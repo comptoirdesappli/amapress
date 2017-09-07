@@ -1,0 +1,21 @@
+{
+  "name": "sharevb/amapress",
+  "description": "Gestion d'AMAP",
+  "minimum-stability": "dev",
+  "license": "LGPL",
+  "authors": [
+    {
+      "name": "ShareVB",
+      "email": "sharevb@gmail.com"
+    }
+  ],
+  "require": {
+    "spipu/html2pdf": "v4.6.1",
+    "guzzle/guzzle": "v3.9.3",
+    "phpoffice/phpexcel": "1.8.1",
+    "google/apiclient": "2.x-dev",
+    "ovh/ovh": "dev-master",
+    "thinkshout/mailchimp-api-php": "dev-master",
+    "campaignmonitor/createsend-php": "v5.0.2"
+  }
+}
