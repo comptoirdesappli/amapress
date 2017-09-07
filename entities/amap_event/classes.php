@@ -1,0 +1,265 @@
+<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_Lieu {
+	const INTERNAL_POST_TYPE = 'amps_amap_event';
+	const POST_TYPE = 'amap_event';
+	const CATEGORY = 'amps_amap_event_category';
+
+	function __construct( $post_id ) {
+		parent::__construct( $post_id );
+	}
+
+	public function getDefaultSortValue() {
+		return $this->getDate();
+	}
+
+	public function getStartDateAndHour() {
+		return Amapress::make_date_and_hour( $this->getDate(), $this->getHeure_debut() );
+	}
+
+	public function getEndDateAndHour() {
+		return Amapress::make_date_and_hour( $this->getDate(), $this->getHeure_fin() );
+	}
+
+	public function getDate() {
+		return $this->getCustom( 'amapress_amap_event_date' );
+	}
+
+	public function getHeure_debut() {
+		return $this->getCustom( 'amapress_amap_event_heure_debut' );
+	}
+
+	public function getHeure_fin() {
+		return $this->getCustom( 'amapress_amap_event_heure_fin' );
+	}
+
+	public function getLieu_externe_nom() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_nom' );
+	}
+
+	public function getLieu_externe_adresse() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse' );
+	}
+
+	public function getLieu_externe_acces() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_acces' );
+	}
+
+	public function getLieu_externe_adresse_acces() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces' );
+	}
+
+	public function isLieu_externe_AdresseLocalized() {
+		$v = $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_location_type' );
+
+		return ! empty( $v );
+	}
+
+	public function getLieu_externe_AdresseLongitude() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_long' );
+	}
+
+	public function getLieu_externe_AdresseLatitude() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_lat' );
+	}
+
+	public function getLieu_externe_AdresseAccesLatitude() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces_lat' );
+	}
+
+	public function getLieu_externe_AdresseAccesLongitude() {
+		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces_long' );
+	}
+
+	public function isLieu_externe_AdresseAccesLocalized() {
+		$v = $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces_location_type' );
+
+		return ! empty( $v );
+	}
+
+	public function getTypeDisplay() {
+		switch ( $this->getCustom( 'amapress_amap_event_type', 'lieu' ) ) {
+			case 'lieu':
+				return 'Lieu de distribution';
+			case 'lieu_externe':
+				return 'Adresse externe';
+			default:
+				return $this->getCustom( 'amapress_amap_event_type' );
+		}
+	}
+
+	public function getType() {
+		return $this->getCustom( 'amapress_amap_event_type', 'lieu' );
+	}
+
+	/** @return AmapressLieu_distribution */
+	public function getLieu() {
+		return $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+	}
+
+	public function getLieuId() {
+		$id = $this->getCustomAsInt( 'amapress_amap_event_lieu' );
+		if ( $id > 0 ) {
+			return $id;
+		} else {
+			return $this->ID;
+		}
+	}
+
+	public function getCategoriesDisplay() {
+		$this->ensure_init();
+		$terms = get_the_terms( $this->ID, 'amps_amap_event_category' );
+		if ( empty( $terms ) ) {
+			return '';
+		}
+		$term_names = array_map( function ( $t ) {
+			/** @var WP_Term $t */
+			return $t->name;
+		}, $terms );
+
+		return implode( ', ', $term_names );
+	}
+
+	/**
+	 * @return AmapressUser[]|null
+	 */
+	public function getParticipants() {
+		return $this->getCustomAsEntityArray( 'amapress_amap_event_participants', 'AmapressUser' );
+	}
+
+	/** @reurn int[] */
+	public function getParticipantsIds() {
+		return $this->getCustomAsIntArray( 'amapress_amap_event_participants' );
+	}
+
+	public function inscrireParticipant( $user_id ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		$participants = unserialize( get_post_meta( $this->ID, 'amapress_amap_event_participants', true ) );
+		if ( ! $participants ) {
+			$participants = array();
+		}
+		if ( in_array( $user_id, $participants ) ) {
+			return 'already_in_list';
+		} else {
+			$participants[] = $user_id;
+			update_post_meta( $this->ID, 'amapress_amap_event_participants', $participants );
+
+			amapress_mail_current_user_inscr( $this, $user_id );
+
+			return 'ok';
+		}
+	}
+
+	public function desinscrireParticipant( $user_id ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		$participants = Amapress::get_post_meta_array( $this->ID, 'amapress_amap_event_participants' );
+		if ( ! $participants ) {
+			$participants = array();
+		}
+
+		if ( ( $key = array_search( $user_id, $participants ) ) !== false ) {
+			unset( $participants[ $key ] );
+
+			update_post_meta( $this->ID, 'amapress_amap_event_participants', $participants );
+
+			amapress_mail_current_user_desinscr( $this, $user_id );
+
+			return true;
+		} else {
+			return 'not_inscr';
+		}
+	}
+
+	/** @return AmapressAmap_event[] */
+	public static function get_next_amap_events( $date = null, $order = 'NONE' ) {
+		if ( ! $date ) {
+			$date = amapress_time();
+		}
+
+		return self::query_events(
+			array(
+				array(
+					'key'     => 'amapress_amap_event_date',
+					'value'   => Amapress::start_of_day( $date ),
+					'compare' => '>=',
+					'type'    => 'INT'
+				),
+			),
+			$order );
+	}
+
+	/** @return Amapress_EventEntry */
+	public function get_related_events( $user_id ) {
+		$ret = array();
+		if ( empty( $user_id ) || $user_id <= 0 ) {
+
+		} else {
+			$resps    = $this->getParticipantsIds();
+			$date     = $this->getStartDateAndHour();
+			$date_end = $this->getEndDateAndHour();
+			if ( in_array( $user_id, $resps ) ) {
+				$ret[] = new Amapress_EventEntry( array(
+					'ev_id'    => "ev-{$this->ID}-resp",
+					'date'     => $date,
+					'date_end' => $date_end,
+					'class'    => "agenda-amap-event",
+					'type'     => 'amap_event',
+					'category' => 'Évènements',
+					'lieu'     => $this,
+					'priority' => 60,
+					'label'    => $this->getTitle(),
+					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_event_icon" ) ),
+					'alt'      => 'Vous êtes inscript pour ' . $this->getTitle() . ' le ' . date_i18n( 'd/m/Y', $date ),
+					'href'     => $this->getPermalink()
+				) );
+			} else {
+				$ret[] = new Amapress_EventEntry( array(
+					'ev_id'    => "ev-{$this->ID}",
+					'date'     => $date,
+					'date_end' => $date_end,
+					'class'    => "agenda-inscription-amap-event",
+					'type'     => 'amap_event',
+					'category' => 'Évènements',
+					'lieu'     => $this,
+					'priority' => 60,
+					'label'    => $this->getTitle(),
+					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_amap_event_inscription_icon" ) ),
+					'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
+					'href'     => $this->getPermalink()
+				) );
+			}
+		}
+
+		return $ret;
+	}
+
+	public function getLieuPermalink() {
+		/** @var AmapressLieu_distribution $lieu */
+		$lieu = $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+		if ( $lieu ) {
+			return $lieu->getPermalink();
+		} else {
+			return $this->getPermalink();
+		}
+	}
+
+	public function getLieuTitle() {
+		/** @var AmapressLieu_distribution $lieu */
+		$lieu = $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+		if ( $lieu ) {
+			return $lieu->getShortName();
+		} else {
+			return $this->getLieu_externe_nom();
+		}
+	}
+}

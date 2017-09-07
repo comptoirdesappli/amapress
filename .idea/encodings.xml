@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/entities/actions.handlers.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/actions.messages.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/amap_event/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/amapien/custom.content.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/amapien/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/amapien/shortcodes.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/assemblee/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/commande/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/contrat/custom.content.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/contrat/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/custom-menu-items.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/custom.content.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/distribution/actions.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/distribution/custom.content.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/distribution/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/distribution/shortcodes.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/intermittence/actions.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/intermittence/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/lieu_distribution/custom.content.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/lieu_distribution/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/message/handler.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/message/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/panier/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/producteur/custom.content.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/producteur/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/produit/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/recette/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/slug.updater.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/titles.formatter.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/user_commande/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/views.filters.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entities/visite/register.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/options/customizer.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/options/tabs.models.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/titan-framework/lib/class-entity.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/titan-framework/lib/class-option-address.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utils.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utils/import-posts-from-csv.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utils/import-users-from-csv.php" charset="UTF-8" />
+  </component>
+</project>

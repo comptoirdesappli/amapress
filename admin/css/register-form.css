@@ -1,0 +1,216 @@
+/**
+ * Styles for the registration form
+*/
+
+/* ========= General Styles ========= */
+
+body.login {
+    background: white;
+}
+
+/* ========= Messages ========= */
+
+div.updated,
+.login .message,
+.press-this #message {
+    padding: 15px;
+    color: #424F5C;
+    box-shadow: none;
+    border-left: none;
+    margin-bottom: 5px;
+    background-color: transparent;
+}
+
+div.error,
+.login #login_error {
+    color: white;
+    box-shadow: none;
+    border: 2px solid;
+    border-color: #F24E4E;
+    background-color: #F24E4E;
+}
+
+.message.register {
+    color: white;
+    text-align: center;
+    margin: 10px 0;
+    background-color: #419288;
+}
+
+/* ========= Header ========= */
+
+#login:before {
+    content: '';
+
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    background-color: #419288;
+}
+
+/* ========= The form ========= */
+
+#login {
+    width: 560px;
+    padding: 40px 0 0;
+}
+
+.login h1 a {
+    width: 265px;
+    height: 80px;
+    background-size: 100%;
+    /*background-image: url(../../admin/img/ramble-logo.png);*/
+}
+
+.login form {
+    box-shadow: none;
+    padding-bottom: 10px;
+    background-color: #F5F5F5;
+    background-color: rgba(255, 255, 255, .75);
+}
+
+.login form input[type="text"],
+.login form input[type="email"],
+.login form input[type="password"] {
+    width: 100%;
+    height: 34px;
+    display: block;
+    color: #555555;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    line-height: 1.42857;
+    background-image: none;
+    vertical-align: middle;
+
+    border-radius: 0;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    -moz-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
+.login form input[type="checkbox"] {
+    top: -1px;
+    margin: 0;
+    padding: 0;
+    width: 13px;
+    height: 13px;
+    position: relative;
+    vertical-align: middle;
+}
+
+label[for=terms] {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+}
+
+p.help,
+p.description,
+span.description,
+.form-wrap p {
+    float: left;
+    margin-bottom: 10px !important;
+}
+
+.login #nav {
+    margin: 0;
+    padding-bottom: 30px;
+    background-color: #F5F5F5;
+    background-color: rgba(255, 255, 255, .75);
+}
+
+#backtoblog {
+    display: none;
+}
+
+/* ========= Footer ========= */
+
+#login:after {
+    z-index: -1;
+    content: '';
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    display: block;
+    position: fixed;
+    background: #4EAEA2;
+    border-top: 6px solid #419288;
+}
+
+/* ========= Button styles ========= */
+
+.wp-core-ui .button-primary,
+.wp-core-ui .button-primary:focus {
+    border-color: #4EAEA2;
+    background-color: #4EAEA2;
+    box-shadow: 0 5px 0 #34495E;
+
+    transition: all ease-in-out .25s;
+    -moz-transition: all ease-in-out .25s;
+    -webkit-transition: all ease-in-out .25s;
+}
+
+.wp-core-ui .button-primary:hover {
+    border-color: #5ecabd;
+    background-color: #5ecabd;
+    box-shadow: 0 5px 0 #4D6C8B;
+
+    transition: all ease-in-out .25s;
+    -moz-transition: all ease-in-out .25s;
+    -webkit-transition: all ease-in-out .25s;
+}
+
+/* ========= Responsive and modal ready ========= */
+
+@media (max-width: 580px) {
+
+    #login {
+        width: 100%;
+        padding: 0;
+    }
+
+    .login h1 {
+        display: none;
+    }
+
+    .login form {
+        margin-top: 0;
+    }
+}
+
+@media (max-height: 680px) {
+
+    #login:after {
+        content: '';
+        left: 0;
+        bottom: 0;
+        height: 30px;
+
+    }
+}
+
+@media (max-width: 600px) {
+
+    .message.register {
+        display: none;
+    }
+
+    #login:before {
+        content: '';
+        background: none;
+        border-bottom: none;
+    }
+
+    #login:after {
+        content: '';
+        background: none;
+        border-top: none;
+    }
+}

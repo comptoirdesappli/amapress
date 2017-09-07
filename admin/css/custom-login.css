@@ -1,0 +1,147 @@
+/**
+ * Style for the WP Login and Forgot Password screens
+*/
+
+/* ========= General Styles ========= */
+
+body.login {
+
+    background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+    /*background: url(../../admin/img/login-bg.jpg) no-repeat center center fixed;*/
+}
+
+/* ========= Messages ========= */
+
+div.updated,
+.login .message,
+.press-this #message {
+    padding: 15px;
+    color: #31708F;
+    box-shadow: none;
+    border-left: none;
+    text-align: center;
+    margin-bottom: 20px;
+    border-color: #BCE8F1;
+    background-color: #D9EDF7;
+}
+
+div.error,
+.login #login_error {
+    color: #A94442;
+    border-color: #EBCCD1;
+    background-color: #F2DEDE;
+
+    box-shadow: none;
+    border-left: none;
+    text-align: center;
+}
+
+/* ========= The form ========= */
+
+#login {
+    width: 560px;
+    padding: 50px 0 0;
+}
+
+.login h1 a {
+    width: 465px;
+    height: 140px;
+    background-size: auto;
+    /*background-image: url(../img/logo.jpg);*/
+}
+
+.login form {
+    box-shadow: none;
+    padding-bottom: 10px;
+    background-color: #F5F5F5;
+    background-color: rgba(255, 255, 255, .75);
+}
+
+.login form input[type="text"],
+.login form input[type="password"] {
+    width: 100%;
+    height: 34px;
+    display: block;
+    color: #555555;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    line-height: 1.42857;
+    background-image: none;
+    vertical-align: middle;
+
+    border-radius: 0;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    -moz-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
+p.help,
+p.description,
+span.description,
+.form-wrap p {
+    float: left;
+    margin-bottom: 10px !important;
+}
+
+.login #nav {
+    margin: 0;
+    padding-bottom: 30px;
+    background-color: #F5F5F5;
+    background-color: rgba(255, 255, 255, .75);
+}
+
+#backtoblog {
+    display: none;
+}
+
+/* ========= Button styles ========= */
+
+.wp-core-ui .button-primary,
+.wp-core-ui .button-primary:focus {
+    border-color: #4EAEA2;
+    background-color: #4EAEA2;
+    box-shadow: 0 5px 0 #34495E;
+
+    transition: all ease-in-out .25s;
+    -moz-transition: all ease-in-out .25s;
+    -webkit-transition: all ease-in-out .25s;
+}
+
+.wp-core-ui .button-primary:hover {
+    border-color: #5ecabd;
+    background-color: #5ecabd;
+    box-shadow: 0 5px 0 #4D6C8B;
+
+    transition: all ease-in-out .25s;
+    -moz-transition: all ease-in-out .25s;
+    -webkit-transition: all ease-in-out .25s;
+}
+
+/* ========= Responsive and modal ready ========= */
+
+@media (max-width: 580px) {
+
+    body.login {
+        background: #FFFFFF;
+    }
+
+    #login {
+        width: 100%;
+        padding: 0;
+    }
+
+    .login h1 {
+        display: none;
+    }
+
+    .login form {
+        margin-top: 0;
+    }
+}

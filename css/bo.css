@@ -1,0 +1,193 @@
+.dashicons-before.fa-menu::before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome !important;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#tagsdiv-amps_paiement_category {
+    display: none;
+}
+
+.amapress-check a {
+    color: black;
+}
+
+.tf-select-wrapper {
+    /*margin-right: 50px;*/
+    /*width: 100%;*/
+    /*display: inline-block;*/
+}
+
+.tf-select-refresh {
+    /*float: right;*/
+}
+
+.select2, select {
+    min-width: 90%;
+    max-width: 90%;
+}
+
+/*.ui-selectmenu-button {*/
+/*width: 100% !important;*/
+/*}*/
+
+.option-link {
+    color: black !important;
+}
+
+.amapress-check .state::before {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    line-height: 1;
+    font-family: 'Dashicons';
+    text-decoration: inherit;
+    font-weight: 400;
+    font-style: normal;
+    vertical-align: top;
+    text-align: center;
+    -webkit-transition: color .1s ease-in 0;
+    transition: color .1s ease-in 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.amapress-check .success::before {
+    color: green;
+    content: '\f147';
+}
+
+.amapress-check .error::before {
+    color: red;
+    content: '\f158';
+}
+
+.amapress-check .warning::before {
+    color: orange;
+    content: '\f227';
+}
+
+.amapress-check .do::before {
+    color: gray;
+    content: '\f107';
+}
+
+.amapress-check .info::before {
+    color: gray;
+    content: '\f107';
+}
+
+.amapress-check .values, .amapress-check .description {
+}
+
+.amapress-check-content {
+    margin-left: 20px;
+    padding-left: 5px;
+    border-left: 1pt solid gray;
+}
+
+.adhesion_paiement_table {
+    width: 100%;
+}
+
+select.paiements_details {
+    width: 100%;
+}
+
+.paiement-date {
+    padding-right: 1em;
+    padding-left: 5px;
+    width: auto;
+    display: table-cell;
+}
+
+.paiement-quant {
+    padding-right: 1em;
+    padding-left: 5px;
+    width: auto;
+    display: table-cell;
+}
+
+.post-type-amps_adhesion .ui-selectmenu-menu ul {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+}
+
+.post-type-amps_adhesion .ui-selectmenu-menu li.ui-menu-item {
+    display: table-row;
+    width: 100%;
+    float: none;
+}
+
+.post-type-amps_adhesion .ui-selectmenu-menu .ui-state-disabled {
+    color: black;
+    font-weight: bold;
+    opacity: 1;
+}
+
+.paiement-amount {
+    white-space: nowrap;
+}
+
+#paiement-amount-total.ok {
+    color: green;
+}
+
+#paiement-amount-total.nok {
+    color: red;
+}
+
+/*#side-sortables {*/
+/*position: fixed;*/
+/*}*/
+
+.fixed .column-categories, .fixed .column-rel, .fixed .column-response, .fixed .column-role, .fixed .column-tags {
+    width: auto !important;
+}
+
+.mailing-conf-link {
+    border-top: 1pt solid #000;
+    font-size: 0.8em;
+}
+
+.quant-conf label {
+    display: inline-block;
+    width: 30%;
+}
+
+.quant-conf input, .quant-conf select, .quant-conf textarea, .quant-conf .select2 {
+    display: inline-block;
+    width: 65%;
+}
+
+.tf-form-table {
+    table-layout: fixed;
+}
+
+.column-thumb-preview img.attachment-thumbnail.size-thumbnail {
+    max-width: 100%;
+    height: initial;
+}
+
+.adhesion-date-error {
+    font-weight: bold;
+    color: red;
+}
+
+#wp-admin-bar-amapress_publish_admin_bar button.amapress_publish {
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 30px !important;
+}
+
+#wp-admin-bar-amapress_publish_admin_bar {
+    vertical-align: middle !important;
+}
