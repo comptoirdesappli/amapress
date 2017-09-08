@@ -34,11 +34,11 @@ class Amapress_Menu_Widget extends WP_Widget {
 		}
 
 		echo '<ul class="navbar">';
-//		echo '<li><a href="/mes-evenements">Mes évènements</a></li>';
-//		echo '<li><a href="/trombinoscope">Les amapiens</a></li>';
-//		echo '<li><a href="/mes-adhesions">Mes adhesions</a></li>';
-//		echo '<li><a href="/mon-profile">Mon profile</a></li>';
-//		echo '<li><a href="/adhesion">Souscrire</a></li>';
+		echo '<li><a href="/mes-evenements">Mes évènements</a></li>';
+		echo '<li><a href="/trombinoscope">Les amapiens</a></li>';
+		echo '<li><a href="/mes-adhesions">Mes adhesions</a></li>';
+		echo '<li><a href="/mon-profile">Mon profile</a></li>';
+		echo '<li><a href="/adhesion">Souscrire</a></li>';
 		//echo '<li><a href=""></a></li>';
 		//echo '<li><a href=""></a></li>';
 		//echo '<li><a href=""></a></li>';

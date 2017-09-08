@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: Guillaume
+ * Date: 13/05/2016
+ * Time: 11:14
+ */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -558,7 +563,7 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 
 	$errors = array();
 	$res    = array();
-	foreach ( $values as $v ) {
+	foreach ( $values as $v) {
 //        $v = trim($v);
 		$id = amapress_resolve_contrat_quantite_id( $contrat_instance_id, $v );
 		if ( $id <= 0 ) {
@@ -573,16 +578,15 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 		return new WP_Error( 'cannot_parse', implode( ' ; ', $errors ) );
 	}
 
-	if ( count( $res ) == 1 ) {
+	if ( count( $res ) == 1 )
 		return array_shift( $res );
-	} else {
-		return $res;
-	}
+	else
+        return $res;
 }
 
 //add_filter('amapress_resolve_contrat_quantite_id','amapress_resolve_contrat_quantite_id', 10, 2);
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
-	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
+	$quants = AmapressContrats::get_contrat_quantites($contrat_instance_id);
 //    $cn = $contrat_quantite_name;
 	$contrat_quantite_name = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $contrat_quantite_name ) ) );
 	if ( empty( $contrat_quantite_name ) ) {
@@ -598,8 +602,8 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 //                } else if (abs($quant->getQuantite() - @floatval(str_replace(',', '.', $cq))) < 0.01) {
 		} else if ( str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
 			return $quant->ID;
-		}
-	}
+        }
+    }
 //    var_dump($contrat_quantite_name);
 //    var_dump($cn);
 //    die();
@@ -607,6 +611,9 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 }
 
 function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo ) {
+	if ( $contrat_instance->getModel() == null ) {
+		return '';
+	}
 	$contrat_produits = array();
 	foreach ( $contrat_instance->getModel()->getProducteur()->getProduits() as $prod ) {
 		$contrat_produits[ $prod->ID ] = $prod->getTitle();
@@ -621,7 +628,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	echo "<div><label>Prix: </label><input type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></div>";
 //    echo '</td>';
 //    echo '<td>';
-	if ( $contrat_instance->isPanierVariable() ) {
+	if ( $contrat_instance->isPanierVariable()) {
 //        echo '<fieldset>';
 		echo "<div><label>Unité: </label><select class='required' name='amapress_quant_data[$id][unit]'>";
 		echo '<option value="">--Unité de prix--</option>';
@@ -635,7 +642,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 //        echo '</fieldset>';
 	} else {
 		echo "<div><label>Quantité: </label><input type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Quantité' value='$quantite' /></div>";
-	}
+    }
 //    echo '</td>';
 //    echo '<td>';
 	?>
@@ -646,7 +653,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
     ><?php
 		tf_parse_select_options( $contrat_produits, $produits );
 		?></select></div><?php
-	echo '</td>';
+    echo '</td>';
 //            echo "<td><input type='number' class='required number' name='amapress_quant_data[$id][max_quant]' placeholder='Quantité commandable max' value='$max' /></td>";
 
 	echo "<td class='tf-upload'  style='border-top: 1pt solid #8c8c8c; border-collapse: collapse'>";
@@ -663,9 +670,13 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 
 function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	if ( $contrat_instance->getModel() == null ) {
+		return '';
+	}
+
 	ob_start();
 	?>
-    <input type="hidden" name="amapress_quant_data_contrat_instance_id" value="<?php echo $contrat_instance_id; ?>"/>
+    <input type="hidden" name="amapress_quant_data_contrat_instance_id" value="<?php echo $contrat_instance_id; ?>" />
     <table class="table" style="width: 100%;">
         <thead>
         <tr>
@@ -675,29 +686,28 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         </tr>
         </thead>
         <tbody>
-		<?php
-		foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance_id ) as $quant ) {
-			$id = $quant->ID;
+	    <?php
+	    foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance_id ) as $quant ) {
+		    $id = $quant->ID;
 
 
-			$tit  = esc_attr( $quant->getTitle() );
-			$q    = esc_attr( $quant->getQuantite() );
-			$c    = esc_attr( $quant->getCode() );
-			$pr   = esc_attr( $quant->getPrix_unitaire() );
-			$qc   = esc_attr( $quant->getQuantiteConfig() );
-			$desc = esc_textarea( stripslashes( $quant->getDescription() ) );
-			$af   = esc_attr( $quant->getAvailFrom() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailFrom() ) ) : null );
-			$at   = esc_attr( $quant->getAvailTo() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailTo() ) ) : null );
+		    $tit  = esc_attr( $quant->getTitle() );
+		    $q    = esc_attr( $quant->getQuantite() );
+		    $c    = esc_attr( $quant->getCode() );
+		    $pr   = esc_attr( $quant->getPrix_unitaire() );
+		    $qc   = esc_attr( $quant->getQuantiteConfig() );
+		    $desc = esc_textarea( stripslashes( $quant->getDescription() ) );
+		    $af   = esc_attr( $quant->getAvailFrom() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailFrom() ) ) : null );
+		    $at   = esc_attr( $quant->getAvailTo() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval($quant->getAvailTo())) : null);
 //            $max = esc_attr($quant->getMax_Commandable());
 
-			amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
-				$qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ) );
-		}
-		?>
+		    amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
+			    $qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID));
+        }
+        ?>
         <tr>
             <td colspan="3"><span class="btn add-model dashicons dashicons-plus-alt"
-                                  onclick="amapress_add_quant(this)"></span> Ajouter une quantité
-            </td>
+                                  onclick="amapress_add_quant(this)"></span> Ajouter une quantité</td>
         </tr>
         </tbody>
     </table>
@@ -706,7 +716,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 	$contents = ob_get_contents();
 	ob_clean();
 
-	ob_start();
+    ob_start();
 //    echo '<tr>';
 //
 //    echo  "<td><input type='text' class='required' name='amapress_quant_data[%%id%%][title]' placeholder='Intitulé' /></td>";
@@ -765,12 +775,12 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 	return $contents;
 }
 
-function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
+function amapress_save_contrat_quantite_editor($contrat_instance_id) {
 //    global $amapress_save_contrat_quantite_editor;
 
 //    if ($amapress_save_contrat_quantite_editor) return;
 
-	if ( isset( $_POST['amapress_quant_data'] ) && isset( $_POST['amapress_quant_data_contrat_instance_id'] ) ) {
+	if ( isset( $_POST['amapress_quant_data'] ) && isset( $_POST['amapress_quant_data_contrat_instance_id'])) {
 //        $amapress_save_contrat_quantite_editor = true;
 
 		$quants     = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
@@ -810,7 +820,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 				wp_update_post( $my_post, true );
 			}
 		}
-		unset( $_POST['amapress_quant_data'] );
+		unset($_POST['amapress_quant_data']);
 
 //        $amapress_save_contrat_quantite_editor = false;
 	}
@@ -827,7 +837,7 @@ function amapress_can_delete_contrat_instance( $can, $post_id ) {
 }
 
 add_filter( 'amapress_can_delete_contrat_quantite', 'amapress_can_delete_contrat_quantite', 10, 2 );
-function amapress_can_delete_contrat_quantite( $can, $post_id ) {
+function amapress_can_delete_contrat_quantite($can, $post_id) {
 //    $posts = get_posts(
 //        array(
 //            'post_type' => AmapressAdhesion::INTERNAL_POST_TYPE,
@@ -852,5 +862,5 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
 	}
 
-	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
+	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit"));
 }
