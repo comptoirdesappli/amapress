@@ -424,7 +424,7 @@ function amapress_paiements_count_editor( $post_id ) {
 
 function amapress_paiements_editor( $post_id ) {
 	$adhesion = new AmapressAdhesion( $post_id );
-	if ( $adhesion->getContrat_instance() == null ) {
+	if ( $adhesion->getContrat_instance() == null || 'draft' == $adhesion->getPost()->post_status ) {
 		echo '<p style="color:red">Les chèques ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée</p>';
 
 		return;
