@@ -215,7 +215,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$quants            = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
 	$paniers_variables = $adh->getPaniersVariables();
 	$ret               .= '<fieldset style="min-width: inherit">';
-	$contrats          = AmapressContrats::get_active_contrat_instances( null, $date_debut );
+	$contrats          = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
 	$had_contrat       = false;
 	foreach ( $contrats as $contrat_instance ) {
 		if ( $contrat_instance->isPanierVariable() ) {
