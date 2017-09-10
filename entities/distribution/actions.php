@@ -13,7 +13,7 @@ function amapress_do_query_action_distribution_inscr_resp() {
 	$dist_id = get_the_ID();
 	$dist    = new AmapressDistribution( $dist_id );
 
-	if ( ! $dist->isUserMemberOf( amapress_current_user_id() ) ) {
+	if ( ! $dist->isUserMemberOf( amapress_current_user_id(), true ) ) {
 		wp_die( 'Vous ne faites pas partie de cette distribution.' );
 	}
 

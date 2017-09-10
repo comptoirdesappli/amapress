@@ -329,7 +329,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				}
 
 //                $ret .= '<td>';
-				$is_user_part_of = $dist->isUserMemberOf( amapress_current_user_id() ); // || (in_array($dist->getDate(), $user_date_substs) && in_array($dist->getLieuId(), $user_lieux_substs));
+				$is_user_part_of = $dist->isUserMemberOf( amapress_current_user_id(), true ); // || (in_array($dist->getDate(), $user_date_substs) && in_array($dist->getLieuId(), $user_lieux_substs));
 				$resps           = $dist->getResponsables();
 				$needed          = AmapressDistributions::get_required_responsables( $dist->ID );
 				$can_unsubscribe = Amapress::start_of_week( $date ) >= Amapress::start_of_week( amapress_time() );
@@ -451,8 +451,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 	$dist_id    = intval( $_POST['dist'] );
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
-	$is_current = amapress_current_user_id() == $user_id;
-	if ( ! $is_current && ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || ! amapress_can_access_admin() ) ) {
+	$is_current = ( amapress_current_user_id() == $user_id );
+	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
 		echo '<p class="error">Non autorisé</p>';
 		die();
 	}
@@ -481,7 +481,7 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	$dist_id    = intval( $_POST['dist'] );
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = amapress_current_user_id() == $user_id;
-	if ( ! $is_current && ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || ! amapress_can_access_admin() ) ) {
+	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
 		echo '<p class="error">Non autorisé</p>';
 		die();
 	}

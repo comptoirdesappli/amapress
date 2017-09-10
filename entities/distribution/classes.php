@@ -33,7 +33,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getDate() {
-		return $this->getCustom( 'amapress_distribution_date', - 1 );
+		return $this->getCustomAsDate( 'amapress_distribution_date' );
 	}
 
 	/** @return AmapressLieu_distribution */
@@ -86,13 +86,26 @@ class AmapressDistribution extends Amapress_EventBase {
 		return $this->getCustomAsIntArray( 'amapress_distribution_contrats' );
 	}
 
-	public function isUserMemberOf( $user_id ) {
-		$user_contrats_ids = AmapressContrats::get_user_active_contrat_instances( $user_id );
+	public function isUserMemberOf( $user_id, $guess_renew = false ) {
+		$user_contrats_ids = AmapressContrats::get_user_active_contrat_instances( $user_id,
+			null,
+			$this->getDate(),
+			$guess_renew );
 		$dist_contrat_ids  = array_map( function ( $c ) {
 			return $c->ID;
 		}, $this->getContrats() );
 
-		return count( array_intersect( $user_contrats_ids, $dist_contrat_ids ) ) > 0;
+		if ( count( array_intersect( $user_contrats_ids, $dist_contrat_ids ) ) > 0 ) {
+			return true;
+		}
+		if ( ! $guess_renew ) {
+			return false;
+		}
+
+		$user_lieu_ids = AmapressUsers::get_user_lieu_ids( $user_id,
+			$this->getDate() );
+
+		return in_array( $this->getLieuId(), $user_lieu_ids );
 	}
 
 	public function inscrireResponsable( $user_id ) {
@@ -100,7 +113,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		if ( ! $this->isUserMemberOf( $user_id ) ) {
+		if ( ! $this->isUserMemberOf( $user_id, true ) ) {
 			wp_die( 'Vous ne faites pas partie de cette distribution.' );
 		}
 

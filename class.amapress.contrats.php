@@ -197,7 +197,7 @@ class AmapressContrats {
 	 * @return AmapressContrat_instance[]
 	 */
 	public static function get_contrat_instances( $from_end_date = null, $ignore_renouv_delta = false ) {
-		$key = "amapress_get_contrat_instances_{$from_end_date}";
+		$key = "amapress_get_contrat_instances_{$from_end_date}_{$ignore_renouv_delta}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( ! $from_end_date ) {
@@ -350,7 +350,7 @@ class AmapressContrats {
 	 * @return AmapressContrat_instance[]
 	 */
 	public static function get_active_contrat_instances( $contrat_instance_id = null, $date = null, $ignore_renouv_delta = false ) {
-		$key = "amapress_get_active_contrat_instances_{$contrat_instance_id}_{$date}";
+		$key = "amapress_get_active_contrat_instances_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( $date == null ) {
@@ -408,7 +408,7 @@ class AmapressContrats {
 			$contrat_id = array( $contrat_id );
 		}
 		$key_ids = implode( '-', $contrat_id );
-		$key     = "amapress_get_active_contrat_instances_by_contrat_{$key_ids}_{$date}";
+		$key     = "amapress_get_active_contrat_instances_by_contrat_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( ! $date ) {
@@ -769,7 +769,7 @@ class AmapressContrats {
 	 */
 	public static function get_active_adhesions( $contrat_id = null, $contrat_quantite_id = null, $lieu_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_active_adhesions_{$key_ids}_{$contrat_quantite_id}_{$lieu_id}_{$date}";
+		$key     = "amapress_get_active_adhesions_{$key_ids}_{$contrat_quantite_id}_{$lieu_id}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( is_array( $contrat_id ) ) {
@@ -916,7 +916,7 @@ class AmapressContrats {
 	 */
 	public static function get_user_active_adhesion_ids( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_user_active_adhesion_ids_{$user_id}_{$key_ids}_{$date}";
+		$key     = "amapress_get_user_active_adhesion_ids_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( $user_id == null ) {
@@ -985,7 +985,7 @@ class AmapressContrats {
 	 */
 	public static function get_user_active_adhesion( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_user_active_adhesion_{$user_id}_{$key_ids}_{$date}";
+		$key     = "amapress_get_user_active_adhesion_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res = array_map( function ( $p ) {
@@ -1244,7 +1244,7 @@ class AmapressContrats {
 	 */
 	public static function get_user_active_adhesion_quantites( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_user_active_adhesion_quantites_{$user_id}_{$key_ids}_{$date}";
+		$key     = "amapress_get_user_active_adhesion_quantites_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 //            if (!$user_id) $user_id = amapress_current_user_id();
@@ -1338,7 +1338,7 @@ class AmapressContrats {
 	 */
 	public static function get_user_active_contrats( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_user_active_contrats_{$user_id}_{$key_ids}_{$date}";
+		$key     = "amapress_get_user_active_contrats_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			$ads = self::get_user_active_adhesion( $user_id, $contrat_id, $date, $ignore_renouv_delta );
@@ -1357,7 +1357,7 @@ class AmapressContrats {
 	 */
 	public static function get_user_active_contrat_instances( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_user_active_contrat_instances_{$user_id}_{$key_ids}_{$date}";
+		$key     = "amapress_get_user_active_contrat_instances_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			$ads = self::get_user_active_adhesion( $user_id, $contrat_id, $date, $ignore_renouv_delta );
