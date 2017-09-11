@@ -25,13 +25,13 @@ function amapress_register_entities_contrat( $entities ) {
 			'remove' => array( 'mine' ),
 		),
 		'fields'                  => array(
-			'amapress_icon_id' => array(
-				'name'    => amapress__( 'Icône' ),
-				'type'    => 'upload',
-				'group'   => 'Information',
-				'desc'    => 'Icône',
-				'bare_id' => true,
-			),
+//			'amapress_icon_id' => array(
+//				'name'    => amapress__( 'Icône' ),
+//				'type'    => 'upload',
+//				'group'   => 'Information',
+//				'desc'    => 'Icône',
+//				'bare_id' => true,
+//			),
 //            'presentation' => array(
 //                'name' => amapress__('Présentation'),
 //                'type' => 'editor',

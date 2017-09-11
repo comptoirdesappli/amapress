@@ -24,9 +24,9 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 		return $this->getCustom( 'amapress_producteur_presentation' );
 	}
 
-	public function getHistorique() {
-		return wpautop( $this->getCustom( 'amapress_producteur_historique' ) );
-	}
+//	public function getHistorique() {
+//		return wpautop( $this->getCustom( 'amapress_producteur_historique' ) );
+//	}
 
 	public function getAcces() {
 		$this->ensure_init();

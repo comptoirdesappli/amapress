@@ -215,7 +215,6 @@ function amapress_no_title_post( WP_Post $post ) {
 		if ( empty( $post->post_title ) ) {
 			return;
 		}
-//       TODO var_dump($post);
 		?>
         <div id="titlediv">
             <div id="titlewrap">
@@ -236,5 +235,9 @@ function amapress_no_title_post( WP_Post $post ) {
 			?>
         </div>
 		<?php
+	}
+
+	if ( AmapressContrat::INTERNAL_POST_TYPE == $post->post_type ) {
+		echo '<h1>Termes du contrat :</h1>';
 	}
 }
