@@ -137,8 +137,8 @@ function amapress_register_entities_contrat( $entities ) {
 							'before_option' =>
 								function ( $option ) {
 									$val_id = $option->getID() . '-validate';
-									echo '<p><input type="checkbox" id="' . $val_id . '" /><label for="' . $val_id . '">La modification des dates ci-dessous doit se faire avec précaution. 
-<br />Pour annuler ou reporter une distribution de ce contrat, veuillez modifier directement le panier correspondant.</label></p>';
+									echo '<p><input type="checkbox" id="' . $val_id . '" /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
+<br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</label></p>';
 									echo '<script type="text/javascript">
 jQuery(function($) {
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
@@ -151,11 +151,11 @@ jQuery(function($) {
 								},
 						),
 						'panier_variable'       => array(
-							'name'     => amapress__( 'Paniers variables' ),
+							'name'     => amapress__( 'Paniers personnalisés' ),
 							'type'     => 'checkbox',
 							'group'    => 'Gestion',
 							'required' => true,
-							'desc'     => 'Paniers variables',
+							'desc'     => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
 						'paiements'             => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
@@ -275,10 +275,10 @@ jQuery(function($) {
 					},
 			),
 			'ended'          => array(
-				'name'  => amapress__( 'Contrat terminé' ),
+				'name'  => amapress__( 'Clôturer' ),
 				'type'  => 'checkbox',
 				'group' => 'Gestion',
-				'desc'  => 'Contrat terminé ou renouvellé',
+				'desc'  => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
 			),
 			'date_ouverture' => array(
 				'name'       => amapress__( 'Ouverture des inscriptions' ),
