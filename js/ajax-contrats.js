@@ -3,7 +3,7 @@
         var $this = jQuery(this);
         var data = {
             'action': 'update_contrat_status_action',
-            'contrat_instance': $this.data('contrat_instance')
+            'contrat_instance': $this.data('contrat-instance')
         };
 
         var contrat_status = jQuery(this).closest('.status');

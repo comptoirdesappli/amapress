@@ -161,7 +161,7 @@ class AmapressContrats {
 
 	static function update_contrat_status_action() {
 		if ( ! isset( $_POST['contrat_instance'] ) ) {
-			die( 'Error' );
+			die( 'Missing contrat instance in query' );
 		}
 
 		/* this area is very simple but being serverside it affords the possibility of retreiving data from the server and passing it back to the javascript function */
