@@ -213,17 +213,20 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		);
 	}
 
+//	var_dump($dist);
+	$all_adhs = AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId(), $dist->getDate(), true );
 	$liste = array();
 //    $query = new WP_Query($query_string);
 	$adhesions = array_group_by(
-		AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId() ),
+		$all_adhs,
 		function ( $adh ) {
 			/** @var AmapressAdhesion $adh */
-			$user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID );
+			$user_ids = array_unique( AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID ) );
 
 			return implode( '_', $user_ids );
 		} );
 
+//	var_dump($all_adhs);
 	/** @var AmapressAdhesion[] $adhs */
 	foreach ( $adhesions as $user_ids => $adhs ) {
 		$line = array();

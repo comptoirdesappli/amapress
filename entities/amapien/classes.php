@@ -405,13 +405,13 @@ class AmapressUser extends TitanUserEntity {
 								'key'     => 'amapress_user_co-adherent-1',
 								'value'   => $this->ID,
 								'compare' => '=',
-								'type'    => 'INT',
+								'type'    => 'NUMERIC',
 							),
 							array(
 								'key'     => 'amapress_user_co-adherent-2',
 								'value'   => $this->ID,
 								'compare' => '=',
-								'type'    => 'INT',
+								'type'    => 'NUMERIC',
 							),
 						),
 					)

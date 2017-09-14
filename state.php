@@ -310,7 +310,7 @@ function amapress_echo_and_check_amapress_state_page() {
 				'key'     => 'amapress_producteur_user',
 				'value'   => array_map( 'Amapress::to_id', $prod_users ),
 				'compare' => 'IN',
-				'type'    => 'INT',
+				'type'    => 'NUMERIC',
 			)
 		)
 	) );
@@ -335,7 +335,7 @@ function amapress_echo_and_check_amapress_state_page() {
 				'key'     => 'amapress_contrat_producteur',
 				'value'   => array_map( 'Amapress::to_id', $producteurs ),
 				'compare' => 'IN',
-				'type'    => 'INT',
+				'type'    => 'NUMERIC',
 			)
 		)
 	) );

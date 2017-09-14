@@ -70,17 +70,17 @@ class AmapressContrats {
 //                                Amapress::start_of_day($date),
 //                                Amapress::end_of_day($date)),
 //                            'compare' => 'BETWEEN',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                        array(
 //                            'key' => 'amapress_contrat_paiement_user',
 //                            'value' => $user_id,
 //                            'compare' => '=',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                        array(
 //                            'key' => 'amapress_contrat_paiement_adhesion',
 //                            'value' => $abo->ID,
 //                            'compare' => '=',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                    )));
 //                if (count($ps) == 0) {
 //                    // Gather post data.
@@ -211,7 +211,7 @@ class AmapressContrats {
 						'key'     => 'amapress_contrat_instance_date_fin',
 						'value'   => Amapress::end_of_day( $ignore_renouv_delta ? $from_end_date : AmapressContrats::renouvellementDelta( $from_end_date ) ),
 						'compare' => '>=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'relation' => 'OR',
@@ -262,7 +262,7 @@ class AmapressContrats {
 						'key'     => 'amapress_contrat_producteur',
 						'value'   => $producteur_id,
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				);
 			}
@@ -366,12 +366,12 @@ class AmapressContrats {
 //                        'key' => 'amapress_contrat_instance_date_debut',
 //                        'value' => Amapress::start_of_day($date),
 //                        'compare' => '<=',
-//                        'type' => 'INT'),
+//                        'type' => 'NUMERIC'),
 					array(
 						'key'     => 'amapress_contrat_instance_date_fin',
 						'value'   => Amapress::end_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),
 						'compare' => '>=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'relation' => 'OR',
@@ -424,12 +424,12 @@ class AmapressContrats {
 //                        'key' => 'amapress_contrat_instance_date_debut',
 //                        'value' => Amapress::start_of_day($date),
 //                        'compare' => '<=',
-//                        'type' => 'INT'),
+//                        'type' => 'NUMERIC'),
 					array(
 						'key'     => 'amapress_contrat_instance_date_fin',
 						'value'   => Amapress::end_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),
 						'compare' => '>=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'relation' => 'OR',
@@ -447,7 +447,7 @@ class AmapressContrats {
 						'key'     => 'amapress_contrat_instance_model',
 						'value'   => $contrat_id,
 						'compare' => 'IN',
-						'type'    => 'INT'
+
 					),
 				)
 			);
@@ -481,7 +481,7 @@ class AmapressContrats {
 						'key'     => 'amapress_contrat_instance_model',
 						'value'   => $contrat_id,
 						'compare' => 'IN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -515,7 +515,7 @@ class AmapressContrats {
 							'key'     => 'amapress_contrat_instance_date_ouverture',
 							'value'   => Amapress::start_of_day( $date ),
 							'compare' => '<=',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 //                    array(
 //                        array(
@@ -526,7 +526,7 @@ class AmapressContrats {
 //                            'key' => 'amapress_contrat_instance_date_debut',
 //                            'value' => $date,
 //                            'compare' => '<=',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                    ),
 					),
 					array(
@@ -535,7 +535,7 @@ class AmapressContrats {
 							'key'     => 'amapress_contrat_instance_date_cloture',
 							'value'   => Amapress::end_of_day( $date ),
 							'compare' => '>=',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 //                    array(
 //                        array(
@@ -546,7 +546,7 @@ class AmapressContrats {
 //                            'key' => 'amapress_contrat_instance_date_fin',
 //                            'value' => $date,
 //                            'compare' => '>=',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                    ),
 					),
 				)
@@ -589,7 +589,7 @@ class AmapressContrats {
 							'key'     => 'amapress_contrat_instance_date_ouverture',
 							'value'   => Amapress::start_of_day( $date ),
 							'compare' => '<=',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 //                    array(
 //                        array(
@@ -600,7 +600,7 @@ class AmapressContrats {
 //                            'key' => 'amapress_contrat_instance_date_debut',
 //                            'value' => $date,
 //                            'compare' => '<=',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                    ),
 					),
 					array(
@@ -609,7 +609,7 @@ class AmapressContrats {
 							'key'     => 'amapress_contrat_instance_date_cloture',
 							'value'   => Amapress::end_of_day( $date ),
 							'compare' => '>=',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 //                    array(
 //                        array(
@@ -620,14 +620,14 @@ class AmapressContrats {
 //                            'key' => 'amapress_contrat_instance_date_fin',
 //                            'value' => $date,
 //                            'compare' => '>=',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                    ),
 					),
 					array(
 						'key'     => 'amapress_contrat_instance_model',
 						'value'   => $contrat_id,
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -702,10 +702,10 @@ class AmapressContrats {
 //            'meta_key' => 'amapress_contrat_quantite_quantite',
 				'meta_query'     => array(
 					array(
-						'key_num' => 'amapress_contrat_quantite_contrat_instance',
+						'key'     => 'amapress_contrat_quantite_contrat_instance',
 						'value'   => $contrat_instance_id,
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -736,7 +736,7 @@ class AmapressContrats {
 //                    'key_num' => 'amapress_contrat_paiement_contrat_instance',
 //                    'value' => $contrat_id,
 //                    'compare' => '=',
-//                    'type' => 'INT'),
+//                    'type' => 'NUMERIC'),
 //            )));
 //    }
 
@@ -778,32 +778,33 @@ class AmapressContrats {
 				$abo_ids = AmapressContrats::get_active_contrat_instances_ids( $contrat_id, $date, $ignore_renouv_delta );
 			}
 			$meta_query = array(
+				'relation' => 'AND',
 				array(
 					'key'     => 'amapress_adhesion_contrat_instance',
 					'value'   => $abo_ids,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				)
 			);
 			if ( $lieu_id ) {
 				$meta_query[] = array(
-					'key_num' => 'amapress_adhesion_lieu',
+					'key'     => 'amapress_adhesion_lieu',
 					'value'   => $lieu_id,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				);
 			}
 			if ( $contrat_quantite_id ) {
 				$meta_query[] = array(
 					'relation' => 'OR',
 					array(
-						'key_num' => 'amapress_adhesion_contrat_quantite',
+						'key'     => 'amapress_adhesion_contrat_quantite',
 						'value'   => $contrat_quantite_id,
 						'compare' => '=',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 					array(
-						'key_num' => 'amapress_adhesion_contrat_quantite',
+						'key'     => 'amapress_adhesion_contrat_quantite',
 						'value'   => '"' . $contrat_quantite_id . '"',
 						'compare' => 'like',
 					)
@@ -813,14 +814,20 @@ class AmapressContrats {
 				array(
 					'relation' => 'OR',
 					array(
-						'key_num' => 'amapress_adhesion_date_fin',
+						'key'     => 'amapress_adhesion_date_fin',
 						'compare' => 'NOT EXISTS',
 					),
 					array(
-						'key_num' => 'amapress_adhesion_date_fin',
+						'key'     => 'amapress_adhesion_date_fin',
+						'value'   => 0,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
+					array(
+						'key'     => 'amapress_adhesion_date_fin',
 						'value'   => Amapress::end_of_day( amapress_time() ),
 						'compare' => '>=',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				)
 			);
@@ -833,7 +840,10 @@ class AmapressContrats {
 			$res = array();
 			foreach ( get_posts( $query ) as $p ) {
 				$res[ $p->ID ] = new AmapressAdhesion( $p );
+//				$res[ $p->ID ]->getLieuId();
 			}
+//			var_dump($query);
+//			var_dump($res);
 			wp_cache_set( $key, $res );
 		}
 
@@ -856,7 +866,7 @@ class AmapressContrats {
 							'key'     => 'amapress_adhesion_contrat_instance',
 							'value'   => $contrat_id,
 							'compare' => 'IN',
-							'type'    => 'INT',
+							'type'    => 'NUMERIC',
 						)
 					);
 				} else {
@@ -865,7 +875,7 @@ class AmapressContrats {
 							'key'     => 'amapress_adhesion_contrat_instance',
 							'value'   => $contrat_id,
 							'compare' => '=',
-							'type'    => 'INT',
+							'type'    => 'NUMERIC',
 						)
 					);
 				}
@@ -873,23 +883,23 @@ class AmapressContrats {
 
 			if ( $lieu_id ) {
 				$meta_query[] = array(
-					'key_num' => 'amapress_adhesion_lieu',
+					'key'     => 'amapress_adhesion_lieu',
 					'value'   => $lieu_id,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				);
 			}
 			if ( $contrat_quantite_id ) {
 				$meta_query[] = array(
 					'relation' => 'OR',
 					array(
-						'key_num' => 'amapress_adhesion_contrat_quantite',
+						'key'     => 'amapress_adhesion_contrat_quantite',
 						'value'   => $contrat_quantite_id,
 						'compare' => '=',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 					array(
-						'key_num' => 'amapress_adhesion_contrat_quantite',
+						'key'     => 'amapress_adhesion_contrat_quantite',
 						'value'   => '"' . $contrat_quantite_id . '"',
 						'compare' => 'like',
 					)
@@ -933,7 +943,7 @@ class AmapressContrats {
 						'key'     => 'amapress_adhesion_contrat_instance',
 						'value'   => $abo_ids,
 						'compare' => 'IN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'relation' => 'OR',
@@ -941,32 +951,38 @@ class AmapressContrats {
 							'key'     => 'amapress_adhesion_adherent',
 							'value'   => $user_ids,
 							'compare' => 'IN',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 						array(
 							'key'     => 'amapress_adhesion_adherent2',
 							'value'   => $user_ids,
 							'compare' => 'IN',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 						array(
 							'key'     => 'amapress_adhesion_adherent3',
 							'value'   => $user_ids,
 							'compare' => 'IN',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 					),
 					array(
 						'relation' => 'OR',
 						array(
-							'key_num' => 'amapress_adhesion_date_fin',
+							'key'     => 'amapress_adhesion_date_fin',
 							'compare' => 'NOT EXISTS',
 						),
 						array(
-							'key_num' => 'amapress_adhesion_date_fin',
+							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => 0,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
 							'value'   => Amapress::end_of_day( amapress_time() ),
 							'compare' => '>=',
-							'type'    => 'INT',
+							'type'    => 'NUMERIC',
 						),
 					)
 				)
@@ -1013,7 +1029,7 @@ class AmapressContrats {
 						'key'     => 'amapress_contrat_paiement_adhesion',
 						'value'   => $adhesion_id,
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				),
 				'orderby'        => 'meta_value_num',
@@ -1045,7 +1061,7 @@ class AmapressContrats {
 						'key'     => 'amapress_adhesion_contrat_instance',
 						'value'   => $contrat_instance_id,
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -1054,7 +1070,7 @@ class AmapressContrats {
 					'key'     => 'amapress_adhesion_contrat_quantite',
 					'value'   => $contrat_quantite,
 					'compare' => '=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				);
 			}
 			$adhesions_ids = array_map( function ( $p ) {
@@ -1069,7 +1085,7 @@ class AmapressContrats {
 						'key'     => 'amapress_contrat_paiement_adhesion',
 						'value'   => $adhesions_ids,
 						'compare' => 'IN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -1113,7 +1129,7 @@ class AmapressContrats {
 //                        'key' => 'amapress_adhesion_intermittence_date_debut',
 //                        'value' => Amapress::end_of_day($date),
 //                        'compare' => '<=',
-//                        'type' => 'INT'
+//                        'type' => 'NUMERIC'
 //                    ),
 //                    array(
 //                        'relation' => 'OR',
@@ -1121,7 +1137,7 @@ class AmapressContrats {
 //                            'key' => 'amapress_adhesion_intermittence_date_fin',
 //                            'value' => Amapress::end_of_day($date),
 //                            'compare' => '>',
-//                            'type' => 'INT'
+//                            'type' => 'NUMERIC'
 //                        ),
 //                        array(
 //                            'key' => 'amapress_adhesion_intermittence_date_fin',
@@ -1137,7 +1153,7 @@ class AmapressContrats {
 //                        'key' => 'amapress_adhesion_intermittence_user',
 //                        'value' => intval($user_id),
 //                        'compare' => '=',
-//                        'type' => 'INT'
+//                        'type' => 'NUMERIC'
 //                    ),
 //                ));
 //            $res = array_map(function ($p) {
@@ -1172,7 +1188,7 @@ class AmapressContrats {
 							'key'     => 'amapress_intermittence_panier_date',
 							'value'   => Amapress::start_of_day( $date ),
 							'compare' => '>=',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 						array(
 							'key'     => 'amapress_intermittence_status',
@@ -1184,7 +1200,7 @@ class AmapressContrats {
 						'key'     => 'amapress_intermittence_panier_adherent',
 						'value'   => intval( $user_id ),
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -1219,13 +1235,13 @@ class AmapressContrats {
 						'key'     => 'amapress_intermittence_panier_date',
 						'value'   => Amapress::start_of_day( $date ),
 						'compare' => '>=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'key'     => 'amapress_intermittence_panier_adherent',
 						'value'   => intval( $user_id ),
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -1259,23 +1275,23 @@ class AmapressContrats {
 //                        'key' => 'amapress_adhesion_contrat_instance',
 //                        'value' => $abo_ids,
 //                        'compare' => 'IN',
-//                        'type' => 'INT'),
+//                        'type' => 'NUMERIC'),
 //                    array('relation' => 'OR',
 //                        array(
 //                            'key' => 'amapress_adhesion_adherent',
 //                            'value' => $user_ids,
 //                            'compare' => 'IN',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                        array(
 //                            'key' => 'amapress_adhesion_adherent2',
 //                            'value' => $user_ids,
 //                            'compare' => 'IN',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                        array(
 //                            'key' => 'amapress_adhesion_adherent3',
 //                            'value' => $user_ids,
 //                            'compare' => 'IN',
-//                            'type' => 'INT'),
+//                            'type' => 'NUMERIC'),
 //                    ),
 //                )));
 
@@ -1388,12 +1404,12 @@ class AmapressContrats {
 //                    'key' => 'amapress_contrat_paiement_user',
 //                    'value' => $user_id,
 //                    'compare' => '=',
-//                    'type' => 'INT'),
+//                    'type' => 'NUMERIC'),
 //                array(
 //                    'key' => 'amapress_contrat_paiement_adhesion',
 //                    'value' => $abo_id,
 //                    'compare' => '=',
-//                    'type' => 'INT'),
+//                    'type' => 'NUMERIC'),
 //            )));
 //        $res = array();
 //        foreach ($paiments as $p) {

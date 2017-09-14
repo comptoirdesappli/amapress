@@ -128,7 +128,7 @@ class AmapressCommande extends Amapress_EventBase {
 					'key'     => 'amapress_commande_date_distrib',
 					'value'   => Amapress::end_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );
@@ -146,7 +146,7 @@ class AmapressCommande extends Amapress_EventBase {
 					'key'     => 'amapress_commande_date_fin',
 					'value'   => Amapress::end_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

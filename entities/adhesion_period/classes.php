@@ -39,13 +39,13 @@ class AmapressAdhesionPeriod extends TitanEntity {
 						'key'     => 'amapress_adhesion_period_date_debut',
 						'value'   => Amapress::start_of_day( $date ),
 						'compare' => '<=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'key'     => 'amapress_adhesion_period_date_fin',
 						'value'   => Amapress::end_of_day( $date ),
 						'compare' => '>=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			);

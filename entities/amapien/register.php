@@ -256,7 +256,7 @@ function amapress_can_delete_user( $can, $user_id ) {
 		$meta_query[] = array(
 			'key'     => $single_user_key,
 			'value'   => $user_id,
-			'type'    => 'INT',
+			'type'    => 'NUMERIC',
 			'compare' => '=',
 		);
 	}

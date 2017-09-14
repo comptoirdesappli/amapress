@@ -88,7 +88,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 					'key'     => 'amapress_contrat_paiement_date',
 					'value'   => Amapress::add_days( $date, - 15 ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 				array(
 					'key'     => 'amapress_contrat_paiement_adhesion',
@@ -114,7 +114,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 					'key'     => 'amapress_contrat_paiement_date',
 					'value'   => array( $start_date, $end_date ),
 					'compare' => 'BETWEEN',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

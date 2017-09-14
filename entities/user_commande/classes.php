@@ -71,13 +71,13 @@ class AmapressUser_commande extends TitanEntity {
 					'key'     => 'amapress_user_commande_date',
 					'value'   => Amapress::start_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 				array(
 					'key'     => 'amapress_user_commande_commande',
 					'value'   => $deliverables_commande_ids,
 					'compare' => 'IN',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			)
 		) );

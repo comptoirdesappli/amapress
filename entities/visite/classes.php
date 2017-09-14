@@ -116,7 +116,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'key'     => 'amapress_visite_date',
 					'value'   => Amapress::start_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );
@@ -137,7 +137,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'key'     => 'amapress_visite_date',
 					'value'   => array( $start_date, $end_date ),
 					'compare' => 'BETWEEN',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

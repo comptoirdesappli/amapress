@@ -72,7 +72,7 @@ function amapress_contrat_info_shortcode( $atts ) {
 			array(
 				'key'     => 'amapress_contrat_quantite_contrat_instance',
 				'value'   => $contrat->ID,
-				'type'    => 'INT',
+				'type'    => 'NUMERIC',
 				'compare' => '=',
 			)
 		),

@@ -545,9 +545,10 @@ class AmapressUsers {
 			'meta_query'     => array(
 				'relation' => 'AND',
 				array(
-					'key_num' => 'amapress_adhesion_contrat_instance',
+					'key'     => 'amapress_adhesion_contrat_instance',
 					'value'   => $abo_ids,
-					'compare' => 'IN'
+					'compare' => 'IN',
+					'type'    => 'NUMERIC'
 				),
 				array(
 					'relation' => 'OR',
@@ -555,19 +556,19 @@ class AmapressUsers {
 						'key'     => 'amapress_adhesion_adherent',
 						'value'   => $user_ids,
 						'compare' => 'IN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'key'     => 'amapress_adhesion_adherent2',
 						'value'   => $user_ids,
 						'compare' => 'IN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'key'     => 'amapress_adhesion_adherent3',
 						'value'   => $user_ids,
 						'compare' => 'IN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				),
 			)

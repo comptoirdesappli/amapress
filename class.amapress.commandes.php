@@ -92,13 +92,13 @@ class AmapressCommandes {
 					'key_num' => 'amapress_user_commande_commande',
 					'value'   => $next_commandes,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 				array(
 					'key_num' => 'amapress_user_commande_amapien',
 					'value'   => amapress_current_user_id(),
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -135,7 +135,7 @@ class AmapressCommandes {
 			'key'     => 'amapress_commande_date_distrib',
 			'value'   => array( Amapress::start_of_week( amapress_time() ), Amapress::end_of_week( amapress_time() ) ),
 			'compare' => 'BETWEEN',
-			'type'    => 'INT'
+			'type'    => 'NUMERIC'
 		);
 		if ( $atts['date'] ) {
 			$dt   = DateTime::createFromFormat( 'd#m#Y', $atts['date'] )->getTimestamp();
@@ -143,7 +143,7 @@ class AmapressCommandes {
 				'key'     => 'amapress_commande_date_distrib',
 				'value'   => array( Amapress::start_of_week( $dt ), Amapress::end_of_week( $dt ) ),
 				'compare' => 'BETWEEN',
-				'type'    => 'INT'
+				'type'    => 'NUMERIC'
 			);
 		}
 
@@ -160,7 +160,7 @@ class AmapressCommandes {
 					'key'     => 'amapress_commande_lieu',
 					'value'   => $lieu_ids,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) ) );
@@ -177,13 +177,13 @@ class AmapressCommandes {
 					'key_num' => 'amapress_user_commande_commande',
 					'value'   => $next_commandes,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 				array(
 					'key_num' => 'amapress_user_commande_amapien',
 					'value'   => amapress_current_user_id(),
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -272,7 +272,7 @@ class AmapressCommandes {
 					'key'     => 'amapress_commande_lieu',
 					'value'   => $lieu_ids,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -309,7 +309,7 @@ class AmapressCommandes {
 			'key'     => 'amapress_commande_date_distrib',
 			'value'   => array( Amapress::start_of_week( amapress_time() ), Amapress::end_of_week( amapress_time() ) ),
 			'compare' => 'BETWEEN',
-			'type'    => 'INT'
+			'type'    => 'NUMERIC'
 		);
 		if ( $atts['date'] ) {
 			$dt   = DateTime::createFromFormat( 'd#m#Y', $atts['date'] )->getTimestamp();
@@ -317,7 +317,7 @@ class AmapressCommandes {
 				'key'     => 'amapress_commande_date_distrib',
 				'value'   => array( Amapress::start_of_week( $dt ), Amapress::end_of_week( $dt ) ),
 				'compare' => 'BETWEEN',
-				'type'    => 'INT'
+				'type'    => 'NUMERIC'
 			);
 		}
 
@@ -334,7 +334,7 @@ class AmapressCommandes {
 					'key'     => 'amapress_commande_lieu',
 					'value'   => $lieu_ids,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -428,13 +428,13 @@ class AmapressCommandes {
 									Amapress::end_of_day( $date )
 								),
 								'compare' => 'BETWEEN',
-								'type'    => 'INT'
+								'type'    => 'NUMERIC'
 							),
 							array(
 								'key'     => 'amapress_commande_lieu',
 								'value'   => intval( $lieu ),
 								'compare' => '=',
-								'type'    => 'INT'
+								'type'    => 'NUMERIC'
 							),
 						),
 					) );
@@ -479,7 +479,7 @@ class AmapressCommandes {
 						'key'     => 'amapress_commande_contrat_instance',
 						'value'   => $contrat->ID,
 						'compare' => '=',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			) );
@@ -543,7 +543,7 @@ class AmapressCommandes {
 							array(
 								'key'   => 'amapress_produit_producteur',
 								'value' => $producteur,
-								'type'  => 'INT'
+								'type'  => 'NUMERIC'
 							),
 						)
 					)
@@ -590,7 +590,7 @@ class AmapressCommandes {
 						array(
 							'key'   => 'amapress_produit_producteur',
 							'value' => $producteur,
-							'type'  => 'INT'
+							'type'  => 'NUMERIC'
 						),
 					)
 				)
@@ -675,13 +675,13 @@ class AmapressCommandes {
 					'key_num' => 'amapress_user_commande_commande',
 					'value'   => $dist_id,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 				array(
 					'key_num' => 'amapress_user_commande_amapien',
 					'value'   => amapress_current_user_id(),
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );

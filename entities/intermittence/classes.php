@@ -447,7 +447,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					'key'     => 'amapress_intermittence_panier_date',
 					'value'   => Amapress::start_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

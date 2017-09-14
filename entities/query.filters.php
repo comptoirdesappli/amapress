@@ -46,7 +46,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					'key'     => "amps_lo",
 					'value'   => 0,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -364,7 +364,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					'key'     => "amapress_contrat_paiement_contrat_instance",
 					'value'   => $amapress_contrat_instnace,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				)
 			) );
 		}
@@ -379,7 +379,7 @@ function amapress_filter_posts( WP_Query $query ) {
 						'key'     => "amapress_{$pt}_contrat_quantite",
 						'value'   => $amapress_contrat_qt,
 						'compare' => '=',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 					array(
 						'key'     => "amapress_{$pt}_contrat_quantite",
@@ -484,7 +484,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					'key'     => "amapress_contrat_paiement_contrat_instance",
 					'value'   => $contrat_instance_ids,
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				)
 			) );
 		}
@@ -522,7 +522,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					'key'     => "amapress_contrat_paiement_adhesion",
 					'value'   => AmapressContrats::get_active_adhesions_ids( null, null, $amapress_lieu ),
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				)
 			) );
 		}
@@ -629,7 +629,7 @@ function amapress_filter_posts( WP_Query $query ) {
 						'key'     => "amapress_adhesion_contrat_instance",
 						'value'   => AmapressContrats::get_active_contrat_instances_ids(),
 						'compare' => 'IN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				) );
 				amapress_add_meta_query( $query, array(
@@ -641,9 +641,15 @@ function amapress_filter_posts( WP_Query $query ) {
 						),
 						array(
 							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => 0,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
 							'value'   => Amapress::end_of_day( amapress_time() ),
 							'compare' => '>=',
-							'type'    => 'INT',
+							'type'    => 'NUMERIC',
 						),
 					)
 				) );
@@ -867,7 +873,7 @@ add_action( 'pre_get_users', function ( WP_User_Query $uqi ) {
 						'key'     => 'amapress_user_intermittent',
 						'compare' => "=",
 						'value'   => 1,
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					)
 				)
 			) );
@@ -969,7 +975,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 							Amapress::end_of_week( amapress_time() )
 						),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				),
 			) );
@@ -996,7 +1002,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 						'key'     => 'amapress_distribution_date',
 						'value'   => array( Amapress::start_of_week( $time ), Amapress::end_of_week( $time ) ),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				),
 			) );
@@ -1025,7 +1031,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 							Amapress::end_of_month( amapress_time() )
 						),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				),
 			) );

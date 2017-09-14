@@ -218,7 +218,7 @@ class AmapressDistributions {
 						'key'     => 'amapress_distribution_date',
 						'value'   => array( Amapress::start_of_day( $start_date ), Amapress::end_of_day( $end_date ) ),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 					array(
 						'key'     => 'amapress_distribution_responsables',
@@ -322,13 +322,13 @@ class AmapressDistributions {
 									Amapress::end_of_day( $date )
 								),
 								'compare' => 'BETWEEN',
-								'type'    => 'INT'
+								'type'    => 'NUMERIC'
 							),
 							array(
 								'key'     => 'amapress_distribution_lieu',
 								'value'   => intval( $lieu ),
 								'compare' => '=',
-								'type'    => 'INT'
+								'type'    => 'NUMERIC'
 							),
 						),
 					) );
@@ -373,7 +373,7 @@ class AmapressDistributions {
 							Amapress::end_of_day( intval( get_post_meta( $contrat->ID, 'amapress_contrat_instance_date_fin', true ) ) )
 						),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			) );

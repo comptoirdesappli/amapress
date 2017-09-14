@@ -53,7 +53,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return int */
 	public function getLieuId() {
-		return $this->getCustom( 'amapress_distribution_lieu', - 1 );
+		return $this->getCustomAsInt( 'amapress_distribution_lieu', - 1 );
 	}
 
 	/** @return AmapressLieu_distribution */
@@ -171,7 +171,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'key'     => 'amapress_distribution_date',
 					'value'   => Amapress::start_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );
@@ -192,7 +192,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'key'     => 'amapress_distribution_date',
 					'value'   => array( $start_date, $end_date ),
 					'compare' => 'BETWEEN',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

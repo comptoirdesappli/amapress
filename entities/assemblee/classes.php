@@ -64,7 +64,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 					'key'     => 'amapress_assemblee_generale_date',
 					'value'   => Amapress::start_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

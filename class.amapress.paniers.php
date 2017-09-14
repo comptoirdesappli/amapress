@@ -50,13 +50,13 @@ class AmapressPaniers {
 								Amapress::end_of_day( $date )
 							),
 							'compare' => 'BETWEEN',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 						array(
 							'key'     => 'amapress_panier_contrat_instance',
 							'value'   => $contrat->ID,
 							'compare' => '=',
-							'type'    => 'INT'
+							'type'    => 'NUMERIC'
 						),
 					)
 				) );
@@ -213,7 +213,7 @@ class AmapressPaniers {
 					'key'     => 'amapress_contrat_quantite_contrat_instance',
 					'value'   => $contrat,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -245,7 +245,7 @@ class AmapressPaniers {
 					'key'     => 'amapress_produit_producteur',
 					'value'   => $producteur,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			),
 			'order'          => 'ASC',
@@ -371,7 +371,7 @@ class AmapressPaniers {
 					'key'     => 'amapress_contrat_quantite_contrat_instance',
 					'value'   => $contrat,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			)
 		) );
@@ -393,7 +393,7 @@ class AmapressPaniers {
 					'key'     => 'amapress_produit_producteur',
 					'value'   => $producteur,
 					'compare' => '=',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 			),
 			'order'          => 'ASC',
@@ -455,13 +455,13 @@ class AmapressPaniers {
 						Amapress::end_of_day( $date )
 					),
 					'compare' => 'BETWEEN',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 				array(
 					'key'     => 'amapress_distribution_lieu',
 					'value'   => intval( $lieu ),
 					'compare' => '=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 		) );
@@ -496,7 +496,7 @@ class AmapressPaniers {
 					'key'     => 'amapress_intermittence_panier_adherent',
 					'value'   => AmapressContrats::get_related_users( $user_id ),
 					'compare' => 'IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				),
 				array(
 					'key'   => 'amapress_intermittence_panier_lieu',
@@ -577,7 +577,7 @@ class AmapressPaniers {
 				'key'     => 'amapress_intermittence_panier_adherent',
 				'value'   => $adherent,
 				'compare' => 'IN',
-				'type'    => 'INT',
+				'type'    => 'NUMERIC',
 			);
 		}
 		if ( ! empty( $args['repreneur'] ) ) {
@@ -602,7 +602,7 @@ class AmapressPaniers {
 					'key'     => 'amapress_intermittence_panier_adherent',
 					'value'   => AmapressContrats::get_related_users( amapress_current_user_id() ),
 					'compare' => 'NOT IN',
-					'type'    => 'INT',
+					'type'    => 'NUMERIC',
 				);
 			}
 		}
@@ -653,7 +653,7 @@ class AmapressPaniers {
 								Amapress::end_of_day( $dist_date )
 							),
 							'compare' => 'BETWEEN',
-							'type'    => 'INT',
+							'type'    => 'NUMERIC',
 						),
 						array(
 							'key'     => 'amapress_panier_date_subst',
@@ -662,14 +662,14 @@ class AmapressPaniers {
 								Amapress::end_of_day( $dist_date )
 							),
 							'compare' => 'BETWEEN',
-							'type'    => 'INT',
+							'type'    => 'NUMERIC',
 						),
 					),
 					array(
 						'key'     => 'amapress_panier_contrat_instance',
 						'value'   => $contrat_instance_id,
 						'compare' => '=',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				)
 			) );
@@ -696,13 +696,13 @@ class AmapressPaniers {
 						'key'     => 'amapress_panier_date',
 						'value'   => array( Amapress::start_of_day( $dist_date ), Amapress::end_of_day( $dist_date ) ),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 					array(
 						'key'     => 'amapress_panier_date_subst',
 						'value'   => array( Amapress::start_of_day( $dist_date ), Amapress::end_of_day( $dist_date ) ),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				)
 			)

@@ -50,13 +50,13 @@ class AmapressPanier extends Amapress_EventBase {
 						'key'     => 'amapress_panier_date',
 						'value'   => array( $start_date, $end_date ),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'key'     => 'amapress_panier_date_subst',
 						'value'   => array( $start_date, $end_date ),
 						'compare' => 'BETWEEN',
-						'type'    => 'INT'
+						'type'    => 'NUMERIC'
 					),
 				)
 			),

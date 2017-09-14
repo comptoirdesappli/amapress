@@ -192,7 +192,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'key'     => 'amapress_amap_event_date',
 					'value'   => Amapress::start_of_day( $date ),
 					'compare' => '>=',
-					'type'    => 'INT'
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );

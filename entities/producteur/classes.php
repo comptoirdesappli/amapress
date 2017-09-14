@@ -89,7 +89,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 						'key'     => 'amapress_produit_producteur',
 						'value'   => $this->ID,
 						'compare' => '=',
-						'type'    => 'INT',
+						'type'    => 'NUMERIC',
 					),
 				),
 				'order'          => 'ASC',
