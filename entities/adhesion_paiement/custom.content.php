@@ -634,7 +634,8 @@ function amapress_save_paiements_editor( $adhesion_id ) {
 		foreach ( array_diff( $paiements_ids, array_keys( $_POST['amapress_paiements_details'] ) ) as $qid ) {
 			wp_delete_post( $qid );
 		}
-		if ( isset( $_POST['amapress_adhesion_paiements'] ) && $_POST['amapress_adhesion_paiements'] < count( $_POST['amapress_paiements_details'] ) ) {
+		if ( isset( $_POST['amapress_adhesion_paiements'] ) &&
+		     $_POST['amapress_adhesion_paiements'] < count( $_POST['amapress_paiements_details'] ) ) {
 			$_POST['amapress_adhesion_paiements'] = count( $_POST['amapress_paiements_details'] );
 		}
 		if ( $_REQUEST['amapress_paiements'] != 'set_count' ) {
@@ -666,6 +667,7 @@ function amapress_save_paiements_editor( $adhesion_id ) {
 				wp_update_post( $my_post, true );
 			}
 		}
+		unset( $_POST['amapress_paiements_details'] );
 	}
 	if ( isset( $_POST['amapress_adhesion_paiements'] ) ) {
 		update_post_meta( $adhesion_id, 'amapress_adhesion_paiements', $_POST['amapress_adhesion_paiements'] );
