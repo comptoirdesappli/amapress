@@ -95,7 +95,7 @@ class TitanFrameworkAdminPage {
 		// Parent menu
 		if ( empty( $this->settings['parent'] ) ) {
 			$this->panelID = add_menu_page( $this->settings['name'],
-				$this->settings['name'],
+				do_shortcode( ! empty( $this->settings['menu_title'] ) ? $this->settings['menu_title'] : $this->settings['name'] ),
 				$this->settings['capability'],
 				$this->settings['id'],
 				array( $this, 'createAdminPage' ),
@@ -105,7 +105,8 @@ class TitanFrameworkAdminPage {
 		} else {
 			$this->panelID = add_submenu_page( $this->settings['parent'],
 				$this->settings['name'],
-				$this->settings['name'],
+				do_shortcode( '<span class="dashicons-before ' . ( empty( $this->settings['menu_icon'] ) ? 'dashicons-admin-post' : $this->settings['menu_icon'] ) . '" /> ' .
+				              ( ! empty( $this->settings['menu_title'] ) ? $this->settings['menu_title'] : $this->settings['name'] ) ),
 				$this->settings['capability'],
 				$this->settings['id'],
 				array( $this, 'createAdminPage' ) );
@@ -371,7 +372,7 @@ class TitanFrameworkAdminPage {
 						}
 
 						?>
-                        <table class='form-table'>
+                        <table class='form-table tf-form-table'>
                             <tbody>
 							<?php
 

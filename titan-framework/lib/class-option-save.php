@@ -50,7 +50,7 @@ class TitanFrameworkOptionSave extends TitanFrameworkOption {
 			?>
         </p>
 
-        <table class='form-table'>
+        <table class='form-table tf-form-table'>
             <tbody>
 		<?php
 	}
