@@ -292,11 +292,16 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-pen',
 					),
 					'options'  => array(
-						array(
-							'name'   => 'Contrat quantités',
-							'type'   => 'custom',
-							'custom' => 'amapress_echo_all_contrat_quantite',
-						),
+//						array(
+//							'name'   => 'Contrat quantités',
+//							'type'   => 'custom',
+//							'custom' => 'amapress_echo_all_contrat_quantite',
+//						),
+//						array(
+//							'name'   => 'Contrat paiements',
+//							'type'   => 'custom',
+//							'custom' => 'amapress_echo_all_contrat_paiements_by_date',
+//						),
 						array(
 							'type' => 'note',
 							'desc' => 'ici vous pouvez gérer...'
@@ -329,6 +334,82 @@ class AmapressEntities {
 							'slug'       => 'contrat_paiements',
 							'function'   => 'amapress_render_contrat_paiements_list',
 							'hook'       => 'amapress_contrat_paiements_list_options',
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'calendar_contrat_paiements',
+							'settings' => array(
+								'name'       => 'Calendrier des encaissements des contrats',
+								'menu_title' => 'Calendrier',
+								'position'   => '25.2',
+								'capability' => 'edit_contrat_paiement',
+								'icon'       => 'dashicons-none flaticon-pen',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								foreach ( AmapressContrats::get_active_contrat_instances() as $contrat_instance ) {
+									$contrat_id                            = $contrat_instance->ID;
+									$tabs[ $contrat_instance->getTitle() ] = array(
+										'id'      => 'contrat-paiement-tab-' . $contrat_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'contrat-paiement-summary-' . $contrat_id,
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $contrat_id ) {
+													return amapress_get_paiement_table_by_dates( $contrat_id );
+												},
+											),
+											array(
+												'type' => 'note',
+												'desc' => 'ici vous pouvez gérer...'
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'contrats_quantites_next_distrib',
+							'settings' => array(
+								'name'       => 'Quantités à la prochaine distribution',
+								'menu_title' => 'Quantités',
+								'position'   => '25.2',
+								'capability' => 'edit_contrat_instance',
+								'icon'       => 'dashicons-none flaticon-pen',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								foreach ( AmapressContrats::get_active_contrat_instances() as $contrat_instance ) {
+									$contrat_id                            = $contrat_instance->ID;
+									$tabs[ $contrat_instance->getTitle() ] = array(
+										'id'      => 'contrat-quant-tab-' . $contrat_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'contrat-quant-summary-' . $contrat_id,
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $contrat_id ) {
+													return amapress_get_contrat_quantite_datatable( $contrat_id );
+												},
+											),
+											array(
+												'type' => 'note',
+												'desc' => 'ici vous pouvez gérer...'
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
 						),
 						//Calendrier
 						array(

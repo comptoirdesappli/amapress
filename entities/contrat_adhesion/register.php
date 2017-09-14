@@ -400,14 +400,27 @@ function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
 	return $actions;
 }
 
-function amapress_echo_all_contrat_quantite() {
-	$ret = '';
-	foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
-		$ret .= amapress_get_contrat_quantite_datatable( $contrat_instances_id );
-	}
-
-	return $ret;
-}
+//function amapress_echo_all_contrat_quantite() {
+//	$ret    = '';
+//	$ret    .= '<div><ul class="nav nav-tabs" role="tablist">';
+//	$active = 'active';
+//	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat_instance ) {
+//		$ret    .= '<li role="presentation" class="'.$active.'"><a href="#contrat-instance-'.$contrat_instance->ID.'" aria-controls="'.$contrat_instance->ID . '" role="tab" data-toggle="tab">'.esc_html($contrat_instance->getTitle()).'</a></li>';
+//		$active = '';
+//	}
+//	$ret .= '</ul>';
+//
+//	$ret    .= '<div class="tab-content">';
+//	$active = 'active';
+//	foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
+//		$ret    .= '<div role = "tabpanel" class="tab-pane '.$active.'" id="contrat-instance-' . $contrat_instance->ID . '" >'.
+//		           amapress_get_contrat_quantite_datatable( $contrat_instances_id ) .'</div >';
+//		$active = '';
+//	}
+//	$ret .= '</div >';
+//
+//	return $ret;
+//}
 
 function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id = null, $date = null ) {
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
@@ -495,7 +508,13 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 		$data[]     = $row;
 	}
 
-	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '"><h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>' .
+//	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
+
+	/** @var AmapressDistribution $dist */
+	$dist = array_shift( AmapressDistribution::get_next_distributions( $date, 'ASC' ) );
+
+	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
+<p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
 	       //	       '<p class="producteur">' . $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay() . '</p>' .
 	       amapress_get_datatable( 'contrat-instance-recap-' . $contrat_instance_id,
 		       $columns, $data,
@@ -508,4 +527,110 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 			       Amapress::DATATABLES_EXPORT_PDF,
 			       Amapress::DATATABLES_EXPORT_PRINT
 		       ) ) . '</div>';
+}
+
+//function amapress_echo_all_contrat_paiements_by_date() {
+//	$ret = '';
+//	foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
+//		$ret .= amapress_get_paiement_table_by_dates( $contrat_instances_id );
+//	}
+//
+//	return $ret;
+//}
+
+function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
+	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id );
+	$dates            = array_map(
+		function ( $p ) {
+			/** @var AmapressAmapien_paiement $p */
+			return $p->getDate();
+		}, $paiements );
+	$dates            = array_merge( $dates, $contrat_instance->getPaiements_Liste_dates() );
+	$dates            = array_unique( $dates );
+	sort( $dates );
+	$emitters = array_unique( array_map(
+		function ( $p ) {
+			/** @var AmapressAmapien_paiement $p */
+			return $p->getEmetteur();
+		}, $paiements ) );
+	sort( $emitters );
+
+	$columns = array(
+		array(
+			'title' => 'Emetteur',
+			'data'  => 'emetteur',
+		),
+	);
+	foreach ( $dates as $date ) {
+		$columns[] = array(
+			'title' => date_i18n( 'd/m/Y', $date ),
+			'data'  => "date_{$date}",
+		);
+	}
+
+	$data = array();
+	foreach ( $emitters as $emetteur ) {
+		$row                = array(
+			'emetteur' => $emetteur
+		);
+		$emetteur_paiements = array_filter(
+			$paiements,
+			function ( $p ) use ( $emetteur ) {
+				/** @var AmapressAmapien_paiement $p */
+				return $p->getEmetteur() == $emetteur;
+			}
+		);
+		foreach ( $dates as $date ) {
+			$emetteur_date_paiements = array_filter(
+				$emetteur_paiements,
+				function ( $p ) use ( $date ) {
+					/** @var AmapressAmapien_paiement $p */
+					return $p->getDate() == $date;
+				}
+			);
+			$contrat_adhesion        = null;
+			if ( count( $emetteur_paiements ) > 0 ) {
+				$contrat_adhesion = array_shift( array_values( $emetteur_paiements ) )->getAdhesion();
+			}
+			if ( $contrat_adhesion && ( $date < $contrat_adhesion->getDate_debut() || $date > $contrat_adhesion->getDate_fin() ) ) {
+				$val = '###';
+			} else {
+				$val = implode( ',', array_map(
+						function ( $p ) {
+							/** @var AmapressAmapien_paiement $p */
+							$banque = $p->getBanque();
+							if ( ! empty( $banque ) ) {
+								return "{$p->getNumero()} ({$banque})";
+							} else {
+								return "{$p->getNumero()}";
+							}
+						}, $emetteur_date_paiements )
+				);
+			}
+			$row["date_{$date}"] = $val;
+		}
+		$data[] = $row;
+	}
+
+//	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
+	$dist = array_shift( AmapressDistribution::get_next_distributions( $date ) );
+
+	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
+<p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
+	       amapress_get_datatable( "contrat-$contrat_instance_id-paiements-month", $columns, $data, array(
+		       'bSort'        => true,
+		       'paging'       => false,
+		       'searching'    => true,
+		       'bAutoWidth'   => true,
+		       'responsive'   => false,
+		       'scrollX'      => true,
+		       'fixedColumns' => array( 'leftColumns' => 1 ),
+	       ),
+		       array(
+			       Amapress::DATATABLES_EXPORT_EXCEL,
+			       Amapress::DATATABLES_EXPORT_PDF,
+			       Amapress::DATATABLES_EXPORT_PRINT
+		       ) ) .
+	       '</div>';
 }
