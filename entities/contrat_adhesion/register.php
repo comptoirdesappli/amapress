@@ -549,12 +549,59 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 	$dates            = array_merge( $dates, $contrat_instance->getPaiements_Liste_dates() );
 	$dates            = array_unique( $dates );
 	sort( $dates );
-	$emitters = array_unique( array_map(
-		function ( $p ) {
+	$emetteurs = array_map(
+		function ( $p ) use ( $paiements ) {
 			/** @var AmapressAmapien_paiement $p */
-			return $p->getEmetteur();
-		}, $paiements ) );
-	sort( $emitters );
+			$all_emetteurs = array_unique(
+				array_map(
+					function ( $op ) use ( $p ) {
+						/** @var AmapressAmapien_paiement $op */
+						if ( $op->getEmetteur() == $p->getEmetteur() ) {
+							return '<strong>' . esc_html( $op->getEmetteur() ) . '</strong>';
+						} else {
+							return esc_html( $op->getEmetteur() );
+						}
+					},
+					array_filter(
+						$paiements,
+						function ( $op ) use ( $p ) {
+							/** @var AmapressAmapien_paiement $op */
+							return $op->getAdhesionId() == $p->getAdhesionId();
+						}
+					)
+				)
+			);
+			usort( $all_emetteurs,
+				function ( $a, $b ) {
+					$a_emetteur = strip_tags( $a );
+					$b_emetteur = strip_tags( $b );
+					if ( $a_emetteur == $b_emetteur ) {
+						return 0;
+					}
+
+					return $a_emetteur < $b_emetteur ? - 1 : 1;
+				} );
+
+			return array(
+				'emetteur' => $p->getEmetteur(),
+				'label'    => implode( ', ', $all_emetteurs ),
+				'href'     => $p->getAdhesion()->getAdminEditLink(),
+			);
+		}, $paiements );
+	$emitters  = array();
+	foreach ( $emetteurs as $emetteur ) {
+		$emitters[ $emetteur['emetteur'] ] = $emetteur;
+	}
+	usort( $emitters,
+		function ( $a, $b ) {
+			$a_emetteur = $a['emetteur'];
+			$b_emetteur = $b['emetteur'];
+			if ( $a_emetteur == $b_emetteur ) {
+				return 0;
+			}
+
+			return $a_emetteur < $b_emetteur ? - 1 : 1;
+		} );
 
 	$columns = array(
 		array(
@@ -570,9 +617,12 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 	}
 
 	$data = array();
-	foreach ( $emitters as $emetteur ) {
+	foreach ( $emitters as $emetteur_obj ) {
+		$emetteur           = $emetteur_obj['emetteur'];
+		$emetteur_label     = $emetteur_obj['label'];
+		$emetteur_href      = $emetteur_obj['href'];
 		$row                = array(
-			'emetteur' => $emetteur
+			'emetteur' => Amapress::makeLink( $emetteur_href, $emetteur_label, false),
 		);
 		$emetteur_paiements = array_filter(
 			$paiements,

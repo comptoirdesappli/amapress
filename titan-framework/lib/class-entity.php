@@ -73,6 +73,10 @@ class TitanEntity {
 		return trailingslashit( $url ) . $relative_url;
 	}
 
+	public function getAdminEditLink() {
+		return admin_url( "post.php?post={$this->ID}&action=edit" );
+	}
+
 	private function init_post() {
 		if ( $this->post == null ) {
 			$this->post = get_post( $this->post_id );
