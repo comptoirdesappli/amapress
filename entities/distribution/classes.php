@@ -127,7 +127,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		} else if ( count( $responsables ) >= $needed_responsables ) {
 			return 'list_full';
 		} else {
-			$responsables[] = amapress_current_user_id();
+			$responsables[] = $user_id;
 			update_post_meta( $this->ID, 'amapress_distribution_responsables', $responsables );
 
 			amapress_mail_current_user_inscr( $this, $user_id );
