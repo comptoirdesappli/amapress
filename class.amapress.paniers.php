@@ -22,14 +22,10 @@ class AmapressPaniers {
 		$contrats = AmapressContrats::get_active_contrat_instances( $contrat_id );
 		foreach ( $contrats as $contrat ) {
 			$res[ $contrat->ID ] = array();
-			$contrat_model       = get_post( get_post_meta( $contrat->ID, 'amapress_contrat_instance_model', true ) );
-
-			//$producteur = intval(get_post_meta($contrat->ID,'amapress_contrat_instance_producteur',true));
-			$lieux       = Amapress::get_array( get_post_meta( $contrat->ID, 'amapress_contrat_instance_lieux', true ) );
-			$liste_dates = Amapress::get_array( get_post_meta( $contrat->ID, 'amapress_contrat_instance_liste_dates', true ) );
-			if ( $liste_dates ) {
-				$liste_dates = array_map( array( 'AmapressDistributions', 'to_date' ), $liste_dates );
-			} else {
+			$contrat_model       = $contrat->getModel();
+			$lieux               = $contrat->getLieuxIds();
+			$liste_dates         = array_unique( $contrat->getListe_dates() );
+			if ( empty( $liste_dates ) ) {
 				continue;
 			}
 
@@ -39,7 +35,7 @@ class AmapressPaniers {
 					continue;
 				}
 				$paniers = get_posts( array(
-					'post_type'      => 'amps_panier',
+					'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
 					'posts_per_page' => - 1,
 					'meta_query'     => array(
 						'relation' => 'AND',
@@ -61,15 +57,13 @@ class AmapressPaniers {
 					)
 				) );
 				if ( count( $paniers ) == 0 ) {
-					// Gather post data.
 					$my_post = array(
 						'post_title'   => sprintf( 'Panier de %s du %02d-%02d-%04d',
 							$contrat_model->post_title,
 							date( 'd', $date ), date( 'm', $date ), date( 'Y', $date ) ),
-						'post_type'    => 'amps_panier',
+						'post_type'    => AmapressPanier::INTERNAL_POST_TYPE,
 						'post_content' => '',
 						'post_status'  => 'publish',
-						'post_author'  => '1',
 						'meta_input'   => array(
 							'amapress_panier_contrat_instance' => $contrat->ID,
 							'amapress_panier_date'             => Amapress::start_of_day( $date ),
@@ -88,7 +82,10 @@ class AmapressPaniers {
 		return $res;
 	}
 
-	public static function getPanierVariableCommandes( $contrat_instance_id, $date, $lieu_id = null ) {
+	public
+	static function getPanierVariableCommandes(
+		$contrat_instance_id, $date, $lieu_id = null
+	) {
 		$columns = array(
 			array(
 				'title' => 'Nom',
@@ -169,7 +166,8 @@ class AmapressPaniers {
 		);
 	}
 
-	public static function panierTable(
+	public
+	static function panierTable(
 		$panier_id
 	) {
 		if ( empty( $panier_id ) ) {

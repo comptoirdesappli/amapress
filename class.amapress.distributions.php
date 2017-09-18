@@ -275,35 +275,15 @@ class AmapressDistributions {
 		$contrats = AmapressContrats::get_active_contrat_instances( $contrat_id );
 		foreach ( $contrats as $contrat ) {
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
-			$liste_dates         = Amapress::get_array( get_post_meta( $contrat->ID, 'amapress_contrat_instance_liste_dates', true ) );
-			if ( $liste_dates ) {
-				$liste_dates = array_map( array( 'AmapressDistributions', 'to_date' ), $liste_dates );
-			} else {
+			$liste_dates         = array_unique( $contrat->getListe_dates() );
+			if ( empty( $liste_dates ) ) {
 				continue;
 			}
 
-			//$producteur = get_post_meta($contrat,'amapress_contrat_instance_producteur',true);
-			$lieux         = Amapress::get_array( get_post_meta( $contrat->ID, 'amapress_contrat_instance_lieux', true ) );
-			$contrat_model = get_post( get_post_meta( $contrat->ID, 'amapress_contrat_instance_model', true ) );
+			$lieux         = $contrat->getLieux();
+			$lieux_ids     = $contrat->getLieuxIds();
+			$contrat_model = $contrat->getModel();
 
-			//$distribs = get_posts(array(
-			//        'post_type' => 'amps_distribution',
-			//        'fields' => 'all_with_meta',
-			//        'meta_query' => array(
-			//                            array(
-			//                                'key' => 'amapress_distribution_date',
-			//                                'value' => array(
-			//                                    Amapress::start_of_day(get_post_meta($contrat->ID,'amapress_contrat_instance_date_debut',true)),
-			//                                    Amapress::end_of_day(get_post_meta($contrat->ID,'amapress_contrat_instance_date_fin',true))),
-			//                                'compare' => 'BETWEEN',
-			//                                'type' => 'INT'),
-			//        )));
-			//$dates_to_insert = array_diff($liste_dates,array());
-			//foreach ($distribs as $dist) {
-			//    $dist_date = Amapress::start_of_day(get_post_meta($dist->ID,'amapress_distribution_date',true));
-			//    if (in_array($dist_date,$dates_to_insert))
-			//        $dates_to_insert = array_diff($dates_to_insert, array($dist_date));
-			//}
 			$now = Amapress::start_of_day( amapress_time() );
 			foreach ( $liste_dates as $date ) {
 				if ( $from_now && $date < $now ) {
@@ -311,7 +291,7 @@ class AmapressDistributions {
 				}
 				foreach ( $lieux as $lieu ) {
 					$dists = get_posts( array(
-						'post_type'      => 'amps_distribution',
+						'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
 						'posts_per_page' => - 1,
 						'meta_query'     => array(
 							'relation' => 'AND',
@@ -326,35 +306,32 @@ class AmapressDistributions {
 							),
 							array(
 								'key'     => 'amapress_distribution_lieu',
-								'value'   => intval( $lieu ),
+								'value'   => $lieu->ID,
 								'compare' => '=',
-								'type'    => 'NUMERIC'
 							),
 						),
 					) );
-					if ( count( $dists ) == 0 ) {
-						// Gather post data.
-						$lieu_post = get_post( $lieu );
-						$my_post   = array(
+					if ( empty( $dists ) ) {
+						$my_post = array(
 							'post_title'   => sprintf( 'Distribution de %s du %02d-%02d-%04d à %s',
-								$contrat_model->post_title,
+								$contrat_model->getTitle(),
 								date( 'd', $date ), date( 'm', $date ), date( 'Y', $date ),
-								$lieu_post->post_title ),
-							'post_type'    => 'amps_distribution',
+								$lieu->getTitle() ),
+							'post_type'    => AmapressDistribution::INTERNAL_POST_TYPE,
 							'post_content' => '',
 							'post_status'  => 'publish',
 							'meta_input'   => array(
-								'amapress_distribution_lieu' => $lieu,
-								'amapress_distribution_date' => Amapress::start_of_day( $date ),
+								'amapress_distribution_lieu'     => $lieu->ID,
+								'amapress_distribution_date'     => Amapress::start_of_day( $date ),
+								'amapress_distribution_contrats' => array( $contrat->ID ),
 							),
 						);
 
 						$res[ $contrat->ID ]['missing'][] = array(
-							'lieu' => $lieu,
+							'lieu' => $lieu->ID,
 							'date' => Amapress::start_of_day( $date )
 						);
 
-						// Insert the post into the database.
 						if ( ! $eval ) {
 							wp_insert_post( $my_post );
 						}
@@ -363,20 +340,22 @@ class AmapressDistributions {
 			}
 
 			$distribs = get_posts( array(
-				'post_type'      => 'amps_distribution',
-				'posts_per_page' => - 1,
-				'meta_query'     => array(
-					array(
-						'key'     => 'amapress_distribution_date',
-						'value'   => array(
-							Amapress::start_of_day( $from_now ? $now : intval( get_post_meta( $contrat->ID, 'amapress_contrat_instance_date_debut', true ) ) ),
-							Amapress::end_of_day( intval( get_post_meta( $contrat->ID, 'amapress_contrat_instance_date_fin', true ) ) )
+					'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+					'meta_query'     => array(
+						'relation' => 'AND',
+						array(
+							'key'     => 'amapress_distribution_date',
+							'value'   => array(
+								Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ),
+								Amapress::end_of_day( $contrat->getDate_fin() )
+							),
+							'compare' => 'BETWEEN',
+							'type'    => 'NUMERIC',
 						),
-						'compare' => 'BETWEEN',
-						'type'    => 'NUMERIC'
-					),
+					)
 				)
-			) );
+			);
 			foreach ( $distribs as $dist ) {
 				$dist_date     = Amapress::start_of_day( intval( get_post_meta( $dist->ID, 'amapress_distribution_date', true ) ) );
 				$dist_lieu     = intval( get_post_meta( $dist->ID, 'amapress_distribution_lieu', true ) );
@@ -384,7 +363,7 @@ class AmapressDistributions {
 				$rem           = false;
 				$add           = false;
 				if ( in_array( $dist_date, $liste_dates ) ) {
-					if ( in_array( $dist_lieu, $lieux ) ) {
+					if ( in_array( $dist_lieu, $lieux_ids ) ) {
 						$add = true;
 					} else {
 						$rem = true;
@@ -400,13 +379,18 @@ class AmapressDistributions {
 					$dist_contrats                        = array_diff( $dist_contrats, array( $contrat->ID ) );
 					$res[ $contrat->ID ]['unassociate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
 				}
+				if ( empty( $dist_contrats ) ) {
+					$res[ $contrat->ID ]['unassociate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
+					if ( ! $eval ) {
+						wp_delete_post( $dist->ID );
+					}
+				}
 				//
 				if ( ! $eval && ( $add || $rem ) ) {
 					update_post_meta( $dist->ID, 'amapress_distribution_contrats', $dist_contrats );
 				}
 			}
 		}
-
 		return $res;
 	}
 

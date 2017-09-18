@@ -58,33 +58,38 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getMax_adherents() {
-		return floatval( $this->getCustom( 'amapress_contrat_instance_max_adherents', 0 ) );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_max_adherents', 0 );
 	}
 
 	public function getDate_ouverture() {
-		return $this->getCustom( 'amapress_contrat_instance_date_ouverture' );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_date_ouverture' );
 	}
 
 	public function getDate_cloture() {
-		return $this->getCustom( 'amapress_contrat_instance_date_cloture' );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_date_cloture' );
 	}
 
 	public function getDate_debut() {
-		return $this->getCustom( 'amapress_contrat_instance_date_debut' );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_date_debut' );
 	}
 
 
 	public function isPanierVariable() {
-		return $this->getCustom( 'amapress_contrat_instance_panier_variable' );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_panier_variable' );
 	}
 
 	public function getDate_fin() {
-		return $this->getCustom( 'amapress_contrat_instance_date_fin' );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_date_fin' );
 	}
 
 	/** @return AmapressLieu_distribution[] */
 	public function getLieux() {
 		return $this->getCustomAsEntityArray( 'amapress_contrat_instance_lieux', 'AmapressLieu_distribution' );
+	}
+
+	/** @return int[] */
+	public function getLieuxIds() {
+		return $this->getCustomAsIntArray( 'amapress_contrat_instance_lieux' );
 	}
 
 	public function getType() {
