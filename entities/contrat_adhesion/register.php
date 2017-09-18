@@ -261,14 +261,15 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
 				$had_contrat = true;
 				$id          = 'contrat-' . $contrat_instance->ID;
-				$ret         .= sprintf( '<label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s/> <b>%s</b></label><br>',
+				$ret         .= '';
+				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s/> Panier personnalisé</label></div>',
+					esc_html( $contrat_instance->getTitle() ),
 					$id,
 					'multicheckReq', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_vars',
 					esc_attr( $contrat_instance->ID ),
-					'',
-					esc_html( $contrat_instance->getTitle() )
+					''
 				);
 			} else {
 				if ( ! $paniers_variables ) {
