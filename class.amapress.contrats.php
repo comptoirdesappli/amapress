@@ -164,11 +164,13 @@ class AmapressContrats {
 			die( 'Missing contrat instance in query' );
 		}
 
-		/* this area is very simple but being serverside it affords the possibility of retreiving data from the server and passing it back to the javascript function */
 		$contrat_id = intval( $_POST['contrat_instance'] );
+		global $wpdb;
+		$wpdb->query( 'START TRANSACTION' );
 		AmapressDistributions::generate_distributions( $contrat_id, true, false );
 		AmapressPaniers::generate_paniers( $contrat_id, true, false );
-		AmapressCommandes::generate_commandes( $contrat_id, true, false );
+//		AmapressCommandes::generate_commandes( $contrat_id, true, false );
+		$wpdb->query( 'COMMIT' );
 		echo self::contratStatus( $contrat_id );// this is passed back to the javascript function
 		die();// wordpress may print out a spurious zero without this - can be particularly bad if using json
 	}
