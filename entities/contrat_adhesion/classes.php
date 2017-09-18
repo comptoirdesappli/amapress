@@ -53,6 +53,18 @@ class AmapressAdhesion extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_adhesion_contrat_instance' );
 	}
 
+	/** @return int */
+	public function isNotRenewable() {
+		return $this->hasDate_fin();
+	}
+
+	public function markNotRenewable() {
+		if ( $this->isNotRenewable() ) {
+			return;
+		}
+		$this->setCustom( 'amapress_adhesion_date_fin', Amapress::start_of_day( amapress_time() ) );
+		$this->setCustom( 'amapress_adhesion_fin_raison', 'Non renouvellement' );
+	}
 
 	/**
 	 * @return AmapressContrat_quantite[]
@@ -323,11 +335,20 @@ class AmapressAdhesion extends TitanEntity {
 		return array_shift( $contrat_instances_ids );
 	}
 
+	public function canRenew() {
+		$new_contrat_id = $this->getNextContratInstanceId();
+
+		return $new_contrat_id
+		       && $new_contrat_id != $this->getContrat_instanceId()
+		       && ! $this->isNotRenewable();
+	}
+
 	public function cloneAdhesion( $as_draft = true ) {
-		$new_contrat_instance_id = $this->getNextContratInstanceId();
-		if ( ! $new_contrat_instance_id ) {
+		if ( ! $this->canRenew() ) {
 			return null;
 		}
+
+		$new_contrat_instance_id = $this->getNextContratInstanceId();
 
 //        $add_weeks = Amapress::datediffInWeeks($this->getContrat_instance()->getDate_debut(), $this->getContrat_instance()->getDate_fin());
 		$meta = array();

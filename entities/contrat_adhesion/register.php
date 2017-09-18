@@ -23,7 +23,8 @@ function amapress_register_entities_adhesion( $entities ) {
 			'add_new_item' => 'Ajout Inscription',
 		),
 		'row_actions'      => array(
-			'renew' => 'Renouveler',
+			'renew'    => 'Renouveler',
+			'no_renew' => 'Ne pas renouveler',
 		),
 		'views'            => array(
 			'remove'  => array( 'mine' ),
@@ -187,6 +188,13 @@ function amapress_register_entities_adhesion( $entities ) {
 				'desc'        => 'Raison de fin du contrat',
 				'show_column' => false,
 			),
+//			'no_renew'       => array(
+//				'name'        => amapress__( 'Pas de renouvellement' ),
+//				'type'        => 'checkbox',
+//				'group'       => '4/ Renouvellement',
+//				'desc'        => 'Cocher cette case si l\'amapien ne souhaite pas renouveller son contrat',
+//				'show_column' => false,
+//			),
 //            'co-adherents' => array(
 //                'name' => amapress__('Binômes'),
 //                'type' => 'multicheck-users',
@@ -377,6 +385,13 @@ function amapress_row_action_adhesion_renew( $post_id ) {
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_adhesion->ID}&action=edit" ) );
 }
 
+add_action( 'amapress_row_action_adhesion_no_renew', 'amapress_row_action_adhesion_no_renew' );
+function amapress_row_action_adhesion_no_renew( $post_id ) {
+	$adhesion = new AmapressAdhesion( $post_id );
+	$adhesion->markNotRenewable();
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
 add_filter( 'amapress_row_actions_adhesion', 'amapress_row_actions_adhesion', 10, 2 );
 function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
 	$adh = new AmapressAdhesion( $adhesion_id );
@@ -391,10 +406,9 @@ function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
 //        }
 //    );
 
-	$new_contrat_id = $adh->getNextContratInstanceId();
-
-	if ( ! $new_contrat_id ) {
+	if ( ! $adh->canRenew() ) {
 		unset( $actions['renew'] );
+		unset( $actions['no_renew'] );
 	}
 
 	return $actions;
