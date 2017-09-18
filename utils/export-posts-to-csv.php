@@ -100,6 +100,8 @@ class AmapressExport_Posts {
 				} else {
 					$header = apply_filters( "amapress_posts_get_field_display_name", $field, $pt );
 					$header = apply_filters( "amapress_posts_{$pt}_get_field_display_name", $header );
+					$header = wp_specialchars_decode( $header );
+					$header = html_entity_decode( $header );
 					if ( empty( $header ) ) {
 						unset( $fields[ $key ] );
 						continue;

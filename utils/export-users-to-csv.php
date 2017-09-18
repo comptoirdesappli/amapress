@@ -87,6 +87,8 @@ class AmapressExport_Users {
 					unset( $fields[ $key ] );
 				} else {
 					$header = apply_filters( "amapress_users_get_field_display_name", $field );
+					$header = wp_specialchars_decode( $header );
+					$header = html_entity_decode( $header );
 					if ( empty( $header ) ) {
 						unset( $fields[ $key ] );
 						continue;
