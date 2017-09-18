@@ -131,9 +131,9 @@ function amapress_register_entities_amapien( $entities ) {
 //                'searchable' => true,
 			),
 			'intermittent'      => array(
-				'name'        => amapress__( 'Intermittent?' ),
+				'name'        => amapress__( 'Intermittent' ),
 				'type'        => 'checkbox',
-				'desc'        => 'Intermittent?',
+				'desc'        => 'Cocher pour que l\'utilisateur devienne intermittent et reçoive des alertes lorsque des paniers sont occasionnellement disponibles',
 				'show_column' => false,
 			),
 //            'allow_show_email' => array(
