@@ -24,6 +24,9 @@ function amapress_register_entities_contrat( $entities ) {
 		'views'                   => array(
 			'remove' => array( 'mine' ),
 		),
+		'edit_header'             => function ( $post ) {
+			echo '<h1>Termes du contrat :</h1>';
+		},
 		'fields'                  => array(
 //			'amapress_icon_id' => array(
 //				'name'    => amapress__( 'Icône' ),
@@ -328,14 +331,14 @@ jQuery(function($) {
 				'show_on_edit' => 'edit-only',
 //                'desc' => 'Quantités',
 			),
-			'max_adherents'  => array(
+			'max_adherents' => array(
 				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
 				'type'     => 'number',
 				'group'    => 'Gestion',
 				'required' => true,
 				'desc'     => 'Nombre maximum d\'amapiens',
 			),
-			'contrat'        => array(
+			'contrat'       => array(
 				'name'       => amapress__( 'Contrat en ligne' ),
 				'type'       => 'editor',
 //                'required' => true,
@@ -343,12 +346,12 @@ jQuery(function($) {
 				'wpautop'    => false,
 				'searchable' => true,
 			),
-//            'is_principal' => array(
-//                'name' => amapress__('Contrat principal'),
-//                'type' => 'checkbox',
-//                'required' => true,
-//                'desc' => 'Contrat principal supportant les adhésions AMAP et Réseau AMAP',
-//            ),
+			'is_principal'  => array(
+				'name'     => amapress__( 'Contrat principal' ),
+				'type'     => 'checkbox',
+				'required' => true,
+				'desc'     => 'Contrat principal',
+			),
 		),
 	);
 	$entities['contrat_quantite'] = array(

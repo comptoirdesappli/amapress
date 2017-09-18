@@ -26,6 +26,37 @@ function amapress_register_entities_adhesion( $entities ) {
 			'renew'    => 'Renouveler',
 			'no_renew' => 'Ne pas renouveler',
 		),
+		'edit_header'      => function ( $post ) {
+			$adh = new AmapressAdhesion( $post );
+			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
+				return;
+			}
+			if ( $adh->getContrat_instance()->isPrincipal() ) {
+				return;
+			}
+
+			$principal_contrat = null;
+			$contrats          = AmapressContrats::get_active_contrat_instances( null, $adh->getDate_debut(), true );
+			foreach ( $contrats as $contrat ) {
+				if ( $contrat->isPrincipal() ) {
+					$principal_contrat = $contrat;
+				}
+			}
+
+			if ( $principal_contrat ) {
+				$other_adhs = AmapressContrats::get_user_active_adhesion( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
+				if ( ! empty( $other_adhs ) ) {
+					return;
+				}
+				$message = "L'amapien {$adh->getAdherent()->getDisplayName()} n'a pas de contrat principal : {$principal_contrat->getTitle()}";
+			} else {
+				$message = 'Pas de contrat principal actif';
+			}
+
+			$class = 'notice notice-warning';
+
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+		},
 		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_views',

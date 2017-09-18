@@ -208,8 +208,8 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 		date_i18n( 'm/Y', intval( $adh->getDate_fin() ) ) );
 }
 
-add_action( 'edit_form_after_title', 'amapress_no_title_post' );
-function amapress_no_title_post( WP_Post $post ) {
+add_action( 'edit_form_after_title', 'amapress_edit_post_title_handler' );
+function amapress_edit_post_title_handler( WP_Post $post ) {
 	if ( ! post_type_supports( $post->post_type, 'title' ) ) {
 		$post_type = get_post_type_object( $post->post_type );
 		if ( empty( $post->post_title ) ) {
@@ -237,7 +237,9 @@ function amapress_no_title_post( WP_Post $post ) {
 		<?php
 	}
 
-	if ( AmapressContrat::INTERNAL_POST_TYPE == $post->post_type ) {
-		echo '<h1>Termes du contrat :</h1>';
+	$pt      = amapress_simplify_post_type( $post->post_type );
+	$options = AmapressEntities::getPostType( $pt );
+	if ( isset( $options['edit_header'] ) && is_callable( $options['edit_header'], false ) ) {
+		call_user_func( $options['edit_header'], $post );
 	}
 }

@@ -111,7 +111,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function isPrincipal() {
-		return isset( $this->custom['amapress_contrat_instance_is_principal'] ) ? intval( $this->custom['amapress_contrat_instance_is_principal'] ) : 0;
+		return $this->getCustomAsInt( 'amapress_contrat_instance_is_principal', 0 );
 	}
 
 	public function getListe_dates() {
