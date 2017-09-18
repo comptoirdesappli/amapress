@@ -552,15 +552,11 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 	$emetteurs = array_map(
 		function ( $p ) use ( $paiements ) {
 			/** @var AmapressAmapien_paiement $p */
-			$all_emetteurs = array_unique(
+			$all_emetteurs   =
 				array_map(
-					function ( $op ) use ( $p ) {
+					function ( $op ) {
 						/** @var AmapressAmapien_paiement $op */
-						if ( $op->getEmetteur() == $p->getEmetteur() ) {
-							return '<strong>' . esc_html( $op->getEmetteur() ) . '</strong>';
-						} else {
-							return esc_html( $op->getEmetteur() );
-						}
+						return $op->getEmetteur();
 					},
 					array_filter(
 						$paiements,
@@ -569,18 +565,37 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 							return $op->getAdhesionId() == $p->getAdhesionId();
 						}
 					)
-				)
-			);
-			usort( $all_emetteurs,
-				function ( $a, $b ) {
-					$a_emetteur = strip_tags( $a );
-					$b_emetteur = strip_tags( $b );
-					if ( $a_emetteur == $b_emetteur ) {
-						return 0;
+				);
+			$all_emetteurs[] = $p->getAdhesion()->getAdherent()->getDisplayName();
+			if ( $p->getAdhesion()->getAdherent2() ) {
+				$all_emetteurs[] = $p->getAdhesion()->getAdherent2()->getDisplayName();
+			}
+			if ( $p->getAdhesion()->getAdherent3() ) {
+				$all_emetteurs[] = $p->getAdhesion()->getAdherent3()->getDisplayName();
+			}
+			$all_emetteurs = array_unique( $all_emetteurs );
+			sort( $all_emetteurs );
+			$all_emetteurs = array_map(
+				function ( $em ) use ( $p ) {
+					if ( $em == $p->getEmetteur() ) {
+						return '<strong>' . esc_html( $em ) . '</strong>';
+					} else {
+						return esc_html( $em );
 					}
+				},
+				$all_emetteurs
+			);
 
-					return $a_emetteur < $b_emetteur ? - 1 : 1;
-				} );
+//			usort( $all_emetteurs,
+//				function ( $a, $b ) {
+//					$a_emetteur = strip_tags( $a );
+//					$b_emetteur = strip_tags( $b );
+//					if ( $a_emetteur == $b_emetteur ) {
+//						return 0;
+//					}
+//
+//					return $a_emetteur < $b_emetteur ? - 1 : 1;
+//				} );
 
 			return array(
 				'emetteur' => $p->getEmetteur(),
@@ -622,7 +637,7 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 		$emetteur_label     = $emetteur_obj['label'];
 		$emetteur_href      = $emetteur_obj['href'];
 		$row                = array(
-			'emetteur' => Amapress::makeLink( $emetteur_href, $emetteur_label, false),
+			'emetteur' => Amapress::makeLink( $emetteur_href, $emetteur_label, false ),
 		);
 		$emetteur_paiements = array_filter(
 			$paiements,
