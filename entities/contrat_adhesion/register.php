@@ -213,7 +213,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'show_column' => false,
 			),
 			'fin_raison'       => array(
-				'name'        => amapress__( 'Raison de fin' ),
+				'name'        => amapress__( 'Motif de fin' ),
 				'type'        => 'textarea',
 				'group'       => '4/ Fin de contrat avant terme',
 				'desc'        => 'Raison de fin du contrat',
