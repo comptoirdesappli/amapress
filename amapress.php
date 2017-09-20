@@ -60,6 +60,11 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 //    remove_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 }
 
+function amapress_dump( $v ) {
+	echo '<pre>';
+	var_dump( $v );
+	echo '</pre>';
+}
 
 global $amapress_notices;
 $amapress_notices = array();

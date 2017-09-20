@@ -1061,7 +1061,7 @@ class AmapressContrats {
 					'relation' => 'AND',
 					array(
 						'key'     => 'amapress_adhesion_contrat_instance',
-						'value'   => $contrat_instance_id,
+						'value'   => intval( $contrat_instance_id ),
 						'compare' => '=',
 						'type'    => 'NUMERIC'
 					),
@@ -1070,7 +1070,7 @@ class AmapressContrats {
 			if ( ! empty( $contrat_quantite ) ) {
 				$query['meta_query'][] = array(
 					'key'     => 'amapress_adhesion_contrat_quantite',
-					'value'   => $contrat_quantite,
+					'value'   => intval( $contrat_quantite ),
 					'compare' => '=',
 					'type'    => 'NUMERIC'
 				);

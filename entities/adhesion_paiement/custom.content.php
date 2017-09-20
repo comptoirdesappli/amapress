@@ -147,8 +147,9 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 			if ( round( $amount ) == 0 ) {
 				$status = array( 'icon' => 'dashicons-before dashicons-no-alt', 'status' => 'paiement-not-paid' );
 			} else if ( round( $amount ) < $expected_amount ) {
-				$status = array( 'icon'   => 'dashicons-before dashicons-star-half',
-				                 'status' => 'paiement-partial-paid'
+				$status = array(
+					'icon'   => 'dashicons-before dashicons-star-half',
+					'status' => 'paiement-partial-paid'
 				);
 			} else if ( round( $amount ) > $expected_amount ) {
 				$status = array( 'icon' => 'dashicons-before dashicons-arrow-up-alt', 'status' => 'paiement-too-paid' );
@@ -442,26 +443,25 @@ function amapress_paiements_editor( $post_id ) {
 //            return $p->getAdhesion()->ID != $adhesion->ID;
 //        }
 //    );
-	$all_paiements_by_dates  = array_group_by( $all_paiements,
+	$all_paiements_by_dates = array_group_by( $all_paiements,
 		function ( AmapressAmapien_paiement $p ) {
 			return Amapress::start_of_day( $p->getDate() );
 		}
 	);
-	$all_paiements_by_dates2 = array_merge( $all_paiements_by_dates );
 	foreach ( $contrat_paiements_dates as $d ) {
-		if ( ! isset( $all_paiements_by_dates2[ $d ] ) ) {
-			$all_paiements_by_dates2[ $d ] = array();
+		if ( ! isset( $all_paiements_by_dates[ $d ] ) ) {
+			$all_paiements_by_dates[ $d ] = array();
 		}
 	}
-	$dates_by_quant = array_combine(
+	$dates_by_cheque_count = array_combine(
 		array_map( function ( $v, $k ) {
 			return sprintf( '%05d-%8x', count( $v ), $k );
-		}, array_values( $all_paiements_by_dates2 ), array_keys( $all_paiements_by_dates2 ) ),
-		array_keys( $all_paiements_by_dates2 )
+		}, array_values( $all_paiements_by_dates ), array_keys( $all_paiements_by_dates ) ),
+		array_keys( $all_paiements_by_dates )
 	);
-	ksort( $dates_by_quant );
-	$dates_by_quant = array_values( $dates_by_quant );
-	$all_quants     = array_merge( array( '_all' ),
+	ksort( $dates_by_cheque_count );
+	$dates_by_cheque_count = array_values( $dates_by_cheque_count );
+	$all_quants            = array_merge( array( '_all' ),
 		array_map( function ( AmapressContrat_quantite $p ) {
 			$code = $p->getCode();
 
@@ -555,6 +555,15 @@ function amapress_paiements_editor( $post_id ) {
 <th></th>
 </tr>";
 
+	$new_paiement_date = array();
+	$def_date          = 0;
+	foreach ( $contrat_paiements as $paiement ) {
+		if ( ! $paiement ) {
+			$new_paiement_date[] = ( isset( $dates_by_cheque_count[ $def_date ] ) ? $dates_by_cheque_count[ $def_date ++ ] : 0 );
+		}
+	}
+	sort( $new_paiement_date );
+
 	$def_date = 0;
 	$def_id   = - 1;
 	foreach ( $contrat_paiements as $paiement ) {
@@ -568,7 +577,7 @@ function amapress_paiements_editor( $post_id ) {
 		$amount = esc_attr( ( $paiement && $paiement->getAmount() > 0 ) ? $paiement->getAmount() : $adhesion->getTotalAmount() / $nb_paiements );
 //        if ($refresh) $amount = $adhesion->getTotalAmount() / $nb_paiements;
 		$status      = esc_attr( $paiement ? $paiement->getStatus() : 'not_received' );
-		$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $dates_by_quant[ $def_date ] ) ? $dates_by_quant[ $def_date ++ ] : 0 );
+		$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
 
 		$status_options = '<option value="not_received" ' . selected( $status, 'not_received', false ) . '>Non reçu</option>
 <option value="received" ' . selected( $status, 'received', false ) . '>Reçu</option>
