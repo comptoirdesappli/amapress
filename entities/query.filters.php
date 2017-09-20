@@ -1136,7 +1136,21 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			} else if ( $amapress_contrat == 'lastyear' ) {
 				$contrat_ids = AmapressContrats::get_contrat_instances();
 			} else {
-				$contrat_ids = array( Amapress::resolve_post_id( $amapress_contrat, AmapressContrat_instance::INTERNAL_POST_TYPE ) );
+				$id = Amapress::resolve_post_id( $amapress_contrat, AmapressContrat::INTERNAL_POST_TYPE );
+				if ( ! $id ) {
+					$id = Amapress::resolve_post_id( $amapress_contrat, AmapressContrat_instance::INTERNAL_POST_TYPE );
+				}
+				if ( $id ) {
+					$post = get_post( $id );
+					$pt   = amapress_simplify_post_type( $post->post_type );
+					if ( 'contrat_instance' == $pt ) {
+						$contrat_ids = array( $id );
+					} else if ( 'contrat' == $pt ) {
+						$contrat_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $id );
+					}
+				} else {
+					$contrat_ids = array();
+				}
 			}
 			$contrat_ids = implode( ',', $contrat_ids );
 			$where       .= " AND $wpdb->users.ID $op (SELECT amps_pmach.meta_value
