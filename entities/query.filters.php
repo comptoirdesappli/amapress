@@ -1152,11 +1152,16 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 					$contrat_ids = array();
 				}
 			}
+			if ( empty( $contrat_ids ) ) {
+				$contrat_ids = array( 0 );
+			}
 			$contrat_ids = implode( ',', $contrat_ids );
 			$where       .= " AND $wpdb->users.ID $op (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
+                                                   INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
                                                    WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3')
+                                                   AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids))";
 		}
@@ -1170,15 +1175,23 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			return Amapress::resolve_post_id( $l, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		}, $amapress_lieu );
 		$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
+		if ( empty( $contrat_ids ) ) {
+			$contrat_ids = array( 0 );
+		}
+		if ( empty( $lieu_ids ) ) {
+			$lieu_ids = array( 0 );
+		}
 		$contrat_ids = implode( ',', $contrat_ids );
 		$lieu_ids    = implode( ',', $lieu_ids );
 		$where       .= " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_adhesion ON amps_pm_adhesion.post_id = amps_pmach.post_id
+                                                   INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
                                                    WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3')
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND amps_pm_adhesion.meta_key = 'amapress_adhesion_lieu'
+                                                   AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids)
                                                    AND amps_pm_adhesion.meta_value IN ($lieu_ids))";
 	}
