@@ -175,13 +175,15 @@ function amapress_get_mailinglist_queries() {
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
 			$ret["amapress_lieu={$lieu->ID}"] = "Amapiens de {$lieu->getTitle()}";
-			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}"] = "Amapiens  de {$lieu->getTitle()} - Contrat {$contrat->getModel()->getTitle()}";
+			foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
+				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}"] = "Amapiens  de {$lieu->getTitle()} - Contrat {$contrat->getTitle()}";
 			}
 		}
 	}
-	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-		$ret["amapress_contrat={$contrat->ID}"] = "Amapiens - Contrat {$contrat->getModel()->getTitle()}";
+
+
+	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
+		$ret["amapress_contrat={$contrat->ID}"] = "Amapiens - Contrat {$contrat->getTitle()}";
 	}
 
 	$ret["amapress_role=referent_producteur"] = "Référents producteurs";
@@ -193,8 +195,8 @@ function amapress_get_mailinglist_queries() {
 //        }
 		}
 	}
-	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getModel()->getTitle()}";
+	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
+		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
 	}
 
 	$ret["amapress_role=access_admin"] = "Responsables AMAP";
@@ -236,13 +238,13 @@ function amapress_get_mailinglist_moderators_queries() {
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
 			$ret["amapress_lieu={$lieu->ID}&amapress_role=referent_producteur"] = "Référents producteurs de {$lieu->getTitle()}";
-			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs  de {$lieu->getTitle()} - {$contrat->getModel()->getTitle()}";
+			foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
+				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs  de {$lieu->getTitle()} - {$contrat->getTitle()}";
 			}
 		}
 	}
-	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getModel()->getTitle()}";
+	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
+		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
 	}
 
 	$ret["amapress_role=access_admin"] = "Responsables AMAP";
