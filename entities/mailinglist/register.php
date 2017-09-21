@@ -20,6 +20,17 @@ function amapress_register_entities_mailinglist( $entities ) {
 			'add_new'      => 'Configurer une liste de diffusion existante',
 			'add_new_item' => 'Configurer une liste de diffusion existante',
 		),
+		'views'            => array(
+			'_dyn_' => function () {
+				$ret = array();
+				amapress_add_view_button(
+					$ret, 'sync_all',
+					"post_type=amps_mailing&sync_all",
+					'Tout synchroniser' );
+
+				return $ret;
+			}
+		),
 //        'title_format' => 'amapress_visite_title_formatter',
 //        'slug_format' => 'from_title',
 		'slug'             => amapress__( 'mailinglists' ),
@@ -600,7 +611,7 @@ add_action( 'init', function () {
 	}
 } );
 
-add_action( 'amapress_mailinglists_autosync', function () {
+function amapress_mailinglists_autosync() {
 	$messages = array();
 	foreach ( Amapress_MailingListConfiguration::getAll() as $conf ) {
 		$ml         = $conf->getMailingList();
@@ -622,4 +633,6 @@ add_action( 'amapress_mailinglists_autosync', function () {
 	if ( ! empty( $messages ) ) {
 		amapress_mail_to_admin( 'Synchronisation des listes de diffusions', "Les listes suivantes n'ont pas pû êtres synchronisées:\r\n" . implode( "\r\n", $messages ) );
 	}
-} );
+}
+
+add_action( 'amapress_mailinglists_autosync', 'amapress_mailinglists_autosync' );
