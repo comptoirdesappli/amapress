@@ -80,7 +80,6 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
-
 		return self::query_events(
 			array(
 				'relation' => 'AND',
@@ -92,7 +91,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 				),
 				array(
 					'key'     => 'amapress_contrat_paiement_adhesion',
-					'value'   => $adhs_ids,
+					'value'   => amapress_prepare_in( adhs_ids ),
 					'compare' => 'IN'
 				),
 			),
@@ -169,7 +168,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 						'meta_query'     => array(
 							array(
 								'key'     => 'amapress_contrat_paiement_adhesion',
-								'value'   => $adhesions_ids,
+								'value'   => amapress_prepare_in( $adhesions_ids ),
 								'compare' => 'IN',
 							),
 						),

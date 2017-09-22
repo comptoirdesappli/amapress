@@ -1063,7 +1063,6 @@ class AmapressContrats {
 						'key'     => 'amapress_adhesion_contrat_instance',
 						'value'   => intval( $contrat_instance_id ),
 						'compare' => '=',
-						'type'    => 'NUMERIC'
 					),
 				)
 			);
@@ -1085,9 +1084,8 @@ class AmapressContrats {
 					'relation' => 'AND',
 					array(
 						'key'     => 'amapress_contrat_paiement_adhesion',
-						'value'   => $adhesions_ids,
+						'value'   => amapress_prepare_in( $adhesions_ids ),
 						'compare' => 'IN',
-						'type'    => 'NUMERIC'
 					),
 				)
 			);

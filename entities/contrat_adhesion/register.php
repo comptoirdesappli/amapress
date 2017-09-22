@@ -587,6 +587,7 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
 	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id );
+//	amapress_dump($paiements);
 	$dates            = array_map(
 		function ( $p ) {
 			/** @var AmapressAmapien_paiement $p */

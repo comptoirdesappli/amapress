@@ -355,11 +355,12 @@ class AmapressEntities {
 										'desc'    => '',
 										'options' => array(
 											array(
-												'id'     => 'contrat-paiement-summary-' . $contrat_id,
-												'bare'   => true,
-												'type'   => 'custom',
-												'custom' => function () use ( $contrat_id ) {
-													return amapress_get_paiement_table_by_dates( $contrat_id );
+												'id'         => 'contrat-paiement-summary-' . $contrat_id,
+												'bare'       => true,
+												'type'       => 'custom',
+												'contrat_id' => $contrat_id,
+												'custom'     => function ( $post_id, $option ) {
+													return amapress_get_paiement_table_by_dates( intval( $option->settings['contrat_id'] ) );
 												},
 											),
 											array(

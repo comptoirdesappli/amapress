@@ -4,6 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function amapress_prepare_in( $in ) {
+	if ( empty( $in ) ) {
+		return array( 0 );
+	}
+
+	return $in;
+}
 
 function amapress_add_meta_query( WP_Query $query, $meta_query ) {
 	$meta = $query->get( 'meta_query' );
@@ -103,7 +110,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
 						'key'     => "amapress_{$pt}_producteur",
-						'value'   => $r['producteur'],
+						'value'   => amapress_prepare_in( $r['producteur'] ),
 						'compare' => 'IN',
 					);
 				}
@@ -112,7 +119,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
 						'key'     => "amapress_{$pt}_contrat_instance",
-						'value'   => $r['contrat_instance_ids'],
+						'value'   => amapress_prepare_in( $r['contrat_instance_ids'] ),
 						'compare' => 'IN',
 					);
 				}
@@ -154,7 +161,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
 						'key'     => "amapress_{$pt}_contrat_instance",
-						'value'   => $r['contrat_instance_ids'],
+						'value'   => amapress_prepare_in( $r['contrat_instance_ids'] ),
 						'compare' => 'IN',
 					);
 				}
@@ -162,7 +169,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
 						'key'     => "amapress_{$pt}_contrat_instance",
-						'value'   => $r['contrat_instance_ids'],
+						'value'   => amapress_prepare_in( $r['contrat_instance_ids'] ),
 						'compare' => 'IN',
 					);
 				}
@@ -178,7 +185,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
 						'key'     => "amapress_{$pt}_model",
-						'value'   => $r['contrat_ids'],
+						'value'   => amapress_prepare_in( $r['contrat_ids'] ),
 						'compare' => 'IN',
 					);
 				}
@@ -220,7 +227,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_model",
-					'value'   => AmapressContrats::get_contrat_ids( $amapress_producteur, false ),
+					'value'   => amapress_prepare_in( AmapressContrats::get_contrat_ids( $amapress_producteur, false ) ),
 					'compare' => 'IN',
 				)
 			) );
@@ -277,7 +284,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					array(
 						'taxonomy' => 'amps_recette_category',
 						'field'    => 'term_id',
-						'terms'    => $amapress_recette_tags,
+						'terms'    => amapress_prepare_in( $amapress_recette_tags ),
 						'operator' => 'IN',
 					)
 				)
@@ -314,7 +321,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					array(
 						'taxonomy' => 'amps_produit_category',
 						'field'    => 'term_id',
-						'terms'    => $amapress_recette_tags,
+						'terms'    => amapress_prepare_in( $amapress_recette_tags ),
 						'operator' => 'IN',
 					)
 				)
@@ -399,7 +406,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_contrat_instance",
-					'value'   => $active_contrat_insts,
+					'value'   => amapress_prepare_in( $active_contrat_insts ),
 					'compare' => 'IN',
 				)
 			) );
@@ -420,17 +427,17 @@ function amapress_filter_posts( WP_Query $query ) {
 					'relation' => 'OR',
 					array(
 						'key'     => "amapress_{$pt}_adherent",
-						'value'   => $user_ids,
+						'value'   => amapress_prepare_in( $user_ids ),
 						'compare' => 'IN',
 					),
 					array(
 						'key'     => "amapress_{$pt}_adherent2",
-						'value'   => $user_ids,
+						'value'   => amapress_prepare_in( $user_ids ),
 						'compare' => 'IN',
 					),
 					array(
 						'key'     => "amapress_{$pt}_adherent3",
-						'value'   => $user_ids,
+						'value'   => amapress_prepare_in( $user_ids ),
 						'compare' => 'IN',
 					),
 				),
@@ -464,7 +471,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_user",
-					'value'   => $user_ids,
+					'value'   => amapress_prepare_in( $user_ids ),
 					'compare' => 'IN',
 				),
 			) );
@@ -473,7 +480,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_adherent",
-					'value'   => $user_ids,
+					'value'   => amapress_prepare_in( $user_ids ),
 					'compare' => 'IN',
 				),
 			) );
@@ -482,7 +489,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_contrat_paiement_contrat_instance",
-					'value'   => $contrat_instance_ids,
+					'value'   => amapress_prepare_in( $contrat_instance_ids ),
 					'compare' => 'IN',
 					'type'    => 'NUMERIC',
 				)
@@ -520,7 +527,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_contrat_paiement_adhesion",
-					'value'   => AmapressContrats::get_active_adhesions_ids( null, null, $amapress_lieu ),
+					'value'   => amapress_prepare_in( AmapressContrats::get_active_adhesions_ids( null, null, $amapress_lieu ) ),
 					'compare' => 'IN',
 					'type'    => 'NUMERIC',
 				)
@@ -627,7 +634,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				amapress_add_meta_query( $query, array(
 					array(
 						'key'     => "amapress_adhesion_contrat_instance",
-						'value'   => AmapressContrats::get_active_contrat_instances_ids(),
+						'value'   => amapress_prepare_in( AmapressContrats::get_active_contrat_instances_ids() ),
 						'compare' => 'IN',
 						'type'    => 'NUMERIC',
 					),
@@ -1152,10 +1159,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 					$contrat_ids = array();
 				}
 			}
-			if ( empty( $contrat_ids ) ) {
-				$contrat_ids = array( 0 );
-			}
-			$contrat_ids = implode( ',', $contrat_ids );
+			$contrat_ids = implode( ',', amapress_prepare_in( $contrat_ids ) );
 			$where       .= " AND $wpdb->users.ID $op (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
@@ -1175,14 +1179,8 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			return Amapress::resolve_post_id( $l, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		}, $amapress_lieu );
 		$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
-		if ( empty( $contrat_ids ) ) {
-			$contrat_ids = array( 0 );
-		}
-		if ( empty( $lieu_ids ) ) {
-			$lieu_ids = array( 0 );
-		}
-		$contrat_ids = implode( ',', $contrat_ids );
-		$lieu_ids    = implode( ',', $lieu_ids );
+		$contrat_ids = implode( ',', amapress_prepare_in( $contrat_ids ) );
+		$lieu_ids    = implode( ',', amapress_prepare_in( $lieu_ids ) );
 		$where       .= " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id

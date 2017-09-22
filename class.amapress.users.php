@@ -546,7 +546,7 @@ class AmapressUsers {
 				'relation' => 'AND',
 				array(
 					'key'     => 'amapress_adhesion_contrat_instance',
-					'value'   => $abo_ids,
+					'value'   => amapress_prepare_in( $abo_ids ),
 					'compare' => 'IN',
 					'type'    => 'NUMERIC'
 				),
