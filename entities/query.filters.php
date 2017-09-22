@@ -576,13 +576,29 @@ function amapress_filter_posts( WP_Query $query ) {
 				array(
 					'relation' => 'OR',
 					array(
-						'key'     => "amapress_{$pt}_adherent1",
-						'compare' => 'EXISTS',
+						array(
+							'key'     => "amapress_{$pt}_adherent2",
+							'compare' => 'EXISTS',
+						),
+						array(
+							'key'     => "amapress_{$pt}_adherent2",
+							'compare' => '>',
+							'value'   => 0,
+							'type'    => 'NUMBERIC',
+						),
 					),
 					array(
-						'key'     => "amapress_{$pt}_adherent2",
-						'compare' => 'EXISTS',
-					)
+						array(
+							'key'     => "amapress_{$pt}_adherent3",
+							'compare' => 'EXISTS',
+						),
+						array(
+							'key'     => "amapress_{$pt}_adherent3",
+							'compare' => '>',
+							'value'   => 0,
+							'type'    => 'NUMBERIC',
+						),
+					),
 				),
 			) );
 		}
@@ -827,6 +843,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			}
 		}
 	}
+//	amapress_dump($query->get( 'meta_query' ));
 }
 
 add_action( 'pre_get_users', function ( WP_User_Query $uqi ) {
@@ -1200,6 +1217,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
                                                    INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
                                                    WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3')
                                                    AND amps_posts.post_status = 'publish'
+                                                   AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids))";
 		}
@@ -1223,6 +1241,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
                                                    WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3')
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND amps_pm_adhesion.meta_key = 'amapress_adhesion_lieu'
+                                                   AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids)
                                                    AND amps_pm_adhesion.meta_value IN ($lieu_ids))";
@@ -1247,12 +1266,14 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
                                                    AND amps_pm_contrat.meta_value BETWEEN %d AND %d)", intval( $min_date ), intval( $max_date ) );
 			} else {
 				$where .= $wpdb->prepare( " AND $wpdb->users.ID NOT IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
+                                                   AND amps_pmach.meta_value IS NOT NULL
                                                    WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
                                                    AND amps_pm_contrat.meta_value = %d)", $period->ID );
@@ -1261,7 +1282,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 	}
 	$uqi->query_where .= $where;
 	//var_dump($uqi->query_from);
-//    var_dump($uqi->query_where);
+//    amapress_dump($uqi->query_where);
 //    die();
 } );
 

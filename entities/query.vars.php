@@ -29,6 +29,7 @@ function amapress_add_query_vars( $query_vars ) {
 	$query_vars[] = 'amapress_produit_recette';
 	$query_vars[] = 'amapress_produit_tag';
 	$query_vars[] = 'amapress_produit_tag_not_in';
+	$query_vars[] = 'amapress_with_coadherents';
 
 	return $query_vars;
 }
