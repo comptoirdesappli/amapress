@@ -612,7 +612,9 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 						}
 					)
 				);
-			$all_emetteurs[] = $p->getAdhesion()->getAdherent()->getDisplayName();
+			if ( $p->getAdhesion()->getAdherent() ) {
+				$all_emetteurs[] = $p->getAdhesion()->getAdherent()->getDisplayName();
+			}
 			if ( $p->getAdhesion()->getAdherent2() ) {
 				$all_emetteurs[] = $p->getAdhesion()->getAdherent2()->getDisplayName();
 			}

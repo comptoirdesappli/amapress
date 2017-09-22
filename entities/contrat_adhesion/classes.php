@@ -39,7 +39,11 @@ class AmapressAdhesion extends TitanEntity {
 			return $fin;
 		}
 
-		return $this->getContrat_instance()->getDate_fin();
+		if ( $this->getContrat_instance() ) {
+			return $this->getContrat_instance()->getDate_fin();
+		} else {
+			return 0;
+		}
 	}
 
 
