@@ -357,7 +357,7 @@ function amapress_filter_posts( WP_Query $query ) {
 	}
 	if ( ! empty( $query->query_vars['amapress_contrat_inst'] ) ) {
 		$amapress_contrat_instnace = Amapress::resolve_post_id( $query->query_vars['amapress_contrat_inst'], 'amps_contrat_inst' );
-		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' ) {
+		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' || 'panier' == $pt ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_contrat_instance",
@@ -372,6 +372,14 @@ function amapress_filter_posts( WP_Query $query ) {
 					'value'   => $amapress_contrat_instnace,
 					'compare' => '=',
 					'type'    => 'NUMERIC',
+				)
+			) );
+		} else if ( $pt == 'distribution' ) {
+			amapress_add_meta_query( $query, array(
+				array(
+					'key'     => "amapress_distribution_contrats",
+					'value'   => '"' . $amapress_contrat_instnace . '"',
+					'compare' => 'like',
 				)
 			) );
 		}
@@ -399,7 +407,7 @@ function amapress_filter_posts( WP_Query $query ) {
 	}
 	if ( ! empty( $query->query_vars['amapress_contrat'] ) ) {
 		$amapress_contrat = Amapress::resolve_post_id( $query->query_vars['amapress_contrat'], 'amps_contrat' );
-		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' ) {
+		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' || $pt == 'panier' ) {
 			$amapress_date        = get_query_var( 'amapress_date' );
 			$date                 = ( empty( $amapress_date ) || $amapress_date == 'active' ) ? null : ( is_int( $amapress_date ) ? intval( $amapress_date ) : DateTime::createFromFormat( 'Y-m-d', $amapress_date )->getTimestamp() );
 			$active_contrat_insts = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $amapress_contrat, $date );
@@ -408,6 +416,32 @@ function amapress_filter_posts( WP_Query $query ) {
 					'key'     => "amapress_{$pt}_contrat_instance",
 					'value'   => amapress_prepare_in( $active_contrat_insts ),
 					'compare' => 'IN',
+				)
+			) );
+		} else if ( $pt == 'contrat_instance' ) {
+			amapress_add_meta_query( $query, array(
+				array(
+					'key'     => "amapress_{$pt}_model",
+					'value'   => intval( $amapress_contrat ),
+					'compare' => '=',
+				)
+			) );
+		} else if ( $pt == 'distribution' ) {
+			$amapress_date        = get_query_var( 'amapress_date' );
+			$date                 = ( empty( $amapress_date ) || $amapress_date == 'active' ) ? null : ( is_int( $amapress_date ) ? intval( $amapress_date ) : DateTime::createFromFormat( 'Y-m-d', $amapress_date )->getTimestamp() );
+			$active_contrat_insts = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $amapress_contrat, $date );
+			$query_or             = array();
+			foreach ( $active_contrat_insts as $contrat_inst ) {
+				$query_or[] = array(
+					'key'     => "amapress_distribution_contrats",
+					'value'   => '"' . $contrat_inst . '"',
+					'compare' => 'like',
+				);
+			}
+			amapress_add_meta_query( $query, array(
+				array(
+					'relation' => 'OR',
+					$query_or
 				)
 			) );
 		}

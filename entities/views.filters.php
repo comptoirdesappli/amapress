@@ -223,6 +223,13 @@ function amapress_contrat_instance_views() {
 		"post_type=amps_contrat_inst&amapress_date=active",
 		'En cours' );
 
+	foreach ( AmapressContrats::get_contrats() as $contrat ) {
+		amapress_add_view_button(
+			$ret, "contrat-{$contrat->ID}",
+			"post_type=amps_contrat_inst&amapress_contrat={$contrat->ID}",
+			$contrat->getTitle() );
+	}
+
 	return $ret;
 }
 
