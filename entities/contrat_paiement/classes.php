@@ -91,7 +91,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 				),
 				array(
 					'key'     => 'amapress_contrat_paiement_adhesion',
-					'value'   => amapress_prepare_in( adhs_ids ),
+					'value'   => amapress_prepare_in( $adhs_ids ),
 					'compare' => 'IN'
 				),
 			),
