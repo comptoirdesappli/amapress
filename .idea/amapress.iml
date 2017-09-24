@@ -19,10 +19,12 @@
         <CLASSES>
           <root url="phar://$MODULE_DIR$/composer.phar/" />
           <root url="phar://$MODULE_DIR$/composer_2.phar/" />
+          <root url="phar://$MODULE_DIR$/composer_3.phar/" />
         </CLASSES>
         <SOURCES>
           <root url="phar://$MODULE_DIR$/composer.phar/" />
           <root url="phar://$MODULE_DIR$/composer_2.phar/" />
+          <root url="phar://$MODULE_DIR$/composer_3.phar/" />
         </SOURCES>
       </library>
     </orderEntry>
