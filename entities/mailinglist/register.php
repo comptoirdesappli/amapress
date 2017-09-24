@@ -622,16 +622,20 @@ function amapress_mailinglists_autosync() {
 			case 'not_sync':
 				$ml->syncMembers( $members, $moderators );
 				if ( 'sync' != $ml->isSync( $members, $moderators ) ) {
-					$messages[] = "La synchro de {$conf->getTitle()} a échouée. Voir {$conf->getPermalink()}";
+					$messages[] = "La synchro de {$conf->getTitle()} a échouée. Voir {$conf->getAdminEditLink()}";
 				}
 				break;
 			case 'manual':
-				$messages[] = "La synchro de {$conf->getTitle()} doit être faite manuellement (ou n'est pas configurée). Voir {$conf->getPermalink()}";
+				$messages[] = "La synchro de {$conf->getTitle()} doit être faite manuellement (ou n'est pas configurée). Voir {$conf->getAdminEditLink()}";
 				break;
 		}
 	}
 	if ( ! empty( $messages ) ) {
-		amapress_mail_to_admin( 'Synchronisation des listes de diffusions', "Les listes suivantes n'ont pas pû êtres synchronisées:\r\n" . implode( "\r\n", $messages ) );
+		$all_sync_link = Amapress::makeLink( admin_url( 'edit.php?post_type=amps_mailing&sync_all' ) );
+		amapress_mail_to_admin( 'Synchronisation des listes de diffusions',
+			"Les listes suivantes n'ont pas pu être synchronisées:\r\n" .
+			implode( "\r\n", $messages ) .
+			"\r\nPour lancer la synchronisation de toutes les listes manuellement, cliquer sur le lien suivant : {$all_sync_link}" );
 	}
 }
 
