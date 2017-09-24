@@ -201,7 +201,6 @@ require_once( AMAPRESS__PLUGIN_DIR . 'class.amapressmeseventswidget.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.users.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.paniers.php' );
-require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.events.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.distributions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.commandes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.contrats.php' );
@@ -393,10 +392,7 @@ function amapress_register_widgets() {
 
 add_action( 'widgets_init', 'amapress_register_widgets' );
 add_action( 'init', array( 'Amapress', 'init' ) );
-//add_action('init', array('AmapressLoginAdmin', 'init'));
-//add_action('init', array('AmapressMembership', 'init'));
 add_action( 'init', array( 'AmapressPaniers', 'init' ) );
-add_action( 'init', array( 'AmapressDistributions', 'init' ) );
 add_action( 'init', array( 'Amapress_Calendar', 'init' ) );
 add_action( 'init', array( 'AmapressUsers', 'init' ) );
 add_action( 'init', array( 'AmapressContrats', 'init' ) );
