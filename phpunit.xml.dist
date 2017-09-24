@@ -1,0 +1,43 @@
+<phpunit
+        bootstrap="tests/phpunit/includes/bootstrap.php"
+        backupGlobals="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true"
+        syntaxCheck="true"
+>
+    <testsuites>
+        <testsuite>
+            <directory suffix=".php">tests/phpunit/tests/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">.</directory>
+            <exclude>
+                <directory>./assets/</directory>
+                <directory>./css/</directory>
+                <directory>./js/</directory>
+                <directory>./fonts/</directory>
+                <directory>./images/</directory>
+                <directory>./tests/</directory>
+                <directory>./vendor/</directory>
+                <directory>./.*/</directory>
+                <directory>./tmp/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <listeners>
+        <listener class="SpeedTrapListener">
+            <arguments>
+                <array>
+                    <element key="slowThreshold">
+                        <integer>150</integer>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
+</phpunit>

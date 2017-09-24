@@ -7,10 +7,12 @@
     <orderEntry type="module-library">
       <library name="PHP">
         <CLASSES>
-          <root url="file://E:/wordpress-4.6-fr_FR/wordpress" />
+          <root url="file://$USER_HOME$/AppData/Local/lxss/rootfs/tmp/wp2/wordpress" />
+          <root url="file://$USER_HOME$/AppData/Local/lxss/rootfs/tmp/wp2/wordpress-tests-lib" />
         </CLASSES>
         <SOURCES>
-          <root url="file://E:/wordpress-4.6-fr_FR/wordpress" />
+          <root url="file://$USER_HOME$/AppData/Local/lxss/rootfs/tmp/wp2/wordpress" />
+          <root url="file://$USER_HOME$/AppData/Local/lxss/rootfs/tmp/wp2/wordpress-tests-lib" />
         </SOURCES>
       </library>
     </orderEntry>
