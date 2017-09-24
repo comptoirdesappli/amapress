@@ -136,7 +136,7 @@ add_action( 'admin_bar_menu', 'amapress_admin_bar_menu' );
 function amapress_admin_bar_menu( WP_Admin_Bar $admin_bar ) {
 	global $pagenow;
 
-	if ( 'post.php' == $pagenow ) {
+	if ( 'post.php' == $pagenow || 'post-new.php' == $pagenow ) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_publish_admin_bar',
 			'parent' => 'top-secondary',
