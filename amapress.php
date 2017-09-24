@@ -348,26 +348,6 @@ if ( ! function_exists( 'get_posts_count' ) ) {
 	/**
 	 * Retrieve count of latest posts or posts matching criteria.
 	 *
-	 * The defaults are as follows:
-	 *
-	 * @since 1.2.0
-	 *
-	 * @see WP_Query::parse_query()
-	 *
-	 * @param array $args {
-	 *     Optional. Arguments to retrieve posts. See WP_Query::parse_query() for all
-	 *     available arguments.
-	 *
-	 * @type int $numberposts Total number of posts to retrieve. Is an alias of $posts_per_page
-	 *                                        in WP_Query. Accepts -1 for all. Default 5.
-	 * @type int|string $category Category ID or comma-separated list of IDs (this or any children).
-	 *                                        Is an alias of $cat in WP_Query. Default 0.
-	 * @type array $include An array of post IDs to retrieve, sticky posts will be included.
-	 *                                        Is an alias of $post__in in WP_Query. Default empty array.
-	 * @type array $exclude An array of post IDs not to retrieve. Default empty array.
-	 * @type bool $suppress_filters Whether to suppress filters. Default true.
-	 * }
-	 * @return array List of posts.
 	 */
 	function get_posts_count( $args = null ) {
 		$args                   = wp_parse_args( $args );
@@ -384,14 +364,6 @@ if ( ! function_exists( 'get_users_count' ) ) {
 	/**
 	 * Retrieve count of users matching criteria.
 	 *
-	 * @since 3.1.0
-	 *
-	 * @see WP_User_Query
-	 *
-	 * @param array $args Optional. Arguments to retrieve users. See {@see WP_User_Query::prepare_query()}
-	 *                    for more information on accepted arguments.
-	 *
-	 * @return array List of users.
 	 */
 	function get_users_count( $args = array() ) {
 		$args                = wp_parse_args( $args );
@@ -924,12 +896,3 @@ if ( ! function_exists( 'wp_mail' ) ) {
 		}
 	}
 }
-
-//add_filter('pre_user_query', function($query) {
-//    var_dump("SELECT $query->query_fields $query->query_from $query->query_where $query->query_orderby $query->query_limit");
-//}, 50);
-//
-//    add_filter('posts_request', function($query) {
-//        var_dump($query);
-//        return $query;
-//    }, 20);

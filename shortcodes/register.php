@@ -105,7 +105,7 @@ function amapress_register_shortcodes() {
 					$show = $show || AmapressContrats::is_user_active_intermittent();
 					break;
 				case 'no_contrat':
-					$show = $show || count( AmapressContrats::get_user_active_contrat_instances() ) == 0;
+					$show = $show || count( AmapressContrat_instance::getContratInstanceIdsForUser() ) == 0;
 					break;
 				case 'responsable_distrib':
 					$show = $show || AmapressDistributions::isCurrentUserResponsableThisWeek();
@@ -116,7 +116,7 @@ function amapress_register_shortcodes() {
 				default:
 					if ( strpos( $role, 'contrat_' ) === 0 ) {
 						$contrat_id = Amapress::resolve_post_id( substr( $role, 8 ), AmapressContrat::INTERNAL_POST_TYPE );
-						$show       = $show || count( AmapressContrats::get_user_active_contrat_instances( null, $contrat_id ) ) > 0;
+						$show       = $show || count( AmapressContrat_instance::getContratInstanceIdsForUser( null, $contrat_id ) ) > 0;
 					} else {
 						$show = $show || amapress_current_user_can( $role );
 					}

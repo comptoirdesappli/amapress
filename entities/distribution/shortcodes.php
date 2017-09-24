@@ -135,7 +135,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$max_dates = 1000;
 	}
 
-	$adhesions             = AmapressContrats::get_user_active_adhesion( $user_id );
+	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
 		return $a->getContrat_instance()->ID;

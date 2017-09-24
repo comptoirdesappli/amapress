@@ -31,7 +31,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$contrat_ids = array_map( function ( $c ) {
 		/** @var AmapressAdhesion $c */
 		return $c->getContrat_instance()->ID;
-	}, AmapressContrats::get_user_active_adhesion( $user_id ) );
+	}, AmapressAdhesion::getUserActiveAdhesions( $user_id ) );
 	$cnt         = 0;
 	$failed      = 0;
 	foreach ( $dist->getContrats() as $contrat ) {
@@ -88,7 +88,7 @@ function amapress_echanger_panier( $panier_id, $user_id = null, $message = null 
 	$panier_date = $panier->getDate();
 //    $redir_url = $panier->getPermalink();
 	$contrat_instance = $panier->getContrat_instance();
-	$adhesions        = array_values( AmapressContrats::get_user_active_adhesion( $user_id, $contrat_instance->ID ) );
+	$adhesions        = array_values( $contrat_instance->getAdhesionsForUser( $user_id ) );
 	if ( empty( $adhesions ) or ( count( $adhesions ) == 0 ) ) {
 		wp_die( 'Vous ne faites pas partie de cette distribution.' );
 	}

@@ -29,7 +29,7 @@ function amapress_do_query_action_contrat_souscription() {
 		wp_redirect_and_exit( add_query_arg( 'message', 'fill_fields', $redir_url ) );
 	}
 
-	$user_contrat_ids = AmapressContrats::get_user_active_contrat_instances();
+	$user_contrat_ids = AmapressContrat_instance::getContratInstanceIdsForUser();
 	if ( in_array( intval( $contrat_instance_id ), $user_contrat_ids ) ) {
 		wp_redirect_and_exit( add_query_arg( 'message', 'already_inscr', $redir_url ) );
 	}
@@ -85,7 +85,7 @@ function amapress_do_query_action_contrat_pdf() {
 	}
 	$new_adhesion = false;
 	if ( amapress_is_user_logged_in() ) {
-		$adhesions = AmapressContrats::get_user_active_adhesion( null, $contrat_instance->ID );
+		$adhesions = $contrat_instance->getAdhesionsForUser();
 		if ( count( $adhesions ) > 0 ) {
 			$post = $adhesions[0]->getPost();
 			setup_postdata( $post );

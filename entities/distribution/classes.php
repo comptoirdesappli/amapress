@@ -87,7 +87,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function isUserMemberOf( $user_id, $guess_renew = false ) {
-		$user_contrats_ids = AmapressContrats::get_user_active_contrat_instances( $user_id,
+		$user_contrats_ids = AmapressContrat_instance::getContratInstanceIdsForUser( $user_id,
 			null,
 			$this->getDate(),
 			$guess_renew );
@@ -227,7 +227,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			}
 		} else {
-			$adhesions         = AmapressContrats::get_user_active_adhesion();
+			$adhesions         = AmapressAdhesion::getUserActiveAdhesions();
 			$lieu              = $this->getLieu();
 			$lieu_substitution = $this->getLieuSubstitution();
 			if ( ! empty( $lieu_substitution ) ) {

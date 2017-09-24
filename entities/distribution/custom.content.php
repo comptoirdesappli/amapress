@@ -11,7 +11,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 	$dist_date     = intval( get_post_meta( $dist_id, 'amapress_distribution_date', true ) );
 	$dist_contrats = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' );
-	$user_contrats = AmapressContrats::get_user_active_contrat_instances();
+	$user_contrats = AmapressContrat_instance::getContratInstanceIdsForUser();
 
 	$resp_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
 	if ( $resp_ids && count( $resp_ids ) > 0 ) {

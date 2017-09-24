@@ -1,1 +1,0 @@
-<?php /** * class short summary. * * class description. * * @version 1.0 * @author Guillaume */if ( ! defined( 'ABSPATH' ) ) {	exit; // Exit if accessed directly}

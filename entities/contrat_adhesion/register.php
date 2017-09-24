@@ -44,7 +44,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			}
 
 			if ( $principal_contrat ) {
-				$other_adhs = AmapressContrats::get_user_active_adhesion( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
+				$other_adhs = AmapressAdhesion::getUserActiveAdhesions( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
 				if ( ! empty( $other_adhs ) ) {
 					return;
 				}

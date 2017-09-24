@@ -792,7 +792,7 @@ class AmapressPaniers {
 
 		$produits_in_panier = array();
 		if ( $pani->getContrat_instance()->isPanierVariable() ) {
-			$adhs = AmapressContrats::get_user_active_adhesion( null, $pani->getContrat_instance()->ID, $pani->getDate() );
+			$adhs = $pani->getContrat_instance()->getAdhesionsForUser( null, $pani->getDate() );
 			if ( amapress_is_user_logged_in() && ! empty( $adhs ) ) {
 				$produits_objects = array();
 				/** @var AmapressAdhesion $adh */
@@ -857,7 +857,7 @@ class AmapressPaniers {
 			if ( amapress_is_user_logged_in() ) {
 				$user_quantites = array_map( function ( $v ) {
 					return $v->ID;
-				}, AmapressContrats::get_user_active_adhesion_quantites( null, null, $pani->getDate() ) );
+				}, AmapressAdhesion::getQuantitesForUser( null, null, $pani->getDate() ) );
 			}
 
 			foreach ( $quantites as $quantite ) {

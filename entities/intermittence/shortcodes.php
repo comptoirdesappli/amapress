@@ -189,7 +189,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		$ret         .= $user_select;
 	}
 
-	$adhesions             = AmapressContrats::get_user_active_adhesion( $user_id );
+	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
 		return $a->getContrat_instance()->ID;

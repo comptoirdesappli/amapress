@@ -322,6 +322,139 @@ class AmapressAdhesion extends TitanEntity {
 		return self::$paiement_cache;
 	}
 
+	/**
+	 * @return AmapressAdhesion[]
+	 */
+	public static function getUserActiveAdhesions( $user_id = null, $contrat_instance_id = null, $date = null, $ignore_renouv_delta = false ) {
+		$key_ids = is_array( $contrat_instance_id ) ? implode( '-', $contrat_instance_id ) : $contrat_instance_id;
+		$key     = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
+		$res     = wp_cache_get( $key );
+		if ( false === $res ) {
+			if ( $user_id == null ) {
+				$user_id = amapress_current_user_id();
+			}
+			$abo_ids  = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta );
+			$user_ids = AmapressContrats::get_related_users( $user_id, false );
+			$query    = array(
+				'posts_per_page' => - 1,
+				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'amapress_adhesion_contrat_instance',
+						'value'   => $abo_ids,
+						'compare' => 'IN',
+						'type'    => 'NUMERIC'
+					),
+					array(
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_adherent',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
+						array(
+							'key'     => 'amapress_adhesion_adherent2',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
+						array(
+							'key'     => 'amapress_adhesion_adherent3',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
+					),
+					array(
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'compare' => 'NOT EXISTS',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => 0,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => Amapress::end_of_day( amapress_time() ),
+							'compare' => '>=',
+							'type'    => 'NUMERIC',
+						),
+					)
+				)
+			);
+			$res      = array_map( function ( $p ) {
+				return new AmapressAdhesion( $p );
+			}, get_posts( $query ) );
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
+	/**
+	 * @return AmapressAmapien_paiement[]
+	 */
+	public function getAllPaiements() {
+		$key = "amapress_get_contrat_paiements_{$this->ID}";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$query = array(
+				'posts_per_page' => - 1,
+				'post_type'      => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'amapress_contrat_paiement_adhesion',
+						'value'   => $this->ID,
+						'compare' => '=',
+						'type'    => 'NUMERIC'
+					),
+				),
+				'orderby'        => 'meta_value_num',
+				'order'          => 'ASC',
+				'meta_key'       => 'amapress_contrat_paiement_date'
+			);
+			$res   = array_map( function ( $p ) {
+				return new AmapressAmapien_paiement( $p );
+			}, get_posts( $query ) );
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
+	/**
+	 * @return AmapressContrat_quantite[]
+	 */
+	public static function getQuantitesForUser( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
+		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
+		$key     = "amapress_get_user_active_adhesion_quantites_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
+		$res     = wp_cache_get( $key );
+		if ( false === $res ) {
+			/** @var AmapressAdhesion[] $ret */
+			$ret = AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat_id, $date, $ignore_renouv_delta );
+
+			$res = array();
+			foreach ( $ret as $adh ) {
+//                $adh = new AmapressAdhesion($v);
+				foreach ( $adh->getContrat_quantites() as $q ) {
+					$res[] = $q;
+				}
+			}
+//            $res = array_unique($res);
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
+
 	public function getNextContratInstanceId() {
 		$contrat_instance_id   = $this->getContrat_instanceId();
 		$contrat_instances_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $this->getContrat_instance()->getModel()->ID,

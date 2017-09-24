@@ -436,7 +436,7 @@ function amapress_paiements_editor( $post_id ) {
 	$contrat_instance        = $adhesion->getContrat_instance();
 	$contrat_paiements_dates = $contrat_instance->getPaiements_Liste_dates();
 	$nb_paiements            = $adhesion->getPaiements();
-	$contrat_paiements       = AmapressContrats::get_contrat_paiements( $adhesion->ID );
+	$contrat_paiements       = $adhesion->getAllPaiements();
 	$all_paiements           = AmapressContrats::get_all_paiements( $contrat_instance->ID );
 //    $all_paiements = array_filter($all_paiements,
 //        function (AmapressAmapien_paiement $p) use ($adhesion) {
@@ -634,7 +634,8 @@ $status_options
 
 function amapress_save_paiements_editor( $adhesion_id ) {
 	if ( isset( $_POST['amapress_paiements_details'] ) ) {
-		$paiements     = AmapressContrats::get_contrat_paiements( $adhesion_id );
+		$adh           = new AmapressAdhesion( $adhesion_id );
+		$paiements     = $adh->getAllPaiements();
 		$paiements_ids = array_map( function ( $q ) {
 			return $q->ID;
 		}, $paiements );

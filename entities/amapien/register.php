@@ -211,7 +211,7 @@ function amapress_amapien_affect_coadherents( TitanFrameworkMetaBox $metabox, $u
 		return;
 	}
 	$user = AmapressUser::getBy( $userID );
-	foreach ( AmapressContrats::get_user_active_adhesion( $userID, null, null ) as $adh ) {
+	foreach ( AmapressAdhesion::getUserActiveAdhesions( $userID ) as $adh ) {
 		if ( $adh->getAdherent()->ID == $userID ) {
 			$adh->setAdherent2( $user->getCoAdherent1() );
 			$adh->setAdherent3( $user->getCoAdherent2() );

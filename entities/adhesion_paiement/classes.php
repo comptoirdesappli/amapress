@@ -84,7 +84,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		}
 		$adhs_ids = array_map( function ( $a ) {
 			return $a->ID;
-		}, AmapressContrats::get_user_active_adhesion( $user_id ) );
+		}, AmapressAdhesion::getUserActiveAdhesions( $user_id ) );
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
@@ -137,7 +137,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$price     = $this->getAmount();
 			$num       = $this->getNumero();
 			$date      = $this->getDate();
-			$adhesions = AmapressContrats::get_user_active_adhesion();
+			$adhesions = AmapressAdhesion::getUserActiveAdhesions();
 			$adh       = array_shift( $adhesions );
 			//TODO page link
 			$ret[] = new Amapress_EventEntry( array(

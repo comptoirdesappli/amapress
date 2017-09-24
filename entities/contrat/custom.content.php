@@ -33,7 +33,7 @@ function amapress_get_custom_content_contrat_details( $content, $subview ) {
 	$cls          = 'contrat-public';
 	$new_adhesion = false;
 	if ( amapress_is_user_logged_in() ) {
-		$adhesions = AmapressContrats::get_user_active_adhesion( null, $contrat_instance->ID );
+		$adhesions = $contrat_instance->getAdhesionsForUser();
 		if ( count( $adhesions ) > 0 ) {
 			$post = $adhesions[0]->getPost();
 			setup_postdata( $post );
@@ -88,7 +88,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
 	$prod_user    = get_post_meta( $prod_id, 'amapress_producteur_user', true );
 
-	$user_contrats = AmapressContrats::get_user_active_contrats();
+	$user_contrats = AmapressAdhesion::getUserActiveAdhesions();
 	$links         = '';
 	if ( in_array( get_the_ID(), $user_contrats ) ) {
 		$links .= '<div><a href="' . trailingslashit( get_permalink( get_the_ID() ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';

@@ -519,7 +519,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				),
 			) );
 		} else if ( $pt == 'contrat_paiement' ) {
-			$contrat_instance_ids = AmapressContrats::get_user_active_contrat_instances( $amapress_user );
+			$contrat_instance_ids = AmapressContrat_instance::getContratInstanceIdsForUser( $amapress_user );
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_contrat_paiement_contrat_instance",
