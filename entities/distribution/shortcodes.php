@@ -155,7 +155,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	}
 //    var_dump($atts['show_past']);
 	$is_current_user_resp_amap = amapress_can_access_admin() || user_can( $user_id, 'manage_distributions' );
-	$is_resp_distrib           = AmapressDistributions::isCurrentUserResponsableThisWeek() || AmapressDistributions::isCurrentUserResponsableNextWeek();
+	$is_resp_distrib           = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsableThisWeek() || AmapressDistributions::isCurrentUserResponsableNextWeek();
 	$current_post              = get_post();
 	if ( $current_post && $current_post->post_type == AmapressDistribution::INTERNAL_POST_TYPE ) {
 		$is_resp_distrib = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsable( $current_post->ID, $user_id );
@@ -181,7 +181,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	$dists = array();
 	if ( $is_current_user_resp_amap ) {
 		foreach ( $all_dists as $dist ) {
-			if ( $max_dates -- <= 0 ) {
+			$max_dates --;
+			if ( $max_dates <= 0 ) {
 				continue;
 			}
 			$dists[] = $dist;
@@ -202,8 +203,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			}
 		}
 	}
-//    $user_date_substs = array();
-//    $user_lieux_substs = array();
+
 	$all_user_lieux = array();
 	foreach ( $dists as $dist ) {
 		$lieu_id = $dist->getLieuId();
@@ -231,45 +231,19 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	foreach ( $all_user_lieux as $lieu_id ) {
 		$user_lieu = new AmapressLieu_distribution( $lieu_id );
 		$ret       .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
-//    $ret .= '<div class="table-responsive">';
-		$ret .= '<table class="table display responsive nowrap distrib-inscr-list" width="100%" style="table-layout: auto" cellspacing="0">';
-		$ret .= '<thead>';
-		$ret .= '<tr>';
-		$ret .= '<th>Date</th>';
-//        $ret .= '<th rowspan="2">Date</th>';
+		$ret       .= '<table class="table display responsive nowrap distrib-inscr-list" width="100%" style="table-layout: auto" cellspacing="0">';
+		$ret       .= '<thead>';
+		$ret       .= '<tr>';
+		$ret       .= '<th>Date</th>';
 		/** @var AmapressLieu_distribution $user_lieu */
-//        foreach ($user_lieux as $lieu_id) {
-//            $user_lieu = new AmapressLieu_distribution($lieu_id);
-//        $colspan = ($lieux_needed_resps[$lieu_id] + ($is_current_user_resp_amap ? 1 : 0));
-//            $colspan = ($lieux_needed_resps[$lieu_id]);
-//            $ret .= '<th colspan="' . $colspan . '"><span class="distrib-inscr-lieu">' . esc_html($user_lieu->getShortName()) . '</span></th>';
-//        $ret .= '<th><span class="distrib-inscr-lieu">' . esc_html($user_lieu->getShortName()) . '</span></th>';
-//        }
-//        $ret .= '</tr>';
-//        $ret .= '<tr>';
 		/** @var AmapressLieu_distribution $user_lieu */
 //        foreach ($user_lieux as $lieu_id) {
 		for ( $i = 1; $i <= $lieux_needed_resps[ $lieu_id ]; $i ++ ) {
 			$ret .= '<th class="distrib-resp-head">Responsable ' . $i . '</th>';
 		}
-//        if ($is_current_user_resp_amap)
-//            $ret .= '<th>Admin</th>';
-//        }
 		$ret .= '</tr>';
 		$ret .= '</thead>';
 
-//    $ret .= '<tfoot>';
-//    $ret .= '<tr>';
-//    $ret .= '<th>Date</th>';
-//    /** @var AmapressLieu_distribution $user_lieu */
-//    foreach ($user_lieux as $lieu_id) {
-//        for ($i = 1; $i <= $lieux_needed_resps[$lieu_id]; $i++)
-//            $ret .= '<th class="distrib-resp-foot">Responsable '.$i.'</th>';
-//        if ($is_current_user_resp_amap)
-//            $ret .= '<th>Admin</th>';
-//    }
-//    $ret .= '</tr>';
-//    $ret .= '</tfoot>';
 
 		$dates = array_group_by( $dists, function ( $d ) {
 			/** @var AmapressDistribution $d */

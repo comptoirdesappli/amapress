@@ -134,23 +134,11 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		wp_die( 'Accès non autorisé' );
 	}
 
-//    $lieu_id = intval(get_post_meta($dist_id, 'amapress_distribution_lieu', true));
-//    $date = intval(get_post_meta($dist_id, 'amapress_distribution_date', true));
-//    $dt = date('Y-m-d', $date);
-
-//    $contrat_ids = Amapress::get_post_meta_array($dist_id, 'amapress_distribution_contrats');
-//    $contrat_ids_arr = $contrat_ids;
-//    $contrat_ids = implode(',', $contrat_ids);
-
-//    $query_string = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids&amapress_date=$dt";
-//    $amapress_contrat = get_query_var('amapress_contrat');
-//    $amapress_contrat_qt = get_query_var('amapress_contrat_qt');
-//    if (!empty($amapress_contrat) && !empty($amapress_contrat_qt))
-//        $query_string = "post_type=amps_adhesion&amapress_contrat=$amapress_contrat&amapress_contrat_qt=$amapress_contrat_qt&amapress_date=$dt";
-//    else if (!empty($amapress_contrat))
-//        $query_string = "post_type=amps_adhesion&amapress_contrat=$amapress_contrat&amapress_date=$dt";
-
 	$columns = array(
+		array(
+			'title' => 'C',
+			'data'  => 'check',
+		),
 		array(
 			'title' => 'Nom',
 			'data'  => array(
@@ -213,6 +201,11 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		);
 	}
 
+	$columns[] = array(
+		'title' => 'Commentaire',
+		'data'  => 'comment',
+	);
+
 //	var_dump($dist);
 	$all_adhs = AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId(), $dist->getDate(), true );
 	$liste = array();
@@ -257,6 +250,9 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			}
 		}
 
+		$line['check']   = '&nbsp;';
+		$line['comment'] = '&nbsp;';
+
 		$liste[] = $line;
 	}
 
@@ -281,7 +277,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
                 #paniers-a-echanger_info { display: none !important}
                 .distrib-resp-missing, .dist-inscrire-button, .dist-desinscrire-button, .btn-print-liste { display: none !important}
                 table.distrib-inscr-list { table-layout: fixed  !important}
-                .btn-print { display: none !important}
+                div.btns { display: none !important}
                 td, th { padding: 2px !important; line-height: normal !important; }
                 body {
                     background-color:#FFFFFF !important;
@@ -294,7 +290,10 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 	the_title( '<h2>', '</h2>' );
 	echo '<br/>';
-	echo '<div><a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a></div>';
+	echo '<div class="btns">
+<a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>
+<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer</a>
+</div>';
 	echo '<br/>';
 
 	echo Amapress::getOption( 'liste-emargement-general-message' );
