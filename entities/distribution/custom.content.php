@@ -74,6 +74,9 @@ function amapress_get_custom_content_distribution( $content ) {
 	?>
 
     <div class="distribution">
+        <div class="btns">
+            <a href="<?php echo esc_attr( $dist->getAdminEditLink() ) ?>" class="btn btn-default">Editer</a>
+        </div>
 		<?php
 
 		if ( $need_responsables ) {
