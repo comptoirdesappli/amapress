@@ -96,7 +96,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'model'          => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
-				'post_type'         => 'amps_contrat',
+				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
 				'group'             => 'Gestion',
 				'required'          => true,
 				'desc'              => 'Sélectionner la présentation web. Si elle n’est pas présente dans la liste ci-dessus, la créer ici « <a href="' . admin_url( 'post-new.php?post_type=amps_contrat' ) . '" target="_blank">présentation web</a> »',
@@ -106,6 +106,7 @@ function amapress_register_entities_contrat( $entities ) {
 					'name'        => 'amapress_contrat',
 					'placeholder' => 'Toutes les présentations web',
 				),
+				'readonly'          => 'amapress_can_edit_contrat_instance',
 				'searchable'        => true,
 			),
 			'nb_visites'     => array(
@@ -127,6 +128,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Type de contrat',
 				'import_key'  => true,
 				'default'     => 'panier',
+				'readonly'    => 'amapress_can_edit_contrat_instance',
 				'conditional' => array(
 					'_default_' => 'panier',
 					'panier'    => array(
@@ -135,6 +137,7 @@ function amapress_register_entities_contrat( $entities ) {
 							'type'          => 'multidate',
 							'required'      => true,
 							'group'         => 'Distributions',
+							'readonly'      => 'amapress_can_edit_contrat_instance',
 							'show_column'   => false,
 							'desc'          => 'Sélectionner les dates de distribution fournies par le producteur',
 							'before_option' =>
@@ -157,6 +160,7 @@ jQuery(function($) {
 							'name'     => amapress__( 'Paniers personnalisés' ),
 							'type'     => 'checkbox',
 							'group'    => 'Gestion',
+							'readonly' => 'amapress_can_edit_contrat_instance',
 							'required' => true,
 							'desc'     => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
@@ -165,6 +169,7 @@ jQuery(function($) {
 							'type'     => 'multicheck',
 							'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
 							'group'    => 'Paiements',
+							'readonly' => 'amapress_can_edit_contrat_instance',
 							'required' => true,
 							'options'  => array(
 								'1'  => '1 chèque',
@@ -184,6 +189,7 @@ jQuery(function($) {
 						'liste_dates_paiements' => array(
 							'name'        => amapress__( 'Calendrier des remises de chèques' ),
 							'type'        => 'multidate',
+							'readonly'    => 'amapress_can_edit_contrat_instance',
 							'required'    => true,
 							'group'       => 'Paiements',
 							'show_column' => false,
@@ -204,6 +210,7 @@ jQuery(function($) {
 							'name'        => amapress__( 'Calendrier des commandes' ),
 							'type'        => 'multidate',
 							'group'       => 'Commandes',
+							'readonly'    => 'amapress_can_edit_contrat_instance',
 							'required'    => true,
 							'show_column' => false,
 							'desc'        => '',
@@ -211,6 +218,7 @@ jQuery(function($) {
 						'commande_cannot_modify' => array(
 							'name'        => amapress__( 'Commandes fermes' ),
 							'type'        => 'checkbox',
+							'readonly'    => 'amapress_can_edit_contrat_instance',
 							'group'       => 'Commandes',
 							'required'    => false,
 							'show_column' => false,
@@ -219,6 +227,7 @@ jQuery(function($) {
 						'commande_open_before'   => array(
 							'name'        => amapress__( 'Ouverture des commandes' ),
 							'type'        => 'number',
+							'readonly'    => 'amapress_can_edit_contrat_instance',
 							'group'       => 'Commandes',
 							'required'    => false,
 							'show_column' => false,
@@ -227,6 +236,7 @@ jQuery(function($) {
 						'commande_close_before'  => array(
 							'name'        => amapress__( 'Fermeture des commandes' ),
 							'group'       => 'Commandes',
+							'readonly'    => 'amapress_can_edit_contrat_instance',
 							'type'        => 'number',
 							'required'    => false,
 							'show_column' => false,
@@ -242,6 +252,7 @@ jQuery(function($) {
 				'required'      => true,
 				'desc'          => 'Date de début du contrat',
 				'import_key'    => true,
+				'readonly'      => 'amapress_can_edit_contrat_instance',
 				'before_option' =>
 					function ( $option ) {
 						echo '<script type="text/javascript">
@@ -263,6 +274,7 @@ jQuery(function($) {
 				'required'      => true,
 				'desc'          => 'Date de fin du contrat',
 				'import_key'    => true,
+				'readonly'      => 'amapress_can_edit_contrat_instance',
 				'before_option' =>
 					function ( $option ) {
 						echo '<script type="text/javascript">
@@ -290,6 +302,7 @@ jQuery(function($) {
 				'required'   => true,
 				'desc'       => 'Date d\'ouverture des inscriptions en ligne',
 				'import_key' => true,
+				'readonly'   => 'amapress_can_edit_contrat_instance',
 			),
 			'date_cloture'   => array(
 				'name'       => amapress__( 'Clôture des inscriptions' ),
@@ -298,6 +311,7 @@ jQuery(function($) {
 				'required'   => true,
 				'desc'       => 'Date de clôture des inscriptions en ligne',
 				'import_key' => true,
+				'readonly'   => 'amapress_can_edit_contrat_instance',
 			),
 			'lieux'          => array(
 				'name'              => amapress__( 'Lieux' ),
@@ -307,6 +321,7 @@ jQuery(function($) {
 				'required'          => true,
 				'desc'              => 'Lieux de distribution',
 				'autoselect_single' => true,
+				'readonly'          => 'amapress_can_edit_contrat_instance',
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'
@@ -345,6 +360,7 @@ jQuery(function($) {
 				'desc'       => 'Configurer le contenu du Contrat en ligne',
 				'wpautop'    => false,
 				'searchable' => true,
+				'readonly'   => 'amapress_can_edit_contrat_instance',
 			),
 			'is_principal'  => array(
 				'name'     => amapress__( 'Contrat principal' ),
@@ -866,4 +882,15 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 	}
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit"));
+}
+
+/** @param TitanFrameworkOption $option */
+function amapress_can_edit_contrat_instance( $option ) {
+	if ( isset( $_GET['adv'] ) ) {
+		return true;
+	}
+
+	$contrat_instance_id = $option->getPostID();
+
+	return count( AmapressContrats::get_active_adhesions( $contrat_instance_id ) ) > 0;
 }
