@@ -429,11 +429,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				}
 
 				return Amapress::makeLink( $dist->getPermalink(), $dist->getTitle() );
+			case 'lien_desinscription_intermittent':
+				return '';
+//				$current_amapien = AmapressUser::getBy(amapress_current_user_id());
+//				return $current_amapien->getProperty($name);
 			default:
 				return $this->getAdherent()->getProperty( $name );
 		}
-
-		return '';
 	}
 
 	public static function get_next_panier_intermittent( $date = null, $order = 'NONE' ) {
