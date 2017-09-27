@@ -890,7 +890,7 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 function amapress_is_contrat_instance_readonly( $option ) {
 	$referer = parse_url( wp_get_referer() );
 	parse_str( $referer['query'], $path );
-	if ( isset( $_REQUEST['adv'] ) || isset( $path['adv'] ) ) {
+	if ( isset( $_REQUEST['adv'] ) || ( isset( $path['adv'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) ) {
 		return false;
 	}
 
