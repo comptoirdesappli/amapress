@@ -888,7 +888,9 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 
 /** @param TitanFrameworkOption $option */
 function amapress_is_contrat_instance_readonly( $option ) {
-	if ( isset( $_GET['adv'] ) ) {
+	$referer = parse_url( wp_get_referer() );
+	parse_str( $referer['query'], $path );
+	if ( isset( $_REQUEST['adv'] ) || isset( $path['adv'] ) ) {
 		return false;
 	}
 
