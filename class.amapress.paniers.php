@@ -21,15 +21,17 @@ class AmapressPaniers {
 		$res      = array();
 		$contrats = AmapressContrats::get_active_contrat_instances( $contrat_id );
 		foreach ( $contrats as $contrat ) {
+			$now             = Amapress::start_of_day( amapress_time() );
+			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );
+
 			$res[ $contrat->ID ] = array();
 			$contrat_model       = $contrat->getModel();
-			$lieux               = $contrat->getLieuxIds();
+			$lieux_ids           = $contrat->getLieuxIds();
 			$liste_dates         = array_unique( $contrat->getListe_dates() );
 			if ( empty( $liste_dates ) ) {
 				continue;
 			}
 
-			$now = Amapress::start_of_day( amapress_time() );
 			foreach ( $liste_dates as $date ) {
 				if ( $from_now && $date < $now ) {
 					continue;
@@ -59,7 +61,7 @@ class AmapressPaniers {
 				if ( count( $paniers ) == 0 ) {
 					$my_post = array(
 						'post_title'   => sprintf( 'Panier de %s du %02d-%02d-%04d',
-							$contrat_model->post_title,
+							$contrat_model->getTitle(),
 							date( 'd', $date ), date( 'm', $date ), date( 'Y', $date ) ),
 						'post_type'    => AmapressPanier::INTERNAL_POST_TYPE,
 						'post_content' => '',
@@ -70,10 +72,53 @@ class AmapressPaniers {
 						),
 					);
 
-					$res[ $contrat->ID ][] = array( 'lieux' => $lieux, 'date' => Amapress::start_of_day( $date ) );
+					$res[ $contrat->ID ][] = array( 'lieux' => $lieux_ids, 'date' => Amapress::start_of_day( $date ) );
 					// Insert the post into the database.
 					if ( ! $eval ) {
 						wp_insert_post( $my_post );
+					}
+				}
+			}
+
+			$paniers = get_posts( array(
+					'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+					'meta_query'     => array(
+						'relation' => 'AND',
+						array(
+							'key'     => 'amapress_panier_date',
+							'value'   => array(
+								Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ),
+								Amapress::end_of_day( $contrat->getDate_fin() )
+							),
+							'compare' => 'BETWEEN',
+							'type'    => 'NUMERIC',
+						),
+					)
+				)
+			);
+			foreach ( $paniers as $panier_post ) {
+				$panier = new AmapressPanier( $panier_post );
+				if ( ! in_array( $panier->getContrat_instanceId(), $all_contrat_ids ) ) {
+					$res[ $contrat->ID ][] = array(
+						'lieux' => $lieux_ids,
+						'date'  => Amapress::start_of_day( $panier->getDate() )
+					);
+					if ( ! $eval ) {
+						wp_delete_post( $panier_post->ID );
+					}
+					continue;
+				}
+				if ( $panier->getContrat_instanceId() == $contrat->ID ) {
+					if ( ! in_array( $panier->getDate(), $liste_dates ) ) {
+						$res[ $contrat->ID ][] = array(
+							'lieux' => $lieux_ids,
+							'date'  => Amapress::start_of_day( $panier->getDate() )
+						);
+						if ( ! $eval ) {
+							wp_delete_post( $panier_post->ID );
+						}
+						continue;
 					}
 				}
 			}

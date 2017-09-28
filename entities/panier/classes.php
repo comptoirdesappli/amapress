@@ -33,6 +33,11 @@ class AmapressPanier extends Amapress_EventBase {
 		return $this->getCustomAsEntity( 'amapress_panier_contrat_instance', 'AmapressContrat_instance' );
 	}
 
+	/** @return int */
+	public function getContrat_instanceId() {
+		return $this->getCustomAsInt( 'amapress_panier_contrat_instance', 0 );
+	}
+
 	/** @return AmapressPanier[] */
 	public static function get_paniers( $start_date = null, $end_date = null, $order = 'NONE' ) {
 		if ( ! $start_date ) {

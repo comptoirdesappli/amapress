@@ -49,8 +49,8 @@ class AmapressContrats {
 	}
 
 	public static function get_contrat_status( $contrat_id, &$result ) {
-		$dists   = AmapressDistributions::generate_distributions( $contrat_id, true, true );
-		$paniers = AmapressPaniers::generate_paniers( $contrat_id, true, true );
+		$dists   = AmapressDistributions::generate_distributions( $contrat_id, false, true );
+		$paniers = AmapressPaniers::generate_paniers( $contrat_id, false, true );
 		//$commands = AmapressCommandes::generate_commandes($contrat_id, true, true);
 
 		if ( ! isset( $dists[ $contrat_id ] ) ) {
@@ -96,8 +96,8 @@ class AmapressContrats {
 		$contrat_id = intval( $_POST['contrat_instance'] );
 		global $wpdb;
 		$wpdb->query( 'START TRANSACTION' );
-		AmapressDistributions::generate_distributions( $contrat_id, true, false );
-		AmapressPaniers::generate_paniers( $contrat_id, true, false );
+		AmapressDistributions::generate_distributions( $contrat_id, false, false );
+		AmapressPaniers::generate_paniers( $contrat_id, false, false );
 //		AmapressCommandes::generate_commandes( $contrat_id, true, false );
 		$wpdb->query( 'COMMIT' );
 		echo self::contratStatus( $contrat_id );// this is passed back to the javascript function
@@ -294,6 +294,12 @@ class AmapressContrats {
 							'key'     => "amapress_contrat_instance_ended",
 							'value'   => 0,
 							'compare' => '=',
+						),
+						array(
+							'key'     => 'amapress_contrat_instance_date_fin',
+							'value'   => Amapress::end_of_day( $date ),
+							'compare' => '>=',
+							'type'    => 'NUMERIC'
 						),
 					),
 				)
