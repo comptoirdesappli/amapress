@@ -5,7 +5,12 @@
 composer.phar
 composer_2.phar
 composer_3.phar
-/vendor/
+#/vendor/
+/vendor/**/tests
+/vendor/**/unitTests
+/vendor/**/docs
+/vendor/**/examples
+/vendor/**/Examples
 
 # Commit your application's lock file http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
@@ -76,3 +81,4 @@ fabric.properties
 # End of https://www.gitignore.io/api/composer,phpstorm
 .idea/shelf/
 /tmp/
+amapress.zip
