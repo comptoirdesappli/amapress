@@ -1,0 +1,23 @@
+{
+    "name": "jdgrimes/wpppb",
+    "description": "Bootstrap for integration testing WordPress plugins with PHPUnit",
+    "homepage": "https://github.com/JDGrimes/wpppb",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "J.D. Grimes",
+            "email": "jdg@codesymphony.co",
+            "homepage": "http://codesymphony.co",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0"
+    },
+    "bin": ["bin/wpppb-init"],
+    "autoload": {
+        "psr-0": {
+            "WPPPB_": "src/"
+        }
+    }
+}
