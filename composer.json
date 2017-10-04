@@ -9,9 +9,14 @@
       "email": "sharevb@gmail.com"
     }
   ],
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    }
+  },
   "require": {
     "spipu/html2pdf": "v4.6.1",
-    "guzzle/guzzle": "v3.9.3",
+    "guzzlehttp/guzzle": "v6.3.0",
     "phpoffice/phpexcel": "1.8.1",
     "athari/yalinqo": "~2.0",
     "jdgrimes/wpppb": "0.2.3",
