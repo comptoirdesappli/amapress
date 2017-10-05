@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.11.25
+Version: 0.12.0
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
