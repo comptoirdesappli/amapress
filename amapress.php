@@ -6,12 +6,11 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.11.25
+Version: 0.11.20
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
 Text Domain: amapress
-GitHub Plugin URI: comptoirdesappli/amapress
 */
 
 /*
@@ -179,8 +178,6 @@ function amapress_get_default_wordpress_from_email() {
 //}
 //add_filter('wp_mail', 'amapress_add_replyto');
 
-
-
 if ( ! defined( 'AMAPRESS_CSV_DELIMITER' ) ) {
 	define( 'AMAPRESS_CSV_DELIMITER', "," );
 }
@@ -192,9 +189,8 @@ register_deactivation_hook( __FILE__, array( 'Amapress', 'plugin_deactivation' )
 function amapress__( $s ) {
 	return __( $s, 'amapress' );
 }
-require_once( AMAPRESS__PLUGIN_DIR . 'utils/install-github-updater.php' );
 
-require_once( AMAPRESS__PLUGIN_DIR . 'titan-framework/titan-framework.php' );
+require_once( 'titan-framework/titan-framework.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'utils.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'state.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/options.php' );
