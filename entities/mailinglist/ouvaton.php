@@ -216,7 +216,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 		return $selected;
 	}
 
-	/** @var  \Guzzle\Http\Client $client */
+	/** @var  \GuzzleHttp\Client $client */
 	private static $client;
 	private $mailinglist_domain;
 
@@ -239,9 +239,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 
 	public function getMailingList( $name ) {
 		$list_info = array();
-		$resp      = self::$client->get( "/wws/edit_list_request/$name/description" )->send();
-		if ( $resp->isSuccessful() ) {
-			$body = $resp->getBody( true );
+		$resp      = self::$client->get( "/wws/edit_list_request/$name/description" );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body = $resp->getBody();
 			preg_match( '/id\="single_param.subject.name"\s+value="(?<desc>[^"]+)"/', $body, $m );
 			$list_info['desc'] = ( $m['desc'] );
 			preg_match( '/Messages?\s*\((?<waiting>\d+)\)/', $body, $m );
@@ -264,9 +264,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			$list_info['moderators']        = array_unique( $list_info['moderators'] );
 			$list_info['moderators_emails'] = array_unique( $list_info['moderators_emails'] );
 		}
-		$resp = self::$client->get( "/wws/edit_list_request/$name/sending" )->send();
-		if ( $resp->isSuccessful() ) {
-			$body                          = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/edit_list_request/$name/sending" );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body                          = $resp->getBody();
 			$reply_to_options              = array();
 			$list_info['reply_to']         = self::parseSelect( $body, 'single_param.reply_to_header.value', $reply_to_options );
 			$list_info['reply_to_options'] = $reply_to_options;
@@ -274,9 +274,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			$list_info['moderation']       = self::parseSelect( $body, 'single_param.send.name', $moderations );
 			$list_info['moderations']      = $moderations;
 		}
-		$resp = self::$client->get( "/wws/edit_list_request/$name/data_source" )->send();
-		if ( $resp->isSuccessful() ) {
-			$body = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/edit_list_request/$name/data_source" );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body = $resp->getBody();
 
 			$source_modes              = array();
 			$list_info['data_source']  = self::parseSelect( $body, 'single_param.user_data_source', $source_modes );
@@ -296,9 +296,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 
 		$ret = array();
 
-		$resp = self::$client->get( '/wws/lists' )->send();
-		if ( $resp->isSuccessful() ) {
-			$body  = $resp->getBody( true );
+		$resp = self::$client->get( '/wws/lists' );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body  = $resp->getBody();
 			$lists = array();
 			preg_match_all( '%\<li\s+class\="listenum"\>.+?\<\/li\>%s', $body, $lists, PREG_SET_ORDER );
 			foreach ( $lists as $list ) {
@@ -321,28 +321,35 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 
 	function ensureConnected( $login, $pass ) {
 		if ( self::$client == null ) {
-			$cookies = new \Guzzle\Plugin\Cookie\CookiePlugin( new \Guzzle\Plugin\Cookie\CookieJar\ArrayCookieJar() );
+			$cookies = new \GuzzleHttp\Cookie\CookieJar();
 			//$jar->add
-			self::$client = new \Guzzle\Http\Client( "http://{$this->mailinglist_domain}" );
-			self::$client->addSubscriber( $cookies );
-			$resp = self::$client->post( '/wws', null,
+			self::$client = new \GuzzleHttp\Client(
 				array(
-					'action'       => 'login',
-					'action_login' => 'Login',
-					'email'        => $login,
-					'passwd'       => $pass,
-				) )->send();
-			if ( $resp->isSuccessful() ) {
+					'base_uri' => "http://{$this->mailinglist_domain}",
+					'cookies'  => $cookies,
+				) );
+			$resp         = self::$client->post( '/wws',
+				[
+					'form_params' =>
+						array(
+							'action'       => 'login',
+							'action_login' => 'Login',
+							'email'        => $login,
+							'passwd'       => $pass,
+						)
+				]
+			);
+			if ( 200 == $resp->getStatusCode() ) {
 				$this->error_message = false;
 			} else {
-				$this->error_message = $resp->getMessage();
+				$this->error_message = $resp->getReasonPhrase();
 			}
 		}
 	}
 
 	public function setSqlDataSource( $sql_query, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" )->send();
-		$body = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" );
+		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
 //        var_dump($sql_query);
@@ -367,19 +374,17 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			'action'                                           => 'edit_list',
 			'action_edit_list'                                 => 'Mise à jour',
 		);
-		$req       = self::$client->post( '/wws' );
-		foreach ( $post_data as $key => $value ) {
-			$req = $req->setPostField( $key, $value );
-		}
-		$resp = $req->send();
-		$body = $resp->getBody( true );
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
 
 		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
 	}
 
 	public function setModeration( $moderation, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" )->send();
-		$body = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" );
+		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
 //        var_dump($sql_query);
@@ -391,19 +396,17 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			'action'                 => 'edit_list',
 			'action_edit_list'       => 'Mise à jour',
 		);
-		$req       = self::$client->post( '/wws' );
-		foreach ( $post_data as $key => $value ) {
-			$req = $req->setPostField( $key, $value );
-		}
-		$resp = $req->send();
-		$body = $resp->getBody( true );
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
 
 		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
 	}
 
 	public function setReplyTo( $reply_to, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" )->send();
-		$body = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" );
+		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
 		$post_data = array(
@@ -414,19 +417,17 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			'action'                             => 'edit_list',
 			'action_edit_list'                   => 'Mise à jour',
 		);
-		$req       = self::$client->post( '/wws' );
-		foreach ( $post_data as $key => $value ) {
-			$req = $req->setPostField( $key, $value );
-		}
-		$resp = $req->send();
-		$body = $resp->getBody( true );
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
 
 		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
 	}
 
 	public function setModerators( $new_moderators, $old_moderators_emails, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/description" )->send();
-		$body = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/description" );
+		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
 		$post_data = array(
@@ -463,54 +464,57 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 
 //        var_dump($sql_query);
 
-		$req = self::$client->post( '/wws' );
-		foreach ( $post_data as $key => $value ) {
-			$req = $req->setPostField( $key, $value );
-		}
-		$resp = $req->send();
-		$body = $resp->getBody( true );
+		$resp = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body = $resp->getBody();
 
 		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
 	}
 
 	public function distributeMail( $list_name, $msg_id ) {
-		$resp = self::$client->post( '/wws', null,
-			array(
+		$resp = self::$client->post( '/wws', [
+			'form_params' => array(
 				'list'              => $list_name,
 				'id'                => $msg_id,
 				'action_distribute' => 'Distribuer',
-			) )->send();
+			)
+		] );
 
-		return $resp->isSuccessful();
+		return 200 == $resp->getStatusCode();
 	}
 
 	public function rejectMailQuiet( $list_name, $msg_id ) {
-		$resp = self::$client->post( '/wws', null,
-			array(
+		$resp = self::$client->post( '/wws', [
+			'form_params' =>
+				array(
 				'list'                => $list_name,
 				'id'                  => $msg_id,
 				'action_reject.quiet' => 'Rejeter sans prévenir l\'auteur',
-			) )->send();
+				)
+		] );
 
-		return $resp->isSuccessful();
+		return 200 == $resp->getStatusCode();
 	}
 
 	public function rejectMail( $list_name, $msg_id ) {
-		$resp = self::$client->post( '/wws', null,
-			array(
+		$resp = self::$client->post( '/wws', [
+			'form_params' =>
+				array(
 				'list'          => $list_name,
 				'id'            => $msg_id,
 				'action_reject' => 'Rejeter',
-			) )->send();
+				)
+		] );
 
-		return $resp->isSuccessful();
+		return 200 == $resp->getStatusCode();
 	}
 
 	/** @return Amapress_MailingList_Mail[] */
 	public function getMailWaitingModeration( $name ) {
-		$resp = self::$client->get( "/wws/modindex/$name" )->send();
-		if ( $resp->isSuccessful() ) {
-			$body = $resp->getBody( true );
+		$resp = self::$client->get( "/wws/modindex/$name" );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body = $resp->getBody();
 
 			$message_matches = array();
 			preg_match_all( '%href\="\/wws\/viewmod\/' . $name . '\/(?<msg_id>[^"]+)"%s', $body, $message_matches, PREG_SET_ORDER );
@@ -518,9 +522,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			$messages = array();
 			foreach ( $message_matches as $msg ) {
 				$msg_id = $msg['msg_id'];
-				$resp   = self::$client->get( "/wws/viewmod/$name/$msg_id" )->send();
-				if ( $resp->isSuccessful() ) {
-					$body = $resp->getBody( true );
+				$resp   = self::$client->get( "/wws/viewmod/$name/$msg_id" );
+				if ( 200 == $resp->getStatusCode() ) {
+					$body = $resp->getBody();
 
 					$headers_matches = array();
 					preg_match_all( '%\<li\>\<strong>(?<id>[^\<]+)\<\/strong\>:\s*(?<content>[^\<]+)\<\/li\>%s', $body, $headers_matches, PREG_SET_ORDER );
