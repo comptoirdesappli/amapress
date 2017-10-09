@@ -172,7 +172,6 @@ function amapress_handle_actions() {
 		$the_id = get_the_ID();
 		if ( function_exists( 'is_bbpress' ) ) {
 			if ( is_bbpress() ) {
-				die( 'a' );
 				$the_id = amapress_get_forum_id_from_post_id( $the_id );
 			}
 		}
