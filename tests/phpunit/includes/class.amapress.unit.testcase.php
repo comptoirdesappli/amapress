@@ -57,6 +57,9 @@ class Amapress_UnitTestCase extends WP_UnitTestCase {
 	protected $administrateur;
 
 	protected function create_amap( $create_distrib_and_paniers = true ) {
+		$this->start_transaction();
+
+		echo 'Preparing Amap';
 		//Users
 		$this->administrateur   = $this->users['2'] = self::factory()->user->create(
 			[ 'role' => 'administrator' ]
@@ -836,15 +839,19 @@ Récemment installé à Milly-la-Forêt',
 			) );
 
 		$this->loginUser( $this->administrateur );
+		echo 'Getting contrats';
 		$contrats = AmapressContrats::get_active_contrat_instances_ids();
 		$this->assertNotEmpty( $contrats );
 
 		if ( $create_distrib_and_paniers ) {
+			echo 'Generating Distributions and paniers';
 			foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
 				AmapressDistributions::generate_distributions( $contrat_instances_id, false );
 				AmapressPaniers::generate_paniers( $contrat_instances_id, false );
 			}
 		}
+
+		$this->commit_transaction();
 	}
 
 	protected function set_is_admin_true() {
@@ -855,6 +862,49 @@ Récemment installé à Milly-la-Forêt',
 
 	protected function set_post( $post_object ) {
 		setup_postdata( $GLOBALS['post'] =& $post_object );
+	}
+
+	protected function supposedPostResultSet( $post_ids ) {
+		return implode( ',',
+			array_map(
+				function ( $p ) {
+					return "\$this->posts['$p']";
+				}, $post_ids
+			) );
+	}
+
+	protected function supposedUsersResultSet( $user_ids ) {
+		return implode( ',',
+			array_map(
+				function ( $p ) {
+					return "\$this->users['$p']";
+				}, $user_ids
+			) );
+	}
+
+	protected function assertUserIdsOrCount( $expected_users, $actual_user_ids ) {
+		if ( is_int( $expected_users ) ) {
+			$this->assertCount( $expected_users, $actual_user_ids, 'Arrays are not equal : ' . count( $actual_user_ids ) );
+		} else {
+			$this->assertEquals( $expected_users, $actual_user_ids, 'Arrays are not equal : ' . $this->supposedUsersResultSet( $actual_user_ids ) );
+		}
+	}
+
+	protected function assertPostIdsOrCount( $expected_posts, $actual_post_ids ) {
+		if ( is_int( $expected_posts ) ) {
+			$this->assertCount( $expected_posts, $actual_post_ids, 'Arrays are not equal : ' . count( $actual_post_ids ) );
+		} else {
+			$this->assertEquals( $expected_posts, $actual_post_ids, 'Arrays are not equal : ' . $this->supposedPostResultSet( $actual_post_ids ) );
+		}
+	}
+
+	protected function getIDs( $posts_or_uses ) {
+		return array_map(
+			function ( $p ) {
+				return $p->ID;
+			},
+			$posts_or_uses
+		);
 	}
 
 //	protected function call_wp_admin( $url ) {
