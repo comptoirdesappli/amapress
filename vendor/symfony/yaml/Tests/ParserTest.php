@@ -1550,6 +1550,16 @@ EOT;
         $this->assertSame(array('foo' => 'bar baz foobar foo', 'bar' => 'baz'), $this->parser->parse($yaml));
     }
 
+	public function testMultiLineQuotedStringWithTrailingBackslash() {
+		$yaml = <<<YAML
+foobar:
+    "foo\
+    bar"
+YAML;
+
+		$this->assertSame( array( 'foobar' => 'foobar' ), $this->parser->parse( $yaml ) );
+	}
+
     public function testParseMultiLineUnquotedString()
     {
         $yaml = <<<EOT
@@ -1979,6 +1989,33 @@ YAML;
 
         $this->parser->parseFile($file);
     }
+
+	public function testParseReferencesOnMergeKeys() {
+		$yaml     = <<<YAML
+mergekeyrefdef:
+    a: foo
+    <<: &quux
+        b: bar
+        c: baz
+mergekeyderef:
+    d: quux
+    <<: *quux
+YAML;
+		$expected = array(
+			'mergekeyrefdef' => array(
+				'a' => 'foo',
+				'b' => 'bar',
+				'c' => 'baz',
+			),
+			'mergekeyderef'  => array(
+				'd' => 'quux',
+				'b' => 'bar',
+				'c' => 'baz',
+			),
+		);
+
+		$this->assertSame( $expected, $this->parser->parse( $yaml ) );
+	}
 }
 
 class B

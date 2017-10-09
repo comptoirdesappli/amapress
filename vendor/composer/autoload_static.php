@@ -94,13 +94,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
     );
 
     public static $prefixesPsr0 = array (
-        'W' => 
-        array (
-            'WPPPB_' => 
-            array (
-                0 => __DIR__ . '/..' . '/jdgrimes/wpppb/src',
-            ),
-        ),
         'P' => 
         array (
             'Prophecy\\' => 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "59dba6e7f04158069a22df31e17f3cb6",
+    "content-hash": "57af15368d86ba85459e16c240710256",
     "packages": [
         {
             "name": "athari/yalinqo",
@@ -188,19 +188,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "2e3e428b0ba4b4b21a8a05d32158e73918f880c4"
+                "reference": "e9cdab6ff93ff789b5b599326c727f51d10893a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/2e3e428b0ba4b4b21a8a05d32158e73918f880c4",
-                "reference": "2e3e428b0ba4b4b21a8a05d32158e73918f880c4",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/e9cdab6ff93ff789b5b599326c727f51d10893a6",
+                "reference": "e9cdab6ff93ff789b5b599326c727f51d10893a6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "^4.8.36"
             },
             "type": "library",
             "extra": {
@@ -231,7 +231,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2017-10-02T17:57:59+00:00"
+            "time": "2017-10-06T12:25:00+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -239,12 +239,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "b27e0bdc20177262121f88a49d5bb135f3e589c0"
+                "reference": "d2537c86fa8b004c29e9b9f5e10028f0a29df101"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/b27e0bdc20177262121f88a49d5bb135f3e589c0",
-                "reference": "b27e0bdc20177262121f88a49d5bb135f3e589c0",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/d2537c86fa8b004c29e9b9f5e10028f0a29df101",
+                "reference": "d2537c86fa8b004c29e9b9f5e10028f0a29df101",
                 "shasum": ""
             },
             "require": {
@@ -296,49 +296,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-10-03T15:18:16+00:00"
-        },
-        {
-            "name": "jdgrimes/wpppb",
-            "version": "0.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/JDGrimes/wpppb.git",
-                "reference": "2574c5a3fc700a30cfcec2f577c4983a4f49409a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/JDGrimes/wpppb/zipball/2574c5a3fc700a30cfcec2f577c4983a4f49409a",
-                "reference": "2574c5a3fc700a30cfcec2f577c4983a4f49409a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "bin": [
-                "bin/wpppb-init"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "WPPPB_": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "J.D. Grimes",
-                    "email": "jdg@codesymphony.co",
-                    "homepage": "http://codesymphony.co",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Bootstrap for integration testing WordPress plugins with PHPUnit",
-            "homepage": "https://github.com/JDGrimes/wpppb",
-            "time": "2017-01-17T15:02:34+00:00"
+            "time": "2017-10-07T03:19:56+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -1541,12 +1499,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "64ee9d2c9cc1c5b968a1830c8d1f2f44d8114e98"
+                "reference": "e3378cb20c869f6d40e53e463e9ce65c0c3ca62d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/64ee9d2c9cc1c5b968a1830c8d1f2f44d8114e98",
-                "reference": "64ee9d2c9cc1c5b968a1830c8d1f2f44d8114e98",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e3378cb20c869f6d40e53e463e9ce65c0c3ca62d",
+                "reference": "e3378cb20c869f6d40e53e463e9ce65c0c3ca62d",
                 "shasum": ""
             },
             "require": {
@@ -1591,7 +1549,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-03T15:01:31+00:00"
+            "time": "2017-10-06T15:16:57+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",

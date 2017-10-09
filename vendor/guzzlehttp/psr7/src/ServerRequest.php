@@ -210,8 +210,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         $hasQuery = false;
         if (isset($_SERVER['REQUEST_URI'])) {
-            $requestUriParts = explode('?', $_SERVER['REQUEST_URI']);
-            $uri = $uri->withPath($requestUriParts[0]);
+	        $requestUriParts = explode( '?', $_SERVER['REQUEST_URI'], 2 );
+            $uri             = $uri->withPath($requestUriParts[0]);
             if (isset($requestUriParts[1])) {
                 $hasQuery = true;
                 $uri = $uri->withQuery($requestUriParts[1]);

@@ -19,7 +19,6 @@
     "guzzlehttp/guzzle": "v6.3.0",
     "phpoffice/phpexcel": "1.8.1",
     "athari/yalinqo": "~2.0",
-    "jdgrimes/wpppb": "0.2.3",
     "phpunit/phpunit": "4.8.36",
     "squizlabs/php_codesniffer": "*",
     "wp-coding-standards/wpcs": "0.10.0"
