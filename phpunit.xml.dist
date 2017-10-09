@@ -40,4 +40,7 @@
             </arguments>
         </listener>
     </listeners>
+    <php>
+        <const name="AMAPRESS_TEST_MODE" value="true"/>
+    </php>
 </phpunit>
