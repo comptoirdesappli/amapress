@@ -26,6 +26,10 @@ function amapress_custom_post_title( $title ) {
 }
 
 function amapress_unfiltered_custom_post_title( $title ) {
+	if ( ! is_user_logged_in() && get_post_meta( get_the_ID(), 'amps_lo', true ) == 1 ) {
+		return '';
+	}
+
 	if ( is_page() ) {
 //        if (is_page(Amapress::getOption('agenda-page'))) {
 //            $title = apply_filters('amapress_get_custom_title_page_agenda', $title);
@@ -59,6 +63,10 @@ function amapress_unfiltered_custom_post_title( $title ) {
 
 add_filter( 'the_excerpt', 'amapress_custom_post_excerpt' );
 function amapress_custom_post_excerpt( $content ) {
+	if ( ! is_user_logged_in() && get_post_meta( get_the_ID(), 'amps_lo', true ) == 1 ) {
+		return '';
+	}
+
 	if ( is_main_query() ) {
 		if ( is_front_page() ) {
 			$content = apply_filters( 'amapress_get_custom_excerpt_page_front', $content );
@@ -94,6 +102,10 @@ function amapress_custom_post_excerpt( $content ) {
 
 add_filter( 'the_content', 'amapress_custom_post_content' );
 function amapress_custom_post_content( $content ) {
+	if ( ! is_user_logged_in() && get_post_meta( get_the_ID(), 'amps_lo', true ) == 1 ) {
+		return '';
+	}
+
 	if ( is_main_query() ) {
 		if ( is_front_page() && get_the_ID() == get_option( 'page_on_front' ) ) {
 			$content = apply_filters( 'amapress_get_custom_content_page_front', $content );
