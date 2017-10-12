@@ -371,6 +371,13 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				if ( $id > 0 ) {
 					return $id;
 				}
+
+				if ( preg_match( '/\S+/', $value, $value_first ) ) {
+					$id = Amapress::resolve_user_id( $value_first[0] );
+					if ( $id > 0 ) {
+						return $id;
+					}
+				}
 			}
 
 			$values = Amapress::get_array( $value );
@@ -529,6 +536,15 @@ function amapress_import_resolve_post( $post, $post_type, $postdata, $postmeta )
 
 	$tmp_meta = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_meta", $tmp_meta, $postdata );
 	$tmp_meta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $tmp_meta, $postdata );
+
+	foreach ( $tmp_meta as $k => $v ) {
+		if ( is_wp_error( $k ) ) {
+			return $k;
+		}
+		if ( is_wp_error( $v ) ) {
+			return $v;
+		}
+	}
 
 	$tmp_meta = array_filter( $tmp_meta, function ( $v, $k ) use ( $fields ) {
 		if ( empty( $k ) || empty( $v ) ) {

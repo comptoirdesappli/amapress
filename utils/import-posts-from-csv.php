@@ -453,6 +453,7 @@ class Amapress_Import_Posts_CSV {
 					}
 				}
 
+
 				// A plugin may need to filter the data and meta
 				$postdata  = apply_filters( "amapress_import_{$post_type}_data", $postdata, $postmeta, $posttaxo, $postmulti );
 				$postmeta  = apply_filters( "amapress_import_{$post_type}_meta", $postmeta, $postdata, $posttaxo, $postmulti );
