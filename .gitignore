@@ -1,11 +1,5 @@
-
-# Created by https://www.gitignore.io/api/composer,phpstorm
-
 amapress.zip
-
-### Composer ###
 composer*.phar
 /vendor/**/.git
-
 .idea/
 /tmp/
