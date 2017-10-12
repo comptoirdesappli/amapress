@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.12.1
+Version: 0.12.5
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
@@ -179,7 +179,6 @@ function amapress_get_default_wordpress_from_email() {
 //add_filter('wp_mail', 'amapress_add_replyto');
 
 
-
 if ( ! defined( 'AMAPRESS_CSV_DELIMITER' ) ) {
 	define( 'AMAPRESS_CSV_DELIMITER', "," );
 }
@@ -191,6 +190,7 @@ register_deactivation_hook( __FILE__, array( 'Amapress', 'plugin_deactivation' )
 function amapress__( $s ) {
 	return __( $s, 'amapress' );
 }
+
 require_once( AMAPRESS__PLUGIN_DIR . 'utils/install-github-updater.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'titan-framework/titan-framework.php' );
