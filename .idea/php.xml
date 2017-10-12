@@ -8,12 +8,12 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter home="C:\wamp\bin\php\php5.5.12\php.exe" id="ba759178-36ee-4d3e-a919-7ddcbc44a0c6" name="Interpreter for Composer" debugger_id="php.debugger.XDebug" />
+      <interpreter home="C:\wamp\bin\php\php5.5.12\php.exe" id="10a182f6-55f9-4ee3-b690-f2f0d2dd1a77" name="Interpreter for Composer (project level)" debugger_id="php.debugger.XDebug" />
     </interpreters>
   </component>
   <component name="PhpInterpretersPhpInfoCache">
     <phpInfoCache>
-      <interpreter name="Interpreter for Composer">
+      <interpreter name="Interpreter for Composer (project level)">
         <phpinfo binary_type="PHP" php_cgi="C:\wamp\bin\php\php5.5.12\php-cgi.exe" php_cli="C:\wamp\bin\php\php5.5.12\php.exe" path_separator=";" version="5.5.12">
           <additional_php_ini />
           <configuration_file>C:\wamp\bin\php\php5.5.12\php.ini</configuration_file>
