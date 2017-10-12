@@ -7,7 +7,5 @@ amapress.zip
 composer*.phar
 /vendor/**/.git
 
-#.idea/
+.idea/
 /tmp/
-.idea/shelf/
-.idea/workspace.xml
