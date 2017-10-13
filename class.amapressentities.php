@@ -1186,6 +1186,24 @@ class AmapressEntities {
 											'type' => 'editor',
 										),
 										array(
+											'id'      => 'liste-emargement-show-phone',
+											'name'    => 'Afficher les numéros de téléphone',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'id'      => 'liste-emargement-show-address',
+											'name'    => 'Afficher les adresses',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'id'      => 'liste-emargement-show-mail',
+											'name'    => 'Afficher les emails',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
 											'type' => 'save',
 										),
 									)

@@ -153,27 +153,35 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 				'sort' => 'first_name',
 			)
 		),
-//        array(
-//            'title' => 'Adresse',
-//            'data' => array(
-//                '_' => 'adresse.full',
-//                'sort' => 'adresse.ville',
-//            )
-//        ),
-//        array(
-//            'title' => 'Email',
-//            'data' => array(
-//                '_' => 'email',
-//                'sort' => 'email',
-//            )
-//        ),
-		array(
+	);
+	if ( Amapress::getOption( 'liste-emargement-show-address' ) ) {
+		$columns[] = array(
+			'title' => 'Adresse',
+			'data'  => array(
+				'_'    => 'adresse.full',
+				'sort' => 'adresse.ville',
+			)
+		);
+	}
+	if ( Amapress::getOption( 'liste-emargement-show-mail' ) ) {
+		$columns[] = array(
+			'title' => 'Email',
+			'data'  => array(
+				'_'    => 'email',
+				'sort' => 'email',
+			)
+		);
+	}
+	if ( Amapress::getOption( 'liste-emargement-show-phone' ) ) {
+		$columns[] = array(
 			'title' => 'Téléphone',
 			'data'  => array(
 				'_'    => 'tel',
 				'sort' => 'tel',
 			)
-		),
+		);
+	}
+
 //        array(
 //            'title' => 'Contrat',
 //            'data' => array(
@@ -189,7 +197,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 //            )
 //        ),
 
-	);
+//	);
 
 	foreach ( $dist->getContrats() as $contrat ) {
 		$columns[] = array(
@@ -208,7 +216,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 //	var_dump($dist);
 	$all_adhs = AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId(), $dist->getDate(), true );
-	$liste = array();
+	$liste    = array();
 //    $query = new WP_Query($query_string);
 	$adhesions = array_group_by(
 		$all_adhs,
@@ -236,12 +244,35 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) {
 			return ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
 		}, $users ) );
-		$line['tel']        = implode( '<br/>', array_map( function ( $user ) {
-			$adh = AmapressUser::getBy( $user );
+		if ( Amapress::getOption( 'liste-emargement-show-phone' ) ) {
+			$line['tel'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
 
-			return $adh->getTelTo();
-		}, $users ) );
+				return $adh->getTelTo();
+			}, $users ) );
+		}
+		if ( Amapress::getOption( 'liste-emargement-show-email' ) ) {
+			$line['email'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
 
+				return implode( ',', $adh->getAllEmails() );
+			}, $users ) );
+		}
+		if ( Amapress::getOption( 'liste-emargement-show-address' ) ) {
+			$line['adresse'] =
+				array(
+					'full'  => implode( '<br/>', array_map( function ( $user ) {
+						$adh = AmapressUser::getBy( $user );
+
+						return $adh->getAdresse();
+					}, $users ) ),
+					'ville' => implode( '<br/>', array_map( function ( $user ) {
+						$adh = AmapressUser::getBy( $user );
+
+						return $adh->getVille();
+					}, $users ) )
+				);
+		}
 		foreach ( $adhs as $adh ) {
 			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] = $adh->getContrat_quantites_Codes_AsString( $dist->getDate() );
 		}
