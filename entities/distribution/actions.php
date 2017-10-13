@@ -366,9 +366,21 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		}
 	}
 
+	$from_date = Amapress::start_of_day( $dist->getDate() );
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
-	echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=8 lieu=' . $dist->getLieuId() . ']' );
+	echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=8 date=' . $from_date . ' lieu=' . $dist->getLieuId() . ']' );
+
+	$lieux_ids = Amapress::get_lieu_ids();
+	if ( count( $lieux_ids ) > 1 ) {
+		echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions sur les autres lieux' ) . '</h3>';
+		foreach ( $lieux_ids as $lieu_id ) {
+			if ( $lieu_id == $dist->getLieuId() ) {
+				continue;
+			}
+			echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=3 date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+		}
+	}
 
 	if ( Amapress::toBool( Amapress::getOption( 'liste-emargement-show-lieu-instructions' ) ) ) {
 		$lieu = ( $dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu() );

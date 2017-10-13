@@ -120,6 +120,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'max_dates'       => - 1,
 		'user'            => null,
 		'lieu'            => null,
+		'date'            => null,
 	), $atts );
 
 	if ( ! amapress_is_user_logged_in() ) {
@@ -136,18 +137,22 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$required_lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
 	}
 
+	$from_date = amapress_time();
+	if ( ! empty( $atts['date'] ) ) {
+		$from_date = intval( $atts['date'] );
+	}
+
 	$max_dates = intval( $atts['max_dates'] );
 	if ( $max_dates <= 0 ) {
 		$max_dates = 1000;
 	}
 
-	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id );
+	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $from_date );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
 		return $a->getContrat_instance()->ID;
 	}, $adhesions );
-	$contrat_instances     = AmapressContrats::get_active_contrat_instances();
-	$from_date             = amapress_time();
+	$contrat_instances     = AmapressContrats::get_active_contrat_instances( null, $from_date );
 	if ( Amapress::toBool( $atts['show_past'] ) ) {
 		foreach ( $contrat_instances as $contrat_instance ) {
 			if ( $contrat_instance->getDate_debut() < $from_date ) {
@@ -161,7 +166,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	}
 //    var_dump($atts['show_past']);
 	$is_current_user_resp_amap = amapress_can_access_admin() || user_can( $user_id, 'manage_distributions' );
-	$is_resp_distrib           = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsableThisWeek() || AmapressDistributions::isCurrentUserResponsableNextWeek();
+	$is_resp_distrib           = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsableThisWeek( null, $from_date ) || AmapressDistributions::isCurrentUserResponsableNextWeek( null, $from_date );
 	$current_post              = get_post();
 	if ( $current_post && $current_post->post_type == AmapressDistribution::INTERNAL_POST_TYPE ) {
 		$is_resp_distrib = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsable( $current_post->ID, $user_id );
@@ -204,7 +209,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			$dists[] = $dist;
 		}
 	} else {
-		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id() );
+		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id(), $from_date );
 		/** @var AmapressDistribution $dist */
 		foreach ( $all_dists as $dist ) {
 			if ( ! in_array( $dist->getLieuId(), $user_lieux_ids ) ) {
@@ -265,7 +270,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			/** @var AmapressDistribution $d */
 			return $d->getDate();
 		} );
-		$today = Amapress::start_of_day( amapress_time() );
+		$today = Amapress::start_of_day( $from_date );
 		uksort( $dates, function ( $a, $b ) use ( $today ) {
 			$da = $a;
 			$db = $b;
@@ -322,7 +327,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$is_user_part_of = $dist->isUserMemberOf( amapress_current_user_id(), true ); // || (in_array($dist->getDate(), $user_date_substs) && in_array($dist->getLieuId(), $user_lieux_substs));
 				$resps           = $dist->getResponsables();
 				$needed          = AmapressDistributions::get_required_responsables( $dist->ID );
-				$can_unsubscribe = Amapress::start_of_week( $date ) >= Amapress::start_of_week( amapress_time() );
+				$can_unsubscribe = Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() );
 				$can_subscribe   = Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() );
 				$colspan_cls     = 'resp-col resp-col-' . ( $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
