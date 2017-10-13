@@ -214,7 +214,8 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		$all_adhs,
 		function ( $adh ) {
 			/** @var AmapressAdhesion $adh */
-			$user_ids = array_unique( AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID ) );
+			$user     = $adh->getAdherent()->getUser();
+			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID ) );
 
 			return implode( '_', $user_ids );
 		} );
@@ -255,6 +256,10 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 		$liste[] = $line;
 	}
+
+	$liste = from( $liste )->orderBy( function ( $l ) {
+		return $l['last_name'];
+	} )->toArray();
 
 	ob_start();
 	echo '<style type="text/css">

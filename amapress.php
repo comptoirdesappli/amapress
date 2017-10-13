@@ -47,6 +47,8 @@ define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 62 );
 //remove_role('responable_amap');
 
+require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
+
 function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
 //    add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 	if ( empty( $headers ) ) {
