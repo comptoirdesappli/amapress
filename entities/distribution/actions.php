@@ -242,7 +242,12 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			return $user->first_name;
 		}, $users ) );
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) {
-			return ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
+			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
+			if ( current_user_can( 'edit_user' ) ) {
+				return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val );
+			}
+
+			return $val;
 		}, $users ) );
 		if ( Amapress::getOption( 'liste-emargement-show-phone' ) ) {
 			$line['tel'] = implode( '<br/>', array_map( function ( $user ) {
