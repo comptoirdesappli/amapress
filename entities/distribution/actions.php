@@ -311,6 +311,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	$query                        = array(//        'status' => 'to_exchange',
 	);
 	$query['contrat_instance_id'] = $dist->getContratIds();
+	$query['lieu_id']             = $dist->getLieuId();
 	$query['date']                = $dist->getDate();
 	$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
 	if ( count( $paniers ) > 0 ) {
@@ -367,7 +368,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
-	echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=false max_dates=8]' );
+	echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=8 lieu=' . $dist->getLieuId() . ']' );
 
 	if ( Amapress::toBool( Amapress::getOption( 'liste-emargement-show-lieu-instructions' ) ) ) {
 		$lieu = ( $dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu() );

@@ -119,6 +119,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_for_resp'   => 'true',
 		'max_dates'       => - 1,
 		'user'            => null,
+		'lieu'            => null,
 	), $atts );
 
 	if ( ! amapress_is_user_logged_in() ) {
@@ -128,6 +129,11 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	$user_id = amapress_current_user_id();
 	if ( ! empty( $atts['user'] ) ) {
 		$user_id = Amapress::resolve_user_id( $atts['user'] );
+	}
+
+	$required_lieu_id = null;
+	if ( ! empty( $atts['lieu'] ) ) {
+		$required_lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
 	}
 
 	$max_dates = intval( $atts['max_dates'] );
@@ -178,8 +184,18 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$all_dists = AmapressDistribution::get_distributions( $from_date, $to_date, 'ASC' );
 	}
 
+	if ( $required_lieu_id ) {
+		$all_dists = from( $all_dists )->where( function ( $d ) use ( $required_lieu_id ) {
+			/** @var AmapressDistribution $d */
+			return $d->getLieuId() == $required_lieu_id;
+		} )->orderBy( function ( $d ) {
+			/** @var AmapressDistribution $d */
+			return $d->getDate();
+		} )->toArray();
+	}
+
 	$dists = array();
-	if ( $is_current_user_resp_amap ) {
+	if ( $is_current_user_resp_amap || $required_lieu_id ) {
 		foreach ( $all_dists as $dist ) {
 			$max_dates --;
 			if ( $max_dates <= 0 ) {
