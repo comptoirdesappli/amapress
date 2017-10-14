@@ -133,27 +133,30 @@ class AmapressDistributions {
 					continue;
 				}
 				foreach ( $lieux as $lieu ) {
-					$dists = get_posts( array(
-						'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
-						'posts_per_page' => - 1,
-						'meta_query'     => array(
-							'relation' => 'AND',
-							array(
-								'key'     => 'amapress_distribution_date',
-								'value'   => array(
-									Amapress::start_of_day( $date ),
-									Amapress::end_of_day( $date )
+					$dists = [];
+					if ( ! defined( 'AMAPRESS_TEST' ) ) {
+						$dists = get_posts( array(
+							'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+							'posts_per_page' => - 1,
+							'meta_query'     => array(
+								'relation' => 'AND',
+								array(
+									'key'     => 'amapress_distribution_date',
+									'value'   => array(
+										Amapress::start_of_day( $date ),
+										Amapress::end_of_day( $date )
+									),
+									'compare' => 'BETWEEN',
+									'type'    => 'NUMERIC'
 								),
-								'compare' => 'BETWEEN',
-								'type'    => 'NUMERIC'
+								array(
+									'key'     => 'amapress_distribution_lieu',
+									'value'   => $lieu->ID,
+									'compare' => '=',
+								),
 							),
-							array(
-								'key'     => 'amapress_distribution_lieu',
-								'value'   => $lieu->ID,
-								'compare' => '=',
-							),
-						),
-					) );
+						) );
+					}
 					if ( empty( $dists ) ) {
 						$my_post = array(
 							'post_title'   => sprintf( 'Distribution de %s du %02d-%02d-%04d à %s',
