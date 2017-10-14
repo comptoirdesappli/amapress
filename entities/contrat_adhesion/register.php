@@ -584,22 +584,22 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 //	return $ret;
 //}
 
-function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
+function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = null ) {
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
-	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id );
+	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, $lieu_id );
 //	amapress_dump($paiements);
-	$dates            = array_map(
+	$dates = array_map(
 		function ( $p ) {
 			/** @var AmapressAmapien_paiement $p */
 			return $p->getDate();
 		}, $paiements );
-	$dates            = array_merge( $dates, $contrat_instance->getPaiements_Liste_dates() );
-	$dates            = array_unique( $dates );
+	$dates = array_merge( $dates, $contrat_instance->getPaiements_Liste_dates() );
+	$dates = array_unique( $dates );
 	sort( $dates );
 	$emetteurs = array_map(
 		function ( $p ) use ( $paiements ) {
 			/** @var AmapressAmapien_paiement $p */
-			$all_emetteurs   =
+			$all_emetteurs =
 				array_map(
 					function ( $op ) {
 						/** @var AmapressAmapien_paiement $op */
@@ -627,7 +627,7 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 			$all_emetteurs = array_map(
 				function ( $em ) use ( $p ) {
 					if ( $em == $p->getEmetteur() ) {
-						return '<strong>' . esc_html( $em ) . '</strong>';
+						return '<strong>[' . esc_html( $em ) . ']</strong>';
 					} else {
 						return esc_html( $em );
 					}
@@ -647,9 +647,13 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 //				} );
 
 			return array(
-				'emetteur' => $p->getEmetteur(),
-				'label'    => implode( ', ', $all_emetteurs ),
-				'href'     => $p->getAdhesion()->getAdminEditLink(),
+				'emetteur'  => $p->getEmetteur(),
+				'banque'    => $p->getBanque(),
+				'last_name' => $p->getAdhesion()->getAdherent()->getUser()->last_name,
+				'lieu'      => $p->getAdhesion()->getLieu()->getShortName(),
+				'quantite'  => $p->getAdhesion()->getContrat_quantites_Codes_AsString(),
+				'label'     => implode( ', ', $all_emetteurs ),
+				'href'      => $p->getAdhesion()->getAdminEditLink(),
 			);
 		}, $paiements );
 	$emitters  = array();
@@ -658,8 +662,8 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 	}
 	usort( $emitters,
 		function ( $a, $b ) {
-			$a_emetteur = $a['emetteur'];
-			$b_emetteur = $b['emetteur'];
+			$a_emetteur = $a['last_name'];
+			$b_emetteur = $b['last_name'];
 			if ( $a_emetteur == $b_emetteur ) {
 				return 0;
 			}
@@ -667,12 +671,33 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 			return $a_emetteur < $b_emetteur ? - 1 : 1;
 		} );
 
-	$columns = array(
+	$columns   = [];
+	$columns[] =
+		array(
+			'title' => 'Lieu',
+			'data'  => 'lieu',
+		);
+	$columns[] =
+		array(
+			'title' => 'Nom',
+			'data'  => 'last_name',
+		);
+	$columns[] =
 		array(
 			'title' => 'Emetteur',
 			'data'  => 'emetteur',
-		),
-	);
+		);
+	$columns[] =
+		array(
+			'title' => 'Quantité',
+			'data'  => 'quantite',
+		);
+	$columns[] =
+		array(
+			'title' => 'Banque',
+			'data'  => 'banque',
+		);
+
 	foreach ( $dates as $date ) {
 		$columns[] = array(
 			'title' => date_i18n( 'd/m/Y', $date ),
@@ -686,7 +711,11 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 		$emetteur_label     = $emetteur_obj['label'];
 		$emetteur_href      = $emetteur_obj['href'];
 		$row                = array(
-			'emetteur' => Amapress::makeLink( $emetteur_href, $emetteur_label, false ),
+			'emetteur'  => Amapress::makeLink( $emetteur_href, $emetteur_label, false ),
+			'last_name' => $emetteur_obj['last_name'],
+			'lieu'      => $emetteur_obj['lieu'],
+			'banque'    => $emetteur_obj['banque'],
+			'quantite'  => $emetteur_obj['quantite'],
 		);
 		$emetteur_paiements = array_filter(
 			$paiements,
@@ -728,7 +757,7 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id ) {
 	}
 
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
-	$dist = array_shift( AmapressDistribution::get_next_distributions( $date ) );
+	$dist = array_shift( AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' ) );
 
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
 <p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
