@@ -139,5 +139,8 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 
 add_filter( 'amapress_can_delete_lieu_distribution', 'amapress_can_delete_lieu_distribution', 10, 2 );
 function amapress_can_delete_lieu_distribution( $can, $post_id ) {
-	return false;
+	$lieux = get_posts(
+		'post_type='.AmapressContrat_instance::INTERNAL_POST_TYPE.'&amapress_lieu='.$post_id
+	);
+	return empty($lieux);
 }

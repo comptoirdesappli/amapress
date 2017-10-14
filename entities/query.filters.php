@@ -557,6 +557,16 @@ function amapress_filter_posts( WP_Query $query ) {
 					)
 				)
 			) );
+		} else if ( $pt == 'contrat_instance' ) {
+			amapress_add_meta_query( $query, array(
+				array(
+					array(
+						'key'     => "amapress_{$pt}_lieux",
+						'value'   => '"'.$amapress_lieu.'"',
+						'compare' => 'LIKE',
+					),
+				)
+			) );
 		} else if ( $pt == 'contrat_paiement' ) {
 			amapress_add_meta_query( $query, array(
 				array(
