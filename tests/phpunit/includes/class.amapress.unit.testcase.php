@@ -55,9 +55,17 @@ class Amapress_UnitTestCase extends WP_UnitTestCase {
 	protected $tresorier;
 	protected $responsable_amap;
 	protected $administrateur;
+	protected $create_distrib_and_paniers = true;
+
+	function setUp() {
+		parent::setUp();
+
+		$this->create_amap( $this->create_distrib_and_paniers );
+	}
+
 
 	protected function create_amap( $create_distrib_and_paniers = true ) {
-		$this->start_transaction();
+//		$this->start_transaction();
 
 		echo 'Preparing Amap';
 		//Users
@@ -851,7 +859,7 @@ Récemment installé à Milly-la-Forêt',
 			}
 		}
 
-		$this->commit_transaction();
+//		$this->commit_transaction();
 	}
 
 	protected function set_is_admin_true() {

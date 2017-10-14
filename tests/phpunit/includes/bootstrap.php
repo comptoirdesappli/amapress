@@ -6,6 +6,9 @@ if ( ! $wp_tests_dir ) {
 	echo( '$_ENV["WP_TESTS_DIR"] is not set.' . PHP_EOL );
 	exit( 1 );
 }
+
+define( 'AMAPRESS_TEST', 1 );
+
 require_once $wp_tests_dir . '/includes/functions.php';
 
 function _manually_load_environment() {
