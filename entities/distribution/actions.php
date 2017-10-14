@@ -302,7 +302,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	}
 
 	$liste = from( $liste )->orderBy( function ( $l ) {
-		return $l['last_name'];
+		return strip_tags( $l['last_name'] );
 	} )->toArray();
 
 	ob_start();
