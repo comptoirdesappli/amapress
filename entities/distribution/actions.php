@@ -341,7 +341,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<br/>';
 	echo '<div class="btns">
 <a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>
-<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer</a>
+<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>
 </div>';
 	echo '<br/>';
 
