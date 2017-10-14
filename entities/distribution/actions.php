@@ -120,6 +120,14 @@ function amapress_get_query_action_template_distribution_liste_emargement( $temp
 	return $template;
 }
 
+add_filter( 'edit_post_link', function ( $content ) {
+	if ( 'liste-emargement' == get_query_var( 'amp_action' ) ) {
+		return '';
+	}
+
+	return $content;
+} );
+
 add_filter( 'amapress_get_custom_content_distribution_liste-emargement', 'amapress_get_custom_content_distribution_liste_emargement' );
 function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	if ( ! amapress_is_user_logged_in() ) {
