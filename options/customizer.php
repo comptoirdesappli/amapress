@@ -159,7 +159,7 @@ function amapress_customizer_init() {
 		'panel' => 'Amapress Agenda',
 	) );
 	$section->createOption( array(
-		'name' => __( 'Général', 'amapress' ),
+		'name' => __( 'Pastille des dates', 'amapress' ),
 		'type' => 'heading',
 	) );
 	$section->createOption( array(
@@ -181,7 +181,26 @@ function amapress_customizer_init() {
 		'id'      => 'agenda_dates_col_brd',
 		'type'    => 'color',
 		'default' => '',
-		'css'     => '.evt-date { border-color: value }',
+		'css'     => '.evt-date { border: 1pt solid value }',
+	) );
+
+	$section->createOption( array(
+		'name' => __( 'Contour des dates', 'amapress' ),
+		'type' => 'heading',
+	) );
+	$section->createOption( array(
+		'name'    => __( "Couleur de fond des dates", 'amapress' ),
+		'id'      => "agenda_event_bg",
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.event { background-color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( "Couleur de bordure des évènements", 'amapress' ),
+		'id'      => "agenda_event_brd",
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.event { border: 1pt solid value }',
 	) );
 
 	foreach (
