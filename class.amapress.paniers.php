@@ -80,6 +80,17 @@ class AmapressPaniers {
 					if ( ! $eval ) {
 						wp_insert_post( $my_post );
 					}
+				} else if ( count( $paniers ) > 1 ) {
+					array_shift( $paniers );
+					foreach ( $paniers as $panier ) {
+						$res[ $contrat->ID ][] = array(
+							'lieux' => $lieux_ids,
+							'date'  => Amapress::start_of_day( $panier->getDate() )
+						);
+						if ( ! $eval ) {
+							wp_delete_post( $panier->ID );
+						}
+					}
 				}
 			}
 
