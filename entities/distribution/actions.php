@@ -295,8 +295,12 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			}
 		}
 
+		$principal_user = new AmapressUser($users[0]);
 		$line['check']   = '&nbsp;';
-		$line['comment'] = '&nbsp;';
+
+		$comment = esc_html($principal_user->getCommentEmargement());
+		if (empty($comment)) $comment='<span class="edit-user-comment">Editer</span>';
+		$line['comment'] = Amapress::makeLink(admin_url('user-edit.php?user_id='.$principal_user->ID.'#amapress_user_comment_emargement'), $comment, false);//;
 
 		$liste[] = $line;
 	}
@@ -312,7 +316,10 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
                 padding:0 !important;
             }
             body { margin: 15px; }
+            .edit-user-comment { color: white; }
+            .edit-user-comment:hover { color: black; !important; }
             @media print {
+            	.edit-user-comment {display: none;}
                 * { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important;}
                 #liste-emargement a.contrat { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}
                 #paniers-a-echanger a { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}

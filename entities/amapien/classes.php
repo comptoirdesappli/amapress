@@ -265,6 +265,12 @@ class AmapressUser extends TitanUserEntity {
 		return isset( $this->custom['amapress_user_ville'] ) ? $this->custom['amapress_user_ville'] : '';
 	}
 
+	public function getCommentEmargement() {
+		$this->ensure_init();
+
+		return isset( $this->custom['amapress_user_comment_emargement'] ) ? $this->custom['amapress_user_comment_emargement'] : '';
+	}
+
 	public function isAdresse_localized() {
 		$this->ensure_init();
 

@@ -136,6 +136,13 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'        => 'Cocher pour que l\'utilisateur devienne intermittent et reçoive des alertes lorsque des paniers sont occasionnellement disponibles',
 				'show_column' => false,
 			),
+			'comment_emargement'      => array(
+				'name'        => amapress__( 'Commentaire pour la liste émargement' ),
+				'type'        => 'textarea',
+				'desc'        => 'Commentaire pour la liste émargement',
+				'show_column' => false,
+			),
+
 //            'allow_show_email' => array(
 //                'name' => amapress__('Autoriser mon email à être affiché'),
 //                'type' => 'select',
