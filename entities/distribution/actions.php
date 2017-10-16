@@ -144,10 +144,6 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 	$columns = array(
 		array(
-			'title' => 'C',
-			'data'  => 'check',
-		),
-		array(
 			'title' => 'Nom',
 			'data'  => array(
 				'_'    => 'last_name',
@@ -160,6 +156,10 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 				'_'    => 'first_name',
 				'sort' => 'first_name',
 			)
+		),
+		array(
+			'title' => 'Pris',
+			'data'  => 'check',
 		),
 	);
 	if ( Amapress::getOption( 'liste-emargement-show-address' ) ) {
@@ -222,10 +222,8 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		'data'  => 'comment',
 	);
 
-//	var_dump($dist);
 	$all_adhs = AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId(), $dist->getDate(), true );
 	$liste    = array();
-//    $query = new WP_Query($query_string);
 	$adhesions = array_group_by(
 		$all_adhs,
 		function ( $adh ) {
@@ -296,7 +294,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		}
 
 		$principal_user = new AmapressUser($users[0]);
-		$line['check']   = '&nbsp;';
+		$line['check']   = '<span style="display: inline-block; width: 32px"> </span>';
 
 		$comment = esc_html($principal_user->getCommentEmargement());
 		if (empty($comment)) $comment='<span class="edit-user-comment">Editer</span>';
@@ -319,13 +317,16 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
             .edit-user-comment { color: white; }
             .edit-user-comment:hover { color: black; !important; }
             @media print {
+            	/*table { table-layout: fixed !important; }*/
             	.edit-user-comment {display: none;}
-                * { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important;}
+                * { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
                 #liste-emargement a.contrat { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}
                 #paniers-a-echanger a { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}
                 a:after {
                     content: \'\' !important;
                 }
+                td, th {white-space:normal !important; word-wrap: break-word !important;}
+                .user-photo {display: none; }
                 .liste-emargement-contrat-variable, .liste-emargement-instructions { page-break-before: always; }
                 #liste-emargement_filter { display: none !important}
                 #paniers-a-echanger_filter { display: none !important}
@@ -396,7 +397,8 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 	echo '<br/>';
 	echo '<h3 class="liste-emargement">Liste</h3>';
-	amapress_echo_datatable( 'liste-emargement', $columns, $liste, array( 'paging' => false, 'searching' => false ) );
+	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
+		array( 'paging' => false, 'searching' => false) );
 
 	foreach ( $dist->getContrats() as $contrat ) {
 		if ( $contrat->isPanierVariable() ) {
@@ -420,7 +422,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	$from_date = Amapress::start_of_day( $dist->getDate() );
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
-	echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=8 date=' . $from_date . ' lieu=' . $dist->getLieuId() . ']' );
+	echo do_shortcode( '[inscription-distrib show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=8 date=' . $from_date . ' lieu=' . $dist->getLieuId() . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
@@ -429,7 +431,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			if ( $lieu_id == $dist->getLieuId() ) {
 				continue;
 			}
-			echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=3 date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+			echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=3 show_adresse=false show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
 		}
 	}
 

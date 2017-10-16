@@ -116,6 +116,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_tel_mobile' => 'default',
 		'show_adresse'    => 'default',
 		'show_avatar'     => 'default',
+		'show_roles'     => 'default',
 		'show_for_resp'   => 'true',
 		'max_dates'       => - 1,
 		'user'            => null,
@@ -164,7 +165,6 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	if ( Amapress::toBool( $atts['show_next'] ) ) {
 		$to_date = null;
 	}
-//    var_dump($atts['show_past']);
 	$is_current_user_resp_amap = amapress_can_access_admin() || user_can( $user_id, 'manage_distributions' );
 	$is_resp_distrib           = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsableThisWeek( null, $from_date ) || AmapressDistributions::isCurrentUserResponsableNextWeek( null, $from_date );
 	$current_post              = get_post();
@@ -406,10 +406,6 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					$ret .= '<td class="">';
 					if ( $is_user_part_of ) {
 						$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
-//                    $ret .= "<div class='$colspan_cls'>";
-//                    $ret .= ($atts['show_avatar'] == true ? '<div class="user-photo">' . $resp->getAvatar() . '</div>' : '') .
-//                        ($atts['show_email'] == true ? '<p><a href="mailto:' . esc_attr($resp->getUser()->user_email) . '">' . esc_html($resp->getDisplayName()) . '</a></p>' : '<p>' . esc_html($resp->getDisplayName()) . '</p>') .
-//                        ($atts['show_tel'] == true ? '<p>' . $resp->getTelTo() . '</p>' : '');
 						$ret .= $resp->getDisplay( $atts );
 						if ( $can_unsubscribe ) {
 							if ( $resp->ID == amapress_current_user_id() ) {

@@ -439,7 +439,7 @@ class AmapressUser extends TitanUserEntity {
 			'show_tel_fixe'   => 'default',
 			'show_tel_mobile' => 'default',
 			'show_adresse'    => 'default',
-			'show_roles'      => 'true',
+			'show_roles'      => 'default',
 		) );
 		$ret  = '<div class="user-profile-info">';
 		$ret  .= ( amapress_check_info_visibility( $args['show_avatar'], 'avatar', $this ) == true ?
@@ -451,20 +451,20 @@ class AmapressUser extends TitanUserEntity {
 			$ret .= '<p>' . esc_html( $this->getDisplayName() ) . '</p>' . "\n";
 		}
 		$ret   .= ( amapress_check_info_visibility( $args['show_email'], 'email', $this ) == true ?
-			$this->wrapIfNotEmpty( '<p><a href="mailto:', esc_attr( $this->getEmail() ) . '">', esc_html( $this->getEmail() ) . '</a></p>' . "\r\n" ) :
+			$this->wrapIfNotEmpty( '<p class="user-email"><a href="mailto:', esc_attr( $this->getEmail() ) . '">', esc_html( $this->getEmail() ) . '</a></p>' . "\r\n" ) :
 			'' );
 		$roles = $this->getAmapRolesString();
 		$ret   .= ( amapress_check_info_visibility( $args['show_roles'], 'roles', $this ) && ! empty( $roles ) ?
 			$this->wrapIfNotEmpty( '<p class="user-roles">', esc_html( $roles ), '</p>' . "\r\n" ) :
 			'' );
 		$ret   .= ( amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_fixe'], 'tel_fixe', $this ) ?
-			$this->wrapIfNotEmpty( '<p>', $this->getTelTo( false ), '</p>' . "\r\n" ) :
+			$this->wrapIfNotEmpty( '<p class="user-tel-fixe">', $this->getTelTo( false ), '</p>' . "\r\n" ) :
 			'' );
 		$ret   .= ( amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_mobile'], 'tel_mobile', $this ) ?
-			$this->wrapIfNotEmpty( '<p>', $this->getTelTo( true ), '</p>' . "\r\n" ) :
+			$this->wrapIfNotEmpty( '<p class="user-tel-mobile">', $this->getTelTo( true ), '</p>' . "\r\n" ) :
 			'' );
 		$ret   .= ( amapress_check_info_visibility( $args['show_adresse'], 'adresse', $this ) ?
-			$this->wrapIfNotEmpty( '<p>', $this->getFormattedAdresseHtml(), '</p>' ) :
+			$this->wrapIfNotEmpty( '<p class="user-adresse">', $this->getFormattedAdresseHtml(), '</p>' ) :
 			'' );
 		$ret   .= '</div>';
 
