@@ -251,7 +251,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		}, $users ) );
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) {
 			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
-			if ( current_user_can( 'edit_user' ) ) {
+			if ( current_user_can( 'edit_users' ) ) {
 				return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val );
 			}
 
