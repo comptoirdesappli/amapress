@@ -15,7 +15,7 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 	$date           = amapress_time();
 	$next_week_date = Amapress::add_a_week( amapress_time() );
-	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( $date ), Amapress::end_of_week( $next_week_date ) );
+	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
 //    $next_week = AmapressDistribution::get_distributions(Amapress::start_of_week($next_week_date), Amapress::end_of_week($next_week_date));
 
 	$user_id = amapress_current_user_id();
