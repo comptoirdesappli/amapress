@@ -262,14 +262,14 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				$had_contrat = true;
 				$id          = 'contrat-' . $contrat_instance->ID;
 				$ret         .= '';
-				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s/> Panier personnalisé</label></div>',
+				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" data-excl="%s"/> Panier personnalisé</label></div>',
 					esc_html( $contrat_instance->getTitle() ),
 					$id,
-					'multicheckReq', //multicheckReq
+					'multicheckReq exclusiveCheckgroup', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_vars',
 					esc_attr( $contrat_instance->ID ),
-					''
+					esc_attr( $contrat_instance->ID )
 				);
 			} else {
 				if ( ! $paniers_variables ) {
@@ -361,13 +361,14 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$ret         .= '<div>';
 			foreach ( $contrat_quants as $quantite ) {
 				$id  = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
-				$ret .= sprintf( '<label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s/> %s</label><br>',
+				$ret .= sprintf( '<label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s"/> %s</label><br>',
 					$id,
-					'multicheckReq', //multicheckReq
+					'multicheckReq exclusiveCheckgroup', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_quants',
 					esc_attr( $quantite->ID ),
 					checked( in_array( $quantite->ID, $quants ), true, false ),
+					esc_attr( $quantite->getContrat_instance()->ID ),
 					esc_html( $quantite->getTitle() )
 				);
 			}

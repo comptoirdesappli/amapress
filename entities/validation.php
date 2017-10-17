@@ -47,6 +47,14 @@ function amapress_post_validation() {
             jQuery.validator.addMethod("multicheckReq", function (value, element) {
                 return jQuery('input:checkbox:checked', jQuery(element).closest('fieldset')).length > 0;
             }, "Please select at least one item");
+            jQuery.validator.addMethod("exclusiveCheckgroup", function (value, element) {
+                var $checked = jQuery('input:checkbox:checked', jQuery(element).closest('fieldset'));
+                var dataExclusives = [];
+                $checked.each(function () {
+                    dataExclusives.push(jQuery(this).data('excl'));
+                });
+                return jQuery.unique(dataExclusives).length <= 1;
+            }, "Please select options in only one group");
             jQuery.validator.addMethod("tinymcerequired", function (value, element) {
                 var content = tinymce.get(element.id).getContent({format: 'text'});
                 return jQuery.trim(content) != '';
@@ -91,7 +99,7 @@ function amapress_post_validation() {
                 onkeyup: false,
                 "errorPlacement": function (error, element) {
                     error.addClass('amapress-error');
-                    if (element.hasClass("multicheckReq")) {
+                    if (element.hasClass("multicheckReq") || element.hasClass("exclusiveCheckgroup")) {
                         error.insertAfter(element.closest("fieldset"));
                     }
                     else
@@ -105,6 +113,9 @@ function amapress_post_validation() {
                 rules: {
                     "multicheckReq": {
                         "multicheckReq": true,
+                    },
+                    "exclusiveCheckgroup": {
+                        "exclusiveCheckgroup": true,
                     },
                 },
             });
