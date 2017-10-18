@@ -307,7 +307,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			sort( $contrat_names );
 			$lieu_users    = array();
 			$contrat_names = implode( ', ', $contrat_names );
-			$ret           .= '<th scope="row">
+			$ret           .= '<th scope="row" class="inscr-list-info">
 <p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>
 <p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
 			if ( ! empty( $subst_lieux ) ) {
@@ -404,9 +404,9 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				}
 				foreach ( $resps as $resp ) {
 					$ret .= '<td class="">';
+					$ret .= $resp->getDisplay( $atts );
 					if ( $is_user_part_of ) {
 						$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
-						$ret .= $resp->getDisplay( $atts );
 						if ( $can_unsubscribe ) {
 							if ( $resp->ID == amapress_current_user_id() ) {
 								$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
