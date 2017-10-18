@@ -337,11 +337,7 @@ class AmapressPaniers {
 							'key'   => 'amapress_adhesion_contrat_quantite',
 							'value' => $abo->ID,
 						),
-						array(
-							'key'     => 'amapress_adhesion_contrat_quantite',
-							'value'   => '"' . $abo->ID . '"',
-							'compare' => 'like'
-						)
+						amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $abo->ID ),
 					),
 				) ) );
 			}

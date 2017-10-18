@@ -61,11 +61,7 @@ class AmapressDistributions {
 						'compare' => 'BETWEEN',
 						'type'    => 'NUMERIC',
 					),
-					array(
-						'key'     => 'amapress_distribution_responsables',
-						'value'   => '"' . $user_id . '"',
-						'compare' => 'LIKE',
-					),
+					amapress_prepare_like_in_array( 'amapress_distribution_responsables', $user_id ),
 				),
 			) ) ) > 0;
 	}
