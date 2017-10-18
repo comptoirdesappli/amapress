@@ -92,7 +92,8 @@ function amapress_register_entities_adhesion( $entities ) {
 				'show_column' => false,
 				'custom'      => 'amapress_adhesion_contrat_quantite_editor',
 				'save'        => 'amapress_save_adhesion_contrat_quantite_editor',
-				'desc'        => 'Contrat et Quantité(s)',
+				'desc'        => 'Sélectionner le contrat et les quantités/produits associé(s) :<br/></br/>',
+				'show_desc'   => 'before',
 				'group'       => '2/ Contrat',
 				'csv'         => false,
 //                'show_on' => 'edit',
@@ -213,10 +214,10 @@ function amapress_register_entities_adhesion( $entities ) {
 				'show_column' => false,
 			),
 			'fin_raison'       => array(
-				'name'        => amapress__( 'Motif de fin' ),
+				'name'        => amapress__( 'Motif' ),
 				'type'        => 'textarea',
 				'group'       => '4/ Fin de contrat avant terme',
-				'desc'        => 'Raison de fin du contrat',
+				'desc'        => 'Motif de départ (Déménagement, insatisfaction, ...)',
 				'show_column' => false,
 			),
 //			'no_renew'       => array(
@@ -265,7 +266,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" data-excl="%s"/> Panier personnalisé</label></div>',
 					esc_html( $contrat_instance->getTitle() ),
 					$id,
-					'multicheckReq exclusiveCheckgroup', //multicheckReq
+					'multicheckReq exclusiveContrat', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_vars',
 					esc_attr( $contrat_instance->ID ),
@@ -363,7 +364,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				$id  = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
 				$ret .= sprintf( '<label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s"/> %s</label><br>',
 					$id,
-					'multicheckReq exclusiveCheckgroup', //multicheckReq
+					'multicheckReq exclusiveContrat', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_quants',
 					esc_attr( $quantite->ID ),

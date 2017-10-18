@@ -44,21 +44,23 @@ function amapress_post_validation() {
     <script type="text/javascript">
         //<![CDATA[
         jQuery(function () {
-            jQuery.validator.addMethod("multicheckReq", function (value, element) {
-                return jQuery('input:checkbox:checked', jQuery(element).closest('fieldset')).length > 0;
-            }, "Please select at least one item");
-            jQuery.validator.addMethod("exclusiveCheckgroup", function (value, element) {
+            var exclusiveGroupCheckFunction = function (value, element) {
                 var $checked = jQuery('input:checkbox:checked', jQuery(element).closest('fieldset'));
                 var dataExclusives = [];
                 $checked.each(function () {
                     dataExclusives.push(jQuery(this).data('excl'));
                 });
                 return jQuery.unique(dataExclusives).length <= 1;
-            }, "Please select options in only one group");
+            };
+            jQuery.validator.addMethod("multicheckReq", function (value, element) {
+                return jQuery('input:checkbox:checked', jQuery(element).closest('fieldset')).length > 0;
+            }, "Merci de sélectionner au moins un élément");
+            jQuery.validator.addMethod("exclusiveCheckgroup", exclusiveGroupCheckFunction, "Merci de sélectionner des élements dans un seul groupe");
+            jQuery.validator.addMethod("exclusiveContrat", exclusiveGroupCheckFunction, "Attention, vous avez sélectionné des produits/quantités concernant des contrats différents !");
             jQuery.validator.addMethod("tinymcerequired", function (value, element) {
                 var content = tinymce.get(element.id).getContent({format: 'text'});
                 return jQuery.trim(content) != '';
-            }, "Must not be empty");
+            }, "Doit être rempli");
             jQuery.validator.setDefaults({
                 ignore: ''
             });
@@ -97,9 +99,12 @@ function amapress_post_validation() {
             var amapress_validator = jQuery('form#post, form#createuser, .titan-framework-panel-wrap form').validate({
                 ignore: ":parentHidden",
                 onkeyup: false,
-                "errorPlacement": function (error, element) {
+                errorPlacement: function (error, element) {
                     error.addClass('amapress-error');
-                    if (element.hasClass("multicheckReq") || element.hasClass("exclusiveCheckgroup")) {
+                    if (element.hasClass("exclusiveCheckgroup") || element.hasClass("exclusiveContrat")) {
+                        error.insertBefore(element.closest("fieldset"));
+                    }
+                    else if (element.hasClass("multicheckReq")) {
                         error.insertAfter(element.closest("fieldset"));
                     }
                     else
@@ -114,8 +119,8 @@ function amapress_post_validation() {
                     "multicheckReq": {
                         "multicheckReq": true,
                     },
-                    "exclusiveCheckgroup": {
-                        "exclusiveCheckgroup": true,
+                    "exclusiveContrat": {
+                        "exclusiveContrat": true,
                     },
                 },
             });
