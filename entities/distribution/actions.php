@@ -222,8 +222,8 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		'data'  => 'comment',
 	);
 
-	$all_adhs = AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId(), $dist->getDate(), true );
-	$liste    = array();
+	$all_adhs  = AmapressContrats::get_active_adhesions( $dist->getContratIds(), null, $dist->getLieuId(), $dist->getDate(), true );
+	$liste     = array();
 	$adhesions = array_group_by(
 		$all_adhs,
 		function ( $adh ) {
@@ -293,12 +293,14 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			}
 		}
 
-		$principal_user = new AmapressUser($users[0]);
-		$line['check']   = '<span style="display: inline-block; width: 32px"> </span>';
+		$principal_user = new AmapressUser( $users[0] );
+		$line['check']  = '<span style="display: inline-block; width: 32px"> </span>';
 
-		$comment = esc_html($principal_user->getCommentEmargement());
-		if (empty($comment)) $comment='<span class="edit-user-comment">Editer</span>';
-		$line['comment'] = Amapress::makeLink(admin_url('user-edit.php?user_id='.$principal_user->ID.'#amapress_user_comment_emargement'), $comment, false);//;
+		$comment = esc_html( $principal_user->getCommentEmargement() );
+		if ( empty( $comment ) ) {
+			$comment = '<span class="edit-user-comment">Editer</span>';
+		}
+		$line['comment'] = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $principal_user->ID . '#amapress_user_comment_emargement' ), $comment, false );//;
 
 		$liste[] = $line;
 	}
@@ -319,7 +321,12 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
             @media print {
             	/*table { table-layout: fixed !important; }*/
             	.edit-user-comment {display: none;}
-                * { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+                * { margin: 0 !important; 
+                	padding: 0 !important; 
+                	width: 100% !important; 
+                	max-width: 100% !important; 
+                	color:black !important;
+                	font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt !important; }
                 #liste-emargement a.contrat { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}
                 #paniers-a-echanger a { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}
                 a:after {
@@ -347,10 +354,16 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 	the_title( '<h2>', '</h2>' );
 	echo '<br/>';
-	echo '<div class="btns">
-<a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>
-<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>
-</div>';
+	echo '<div class="btns">';
+	echo '<a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>';
+	if ( current_user_can( 'edit_distribution' ) ) {
+		echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
+		echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
+	}
+	if ( current_user_can( 'edit_lieu_distribution' ) ) {
+		echo '<a href="' . esc_attr( $dist->getLieu()->getAdminEditLink() ) . '" class="btn btn-default">Editer les infos du lieu</a>';
+	}
+	echo '</div>';
 	echo '<br/>';
 
 	echo Amapress::getOption( 'liste-emargement-general-message' );
@@ -398,7 +411,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<br/>';
 	echo '<h3 class="liste-emargement">Liste</h3>';
 	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
-		array( 'paging' => false, 'searching' => false) );
+		array( 'paging' => false, 'searching' => false ) );
 
 	foreach ( $dist->getContrats() as $contrat ) {
 		if ( $contrat->isPanierVariable() ) {
@@ -422,11 +435,14 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	$from_date = Amapress::start_of_day( $dist->getDate() );
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
+	echo '<br/>';
 	echo do_shortcode( '[inscription-distrib show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=8 date=' . $from_date . ' lieu=' . $dist->getLieuId() . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
+		echo '<br/>';
 		echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions sur les autres lieux' ) . '</h3>';
+		echo '<br/>';
 		foreach ( $lieux_ids as $lieu_id ) {
 			if ( $lieu_id == $dist->getLieuId() ) {
 				continue;
@@ -442,6 +458,9 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			echo '<br/>';
 			echo '<h3 class="liste-emargement-instructions">' . esc_html( 'Instructions pour ' . $lieu->getShortName() ) . '</h3>';
 			echo $lieu->getInstructions_privee();
+			echo '<br/>';
+			echo '<h4 class="liste-emargement-contact">Contacts</h4>';
+			echo $lieu->getContact_externe();
 		}
 	}
 

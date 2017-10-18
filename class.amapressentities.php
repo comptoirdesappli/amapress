@@ -1161,7 +1161,7 @@ class AmapressEntities {
 							'settings' => array(
 								'name'       => 'Liste émargement',
 								'position'   => '25.16',
-								'capability' => 'manage_amapress',
+								'capability' => 'edit_distribution',
 								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(
@@ -1202,6 +1202,13 @@ class AmapressEntities {
 											'name'    => 'Afficher les emails',
 											'type'    => 'checkbox',
 											'default' => false,
+										),
+										array(
+											'id'      => 'liste-emargement-print-font-size',
+											'name'    => 'Taille (en pt) d\'impression de la liste d\'émargement',
+											'type'    => 'number',
+											'step'    => 0.5,
+											'default' => '8',
 										),
 										array(
 											'type' => 'save',
