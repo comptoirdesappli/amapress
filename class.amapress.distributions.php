@@ -108,10 +108,11 @@ class AmapressDistributions {
 	}
 
 	public static function generate_distributions( $contrat_id, $from_now = true, $eval = false ) {
+		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
 		$res      = array();
-		$contrats = AmapressContrats::get_active_contrat_instances( $contrat_id );
+		$contrats = [ new AmapressContrat_instance( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
-			$now             = Amapress::start_of_day( amapress_time() );
+			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
 			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );
 
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
@@ -208,10 +209,12 @@ class AmapressDistributions {
 				$keys[ $k ]     = true;
 
 				$dist_contrats = array_map( 'intval', Amapress::get_post_meta_array( $dist->ID, 'amapress_distribution_contrats' ) );
-				$diff_contrats = array_diff( $dist_contrats, $all_contrat_ids );
-				if ( ! empty( $diff_contrats ) ) {
-					$clean         = true;
-					$dist_contrats = array_diff( $dist_contrats, $diff_contrats );
+				if ( ! $is_ref ) {
+					$diff_contrats = array_diff( $dist_contrats, $all_contrat_ids );
+					if ( ! empty( $diff_contrats ) ) {
+						$clean         = true;
+						$dist_contrats = array_diff( $dist_contrats, $diff_contrats );
+					}
 				}
 				$rem = false;
 				$add = false;
