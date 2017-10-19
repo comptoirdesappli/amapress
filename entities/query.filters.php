@@ -138,12 +138,12 @@ function amapress_filter_posts( WP_Query $query ) {
 						'compare' => 'IN',
 					);
 				}
-			} else if ( $pt == 'distribution' ) {
-				foreach ( $refs as $r ) {
-					foreach ( $r['contrat_instance_ids'] as $contrat_id ) {
-						$meta[] = amapress_prepare_like_in_array( "amapress_{$pt}_contrats", $contrat_id );
-					}
-				}
+//			} else if ( $pt == 'distribution' ) {
+//				foreach ( $refs as $r ) {
+//					foreach ( $r['contrat_instance_ids'] as $contrat_id ) {
+//						$meta[] = amapress_prepare_like_in_array( "amapress_{$pt}_contrats", $contrat_id );
+//					}
+//				}
 			} else if ( $pt == 'contrat_paiement' ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
@@ -384,9 +384,9 @@ function amapress_filter_posts( WP_Query $query ) {
 	if ( ! empty( $query->query_vars['amapress_contrat'] ) ) {
 		$amapress_contrat = Amapress::resolve_post_id( $query->query_vars['amapress_contrat'], 'amps_contrat' );
 		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' || $pt == 'panier' ) {
-			$amapress_date        = get_query_var( 'amapress_date' );
-			$date                 = ( empty( $amapress_date ) || $amapress_date == 'active' ) ? null : ( is_int( $amapress_date ) ? intval( $amapress_date ) : DateTime::createFromFormat( 'Y-m-d', $amapress_date )->getTimestamp() );
-			$active_contrat_insts = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $amapress_contrat, $date );
+//			$amapress_date        = get_query_var( 'amapress_date' );
+//			$date                 = ( empty( $amapress_date ) || $amapress_date == 'active' ) ? null : ( is_int( $amapress_date ) ? intval( $amapress_date ) : DateTime::createFromFormat( 'Y-m-d', $amapress_date )->getTimestamp() );
+			$active_contrat_insts = Amapress::getIDs( AmapressContrats::get_all_contrat_instances_by_contrat( $amapress_contrat ) );
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_contrat_instance",
@@ -403,9 +403,9 @@ function amapress_filter_posts( WP_Query $query ) {
 				)
 			) );
 		} else if ( $pt == 'distribution' ) {
-			$amapress_date        = get_query_var( 'amapress_date' );
-			$date                 = ( empty( $amapress_date ) || $amapress_date == 'active' ) ? null : ( is_int( $amapress_date ) ? intval( $amapress_date ) : DateTime::createFromFormat( 'Y-m-d', $amapress_date )->getTimestamp() );
-			$active_contrat_insts = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $amapress_contrat, $date );
+//			$amapress_date        = get_query_var( 'amapress_date' );
+//			$date                 = ( empty( $amapress_date ) || $amapress_date == 'active' ) ? null : ( is_int( $amapress_date ) ? intval( $amapress_date ) : DateTime::createFromFormat( 'Y-m-d', $amapress_date )->getTimestamp() );
+			$active_contrat_insts = Amapress::getIDs( AmapressContrats::get_all_contrat_instances_by_contrat( $amapress_contrat ) );
 			$query_or             = array();
 			foreach ( $active_contrat_insts as $contrat_inst ) {
 				$query_or[] = amapress_prepare_like_in_array( "amapress_distribution_contrats", $contrat_inst );
@@ -528,6 +528,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				)
 			);
 		} else if ( $pt == 'contrat_paiement' ) {
+			//TODO : what if past ?
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_contrat_paiement_adhesion",

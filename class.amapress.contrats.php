@@ -578,7 +578,7 @@ class AmapressContrats {
 				if ( count( $contrat_ids ) == 0 ) {
 					$contrat_ids = array( 0 );
 				}
-				$contrat_instance_ids = self::get_active_contrat_instances_ids_by_contrat( $contrat_ids );
+				$contrat_instance_ids = Amapress::getIDs( AmapressContrats::get_all_contrat_instances_by_contrat( $contrat_ids ) );
 				if ( count( $contrat_instance_ids ) == 0 ) {
 					$contrat_instance_ids = array( 0 );
 				}
