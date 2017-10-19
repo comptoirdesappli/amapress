@@ -11,6 +11,8 @@ function amapress_get_custom_content_visite( $content ) {
 
 	ob_start();
 
+	amapress_echo_button( 'Participer', amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+
 	amapress_echo_panel_start( 'Au programme', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-programme' );
 	echo '<p class="visite-au-programme">' .
 	     $visite->getAu_programme() .
@@ -55,8 +57,6 @@ function amapress_get_custom_content_visite( $content ) {
 	} else { ?>
         <p>Aucun participants</p>
 	<?php }
-
-	amapress_echo_button( 'Participer', amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
 
 	amapress_echo_panel_end();
 
