@@ -716,11 +716,7 @@ class AmapressContrats {
 						'compare' => '=',
 						'type'    => 'NUMERIC',
 					),
-					array(
-						'key'     => 'amapress_adhesion_contrat_quantite',
-						'value'   => '"' . $contrat_quantite_id . '"',
-						'compare' => 'like',
-					)
+					amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite_id ),
 				);
 			}
 			$meta_query[] = array(
@@ -811,11 +807,7 @@ class AmapressContrats {
 						'compare' => '=',
 						'type'    => 'NUMERIC',
 					),
-					array(
-						'key'     => 'amapress_adhesion_contrat_quantite',
-						'value'   => '"' . $contrat_quantite_id . '"',
-						'compare' => 'like',
-					)
+					amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite_id ),
 				);
 			}
 			$query = array(

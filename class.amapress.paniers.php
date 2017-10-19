@@ -19,9 +19,9 @@ class AmapressPaniers {
 
 	public static function generate_paniers( $contrat_id, $from_now = true, $eval = false ) {
 		$res      = array();
-		$contrats = AmapressContrats::get_active_contrat_instances( $contrat_id );
+		$contrats = [ new AmapressContrat_instance( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
-			$now             = Amapress::start_of_day( amapress_time() );
+			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
 			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );
 
 			$res[ $contrat->ID ] = array();
@@ -337,11 +337,7 @@ class AmapressPaniers {
 							'key'   => 'amapress_adhesion_contrat_quantite',
 							'value' => $abo->ID,
 						),
-						array(
-							'key'     => 'amapress_adhesion_contrat_quantite',
-							'value'   => '"' . $abo->ID . '"',
-							'compare' => 'like'
-						)
+						amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $abo->ID ),
 					),
 				) ) );
 			}

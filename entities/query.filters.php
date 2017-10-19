@@ -12,6 +12,22 @@ function amapress_prepare_in( $in ) {
 	return $in;
 }
 
+function amapress_prepare_like_in_array( $key, $value ) {
+	return array(
+		'relation' => 'OR',
+		array(
+			'key'     => $key,
+			'value'   => '"' . $value . '"',
+			'compare' => 'like'
+		),
+		array(
+			'key'     => $key,
+			'value'   => 'i:' . $value . ';',
+			'compare' => 'like'
+		),
+	);
+}
+
 function amapress_add_meta_query( WP_Query $query, $meta_query ) {
 	$meta = $query->get( 'meta_query' );
 	if ( ! is_array( $meta ) ) {
@@ -93,7 +109,6 @@ function amapress_filter_posts( WP_Query $query ) {
 	global $amapress_getting_referent_infos;
 	if ( ! $amapress_getting_referent_infos && is_admin() && amapress_can_access_admin() ) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
-		//var_dump($refs);
 		if ( count( $refs ) > 0 ) {
 			$meta = array();
 			if ( $pt == 'producteur' ) {
@@ -126,37 +141,9 @@ function amapress_filter_posts( WP_Query $query ) {
 			} else if ( $pt == 'distribution' ) {
 				foreach ( $refs as $r ) {
 					foreach ( $r['contrat_instance_ids'] as $contrat_id ) {
-						$meta[] = array(
-//                        array(
-//                            'relation' => 'OR',
-//                            array(
-//                                'key' => "amapress_{$pt}_lieu",
-//                                'value' => $r['lieu'],
-//                                'compare' => '=',
-//                            ),
-//                            array(
-//                                'key' => "amapress_{$pt}_lieu_substitution",
-//                                'value' => $r['lieu'],
-//                                'compare' => '=',
-//                            ),
-//                        ),
-							array(
-								'key'     => "amapress_{$pt}_contrats",
-								'value'   => '"' . $contrat_id . '"',
-								'compare' => 'LIKE',
-							),
-						);
+						$meta[] = amapress_prepare_like_in_array( "amapress_{$pt}_contrats", $contrat_id );
 					}
 				}
-//            } else if ($pt == 'lieu_distribution') {
-//                $post__in = $query->get('post__in');
-//                if (is_array($post__in)) $post__in = array();
-//                foreach ($refs as $r) {
-//                    $post__in[] = intval($r['lieu']);
-//                }
-//                $post__in = array_unique($post__in);
-//                $query->set('post__in', $post__in);
-
 			} else if ( $pt == 'contrat_paiement' ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
@@ -192,15 +179,18 @@ function amapress_filter_posts( WP_Query $query ) {
 			}
 			if ( count( $meta ) > 0 ) {
 				if ( count( $meta ) > 1 ) {
-					//var_dump($meta);
 					amapress_add_meta_query( $query, array(
-						array_merge( array( 'relation' => 'OR' ), $meta )
+						array_merge(
+							array( 'relation' => 'OR' ),
+							$meta
+						)
 					) );
 				} else {
 					amapress_add_meta_query( $query, array(
 						$meta
 					) );
 				}
+				//amapress_dump($query->get( 'meta_query' ));
 			}
 		}
 	}
@@ -241,11 +231,7 @@ function amapress_filter_posts( WP_Query $query ) {
 		if ( $pt == 'recette' ) {
 			$arr = array( 'relation' => 'OR' );
 			foreach ( $amapress_recette_produits as $prod ) {
-				$arr[] = array(
-					'key'     => "amapress_{$pt}_produits",
-					'value'   => '"' . $prod . '"',
-					'compare' => 'like',
-				);
+				$arr[] = amapress_prepare_like_in_array( "amapress_{$pt}_produits", $prod );
 			}
 			amapress_add_meta_query( $query, array(
 				array(
@@ -375,13 +361,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				)
 			) );
 		} else if ( $pt == 'distribution' ) {
-			amapress_add_meta_query( $query, array(
-				array(
-					'key'     => "amapress_distribution_contrats",
-					'value'   => '"' . $amapress_contrat_instnace . '"',
-					'compare' => 'like',
-				)
-			) );
+			amapress_add_meta_query( $query, array( amapress_prepare_like_in_array( "amapress_distribution_contrats", $amapress_contrat_instnace ) ) );
 		}
 	}
 	if ( ! empty( $query->query_vars['amapress_contrat_qt'] ) ) {
@@ -396,11 +376,7 @@ function amapress_filter_posts( WP_Query $query ) {
 						'compare' => '=',
 						'type'    => 'NUMERIC',
 					),
-					array(
-						'key'     => "amapress_{$pt}_contrat_quantite",
-						'value'   => '"' . $amapress_contrat_qt . '"',
-						'compare' => 'like',
-					)
+					amapress_prepare_like_in_array( "amapress_{$pt}_contrat_quantite", $amapress_contrat_qt ),
 				)
 			) );
 		}
@@ -432,11 +408,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			$active_contrat_insts = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $amapress_contrat, $date );
 			$query_or             = array();
 			foreach ( $active_contrat_insts as $contrat_inst ) {
-				$query_or[] = array(
-					'key'     => "amapress_distribution_contrats",
-					'value'   => '"' . $contrat_inst . '"',
-					'compare' => 'like',
-				);
+				$query_or[] = amapress_prepare_like_in_array( "amapress_distribution_contrats", $contrat_inst );
 			}
 			amapress_add_meta_query( $query, array(
 				array(
@@ -478,19 +450,11 @@ function amapress_filter_posts( WP_Query $query ) {
 			) );
 		} else if ( $pt == 'amap_event' || $pt == 'visite' || $pt == 'assemblee' ) {
 			amapress_add_meta_query( $query, array(
-				array(
-					'key'     => "amapress_{$pt}_participants",
-					'value'   => '"' . $amapress_user . '"',
-					'compare' => 'LIKE',
-				),
+				amapress_prepare_like_in_array( "amapress_{$pt}_participants", $amapress_user ),
 			) );
 		} else if ( $pt == 'distribution' ) {
 			amapress_add_meta_query( $query, array(
-				array(
-					'key'     => "amapress_{$pt}_responsables",
-					'value'   => '"' . $amapress_user . '"',
-					'compare' => 'LIKE',
-				),
+				amapress_prepare_like_in_array( "amapress_{$pt}_responsables", $amapress_user ),
 			) );
 //        } else if ($pt == 'adhesion_intermittence') {
 //            amapress_add_meta_query($query, array(
@@ -558,15 +522,11 @@ function amapress_filter_posts( WP_Query $query ) {
 				)
 			) );
 		} else if ( $pt == 'contrat_instance' ) {
-			amapress_add_meta_query( $query, array(
+			amapress_add_meta_query( $query,
 				array(
-					array(
-						'key'     => "amapress_{$pt}_lieux",
-						'value'   => '"'.$amapress_lieu.'"',
-						'compare' => 'LIKE',
-					),
+					amapress_prepare_like_in_array( "amapress_{$pt}_lieux", $amapress_lieu ),
 				)
-			) );
+			);
 		} else if ( $pt == 'contrat_paiement' ) {
 			amapress_add_meta_query( $query, array(
 				array(
