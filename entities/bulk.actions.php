@@ -90,7 +90,7 @@ function amapress_custom_bulk_action() {
 }
 
 function amapress_add_bulk_count( $url, $count ) {
-	return add_query_arg( $url, 'amp_bulk_count', $count );
+	return add_query_arg( 'amp_bulk_count', $count, $url );
 }
 
 add_action( 'admin_notices', 'amapress_custom_bulk_actions_admin_notices' );
