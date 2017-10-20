@@ -159,8 +159,55 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 	}
 
+	/**
+	 * @param int $lieu_id
+	 * @param int $contrat_instance_id
+	 * @param int $date
+	 *
+	 * @return AmapressDistribution
+	 */
+	public static function getNextDistribution( $lieu_id = null, $contrat_instance_id = null, $date = null ) {
+		if ( ! $date ) {
+			$date = amapress_time();
+		}
+		$meta = array(
+			array(
+				'key'     => 'amapress_distribution_date',
+				'value'   => Amapress::start_of_day( $date ),
+				'compare' => '>',
+				'type'    => 'NUMERIC'
+			),
+		);
+		if ( $lieu_id ) {
+			$meta[] = array(
+				'key'     => 'amapress_distribution_lieu',
+				'value'   => $lieu_id,
+				'compare' => '=',
+				'type'    => 'NUMERIC'
+			);
+		}
+		if ( $contrat_instance_id ) {
+			$meta[] = amapress_prepare_like_in_array( 'amapress_distribution_contrats', $contrat_instance_id );
+		}
+		$dists = get_posts( array(
+			'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+			'posts_per_page' => - 1,
+			'meta_query'     => $meta,
+			'orderby'        => 'meta_value_num',
+			'order'          => 'ASC',
+			'meta_key'       => 'amapress_distribution_date',
+		) );
+
+		$dist = array_shift( $dists );
+		if ( $dist ) {
+			$dist = new AmapressDistribution( $dist );
+		}
+
+		return $dist;
+	}
+
 	/** @return AmapressDistribution[] */
-	public static function get_next_distributions( $date = null, $order = 'NONE' ) {
+	public static function get_next_distributions( $date = null, $order = 'ASC' ) {
 		if ( ! $date ) {
 			$date = amapress_time();
 		}

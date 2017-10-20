@@ -116,7 +116,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_tel_mobile' => 'default',
 		'show_adresse'    => 'default',
 		'show_avatar'     => 'default',
-		'show_roles'     => 'default',
+		'show_roles'      => 'default',
 		'show_for_resp'   => 'true',
 		'max_dates'       => - 1,
 		'user'            => null,
@@ -499,4 +499,59 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	}
 	die();
 } );
+
+function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) {
+	$atts    = shortcode_atts(
+		array(
+			'lieu'    => null,
+			'contrat' => null,
+		), $atts
+	);
+	$lieu_id = null;
+	if ( ! empty( $atts['lieu'] ) ) {
+		$lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
+	}
+	$contrat_instance_id = null;
+	if ( ! empty( $atts['contrat'] ) ) {
+		$contrat_instance_id = Amapress::resolve_post_id( $atts['contrat'], AmapressContrat_instance::INTERNAL_POST_TYPE );
+	}
+	$next_distrib = AmapressDistribution::getNextDistribution( $lieu_id, $contrat_instance_id );
+
+	switch ( $tag ) {
+		case 'next-distrib-href';
+			if ( $next_distrib ) {
+				return $next_distrib->getPermalink();
+			}
+			break;
+		case 'next-distrib-link';
+			if ( $next_distrib ) {
+				return Amapress::makeLink( $next_distrib->getPermalink(), $content, false );
+			}
+			break;
+		case 'next-distrib-date';
+			if ( $next_distrib ) {
+				return date_i18n( 'd/m/Y H:i', $next_distrib->getStartDateAndHour() );
+			} else {
+				return 'Pas de prochaine distribution';
+			}
+		case 'next-emargement-href';
+			if ( $next_distrib ) {
+				return $next_distrib->getPermalink( 'liste-emargement' );
+			}
+			break;
+		case 'next-emargement-link';
+			if ( $next_distrib ) {
+				return Amapress::makeLink( $next_distrib->getPermalink( 'liste-emargement' ), $content, false );
+			}
+			break;
+		case 'amapress-redirect-next-distrib';
+			wp_redirect_and_exit( $next_distrib->getPermalink() );
+			break;
+		case 'amapress-redirect-next-emargement';
+			wp_redirect_and_exit( $next_distrib->getPermalink( 'liste-emargement' ) );
+			break;
+	}
+
+	return $content;
+}
 //});

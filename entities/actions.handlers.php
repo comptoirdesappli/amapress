@@ -204,6 +204,16 @@ function amapress_handle_actions() {
 				amapress_redirect_login();
 			}
 		}
+
+		if ( is_singular() ) {
+			global $post;
+
+			if ( ! empty( $post->post_content ) ) {
+				if ( strpos( $post->post_content, '[amapress-redirect-' ) ) {
+					do_shortcode( $post->post_content );
+				}
+			}
+		}
 	}
 
 	$action = get_query_var( 'amp_action' );

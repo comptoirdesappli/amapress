@@ -70,6 +70,14 @@ function amapress_register_shortcodes() {
 		return 'COMING SOON';
 	} );
 
+	amapress_register_shortcode( 'next-distrib-href', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'next-distrib-link', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'next-distrib-date', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'next-emargement-href', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'next-emargement-link', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'amapress-redirect-next-distrib', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'amapress-redirect-next-emargement', 'amapress_next_distrib_shortcode' );
+
 	amapress_register_shortcode( 'liste-emargement-button', function ( $atts, $content = null ) {
 		if ( is_singular( AmapressDistribution::INTERNAL_POST_TYPE ) ) {
 			$dist_id = get_the_ID();
