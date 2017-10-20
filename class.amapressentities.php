@@ -844,7 +844,7 @@ class AmapressEntities {
 						),
 					),
 					'tabs'     => array(
-						'Recettes'  => array(
+						'Recettes'   => array(
 							'desc'       => '',
 							'capability' => 'edit_recette',
 							'options'    => array(
@@ -882,7 +882,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Produits'  => array(
+						'Produits'   => array(
 							'desc'       => '',
 							'capability' => 'edit_produit',
 							'options'    => array(
@@ -920,7 +920,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Pages'     => array(
+						'Pages'      => array(
 							'desc'       => '',
 							'capability' => 'manage_options',
 							'options'    => array(
@@ -964,7 +964,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Général'   => array(
+						'Général'    => array(
 							'desc'    => '',
 							'options' => array(
 //                                array(
@@ -985,13 +985,6 @@ class AmapressEntities {
 									'name'       => 'Adresse mail de l\'expéditeur des mails du site',
 									'type'       => 'text',
 									'default'    => amapress_get_default_wordpress_from_email(),
-									'capability' => 'manage_options',
-								),
-								array(
-									'id'         => 'google_map_key',
-									'name'       => 'Clé Google',
-									'type'       => 'text',
-									'default'    => '',
 									'capability' => 'manage_options',
 								),
 								array(
@@ -1020,8 +1013,36 @@ class AmapressEntities {
 								),
 							)
 						),
+						'Google API' => array(
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'         => 'google_map_key',
+									'name'       => 'Clé Google API',
+									'type'       => 'text',
+									'default'    => '',
+									'desc'       => function ( $option = null ) {
+										ob_start();
+										?>
+                                        <a
+                                                href='https://console.developers.google.com/henhouse/?pb=["hh-1","maps_backend",null,[],"https://developers.google.com",null,["maps_backend","geocoding_backend","directions_backend","distance_matrix_backend","elevation_backend","places_backend"],null]&TB_iframe=true&width=600&height=400'
+                                                class="thickbox button-primary"
+                                                title="<?php _e( 'Générer une clé d\'API - ( vous devez être connecté à votre compte Google )', 'gmaps-api-key' ); ?>">
+											<?php _e( 'Générer une clé d\'API', 'gmaps-api-key' ); ?>
+                                        </a>
+										<?php echo sprintf( __( 'ou %scliquez ici%s pour Obtenir une clé Google Map', 'geodirectory' ), '<a target="_blank" href=\'https://console.developers.google.com/flows/enableapi?apiid=maps_backend,geocoding_backend,directions_backend,distance_matrix_backend,elevation_backend&keyType=CLIENT_SIDE&reusekey=true\'>', '</a>' ) ?>
+										<?php
+										return ob_get_clean();
+									},
+									'capability' => 'manage_options',
+								),
+								array(
+									'type' => 'save',
+								),
+							),
+						),
 						//
-						'Paiements' => array(
+						'Paiements'  => array(
 							'desc'    => '',
 							'options' => array(
 								array(
