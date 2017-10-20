@@ -364,7 +364,7 @@ class AmapressUser extends TitanUserEntity {
 	}
 
 	public function resolveAddress() {
-		AmapressUsers::resolveUserAddress( $this->getID(),
+		return AmapressUsers::resolveUserAddress( $this->getID(),
 			$this->getFormattedAdresse() );
 	}
 

@@ -733,13 +733,14 @@ class AmapressUsers {
 			update_user_meta( $user_id, 'amapress_user_long', $address['longitude'] );
 			update_user_meta( $user_id, 'amapress_user_lat', $address['latitude'] );
 			update_user_meta( $user_id, 'amapress_user_location_type', $address['location_type'] );
+
+			return true;
 		} else {
 			delete_user_meta( $user_id, 'amapress_user_long' );
 			delete_user_meta( $user_id, 'amapress_user_lat' );
 			delete_user_meta( $user_id, 'amapress_user_location_type' );
+
+			return false;
 		}
-
-		return false;
-
 	}
 }

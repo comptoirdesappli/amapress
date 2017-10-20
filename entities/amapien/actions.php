@@ -285,3 +285,18 @@ function amapress_amp_resend_welcome_bulk_action( $sendback, $post_ids ) {
 
 	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
 }
+
+add_filter( 'amapress_bulk_action_amp_relocate', 'amapress_bulk_action_amp_relocate', 10, 2 );
+function amapress_bulk_action_amp_relocate( $sendback, $user_ids ) {
+	$localized_users = [];
+	foreach ( $user_ids as $user_id ) {
+		$user = AmapressUser::getBy( $user_id );
+		if ( $user ) {
+			if ( AmapressUsers::resolveUserAddress( $user_id, $user->getFormattedAdresse() ) ) {
+				$localized_users[] = $user_id;
+			}
+		}
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $localized_users ) );
+}

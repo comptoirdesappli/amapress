@@ -14,8 +14,18 @@ function amapress_register_entities_amapien( $entities ) {
 				'label'    => 'Réenvoyer le mail de bienvenue',
 				'messages' => array(
 					'<0' => 'Une erreur s\'est produit pendant l\'envoie des mails de bienvenue',
+					'0'  => 'Une erreur s\'est produit pendant l\'envoie des mails de bienvenue',
 					'1'  => 'Un mail de bienvenue a été envoyé avec succès',
 					'>1' => '%s mails de bienvenue ont été envoyés avec succès',
+				),
+			),
+			'amp_relocate'       => array(
+				'label'    => 'Localiser les adresses',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant la localisation des adresses',
+					'0'  => 'Aucune adresse n\'a été localisée',
+					'1'  => 'Une adresse a été localisée',
+					'>1' => '%s adresses ont été localisées',
 				),
 			),
 		),
