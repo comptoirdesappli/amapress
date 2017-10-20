@@ -522,6 +522,10 @@ class Amapress_Import_Users_CSV {
 				}
 				unset( $userdata['roles'] );
 
+				if ( $update ) {
+					unset( $userdata['role'] );
+				}
+
 				if ( empty( $userdata['user_login'] ) ) {
 					if ( ! empty( $userdata['first_name'] ) and ! empty( $userdata['last_name'] ) ) {
 						$userdata['user_login'] = sprintf( '%s.%s', strtolower( $userdata['first_name'] ), strtolower( $userdata['last_name'] ) );
