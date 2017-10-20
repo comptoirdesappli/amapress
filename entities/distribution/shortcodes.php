@@ -203,7 +203,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	if ( $is_current_user_resp_amap || $required_lieu_id ) {
 		foreach ( $all_dists as $dist ) {
 			$max_dates --;
-			if ( $max_dates <= 0 ) {
+			if ( $max_dates < 0 ) {
 				continue;
 			}
 			$dists[] = $dist;

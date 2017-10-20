@@ -1167,7 +1167,7 @@ class AmapressEntities {
 							'options'  => array(
 								array(
 									'type' => 'note',
-									'desc' => 'ici vous pouvez gérer...'
+									'desc' => 'Ici vous pouvez gérer les paramètres de la liste d\'émargement'
 								),
 							),
 							'tabs'     => array(
@@ -1205,11 +1205,21 @@ class AmapressEntities {
 										),
 										array(
 											'id'      => 'liste-emargement-print-font-size',
-											'name'    => 'Taille (en pt) d\'impression de la liste d\'émargement',
+											'name'    => 'Taille d\'impression',
+											'desc'    => 'Taille (en pt) d\'impression de la liste d\'émargement',
 											'type'    => 'number',
 											'step'    => 0.5,
 											'default' => '8',
 										),
+										array(
+											'id'      => 'liste-emargement-next-resp-count',
+											'name'    => 'Responsables prochaines distributions',
+											'desc'    => 'Nombre de distribution à afficher pour inscrire les prochains responsables de distribution',
+											'type'    => 'number',
+											'step'    => 1,
+											'default' => '8',
+										),
+										//liste-emargement-next-resp-count
 										array(
 											'type' => 'save',
 										),

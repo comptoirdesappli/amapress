@@ -436,7 +436,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
 	echo '<br/>';
-	echo do_shortcode( '[inscription-distrib show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=8 date=' . $from_date . ' lieu=' . $dist->getLieuId() . ']' );
+	echo do_shortcode( '[inscription-distrib show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist->getLieuId() . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
