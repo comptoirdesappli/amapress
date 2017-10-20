@@ -239,6 +239,15 @@ function amapress_echo_and_check_amapress_state_page() {
 //        admin_url('post.php?post=' . $static_front_id . '&action=edit')
 //    );
 
+	$google_key           = Amapress::getOption( 'google_map_key' );
+	$state['02_config'][] = amapress_get_check_state(
+		! empty( $google_key ) ? 'success' : 'error',
+		'Clé API Google',
+		'<strong>Requis</strong> : Une clé Google API est nécessaire pour le bon fonctionnement de la géolocalisation ',
+		admin_url( 'admin.php?page=amapress_options_page&tab=Google+API' )
+	);
+
+
 
 	$state['03_users'] = array();
 
