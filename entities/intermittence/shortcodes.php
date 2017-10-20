@@ -129,6 +129,15 @@ function amapress_intermittence_tags_handler( WPCF7_ContactForm $cf7 ) {
 	) );
 }
 
+function amapress_intermittence_desinscription_link( $atts = null ) {
+	return wp_nonce_url(
+		admin_url( 'admin-post.php?action=desinscription_intermittent' ),
+		'desinscription_intermittent',
+		'desinter_nonce'
+	);
+}
+
+
 
 //function amapress_intermittents_paniers_list_shortcode()
 //{

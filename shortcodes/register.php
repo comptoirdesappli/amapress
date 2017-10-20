@@ -70,6 +70,10 @@ function amapress_register_shortcodes() {
 		return 'COMING SOON';
 	} );
 
+	if ( amapress_is_user_logged_in() ) {
+		amapress_register_shortcode( 'intermittent-desinscription-href', 'amapress_intermittence_desinscription_link' );
+	}
+
 	amapress_register_shortcode( 'next-distrib-href', 'amapress_next_distrib_shortcode' );
 	amapress_register_shortcode( 'next-distrib-link', 'amapress_next_distrib_shortcode' );
 	amapress_register_shortcode( 'next-distrib-date', 'amapress_next_distrib_shortcode' );

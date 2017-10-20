@@ -79,11 +79,24 @@ function amapress_admin_action_inscription_intermittent() {
 	}
 }
 
+
 add_action( 'admin_post_nopriv_desinscription_intermittent', 'amapress_admin_action_nopriv_desinscription_intermittent' );
 function amapress_admin_action_nopriv_desinscription_intermittent() {
-	if ( isset( $_GET['key'] ) ) {
-		AmapressUser::logUserByLoginKey( $_GET['key'] );
-		amapress_admin_action_desinscription_intermittent();
+	if ( ! empty( $_GET['desinter_nonce'] ) ) {
+		header( 'Content-Type: text/html; charset=UTF-8' );
+		if ( ! wp_verify_nonce( $_GET['desinter_nonce'], 'desinscription_intermittent' ) ) {
+			wp_die( 'Ce lien de désinscription de la liste des intermittents est périmé.' );
+		}
+		if ( ! empty( $_REQUEST['email'] ) ) {
+			amapress_admin_action_desinscription_intermittent();
+		} else {
+			echo '<form method="post" action="' . amapress_intermittence_desinscription_link() . '">
+	<p>Veuillez entrer votre email pour vous désinscrire de la liste des intermittents.</p>
+	<label for="email">Email :</label>
+	<input type="text" name="email" />
+	<input type="submit" value="Désinscrire" />
+</form>';
+		}
 	} else {
 		amapress_redirect_login();
 	}
@@ -91,6 +104,11 @@ function amapress_admin_action_nopriv_desinscription_intermittent() {
 
 add_action( 'admin_post_desinscription_intermittent', 'amapress_admin_action_desinscription_intermittent' );
 function amapress_admin_action_desinscription_intermittent() {
+	if ( ! empty( $_REQUEST['desinter_nonce'] ) && empty( $_REQUEST['email'] ) ) {
+		amapress_admin_action_nopriv_desinscription_intermittent();
+
+		return;
+	}
 	header( 'Content-Type: text/html; charset=UTF-8' );
 
 	if ( ! isset( $_REQUEST['email'] ) ) {
