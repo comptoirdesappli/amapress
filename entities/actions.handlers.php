@@ -209,7 +209,7 @@ function amapress_handle_actions() {
 			global $post;
 
 			if ( ! empty( $post->post_content ) ) {
-				if ( strpos( $post->post_content, '[amapress-redirect-' ) ) {
+				if ( strpos( $post->post_content, '[amapress-redirect-' ) !== false ) {
 					do_shortcode( $post->post_content );
 				}
 			}
