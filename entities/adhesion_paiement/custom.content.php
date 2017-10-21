@@ -543,7 +543,7 @@ function amapress_paiements_editor( $post_id ) {
 
 	echo '<input id="amapress_paiements" name="amapress_paiements" type="hidden" value="">';
 
-	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table">';
+	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" width="100%" style="">';
 	echo "<tr>
 <th>Numéro de chèque</th>
 <th>Adhérent</th>
@@ -615,17 +615,17 @@ function amapress_paiements_editor( $post_id ) {
 		}
 
 		echo "<tr>
-<td class='paiement-numero'><input class='recopy-context-menu'  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
-<td class='paiement-adherent'><input class='recopy-context-menu' class='adherent_select' name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>
-<td class='paiement-banque'><input class='recopy-context-menu'  name='amapress_paiements_details[$id][banque]' placeholder='' maxlength='1000' type='text' value='$banque' /></td>
-<td class='paiement-amount'><input class='small-text paiement-amount-val' name='amapress_paiements_details[$id][amount]' placeholder='' type='number' min='0' step='0.01' value='$amount' />&nbsp;€</td>
-<td><select name='amapress_paiements_details[$id][date]' class='paiements_details'>
+<td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
+<td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>
+<td class='paiement-banque'><input class='recopy-context-menu' style=\"width: 100%\" name='amapress_paiements_details[$id][banque]' placeholder='' maxlength='1000' type='text' value='$banque' /></td>
+<td class='paiement-amount'><input class='small-text paiement-amount-val' style=\"width: 100%\" name='amapress_paiements_details[$id][amount]' placeholder='' type='number' min='0' step='0.01' value='$amount' />&nbsp;€</td>
+<td><select name='amapress_paiements_details[$id][date]' class='paiements_details' style=\"width: 100%\">
 $date_options
 </select>
 <td><select name='amapress_paiements_details[$id][status]' class=''>
 $status_options
 </select></td>
-<td><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_paiement(this)'></span></td>
+<td style='width: 32px'><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_paiement(this)'></span></td>
 </tr>";
 	}
 	echo '<tr><td></td><td></td><td id="paiement-amount-total" data-sum="' . $adhesion->getTotalAmount() . '"></td><td></td><td></td><td></td></tr>';
