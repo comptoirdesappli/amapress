@@ -98,14 +98,14 @@ class AmapressVisite extends Amapress_EventBase {
 
 			amapress_mail_current_user_desinscr( $this, $user_id );
 
-			return true;
+			return 'ok';
 		} else {
 			return 'not_inscr';
 		}
 	}
 
 	/** @return AmapressVisite[] */
-	public static function get_next_visites( $date = null, $order = 'NONE' ) {
+	public static function get_next_visites( $date = null, $order = 'ASC' ) {
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
