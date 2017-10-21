@@ -457,6 +457,9 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function getNextContratInstanceId() {
 		$contrat_instance_id   = $this->getContrat_instanceId();
+		if ( empty( $contrat_instance_id ) ) {
+			return null;
+		}
 		$contrat_instances_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $this->getContrat_instance()->getModel()->ID,
 			null, true );
 		$contrat_instances_ids = array_filter(
