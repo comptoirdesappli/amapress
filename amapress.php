@@ -1000,10 +1000,10 @@ if ( ! function_exists( 'wp_mail' ) ) {
 	}
 }
 
-add_filter( 'is_protected_meta', function ( $protected, $meta_key ) {
+add_filter( 'is_protected_meta', function ( $protected, $meta_key = null ) {
 	if ( strpos( $meta_key, 'amapress_' ) || strpos( $meta_key, 'amps_' ) ) {
 		return true;
 	}
 
 	return $protected;
-} );
+}, 10, 2 );
