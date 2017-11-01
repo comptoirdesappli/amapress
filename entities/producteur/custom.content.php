@@ -30,7 +30,7 @@ function amapress_get_custom_content_producteur( $content ) {
 //    ));
 //    amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Adresse de l\'exploitation', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-address' );
+	amapress_echo_panel_start( 'Adresse de la ferme', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-address' );
 	echo '<p class="visite-nom-exploitation">' .
 	     '<a href="' . $producteur->getPermalink() . '">' . $producteur->getNomExploitation() . '</a>' .
 	     '</p>';
