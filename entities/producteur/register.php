@@ -49,15 +49,15 @@ function amapress_register_entities_producteur( $entities ) {
 			'nom_exploitation'     => array(
 				'name'       => amapress__( 'Nom de l\'exploitation' ),
 				'type'       => 'text',
-				'desc'       => 'Nom de l\'exploitation',
+				'desc'       => 'Nom de la ferme',
 				'group'      => 'Emplacement',
 				'searchable' => true,
 			),
 			'adresse_exploitation' => array(
-				'name'         => amapress__( 'Adresse de l\'exploitation' ),
+				'name'         => amapress__( 'Adresse de la ferme' ),
 				'type'         => 'address',
 				'use_as_field' => true,
-				'desc'         => 'Adresse de l\'exploitation',
+				'desc'         => 'Adresse de la ferme',
 				'group'        => 'Emplacement',
 				'searchable'   => true,
 			),
