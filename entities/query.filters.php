@@ -975,15 +975,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 				$prod = $contrat->getModel()->getProducteur();
 				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-					if ( $prod->getReferent( $lieu_id ) == null ) {
-						continue;
-					}
-					$user_ids[] = $prod->getReferent( $lieu_id )->ID;
+					$user_ids = $user_ids + $prod->getReferentsIds( $lieu_id );
 				}
-				if ( $prod->getReferent() == null ) {
-					continue;
-				}
-				$user_ids[] = $prod->getReferent()->ID;
+				$user_ids = $user_ids + $prod->getReferentsIds();
 			}
 			$user_ids = implode( ',', array_unique( $user_ids ) );
 			if ( empty( $user_ids ) ) {

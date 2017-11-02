@@ -99,10 +99,7 @@ class AmapressUser extends TitanUserEntity {
 			$prod                = $contrat->getProducteur();
 			$had_local_referents = false;
 			foreach ( $lieu_ids as $lieu_id ) {
-				if ( $prod->getReferent( $lieu_id ) == null ) {
-					continue;
-				}
-				if ( $prod->getReferent( $lieu_id )->ID != $this->ID ) {
+				if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
 					continue;
 				}
 				$had_local_referents                           = true;
@@ -117,10 +114,7 @@ class AmapressUser extends TitanUserEntity {
 					);
 			}
 			if ( ! $had_local_referents ) {
-				if ( $prod->getReferent() == null ) {
-					continue;
-				}
-				if ( $prod->getReferent()->ID != $this->ID ) {
+				if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
 					continue;
 				}
 				$this_user_roles[ 'ref_prod_' . $contrat->ID ] =

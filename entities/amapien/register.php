@@ -264,10 +264,17 @@ function amapress_can_delete_user( $can, $user_id ) {
 		'amapress_lieu_distribution_referent',
 		'amapress_producteur_user',
 		'amapress_producteur_referent',
+		'amapress_producteur_referent2',
+		'amapress_producteur_referent3',
 		'amapress_user_commande_amapien'
 	);
-	foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-		$single_user_keys[] = "amapress_producteur_referent_{$lieu_id}";
+	$lieux_ids        = Amapress::get_lieu_ids();
+	if ( count( $lieux_ids ) > 1 ) {
+		foreach ( $lieux_ids as $lieu_id ) {
+			$single_user_keys[] = "amapress_producteur_referent_{$lieu_id}";
+			$single_user_keys[] = "amapress_producteur_referent2_{$lieu_id}";
+			$single_user_keys[] = "amapress_producteur_referent3_{$lieu_id}";
+		}
 	}
 	foreach ( $single_user_keys as $single_user_key ) {
 		$meta_query[] = array(

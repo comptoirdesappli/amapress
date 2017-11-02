@@ -278,7 +278,13 @@ function amapress_message_get_targets() {
 	$ret = array();
 	amapress_add_message_target( $ret, "post_type=amps_producteur|amapress_producteur_user", "Les producteurs", 'producteur' );
 	amapress_add_message_target( $ret, "user:role=responsable_amap", "Les responsables AMAP", 'resp-amap' );
-	amapress_add_message_target( $ret, "post_type=amps_producteur|amapress_producteur_referent", "Les referents producteurs", "referent-producteur" );
+	$refs = [ 'amapress_producteur_referent', 'amapress_producteur_referent2', 'amapress_producteur_referent3' ];
+	foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+		$refs[] = "amapress_producteur_referent_$lieu_id";
+		$refs[] = "amapress_producteur_referent2_$lieu_id";
+		$refs[] = "amapress_producteur_referent3_$lieu_id";
+	}
+	amapress_add_message_target( $ret, "post_type=amps_producteur|" . implode( ',', $refs ), "Les referents producteurs", "referent-producteur" );
 	amapress_add_message_target( $ret, "post_type=amps_lieu|amapress_lieu_distribution_referent", "Les referents lieux de distribution", "referent-lieu" );
 	$res['Responsables'] = $ret;
 

@@ -69,7 +69,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'desc'       => 'Accès',
 				'searchable' => true,
 			),
-			'user'                 => array(
+			'user'      => array(
 				'name'       => amapress__( 'Utilisateur' ),
 				'type'       => 'select-users',
 				'role'       => 'producteur',
@@ -78,13 +78,31 @@ function amapress_register_entities_producteur( $entities ) {
 				'desc'       => 'Utilisateur',
 				'searchable' => true,
 			),
-			'referent'             => array(
+			'referent'  => array(
 				'name'       => amapress__( 'Référent' ),
 				'type'       => 'select-users',
 				'role'       => amapress_can_access_admin_roles(),
 				'group'      => 'Référents',
 //                'required' => true,
 				'desc'       => 'Référent',
+				'searchable' => true,
+			),
+			'referent2' => array(
+				'name'       => amapress__( 'Référent 2' ),
+				'type'       => 'select-users',
+				'role'       => amapress_can_access_admin_roles(),
+				'group'      => 'Référents',
+//                'required' => true,
+				'desc'       => 'Référent 2',
+				'searchable' => true,
+			),
+			'referent3' => array(
+				'name'       => amapress__( 'Référent 3' ),
+				'type'       => 'select-users',
+				'role'       => amapress_can_access_admin_roles(),
+				'group'      => 'Référents',
+//                'required' => true,
+				'desc'       => 'Référent 3',
 				'searchable' => true,
 			),
 //            'actions' => array(
