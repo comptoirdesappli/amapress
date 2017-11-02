@@ -65,7 +65,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 		}
 
 		return array(
-			date_i18n( $fmt, mktime() ),
+			date_i18n( $fmt, time() ),
 		);
 	}
 
