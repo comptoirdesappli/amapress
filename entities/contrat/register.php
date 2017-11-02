@@ -164,6 +164,14 @@ jQuery(function($) {
 							'required' => true,
 							'desc'     => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
+						'quantite_variable'     => array(
+							'name'     => amapress__( 'Quantités personnalisées' ),
+							'type'     => 'checkbox',
+							'group'    => 'Gestion',
+							'readonly' => 'amapress_is_contrat_instance_readonly',
+							'required' => true,
+							'desc'     => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
+						),
 						'paiements'             => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
 							'type'     => 'multicheck',
@@ -205,44 +213,44 @@ jQuery(function($) {
 //                        ),
 
 					),
-					'commande'  => array(
-						'commande_liste_dates'   => array(
-							'name'        => amapress__( 'Calendrier des commandes' ),
-							'type'        => 'multidate',
-							'group'       => 'Commandes',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'required'    => true,
-							'show_column' => false,
-							'desc'        => '',
-						),
-						'commande_cannot_modify' => array(
-							'name'        => amapress__( 'Commandes fermes' ),
-							'type'        => 'checkbox',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'group'       => 'Commandes',
-							'required'    => false,
-							'show_column' => false,
-							'desc'        => '',
-						),
-						'commande_open_before'   => array(
-							'name'        => amapress__( 'Ouverture des commandes' ),
-							'type'        => 'number',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'group'       => 'Commandes',
-							'required'    => false,
-							'show_column' => false,
-							'desc'        => 'Ouverture des commandes x jours avant (0=tout de suite)',
-						),
-						'commande_close_before'  => array(
-							'name'        => amapress__( 'Fermeture des commandes' ),
-							'group'       => 'Commandes',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'type'        => 'number',
-							'required'    => false,
-							'show_column' => false,
-							'desc'        => 'Fermeture des commandes x jours avant',
-						),
-					),
+//					'commande'  => array(
+//						'commande_liste_dates'   => array(
+//							'name'        => amapress__( 'Calendrier des commandes' ),
+//							'type'        => 'multidate',
+//							'group'       => 'Commandes',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'required'    => true,
+//							'show_column' => false,
+//							'desc'        => '',
+//						),
+//						'commande_cannot_modify' => array(
+//							'name'        => amapress__( 'Commandes fermes' ),
+//							'type'        => 'checkbox',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'group'       => 'Commandes',
+//							'required'    => false,
+//							'show_column' => false,
+//							'desc'        => '',
+//						),
+//						'commande_open_before'   => array(
+//							'name'        => amapress__( 'Ouverture des commandes' ),
+//							'type'        => 'number',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'group'       => 'Commandes',
+//							'required'    => false,
+//							'show_column' => false,
+//							'desc'        => 'Ouverture des commandes x jours avant (0=tout de suite)',
+//						),
+//						'commande_close_before'  => array(
+//							'name'        => amapress__( 'Fermeture des commandes' ),
+//							'group'       => 'Commandes',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'type'        => 'number',
+//							'required'    => false,
+//							'show_column' => false,
+//							'desc'        => 'Fermeture des commandes x jours avant',
+//						),
+//					),
 				)
 			),
 			'date_debut'     => array(
@@ -557,7 +565,20 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 		return $ids;
 	}
 
-	$postmeta['amapress_adhesion_contrat_quantite'] = $ids;
+	$postmeta['amapress_adhesion_contrat_quantite']         = array_map(
+		function ( $id ) {
+			return $id['id'];
+		}, $ids );
+	$postmeta['amapress_adhesion_contrat_quantite_factors'] = array_combine(
+		array_map(
+			function ( $id ) {
+				return $id['id'];
+			}, $ids ),
+		array_map(
+			function ( $id ) {
+				return $id['quant'];
+			}, $ids )
+	);
 
 	return $postmeta;
 }
@@ -570,8 +591,8 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 		}
 
 		$id = amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name );
-		if ( $id > 0 ) {
-			return $id;
+		if ( $id !== - 1 ) {
+			return [ $id ];
 		}
 	}
 
@@ -585,7 +606,7 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 	foreach ( $values as $v ) {
 //        $v = trim($v);
 		$id = amapress_resolve_contrat_quantite_id( $contrat_instance_id, $v );
-		if ( $id <= 0 ) {
+		if ( $id === - 1 ) {
 			$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
 			$url              = admin_url( "post.php?post=$contrat_instance_id&action=edit" );
 			$errors[]         = "Valeur '$v' non valide pour '{$contrat_instance->getTitle()}' (Voir <$url>)";
@@ -597,37 +618,81 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 		return new WP_Error( 'cannot_parse', implode( ' ; ', $errors ) );
 	}
 
-	if ( count( $res ) == 1 ) {
-		return array_shift( $res );
-	} else {
-		return $res;
-	}
+//	if ( count( $res ) == 1 ) {
+	return $res;
+//	} else {
+//		return $res;
+//	}
 }
 
 //add_filter('amapress_resolve_contrat_quantite_id','amapress_resolve_contrat_quantite_id', 10, 2);
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
-	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
+	$quants           = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
+	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
 //    $cn = $contrat_quantite_name;
 	$contrat_quantite_name = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $contrat_quantite_name ) ) );
 	if ( empty( $contrat_quantite_name ) ) {
-		return 0;
+		return null;
 	}
+
 	foreach ( $quants as $quant ) {
 		if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
-			return $quant->ID;
+			return [
+				'id'    => $quant->ID,
+				'quant' => 1,
+			];
 		} else if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $quant->getSlug() ) ) ), $contrat_quantite_name ) === 0 ) {
-			return $quant->ID;
+			return [
+				'id'    => $quant->ID,
+				'quant' => 1,
+			];
 		} else if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $quant->getTitle() ) ) ), $contrat_quantite_name ) === 0 ) {
-			return $quant->ID;
-//                } else if (abs($quant->getQuantite() - @floatval(str_replace(',', '.', $cq))) < 0.01) {
+			return [
+				'id'    => $quant->ID,
+				'quant' => 1,
+			];
 		} else if ( str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
-			return $quant->ID;
+			return [
+				'id'    => $quant->ID,
+				'quant' => 1,
+			];
+		}
+
+		if ( $contrat_instance->isQuantiteVariable() ) {
+			foreach ( $quant->getQuantiteOptions() as $raw => $fmt ) {
+				if ( empty( $raw ) ) {
+					continue;
+				}
+				foreach ( [ $raw, $fmt, $raw . ' ', $fmt . ' ' ] as $prefix ) {
+					if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $prefix . $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
+						return [
+							'id'    => $quant->ID,
+							'quant' => floatval( $raw ),
+						];
+					} else if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $prefix . $quant->getSlug() ) ) ), $contrat_quantite_name ) === 0 ) {
+						return [
+							'id'    => $quant->ID,
+							'quant' => floatval( $raw ),
+						];
+					} else if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $prefix . $quant->getTitle() ) ) ), $contrat_quantite_name ) === 0 ) {
+						return [
+							'id'    => $quant->ID,
+							'quant' => floatval( $raw ),
+						];
+					} else if ( str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
+						return [
+							'id'    => $quant->ID,
+							'quant' => floatval( $raw ),
+						];
+					}
+				}
+			}
 		}
 	}
 //    var_dump($contrat_quantite_name);
 //    var_dump($cn);
 //    die();
-	return 0;
+	return -1;
 }
 
 function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo ) {
@@ -648,7 +713,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	echo "<div><label>Prix: </label><input type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></div>";
 //    echo '</td>';
 //    echo '<td>';
-	if ( $contrat_instance->isPanierVariable() ) {
+	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
 //        echo '<fieldset>';
 		echo "<div><label>Unité: </label><select class='required' name='amapress_quant_data[$id][unit]'>";
 		echo '<option value="">--Unité de prix--</option>';
@@ -657,8 +722,10 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">Au litre</option>';
 		echo '</select></div>';
 		echo "<div><label>Quantité(s): </label><input type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' /></div>";
-		echo "<div><label>Dispo de </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_from]' placeholder='Date début' value='$from' /></div>";
-		echo "<div><label> - à </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_to]' placeholder='Date fin' value='$to' /></div>";
+		if ( $contrat_instance->isPanierVariable() ) {
+			echo "<div><label>Dispo de </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_from]' placeholder='Date début' value='$from' /></div>";
+			echo "<div><label> - à </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_to]' placeholder='Date fin' value='$to' /></div>";
+		}
 //        echo '</fieldset>';
 	} else {
 		echo "<div><label>Quantité: </label><input type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Quantité' value='$quantite' /></div>";
@@ -889,9 +956,11 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 /** @param TitanFrameworkOption $option */
 function amapress_is_contrat_instance_readonly( $option ) {
 	$referer = parse_url( wp_get_referer() );
-	parse_str( $referer['query'], $path );
-	if ( isset( $_REQUEST['adv'] ) || ( isset( $path['adv'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) ) {
-		return false;
+	if ( isset( $referer['query'] ) ) {
+		parse_str( $referer['query'], $path );
+		if ( isset( $_REQUEST['adv'] ) || ( isset( $path['adv'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) ) {
+			return false;
+		}
 	}
 
 	$contrat_instance_id = $option->getPostID();

@@ -118,13 +118,21 @@ function amapress_register_entities_adhesion( $entities ) {
 			),
 			'contrat_quantite' => array(
 				'name'         => amapress__( 'Quantité' ),
-				'type'         => 'multicheck-posts',
+				'type'         => 'custom',
 				'readonly'     => true,
 				'hidden'       => true,
 				'group'        => '2/ Contrat',
 				'required'     => true,
 				'post_type'    => 'amps_contrat_quant',
 				'desc'         => 'Quantité',
+				'column'       => function ( $post_id, $option = null ) {
+					if ( ! $post_id ) {
+						return '';
+					}
+					$adh = new AmapressAdhesion( $post_id );
+
+					return esc_html( $adh->getContrat_quantites_AsString() );
+				},
 				'top_filter'   => array(
 					'name'        => 'amapress_contrat_qt',
 					'placeholder' => 'Toutes les quantités'
@@ -252,7 +260,8 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$ret               = '';
 	$adh               = new AmapressAdhesion( $post_id );
 	$date_debut        = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
-	$quants            = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
+	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
+	$adhesion_quantites = $adh->getContrat_quantites();
 	$paniers_variables = $adh->getPaniersVariables();
 	$ret               .= '<fieldset style="min-width: inherit">';
 	$contrats          = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
@@ -353,7 +362,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			if ( empty( $contrat_quants ) || count( $contrat_quants ) == 0 ) {
 				continue;
 			}
-			if ( count( $quants ) > 0 && count( array_intersect( $quants, $contrat_quants_ids ) ) == 0 ) {
+			if ( count( $adhesion_quantite_ids ) > 0 && count( array_intersect( $adhesion_quantite_ids, $contrat_quants_ids ) ) == 0 ) {
 				continue;
 			}
 
@@ -362,15 +371,27 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$ret         .= '<div>';
 			foreach ( $contrat_quants as $quantite ) {
 				$id  = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
-				$ret .= sprintf( '<label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s"/> %s</label><br>',
+
+				$quant_var_editor = '';
+				if ( $contrat_instance->isQuantiteVariable() ) {
+					$quant_var_editor .= "<select name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block'>";
+					$quant_var_editor .= tf_parse_select_options(
+						$quantite->getQuantiteOptions(),
+						isset( $adhesion_quantites[ $quantite->ID ] ) ? $adhesion_quantites[ $quantite->ID ]->getFactor() : null,
+						false );
+					$quant_var_editor .= '</select>';
+				}
+
+				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s"/> %s %s </label> <br />',
 					$id,
 					'multicheckReq exclusiveContrat', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_quants',
 					esc_attr( $quantite->ID ),
-					checked( in_array( $quantite->ID, $quants ), true, false ),
+					checked( in_array( $quantite->ID, $adhesion_quantite_ids ), true, false ),
 					esc_attr( $quantite->getContrat_instance()->ID ),
-					esc_html( $quantite->getTitle() )
+					$quant_var_editor,
+					esc_html( $quantite->getTitle())
 				);
 			}
 			$ret .= '</div>';
@@ -388,17 +409,18 @@ function amapress_save_adhesion_contrat_quantite_editor( $adhesion_id ) {
 	if ( ! empty( $_REQUEST['amapress_adhesion_contrat_vars'] ) ) {
 		update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_instance', intval( $_REQUEST['amapress_adhesion_contrat_vars'][0] ) );
 	} else if ( isset( $_REQUEST['amapress_adhesion_contrat_panier_vars'] ) ) {
-//        var_dump($_REQUEST['amapress_adhesion_contrat_panier_vars']);
-//        die();
 		update_post_meta( $adhesion_id, 'amapress_adhesion_panier_variables', $_REQUEST['amapress_adhesion_contrat_panier_vars'] );
 	} else if ( isset( $_REQUEST['amapress_adhesion_contrat_quants'] ) ) {
-//        var_dump($adhesion_id);
-//        var_dump($_REQUEST['amapress_adhesion_contrat_quants']);
 		$quants = array_map( 'intval', $_REQUEST['amapress_adhesion_contrat_quants'] );
 		if ( ! empty( $quants ) ) {
 			$first_quant = new AmapressContrat_quantite( $quants[0] );
 			update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_instance', $first_quant->getContrat_instance()->ID );
 			update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_quantite', $quants );
+
+			if ( isset( $_REQUEST['amapress_adhesion_contrat_quants_factors'] ) ) {
+				$factors = array_map( 'intval', $_REQUEST['amapress_adhesion_contrat_quants_factors'] );
+				update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_quantite_factors', $factors );
+			}
 		}
 	}
 }
@@ -527,13 +549,13 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 							$lieu_quant_sum   += $quant['quantite'];
 						}
 					} else {
-						foreach ( $adh->getContrat_quantites_IDs() as $adh_quant_id ) {
-							if ( $adh_quant_id != $quant->ID ) {
+						foreach ( $adh->getContrat_quantites() as $adh_quant ) {
+							if ( $adh_quant->getId() != $quant->ID ) {
 								continue;
 							}
 
-							$lieu_quant_count += 1;
-							$lieu_quant_sum   += $quant->getQuantite();
+							$lieu_quant_count += $adh_quant->getFactor();
+							$lieu_quant_sum   += $adh_quant->getQuantite();
 						}
 					}
 				}
@@ -543,13 +565,13 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 		$all_quant_count = 0;
 		$all_quant_sum   = 0;
 		foreach ( $adhesions as $adh ) {
-			foreach ( $adh->getContrat_quantites_IDs() as $adh_quant_id ) {
-				if ( $adh_quant_id != $quant->ID ) {
+			foreach ( $adh->getContrat_quantites() as $adh_quant ) {
+				if ( $adh_quant->getId() != $quant->ID ) {
 					continue;
 				}
 
-				$all_quant_count += 1;
-				$all_quant_sum   += $quant->getQuantite();
+				$all_quant_count += $adh_quant->getFactor();
+				$all_quant_sum   += $adh_quant->getQuantite();
 			}
 		}
 		$row['all'] = "$all_quant_count ($all_quant_sum)";
@@ -559,7 +581,8 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
 
 	/** @var AmapressDistribution $dist */
-	$dist = array_shift( AmapressDistribution::get_next_distributions( $date, 'ASC' ) );
+	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
+	$dist          = array_shift( $next_distribs );
 
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
 <p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
@@ -736,7 +759,8 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 			);
 			$contrat_adhesion        = null;
 			if ( count( $emetteur_paiements ) > 0 ) {
-				$contrat_adhesion = array_shift( array_values( $emetteur_paiements ) )->getAdhesion();
+				$emetteur_paiements = array_values( $emetteur_paiements );
+				$contrat_adhesion   = array_shift( $emetteur_paiements )->getAdhesion();
 			}
 			if ( $contrat_adhesion && ( $date < $contrat_adhesion->getDate_debut() || $date > $contrat_adhesion->getDate_fin() ) ) {
 				$val = '###';
@@ -759,7 +783,8 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 	}
 
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
-	$dist = array_shift( AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' ) );
+	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
+	$dist          = array_shift( $next_distribs );
 
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
 <p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .

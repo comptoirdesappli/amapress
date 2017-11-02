@@ -471,10 +471,10 @@ function amapress_paiements_editor( $post_id ) {
 		$all_paiements_by_dates[ $k ] = array_merge( array( '_all' => $v ),
 			array_group_by( $v, function ( AmapressAmapien_paiement $p ) {
 				return implode( ',', array_map( function ( $vv ) {
-					/** @var AmapressContrat_quantite $vv */
-					$code = $vv->getCode();
+					/** @var AmapressAdhesionQuantite $vv */
+					$code = $vv->getContratQuantite()->getCode();
 
-					return ! empty( $code ) ? $code : $vv->getTitle();
+					return ! empty( $code ) ? $code : $vv->getContratQuantite()->getTitle();
 				}, $p->getAdhesion()->getContrat_quantites() ) );
 			} )
 		);

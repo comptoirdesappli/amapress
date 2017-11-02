@@ -73,6 +73,9 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_debut' );
 	}
 
+	public function isQuantiteVariable() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_quantite_variable' );
+	}
 
 	public function isPanierVariable() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_panier_variable' );

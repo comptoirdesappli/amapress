@@ -4,6 +4,84 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+class AmapressAdhesionQuantite {
+	/** @var  AmapressContrat_quantite */
+	private $quantite;
+	/** @var  float */
+	private $factor;
+
+	/**
+	 * AmapressAdhesionQuantite constructor.
+	 *
+	 * @param AmapressContrat_quantite $quantite
+	 * @param float $factor
+	 */
+	public function __construct( AmapressContrat_quantite $quantite, $factor ) {
+		$this->quantite = $quantite;
+		$this->factor   = ! empty( $factor ) ? $factor : 1;
+	}
+
+	/**
+	 * @return AmapressContrat_quantite
+	 */
+	public function getContratQuantite() {
+		return $this->quantite;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getFactor() {
+		return $this->factor;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCode() {
+		$quant = $this->getContratQuantite();
+		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
+			return $this->getFactor() . ' ' . $quant->getCode();
+		} else {
+			return $quant->getCode();
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTitle() {
+		$quant = $this->getContratQuantite();
+		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
+			return $this->getFactor() . ' ' . $quant->getTitle();
+		} else {
+			return $quant->getTitle();
+		}
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getId() {
+		return $this->getContratQuantite()->ID;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getQuantite() {
+		return $this->getFactor() * $this->getContratQuantite()->getQuantite();
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getPrice() {
+		return $this->getFactor() * $this->getContratQuantite()->getPrix_unitaire();
+	}
+
+}
+
 class AmapressAdhesion extends TitanEntity {
 	const INTERNAL_POST_TYPE = 'amps_adhesion';
 	const POST_TYPE = 'adhesion';
@@ -71,10 +149,23 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	/**
-	 * @return AmapressContrat_quantite[]
+	 * @return AmapressAdhesionQuantite[]
 	 */
 	public function getContrat_quantites() {
-		return $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
+		$factors = $this->getCustomAsFloatArray( 'amapress_adhesion_contrat_quantite_factors' );
+		$quants  = $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
+
+//		amapress_dump($this->getCustom('amapress_adhesion_contrat_quantite'));
+		$ret = [];
+		foreach ( $quants as $quant ) {
+			$factor = 1;
+			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
+				$factor = $factors[ $quant->ID ];
+			}
+			$ret[ $quant->ID ] = new AmapressAdhesionQuantite( $quant, $factor );
+		}
+
+		return $ret;
 	}
 
 	/** @return array */
@@ -124,7 +215,7 @@ class AmapressAdhesion extends TitanEntity {
 		} else {
 			$quant_labels = array_map(
 				function ( $vv ) {
-					/** @var AmapressContrat_quantite $vv */
+					/** @var AmapressAdhesionQuantite $vv */
 					return $vv->getTitle();
 				}
 				, $this->getContrat_quantites() );
@@ -138,9 +229,9 @@ class AmapressAdhesion extends TitanEntity {
 			return 'Var.';
 		}
 
-		$codes  = array_map( function ( $q ) {
-			/** @var AmapressContrat_quantite $q */
-			return $q->getCode();
+		$codes = array_map( function ( $vv ) {
+			/** @var AmapressAdhesionQuantite $vv */
+			return $vv->getCode();
 		}, $this->getContrat_quantites() );
 //		$quants = array_map( function ( $q ) {
 //			/** @var AmapressContrat_quantite $q */
@@ -183,7 +274,7 @@ class AmapressAdhesion extends TitanEntity {
 			}
 		} else {
 			foreach ( $this->getContrat_quantites() as $c ) {
-				$sum += $c->getPrix_unitaire();
+				$sum += $c->getPrice();
 			}
 		}
 
@@ -295,6 +386,7 @@ class AmapressAdhesion extends TitanEntity {
 
 	private static $paiement_cache = null;
 
+	/** @return  AmapressAdhesion[] */
 	public static function getAllActiveByUserId() {
 		if ( ! self::$paiement_cache ) {
 			$cache = array();
@@ -430,7 +522,7 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	/**
-	 * @return AmapressContrat_quantite[]
+	 * @return AmapressAdhesionQuantite[]
 	 */
 	public static function getQuantitesForUser( $user_id = null, $contrat_id = null, $date = null, $ignore_renouv_delta = false ) {
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
@@ -515,8 +607,8 @@ class AmapressAdhesion extends TitanEntity {
 		$new_quants_ids = array();
 		foreach ( $quants as $quant ) {
 			foreach ( $new_quants as $new_quant ) {
-				if ( $new_quant->getCode() == $quant->getCode()
-				     || $new_quant->getTitle() == $quant->getTitle()
+				if ( $new_quant->getCode() == $quant->getContratQuantite()->getCode()
+				     || $new_quant->getTitle() == $quant->getContratQuantite()->getTitle()
 				) {
 					$new_quants_ids[] = $new_quant->ID;
 				}

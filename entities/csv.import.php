@@ -145,7 +145,23 @@ function amapress_import_posts_adhesion_is_multi_field( $is_multi, $column_name 
 add_filter( 'amapress_import_adhesion_apply_multi_to_posts_meta', 'amapress_import_adhesion_apply_multi_to_posts_meta', 10, 3 );
 function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_key, $multi_value ) {
 	$postmeta['amapress_adhesion_contrat_instance'] = $multi_key;
-	$postmeta['amapress_adhesion_contrat_quantite'] = $multi_value;
+
+	$postmeta['amapress_adhesion_contrat_quantite']         = array_map(
+		function ( $id ) {
+			return $id['id'];
+		}, $multi_value );
+	$postmeta['amapress_adhesion_contrat_quantite_factors'] = array_combine(
+		array_map(
+			function ( $id ) {
+				return $id['id'];
+			}, $multi_value ),
+		array_map(
+			function ( $id ) {
+				return $id['quant'];
+			}, $multi_value )
+	);
+//	$postmeta['amapress_adhesion_contrat_quantite'] = array_keys($multi_value);
+//	$postmeta['amapress_adhesion_contrat_quantite_factors'] = $multi_value;
 
 	return $postmeta;
 }
@@ -515,6 +531,7 @@ function amapress_csv_posts_adhesion_import_required_headers( $required_headers,
 	if ( $has_multi ) {
 		unset( $required_headers['amapress_adhesion_contrat_instance'] );
 		unset( $required_headers['amapress_adhesion_contrat_quantite'] );
+		unset( $required_headers['amapress_adhesion_contrat_quantite_factors'] );
 	}
 
 //    var_dump($_REQUEST);

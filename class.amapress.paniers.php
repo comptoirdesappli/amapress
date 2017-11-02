@@ -360,7 +360,7 @@ class AmapressPaniers {
 				foreach ( $adhesions as $sous ) {
 					$adh = new AmapressAdhesion( $sous->ID );
 					foreach ( $adh->getContrat_quantites() as $q ) {
-						$quant  = floatval( $q->getQuantite() );
+						$quant  = $q->getQuantite();
 						$factor += $quant;
 					}
 				}
@@ -913,7 +913,8 @@ class AmapressPaniers {
 			$user_quantites = null;
 			if ( amapress_is_user_logged_in() ) {
 				$user_quantites = array_map( function ( $v ) {
-					return $v->ID;
+					/** @var AmapressAdhesionQuantite $v */
+					return $v->getId();
 				}, AmapressAdhesion::getQuantitesForUser( null, null, $pani->getDate() ) );
 			}
 
