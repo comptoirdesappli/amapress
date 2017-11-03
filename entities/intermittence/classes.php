@@ -434,7 +434,14 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 //				$current_amapien = AmapressUser::getBy(amapress_current_user_id());
 //				return $current_amapien->getProperty($name);
 			default:
-				return $this->getAdherent()->getProperty( $name );
+				if ( strpos( $name, 'adherent-' ) === 0 ) {
+					return $this->getAdherent()->getProperty( substr( $name, strlen( 'adherent-' ) ) );
+				}
+				if ( strpos( $name, 'repreneur-' ) === 0 ) {
+					return $this->getAdherent()->getProperty( substr( $name, strlen( 'repreneur-' ) ) );
+				}
+
+				return parent::getProperty( $name );
 		}
 	}
 
