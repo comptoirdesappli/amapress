@@ -6,60 +6,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'amapress_do_query_action_distribution_inscr_resp', 'amapress_do_query_action_distribution_inscr_resp' );
 function amapress_do_query_action_distribution_inscr_resp() {
-	if ( ! amapress_is_user_logged_in() ) {
-		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
-	}
-
-	$dist_id = get_the_ID();
-	$dist    = new AmapressDistribution( $dist_id );
-
-	if ( ! $dist->isUserMemberOf( amapress_current_user_id(), true ) ) {
-		wp_die( 'Vous ne faites pas partie de cette distribution.' );
-	}
-
-	$redir_url           = get_post_permalink( $dist_id );
-	$responsables        = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
-	$needed_responsables = AmapressDistributions::get_required_responsables( $dist_id );
-	if ( ! $responsables ) {
-		$responsables = array();
-	}
-	if ( in_array( amapress_current_user_id(), $responsables ) ) {
-		wp_redirect_and_exit( add_query_arg( array( 'message' => 'already_in_list' ), $redir_url ) );
-	} else if ( count( $responsables ) >= $needed_responsables ) {
-		wp_redirect_and_exit( add_query_arg( array( 'message' => 'list_full' ), $redir_url ) );
+	$amap_event = new AmapressDistribution( get_the_ID() );
+	$res        = $amap_event->inscrireResponsable( amapress_current_user_id() );
+	if ( 'list_full' == $res ) {
+		wp_redirect_and_exit( add_query_arg( array( 'message' => 'list_full' ), $amap_event->getPermalink() ) );
+	} else if ( 'already_in_list' == $res ) {
+		wp_redirect_and_exit( add_query_arg( array( 'message' => 'already_in_list' ), $amap_event->getPermalink() ) );
 	} else {
-		$responsables[] = amapress_current_user_id();
-		update_post_meta( $dist_id, 'amapress_distribution_responsables', $responsables );
-
-		amapress_mail_current_user_inscr( new AmapressDistribution( $dist_id ) );
-
-		wp_redirect_and_exit( add_query_arg( array( 'message' => 'inscr_success' ), $redir_url ) );
+		wp_redirect_and_exit( add_query_arg( array( 'message' => 'inscr_success' ), $amap_event->getPermalink() ) );
 	}
 }
 
 add_action( 'amapress_do_query_action_distribution_desinscr_resp', 'amapress_do_query_action_distribution_desinscr_resp' );
 function amapress_do_query_action_distribution_desinscr_resp() {
-	if ( ! amapress_is_user_logged_in() ) {
-		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
-	}
-
-	$dist_id      = get_the_ID();
-	$redir_url    = get_post_permalink( $dist_id );
-	$responsables = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
-	if ( ! $responsables ) {
-		$responsables = array();
-	}
-
-	if ( ( $key = array_search( amapress_current_user_id(), $responsables ) ) !== false ) {
-		unset( $responsables[ $key ] );
-
-		update_post_meta( $dist_id, 'amapress_distribution_responsables', $responsables );
-
-		amapress_mail_current_user_desinscr( new AmapressDistribution( $dist_id ) );
-
-		wp_redirect_and_exit( add_query_arg( array( 'message' => 'inscr_success' ), $redir_url ) );
+	$amap_event = new AmapressDistribution( get_the_ID() );
+	$res        = $amap_event->desinscrireResponsable( amapress_current_user_id() );
+	if ( 'not_inscr' == $res ) {
+		wp_redirect_and_exit( add_query_arg( array( 'message' => 'not_inscr' ), $amap_event->getPermalink() ) );
 	} else {
-		wp_redirect_and_exit( add_query_arg( array( 'message' => 'not_inscr' ), $redir_url ) );
+		wp_redirect_and_exit( add_query_arg( array( 'message' => 'desinscr_success' ), $amap_event->getPermalink() ) );
 	}
 }
 
@@ -234,7 +199,6 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			return implode( '_', $user_ids );
 		} );
 
-//	var_dump($all_adhs);
 	/** @var AmapressAdhesion[] $adhs */
 	foreach ( $adhesions as $user_ids => $adhs ) {
 		$line = array();

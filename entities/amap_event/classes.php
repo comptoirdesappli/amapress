@@ -151,7 +151,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			$participants[] = $user_id;
 			update_post_meta( $this->ID, 'amapress_amap_event_participants', $participants );
 
-			amapress_mail_current_user_inscr( $this, $user_id );
+			amapress_mail_current_user_inscr( $this, $user_id, 'amap_event' );
 
 			return 'ok';
 		}
@@ -172,7 +172,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 
 			update_post_meta( $this->ID, 'amapress_amap_event_participants', $participants );
 
-			amapress_mail_current_user_desinscr( $this, $user_id );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'amap_event' );
 
 			return true;
 		} else {

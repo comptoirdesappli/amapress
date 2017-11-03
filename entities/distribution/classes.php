@@ -130,7 +130,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			$responsables[] = $user_id;
 			update_post_meta( $this->ID, 'amapress_distribution_responsables', $responsables );
 
-			amapress_mail_current_user_inscr( $this, $user_id );
+			amapress_mail_current_user_inscr( $this, $user_id, 'distrib' );
 
 			return 'ok';
 		}
@@ -151,7 +151,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 			update_post_meta( $this->ID, 'amapress_distribution_responsables', $responsables );
 
-			amapress_mail_current_user_desinscr( $this, $user_id );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib' );
 
 			return 'ok';
 		} else {

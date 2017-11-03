@@ -247,22 +247,26 @@ function amapress_mail_to_current_user( $subject, $message, $user_id = null, Tit
 	amapress_wp_mail( implode( ',', $user->getAllEmails() ), $subject, $message );
 }
 
-function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null ) {
-//    $post = get_post($post_id);
-//    $post_title = $post->post_title;
-//    $post_link = get_post_permalink($post_id);
-//    $site_name = get_bloginfo('name');
-	amapress_mail_to_current_user( Amapress::getOption( 'inscr-event-mail-subject' ), Amapress::getOption( 'inscr-event-mail-content' ), $user_id, $post );
-//    amapress_mail_to_current_user("Votre participation à {$post_title}",
-//        "Bonjour,<br/><br/>Votre participation à <a href='$post_link'>$post_title</a> a bien été enregistrée<br/><br/>Bien cordialement,<br/><br/>$site_name", $user_id);
+function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $event_type = 'event' ) {
+	$subject = Amapress::getOption( "inscr-$event_type-mail-subject" );
+	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
+		$subject = Amapress::getOption( 'inscr-event-mail-subject' );
+	}
+	$content = Amapress::getOption( "inscr-$event_type-mail-content" );
+	if ( empty( $content ) || empty( trim( $content ) ) ) {
+		$content = Amapress::getOption( 'inscr-event-mail-content' );
+	}
+	amapress_mail_to_current_user( $subject, $content, $user_id, $post );
 }
 
-function amapress_mail_current_user_desinscr( TitanEntity $post, $user_id = null ) {
-//    $post = get_post($post_id);
-//    $post_title = $post->post_title;
-//    $post_link = get_post_permalink($post_id);
-//    $site_name = get_bloginfo('name');
-//    amapress_mail_to_current_user("Désinscription de votre participation à {$post_title}",
-//        "Bonjour,<br/><br/>Votre participation à <a href='$post_link'>$post_title</a> a bien été desenregistrée<br/><br/>Bien cordialement,<br/><br/>$site_name", $user_id);
-	amapress_mail_to_current_user( Amapress::getOption( 'desinscr-event-mail-subject' ), Amapress::getOption( 'desinscr-event-mail-content' ), $user_id, $post );
+function amapress_mail_current_user_desinscr( TitanEntity $post, $user_id = null, $event_type = 'event' ) {
+	$subject = Amapress::getOption( "inscr-$event_type-mail-subject" );
+	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
+		$subject = Amapress::getOption( 'desinscr-event-mail-subject' );
+	}
+	$content = Amapress::getOption( "inscr-$event_type-mail-content" );
+	if ( empty( $content ) || empty( trim( $content ) ) ) {
+		$content = Amapress::getOption( 'desinscr-event-mail-content' );
+	}
+	amapress_mail_to_current_user( $subject, $content, $user_id, $post );
 }

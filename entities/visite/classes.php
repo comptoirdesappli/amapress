@@ -75,7 +75,7 @@ class AmapressVisite extends Amapress_EventBase {
 			$participants[] = $user_id;
 			update_post_meta( $this->ID, 'amapress_visite_participants', $participants );
 
-			amapress_mail_current_user_inscr( $this, $user_id );
+			amapress_mail_current_user_inscr( $this, $user_id, 'visite' );
 
 			return 'ok';
 		}
@@ -96,7 +96,7 @@ class AmapressVisite extends Amapress_EventBase {
 
 			update_post_meta( $this->ID, 'amapress_visite_participants', $participants );
 
-			amapress_mail_current_user_desinscr( $this, $user_id );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'visite' );
 
 			return 'ok';
 		} else {
