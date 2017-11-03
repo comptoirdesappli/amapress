@@ -52,6 +52,10 @@ class TitanEntity {
 		return 0;
 	}
 
+	public function getPropertiesDescriptions() {
+		return [];
+	}
+
 	public function getProperty( $name ) {
 		$this->ensure_init();
 
