@@ -536,19 +536,19 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 			}
 		case 'next-emargement-href';
 			if ( $next_distrib ) {
-				return $next_distrib->getPermalink( 'liste-emargement' );
+				return $next_distrib->getListeEmargementHref();
 			}
 			break;
 		case 'next-emargement-link';
 			if ( $next_distrib ) {
-				return Amapress::makeLink( $next_distrib->getPermalink( 'liste-emargement' ), $content, false );
+				return Amapress::makeLink( $next_distrib->getListeEmargementHref(), $content, false );
 			}
 			break;
 		case 'amapress-redirect-next-distrib';
 			wp_redirect_and_exit( $next_distrib->getPermalink() );
 			break;
 		case 'amapress-redirect-next-emargement';
-			wp_redirect_and_exit( $next_distrib->getPermalink( 'liste-emargement' ) );
+			wp_redirect_and_exit( $next_distrib->getListeEmargementHref() );
 			break;
 	}
 

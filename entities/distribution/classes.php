@@ -427,4 +427,38 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		return $ret;
 	}
+
+	public function getProperty( $name ) {
+		switch ( $name ) {
+			case 'lien_liste_emargement':
+				return Amapress::makeLink( $this->getListeEmargementHref() );
+			case 'lieu_instruction':
+				return $this->getLieu()->getInstructions_privee();
+			case  'liste_contrats':
+				return implode( ', ', array_map(
+					function ( $c ) {
+						/** @var AmapressContrat_instance $c */
+						return $c->getModel()->getTitle();
+					}, $this->getContrats()
+				) );
+			case 'lien_distrib':
+				return Amapress::makeLink( $this->getPermalink() );
+			case  'lien-resp-distrib-ical':
+				return add_query_arg(
+					[
+						'events_id'    => $this->ID,
+						'events_types' => 'distribution,resp-distribution'
+					],
+					Amapress_Agenda_ICAL_Export::get_link_href() );
+			case  'lien-distrib-ical':
+				return parent::getProperty( 'lien-evenement-ical' );
+		}
+
+
+		return parent::getProperty( $name );
+	}
+
+	public function getListeEmargementHref() {
+		return $this->getPermalink( 'liste-emargement' );
+	}
 }
