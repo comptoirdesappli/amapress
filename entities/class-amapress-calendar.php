@@ -158,4 +158,49 @@ class Amapress_Calendar {
 
 		return $ret;
 	}
+
+	public static function get_events( $events_id, $events_types = [], $user_id = null ) {
+		if ( ! $user_id ) {
+			$user_id = amapress_current_user_id();
+		}
+
+		$events = [];
+		switch ( get_post_type( $events_id ) ) {
+			case AmapressDistribution::INTERNAL_POST_TYPE:
+				$events[] = new AmapressDistribution( $events_id );
+				break;
+			case AmapressAdhesion_paiement::INTERNAL_POST_TYPE:
+				$events[] = new AmapressAdhesion_paiement( $events_id );
+				break;
+			case AmapressAmap_event::INTERNAL_POST_TYPE:
+				$events[] = new AmapressAmap_event( $events_id );
+				break;
+			case AmapressAssemblee_generale::INTERNAL_POST_TYPE:
+				$events[] = new AmapressAssemblee_generale( $events_id );
+				break;
+			case AmapressCommande::INTERNAL_POST_TYPE:
+				$events[] = new AmapressCommande( $events_id );
+				break;
+			case AmapressIntermittence_panier::INTERNAL_POST_TYPE:
+				$events[] = new AmapressIntermittence_panier( $events_id );
+				break;
+			case AmapressAmapien_paiement::INTERNAL_POST_TYPE:
+				$events[] = new AmapressAmapien_paiement( $events_id );
+				break;
+			case AmapressPanier::INTERNAL_POST_TYPE:
+				$events[] = new AmapressPanier( $events_id );
+				break;
+			case AmapressVisite::INTERNAL_POST_TYPE:
+				$events[] = new AmapressVisite( $events_id );
+				break;
+		}
+		Amapress_EventBase::sort_events( $events );
+
+		$ret = array();
+		foreach ( $events as $ev ) {
+			$ret = array_merge( $ret, $ev->get_related_events( $user_id ) );
+		}
+
+		return $ret;
+	}
 }

@@ -55,13 +55,27 @@ class Amapress_Agenda_ICAL_Export {
 	 */
 	public static function export_events() {
 		//Give the ICAL a filename
-		$filename = urlencode( 'agenda-ical-' . date( 'Y-m-d-H-i' ) . '.ics' );
 
 //        $user_id = null;
 		if ( isset( $_GET['key'] ) ) {
 			AmapressUser::logUserByLoginKey( $_GET['key'] );
 		}
-		$events = Amapress_Calendar::get_next_events();
+		$events_types = explode( ',', ! empty( $_GET['events_types'] ) ? $_GET['events_types'] : '' );
+		$events       = [];
+		if ( ! empty( $_GET['events_id'] ) ) {
+			$events_id  = $_GET['events_id'];
+			$filename   = urlencode( 'events-' . $events_id . '-ical-' . date( 'Y-m-d-H-i' ) . '.ics' );
+			$all_events = Amapress_Calendar::get_events( $events_id );
+		} else {
+			$filename   = urlencode( 'agenda-ical-' . date( 'Y-m-d-H-i' ) . '.ics' );
+			$all_events = Amapress_Calendar::get_next_events();
+		}
+
+		foreach ( $all_events as $ev ) {
+			if ( empty( $events_types ) || in_array( $ev->getType(), $events_types ) ) {
+				$events[] = $ev;
+			}
+		}
 
 		//Collect output
 		ob_start();
@@ -73,24 +87,12 @@ class Amapress_Agenda_ICAL_Export {
 		header( 'Cache-Control: no-cache, no-store, must-revalidate' ); // HTTP 1.1
 		header( 'Pragma: no-cache' ); // HTTP 1.0
 		header( 'Expires: 0' ); // Proxies
-		?>
-        BEGIN:VCALENDAR
-        VERSION:2.0
-        PRODID:-//Amapress//NONSGML Events//FR
-        CALSCALE:GREGORIAN
-        X-WR-CALNAME:<?php echo self::ical_split( 'X-WR-CALNAME:', get_bloginfo( 'name' ) ); ?> - Agenda
-		<?php
 
-//        if (amapress_is_user_logged_in()) {
-//            if (AmapressContrats::is_user_active_intermittent()) {
-//                $events = AmapressIntermittence_panier::get_intermittent_next_events();
-//            } else {
-//                $events = AmapressEvents::get_user_next_events();
-//            }
-//        }
-//        else
-//            $events = AmapressEvents::get_everyone_next_events();
-
+		echo "BEGIN:VCALENDAR\n";
+		echo "VERSION:2.0\n";
+		echo "PRODID:-//Amapress//NONSGML Events//FR\n";
+		echo "CALSCALE:GREGORIAN\n";
+		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', get_bloginfo( 'name' ) ) . " - Agenda\n";
 
 		$offset = get_option( 'gmt_offset' ) * 3600;
 		foreach ( $events as $event ) {
@@ -106,40 +108,25 @@ class Amapress_Agenda_ICAL_Export {
 			$reoccurrence_rule = false;                                       //event reoccurrence rule.
 			$location          = $event->getLieu()->getLieuTitle();                          //event location
 			$organiser         = get_bloginfo( 'name' );                                //event organiser
-			?>
-            BEGIN:VEVENT
-            UID:<?php echo $uid; ?>
 
-            SUMMARY:<?php echo self::ical_split( 'SUMMARY:', $title ); ?>
-
-            CATEGORIES:<?php echo self::ical_split( 'CATEGORIES:', $categories ); ?>
-
-            DTSTAMP:<?php echo $dtstamp; ?>
-
-            CREATED:<?php echo $created_date; ?>
-
-            DTSTART:<?php echo $start_date; ?>
-
-            DTEND:<?php echo $end_date; ?>
-
-			<?php if ( $reoccurrence_rule ): ?>
-                RRULE:<?php echo $reoccurrence_rule; ?>
-
-			<?php endif; ?>
-            LOCATION:<?php echo self::ical_split( 'LOCATION:', $location ); ?>
-
-            ORGANIZER:<?php echo self::ical_split( 'ORGANIZER:', $organiser ); ?>
-
-            URL:<?php echo self::ical_split( 'URL:', $url ); ?>
-
-            DESCRIPTION:<?php echo self::ical_split( 'DESCRIPTION:', $desc ); ?>
-
-            END:VEVENT
-			<?php
+			echo "BEGIN:VEVENT\n";
+			echo "UID:" . $uid . "\n";
+			echo "SUMMARY:" . self::ical_split( 'SUMMARY:', $title ) . "\n";
+			echo "CATEGORIES:" . self::ical_split( 'CATEGORIES:', $categories ) . "\n";
+			echo "DTSTAMP:" . $dtstamp . "\n";
+			echo "CREATED:" . $created_date . "\n";
+			echo "DTSTART:" . $start_date . "\n";
+			echo "DTEND:" . $end_date . "\n";
+			if ( $reoccurrence_rule ) {
+				echo "RRULE:" . $reoccurrence_rule . "\n";
+			}
+			echo "LOCATION:" . self::ical_split( 'LOCATION:', $location ) . "\n";
+			echo "ORGANIZER:" . self::ical_split( 'ORGANIZER:', $organiser ) . "\n";
+			echo "URL:" . self::ical_split( 'URL:', $url ) . "\n";
+			echo "DESCRIPTION:" . self::ical_split( 'DESCRIPTION:', $desc ) . "\n";
+			echo "END:VEVENT\n";
 		}
-		?>
-        END:VCALENDAR
-		<?php
+		echo "END:VCALENDAR\n";
 
 		//Collect output and echo
 		$eventsical = ob_get_contents();
