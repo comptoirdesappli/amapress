@@ -109,6 +109,10 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 
 	$columns = array(
 		array(
+			'title' => 'Pris',
+			'data'  => 'check',
+		),
+		array(
 			'title' => 'Nom',
 			'data'  => array(
 				'_'    => 'last_name',
@@ -122,10 +126,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 				'sort' => 'first_name',
 			)
 		),
-		array(
-			'title' => 'Pris',
-			'data'  => 'check',
-		),
+
 	);
 	if ( Amapress::getOption( 'liste-emargement-show-address' ) ) {
 		$columns[] = array(
@@ -283,12 +284,9 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
             .edit-user-comment { color: white; }
             .edit-user-comment:hover { color: black; !important; }
             @media print {
-            	/*table { table-layout: fixed !important; }*/
             	.edit-user-comment {display: none;}
                 * { margin: 0 !important; 
                 	padding: 0 !important; 
-                	width: 100% !important; 
-                	max-width: 100% !important; 
                 	color:black !important;
                 	font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt !important; }
                 #liste-emargement a.contrat { box-shadow: none !important; text-decoration: none !important; color: #000000!important; border: none !important;}
@@ -375,7 +373,11 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<br/>';
 	echo '<h3 class="liste-emargement">Liste</h3>';
 	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
-		array( 'paging' => false, 'searching' => false ) );
+		array(
+			'paging'    => false,
+			'searching' => false,
+			'aaSorting' => [ [ 1, 'asc' ] ]
+		) );
 
 	foreach ( $dist->getContrats() as $contrat ) {
 		if ( $contrat->isPanierVariable() ) {
