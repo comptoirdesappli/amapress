@@ -582,7 +582,13 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 
 	/** @var AmapressDistribution $dist */
 	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
-	$dist          = array_shift( $next_distribs );
+	$dist          = null;
+	foreach ( $next_distribs as $distrib ) {
+		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {
+			$dist = $distrib;
+			break;
+		}
+	}
 
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
 <p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
@@ -795,7 +801,13 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
 	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
-	$dist          = array_shift( $next_distribs );
+	$dist          = null;
+	foreach ( $next_distribs as $distrib ) {
+		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {
+			$dist = $distrib;
+			break;
+		}
+	}
 
 	$id = "contrat-$contrat_instance_id-paiements-month-$lieu_id";
 	$fn = "contrat_{$contrat_instance_id}_paiements_month_$lieu_id";
