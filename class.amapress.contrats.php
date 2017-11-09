@@ -864,7 +864,7 @@ class AmapressContrats {
 			if ( ! empty( $lieu_id ) ) {
 				$query['meta_query'][] = array(
 					'key'     => 'amapress_adhesion_lieu',
-					'value'   => intval( $lieu_id ),
+					'value'   => $lieu_id,
 					'compare' => '=',
 					'type'    => 'NUMERIC'
 				);

@@ -257,15 +257,15 @@ function amapress_register_entities_adhesion( $entities ) {
 
 
 function amapress_adhesion_contrat_quantite_editor( $post_id ) {
-	$ret               = '';
-	$adh               = new AmapressAdhesion( $post_id );
-	$date_debut        = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
-	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
-	$adhesion_quantites = $adh->getContrat_quantites();
-	$paniers_variables = $adh->getPaniersVariables();
-	$ret               .= '<fieldset style="min-width: inherit">';
-	$contrats          = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
-	$had_contrat       = false;
+	$ret                        = '';
+	$adh                        = new AmapressAdhesion( $post_id );
+	$date_debut                 = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
+	$adhesion_quantite_ids      = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
+	$adhesion_quantites         = $adh->getContrat_quantites();
+	$paniers_variables          = $adh->getPaniersVariables();
+	$ret                        .= '<fieldset style="min-width: inherit">';
+	$contrats                   = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
+	$had_contrat                = false;
 	foreach ( $contrats as $contrat_instance ) {
 		if ( $contrat_instance->isPanierVariable() ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
@@ -370,7 +370,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$ret         .= '<b>' . esc_html( $contrat_instance->getTitle() ) . '</b>';
 			$ret         .= '<div>';
 			foreach ( $contrat_quants as $quantite ) {
-				$id  = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
+				$id = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
 
 				$quant_var_editor = '';
 				if ( $contrat_instance->isQuantiteVariable() ) {
@@ -391,7 +391,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					checked( in_array( $quantite->ID, $adhesion_quantite_ids ), true, false ),
 					esc_attr( $quantite->getContrat_instance()->ID ),
 					$quant_var_editor,
-					esc_html( $quantite->getTitle())
+					esc_html( $quantite->getTitle() )
 				);
 			}
 			$ret .= '</div>';
@@ -610,8 +610,15 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 //}
 
 function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = null ) {
+	$title      = 'Calendrier des paiements';
+	$lieu_title = '';
+	if ( ! empty( $lieu_id ) ) {
+		$lieu       = new AmapressLieu_distribution( $lieu_id );
+		$title      .= ' - ' . $lieu->getTitle();
+		$lieu_title = '<h4>' . esc_html( $lieu->getTitle() ) . '</h4>';
+	}
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
-	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, $lieu_id );
+	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, null, $lieu_id );
 //	amapress_dump($paiements);
 	$dates = array_map(
 		function ( $p ) {
@@ -696,12 +703,14 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 			return $a_emetteur < $b_emetteur ? - 1 : 1;
 		} );
 
-	$columns   = [];
-	$columns[] =
-		array(
-			'title' => 'Lieu',
-			'data'  => 'lieu',
-		);
+	$columns = [];
+	if ( empty( $lieu_id ) ) {
+		$columns[] =
+			array(
+				'title' => 'Lieu',
+				'data'  => 'lieu',
+			);
+	}
 	$columns[] =
 		array(
 			'title' => 'Nom',
@@ -749,6 +758,7 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 				return $p->getEmetteur() == $emetteur;
 			}
 		);
+
 		foreach ( $dates as $date ) {
 			$emetteur_date_paiements = array_filter(
 				$emetteur_paiements,
@@ -757,19 +767,20 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 					return $p->getDate() == $date;
 				}
 			);
+
 			$contrat_adhesion        = null;
 			if ( count( $emetteur_paiements ) > 0 ) {
-				$emetteur_paiements = array_values( $emetteur_paiements );
-				$contrat_adhesion   = array_shift( $emetteur_paiements )->getAdhesion();
+				$emetteur_paiements2 = array_values( $emetteur_paiements );
+				$contrat_adhesion    = array_shift( $emetteur_paiements2 )->getAdhesion();
 			}
 			if ( $contrat_adhesion && ( $date < $contrat_adhesion->getDate_debut() || $date > $contrat_adhesion->getDate_fin() ) ) {
 				$val = '###';
 			} else {
 				$val = implode( ',', array_map(
-						function ( $p ) {
+						function ( $p ) use ( $emetteur_obj ) {
 							/** @var AmapressAmapien_paiement $p */
 							$banque = $p->getBanque();
-							if ( ! empty( $banque ) ) {
+							if ( ! empty( $banque ) && $emetteur_obj['banque'] != $banque ) {
 								return "{$p->getNumero()} ({$banque})";
 							} else {
 								return "{$p->getNumero()}";
@@ -786,21 +797,61 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
 	$dist          = array_shift( $next_distribs );
 
+	$id = "contrat-$contrat_instance_id-paiements-month-$lieu_id";
+	$fn = "contrat_{$contrat_instance_id}_paiements_month_$lieu_id";
+
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
+' . $lieu_title . '
 <p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
-	       amapress_get_datatable( "contrat-$contrat_instance_id-paiements-month", $columns, $data, array(
-		       'bSort'        => true,
-		       'paging'       => false,
-		       'searching'    => true,
-		       'bAutoWidth'   => true,
-		       'responsive'   => false,
-		       'scrollX'      => true,
-		       'fixedColumns' => array( 'leftColumns' => 1 ),
-	       ),
+	       amapress_get_datatable(
+		       $id,
+		       $columns, $data,
 		       array(
-			       Amapress::DATATABLES_EXPORT_EXCEL,
-			       Amapress::DATATABLES_EXPORT_PDF,
-			       Amapress::DATATABLES_EXPORT_PRINT
-		       ) ) .
-	       '</div>';
+			       'bSort'        => true,
+			       'paging'       => false,
+			       'searching'    => true,
+			       'bAutoWidth'   => true,
+			       'responsive'   => false,
+			       'scrollX'      => true,
+			       'fixedColumns' => array( 'leftColumns' => 1 ),
+			       'initComplete' => $fn,
+			       'dom'          => 'Bfrtip',
+			       'buttons'      => [],
+		       )
+	       ) .
+
+	       '
+<script type="text/javascript">
+function ' . $fn . '() {
+var table = jQuery(\'#' . $id . '\').DataTable();
+new jQuery.fn.dataTable.Buttons( table, {
+    buttons: [
+        \'excel\',
+        {
+            extend: \'print\',
+            text: \'Imprimer\',
+            title: \'' . $title . '\',
+            autoPrint: false,
+            exportOptions: {
+                columns: \':visible\',
+                stripHtml: false,
+            },
+            customize: function (win) {
+                jQuery(win.document.body).css(\'background-color\', \'#fff\');
+                jQuery(win.document.body).find(\'table\').addClass(\'display\');/*.css(\'font-size\', \'9px\');*/
+                jQuery(win.document.body).find(\'table td\').css(\'border\', \'1px solid black\');
+                jQuery(win.document.body).find(\'tr:nth-child(odd) td\').each(function(index){
+                    jQuery(this).css(\'background-color\',\'#eee\');
+                });
+                jQuery(win.document.body).find(\'a\').css(\'color\',\'black\').css(\'text-decoration\',\'none\');
+            }
+        }
+    ]
+} );
+    table.buttons( 0, null ).container().prependTo(
+        table.table().container()
+    );
+}
+</script>
+</div>';
 }

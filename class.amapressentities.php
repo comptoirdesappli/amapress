@@ -360,13 +360,18 @@ class AmapressEntities {
 												'type'       => 'custom',
 												'contrat_id' => $contrat_id,
 												'custom'     => function ( $post_id, $option ) {
-													return amapress_get_paiement_table_by_dates( intval( $option->settings['contrat_id'] ) );
+													$ret = '';
+													foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+														$ret .= amapress_get_paiement_table_by_dates( intval( $option->settings['contrat_id'] ), $lieu_id );
+													}
+
+													return $ret;
 												},
 											),
-											array(
-												'type' => 'note',
-												'desc' => 'ici vous pouvez gérer...'
-											),
+//											array(
+//												'type' => 'note',
+//												'desc' => 'ici vous pouvez gérer...'
+//											),
 										)
 									);
 								}

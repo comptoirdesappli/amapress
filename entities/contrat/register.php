@@ -955,10 +955,13 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 
 /** @param TitanFrameworkOption $option */
 function amapress_is_contrat_instance_readonly( $option ) {
+	if ( isset( $_REQUEST['adv'] ) ) {
+		return false;
+	}
 	$referer = parse_url( wp_get_referer() );
 	if ( isset( $referer['query'] ) ) {
 		parse_str( $referer['query'], $path );
-		if ( isset( $_REQUEST['adv'] ) || ( isset( $path['adv'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) ) {
+		if ( ( isset( $path['adv'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) ) {
 			return false;
 		}
 	}
