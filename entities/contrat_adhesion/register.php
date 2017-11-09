@@ -257,15 +257,15 @@ function amapress_register_entities_adhesion( $entities ) {
 
 
 function amapress_adhesion_contrat_quantite_editor( $post_id ) {
-	$ret                        = '';
-	$adh                        = new AmapressAdhesion( $post_id );
-	$date_debut                 = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
-	$adhesion_quantite_ids      = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
-	$adhesion_quantites         = $adh->getContrat_quantites();
-	$paniers_variables          = $adh->getPaniersVariables();
-	$ret                        .= '<fieldset style="min-width: inherit">';
-	$contrats                   = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
-	$had_contrat                = false;
+	$ret                   = '';
+	$adh                   = new AmapressAdhesion( $post_id );
+	$date_debut            = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
+	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
+	$adhesion_quantites    = $adh->getContrat_quantites();
+	$paniers_variables     = $adh->getPaniersVariables();
+	$ret                   .= '<fieldset style="min-width: inherit">';
+	$contrats              = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
+	$had_contrat           = false;
 	foreach ( $contrats as $contrat_instance ) {
 		if ( $contrat_instance->isPanierVariable() ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
@@ -492,7 +492,21 @@ function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
 //	return $ret;
 //}
 
-function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id = null, $date = null ) {
+function amapress_get_contrat_quantite_datatable(
+	$contrat_instance_id,
+	$lieu_id = null,
+	$date = null,
+	$options = array()
+) {
+
+	$options = wp_parse_args(
+		$options,
+		array(
+			'show_next_distrib'       => true,
+			'show_contact_producteur' => true,
+		)
+	);
+
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
 
 	$columns = array(
@@ -589,7 +603,7 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 		} else {
 			$row['all'] = "$all_quant_adh_count adhérents ; $all_quant_count $quant_title équivalent quantité : $all_quant_sum";
 		}
-		$data[]     = $row;
+		$data[] = $row;
 	}
 
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
@@ -604,8 +618,26 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 		}
 	}
 
-	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
-<p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
+	$next_distrib_text = '';
+	if ( $options['show_next_distrib'] ) {
+		$next_distrib_text = '<p>Prochaine distribution: ' . ( $dist ? ( $dist && Amapress::end_of_week( amapress_time() ) > $dist->getDate() ? '<strong>Cette semaine</strong> - ' : '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>';
+	}
+	$contact_producteur = '';
+	if ( $options['show_contact_producteur'] ) {
+		$contact_producteur = '<div><h5>Contact producteur:</h5>' .
+		                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
+			                      array(
+				                      'show_avatar' => 'false',
+				                      'show_tel'    => 'force',
+				                      'show_sms'    => 'force',
+				                      'show_email'  => 'force',
+				                      'show_roles'  => 'false',
+			                      ) ) . '</div>';
+	}
+
+	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">' .
+	       $next_distrib_text .
+	       $contact_producteur .
 	       //	       '<p class="producteur">' . $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay() . '</p>' .
 	       amapress_get_datatable( 'contrat-instance-recap-' . $contrat_instance_id,
 		       $columns, $data,
@@ -629,7 +661,20 @@ function amapress_get_contrat_quantite_datatable( $contrat_instance_id, $lieu_id
 //	return $ret;
 //}
 
-function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = null ) {
+function amapress_get_paiement_table_by_dates(
+	$contrat_instance_id,
+	$lieu_id = null,
+	$options = array()
+) {
+
+	$options = wp_parse_args(
+		$options,
+		array(
+			'show_next_distrib'       => true,
+			'show_contact_producteur' => true,
+		)
+	);
+
 	$title      = 'Calendrier des paiements';
 	$lieu_title = '';
 	if ( ! empty( $lieu_id ) ) {
@@ -788,7 +833,7 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 				}
 			);
 
-			$contrat_adhesion        = null;
+			$contrat_adhesion = null;
 			if ( count( $emetteur_paiements ) > 0 ) {
 				$emetteur_paiements2 = array_values( $emetteur_paiements );
 				$contrat_adhesion    = array_shift( $emetteur_paiements2 )->getAdhesion();
@@ -826,9 +871,25 @@ function amapress_get_paiement_table_by_dates( $contrat_instance_id, $lieu_id = 
 	$id = "contrat-$contrat_instance_id-paiements-month-$lieu_id";
 	$fn = "contrat_{$contrat_instance_id}_paiements_month_$lieu_id";
 
+	$next_distrib_text = '';
+	if ( $options['show_next_distrib'] ) {
+		$next_distrib_text = '<p>Prochaine distribution: ' . ( $dist ? ( $dist && Amapress::end_of_week( amapress_time() ) > $dist->getDate() ? '<strong>Cette semaine</strong> - ' : '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>';
+	}
+	$contact_producteur = '';
+	if ( $options['show_contact_producteur'] ) {
+		$contact_producteur = '<div><h5>Contact producteur:</h5>' .
+		                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
+			                      array(
+				                      'show_avatar' => 'false',
+				                      'show_tel'    => 'force',
+				                      'show_sms'    => 'force',
+				                      'show_email'  => 'force',
+				                      'show_roles'  => 'false',
+			                      ) ) . '</div>';
+	}
+
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
-' . $lieu_title . '
-<p>Prochaine distribution: ' . esc_html( $dist ? date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>' .
+' . $lieu_title . $next_distrib_text . $contact_producteur .
 	       amapress_get_datatable(
 		       $id,
 		       $columns, $data,

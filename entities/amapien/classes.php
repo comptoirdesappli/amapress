@@ -280,7 +280,7 @@ class AmapressUser extends TitanUserEntity {
 		return $this->custom['amapress_user_telephone'];
 	}
 
-	public function getTelTo( $mobile = 'both' ) {
+	public function getTelTo( $mobile = 'both', $sms = false ) {
 		$tel = $this->getTelephone() . ' ' . $this->getTelephone2();
 		if ( empty( $tel ) ) {
 			return '';
@@ -303,7 +303,7 @@ class AmapressUser extends TitanUserEntity {
 				continue;
 			}
 			$used[] = $tel_norm;
-			$ret[]  = '<a href="tel:' . $tel_norm . '">' . esc_html( $m[0] ) . '</a>';
+			$ret[]  = '<a href="' . ( $sms ? 'sms' : 'tel' ) . ':' . $tel_norm . '">' . esc_html( $m[0] ) . '</a>';
 		}
 
 		return implode( '<br/>', $ret );
@@ -432,6 +432,7 @@ class AmapressUser extends TitanUserEntity {
 			'show_tel'        => 'default',
 			'show_tel_fixe'   => 'default',
 			'show_tel_mobile' => 'default',
+			'show_sms'        => 'default',
 			'show_adresse'    => 'default',
 			'show_roles'      => 'default',
 		) );
@@ -452,10 +453,13 @@ class AmapressUser extends TitanUserEntity {
 			$this->wrapIfNotEmpty( '<p class="user-roles">', esc_html( $roles ), '</p>' . "\r\n" ) :
 			'' );
 		$ret   .= ( amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_fixe'], 'tel_fixe', $this ) ?
-			$this->wrapIfNotEmpty( '<p class="user-tel-fixe">', $this->getTelTo( false ), '</p>' . "\r\n" ) :
+			$this->wrapIfNotEmpty( '<p class="user-tel-fixe">Fix: ', $this->getTelTo( false ), '</p>' . "\r\n" ) :
 			'' );
 		$ret   .= ( amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_mobile'], 'tel_mobile', $this ) ?
-			$this->wrapIfNotEmpty( '<p class="user-tel-mobile">', $this->getTelTo( true ), '</p>' . "\r\n" ) :
+			$this->wrapIfNotEmpty( '<p class="user-tel-mobile">Mob: ', $this->getTelTo( true ), '</p>' . "\r\n" ) :
+			'' );
+		$ret   .= ( amapress_check_info_visibility( $args['show_sms'], 'tel', $this ) ?
+			$this->wrapIfNotEmpty( '<p class="user-sms">SMS: ', $this->getTelTo( true, true ), '</p>' . "\r\n" ) :
 			'' );
 		$ret   .= ( amapress_check_info_visibility( $args['show_adresse'], 'adresse', $this ) ?
 			$this->wrapIfNotEmpty( '<p class="user-adresse">', $this->getFormattedAdresseHtml(), '</p>' ) :
