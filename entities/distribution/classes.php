@@ -443,6 +443,8 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			case 'lien_distrib':
 				return Amapress::makeLink( $this->getPermalink() );
+			case 'lien_instructions_lieu':
+				return Amapress::makeLink( $this->getPermalink() . '#instructions-lieu' );
 			case  'lien-resp-distrib-ical':
 				return add_query_arg(
 					[

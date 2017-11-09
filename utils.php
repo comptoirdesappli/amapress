@@ -31,8 +31,8 @@ function amapress_echo_panel_end() {
 	echo amapress_get_panel_end();
 }
 
-function amapress_get_panel_start_no_esc( $title, $icon = null, $other_class = 'amap-panel-default' ) {
-	$ret = '<div class="amap-panel ' . $other_class . '">';
+function amapress_get_panel_start_no_esc( $title, $icon = null, $other_class = 'amap-panel-default', $id = null ) {
+	$ret = '<div class="amap-panel ' . $other_class . '" ' . ( ! empty( $id ) ? 'id="' . esc_attr( $id ) . '"' : '' ) . '>';
 	if ( ! empty( $title ) ) {
 		$ret .= '<div class="amap-panel-heading">
             <h3 class="amap-panel-title">' . ( ! empty( $icon ) ? amapress_get_font_icon( $icon ) . ' ' : '' ) . $title . '</h3>
@@ -42,8 +42,8 @@ function amapress_get_panel_start_no_esc( $title, $icon = null, $other_class = '
 	return $ret . '<div class="amap-panel-body">';
 }
 
-function amapress_get_panel_start( $title, $icon = null, $other_class = 'amap-panel-default' ) {
-	return amapress_get_panel_start_no_esc( esc_html( $title ), $icon, $other_class );
+function amapress_get_panel_start( $title, $icon = null, $other_class = 'amap-panel-default', $id = null ) {
+	return amapress_get_panel_start_no_esc( esc_html( $title ), $icon, $other_class, $id );
 }
 
 function amapress_get_panel_end() {

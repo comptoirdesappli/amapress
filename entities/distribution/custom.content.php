@@ -90,7 +90,9 @@ function amapress_get_custom_content_distribution( $content ) {
 				$add_text = '<span class="resp-distribution">Vous êtes responsable de distribution</span> - ';
 			}
 
-			$instructions .= amapress_get_panel_start( $add_text . 'Instruction du lieu ', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ' );
+			$instructions .= amapress_get_panel_start( $add_text . 'Instruction du lieu ',
+				'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ',
+				'instructions-lieu' );
 			if ( ! $is_resp_amap ) {
 				if ( $can_unsubscribe ) {
 					amapress_get_button( 'Se désinscrire', amapress_action_link( $dist_id, 'desinscrire' ), 'fa-fa', false, "Confirmez-vous votre désinscription ?" );
