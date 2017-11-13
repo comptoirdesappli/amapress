@@ -201,7 +201,12 @@ class Amapress_Import_Posts_CSV {
 				/**
 				 * @var TitanFrameworkOptionSelect $option
 				 */
-				foreach ( $option->fetchOptionsWithCache() as $k => $value ) {
+				if ( isset( $option->settings['custom_multi'] ) && is_callable( $option->settings['custom_multi'], false ) ) {
+					$multi_options = call_user_func( $option->settings['custom_multi'], $option );
+				} else {
+					$multi_options = $option->fetchOptionsWithCache();
+				}
+				foreach ( $multi_options as $k => $value ) {
 					if ( empty( $k ) ) {
 						continue;
 					}
@@ -232,18 +237,23 @@ class Amapress_Import_Posts_CSV {
 				$headers[ $key ] = $taxonomies_names[ $field ];
 				$options[ $key ] = $taxonomies_values[ $field ];
 			} else {
-//                if (strpos($key,'_') === 0) {
-//                    var_dump($key);
-//                    var_dump($multi);
-//                }
+				$arg = [
+					'key'       => $key,
+					'field'     => $field,
+					'multi'     => - 1,
+					'post_type' => $pt,
+				];
 				if ( strpos( $key, '_' ) === 0 && isset( $multi[ $key ] ) ) {
-					$header = $field;
-					$field  = $multi[ $key ];
-					$key    = $field . $key;
+					$header       = $field;
+					$field        = $multi[ $key ];
+					$arg['multi'] = intval( trim( $key, '_' ) );
+					$arg['field'] = $field;
+					$key          = $field . $key;
 				} else {
 					$header = apply_filters( "amapress_posts_get_field_display_name", $field, $pt );
 					$header = apply_filters( "amapress_posts_{$pt}_get_field_display_name", $header );
 				}
+				$arg['header'] = $header;
 				if ( empty( $header ) ) {
 					unset( $fields[ $key ] );
 					continue;
@@ -251,7 +261,7 @@ class Amapress_Import_Posts_CSV {
 				$headers[ $key ] = $header;
 				$option          = AmapressEntities::getTfOption( $post_type, $field );
 				if ( $option ) {
-					$options[ $key ] = $option->getSamplesForCSV();
+					$options[ $key ] = $option->getSamplesForCSV( $arg );
 				} else {
 					$options[ $key ] = array();
 				}

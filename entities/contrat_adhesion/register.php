@@ -115,17 +115,25 @@ function amapress_register_entities_adhesion( $entities ) {
 				),
 				'csv_required'      => true,
 				'searchable'        => true,
+				'custom_multi'      => function ( $option ) {
+					$ret = [];
+					foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
+						$ret[ $c->ID ] = $c->getTitle();
+					}
+
+					return $ret;
+				}
 			),
 			'contrat_quantite' => array(
-				'name'         => amapress__( 'Quantité' ),
-				'type'         => 'custom',
-				'readonly'     => true,
-				'hidden'       => true,
-				'group'        => '2/ Contrat',
-				'required'     => true,
-				'post_type'    => 'amps_contrat_quant',
-				'desc'         => 'Quantité',
-				'column'       => function ( $post_id, $option = null ) {
+				'name'              => amapress__( 'Quantité' ),
+				'type'              => 'custom',
+				'readonly'          => true,
+				'hidden'            => true,
+				'group'             => '2/ Contrat',
+				'required'          => true,
+				'post_type'         => 'amps_contrat_quant',
+				'desc'              => 'Quantité',
+				'column'            => function ( $post_id, $option = null ) {
 					if ( ! $post_id ) {
 						return '';
 					}
@@ -133,12 +141,28 @@ function amapress_register_entities_adhesion( $entities ) {
 
 					return esc_html( $adh->getContrat_quantites_AsString() );
 				},
-				'top_filter'   => array(
+				'custom_csv_sample' => function ( $option, $arg ) {
+					$ret = [];
+					if ( $arg['multi'] != - 1 ) {
+						foreach ( AmapressContrats::get_contrat_quantites( $arg['multi'] ) as $q ) {
+							$ret[] = $q->getTitle();
+						}
+					} else {
+						foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
+							foreach ( AmapressContrats::get_contrat_quantites( $c->ID ) as $q ) {
+								$ret[] = $q->getTitle();
+							}
+						}
+					}
+
+					return $ret;
+				},
+				'top_filter'        => array(
 					'name'        => 'amapress_contrat_qt',
 					'placeholder' => 'Toutes les quantités'
 				),
-				'csv_required' => true,
-				'wrap_edit'    => false,
+				'csv_required'      => true,
+				'wrap_edit'         => false,
 //                'import_key' => true,
 //                'csv_required' => true,
 			),

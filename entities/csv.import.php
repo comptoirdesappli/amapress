@@ -482,7 +482,8 @@ function amapress_process_generate_model() {
 			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats', array() );
 			break;
 		case 'generate_model_' . AmapressAdhesion::POST_TYPE . '_multi':
-			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats_multi', array(), array( 'amapress_adhesion_contrat_instance' => 'amapress_adhesion_contrat_quantite' ) );
+			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats_multi', array(),
+				array( 'amapress_adhesion_contrat_instance' => 'amapress_adhesion_contrat_quantite' ) );
 			break;
 //        case 'generate_model_'.AmapressAdhesion_intermittence::POST_TYPE:
 //            Amapress_Import_Posts_CSV::generateModel(AmapressAdhesion_intermittence::POST_TYPE, 'inscriptions_intermittents', array());

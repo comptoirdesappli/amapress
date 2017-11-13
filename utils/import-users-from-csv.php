@@ -93,6 +93,12 @@ class Amapress_Import_Users_CSV {
 		$options = array();
 		$headers = array();
 		foreach ( $fields as $key => $field ) {
+			$arg = [
+				'key'       => $key,
+				'field'     => $field,
+				'multi'     => - 1,
+				'post_type' => 'user',
+			];
 			if ( in_array( $field, $taxonomies_names ) ) {
 				$headers[ $key ] = $taxonomies_names[ $field ];
 				$options[ $key ] = $taxonomies_values[ $field ];
@@ -105,7 +111,7 @@ class Amapress_Import_Users_CSV {
 				$headers[ $key ] = $header;
 				$option          = AmapressEntities::getTfOption( 'user', $field );
 				if ( $option ) {
-					$options[ $key ] = $option->getSamplesForCSV();
+					$options[ $key ] = $option->getSamplesForCSV( $arg );
 				} else {
 					$options[ $key ] = array();
 				}

@@ -56,7 +56,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 		return true;
 	}
 
-	public function getSamplesForCSV() {
+	public function getSamplesForCSV( $arg = null ) {
 		$fmt = self::$default_date_format . ' ' . self::$default_time_format;
 		if ( $this->settings['time'] && ! $this->settings['date'] ) {
 			$fmt = self::$default_time_format;

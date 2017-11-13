@@ -74,7 +74,7 @@ class TitanFrameworkOptionFloat extends TitanFrameworkOption {
 		return $value;
 	}
 
-	public function getSamplesForCSV() {
+	public function getSamplesForCSV( $arg = null ) {
 		return array(
 			'15.50',
 			'15,50',

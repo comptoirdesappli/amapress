@@ -47,9 +47,9 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		}
 	}
 
-	public function getSamplesForCSV() {
+	public function getSamplesForCSV( $arg = null ) {
 		if ( is_callable( $this->settings['custom_csv_sample'], false ) ) {
-			return call_user_func( $this->settings['custom_csv_sample'], $this );
+			return call_user_func( $this->settings['custom_csv_sample'], $this, $arg );
 		} else if ( is_array( $this->settings['custom_csv_sample'] ) ) {
 			return $this->settings['custom_csv_sample'];
 		} else {

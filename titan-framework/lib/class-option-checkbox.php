@@ -42,7 +42,7 @@ class TitanFrameworkOptionCheckbox extends TitanFrameworkOption {
 		return $value == '1' ? true : false;
 	}
 
-	public function getSamplesForCSV() {
+	public function getSamplesForCSV( $arg = null ) {
 		return array(
 			'true',
 			'vrai',
