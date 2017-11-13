@@ -250,7 +250,13 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 				);
 		}
 		foreach ( $adhs as $adh ) {
-			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] = $adh->getContrat_quantites_Codes_AsString( $dist->getDate() );
+			if ( ! isset( $line[ 'contrat_' . $adh->getContrat_instance()->ID ] ) ) {
+				$line[ 'contrat_' . $adh->getContrat_instance()->ID ] = '';
+			}
+			if ( ! empty( $line[ 'contrat_' . $adh->getContrat_instance()->ID ] ) ) {
+				$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= ',';
+			}
+			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= $adh->getContrat_quantites_Codes_AsString( $dist->getDate() );
 		}
 		foreach ( $dist->getContrats() as $contrat ) {
 			if ( ! isset( $line[ 'contrat_' . $contrat->ID ] ) ) {
