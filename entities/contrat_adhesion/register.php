@@ -277,7 +277,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" data-excl="%s"/> Panier personnalisé</label></div>',
 					esc_html( $contrat_instance->getTitle() ),
 					$id,
-					'multicheckReq exclusiveContrat', //multicheckReq
+					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_vars',
 					esc_attr( $contrat_instance->ID ),
@@ -388,7 +388,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 
 				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s"/> %s %s </label> <br />',
 					$id,
-					'multicheckReq exclusiveContrat', //multicheckReq
+					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_quants',
 					esc_attr( $quantite->ID ),
@@ -412,6 +412,25 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 
 	return $ret;
 }
+
+add_action( 'wp_ajax_check_inscription_unique', function () {
+	$contrats = $_POST['contrats'];
+	$user     = $_POST['user'];
+
+	$contrats = array_unique( array_map( 'intval', explode( ',', $contrats ) ) );
+
+	$adhs = array();
+	foreach ( $contrats as $contrat ) {
+		$adhs += AmapressAdhesion::getUserActiveAdhesions( intval( $user ), $contrat );
+	}
+	if ( empty( $adhs ) ) {
+		echo json_encode( true );
+	} else {
+		echo json_encode( 'L\'amapien possède déjà un contrat de ce type' );
+	}
+
+	wp_die();
+} );
 
 function amapress_save_adhesion_contrat_quantite_editor( $adhesion_id ) {
 	if ( ! empty( $_REQUEST['amapress_adhesion_contrat_vars'] ) ) {

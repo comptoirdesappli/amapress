@@ -96,6 +96,27 @@ function amapress_post_validation() {
             jQuery.expr[':'].parentHidden = function (a) {
                 return jQuery(a).parent().is(':hidden');
             };
+            jQuery.validator.addClassRules('onlyOneInscription', {
+                remote: function (element) {
+                    return {
+                        "url": "<?php echo admin_url( 'admin-ajax.php' ) ?>",
+                        "type": "post",
+                        "data": {
+                            "action": "check_inscription_unique",
+                            "contrats": function () {
+                                var contrats = '';
+                                jQuery('input.contrat-quantite:checkbox:checked').each(function () {
+                                    contrats += jQuery(this).data('excl');
+                                });
+                                return contrats;
+                            },
+                            "user": function () {
+                                return jQuery('#amapress_adhesion_adherent').val();
+                            }
+                        }
+                    }
+                }
+            });
             var amapress_validator = jQuery('form#post, form#createuser, .titan-framework-panel-wrap form').validate({
                 ignore: ":parentHidden",
                 onkeyup: false,
