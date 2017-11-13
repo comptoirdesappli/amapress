@@ -372,11 +372,13 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$ret         .= '<b>' . esc_html( $contrat_instance->getTitle() ) . '</b>';
 			$ret         .= '<div>';
 			foreach ( $contrat_quants as $quantite ) {
-				$id = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
+				$id        = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
+				$id_factor = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID . '-factor';
 
 				$quant_var_editor = '';
 				if ( $contrat_instance->isQuantiteVariable() ) {
-					$quant_var_editor .= "<select name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block'>";
+					$disabled         = disabled( in_array( $quantite->ID, $adhesion_quantite_ids ), false, false );
+					$quant_var_editor .= "<select id='$id_factor' name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block' $disabled>";
 					$quant_var_editor .= tf_parse_select_options(
 						$quantite->getQuantiteOptions(),
 						isset( $adhesion_quantites[ $quantite->ID ] ) ? $adhesion_quantites[ $quantite->ID ]->getFactor() : null,
@@ -395,6 +397,10 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					$quant_var_editor,
 					esc_html( $quantite->getTitle() )
 				);
+
+				$ret .= "<script type='text/javascript'>jQuery('#$id').change(function() {
+  jQuery('#$id_factor').prop('disabled', !jQuery(this).is(':checked'));
+})</script>";
 			}
 			$ret .= '</div>';
 		}
