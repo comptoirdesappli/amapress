@@ -220,6 +220,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'group'       => '4/ Fin de contrat avant terme',
 				'desc'        => 'Date à laquelle se termine le contrat',
 				'show_column' => false,
+				'show_on'     => 'edit-only',
 			),
 			'fin_raison'       => array(
 				'name'        => amapress__( 'Motif' ),
@@ -227,6 +228,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'group'       => '4/ Fin de contrat avant terme',
 				'desc'        => 'Motif de départ (Déménagement, insatisfaction, ...)',
 				'show_column' => false,
+				'show_on'     => 'edit-only',
 			),
 //			'no_renew'       => array(
 //				'name'        => amapress__( 'Pas de renouvellement' ),
