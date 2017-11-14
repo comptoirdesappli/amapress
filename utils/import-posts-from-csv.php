@@ -51,7 +51,7 @@ class Amapress_Import_Posts_CSV {
 			if ( ! empty( $_FILES['posts_csv']['tmp_name'] ) ) {
 				// Setup settings variables
 				$filename     = $_FILES['posts_csv']['tmp_name'];
-				$posts_update = isset( $_POST['posts_update'] ) ? $_POST['posts_update'] : false;
+				$posts_update = isset( $_POST['posts_update'] ) ? $_POST['posts_update'] : true;
 
 				$results = self::import_posts_csv( $filename, array(
 					'posts_update' => $posts_update,
@@ -142,19 +142,21 @@ class Amapress_Import_Posts_CSV {
                             class="description"><?php echo sprintf( __( 'Vous pouvez voir <a href="%s">un exemple de fichier CSV</a>.', 'amapress' ), plugin_dir_url( __FILE__ ) . 'examples/import_' . $post_type . '.csv' ); ?></span>
                 </td>
             </tr>
-            <tr valign="top">
-                <th scope="row"><?php _e( "Mise à jour des $post_type", 'amapress' ); ?></th>
-                <td>
-                    <fieldset>
-                        <legend class="screen-reader-text">
-                            <span><?php _e( "Mise à jour des $post_type", 'amapress' ); ?></span></legend>
-                        <label for="posts_update">
-                            <input id="posts_update" name="posts_update" type="checkbox" value="1" checked="checked"/>
-							<?php _e( "Mettre à jour le $post_type si son titre ou slug existe", 'amapress' ); ?>
-                        </label>
-                    </fieldset>
-                </td>
-            </tr>
+            <!--            <tr valign="top">-->
+            <!--                <th scope="row">-->
+	        <?php //_e( "Mise à jour des $post_type", 'amapress' ); ?><!--</th>-->
+            <!--                <td>-->
+            <!--                    <fieldset>-->
+            <!--                        <legend class="screen-reader-text">-->
+            <!--                            <span>-->
+	        <?php //_e( "Mise à jour des $post_type", 'amapress' ); ?><!--</span></legend>-->
+            <!--                        <label for="posts_update">-->
+            <!--                            <input id="posts_update" name="posts_update" type="checkbox" value="1" checked="checked"/>-->
+            <!--							--><?php //_e( "Mettre à jour le $post_type si son titre ou slug existe", 'amapress' ); ?>
+            <!--                        </label>-->
+            <!--                    </fieldset>-->
+            <!--                </td>-->
+            <!--            </tr>-->
         </table>
         <p class="submit">
             <button name="action" value="import"

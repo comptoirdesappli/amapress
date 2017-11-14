@@ -284,7 +284,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				if ( is_string( $value ) ) {
 					$value = trim( $value );
 				}
-				if ( is_float( $value ) || is_int( $value ) || preg_match( '/^\d+$/', $value ) ) {
+				if ( is_float( $value ) || is_int( $value ) || preg_match( '/^\d+$/', strval( $value ) ) ) {
 					return PHPExcel_Shared_Date::ExcelToPHP( intval( $value ) );
 				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4}$/', $value ) ) {
 					return DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format, $value )->getTimestamp();

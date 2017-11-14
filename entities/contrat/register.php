@@ -509,13 +509,16 @@ function amapress_get_edit_url_for_contrat_quantite( $url ) {
 
 add_filter( 'amapress_import_adhesion_apply_default_values_to_posts_meta', 'amapress_import_adhesion_apply_default_values_to_posts_meta' );
 function amapress_import_adhesion_apply_default_values_to_posts_meta( $postmeta ) {
-	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] ) && empty( $postmeta['amapress_adhesion_contrat_instance'] ) ) {
+	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] )
+	     && empty( $postmeta['amapress_adhesion_contrat_instance'] ) ) {
 		$postmeta['amapress_adhesion_contrat_instance'] = $_REQUEST['amapress_import_adhesion_default_contrat_instance'];
 	}
-	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_lieu'] ) && empty( $postmeta['amapress_adhesion_lieu'] ) ) {
+	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_lieu'] )
+	     && empty( $postmeta['amapress_adhesion_lieu'] ) ) {
 		$postmeta['amapress_adhesion_lieu'] = $_REQUEST['amapress_import_adhesion_default_lieu'];
 	}
-	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) && empty( $postmeta['amapress_adhesion_date_debut'] ) ) {
+	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_date_debut'] )
+	     && empty( $postmeta['amapress_adhesion_date_debut'] ) ) {
 		$vals                                     = AmapressEntities::getPostFieldsValidators();
 		$val                                      = $vals['amapress_adhesion_date_debut'];
 		$postmeta['amapress_adhesion_date_debut'] = call_user_func( $val, $_REQUEST['amapress_import_adhesion_default_date_debut'] );
@@ -548,6 +551,9 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 	if ( is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] ) || is_wp_error( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
 		return $postmeta;
 	}
+
+	$postmeta = apply_filters( "amapress_import_adhesion_apply_default_values_to_posts_meta", $postmeta, $postdata );
+	$postmeta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $postmeta, $postdata );
 
 	if ( empty( $postmeta['amapress_adhesion_contrat_instance'] ) || empty( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
 		return new WP_Error( 'ignore_contrat', "Colonne contrat vide. La ligne sera ignorée." );
