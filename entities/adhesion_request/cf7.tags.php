@@ -160,6 +160,7 @@ function amapress_cf7_tag_generator_amapress_field( $contact_form, $args = '' ) 
                             <option value="telephone">Téléphone</option>
                             <option value="lieux">Lieux de distribution</option>
                             <option value="contrats">Contrats</option>
+                            <option value="intermittent">Intermittent</option>
                             <option value="message">Message</option>
                         </select>
                     </td>

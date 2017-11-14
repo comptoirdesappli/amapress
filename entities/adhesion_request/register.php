@@ -72,20 +72,25 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'lieux'             => array(
+			'lieux'            => array(
 				'name'              => amapress__( 'Lieux de distribution' ),
 				'type'              => 'multicheck-posts',
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 				'desc'              => 'Lieux de distribution',
 				'autoselect_single' => true,
 			),
-			'contrat_intances'  => array(
+			'contrat_intances' => array(
 				'name'      => amapress__( 'Contrats' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'desc'      => 'Contrats',
 			),
-			'status'            => array(
+			'intermittent'     => array(
+				'name' => amapress__( 'Intermittent' ),
+				'type' => 'checkbox',
+				'desc' => 'Le contact souhaite devenir intermittent',
+			),
+			'status'           => array(
 				'name'     => amapress__( 'Statut' ),
 				'type'     => 'select',
 				'group'    => '1/ Informations',

@@ -25,15 +25,16 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 		return;
 	}
 
-	$submission = WPCF7_Submission::get_instance();
-	$first_name = $submission->get_posted_data( 'prenom' );
-	$last_name  = $submission->get_posted_data( 'nom' );
-	$email      = $submission->get_posted_data( 'email' );
-	$telephone  = $submission->get_posted_data( 'telephone' );
-	$adresse    = $submission->get_posted_data( 'adresse' );
-	$lieux      = $submission->get_posted_data( 'lieux' );
-	$contrats   = $submission->get_posted_data( 'contrats' );
-	$message    = $submission->get_posted_data( 'message' );
+	$submission   = WPCF7_Submission::get_instance();
+	$first_name   = $submission->get_posted_data( 'prenom' );
+	$last_name    = $submission->get_posted_data( 'nom' );
+	$email        = $submission->get_posted_data( 'email' );
+	$telephone    = $submission->get_posted_data( 'telephone' );
+	$adresse      = $submission->get_posted_data( 'adresse' );
+	$lieux        = $submission->get_posted_data( 'lieux' );
+	$contrats     = $submission->get_posted_data( 'contrats' );
+	$message      = $submission->get_posted_data( 'message' );
+	$intermittent = $submission->get_posted_data( 'intermittent' );
 
 	if ( empty( $lieux ) ) {
 		$lieux = array();
@@ -59,6 +60,9 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 
 		return $p->post_title;
 	}, $contrats );
+	if ( $intermittent ) {
+		$contrats_noms[] = 'Intermittent';
+	}
 	$contrats_noms = implode( ', ', $contrats_noms );
 
 	$my_post = array(
@@ -77,6 +81,7 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 			'amapress_adhesion_request_email'             => $email,
 			'amapress_adhesion_request_lieux'             => $lieux,
 			'amapress_adhesion_request_contrat_instances' => $contrats,
+			'amapress_adhesion_request_intermittent'      => $intermittent,
 			'amapress_adhesion_request_status'            => 'to_confirm',
 		),
 	);
