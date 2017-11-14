@@ -76,11 +76,11 @@ function amapress_intermittence_desinscription_shortcode( $atts ) {
 	switch ( $atts['view'] ) {
 		case 'me':
 			if ( ! AmapressContrats::is_user_active_intermittent() ) {
-				return "<p class='intermittence desinscription not-in-list'>Vous n'êtes pas sur la liste d\'intermittence</p>";
+				return "<p class='intermittence desinscription not-in-list'>Vous n'êtes pas sur la liste des intermittents</p>";
 			} else {
 				$my_email = wp_get_current_user()->user_email;
 
-				return "<p class='intermittence desinscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=desinscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('Confirmez-vous votre désinscription ?')\">Se désinscrire de la liste d\'intermittence</a></p>";
+				return "<p class='intermittence desinscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=desinscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('Confirmez-vous votre désinscription ?')\">Se désinscrire de la liste des intermittents</a></p>";
 				//admin-post.php?action=inscription_intermittent&confirm=true&email=
 			}
 			break;

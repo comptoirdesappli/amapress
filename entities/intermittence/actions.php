@@ -67,13 +67,13 @@ function amapress_admin_action_inscription_intermittent() {
 			if ( $return_to_sender ) {
 				wp_redirect_and_exit( add_query_arg( $_SERVER['HTTP_REFERER'], 'inscription_intermittent', 'already' ) );
 			} else {
-				echo ( $is_me ? 'Vous êtes déjà inscrit' : "{$user_email} est déjà inscrit" ) . ' sur la liste d\'intermittents';
+				echo ( $is_me ? 'Vous êtes déjà inscrit' : "{$user_email} est déjà inscrit" ) . ' sur la liste des intermittents';
 			}
 		} else {
 			if ( $return_to_sender ) {
 				wp_redirect_and_exit( add_query_arg( 'inscription_intermittent', 'ok', $_SERVER['HTTP_REFERER'] ) );
 			} else {
-				echo ( $is_me ? 'Vous êtes inscrit' : "{$user_email} a été inscrit" ) . ' sur la liste d\'intermittents';
+				echo ( $is_me ? 'Vous êtes inscrit' : "{$user_email} a été inscrit" ) . ' sur la liste des intermittents';
 			}
 		}
 	}
@@ -126,7 +126,7 @@ function amapress_admin_action_desinscription_intermittent() {
 	$amapien = AmapressUser::getBy( $user );
 
 	if ( ! $amapien->isIntermittent() ) {
-		die( ( $is_me ? 'Vous n\'êtes pas inscrit' : "{$user_email} n'est pas inscrit" ) . ' sur la liste d\'intermittents' );
+		die( ( $is_me ? 'Vous n\'êtes pas inscrit' : "{$user_email} n'est pas inscrit" ) . ' sur la liste des intermittents' );
 	}
 
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
@@ -136,7 +136,7 @@ function amapress_admin_action_desinscription_intermittent() {
 	} else {
 		$amapien->desinscriptionIntermittence();
 
-		echo ( $is_me ? 'Vous êtes désinscrit' : "{$user_email} a été désinscrit" ) . ' de la liste d\'intermittents';
+		echo ( $is_me ? 'Vous êtes désinscrit' : "{$user_email} a été désinscrit" ) . ' de la liste des intermittents';
 	}
 }
 
