@@ -75,7 +75,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'group'    => 'Gestion',
 				'default'  => 0,
 			),
-			'contrats'          => array(
+			'contrats'     => array(
 				'name'      => amapress__( 'Contrats' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => 'amps_contrat_inst',
@@ -84,7 +84,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'      => 'Contrats',
 //                'searchable' => true,
 			),
-			'responsables'      => array(
+			'responsables' => array(
 				'name'         => amapress__( 'Responsables' ),
 				'group'        => 'Livraison',
 				'type'         => 'select-users',
@@ -94,6 +94,38 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'         => 'Responsables',
 //                'searchable' => true,
 			),
+			'paniers'      => array(
+				'name'            => amapress__( 'Panier(s)' ),
+				'group'           => 'Livraison',
+				'desc'            => 'Paniers à cette distribution',
+				'show_column'     => false,
+				'bare'            => true,
+				'include_columns' => array(
+					'title',
+					'amapress_panier_contrat_instance',
+					'amapress_panier_status',
+					'amapress_panier_date_subst',
+				),
+				'type'            => 'related-posts',
+				'query'           => function ( $postID ) {
+					$dist = new AmapressDistribution( $postID );
+
+					return array(
+						'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+						'meta_query'     => array(
+							array(
+								'key'     => 'amapress_panier_date',
+								'value'   => [
+									Amapress::start_of_day( $dist->getDate() ),
+									Amapress::end_of_day( $dist->getDate() )
+								],
+								'compare' => 'BETWEEN',
+							)
+						)
+					);
+				}
+			)
 		),
 	);
 

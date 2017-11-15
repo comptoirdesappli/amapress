@@ -39,7 +39,9 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 			$query = call_user_func( $query, $postID );
 		}
 
-		$query = str_replace( '%%id%%', $postID, $query );
+		if ( is_string( $query ) ) {
+			$query = str_replace( '%%id%%', $postID, $query );
+		}
 		$query = apply_filters( "tf_replace_placeholders_{$post_type}", $query, $postID );
 		$query = apply_filters( "tf_replace_placeholders_{$option_id}", $query, $postID );
 
@@ -58,17 +60,21 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 	}
 
 	public function display() {
-		if ( ! $this->settings['show_table'] ) {
+//		if ( ! $this->settings['show_table'] ) {
 			$this->echoOptionHeader();
-		} else {
-			$this->echoOptionHeaderBare();
-		}
+//		} else {
+//			$this->echoOptionHeaderBare();
+//		}
 
-		$query                  = $this->evalQuery();
-		$args                   = wp_parse_args( $query );
+		$query = $this->evalQuery();
+		if ( is_array( $query ) ) {
+			$args = $query;
+		} else {
+			$args = wp_parse_args( $query );
+		}
 		$args['posts_per_page'] = - 1;
 
-		if ( $this->settings['show_link'] ) {
+		if ( $this->settings['show_link'] && ! is_array( $query ) ) {
 			$count = get_posts_count( $query );
 			if ( $count > 0 ) {
 				$edit      = admin_url( 'edit.php' );
@@ -130,11 +136,11 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		}
 
 
-		if ( ! $this->settings['show_table'] ) {
+//		if ( ! $this->settings['show_table'] ) {
 			$this->echoOptionFooter();
-		} else {
-			$this->echoOptionFooterBare();
-		}
+//		} else {
+//			$this->echoOptionFooterBare();
+//		}
 	}
 
 	/**
@@ -458,7 +464,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 			);
 			echo $this->get_edit_link( $format_args, $label . ':', $format_class );
 		}
-		$title = _draft_or_post_title();
+		$title = _draft_or_post_title( $post );
 		if ( $can_edit_post && $post->post_status != 'trash' ) {
 			printf(
 				'<a class="row-title" href="%s" aria-label="%s">%s%s</a>',
