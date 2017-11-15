@@ -1007,3 +1007,7 @@ add_filter( 'is_protected_meta', function ( $protected, $meta_key = null ) {
 
 	return $protected;
 }, 10, 2 );
+
+add_filter( 'password_reset_expiration', function ( $expiration ) {
+	return floatval( Amapress::getOption( 'welcome-mail-expiration', '180' ) ) * 24 * 60 * 60;
+} );

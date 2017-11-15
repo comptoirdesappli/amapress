@@ -1113,6 +1113,14 @@ class AmapressEntities {
 //                                            'capability' => 'manage_amapress',
 										),
 										array(
+											'id'      => 'welcome-mail-expiration',
+											'name'    => 'Durée d\'expiration',
+											'desc'    => 'Expiration du mail de bienvenue/mot de passe perdu en jours',
+											'type'    => 'number',
+											'step'    => 0.5,
+											'default' => '180',
+										),
+										array(
 											'type' => 'save',
 										),
 									)
