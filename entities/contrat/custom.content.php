@@ -108,27 +108,19 @@ function amapress_get_custom_content_contrat_default( $content ) {
 		$links = '<h3>Ses contrats</h3>' . $links;
 	}
 
-	$content = '<div>
-                    <div class="row contrat-pres">
-                        <div class="col-md-6 col-sm-12">' .
-	           amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
+	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
 	           '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>
-                            <div class="contrat-prod-summary">' . get_post_meta( $prod_id, 'amapress_producteur_resume', true ) . '</div>
-                            ' . Amapress::get_know_more( get_permalink( $prod_id ) ) .
+                <div class="contrat-prod-summary">' . get_post_meta( $prod_id, 'amapress_producteur_resume', true ) . '</div>
+                ' . Amapress::get_know_more( get_permalink( $prod_id ) ) .
 	           amapress_get_panel_end() .
-	           '</div>
-                        <div class="col-md-6 col-sm-12">' .
 	           amapress_get_panel_start( Amapress::getOption( 'pres_contrat_title' ), null, 'amap-panel-pres-contrat amap-panel-pres-contrat-' . get_the_ID() ) .
 	           '<div class="contrat-abonnement">' . get_the_content() . '</div>
                             ' . $links .
 	           amapress_get_panel_end() .
-	           '</div>
-                    </div>' .
 	           amapress_get_panel_start( Amapress::getOption( 'pres_produits_title' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
                     <div class="row contrat-produits">
                     ' . $prouits_html .
-	           amapress_get_panel_end() .
-	           '</div>';
+	           amapress_get_panel_end();
 
 	return $content;
 }
