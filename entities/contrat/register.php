@@ -115,6 +115,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'type'     => 'number',
 				'required' => true,
 				'desc'     => 'Nombre de visites obligatoires chez le producteur',
+				'max'      => 12,
 			),
 			'type'           => array(
 				'name'        => amapress__( 'Type de contrat' ),
@@ -142,10 +143,11 @@ function amapress_register_entities_contrat( $entities ) {
 							'desc'          => 'Sélectionner les dates de distribution fournies par le producteur',
 							'before_option' =>
 								function ( $option ) {
-									$val_id = $option->getID() . '-validate';
-									echo '<p><input type="checkbox" id="' . $val_id . '" /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
+									if ( ! TitanFrameworkOption::isOnNewScreen() && ! amapress_is_contrat_instance_readonly( $option ) ) {
+										$val_id = $option->getID() . '-validate';
+										echo '<p><input type="checkbox" id="' . $val_id . '" /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
 <br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</label></p>';
-									echo '<script type="text/javascript">
+										echo '<script type="text/javascript">
 jQuery(function($) {
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $("#' . $val_id . '").change(function() {
@@ -154,6 +156,7 @@ jQuery(function($) {
     $liste_dates.multiDatesPicker("option", {disabled: true});
 });
 </script>';
+									}
 								},
 						),
 						'panier_variable'       => array(
@@ -298,10 +301,11 @@ jQuery(function($) {
 					},
 			),
 			'ended'          => array(
-				'name'  => amapress__( 'Clôturer' ),
-				'type'  => 'checkbox',
-				'group' => 'Gestion',
-				'desc'  => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
+				'name'    => amapress__( 'Clôturer' ),
+				'type'    => 'checkbox',
+				'group'   => 'Gestion',
+				'desc'    => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
+				'show_on' => 'edit-only',
 			),
 			'date_ouverture' => array(
 				'name'       => amapress__( 'Ouverture des inscriptions' ),
@@ -322,15 +326,15 @@ jQuery(function($) {
 				'readonly'   => 'amapress_is_contrat_instance_readonly',
 			),
 			'lieux'          => array(
-				'name'              => amapress__( 'Lieux' ),
-				'type'              => 'multicheck-posts',
-				'post_type'         => 'amps_lieu',
-				'group'             => 'Gestion',
-				'required'          => true,
-				'desc'              => 'Lieux de distribution',
-				'autoselect_single' => true,
-				'readonly'          => 'amapress_is_contrat_instance_readonly',
-				'top_filter'        => array(
+				'name'       => amapress__( 'Lieux' ),
+				'type'       => 'multicheck-posts',
+				'post_type'  => 'amps_lieu',
+				'group'      => 'Gestion',
+				'required'   => true,
+				'desc'       => 'Lieux de distribution',
+				'select_all' => true,
+				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'top_filter' => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'
 				),
@@ -345,13 +349,13 @@ jQuery(function($) {
 				'show_on' => 'edit-only',
 			),
 			'quant_editor'   => array(
-				'name'         => amapress__( 'Quantités' ),
-				'type'         => 'custom',
-				'group'        => 'Gestion',
-				'column'       => null,
-				'custom'       => 'amapress_get_contrat_quantite_editor',
-				'save'         => 'amapress_save_contrat_quantite_editor',
-				'show_on_edit' => 'edit-only',
+				'name'    => amapress__( 'Quantités' ),
+				'type'    => 'custom',
+				'group'   => 'Gestion',
+				'column'  => null,
+				'custom'  => 'amapress_get_contrat_quantite_editor',
+				'save'    => 'amapress_save_contrat_quantite_editor',
+				'show_on' => 'edit-only',
 //                'desc' => 'Quantités',
 			),
 			'max_adherents'  => array(
@@ -633,9 +637,10 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 
 //add_filter('amapress_resolve_contrat_quantite_id','amapress_resolve_contrat_quantite_id', 10, 2);
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
-	$quants           = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
-	if ( ! empty( $quants ) && count( $quants ) == 1 && Amapress::toBool( $contrat_quantite_name ) )
+	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
+	if ( ! empty( $quants ) && count( $quants ) == 1 && Amapress::toBool( $contrat_quantite_name ) ) {
 		$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	}
 //    $cn = $contrat_quantite_name;
 	$contrat_quantite_name = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $contrat_quantite_name ) ) );
 	if ( empty( $contrat_quantite_name ) ) {
@@ -699,7 +704,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 //    var_dump($contrat_quantite_name);
 //    var_dump($cn);
 //    die();
-	return -1;
+	return - 1;
 }
 
 function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo ) {
