@@ -300,7 +300,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 				case 'exchangeable':
 					if ( $can_subscribe ) {
 						$id  = "info_{$dist->ID}";
-						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '"></textarea><br/>';
+						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '" style="box-sizing: border-box"></textarea><br/>';
 						$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button echange-panier" 
 						data-confirm="Etes-vous sûr de vouloir céder votre panier ?" data-action="echanger_panier" data-dist="' . $dist->ID . '" data-message="val:#' . $id . '" data-user="' . $user_id . '">' . $ceder_title . '</button></div>';
 					} else {
