@@ -66,6 +66,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			'paging'       => false,
 			'initComplete' => null,
 			'info'         => false,
+			'nowrap'       => true,
 			'data'         => $data,
 			'table-layout' => 'auto',
 			'language'     => array( 'url' => '//cdn.datatables.net/plug-ins/1.10.11/i18n/French.json' ),
@@ -78,7 +79,8 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 		$init = ".on('init.dt', $initComplete)";
 	}
 
-	$style = "table-layout:{$options['table-layout']}";
+	$nowrap = $options['nowrap'] ? 'nowrap' : '';
+	$style  = "table-layout:{$options['table-layout']}";
 
 	unset( $options['table-layout'] );
 	if ( ! empty( $exports ) ) {
@@ -88,7 +90,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
-	$ret .= "<table id='$id' class='display nowrap' style='$style' width='100%' cellspacing='0'></table>";
+	$ret .= "<table id='$id' class='display $nowrap' style='$style' width='100%' cellspacing='0'></table>";
 //    $ret .= "</div>\n";
 	$ret .= "<script type='text/javascript'>\n";
 	$ret .= "    //<![CDATA[\n";

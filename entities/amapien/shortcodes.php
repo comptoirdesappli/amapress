@@ -224,16 +224,18 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		return '';
 	}
 
+	$all_lieu_ids = Amapress::get_lieu_ids();
+
 	if ( ! empty( $atts['lieu'] ) ) {
 		$lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		if ( $lieu_id ) {
 			$lieu_ids = array( $lieu_id );
 		} else {
-			$lieu_ids = Amapress::get_lieu_ids();
+			$lieu_ids = $all_lieu_ids;
 		}
 	} else {
 		if ( amapress_can_access_admin() ) {
-			$lieu_ids = Amapress::get_lieu_ids();
+			$lieu_ids = $all_lieu_ids;
 		} else {
 			$lieu_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id() );
 		}
@@ -242,20 +244,25 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	$columns   = array();
 	$columns[] = array(
 		'title' => 'Rôle',
+		'width' => '30%',
 		'data'  => array(
 			'_'    => 'role',
 			'sort' => 'role',
 		)
 	);
-	$columns[] = array(
-		'title' => 'Lieu',
-		'data'  => array(
-			'_'    => 'lieu',
-			'sort' => 'lieu',
-		)
-	);
+	if ( count( $all_lieu_ids ) > 1 ) {
+		$columns[] = array(
+			'title' => 'Lieu',
+			'width' => '20%',
+			'data'  => array(
+				'_'    => 'lieu',
+				'sort' => 'lieu',
+			)
+		);
+	}
 	$columns[] = array(
 		'title' => 'Amapien',
+		'width' => '50%',
 		'data'  => array(
 			'_'    => 'user',
 			'sort' => 'user',
@@ -461,6 +468,10 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //    }
 
 
-	return amapress_get_datatable( 'amapiens-role-list', $columns, $data, null,
+	return amapress_get_datatable( 'amapiens-role-list', $columns, $data,
+		[
+			'nowrap'     => false,
+			'responsive' => false,
+		],
 		array( Amapress::DATATABLES_EXPORT_EXCEL, Amapress::DATATABLES_EXPORT_PDF ) );
 }
