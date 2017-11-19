@@ -167,12 +167,30 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'csv_required' => true,
 			),
 			'date_debut'       => array(
-				'name'         => amapress__( 'Date de début' ),
-				'type'         => 'date',
-				'required'     => true,
-				'group'        => '1/ Informations',
-				'desc'         => 'Date à laquelle démarre le contrat',
-				'csv_required' => true,
+				'name'          => amapress__( 'Date de début' ),
+				'type'          => 'date',
+				'required'      => true,
+				'group'         => '2/ Contrat',
+				'desc'          => 'Date à laquelle démarre le contrat',
+				'csv_required'  => true,
+				'before_option' =>
+					function ( $option ) {
+						/** @var TitanFrameworkOption $option */
+						if ( TitanFrameworkOption::isOnEditScreen() ) {
+							$adh = new AmapressAdhesion( $option->getPostID() );
+							echo '<script type="text/javascript">
+jQuery(function($) {
+    var $date_debut = $("#amapress_adhesion_date_debut");
+    $date_debut.datepicker("option", 
+    	{
+    	    minDate: "' . date_i18n( TitanFrameworkOptionDate::$default_date_format, $adh->getContrat_instance()->getDate_debut() ) . '",
+    	    maxDate: "' . date_i18n( TitanFrameworkOptionDate::$default_date_format, $adh->getContrat_instance()->getDate_fin() ) . '"
+    	}
+    );
+});
+</script>';
+						}
+					},
 			),
 			'paiements'        => array(
 				'name'     => amapress__( 'Nombre de chèque' ),
@@ -239,12 +257,30 @@ function amapress_register_entities_adhesion( $entities ) {
 				'searchable'   => true,
 			),
 			'date_fin'         => array(
-				'name'        => amapress__( 'Date de fin' ),
-				'type'        => 'date',
-				'group'       => '4/ Fin de contrat avant terme',
-				'desc'        => 'Date à laquelle se termine le contrat',
-				'show_column' => false,
-				'show_on'     => 'edit-only',
+				'name'          => amapress__( 'Date de fin' ),
+				'type'          => 'date',
+				'group'         => '4/ Fin de contrat avant terme',
+				'desc'          => 'Date à laquelle se termine le contrat',
+				'show_column'   => false,
+				'show_on'       => 'edit-only',
+				'before_option' =>
+					function ( $option ) {
+						/** @var TitanFrameworkOption $option */
+						if ( TitanFrameworkOption::isOnEditScreen() ) {
+							$adh = new AmapressAdhesion( $option->getPostID() );
+							echo '<script type="text/javascript">
+jQuery(function($) {
+    var $date_debut = $("#amapress_adhesion_date_fin");
+    $date_debut.datepicker("option", 
+    	{
+    	    minDate: "' . date_i18n( TitanFrameworkOptionDate::$default_date_format, $adh->getContrat_instance()->getDate_debut() ) . '",
+    	    maxDate: "' . date_i18n( TitanFrameworkOptionDate::$default_date_format, $adh->getContrat_instance()->getDate_fin() ) . '"
+    	}
+    );
+});
+</script>';
+						}
+					},
 			),
 			'fin_raison'       => array(
 				'name'        => amapress__( 'Motif' ),
@@ -293,20 +329,26 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$contrats              = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
 	$had_contrat           = false;
 	foreach ( $contrats as $contrat_instance ) {
+		$id = 'contrat-' . $contrat_instance->ID;
 		if ( $contrat_instance->isPanierVariable() ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
 				$had_contrat = true;
-				$id          = 'contrat-' . $contrat_instance->ID;
 				$ret         .= '';
-				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" data-excl="%s"/> Panier personnalisé</label></div>',
+				$ret         .= sprintf( '<b>%s</b><div><label for="%s"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> Panier personnalisé</label></div>',
 					esc_html( $contrat_instance->getTitle() ),
 					$id,
 					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
 					$id,
 					'amapress_adhesion_contrat_vars',
 					esc_attr( $contrat_instance->ID ),
-					esc_attr( $contrat_instance->ID )
+					esc_attr( $contrat_instance->ID ),
+					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_debut() ),
+					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_fin() )
 				);
+				$ret         .= "<script type='text/javascript'>jQuery('#$id').change(function() {
+    var this_option = jQuery(this);
+  jQuery('#amapress_adhesion_date_debut').datepicker('option', {minDate:this_option.data('contrat-date-debut'), maxDate: this_option.data('contrat-date-fin')});
+})</script>";
 			} else {
 				if ( ! $paniers_variables ) {
 					$paniers_variables = array();
@@ -410,7 +452,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					$quant_var_editor .= '</select>';
 				}
 
-				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s"/> %s %s </label> <br />',
+				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',
 					$id,
 					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
 					$id,
@@ -418,12 +460,16 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					esc_attr( $quantite->ID ),
 					checked( in_array( $quantite->ID, $adhesion_quantite_ids ), true, false ),
 					esc_attr( $quantite->getContrat_instance()->ID ),
+					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_debut() ),
+					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_fin() ),
 					$quant_var_editor,
 					esc_html( $quantite->getTitle() )
 				);
 
 				$ret .= "<script type='text/javascript'>jQuery('#$id').change(function() {
-  jQuery('#$id_factor').prop('disabled', !jQuery(this).is(':checked'));
+    var this_option = jQuery(this);
+  jQuery('#amapress_adhesion_date_debut').datepicker('option', {minDate:this_option.data('contrat-date-debut'), maxDate: this_option.data('contrat-date-fin')});
+  jQuery('#$id_factor').prop('disabled', !this_option.is(':checked'));
 })</script>";
 			}
 			$ret .= '</div>';
