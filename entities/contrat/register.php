@@ -266,16 +266,21 @@ jQuery(function($) {
 				'readonly'      => 'amapress_is_contrat_instance_readonly',
 				'before_option' =>
 					function ( $option ) {
-						echo '<script type="text/javascript">
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
 jQuery(function($) {
-    var $date_debut = $("#' . $option->getID() . '");
+    var $date_debut = $("#amapress_contrat_instance_date_debut");
+    var $date_fin = $("#amapress_contrat_instance_date_fin");
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $date_debut.change(function() {
         $liste_dates.multiDatesPicker("option", {minDate: $(this).val()});
+        $date_fin.datepicker("option","minDate", $date_debut.val());
     });
     $liste_dates.multiDatesPicker("option", {minDate: $date_debut.val()});
+    $date_fin.datepicker("option","minDate", $date_debut.val());
 });
 </script>';
+						}
 					},
 			),
 			'date_fin'       => array(
@@ -288,16 +293,21 @@ jQuery(function($) {
 				'readonly'      => 'amapress_is_contrat_instance_readonly',
 				'before_option' =>
 					function ( $option ) {
-						echo '<script type="text/javascript">
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
 jQuery(function($) {
-    var $date_fin = $("#' . $option->getID() . '");
+    var $date_debut = $("#amapress_contrat_instance_date_debut");
+    var $date_fin = $("#amapress_contrat_instance_date_fin");
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $date_fin.on("change", function() {
         $liste_dates.multiDatesPicker("option", {maxDate: $(this).val()});
+        $date_debut.datepicker("option","maxDate", $date_fin.val());
     });
     $liste_dates.multiDatesPicker("option", {maxDate: $date_fin.val()});
+    $date_debut.datepicker("option","maxDate", $date_fin.val());
 });
 </script>';
+						}
 					},
 			),
 			'ended'          => array(
@@ -308,22 +318,52 @@ jQuery(function($) {
 				'show_on' => 'edit-only',
 			),
 			'date_ouverture' => array(
-				'name'       => amapress__( 'Ouverture des inscriptions' ),
-				'type'       => 'date',
-				'group'      => 'Gestion',
-				'required'   => true,
-				'desc'       => 'Date d\'ouverture des inscriptions en ligne',
-				'import_key' => true,
-				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'name'          => amapress__( 'Ouverture des inscriptions' ),
+				'type'          => 'date',
+				'group'         => 'Gestion',
+				'required'      => true,
+				'desc'          => 'Date d\'ouverture des inscriptions en ligne',
+				'import_key'    => true,
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'before_option' =>
+					function ( $option ) {
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
+jQuery(function($) {
+    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
+    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
+    $date_ouverture.change(function() {
+        $date_cloture.datepicker("option","minDate", $(this).val());
+    });
+    $date_cloture.datepicker("option","minDate", $date_ouverture.val());
+});
+</script>';
+						}
+					},
 			),
 			'date_cloture'   => array(
-				'name'       => amapress__( 'Clôture des inscriptions' ),
-				'type'       => 'date',
-				'group'      => 'Gestion',
-				'required'   => true,
-				'desc'       => 'Date de clôture des inscriptions en ligne',
-				'import_key' => true,
-				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'name'          => amapress__( 'Clôture des inscriptions' ),
+				'type'          => 'date',
+				'group'         => 'Gestion',
+				'required'      => true,
+				'desc'          => 'Date de clôture des inscriptions en ligne',
+				'import_key'    => true,
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'before_option' =>
+					function ( $option ) {
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
+jQuery(function($) {
+    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
+    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
+    $date_cloture.on("change", function() {
+        $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
+    });
+    $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
+});
+</script>';
+						}
+					},
 			),
 			'lieux'          => array(
 				'name'       => amapress__( 'Lieux' ),
