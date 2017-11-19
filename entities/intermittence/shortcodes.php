@@ -241,11 +241,11 @@ function amapress_echanger_panier_shortcode( $atts ) {
 //        if (!in_array($lieu_id, $user_lieux)) $user_lieux[] = $lieu_id;
 //    }
 
-	$ret .= '<div class="table-responsive">';
-	$ret .= '<table class="table echange-paniers-list">';
+	$ret .= '<div>';
+	$ret .= '<table class="table echange-paniers-list" width="100%">';
 	$ret .= '<thead>';
 	$ret .= '<tr>';
-	$ret .= '<th>Date</th>';
+	$ret .= '<th width="30%">Date</th>';
 	$ret .= '<th></th>';
 //    /** @var AmapressLieu_distribution $user_lieu */
 //    foreach ($user_lieux as $lieu_id) {
@@ -274,7 +274,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		sort( $contrat_names );
 		$ceder_title   = count( $contrat_names ) > 1 ? 'Céder mes ' . count( $contrat_names ) . ' paniers' : 'Céder mon panier';
 		$contrat_names = implode( ', ', $contrat_names );
-		$ret           .= '<th scope="row">';
+		$ret           .= '<th scope="row" width="30%">';
 		$ret           .= '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>';
 		$ret           .= '<p class="inscr-list-contrats"><a href="' . $dist->getPermalink() . '">' . esc_html( $contrat_names ) . '</a></p></th>';
 		foreach ( $date_dists as $dist ) {
