@@ -679,7 +679,10 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
 	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 	if ( ! empty( $quants ) && count( $quants ) == 1 && Amapress::toBool( $contrat_quantite_name ) ) {
-		$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+		$quants_val = array_values($quants);
+		$contrat_quantite_name = $quants_val[0];
+	}
+	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
 	}
 //    $cn = $contrat_quantite_name;
 	$contrat_quantite_name = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $contrat_quantite_name ) ) );
