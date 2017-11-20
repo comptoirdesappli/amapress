@@ -146,11 +146,18 @@ function amapress_register_entities_adhesion( $entities ) {
 					if ( $arg['multi'] != - 1 ) {
 						foreach ( AmapressContrats::get_contrat_quantites( $arg['multi'] ) as $q ) {
 							$ret[] = $q->getTitle();
+							$ret[] = $q->getCode();
+							if ( $q->getQuantite() ) {
+								$ret[] = $q->getQuantite();
+							}
 						}
 					} else {
 						foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
 							foreach ( AmapressContrats::get_contrat_quantites( $c->ID ) as $q ) {
 								$ret[] = $q->getTitle();
+								$ret[] = $q->getCode();
+								if ( $q->getQuantite() )
+									$ret[] = $q->getQuantite();
 							}
 						}
 					}
