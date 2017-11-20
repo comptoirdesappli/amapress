@@ -711,13 +711,20 @@ class AmapressPaniers {
 							'type'    => 'NUMERIC',
 						),
 						array(
-							'key'     => 'amapress_panier_date_subst',
-							'value'   => array(
-								Amapress::start_of_day( $dist_date ),
-								Amapress::end_of_day( $dist_date )
+							array(
+								'key'     => 'amapress_panier_status',
+								'value'   => 'delayed',
+								'compare' => '=',
 							),
-							'compare' => 'BETWEEN',
-							'type'    => 'NUMERIC',
+							array(
+								'key'     => 'amapress_panier_date_subst',
+								'value'   => array(
+									Amapress::start_of_day( $dist_date ),
+									Amapress::end_of_day( $dist_date )
+								),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC',
+							),
 						),
 					),
 					array(
@@ -754,11 +761,21 @@ class AmapressPaniers {
 						'type'    => 'NUMERIC',
 					),
 					array(
-						'key'     => 'amapress_panier_date_subst',
-						'value'   => array( Amapress::start_of_day( $dist_date ), Amapress::end_of_day( $dist_date ) ),
-						'compare' => 'BETWEEN',
-						'type'    => 'NUMERIC',
-					),
+						array(
+							'key'     => 'amapress_panier_status',
+							'value'   => 'delayed',
+							'compare' => '=',
+						),
+						array(
+							'key'     => 'amapress_panier_date_subst',
+							'value'   => array(
+								Amapress::start_of_day( $dist_date ),
+								Amapress::end_of_day( $dist_date )
+							),
+							'compare' => 'BETWEEN',
+							'type'    => 'NUMERIC',
+						),
+					)
 				)
 			)
 		) );

@@ -39,27 +39,21 @@ function amapress_get_custom_title_distribution_liste_emargement( $content ) {
 		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 	}
 
-	$dist_id = get_the_ID();
-	$lieu    = get_post( intval( get_post_meta( $dist_id, 'amapress_distribution_lieu', true ) ) );
-	$date    = intval( get_post_meta( $dist_id, 'amapress_distribution_date', true ) );
-//    $dt = date('Y-m-d', $date);
-
+	$dist                = new AmapressDistribution( get_the_ID() );
 	$amapress_contrat    = get_query_var( 'amapress_contrat' );
 	$amapress_contrat_qt = get_query_var( 'amapress_contrat_qt' );
-	//var_dump($amapress_contrat);
 
 	if ( ! empty( $amapress_contrat ) ) {
 		$contrat       = get_post( Amapress::resolve_post_id( $amapress_contrat, AmapressContrat::INTERNAL_POST_TYPE ) );
 		$contrat_names = array( $contrat->post_title );
 	} else {
-		$contrat_ids   = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' );
-		$contrats      = get_posts( array(
-			'include' => $contrat_ids
-		) );
-		$contrat_names = array_map( 'Amapress::to_title', $contrats );
+		$contrat_names = array_map( function ( $c ) {
+			/** @var AmapressContrat_instance $c */
+			return $c->getTitle();
+		}, $dist->getContrats() );
 	}
 
-	$content = sprintf( 'Liste d\'émargement de %s du %s', $lieu->post_title, date_i18n( 'd/m/Y', $date ), implode( ', ', $contrat_names ) );
+	$content = sprintf( 'Liste d\'émargement de %s du %s', $dist->getLieu()->getTitle(), date_i18n( 'd/m/Y', $dist->getDate() ), implode( ', ', $contrat_names ) );
 
 	if ( ! empty( $amapress_contrat_qt ) ) {
 		$contrat_qt = get_post( Amapress::resolve_post_id( $amapress_contrat_qt, AmapressContrat_quantite::INTERNAL_POST_TYPE ) );

@@ -78,12 +78,37 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressContrat_instance[] */
 	public function getContrats() {
-		return $this->getCustomAsEntityArray( 'amapress_distribution_contrats', 'AmapressContrat_instance' );
+		return array_map(
+			function ( $id ) {
+				return new AmapressContrat_instance( $id );
+			}, $this->getContratIds()
+		);
+	}
+
+	public function getDelayedToThisPaniers() {
+		return AmapressPanier::get_delayed_paniers( null, $this->getDate(), null, [ 'delayed' ] );
+	}
+
+	public function getCancelledPaniers() {
+		return AmapressPanier::get_delayed_paniers( null, null, $this->getDate() );
 	}
 
 	/** @return int[] */
 	public function getContratIds() {
-		return $this->getCustomAsIntArray( 'amapress_distribution_contrats' );
+		$res = $this->getCustomAsIntArray( 'amapress_distribution_contrats' );
+
+		$cancelled_contrat_ids = array_map( function ( $p ) {
+			/** @var AmapressPanier $p */
+			return $p->getContrat_instanceId();
+		}, $this->getCancelledPaniers() );
+		$delayed_contrat_ids   = array_map( function ( $p ) {
+			/** @var AmapressPanier $p */
+			return $p->getContrat_instanceId();
+		}, $this->getDelayedToThisPaniers() );
+		$res                   = array_merge( $res, $delayed_contrat_ids );
+		$res                   = array_diff( $res, $cancelled_contrat_ids );
+
+		return array_unique( $res );
 	}
 
 	public function isUserMemberOf( $user_id, $guess_renew = false ) {
@@ -187,7 +212,35 @@ class AmapressDistribution extends Amapress_EventBase {
 			);
 		}
 		if ( $contrat_instance_id ) {
-			$meta[] = amapress_prepare_like_in_array( 'amapress_distribution_contrats', $contrat_instance_id );
+			$cancelled_paniers_dates = array_map( function ( $p ) {
+				/** @var AmapressPanier $p */
+				return Amapress::start_of_day( $p->getDate() );
+			}, AmapressPanier::get_delayed_paniers( $contrat_instance_id ) );
+			$delayed_paniers_dates   = array_map( function ( $p ) {
+				/** @var AmapressPanier $p */
+				return Amapress::start_of_day( $p->getDateSubst() );
+			}, AmapressPanier::get_delayed_paniers( $contrat_instance_id, null, null, [ 'delayed' ] ) );
+			$meta[]                  =
+				array(
+					array(
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_distribution_date',
+							'value'   => $delayed_paniers_dates,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC',
+						),
+						amapress_prepare_like_in_array( "amapress_distribution_contrats", $contrat_instance_id )
+					),
+					array(
+						array(
+							'key'     => 'amapress_distribution_date',
+							'value'   => $cancelled_paniers_dates,
+							'compare' => 'NOT IN',
+							'type'    => 'NUMERIC',
+						),
+					)
+				);
 		}
 		$dists = get_posts( array(
 			'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,

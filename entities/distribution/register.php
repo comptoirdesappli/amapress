@@ -115,12 +115,26 @@ function amapress_register_entities_distribution( $entities ) {
 						'posts_per_page' => - 1,
 						'meta_query'     => array(
 							array(
-								'key'     => 'amapress_panier_date',
-								'value'   => [
-									Amapress::start_of_day( $dist->getDate() ),
-									Amapress::end_of_day( $dist->getDate() )
-								],
-								'compare' => 'BETWEEN',
+								'relation' => 'OR',
+								array(
+									'key'     => 'amapress_panier_date',
+									'value'   => $dist->getDate(),
+									'compare' => '=',
+									'type'    => 'NUMERIC'
+								),
+								array(
+									array(
+										'key'     => 'amapress_panier_status',
+										'value'   => 'delayed',
+										'compare' => '=',
+									),
+									array(
+										'key'     => 'amapress_panier_date_subst',
+										'value'   => $dist->getDate(),
+										'compare' => '=',
+										'type'    => 'NUMERIC'
+									),
+								)
 							)
 						)
 					);

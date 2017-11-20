@@ -10,7 +10,7 @@ function amapress_get_custom_content_distribution( $content ) {
 	$dist    = new AmapressDistribution( $dist_id );
 
 	$dist_date     = intval( get_post_meta( $dist_id, 'amapress_distribution_date', true ) );
-	$dist_contrats = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' );
+	$dist_contrats = $dist->getContratIds();
 	$user_contrats = AmapressContrat_instance::getContratInstanceIdsForUser();
 
 	$resp_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
