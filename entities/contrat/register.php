@@ -683,7 +683,6 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 		$contrat_quantite_name = $quants_val[0];
 	}
 	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
-	}
 //    $cn = $contrat_quantite_name;
 	$contrat_quantite_name = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $contrat_quantite_name ) ) );
 	if ( empty( $contrat_quantite_name ) ) {
