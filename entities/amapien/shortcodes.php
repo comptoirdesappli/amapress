@@ -210,10 +210,10 @@ function amapress_amapiens_map_shortcode( $atts ) {
 function amapress_amapiens_role_list_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'lieu'            => null,
-		'show_email'      => 'default',
+		'show_email'      => 'force',
 		'show_tel'        => 'default',
 		'show_tel_fixe'   => 'default',
-		'show_tel_mobile' => 'default',
+		'show_tel_mobile' => 'force',
 		'show_adresse'    => 'default',
 		'show_avatar'     => 'default',
 	), $atts );
