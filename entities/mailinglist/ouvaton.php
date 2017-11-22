@@ -142,6 +142,11 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 			}
 			$new_query   = trim( preg_replace( '/\s+/', ' ', $new_query ) );
 			$sql_query   = trim( preg_replace( '/\s+/', ' ', $sql_query ) );
+
+			//TODO : dont know why there is {xxxx} in "like wp_capabilities"
+			$new_query = trim( preg_replace( '/\{[0-9A-Fa-f]+\}/', '', $new_query ) );
+			$sql_query = trim( preg_replace( '/\{[0-9A-Fa-f]+\}/', '', $sql_query ) );
+
 			$new_users   = array_unique( $wpdb->get_col( $new_query ) );
 			$was_errored = $wpdb->last_error;
 			$old_users   = array_unique( $wpdb->get_col( $sql_query ) );
