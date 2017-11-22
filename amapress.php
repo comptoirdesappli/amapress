@@ -397,7 +397,6 @@ function amapress_register_widgets() {
 
 add_action( 'widgets_init', 'amapress_register_widgets' );
 add_action( 'init', array( 'Amapress', 'init' ) );
-add_action( 'init', array( 'AmapressPaniers', 'init' ) );
 add_action( 'init', array( 'Amapress_Calendar', 'init' ) );
 add_action( 'init', array( 'AmapressUsers', 'init' ) );
 add_action( 'init', array( 'AmapressContrats', 'init' ) );

@@ -13,10 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @author Guillaume
  */
 class AmapressPaniers {
-	public static function init() {
-//        add_shortcode('distribution_panier', array(__CLASS__, 'panier_shortcode'));
-	}
-
 	public static function generate_paniers( $contrat_id, $from_now = true, $eval = false ) {
 		$res      = array();
 		$contrats = [ new AmapressContrat_instance( $contrat_id ) ];
@@ -321,13 +317,13 @@ class AmapressPaniers {
 		$adhesion_lieu_counts = array();
 
 		ob_start();
-		echo '<table class="panier">';
+		echo '<table class="table panier" width="100%">';
 		echo '<tr>
 					<th class="panier-produit-col-head"></th>
 					<th class="panier-base-col-head"></th>
 					<th class="panier-unit-col-head"></th>';
 		foreach ( $abos as $abo ) {
-			if ( ! array_key_exists( $abo->ID, $adhesion_abo_counts ) ) {
+			if ( ! isset( $adhesion_abo_counts[ $abo->ID ] ) ) {
 				$adhesion_abo_counts[ $abo->ID ] = count( get_posts( array(
 					'post_type'      => 'amps_adhesion',
 					'posts_per_page' => - 1,
@@ -390,7 +386,8 @@ class AmapressPaniers {
 				//$factor = get_post_meta($abo->ID,'amapress_contrat_instance_quantite',true);
 				//$contrat_quant_id = intval(get_post_meta($abo->ID,'amapress_adhesion_contrat_quantite',true));
 				$factor = floatval( get_post_meta( $abo->ID, 'amapress_contrat_quantite_quantite', true ) );
-				echo '<td class="panier-abo-col"><input class="number" data-count="' . $adhesion_abo_counts[ $abo->ID ] . '" data-factor="' . $factor . '" id="' . $base_id . '" name="' . $base_id . '" type="text" value="' . $produits_abo[ $abo->ID ] . '" /></td>';
+				echo '<td class="panier-abo-col"><input class="number" data-count="' . $adhesion_abo_counts[ $abo->ID ] . '" data-factor="' . $factor
+				     . '" id="' . $base_id . '" name="' . $base_id . '" type="text" value="' . ( isset( $produits_abo[ $abo->ID ] ) ? $produits_abo[ $abo->ID ] : '' ) . '" /></td>';
 			}
 			foreach ( $lieux as $lieu ) {
 				$factor = $adhesion_lieu_counts[ $lieu->ID ];
