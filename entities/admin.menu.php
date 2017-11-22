@@ -145,6 +145,15 @@ function amapress_admin_bar_menu( WP_Admin_Bar $admin_bar ) {
 		) );
 	}
 
+	if ( 'user-edit.php' == $pagenow || 'profile.php' == $pagenow ) {
+		$admin_bar->add_menu( array(
+			'id'     => 'amapress_update_user_admin_bar',
+			'parent' => 'top-secondary',
+			'title'  => '<button class=\'amapress_update_user button button-primary\'>Enregistrer</button>',
+			'href'   => '#',
+		) );
+	}
+
 	amapress_admin_bar_add_items( AmapressEntities::$admin_bar_menu, $admin_bar, null );
 }
 

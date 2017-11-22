@@ -79,6 +79,21 @@ function amapress_post_validation() {
                 }
             });
 
+            var updateBtn = jQuery("form#your-profile #submit");
+            updateBtn.hide().after("<input type=\'button\' value=\'Mettre à jour\' id=\'amapress_update_user\' class=\'amapress_update_user button-primary\' />");
+            jQuery("#amapress_update_user, #wp-admin-bar-amapress_update_user_admin_bar button.amapress_update_user").click(function () {
+                try {
+                    window.tinyMCE.triggerSave();
+                }
+                catch (ee) {
+                }
+                if (jQuery('form#your-profile').valid()) {
+                    updateBtn.click();
+                } else {
+                    alert('Certains champs ne sont pas valides');
+                }
+            });
+
             var publishBtn = jQuery("form#post #publish");
             publishBtn.hide().after("<input type=\'button\' value=\'Enregistrer\' id=\'amapress_publish\' class=\'amapress_publish button-primary\' />");
             jQuery("#amapress_publish, #wp-admin-bar-amapress_publish_admin_bar button.amapress_publish").click(function () {
