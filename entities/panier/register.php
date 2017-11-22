@@ -25,28 +25,40 @@ function amapress_register_entities_panier( $entities ) {
 			'_dyn_'  => 'amapress_panier_views',
 		),
 		'fields'           => array(
-			'date'             => array(
+			'date'              => array(
 				'name'     => amapress__( 'Date du panier' ),
 				'type'     => 'date',
 				'readonly' => true,
 				'desc'     => 'Date de distribution',
+				'group'    => '1/ Informations',
 			),
-			'contrat_instance' => array(
+			'contrat_instance'  => array(
 				'name'       => amapress__( 'Contrat' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_contrat_inst',
 				'readonly'   => true,
 				'desc'       => 'Contrat',
 				'searchable' => true,
+				'group'      => '1/ Informations',
 			),
-			'produits'         => array(
-				'name'   => amapress__( 'Panier' ),
-				'type'   => 'custom',
-				'custom' => array( 'AmapressPaniers', "panierTable" ),
-				'save'   => array( 'AmapressPaniers', 'savePanierTable' ),
-				'desc'   => 'Produits',
+			'produits_selected' => array(
+				'name'         => amapress__( 'Produits associés' ),
+				'type'         => 'select-posts',
+				'post_type'    => AmapressProduit::INTERNAL_POST_TYPE,
+				'desc'         => 'Produits associés aux paniers',
+				'multiple'     => true,
+				'tags'         => true,
+				'autocomplete' => true,
+				'group'        => '2/ Contenu',
 			),
-			'status'           => array(
+//			'produits'         => array(
+//				'name'   => amapress__( 'Panier' ),
+//				'type'   => 'custom',
+//				'custom' => array( 'AmapressPaniers', "panierTable" ),
+//				'save'   => array( 'AmapressPaniers', 'savePanierTable' ),
+//				'desc'   => 'Produits',
+//			),
+			'status'            => array(
 				'name'    => amapress__( '' ),
 				'type'    => 'select',
 				'options' => array(
@@ -54,11 +66,13 @@ function amapress_register_entities_panier( $entities ) {
 					'cancelled' => 'Annulé',
 					'delayed'   => 'Reporté',
 				),
+				'group'   => '3/ Modification',
 			),
-			'date_subst'       => array(
-				'name' => amapress__( 'Date de remplacement' ),
-				'type' => 'date',
-				'desc' => 'Date de distribution de remplacement',
+			'date_subst'        => array(
+				'name'  => amapress__( 'Date de remplacement' ),
+				'type'  => 'date',
+				'desc'  => 'Date de distribution de remplacement',
+				'group' => '3/ Modification',
 			),
 		),
 	);
@@ -69,4 +83,26 @@ function amapress_register_entities_panier( $entities ) {
 add_filter( 'amapress_can_delete_panier', 'amapress_can_delete_panier', 10, 2 );
 function amapress_can_delete_panier( $can, $post_id ) {
 	return false;
+}
+
+add_filter( 'amapress_panier_fields', 'amapress_panier_fields' );
+function amapress_panier_fields( $fields ) {
+	if ( isset( $_REQUEST['post'] ) || isset( $_REQUEST['post_ID'] ) ) {
+		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : $_REQUEST['post_ID'];
+		if ( get_post_type( $post_id ) == AmapressPanier::INTERNAL_POST_TYPE ) {
+			$panier = new AmapressPanier( $post_id );
+			if ( $panier->getContrat_instanceId() && ! $panier->getContrat_instance()->isPanierVariable() ) {
+				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
+					$fields[ 'contenu_' . $quantite->ID ] = array(
+						'name'  => amapress__( 'Contenu pour ' . $quantite->getTitle() ),
+						'type'  => 'editor',
+						'group' => '2/ Contenu',
+					);
+				}
+			}
+		}
+	}
+
+
+	return $fields;
 }

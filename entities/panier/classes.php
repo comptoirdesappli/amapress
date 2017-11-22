@@ -28,6 +28,20 @@ class AmapressPanier extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_panier_status' );
 	}
 
+	/**
+	 * @param AmapressContrat_quantite $quantite
+	 *
+	 * @return string
+	 */
+	public function getContenu( $quantite ) {
+		$ret = $this->getCustom( 'amapress_panier_contenu_' . $quantite->ID );
+		if ( empty( $ret ) ) {
+			$ret = $this->getCustom( 'amapress_panier_contenu' );
+		}
+
+		return $ret;
+	}
+
 	public function isDelayed() {
 		return 'delayed' == $this->getStatus();
 	}
@@ -163,9 +177,34 @@ class AmapressPanier extends Amapress_EventBase {
 		return array();
 	}
 
-	/** @return AmapressProduit[] */
-	public function getSelectedProduits() {
-		return $this->getCustomAsEntityArray( 'amapress_panier_produits_selected', 'AmapressProduit' );
+	/**
+	 * @param AmapressContrat_quantite $quantite
+	 *
+	 * @return AmapressProduit[]
+	 */
+	public function getSelectedProduits( $quantite = null ) {
+		$prods = $this->getCustomAsEntityArray( 'amapress_panier_produits_selected', 'AmapressProduit' );
+		if ( $quantite ) {
+			$prod_ids    = array_map(
+				function ( $p ) {
+					return $p->ID;
+				}, $prods
+			);
+			$quant_prods = $this->getCustomAsEntityArray( 'amapress_panier_produits_' . $quantite->ID . '_selected', 'AmapressProduit' );
+			foreach ( $quant_prods as $prod ) {
+				if ( ! in_array( $prod->ID, $prod_ids ) ) {
+					$prods[]    = $prod;
+					$prod_ids[] = $prod->ID;
+				}
+			}
+			foreach ( $quantite->getProduits() as $prod ) {
+				if ( ! in_array( $prod->ID, $prod_ids ) ) {
+					$prods[] = $prod;
+				}
+			}
+		}
+
+		return $prods;
 	}
 }
 

@@ -897,30 +897,30 @@ class AmapressPaniers {
 				echo self::getPanierQuantiteTable( 'public', $produits_objects );
 			}
 		} else {
-			$dist_is_today = Amapress::start_of_day( $pani->getDate() ) == Amapress::start_of_day( amapress_time() );
-			$dist_is_after = Amapress::start_of_day( $pani->getDate() ) >= Amapress::start_of_day( amapress_time() );
+//			$dist_is_today = Amapress::start_of_day( $pani->getDate() ) == Amapress::start_of_day( amapress_time() );
+//			$dist_is_after = Amapress::start_of_day( $pani->getDate() ) >= Amapress::start_of_day( amapress_time() );
 
-			$produits         = $pani->getSelectedProduits();
-			$produits_objects = array();
-			foreach ( $produits as $produit ) {
-				$produits_abo = Amapress::get_post_meta_array( intval( $panier_id ), 'amapress_panier_produits_' . $produit->ID . '_quants' );
-				$u            = '';
-				foreach ( array( 'unit' => 'Unité', 'kg' => 'kg' ) as $unit => $unit_label ) {
-					if ( $unit == $produits_abo['unit'] ) {
-						$u = $unit_label;
-					}
-				}
-				foreach ( $quantites as $quantite ) {
-					if ( ! isset( $produits_objects[ $quantite->ID ] ) ) {
-						$produits_objects[ $quantite->ID ] = array();
-					}
-					$produits_objects[ $quantite->ID ][] = array(
-						'produit'  => '<img class="panier-produit-photo" alt="' . esc_attr( $produit->getTitle() ) . '" src="' . amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_produit.jpg' ) . '" />' . '<a href="' . esc_attr( $quantite->getPermalink() ) . '">' . esc_html( $quantite->getTitle() ) . '</a>',
-						'price'    => $quantite->getPrix_unitaire(),
-						'quantite' => $produits_abo[ $quantite->ID ] . $u,
-					);
-				}
-			}
+
+//			$produits_objects = array();
+//			foreach ( $produits as $produit ) {
+//				$produits_abo = Amapress::get_post_meta_array( intval( $panier_id ), 'amapress_panier_produits_' . $produit->ID . '_quants' );
+//				$u            = '';
+//				foreach ( array( 'unit' => 'Unité', 'kg' => 'kg' ) as $unit => $unit_label ) {
+//					if ( $unit == $produits_abo['unit'] ) {
+//						$u = $unit_label;
+//					}
+//				}
+//				foreach ( $quantites as $quantite ) {
+//					if ( ! isset( $produits_objects[ $quantite->ID ] ) ) {
+//						$produits_objects[ $quantite->ID ] = array();
+//					}
+//					$produits_objects[ $quantite->ID ][] = array(
+//						'produit'  => '<img class="panier-produit-photo" alt="' . esc_attr( $produit->getTitle() ) . '" src="' . amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_produit.jpg' ) . '" />' . '<a href="' . esc_attr( $quantite->getPermalink() ) . '">' . esc_html( $quantite->getTitle() ) . '</a>',
+//						'price'    => $quantite->getPrix_unitaire(),
+//						'quantite' => $produits_abo[ $quantite->ID ] . $u,
+//					);
+//				}
+//			}
 
 			ob_start();
 
@@ -936,6 +936,12 @@ class AmapressPaniers {
 				if ( $user_quantites && ! in_array( $quantite->ID, $user_quantites ) ) {
 					continue;
 				}
+
+				$produits = $pani->getSelectedProduits( $quantite );
+				foreach ( $produits as $prod ) {
+					$produits_in_panier[] = $prod->getID();
+				}
+
 				$url = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
 				echo '<h3><img class="dist-panier-quantite-img" src="' . $url . '" alt="" /> ' . esc_html( $quantite->getTitle() );
 //                if (amapress_is_user_logged_in()) {
@@ -960,22 +966,34 @@ class AmapressPaniers {
 
 				echo '<p class="panier-quantite-description">' . $quantite->getDescription() . '</p>';
 
-				if ( isset( $produits_objects[ $quantite->ID ] ) ) {
-					echo self::getPanierQuantiteTable( $quantite->ID, $produits_objects[ $quantite->ID ] );
+				echo '<div class="panier-contenu">' . $pani->getContenu( $quantite ) . '</div>';
 
-					foreach ( $produits_objects[ $quantite->ID ] as $prod ) {
-						$produits_in_panier[] = $prod['produit']->ID;
-					}
-				} else {
-					echo self::getPanierQuantiteTable( $quantite->ID, array(), array( 'empty_desc' => 'Contenu du panier de cette distribution non rempli.' ) );
-					if ( amapress_current_user_can( 'edit_panier' ) ) {
-						echo '<br/>' . amapress_get_button( 'Renseigner le contenu du panier', admin_url( "post.php?post=$panier_id&action=edit" ), 'fa-fa' );
-					}
+//				if ( isset( $produits_objects[ $quantite->ID ] ) ) {
+//					echo self::getPanierQuantiteTable( $quantite->ID, $produits_objects[ $quantite->ID ] );
+//				} else {
+//					echo self::getPanierQuantiteTable( $quantite->ID, array(), array( 'empty_desc' => 'Contenu du panier de cette distribution non rempli.' ) );
+//				}
+
+				if ( amapress_current_user_can( 'edit_panier' ) ) {
+					echo '<br/>' . amapress_get_button( 'Renseigner le contenu du panier', admin_url( "post.php?post=$panier_id&action=edit" ), 'fa-fa' );
 				}
 
 //                    $arr = isset($produits_objects[$quantite->ID]) ? $produits_objects[$quantite->ID] : null;
 //                    if (!$arr) $arr = array();
-//                    echo amapress_generic_gallery($arr, 'panier', 'produit_panier_cell', $panier_empty);
+				if ( ! empty( $produits ) ) {
+					echo '<h4>Produits associés</h4>';
+					echo amapress_generic_gallery(
+						array_map(
+							function ( $p ) {
+								return [
+									'produit'  => $p,
+									'price'    => null,
+									'quantite' => null,
+									'unit'     => null,
+								];
+							}
+							, $produits ), 'panier', 'produit_panier_cell', 'Contenu du panier de cette distribution non rempli.' );
+				}
 
 				echo '</div>';
 			}
