@@ -119,11 +119,11 @@ function amapress_post_validation() {
                         "data": {
                             "action": "check_inscription_unique",
                             "contrats": function () {
-                                var contrats = '';
+                                var contrats = [];
                                 jQuery('input.contrat-quantite:checkbox:checked').each(function () {
-                                    contrats += jQuery(this).data('excl');
+                                    contrats.push(jQuery(this).data('excl'));
                                 });
-                                return contrats;
+                                return contrats.join(',');
                             },
                             "user": function () {
                                 return jQuery('#amapress_adhesion_adherent').val();
