@@ -35,11 +35,13 @@ function amapress_register_entities_adhesion( $entities ) {
 				return;
 			}
 
-			$principal_contrat = null;
-			$contrats          = AmapressContrats::get_active_contrat_instances( null, $adh->getDate_debut(), true );
+			$principal_contrat            = null;
+			$principal_contrat_date_debut = 0;
+			$contrats                     = AmapressContrats::get_active_contrat_instances( null, $adh->getDate_debut(), true );
 			foreach ( $contrats as $contrat ) {
-				if ( $contrat->isPrincipal() ) {
-					$principal_contrat = $contrat;
+				if ( $contrat->isPrincipal() && $contrat->getDate_debut() > $principal_contrat_date_debut ) {
+					$principal_contrat            = $contrat;
+					$principal_contrat_date_debut = $contrat->getDate_debut();
 				}
 			}
 
