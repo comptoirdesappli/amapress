@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.15.3
+Version: 0.16.0
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
@@ -44,7 +44,7 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 63 );
+define( 'AMAPRESS_DB_VERSION', 64 );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -978,8 +978,11 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 		}
 	}
 
+//	$allcaps[$cap] = false;
 //    var_dump($cap);
-//    var_dump($args);
+//    var_dump($allcaps[$cap]);
+//    if (isset($allcaps['publish_adhesions'])) var_dump($allcaps['publish_adhesions']);
+//	$allcaps[$caps[0]] = true;
 	return $allcaps;
 }
 
@@ -1009,4 +1012,17 @@ add_filter( 'is_protected_meta', function ( $protected, $meta_key = null ) {
 
 add_filter( 'password_reset_expiration', function ( $expiration ) {
 	return floatval( Amapress::getOption( 'welcome-mail-expiration', '180' ) ) * 24 * 60 * 60;
+} );
+
+//add_filter('wp_insert_post_data', function ($data) {
+//	amapress_dump($_POST);
+//	amapress_dump($data);
+//    die();
+//});
+
+//TODO : dont know why amps_adhesion does not publish...
+add_action( 'save_post', function () {
+	if ( isset( $_POST['post_type'] ) && $_POST['post_type'] == 'amps_adhesion' && isset( $_POST['post_ID'] ) ) {
+		wp_publish_post( $_POST['post_ID'] );
+	}
 } );
