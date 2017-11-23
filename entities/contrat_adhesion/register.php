@@ -493,12 +493,19 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 add_action( 'wp_ajax_check_inscription_unique', function () {
 	$contrats = $_POST['contrats'];
 	$user     = $_POST['user'];
+	$post_ID  = $_POST['post_ID'];
 
 	$contrats = array_unique( array_map( 'intval', explode( ',', $contrats ) ) );
 
 	$adhs = array();
 	foreach ( $contrats as $contrat ) {
-		$adhs += AmapressAdhesion::getUserActiveAdhesions( intval( $user ), $contrat );
+		foreach ( AmapressAdhesion::getUserActiveAdhesions( intval( $user ), $contrat ) as $adh ) {
+			if ( $adh->getID() == $post_ID ) {
+				continue;
+			}
+
+			$adhs[] = $adh;
+		}
 	}
 	if ( empty( $adhs ) ) {
 		echo json_encode( true );

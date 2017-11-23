@@ -127,6 +127,9 @@ function amapress_post_validation() {
                             },
                             "user": function () {
                                 return jQuery('#amapress_adhesion_adherent').val();
+                            },
+                            "post_ID": function () {
+                                return jQuery('#post_ID').val();
                             }
                         }
                     }
