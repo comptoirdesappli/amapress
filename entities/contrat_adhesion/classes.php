@@ -536,7 +536,7 @@ class AmapressAdhesion extends TitanEntity {
 			foreach ( $ret as $adh ) {
 //                $adh = new AmapressAdhesion($v);
 				foreach ( $adh->getContrat_quantites() as $q ) {
-					$res[] = $q;
+					$res[ $q->getId() ] = $q;
 				}
 			}
 //            $res = array_unique($res);

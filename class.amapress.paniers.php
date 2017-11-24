@@ -924,16 +924,18 @@ class AmapressPaniers {
 
 			ob_start();
 
-			$user_quantites = null;
+			$user_quantites     = null;
+			$user_quantites_ids = null;
 			if ( amapress_is_user_logged_in() ) {
-				$user_quantites = array_map( function ( $v ) {
+				$user_quantites     = AmapressAdhesion::getQuantitesForUser( null, null, $pani->getDate() );
+				$user_quantites_ids = array_map( function ( $v ) {
 					/** @var AmapressAdhesionQuantite $v */
 					return $v->getId();
-				}, AmapressAdhesion::getQuantitesForUser( null, null, $pani->getDate() ) );
+				}, $user_quantites );
 			}
 
 			foreach ( $quantites as $quantite ) {
-				if ( $user_quantites && ! in_array( $quantite->ID, $user_quantites ) ) {
+				if ( ! empty( $user_quantites_ids ) && ! in_array( $quantite->ID, $user_quantites_ids ) ) {
 					continue;
 				}
 
@@ -942,8 +944,9 @@ class AmapressPaniers {
 					$produits_in_panier[] = $prod->getID();
 				}
 
-				$url = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
-				echo '<h3><img class="dist-panier-quantite-img" src="' . $url . '" alt="" /> ' . esc_html( $quantite->getTitle() );
+				$url   = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
+				$title = ! empty( $user_quantites_ids ) ? $user_quantites[ $quantite->getID() ]->getTitle() : $quantite->getTitle();
+				echo '<h3><img class="dist-panier-quantite-img" src="' . $url . '" alt="" /> ' . esc_html( $title );
 //                if (amapress_is_user_logged_in()) {
 //                    if ($dist_is_after && !$dist_is_today) {
 //                        $inter_status = self::isIntermittent($panier_id, $pani->getContrat_instance()->ID, $lieu_id);
