@@ -563,7 +563,7 @@ function admin_action_amapress_mailing_sync() {
 	$ml     = new Amapress_MailingListConfiguration( $mailing_list_id );
 	$ml_obj = $ml->getMailingList();
 	if ( $ml_obj ) {
-		$ml_obj->syncMembers( $ml->getMembersQueries(), $ml->getModeratorsQueries() );
+		$ml_obj->syncMembers( $ml );
 	}
 
 	wp_redirect( $_SERVER['HTTP_REFERER'] );
@@ -578,7 +578,7 @@ function amapress_get_mailinglist_status( $mailing_list_id ) {
 	}
 
 	$ret = '';
-	switch ( $ml_obj->isSync( $ml->getMembersQueries(), $ml->getModeratorsQueries() ) ) {
+	switch ( $ml_obj->isSync( $ml ) ) {
 		case 'manual':
 			$ret .= '<div class="status"><div class="mailinglist-status" style="color: gray;">Synchro manuelle</div>' .
 			        amapress_get_mail_action_form( 'Configurer et synchroniser', 'amapress_mailing_sync', $ml->ID, '' ) . '</div>';
@@ -614,14 +614,12 @@ add_action( 'init', function () {
 function amapress_mailinglists_autosync() {
 	$messages = array();
 	foreach ( Amapress_MailingListConfiguration::getAll() as $conf ) {
-		$ml         = $conf->getMailingList();
-		$members    = $conf->getMembersQueries();
-		$moderators = $conf->getModeratorsQueries();
-		$sync       = $ml->isSync( $members, $moderators );
+		$ml   = $conf->getMailingList();
+		$sync = $ml->isSync( $conf );
 		switch ( $sync ) {
 			case 'not_sync':
-				$ml->syncMembers( $members, $moderators );
-				if ( 'sync' != $ml->isSync( $members, $moderators ) ) {
+				$ml->syncMembers( $conf );
+				if ( 'sync' != $ml->isSync( $conf ) ) {
 					$messages[] = "La synchro de {$conf->getTitle()} a échouée. Voir {$conf->getAdminEditLink()}";
 				}
 				break;

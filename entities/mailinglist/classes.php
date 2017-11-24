@@ -300,20 +300,18 @@ class Amapress_MailingList {
 	}
 
 	/**
-	 * @param string[]|array[] $members_queries
-	 * @param string[]|array[] $moderators_queries
+	 * @param Amapress_MailingListConfiguration $config
 	 */
-	public function syncMembers( $members_queries, $moderators_queries ) {
+	public function syncMembers( $config ) {
 
 	}
 
 	/**
-	 * @param string[]|array[] $members_queries
-	 * @param string[]|array[] $moderators_queries
+	 * @param Amapress_MailingListConfiguration $config
 	 *
 	 * @return string
 	 */
-	public function isSync( $members_queries, $moderators_queries ) {
+	public function isSync( $config ) {
 
 	}
 

@@ -5,13 +5,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
-	/** @return  Amapress_Ouvaton_MailSystem */
+class Amapress_SudOuest_MailingList extends Amapress_MailingList {
+	/** @return  Amapress_SudOuest_MailSystem */
 	public function getSystem() {
 		return parent::getSystem();
 	}
 
-	function __construct( $name, $info, Amapress_Ouvaton_MailSystem $system ) {
+	function __construct( $name, $info, Amapress_SudOuest_MailSystem $system ) {
 		parent::__construct( $name, $info, $system );
 	}
 
@@ -49,7 +49,7 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 		parent::setModerators( $value );
 	}
 
-	private function getSqlQuery( $queries ) {
+	public function getSqlQuery( $queries ) {
 		global $wpdb;
 
 		if ( empty( $queries ) || count( $queries ) == 0 ) {
@@ -88,8 +88,6 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 	 */
 	public function syncMembers( $config ) {
 		$moderators_queries = $config->getModeratorsQueries();
-		$members_queries    = $config->getMembersQueries();
-
 		if ( ! empty( $moderators_queries ) ) {
 			$user_ids = array();
 			foreach ( $moderators_queries as $q ) {
@@ -103,12 +101,18 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 			$this->setModerators( $user_ids );
 		}
 
-		if ( empty( $members_queries ) ) {
-			return;
-		}
+		$this->getSystem()->setRemoteUrl( $this->getName(), $this->getRemoteUrl( $config->ID ) );
+	}
 
-		$new_query = $this->getSqlQuery( $members_queries );
-		$this->getSystem()->setSqlDataSource( $new_query, $this->getName() );
+	public function getRemoteUrl( $id ) {
+		return add_query_arg(
+			array(
+				'action' => 'fetch-mailing-members',
+				'id'     => $id,
+				'secret' => Amapress::getOption( 'sud-ouest_secret' ),
+			),
+			admin_url( 'admin-post.php' )
+		);
 	}
 
 	/**
@@ -118,8 +122,6 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 	 */
 	public function isSync( $config ) {
 		$moderators_queries = $config->getModeratorsQueries();
-		$members_queries    = $config->getMembersQueries();
-
 		if ( ! empty( $moderators_queries ) ) {
 			$user_emails = array();
 			foreach ( $moderators_queries as $q ) {
@@ -137,26 +139,10 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 				return 'not_sync';
 			}
 		}
-		global $wpdb;
-		$sql_query = isset( $this->info['query'] ) ? $this->info['query'] : '';
-		if ( ! empty( $sql_query ) ) {
-			$new_query = $this->getSqlQuery( $members_queries );
-			if ( empty( $new_query ) ) {
-				return 'manual';
-			}
-			$new_query   = trim( preg_replace( '/\s+/', ' ', $new_query ) );
-			$sql_query   = trim( preg_replace( '/\s+/', ' ', $sql_query ) );
-
-			//TODO : dont know why there is {xxxx} in "like wp_capabilities"
-			$new_query = trim( preg_replace( '/\{[0-9A-Fa-f]+\}/', '', $new_query ) );
-			$sql_query = trim( preg_replace( '/\{[0-9A-Fa-f]+\}/', '', $sql_query ) );
-
-			$new_users   = array_unique( $wpdb->get_col( $new_query ) );
-			$was_errored = $wpdb->last_error;
-			$old_users   = array_unique( $wpdb->get_col( $sql_query ) );
-			$was_errored = $was_errored || $wpdb->last_error;
-			$inter       = array_intersect( $new_users, $old_users );
-			if ( ! $was_errored && count( $inter ) == count( $old_users ) && count( $inter ) == count( $new_users ) ) {
+		$remote_url = isset( $this->info['remote_url'] ) ? $this->info['remote_url'] : '';
+		if ( ! empty( $remote_url ) ) {
+			$new_remote_url = $this->getRemoteUrl( $config->ID );
+			if ( $new_remote_url == $remote_url ) {
 				return 'sync';
 			} else {
 				return 'not_sync';
@@ -166,24 +152,35 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 		}
 	}
 
-	public function getModerationControl() {
+	public
+	function getModerationControl() {
 
 	}
 
-	public function distributeMail( $msg_id ) {
+	public
+	function distributeMail(
+		$msg_id
+	) {
 		return $this->getSystem()->distributeMail( $this->getName(), $msg_id );
 	}
 
-	public function rejectMailQuiet( $msg_id ) {
+	public
+	function rejectMailQuiet(
+		$msg_id
+	) {
 		return $this->getSystem()->rejectMailQuiet( $this->getName(), $msg_id );
 	}
 
-	public function rejectMail( $msg_id ) {
+	public
+	function rejectMail(
+		$msg_id
+	) {
 		return $this->getSystem()->rejectMail( $this->getName(), $msg_id );
 	}
 
 	/** @return Amapress_MailingList_Mail[] */
-	public function getMailWaitingModeration() {
+	public
+	function getMailWaitingModeration() {
 		if ( ! isset( $this->info['messages'] ) ) {
 			if ( $this->getMailWaitingModerationCount() > 0 ) {
 				$this->info['messages'] = $this->getSystem()->getMailWaitingModeration( $this->getName() );
@@ -195,16 +192,18 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 		return $this->info['messages'];
 	}
 
-	public function getFullName() {
+	public
+	function getFullName() {
 		return $this->getSystem()->getFullName( $this->getName() );
 	}
 
-	public function getId() {
+	public
+	function getId() {
 		return $this->getSystem()->getId( $this->getName() );
 	}
 }
 
-class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
+class Amapress_SudOuest_MailSystem extends Amapress_MailingSystem {
 	public function handleMessagesModeration() {
 		return true;
 	}
@@ -230,7 +229,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 	private $mailinglist_domain;
 
 	public function getMailingListBaseUrl() {
-		return "http://{$this->mailinglist_domain}/wws/";
+		return "https://{$this->mailinglist_domain}/wws/";
 	}
 
 	public function getCreationLink() {
@@ -243,7 +242,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function getId( $name ) {
-		return "ouvaton:{$this->getFullName($name)}";
+		return "sud-ouest:{$this->getFullName($name)}";
 	}
 
 	public function getMailingList( $name ) {
@@ -287,15 +286,11 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();
 
-			$source_modes              = array();
-			$list_info['data_source']  = self::parseSelect( $body, 'single_param.user_data_source', $source_modes );
-			$list_info['data_sources'] = $source_modes;
-
-			preg_match( '/id\="single_param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m );
-			$list_info['query'] = html_entity_decode( $m['mode'] );
+			preg_match( '/id\="single_param.include_remote_file.0.url"\s+value="(?<url>[^"]*)"/', $body, $m );
+			$list_info['remote_url'] = html_entity_decode( $m['url'] );
 		}
 
-		return new Amapress_Ouvaton_MailingList( $name, $list_info, $this );
+		return new Amapress_SudOuest_MailingList( $name, $list_info, $this );
 	}
 
 	protected function fetchMails() {
@@ -311,7 +306,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			$lists = array();
 			preg_match_all( '%\<li\s+class\="listenum"\>.+?\<\/li\>%s', $body, $lists, PREG_SET_ORDER );
 			foreach ( $lists as $list ) {
-				preg_match( '/href\="\/wws\/admin\/(?<name>[^"]+)"/', $list[0], $m );
+				preg_match( '/href\="\/wws\/+info\/(?<name>[^"]+)"/', $list[0], $m );
 				$ret[] = $this->getMailingList( $m['name'] );
 			}
 		}
@@ -334,7 +329,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 			//$jar->add
 			self::$client = new \GuzzleHttp\Client(
 				array(
-					'base_uri' => "http://{$this->mailinglist_domain}",
+					'base_uri' => "https://{$this->mailinglist_domain}",
 					'cookies'  => $cookies,
 				) );
 			$resp         = self::$client->post( '/wws',
@@ -356,32 +351,20 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 		}
 	}
 
-	public function setSqlDataSource( $sql_query, $list_name ) {
+	public function setRemoteUrl( $list_name, $remote_url ) {
 		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" );
 		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
 //        var_dump($sql_query);
 		$post_data = array(
-			'serial'                                           => $m['serial'],
-			'single_param.user_data_source'                    => 'include2',
-			'single_param.include_sql_query.0.name'            => DB_USER,
-			'single_param.include_sql_query.0.db_type'         => 'mysql',
-			'single_param.include_sql_query.0.host'            => DB_HOST,
-			'single_param.include_sql_query.0.db_name'         => DB_NAME,
-			'single_param.include_sql_query.0.db_host'         => '',
-			'single_param.include_sql_query.0.db_user'         => '',
-			'single_param.include_sql_query.0.db_passwd'       => '',
-			'single_param.include_sql_query.0.db_port'         => '',
-			'single_param.include_sql_query.0.connect_options' => '',
-			'single_param.include_sql_query.0.db_env'          => '',
-			'single_param.include_sql_query.0.user'            => DB_USER,
-			'single_param.include_sql_query.0.passwd'          => DB_PASSWORD,
-			'single_param.include_sql_query.0.sql_query'       => preg_replace( '/\s/', ' ', $sql_query ),
-			'list'                                             => $list_name,
-			'group'                                            => 'data_source',
-			'action'                                           => 'edit_list',
-			'action_edit_list'                                 => 'Mise à jour',
+			'serial'                                  => $m['serial'],
+			'single_param.include_remote_file.0.name' => 'Amapress',
+			'single_param.include_remote_file.0.url'  => $remote_url,
+			'list'                                    => $list_name,
+			'group'                                   => 'data_source',
+			'action'                                  => 'edit_list',
+			'action_edit_list'                        => 'Mise à jour',
 		);
 		$resp      = self::$client->post( '/wws', [
 			'form_params' => $post_data
@@ -497,9 +480,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 		$resp = self::$client->post( '/wws', [
 			'form_params' =>
 				array(
-				'list'                => $list_name,
-				'id'                  => $msg_id,
-				'action_reject.quiet' => 'Rejeter sans prévenir l\'auteur',
+					'list'                => $list_name,
+					'id'                  => $msg_id,
+					'action_reject.quiet' => 'Rejeter sans prévenir l\'auteur',
 				)
 		] );
 
@@ -510,9 +493,9 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 		$resp = self::$client->post( '/wws', [
 			'form_params' =>
 				array(
-				'list'          => $list_name,
-				'id'            => $msg_id,
-				'action_reject' => 'Rejeter',
+					'list'          => $list_name,
+					'id'            => $msg_id,
+					'action_reject' => 'Rejeter',
 				)
 		] );
 
@@ -560,14 +543,43 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 	}
 }
 
-add_filter( 'amapress_get_mailinglist_systems', 'amapress_ouvaton_get_mailinglist_systems' );
-function amapress_ouvaton_get_mailinglist_systems( $systems ) {
-	$mailinglist_domain = trim( trim( Amapress::getOption( 'ouvaton_mailing_domain' ) ), '@' );
-	$login              = Amapress::getOption( 'ouvaton_admin_user' );
-	$pass               = Amapress::getOption( 'ouvaton_admin_pass' );
+add_filter( 'amapress_get_mailinglist_systems', 'amapress_SudOuest_get_mailinglist_systems' );
+function amapress_SudOuest_get_mailinglist_systems( $systems ) {
+	$mailinglist_domain = trim( trim( Amapress::getOption( 'sud-ouest_mailing_domain' ) ), '@' );
+	$login              = Amapress::getOption( 'sud-ouest_admin_user' );
+	$pass               = Amapress::getOption( 'sud-ouest_admin_pass' );
 	if ( ! empty( $mailinglist_domain ) && ! empty( $login ) && ! empty( $pass ) ) {
-		$systems[] = new Amapress_Ouvaton_MailSystem( $mailinglist_domain, $login, $pass );
+		$systems[] = new Amapress_SudOuest_MailSystem( $mailinglist_domain, $login, $pass );
 	}
 
 	return $systems;
 }
+
+add_action( 'admin_post_nopriv_fetch-mailing-members', function () {
+//	file_put_contents(AMAPRESS__PLUGIN_DIR."/test.txt", var_export(getallheaders() , true));
+	if ( empty( Amapress::getOption( 'sud-ouest_admin_user' ) ) ) {
+		wp_die( "No Sud-Ouest Mailing list found" );
+	}
+
+	if ( ! isset( $_REQUEST['secret'] ) || $_REQUEST['secret'] != Amapress::getOption( 'sud-ouest_secret' ) ) {
+		wp_die( "Sync secret does not match" );
+	}
+
+	$ml = new Amapress_MailingListConfiguration( $_REQUEST['id'] );
+	if ( ! $ml ) {
+		wp_die( "Mailing list {$_REQUEST['id']} cannot be found" );
+	}
+
+	/** @var Amapress_SudOuest_MailingList $ml_obj */
+	$ml_obj = $ml->getMailingList();
+	if ( ! is_a( $ml_obj, 'Amapress_SudOuest_MailingList' ) ) {
+		wp_die( "Mailing list {$_REQUEST['id']} is not a Sud Ouest mailing list configuration" );
+	}
+
+	header( 'Content-type: text/plain' );
+	global $wpdb;
+	foreach ( $wpdb->get_col( $ml_obj->getSqlQuery( $ml->getMembersQueries() ) ) as $email ) {
+		echo "{$email}\n";
+	}
+	die();
+} );

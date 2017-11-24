@@ -1414,7 +1414,7 @@ class AmapressEntities {
 								),
 							),
 							'tabs'     => array(
-								'Ouvaton - Sympa' => array(
+								'Ouvaton - Sympa'   => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -1435,6 +1435,39 @@ class AmapressEntities {
 											'type'        => 'text',
 											'is_password' => true,
 											'default'     => '',
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Sud Ouest - Sympa' => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'sud-ouest_mailing_domain',
+											'name'    => 'Domaine de la liste de diffusion',
+											'type'    => 'text',
+											'default' => '',
+										),
+										array(
+											'id'      => 'sud-ouest_admin_user',
+											'name'    => 'Email de l\'admin',
+											'type'    => 'text',
+											'default' => '',
+										),
+										array(
+											'id'          => 'sud-ouest_admin_pass',
+											'name'        => 'Mot de passe',
+											'type'        => 'text',
+											'is_password' => true,
+											'default'     => '',
+										),
+										array(
+											'id'      => 'sud-ouest_secret',
+											'name'    => 'Secret pour la mise à jour des membres',
+											'type'    => 'text',
+											'default' => uniqid(),
 										),
 										array(
 											'type' => 'save',
