@@ -472,7 +472,11 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	$dist_id    = intval( $_POST['dist'] );
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = amapress_current_user_id() == $user_id;
-	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
+	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
+	                          || amapress_can_access_admin()
+	                          || AmapressDistributions::isCurrentUserResponsableThisWeek()
+	                          || AmapressDistributions::isCurrentUserResponsableNextWeek()
+		) ) {
 		echo '<p class="error">Non autorisé</p>';
 		die();
 	}
