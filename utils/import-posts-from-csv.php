@@ -621,7 +621,11 @@ class Amapress_Import_Posts_CSV {
 						if ( $postmeta ) {
 							foreach ( $postmeta as $metakey => $metavalue ) {
 								$metavalue = maybe_unserialize( $metavalue );
-								update_post_meta( $post_id, $metakey, $metavalue );
+								if ( empty( $metavalue ) ) {
+									delete_post_meta( $post_id, $metakey );
+								} else {
+									update_post_meta( $post_id, $metakey, $metavalue );
+								}
 							}
 						}
 

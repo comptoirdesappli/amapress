@@ -562,7 +562,11 @@ class Amapress_Import_Users_CSV {
 					if ( $usermeta ) {
 						foreach ( $usermeta as $metakey => $metavalue ) {
 							$metavalue = maybe_unserialize( $metavalue );
-							update_user_meta( $user_id, $metakey, $metavalue );
+							if ( empty( $metavalue ) ) {
+								delete_user_meta( $user_id, $metakey );
+							} else {
+								update_user_meta( $user_id, $metakey, $metavalue );
+							}
 						}
 					}
 
