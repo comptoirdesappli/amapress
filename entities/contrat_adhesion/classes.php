@@ -41,7 +41,11 @@ class AmapressAdhesionQuantite {
 	public function getCode() {
 		$quant = $this->getContratQuantite();
 		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
-			return $this->getFactor() . ' ' . $quant->getCode();
+			if ( $this->getFactor() != 1 ) {
+				return $this->getFactor() . ' x ' . $quant->getCode();
+			} else {
+				return $quant->getCode();
+			}
 		} else {
 			return $quant->getCode();
 		}
@@ -53,7 +57,11 @@ class AmapressAdhesionQuantite {
 	public function getTitle() {
 		$quant = $this->getContratQuantite();
 		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
-			return $this->getFactor() . ' ' . $quant->getTitle();
+			if ( $this->getFactor() != 1 ) {
+				return $this->getFactor() . ' x ' . $quant->getTitle();
+			} else {
+				return $quant->getTitle();
+			}
 		} else {
 			return $quant->getTitle();
 		}
