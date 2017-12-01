@@ -119,6 +119,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_roles'      => 'default',
 		'show_for_resp'   => 'true',
 		'max_dates'       => - 1,
+		'responsive'      => 'true',
 		'user'            => null,
 		'lieu'            => null,
 		'date'            => null,
@@ -252,7 +253,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	foreach ( $all_user_lieux as $lieu_id ) {
 		$user_lieu = new AmapressLieu_distribution( $lieu_id );
 		$ret       .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
-		$ret       .= '<table class="table display responsive nowrap distrib-inscr-list" width="100%" style="table-layout: auto" cellspacing="0">';
+		$ret       .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' nowrap distrib-inscr-list" width="100%" style="table-layout: auto" cellspacing="0">';
 		$ret       .= '<thead>';
 		$ret       .= '<tr>';
 		$ret       .= '<th>Date</th>';

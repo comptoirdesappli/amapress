@@ -284,6 +284,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
             .edit-user-comment { color: white; }
             .edit-user-comment:hover { color: black; !important; }
             @media print {
+            	.user-sms { display: none; }
             	.edit-user-comment {display: none;}
                 * { margin: 0 !important; 
                 	padding: 0 !important; 
@@ -302,7 +303,6 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
                 #liste-emargement_info { display: none !important}
                 #paniers-a-echanger_info { display: none !important}
                 .distrib-resp-missing, .dist-inscrire-button, .dist-desinscrire-button, .btn-print-liste { display: none !important}
-                table.distrib-inscr-list { table-layout: fixed  !important}
                 div.btns { display: none !important}
                 td, th { padding: 2px !important; line-height: normal !important; }
                 body {
