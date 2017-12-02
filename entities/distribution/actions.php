@@ -175,9 +175,9 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	}
 
 	foreach ( $all_contrat_instances as $contrat ) {
-		$tit = $contrat->getModel()->getTitle();
+		$tit = '<span style="word-break: break-all; white-space: normal;">' . esc_html( $contrat->getModel()->getTitle() ) . '</span>';
 		if ( ! in_array( $contrat->ID, $dist_contrat_ids ) ) {
-			$tit = '<span class="not-this-dist">' . esc_html( $tit ) . '</span>';
+			$tit = '<span class="not-this-dist">' . $tit . '</span>';
 		}
 		$columns[] = array(
 			'title' => $tit,
@@ -390,9 +390,14 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<h3 class="liste-emargement">Liste</h3>';
 	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
 		array(
-			'paging'    => false,
-			'searching' => false,
-			'aaSorting' => [ [ 1, 'asc' ] ]
+			'paging'     => false,
+			'searching'  => false,
+			'nowrap'     => false,
+			'responsive' => false,
+			'aaSorting'  => [ [ 1, 'asc' ] ]
+		),
+		array(
+			Amapress::DATATABLES_EXPORT_EXCEL
 		) );
 
 	foreach ( $dist->getContrats() as $contrat ) {
