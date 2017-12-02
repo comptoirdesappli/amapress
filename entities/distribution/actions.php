@@ -341,6 +341,11 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	if ( current_user_can( 'edit_lieu_distribution' ) ) {
 		echo '<a href="' . esc_attr( $dist->getLieu()->getAdminEditLink() ) . '" class="btn btn-default">Editer les infos du lieu</a>';
 	}
+	if ( isset( $_GET['all'] ) ) {
+		echo '<a href="' . esc_attr( remove_query_arg( 'all' ) ) . '" class="btn btn-default btn-print">Contrats à cette distribution</a>';
+	} else {
+		echo '<a href="' . esc_attr( add_query_arg( 'all', '' ) ) . '" class="btn btn-default btn-print">Tous les contrats</a>';
+	}
 	echo '</div>';
 	echo '<br/>';
 
