@@ -220,7 +220,7 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 			'post_type'      => $post_type,
 //            'paged' => $gallery_page,
 			'post__in'       => $post__in,
-			'post__not_in'   => $post__not_in
+			'post__not_in'   => $post__not_in,
 		);
 		if ( $post_type == 'user' ) {
 			$gallery = new WP_User_Query();
@@ -245,6 +245,8 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 		$gallery->set( 'post__not_in', $post__not_in );
 	}
 
+	$gallery->set( 'posts_per_page', - 1 );
+	$gallery->set( 'no_found_rows', true );
 	$gallery->get_posts();
 	$cols               = $columns;
 	$has_custom_content = ! empty( $render_func );
