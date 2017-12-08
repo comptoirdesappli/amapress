@@ -828,8 +828,6 @@ class AmapressContrats {
 	}
 
 
-
-
 	/**
 	 * @return AmapressAmapien_paiement[]
 	 */
@@ -902,7 +900,6 @@ class AmapressContrats {
 
 		return $user && $user->isIntermittent();
 	}
-
 
 
 	/**
@@ -995,8 +992,8 @@ class AmapressContrats {
 		return $res;
 	}
 
-	public static function get_related_users( $user_id, $search_in_adhesion = true ) {
-		$key = "amapress_get_related_users_{$user_id}_{$search_in_adhesion}";
+	public static function get_related_users( $user_id ) {
+		$key = "amapress_get_related_users_{$user_id}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res  = array( $user_id );
@@ -1011,19 +1008,36 @@ class AmapressContrats {
 				$res = array_merge( $res, $user->getPrincipalUserIds() );
 			}
 
-			if ( $search_in_adhesion ) {
-				foreach ( AmapressAdhesion::getUserActiveAdhesions( $user_id ) as $adh ) {
-					if ( $adh->getAdherent() != null && ! in_array( $adh->getAdherent()->ID, $res ) ) {
-						$res[] = $adh->getAdherent()->ID;
-					}
-					if ( $adh->getAdherent2() != null && ! in_array( $adh->getAdherent2()->ID, $res ) ) {
-						$res[] = $adh->getAdherent2()->ID;
-					}
-					if ( $adh->getAdherent3() != null && ! in_array( $adh->getAdherent3()->ID, $res ) ) {
-						$res[] = $adh->getAdherent3()->ID;
-					}
-				}
-			}
+			$in       = implode( ',', amapress_prepare_in( $res ) );
+			$end_time = Amapress::end_of_day( amapress_time() );
+			global $wpdb;
+			$res = array_merge( $res,
+				$wpdb->get_col(
+					"SELECT mt3.meta_value
+FROM $wpdb->postmeta
+LEFT JOIN $wpdb->postmeta AS mt1
+ON ($wpdb->postmeta.post_id = mt1.post_id
+AND mt1.meta_key = 'amapress_adhesion_date_fin' ) 
+LEFT JOIN $wpdb->postmeta AS mt2
+ON ( $wpdb->postmeta.post_id = mt2.post_id )
+LEFT JOIN $wpdb->postmeta AS mt3
+ON ( $wpdb->postmeta.post_id = mt3.post_id 
+AND mt3.meta_key = 'amapress_adhesion_adherent' ) 
+WHERE 1=1 
+AND ( ( ( $wpdb->postmeta.meta_key = 'amapress_adhesion_adherent'
+AND CAST($wpdb->postmeta.meta_value AS SIGNED) IN ($in) ) 
+OR ( $wpdb->postmeta.meta_key = 'amapress_adhesion_adherent2'
+AND CAST($wpdb->postmeta.meta_value AS SIGNED) IN ($in) ) 
+OR ( $wpdb->postmeta.meta_key = 'amapress_adhesion_adherent3'
+AND CAST($wpdb->postmeta.meta_value AS SIGNED) IN ($in) ) ) 
+AND ( mt1.post_id IS NULL 
+OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
+AND CAST(mt2.meta_value AS UNSIGNED) = 0 ) 
+OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
+AND CAST(mt2.meta_value AS UNSIGNED) >= $end_time ) ) )"
+				) );
+
+			$res = array_unique( array_map( 'intval', $res ) );
 			wp_cache_set( $key, $res );
 		}
 

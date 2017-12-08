@@ -77,6 +77,8 @@ class AmapressPanier extends Amapress_EventBase {
 		$date_orig = null,
 		$status = [ 'delayed', 'cancelled' ]
 	) {
+		return [];
+
 		if ( ! empty( $contrat_instance_id ) && ! is_array( $contrat_instance_id ) ) {
 			$contrat_instance_id = array( $contrat_instance_id );
 		}

@@ -7,6 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'amapress_init', 'amapress_customizer_init' );
 
 function amapress_customizer_init() {
+	if ( ! Amapress::isBackOfficePage() ) {
+		return;
+	}
+	
 	$titan    = TitanFramework::getInstance( 'amapress' );
 	$contrats = get_posts( array(
 		'posts_per_page' => - 1,

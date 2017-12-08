@@ -538,7 +538,7 @@ class AmapressUsers {
 
 	public static function get_user_lieu_ids( $user_id, $date = null, $ignore_renouv_delta = false ) {
 		$abo_ids  = AmapressContrats::get_active_contrat_instances_ids( null, $date, $ignore_renouv_delta );
-		$user_ids = AmapressContrats::get_related_users( $user_id, false );
+		$user_ids = AmapressContrats::get_related_users( $user_id );
 		$lieu_ids = array_map( array( 'Amapress', 'to_adhesion_lieu' ), get_posts( array(
 			'post_type'      => 'amps_adhesion',
 			'posts_per_page' => - 1,

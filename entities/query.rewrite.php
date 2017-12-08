@@ -108,10 +108,11 @@ function amapress_add_page_if_not_exists( $option_name, $title, $slug, $protecte
 			return;
 		}
 		Amapress::setOption( $option_name, $option_value );
-	}
-	if ( $protected ) {
-		update_post_meta( $option_value, 'amps_lo', 1 );
-	} else {
-		delete_post_meta( $option_value, 'amps_lo' );
+
+		if ( $protected ) {
+			update_post_meta( $option_value, 'amps_lo', 1 );
+		} else {
+			delete_post_meta( $option_value, 'amps_lo' );
+		}
 	}
 }

@@ -4,6 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/transients.php' );
+
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/class.amapress-users-list-table.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/post-its.php' );

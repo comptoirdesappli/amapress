@@ -1026,3 +1026,19 @@ add_action( 'save_post', function () {
 		wp_publish_post( $_POST['post_ID'] );
 	}
 } );
+
+
+//add_filter('posts_distinct', function() {
+//    return 'DISTINCT';
+//},1);
+//
+//add_filter('posts_groupby', function($sql) {
+//	return '';
+//},1);
+
+function get_posts_by_meta_query( $meta_query ) {
+	global $wpdb;
+	$meta_sql = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
+
+	return $wpdb->get_col( "SELECT DISTINCT $wpdb->posts.ID FROM $wpdb->posts {$meta_sql['join']} WHERE 1=1 AND $wpdb->posts.post_status = 'publish' {$meta_sql['where']}" );
+}

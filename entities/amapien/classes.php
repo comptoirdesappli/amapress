@@ -392,33 +392,26 @@ class AmapressUser extends TitanUserEntity {
 		return $this->adherent2;
 	}
 
-	public function getPrincipalUserIds() {
-		$ret = array_map( function ( $u ) {
-			return $u->ID;
-		},
-			get_users(
-				array(
-					'meta_query' => array(
-						array(
-							'relation' => 'OR',
-							array(
-								'key'     => 'amapress_user_co-adherent-1',
-								'value'   => $this->ID,
-								'compare' => '=',
-								'type'    => 'NUMERIC',
-							),
-							array(
-								'key'     => 'amapress_user_co-adherent-2',
-								'value'   => $this->ID,
-								'compare' => '=',
-								'type'    => 'NUMERIC',
-							),
-						),
-					)
-				)
-			) );
+	private $principal_user_ids = null;
 
-		return $ret;
+	public function getPrincipalUserIds() {
+		if ( empty( $this->principal_user_ids ) ) {
+			global $wpdb;
+			$ret1 = array_map( 'intval',
+				$wpdb->get_col( "SELECT DISTINCT $wpdb->usermeta.user_id
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key = 'amapress_user_co-adherent-1'
+AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID  " ) );
+			$ret2 = array_map( 'intval',
+				$wpdb->get_col( "SELECT DISTINCT $wpdb->usermeta.user_id
+FROM $wpdb->usermeta
+WHERE $wpdb->usermeta.meta_key = 'amapress_user_co-adherent-2'
+AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
+
+			$this->principal_user_ids = array_merge( $ret1, $ret2 );
+		}
+
+		return $this->principal_user_ids;
 	}
 
 	public function getEmail() {

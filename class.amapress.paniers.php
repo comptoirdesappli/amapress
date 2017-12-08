@@ -662,12 +662,14 @@ class AmapressPaniers {
 			$meta_query[] = array(
 				'key'   => 'amapress_intermittence_panier_date',
 				'value' => Amapress::start_of_day( $args['date'] ),
+				'type'  => 'NUMERIC'
 			);
 		} else {
 			$meta_query[] = array(
 				'key'     => 'amapress_intermittence_panier_date',
 				'value'   => Amapress::start_of_day( amapress_time() ),
-				'compare' => '>='
+				'compare' => '>=',
+				'type'    => 'NUMERIC'
 			);
 		}
 

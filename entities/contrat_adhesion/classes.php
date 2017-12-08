@@ -254,7 +254,7 @@ class AmapressAdhesion extends TitanEntity {
 //		if ( count( array_unique( $quants ) ) == count( $this->getContrat_quantites() ) ) {
 //			return implode( ',', $quants );
 //		} else if ( count( array_unique( $codes ) ) == count( $this->getContrat_quantites() ) ) {
-			return implode( ',', $codes );
+		return implode( ',', $codes );
 //		} else {
 //			return implode( ',', $titles );
 //		}
@@ -425,47 +425,37 @@ class AmapressAdhesion extends TitanEntity {
 	/**
 	 * @return AmapressAdhesion[]
 	 */
-	public static function getUserActiveAdhesions( $user_id = null, $contrat_instance_id = null, $date = null, $ignore_renouv_delta = false ) {
-		$key_ids = is_array( $contrat_instance_id ) ? implode( '-', $contrat_instance_id ) : $contrat_instance_id;
-		$key     = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
-		$res     = wp_cache_get( $key );
+	public static function getUserActiveAdhesions(
+		$user_id = null,
+		$contrat_instance_id = null,
+		$date = null,
+		$ignore_renouv_delta = false
+	) {
+		if ( $user_id == null ) {
+			$user_id = amapress_current_user_id();
+		}
+//		$key_ids = is_array( $contrat_instance_id ) ? implode( '-', $contrat_instance_id ) : $contrat_instance_id;
+		$key = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$date}_{$ignore_renouv_delta}";
+		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			if ( $user_id == null ) {
-				$user_id = amapress_current_user_id();
-			}
 			$abo_ids  = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta );
-			$user_ids = AmapressContrats::get_related_users( $user_id, false );
+			$user_ids = AmapressContrats::get_related_users( $user_id );
 			$query    = array(
 				'posts_per_page' => - 1,
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
 				'meta_query'     => array(
 					'relation' => 'AND',
 					array(
-						'key'     => 'amapress_adhesion_contrat_instance',
-						'value'   => $abo_ids,
+						'key'     => 'amapress_adhesion_adherent',
+						'value'   => $user_ids,
 						'compare' => 'IN',
 						'type'    => 'NUMERIC'
 					),
 					array(
-						'relation' => 'OR',
-						array(
-							'key'     => 'amapress_adhesion_adherent',
-							'value'   => $user_ids,
-							'compare' => 'IN',
-							'type'    => 'NUMERIC'
-						),
-						array(
-							'key'     => 'amapress_adhesion_adherent2',
-							'value'   => $user_ids,
-							'compare' => 'IN',
-							'type'    => 'NUMERIC'
-						),
-						array(
-							'key'     => 'amapress_adhesion_adherent3',
-							'value'   => $user_ids,
-							'compare' => 'IN',
-							'type'    => 'NUMERIC'
-						),
+						'key'     => 'amapress_adhesion_contrat_instance',
+						'value'   => $abo_ids,
+						'compare' => 'IN',
+						'type'    => 'NUMERIC'
 					),
 					array(
 						'relation' => 'OR',
@@ -556,7 +546,7 @@ class AmapressAdhesion extends TitanEntity {
 
 
 	public function getNextContratInstanceId() {
-		$contrat_instance_id   = $this->getContrat_instanceId();
+		$contrat_instance_id = $this->getContrat_instanceId();
 		if ( empty( $contrat_instance_id ) ) {
 			return null;
 		}

@@ -106,6 +106,8 @@ class Amapress_Calendar {
 
 	/** @return Amapress_EventEntry[] */
 	public static function get_next_events( $date = null, $user_id = null ) {
+//		return [];
+
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
