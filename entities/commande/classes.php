@@ -39,7 +39,7 @@ class AmapressCommande extends Amapress_EventBase {
 			return null;
 		}
 		if ( $this->lieu == null ) {
-			$this->lieu = new AmapressLieu_distribution( $v );
+			$this->lieu = AmapressLieu_distribution::getBy( $v );
 		}
 
 		return $this->lieu;
@@ -105,7 +105,7 @@ class AmapressCommande extends Amapress_EventBase {
 			return null;
 		}
 		if ( $this->contrat_instance == null ) {
-			$this->contrat_instance = new AmapressContrat_instance( $v );
+			$this->contrat_instance = AmapressContrat_instance::getBy( $v );
 		}
 
 		return $this->contrat_instance;

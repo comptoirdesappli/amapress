@@ -204,6 +204,35 @@ class Amapress_MailingList {
 		);
 	}
 
+	public static function getSqlQuery( $queries ) {
+		global $wpdb;
+
+		if ( empty( $queries ) || count( $queries ) == 0 ) {
+			return "SELECT user_email
+                    FROM {$wpdb->users} WHERE 1=0";
+		}
+
+		$sql_queries  = array_map( function ( $q ) {
+			$args = wp_parse_args( $q,
+				array( 'fields' => array( "ID" ) ) );
+			$qq   = new WP_User_Query();
+			$qq->prepare_query( $args );
+
+			return "SELECT user_email $qq->query_from $qq->query_where";
+		}, $queries );
+		$sql_queries2 = array_map( function ( $q ) {
+			global $wpdb;
+			$args = wp_parse_args( $q,
+				array( 'fields' => array( "ID" ) ) );
+			$qq   = new WP_User_Query();
+			$qq->prepare_query( $args );
+
+			return "SELECT meta_value FROM $wpdb->usermeta WHERE meta_key IN ('email2','email3','email4') AND TRIM(IFNULL(meta_value,'')) <> '' AND user_id IN (SELECT ID $qq->query_from $qq->query_where)";
+		}, $queries );
+
+		return implode( ' UNION ', array_merge( $sql_queries, $sql_queries2 ) );
+	}
+
 	public function getName() {
 		return $this->info['name'];
 	}

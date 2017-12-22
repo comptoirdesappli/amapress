@@ -79,6 +79,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	/** @return AmapressAmapien_paiement[] */
 	public static function get_next_paiements( $user_id = null, $date = null, $order = 'NONE' ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return [];
+		}
+
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
@@ -168,7 +172,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$period_id            = $period ? $period->ID : 0;
 			self::$paiement_cache = array_group_by( array_map(
 				function ( $p ) {
-					return new AmapressAdhesion_paiement( $p );
+					return AmapressAdhesion::getBy_paiement( $p );
 				},
 				get_posts(
 					array(

@@ -31,7 +31,7 @@ function amapress_producteur_map_shortcode( $atts ) {
 	if ( $prod_id <= 0 ) {
 		return '';
 	}
-	$producteur = new AmapressProducteur( $prod_id );
+	$producteur = AmapressProducteur::getBy( $prod_id );
 	if ( ! $producteur->isAdresseExploitationLocalized() ) {
 		return '';
 	}
@@ -135,7 +135,7 @@ function amapress_amapiens_map_shortcode( $atts ) {
 	if ( ! empty( $atts['lieu'] ) ) {
 		$lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		if ( $lieu_id ) {
-			$lieux = array( new AmapressLieu_distribution( $lieu_id ) );
+			$lieux = array( AmapressLieu_distribution::getBy( $lieu_id ) );
 		} else {
 			$lieux = Amapress::get_lieux();
 		}
@@ -145,7 +145,7 @@ function amapress_amapiens_map_shortcode( $atts ) {
 		} else {
 			$lieux = array_map(
 				function ( $id ) {
-					return new AmapressLieu_distribution( $id );
+					return AmapressLieu_distribution::getBy( $id );
 				},
 				AmapressUsers::get_user_lieu_ids( amapress_current_user_id() ) );
 		}
@@ -357,7 +357,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //        foreach ($lieu_ids as $lieu_id) {
 //            if ($prod->getReferent($lieu_id) == null) continue;
 //            $had_local_referents = true;
-//            $lieu = new AmapressLieu_distribution($lieu_id);
+//            $lieu = AmapressLieu_distribution::getBy($lieu_id);
 //            $used_user_ids[] = $prod->getReferent($lieu_id)->ID;
 //            $data[] =
 //                array(
@@ -370,7 +370,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //            if ($prod->getReferent() != null) $used_user_ids[] = $prod->getReferent()->ID;
 //            foreach ($lieu_ids as $lieu_id) {
 //                if ($prod->getReferent() == null) continue;
-//                $lieu = new AmapressLieu_distribution($lieu_id);
+//                $lieu = AmapressLieu_distribution::getBy($lieu_id);
 //                $data[] =
 //                    array(
 //                        'user' => $prod->getReferent()->getDisplay($atts),
@@ -383,7 +383,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //
 //    //référent lieu
 //    foreach ($lieu_ids as $lieu_id) {
-//        $lieu = new AmapressLieu_distribution($lieu_id);
+//        $lieu = AmapressLieu_distribution::getBy($lieu_id);
 //        if ($lieu->getReferent() == null) continue;
 //        $used_user_ids[] = $lieu->getReferent()->ID;
 //        $data[] =
@@ -422,7 +422,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 ////            if (in_array($user_id, $used_user_ids)) continue;
 //            foreach (AmapressUsers::get_user_lieu_ids($user_id) as $lieu_id) {
 //                if (!in_array($lieu_id, $lieu_ids)) continue;
-//                $lieu = new AmapressLieu_distribution($lieu_id);
+//                $lieu = AmapressLieu_distribution::getBy($lieu_id);
 //                $u = AmapressUser::getBy($user_id);
 //                $used_user_ids[] = $user_id;
 //                $data[] =
@@ -454,7 +454,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //    foreach ($users as $user) {
 //        foreach (AmapressUsers::get_user_lieu_ids($user->ID) as $lieu_id) {
 //            if (!in_array($lieu_id, $lieu_ids)) continue;
-//            $lieu = new AmapressLieu_distribution($lieu_id);
+//            $lieu = AmapressLieu_distribution::getBy($lieu_id);
 //            $u = AmapressUser::getBy($user->ID);
 //            foreach ($u->getUser()->roles as $r) {
 //                $data[] =

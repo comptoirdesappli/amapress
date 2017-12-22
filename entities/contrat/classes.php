@@ -8,6 +8,33 @@ class AmapressContrat extends TitanEntity {
 	const INTERNAL_POST_TYPE = 'amps_contrat';
 	const POST_TYPE = 'contrat';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressContrat
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressContrat' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressContrat( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}
@@ -47,6 +74,34 @@ class AmapressContrat extends TitanEntity {
 class AmapressContrat_instance extends TitanEntity {
 	const INTERNAL_POST_TYPE = 'amps_contrat_inst';
 	const POST_TYPE = 'contrat_instance';
+
+
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressContrat_instance
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressContrat_instance' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressContrat_instance( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
 
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
@@ -207,13 +262,40 @@ class AmapressContrat_instance extends TitanEntity {
 			$quantite->cloneForContrat( $new_id );
 		}
 
-		return new AmapressContrat_instance( $new_id );
+		return AmapressContrat_instance::getBy( $new_id );
 	}
 }
 
 class AmapressContrat_quantite extends TitanEntity {
 	const INTERNAL_POST_TYPE = 'amps_contrat_quant';
 	const POST_TYPE = 'contrat_quantite';
+
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressContrat_quantite
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressContrat_quantite' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressContrat_quantite( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
 
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
@@ -370,6 +452,6 @@ class AmapressContrat_quantite extends TitanEntity {
 			return null;
 		}
 
-		return new AmapressContrat_quantite( $new_id );
+		return AmapressContrat_quantite::getBy( $new_id );
 	}
 }

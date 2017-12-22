@@ -49,39 +49,39 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 		parent::setModerators( $value );
 	}
 
-	private function getSqlQuery( $queries ) {
-		global $wpdb;
-
-		if ( empty( $queries ) || count( $queries ) == 0 ) {
-			return "SELECT user_email
-                    FROM {$wpdb->users} WHERE 1=0";
-		}
-
-		$sql_queries  = array_map( function ( $q ) {
-			$args = wp_parse_args( $q,
-				array( 'fields' => array( "ID" ) ) );
-			$qq   = new WP_User_Query();
-			$qq->prepare_query( $args );
-
-			return "SELECT user_email $qq->query_from $qq->query_where";
-		}, $queries );
-		$sql_queries2 = array_map( function ( $q ) {
-			global $wpdb;
-			$args = wp_parse_args( $q,
-				array( 'fields' => array( "ID" ) ) );
-			$qq   = new WP_User_Query();
-			$qq->prepare_query( $args );
-
-			return "SELECT meta_value FROM $wpdb->usermeta WHERE meta_key IN ('email2','email3','email4') AND TRIM(IFNULL(meta_value,'')) <> '' AND user_id IN (SELECT ID $qq->query_from $qq->query_where)";
-		}, $queries );
-
-		return implode( ' UNION ', array_merge( $sql_queries, $sql_queries2 ) );
-//        return "SELECT user_email
-//                FROM {$wpdb->users}
-//                WHERE ID IN(
-//                  {$sql_queries}
-//                )";
-	}
+//	private function getSqlQuery( $queries ) {
+//		global $wpdb;
+//
+//		if ( empty( $queries ) || count( $queries ) == 0 ) {
+//			return "SELECT user_email
+//                    FROM {$wpdb->users} WHERE 1=0";
+//		}
+//
+//		$sql_queries  = array_map( function ( $q ) {
+//			$args = wp_parse_args( $q,
+//				array( 'fields' => array( "ID" ) ) );
+//			$qq   = new WP_User_Query();
+//			$qq->prepare_query( $args );
+//
+//			return "SELECT user_email $qq->query_from $qq->query_where";
+//		}, $queries );
+//		$sql_queries2 = array_map( function ( $q ) {
+//			global $wpdb;
+//			$args = wp_parse_args( $q,
+//				array( 'fields' => array( "ID" ) ) );
+//			$qq   = new WP_User_Query();
+//			$qq->prepare_query( $args );
+//
+//			return "SELECT meta_value FROM $wpdb->usermeta WHERE meta_key IN ('email2','email3','email4') AND TRIM(IFNULL(meta_value,'')) <> '' AND user_id IN (SELECT ID $qq->query_from $qq->query_where)";
+//		}, $queries );
+//
+//		return implode( ' UNION ', array_merge( $sql_queries, $sql_queries2 ) );
+////        return "SELECT user_email
+////                FROM {$wpdb->users}
+////                WHERE ID IN(
+////                  {$sql_queries}
+////                )";
+//	}
 
 	/**
 	 * @param Amapress_MailingListConfiguration $config
@@ -107,7 +107,7 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 			return;
 		}
 
-		$new_query = $this->getSqlQuery( $members_queries );
+		$new_query = Amapress_MailingList::getSqlQuery( $members_queries );
 		$this->getSystem()->setSqlDataSource( $new_query, $this->getName() );
 	}
 
@@ -140,7 +140,7 @@ class Amapress_Ouvaton_MailingList extends Amapress_MailingList {
 		global $wpdb;
 		$sql_query = isset( $this->info['query'] ) ? $this->info['query'] : '';
 		if ( ! empty( $sql_query ) ) {
-			$new_query = $this->getSqlQuery( $members_queries );
+			$new_query = Amapress_MailingList::getSqlQuery( $members_queries );
 			if ( empty( $new_query ) ) {
 				return 'manual';
 			}

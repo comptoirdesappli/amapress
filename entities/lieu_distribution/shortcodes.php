@@ -20,7 +20,7 @@ function amapress_lieu_map_shortcode( $atts ) {
 		return '';
 	}
 
-	$lieu = new AmapressLieu_distribution( $lieu_id );
+	$lieu = AmapressLieu_distribution::getBy( $lieu_id );
 
 	$markers = array();
 	if ( ! $lieu->isAdresseLocalized() ) {

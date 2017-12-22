@@ -171,7 +171,7 @@ function amapress_order_producteurs_and_contrats( array $posts, WP_Query $query 
 					if ( $post_type == AmapressContrat::INTERNAL_POST_TYPE ) {
 						return intval( $cid );
 					} else if ( $post_type == AmapressProducteur::INTERNAL_POST_TYPE ) {
-						$c = new AmapressContrat( intval( $cid ) );
+						$c = AmapressContrat::getBy( intval( $cid ) );
 
 						return $c->getProducteurId();
 					} else {
@@ -205,7 +205,7 @@ function amapress_order_producteurs_and_contrats( array $posts, WP_Query $query 
 
 add_filter( 'amapress_can_delete_producteur', 'amapress_can_delete_producteur', 10, 2 );
 function amapress_can_delete_producteur( $can, $post_id ) {
-	$prod = new AmapressProducteur( $post_id );
+	$prod = AmapressProducteur::getBy( $post_id );
 
 	return count( $prod->getProduits() ) == 0
 	       && count( $prod->getContrats() ) == 0;
@@ -225,7 +225,7 @@ function amapress_producteurs_user_mails( $display_name, WP_User $user, TitanFra
 
 add_filter( 'tf_replace_placeholders_' . AmapressProducteur::INTERNAL_POST_TYPE, function ( $text, $post_id ) {
 	$current_user = AmapressUser::getBy( amapress_current_user_id() );
-	$prod         = new AmapressProducteur( $post_id );
+	$prod         = AmapressProducteur::getBy( $post_id );
 	$text         = amapress_replace_mail_placeholders( $text, $current_user, $prod );
 
 	return $text;

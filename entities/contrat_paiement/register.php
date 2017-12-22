@@ -126,7 +126,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 
 function amapress_contrat_paiement_set_contrat_instance( $contrat_paiement_id ) {
 	if ( ! empty( $_POST['amapress_contrat_paiement_adhesion'] ) ) {
-		$adh = new AmapressAdhesion( intval( $_POST['amapress_contrat_paiement_adhesion'] ) );
+		$adh = AmapressAdhesion::getBy( intval( $_POST['amapress_contrat_paiement_adhesion'] ) );
 		update_post_meta( $contrat_paiement_id, 'amapress_contrat_paiement_contrat_instance', $adh->getContrat_instanceId() );
 	}
 }

@@ -9,7 +9,7 @@ function amapress_get_custom_content_contrat_details( $content, $subview ) {
 	global $post;
 //    $prod_id = get_post_meta(get_the_ID(), 'amapress_contrat_producteur', true);
 	if ( ! empty( $subview ) ) {
-		$contrat_instance = new AmapressContrat_instance( Amapress::resolve_post_id( $subview, AmapressContrat_instance::INTERNAL_POST_TYPE ) );
+		$contrat_instance = AmapressContrat_instance::getBy( Amapress::resolve_post_id( $subview, AmapressContrat_instance::INTERNAL_POST_TYPE ) );
 	} else {
 		$contrat_instances = AmapressContrats::get_active_contrat_instances_by_contrat( get_the_ID() );
 		if ( count( $contrat_instances ) == 0 ) {
@@ -83,22 +83,24 @@ function amapress_get_custom_title_contrat( $content ) {
 
 add_filter( 'amapress_get_custom_content_contrat_default', 'amapress_get_custom_content_contrat_default' );
 function amapress_get_custom_content_contrat_default( $content ) {
-	global $post;
-	$prod_id      = get_post_meta( get_the_ID(), 'amapress_contrat_producteur', true );
+	$contrat_id   = get_the_ID();
+	$contrat      = AmapressContrat::getBy( $contrat_id );
+	$prod         = $contrat->getProducteur();
+	$prod_id      = $prod->ID;
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
-	$prod_user    = get_post_meta( $prod_id, 'amapress_producteur_user', true );
+	$prod_user    = $prod->getUserId();
 
 	$user_contrats = Amapress::getIDs( AmapressAdhesion::getUserActiveAdhesions() );
 	$links         = '';
-	if ( in_array( get_the_ID(), $user_contrats ) ) {
-		$links .= '<div><a href="' . trailingslashit( get_permalink( get_the_ID() ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
+	if ( in_array( $contrat_id, $user_contrats ) ) {
+		$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
 	} else {
-		foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( get_the_ID() ) as $contrat_inst ) {
+		foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( $contrat_id ) as $contrat_inst ) {
 			$contrat_cnt = $contrat_inst->getContratRaw();
 			if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
 				continue;
 			}
-			$links .= '<div><a href="' . trailingslashit( get_permalink( get_the_ID() ) ) . 'details/' . $contrat_inst->getSlug() . '" class="btn btn-default btn-abonnement">' . esc_html( $contrat_inst->getTitle() ) . '</a></div>';
+			$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details/' . $contrat_inst->getSlug() . '" class="btn btn-default btn-abonnement">' . esc_html( $contrat_inst->getTitle() ) . '</a></div>';
 		}
 //        if (empty($links)) {
 //            $links .= '<div><a href="' . trailingslashit(get_permalink(get_the_ID())) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';

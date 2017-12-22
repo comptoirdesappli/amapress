@@ -249,7 +249,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 	$ret .= '<th></th>';
 //    /** @var AmapressLieu_distribution $user_lieu */
 //    foreach ($user_lieux as $lieu_id) {
-//        $user_lieu = new AmapressLieu_distribution($lieu_id);
+//        $user_lieu = AmapressLieu_distribution::getBy($lieu_id);
 //        $ret .= '<th>' . esc_html($user_lieu->getShortName()) . '</th>';
 //    }
 	$ret .= '</tr>';
@@ -287,7 +287,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 
 			$is_intermittent = 'exchangeable';
 			foreach ( AmapressPaniers::getPaniersForDist( $date ) as $panier ) {
-				$status = AmapressPaniers::isIntermittent( $panier->ID, $panier->getContrat_instance()->ID, $dist->getLieuId() );
+				$status = AmapressPaniers::isIntermittent( $panier->ID, $panier->getContrat_instanceId(), $dist->getLieuId() );
 //                    var_dump($status);
 				if ( ! empty( $status ) ) {
 					$is_intermittent = $status;

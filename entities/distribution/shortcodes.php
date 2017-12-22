@@ -251,7 +251,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 
 	$ret = '';
 	foreach ( $all_user_lieux as $lieu_id ) {
-		$user_lieu = new AmapressLieu_distribution( $lieu_id );
+		$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 		$ret       .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
 		$ret       .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' nowrap distrib-inscr-list" width="100%" style="table-layout: auto" cellspacing="0">';
 		$ret       .= '<thead>';
@@ -308,7 +308,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			sort( $contrat_names );
 			$lieu_users    = array();
 			$contrat_names = implode( ', ', $contrat_names );
-			$ret           .= '<th scope="row" class="inscr-list-info">
+			$ret   .= '<th scope="row" class="inscr-list-info">
 <p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>
 <p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
 			if ( ! empty( $subst_lieux ) ) {
@@ -317,7 +317,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			}
 			$ret .= '</th>';
 //            foreach ($user_lieux as $lieu_id) {
-			$user_lieu = new AmapressLieu_distribution( $lieu_id );
+			$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 			foreach ( $date_dists as $dist ) {
 //                if ($dist->getLieuId() != $user_lieu->ID && $dist->getLieuSubstitutionId() != $user_lieu->ID) continue;
 				if ( $dist->getLieuId() != $user_lieu->ID ) {

@@ -27,7 +27,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			'no_renew' => 'Ne pas renouveler',
 		),
 		'edit_header'      => function ( $post ) {
-			$adh = new AmapressAdhesion( $post );
+			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
 			}
@@ -139,7 +139,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					if ( ! $post_id ) {
 						return '';
 					}
-					$adh = new AmapressAdhesion( $post_id );
+					$adh = AmapressAdhesion::getBy( $post_id );
 
 					return esc_html( $adh->getContrat_quantites_AsString() );
 				},
@@ -186,7 +186,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					function ( $option ) {
 						/** @var TitanFrameworkOption $option */
 						if ( TitanFrameworkOption::isOnEditScreen() ) {
-							$adh = new AmapressAdhesion( $option->getPostID() );
+							$adh = AmapressAdhesion::getBy( $option->getPostID() );
 							echo '<script type="text/javascript">
 jQuery(function($) {
     var $date_debut = $("#amapress_adhesion_date_debut");
@@ -276,7 +276,7 @@ jQuery(function($) {
 					function ( $option ) {
 						/** @var TitanFrameworkOption $option */
 						if ( TitanFrameworkOption::isOnEditScreen() ) {
-							$adh = new AmapressAdhesion( $option->getPostID() );
+							$adh = AmapressAdhesion::getBy( $option->getPostID() );
 							echo '<script type="text/javascript">
 jQuery(function($) {
     var $date_debut = $("#amapress_adhesion_date_fin");
@@ -329,7 +329,7 @@ jQuery(function($) {
 
 function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$ret                   = '';
-	$adh                   = new AmapressAdhesion( $post_id );
+	$adh                   = AmapressAdhesion::getBy( $post_id );
 	$date_debut            = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
 	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
 	$adhesion_quantites    = $adh->getContrat_quantites();
@@ -526,7 +526,7 @@ function amapress_save_adhesion_contrat_quantite_editor( $adhesion_id ) {
 	} else if ( isset( $_REQUEST['amapress_adhesion_contrat_quants'] ) ) {
 		$quants = array_map( 'intval', $_REQUEST['amapress_adhesion_contrat_quants'] );
 		if ( ! empty( $quants ) ) {
-			$first_quant = new AmapressContrat_quantite( $quants[0] );
+			$first_quant = AmapressContrat_quantite::getBy( $quants[0] );
 			update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_instance', $first_quant->getContrat_instance()->ID );
 			update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_quantite', $quants );
 
@@ -545,7 +545,7 @@ function amapress_save_adhesion_contrat_quantite_editor( $adhesion_id ) {
 
 add_action( 'amapress_row_action_adhesion_renew', 'amapress_row_action_adhesion_renew' );
 function amapress_row_action_adhesion_renew( $post_id ) {
-	$adhesion     = new AmapressAdhesion( $post_id );
+	$adhesion     = AmapressAdhesion::getBy( $post_id );
 	$new_adhesion = $adhesion->cloneAdhesion();
 	if ( ! $new_adhesion ) {
 		wp_die( 'Une erreur s\'est produit lors du renouvèlement de l\'adhésion. Veuillez réessayer' );
@@ -556,14 +556,14 @@ function amapress_row_action_adhesion_renew( $post_id ) {
 
 add_action( 'amapress_row_action_adhesion_no_renew', 'amapress_row_action_adhesion_no_renew' );
 function amapress_row_action_adhesion_no_renew( $post_id ) {
-	$adhesion = new AmapressAdhesion( $post_id );
+	$adhesion = AmapressAdhesion::getBy( $post_id );
 	$adhesion->markNotRenewable();
 	wp_redirect_and_exit( wp_get_referer() );
 }
 
 add_filter( 'amapress_row_actions_adhesion', 'amapress_row_actions_adhesion', 10, 2 );
 function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
-	$adh = new AmapressAdhesion( $adhesion_id );
+	$adh = AmapressAdhesion::getBy( $adhesion_id );
 
 //    $contrat_instance_id = $adh->getContrat_instanceId();
 //    $contrat_instances_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat($adh->getContrat_instance()->getModel()->ID,
@@ -620,7 +620,7 @@ function amapress_get_contrat_quantite_datatable(
 		)
 	);
 
-	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 
 	$columns = array(
 		array(
@@ -791,11 +791,11 @@ function amapress_get_paiement_table_by_dates(
 	$title      = 'Calendrier des paiements';
 	$lieu_title = '';
 	if ( ! empty( $lieu_id ) ) {
-		$lieu       = new AmapressLieu_distribution( $lieu_id );
+		$lieu       = AmapressLieu_distribution::getBy( $lieu_id );
 		$title      .= ' - ' . $lieu->getTitle();
 		$lieu_title = '<h4>' . esc_html( $lieu->getTitle() ) . '</h4>';
 	}
-	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, null, $lieu_id );
 //	amapress_dump($paiements);
 	$dates = array_map(

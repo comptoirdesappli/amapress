@@ -71,6 +71,10 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 
 	/** @return AmapressAmapien_paiement[] */
 	public static function get_next_paiements( $user_id = null, $date = null, $order = 'NONE' ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return [];
+		}
+
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
@@ -170,6 +174,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 								'key'     => 'amapress_contrat_paiement_adhesion',
 								'value'   => amapress_prepare_in( $adhesions_ids ),
 								'compare' => 'IN',
+								'type'    => 'NUMERIC',
 							),
 						),
 					)

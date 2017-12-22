@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_filter( 'amapress_get_custom_archive_content_lieu_distribution', 'amapress_get_custom_archive_content_lieu_distribution' );
 function amapress_get_custom_archive_content_lieu_distribution( $content ) {
-	$lieu    = new AmapressLieu_distribution( get_the_ID() );
+	$lieu    = AmapressLieu_distribution::getBy( get_the_ID() );
 	$content = '<p class="lieu-adresse">Adresse : ' . $lieu->getFormattedAdresseHtml() . '</p>' . $content;
 
 	return $content;
@@ -14,7 +14,7 @@ function amapress_get_custom_archive_content_lieu_distribution( $content ) {
 
 add_filter( 'amapress_get_custom_content_lieu_distribution', 'amapress_get_custom_content_lieu_distribution' );
 function amapress_get_custom_content_lieu_distribution( $content ) {
-	$lieu = new AmapressLieu_distribution( get_the_ID() );
+	$lieu = AmapressLieu_distribution::getBy( get_the_ID() );
 
 	ob_start();
 

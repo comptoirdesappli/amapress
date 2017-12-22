@@ -171,7 +171,7 @@ function amapress_admin_action_desinscription_intermittent() {
 //    );
 //    $post_id = wp_insert_post($my_post);
 //
-//    $inter = new AmapressAdhesion_intermittence($post_id);
+//    $inter = AmapressAdhesion::getBy_intermittence($post_id);
 //    amapress_mail_to_current_user(Amapress::getOption('intermittence-mail-subject'), Amapress::getOption('intermittence-mail-content'), null, $inter);
 //
 //    wp_redirect_and_exit(add_query_arg('message','intermittence_success', $base_url.'adhesions'));
@@ -182,7 +182,7 @@ add_action( 'wp_ajax_reprendre_panier', function () {
 
 	$result = 'ok';
 	foreach ( $panier_ids as $panier_id ) {
-		$panier = new AmapressIntermittence_panier( intval( $panier_id ) );
+		$panier = AmapressIntermittence_panier::getBy( intval( $panier_id ) );
 
 		if ( 'ok' != ( $result = $panier->askReprise() ) ) {
 			break;
@@ -206,7 +206,7 @@ add_action( 'wp_ajax_annuler_adherent', function () {
 
 	$result = 'ok';
 	foreach ( $panier_ids as $panier_id ) {
-		$panier = new AmapressIntermittence_panier( intval( $panier_id ) );
+		$panier = AmapressIntermittence_panier::getBy( intval( $panier_id ) );
 
 		if ( 'ok' != ( $result = $panier->cancelFromAdherent( null, isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) ) ) {
 			break;
@@ -229,7 +229,7 @@ add_action( 'wp_ajax_annuler_repreneur', function () {
 
 	$result = 'ok';
 	foreach ( $panier_ids as $panier_id ) {
-		$panier = new AmapressIntermittence_panier( intval( $panier_id ) );
+		$panier = AmapressIntermittence_panier::getBy( intval( $panier_id ) );
 
 		if ( 'ok' != ( $result = $panier->cancelFromRepreneur( null, isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) ) ) {
 			break;
@@ -253,7 +253,7 @@ add_action( 'wp_ajax_validate_reprise', function () {
 
 	$result = 'ok';
 	foreach ( $panier_ids as $panier_id ) {
-		$panier = new AmapressIntermittence_panier( intval( $panier_id ) );
+		$panier = AmapressIntermittence_panier::getBy( intval( $panier_id ) );
 
 		if ( 'ok' != ( $result = $panier->validateReprise( $user_id ) ) ) {
 			break;
@@ -277,7 +277,7 @@ add_action( 'wp_ajax_reject_reprise', function () {
 
 	$result = 'ok';
 	foreach ( $panier_ids as $panier_id ) {
-		$panier = new AmapressIntermittence_panier( intval( $panier_id ) );
+		$panier = AmapressIntermittence_panier::getBy( intval( $panier_id ) );
 
 		if ( 'ok' != ( $result = $panier->rejectReprise( $user_id ) ) ) {
 			break;

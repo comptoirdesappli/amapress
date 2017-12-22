@@ -110,7 +110,7 @@ class AmapressDistributions {
 	public static function generate_distributions( $contrat_id, $from_now = true, $eval = false ) {
 		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
 		$res      = array();
-		$contrats = [ new AmapressContrat_instance( $contrat_id ) ];
+		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
 			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );

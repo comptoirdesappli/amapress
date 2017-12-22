@@ -94,6 +94,33 @@ class AmapressAdhesion extends TitanEntity {
 	const INTERNAL_POST_TYPE = 'amps_adhesion';
 	const POST_TYPE = 'adhesion';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressAdhesion
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressAdhesion' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressAdhesion( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}
@@ -187,7 +214,7 @@ class AmapressAdhesion extends TitanEntity {
 		}
 
 		$quants      = array();
-		$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instance()->ID );
+		$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instanceId() );
 		$quant_by_id = array_combine( array_map( function ( $c ) {
 			return $c->ID;
 		}, $quant_by_id ), $quant_by_id );
@@ -267,7 +294,7 @@ class AmapressAdhesion extends TitanEntity {
 	public function getContrat_quantites_Price( $date = null ) {
 		$sum = 0;
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
-			$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instance()->ID );
+			$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instanceId() );
 			$quant_by_id = array_combine( array_map( function ( $c ) {
 				return $c->ID;
 			}, $quant_by_id ), $quant_by_id );
@@ -431,6 +458,10 @@ class AmapressAdhesion extends TitanEntity {
 		$date = null,
 		$ignore_renouv_delta = false
 	) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return [];
+		}
+
 		if ( $user_id == null ) {
 			$user_id = amapress_current_user_id();
 		}
@@ -479,7 +510,7 @@ class AmapressAdhesion extends TitanEntity {
 				)
 			);
 			$res      = array_map( function ( $p ) {
-				return new AmapressAdhesion( $p );
+				return AmapressAdhesion::getBy( $p );
 			}, get_posts( $query ) );
 			wp_cache_set( $key, $res );
 		}
@@ -532,7 +563,7 @@ class AmapressAdhesion extends TitanEntity {
 
 			$res = array();
 			foreach ( $ret as $adh ) {
-//                $adh = new AmapressAdhesion($v);
+//                $adh = AmapressAdhesion::getBy($v);
 				foreach ( $adh->getContrat_quantites() as $q ) {
 					$res[ $q->getId() ] = $q;
 				}
@@ -586,7 +617,7 @@ class AmapressAdhesion extends TitanEntity {
 			$meta[ $k ] = $v;
 		}
 
-		$new_contrat = new AmapressContrat_instance( $new_contrat_instance_id );
+		$new_contrat = AmapressContrat_instance::getBy( $new_contrat_instance_id );
 		$date_debut  = $new_contrat->getDate_debut();
 
 //        $date_debut = Amapress::add_a_week($this->getDate_debut(), $add_weeks);
@@ -626,6 +657,6 @@ class AmapressAdhesion extends TitanEntity {
 			return null;
 		}
 
-		return new AmapressAdhesion( $new_id );
+		return AmapressAdhesion::getBy( $new_id );
 	}
 }

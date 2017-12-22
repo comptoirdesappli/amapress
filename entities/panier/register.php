@@ -90,7 +90,7 @@ function amapress_panier_fields( $fields ) {
 	if ( isset( $_REQUEST['post'] ) || isset( $_REQUEST['post_ID'] ) ) {
 		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : $_REQUEST['post_ID'];
 		if ( get_post_type( $post_id ) == AmapressPanier::INTERNAL_POST_TYPE ) {
-			$panier = new AmapressPanier( $post_id );
+			$panier = AmapressPanier::getBy( $post_id );
 			if ( $panier->getContrat_instanceId() && ! $panier->getContrat_instance()->isPanierVariable() ) {
 				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
 					$fields[ 'contenu_' . $quantite->ID ] = array(

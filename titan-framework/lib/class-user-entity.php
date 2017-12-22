@@ -72,6 +72,7 @@ class TitanUserEntity {
 			/** @var TitanUserEntity $user_or_id */
 			$this->user_id = $user_or_id->ID;
 			$this->user    = $user_or_id->getUser();
+			$this->custom  = $user_or_id->custom;
 		} else {
 			$this->user_id = intval( $user_or_id );
 		}

@@ -54,6 +54,10 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 
 	/** @return AmapressAssemblee_generale[] */
 	public static function get_next_assemblees( $date = null, $order = 'NONE' ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return [];
+		}
+
 		if ( ! $date ) {
 			$date = amapress_time();
 		}

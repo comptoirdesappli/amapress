@@ -84,7 +84,7 @@ function amapress_echanger_panier( $panier_id, $user_id = null, $message = null 
 		$user_id = amapress_current_user_id();
 	}
 
-	$panier      = new AmapressPanier( $panier_id );
+	$panier      = AmapressPanier::getBy( $panier_id );
 	$panier_date = $panier->getDate();
 //    $redir_url = $panier->getPermalink();
 	$contrat_instance = $panier->getContrat_instance();
@@ -129,7 +129,7 @@ function amapress_send_panier_intermittent_available( $intermittence_panier_id )
 	if ( is_a( $intermittence_panier_id, 'WP_Post' ) ) {
 		$intermittence_panier_id = $intermittence_panier_id->ID;
 	}
-	$inter = new AmapressIntermittence_panier( $intermittence_panier_id );
+	$inter = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
 //    $panier = $inter->getPanier();
 //    $dist = AmapressPaniers::getDistribution($panier->getDate(), $inter->getLieu()->ID);
 	//amapress_contrat=intermittent

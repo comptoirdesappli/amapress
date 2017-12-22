@@ -104,6 +104,7 @@ class Amapress_Calendar {
 		add_filter( 'amapress_get_agenda_date_separator_monthly', 'self::amapress_get_agenda_date_separator_monthly', 10, 3 );
 	}
 
+	public static $get_next_events_start_date = null;
 	/** @return Amapress_EventEntry[] */
 	public static function get_next_events( $date = null, $user_id = null ) {
 //		return [];
@@ -111,6 +112,8 @@ class Amapress_Calendar {
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
+		self::$get_next_events_start_date = $date;
+
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
@@ -140,14 +143,14 @@ class Amapress_Calendar {
 		if ( $t ) {
 			$events = array_merge( $events, $t );
 		}
-		$t = AmapressCommande::get_next_orderable_commandes( $date );
-		if ( $t ) {
-			$events = array_merge( $events, $t );
-		}
-		$t = AmapressUser_commande::get_next_user_commandes( $date );
-		if ( $t ) {
-			$events = array_merge( $events, $t );
-		}
+//		$t = AmapressCommande::get_next_orderable_commandes( $date );
+//		if ( $t ) {
+//			$events = array_merge( $events, $t );
+//		}
+//		$t = AmapressUser_commande::get_next_user_commandes( $date );
+//		if ( $t ) {
+//			$events = array_merge( $events, $t );
+//		}
 //        $t = AmapressIntermittence_panier::get_next_panier_intermittent($date);
 //        if ($t) $events = array_merge($events, $t);
 
@@ -157,6 +160,8 @@ class Amapress_Calendar {
 		foreach ( $events as $ev ) {
 			$ret = array_merge( $ret, $ev->get_related_events( $user_id ) );
 		}
+
+		self::$get_next_events_start_date = null;
 
 		return $ret;
 	}
@@ -172,7 +177,7 @@ class Amapress_Calendar {
 				$events[] = new AmapressDistribution( $events_id );
 				break;
 			case AmapressAdhesion_paiement::INTERNAL_POST_TYPE:
-				$events[] = new AmapressAdhesion_paiement( $events_id );
+				$events[] = AmapressAdhesion::getBy_paiement( $events_id );
 				break;
 			case AmapressAmap_event::INTERNAL_POST_TYPE:
 				$events[] = new AmapressAmap_event( $events_id );
@@ -184,13 +189,13 @@ class Amapress_Calendar {
 				$events[] = new AmapressCommande( $events_id );
 				break;
 			case AmapressIntermittence_panier::INTERNAL_POST_TYPE:
-				$events[] = new AmapressIntermittence_panier( $events_id );
+				$events[] = AmapressIntermittence_panier::getBy( $events_id );
 				break;
 			case AmapressAmapien_paiement::INTERNAL_POST_TYPE:
 				$events[] = new AmapressAmapien_paiement( $events_id );
 				break;
 			case AmapressPanier::INTERNAL_POST_TYPE:
-				$events[] = new AmapressPanier( $events_id );
+				$events[] = AmapressPanier::getBy( $events_id );
 				break;
 			case AmapressVisite::INTERNAL_POST_TYPE:
 				$events[] = new AmapressVisite( $events_id );

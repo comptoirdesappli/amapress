@@ -30,7 +30,7 @@ class AmapressUser extends TitanUserEntity {
 			$user_id = intval( $user_or_id );
 		}
 		if ( ! isset( self::$users_cache[ $user_id ] ) ) {
-			$user = get_user_by( 'ID', $user_id );
+			$user = get_user_by( 'id', $user_id );
 			if ( ! $user ) {
 				self::$users_cache[ $user_id ] = null;
 			} else {
@@ -131,7 +131,7 @@ class AmapressUser extends TitanUserEntity {
 
 		//référent lieu
 		foreach ( $lieu_ids as $lieu_id ) {
-			$lieu = new AmapressLieu_distribution( $lieu_id );
+			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
 			if ( $lieu->getReferent() == null ) {
 				continue;
 			}
@@ -155,7 +155,7 @@ class AmapressUser extends TitanUserEntity {
 		foreach ( $this->getUser()->roles as $r ) {
 			if ( $r == 'producteur' ) {
 				foreach ( Amapress::get_producteurs() as $prod ) {
-					if ( $prod->getUser() != null && $prod->getUser()->ID == $this->ID ) {
+					if ( $prod->getUserId() == $this->ID ) {
 						$this_user_roles[ 'role_' . $r ] =
 							array(
 								'title'      => sprintf( 'Producteur - %s', $prod->getTitle() ),
@@ -362,16 +362,33 @@ class AmapressUser extends TitanUserEntity {
 			$this->getFormattedAdresse() );
 	}
 
-	private $adherent1 = null;
-
-	public function getCoAdherent1() {
+	public function getCoAdherent1Id() {
 		$this->ensure_init();
+
 		$v = intval( isset( $this->custom['amapress_user_co-adherent-1'] ) ? $this->custom['amapress_user_co-adherent-1'] : null );
 		if ( empty( $v ) ) {
 			return null;
 		}
+
+		return $v;
+	}
+
+	public function getCoAdherent2Id() {
+		$this->ensure_init();
+
+		$v = intval( isset( $this->custom['amapress_user_co-adherent-2'] ) ? $this->custom['amapress_user_co-adherent-2'] : null );
+		if ( empty( $v ) ) {
+			return null;
+		}
+
+		return $v;
+	}
+
+	private $adherent1 = null;
+
+	public function getCoAdherent1() {
 		if ( $this->adherent1 == null ) {
-			$this->adherent1 = AmapressUser::getBy( $v );
+			$this->adherent1 = AmapressUser::getBy( $this->getCoAdherent1Id() );
 		}
 
 		return $this->adherent1;
@@ -380,13 +397,8 @@ class AmapressUser extends TitanUserEntity {
 	private $adherent2 = null;
 
 	public function getCoAdherent2() {
-		$this->ensure_init();
-		$v = intval( isset( $this->custom['amapress_user_co-adherent-2'] ) ? $this->custom['amapress_user_co-adherent-2'] : null );
-		if ( empty( $v ) ) {
-			return null;
-		}
 		if ( $this->adherent2 == null ) {
-			$this->adherent2 = AmapressUser::getBy( $v );
+			$this->adherent2 = AmapressUser::getBy( $this->getCoAdherent2Id() );
 		}
 
 		return $this->adherent2;

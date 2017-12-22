@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class AmapressPaniers {
 	public static function generate_paniers( $contrat_id, $from_now = true, $eval = false ) {
 		$res      = array();
-		$contrats = [ new AmapressContrat_instance( $contrat_id ) ];
+		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
 			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );
@@ -109,7 +109,7 @@ class AmapressPaniers {
 					)
 				);
 				foreach ( $paniers as $panier_post ) {
-					$panier = new AmapressPanier( $panier_post );
+					$panier = AmapressPanier::getBy( $panier_post );
 					if ( ! in_array( $panier->getContrat_instanceId(), $all_contrat_ids ) ) {
 						$res[ $contrat->ID ][] = array(
 							'lieux' => $lieux_ids,
@@ -234,13 +234,13 @@ class AmapressPaniers {
 		if ( ! $panier ) {
 			return '';
 		}
-		$panier = new AmapressPanier( $panier );
+		$panier = AmapressPanier::getBy( $panier );
 
 		$contrat = intval( get_post_meta( intval( $panier_id ), 'amapress_panier_contrat_instance', true ) );
 		if ( ! $contrat ) {
 			return 'Merci de sélectionner le contrat associé';
 		}
-		$c = new AmapressContrat_instance( $contrat );
+		$c = AmapressContrat_instance::getBy( $contrat );
 		if ( $c->isPanierVariable() ) {
 			$panier_commandes = self::getPanierVariableCommandes( $c->ID, $panier->getDate() );
 
@@ -354,7 +354,7 @@ class AmapressPaniers {
 				) );
 				$factor    = 0.0;
 				foreach ( $adhesions as $sous ) {
-					$adh = new AmapressAdhesion( $sous->ID );
+					$adh = AmapressAdhesion::getBy( $sous->ID );
 					foreach ( $adh->getContrat_quantites() as $q ) {
 						$quant  = $q->getQuantite();
 						$factor += $quant;
@@ -528,7 +528,7 @@ class AmapressPaniers {
 	static function isIntermittent(
 		$panier_id, $contrat_instance_id, $lieu_id, $user_id = null
 	) {
-//        $panier = new AmapressPanier($panier_id);
+//        $panier = AmapressPanier::getBy($panier_id);
 		if ( empty( $user_id ) ) {
 			$user_id = amapress_current_user_id();
 		}
@@ -565,7 +565,7 @@ class AmapressPaniers {
 			$args
 		);
 		if ( count( $posts ) > 0 ) {
-			$echange = new AmapressIntermittence_panier( $posts[0] );
+			$echange = AmapressIntermittence_panier::getBy( $posts[0] );
 
 			return $echange->getStatus();
 		}
@@ -605,19 +605,64 @@ class AmapressPaniers {
 				'status'              => null,
 				'date'                => null,
 			) );
-//        $panier = new AmapressPanier($panier_id);
+
+//		$dt  = Amapress_Calendar::$get_next_events_start_date ?
+//			Amapress_Calendar::$get_next_events_start_date :
+//			$args['date'];
+//		if ($args['date'] && $args['date'] < $dt){
+//			$dt = $args['date'];
+//		}
+		$key = "amapress_getPanierIntermittents";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = array_map( function ( $p ) {
+				return AmapressIntermittence_panier::getBy( $p );
+			}, get_posts( array(
+				'post_type'      => AmapressIntermittence_panier::INTERNAL_POST_TYPE,
+				'posts_per_page' => - 1,
+				'meta_query'     => array(
+					array(
+						'key'     => 'amapress_intermittence_panier_date',
+						'value'   => Amapress::start_of_day( Amapress::add_days( amapress_time(), - 365 * 2 ) ),
+						'compare' => '>=',
+						'type'    => 'NUMERIC'
+					)
+				)
+			) ) );
+			wp_cache_set( $key, $res );
+		}
+
+		$ret        = $res;
 		$meta_query = array();
 		if ( ! empty( $args['panier_id'] ) ) {
-			$meta_query[] = array(
-				'key'   => 'amapress_intermittence_panier_panier',
-				'value' => $args['panier_id'],
+//			$meta_query[] = array(
+//				'key'   => 'amapress_intermittence_panier_panier',
+//				'value' => $args['panier_id'],
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+					return $ip->getPanierId() == $args['panier_id'];
+				}
 			);
 		}
 		if ( ! empty( $args['contrat_instance_id'] ) ) {
-			$meta_query[] = array(
-				'key'     => 'amapress_intermittence_panier_contrat_instance',
-				'value'   => $args['contrat_instance_id'],
-				'compare' => is_array( $args['contrat_instance_id'] ) ? 'IN' : '=',
+//			$meta_query[] = array(
+//				'key'     => 'amapress_intermittence_panier_contrat_instance',
+//				'value'   => $args['contrat_instance_id'],
+//				'compare' => is_array( $args['contrat_instance_id'] ) ? 'IN' : '=',
+//			);
+			if ( ! is_array( $args['contrat_instance_id'] ) ) {
+				$args['contrat_instance_id'] = [ $args['contrat_instance_id'] ];
+			}
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+
+					return in_array( $ip->getContrat_instanceId(), $args['contrat_instance_id'] );
+				}
 			);
 		}
 		if ( ! empty( $args['adherent'] ) ) {
@@ -625,66 +670,118 @@ class AmapressPaniers {
 			if ( ! is_array( $adherent ) ) {
 				$adherent = AmapressContrats::get_related_users( $adherent );
 			}
-			$meta_query[] = array(
-				'key'     => 'amapress_intermittence_panier_adherent',
-				'value'   => $adherent,
-				'compare' => 'IN',
-				'type'    => 'NUMERIC',
+//			$meta_query[] = array(
+//				'key'     => 'amapress_intermittence_panier_adherent',
+//				'value'   => $adherent,
+//				'compare' => 'IN',
+//				'type'    => 'NUMERIC',
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $adherent ) {
+					/** @var AmapressIntermittence_panier $ip */
+
+					return in_array( $ip->getAdherentId(), $adherent );
+				}
 			);
 		}
 		if ( ! empty( $args['repreneur'] ) ) {
-			$meta_query[] = array(
-				'key'   => 'amapress_intermittence_panier_repreneur',
-				'value' => $args['repreneur'],
+//			$meta_query[] = array(
+//				'key'   => 'amapress_intermittence_panier_repreneur',
+//				'value' => $args['repreneur'],
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+					return $ip->getRepreneurId() == $args['repreneur'];
+				}
 			);
 		}
 		if ( ! empty( $args['lieu_id'] ) ) {
-			$meta_query[] = array(
-				'key'   => 'amapress_intermittence_panier_lieu',
-				'value' => $args['lieu_id'],
+//			$meta_query[] = array(
+//				'key'   => 'amapress_intermittence_panier_lieu',
+//				'value' => $args['lieu_id'],
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+					return $ip->getLieuId() == $args['lieu_id'];
+				}
 			);
 		}
 		if ( ! empty( $args['status'] ) ) {
-			$meta_query[] = array(
-				'key'   => 'amapress_intermittence_panier_status',
-				'value' => $args['status'],
+//			$meta_query[] = array(
+//				'key'   => 'amapress_intermittence_panier_status',
+//				'value' => $args['status'],
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+					return $ip->getStatus() == $args['status'];
+				}
 			);
 			if ( $args['status'] == 'to_exchange' ) {
-				$meta_query[] = array(
-					'key'     => 'amapress_intermittence_panier_adherent',
-					'value'   => AmapressContrats::get_related_users( amapress_current_user_id() ),
-					'compare' => 'NOT IN',
-					'type'    => 'NUMERIC',
+				$me  = AmapressContrats::get_related_users( amapress_current_user_id() );
+				$ret = array_filter(
+					$ret,
+					function ( $ip ) use ( $me ) {
+						/** @var AmapressIntermittence_panier $ip */
+						return ! in_array( $ip->getAdherentId(), $me );
+					}
 				);
+//				$meta_query[] = array(
+//					'key'     => 'amapress_intermittence_panier_adherent',
+//					'value'   => AmapressContrats::get_related_users( amapress_current_user_id() ),
+//					'compare' => 'NOT IN',
+//					'type'    => 'NUMERIC',
+//				);
 			}
 		}
 		if ( ! empty( $args['date'] ) ) {
-			$meta_query[] = array(
-				'key'   => 'amapress_intermittence_panier_date',
-				'value' => Amapress::start_of_day( $args['date'] ),
-				'type'  => 'NUMERIC'
+//			$meta_query[] = array(
+//				'key'   => 'amapress_intermittence_panier_date',
+//				'value' => Amapress::start_of_day( $args['date'] ),
+//				'type'  => 'NUMERIC'
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+					return $ip->getDate() == Amapress::start_of_day( $args['date'] );
+				}
 			);
 		} else {
-			$meta_query[] = array(
-				'key'     => 'amapress_intermittence_panier_date',
-				'value'   => Amapress::start_of_day( amapress_time() ),
-				'compare' => '>=',
-				'type'    => 'NUMERIC'
+//			$meta_query[] = array(
+//				'key'     => 'amapress_intermittence_panier_date',
+//				'value'   => Amapress::start_of_day( amapress_time() ),
+//				'compare' => '>=',
+//				'type'    => 'NUMERIC'
+//			);
+			$ret = array_filter(
+				$ret,
+				function ( $ip ) use ( $args ) {
+					/** @var AmapressIntermittence_panier $ip */
+					return $ip->getDate() >= Amapress::start_of_day( amapress_time() );
+				}
 			);
 		}
 
-		$args  = array(
-			'post_type'      => AmapressIntermittence_panier::INTERNAL_POST_TYPE,
-			'posts_per_page' => - 1,
-			'meta_query'     => $meta_query
-		);
-		$posts = get_posts(
-			$args
-		);
-
-		return array_map( function ( $p ) {
-			return new AmapressIntermittence_panier( $p );
-		}, $posts );
+//		$args  = array(
+//			'post_type'      => AmapressIntermittence_panier::INTERNAL_POST_TYPE,
+//			'posts_per_page' => - 1,
+//			'meta_query'     => $meta_query
+//		);
+//		$posts = get_posts(
+//			$args
+//		);
+//
+//		return array_map( function ( $p ) {
+//			return AmapressIntermittence_panier::getBy( $p );
+//		}, $posts );
+		return $ret;
 	}
 
 	/** @return AmapressPanier */
@@ -738,7 +835,7 @@ class AmapressPaniers {
 			return null;
 		}
 
-		return new AmapressPanier( array_shift( $res ) );
+		return AmapressPanier::getBy( array_shift( $res ) );
 	}
 
 	/** @return AmapressPanier[] */
@@ -780,7 +877,7 @@ class AmapressPaniers {
 		) );
 
 		return array_map( function ( $r ) {
-			return new AmapressPanier( $r );
+			return AmapressPanier::getBy( $r );
 		}, $res );
 	}
 
@@ -857,11 +954,11 @@ class AmapressPaniers {
 			return '';
 		}
 
-		$pani = new AmapressPanier( $panier );
+		$pani = AmapressPanier::getBy( $panier );
 		if ( $pani->getContrat_instance() == null ) {
 			return 'Merci de sélectionner le contrat associé';
 		}
-		$quantites = AmapressContrats::get_contrat_quantites( $pani->getContrat_instance()->ID );
+		$quantites = AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() );
 
 		$produits_in_panier = array();
 		if ( $pani->getContrat_instance()->isPanierVariable() ) {
@@ -888,7 +985,7 @@ class AmapressPaniers {
 				echo self::getPanierQuantiteTable( 'all', $produits_objects );
 			} else {
 				$produits_objects = array();
-				foreach ( AmapressContrats::get_contrat_quantites( $pani->getContrat_instance()->ID ) as $contrat_quantite ) {
+				foreach ( AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() ) as $contrat_quantite ) {
 					$produits_objects[] = array(
 						'produit'  => '<img class="panier-produit-photo" alt="' . esc_attr( $contrat_quantite->getTitle() ) . '" src="' . amapress_get_avatar_url( $contrat_quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' ) . '" />' . esc_html( $contrat_quantite->getTitle() ),
 						'price'    => $contrat_quantite->getPrix_unitaire(),

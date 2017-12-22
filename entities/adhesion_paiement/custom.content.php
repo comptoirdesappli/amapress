@@ -131,7 +131,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 				if ( $adh->getContrat_instanceId() != $contrat_id ) {
 					continue;
 				}
-//                $p = new AmapressAdhesion_paiement($post);
+//                $p = AmapressAdhesion::getBy_paiement($post);
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
 					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
@@ -167,7 +167,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 		return $output;
 	}
 
-//    $adh = new AmapressAdhesion($post_id);
+//    $adh = AmapressAdhesion::getBy($post_id);
 
 //    $args = array(
 //        'post_type' => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
@@ -196,7 +196,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 //    $posts = get_posts($args);
 //    $amount = 0;
 //    foreach ($posts as $post) {
-//        $p = new AmapressAdhesion_paiement($post);
+//        $p = AmapressAdhesion::getBy_paiement($post);
 //        $amount += $p->getAmount($colname);
 //    }
 
@@ -287,7 +287,7 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 				if ( $adh->getContrat_instanceId() != $contrat_id ) {
 					continue;
 				}
-//                $p = new AmapressAdhesion_paiement($post);
+//                $p = AmapressAdhesion::getBy_paiement($post);
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
 					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
@@ -308,7 +308,7 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 		return $output;
 	}
 
-//    $adh = new AmapressAdhesion($post_id);
+//    $adh = AmapressAdhesion::getBy($post_id);
 
 //    $args = array(
 //        'post_type' => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
@@ -337,7 +337,7 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 //    $posts = get_posts($args);
 //    $amount = 0;
 //    foreach ($posts as $post) {
-//        $p = new AmapressAdhesion_paiement($post);
+//        $p = AmapressAdhesion::getBy_paiement($post);
 //        $amount += $p->getAmount($colname);
 //    }
 
@@ -390,7 +390,7 @@ add_action( 'admin_footer', function () {
 //    return $terms;
 //}
 function amapress_paiements_count_editor( $post_id ) {
-	$adhesion = new AmapressAdhesion( $post_id );
+	$adhesion = AmapressAdhesion::getBy( $post_id );
 	$ret      = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" min="0" max="12" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
 	$ret      .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">Préparer la saisie des chèques</button></div>';
 	$ret      .= '<script type="text/javascript">
@@ -424,7 +424,7 @@ function amapress_paiements_count_editor( $post_id ) {
 }
 
 function amapress_paiements_editor( $post_id ) {
-	$adhesion = new AmapressAdhesion( $post_id );
+	$adhesion = AmapressAdhesion::getBy( $post_id );
 	if ( $adhesion->getContrat_instance() == null || 'draft' == $adhesion->getPost()->post_status ) {
 		echo '<p style="color:red">Les chèques ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée</p>';
 
@@ -634,7 +634,7 @@ $status_options
 
 function amapress_save_paiements_editor( $adhesion_id ) {
 	if ( isset( $_POST['amapress_paiements_details'] ) ) {
-		$adh           = new AmapressAdhesion( $adhesion_id );
+		$adh           = AmapressAdhesion::getBy( $adhesion_id );
 		$paiements     = $adh->getAllPaiements();
 		$paiements_ids = array_map( function ( $q ) {
 			return $q->ID;
@@ -652,7 +652,7 @@ function amapress_save_paiements_editor( $adhesion_id ) {
 			$_POST['amapress_adhesion_paiements'] = count( $_POST['amapress_paiements_details'] );
 		}
 		$quants      = array_map( 'intval', $_REQUEST['amapress_adhesion_contrat_quants'] );
-		$first_quant = new AmapressContrat_quantite( $quants[0] );
+		$first_quant = AmapressContrat_quantite::getBy( $quants[0] );
 		foreach ( $_POST['amapress_paiements_details'] as $quant_id => $quant_data ) {
 			$quant_id = intval( $quant_id );
 			$my_post  = array(

@@ -246,7 +246,7 @@ function amapress_import_posts_meta( $postmeta, $postdata, $posttaxo, $post_type
 //        $id = Amapress::resolve_post_id($value, amapress_unsimplify_post_type($post_type));
 //        if ($id <= 0) return new WP_Error('cannot_parse', "Valeur '$value' non valide pour 'Contrat'");
 //        $postmeta['amapress_adhesion_contrat_instance'] = $id;
-//        $contrat_instance = new AmapressContrat_instance($id);
+//        $contrat_instance = AmapressContrat_instance::getBy($id);
 //
 //        if ($field_name == 'Quantité') return 'amapress_adhesion_contrat_quantite';
 //    }

@@ -80,7 +80,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	public function getContrats() {
 		return array_map(
 			function ( $id ) {
-				return new AmapressContrat_instance( $id );
+				return AmapressContrat_instance::getBy( $id );
 			}, $this->getContratIds()
 		);
 	}
@@ -355,7 +355,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			$contrats = $this->getContratIds();
 			foreach ( $adhesions as $adhesion ) {
 				if ( $adhesion->getLieuId() == $this->getLieuId()
-				     && in_array( $adhesion->getContrat_instance()->ID, $contrats )
+				     && in_array( $adhesion->getContrat_instanceId(), $contrats )
 				) {
 					$ret[] = new Amapress_EventEntry( array(
 						'ev_id'    => "dist-{$this->ID}",
@@ -376,7 +376,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			}
 		}
 
-		if ( Amapress::isIntermittenceEnabled() ) {
+		if ( Amapress::isIntermittenceEnabled() && amapress_is_user_logged_in() ) {
 			$status_count = array(
 				'me_to_exchange'    => 0,
 				'other_to_exchange' => 0,
@@ -390,13 +390,13 @@ class AmapressDistribution extends Amapress_EventBase {
 				)
 			);
 			foreach ( $paniers as $panier ) {
-				if ( $panier->getAdherent()->ID == $user_id ) {
+				if ( $panier->getAdherentId() == $user_id ) {
 					if ( $panier->getStatus() == 'to_exchange' ) {
 						$status_count['me_to_exchange'] += 1;
 					} else {
 						$status_count['me_exchanged'] += 1;
 					}
-				} else if ( $panier->getRepreneur() != null && $panier->getRepreneur()->ID == $user_id ) {
+				} else if ( $panier->getRepreneurId() == $user_id ) {
 					$status_count['me_recup'] += 1;
 				} else {
 					if ( $panier->getStatus() == 'to_exchange' ) {
@@ -457,9 +457,9 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			}
 			if ( $status_count['other_to_exchange'] > 0 ) {
-				$dist = AmapressPaniers::getDistribution( $this->getDate(), $this->getLieu()->ID );
-				if ( $dist ) {
-					$paniers_url = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug();
+//				$dist = $this;//AmapressPaniers::getDistribution( $this->getDate(), $this->getLieuId() );
+//				if ( $dist ) {
+				$paniers_url     = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $this->getSlug();
 					$ret[]       = new Amapress_EventEntry( array(
 						'ev_id'    => "intermittence-{$this->ID}-to-exchange",
 						'date'     => $date,
@@ -474,7 +474,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						'alt'      => $status_count['other_to_exchange'] . ' à échanger',
 						'href'     => $paniers_url
 					) );
-				}
+//				}
 			}
 		}
 

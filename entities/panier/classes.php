@@ -8,6 +8,33 @@ class AmapressPanier extends Amapress_EventBase {
 	const INTERNAL_POST_TYPE = 'amps_panier';
 	const POST_TYPE = 'panier';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressPanier
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressPanier' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressPanier( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}
@@ -77,64 +104,140 @@ class AmapressPanier extends Amapress_EventBase {
 		$date_orig = null,
 		$status = [ 'delayed', 'cancelled' ]
 	) {
-		return [];
-
 		if ( ! empty( $contrat_instance_id ) && ! is_array( $contrat_instance_id ) ) {
 			$contrat_instance_id = array( $contrat_instance_id );
 		}
 
-		$key_ids       = is_array( $contrat_instance_id ) ? implode( '-', $contrat_instance_id ) : $contrat_instance_id;
-		$status_string = implode( '-', $status );
-		$key           = "amapress_get_delayed_paniers_{$key_ids}_{$date_orig}_{$date_delayed}_{$status_string}";
-		$res           = wp_cache_get( $key );
+//		$dt  = Amapress_Calendar::$get_next_events_start_date ?
+//			Amapress_Calendar::$get_next_events_start_date :
+//			$date_orig;
+//		if ($date_orig && $date_orig < $dt){
+//			$dt = $date_orig;
+//		}
+//		if ($date_delayed && $date_delayed < $dt){
+//			$dt = $date_delayed;
+//		}
+		$key = "amapress_get_delayed_paniers";
+		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$meta = array(
+			$post_ids = get_posts( array(
+				'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
+				'posts_per_page' => - 1,
+				'fields'         => 'ids',
+				'meta_query'     => array(
+					array(
+						'key'     => 'amapress_panier_status',
+						'value'   => $status,
+						'compare' => 'IN',
+					),
+				)
+			) );
+//			$post_ids += get_posts( array(
+//				'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
+//				'posts_per_page' => - 1,
+//				'fields' => 'ids',
+//				'meta_query'     => array(
+//					array(
+//						'key'     => 'amapress_panier_date_subst',
+//						'value'   => Amapress::start_of_day( $dt ),
+//						'compare' => '>=',
+//						'type'    => 'NUMERIC'
+//					),
+//				)
+//			) );
+			$res = array_map( function ( $p ) {
+				return AmapressPanier::getBy( $p );
+			}, get_posts(
 				array(
-					'key'     => 'amapress_panier_status',
-					'value'   => $status,
-					'compare' => 'IN',
-				),
-			);
-			if ( ! empty( $contrat_instance_id ) ) {
-				$meta[] = array(
-					'key'     => 'amapress_panier_contrat_instance',
-					'value'   => $contrat_instance_id,
-					'compare' => 'IN',
-					'type'    => 'NUMERIC',
-				);
-			}
-			if ( ! empty( $date_delayed ) ) {
-				$meta[] = array(
-					'key'     => 'amapress_panier_date_subst',
-					'value'   => Amapress::start_of_day( $date_delayed ),
-					'compare' => '=',
-					'type'    => 'NUMERIC',
-				);
-			}
-			if ( ! empty( $date_orig ) ) {
-				$meta[] = array(
-					'key'     => 'amapress_panier_date',
-					'value'   => Amapress::start_of_day( $date_orig ),
-					'compare' => '=',
-					'type'    => 'NUMERIC',
-				);
-			}
-			$query =
-				array(
-					'post_type'      => 'amps_panier',
+					'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
 					'posts_per_page' => - 1,
-					'post_status'    => 'publish',
-					'meta_query'     => array(
-						$meta,
-					)
-				);
-			$res   = array_map( function ( $p ) {
-				return new AmapressPanier( $p );
-			}, get_posts( $query ) );
+					'post__in'       => array_unique( $post_ids ),
+				)
+			) );
 			wp_cache_set( $key, $res );
 		}
 
-		return $res;
+		$ret = $res;
+//		$key_ids       = is_array( $contrat_instance_id ) ? implode( '-', $contrat_instance_id ) : $contrat_instance_id;
+//		$status_string = implode( '-', $status );
+//		$key           = "amapress_get_delayed_paniers_{$key_ids}_{$date_orig}_{$date_delayed}_{$status_string}";
+//		$res           = wp_cache_get( $key );
+//		if ( false === $res ) {
+//			$meta = array(
+//				array(
+//					'key'     => 'amapress_panier_status',
+//					'value'   => $status,
+//					'compare' => 'IN',
+//				),
+//			);
+		$ret = array_filter(
+			$ret,
+			function ( $p ) use ( $status ) {
+				/** @var AmapressPanier $p */
+				return in_array( $p->getStatus(), $status );
+			}
+		);
+		if ( ! empty( $contrat_instance_id ) ) {
+//				$meta[] = array(
+//					'key'     => 'amapress_panier_contrat_instance',
+//					'value'   => $contrat_instance_id,
+//					'compare' => 'IN',
+//					'type'    => 'NUMERIC',
+//				);
+			$ret = array_filter(
+				$ret,
+				function ( $p ) use ( $contrat_instance_id ) {
+					/** @var AmapressPanier $p */
+					return in_array( $p->getContrat_instanceId(), $contrat_instance_id );
+				}
+			);
+		}
+		if ( ! empty( $date_delayed ) ) {
+//				$meta[] = array(
+//					'key'     => 'amapress_panier_date_subst',
+//					'value'   => Amapress::start_of_day( $date_delayed ),
+//					'compare' => '=',
+//					'type'    => 'NUMERIC',
+//				);
+			$ret = array_filter(
+				$ret,
+				function ( $p ) use ( $date_delayed ) {
+					/** @var AmapressPanier $p */
+					return $p->getDateSubst() == Amapress::start_of_day( $date_delayed );
+				}
+			);
+		}
+		if ( ! empty( $date_orig ) ) {
+//				$meta[] = array(
+//					'key'     => 'amapress_panier_date',
+//					'value'   => Amapress::start_of_day( $date_orig ),
+//					'compare' => '=',
+//					'type'    => 'NUMERIC',
+//				);
+			$ret = array_filter(
+				$ret,
+				function ( $p ) use ( $date_orig ) {
+					/** @var AmapressPanier $p */
+					return $p->getDate() == Amapress::start_of_day( $date_orig );
+				}
+			);
+		}
+//			$query =
+//				array(
+//					'post_type'      => 'amps_panier',
+//					'posts_per_page' => - 1,
+//					'post_status'    => 'publish',
+//					'meta_query'     => array(
+//						$meta,
+//					)
+//				);
+//			$res   = array_map( function ( $p ) {
+//				return AmapressPanier::getBy( $p );
+//			}, get_posts( $query ) );
+//			wp_cache_set( $key, $res );
+//		}
+
+		return $ret;
 	}
 
 	/** @return AmapressPanier[] */

@@ -159,7 +159,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 		$is_intermittent = 'exchangeable';
 		foreach ( $paniers as $panier ) {
-			$status = AmapressPaniers::isIntermittent( $panier->ID, $panier->getContrat_instance()->ID, $dist->getLieuId() );
+			$status = AmapressPaniers::isIntermittent( $panier->ID, $panier->getContrat_instanceId(), $dist->getLieuId() );
 			if ( ! empty( $status ) ) {
 				$is_intermittent = $status;
 			}

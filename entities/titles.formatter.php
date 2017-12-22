@@ -115,7 +115,7 @@ add_filter( 'amapress_adhesion_title_formatter', 'amapress_adhesion_title_format
 function amapress_adhesion_title_formatter( $post_title, WP_Post $post ) {
 	$post_id = $post->ID;
 
-	$adh = new AmapressAdhesion( $post );
+	$adh = AmapressAdhesion::getBy( $post );
 	if ( $adh->getContrat_instance() == null ) {
 		return $post->post_title;
 	}
@@ -161,7 +161,7 @@ function amapress_adhesion_period_title_formatter( $post_title, WP_Post $post ) 
 
 add_filter( 'amapress_adhesion_paiement_title_formatter', 'amapress_adhesion_paiement_title_formatter', 10, 2 );
 function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post ) {
-	$pmt = new AmapressAdhesion_paiement( $post->ID );
+	$pmt = AmapressAdhesion::getBy_paiement( $post->ID );
 	//$date = get_post_meta($post_id, 'amapress_contrat_paiement_date', true);
 	if ( $pmt->getUser() == null ) {
 		return $post->post_title;
@@ -176,7 +176,7 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 
 //add_filter('amapress_adhesion_intermittence_title_formatter', 'amapress_adhesion_intermittence_title_formatter', 10, 2);
 //function amapress_adhesion_intermittence_title_formatter($post_title, WP_Post $post) {
-//    $adh = new AmapressAdhesion_intermittence($post->ID);
+//    $adh = AmapressAdhesion::getBy_intermittence($post->ID);
 //    if (!$adh->getUser()) return $post->post_title;
 //
 //    return sprintf('%s - %s',
@@ -185,7 +185,7 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 //}
 add_filter( 'amapress_intermittence_panier_title_formatter', 'amapress_intermittence_panier_title_formatter', 10, 2 );
 function amapress_intermittence_panier_title_formatter( $post_title, WP_Post $post ) {
-	$adh = new AmapressIntermittence_panier( $post->ID );
+	$adh = AmapressIntermittence_panier::getBy( $post->ID );
 	if ( $adh->getPanier() == null ) {
 		return $post->post_title;
 	}
@@ -197,7 +197,7 @@ function amapress_intermittence_panier_title_formatter( $post_title, WP_Post $po
 
 add_filter( 'amapress_contrat_instance_title_formatter', 'amapress_contrat_instance_title_formatter', 10, 2 );
 function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post ) {
-	$adh = new AmapressContrat_instance( $post );
+	$adh = AmapressContrat_instance::getBy( $post );
 	if ( $adh->getModel() == null ) {
 		return $post->post_title;
 	}

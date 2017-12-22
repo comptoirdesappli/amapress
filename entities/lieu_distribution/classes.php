@@ -8,6 +8,33 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	const INTERNAL_POST_TYPE = 'amps_lieu';
 	const POST_TYPE = 'lieu_distribution';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressLieu_distribution
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressLieu_distribution' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressLieu_distribution( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}

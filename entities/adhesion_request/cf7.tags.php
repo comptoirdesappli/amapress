@@ -82,7 +82,7 @@ function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
 				break;
 			case 'contrats':
 				$tag['basetype'] = 'checkbox';
-				foreach ( AmapressContrats::get_subscribable_contrat_instances() as $contrat ) {
+				foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( null ) as $contrat ) {
 					$tag['raw_values'][] = $contrat->ID;
 					$tag['values'][]     = $contrat->ID;
 					$tag['labels'][]     = $contrat->getTitle();

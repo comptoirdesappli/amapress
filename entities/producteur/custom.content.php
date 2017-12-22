@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_filter( 'amapress_get_custom_content_producteur', 'amapress_get_custom_content_producteur' );
 function amapress_get_custom_content_producteur( $content ) {
-	$producteur = new AmapressProducteur( get_the_ID() );
+	$producteur = AmapressProducteur::getBy( get_the_ID() );
 	ob_start();
 
 	amapress_echo_panel_start( 'Présentation', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-resume' );
@@ -94,7 +94,7 @@ function amapress_get_custom_content_producteur( $content ) {
 
 add_filter( 'amapress_get_custom_archive_content_producteur', 'amapress_get_custom_archive_content_producteur' );
 function amapress_get_custom_archive_content_producteur( $content ) {
-	$producteur = new AmapressProducteur( get_the_ID() );
+	$producteur = AmapressProducteur::getBy( get_the_ID() );
 	ob_start();
 	echo wpautop( $producteur->getResume() );
 	echo wpautop( $producteur->getPresentation() );

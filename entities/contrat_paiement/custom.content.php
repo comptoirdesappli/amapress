@@ -22,9 +22,9 @@ function amapress_user_paiments_columns( $columns ) {
 
 add_filter( 'manage_amps_adhesion_posts_custom_column_export', 'amapress_user_paiments_column_export', 10, 3 );
 function amapress_user_paiments_column_export( $value, $colname, $post_id ) {
-	//$adh = new AmapressAdhesion($post_id);
+	//$adh = AmapressAdhesion::getBy($post_id);
 	$all_adhesions = AmapressContrats::get_active_adhesions();
-	$adh           = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : new AmapressAdhesion( $post_id );
+	$adh           = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
 	if ( $colname == 'amapress_total_amount' ) {
 		return sprintf( '%.02f', $adh->getTotalAmount() );
 	}
@@ -75,10 +75,10 @@ function amapress_user_paiments_column_export( $value, $colname, $post_id ) {
 
 add_filter( 'manage_amps_adhesion_posts_custom_column', 'amapress_user_paiments_column_display', 10, 2 );
 function amapress_user_paiments_column_display( $colname, $post_id ) {
-//    $adh = new AmapressAdhesion($post_id);
+//    $adh = AmapressAdhesion::getBy($post_id);
 	$all_adhesions = AmapressContrats::get_active_adhesions();
 //    var_dump(array_keys($all_adhesions));
-	$adh = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : new AmapressAdhesion( $post_id );
+	$adh = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
 	if ( $colname == 'amapress_total_amount' ) {
 		echo sprintf( '%.02f', $adh->getTotalAmount() );
 

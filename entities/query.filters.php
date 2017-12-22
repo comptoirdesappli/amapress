@@ -1190,10 +1190,10 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			$user_ids = array();
 			foreach ( $adhs as $adh ) {
 				if ( $adh->getAdherent2() != null ) {
-					$user_ids[] = $adh->getAdherent2()->ID;
+					$user_ids[] = $adh->getAdherent2Id();
 				}
 				if ( $adh->getAdherent3() != null ) {
-					$user_ids[] = $adh->getAdherent3()->ID;
+					$user_ids[] = $adh->getAdherent3Id();
 				}
 			}
 

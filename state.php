@@ -303,7 +303,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'Créer au moins un lieu de distribution',
 		admin_url( 'post-new.php?post_type=' . AmapressLieu_distribution::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
-			$dn = new AmapressLieu_distribution( $u );
+			$dn = AmapressLieu_distribution::getBy( $u );
 			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			return "<a href='{$l}'>{$dn->getTitle()}</a>";
@@ -329,7 +329,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'Créer les Producteur correspondant à leur compte utilisateur',
 		admin_url( 'post-new.php?post_type=' . AmapressProducteur::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
-			$dn = new AmapressProducteur( $u );
+			$dn = AmapressProducteur::getBy( $u );
 			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			return "<a href='{$l}'>{$dn->getTitle()}</a>";
@@ -354,7 +354,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'Créer une présentation web par producteur pour présenter son offre',
 		admin_url( 'post-new.php?post_type=' . AmapressContrat::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
-			$dn = new AmapressContrat( $u );
+			$dn = AmapressContrat::getBy( $u );
 			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			return "<a href='{$l}'>{$dn->getTitle()}</a>";

@@ -14,6 +14,33 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	const CLOSED = 'closed';
 	const CANCELLED = 'cancelled';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressIntermittence_panier
+	 */
+	public static function getBy( $post_or_id ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressIntermittence_panier' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressIntermittence_panier( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}
@@ -39,14 +66,29 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return $this->getCustomAsEntity( 'amapress_intermittence_panier_panier', 'AmapressPanier' );
 	}
 
+	/** @return int */
+	public function getPanierId() {
+		return $this->getCustomAsInt( 'amapress_intermittence_panier_panier' );
+	}
+
 	/** @return AmapressContrat_instance */
 	public function getContrat_instance() {
 		return $this->getCustomAsEntity( 'amapress_intermittence_panier_contrat_instance', 'AmapressContrat_instance' );
 	}
 
+	/** @return int */
+	public function getContrat_instanceId() {
+		return $this->getCustomAsInt( 'amapress_intermittence_panier_contrat_instance' );
+	}
+
 	/** @return AmapressUser */
 	public function getRepreneur() {
 		return $this->getCustomAsEntity( 'amapress_intermittence_panier_repreneur', 'AmapressUser' );
+	}
+
+	/** @return int */
+	public function getRepreneurId() {
+		return $this->getCustomAsInt( 'amapress_intermittence_panier_repreneur' );
 	}
 
 	public function setRepreneur( $value ) {
@@ -58,14 +100,24 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return $this->getCustomAsEntity( 'amapress_intermittence_panier_adherent', 'AmapressUser' );
 	}
 
+	/** @return int */
+	public function getAdherentId() {
+		return $this->getCustomAsInt( 'amapress_intermittence_panier_adherent' );
+	}
+
 	/** @return AmapressLieu_distribution */
 	public function getLieu() {
 		return $this->getCustomAsEntity( 'amapress_intermittence_panier_lieu', 'AmapressLieu_distribution' );
 	}
 
+	/** @return int */
+	public function getLieuId() {
+		return $this->getCustomAsInt( 'amapress_intermittence_panier_lieu' );
+	}
+
 	/** @return AmapressDistribution */
 	public function getDistribution() {
-		return AmapressPaniers::getDistribution( $this->getDate(), $this->getLieu()->ID );
+		return AmapressPaniers::getDistribution( $this->getDate(), $this->getLieuId() );
 	}
 
 	/** @return AmapressLieu_distribution */
@@ -192,7 +244,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-content' ),
-			$this->getAdherent()->ID,
+			$this->getAdherentId(),
 			$this );
 
 		amapress_mail_to_current_user(
@@ -241,7 +293,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-content' ),
-			$this->getAdherent()->ID,
+			$this->getAdherentId(),
 			$this );
 
 		amapress_mail_to_current_user(
@@ -273,7 +325,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
-				$this->getRepreneur()->ID,
+				$this->getRepreneurId(),
 				$this );
 		} else {
 			foreach ( $this->getAsk() as $ask ) {
@@ -470,7 +522,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		} else {
 			$date     = $this->getStartDateAndHour();
 			$date_end = $this->getEndDateAndHour();
-			if ( $this->getAdherent()->ID == $user_id ) {
+			if ( $this->getAdherentId() == $user_id ) {
 				if ( $this->getStatus() == 'to_exchange' ) {
 					$ret[] = new Amapress_EventEntry( array(
 						'ev_id'    => "intermittence-{$this->ID}-to-exchange",
@@ -502,7 +554,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
 				}
-			} else if ( $this->getRepreneur() != null && $this->getRepreneur()->ID == $user_id ) {
+			} else if ( $this->getRepreneurId() == $user_id ) {
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "intermittence-{$this->ID}-recup",
 					'date'     => $date,

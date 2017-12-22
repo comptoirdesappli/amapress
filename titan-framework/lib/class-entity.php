@@ -147,7 +147,34 @@ class TitanEntity {
 	protected function getCustomAsEntity( $name, $classname, $default = null ) {
 		$this->ensure_init();
 
-		$ret = ! empty( $this->custom[ $name ] ) ? new $classname( intval( $this->custom[ $name ] ) ) : $default;
+		$create = function () use ( $classname, $name ) {
+			$id = intval( $this->custom[ $name ] );
+			switch ( $classname ) {
+				case 'AmapressUser':
+					return AmapressUser::getBy( $id );
+				case 'AmapressContrat':
+					return AmapressContrat::getBy( $id );
+				case 'AmapressContrat_instance':
+					return AmapressContrat_instance::getBy( $id );
+				case 'AmapressProducteur':
+					return AmapressProducteur::getBy( $id );
+				case 'AmapressAdhesion':
+					return AmapressAdhesion::getBy( $id );
+				case 'AmapressLieu_distribution':
+					return AmapressLieu_distribution::getBy( $id );
+				case 'AmapressContrat_quantite':
+					return AmapressContrat_quantite::getBy( $id );
+				case 'AmapressIntermittence_panier':
+					return AmapressIntermittence_panier::getBy( $id );
+				case 'AmapressPanier':
+					return AmapressPanier::getBy( $id );
+				default:
+					return new $classname( $id );
+			}
+		};
+		$ret    = ! empty( $this->custom[ $name ] ) ?
+			call_user_func( $create ) :
+			$default;
 		if ( isset( $this->customEntities[ $name ] ) ) {
 			return $this->customEntities[ $name ];
 		}

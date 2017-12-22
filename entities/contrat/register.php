@@ -657,7 +657,7 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 //        $v = trim($v);
 		$id = amapress_resolve_contrat_quantite_id( $contrat_instance_id, $v );
 		if ( $id === - 1 ) {
-			$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+			$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 			$url              = admin_url( "post.php?post=$contrat_instance_id&action=edit" );
 			$errors[]         = "Valeur '$v' non valide pour '{$contrat_instance->getTitle()}' (Voir <$url>)";
 		} else {
@@ -682,7 +682,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 		$quants_val = array_values($quants);
 		$contrat_quantite_name = $quants_val[0];
 	}
-	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 //    $cn = $contrat_quantite_name;
 	$contrat_quantite_name = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $contrat_quantite_name ) ) );
 	if ( empty( $contrat_quantite_name ) ) {
@@ -810,7 +810,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 }
 
 function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
-	$contrat_instance = new AmapressContrat_instance( $contrat_instance_id );
+	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 	if ( $contrat_instance->getModel() == null ) {
 		return '';
 	}
@@ -998,7 +998,7 @@ function amapress_can_delete_contrat_quantite( $can, $post_id ) {
 
 add_action( 'amapress_row_action_contrat_instance_renew', 'amapress_row_action_contrat_instance_renew' );
 function amapress_row_action_contrat_instance_renew( $post_id ) {
-	$contrat_inst         = new AmapressContrat_instance( $post_id );
+	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
 	$new_contrat_instance = $contrat_inst->cloneContrat();
 	if ( ! $new_contrat_instance ) {
 		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
