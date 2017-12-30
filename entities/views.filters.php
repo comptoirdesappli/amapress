@@ -77,7 +77,7 @@ function amapress_views_process( $views, $pt ) {
 			$views = array_merge( $views, call_user_func( $v, $views ) );
 		} else if ( $k == '_dyn_all_' && is_callable( $v, false ) ) {
 			$views = call_user_func( $v, $views );
-		} else {
+		} else if ( is_callable( $v, false ) ) {
 			$views[ $k ] = call_user_func( $v );
 
 		}
