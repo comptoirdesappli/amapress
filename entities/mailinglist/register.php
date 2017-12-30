@@ -611,11 +611,15 @@ add_action( 'init', function () {
 	}
 } );
 
-function amapress_mailinglists_autosync() {
+function amapress_mailinglists_autosync( $force = false ) {
 	$messages = array();
 	foreach ( Amapress_MailingListConfiguration::getAll() as $conf ) {
 		$ml   = $conf->getMailingList();
-		$sync = $ml->isSync( $conf );
+		if ( $force ) {
+			$sync = 'not_sync';
+		} else {
+			$sync = $ml->isSync( $conf );
+		}
 		switch ( $sync ) {
 			case 'not_sync':
 				$ml->syncMembers( $conf );
