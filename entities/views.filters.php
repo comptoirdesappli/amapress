@@ -173,6 +173,20 @@ function amapress_assemblee_views() {
 	return $ret;
 }
 
+function amapress_amap_event_views() {
+	$ret = array();
+	amapress_add_view_button(
+		$ret, 'next_events',
+		"post_type=amps_amap_event&amapress_date=next",
+		'A venir' );
+	amapress_add_view_button(
+		$ret, 'thismonth',
+		"post_type=amps_amap_event&amapress_date=thismonth",
+		'Ce mois' );
+
+	return $ret;
+}
+
 function amapress_panier_views() {
 	$ret = array();
 	amapress_add_view_button(
