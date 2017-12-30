@@ -349,9 +349,9 @@ function amapress_echo_and_check_amapress_state_page() {
 		)
 	) );
 	$state['04_posts'][] = amapress_get_check_state(
-		count( $contrat_types ) == 0 || count( $contrat_types ) != count( $producteurs ) ? 'error' : 'success',
+		count( $contrat_types ) == 0 || count( $contrat_types ) < count( $producteurs ) ? 'error' : 'success',
 		'Présentation Web des contrats',
-		'Créer une présentation web par producteur pour présenter son offre',
+		'Créer au moins une présentation web par producteur pour présenter son/ses offre(s)',
 		admin_url( 'post-new.php?post_type=' . AmapressContrat::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
 			$dn = AmapressContrat::getBy( $u );
