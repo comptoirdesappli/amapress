@@ -18,10 +18,7 @@ function amapress_customizer_init() {
 	}
 	
 	$titan    = TitanFramework::getInstance( 'amapress' );
-	$contrats = get_posts( array(
-		'posts_per_page' => - 1,
-		'post_type'      => 'amps_contrat'
-	) );
+	$contrats = AmapressContrats::get_contrats();
 
 	$section = $titan->createCustomizer( array(
 		'id' => 'static_front_page',
@@ -69,7 +66,7 @@ function amapress_customizer_init() {
 
 	$contrat_options = array();
 	foreach ( $contrats as $contrat ) {
-		$contrat_options[ $contrat->ID ] = $contrat->post_title;
+		$contrat_options[ $contrat->ID ] = $contrat->getTitle();
 	}
 
 	$section->createOption( array(
@@ -294,34 +291,30 @@ function amapress_customizer_init() {
 		'css'     => '.evt-cnt-inner:nth-child(1n+2) { border-top-color: value }',
 	) );
 
-	$lieux = get_posts(
-		array(
-			'post_type'      => AmapressLieu_distribution::INTERNAL_POST_TYPE,
-			'posts_per_page' => - 1
-		)
-	);
+	$lieux = Amapress::get_lieux();
+
 	foreach ( $lieux as $lieu ) {
 		$section = $titan->createCustomizer( array(
-			'name'  => __( $lieu->post_title, 'amapress' ),
+			'name'  => __( $lieu->getTitle(), 'amapress' ),
 			'panel' => 'Amapress Agenda',
 		) );
 		//assemblées
 		$section->createOption( array(
-			'name'    => __( 'Couleur du texte de ' . $lieu->post_title, 'amapress' ),
+			'name'    => __( 'Couleur du texte de ' . $lieu->getTitle(), 'amapress' ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_fg',
 			'type'    => 'color',
 			'default' => '',
 			'css'     => '.evt-lieu.evt-lieu-' . $lieu->ID . ' .evt-lieu-cnt, .evt-lieu.evt-lieu-' . $lieu->ID . ' .evt-lieu-cnt * { color: value }',
 		) );
 		$section->createOption( array(
-			'name'    => __( 'Couleur de fond de ' . $lieu->post_title, 'amapress' ),
+			'name'    => __( 'Couleur de fond de ' . $lieu->getTitle(), 'amapress' ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_bg',
 			'type'    => 'color',
 			'default' => '',
 			'css'     => '.evt-lieu.evt-lieu-' . $lieu->ID . ' .evt-lieu-cnt { background-color: value }',
 		) );
 		$section->createOption( array(
-			'name'    => __( 'Couleur de bordure de ' . $lieu->post_title, 'amapress' ),
+			'name'    => __( 'Couleur de bordure de ' . $lieu->getTitle(), 'amapress' ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_brd',
 			'type'    => 'color',
 			'default' => '',
@@ -491,7 +484,7 @@ function amapress_customizer_init() {
 	) );
 
 	foreach ( $contrats as $contrat ) {
-		$tit     = $contrat->post_title;
+		$tit     = $contrat->getTitle();
 		$id      = $contrat->ID; //get_post_meta($contrat->ID, 'amapress_contrat_instance_model', true);
 		$section = $titan->createCustomizer( array(
 			'name'  => __( 'Contrat ' . $tit, 'amapress' ),

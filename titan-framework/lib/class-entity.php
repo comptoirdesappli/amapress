@@ -19,31 +19,41 @@ class TitanEntity {
 	}
 
 	public function getID() {
-		$this->ensure_init();
+		if ( ! $this->post ) {
+			$this->ensure_init();
+		}
 
 		return $this->post->ID;
 	}
 
 	public function getTitle() {
-		$this->ensure_init();
+		if ( ! $this->post ) {
+			$this->ensure_init();
+		}
 
 		return $this->post->post_title;
 	}
 
 	public function getContent() {
-		$this->ensure_init();
+		if ( ! $this->post ) {
+			$this->ensure_init();
+		}
 
 		return $this->post->post_content;
 	}
 
 	public function getSlug() {
-		$this->ensure_init();
+		if ( ! $this->post ) {
+			$this->ensure_init();
+		}
 
 		return $this->post->post_name;
 	}
 
 	public function getPost() {
-		$this->ensure_init();
+		if ( ! $this->post ) {
+			$this->ensure_init();
+		}
 
 		return $this->post;
 	}
@@ -67,7 +77,9 @@ class TitanEntity {
 	}
 
 	public function getPermalink( $relative_url = null ) {
-		$this->ensure_init();
+		if ( ! $this->post ) {
+			$this->ensure_init();
+		}
 
 		$url = get_permalink( $this->post->ID );
 		if ( empty( $relative_url ) ) {
@@ -147,6 +159,7 @@ class TitanEntity {
 	protected function getCustomAsEntity( $name, $classname, $default = null ) {
 		$this->ensure_init();
 
+		//TODO refactor, this should not be here, it's a quick fix
 		$create = function () use ( $classname, $name ) {
 			$id = intval( $this->custom[ $name ] );
 			switch ( $classname ) {

@@ -18,7 +18,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		'refresh_button'    => false,
 	);
 
-	private $optionsCache = null;
+	private static $optionsCache = [];
 
 	/**
 	 * TitanFrameworkOptionSelect constructor.
@@ -31,11 +31,11 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	}
 
 	public function fetchOptionsWithCache() {
-		if ( $this->optionsCache == null || ( isset( $this->settings['cache'] ) && ! $this->settings['cache'] ) ) {
-			$this->optionsCache = $this->fetchOptions();
+		if ( ! isset( self::$optionsCache[ $this->getID() ] ) || ( isset( $this->settings['cache'] ) && false === $this->settings['cache'] ) ) {
+			self::$optionsCache[ $this->getID() ] = $this->fetchOptions();
 		}
 
-		return $this->optionsCache;
+		return self::$optionsCache[ $this->getID() ];
 	}
 
 	public function fetchOptions() {

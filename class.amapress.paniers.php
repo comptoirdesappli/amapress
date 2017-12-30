@@ -18,7 +18,7 @@ class AmapressPaniers {
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
-			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );
+			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
 
 			$res[ $contrat->ID ] = array();
 			$contrat_model       = $contrat->getModel();

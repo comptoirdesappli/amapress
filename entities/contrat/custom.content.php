@@ -90,7 +90,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
 	$prod_user    = $prod->getUserId();
 
-	$user_contrats = Amapress::getIDs( AmapressAdhesion::getUserActiveAdhesions() );
+	$user_contrats = AmapressAdhesion::getUserActiveAdhesionIds();
 	$links         = '';
 	if ( in_array( $contrat_id, $user_contrats ) ) {
 		$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';

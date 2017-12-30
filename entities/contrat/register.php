@@ -970,7 +970,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 
 add_filter( 'amapress_can_delete_contrat', 'amapress_can_delete_contrat', 10, 2 );
 function amapress_can_delete_contrat( $can, $post_id ) {
-	return count( AmapressContrats::get_all_contrat_instances_by_contrat( $post_id ) ) == 0;
+	return count( AmapressContrats::get_all_contrat_instances_by_contrat_ids( $post_id ) ) == 0;
 }
 
 add_filter( 'amapress_can_delete_contrat_instance', 'amapress_can_delete_contrat_instance', 10, 2 );

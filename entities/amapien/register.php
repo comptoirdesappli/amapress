@@ -35,28 +35,28 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Rôle dans l\'AMAP',
 //            ),
-			'adresse'           => array(
+			'adresse'            => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'code_postal'       => array(
+			'code_postal'        => array(
 				'name'       => amapress__( 'Code postal' ),
 				'type'       => 'text',
 				'desc'       => 'Code postal',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'ville'             => array(
+			'ville'              => array(
 				'name'       => amapress__( 'Ville' ),
 				'type'       => 'text',
 				'desc'       => 'Ville',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'adresse_localized' => array(
+			'adresse_localized'  => array(
 				'name'                   => amapress__( 'Localisé' ),
 				'type'                   => 'address',
 				'use_as_field'           => false,
@@ -67,44 +67,44 @@ function amapress_register_entities_amapien( $entities ) {
 				'postal_code_field_name' => 'amapress_user_code_postal',
 				'town_field_name'        => 'amapress_user_ville',
 			),
-			'telephone'         => array(
+			'telephone'          => array(
 				'name'       => amapress__( 'Téléphone' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'telephone2'        => array(
+			'telephone2'         => array(
 				'name'       => amapress__( 'Téléphone 2' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 2',
 				'searchable' => true,
 			),
-			'telephone3'        => array(
+			'telephone3'         => array(
 				'name'       => amapress__( 'Téléphone 3' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 3',
 				'searchable' => true,
 			),
-			'telephone4'        => array(
+			'telephone4'         => array(
 				'name'       => amapress__( 'Téléphone 4' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 4',
 				'searchable' => true,
 			),
-			'co-adherent-1'     => array(
+			'co-adherent-1'      => array(
 				'name'       => amapress__( 'Co-adhérent 1' ),
 				'type'       => 'select-users',
 				'desc'       => 'Co-adhérent 1',
 				'searchable' => true,
 			),
-			'co-adherent-2'     => array(
+			'co-adherent-2'      => array(
 				'name'        => amapress__( 'Co-adhérent 2' ),
 				'type'        => 'select-users',
 				'desc'        => 'Co-adhérent 2',
 				'show_column' => false,
 				'searchable'  => true,
 			),
-			'co-adherents'      => array(
+			'co-adherents'       => array(
 				'name'       => amapress__( 'Co-adhérent(s) - sans mail' ),
 				'type'       => 'text',
 				'desc'       => 'Co-adhérent(s) - sans mail',
@@ -115,7 +115,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Co-adhérent(s) - email',
 //            ),
-			'moyen'             => array(
+			'moyen'              => array(
 				'name'        => amapress__( 'Moyen préféré' ),
 				'type'        => 'select',
 				'show_column' => false,
@@ -125,14 +125,14 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'desc'        => 'Moyen préféré',
 			),
-			'avatar'            => array(
+			'avatar'             => array(
 				'name'        => amapress__( 'Avatar' ),
 				'type'        => 'upload',
 				'custom_save' => 'amapress_save_user_avatar',
 				'desc'        => 'Avatar',
 				'show_column' => false,
 			),
-			'amap_roles'        => array(
+			'amap_roles'         => array(
 				'name'        => amapress__( 'Rôles dans l\'AMAP' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -140,13 +140,13 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column' => false,
 //                'searchable' => true,
 			),
-			'intermittent'      => array(
+			'intermittent'       => array(
 				'name'        => amapress__( 'Intermittent' ),
 				'type'        => 'checkbox',
 				'desc'        => 'Cocher pour que l\'utilisateur devienne intermittent et reçoive des alertes lorsque des paniers sont occasionnellement disponibles',
 				'show_column' => false,
 			),
-			'comment_emargement'      => array(
+			'comment_emargement' => array(
 				'name'        => amapress__( 'Commentaire pour la liste émargement' ),
 				'type'        => 'textarea',
 				'desc'        => 'Commentaire pour la liste émargement',
@@ -229,7 +229,7 @@ function amapress_amapien_affect_coadherents( TitanFrameworkMetaBox $metabox, $u
 	}
 	$user = AmapressUser::getBy( $userID );
 	foreach ( AmapressAdhesion::getUserActiveAdhesions( $userID ) as $adh ) {
-		if ( $adh->getAdherent()->ID == $userID ) {
+		if ( $adh->getAdherentId() == $userID ) {
 			$adh->setAdherent2( $user->getCoAdherent1() );
 			$adh->setAdherent3( $user->getCoAdherent2() );
 		}
@@ -250,63 +250,69 @@ function amapress_get_role_list( $role_list, $user_object ) {
 
 add_filter( 'amapress_can_delete_user', 'amapress_can_delete_user', 10, 2 );
 function amapress_can_delete_user( $can, $user_id ) {
-	$meta_query       = array(
-		'relation' => 'OR',
-	);
-	$single_user_keys = array(
-		'amapress_adhesion_paiement_user',
-		'amapress_adhesion_adherent',
-		'amapress_adhesion_adherent2',
-		'amapress_adhesion_adherent3',
-//        'amapress_adhesion_intermittence_user',
-		'amapress_intermittence_panier_repreneur',
-		'amapress_intermittence_panier_adherent',
-		'amapress_lieu_distribution_referent',
-		'amapress_producteur_user',
-		'amapress_producteur_referent',
-		'amapress_producteur_referent2',
-		'amapress_producteur_referent3',
-		'amapress_user_commande_amapien'
-	);
-	$lieux_ids        = Amapress::get_lieu_ids();
-	if ( count( $lieux_ids ) > 1 ) {
-		foreach ( $lieux_ids as $lieu_id ) {
-			$single_user_keys[] = "amapress_producteur_referent_{$lieu_id}";
-			$single_user_keys[] = "amapress_producteur_referent2_{$lieu_id}";
-			$single_user_keys[] = "amapress_producteur_referent3_{$lieu_id}";
-		}
-	}
-	foreach ( $single_user_keys as $single_user_key ) {
-		$meta_query[] = array(
-			'key'     => $single_user_key,
-			'value'   => $user_id,
-			'type'    => 'NUMERIC',
-			'compare' => '=',
+	$key        = 'amapress_can_delete_user';
+	$used_users = wp_cache_get( $key );
+	if ( false === $used_users ) {
+		$single_user_keys = array(
+			'amapress_adhesion_paiement_user',
+			'amapress_adhesion_adherent',
+			'amapress_adhesion_adherent2',
+			'amapress_adhesion_adherent3',
+			'amapress_intermittence_panier_repreneur',
+			'amapress_intermittence_panier_adherent',
+			'amapress_lieu_distribution_referent',
+			'amapress_producteur_user',
+			'amapress_producteur_referent',
+			'amapress_producteur_referent2',
+			'amapress_producteur_referent3',
+			'amapress_user_commande_amapien',
+			'amapress_visite_participants',
+			'amapress_distribution_responsables',
+			'amapress_amap_event_participants',
+			'amapress_assemblee_generale_participants',
 		);
+		$lieux_ids        = Amapress::get_lieu_ids();
+		if ( count( $lieux_ids ) > 1 ) {
+			foreach ( $lieux_ids as $lieu_id ) {
+				$single_user_keys[] = "amapress_producteur_referent_{$lieu_id}";
+				$single_user_keys[] = "amapress_producteur_referent2_{$lieu_id}";
+				$single_user_keys[] = "amapress_producteur_referent3_{$lieu_id}";
+			}
+		}
+		global $wpdb;
+		$meta_query = [];
+		foreach ( $single_user_keys as $single_user_key ) {
+			$meta_query[] = $wpdb->prepare( "($wpdb->postmeta.meta_key = %s)", $single_user_key );
+		}
+//		$posts = get_posts_count( array(
+//			'post_status'    => 'any',
+//			'post_type'      => array(
+//				AmapressAdhesion::INTERNAL_POST_TYPE,
+//				AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
+//				AmapressIntermittence_panier::INTERNAL_POST_TYPE,
+//				AmapressProducteur::INTERNAL_POST_TYPE,
+//				AmapressUser_commande::INTERNAL_POST_TYPE,
+//				AmapressLieu_distribution::INTERNAL_POST_TYPE
+//			),
+//			'posts_per_page' => - 1,
+//			'meta_query'     => array( $meta_query ),
+//		) );
+
+		$where  = implode( ' OR ', $meta_query );
+		$values = $wpdb->get_col( "SELECT DISTINCT $wpdb->postmeta.meta_value FROM $wpdb->postmeta WHERE $where" );
+		foreach ( $values as $v ) {
+			$v = maybe_unserialize( $v );
+			if ( is_array( $v ) ) {
+				$used_users += $v;
+			} else {
+				$used_users[] = $v;
+			}
+		}
+		$used_users = array_unique( array_map( 'intval', $used_users ) );
+		wp_cache_set( $key, $used_users );
 	}
-	$posts = get_posts( array(
-		'post_status'    => 'any',
-		'post_type'      => array(
-			AmapressAdhesion::INTERNAL_POST_TYPE,
-			AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
-//            AmapressAdhesion_intermittence::INTERNAL_POST_TYPE,
-			AmapressIntermittence_panier::INTERNAL_POST_TYPE,
-			AmapressProducteur::INTERNAL_POST_TYPE,
-			AmapressUser_commande::INTERNAL_POST_TYPE,
-			AmapressLieu_distribution::INTERNAL_POST_TYPE
-		),
-		'posts_per_page' => - 1,
-		'meta_query'     => array( $meta_query ),
-	) );
-//amapress_visite_participants
-//amapress_distribution_responsables
-//amapress_amap_event_participants
-//amapress_assemblee_generale_participants
-//    if (108 == $user_id) {
-//        var_dump(AmapressContrats::get_related_users($user_id));
-//        var_dump($posts);
-//    }
-	return count( $posts ) == 0 && count( AmapressContrats::get_related_users( $user_id ) ) <= 1;
+
+	return ! in_array( $user_id, $used_users ) && count( AmapressContrats::get_related_users( $user_id ) ) <= 1;
 }
 
 //function amapress_import_user_data_validate($v, $k) {

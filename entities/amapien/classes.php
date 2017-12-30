@@ -8,13 +8,15 @@ class AmapressUser extends TitanUserEntity {
 	const AMAP_ROLE = 'amps_amap_role_category';
 
 	/** @var WP_Term[] */
-	private $amap_roles = array();
+	private $amap_roles = null;
 
 	function __construct( $user_or_id ) {
 		parent::__construct( $user_or_id );
 	}
 
 	private static $users_cache = array();
+
+	private static $user_ids_with_roles = null;
 
 	/**
 	 * @param $user_or_id
@@ -24,8 +26,14 @@ class AmapressUser extends TitanUserEntity {
 	public static function getBy( $user_or_id ) {
 		if ( is_a( $user_or_id, 'WP_User' ) ) {
 			$user_id = $user_or_id->ID;
+			if ( ! isset( self::$users_cache[ $user_id ] ) ) {
+				self::$users_cache[ $user_id ] = new AmapressUser( $user_or_id );
+			}
 		} else if ( is_a( $user_or_id, 'AmapressUser' ) ) {
 			$user_id = $user_or_id->ID;
+			if ( ! isset( self::$users_cache[ $user_id ] ) ) {
+				self::$users_cache[ $user_id ] = $user_or_id;
+			}
 		} else {
 			$user_id = intval( $user_or_id );
 		}
@@ -42,44 +50,55 @@ class AmapressUser extends TitanUserEntity {
 	}
 
 	private function ensure_amap_roles() {
-		if ( ! empty( $this->amap_roles ) ) {
+		if ( null !== $this->amap_roles ) {
 			return;
 		}
 
-		$res = wp_get_post_terms( $this->ID, self::AMAP_ROLE, array( 'fields' => 'all' ) );
+		if ( null === self::$user_ids_with_roles ) {
+			global $wpdb;
+			self::$user_ids_with_roles = $wpdb->get_col( 'SELECT DISTINCT tr.object_id
+FROM wp_term_taxonomy AS tt
+INNER JOIN wp_term_relationships AS tr
+ON tr.term_taxonomy_id = tt.term_taxonomy_id
+WHERE tt.taxonomy = \'amps_amap_role_category\'' );
+		}
+		if ( ! in_array( $this->getID(), self::$user_ids_with_roles ) ) {
+			$this->amap_roles = [];
+
+			return;
+		}
+
+		$res = wp_get_post_terms( $this->ID, self::AMAP_ROLE,
+			array( 'fields' => 'all', 'orderby' => 'term_id' ) );
 		if ( ! is_wp_error( $res ) ) {
 			$this->amap_roles = $res;
+		} else {
+			$this->amap_roles = [];
 		}
 	}
 
 	public function getAmapRoleCapabilities() {
 		$this->ensure_amap_roles();
+
 		$ret = array();
-		if ( ! empty( $this->amap_roles ) ) {
-			foreach ( $this->amap_roles as $term ) {
-				$cap = get_term_meta( $term->term_id, 'amapress_caps', true );
-				if ( ! empty( $cap ) ) {
-					$ret = array_merge( $ret, explode( ',', $cap ) );
-				}
+		foreach ( $this->amap_roles as $term ) {
+			$cap = get_term_meta( $term->term_id, 'amapress_caps', true );
+			if ( ! empty( $cap ) ) {
+				$ret = array_merge( $ret, explode( ',', $cap ) );
 			}
 		}
 
 		return $ret;
 	}
 
+	private $user_roles = null;
+
 	public function getAmapRoles() {
 		$this->ensure_init();
 		$this->ensure_amap_roles();
 
-//        $args = wp_parse_args(
-//            $args,
-//            array(
-//
-//            )
-//        );
-
-		$this_user_roles = array();
-		if ( ! empty( $this->amap_roles ) ) {
+		if ( null === $this->user_roles ) {
+			$this_user_roles = array();
 			foreach ( $this->amap_roles as $amap_role ) {
 				$this_user_roles["amap_role_{$amap_role->term_id}"] =
 					array(
@@ -91,113 +110,116 @@ class AmapressUser extends TitanUserEntity {
 						'other_link' => admin_url( "users.php?{$amap_role->taxonomy}={$amap_role->slug}" ),
 					);
 			}
-		}
-		$lieu_ids = Amapress::get_lieu_ids();
+			$lieu_ids = Amapress::get_lieu_ids();
 
-		//référent producteur
-		foreach ( AmapressContrats::get_contrats() as $contrat ) {
-			$prod                = $contrat->getProducteur();
-			$had_local_referents = false;
+			//référent producteur
+			foreach ( AmapressContrats::get_contrats() as $contrat ) {
+				$prod                = $contrat->getProducteur();
+				$had_local_referents = false;
+				foreach ( $lieu_ids as $lieu_id ) {
+					if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
+						continue;
+					}
+					$had_local_referents                           = true;
+					$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
+						array(
+							'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
+							'type'       => 'referent_producteur',
+							'lieu'       => $lieu_id,
+							'object_id'  => $contrat->ID,
+							'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
+							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
+						);
+				}
+				if ( ! $had_local_referents ) {
+					if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
+						continue;
+					}
+					$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
+						array(
+							'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
+							'type'       => 'referent_producteur',
+							'lieu'       => null,
+							'object_id'  => $contrat->ID,
+							'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
+							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
+						);
+				}
+			}
+
+			//référent lieu
 			foreach ( $lieu_ids as $lieu_id ) {
-				if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
+				$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+				if ( ! $lieu->getReferentId() ) {
 					continue;
 				}
-				$had_local_referents                           = true;
-				$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
+				if ( $lieu->getReferentId() != $this->ID ) {
+					continue;
+				}
+				$this_user_roles[ 'ref_lieu_' . $lieu->ID ] =
 					array(
-						'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
-						'type'       => 'referent_producteur',
+						'title'      => sprintf( 'Référent %s', $lieu->getShortName() ),
+						'type'       => 'referent_lieu',
 						'lieu'       => $lieu_id,
-						'object_id'  => $contrat->ID,
-						'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
-						'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
+						'object_id'  => $lieu->ID,
+						'edit_link'  => admin_url( "post.php?post={$lieu->ID}&action=edit" ),
+						'other_link' => admin_url( "users.php?amapress_role=referent_lieu" ),
 					);
 			}
-			if ( ! $had_local_referents ) {
-				if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
-					continue;
-				}
-				$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
-					array(
-						'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
-						'type'       => 'referent_producteur',
-						'lieu'       => null,
-						'object_id'  => $contrat->ID,
-						'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
-						'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
-					);
-			}
-		}
-
-		//référent lieu
-		foreach ( $lieu_ids as $lieu_id ) {
-			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
-			if ( $lieu->getReferent() == null ) {
-				continue;
-			}
-			if ( $lieu->getReferent()->ID != $this->ID ) {
-				continue;
-			}
-			$this_user_roles[ 'ref_lieu_' . $lieu->ID ] =
-				array(
-					'title'      => sprintf( 'Référent %s', $lieu->getShortName() ),
-					'type'       => 'referent_lieu',
-					'lieu'       => $lieu_id,
-					'object_id'  => $lieu->ID,
-					'edit_link'  => admin_url( "post.php?post={$lieu->ID}&action=edit" ),
-					'other_link' => admin_url( "users.php?amapress_role=referent_lieu" ),
-				);
-		}
 
 
 //        if (count($this_user_roles) == 0) {
-		global $wp_roles;
-		foreach ( $this->getUser()->roles as $r ) {
-			if ( $r == 'producteur' ) {
-				foreach ( Amapress::get_producteurs() as $prod ) {
-					if ( $prod->getUserId() == $this->ID ) {
-						$this_user_roles[ 'role_' . $r ] =
-							array(
-								'title'      => sprintf( 'Producteur - %s', $prod->getTitle() ),
-								'type'       => 'producteur',
-								'lieu'       => null,
-								'object_id'  => $this->ID,
-								'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
-								'other_link' => admin_url( 'edit.php?post_type=' . AmapressProducteur::INTERNAL_POST_TYPE ),
-							);
+			global $wp_roles;
+			foreach ( $this->getUser()->roles as $r ) {
+				if ( $r == 'producteur' ) {
+					foreach ( Amapress::get_producteurs() as $prod ) {
+						if ( $prod->getUserId() == $this->ID ) {
+							$this_user_roles[ 'role_' . $r ] =
+								array(
+									'title'      => sprintf( 'Producteur - %s', $prod->getTitle() ),
+									'type'       => 'producteur',
+									'lieu'       => null,
+									'object_id'  => $this->ID,
+									'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
+									'other_link' => admin_url( 'edit.php?post_type=' . AmapressProducteur::INTERNAL_POST_TYPE ),
+								);
+						}
 					}
+				} else {
+					$this_user_roles[ 'role_' . $r ] =
+						array(
+							'title'      => translate_user_role( $wp_roles->roles[ $r ]['name'] ),
+							'type'       => 'wp_role',
+							'lieu'       => null,
+							'object_id'  => $this->ID,
+							'role'       => $r,
+							'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+							'other_link' => admin_url( "users.php?role={$r}" ),
+						);
 				}
-			} else {
-				$this_user_roles[ 'role_' . $r ] =
-					array(
-						'title'      => translate_user_role( $wp_roles->roles[ $r ]['name'] ),
-						'type'       => 'wp_role',
-						'lieu'       => null,
-						'object_id'  => $this->ID,
-						'role'       => $r,
-						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
-						'other_link' => admin_url( "users.php?role={$r}" ),
-					);
 			}
-		}
 //        }
 
-		if ( $this->isIntermittent() ) {
-			$this_user_roles["intermittent"] =
-				array(
-					'title'      => 'Intermittent',
-					'type'       => 'intermittent',
-					'lieu'       => null,
-					'object_id'  => $this->ID,
-					'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
-					'other_link' => admin_url( "users.php?amapress_contrat=intermittent" ),
-				);
+			if ( $this->isIntermittent() ) {
+				$this_user_roles["intermittent"] =
+					array(
+						'title'      => 'Intermittent',
+						'type'       => 'intermittent',
+						'lieu'       => null,
+						'object_id'  => $this->ID,
+						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+						'other_link' => admin_url( "users.php?amapress_contrat=intermittent" ),
+					);
+			}
+			$this->user_roles = $this_user_roles;
 		}
 
-		return $this_user_roles;
+
+		return $this->user_roles;
 	}
 
-	public function getAmapRolesString() {
+	public
+	function getAmapRolesString() {
 		return implode( ', ', array_unique( array_map(
 			function ( $role ) {
 //            return '<a href="'.esc_attr($role['edit_link']).'">'.esc_html($role['title']).'</a>';
@@ -205,7 +227,8 @@ class AmapressUser extends TitanUserEntity {
 			}, $this->getAmapRoles() ) ) );
 	}
 
-	public function getFormattedAdresse() {
+	public
+	function getFormattedAdresse() {
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
@@ -215,7 +238,8 @@ class AmapressUser extends TitanUserEntity {
 		}
 	}
 
-	public function getFormattedAdresseHtml() {
+	public
+	function getFormattedAdresseHtml() {
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
@@ -225,53 +249,62 @@ class AmapressUser extends TitanUserEntity {
 		}
 	}
 
-	public function getAvatar() {
+	public
+	function getAvatar() {
 		return get_avatar( $this->ID );
 	}
 
-	public function getUserLatitude() {
+	public
+	function getUserLatitude() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_lat'] ) ? $this->custom['amapress_user_lat'] : 0;
 	}
 
-	public function getUserLongitude() {
+	public
+	function getUserLongitude() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_long'] ) ? $this->custom['amapress_user_long'] : 0;
 	}
 
-	public function getAdresse() {
+	public
+	function getAdresse() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_adresse'] ) ? $this->custom['amapress_user_adresse'] : '';
 	}
 
-	public function getCode_postal() {
+	public
+	function getCode_postal() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_code_postal'] ) ? $this->custom['amapress_user_code_postal'] : '';
 	}
 
-	public function getVille() {
+	public
+	function getVille() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_ville'] ) ? $this->custom['amapress_user_ville'] : '';
 	}
 
-	public function getCommentEmargement() {
+	public
+	function getCommentEmargement() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_comment_emargement'] ) ? $this->custom['amapress_user_comment_emargement'] : '';
 	}
 
-	public function isAdresse_localized() {
+	public
+	function isAdresse_localized() {
 		$this->ensure_init();
 
 		return ! empty( $this->custom['amapress_user_location_type'] );
 	}
 
-	public function getTelephone() {
+	public
+	function getTelephone() {
 		$this->ensure_init();
 		if ( empty( $this->custom['amapress_user_telephone'] ) ) {
 			return '';
@@ -280,7 +313,10 @@ class AmapressUser extends TitanUserEntity {
 		return $this->custom['amapress_user_telephone'];
 	}
 
-	public function getTelTo( $mobile = 'both', $sms = false ) {
+	public
+	function getTelTo(
+		$mobile = 'both', $sms = false
+	) {
 		$tel = $this->getTelephone() . ' ' . $this->getTelephone2();
 		if ( empty( $tel ) ) {
 			return '';
@@ -309,7 +345,8 @@ class AmapressUser extends TitanUserEntity {
 		return implode( '<br/>', $ret );
 	}
 
-	public function getTelephone2() {
+	public
+	function getTelephone2() {
 		$this->ensure_init();
 		if ( empty( $this->custom['amapress_user_telephone2'] ) ) {
 			return '';
@@ -318,13 +355,15 @@ class AmapressUser extends TitanUserEntity {
 		return $this->custom['amapress_user_telephone2'];
 	}
 
-	public function getCoAdherents() {
+	public
+	function getCoAdherents() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_co-adherents'] ) ? $this->custom['amapress_user_co-adherents'] : '';
 	}
 
-	public function getMoyenDisplay() {
+	public
+	function getMoyenDisplay() {
 		$this->ensure_init();
 		$m = isset( $this->custom['amapress_user_moyen'] ) ? $this->custom['amapress_user_moyen'] : null;
 		switch ( $m ) {
@@ -338,13 +377,15 @@ class AmapressUser extends TitanUserEntity {
 		}
 	}
 
-	public function getMoyen() {
+	public
+	function getMoyen() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_moyen'] ) ? $this->custom['amapress_user_moyen'] : 'mail';
 	}
 
-	public function getDisplayName() {
+	public
+	function getDisplayName() {
 		$this->ensure_init();
 		$dn = $this->getUser()->display_name;
 		if ( ! empty( $this->getUser()->last_name ) ) {
@@ -357,12 +398,14 @@ class AmapressUser extends TitanUserEntity {
 		return $dn;
 	}
 
-	public function resolveAddress() {
+	public
+	function resolveAddress() {
 		return AmapressUsers::resolveUserAddress( $this->getID(),
 			$this->getFormattedAdresse() );
 	}
 
-	public function getCoAdherent1Id() {
+	public
+	function getCoAdherent1Id() {
 		$this->ensure_init();
 
 		$v = intval( isset( $this->custom['amapress_user_co-adherent-1'] ) ? $this->custom['amapress_user_co-adherent-1'] : null );
@@ -373,7 +416,8 @@ class AmapressUser extends TitanUserEntity {
 		return $v;
 	}
 
-	public function getCoAdherent2Id() {
+	public
+	function getCoAdherent2Id() {
 		$this->ensure_init();
 
 		$v = intval( isset( $this->custom['amapress_user_co-adherent-2'] ) ? $this->custom['amapress_user_co-adherent-2'] : null );
@@ -384,9 +428,11 @@ class AmapressUser extends TitanUserEntity {
 		return $v;
 	}
 
-	private $adherent1 = null;
+	private
+		$adherent1 = null;
 
-	public function getCoAdherent1() {
+	public
+	function getCoAdherent1() {
 		if ( $this->adherent1 == null ) {
 			$this->adherent1 = AmapressUser::getBy( $this->getCoAdherent1Id() );
 		}
@@ -394,9 +440,11 @@ class AmapressUser extends TitanUserEntity {
 		return $this->adherent1;
 	}
 
-	private $adherent2 = null;
+	private
+		$adherent2 = null;
 
-	public function getCoAdherent2() {
+	public
+	function getCoAdherent2() {
 		if ( $this->adherent2 == null ) {
 			$this->adherent2 = AmapressUser::getBy( $this->getCoAdherent2Id() );
 		}
@@ -406,31 +454,44 @@ class AmapressUser extends TitanUserEntity {
 
 	private $principal_user_ids = null;
 
+	private static $coadherents = null;
 	public function getPrincipalUserIds() {
-		if ( empty( $this->principal_user_ids ) ) {
+		if ( null === self::$coadherents ) {
 			global $wpdb;
-			$ret1 = array_map( 'intval',
-				$wpdb->get_col( "SELECT DISTINCT $wpdb->usermeta.user_id
+			self::$coadherents = array_group_by(
+				$wpdb->get_results(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key = 'amapress_user_co-adherent-1'
-AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID  " ) );
-			$ret2 = array_map( 'intval',
-				$wpdb->get_col( "SELECT DISTINCT $wpdb->usermeta.user_id
-FROM $wpdb->usermeta
-WHERE $wpdb->usermeta.meta_key = 'amapress_user_co-adherent-2'
-AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ),
+				function ( $o ) {
+					return intval( $o->meta_value );
+				} );
+		}
+		if ( null === $this->principal_user_ids ) {
+			$this->principal_user_ids = [];
+			if ( isset( self::$coadherents[ $this->getID() ] ) ) {
+				foreach ( self::$coadherents[ $this->getID() ] as $o ) {
+					if ( ! $o->user_id || in_array( $o->user_id, $this->principal_user_ids ) ) {
+						continue;
+					}
 
-			$this->principal_user_ids = array_merge( $ret1, $ret2 );
+					$this->principal_user_ids[] = $o->user_id;
+				}
+			}
 		}
 
 		return $this->principal_user_ids;
 	}
 
-	public function getEmail() {
+	public
+	function getEmail() {
 		return $this->getUser()->user_email;
 	}
 
-	public function getDisplay( $args = array() ) {
+	public
+	function getDisplay(
+		$args = array()
+	) {
 		$args = wp_parse_args( $args, array(
 			'show_avatar'     => 'default',
 			'show_email'      => 'default',
@@ -474,7 +535,10 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		return $ret;
 	}
 
-	private function wrapIfNotEmpty( $start_tags, $html, $end_tags ) {
+	private
+	function wrapIfNotEmpty(
+		$start_tags, $html, $end_tags
+	) {
 		if ( empty( $html ) ) {
 			return '';
 		}
@@ -482,11 +546,15 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		return $start_tags . $html . $end_tags;
 	}
 
-	public function getDisplayRight( $name ) {
+	public
+	function getDisplayRight(
+		$name
+	) {
 		return isset( $this->custom["allow_show_$name"] ) ? $this->custom["allow_show_$name"] : null;
 	}
 
-	public function getAllEmails() {
+	public
+	function getAllEmails() {
 		$ret   = array();
 		$ret[] = $this->getUser()->user_email;
 		if ( ! empty( $this->custom['email2'] ) ) {
@@ -503,14 +571,18 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 	}
 
 
-	public function isIntermittent() {
+	public
+	function isIntermittent() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_intermittent'] ) ? Amapress::toBool( $this->custom['amapress_user_intermittent'] ) : false;
 	}
 
 
-	public function inscriptionIntermittence( $send_mail = true ) {
+	public
+	function inscriptionIntermittence(
+		$send_mail = true
+	) {
 		if ( $this->isIntermittent() ) {
 			return false;
 		}
@@ -530,7 +602,8 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		return true;
 	}
 
-	public function getDesinscriptionIntermittenceLink() {
+	public
+	function getDesinscriptionIntermittenceLink() {
 		$admin_post_url = admin_url( 'admin-post.php' );
 		$my_email       = $this->getEmail();
 		$key            = $this->getUserLoginKey();
@@ -538,7 +611,8 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		return "$admin_post_url?action=desinscription_intermittent&email=$my_email&key=$key";
 	}
 
-	public function desinscriptionIntermittence() {
+	public
+	function desinscriptionIntermittence() {
 		if ( ! $this->isIntermittent() ) {
 			return false;
 		}
@@ -551,7 +625,10 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		}
 	}
 
-	public function getProperty( $name ) {
+	public
+	function getProperty(
+		$name
+	) {
 		if ( 'lien_intermittence' == $name || 'lien_paniers_intermittence' == $name ) {
 			$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
 
@@ -562,7 +639,8 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		}
 	}
 
-	public function getUserLoginKey() {
+	public
+	function getUserLoginKey() {
 		$key = get_user_meta( $this->ID, 'amapress_user_key', true );
 		if ( empty( $key ) ) {
 			$key = md5( uniqid() );
@@ -572,11 +650,17 @@ AND CAST($wpdb->usermeta.meta_value AS UNSIGNED) = $this->ID" ) );
 		return $key;
 	}
 
-	public function addUserLoginKey( $url ) {
+	public
+	function addUserLoginKey(
+		$url
+	) {
 		return add_query_arg( 'key', $this->getUserLoginKey(), $url );
 	}
 
-	public static function logUserByLoginKey( $key ) {
+	public
+	static function logUserByLoginKey(
+		$key
+	) {
 
 		global $wpdb;
 		$user_id = $wpdb->get_var( $wpdb->prepare(

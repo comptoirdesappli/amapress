@@ -13,36 +13,26 @@ function adhesion_paiements_manage_users_columns( $columns ) {
 	if ( isset( $_GET['page'] ) ) {
 		if ( $_GET['page'] == 'adhesion_paiements' ) {
 			unset( $columns['pw_user_status'] );
-//            unset($columns['amapress_user_avatar']);
 			unset( $columns['amapress_user_telephone2'] );
 			unset( $columns['amapress_user_adresse_localized'] );
 			unset( $columns['amapress_user_role_desc'] );
-//            unset($columns['amapress_user_amap_roles']);
 			unset( $columns['amapress_user_moyen'] );
 			unset( $columns['role'] );
 			unset( $columns['bbp_user_role'] );
 
-//    $columns['amapress_total_amount'] = 'Montant';
 			$terms = get_terms( 'amps_paiement_category',
 				array(
 					'taxonomy'   => 'amps_paiement_category',
 					'hide_empty' => false,
 				) );
-//    $adhesion_tax_id = Amapress::getOption('adhesion_contrat_term');
-//    $tax = get_term_by('id', $adhesion_tax_id, 'amps_paiement_category');
-//    $columns[$tax->slug] = $tax->name;
 			foreach ( $terms as $tax ) {
-//        if ($tax->term_id == $adhesion_tax_id) continue;
-
-				$columns[ $tax->slug ] = $tax->name;
+				$columns[ 'amps_pcat_' . $tax->slug ] = $tax->name;
 			}
 		} else if ( $_GET['page'] == 'contrat_paiements' ) {
 			unset( $columns['pw_user_status'] );
-//            unset($columns['amapress_user_avatar']);
 			unset( $columns['amapress_user_telephone2'] );
 			unset( $columns['amapress_user_adresse_localized'] );
 			unset( $columns['amapress_user_role_desc'] );
-//            unset($columns['amapress_user_amap_roles']);
 			unset( $columns['amapress_user_moyen'] );
 			unset( $columns['role'] );
 			unset( $columns['bbp_user_role'] );
@@ -64,7 +54,6 @@ add_filter( 'manage_users_custom_column', 'amapress_paiements_column_display', 1
 function amapress_paiements_column_display( $output, $colname, $user_id ) {
 	$adhesions = AmapressAdhesion::getAllActiveByUserId();
 	if ( $colname == 'adh_nb_contrats' ) {
-//        return count(AmapressContrats::get_user_active_contrat_instances($user_id));
 		$cnt  = isset( $adhesions[ $user_id ] ) ? count( $adhesions[ $user_id ] ) : 0;
 		$href = admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active&amapress_user=' . $user_id );
 
@@ -72,16 +61,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 	}
 
 	if ( strpos( $colname, 'contrat_amount_' ) === 0 ) {
-//        $contrat_id = intval(substr($colname, 15));
-//        $adhesions = AmapressContrats::get_user_active_adhesion($user_id, $contrat_id);
-//        $expected_amount = 0;
-//        foreach ($adhesions as $adh) {
-//            $expected_amount += $adh->getTotalAmount();
-//        }
-//
-//        $adhesion_ids = array_map('Amapress::to_id', $adhesions);
 		$contrat_id = intval( substr( $colname, 15 ) );
-		//$adhesions = AmapressContrats::get_user_active_adhesion($user_id, $contrat_id);
 		$expected_amount = 0;
 		/** @var AmapressAdhesion $adh */
 		foreach ( ( isset( $adhesions[ $user_id ] ) ? $adhesions[ $user_id ] : array() ) as $adh ) {
@@ -100,30 +80,6 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 			} else {
 				$href = admin_url( "edit.php?post_type=amps_adhesion&amapress_contrat_inst={$contrat_id}&amapress_user=$user_id" );
 			}
-//            $args = array(
-//                'post_type' => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
-//                'posts_per_page' => -1,
-//                'meta_query' => array(
-//                    array(
-//                        'key' => 'amapress_contrat_paiement_adhesion',
-//                        'value' => $adhesion_ids,
-//                        'compare' => 'IN',
-//                        'type' => 'INT',
-//                    ),
-//                    array(
-//                        'key' => 'amapress_contrat_paiement_status',
-//                        'value' => array('received', 'bank'),
-//                        'compare' => 'IN'
-//                    ),
-//                ),
-//            );
-//
-//            $posts = get_posts($args);
-//            $amount = 0;
-//            foreach ($posts as $post) {
-//                $p = new AmapressAmapien_paiement($post);
-//                $amount += $p->getAmount();
-//            }
 
 			$all_paiements = AmapressAmapien_paiement::getAllActiveByAdhesionId();
 			$amount        = 0;
@@ -131,7 +87,6 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 				if ( $adh->getContrat_instanceId() != $contrat_id ) {
 					continue;
 				}
-//                $p = AmapressAdhesion::getBy_paiement($post);
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
 					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
@@ -163,44 +118,12 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 		}
 	}
 
-	if ( ! term_exists( $colname, 'amps_paiement_category' ) ) {
+	if ( strpos( $colname, 'amps_pcat_' ) !== 0 ) {
 		return $output;
 	}
 
-//    $adh = AmapressAdhesion::getBy($post_id);
-
-//    $args = array(
-//        'post_type' => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
-//        'posts_per_page' => -1,
-//        'meta_query' => array(
-//            array(
-//                'key' => 'amapress_adhesion_paiement_user',
-//                'value' => $user_id,
-//            ),
-//            array(
-//                'key' => 'amapress_adhesion_paiement_status',
-//                'value' => array('received', 'bank'),
-//                'compare' => 'IN'
-//            ),
-//        ),
-//        'tax_query' => array(
-//            array(
-//                'taxonomy' => 'amps_paiement_category',
-//                'field' => 'slug',
-//                'terms' => $colname,
-//                'operator' => 'IN'
-//            ),
-//        ),
-//    );
-//
-//    $posts = get_posts($args);
-//    $amount = 0;
-//    foreach ($posts as $post) {
-//        $p = AmapressAdhesion::getBy_paiement($post);
-//        $amount += $p->getAmount($colname);
-//    }
-
-	$term = get_term_by( 'slug', $colname, 'amps_paiement_category' );
+	$colname = substr( $colname, 10 );
+	$term    = get_term_by( 'slug', $colname, 'amps_paiement_category' );
 	if ( empty( $term ) ) {
 		return '';
 	}
@@ -287,7 +210,7 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 				if ( $adh->getContrat_instanceId() != $contrat_id ) {
 					continue;
 				}
-//                $p = AmapressAdhesion::getBy_paiement($post);
+//                $p = new AmapressAdhesion_paiement($post);
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
 					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
@@ -304,42 +227,11 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 		}
 	}
 
-	if ( ! term_exists( $colname, 'amps_paiement_category' ) ) {
+	if ( strpos( $colname, 'amps_pcat_' ) !== 0 ) {
 		return $output;
 	}
 
-//    $adh = AmapressAdhesion::getBy($post_id);
-
-//    $args = array(
-//        'post_type' => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
-//        'posts_per_page' => -1,
-//        'meta_query' => array(
-//            array(
-//                'key' => 'amapress_adhesion_paiement_user',
-//                'value' => $user_id,
-//            ),
-//            array(
-//                'key' => 'amapress_adhesion_paiement_status',
-//                'value' => array('received', 'bank'),
-//                'compare' => 'IN'
-//            ),
-//        ),
-////        'tax_query' => array(
-////            array(
-////                'taxonomy' => 'amps_paiement_category',
-////                'field' => 'slug',
-////                'terms' => $colname,
-////                'operator' => 'IN'
-////            ),
-////        ),
-//    );
-//
-//    $posts = get_posts($args);
-//    $amount = 0;
-//    foreach ($posts as $post) {
-//        $p = AmapressAdhesion::getBy_paiement($post);
-//        $amount += $p->getAmount($colname);
-//    }
+	$colname = substr( $colname, 10 );
 
 	$term = get_term_by( 'slug', $colname, 'amps_paiement_category' );
 	if ( empty( $term ) ) {

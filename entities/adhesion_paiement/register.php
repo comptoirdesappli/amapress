@@ -129,20 +129,24 @@ function amapress_get_adhesion_paiements_summary( $paiement_id ) {
 		'taxonomy'   => 'amps_paiement_category',
 		'hide_empty' => false,
 	) );
-	$terms   = array_map( function ( $t ) {
-		return $t->term_id;
-	}, wp_get_post_terms( $paiement_id, 'amps_paiement_category' ) );
+//	$terms   = array_map( function ( $t ) {
+//		return $t->term_id;
+//	}, wp_get_post_terms( $paiement_id, 'amps_paiement_category' ) );
 	$amounts = Amapress::get_post_meta_array( $paiement_id, 'amapress_adhesion_paiement_repartition' );
 	if ( empty( $amounts ) ) {
 		$amounts = array();
 	}
 	$ret = array();
 	foreach ( $taxes as $tax ) {
-		$tax_used   = in_array( $tax->term_id, $terms );
-		$tax_amount = $tax_used && isset( $amounts[ $tax->term_id ] ) ? $amounts[ $tax->term_id ] : 0;
+//		$tax_used   = in_array( $tax->term_id, $terms );
+		$tax_amount = isset( $amounts[ $tax->term_id ] ) ? $amounts[ $tax->term_id ] : 0;
 		if ( empty( $tax_amount ) ) {
 			$tax_amount = 0;
 		}
+		if ( $tax_amount < 0.001 ) {
+			continue;
+		}
+
 		$ret[] = esc_html( sprintf( '%s=%.00f€', $tax->name, $tax_amount ) );
 	}
 

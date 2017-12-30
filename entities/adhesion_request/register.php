@@ -108,7 +108,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 }
 
 function amapress_adhesion_request_count_shortcode( $atts ) {
-	$posts = get_posts(
+	$cnt = get_posts_count(
 		array(
 			'posts_per_page' => - 1,
 			'post_type'      => 'amps_adh_req',
@@ -126,7 +126,6 @@ function amapress_adhesion_request_count_shortcode( $atts ) {
 			)
 		)
 	);
-	$cnt   = count( $posts );
 
 	return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
 }

@@ -240,7 +240,7 @@ function amapress_adhesion_views() {
 		"post_type=amps_adhesion&amapress_date=active",
 		'En cours' );
 
-	$contrats = AmapressContrats::get_contrat_instances( Amapress::remove_a_year( amapress_time() ) );
+	$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
 	usort( $contrats, function ( $c1, $c2 ) {
 		/** @var AmapressContrat_instance $c1 */
 		/** @var AmapressContrat_instance $c2 */
@@ -306,9 +306,11 @@ function amapress_adhesion_views() {
 //}
 
 function amapress_user_views( $ret ) {
-	$query_add = '';
-	$page      = '';
-	if ( isset( $_GET['page'] ) && $_GET['page'] == 'adhesion_paiements' ) {
+	$query_add             = '';
+	$page                  = '';
+	$is_adhesion_paiements = isset( $_GET['page'] ) && $_GET['page'] == 'adhesion_paiements';
+	$is_contrat_paiements  = isset( $_GET['page'] ) && $_GET['page'] == 'contrat_paiements';
+	if ( $is_adhesion_paiements ) {
 		$page = 'adhesion_paiements';
 		foreach ( $ret as $k => $v ) {
 			if ( $k != 'all' ) {
@@ -317,7 +319,7 @@ function amapress_user_views( $ret ) {
 		}
 		$query_add = '&page=adhesion_paiements';
 	}
-	if ( isset( $_GET['page'] ) && $_GET['page'] == 'contrat_paiements' ) {
+	if ( $is_contrat_paiements ) {
 		$page = 'contrat_paiements';
 		foreach ( $ret as $k => $v ) {
 			if ( $k != 'all' ) {
@@ -327,100 +329,104 @@ function amapress_user_views( $ret ) {
 		$query_add = '&page=contrat_paiements';
 	}
 
-	if ( empty( $page ) || $page == 'adhesion_paiements' ) {
+	if ( ! isset( $_REQUEST['s'] ) ) {
+		if ( empty( $page ) || $page == 'adhesion_paiements' ) {
+			amapress_add_view_button(
+				$ret, 'adhe_nok',
+				"amapress_adhesion=nok$query_add",
+				'Adhésions non réglées',
+				true );
+			amapress_add_view_button(
+				$ret, 'w_adhe',
+				"amapress_contrat=active$query_add",
+				'Amapiens avec contrats',
+				true );
+		}
 		amapress_add_view_button(
-			$ret, 'adhe_nok',
-			"amapress_adhesion=nok$query_add",
-			'Adhésions non réglées',
+			$ret, 'no_loc',
+			"amapress_info=address_unk$query_add",
+			'Amapiens non localisés',
 			true );
 		amapress_add_view_button(
-			$ret, 'w_adhe',
-			"amapress_contrat=active$query_add",
-			'Amapiens avec contrats',
+			$ret, 'no_tel',
+			"amapress_info=phone_unk$query_add",
+			'Amapiens sans téléphone',
 			true );
-	}
-	amapress_add_view_button(
-		$ret, 'no_loc',
-		"amapress_info=address_unk$query_add",
-		'Amapiens non localisés',
-		true );
-	amapress_add_view_button(
-		$ret, 'no_tel',
-		"amapress_info=phone_unk$query_add",
-		'Amapiens sans téléphone',
-		true );
-	amapress_add_view_button(
-		$ret, 'wo_adhe',
-		"amapress_contrat=no$query_add",
-		'Amapiens sans contrats',
-		true );
-	amapress_add_view_button(
-		$ret, 'intermittents',
-		"amapress_contrat=intermittent$query_add",
-		'Intermittents',
-		true );
-	amapress_add_view_button(
-		$ret, 'with_coadh',
-		"amapress_contrat=coadherent$query_add",
-		'Co-adhérents',
-		true );
-	amapress_add_view_button(
-		$ret, 'never_logged',
-		"amapress_role=never_logged$query_add",
-		'Jamais connecté',
-		true );
-	amapress_add_view_button(
-		$ret, 'with_role',
-		"amapress_role=amap_role_any$query_add",
-		'Avec rôle',
-		true );
-	amapress_add_view_button(
-		$ret, 'resp_distrib',
-		"amapress_role=resp_distrib$query_add",
-		'Responsable Distribution - Semaine',
-		true );
-	amapress_add_view_button(
-		$ret, 'resp_distrib_next',
-		"amapress_role=resp_distrib_next$query_add",
-		'Responsable Distribution - Semaine prochaine',
-		true );
-	amapress_add_view_button(
-		$ret, 'resp_distrib_month',
-		"amapress_role=resp_distrib_month$query_add",
-		'Responsable Distribution - Mois',
-		true );
+		amapress_add_view_button(
+			$ret, 'wo_adhe',
+			"amapress_contrat=no$query_add",
+			'Amapiens sans contrats',
+			true );
+		amapress_add_view_button(
+			$ret, 'intermittents',
+			"amapress_contrat=intermittent$query_add",
+			'Intermittents',
+			true );
+		amapress_add_view_button(
+			$ret, 'with_coadh',
+			"amapress_contrat=coadherent$query_add",
+			'Co-adhérents',
+			true );
+		amapress_add_view_button(
+			$ret, 'with_role',
+			"amapress_role=amap_role_any$query_add",
+			'Avec rôle',
+			true );
+		if ( ! $is_adhesion_paiements ) {
+			amapress_add_view_button(
+				$ret, 'never_logged',
+				"amapress_role=never_logged$query_add",
+				'Jamais connecté',
+				true );
+			amapress_add_view_button(
+				$ret, 'resp_distrib',
+				"amapress_role=resp_distrib$query_add",
+				'Responsable Distribution - Semaine',
+				true );
+			amapress_add_view_button(
+				$ret, 'resp_distrib_next',
+				"amapress_role=resp_distrib_next$query_add",
+				'Responsable Distribution - Semaine prochaine',
+				true );
+			amapress_add_view_button(
+				$ret, 'resp_distrib_month',
+				"amapress_role=resp_distrib_month$query_add",
+				'Responsable Distribution - Mois',
+				true );
 
-	$contrats = AmapressContrats::get_contrat_instances( Amapress::remove_a_year( amapress_time() ) );
-	usort( $contrats, function ( $c1, $c2 ) {
-		/** @var AmapressContrat_instance $c1 */
-		/** @var AmapressContrat_instance $c2 */
-		$c1_date = $c1->getDate_debut();
-		$c2_date = $c2->getDate_debut();
-		if ( $c1_date == $c2_date ) {
-			return strcasecmp( $c1->getTitle(), $c2->getTitle() );
+			$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
+			usort( $contrats, function ( $c1, $c2 ) {
+				/** @var AmapressContrat_instance $c1 */
+				/** @var AmapressContrat_instance $c2 */
+				$c1_date = $c1->getDate_debut();
+				$c2_date = $c2->getDate_debut();
+				if ( $c1_date == $c2_date ) {
+					return strcasecmp( $c1->getTitle(), $c2->getTitle() );
+				}
+
+				return $c1_date < $c2_date ? 1 : - 1;
+			} );
+			foreach ( $contrats as $contrat ) {
+				amapress_add_view_button(
+					$ret, 'for_' . $contrat->ID,
+					"amapress_contrat={$contrat->ID}$query_add",
+					$contrat->getTitle(),
+					true );
+			}
 		}
 
-		return $c1_date < $c2_date ? 1 : - 1;
-	} );
-	foreach ( $contrats as $contrat ) {
-		amapress_add_view_button(
-			$ret, 'for_' . $contrat->ID,
-			"amapress_contrat={$contrat->ID}$query_add",
-			$contrat->getTitle(),
-			true );
-	}
-
-	$lieux = get_posts( array(
-			'posts_per_page' => - 1,
-			'post_type'      => 'amps_lieu'
-		)
-	);
-	foreach ( $lieux as $lieu ) {
-		amapress_add_view_button(
-			$ret, 'for_' . $lieu->ID,
-			"amapress_lieu={$lieu->ID}$query_add",
-			$lieu->post_title,
-			true );
+		$lieux = get_posts( array(
+				'posts_per_page' => - 1,
+				'post_type'      => 'amps_lieu'
+			)
+		);
+		foreach ( $lieux as $lieu ) {
+			amapress_add_view_button(
+				$ret, 'for_' . $lieu->ID,
+				"amapress_lieu={$lieu->ID}$query_add",
+				$lieu->post_title,
+				true );
+		}
 	}
 
 //    amapress_add_view_button(

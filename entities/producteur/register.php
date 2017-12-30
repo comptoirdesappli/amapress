@@ -207,7 +207,7 @@ add_filter( 'amapress_can_delete_producteur', 'amapress_can_delete_producteur', 
 function amapress_can_delete_producteur( $can, $post_id ) {
 	$prod = AmapressProducteur::getBy( $post_id );
 
-	return count( $prod->getProduits() ) == 0
+	return count( $prod->getProduitIds() ) == 0
 	       && count( $prod->getContrats() ) == 0;
 }
 

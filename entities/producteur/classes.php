@@ -162,21 +162,33 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	public function getProduits() {
 		return array_map( function ( $id ) {
 			return new AmapressProduit( $id );
-		}, get_posts( array(
-				'post_type'      => AmapressProduit::INTERNAL_POST_TYPE,
-				'posts_per_page' => - 1,
-				'meta_query'     => array(
-					array(
-						'key'     => 'amapress_produit_producteur',
-						'value'   => $this->ID,
-						'compare' => '=',
-						'type'    => 'NUMERIC',
+		}, $this->getProduitIds() );
+	}
+
+	private $produit_ids = null;
+
+	/** @return int[] */
+	public function getProduitIds() {
+		if ( null === $this->produit_ids ) {
+			$this->produit_ids = get_posts( array(
+					'post_type'      => AmapressProduit::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+					'fields'         => 'ids',
+					'meta_query'     => array(
+						array(
+							'key'     => 'amapress_produit_producteur',
+							'value'   => $this->ID,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
 					),
-				),
-				'order'          => 'ASC',
-				'orderby'        => 'title'
-			)
-		) );
+					'order'          => 'ASC',
+					'orderby'        => 'title'
+				)
+			);
+		}
+
+		return $this->produit_ids;
 	}
 
 	public function getNomExploitation() {

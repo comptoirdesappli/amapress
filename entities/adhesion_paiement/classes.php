@@ -86,9 +86,6 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
-		$adhs_ids = array_map( function ( $a ) {
-			return $a->ID;
-		}, AmapressAdhesion::getUserActiveAdhesions( $user_id ) );
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
@@ -97,15 +94,16 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			array(
 				'relation' => 'AND',
 				array(
-					'key'     => 'amapress_contrat_paiement_date',
+					'key'     => 'amapress_adhesion_paiement_date',
 					'value'   => Amapress::add_days( $date, - 15 ),
 					'compare' => '>=',
 					'type'    => 'NUMERIC'
 				),
 				array(
-					'key'     => 'amapress_contrat_paiement_adhesion',
-					'value'   => amapress_prepare_in( $adhs_ids ),
-					'compare' => 'IN'
+					'key'     => 'amapress_adhesion_paiement_user',
+					'value'   => $user_id,
+					'compare' => '=',
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );
@@ -141,7 +139,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$price     = $this->getAmount();
 			$num       = $this->getNumero();
 			$date      = $this->getDate();
-			$adhesions = AmapressAdhesion::getUserActiveAdhesions();
+			$adhesions = AmapressAdhesion::getUserActiveAdhesions( $user_id );
 			$adh       = array_shift( $adhesions );
 			//TODO page link
 			$ret[] = new Amapress_EventEntry( array(
@@ -166,13 +164,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	private static $paiement_cache = null;
 
 	public static function getAllActiveByUserId() {
-		if ( ! self::$paiement_cache ) {
-//            $adhesions_ids = AmapressContrats::get_active_adhesions_ids();
+		if ( null === self::$paiement_cache ) {
 			$period               = AmapressAdhesionPeriod::getCurrent();
 			$period_id            = $period ? $period->ID : 0;
 			self::$paiement_cache = array_group_by( array_map(
 				function ( $p ) {
-					return AmapressAdhesion::getBy_paiement( $p );
+					return new AmapressAdhesion_paiement( $p );
 				},
 				get_posts(
 					array(

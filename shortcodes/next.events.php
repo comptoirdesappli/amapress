@@ -313,10 +313,7 @@ function amapress_get_event_html( $ev_date, $arr, $lieu_hour_dic, $first_lieu, $
 						'status' => 'to_exchange',
 					);
 
-					$query['contrat_instance_id'] = array_map( function ( $a ) {
-						return $a->ID;
-					},
-						$dist->getContrats() );
+					$query['contrat_instance_id'] = $dist->getContratIds();
 					$query['date']                = intval( $dist->getDate() );
 					$query['lieu_id']             = $lieu->getLieuId();
 

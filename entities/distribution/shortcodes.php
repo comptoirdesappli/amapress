@@ -16,30 +16,15 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 	$date           = amapress_time();
 	$next_week_date = Amapress::add_a_week( amapress_time() );
 	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
-//    $next_week = AmapressDistribution::get_distributions(Amapress::start_of_week($next_week_date), Amapress::end_of_week($next_week_date));
 
 	$user_id = amapress_current_user_id();
-//    $is_resp_this_week = false;
-//    foreach ($this_week as $dist) {
-//        $is_resp_this_week = $is_resp_this_week || in_array($user_id, $dist->getResponsablesIds());
-//    }
-//    $is_resp_next_week = false;
-//    foreach ($next_week as $dist) {
-//        $is_resp_this_week = $is_resp_this_week || in_array($user_id, $dist->getResponsablesIds());
-//    }
 
-//    $ret = '';
-//    if ($is_resp_amap || $is_resp_this_week) {
 	foreach ( $next_distribs as $dist ) {
-//        $ret .= amapress_get_panel_start('Pour les responsables de distribution - de la semaine');
-//        if (count($this_week) > 0) {
-//            foreach ($this_week as $dist) {
 		if ( ! $is_resp_amap && ! in_array( $user_id, $dist->getResponsablesIds() ) ) {
 			continue;
 		}
 
 		$content = '';
-		//$lieu = ($dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu());
 		$lieu = $dist->getLieu();
 		if ( in_array( $user_id, $dist->getResponsablesIds() ) ) {
 			$content .= '<p class="resp-distribution">Vous êtes responsable de distribution</p>';
@@ -57,51 +42,7 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 			'content' => $content,
 		);
 
-//                $ret .= amapress_get_panel_start($dist->getTitle());
-//        $ret .= '<div class="post-it dist-post-it">';
-//        $ret .= '<h4>' . esc_html(date_i18n('d/m/Y', $dist->getDate())) . ' - Distribution</h4>';
-//        $ret .= '<div class="post-it-content">';
-//        $ret .= '</div>';
-//        $ret .= '</div>';
-
-//                $ret .= '<h3>Instruction du lieu</h3>';
-//                echo $lieu->getInstructions_privee();
-
-//                $ret .= amapress_get_panel_end();
 	}
-//        } else {
-//            $ret .= '<span class="no-distrib">Pas de distribution cette semaine</span>';
-//        }
-//        $ret .= amapress_get_panel_end();
-//    }
-
-//    if ($is_resp_amap || $is_resp_next_week) {
-//        $ret .= amapress_get_panel_start('Pour les responsables de distribution - de la semaine prochaine');
-//        if (count($next_week) > 0) {
-//            foreach ($next_week as $dist) {
-//                if (!$is_resp_amap && !in_array($user_id, $dist->getResponsablesIds())) continue;
-//
-////                $ret .= amapress_get_panel_start($dist->getTitle());
-//                $ret .= '<h4>'.esc_html($dist->getTitle()).'</h4>';
-//                $lieu = ($dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu());
-//                if (in_array($user_id, $dist->getResponsablesIds())) {
-//                    $ret .= '<h3 class="resp-distribution">Vous êtes responsable de distribution</h3>';
-//                }
-//
-//                $ret .= amapress_get_button('Imprimer la liste d\'émargement',
-//                    amapress_action_link($dist->ID, 'liste-emargement'), 'fa-fa',
-//                    true);
-//
-////                $ret .= '<h3>Instruction du lieu</h3>';
-////                echo $lieu->getInstructions_privee();
-//
-////                $ret .= amapress_get_panel_end();
-//            }
-//        } else {
-//            $ret .= '<span class="no-distrib">Pas de distribution la semaine prochaine</span>';
-//        }
-//        $ret .= amapress_get_panel_end();
-//    }
 
 	return $post_its;
 }
@@ -152,7 +93,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $from_date );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
-		return $a->getContrat_instance()->ID;
+		return $a->getContrat_instanceId();
 	}, $adhesions );
 	$contrat_instances     = AmapressContrats::get_active_contrat_instances( null, $from_date );
 	if ( Amapress::toBool( $atts['show_past'] ) ) {
@@ -336,8 +277,9 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					$arr = array( '' => '--Sélectionner un amapien--' );
 					/** @var WP_User $user */
 					foreach (
-						get_users( array(
+						get_users_cached( array(
 							'amapress_lieu' => $lieu_id,
+							'fields'        => 'all_with_meta',
 						) ) as $user
 					) {
 						$arr[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );

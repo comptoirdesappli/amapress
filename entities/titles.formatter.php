@@ -161,7 +161,7 @@ function amapress_adhesion_period_title_formatter( $post_title, WP_Post $post ) 
 
 add_filter( 'amapress_adhesion_paiement_title_formatter', 'amapress_adhesion_paiement_title_formatter', 10, 2 );
 function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post ) {
-	$pmt = AmapressAdhesion::getBy_paiement( $post->ID );
+	$pmt = new AmapressAdhesion_paiement( $post->ID );
 	//$date = get_post_meta($post_id, 'amapress_contrat_paiement_date', true);
 	if ( $pmt->getUser() == null ) {
 		return $post->post_title;

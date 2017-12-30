@@ -177,7 +177,7 @@ class Amapress_Calendar {
 				$events[] = new AmapressDistribution( $events_id );
 				break;
 			case AmapressAdhesion_paiement::INTERNAL_POST_TYPE:
-				$events[] = AmapressAdhesion::getBy_paiement( $events_id );
+				$events[] = new AmapressAdhesion_paiement( $events_id );
 				break;
 			case AmapressAmap_event::INTERNAL_POST_TYPE:
 				$events[] = new AmapressAmap_event( $events_id );

@@ -156,8 +156,6 @@ function amapress_amapiens_map_shortcode( $atts ) {
 	$lix     = 0;
 	$markers = array();
 	foreach ( $lieux as $lieu ) {
-		$lieu_name = $lieu->getShortName();
-
 		if ( $lieu->isAdresseLocalized() ) {
 			$m = array(
 				'longitude' => $lieu->getAdresseLongitude(),
@@ -175,7 +173,7 @@ function amapress_amapiens_map_shortcode( $atts ) {
 			}
 			$markers[] = $m;
 		}
-		$query = array(
+		$query           = array(
 			'meta_query'    => array(
 				array(
 					'relation' => 'OR',
@@ -185,10 +183,11 @@ function amapress_amapiens_map_shortcode( $atts ) {
 			),
 			'amapress_lieu' => $lieu->ID,
 		);
-		$me_id = amapress_current_user_id();
-		$users = get_users( $query );
+		$me_id           = amapress_current_user_id();
+		$query['fields'] = 'all_with_meta';
+		$users           = get_users( $query );
 		foreach ( $users as $user ) {
-			$auser = AmapressUser::getBy( $user->ID );
+			$auser = AmapressUser::getBy( $user );
 			if ( ! $auser->isAdresse_localized() ) {
 				continue;
 			}
@@ -275,7 +274,8 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	foreach (
 		get_users(
 			array(
-				'amapress_role' => 'referent_producteur'
+				'amapress_role' => 'referent_producteur',
+				'fields'        => 'all_with_meta',
 			)
 		) as $user
 	) {
@@ -284,7 +284,8 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	foreach (
 		get_users(
 			array(
-				'amapress_role' => 'referent_lieu'
+				'amapress_role' => 'referent_lieu',
+				'fields'        => 'all_with_meta',
 			)
 		) as $user
 	) {
@@ -293,7 +294,8 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	foreach (
 		get_users(
 			array(
-				'role__in' => amapress_can_access_admin_roles()
+				'role__in' => amapress_can_access_admin_roles(),
+				'fields'   => 'all_with_meta',
 			)
 		) as $user
 	) {
@@ -302,7 +304,8 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	foreach (
 		get_users(
 			array(
-				'amapress_role' => 'amap_role_any'
+				'amapress_role' => 'amap_role_any',
+				'fields'        => 'all_with_meta',
 			)
 		) as $user
 	) {

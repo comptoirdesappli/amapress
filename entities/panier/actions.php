@@ -30,7 +30,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 
 	$contrat_ids = array_map( function ( $c ) {
 		/** @var AmapressAdhesion $c */
-		return $c->getContrat_instance()->ID;
+		return $c->getContrat_instanceId();
 	}, AmapressAdhesion::getUserActiveAdhesions( $user_id ) );
 	$cnt         = 0;
 	$failed      = 0;

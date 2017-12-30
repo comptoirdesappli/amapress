@@ -78,9 +78,11 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
-		$adhs_ids = array_map( function ( $a ) {
-			return $a->ID;
-		}, AmapressAdhesion::getUserActiveAdhesions( $user_id ) );
+		$adhs_ids = AmapressAdhesion::getUserActiveAdhesionIds( $user_id );
+		if ( empty( $adhs_ids ) ) {
+			return [];
+		}
+
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
@@ -96,7 +98,8 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 				array(
 					'key'     => 'amapress_contrat_paiement_adhesion',
 					'value'   => amapress_prepare_in( $adhs_ids ),
-					'compare' => 'IN'
+					'compare' => 'IN',
+					'type'    => 'NUMERIC'
 				),
 			),
 			$order );
@@ -180,6 +183,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 					)
 				) ),
 				function ( $p ) {
+					/** @var AmapressAmapien_paiement $p */
 					return $p->getAdhesionId();
 				}
 			);

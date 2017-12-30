@@ -797,6 +797,12 @@ function amapress_get_paiement_table_by_dates(
 	}
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, null, $lieu_id );
+	$user_ids         = array_map( function ( $p ) {
+		/** @var AmapressAmapien_paiement $p */
+		return $p->getAdhesion()->getAdherentId();
+	}, $paiements );
+	update_meta_cache( 'user', $user_ids );
+	cache_users( $user_ids );
 //	amapress_dump($paiements);
 	$dates = array_map(
 		function ( $p ) {
@@ -844,17 +850,6 @@ function amapress_get_paiement_table_by_dates(
 				},
 				$all_emetteurs
 			);
-
-//			usort( $all_emetteurs,
-//				function ( $a, $b ) {
-//					$a_emetteur = strip_tags( $a );
-//					$b_emetteur = strip_tags( $b );
-//					if ( $a_emetteur == $b_emetteur ) {
-//						return 0;
-//					}
-//
-//					return $a_emetteur < $b_emetteur ? - 1 : 1;
-//				} );
 
 			return array(
 				'emetteur'  => $p->getEmetteur(),
@@ -971,7 +966,6 @@ function amapress_get_paiement_table_by_dates(
 		$data[] = $row;
 	}
 
-//	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
 	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
 	$dist          = null;
 	foreach ( $next_distribs as $distrib ) {

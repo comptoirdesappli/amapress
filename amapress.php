@@ -364,6 +364,26 @@ if ( ! function_exists( 'get_posts_count' ) ) {
 	}
 }
 
+//
+
+if ( ! function_exists( 'get_users_cached' ) ) {
+	function get_users_cached( $args = array() ) {
+		$args        = wp_parse_args( $args );
+		$user_search = new WP_User_Query();
+		$user_search->prepare_query( $args );
+
+		$query = "SELECT $user_search->query_fields $user_search->query_from $user_search->query_where $user_search->query_orderby $user_search->query_limit";
+		$res   = wp_cache_get( $query );
+		if ( false === $res ) {
+			$user_search->query();
+			$res = $user_search->get_results();
+			wp_cache_set( $query, $res );
+		}
+
+		return $res;
+	}
+}
+
 if ( ! function_exists( 'get_users_count' ) ) {
 	/**
 	 * Retrieve count of users matching criteria.
@@ -377,8 +397,14 @@ if ( ! function_exists( 'get_users_count' ) ) {
 		$user_search->prepare_query( $args );
 
 		global $wpdb;
+		$query = "SELECT COUNT(DISTINCT $wpdb->users.ID) $user_search->query_from $user_search->query_where";
+		$res   = wp_cache_get( $query );
+		if ( false === $res ) {
+			$res = intval( $wpdb->get_var( $query ) );
+			wp_cache_set( $query, $res );
+		}
 
-		return intval( $wpdb->get_var( "SELECT COUNT(DISTINCT $wpdb->users.ID) $user_search->query_from $user_search->query_where" ) );
+		return $res;
 	}
 }
 
@@ -903,31 +929,49 @@ if ( is_admin() ) {
 
 if ( ! function_exists( 'get_user_by' ) ) :
 	function get_user_by( $field, $value ) {
-		$userdata = WP_User::get_data_by( $field, $value );
+		$key = "get_user_by_$field-$value";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$userdata = WP_User::get_data_by( $field, $value );
 
-		if ( ! $userdata ) {
-			if ( 'email' == $field ) {
-				global $wpdb;
-				if ( ! $user_id = $wpdb->get_var( $wpdb->prepare(
-					"SELECT user_id FROM $wpdb->usermeta WHERE meta_key IN ('email2','email3','email4') AND meta_value = %s", $value
-				) )
-				) {
-					return false;
-				}
+			$not_found = false;
+			if ( ! $userdata ) {
+				if ( 'email' == $field ) {
+					global $wpdb;
+					if ( ! $user_id = $wpdb->get_var( $wpdb->prepare(
+						"SELECT user_id FROM $wpdb->usermeta WHERE meta_key IN ('email2','email3','email4') AND meta_value = %s", $value
+					) )
+					) {
+						$not_found = true;
+					}
 
-				$userdata = WP_User::get_data_by( 'ID', intval( $user_id ) );
-				if ( ! $userdata ) {
-					return false;
+					$userdata = WP_User::get_data_by( 'ID', intval( $user_id ) );
+					if ( ! $userdata ) {
+						$not_found = true;
+					}
+				} else {
+					$not_found = true;
 				}
-			} else {
-				return false;
 			}
+
+			if ( $not_found ) {
+				$res = null;
+			} else {
+
+				$user = new WP_User();
+				$user->init( $userdata );
+
+				$res = $user;
+			}
+
+			wp_cache_set( $key, $res );
 		}
 
-		$user = new WP_User();
-		$user->init( $userdata );
-
-		return $user;
+		if ( null === $res ) {
+			return false;
+		} else {
+			return $res;
+		}
 	}
 endif;
 

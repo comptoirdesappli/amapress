@@ -55,6 +55,11 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 		return $this->getCustomAsEntity( 'amapress_lieu_distribution_referent', 'AmapressUser' );
 	}
 
+	/** @return int */
+	public function getReferentId() {
+		return $this->getCustomAsInt( 'amapress_lieu_distribution_referent' );
+	}
+
 	public function getShortName() {
 		$ret = $this->getCustom( 'amapress_lieu_distribution_shortname', null );
 		if ( empty( $ret ) ) {

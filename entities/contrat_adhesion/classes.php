@@ -398,7 +398,7 @@ class AmapressAdhesion extends TitanEntity {
 
 	/** @return float */
 	public function getTotalAmount() {
-		if ( $this->getContrat_instance() == null ) {
+		if ( ! $this->getContrat_instanceId() ) {
 			return 0;
 		}
 		$dates      = $this->getContrat_instance()->getListe_dates();
@@ -423,7 +423,7 @@ class AmapressAdhesion extends TitanEntity {
 
 	/** @return  AmapressAdhesion[] */
 	public static function getAllActiveByUserId() {
-		if ( ! self::$paiement_cache ) {
+		if ( null === self::$paiement_cache ) {
 			$cache = array();
 			foreach ( AmapressContrats::get_active_adhesions() as $adh ) {
 				if ( ! isset( $cache[ $adh->getAdherentId() ] ) ) {
@@ -458,6 +458,20 @@ class AmapressAdhesion extends TitanEntity {
 		$date = null,
 		$ignore_renouv_delta = false
 	) {
+		return array_map( function ( $p ) {
+			return AmapressAdhesion::getBy( $p );
+		}, self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta ) );
+	}
+
+	/**
+	 * @return int[]
+	 */
+	public static function getUserActiveAdhesionIds(
+		$user_id = null,
+		$contrat_instance_id = null,
+		$date = null,
+		$ignore_renouv_delta = false
+	) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return [];
 		}
@@ -465,15 +479,18 @@ class AmapressAdhesion extends TitanEntity {
 		if ( $user_id == null ) {
 			$user_id = amapress_current_user_id();
 		}
-//		$key_ids = is_array( $contrat_instance_id ) ? implode( '-', $contrat_instance_id ) : $contrat_instance_id;
-		$key = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$date}_{$ignore_renouv_delta}";
+
+		$abo_ids = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta );
+		$abo_key = implode( '-', $abo_ids );
+
+		$key = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$abo_key}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$abo_ids  = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta );
 			$user_ids = AmapressContrats::get_related_users( $user_id );
 			$query    = array(
 				'posts_per_page' => - 1,
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+				'fields'         => 'ids',
 				'meta_query'     => array(
 					'relation' => 'AND',
 					array(
@@ -509,9 +526,8 @@ class AmapressAdhesion extends TitanEntity {
 					)
 				)
 			);
-			$res      = array_map( function ( $p ) {
-				return AmapressAdhesion::getBy( $p );
-			}, get_posts( $query ) );
+			$res      = get_posts( $query );
+
 			wp_cache_set( $key, $res );
 		}
 

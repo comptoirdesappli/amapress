@@ -264,17 +264,25 @@ class AmapressDistribution extends Amapress_EventBase {
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
+		$date = Amapress::start_of_day( $date );
 
-		return self::query_events(
-			array(
+		$key = "amapress_get_next_distributions-$date-$order";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = self::query_events(
 				array(
-					'key'     => 'amapress_distribution_date',
-					'value'   => Amapress::start_of_day( $date ),
-					'compare' => '>=',
-					'type'    => 'NUMERIC'
+					array(
+						'key'     => 'amapress_distribution_date',
+						'value'   => $date,
+						'compare' => '>=',
+						'type'    => 'NUMERIC'
+					),
 				),
-			),
-			$order );
+				$order );
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
 	}
 
 	/** @return AmapressDistribution[] */
@@ -459,21 +467,21 @@ class AmapressDistribution extends Amapress_EventBase {
 			if ( $status_count['other_to_exchange'] > 0 ) {
 //				$dist = $this;//AmapressPaniers::getDistribution( $this->getDate(), $this->getLieuId() );
 //				if ( $dist ) {
-				$paniers_url     = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $this->getSlug();
-					$ret[]       = new Amapress_EventEntry( array(
-						'ev_id'    => "intermittence-{$this->ID}-to-exchange",
-						'date'     => $date,
-						'date_end' => $date_end,
-						'class'    => "agenda-intermittence",
-						'type'     => 'intermittence',
-						'category' => 'Paniers dispo',
-						'priority' => 10,
-						'lieu'     => $this->getRealLieu(),
-						'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span> à échanger',
-						'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
-						'alt'      => $status_count['other_to_exchange'] . ' à échanger',
-						'href'     => $paniers_url
-					) );
+				$paniers_url = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $this->getSlug();
+				$ret[]       = new Amapress_EventEntry( array(
+					'ev_id'    => "intermittence-{$this->ID}-to-exchange",
+					'date'     => $date,
+					'date_end' => $date_end,
+					'class'    => "agenda-intermittence",
+					'type'     => 'intermittence',
+					'category' => 'Paniers dispo',
+					'priority' => 10,
+					'lieu'     => $this->getRealLieu(),
+					'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span> à échanger',
+					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+					'alt'      => $status_count['other_to_exchange'] . ' à échanger',
+					'href'     => $paniers_url
+				) );
 //				}
 			}
 		}

@@ -537,44 +537,53 @@ class AmapressUsers {
 //    }
 
 	public static function get_user_lieu_ids( $user_id, $date = null, $ignore_renouv_delta = false ) {
-		$abo_ids  = AmapressContrats::get_active_contrat_instances_ids( null, $date, $ignore_renouv_delta );
-		$user_ids = AmapressContrats::get_related_users( $user_id );
-		$lieu_ids = array_map( array( 'Amapress', 'to_adhesion_lieu' ), get_posts( array(
-			'post_type'      => 'amps_adhesion',
-			'posts_per_page' => - 1,
-			'meta_query'     => array(
-				'relation' => 'AND',
-				array(
-					'key'     => 'amapress_adhesion_contrat_instance',
-					'value'   => amapress_prepare_in( $abo_ids ),
-					'compare' => 'IN',
-					'type'    => 'NUMERIC'
-				),
-				array(
-					'relation' => 'OR',
-					array(
-						'key'     => 'amapress_adhesion_adherent',
-						'value'   => $user_ids,
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
-					array(
-						'key'     => 'amapress_adhesion_adherent2',
-						'value'   => $user_ids,
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
-					array(
-						'key'     => 'amapress_adhesion_adherent3',
-						'value'   => $user_ids,
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
-				),
-			)
-		) ) );
+		$abo_ids = AmapressContrats::get_active_contrat_instances_ids( null, $date, $ignore_renouv_delta );
+		$abo_key = implode( '-', $abo_ids );
+		$key     = "amapress_get_user_lieu_ids_$user_id-$abo_key";
 
-		return array_unique( $lieu_ids );
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$user_ids = AmapressContrats::get_related_users( $user_id );
+			$lieu_ids = array_map( array( 'Amapress', 'to_adhesion_lieu' ), get_posts( array(
+				'post_type'      => 'amps_adhesion',
+				'posts_per_page' => - 1,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'amapress_adhesion_contrat_instance',
+						'value'   => amapress_prepare_in( $abo_ids ),
+						'compare' => 'IN',
+						'type'    => 'NUMERIC'
+					),
+					array(
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_adherent',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
+						array(
+							'key'     => 'amapress_adhesion_adherent2',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
+						array(
+							'key'     => 'amapress_adhesion_adherent3',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
+					),
+				)
+			) ) );
+
+			$res = array_unique( $lieu_ids );
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
 	}
 
 

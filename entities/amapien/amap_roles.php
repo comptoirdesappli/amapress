@@ -14,27 +14,26 @@ function amapress_amap_role_user_query( $query ) {
 	global $wpdb;
 	$args       = array(
 		'object_type'       => array( 'user' ),
-		'show_admin_column' => true
 	);
-	$taxonomies = get_taxonomies( $args, "objects" );
+	$taxonomies = get_taxonomies( $args, "names" );
 	foreach ( $taxonomies as $taxonomy ) {
-		if ( ! empty( $query->query_vars[ $taxonomy->name ] ) ) {
-			$terms    = array();
+		if ( ! empty( $query->query_vars[ $taxonomy ] ) ) {
 			$term_ids = array();
-			if ( '*' == $query->query_vars[ $taxonomy->name ] ) {
-				$terms = get_terms(
+			if ( '*' == $query->query_vars[ $taxonomy ] ) {
+				$terms    = array_map(
+					function ( $t ) {
+						return $t->term_id;
+					}, get_terms(
 					array(
-						'taxonomy'   => $taxonomy->name,
+						'taxonomy'   => $taxonomy,
 						'hide_empty' => false,
 					)
-				);
-				foreach ( $terms as $term ) {
-					$term_ids = array_merge( $term_ids, get_objects_in_term( $term->term_id, $taxonomy->name ) );
-				}
+				) );
+				$term_ids = get_objects_in_term( $terms, $taxonomy );
 			} else {
-				$term = get_term_by( 'slug', esc_attr( $query->query_vars[ $taxonomy->name ] ), $taxonomy->name );
+				$term = get_term_by( 'slug', esc_attr( $query->query_vars[ $taxonomy ] ), $taxonomy );
 				if ( $term ) {
-					$term_ids = get_objects_in_term( $term->term_id, $taxonomy->name );
+					$term_ids = get_objects_in_term( $term->term_id, $taxonomy );
 				}
 			}
 			if ( ! isset( $ids ) || empty( $ids ) ) {

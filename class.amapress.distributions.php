@@ -41,6 +41,41 @@ class AmapressDistributions {
 		return Amapress::start_of_day( $d->getTimestamp() );
 	}
 
+	/** @return int[] */
+	public static function getResponsablesBetween( $start_date, $end_date ) {
+		$start_date = Amapress::start_of_day( $start_date );
+		$end_date   = Amapress::end_of_day( $end_date );
+		$key        = "getResponsablesBetween-$start_date-$end_date";
+		$res        = wp_cache_get( $key );
+		if ( false === $res ) {
+			global $wpdb;
+			$query    = $wpdb->prepare(
+				"SELECT mt2.meta_value FROM $wpdb->postmeta mt1 
+					INNER JOIN $wpdb->postmeta mt2 ON mt1.post_id = mt2.post_id 
+					WHERE mt1.meta_key = %s AND mt2.meta_key = %s
+					AND CAST(mt1.meta_value as SIGNED) BETWEEN %d AND %d",
+				'amapress_distribution_date',
+				'amapress_distribution_responsables',
+				Amapress::start_of_day( $start_date ),
+				Amapress::end_of_day( $end_date )
+			);
+			$resp_ids = [];
+			foreach ( $wpdb->get_col( $query ) as $responsables ) {
+				$v = maybe_unserialize( $responsables );
+				if ( is_array( $v ) ) {
+					$resp_ids += $v;
+				} else {
+					$resp_ids[] = $v;
+				}
+			}
+			$resp_ids = array_unique( array_map( 'intval', $resp_ids ) );
+			$res      = $resp_ids;
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
 	public static function isCurrentUserResponsableBetween( $start_date, $end_date, $user_id = null ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return false;
@@ -111,9 +146,10 @@ class AmapressDistributions {
 		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
 		$res      = array();
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
+		/** @var AmapressContrat_instance $contrat */
 		foreach ( $contrats as $contrat ) {
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
-			$all_contrat_ids = Amapress::getIDs( AmapressContrats::get_active_contrat_instances( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) ) );
+			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
 
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
 			$liste_dates         = array_unique( $contrat->getListe_dates() );
@@ -130,9 +166,12 @@ class AmapressDistributions {
 					continue;
 				}
 				foreach ( $lieux as $lieu ) {
-					$dists = [];
-					if ( ! defined( 'AMAPRESS_TEST' ) ) {
-						$dists = get_posts( array(
+					$start     = Amapress::start_of_day( $date );
+					$stop      = Amapress::end_of_day( $date );
+					$cache_key = "amapress_generate_distribs1_$start-$stop-{$lieu->ID}";
+					$cnt       = wp_cache_get( $cache_key );
+					if ( false == $cnt ) {
+						$cnt = get_posts_count( array(
 							'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
 							'posts_per_page' => - 1,
 							'meta_query'     => array(
@@ -140,8 +179,8 @@ class AmapressDistributions {
 								array(
 									'key'     => 'amapress_distribution_date',
 									'value'   => array(
-										Amapress::start_of_day( $date ),
-										Amapress::end_of_day( $date )
+										$start,
+										$stop
 									),
 									'compare' => 'BETWEEN',
 									'type'    => 'NUMERIC'
@@ -153,8 +192,11 @@ class AmapressDistributions {
 								),
 							),
 						) );
+						if ( $cnt > 0 ) {
+							wp_cache_set( $cache_key, $cnt );
+						}
 					}
-					if ( empty( $dists ) ) {
+					if ( $cnt == 0 ) {
 						$my_post = array(
 							'post_title'   => sprintf( 'Distribution de %s du %02d-%02d-%04d à %s',
 								$contrat_model->getTitle(),
@@ -182,33 +224,42 @@ class AmapressDistributions {
 				}
 			}
 
-			$distribs = get_posts( array(
-					'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
-					'posts_per_page' => - 1,
-					'meta_query'     => array(
-						'relation' => 'AND',
-						array(
-							'key'     => 'amapress_distribution_date',
-							'value'   => array(
-								Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ),
-								Amapress::end_of_day( $contrat->getDate_fin() )
+			$start     = Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() );
+			$stop      = Amapress::end_of_day( $contrat->getDate_fin() );
+			$cache_key = "amapress_generate_distribs2_$start-$stop";
+			$distribs  = wp_cache_get( $cache_key );
+			if ( false == $distribs ) {
+				$distribs = get_posts( array(
+						'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+						'fields'         => 'ids',
+						'meta_query'     => array(
+							'relation' => 'AND',
+							array(
+								'key'     => 'amapress_distribution_date',
+								'value'   => array(
+									$start,
+									$stop
+								),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC',
 							),
-							'compare' => 'BETWEEN',
-							'type'    => 'NUMERIC',
-						),
+						)
 					)
-				)
-			);
-			$keys     = [];
-			foreach ( $distribs as $dist ) {
-				$dist_date      = Amapress::start_of_day( intval( get_post_meta( $dist->ID, 'amapress_distribution_date', true ) ) );
-				$dist_lieu      = intval( get_post_meta( $dist->ID, 'amapress_distribution_lieu', true ) );
+				);
+				update_meta_cache( 'post', $distribs );
+				wp_cache_set( $cache_key, $distribs );
+			}
+			$keys = [];
+			foreach ( $distribs as $dist_id ) {
+				$dist_date      = Amapress::start_of_day( intval( get_post_meta( $dist_id, 'amapress_distribution_date', true ) ) );
+				$dist_lieu      = intval( get_post_meta( $dist_id, 'amapress_distribution_lieu', true ) );
 				$k              = "$dist_date|$dist_lieu";
 				$already_exists = isset( $keys[ $k ] );
 				$clean          = $already_exists;
 				$keys[ $k ]     = true;
 
-				$dist_contrats = array_map( 'intval', Amapress::get_post_meta_array( $dist->ID, 'amapress_distribution_contrats' ) );
+				$dist_contrats = array_map( 'intval', Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' ) );
 				if ( ! $is_ref ) {
 					$diff_contrats = array_diff( $dist_contrats, $all_contrat_ids );
 					if ( ! empty( $diff_contrats ) ) {
@@ -238,18 +289,16 @@ class AmapressDistributions {
 				if ( empty( $dist_contrats ) || $clean ) {
 					$res[ $contrat->ID ]['unassociate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
 					if ( ! $eval && ( empty( $dist_contrats ) || $already_exists ) ) {
-						wp_delete_post( $dist->ID );
+						wp_delete_post( $dist_id );
 					}
 				}
 				//
 				if ( ! $eval && ( $add || $rem || $clean ) ) {
-					update_post_meta( $dist->ID, 'amapress_distribution_contrats', $dist_contrats );
+					update_post_meta( $dist_id, 'amapress_distribution_contrats', $dist_contrats );
 				}
 			}
 		}
 
 		return $res;
 	}
-
-
 }
