@@ -1249,8 +1249,14 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 		}
 	}
 	$uqi->query_where .= $where;
+	if ( strpos( $uqi->query_fields, 'DISTINCT' ) === false ) {
+		$uqi->query_fields = 'DISTINCT ' . $uqi->query_fields;
+	}
 	//var_dump($uqi->query_from);
-//    amapress_dump($uqi->query_where);
+//	amapress_dump($uqi->request);
+//	amapress_dump($uqi->query_from);
+//	amapress_dump($uqi->query_limit);
+//	amapress_dump($uqi->query_where);
 //    die();
 } );
 
