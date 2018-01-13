@@ -77,7 +77,7 @@ class Amapress_SudOuest_MailingList extends Amapress_MailingList {
 				'id'     => $id,
 				'secret' => Amapress::getOption( 'sud-ouest_secret' ),
 			),
-			admin_url( 'admin-post.php' )
+			admin_url( 'admin-post.php', 'http' )
 		);
 	}
 
