@@ -60,6 +60,10 @@ function amapress_check_access() {
 		return;
 	}
 
+	if ( 'admin-post.php' == $pagenow ) {
+		return;
+	}
+
 	if ( is_user_logged_in() && is_admin() && ! amapress_can_access_admin() ) {
 		if ( 'profile.php' == $pagenow ) {
 			amapress_redirect_info();
