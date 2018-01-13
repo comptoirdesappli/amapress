@@ -136,6 +136,14 @@ add_action( 'admin_bar_menu', 'amapress_admin_bar_menu' );
 function amapress_admin_bar_menu( WP_Admin_Bar $admin_bar ) {
 	global $pagenow;
 
+	$admin_bar->add_menu( array(
+		'id'     => 'amapress_search_user_admin_bar',
+		'parent' => 'top-secondary',
+		'title'  => '<input id="amapress_search_user_text" type="text" placeholder="Recherche utilisateur" class=\'amapress_search_user form-control\' />
+<span role="button" id="amapress_search_user_btn" class="amapress_search_user"><span class="dashicons-before dashicons-search"></span></span>',
+		'href'   => '#',
+	) );
+
 	if ( 'post.php' == $pagenow || 'post-new.php' == $pagenow ) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_publish_admin_bar',
