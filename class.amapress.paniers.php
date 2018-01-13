@@ -633,12 +633,7 @@ class AmapressPaniers {
 		}
 
 		$ret        = $res;
-		$meta_query = array();
 		if ( ! empty( $args['panier_id'] ) ) {
-//			$meta_query[] = array(
-//				'key'   => 'amapress_intermittence_panier_panier',
-//				'value' => $args['panier_id'],
-//			);
 			$ret = array_filter(
 				$ret,
 				function ( $ip ) use ( $args ) {
@@ -648,11 +643,6 @@ class AmapressPaniers {
 			);
 		}
 		if ( ! empty( $args['contrat_instance_id'] ) ) {
-//			$meta_query[] = array(
-//				'key'     => 'amapress_intermittence_panier_contrat_instance',
-//				'value'   => $args['contrat_instance_id'],
-//				'compare' => is_array( $args['contrat_instance_id'] ) ? 'IN' : '=',
-//			);
 			if ( ! is_array( $args['contrat_instance_id'] ) ) {
 				$args['contrat_instance_id'] = [ $args['contrat_instance_id'] ];
 			}
@@ -670,12 +660,6 @@ class AmapressPaniers {
 			if ( ! is_array( $adherent ) ) {
 				$adherent = AmapressContrats::get_related_users( $adherent );
 			}
-//			$meta_query[] = array(
-//				'key'     => 'amapress_intermittence_panier_adherent',
-//				'value'   => $adherent,
-//				'compare' => 'IN',
-//				'type'    => 'NUMERIC',
-//			);
 			$ret = array_filter(
 				$ret,
 				function ( $ip ) use ( $adherent ) {
@@ -686,15 +670,14 @@ class AmapressPaniers {
 			);
 		}
 		if ( ! empty( $args['repreneur'] ) ) {
-//			$meta_query[] = array(
-//				'key'   => 'amapress_intermittence_panier_repreneur',
-//				'value' => $args['repreneur'],
-//			);
 			$ret = array_filter(
 				$ret,
 				function ( $ip ) use ( $args ) {
 					/** @var AmapressIntermittence_panier $ip */
-					return $ip->getRepreneurId() == $args['repreneur'];
+					$repreneur = $args['repreneur'];
+					$ask       = $ip->getAsk();
+
+					return $ip->getRepreneurId() == $repreneur || isset( $ask[ $repreneur ] );
 				}
 			);
 		}

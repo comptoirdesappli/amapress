@@ -439,7 +439,8 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 	return amapress_get_paniers_intermittents_table( 'my-recups', $adhs,
 		function ( $state, $status, $adh ) {
 			if ( 'exch_valid_wait' == $status || 'exchanged' == $status ) {
-				$state = '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="Etes-vous sûr de vouloir annuler l\'échange ?" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
+				$state = '<span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>En attente de validation</strong>' : 'A récupérer' ) . '</span>';
+				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="Etes-vous sûr de vouloir annuler l\'échange ?" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
 					}, $adh ) ) . '">Annuler échange</button>';
 			}
