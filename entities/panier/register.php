@@ -59,19 +59,34 @@ function amapress_register_entities_panier( $entities ) {
 //				'desc'   => 'Produits',
 //			),
 			'status'            => array(
-				'name'    => amapress__( '' ),
-				'type'    => 'select',
-				'options' => array(
+				'name'          => amapress__( 'Status' ),
+				'type'          => 'select',
+				'options'       => array(
 					''          => 'En temps',
 					'cancelled' => 'Annulé',
 					'delayed'   => 'Reporté',
 				),
-				'group'   => '3/ Modification',
+				'group'         => '3/ Modification',
+				'before_option' => '<script type="text/javascript">
+jQuery(function() {
+    var $status_field = jQuery("#amapress_panier_status");
+    var $date_subst_field = jQuery("#amapress_panier_date_subst");
+    function activate_date_subst() {
+        if ("delayed" === $status_field.val()) {
+	        $date_subst_field.show();
+        } else {
+    	    $date_subst_field.hide();
+        }
+    }
+    activate_date_subst();
+    $status_field.on("change", activate_date_subst);
+});
+</script>',
 			),
 			'date_subst'        => array(
 				'name'  => amapress__( 'Date de remplacement' ),
 				'type'  => 'date',
-				'desc'  => 'Date de distribution de remplacement',
+				'desc'  => 'Date de distribution de remplacement pour les panier dont le <strong>Status</strong> est <strong>Reporté</strong>',
 				'group' => '3/ Modification',
 			),
 		),
