@@ -434,7 +434,11 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 
 //    amapress_handle_action_messages();
 
-	$adhs = AmapressPaniers::getPanierIntermittents( array( 'repreneur' => amapress_current_user_id() ) );
+	$adhs = AmapressPaniers::getPanierIntermittents(
+		array(
+			'repreneur' => amapress_current_user_id()
+		)
+	);
 
 	return amapress_get_paniers_intermittents_table( 'my-recups', $adhs,
 		function ( $state, $status, $adh ) {

@@ -352,12 +352,14 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			if ( empty( $ask ) ) {
 				$this->setStatus( 'to_exchange' );
 			}
+			$this->setAsk( $ask );
+			$repreneur = AmapressUser::getBy( $user_id );
 		} else if ( $repreneur && $repreneur->ID == $user_id ) {
+			$this->setRepreneur( null );
 			$this->setStatus( 'to_exchange' );
 		} else {
 			return 'unknown';
 		}
-		$this->setRepreneur( null );
 
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject' ),

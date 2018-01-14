@@ -676,16 +676,14 @@ class AmapressPaniers {
 					/** @var AmapressIntermittence_panier $ip */
 					$repreneur = $args['repreneur'];
 					$ask       = $ip->getAsk();
+					$status    = $ip->getStatus();
 
-					return $ip->getRepreneurId() == $repreneur || isset( $ask[ $repreneur ] );
+					return ( 'exch_valid_wait' == $status || 'exchanged' == $status )
+					       && ( $ip->getRepreneurId() == $repreneur || isset( $ask[ $repreneur ] ) );
 				}
 			);
 		}
 		if ( ! empty( $args['lieu_id'] ) ) {
-//			$meta_query[] = array(
-//				'key'   => 'amapress_intermittence_panier_lieu',
-//				'value' => $args['lieu_id'],
-//			);
 			$ret = array_filter(
 				$ret,
 				function ( $ip ) use ( $args ) {
@@ -695,10 +693,6 @@ class AmapressPaniers {
 			);
 		}
 		if ( ! empty( $args['status'] ) ) {
-//			$meta_query[] = array(
-//				'key'   => 'amapress_intermittence_panier_status',
-//				'value' => $args['status'],
-//			);
 			$ret = array_filter(
 				$ret,
 				function ( $ip ) use ( $args ) {
