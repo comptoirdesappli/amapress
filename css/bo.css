@@ -188,6 +188,14 @@ select.paiements_details {
     height: 30px !important;
 }
 
+.ab-top-menu {
+    background-color: rgb(35, 40, 45) !important;
+}
+
+#wp-admin-bar-amapress_search_user_admin_bar, #wp-admin-bar-amapress_publish_admin_bar {
+    display: block !important;
+}
+
 #wp-admin-bar-amapress_publish_admin_bar, #wp-admin-bar-amapress_update_user_admin_bar {
     vertical-align: middle !important;
 }
