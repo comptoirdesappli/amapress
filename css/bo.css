@@ -188,15 +188,6 @@ select.paiements_details {
     height: 30px !important;
 }
 
-#wp-admin-bar-amapress_search_user_admin_bar .amapress_search_user {
-    height: 25px !important;
-}
-
-#wp-admin-bar-amapress_search_user_admin_bar .amapress_search_user .dashicons-before::before {
-    padding: 0 5px 0 0;
-    vertical-align: -25%;
-}
-
-#wp-admin-bar-amapress_search_user_admin_bar, #wp-admin-bar-amapress_publish_admin_bar, #wp-admin-bar-amapress_update_user_admin_bar {
+#wp-admin-bar-amapress_publish_admin_bar, #wp-admin-bar-amapress_update_user_admin_bar {
     vertical-align: middle !important;
 }

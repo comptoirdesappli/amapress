@@ -109,24 +109,6 @@ function amapress_post_validation() {
                 }
             });
 
-            function search_user() {
-                var val = jQuery('#amapress_search_user_text').val();
-                if (val == null || val == '') {
-                    alert("Champs de recherche vide");
-                    return;
-                }
-                window.location.href = '<?php echo admin_url( '/users.php' ); ?>?s=' + encodeURIComponent(val);
-            }
-
-            jQuery('#amapress_search_user_btn').click(function () {
-                search_user();
-            });
-            jQuery('#amapress_search_user_text').keypress(function (e) {
-                if (e.which === 13) {
-                    search_user();
-                }
-            });
-
             jQuery.expr[':'].parentHidden = function (a) {
                 return jQuery(a).parent().is(':hidden');
             };

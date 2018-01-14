@@ -136,13 +136,47 @@ add_action( 'admin_bar_menu', 'amapress_admin_bar_menu' );
 function amapress_admin_bar_menu( WP_Admin_Bar $admin_bar ) {
 	global $pagenow;
 
-	$admin_bar->add_menu( array(
-		'id'     => 'amapress_search_user_admin_bar',
-		'parent' => 'top-secondary',
-		'title'  => '<input id="amapress_search_user_text" type="text" placeholder="Recherche utilisateur" class=\'amapress_search_user form-control\' />
-<span role="button" id="amapress_search_user_btn" class="amapress_search_user"><span class="dashicons-before dashicons-search"></span></span>',
-		'href'   => '#',
-	) );
+	if ( current_user_can( 'list_users' ) ) {
+		$script = '<script type="text/javascript">
+jQuery(function() {
+              function search_user() {
+                var val = jQuery(\'#amapress_search_user_text\').val();
+                if (val == null || val == \'\') {
+                    alert("Champs de recherche vide");
+                    return;
+                }
+                window.location.href = \'' . admin_url( '/users.php' ) . '?s=\' + encodeURIComponent(val);
+            }
+
+            jQuery(\'#amapress_search_user_btn\').click(function () {
+                search_user();
+            });
+            jQuery(\'#amapress_search_user_text\').keypress(function (e) {
+                if (e.which === 13) {
+                    search_user();
+                }
+            }); 
+});
+</script>';
+		$style  = '<style type="text/css">
+#wp-admin-bar-amapress_search_user_admin_bar #amapress_search_user_text {
+    height: 24px !important;
+}
+#wp-admin-bar-amapress_search_user_admin_bar {
+    vertical-align: middle !important;
+}
+#amapress_search_user_btn::before {
+	vertical-align: middle;
+}
+</style>';
+		$admin_bar->add_menu( array(
+			'id'     => 'amapress_search_user_admin_bar',
+			'parent' => 'top-secondary',
+			'title'  => '<input id="amapress_search_user_text" style="display: inline" type="text" placeholder="Recherche utilisateur" class=\'amapress_search_user form-control\' />
+<span role="button" id="amapress_search_user_btn" style="display: inline" class="amapress_search_user dashicons-before dashicons-search"></span>' . $style . $script,
+			'href'   => '#',
+		) );
+	}
 
 	if ( 'post.php' == $pagenow || 'post-new.php' == $pagenow ) {
 		$admin_bar->add_menu( array(
