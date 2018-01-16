@@ -223,6 +223,15 @@ function amapress_filter_posts( WP_Query $query ) {
 			) );
 		}
 	}
+	if ( ! empty( $query->query_vars['amapress_status'] ) ) {
+		amapress_add_meta_query( $query, array(
+			array(
+				'key'     => "amapress_{$pt}_status",
+				'value'   => $query->query_vars['amapress_status'],
+				'compare' => '=',
+			)
+		) );
+	}
 	if ( ! empty( $query->query_vars['amapress_recette_produits'] ) ) {
 		$amapress_recette_produits = array_map( function ( $a ) {
 			return Amapress::resolve_post_id( $a, AmapressProduit::INTERNAL_POST_TYPE );
