@@ -334,7 +334,15 @@ jQuery(function() {
 			$this->settings['placeholder'] = $old_placeholder;
 		}
 
-		if ( count( $options ) <= 2 ) {
+		if ( ! isset( $options[''] ) ) {
+			$new_options     = [];
+			$new_options[''] = $placeholder;
+			foreach ( $options as $k => $v ) {
+				$new_options[ $k ] = $v;
+			}
+			$options = $new_options;
+		}
+		if ( count( $options ) <= 1 ) {
 			return;
 		}
 
