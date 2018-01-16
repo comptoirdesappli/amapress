@@ -74,7 +74,7 @@ class AmapressEntities {
 					'icon'       => 'dashicons-universal-access',
 					'menu_title' => 'Demande d\'adhésions [adhesion-request-count]',
 					'capability' => 'edit_adhesion_request',
-					'slug'       => 'edit.php?post_type=amps_adh_req&amapress_date=active',
+					'slug'       => 'edit.php?post_type=amps_adh_req&amapress_date=active&amapress_status=to_confirm',
 					'position'   => '25.0',
 					'function'   => null,
 				),

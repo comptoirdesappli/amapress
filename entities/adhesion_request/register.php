@@ -25,9 +25,12 @@ function amapress_register_entities_adhesion_request( $entities ) {
 //        'menu_icon' => 'fa-menu fa-university',
 		'views'            => array(
 			'remove'  => array( 'mine' ),
-//            '_dyn_' => 'amapress_assemblee_views',
+			'_dyn_'   => 'amapress_adhesion_request_views',
 			'exp_csv' => true,
 		),
+		'default_orderby'  => 'post_date',
+		'default_order'    => 'ASC',
+		'show_date_column' => true,
 		'fields'           => array(
 			'first_name'        => array(
 				'name'       => amapress__( 'Prénom' ),
@@ -78,6 +81,10 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 				'desc'              => 'Lieux de distribution',
 				'autoselect_single' => true,
+				'top_filter'        => array(
+					'name'        => 'amapress_lieu',
+					'placeholder' => 'Tous les lieux',
+				),
 			),
 			'contrat_intances' => array(
 				'name'      => amapress__( 'Contrats' ),
@@ -91,15 +98,19 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'desc' => 'Le contact souhaite devenir intermittent',
 			),
 			'status'           => array(
-				'name'     => amapress__( 'Statut' ),
-				'type'     => 'select',
-				'group'    => '1/ Informations',
-				'options'  => array(
+				'name'       => amapress__( 'Statut' ),
+				'type'       => 'select',
+				'group'      => '1/ Informations',
+				'options'    => array(
 					'to_confirm' => 'En attente de confirmation',
 					'confirmed'  => 'Confirmée',
 				),
-				'required' => true,
-				'desc'     => 'Statut',
+				'required'   => true,
+				'desc'       => 'Statut',
+				'top_filter' => array(
+					'name'        => 'amapress_status',
+					'placeholder' => 'Toutes les statuts',
+				),
 			),
 		),
 	);

@@ -187,6 +187,16 @@ function amapress_amap_event_views() {
 	return $ret;
 }
 
+function amapress_adhesion_request_views() {
+	$ret = array();
+	amapress_add_view_button(
+		$ret, 'to_confirm',
+		"post_type=amps_adh_req&amapress_date=active&amapress_status=to_confirm",
+		'En attente de confirmation' );
+
+	return $ret;
+}
+
 function amapress_panier_views() {
 	$ret = array();
 	amapress_add_view_button(
