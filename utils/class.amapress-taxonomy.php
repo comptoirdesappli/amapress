@@ -28,7 +28,7 @@ class AmapressUserTaxonomy {
 		if ( 'users' === $column ) {
 			$taxonomy = $_GET['taxonomy'];
 			$term     = get_term( $term_id, $taxonomy );
-			$url      = admin_url( "users.php?$taxonomy=$term->name" );
+			$url      = admin_url( "users.php?$taxonomy=$term->slug" );
 			echo "<a href='$url'>{$term->count}</a>";
 		}
 	}
