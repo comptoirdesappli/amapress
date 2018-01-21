@@ -26,6 +26,8 @@ function amapress_register_entities_adhesion( $entities ) {
 			'renew'    => 'Renouveler',
 			'no_renew' => 'Ne pas renouveler',
 		),
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
 		'edit_header'      => function ( $post ) {
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
@@ -111,6 +113,8 @@ function amapress_register_entities_adhesion( $entities ) {
 				'import_key'        => true,
 //                'required' => true,
 				'autoselect_single' => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_contrat_inst',
 					'placeholder' => 'Tous les contrats'
@@ -166,6 +170,8 @@ function amapress_register_entities_adhesion( $entities ) {
 
 					return $ret;
 				},
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_contrat_qt',
 					'placeholder' => 'Toutes les quantités'
@@ -233,6 +239,8 @@ jQuery(function($) {
 				'csv_required'      => true,
 				'autoselect_single' => true,
 				'searchable'        => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'
@@ -335,9 +343,20 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$adhesion_quantites    = $adh->getContrat_quantites();
 	$paniers_variables     = $adh->getPaniersVariables();
 	$ret                   .= '<fieldset style="min-width: inherit">';
-	$contrats              = AmapressContrats::get_active_contrat_instances( $adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null, $date_debut );
+	$contrats              = AmapressContrats::get_active_contrat_instances(
+		$adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null,
+		$date_debut );
+	$excluded_contrat_ids  = [];
+	if ( TitanFrameworkOption::isOnNewScreen() && ! empty( $_GET['amapress_adhesion_adherent'] ) ) {
+		foreach ( AmapressAdhesion::getUserActiveAdhesions( intval( $_GET['amapress_adhesion_adherent'] ) ) as $user_adh ) {
+			$excluded_contrat_ids[] = $user_adh->getContrat_instanceId();
+		}
+	}
 	$had_contrat           = false;
 	foreach ( $contrats as $contrat_instance ) {
+		if ( in_array( $contrat_instance->ID, $excluded_contrat_ids ) ) {
+			continue;
+		}
 		$id = 'contrat-' . $contrat_instance->ID;
 		if ( $contrat_instance->isPanierVariable() ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
