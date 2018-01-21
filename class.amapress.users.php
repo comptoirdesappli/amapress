@@ -26,7 +26,35 @@ class AmapressUsers {
 //        return '<a href="' . get_author_posts_url($user->ID) . '">' . $dn . '</a>';
 	}
 
+	private static function generate_unique_username( $username ) {
+		static $i;
+		if ( null === $i ) {
+			$i = 1;
+		} else {
+			$i ++;
+		}
+		if ( ! username_exists( $username ) ) {
+			return $username;
+		}
+		$new_username = sprintf( '%s%s', $username, $i );
+		if ( ! username_exists( $new_username ) ) {
+			return $new_username;
+		} else {
+			return call_user_func( __FUNCTION__, $username );
+		}
+	}
+
 	public static function init() {
+//		add_action('init', function() {
+		if ( isset( $_REQUEST['action'] ) && 'createuser' == $_REQUEST['action'] ) {
+			if ( empty( $_POST['user_login'] ) && ( ! empty( $_POST['first_name'] ) || ! empty( $_POST['last_name'] ) ) ) {
+				$user_first_name     = isset( $_POST['first_name'] ) ? $_POST['first_name'] : '';
+				$user_last_name      = isset( $_POST['last_name'] ) ? $_POST['last_name'] : '';
+				$_POST['user_login'] = self::generate_unique_username( strtolower( $user_first_name . '.' . $user_last_name ) );
+			}
+		}
+//		});
+		add_action( 'admin_head-user-new.php', array( 'AmapressUsers', 'remove_user_unused_fields' ) );
 		add_action( 'admin_head-user-edit.php', array( 'AmapressUsers', 'remove_user_unused_fields' ) );
 		add_action( 'admin_head-profile.php', array( 'AmapressUsers', 'remove_user_unused_fields' ) );
 		amapress_register_shortcode( 'users_near', array( 'AmapressUsers', 'users_near_shortcode' ) );
@@ -116,7 +144,18 @@ class AmapressUsers {
                 /*tr.user-profile-picture{ display: none; }*/
                 /*tr.user-description-wrap{ display: none; }*/
                 tr.user-url-wrap{ display: none; }
+                tr.user-syntax-highlighting-wrap {display: none; }
               </style>';
+		global $pagenow;
+		if ( 'user-new.php' == $pagenow ) {
+			echo '<script type="text/javascript">
+jQuery(function() {
+              jQuery(".form-field").has("#url").hide();
+              jQuery(".form-field").has("#user_login").hide();
+});
+</script>';
+
+		}
 	}
 
 	public static function echoUserById( $user_id, $type, $custom_link = null, $custom_role = null ) {
