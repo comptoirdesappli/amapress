@@ -347,8 +347,12 @@ class AmapressEntities {
 							),
 							'options'  => array(),
 							'tabs'     => function () {
-								$tabs = array();
-								foreach ( AmapressContrats::get_active_contrat_instances() as $contrat_instance ) {
+								$tabs              = array();
+								$contrat_instances = AmapressContrats::get_active_contrat_instances();
+								usort( $contrat_instances, function ( $a, $b ) {
+									return strcmp( $a->getTitle(), $b->getTitle() );
+								} );
+								foreach ( $contrat_instances as $contrat_instance ) {
 									$contrat_id                            = $contrat_instance->ID;
 									$tabs[ $contrat_instance->getTitle() ] = array(
 										'id'      => 'contrat-paiement-tab-' . $contrat_id,
@@ -391,8 +395,12 @@ class AmapressEntities {
 							),
 							'options'  => array(),
 							'tabs'     => function () {
-								$tabs = array();
-								foreach ( AmapressContrats::get_active_contrat_instances() as $contrat_instance ) {
+								$tabs              = array();
+								$contrat_instances = AmapressContrats::get_active_contrat_instances();
+								usort( $contrat_instances, function ( $a, $b ) {
+									return strcmp( $a->getTitle(), $b->getTitle() );
+								} );
+								foreach ( $contrat_instances as $contrat_instance ) {
 									$contrat_id                            = $contrat_instance->ID;
 									$tabs[ $contrat_instance->getTitle() ] = array(
 										'id'      => 'contrat-quant-tab-' . $contrat_id,
