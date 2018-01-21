@@ -51,6 +51,8 @@ function amapress_register_entities_distribution( $entities ) {
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'group'      => 'Livraison',
+				'orderby'    => 'post_title',
+				'order'      => 'ASC',
 				'top_filter' => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Toutes les lieux',

@@ -19,6 +19,8 @@ function amapress_register_entities_amap_event( $entities ) {
 		'slug'             => 'evenements',
 		'menu_icon'        => 'dashicons-groups',
 		'redirect_archive' => 'amapress_redirect_agenda',
+		'default_orderby'  => 'amapress_amap_event_date',
+		'default_order'    => 'ASC',
 		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_amap_event_views',

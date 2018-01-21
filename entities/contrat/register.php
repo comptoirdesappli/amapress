@@ -21,6 +21,8 @@ function amapress_register_entities_contrat( $entities ) {
 		'slug'                    => 'contrats',
 		'custom_archive_template' => true,
 		'menu_icon'               => 'flaticon-note',
+		'default_orderby'         => 'post_title',
+		'default_order'           => 'ASC',
 		'views'                   => array(
 			'remove' => array( 'mine' ),
 		),
@@ -60,6 +62,8 @@ function amapress_register_entities_contrat( $entities ) {
 				'required'          => true,
 				'desc'              => 'Producteur',
 				'autoselect_single' => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_producteur',
 					'placeholder' => 'Toutes les producteurs',
@@ -81,6 +85,8 @@ function amapress_register_entities_contrat( $entities ) {
 		'slug_format'     => 'from_title',
 		'editor'          => false,
 		'menu_icon'       => 'flaticon-interface',
+		'default_orderby' => 'post_title',
+		'default_order'   => 'ASC',
 		'row_actions'     => array(
 			'renew' => 'Renouveler',
 		),
@@ -102,6 +108,8 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'              => 'Sélectionner la présentation web. Si elle n’est pas présente dans la liste ci-dessus, la créer ici « <a href="' . admin_url( 'post-new.php?post_type=amps_contrat' ) . '" target="_blank">présentation web</a> »',
 				'import_key'        => true,
 				'autoselect_single' => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_contrat',
 					'placeholder' => 'Toutes les présentations web',
@@ -374,6 +382,8 @@ jQuery(function($) {
 				'desc'       => 'Lieux de distribution',
 				'select_all' => true,
 				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'orderby'    => 'post_title',
+				'order'      => 'ASC',
 				'top_filter' => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'

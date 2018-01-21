@@ -17,6 +17,8 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 		'slug'                    => 'lieux-distribution',
 		'custom_archive_template' => true,
 		'menu_icon'               => 'fa-menu fa-map-signs',
+		'default_orderby'         => 'post_title',
+		'default_order'           => 'ASC',
 		'views'                   => array(
 			'remove' => array( 'mine' ),
 		),

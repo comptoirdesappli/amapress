@@ -81,6 +81,8 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 				'desc'              => 'Lieux de distribution',
 				'autoselect_single' => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux',

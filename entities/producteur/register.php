@@ -17,6 +17,8 @@ function amapress_register_entities_producteur( $entities ) {
 		'show_in_menu'            => false,
 		'quick_edit'              => false,
 		'custom_archive_template' => true,
+		'default_orderby'         => 'post_title',
+		'default_order'           => 'ASC',
 		'views'                   => array(
 			'remove'  => array( 'mine' ),
 			'exp_csv' => true,

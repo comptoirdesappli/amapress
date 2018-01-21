@@ -20,6 +20,8 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 		'title'            => false,
 		'editor'           => false,
 		'menu_icon'        => 'flaticon-business',
+		'default_orderby'  => 'amapress_contrat_paiement_date',
+		'default_order'    => 'ASC',
 		'labels'           => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Saisie Chèque Inscription Contrat',

@@ -22,6 +22,8 @@ function amapress_register_entities_assemblee( $entities ) {
 		'slug'             => amapress__( 'assemblees' ),
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'fa-menu fa-university',
+		'default_orderby'  => 'amapress_assemblee_generale_date',
+		'default_order'    => 'ASC',
 		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_assemblee_views',

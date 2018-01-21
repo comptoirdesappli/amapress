@@ -8,8 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_page' );
 function amapress_register_entities_page( $entities ) {
 	$entities['page'] = array(
-		'internal_name' => 'page',
-		'fields'        => array(
+		'internal_name'   => 'page',
+		'default_orderby' => 'post_title',
+		'default_order'   => 'ASC',
+		'fields'          => array(
 //            'logged_only' => array(
 //                'name' => amapress__('Amapiens seulement'),
 //                'type' => 'checkbox',

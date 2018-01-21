@@ -17,6 +17,8 @@ function amapress_register_entities_produit( $entities ) {
 		'import_by_meta'          => false,
 		'menu_icon'               => 'dashicons-carrot',
 		'custom_archive_template' => true,
+		'default_orderby'         => 'post_title',
+		'default_order'           => 'ASC',
 		'views'                   => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_produit_views',
@@ -98,6 +100,8 @@ function amapress_register_entities_produit( $entities ) {
 				'desc'              => 'Producteur',
 				'csv_required'      => true,
 				'autoselect_single' => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_producteur',
 					'placeholder' => 'Toutes les producteurs',

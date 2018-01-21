@@ -20,6 +20,8 @@ function amapress_register_entities_mailinglist( $entities ) {
 			'add_new'      => 'Configurer une liste de diffusion existante',
 			'add_new_item' => 'Configurer une liste de diffusion existante',
 		),
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
 		'views'            => array(
 			'_dyn_' => function () {
 				$ret = array();

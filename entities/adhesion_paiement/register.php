@@ -20,6 +20,8 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 		'title'            => false,
 		'editor'           => false,
 		'menu_icon'        => 'flaticon-business',
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
 		'labels'           => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Saisie chèques adhésion',

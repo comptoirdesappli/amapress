@@ -69,6 +69,8 @@ function amapress_register_entities_visite( $entities ) {
 				'import_key'        => true,
 				'csv_required'      => true,
 				'autoselect_single' => true,
+				'orderby'           => 'post_title',
+				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_producteur',
 					'placeholder' => 'Toutes les producteurs',
