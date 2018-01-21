@@ -35,6 +35,21 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Rôle dans l\'AMAP',
 //            ),
+			'head_amapress0'     => array(
+				'name' => amapress__( 'Amapress' ),
+				'type' => 'heading',
+			),
+			'avatar'             => array(
+				'name'        => amapress__( 'Avatar' ),
+				'type'        => 'upload',
+				'custom_save' => 'amapress_save_user_avatar',
+				'desc'        => 'Avatar',
+				'show_column' => false,
+			),
+			'head_amapress'      => array(
+				'name' => amapress__( 'Adresses' ),
+				'type' => 'heading',
+			),
 			'adresse'            => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
@@ -66,6 +81,11 @@ function amapress_register_entities_amapien( $entities ) {
 				'address_field_name'     => 'amapress_user_adresse',
 				'postal_code_field_name' => 'amapress_user_code_postal',
 				'town_field_name'        => 'amapress_user_ville',
+				'show_on'                => 'edit-only',
+			),
+			'head_amapress2'     => array(
+				'name' => amapress__( 'Téléphones' ),
+				'type' => 'heading',
 			),
 			'telephone'          => array(
 				'name'       => amapress__( 'Téléphone' ),
@@ -80,16 +100,24 @@ function amapress_register_entities_amapien( $entities ) {
 				'searchable' => true,
 			),
 			'telephone3'         => array(
-				'name'       => amapress__( 'Téléphone 3' ),
-				'type'       => 'text',
-				'desc'       => 'Téléphone 3',
-				'searchable' => true,
+				'name'        => amapress__( 'Téléphone 3' ),
+				'type'        => 'text',
+				'desc'        => 'Téléphone 3',
+				'searchable'  => true,
+				'show_on'     => 'edit-only',
+				'show_column' => false,
 			),
 			'telephone4'         => array(
-				'name'       => amapress__( 'Téléphone 4' ),
-				'type'       => 'text',
-				'desc'       => 'Téléphone 4',
-				'searchable' => true,
+				'name'        => amapress__( 'Téléphone 4' ),
+				'type'        => 'text',
+				'desc'        => 'Téléphone 4',
+				'searchable'  => true,
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+			),
+			'head_amapress3'     => array(
+				'name' => amapress__( 'Co-adhérents' ),
+				'type' => 'heading',
 			),
 			'co-adherent-1'      => array(
 				'name'       => amapress__( 'Co-adhérent 1' ),
@@ -103,6 +131,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'        => 'Co-adhérent 2',
 				'show_column' => false,
 				'searchable'  => true,
+				'show_on'     => 'edit-only',
 			),
 			'co-adherents'       => array(
 				'name'       => amapress__( 'Co-adhérent(s) - sans mail' ),
@@ -115,22 +144,19 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Co-adhérent(s) - email',
 //            ),
-			'moyen'              => array(
-				'name'        => amapress__( 'Moyen préféré' ),
-				'type'        => 'select',
-				'show_column' => false,
-				'options'     => array(
-					'mail' => 'Email',
-					'tel'  => 'Téléphone',
-				),
-				'desc'        => 'Moyen préféré',
-			),
-			'avatar'             => array(
-				'name'        => amapress__( 'Avatar' ),
-				'type'        => 'upload',
-				'custom_save' => 'amapress_save_user_avatar',
-				'desc'        => 'Avatar',
-				'show_column' => false,
+//			'moyen'              => array(
+//				'name'        => amapress__( 'Moyen préféré' ),
+//				'type'        => 'select',
+//				'show_column' => false,
+//				'options'     => array(
+//					'mail' => 'Email',
+//					'tel'  => 'Téléphone',
+//				),
+//				'desc'        => 'Moyen préféré',
+//			),
+			'head_amapress4'     => array(
+				'name' => amapress__( 'Fonctions' ),
+				'type' => 'heading',
 			),
 			'amap_roles'         => array(
 				'name'        => amapress__( 'Rôles dans l\'AMAP' ),
@@ -145,6 +171,10 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'        => 'checkbox',
 				'desc'        => 'Cocher pour que l\'utilisateur devienne intermittent et reçoive des alertes lorsque des paniers sont occasionnellement disponibles',
 				'show_column' => false,
+			),
+			'head_amapress5'     => array(
+				'name' => amapress__( 'Liste émargement' ),
+				'type' => 'heading',
 			),
 			'comment_emargement' => array(
 				'name'        => amapress__( 'Commentaire pour la liste émargement' ),
