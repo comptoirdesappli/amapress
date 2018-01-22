@@ -1117,7 +1117,7 @@ class AmapressEntities {
 											'id'      => 'welcome_mail',
 											'name'    => 'Contenu du mail d\'enregistrement',
 											'type'    => 'textarea',
-											'default' => "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%\n%%site_icon_url_link%%",
+											'default' => "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%\n%%site_icon_url_link%%",
 //                                            'capability' => 'manage_amapress',
 										),
 										array(
