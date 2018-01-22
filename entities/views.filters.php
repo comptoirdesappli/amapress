@@ -392,9 +392,9 @@ function amapress_user_views( $ret ) {
 			'Co-adhérents',
 			true );
 		amapress_add_view_button(
-			$ret, 'with_role',
-			"amapress_role=amap_role_any$query_add",
-			'Avec rôle',
+			$ret, 'collectif',
+			"amapress_role=collectif$query_add",
+			'Membres du collectif',
 			true );
 		if ( ! $is_adhesion_paiements ) {
 			amapress_add_view_button(

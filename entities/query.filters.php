@@ -1082,6 +1082,13 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			$user_ids = amapress_prepare_in( $user_ids );
 			$user_ids = implode( ',', $user_ids );
 			$where    .= " AND $wpdb->users.ID IN ($user_ids)";
+		} else if ( 'collectif' == $amapress_role ) {
+			$user_ids = get_users( wp_parse_args( 'amapress_role=access_admin&fields=id' ) ) +
+			            get_users( wp_parse_args( 'amapress_role=amap_role_any&fields=id' ) ) +
+			            get_users( wp_parse_args( 'amapress_role=referent_producteur&fields=id' ) );
+			$user_ids = amapress_prepare_in( $user_ids );
+			$user_ids = implode( ',', $user_ids );
+			$where    .= " AND $wpdb->users.ID IN ($user_ids)";
 		} else if ( strpos( $amapress_role, 'amap_role_' ) === 0 ) {
 			$amap_role = substr( $amapress_role, 10 );
 			if ( 'any' == $amap_role ) {
