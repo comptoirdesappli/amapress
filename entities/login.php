@@ -93,7 +93,7 @@ function amapress_login_headerurl( $url ) {
 
 add_action( 'login_message', 'amapress_login_message' );
 function amapress_login_message( $message ) {
-	$message .= Amapress::getOption( 'below_login_message' );
+	$message .= wp_unslash( Amapress::getOption( 'below_login_message' ) );
 
 	return $message;
 }
