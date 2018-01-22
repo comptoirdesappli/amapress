@@ -28,12 +28,12 @@ function amapress_register_entities_visite( $entities ) {
 			'exp_csv' => true,
 		),
 		'fields'             => array(
-			'photo'        => array(
-				'name'  => amapress__( 'Photo' ),
-				'type'  => 'upload',
-				'group' => 'Information',
-				'desc'  => 'Photo',
-			),
+//			'photo'        => array(
+//				'name'  => amapress__( 'Photo' ),
+//				'type'  => 'upload',
+//				'group' => 'Information',
+//				'desc'  => 'Photo',
+//			),
 			'date'         => array(
 				'name'         => amapress__( 'Date de visite' ),
 				'type'         => 'date',
