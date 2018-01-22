@@ -34,7 +34,7 @@ function amapress_register_entities_amap_event( $entities ) {
 				'time'     => true,
 				'required' => true,
 				'desc'     => 'Date évènement',
-				'group'    => 'Horaires',
+				'group'    => '1/ Horaires',
 			),
 			'heure_debut'  => array(
 				'name'     => amapress__( 'Heure début' ),
@@ -43,7 +43,7 @@ function amapress_register_entities_amap_event( $entities ) {
 				'time'     => true,
 				'required' => true,
 				'desc'     => 'Heure début',
-				'group'    => 'Horaires',
+				'group'    => '1/ Horaires',
 			),
 			'heure_fin'    => array(
 				'name'     => amapress__( 'Heure fin' ),
@@ -52,7 +52,7 @@ function amapress_register_entities_amap_event( $entities ) {
 				'time'     => true,
 				'required' => true,
 				'desc'     => 'Heure fin',
-				'group'    => 'Horaires',
+				'group'    => '1/ Horaires',
 			),
 			'type'         => array(
 				'name'        => amapress__( 'Emplacement' ),
@@ -62,8 +62,7 @@ function amapress_register_entities_amap_event( $entities ) {
 					'lieu_externe' => 'Adresse externe',
 				),
 				'required'    => true,
-				'group'       => 'Gestion',
-				'desc'        => 'Type de de contrat',
+				'group'       => '2/ Emplacement',
 				'conditional' => array(
 					'_default_'    => 'lieu',
 					'lieu'         => array(
@@ -72,7 +71,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'type'              => 'select-posts',
 							'post_type'         => 'amps_lieu',
 							'desc'              => 'Lieu',
-							'group'             => 'Emplacement',
+							'group'             => '2/ Emplacement',
 							'autoselect_single' => true,
 							'searchable'        => true,
 						),
@@ -82,7 +81,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'name'       => amapress__( 'Lieu ext.' ),
 							'type'       => 'text',
 							'desc'       => 'Lieu externe',
-							'group'      => 'Emplacement',
+							'group'      => '2/ Emplacement',
 							'searchable' => true,
 						),
 						'lieu_externe_adresse'       => array(
@@ -90,7 +89,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'type'         => 'address',
 							'use_as_field' => true,
 							'desc'         => 'Adresse',
-							'group'        => 'Emplacement',
+							'group'        => '2/ Emplacement',
 							'searchable'   => true,
 						),
 						'lieu_externe_acces'         => array(
@@ -98,7 +97,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'type'        => 'editor',
 							'required'    => false,
 							'desc'        => 'Accès',
-							'group'       => 'Emplacement',
+							'group'       => '2/ Emplacement',
 							'searchable'  => true,
 							'show_column' => false,
 						),
@@ -106,7 +105,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'name'        => amapress__( 'Adresse d\'accès' ),
 							'type'        => 'address',
 							'desc'        => 'Adresse d\'accès',
-							'group'       => 'Emplacement',
+							'group'       => '2/ Emplacement',
 							'searchable'  => true,
 							'show_column' => false,
 						),
@@ -120,7 +119,7 @@ function amapress_register_entities_amap_event( $entities ) {
 				'multiple'     => true,
 				'tags'         => true,
 				'desc'         => 'Participants',
-				'group'        => 'Gestion',
+				'group'        => '3/ Participants',
 			),
 		),
 	);

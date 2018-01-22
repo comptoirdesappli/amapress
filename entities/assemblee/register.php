@@ -36,7 +36,8 @@ function amapress_register_entities_assemblee( $entities ) {
 				'type'     => 'date',
 				'time'     => true,
 				'required' => true,
-				'desc'     => 'Date',
+				'desc'     => 'Date ',
+				'group'    => '2/ Horaires',
 			),
 			'heure_debut'   => array(
 				'name'     => amapress__( 'Heure début' ),
@@ -45,6 +46,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				'time'     => true,
 				'required' => true,
 				'desc'     => 'Heure début',
+				'group'    => '2/ Horaires',
 			),
 			'heure_fin'     => array(
 				'name'     => amapress__( 'Heure fin' ),
@@ -53,12 +55,14 @@ function amapress_register_entities_assemblee( $entities ) {
 				'time'     => true,
 				'required' => true,
 				'desc'     => 'Heure fin',
+				'group'    => '2/ Horaires',
 			),
 			'ordre_du_jour' => array(
 				'name'       => amapress__( 'Ordre du jour' ),
 				'type'       => 'editor',
 				'desc'       => 'Ordre du jour',
 				'searchable' => true,
+				'group'      => '1/ Ordre du jour',
 			),
 			'lieu'          => array(
 				'name'              => amapress__( 'Lieu de distribution' ),
@@ -68,6 +72,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				'desc'              => 'Lieu de distribution',
 				'autoselect_single' => true,
 				'searchable'        => true,
+				'group'             => '3/ Emplacement',
 			),
 			'participants'  => array(
 				'name'         => amapress__( 'Participants' ),
@@ -76,6 +81,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				'multiple'     => true,
 				'tags'         => true,
 				'desc'         => 'Participants',
+				'group'        => '4/ Participants',
 			),
 		),
 	);
