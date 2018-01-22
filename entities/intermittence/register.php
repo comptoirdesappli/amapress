@@ -32,7 +32,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'name'     => amapress__( 'Date' ),
 				'type'     => 'date',
 				'readonly' => true,
-				'desc'     => 'Date'
+				'desc'     => 'Date '
 			),
 			'panier'             => array(
 				'name'       => amapress__( 'Panier' ),
