@@ -11,6 +11,10 @@ function amapress_visite_title_formatter( $post_title, WP_Post $post ) {
 	$date       = get_post_meta( $post_id, 'amapress_visite_date', true );
 	$producteur = get_post( get_post_meta( $post_id, 'amapress_visite_producteur', true ) );
 
+	if ( ! $producteur ) {
+		return $post_title;
+	}
+
 	return sprintf( 'Visite du %s chez %s',
 		date_i18n( 'l j F Y', intval( $date ) ),
 		$producteur->post_title );
