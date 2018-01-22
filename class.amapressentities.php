@@ -166,6 +166,13 @@ class AmapressEntities {
 							'capability' => 'edit_recette',
 							'slug'       => 'edit.php?post_type=amps_recette',
 						),
+						array(
+							'title'      => 'Catégories de recettes',
+							'menu_icon'  => 'dashicons-none ',
+							'menu_title' => 'Catégories de recettes',
+							'capability' => 'edit_recette',
+							'slug'       => 'edit-tags.php?taxonomy=amps_recette_category',
+						),
 //						array(
 //							'title'      => 'News',
 //							'menu_icon'  => 'post_type',
@@ -857,82 +864,82 @@ class AmapressEntities {
 						),
 					),
 					'tabs'     => array(
-						'Recettes'   => array(
-							'desc'       => '',
-							'capability' => 'edit_recette',
-							'options'    => array(
-								array(
-									'id'      => 'recette_models',
-									'name'    => 'Modèles de recettes',
-									'type'    => 'custom',
-									'custom'  => 'amapress_tabs_model_editor',
-									'save'    => 'amapress_tabs_model_save',
-									'default' => array(
-										1 =>
-											array(
-												'id'   => 'classique',
-												'name' => 'Classique',
-												'tabs' =>
-													array(
-														0 => 'ingred=Ingrédients',
-														1 => 'prepa=Préparation',
-														2 => 'other=Autour de la recette',
-														3 => 'source=Source',
-													),
-											),
-									),
-								),
-								array(
-									'id'         => 'recette_default_model',
-									'name'       => 'Modèle de recette par défaut',
-									'type'       => 'select',
-									'options'    => 'amapress_tabs_model_get_options',
-									'assoc_prop' => 'recette_models',
-									'default'    => 'classique',
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Produits'   => array(
-							'desc'       => '',
-							'capability' => 'edit_produit',
-							'options'    => array(
-								array(
-									'id'      => 'produit_models',
-									'name'    => 'Modèles de produits',
-									'type'    => 'custom',
-									'custom'  => 'amapress_tabs_model_editor',
-									'save'    => 'amapress_tabs_model_save',
-									'default' => array(
-										1 =>
-											array(
-												'id'   => 'classique',
-												'name' => 'Classique',
-												'tabs' =>
-													array(
-														0 => 'saison=Saison',
-														1 => 'histo=Histoire',
-														2 => 'conserv=Conservation',
-														3 => 'desc=Description',
-													),
-											),
-									),
-								),
-								array(
-									'id'         => 'produit_default_model',
-									'name'       => 'Modèle de produit par défaut',
-									'type'       => 'select',
-									'options'    => 'amapress_tabs_model_get_options',
-									'assoc_prop' => 'produit_models',
-									'default'    => 'classique',
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
+//						'Recettes'   => array(
+//							'desc'       => '',
+//							'capability' => 'edit_recette',
+//							'options'    => array(
+//								array(
+//									'id'      => 'recette_models',
+//									'name'    => 'Modèles de recettes',
+//									'type'    => 'custom',
+//									'custom'  => 'amapress_tabs_model_editor',
+//									'save'    => 'amapress_tabs_model_save',
+//									'default' => array(
+//										1 =>
+//											array(
+//												'id'   => 'classique',
+//												'name' => 'Classique',
+//												'tabs' =>
+//													array(
+//														0 => 'ingred=Ingrédients',
+//														1 => 'prepa=Préparation',
+//														2 => 'other=Autour de la recette',
+//														3 => 'source=Source',
+//													),
+//											),
+//									),
+//								),
+//								array(
+//									'id'         => 'recette_default_model',
+//									'name'       => 'Modèle de recette par défaut',
+//									'type'       => 'select',
+//									'options'    => 'amapress_tabs_model_get_options',
+//									'assoc_prop' => 'recette_models',
+//									'default'    => 'classique',
+//								),
+//								array(
+//									'type' => 'save',
+//								),
+//							)
+//						),
+//						'Produits'   => array(
+//							'desc'       => '',
+//							'capability' => 'edit_produit',
+//							'options'    => array(
+//								array(
+//									'id'      => 'produit_models',
+//									'name'    => 'Modèles de produits',
+//									'type'    => 'custom',
+//									'custom'  => 'amapress_tabs_model_editor',
+//									'save'    => 'amapress_tabs_model_save',
+//									'default' => array(
+//										1 =>
+//											array(
+//												'id'   => 'classique',
+//												'name' => 'Classique',
+//												'tabs' =>
+//													array(
+//														0 => 'saison=Saison',
+//														1 => 'histo=Histoire',
+//														2 => 'conserv=Conservation',
+//														3 => 'desc=Description',
+//													),
+//											),
+//									),
+//								),
+//								array(
+//									'id'         => 'produit_default_model',
+//									'name'       => 'Modèle de produit par défaut',
+//									'type'       => 'select',
+//									'options'    => 'amapress_tabs_model_get_options',
+//									'assoc_prop' => 'produit_models',
+//									'default'    => 'classique',
+//								),
+//								array(
+//									'type' => 'save',
+//								),
+//							)
+//						),
 						'Pages'      => array(
 							'desc'       => '',
 							'capability' => 'manage_options',

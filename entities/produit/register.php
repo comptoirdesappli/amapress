@@ -10,6 +10,7 @@ function amapress_register_entities_produit( $entities ) {
 		'plural'                  => amapress__( 'Produits' ),
 		'public'                  => true,
 		'thumb'                   => true,
+		'editor'                  => true,
 		'slug'                    => amapress__( 'produits' ),
 		'show_in_menu'            => false,
 		'quick_edit'              => false,
@@ -26,6 +27,11 @@ function amapress_register_entities_produit( $entities ) {
 			'exp_csv' => true,
 		),
 		'csv_required_fields'     => 'post_title',
+		'groups'                  => array(
+			'Producteur' => [
+				'context' => 'side',
+			],
+		),
 		'fields'                  => array(
 //            'photo' => array(
 //                'name' => amapress__('Photo'),
@@ -33,27 +39,27 @@ function amapress_register_entities_produit( $entities ) {
 //                'group' => 'Information',
 //                'desc' => 'Photo',
 //            ),
-			'content_model' => array(
-				'name'         => amapress__( 'Modèle' ),
-				'type'         => 'select',
-				'group'        => 'Contenu',
-				'required'     => true,
-				'assoc_prop'   => 'produit_models',
-				'desc'         => 'Modèle de produit',
-				'options'      => 'amapress_tabs_model_get_options',
-				'csv_required' => true,
-			),
-			'content'       => array(
-				'name'            => amapress__( 'Contenu' ),
-				'type'            => 'custom',
-				'group'           => 'Contenu',
-				'tabs_conf'       => 'produit_models',
-				'tabs_default'    => 'produit_default_model',
-				'tabs_model_prop' => 'amapress_produit_content_model',
-				'custom'          => 'amapress_tabs_model_metabox_editor',
-				'save'            => 'amapress_tabs_model_metabox_editor_save',
-				'searchable'      => true,
-			),
+//			'content_model' => array(
+//				'name'         => amapress__( 'Modèle' ),
+//				'type'         => 'select',
+//				'group'        => 'Contenu',
+//				'required'     => true,
+//				'assoc_prop'   => 'produit_models',
+//				'desc'         => 'Modèle de produit',
+//				'options'      => 'amapress_tabs_model_get_options',
+//				'csv_required' => true,
+//			),
+//			'content'       => array(
+//				'name'            => amapress__( 'Contenu' ),
+//				'type'            => 'custom',
+//				'group'           => 'Contenu',
+//				'tabs_conf'       => 'produit_models',
+//				'tabs_default'    => 'produit_default_model',
+//				'tabs_model_prop' => 'amapress_produit_content_model',
+//				'custom'          => 'amapress_tabs_model_metabox_editor',
+//				'save'            => 'amapress_tabs_model_metabox_editor_save',
+//				'searchable'      => true,
+//			),
 //                    'conservation' => array(
 //                        'name' => amapress__('Conservation'),
 //                        'type' => 'editor',
@@ -96,7 +102,7 @@ function amapress_register_entities_produit( $entities ) {
 				'name'              => amapress__( 'Producteur' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_producteur',
-				'group'             => 'Information',
+				'group'             => 'Producteur',
 				'required'          => true,
 				'desc'              => 'Producteur',
 				'csv_required'      => true,
@@ -111,32 +117,32 @@ function amapress_register_entities_produit( $entities ) {
 			),
 		),
 	);
-	$entities['user_produit_like'] = array(
-		'internal_name' => 'amps_user_plike',
-		'singular'      => amapress__( 'user_produit_like' ),
-		'plural'        => amapress__( 'user_produit_like' ),
-		'public'        => false,
-		'fields'        => array(
-			'user'    => array(
-				'name'     => amapress__( 'Utilisateur' ),
-				'type'     => 'select-users',
-				'required' => true,
-				'desc'     => 'Utilisateur',
-			),
-			'produit' => array(
-				'name'     => amapress__( 'Utilisateur' ),
-				'type'     => 'select-users',
-				'required' => true,
-				'desc'     => 'Utilisateur',
-			),
-			'like'    => array(
-				'name'     => amapress__( 'Like' ),
-				'type'     => 'number',
-				'required' => true,
-				'desc'     => 'Like',
-			),
-		),
-	);
+//	$entities['user_produit_like'] = array(
+//		'internal_name' => 'amps_user_plike',
+//		'singular'      => amapress__( 'user_produit_like' ),
+//		'plural'        => amapress__( 'user_produit_like' ),
+//		'public'        => false,
+//		'fields'        => array(
+//			'user'    => array(
+//				'name'     => amapress__( 'Utilisateur' ),
+//				'type'     => 'select-users',
+//				'required' => true,
+//				'desc'     => 'Utilisateur',
+//			),
+//			'produit' => array(
+//				'name'     => amapress__( 'Utilisateur' ),
+//				'type'     => 'select-users',
+//				'required' => true,
+//				'desc'     => 'Utilisateur',
+//			),
+//			'like'    => array(
+//				'name'     => amapress__( 'Like' ),
+//				'type'     => 'number',
+//				'required' => true,
+//				'desc'     => 'Like',
+//			),
+//		),
+//	);
 
 	return $entities;
 }
