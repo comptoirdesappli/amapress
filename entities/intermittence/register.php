@@ -56,6 +56,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'type'       => 'select-users',
 				'desc'       => 'Repreneur',
 				'searchable' => true,
+				'readonly'   => true,
 			),
 			'adherent'           => array(
 				'name'       => amapress__( 'Adherent' ),
@@ -97,6 +98,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				),
 				'required' => true,
 				'desc'     => 'Statut',
+				'readonly' => true,
 			),
 		),
 	);
