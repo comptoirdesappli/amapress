@@ -166,14 +166,14 @@ class AmapressEntities {
 							'capability' => 'edit_recette',
 							'slug'       => 'edit.php?post_type=amps_recette',
 						),
-						array(
-							'title'      => 'News',
-							'menu_icon'  => 'post_type',
-							'menu_title' => 'News',
-							'post_type'  => 'amps_news',
-							'capability' => 'edit_news',
-							'slug'       => 'edit.php?post_type=amps_news',
-						),
+//						array(
+//							'title'      => 'News',
+//							'menu_icon'  => 'post_type',
+//							'menu_title' => 'News',
+//							'post_type'  => 'amps_news',
+//							'capability' => 'edit_news',
+//							'slug'       => 'edit.php?post_type=amps_news',
+//						),
 						array(
 							'title'      => 'Paniers',
 							'menu_icon'  => 'post_type',
