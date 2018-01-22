@@ -164,7 +164,7 @@ function amapress_register_shortcodes() {
 //    $agenda = '';
 //    if (trim(wp_strip_all_tags($agenda_content, true)) != '') {
 //    (amapress_is_user_logged_in() ? ' (<a href="' . Amapress_Agenda_ICAL_Export::get_link_href() . '"><i class="fa fa-calendar" aria-hidden="true"></i> iCal</a>)' : '') . '</h2>' .
-		$agenda = '<h2 id="front-adgenda-title">' . ( amapress_is_user_logged_in() ? Amapress::getOption( 'front_agenda_title' ) : Amapress::getOption( 'front_agenda_public_title' ) ) . '</h2>' .
+		$agenda = '<h3 id="front-adgenda-title">' . ( amapress_is_user_logged_in() ? Amapress::getOption( 'front_agenda_title' ) : Amapress::getOption( 'front_agenda_public_title' ) ) . '</h3>' .
 		          $agenda_content;
 
 //    }
@@ -180,7 +180,7 @@ function amapress_register_shortcodes() {
 		$produits_content = Amapress::get_contrats_list();
 		$produits         = '';
 		if ( Amapress::toBool( $atts['title'] ) ) {
-			$produits = '<h2 id="front-produits-title">' . Amapress::getOption( 'front_produits_title' ) . '</h2>';
+			$produits = '<h3 id="front-produits-title">' . Amapress::getOption( 'front_produits_title' ) . '</h3>';
 		}
 		if ( trim( wp_strip_all_tags( $produits_content, true ) ) != '' ) {
 			$interm = '';
@@ -207,7 +207,7 @@ function amapress_register_shortcodes() {
 		if ( ! Amapress::toBool( $atts['title'] ) ) {
 			return $map_content;
 		}
-		$map = '<h2 id="front-map-title">' . Amapress::getOption( 'front_map_title' ) . '</h2>' . $map_content;
+		$map = '<h3 id="front-map-title">' . Amapress::getOption( 'front_map_title' ) . '</h3>' . $map_content;
 
 		return $map;
 	} );

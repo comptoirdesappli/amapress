@@ -131,6 +131,7 @@ jQuery(function ($) {
             $(".paiement input[type=radio]", $(this).parent().parent()).prop('disabled', false);
         }
     });
-    fakewaffle.responsiveTabs(['xs', 'sm']);
+    if ('undefined' !== typeof(fakewaffle))
+        fakewaffle.responsiveTabs(['xs', 'sm']);
     amapress_init_front_end_ajax_buttons();
 });
