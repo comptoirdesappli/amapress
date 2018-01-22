@@ -199,6 +199,23 @@ jQuery(function() {
 	amapress_admin_bar_add_items( AmapressEntities::$admin_bar_menu, $admin_bar, null );
 }
 
+add_action( 'admin_bar_menu', 'amapress_admin_bar_new_entities', 900, 1 );
+function amapress_admin_bar_new_entities( WP_Admin_Bar $admin_bar ) {
+	$create_new_items = [];
+	foreach ( AmapressEntities::getPostTypes() as $name => $conf ) {
+		if ( isset( $conf['show_admin_bar_new'] ) && true === $conf['show_admin_bar_new'] && current_user_can( "publish_$name" ) ) {
+			$internal_post_type = isset( $conf['internal_name'] ) ? $conf['internal_name'] : 'amps_' . $name;
+			$create_new_items[] = [
+				'id'    => "new-$internal_post_type",
+//				'icon' => isset($conf['menu_icon']) ? $conf['menu_icon'] : null,
+				'title' => $conf['singular'],
+				'href'  => admin_url( "post-new.php?post_type=$internal_post_type" ),
+			];
+		}
+	}
+	amapress_admin_bar_add_items( $create_new_items, $admin_bar, 'new-content' );
+}
+
 function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent ) {
 	if ( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
@@ -206,7 +223,7 @@ function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent 
 				$item,
 				array(
 					'id'        => null,
-					'icon'      => '',
+//					'icon'      => '',
 					'title'     => '',
 					'href'      => '#',
 					'parent'    => $parent,
@@ -219,9 +236,9 @@ function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent 
 
 			if ( call_user_func( $item_with_default['condition'] ) ) {
 				$title = $item_with_default['title'];
-				if ( ! empty( $item_with_default['icon'] ) ) {
-					$title = amapress_get_font_icon( $item_with_default['icon'] ) . $title;
-				}
+//				if ( ! empty( $item_with_default['icon'] ) ) {
+//					$title = amapress_get_font_icon( $item_with_default['icon'] ) . $title;
+//				}
 				$admin_bar->add_menu( array(
 					'id'     => $item_with_default['id'],
 					'parent' => $item_with_default['parent'],

@@ -7,26 +7,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_amap_event' );
 function amapress_register_entities_amap_event( $entities ) {
 	$entities['amap_event'] = array(
-		'singular'         => amapress__( 'Evènement' ),
-		'plural'           => amapress__( 'Evènements' ),
-		'public'           => true,
-		'thumb'            => true,
-		'editor'           => true,
-		'logged_or_public' => true,
-		'special_options'  => array(),
-		'show_in_menu'     => false,
-		'show_in_nav_menu' => false,
-		'slug'             => 'evenements',
-		'menu_icon'        => 'dashicons-groups',
-		'redirect_archive' => 'amapress_redirect_agenda',
-		'default_orderby'  => 'amapress_amap_event_date',
-		'default_order'    => 'ASC',
-		'views'            => array(
+		'singular'           => amapress__( 'Evènement' ),
+		'plural'             => amapress__( 'Evènements' ),
+		'public'             => true,
+		'thumb'              => true,
+		'editor'             => true,
+		'logged_or_public'   => true,
+		'special_options'    => array(),
+		'show_in_menu'       => false,
+		'show_in_nav_menu'   => false,
+		'slug'               => 'evenements',
+		'menu_icon'          => 'dashicons-groups',
+		'redirect_archive'   => 'amapress_redirect_agenda',
+		'default_orderby'    => 'amapress_amap_event_date',
+		'default_order'      => 'ASC',
+		'show_admin_bar_new' => true,
+		'views'              => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_amap_event_views',
 			'exp_csv' => true,
 		),
-		'fields'           => array(
+		'fields'             => array(
 			'date'         => array(
 				'name'     => amapress__( 'Date de l\'évènement' ),
 				'type'     => 'date',

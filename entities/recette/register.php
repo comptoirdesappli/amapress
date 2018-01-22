@@ -20,6 +20,7 @@ function amapress_register_entities_recette( $entities ) {
 		'custom_archive_template' => true,
 		'default_orderby'         => 'post_title',
 		'default_order'           => 'ASC',
+		'show_admin_bar_new'      => true,
 		'fields'                  => array(
 //            'photo' => array(
 //                'name' => amapress__('Photo'),

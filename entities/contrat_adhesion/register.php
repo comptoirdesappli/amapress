@@ -7,28 +7,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_adhesion' );
 function amapress_register_entities_adhesion( $entities ) {
 	$entities['adhesion'] = array(
-		'singular'         => amapress__( 'Inscription Contrat' ),
-		'plural'           => amapress__( 'Inscriptions Contrat' ),
-		'public'           => 'adminonly',
-		'show_in_menu'     => false,
-		'show_in_nav_menu' => false,
-		'title'            => false,
-		'editor'           => false,
-		'slug'             => 'adhesions',
-		'title_format'     => 'amapress_adhesion_title_formatter',
-		'slug_format'      => 'from_title',
-		'menu_icon'        => 'flaticon-signature',
-		'labels'           => array(
+		'singular'           => amapress__( 'Inscription Contrat' ),
+		'plural'             => amapress__( 'Inscriptions Contrat' ),
+		'public'             => 'adminonly',
+		'show_in_menu'       => false,
+		'show_in_nav_menu'   => false,
+		'title'              => false,
+		'editor'             => false,
+		'slug'               => 'adhesions',
+		'title_format'       => 'amapress_adhesion_title_formatter',
+		'slug_format'        => 'from_title',
+		'menu_icon'          => 'flaticon-signature',
+		'show_admin_bar_new' => true,
+		'labels'             => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajout Inscription',
 		),
-		'row_actions'      => array(
+		'row_actions'        => array(
 			'renew'    => 'Renouveler',
 			'no_renew' => 'Ne pas renouveler',
 		),
-		'default_orderby'  => 'post_title',
-		'default_order'    => 'ASC',
-		'edit_header'      => function ( $post ) {
+		'default_orderby'    => 'post_title',
+		'default_order'      => 'ASC',
+		'edit_header'        => function ( $post ) {
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;

@@ -19,6 +19,7 @@ function amapress_register_entities_produit( $entities ) {
 		'custom_archive_template' => true,
 		'default_orderby'         => 'post_title',
 		'default_order'           => 'ASC',
+		'show_admin_bar_new'      => true,
 		'views'                   => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_produit_views',

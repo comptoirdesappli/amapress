@@ -616,6 +616,8 @@ function amapress_get_font_icon( $icon_name ) {
 		return '<i class="fa ' . $icon_name . '" aria-hidden="true"></i>';
 	} else if ( strpos( $icon_name, 'dashicons-' ) === 0 ) {
 		return '<span class="dashicons-before ' . $icon_name . '" aria-hidden="true"></span>';
+	} else if ( strpos( $icon_name, 'flaticon-' ) === 0 ) {
+		return '<span class="dashicons-before ' . $icon_name . '" aria-hidden="true"></span>';
 	} else {
 		return $icon_name;
 	}
