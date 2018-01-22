@@ -31,6 +31,13 @@ function amapress_register_entities_assemblee( $entities ) {
 			'exp_csv' => true,
 		),
 		'fields'             => array(
+			'ordre_du_jour' => array(
+				'name'       => amapress__( 'Ordre du jour' ),
+				'type'       => 'editor',
+				'desc'       => 'Ordre du jour',
+				'searchable' => true,
+				'group'      => '1/ Ordre du jour',
+			),
 			'date'          => array(
 				'name'     => amapress__( 'Date' ),
 				'type'     => 'date',
@@ -56,13 +63,6 @@ function amapress_register_entities_assemblee( $entities ) {
 				'required' => true,
 				'desc'     => 'Heure fin',
 				'group'    => '2/ Horaires',
-			),
-			'ordre_du_jour' => array(
-				'name'       => amapress__( 'Ordre du jour' ),
-				'type'       => 'editor',
-				'desc'       => 'Ordre du jour',
-				'searchable' => true,
-				'group'      => '1/ Ordre du jour',
 			),
 			'lieu'          => array(
 				'name'              => amapress__( 'Lieu de distribution' ),

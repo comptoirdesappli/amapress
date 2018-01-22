@@ -34,6 +34,13 @@ function amapress_register_entities_visite( $entities ) {
 //				'group' => 'Information',
 //				'desc'  => 'Photo',
 //			),
+			'au_programme' => array(
+				'name'       => amapress__( 'Au programme' ),
+				'type'       => 'editor',
+				'desc'       => 'Au programme',
+				'searchable' => true,
+				'group'      => '1/ Informations',
+			),
 			'date'         => array(
 				'name'         => amapress__( 'Date de visite' ),
 				'type'         => 'date',
@@ -42,6 +49,7 @@ function amapress_register_entities_visite( $entities ) {
 				'desc'         => 'Date de visite',
 				'import_key'   => true,
 				'csv_required' => true,
+				'group'        => '2/ Horaires',
 			),
 			'heure_debut'  => array(
 				'name'         => amapress__( 'Heure début' ),
@@ -51,6 +59,7 @@ function amapress_register_entities_visite( $entities ) {
 				'required'     => true,
 				'desc'         => 'Heure début',
 				'csv_required' => true,
+				'group'        => '2/ Horaires',
 			),
 			'heure_fin'    => array(
 				'name'         => amapress__( 'Heure fin' ),
@@ -60,6 +69,7 @@ function amapress_register_entities_visite( $entities ) {
 				'required'     => true,
 				'desc'         => 'Heure fin',
 				'csv_required' => true,
+				'group'        => '2/ Horaires',
 			),
 			'producteur'   => array(
 				'name'              => amapress__( 'Producteur' ),
@@ -77,12 +87,7 @@ function amapress_register_entities_visite( $entities ) {
 					'placeholder' => 'Toutes les producteurs',
 				),
 				'searchable'        => true,
-			),
-			'au_programme' => array(
-				'name'       => amapress__( 'Au programme' ),
-				'type'       => 'editor',
-				'desc'       => 'Au programme',
-				'searchable' => true,
+				'group'             => '3/ Emplacement',
 			),
 			'participants' => array(
 				'name'         => amapress__( 'Participants' ),
@@ -91,6 +96,7 @@ function amapress_register_entities_visite( $entities ) {
 				'multiple'     => true,
 				'tags'         => true,
 				'desc'         => 'Participants',
+				'group'        => '4/ Participants',
 			),
 		),
 	);

@@ -86,6 +86,10 @@ function amapress_assemblee_generale_title_formatter( $post_title, WP_Post $post
 	$date = get_post_meta( $post_id, 'amapress_assemblee_generale_date', true );
 	$lieu = get_post( get_post_meta( $post_id, 'amapress_assemblee_generale_lieu', true ) );
 
+	if ( ! $lieu ) {
+		return $post_title;
+	}
+
 	return sprintf( 'Assemblée générale du %s à %s',
 		date_i18n( 'l j F Y', intval( $date ) ),
 		$lieu->post_title );
