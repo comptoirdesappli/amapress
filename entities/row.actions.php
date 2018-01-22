@@ -63,6 +63,7 @@ function amapress_row_actions_registration( $actions, $post_or_user ) {
 
 add_action( 'load-users.php', 'amapress_row_actions_handler' );
 add_action( 'load-edit.php', 'amapress_row_actions_handler' );
+add_action( 'load-post.php', 'amapress_row_actions_handler' );
 function amapress_row_actions_handler() {
 	if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['amp_id'] ) ) {
 		global $typenow, $pagenow;

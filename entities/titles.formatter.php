@@ -242,4 +242,11 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	if ( isset( $options['edit_header'] ) && is_callable( $options['edit_header'], false ) ) {
 		call_user_func( $options['edit_header'], $post );
 	}
+
+	//TODO : should be in row.actions.php
+	$actions = amapress_row_actions_registration( [], $post );
+	if ( ! empty( $actions ) ) {
+		$actions = implode( ', ', $actions );
+		echo "<p>Actions possibles : $actions</p>";
+	}
 }
