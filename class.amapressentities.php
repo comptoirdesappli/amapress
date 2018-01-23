@@ -187,7 +187,7 @@ class AmapressEntities {
 							'menu_title' => 'Paniers',
 							'post_type'  => 'amps_panier',
 							'capability' => 'edit_panier',
-							'slug'       => 'edit.php?post_type=amps_panier&amapress_date=thisweek',
+							'slug'       => 'edit.php?post_type=amps_panier&amapress_date=thismonth',
 						),
 					),
 				),

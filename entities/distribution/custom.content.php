@@ -71,11 +71,24 @@ function amapress_get_custom_content_distribution( $content ) {
 
 //    amapress_handle_action_messages();
 
+	$btns = [];
+	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
+		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
+	}
+	if ( $is_resp_amap || current_user_can( 'edit_contrat_instance' ) ) {
+		$btns[] = '<a href="' . esc_attr( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) ) . '" class="btn btn-default">Quantités au producteur</a>';
+	}
+	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
+		$mailto = $dist->getMailtoResponsables();
+		if ( ! empty( $mailto ) ) {
+			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Mail aux responsables</a>';
+		}
+	}
 	?>
 
     <div class="distribution">
         <div class="btns">
-            <a href="<?php echo esc_attr( $dist->getAdminEditLink() ) ?>" class="btn btn-default">Editer</a>
+	        <?php echo implode( '', $btns ) ?>
         </div>
 		<?php
 
@@ -204,7 +217,11 @@ function amapress_get_custom_content_distribution( $content ) {
 
 				$url = amapress_get_avatar_url( $contrat_model->ID, null, 'produit-thumb', 'default_contrat.jpg' );
 
-				amapress_echo_panel_start( $contrat_model->post_title, '<img class="dist-panier-contrat-img" src="' . $url . '" alt="" />',
+				$panier_btns = '';
+				if ( $is_resp_amap || current_user_can( 'edit_panier' ) ) {
+					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">Editer le contenu/Déplacer</a>';
+				}
+				amapress_echo_panel_start_no_esc( esc_html( $contrat_model->post_title ) . $panier_btns, '<img class="dist-panier-contrat-img" src="' . $url . '" alt="" />',
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
 				echo AmapressPaniers::getPanierContentHtml( $panier->ID, $lieu_id );
 				amapress_echo_panel_end();

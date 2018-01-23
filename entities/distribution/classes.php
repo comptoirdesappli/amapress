@@ -71,6 +71,19 @@ class AmapressDistribution extends Amapress_EventBase {
 		return $this->getCustomAsEntityArray( 'amapress_distribution_responsables', 'AmapressUser' );
 	}
 
+	public function getMailtoResponsables() {
+		$resp_mails = [];
+		foreach ( $this->getResponsables() as $user ) {
+			$resp_mails = array_merge( $resp_mails, $user->getAllEmails() );
+		}
+		if ( empty( $resp_mails ) ) {
+			return '';
+		}
+
+		return 'mailto:' . urlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
+		       date_i18n( 'D j M Y' );
+	}
+
 	/** @return int[] */
 	public function getResponsablesIds() {
 		return $this->getCustomAsIntArray( 'amapress_distribution_responsables' );

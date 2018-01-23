@@ -200,6 +200,10 @@ function amapress_adhesion_request_views() {
 function amapress_panier_views() {
 	$ret = array();
 	amapress_add_view_button(
+		$ret, 'lastweek',
+		"post_type=amps_panier&amapress_date=lastweek",
+		'Semaine dernière' );
+	amapress_add_view_button(
 		$ret, 'thisweek',
 		"post_type=amps_panier&amapress_date=thisweek",
 		'Cette semaine' );
@@ -207,6 +211,15 @@ function amapress_panier_views() {
 		$ret, 'thismonth',
 		"post_type=amps_panier&amapress_date=thismonth",
 		'Ce mois' );
+
+	amapress_add_view_button(
+		$ret, 'delayed',
+		"post_type=amps_panier&amapress_status=delayed&amapress_date=thisyear",
+		'Reporté' );
+	amapress_add_view_button(
+		$ret, 'cancelled',
+		"post_type=amps_panier&amapress_status=cancelled&amapress_date=thisyear",
+		'Annulé' );
 
 	$contrats = AmapressContrats::get_active_contrat_instances();
 	foreach ( $contrats as $contrat ) {
@@ -216,27 +229,6 @@ function amapress_panier_views() {
 			$contrat->getTitle() );
 	}
 
-//        $prods = get_posts(array(
-//                'posts_per_page' => -1,
-//                'post_type' => 'amps_producteur')
-//        );
-//        foreach ($prods as $prod) {
-//            amapress_add_view_button(
-//                $ret, 'for_' . $prod->ID,
-//                "post_type=distribution&amapress_producteur={$prod->ID}",
-//                $prod->post_title);
-//        }
-
-//        $lieux = get_posts(array(
-//                'posts_per_page' => -1,
-//                'post_type' => 'amps_lieu')
-//        );
-//        foreach ($lieux as $lieu) {
-//            amapress_add_view_button(
-//                $ret, 'for_' . $lieu->ID,
-//                "post_type=distribution&amapress_lieu={$lieu->ID}",
-//                $lieu->post_title);
-//        }
 	return $ret;
 }
 

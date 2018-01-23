@@ -24,13 +24,23 @@ function amapress_register_entities_panier( $entities ) {
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_panier_views',
 		),
+		'groups'           => [
+			'Changement' => [
+				'context' => 'side',
+			]
+		],
 		'fields'           => array(
 			'date'              => array(
-				'name'     => amapress__( 'Date du panier' ),
-				'type'     => 'date',
-				'readonly' => true,
-				'desc'     => 'Date de distribution',
-				'group'    => '1/ Informations',
+				'name'       => amapress__( 'Date du panier' ),
+				'type'       => 'date',
+				'readonly'   => true,
+				'desc'       => 'Date de distribution',
+				'group'      => '1/ Informations',
+				'top_filter' => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 			),
 			'contrat_instance'  => array(
 				'name'       => amapress__( 'Contrat' ),
@@ -40,6 +50,12 @@ function amapress_register_entities_panier( $entities ) {
 				'desc'       => 'Contrat',
 				'searchable' => true,
 				'group'      => '1/ Informations',
+				'orderby'    => 'post_title',
+				'order'      => 'ASC',
+				'top_filter' => array(
+					'name'        => 'amapress_contrat',
+					'placeholder' => 'Toutes les contrats',
+				),
 			),
 			'produits_selected' => array(
 				'name'         => amapress__( 'Produits associés' ),
@@ -66,7 +82,11 @@ function amapress_register_entities_panier( $entities ) {
 					'cancelled' => 'Annulé',
 					'delayed'   => 'Reporté',
 				),
-				'group'         => '3/ Modification',
+				'top_filter'    => array(
+					'name'        => 'amapress_status',
+					'placeholder' => 'Tous les status',
+				),
+				'group'         => 'Changement',
 				'before_option' => '<script type="text/javascript">
 jQuery(function() {
     var $status_field = jQuery("#amapress_panier_status");
@@ -87,7 +107,7 @@ jQuery(function() {
 				'name'  => amapress__( 'Date de remplacement' ),
 				'type'  => 'date',
 				'desc'  => 'Date de distribution de remplacement pour les panier dont le <strong>Status</strong> est <strong>Reporté</strong>',
-				'group' => '3/ Modification',
+				'group' => 'Changement',
 			),
 		),
 	);
@@ -106,7 +126,10 @@ function amapress_panier_fields( $fields ) {
 		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : $_REQUEST['post_ID'];
 		if ( get_post_type( $post_id ) == AmapressPanier::INTERNAL_POST_TYPE ) {
 			$panier = AmapressPanier::getBy( $post_id );
-			if ( $panier->getContrat_instanceId() && ! $panier->getContrat_instance()->isPanierVariable() ) {
+			if ( $panier->getContrat_instanceId()
+			     && ( ( ! $panier->getContrat_instance()->isPanierVariable()
+			            && ! $panier->getContrat_instance()->isQuantiteVariable() )
+			          || $panier->getContrat_instance()->isPrincipal() ) ) {
 				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
 					$fields[ 'contenu_' . $quantite->ID ] = array(
 						'name'  => amapress__( 'Contenu pour ' . $quantite->getTitle() ),
