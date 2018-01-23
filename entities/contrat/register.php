@@ -27,6 +27,11 @@ function amapress_register_entities_contrat( $entities ) {
 		'views'                   => array(
 			'remove' => array( 'mine' ),
 		),
+		'groups'                  => [
+			'Producteur' => [
+				'context' => 'side',
+			],
+		],
 		'edit_header'             => function ( $post ) {
 			echo '<h1>Termes du contrat :</h1>';
 		},
@@ -65,6 +70,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'autoselect_single' => true,
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
+				'group'             => 'Producteur',
 				'top_filter'        => array(
 					'name'        => 'amapress_producteur',
 					'placeholder' => 'Toutes les producteurs',
@@ -690,7 +696,7 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
 	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 	if ( ! empty( $quants ) && count( $quants ) == 1 && Amapress::toBool( $contrat_quantite_name ) ) {
-		$quants_val = array_values($quants);
+		$quants_val            = array_values( $quants );
 		$contrat_quantite_name = $quants_val[0];
 	}
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
