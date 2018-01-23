@@ -42,7 +42,8 @@ function amapress_row_actions_registration( $actions, $post_or_user ) {
 				$row_action_config = wp_parse_args( $row_action_config,
 					array(
 						'label'      => '',
-						'capability' => ''
+						'capability' => '',
+						'href'       => '',
 					) );
 				if ( empty( $row_action_config['label'] ) ) {
 					continue;
@@ -50,7 +51,16 @@ function amapress_row_actions_registration( $actions, $post_or_user ) {
 				if ( ! empty( $row_action_config['capability'] ) && ! current_user_can( $row_action_config['capability'] ) ) {
 					continue;
 				}
-				$actions[ $row_action ] = amapress_get_row_action_html( $row_action, $post_or_user->ID, $row_action_config['label'] );
+				if ( ! empty( $row_action_config['href'] ) ) {
+					$label                  = $row_action_config['label'];
+					$actions[ $row_action ] = sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s">%2$s</a>',
+						str_replace( '%id%', $post_or_user->ID, $row_action_config['href'] ),
+						esc_html( $label ),
+						esc_attr( $row_action ),
+						esc_attr( $label ) );
+				} else {
+					$actions[ $row_action ] = amapress_get_row_action_html( $row_action, $post_or_user->ID, $row_action_config['label'] );
+				}
 			}
 		}
 	}
