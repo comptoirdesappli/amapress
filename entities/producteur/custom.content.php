@@ -6,16 +6,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_filter( 'amapress_get_custom_content_producteur', 'amapress_get_custom_content_producteur' );
 function amapress_get_custom_content_producteur( $content ) {
+	if ( is_search() ) {
+		return amapress_get_custom_archive_content_producteur( $content );
+	}
+
 	$producteur = AmapressProducteur::getBy( get_the_ID() );
 	ob_start();
 
-	amapress_echo_panel_start( 'Présentation', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-resume' );
-	echo wpautop( $producteur->getResume() );
-	amapress_echo_panel_end();
+	echo $content;
 
-	amapress_echo_panel_start( 'En résumé', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-presentation' );
-	echo wpautop( $producteur->getPresentation() );
-	amapress_echo_panel_end();
+//	amapress_echo_panel_start( 'Présentation', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-resume' );
+//	echo wpautop( $producteur->getResume() );
+//	amapress_echo_panel_end();
+
+//	amapress_echo_panel_start( 'En résumé', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-presentation' );
+//	echo wpautop( $producteur->getPresentation() );
+//	amapress_echo_panel_end();
 
 //    amapress_echo_panel_start('Coordonnées', null, 'amap-panel-prod amap-panel-prod-'.$producteur->ID.' amap-panel-prod-address');
 //    //AmapressUsers::echoUserById(get_post_meta($producteur_id, 'amapress_producteur_user', true), array('adresse'));
@@ -96,8 +102,9 @@ add_filter( 'amapress_get_custom_archive_content_producteur', 'amapress_get_cust
 function amapress_get_custom_archive_content_producteur( $content ) {
 	$producteur = AmapressProducteur::getBy( get_the_ID() );
 	ob_start();
-	echo wpautop( $producteur->getResume() );
-	echo wpautop( $producteur->getPresentation() );
+//	echo wpautop( $producteur->getResume() );
+//	echo wpautop( $producteur->getPresentation() );
+	echo $content;
 
 	echo '<h3>Contrats</h3>';
 	echo Amapress::get_contrats_list( $producteur->ID );

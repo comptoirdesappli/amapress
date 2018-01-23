@@ -44,13 +44,13 @@ class AmapressContrat extends TitanEntity {
 //        return $this->getCustom('amapress_contrat_photo');
 //    }
 
-	public function getPresentation() {
-		return wpautop( $this->getCustom( 'amapress_contrat_presentation' ) );
-	}
-
-	public function getPresentationRaw() {
-		return $this->getCustom( 'amapress_contrat_presentation' );
-	}
+//	public function getPresentation() {
+//		return wpautop( $this->getCustom( 'amapress_contrat_presentation' ) );
+//	}
+//
+//	public function getPresentationRaw() {
+//		return $this->getCustom( 'amapress_contrat_presentation' );
+//	}
 
 	public function getNb_visites() {
 		return floatval( $this->getCustom( 'amapress_contrat_nb_visites', 0 ) );

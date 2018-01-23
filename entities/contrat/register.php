@@ -16,6 +16,7 @@ function amapress_register_entities_contrat( $entities ) {
 		'plural'                  => amapress__( 'Présentations web' ),
 		'public'                  => true,
 		'thumb'                   => true,
+		'editor'                  => true,
 		'special_options'         => array(),
 		'show_in_menu'            => false,
 		'slug'                    => 'contrats',
