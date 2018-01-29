@@ -189,6 +189,9 @@ function amapress_register_entities_adhesion( $entities ) {
 				'group'         => '2/ Contrat',
 				'desc'          => 'Date à laquelle démarre le contrat',
 				'csv_required'  => true,
+				'default'       => function ( $option = null ) {
+					return amapress_time();
+				},
 				'before_option' =>
 					function ( $option ) {
 						/** @var TitanFrameworkOption $option */
@@ -245,7 +248,16 @@ jQuery(function($) {
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'
-				)
+				),
+				'default'           => function ( $option = null ) {
+					if ( ! empty( $_GET['amapress_adhesion_adherent'] ) ) {
+						$user_lieux = AmapressUsers::get_user_lieu_ids( intval( $_GET['amapress_adhesion_adherent'] ) );
+
+						return array_shift( $user_lieux );
+					}
+
+					return 0;
+				}
 			),
 			'message'          => array(
 				'name'        => amapress__( 'Message' ),
