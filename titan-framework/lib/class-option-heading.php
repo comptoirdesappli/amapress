@@ -27,6 +27,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @no id,default,livepreview,css,hidden
  */
 class TitanFrameworkOptionHeading extends TitanFrameworkOption {
+	public $defaultSecondarySettings = array(
+		'show_column' => false,
+	);
 
 	/**
 	 * Display for options and meta

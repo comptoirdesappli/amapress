@@ -10,8 +10,8 @@ class TitanFrameworkOptionNote extends TitanFrameworkOption {
 		'color'        => 'green', // The color of the note's border
 		'notification' => false,
 		'paragraph'    => true,
+		'show_column'  => false,
 	);
-
 	/*
 	 * Display for options and meta
 	 */
