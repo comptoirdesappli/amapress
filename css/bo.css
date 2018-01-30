@@ -169,6 +169,10 @@ select.paiements_details {
     table-layout: fixed;
 }
 
+#profile-page .tf-form-table {
+    table-layout: auto;
+}
+
 .column-thumb-preview img.attachment-thumbnail.size-thumbnail {
     max-width: 100%;
     height: initial;
