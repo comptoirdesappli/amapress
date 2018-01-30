@@ -29,7 +29,7 @@ function amapress_register_entities_adhesion( $entities ) {
 		),
 		'default_orderby'    => 'post_title',
 		'default_order'      => 'ASC',
-		'edit_header' => function ( $post ) {
+		'edit_header'        => function ( $post ) {
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
@@ -62,12 +62,12 @@ function amapress_register_entities_adhesion( $entities ) {
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 		},
-		'views'       => array(
+		'views'              => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_views',
 			'exp_csv' => true,
 		),
-		'fields'      => array(
+		'fields'             => array(
 			'adherent'         => array(
 				'name'         => amapress__( 'Adhérent' ),
 				'type'         => 'select-users',
@@ -87,7 +87,14 @@ function amapress_register_entities_adhesion( $entities ) {
 					'to_confirm' => 'En attente de confirmation',
 					'confirmed'  => 'Confirmée',
 				),
-				'default'  => 'confirmed',
+				'default'  => function ( $option ) {
+					$my_roles = AmapressContrats::getReferentProducteursAndLieux( amapress_current_user_id() );
+					if ( ! empty( $my_roles ) ) {
+						return 'confirmed';
+					} else {
+						return 'to_confirm';
+					}
+				},
 				'required' => true,
 				'desc'     => 'Statut',
 			),
@@ -213,13 +220,14 @@ jQuery(function($) {
 					},
 			),
 			'paiements'        => array(
-				'name'     => amapress__( 'Nombre de chèque' ),
-				'type'     => 'custom',
-				'group'    => '3/ Paiements',
-				'required' => true,
-				'desc'     => 'Nombre de paiements. <b>Lorsque vous changer la valeur de ce champs, il est nécessaire d\'enregistrer l\'adhésion</b>',
-				'custom'   => 'amapress_paiements_count_editor',
-				'show_on'  => 'edit-only',
+				'name'        => amapress__( 'Nombre de chèque' ),
+				'type'        => 'custom',
+				'group'       => '3/ Paiements',
+				'required'    => true,
+				'desc'        => 'Nombre de paiements. <b>Lorsque vous changer la valeur de ce champs, il est nécessaire d\'enregistrer l\'adhésion</b>',
+				'custom'      => 'amapress_paiements_count_editor',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
 //                'csv_required' => true,
 			),
 			'paiements_editor' => array(
@@ -477,7 +485,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			}
 
 			$had_contrat = true;
-			$ret         .= '<b>' . esc_html( $contrat_instance->getTitle() ) . '</b>';
+			$ret         .= '<b>' . Amapress::makeLink( $contrat_instance->getAdminEditLink(), $contrat_instance->getTitle(), true, true ) . '</b>';
 			$ret         .= '<div>';
 			foreach ( $contrat_quants as $quantite ) {
 				$id        = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;

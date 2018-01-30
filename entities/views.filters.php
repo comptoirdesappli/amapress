@@ -290,6 +290,10 @@ function amapress_adhesion_views() {
 		$ret, 'with_coadh',
 		"post_type=amps_adhesion&amapress_date=active&amapress_with_coadherents=true",
 		'Avec coadhérents' );
+	amapress_add_view_button(
+		$ret, 'with_coadh',
+		"post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm",
+		'A confirmer' );
 
 //    amapress_add_view_button(
 //        $ret, 'lastyear',
