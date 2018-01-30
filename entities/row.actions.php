@@ -43,13 +43,20 @@ function amapress_row_actions_registration( $actions, $post_or_user ) {
 					array(
 						'label'      => '',
 						'capability' => '',
+						'condition'  => null,
 						'href'       => '',
 						'target'     => '',
 					) );
 				if ( empty( $row_action_config['label'] ) ) {
 					continue;
 				}
-				if ( ! empty( $row_action_config['capability'] ) && ! current_user_can( $row_action_config['capability'] ) ) {
+				if ( ! empty( $row_action_config['capability'] )
+				     && ! current_user_can( $row_action_config['capability'] ) ) {
+					continue;
+				}
+				if ( ! empty( $row_action_config['condition'] )
+				     && is_callable( $row_action_config['condition'], false )
+				     && ! call_user_func( $row_action_config['condition'], $post_or_user ) ) {
 					continue;
 				}
 				if ( ! empty( $row_action_config['href'] ) ) {
