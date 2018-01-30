@@ -24,13 +24,18 @@ function amapress_register_entities_distribution( $entities ) {
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_distribution_views',
 		),
+		'groups'           => array(
+			'Infos' => [
+				'context' => 'side',
+			],
+		),
 		'default_orderby'  => 'amapress_distribution_date',
 		'default_order'    => 'ASC',
 		'fields'           => array(
 			'info'              => array(
 				'name'  => amapress__( 'Informations spécifiques' ),
 				'type'  => 'editor',
-				'group' => 'Informations',
+				'group' => '3/ Informations',
 				'desc'  => 'Informations complémentaires',
 			),
 			'date'              => array(
@@ -42,7 +47,7 @@ function amapress_register_entities_distribution( $entities ) {
 					'placeholder'    => 'Toutes les dates',
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
-				'group'      => 'Livraison',
+				'group'      => 'Infos',
 				'readonly'   => true,
 				'desc'       => 'Date de distribution',
 			),
@@ -50,7 +55,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'name'       => amapress__( 'Lieu de distribution' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
-				'group'      => 'Livraison',
+				'group'      => 'Infos',
 				'orderby'    => 'post_title',
 				'order'      => 'ASC',
 				'top_filter' => array(
@@ -65,30 +70,32 @@ function amapress_register_entities_distribution( $entities ) {
 				'name'       => amapress__( 'Lieu de substitution' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
-				'group'      => 'Livraison',
+				'group'      => '1/ Livraison',
 				'desc'       => 'Lieu de substitution',
 				'searchable' => true,
 			),
 			'nb_resp_supp'      => array(
-				'name'     => amapress__( 'Nombre de responsables de distributions supplémentaires' ),
-				'type'     => 'number',
-				'required' => true,
-				'desc'     => 'Nombre de responsables de distributions supplémentaires',
-				'group'    => 'Gestion',
-				'default'  => 0,
+				'name'        => amapress__( 'Nombre de responsables de distributions supplémentaires' ),
+				'type'        => 'number',
+				'required'    => true,
+				'desc'        => 'Nombre de responsables de distributions supplémentaires',
+				'group'       => '2/ Responsables',
+				'default'     => 0,
+				'show_column' => false,
 			),
-			'contrats'     => array(
+			'contrats'          => array(
 				'name'      => amapress__( 'Contrats' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => 'amps_contrat_inst',
-				'group'     => 'Gestion',
+				'group'     => '1/ Livraison',
 				'readonly'  => true,
+				'hidden'    => true,
 				'desc'      => 'Contrats',
 //                'searchable' => true,
 			),
-			'responsables' => array(
+			'responsables'      => array(
 				'name'         => amapress__( 'Responsables' ),
-				'group'        => 'Livraison',
+				'group'        => '2/ Responsables',
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
@@ -96,9 +103,9 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'         => 'Responsables',
 //                'searchable' => true,
 			),
-			'paniers'      => array(
+			'paniers'           => array(
 				'name'            => amapress__( 'Panier(s)' ),
-				'group'           => 'Livraison',
+				'group'           => '1/ Livraison',
 				'desc'            => 'Paniers à cette distribution',
 				'show_column'     => false,
 				'bare'            => true,
