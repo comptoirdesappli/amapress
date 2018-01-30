@@ -113,6 +113,20 @@ function amapress_post_validation() {
             jQuery.expr[':'].parentHidden = function (a) {
                 return jQuery(a).parent().is(':hidden');
             };
+            jQuery.validator.addClassRules('emailDoesNotExists', {
+                remote: function (element) {
+                    return {
+                        "url": "<?php echo admin_url( 'admin-ajax.php' ) ?>",
+                        "type": "post",
+                        "data": {
+                            "action": "check_email_exists",
+                            "email": function () {
+                                return $(element).val();
+                            },
+                        }
+                    }
+                }
+            });
             jQuery.validator.addClassRules('onlyOneInscription', {
                 remote: function (element) {
                     return {

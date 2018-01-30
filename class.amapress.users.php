@@ -26,7 +26,7 @@ class AmapressUsers {
 //        return '<a href="' . get_author_posts_url($user->ID) . '">' . $dn . '</a>';
 	}
 
-	private static function generate_unique_username( $username ) {
+	public static function generate_unique_username( $username ) {
 		static $i;
 		if ( null === $i ) {
 			$i = 1;
@@ -776,6 +776,10 @@ jQuery(function() {
 			$address_text = $_REQUEST['amapress_user_adresse'] . ', ' . $_REQUEST['amapress_user_code_postal'] . ' ' . $_REQUEST['amapress_user_ville'];
 		}
 
+		self::resolveUserFullAdress( $user_id, $address_text );
+	}
+
+	public static function resolveUserFullAdress( $user_id, $address_text ) {
 		$address = TitanFrameworkOptionAddress::lookup_address( $address_text );
 		if ( $address ) {
 			update_user_meta( $user_id, 'amapress_user_long', $address['longitude'] );

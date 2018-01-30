@@ -4,12 +4,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function amapress_create_user_if_not_exists( $email_address, $first_name = null, $last_name = null ) {
+function amapress_create_user_if_not_exists(
+	$email_address,
+	$first_name = null, $last_name = null,
+	$address = null, $tel = null,
+	$notify = 'both'
+) {
 	$user = get_user_by( 'email', $email_address );
 	if ( null == $user ) {
 		// Generate the password and create the user
 		$password = wp_generate_password( 12, false );
-		$user_id  = wp_create_user( $email_address, $password, $email_address );
+		$username = sanitize_user( $email_address );
+		if ( ! empty( $last_name ) && ! empty( $first_name ) ) {
+			$username = "$first_name.$last_name";
+		}
+
+		$username = AmapressUsers::generate_unique_username( $username );
+		$user_id  = wp_create_user( $username, $password, $email_address );
 
 		// Set the nickname
 		wp_update_user(
@@ -31,11 +42,17 @@ function amapress_create_user_if_not_exists( $email_address, $first_name = null,
 		$user = new WP_User( $user_id );
 		$user->set_role( 'amapien' );
 
-
 		// Email the user
 //        wp_mail( $email_address, 'Welcome!', 'Your Password: ' . $password );
-		wp_new_user_notification( $user_id, null, 'both' );
+		wp_new_user_notification( $user_id, null, $notify );
 
+		if ( ! empty( $address ) ) {
+			update_user_meta( $user->ID, 'amapress_user_adresse', $address );
+			AmapressUsers::resolveUserFullAdress( $user->ID, $address );
+		}
+		if ( ! empty( $tel ) ) {
+			update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
+		}
 	} // end if
 
 	return $user->ID;

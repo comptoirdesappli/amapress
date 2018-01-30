@@ -29,7 +29,7 @@ function amapress_register_entities_adhesion( $entities ) {
 		),
 		'default_orderby'    => 'post_title',
 		'default_order'      => 'ASC',
-		'edit_header'        => function ( $post ) {
+		'edit_header' => function ( $post ) {
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
@@ -62,12 +62,12 @@ function amapress_register_entities_adhesion( $entities ) {
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 		},
-		'views'            => array(
+		'views'       => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_views',
 			'exp_csv' => true,
 		),
-		'fields'           => array(
+		'fields'      => array(
 			'adherent'         => array(
 				'name'         => amapress__( 'Adhérent' ),
 				'type'         => 'select-users',
@@ -163,8 +163,9 @@ function amapress_register_entities_adhesion( $entities ) {
 							foreach ( AmapressContrats::get_contrat_quantites( $c->ID ) as $q ) {
 								$ret[] = $q->getTitle();
 								$ret[] = $q->getCode();
-								if ( $q->getQuantite() )
+								if ( $q->getQuantite() ) {
 									$ret[] = $q->getQuantite();
+								}
 							}
 						}
 					}
@@ -365,7 +366,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$excluded_contrat_ids[] = $user_adh->getContrat_instanceId();
 		}
 	}
-	$had_contrat           = false;
+	$had_contrat = false;
 	foreach ( $contrats as $contrat_instance ) {
 		if ( in_array( $contrat_instance->ID, $excluded_contrat_ids ) ) {
 			continue;
@@ -1081,3 +1082,143 @@ new jQuery.fn.dataTable.Buttons( table, {
 </script>
 </div>';
 }
+
+add_action( 'tf_custom_admin_amapress_action_existing_user', function () {
+	wp_redirect_and_exit( add_query_arg( 'user_id', $_POST['user_id'] ) );
+} );
+add_action( 'tf_custom_admin_amapress_action_new_user', function () {
+	$email      = $_POST['email'];
+	$last_name  = $_POST['last_name'];
+	$first_name = $_POST['first_name'];
+	$address    = $_POST['address'];
+	$tel        = $_POST['tel'];
+
+	$user_id = amapress_create_user_if_not_exists( $email, $first_name, $last_name, $address, $tel, 'user' );
+
+	wp_redirect_and_exit( add_query_arg( 'user_id', $user_id ) );
+} );
+
+function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOption $option ) {
+	if ( isset( $_REQUEST['user_id'] ) ) {
+		echo '<h4>2/ Inscrire l\'utilisateur à un contrat</h4>';
+
+		$user = AmapressUser::getBy( $_REQUEST['user_id'] );
+
+		echo '<hr />';
+		echo $user->getDisplay();
+		echo '<hr />';
+
+		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user->ID );
+		usort( $adhs, function ( $a, $b ) {
+			return strcmp( $a->getTitle(), $b->getTitle() );
+		} );
+		echo '<p><strong>Ses contrats:</strong></p>';
+		echo '<ul style="list-style-type: circle">';
+		foreach ( $adhs as $adh ) {
+			$renew_url = '';
+			if ( Amapress::start_of_day( $adh->getDate_fin() ) < Amapress::start_of_day( amapress_time() ) ) {
+				$renew_url = 'edit.php?post_type=amps_adhesion&action=renew&amp_id=' . $adh->ID;
+				$renew_url = esc_url( wp_nonce_url( $renew_url,
+						"renew_{$adh->ID}" )
+				);
+			}
+			echo '<li style="margin-left: 35px">';
+			echo '<a href="' . esc_attr( $adh->getPermalink() ) . '" >Voir</a>&nbsp;:&nbsp;' . esc_html( $adh->getTitle() );
+			if ( ! empty( $renew_url ) ) {
+				echo '&nbsp;<a href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
+			}
+			echo '</li>';
+		}
+		echo '</ul>';
+
+		$add_url = admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=' . $user->ID );
+		echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une autre inscription</a></p>';
+	} else {
+		echo '<h4>1/ Choisir un utilisateur ou le créer</h4>';
+		$options       = [];
+		$all_user_adhs = AmapressContrats::get_active_adhesions();
+		/** @var WP_User $user */
+		foreach ( get_users() as $user ) {
+			$user_adhs            = from( $all_user_adhs )
+				->count( function ( $a ) use ( $user ) {
+					/** @var AmapressAdhesion $a */
+					return $a->getAdherentId() == $user->ID;
+				} );
+			$options[ $user->ID ] = $user->display_name . '[' . $user->user_email . '] (' . $user_adhs . ' contrat(s))';
+		}
+
+		echo '<form method="post" id="existing_user">';
+		echo '<input type="hidden" name="action" value="existing_user" />';
+		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
+		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete" data-placeholder="Sélectionner un utilisateur">';
+		tf_parse_select_options( $options, isset( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : null );
+		echo '</select><br />';
+		echo '<input type="submit" class="button button-primary" value="Choisir" />';
+		echo '</form>';
+
+		echo '<p><strong>OU</strong></p>';
+
+		echo '<form method="post" id="new_user">';
+		echo '<input type="hidden" name="action" value="new_user" />';
+		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
+		echo '<table style="min-width: 50%">';
+		echo '<tr>';
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email: </label></th>
+<td><input style="width: 100%" type="text" id="email" name="email" class="required email emailDoesNotExists" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="last_name">Nom: </label></th>
+<td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="first_name">Prénom: </label></th>
+<td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="tel">Téléphone: </label></th>
+<td><input style="width: 100%" type="text" id="tel" name="tel" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
+<td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
+		echo '</tr>';
+		echo '</table>';
+		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Créer l\'amapien" />';
+		echo '</form>';
+	}
+	echo '<hr />';
+	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Choisir/ajouter un autre amapien</a></p>';
+	echo '<script type="text/javascript">jQuery(function() {
+    jQuery("#user_id").select2({
+        allowClear: true,
+		  escapeMarkup: function(markup) {
+		return markup;
+	},
+		  templateResult: function(data) {
+		return jQuery("<span>"+data.text+"</span>");
+	},
+		  templateSelection: function(data) {
+		return jQuery("<span>"+data.text+"</span>");
+	},
+    });
+    jQuery("form#new_user").validate({
+                onkeyup: false,
+        }
+    );
+});
+</script>
+<style type="text/css">
+	.error {
+		font-weight: bold;
+		color: red;
+	}
+</style>';
+}
+
+add_action( 'wp_ajax_check_email_exists', function () {
+	$email = $_POST['email'];
+	$user  = get_user_by( 'email', $email );
+	if ( ! $user ) {
+		echo json_encode( true );
+	} else {
+		echo json_encode( 'Cette adresse est déjà utilisée' );
+	}
+
+	wp_die();
+} );

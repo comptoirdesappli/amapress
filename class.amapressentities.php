@@ -309,13 +309,26 @@ class AmapressEntities {
 //							'type'   => 'custom',
 //							'custom' => 'amapress_echo_all_contrat_paiements_by_date',
 //						),
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
-						'Renouvèlement' => array(
+						'Ajouter une inscription' => array(
+							'desc'      => '',
+							'use_form'  => false,
+							'use_table' => false,
+							'options'   => array(
+								array(
+									'id'     => 'add_user_inscr',
+									'type'   => 'custom',
+									'bare'   => true,
+									'custom' => 'amapress_create_user_and_adhesion_assistant',
+								)
+							),
+						),
+						'Renouvèlement'           => array(
 							'desc'    => '',
 							'options' => array(
 								array(

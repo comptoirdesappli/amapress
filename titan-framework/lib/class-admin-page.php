@@ -22,6 +22,7 @@ class TitanFrameworkAdminPage {
 		'position'   => null,
 		// Menu position. Can be used for both top and sub level menus
 		'use_form'   => true,
+		'use_table'  => true,
 		// If false, options will not be wrapped in a form
 		'desc'       => '',
 		// Description displayed below the title
@@ -360,16 +361,26 @@ class TitanFrameworkAdminPage {
 						}
 					}
 
-					if ( $this->settings['use_form'] ) :
+					$use_form  = ! empty( $this->getActiveTab() )
+					             && isset( $this->getActiveTab()->settings['use_form'] ) ?
+						$this->getActiveTab()->settings['use_form'] :
+						$this->settings['use_form'];
+					$use_table = ! empty( $this->getActiveTab() )
+					             && isset( $this->getActiveTab()->settings['use_table'] ) ?
+						$this->getActiveTab()->settings['use_table'] :
+						$this->settings['use_table'];
+					if ( $use_form ) :
 					?>
                     <form method='post' enctype="multipart/form-data">
 						<?php
 						endif;
 
-						if ( $this->settings['use_form'] ) {
+						if ( $use_form ) {
 							// security
 							wp_nonce_field( $this->settings['id'], TF . '_nonce' );
 						}
+
+						if ( $use_table ) {
 
 						?>
                         <table class='form-table tf-form-table'>
@@ -378,6 +389,8 @@ class TitanFrameworkAdminPage {
 
 							do_action( 'tf_admin_page_table_start' );
 							do_action( 'tf_admin_page_table_start_' . $this->getOptionNamespace() );
+							}
+
 
 							$activeTab = $this->getActiveTab();
 							if ( ! empty( $activeTab ) ) {
@@ -393,6 +406,8 @@ class TitanFrameworkAdminPage {
 								$option->display_with_check();
 							}
 
+							if ( $use_table ) {
+
 							do_action( 'tf_admin_page_table_end' );
 							do_action( 'tf_admin_page_table_end_' . $this->getOptionNamespace() );
 
@@ -400,8 +415,9 @@ class TitanFrameworkAdminPage {
                             </tbody>
                         </table>
 						<?php
+						}
+						if ( $use_form ) :
 
-						if ( $this->settings['use_form'] ) :
 						?>
                     </form>
 				<?php
@@ -409,7 +425,7 @@ class TitanFrameworkAdminPage {
 
 				// Reset form. We use JS to trigger a reset from other buttons within the main form
 				// This is used by class-option-save.php
-				if ( $this->settings['use_form'] ) :
+				if ( $use_form ) :
 					?>
                     <form method='post' id='tf-reset-form'>
 						<?php
