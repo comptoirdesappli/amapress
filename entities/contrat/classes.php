@@ -112,6 +112,11 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsEntity( 'amapress_contrat_instance_model', 'AmapressContrat' );
 	}
 
+	/** @return int */
+	public function getModelId() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_model' );
+	}
+
 	public function getMax_adherents() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_max_adherents', 0 );
 	}
@@ -263,6 +268,15 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		return AmapressContrat_instance::getBy( $new_id );
+	}
+
+	public function canRenew() {
+		$contrat_instances = AmapressContrats::get_active_contrat_instances();
+
+		return ! from( $contrat_instances )->any( function ( $a ) {
+			/** @var AmapressContrat_instance $a */
+			return ( $a->getModelId() == $this->getModelId() && $a->getDate_debut() > $this->getDate_debut() );
+		} );
 	}
 }
 

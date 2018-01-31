@@ -24,6 +24,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			'add_new_item' => 'Ajout Inscription',
 		),
 		'row_actions'        => array(
+			//visibilité checkée dans amapress_row_actions_adhesion
 			'renew'    => 'Renouveler',
 			'no_renew' => 'Ne pas renouveler',
 		),

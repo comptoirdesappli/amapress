@@ -95,7 +95,17 @@ function amapress_register_entities_contrat( $entities ) {
 		'default_orderby' => 'post_title',
 		'default_order'   => 'ASC',
 		'row_actions'     => array(
-			'renew' => 'Renouveler',
+			'renew' => array(
+				'label'     => 'Renouveler',
+				'condition' => function ( $post_or_user ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
+					if ( ! $contrat_instance ) {
+						return false;
+					}
+
+					return $contrat_instance->canRenew();
+				}
+			),
 		),
 		'labels'          => array(
 			'add_new'      => 'Ajouter',

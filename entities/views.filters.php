@@ -246,6 +246,11 @@ function amapress_contrat_instance_views() {
 			$contrat->getTitle() );
 	}
 
+	amapress_add_view_button(
+		$ret, 'to_renew',
+		"post_type=amps_contrat_inst&amapress_date=renew",
+		'A renouveller' );
+
 	return $ret;
 }
 
@@ -291,10 +296,14 @@ function amapress_adhesion_views() {
 		"post_type=amps_adhesion&amapress_date=active&amapress_with_coadherents=true",
 		'Avec coadhérents' );
 	amapress_add_view_button(
-		$ret, 'with_coadh',
+		$ret, 'to_confirm',
 		"post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm",
 		'A confirmer' );
 
+	amapress_add_view_button(
+		$ret, 'to_renew',
+		"post_type=amps_adhesion&amapress_date=active&amapress_date=renew",
+		'A renouveller' );
 //    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",

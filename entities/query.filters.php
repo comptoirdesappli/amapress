@@ -756,6 +756,47 @@ function amapress_filter_posts( WP_Query $query ) {
 					)
 				) );
 			}
+		} else if ( $amapress_date == 'renew' ) {
+			$contrat_inst_ids_to_renew = [];
+			$contrat_instances         = AmapressContrats::get_active_contrat_instances();
+			foreach ( $contrat_instances as $contrat_instance ) {
+				if ( Amapress::start_of_day( $contrat_instance->getDate_fin() ) <= amapress_time() && $contrat_instance->canRenew() ) {
+					$contrat_inst_ids_to_renew[] = $contrat_instance->ID;
+				}
+			}
+			if ( $pt == 'contrat_instance' ) {
+				$query->set( 'post__in', amapress_prepare_in( $contrat_inst_ids_to_renew ) );
+			} else if ( $pt == 'adhesion' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_adhesion_contrat_instance",
+						'value'   => amapress_prepare_in( $contrat_inst_ids_to_renew ),
+						'compare' => 'IN',
+						'type'    => 'NUMERIC',
+					),
+				) );
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_adhesion_renewed",
+						'compare' => 'NOT EXISTS',
+					),
+				) );
+				amapress_add_meta_query( $query, array(
+					array(
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'compare' => 'NOT EXISTS',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => 0,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+					)
+				) );
+			}
 		} else if ( $amapress_date == 'today' ) {
 			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite' || $pt == 'contrat_paiement' || $pt == 'amap_event' || $pt == 'intermittence_panier' ) {
 				amapress_add_meta_query( $query, array(

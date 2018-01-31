@@ -673,6 +673,8 @@ class AmapressAdhesion extends TitanEntity {
 			return null;
 		}
 
+		update_post_meta( $this->ID, 'amapress_adhesion_renewed', 1 );
+
 		return AmapressAdhesion::getBy( $new_id );
 	}
 }
