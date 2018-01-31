@@ -194,6 +194,8 @@ function amapress_get_mailinglist_queries() {
 		}
 	}
 
+	$ret["amapress_contrat=active"] = "Amapiens avec contrat";
+
 
 	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
 		$ret["amapress_contrat={$contrat->ID}"] = "Amapiens - Contrat {$contrat->getTitle()}";
