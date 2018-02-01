@@ -29,12 +29,17 @@ function amapress_register_entities_amap_event( $entities ) {
 		),
 		'fields'             => array(
 			'date'         => array(
-				'name'     => amapress__( 'Date de l\'évènement' ),
-				'type'     => 'date',
-				'time'     => true,
-				'required' => true,
-				'desc'     => 'Date évènement',
-				'group'    => '1/ Horaires',
+				'name'       => amapress__( 'Date de l\'évènement' ),
+				'type'       => 'date',
+				'time'       => true,
+				'required'   => true,
+				'desc'       => 'Date évènement',
+				'group'      => '1/ Horaires',
+				'top_filter' => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 			),
 			'heure_debut'  => array(
 				'name'     => amapress__( 'Heure début' ),

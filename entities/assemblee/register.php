@@ -39,12 +39,17 @@ function amapress_register_entities_assemblee( $entities ) {
 				'group'      => '1/ Ordre du jour',
 			),
 			'date'          => array(
-				'name'     => amapress__( 'Date' ),
-				'type'     => 'date',
-				'time'     => true,
-				'required' => true,
-				'desc'     => 'Date ',
-				'group'    => '2/ Horaires',
+				'name'       => amapress__( 'Date' ),
+				'type'       => 'date',
+				'time'       => true,
+				'required'   => true,
+				'desc'       => 'Date ',
+				'group'      => '2/ Horaires',
+				'top_filter' => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 			),
 			'heure_debut'   => array(
 				'name'     => amapress__( 'Heure début' ),

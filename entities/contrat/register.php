@@ -288,6 +288,11 @@ jQuery(function($) {
 				'required'      => true,
 				'desc'          => 'Date de début du contrat',
 				'import_key'    => true,
+				'top_filter'    => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 				'readonly'      => 'amapress_is_contrat_instance_readonly',
 				'before_option' =>
 					function ( $option ) {

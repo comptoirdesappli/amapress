@@ -201,6 +201,11 @@ function amapress_register_entities_adhesion( $entities ) {
 				'default'       => function ( $option = null ) {
 					return amapress_time();
 				},
+				'top_filter'    => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 				'before_option' =>
 					function ( $option ) {
 						/** @var TitanFrameworkOption $option */

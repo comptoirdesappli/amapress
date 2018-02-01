@@ -904,7 +904,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				) );
 			}
 		} else {
-			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite' || $pt == 'contrat_paiement' || $pt == 'amap_event' || $pt == 'intermittence_panier' ) {
+			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite' || $pt == 'contrat_paiement' || $pt == 'amap_event' || $pt == 'intermittence_panier' || $pt == 'contrat_instance' || $pt == 'adhesion' ) {
 				$start_date = $end_date = null;
 				$date       = DateTime::createFromFormat( 'Y-m-d', $amapress_date );
 				if ( $date ) {
@@ -930,7 +930,7 @@ function amapress_filter_posts( WP_Query $query ) {
 				if ( $start_date && $end_date ) {
 					amapress_add_meta_query( $query, array(
 						array(
-							'key'     => "amapress_{$pt}_date",
+							'key'     => "amapress_{$pt}_date" . ( $pt == 'contrat_instance' || $pt == 'adhesion' ? '_debut' : '' ),
 							'value'   => array(
 								$start_date,
 								$end_date,

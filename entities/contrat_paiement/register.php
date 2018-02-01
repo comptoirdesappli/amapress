@@ -48,6 +48,11 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'import_key' => true,
 				'csv_required' => true,
 				'searchable'   => true,
+				'top_filter'   => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 			),
 			'date_emission' => array(
 				'name'         => amapress__( 'Date d\'émission' ),
