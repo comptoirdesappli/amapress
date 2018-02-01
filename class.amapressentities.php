@@ -39,7 +39,7 @@ class AmapressEntities {
 	private static $post_types_initialized = false;
 	private static $post_types_options = array();
 
-	public static $admin_bar_menu = array();
+//	public static $admin_bar_menu = array();
 
 	public static function setTfOption( $post_type, $field, $option ) {
 		$post_type                                                               = amapress_simplify_post_type( $post_type );
@@ -316,6 +316,7 @@ class AmapressEntities {
 					),
 					'tabs'     => array(
 						'Ajouter une inscription' => array(
+							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
 							'use_table' => false,
@@ -410,7 +411,7 @@ class AmapressEntities {
 								'name'       => 'Quantités à la prochaine distribution',
 								'menu_title' => 'Quantités',
 								'position'   => '25.2',
-								'capability' => 'edit_contrat_instance',
+								'capability' => 'edit_distribution',
 								'icon'       => 'dashicons-none flaticon-pen',
 							),
 							'options'  => array(),
@@ -1801,7 +1802,6 @@ class AmapressEntities {
 
 	private static function init_posts() {
 		self::$post_types     = apply_filters( 'amapress_register_entities', array() );
-		self::$admin_bar_menu = apply_filters( 'amapress_register_admin_bar_menu_items', array() );
 	}
 
 	public static function getPostFieldsLabels( $post_type = null ) {

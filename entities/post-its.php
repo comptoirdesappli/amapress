@@ -19,7 +19,7 @@ function amapress_postits_shortcode( $args ) {
 	$ret = '<div class="post-its">';
 	foreach ( $post_its as $post_it ) {
 		$ret .= '<div class="post-it ' . esc_attr( isset( $post_it['type'] ) ? 'post-it-' . $post_it['type'] : '' ) . '">';
-		$ret .= '<h4>' . esc_html( $post_it['title'] ) . '</h4>';
+		$ret .= '<h4>' . ( isset( $post_it['title_html'] ) ? $post_it['title_html'] : esc_html( $post_it['title'] ) ) . '</h4>';
 		$ret .= '<div class="post-it-content">';
 		$ret .= $post_it['content'];
 		$ret .= '</div>';

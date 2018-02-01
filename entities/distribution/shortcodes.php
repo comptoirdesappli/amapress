@@ -11,18 +11,20 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 		return $post_its;
 	}
 
-	$is_resp_amap = amapress_can_access_admin();
+//	$is_resp_amap = amapress_can_access_admin();
 
-	$date           = amapress_time();
-	$next_week_date = Amapress::add_a_week( amapress_time() );
-	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
+//	$date           = amapress_time();
+//	$next_week_date = Amapress::add_a_week( amapress_time() );
+//	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
 
 	$user_id = amapress_current_user_id();
 
+	$next_distribs = AmapressDistribution::getNextDistribs( null, 2, null );
+
 	foreach ( $next_distribs as $dist ) {
-		if ( ! $is_resp_amap && ! in_array( $user_id, $dist->getResponsablesIds() ) ) {
-			continue;
-		}
+//		if ( ! $is_resp_amap && ! in_array( $user_id, $dist->getResponsablesIds() ) ) {
+//			continue;
+//		}
 
 		$content = '';
 		$lieu = $dist->getLieu();
@@ -36,10 +38,10 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 
 		$post_its[] = array(
-			'date'    => $dist->getStartDateAndHour(),
-			'type'    => 'distrib',
-			'title'   => date_i18n( 'd/m/Y', $dist->getDate() ) . ' - Distribution',
-			'content' => $content,
+			'date'       => $dist->getStartDateAndHour(),
+			'type'       => 'distrib',
+			'title_html' => Amapress::makeLink( $dist->getPermalink(), date_i18n( 'd/m/Y', $dist->getDate() ) . ' - Distribution' ),
+			'content'    => $content,
 		);
 
 	}

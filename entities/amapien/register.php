@@ -9,7 +9,7 @@ function amapress_register_entities_amapien( $entities ) {
 	$entities['user'] = array(
 		'internal_name'       => 'user',
 		'csv_required_fields' => array( 'user_email', 'first_name', 'last_name' ),
-		'bulk_actions'        => array(
+		'bulk_actions' => array(
 			'amp_resend_welcome' => array(
 				'label'    => 'Réenvoyer le mail de bienvenue',
 				'messages' => array(
@@ -361,14 +361,113 @@ function amapress_can_delete_user( $can, $user_id ) {
 
 add_filter( 'amapress_register_admin_bar_menu_items', 'amapress_register_admin_bar_menu_items' );
 function amapress_register_admin_bar_menu_items( $items ) {
-	$items['referent-producteur'] = array(
-		'icon'      => '',
-		'title'     => '',
-		'position'  => 0,
-		'condition' => function () {
-			return true;
-		},
-		'items'     => array(),
+	$contrat_to_renew       = get_posts_count( 'post_type=amps_contrat_inst&amapress_date=renew' );
+	$next_distribs          = AmapressDistribution::getNextDistribs( null, 2, null );
+	$liste_emargement_items = [];
+	foreach ( $next_distribs as $dist ) {
+		$liste_emargement_items[] = array(
+			'id'         => 'amapress_emargement_' . $dist->ID,
+			'title'      => $dist->getTitle(),
+			'capability' => 'edit_distribution',
+			'href'       => $dist->getListeEmargementHref(),
+		);
+	}
+
+	$dist_items = [];
+	$dist_dates = [];
+	foreach ( $next_distribs as $dist ) {
+		if ( ! in_array( $dist->getDate(), $dist_dates ) ) {
+			$dist_dates[] = $dist->getDate();
+		}
+		$dist_items[] = array(
+			'id'         => 'amapress_dist_' . $dist->ID,
+			'title'      => $dist->getTitle(),
+			'capability' => 'edit_distribution',
+			'href'       => $dist->getAdminEditLink(),
+		);
+	}
+
+	$panier_rens_items = [];
+	$panier_edit_items = [];
+	foreach ( $dist_dates as $dist_date ) {
+		foreach ( AmapressPaniers::getPaniersForDist( $dist_date ) as $panier ) {
+			$panier_rens_items[] = array(
+				'id'         => 'amapress_rens_panier_' . $panier->ID,
+				'title'      => $panier->getTitle(),
+				'capability' => 'edit_panier',
+				'href'       => $panier->getAdminEditLink(),
+			);
+			$panier_edit_items[] = array(
+				'id'         => 'amapress_edit_panier_' . $panier->ID,
+				'title'      => $panier->getTitle(),
+				'capability' => 'edit_panier',
+				'href'       => $panier->getAdminEditLink(),
+			);
+		}
+	}
+
+	$items[] = array(
+		'id'    => 'amapress',
+		'title' => 'Amapress',
+		'items' => array(
+			array(
+				'id'         => 'amapress_add_inscription',
+				'title'      => 'Ajouter une inscription',
+				'capability' => 'manage_contrats',
+				'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
+			),
+			array(
+				'id'         => 'amapress_quantite_contrats',
+				'title'      => 'Quantités prochaine distrib',
+				'capability' => 'edit_distribution',
+				'href'       => admin_url( 'admin.php?page=contrats_quantites_next_distrib' ),
+			),
+			//TODO : prochaine date de remise si referent
+			array(
+				'id'         => 'amapress_calendar_paiements',
+				'title'      => 'Calendrier chèques producteurs',
+				'capability' => 'manage_contrats',
+				'href'       => admin_url( 'admin.php?page=calendar_contrat_paiements' ),
+			),
+			array(
+				'id'         => 'amapress_contrat_to_renew',
+				'title'      => '<span class="badge">' . $contrat_to_renew . '</span> Contrats à renouveller',
+				'capability' => 'edit_contrat_instance',
+				'condition'  => function () use ( $contrat_to_renew ) {
+					return $contrat_to_renew > 0;
+				},
+				'href'       => admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=renew' ),
+			),
+			array(
+				'id'         => 'amapress_emargement',
+				'title'      => 'Listes émargement',
+				'capability' => 'edit_distribution',
+				'items'      => $liste_emargement_items
+			),
+			array(
+				'id'         => 'amapress_dists',
+				'title'      => 'Info Distrib/Changer de lieu',
+				'capability' => 'edit_distribution',
+				'items'      => $dist_items
+			),
+			array(
+				'id'         => 'amapress_rens_paniers',
+				'title'      => 'Renseigner paniers',
+				'capability' => 'edit_panier',
+				'items'      => $panier_rens_items
+			),
+			array(
+				'id'         => 'amapress_change_paniers',
+				'title'      => 'Déplacer/annuler paniers',
+				'capability' => 'edit_panier',
+				'items'      => $panier_edit_items
+			),
+//			array(
+//				'id' => 'amapress_',
+//				'title' => '',
+//				'href' => admin_url(),
+//			),
+		),
 	);
 
 	return $items;

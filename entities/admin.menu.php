@@ -195,8 +195,13 @@ jQuery(function() {
 			'href'   => '#',
 		) );
 	}
+}
 
-	amapress_admin_bar_add_items( AmapressEntities::$admin_bar_menu, $admin_bar, null );
+add_action( 'admin_bar_menu', 'amapress_admin_bar_menu_entities', 900, 1 );
+function amapress_admin_bar_menu_entities( WP_Admin_Bar $admin_bar ) {
+	amapress_admin_bar_add_items(
+		apply_filters( 'amapress_register_admin_bar_menu_items', array() ),
+		$admin_bar, null );
 }
 
 add_action( 'admin_bar_menu', 'amapress_admin_bar_new_entities', 900, 1 );
@@ -222,32 +227,37 @@ function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent 
 			$item_with_default = wp_parse_args(
 				$item,
 				array(
-					'id'        => null,
+					'id'         => null,
 //					'icon'      => '',
-					'title'     => '',
-					'href'      => '#',
-					'parent'    => $parent,
-					'condition' => function () {
-						return true;
-					},
-					'items'     => array(),
+					'title'      => '',
+					'href'       => '#',
+					'parent'     => $parent,
+					'capability' => null,
+					'condition'  => null,
+					'items'      => array(),
 				)
 			);
 
-			if ( call_user_func( $item_with_default['condition'] ) ) {
-				$title = $item_with_default['title'];
+			if ( ! empty( $item_with_default['capability'] ) && ! current_user_can( $item_with_default['capability'] ) ) {
+				continue;
+			}
+
+			if ( ! empty( $item_with_default['condition'] && ! call_user_func( $item_with_default['condition'] ) ) ) {
+				continue;
+			}
+
+			$title = $item_with_default['title'];
 //				if ( ! empty( $item_with_default['icon'] ) ) {
 //					$title = amapress_get_font_icon( $item_with_default['icon'] ) . $title;
 //				}
-				$admin_bar->add_menu( array(
-					'id'     => $item_with_default['id'],
-					'parent' => $item_with_default['parent'],
-					'title'  => $title,
-					'href'   => $item_with_default['href'],
-				) );
+			$admin_bar->add_menu( array(
+				'id'     => $item_with_default['id'],
+				'parent' => $item_with_default['parent'],
+				'title'  => $title,
+				'href'   => $item_with_default['href'],
+			) );
 
-				amapress_admin_bar_add_items( $item_with_default['items'], $admin_bar, $item_with_default['id'] );
-			}
+			amapress_admin_bar_add_items( $item_with_default['items'], $admin_bar, $item_with_default['id'] );
 		}
 	}
 }

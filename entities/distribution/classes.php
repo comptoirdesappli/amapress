@@ -537,4 +537,30 @@ class AmapressDistribution extends Amapress_EventBase {
 	public function getListeEmargementHref() {
 		return $this->getPermalink( 'liste-emargement' );
 	}
+
+	/** @return AmapressDistribution[] */
+	public static function getNextDistribs( $date = null, $weeks = 1, $user_id = null ) {
+		$is_resp_amap = amapress_can_access_admin();
+
+		if ( ! $date ) {
+			$date = amapress_time();
+		}
+		$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
+		$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
+
+		if ( ! $user_id ) {
+			$user_id = amapress_current_user_id();
+		}
+
+		$ret = [];
+		foreach ( $next_distribs as $dist ) {
+			if ( ! $is_resp_amap && ! in_array( $user_id, $dist->getResponsablesIds() ) ) {
+				continue;
+			}
+
+			$ret[] = $dist;
+		}
+
+		return $ret;
+	}
 }
