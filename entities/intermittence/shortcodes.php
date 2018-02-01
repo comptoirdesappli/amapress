@@ -165,7 +165,6 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		'for_other_users' => 'no',
 	), $atts );
 
-
 	if ( ! amapress_is_user_logged_in() ) {
 		return '';
 	}
@@ -277,6 +276,11 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		$ret           .= '<th scope="row" width="30%">';
 		$ret           .= '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>';
 		$ret           .= '<p class="inscr-list-contrats"><a href="' . $dist->getPermalink() . '">' . esc_html( $contrat_names ) . '</a></p></th>';
+
+		if ( count( $date_dists ) > 1 ) {
+			$date_dists = [ array_shift( $date_dists ) ];
+		}
+
 		foreach ( $date_dists as $dist ) {
 			if ( ! in_array( $dist->getLieuId(), $lieu_ids ) ) {
 				continue;
@@ -287,7 +291,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 
 			$is_intermittent = 'exchangeable';
 			foreach ( AmapressPaniers::getPaniersForDist( $date ) as $panier ) {
-				$status = AmapressPaniers::isIntermittent( $panier->ID, $panier->getContrat_instanceId(), $dist->getLieuId() );
+				$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId() );
 //                    var_dump($status);
 				if ( ! empty( $status ) ) {
 					$is_intermittent = $status;

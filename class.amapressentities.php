@@ -745,13 +745,13 @@ class AmapressEntities {
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-rejet-adherent-mail-subject',
+									'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-subject',
 									'name'    => 'Sujet du mail',
 									'type'    => 'text',
 									'default' => '%%post:adherent-nom%% a refusé la reprise de %%post:panier%%',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-rejet-adherent-mail-content',
+									'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),

@@ -524,49 +524,37 @@ class AmapressPaniers {
 		return null;
 	}
 
+	/**
+	 * @param int $panier_id
+	 * @param int $lieu_id
+	 * @param int $user_id
+	 *
+	 * @return string
+	 */
 	public
 	static function isIntermittent(
-		$panier_id, $contrat_instance_id, $lieu_id, $user_id = null
+		$panier_id, $lieu_id, $user_id = null
 	) {
 //        $panier = AmapressPanier::getBy($panier_id);
 		if ( empty( $user_id ) ) {
 			$user_id = amapress_current_user_id();
 		}
-		$args  = array(
-			'post_type'      => AmapressIntermittence_panier::INTERNAL_POST_TYPE,
-			'posts_per_page' => - 1,
-			'meta_query'     => array(
-				array(
-					'key'   => 'amapress_intermittence_panier_panier',
-					'value' => $panier_id,
-				),
-				array(
-					'key'   => 'amapress_intermittence_panier_contrat_instance',
-					'value' => $contrat_instance_id,
-				),
-				array(
-					'key'     => 'amapress_intermittence_panier_adherent',
-					'value'   => AmapressContrats::get_related_users( $user_id ),
-					'compare' => 'IN',
-					'type'    => 'NUMERIC',
-				),
-				array(
-					'key'   => 'amapress_intermittence_panier_lieu',
-					'value' => $lieu_id,
-				),
-				array(
-					'key'     => 'amapress_intermittence_panier_status',
-					'value'   => 'cancelled',
-					'compare' => '!='
-				),
-			)
+		$paniers = self::getPanierIntermittents(
+			[
+				'panier_id' => $panier_id,
+				'adherent'  => $user_id,
+				'lieu_id'   => $lieu_id,
+			]
 		);
-		$posts = get_posts(
-			$args
+		$paniers = array_filter(
+			$paniers,
+			function ( $p ) {
+				/** @var AmapressIntermittence_panier $p */
+				return $p->getStatus() != 'cancelled';
+			}
 		);
-		if ( count( $posts ) > 0 ) {
-			$echange = AmapressIntermittence_panier::getBy( $posts[0] );
-
+		if ( count( $paniers ) > 0 ) {
+			$echange = array_shift( $paniers);
 			return $echange->getStatus();
 		}
 
@@ -632,13 +620,22 @@ class AmapressPaniers {
 			wp_cache_set( $key, $res );
 		}
 
-		$ret        = $res;
+		$ret = $res;
 		if ( ! empty( $args['panier_id'] ) ) {
+			if ( ! is_array( $args['panier_id'] ) ) {
+				$args['panier_id'] = [ $args['panier_id'] ];
+			}
 			$ret = array_filter(
 				$ret,
 				function ( $ip ) use ( $args ) {
 					/** @var AmapressIntermittence_panier $ip */
-					return $ip->getPanierId() == $args['panier_id'];
+					foreach ( $ip->getPanierIds() as $id ) {
+						if ( in_array( $id, $args['panier_id'] ) ) {
+							return true;
+						}
+					}
+
+					return false;
 				}
 			);
 		}
@@ -651,7 +648,13 @@ class AmapressPaniers {
 				function ( $ip ) use ( $args ) {
 					/** @var AmapressIntermittence_panier $ip */
 
-					return in_array( $ip->getContrat_instanceId(), $args['contrat_instance_id'] );
+					foreach ( $ip->getContrat_instanceIds() as $id ) {
+						if ( in_array( $id, $args['contrat_instance_id'] ) ) {
+							return true;
+						}
+					}
+
+					return false;
 				}
 			);
 		}

@@ -19,6 +19,8 @@ function amapress_register_entities_intermittence( $entities ) {
 		'title_format'     => 'amapress_intermittence_panier_title_formatter',
 		'slug_format'      => 'from_title',
 		'menu_icon'        => 'fa-menu fa-shopping-basket',
+		'default_orderby'  => 'amapress_intermittence_panier_date',
+		'default_order'    => 'ASC',
 		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_intermittence_panier_views',
@@ -29,27 +31,32 @@ function amapress_register_entities_intermittence( $entities ) {
 //        ),
 		'fields'           => array(
 			'date'               => array(
-				'name'     => amapress__( 'Date' ),
-				'type'     => 'date',
-				'readonly' => true,
-				'desc'     => 'Date '
+				'name'       => amapress__( 'Date' ),
+				'type'       => 'date',
+				'readonly'   => true,
+				'desc'       => 'Date ',
+				'top_filter' => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
 			),
 			'panier'             => array(
-				'name'       => amapress__( 'Panier' ),
-				'type'       => 'select-posts',
-				'post_type'  => AmapressPanier::INTERNAL_POST_TYPE,
-				'readonly'   => true,
-				'desc'       => 'Panier',
-				'searchable' => true,
+				'name'      => amapress__( 'Panier(s)' ),
+				'type'      => 'multicheck-posts',
+				'post_type' => AmapressPanier::INTERNAL_POST_TYPE,
+				'readonly'  => true,
+				'desc'      => 'Panier(s)',
+//				'searchable' => true,
 			),
 			'contrat_instance'   => array(
-				'name'              => amapress__( 'Contrat' ),
-				'type'              => 'select-posts',
-				'post_type'         => AmapressContrat_instance::INTERNAL_POST_TYPE,
-				'readonly'          => true,
-				'desc'              => 'Contrat',
-				'autoselect_single' => true,
-				'searchable'        => true,
+				'name'      => amapress__( 'Contrat(s)' ),
+				'type'      => 'multicheck-posts',
+				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
+				'readonly'  => true,
+				'desc'      => 'Contrat(s)',
+//				'autoselect_single' => true,
+//				'searchable'        => true,
 			),
 			'repreneur'          => array(
 				'name'       => amapress__( 'Repreneur' ),
@@ -72,7 +79,11 @@ function amapress_register_entities_intermittence( $entities ) {
 				'readonly'          => true,
 				'desc'              => 'Lieu',
 				'autoselect_single' => true,
-				'searchable'        => true,
+//				'searchable'        => true,
+				'top_filter'        => array(
+					'name'        => 'amapress_lieu',
+					'placeholder' => 'Toutes les lieux',
+				),
 			),
 			'adh_message'        => array(
 				'name'       => amapress__( 'Message aux repreneurs' ),

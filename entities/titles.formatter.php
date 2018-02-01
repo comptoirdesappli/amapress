@@ -194,12 +194,12 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 add_filter( 'amapress_intermittence_panier_title_formatter', 'amapress_intermittence_panier_title_formatter', 10, 2 );
 function amapress_intermittence_panier_title_formatter( $post_title, WP_Post $post ) {
 	$adh = AmapressIntermittence_panier::getBy( $post->ID );
-	if ( $adh->getPanier() == null ) {
+	if ( ! $adh->hasPaniers() ) {
 		return $post->post_title;
 	}
 
 	return sprintf( '%s - %s',
-		$adh->getPanier()->getTitle(),
+		$adh->getPaniersTitles(),
 		$adh->getAdherent()->getDisplayName() );
 }
 

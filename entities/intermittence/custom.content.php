@@ -208,13 +208,15 @@ function amapress_get_paniers_intermittents_table(
 		$quantites = array();
 		$prices    = array();
 		foreach ( $adh as $a ) {
-			$adhesions = AmapressAdhesion::getUserActiveAdhesions( $a->getAdherent()->ID, $a->getContrat_instance()->ID );
-			/** @var AmapressAdhesion $adhesion */
-			$adhesion = array_shift( $adhesions );
+			foreach ( $a->getContrat_instances() as $contrat_instance ) {
+				$adhesions = AmapressAdhesion::getUserActiveAdhesions( $a->getAdherent()->ID, $contrat_instance->ID );
+				/** @var AmapressAdhesion $adhesion */
+				$adhesion = array_shift( $adhesions );
 
-			$paniers[]   = "<a href='{$dist->getPermalink()}'>{$a->getContrat_instance()->getModel()->getTitle()}</a>";
-			$quantites[] = $adhesion->getContrat_quantites_AsString( $date );
-			$prices[]    = $adhesion->getContrat_quantites_Price( $date );
+				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModel()->getTitle()}</a>";
+				$quantites[] = $adhesion->getContrat_quantites_AsString( $date );
+				$prices[]    = $adhesion->getContrat_quantites_Price( $date );
+			}
 		}
 		$data[] = array(
 			'panier'    => implode( ', ', $paniers ),
@@ -261,10 +263,11 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 	return amapress_get_paniers_intermittents_table( 'my-echanges', $adhs,
 		function ( $state, $status, $adh ) {
 			if ( 'to_exchange' == $status || 'exch_valid_wait' == $status || 'exchanged' == $status ) {
-				$ad    = $adh[0];
-				$id    = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
-				$state .= '<div class="cancel-echange-panier amapress-ajax-parent"><h4>Motif d\'annulation</h4><textarea id="' . $id . '"></textarea><br/>';
-				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
+				/** @var AmapressIntermittence_panier $ad */
+				$ad        = $adh[0];
+				$id        = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
+				$state     .= '<div class="cancel-echange-panier amapress-ajax-parent"><h4>Motif d\'annulation</h4><textarea id="' . $id . '"></textarea><br/>';
+				$state     .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
 				data-message="val:#' . $id . '" data-confirm="Etes-vous sûr d\'annuler votre proposition?" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
 					}, $adh ) ) . '">Annuler échange</button></div>';
@@ -285,7 +288,7 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 					$state .= '<button type="button" class="btn btn-default amapress-ajax-button reject-echange" data-user="' . $user->ID . '" data-confirm="Etes-vous sûr de vouloir valider la propositio, ?" data-action="reject_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
 						}, $adh ) ) . '">Rejet échange (' . $user->getDisplayName() . ')</button>';
-					$state .= '<div/>';
+					$state .= '</div>';
 				}
 			}
 
@@ -443,10 +446,10 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 	return amapress_get_paniers_intermittents_table( 'my-recups', $adhs,
 		function ( $state, $status, $adh ) {
 			if ( 'exch_valid_wait' == $status || 'exchanged' == $status ) {
-				$state = '<span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>En attente de validation</strong>' : 'A récupérer' ) . '</span>';
+				$state = '<div class="amapress-ajax-parent"><span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>En attente de validation</strong>' : 'A récupérer' ) . '</span>';
 				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="Etes-vous sûr de vouloir annuler l\'échange ?" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
-					}, $adh ) ) . '">Annuler échange</button>';
+					}, $adh ) ) . '">Annuler échange</button></div>';
 			}
 
 			return $state;

@@ -504,18 +504,19 @@ function amapress_paiements_views() {
 
 function amapress_intermittence_panier_views() {
 	$ret = array();
-//    amapress_add_view_button(
-//        $ret, 'actives',
-//        "post_type=amps_inter_adhe&amapress_date=active",
-//        'En cours');
-//
-//    $lieux = Amapress::get_lieux();
-//    foreach ($lieux as $lieu) {
-//        amapress_add_view_button(
-//            $ret, 'for_' . $lieu->ID,
-//            "post_type=amps_inter_adhe&amapress_date=active&amapress_lieu={$lieu->ID}",
-//            $lieu->getShortName());
-//    }
+
+	amapress_add_view_button(
+		$ret, 'actives',
+		"post_type=amps_inter_adhe&amapress_date=active",
+		'En cours' );
+
+	$lieux = Amapress::get_lieux();
+	foreach ( $lieux as $lieu ) {
+		amapress_add_view_button(
+			$ret, 'for_' . $lieu->ID,
+			"post_type=amps_inter_adhe&amapress_date=active&amapress_lieu={$lieu->ID}",
+			$lieu->getShortName() );
+	}
 //
 //    $contrats = AmapressContrats::get_active_contrat_instances();
 //    foreach ($contrats as $contrat) {

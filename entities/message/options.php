@@ -105,144 +105,145 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 }
 
 function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, TitanEntity $post = null ) {
-	$res = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i', function ( $m ) use ( $user, $post ) {
-		/** @var TitanEntity $post */
-		$opt    = isset( $m['opt'] ) ? $m['opt'] : '';
-		$subopt = isset( $m['subopt'] ) ? $m['subopt'] : '';
-		$fmt    = isset( $m['fmt'] ) ? $m['fmt'] : '';
+	$res = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
+		function ( $m ) use ( $user, $post ) {
+			/** @var TitanEntity $post */
+			$opt    = isset( $m['opt'] ) ? $m['opt'] : '';
+			$subopt = isset( $m['subopt'] ) ? $m['subopt'] : '';
+			$fmt    = isset( $m['fmt'] ) ? $m['fmt'] : '';
 
 
-		switch ( $opt ) {
-			case "nom_site":
-			case "site_name":
-				return get_bloginfo( 'name' );
-			case "url":
-			case "site_url":
-				return get_bloginfo( 'url' );
-			case "description":
-			case "site_description":
-				return get_bloginfo( 'description' );
-			case "site":
-				switch ( $opt ) {
-					default:
-						return get_bloginfo( $subopt );
-				}
-			case 'site_icon_url':
-				$size = empty( $fmt ) ? 'thumbnail' : $fmt;
-				preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
-				if ( $ma ) {
-					$size = array( intval( $ma['w'] ), intval( $ma['h'] ) );
-				}
-				$site_icon_id = get_option( 'site_icon' );
-				$image        = wp_get_attachment_image_src( $site_icon_id, $size );
-				if ( empty( $image ) ) {
-					return '';
-				}
+			switch ( $opt ) {
+				case "nom_site":
+				case "site_name":
+					return get_bloginfo( 'name' );
+				case "url":
+				case "site_url":
+					return get_bloginfo( 'url' );
+				case "description":
+				case "site_description":
+					return get_bloginfo( 'description' );
+				case "site":
+					switch ( $opt ) {
+						default:
+							return get_bloginfo( $subopt );
+					}
+				case 'site_icon_url':
+					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
+					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
+					if ( $ma ) {
+						$size = array( intval( $ma['w'] ), intval( $ma['h'] ) );
+					}
+					$site_icon_id = get_option( 'site_icon' );
+					$image        = wp_get_attachment_image_src( $site_icon_id, $size );
+					if ( empty( $image ) ) {
+						return '';
+					}
 
-				return esc_url( $image[0] );
-			case 'site_icon_url_link':
-				$size = empty( $fmt ) ? 'thumbnail' : $fmt;
-				preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
-				if ( $ma ) {
-					$size = array( intval( $ma['w'] ), intval( $ma['h'] ) );
-				}
-				$site_icon_id = get_option( 'site_icon' );
-				$image        = wp_get_attachment_image_src( $site_icon_id, $size );
-				if ( empty( $image ) ) {
-					return '';
-				}
-				$url = esc_url( $image[0] );
+					return esc_url( $image[0] );
+				case 'site_icon_url_link':
+					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
+					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
+					if ( $ma ) {
+						$size = array( intval( $ma['w'] ), intval( $ma['h'] ) );
+					}
+					$site_icon_id = get_option( 'site_icon' );
+					$image        = wp_get_attachment_image_src( $site_icon_id, $size );
+					if ( empty( $image ) ) {
+						return '';
+					}
+					$url = esc_url( $image[0] );
 
-				return "<img src='{$url}' />";
-			case "moi":
-			case "me":
-				$curr = AmapressUser::getBy( amapress_current_user_id() );
+					return "<img src='{$url}' />";
+				case "moi":
+				case "me":
+					$curr = AmapressUser::getBy( amapress_current_user_id() );
 
-				return amapress_replace_mail_user_placeholder( $curr, $subopt, $fmt );
-			case "user":
-			case "dest":
-				$curr = AmapressUser::getBy( $user->ID );
+					return amapress_replace_mail_user_placeholder( $curr, $subopt, $fmt );
+				case "user":
+				case "dest":
+					$curr = AmapressUser::getBy( $user->ID );
 
-				return amapress_replace_mail_user_placeholder( $curr, $subopt, $fmt );
-			case "login_url":
-				return wp_login_url();
-			case "login_url_link":
-				$url = wp_login_url();
+					return amapress_replace_mail_user_placeholder( $curr, $subopt, $fmt );
+				case "login_url":
+					return wp_login_url();
+				case "login_url_link":
+					$url = wp_login_url();
 
-				return "<a href='mailto:{$url}'>{$url}</a>";
-			case "password_url":
-				$url = amapress_get_user_reset_password_url( $user->getUser() );
+					return "<a href='mailto:{$url}'>{$url}</a>";
+				case "password_url":
+					$url = amapress_get_user_reset_password_url( $user->getUser() );
 
-				return '<a href="' . esc_attr( $url ) . '">' . esc_html( $url ) . '</a>';
-				break;
-			case "password_url_raw":
-				return amapress_get_user_reset_password_url( $user->getUser() );
-			case "registration_text":
-				$message = sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
-				$message .= __( 'To set your password, visit the following address:' ) . "\r\n\r\n";
-				$message .= '<' . amapress_get_user_reset_password_url( $user->getUser() ) . ">\r\n\r\n";
+					return '<a href="' . esc_attr( $url ) . '">' . esc_html( $url ) . '</a>';
+					break;
+				case "password_url_raw":
+					return amapress_get_user_reset_password_url( $user->getUser() );
+				case "registration_text":
+					$message = sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
+					$message .= __( 'To set your password, visit the following address:' ) . "\r\n\r\n";
+					$message .= '<' . amapress_get_user_reset_password_url( $user->getUser() ) . ">\r\n\r\n";
 
-				return $message;
+					return $message;
 
-			case "now":
-				if ( empty( $fmt ) ) {
-					$fmt = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-				}
+				case "now":
+					if ( empty( $fmt ) ) {
+						$fmt = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+					}
 
-				return date_i18n( $fmt );
-				break;
-			case 'post':
-				switch ( $subopt ) {
-					case 'id':
-						if ( $post != null ) {
-							return $post->ID;
-						} else {
-							return $user->ID;
-						}
-					case 'title':
-					case 'titre':
-						if ( $post != null ) {
-							return $post->getTitle();
-						} else {
-							return $user->getDisplayName();
-						}
-						break;
-					case 'link':
-					case 'lien':
-						if ( $post != null ) {
-							return Amapress::makeLink( $post->getPermalink() );
-						} else {
-							return '';
-						}
-						break;
-					case 'title-link':
-					case 'titre-lien':
-						if ( $post != null ) {
-							return Amapress::makeLink( $post->getPermalink(), $post->getTitle() );
-						} else {
-							return '';
-						}
-						break;
-					case 'href':
-						if ( $post != null ) {
-							return $post->getPermalink();
-						} else {
-							return '';
-						}
-						break;
+					return date_i18n( $fmt );
+					break;
+				case 'post':
+					switch ( $subopt ) {
+						case 'id':
+							if ( $post != null ) {
+								return $post->ID;
+							} else {
+								return $user->ID;
+							}
+						case 'title':
+						case 'titre':
+							if ( $post != null ) {
+								return $post->getTitle();
+							} else {
+								return $user->getDisplayName();
+							}
+							break;
+						case 'link':
+						case 'lien':
+							if ( $post != null ) {
+								return Amapress::makeLink( $post->getPermalink() );
+							} else {
+								return '';
+							}
+							break;
+						case 'title-link':
+						case 'titre-lien':
+							if ( $post != null ) {
+								return Amapress::makeLink( $post->getPermalink(), $post->getTitle() );
+							} else {
+								return '';
+							}
+							break;
+						case 'href':
+							if ( $post != null ) {
+								return $post->getPermalink();
+							} else {
+								return '';
+							}
+							break;
 
-					default:
-						if ( $post != null ) {
-							return $post->getProperty( $subopt );
-						} else {
-							return $user->getProperty( $subopt );
-						}
-				}
-				break;
-			default:
-				return $m[0];
-		}
-	}, $mail_content );
+						default:
+							if ( $post != null ) {
+								return $post->getProperty( $subopt );
+							} else {
+								return $user->getProperty( $subopt );
+							}
+					}
+					break;
+				default:
+					return $m[0];
+			}
+		}, $mail_content );
 
 	return $res;
 }
