@@ -210,7 +210,7 @@ class TitanEntity {
 			return explode( ',', $value );
 		}
 
-		return $value;
+		return [ $value ];
 	}
 
 	public static function to_date( $s ) {
