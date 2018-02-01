@@ -369,13 +369,10 @@ class TitanFrameworkAdminPage {
 					             && isset( $this->getActiveTab()->settings['use_table'] ) ?
 						$this->getActiveTab()->settings['use_table'] :
 						$this->settings['use_table'];
-					if ( $use_form ) :
+					if ( $use_form ) {
 					?>
                     <form method='post' enctype="multipart/form-data">
 						<?php
-						endif;
-
-						if ( $use_form ) {
 							// security
 							wp_nonce_field( $this->settings['id'], TF . '_nonce' );
 						}
@@ -416,12 +413,12 @@ class TitanFrameworkAdminPage {
                         </table>
 						<?php
 						}
-						if ( $use_form ) :
+						if ( $use_form ) {
 
 						?>
                     </form>
 				<?php
-				endif;
+				}
 
 				// Reset form. We use JS to trigger a reset from other buttons within the main form
 				// This is used by class-option-save.php
