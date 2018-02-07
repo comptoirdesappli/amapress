@@ -407,9 +407,19 @@ function amapress_register_admin_bar_menu_items( $items ) {
 	}
 
 	$items[] = array(
-		'id'    => 'amapress',
-		'title' => 'Amapress',
-		'items' => array(
+		'id'        => 'amapress-site-name',
+		'title'     => 'Bienvenu sur le site de ' . get_bloginfo( 'name' ),
+		'condition' => function () {
+			return ! amapress_can_access_admin();
+		}
+	);
+	$items[] = array(
+		'id'        => 'amapress',
+		'title'     => 'Amapress',
+		'condition' => function () {
+			return amapress_can_access_admin();
+		},
+		'items'     => array(
 			array(
 				'id'         => 'amapress_add_inscription',
 				'title'      => 'Ajouter une inscription',

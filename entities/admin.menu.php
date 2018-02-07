@@ -202,6 +202,12 @@ function amapress_admin_bar_menu_entities( WP_Admin_Bar $admin_bar ) {
 	amapress_admin_bar_add_items(
 		apply_filters( 'amapress_register_admin_bar_menu_items', array() ),
 		$admin_bar, null );
+
+	if ( ! amapress_can_access_admin() ) {
+		$admin_bar->remove_node( 'site-name' );
+		$admin_bar->remove_node( 'wp-logo' );
+		$admin_bar->remove_node( 'gdbb-toolbar' );
+	}
 }
 
 add_action( 'admin_bar_menu', 'amapress_admin_bar_new_entities', 900, 1 );
