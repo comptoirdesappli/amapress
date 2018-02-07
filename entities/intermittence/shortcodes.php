@@ -265,6 +265,10 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		$contrat_names = array();
 		foreach ( $date_dists as $dist ) {
 			foreach ( $dist->getContrats() as $c ) {
+				if ( ! in_array( $c->ID, $adhesions_contrat_ids ) ) {
+					continue;
+				}
+
 				if ( ! in_array( $c->getTitle(), $contrat_names ) ) {
 					$contrat_names[] = $c->getTitle();
 				}
