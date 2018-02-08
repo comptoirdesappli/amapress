@@ -56,11 +56,11 @@ class AmapressUser extends TitanUserEntity {
 
 		if ( null === self::$user_ids_with_roles ) {
 			global $wpdb;
-			self::$user_ids_with_roles = $wpdb->get_col( 'SELECT DISTINCT tr.object_id
-FROM wp_term_taxonomy AS tt
-INNER JOIN wp_term_relationships AS tr
+			self::$user_ids_with_roles = $wpdb->get_col( "SELECT DISTINCT tr.object_id
+FROM $wpdb->term_taxonomy AS tt
+INNER JOIN $wpdb->term_relationships AS tr
 ON tr.term_taxonomy_id = tt.term_taxonomy_id
-WHERE tt.taxonomy = \'amps_amap_role_category\'' );
+WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		}
 		if ( ! in_array( $this->getID(), self::$user_ids_with_roles ) ) {
 			$this->amap_roles = [];
