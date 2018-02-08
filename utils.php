@@ -68,9 +68,17 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			'info'         => false,
 			'nowrap'       => true,
 			'data'         => $data,
+			'init_as_html' => false,
 			'table-layout' => 'auto',
 			'language'     => array( 'url' => '//cdn.datatables.net/plug-ins/1.10.11/i18n/French.json' ),
 		) );
+
+	$init_as_html = $options['init_as_html'];
+	if ( $init_as_html ) {
+		unset( $options['columns'] );
+		unset( $options['data'] );
+	}
+	unset( $options['init_as_html'] );
 
 	$initComplete = $options['initComplete'];
 	unset( $options['initComplete'] );
@@ -88,14 +96,44 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 		$options['dom']     = 'Bfrtip';
 	}
 
+	$table_content = '';
+	if ( $init_as_html ) {
+		$table_content .= '<thead><tr>';
+		foreach ( $columns as $col ) {
+			$title         = isset( $col['title'] ) ? $col['title'] : '&#xA0;';
+			$table_content .= '<th>' . $title . '</th>';
+		}
+		$table_content .= '</tr></thead>';
+
+		$table_content .= '<tbody>';
+		foreach ( $data as $d ) {
+			$table_content .= '<tr>';
+			foreach ( $columns as $col ) {
+				$data_k      = is_array( $col['data'] ) ? $col['data']['_'] : $col['data'];
+				$data_sort_k = is_array( $col['data'] ) ? $col['data']['sort'] : $col['data'];
+
+				$data_v      = isset( $d[ $data_k ] ) ? $d[ $data_k ] : '';
+				$data_sort_v = isset( $d[ $data_sort_k ] ) ? $d[ $data_sort_k ] : '';
+
+				if ( $data_v != $data_sort_v ) {
+					$table_content .= '<td data-sort="' . esc_attr( $data_sort_v ) . '">' . $data_v . '</td>';
+				} else {
+					$table_content .= '<td>' . $data_v . '</td>';
+				}
+			}
+			$table_content .= '</tr>';
+		}
+		$table_content .= '</tbody>';
+	}
+
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
-	$ret .= "<table id='$id' class='display $nowrap' style='$style' width='100%' cellspacing='0'></table>";
+	$ret .= "<table id='$id' class='display $nowrap' style='$style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	$ret .= "<script type='text/javascript'>\n";
 	$ret .= "    //<![CDATA[\n";
 	$ret .= "    jQuery(document).ready(function ($) {\n";
-	$ret .= "        $('#$id')$init.dataTable(" . json_encode( $options ) . ")\n";
+	$ret .= "        $('#$id')$init.DataTable(" . json_encode( $options ) . ")\n";
 	$ret .= "    });\n";
 	$ret .= "    //]]>\n";
 	$ret .= "</script>";
