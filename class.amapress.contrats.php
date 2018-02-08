@@ -557,7 +557,7 @@ class AmapressContrats {
 		}
 
 		$ret = $res;
-		if ( $user_id ) {
+		if ( 'all' !== $user_id ) {
 			$ret = array_filter(
 				$ret,
 				function ( $a ) use ( $user_id ) {

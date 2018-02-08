@@ -17,6 +17,7 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 		'show_link'         => true,
 		'link_text'         => 'Voir les (%%count%%) utilisateurs',
 		'show_table'        => true,
+		'show_header'       => false,
 		'include_columns'   => array(),
 		'exclude_columns'   => array(),
 		'datatable_options' => array(),
@@ -59,7 +60,7 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 	}
 
 	public function display() {
-		if ( ! $this->settings['show_table'] ) {
+		if ( ! $this->settings['show_table'] || $this->settings['show_header'] ) {
 			$this->echoOptionHeader();
 		} else {
 			$this->echoOptionHeaderBare();
@@ -125,7 +126,7 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 		}
 
 
-		if ( ! $this->settings['show_table'] ) {
+		if ( ! $this->settings['show_table'] || $this->settings['show_header'] ) {
 			$this->echoOptionFooter();
 		} else {
 			$this->echoOptionFooterBare();

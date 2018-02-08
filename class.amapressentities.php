@@ -1506,6 +1506,117 @@ class AmapressEntities {
 							),
 						),
 						array(
+							'subpage'  => true,
+							'id'       => 'amapress_collectif',
+							'type'     => 'panel',
+							'settings' => array(
+								'name'       => 'Le collectif',
+								'position'   => '25.17',
+								'capability' => 'edit_user',
+//								'icon'       => 'dashicons-admin-tools',
+							),
+							'options'  => array(
+//								array(
+//									'type' => 'note',
+//									'desc' => 'ici vous pouvez gérer...'
+//								),
+							),
+							'tabs'     => array(
+								'Rôles dans l\'Amap'    => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'amap_role_editor',
+											'bare'   => true,
+											'type'   => 'custom',
+											'custom' => function ( $option ) {
+												return amapress_get_amap_roles_editor();
+											},
+											'save'   => function ( $option ) {
+												amapress_save_amap_role_editor();
+											},
+										),
+										array(
+											'type'      => 'save',
+											'use_reset' => false,
+										),
+										array(
+											'id'      => 'amap_role_add',
+											'type'    => 'action-buttons',
+											'name'    => 'Rôles supplémentaires',
+											'buttons' => array(
+												array(
+													'text' => 'Ajouter un rôle',
+													'href' => admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
+												),
+											),
+										),
+
+									)
+								),
+								'Référents producteurs' => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'amap_referents_view',
+											'name'   => '',
+											'type'   => 'custom',
+											'custom' => function ( $option ) {
+												return amapress_get_referent_prods_grid();
+											}
+										)
+									),
+								),
+								'Rôles Amapress'        => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'type'            => 'related-users',
+											'name'            => 'Administrateurs',
+											'query'           => 'role=administrator',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+										array(
+											'type'            => 'related-users',
+											'name'            => 'Responsables Amap',
+											'query'           => 'role=responsable_amap',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+										array(
+											'type'            => 'related-users',
+											'name'            => 'Coordinateurs Amap',
+											'query'           => 'role=coordinateur_amap',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+										array(
+											'type'            => 'related-users',
+											'name'            => 'Référents Producteurs',
+											'query'           => 'role=referent',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+										array(
+											'type'            => 'related-users',
+											'name'            => 'Producteurs',
+											'query'           => 'role=producteur',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+										array(
+											'type'            => 'related-users',
+											'name'            => 'Trésoriers',
+											'query'           => 'role=tresorier',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+									),
+								),
+							),
+						),
+						array(
 							'title'      => 'Lieux de distributions',
 							'menu_icon'  => 'post_type',
 							'menu_title' => 'Lieux de distributions',
@@ -1801,7 +1912,7 @@ class AmapressEntities {
 	}
 
 	private static function init_posts() {
-		self::$post_types     = apply_filters( 'amapress_register_entities', array() );
+		self::$post_types = apply_filters( 'amapress_register_entities', array() );
 	}
 
 	public static function getPostFieldsLabels( $post_type = null ) {
