@@ -94,7 +94,7 @@ jQuery(function ($) {
             },
             width: 'auto'
         });
-    }
+    };
     $(".tab-content .tab-pane").each(function () {
         $(this).addClass("active");
         var height = $(this).height();

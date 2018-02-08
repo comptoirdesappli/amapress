@@ -25,8 +25,8 @@ class AmapressUserTaxonomy {
 	 * Set values for custom columns in user taxonomies
 	 */
 	public function set_user_column_values( $display, $column, $term_id ) {
-		if ( 'users' === $column ) {
-			$taxonomy = $_GET['taxonomy'];
+		if ( 'users' === $column && isset( $_REQUEST['taxonomy'] ) ) {
+			$taxonomy = $_REQUEST['taxonomy'];
 			$term     = get_term( $term_id, $taxonomy );
 			$url      = admin_url( "users.php?$taxonomy=$term->slug" );
 			echo "<a href='$url'>{$term->count}</a>";
