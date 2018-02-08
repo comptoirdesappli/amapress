@@ -328,7 +328,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 			if ( $lieu_id && ! in_array( $lieu_id, $lieu_ids ) ) {
 				continue;
 			}
-			if ( 'wp_role' == $type && ! in_array( $role['role'], amapress_can_access_admin_roles() ) ) {
+			if ( 'wp_role' == $type ) {
 				continue;
 			}
 
