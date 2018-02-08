@@ -62,7 +62,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_roles'      => 'default',
 		'show_for_resp'   => 'true',
 		'max_dates'       => - 1,
-		'responsive'      => 'true',
+		'responsive'      => 'false',
 		'user'            => null,
 		'lieu'            => null,
 		'date'            => null,
@@ -196,15 +196,18 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	foreach ( $all_user_lieux as $lieu_id ) {
 		$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 		$ret       .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
-		$ret       .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' nowrap distrib-inscr-list" width="100%" style="table-layout: auto" cellspacing="0">';
-		$ret       .= '<thead>';
-		$ret       .= '<tr>';
-		$ret       .= '<th>Date</th>';
+		if ( current_user_can( 'edit_lieu_distribution' ) ) {
+			$ret .= '<p style="text-align: center"><a class="btn btn-default" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
+		}
+		$ret .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed" cellspacing="0">';
+		$ret .= '<thead>';
+		$ret .= '<tr>';
+		$ret .= '<th style="width: 5em">Date</th>';
 		/** @var AmapressLieu_distribution $user_lieu */
 		/** @var AmapressLieu_distribution $user_lieu */
 //        foreach ($user_lieux as $lieu_id) {
 		for ( $i = 1; $i <= $lieux_needed_resps[ $lieu_id ]; $i ++ ) {
-			$ret .= '<th class="distrib-resp-head">Responsable ' . $i . '</th>';
+			$ret .= '<th class="distrib-resp-head" style="width: calc(100 / ' . $lieux_needed_resps[ $lieu_id ] . ' - 5em)">Responsable ' . $i . '</th>';
 		}
 		$ret .= '</tr>';
 		$ret .= '</thead>';
@@ -343,19 +346,19 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 						if ( $is_user_part_of ) {
 							$ret .= "<td class='$colspan_cls incr-list-resp incr-missing'><span class='distrib-resp-missing'>manquant</span>$inscr_another</td>";
 						} else {
-							$ret .= "<td class='$colspan_cls incr-list-resp incr-not-part'></td>";
+							$ret .= "<td class='$colspan_cls incr-list-resp incr-not-part'>$inscr_another</td>";
 						}
 					}
 				}
 				foreach ( $resps as $resp ) {
-					$ret .= '<td class="">';
+					$ret .= '<td style="text-align: center">';
 					$ret .= $resp->getDisplay( $atts );
-					if ( $is_user_part_of ) {
+					if ( $is_user_part_of || $is_current_user_resp_amap ) {
 						$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
 						if ( $can_unsubscribe ) {
 							if ( $resp->ID == amapress_current_user_id() ) {
 								$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
-							} else if ( $is_resp_distrib ) {
+							} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
 								$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '" data-user="' . $resp->ID . '">Désinscrire</button>';
 							}
 						}

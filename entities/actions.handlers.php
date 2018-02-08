@@ -260,11 +260,11 @@ function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $
 }
 
 function amapress_mail_current_user_desinscr( TitanEntity $post, $user_id = null, $event_type = 'event' ) {
-	$subject = Amapress::getOption( "inscr-$event_type-mail-subject" );
+	$subject = Amapress::getOption( "desinscr-$event_type-mail-subject" );
 	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
 		$subject = Amapress::getOption( 'desinscr-event-mail-subject' );
 	}
-	$content = Amapress::getOption( "inscr-$event_type-mail-content" );
+	$content = Amapress::getOption( "desinscr-$event_type-mail-content" );
 	if ( empty( $content ) || empty( trim( $content ) ) ) {
 		$content = Amapress::getOption( 'desinscr-event-mail-content' );
 	}
