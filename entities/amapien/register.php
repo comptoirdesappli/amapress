@@ -9,7 +9,7 @@ function amapress_register_entities_amapien( $entities ) {
 	$entities['user'] = array(
 		'internal_name'       => 'user',
 		'csv_required_fields' => array( 'user_email', 'first_name', 'last_name' ),
-		'bulk_actions' => array(
+		'bulk_actions'        => array(
 			'amp_resend_welcome' => array(
 				'label'    => 'Réenvoyer le mail de bienvenue',
 				'messages' => array(
@@ -29,7 +29,7 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 			),
 		),
-		'fields'       => array(
+		'fields'              => array(
 //            'role_desc' => array(
 //                'name' => amapress__('Rôle dans l\'AMAP'),
 //                'type' => 'text',
@@ -183,6 +183,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'        => 'textarea',
 				'desc'        => 'Commentaire pour la liste émargement',
 				'show_column' => false,
+				'csv'         => false,
 			),
 
 //            'allow_show_email' => array(
@@ -241,15 +242,15 @@ function amapress_register_entities_amapien( $entities ) {
 //                ),
 //            ),
 		),
-		'help_new'     => array(),
-		'help_edit'    => array(),
-		'help_view'    => array(),
-		'help_profile' => array(),
-		'views'        => array(
+		'help_new'            => array(),
+		'help_edit'           => array(),
+		'help_view'           => array(),
+		'help_profile'        => array(),
+		'views'               => array(
 			'_dyn_all_' => 'amapress_user_views',
 			'exp_csv'   => true,
 		),
-		'row_actions'  => array(
+		'row_actions'         => array(
 			'add_inscription' => [
 				'label'  => 'Ajouter une inscription',
 				'href'   => admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=%id%' ),

@@ -482,6 +482,14 @@ jQuery(function($) {
 				'import_key'        => true,
 				'autoselect_single' => true,
 				'searchable'        => true,
+				'custom_csv_sample' => function ( $option, $arg ) {
+					$ret = [];
+					foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
+						$ret[ $c->ID ] = $c->getTitle();
+					}
+
+					return $ret;
+				}
 			),
 			'code'             => array(
 				'name'         => amapress__( 'Code' ),
@@ -516,6 +524,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
+				'csv'          => false,
 			),
 			'unit'             => array(
 				'name'    => amapress__( 'Unité' ),
@@ -529,6 +538,7 @@ jQuery(function($) {
 			'quantite_config'  => array(
 				'name' => amapress__( 'Config quantité' ),
 				'type' => 'text',
+				'csv'  => false,
 			),
 			'avail_from'       => array(
 				'name' => amapress__( 'Valable à partir de' ),

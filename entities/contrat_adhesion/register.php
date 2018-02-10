@@ -137,7 +137,16 @@ function amapress_register_entities_adhesion( $entities ) {
 					}
 
 					return $ret;
+				},
+				'custom_csv_sample' => function ( $option, $arg ) {
+					$ret = [];
+					foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
+						$ret[ $c->ID ] = $c->getTitle();
+					}
+
+					return $ret;
 				}
+
 			),
 			'contrat_quantite' => array(
 				'name'              => amapress__( 'Quantité' ),
@@ -157,8 +166,8 @@ function amapress_register_entities_adhesion( $entities ) {
 					return esc_html( $adh->getContrat_quantites_AsString() );
 				},
 				'custom_csv_sample' => function ( $option, $arg ) {
-					$ret = [];
 					if ( $arg['multi'] != - 1 ) {
+						$ret = [];
 						foreach ( AmapressContrats::get_contrat_quantites( $arg['multi'] ) as $q ) {
 							$ret[] = $q->getTitle();
 							$ret[] = $q->getCode();
@@ -166,19 +175,37 @@ function amapress_register_entities_adhesion( $entities ) {
 								$ret[] = $q->getQuantite();
 							}
 						}
+						$filtered_ret = [];
+						foreach ( $ret as $r ) {
+							if ( ! in_array( $r, $filtered_ret ) ) {
+								$filtered_ret[] = $r;
+							}
+						}
+
+						return $filtered_ret;
 					} else {
+						$ret = [];
 						foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
+							$ret[]       = '**Pour le contrat <' . $c->getTitle() . '>**';
+							$contrat_ret = [];
 							foreach ( AmapressContrats::get_contrat_quantites( $c->ID ) as $q ) {
-								$ret[] = $q->getTitle();
-								$ret[] = $q->getCode();
+								$contrat_ret[] = $q->getTitle();
+								$contrat_ret[] = $q->getCode();
 								if ( $q->getQuantite() ) {
-									$ret[] = $q->getQuantite();
+									$contrat_ret[] = $q->getQuantite();
+								}
+							}
+							$filtered_ret = [];
+							foreach ( $contrat_ret as $r ) {
+								if ( ! in_array( $r, $filtered_ret ) ) {
+									$filtered_ret[] = $r;
+									$ret[]          = $r;
 								}
 							}
 						}
-					}
 
-					return $ret;
+						return $ret;
+					}
 				},
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
@@ -308,6 +335,7 @@ jQuery(function($) {
 				'desc'          => 'Date à laquelle se termine le contrat',
 				'show_column'   => false,
 				'show_on'       => 'edit-only',
+				'csv'           => false,
 				'before_option' =>
 					function ( $option ) {
 						/** @var TitanFrameworkOption $option */
@@ -334,6 +362,7 @@ jQuery(function($) {
 				'desc'        => 'Motif de départ (Déménagement, insatisfaction, ...)',
 				'show_column' => false,
 				'show_on'     => 'edit-only',
+				'csv'         => false,
 			),
 //			'no_renew'       => array(
 //				'name'        => amapress__( 'Pas de renouvellement' ),
