@@ -472,6 +472,13 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'capability' => 'edit_panier',
 				'items'      => $panier_edit_items
 			),
+			array(
+				'id'         => 'amapress_edit_collectif',
+				'title'      => 'Editer le collectif',
+				'capability' => 'edit_user',
+				'href'       => admin_url( 'admin.php?page=amapress_collectif' ),
+			),
+//admin.php?page=amapress_collectif
 //			array(
 //				'id' => 'amapress_',
 //				'title' => '',
