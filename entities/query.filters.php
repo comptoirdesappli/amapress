@@ -499,25 +499,25 @@ function amapress_filter_posts( WP_Query $query ) {
 //            var_dump($user_ids);
 			amapress_add_meta_query( $query, array(
 				array(
-					'relation' => 'OR',
+//					'relation' => 'OR',
 					array(
 						'key'     => "amapress_{$pt}_adherent",
 						'value'   => amapress_prepare_in( $user_ids ),
 						'compare' => 'IN',
 						'type'    => 'NUMERIC'
 					),
-					array(
-						'key'     => "amapress_{$pt}_adherent2",
-						'value'   => amapress_prepare_in( $user_ids ),
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
-					array(
-						'key'     => "amapress_{$pt}_adherent3",
-						'value'   => amapress_prepare_in( $user_ids ),
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
+//					array(
+//						'key'     => "amapress_{$pt}_adherent2",
+//						'value'   => amapress_prepare_in( $user_ids ),
+//						'compare' => 'IN',
+//						'type'    => 'NUMERIC'
+//					),
+//					array(
+//						'key'     => "amapress_{$pt}_adherent3",
+//						'value'   => amapress_prepare_in( $user_ids ),
+//						'compare' => 'IN',
+//						'type'    => 'NUMERIC'
+//					),
 				),
 			) );
 		} else if ( $pt == 'amap_event' || $pt == 'visite' || $pt == 'assemblee' ) {
@@ -619,31 +619,16 @@ function amapress_filter_posts( WP_Query $query ) {
 //            if ($amapress)
 			amapress_add_meta_query( $query, array(
 				array(
-					'relation' => 'OR',
-					array(
 						array(
-							'key'     => "amapress_{$pt}_adherent2",
-							'compare' => 'EXISTS',
+							'key'     => "amapress_{$pt}_adherent",
+							'compare' => 'IN',
+							'value'   => get_users(
+								array(
+									'fields'           => 'ids',
+									'amapress_contrat' => 'with_coadherent',
+								)
+							)
 						),
-						array(
-							'key'     => "amapress_{$pt}_adherent2",
-							'compare' => '>',
-							'value'   => 0,
-							'type'    => 'NUMBERIC',
-						),
-					),
-					array(
-						array(
-							'key'     => "amapress_{$pt}_adherent3",
-							'compare' => 'EXISTS',
-						),
-						array(
-							'key'     => "amapress_{$pt}_adherent3",
-							'compare' => '>',
-							'value'   => 0,
-							'type'    => 'NUMBERIC',
-						),
-					),
 				),
 			) );
 		}
@@ -1204,6 +1189,14 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 		} else if ( $amapress_contrat == 'coadherent' ) {
 			$adhs     = AmapressContrats::get_active_adhesions();
 			$user_ids = array();
+			foreach (
+				$wpdb->get_col(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
 			foreach ( $adhs as $adh ) {
 				if ( $adh->getAdherent2Id() ) {
 					$user_ids[] = $adh->getAdherent2Id();
@@ -1214,11 +1207,31 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			}
 
 			if ( count( $user_ids ) > 0 ) {
-				$user_ids = implode( ',', array_unique( $user_ids ) );
-				if ( empty( $user_ids ) ) {
-					$user_ids = '0';
+				$user_ids = implode( ',', amapress_prepare_in( array_unique( $user_ids ) ) );
+				$where    .= " AND $wpdb->users.ID IN ($user_ids)";
+			} else {
+				$where .= " AND 0 = 1";
+			}
+		} else if ( $amapress_contrat == 'with_coadherent' ) {
+			$adhs     = AmapressContrats::get_active_adhesions();
+			$user_ids = array();
+			foreach (
+				$wpdb->get_col(
+					"SELECT DISTINCT $wpdb->usermeta.user_id
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			foreach ( $adhs as $adh ) {
+				if ( $adh->getAdherent2Id() || $adh->getAdherent3Id() ) {
+					$user_ids[] = $adh->getAdherentId();
 				}
-				$where .= " AND $wpdb->users.ID IN ($user_ids)";
+			}
+
+			if ( count( $user_ids ) > 0 ) {
+				$user_ids = implode( ',', amapress_prepare_in( array_unique( $user_ids ) ) );
+				$where    .= " AND $wpdb->users.ID IN ($user_ids)";
 			} else {
 				$where .= " AND 0 = 1";
 			}
@@ -1249,7 +1262,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 				}
 			}
 			$contrat_ids = implode( ',', amapress_prepare_in( $contrat_ids ) );
-			$where       .= " AND $wpdb->users.ID $op (SELECT amps_pmach.meta_value
+			$user_ids    = array();
+			foreach (
+				$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
@@ -1257,7 +1272,22 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
-                                                   AND CAST(amps_pm_contrat.meta_value as SIGNED) IN ($contrat_ids))";
+                                                   AND CAST(amps_pm_contrat.meta_value as SIGNED) IN ($contrat_ids)" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = implode( ',', amapress_prepare_in( array_unique( $user_ids ) ) );
+			foreach (
+				$wpdb->get_col(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')
+AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = implode( ',', amapress_prepare_in( array_unique( $user_ids ) ) );
+			$where        .= " AND $wpdb->users.ID $op ($all_user_ids)";
 		}
 	}
 	if ( isset( $uqi->query_vars['amapress_lieu'] ) ) {
@@ -1271,7 +1301,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 		$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 		$contrat_ids = implode( ',', amapress_prepare_in( $contrat_ids ) );
 		$lieu_ids    = implode( ',', amapress_prepare_in( $lieu_ids ) );
-		$where       .= " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
+		$user_ids    = array();
+		foreach (
+			$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_adhesion ON amps_pm_adhesion.post_id = amps_pmach.post_id
@@ -1282,7 +1314,22 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids)
-                                                   AND amps_pm_adhesion.meta_value IN ($lieu_ids))";
+                                                   AND amps_pm_adhesion.meta_value IN ($lieu_ids)" ) as $user_id
+		) {
+			$user_ids[] = intval( $user_id );
+		}
+		$all_user_ids = implode( ',', amapress_prepare_in( array_unique( $user_ids ) ) );
+		foreach (
+			$wpdb->get_col(
+				"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')
+AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
+		) {
+			$user_ids[] = intval( $user_id );
+		}
+		$all_user_ids = implode( ',', amapress_prepare_in( array_unique( $user_ids ) ) );
+		$where        .= " AND $wpdb->users.ID IN ($all_user_ids)";
 	}
 	if ( isset( $uqi->query_vars['amapress_adhesion'] ) ) {
 		$amapress_adhesion = $uqi->query_vars['amapress_adhesion'];

@@ -455,7 +455,8 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	private $principal_user_ids = null;
 
 	private static $coadherents = null;
-	public function getPrincipalUserIds() {
+
+	private static function ensureInitCoadherents() {
 		if ( null === self::$coadherents ) {
 			global $wpdb;
 			self::$coadherents = array_group_by(
@@ -467,6 +468,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 					return intval( $o->meta_value );
 				} );
 		}
+	}
+	public function getPrincipalUserIds() {
+		$this->ensureInitCoadherents();
 		if ( null === $this->principal_user_ids ) {
 			$this->principal_user_ids = [];
 			if ( isset( self::$coadherents[ $this->getID() ] ) ) {

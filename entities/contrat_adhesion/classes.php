@@ -424,23 +424,38 @@ class AmapressAdhesion extends TitanEntity {
 	/** @return  AmapressAdhesion[] */
 	public static function getAllActiveByUserId() {
 		if ( null === self::$paiement_cache ) {
+			global $wpdb;
+			$coadhs = array_group_by(
+				$wpdb->get_results(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ),
+				function ( $o ) {
+					return intval( $o->user_id );
+				} );
+
 			$cache = array();
 			foreach ( AmapressContrats::get_active_adhesions() as $adh ) {
-				if ( ! isset( $cache[ $adh->getAdherentId() ] ) ) {
-					$cache[ $adh->getAdherentId() ] = array();
+				$user_ids = array( $adh->getAdherentId() );
+				if ( $adh->getAdherent2Id() ) {
+					$user_ids[] = $adh->getAdherent2Id();
 				}
-				$cache[ $adh->getAdherentId() ][] = $adh;
-				if ( $adh->getAdherent2Id() > 0 ) {
-					if ( ! isset( $cache[ $adh->getAdherent2Id() ] ) ) {
-						$cache[ $adh->getAdherent2Id() ] = array();
-					}
-					$cache[ $adh->getAdherent2Id() ][] = $adh;
+				if ( $adh->getAdherent3Id() ) {
+					$user_ids[] = $adh->getAdherent3Id();
 				}
-				if ( $adh->getAdherent3Id() > 0 ) {
-					if ( ! isset( $cache[ $adh->getAdherent3Id() ] ) ) {
-						$cache[ $adh->getAdherent3Id() ] = array();
+				foreach ( $user_ids as $user_id ) {
+					if ( isset( $coadhs[ $user_id ] ) ) {
+						foreach ( $coadhs[ $user_id ] as $co ) {
+							$user_ids[] = $co->meta_value;
+						}
 					}
-					$cache[ $adh->getAdherent3Id() ][] = $adh;
+				}
+				$user_ids = array_unique( $user_ids );
+				foreach ( $user_ids as $user_id ) {
+					if ( ! isset( $cache[ $user_id ] ) ) {
+						$cache[ $user_id ] = array();
+					}
+					$cache[ $user_id ][] = $adh;
 				}
 			}
 			self::$paiement_cache = $cache;
