@@ -50,7 +50,16 @@ function amapress_get_amap_roles_editor() {
 
 		$ret .= '<tr><td>' . esc_html( $term->name ) . '</td>';
 		foreach ( $lieux as $lieu ) {
-			$ret .= '<td><select id="amapress_amap_roles_' . $term->term_id . '_' . $lieu->getID() . '" name="amapress_amap_roles[' . $term->term_id . '][' . $lieu->getID() . '][]" class="autocomplete required" multiple>' . tf_parse_select_options( $all_users, $user_ids, false ) . '</select></td>';
+			$lieu_user_ids = array();
+			foreach ( $user_ids as $user_id ) {
+				$user_lieux = AmapressUsers::get_user_lieu_ids( $user_id );
+				if ( ! empty( $user_lieux ) && ! in_array( $lieu->ID, $user_lieux ) ) {
+					continue;
+				}
+
+				$lieu_user_ids[] = $user_id;
+			}
+			$ret .= '<td><select id="amapress_amap_roles_' . $term->term_id . '_' . $lieu->getID() . '" name="amapress_amap_roles[' . $term->term_id . '][' . $lieu->getID() . '][]" class="autocomplete" multiple>' . tf_parse_select_options( $all_users, $lieu_user_ids, false ) . '</select></td>';
 		}
 		$ret .= '</tr>';
 	}
