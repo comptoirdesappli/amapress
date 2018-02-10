@@ -78,12 +78,12 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 	/** @return AmapressUser */
 	public function getReferent2( $lieu_id = null ) {
-		return $this->getReferentNum( $lieu_id, 1 );
+		return $this->getReferentNum( $lieu_id, 2 );
 	}
 
 	/** @return AmapressUser */
 	public function getReferent3( $lieu_id = null ) {
-		return $this->getReferentNum( $lieu_id, 1 );
+		return $this->getReferentNum( $lieu_id, 3 );
 	}
 
 	/** @return int */
@@ -93,12 +93,12 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 	/** @return int */
 	public function getReferent2Id( $lieu_id = null ) {
-		return $this->getReferentNumId( $lieu_id, 1 );
+		return $this->getReferentNumId( $lieu_id, 2 );
 	}
 
 	/** @return int */
 	public function getReferent3Id( $lieu_id = null ) {
-		return $this->getReferentNumId( $lieu_id, 1 );
+		return $this->getReferentNumId( $lieu_id, 3 );
 	}
 
 	/** @return int[] */
@@ -124,14 +124,17 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 	/** @return int */
 	private function getReferentNumId( $lieu_id = null, $num = 1 ) {
+		$lieu_name = ( $lieu_id ? $lieu_id : 'defaut' );
+		if ( ! empty( $this->referent_ids[ $num ][ $lieu_name ] ) ) {
+			return $this->referent_ids[ $num ][ $lieu_name ];
+		}
 		$this->ensure_init();
 		$v = $this->getCustom( 'amapress_producteur_referent' . ( $num > 1 ? $num : '' ) . ( $lieu_id ? '_' . $lieu_id : '' ) );
-		$lieu_name = ( $lieu_id ? $lieu_id : 'defaut' );
 		if ( ! empty( $v ) ) {
 			$this->referent_ids[ $num ][ $lieu_name ] = $v;
 		} else {
 			if ( $lieu_id ) {
-				return $this->getReferentNumId( null, $num );
+				$this->referent_ids[ $num ][ $lieu_name ] = $this->getReferentNumId( null, $num );
 			} else {
 				$this->referent_ids[ $num ][ $lieu_name ] = null;
 			}

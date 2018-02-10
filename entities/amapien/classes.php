@@ -117,7 +117,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 				$prod                = $contrat->getProducteur();
 				$had_local_referents = false;
 				foreach ( $lieu_ids as $lieu_id ) {
-					if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
+					if ( ! in_array( $this->ID, $prod->getReferentsIds( $lieu_id ) ) ) {
 						continue;
 					}
 					$had_local_referents                           = true;

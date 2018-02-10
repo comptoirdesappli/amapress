@@ -526,7 +526,7 @@ class AmapressContrats {
 			$lieu_ids                        = Amapress::get_lieu_ids();
 			$res                             = array();
 			foreach ( Amapress::get_producteurs() as $prod ) {
-				$contrats    = self::get_contrats( $prod->ID );
+				$contrats    = self::get_contrats( $prod->ID, false, false );
 				$contrat_ids = array_map( function ( $c ) {
 					return $c->ID;
 				}, $contrats );
