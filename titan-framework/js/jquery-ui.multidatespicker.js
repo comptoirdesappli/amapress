@@ -22,6 +22,16 @@
         var day_zero = new Date(0);
         var mdp_events = {};
 
+        function parseDate(date) {
+            if (!date) return null;
+
+            var dt = dateConvert.call(this, date);
+            if (!dt) {
+                dt = $.datepicker._determineDate(this, date, null);
+            }
+            return dt;
+        }
+
         function removeDate(date, type) {
             if (!type) type = 'picked';
             date = dateConvert.call(this, date);
@@ -44,6 +54,11 @@
             date.setMinutes(0);
             date.setSeconds(0);
             date.setMilliseconds(0);
+
+            var min_date = this.multiDatesPicker.minDate;
+            var max_date = this.multiDatesPicker.maxDate;
+            if (min_date && date < min_date) return;
+            if (max_date && date > max_date) return;
 
             if (methods.gotDate.call(this, date, type) === false) {
                 this.multiDatesPicker.dates[type].push(date);
@@ -149,7 +164,7 @@
                 };
 
                 // value have to be extracted before datepicker is initiated
-                if ($this.val()) var inputDates = $this.val()
+                if ($this.val()) var inputDates = $this.val();
 
                 if (options) {
                     // value have to be extracted before datepicker is initiated
@@ -165,8 +180,8 @@
                     // datepicker init
                     $this.datepicker(options);
 
-                    this.multiDatesPicker.minDate = $.datepicker._determineDate(this, options.minDate, null);
-                    this.multiDatesPicker.maxDate = $.datepicker._determineDate(this, options.maxDate, null);
+                    this.multiDatesPicker.minDate = parseDate.call(this, options.minDate);
+                    this.multiDatesPicker.maxDate = parseDate.call(this, options.maxDate);
                     if (options.addDates) methods.addDates.call(this, options.addDates);
 
                     if (options.addDisabledDates)
@@ -185,11 +200,13 @@
                 var inputs_values = $this.multiDatesPicker('value');
 
                 // fills the input field back with all the dates in the calendar
-                $this.val(inputs_values);
+                $this.val(inputs_values).trigger('change');
+                ;
 
                 // Fixes the altField filled with defaultDate by default
                 var altFieldOption = $this.datepicker('option', 'altField');
-                if (altFieldOption) $(altFieldOption).val(inputs_values);
+                if (altFieldOption) $(altFieldOption).val(inputs_values).trigger('change');
+                ;
 
                 // Updates the calendar view
                 $this.datepicker('refresh');
@@ -198,6 +215,9 @@
                 var $this = $(this);
 
                 $this.datepicker('option', options);
+
+                this.multiDatesPicker.minDate = parseDate.call(this, $this.datepicker('option', 'minDate'));
+                this.multiDatesPicker.maxDate = parseDate.call(this, $this.datepicker('option', 'maxDate'));
 
                 // Updates the calendar view
                 $this.datepicker('refresh');
@@ -301,17 +321,26 @@
             getDates: function (format, type) {
                 if (!format) format = 'string';
                 if (!type) type = 'picked';
+                var dates = [];
+                var min_date = this.multiDatesPicker.minDate;
+                var max_date = this.multiDatesPicker.maxDate;
+                for (var i = 0; i < this.multiDatesPicker.dates[type].length; i++) {
+                    var date = this.multiDatesPicker.dates[type][i];
+                    if (min_date && date < min_date) continue;
+                    if (max_date && date > max_date) continue;
+                    dates.push(date);
+                }
                 switch (format) {
                     case 'object':
-                        return this.multiDatesPicker.dates[type];
+                        return dates;
                     case 'string':
                     case 'number':
                         var o_dates = [];
-                        for (var i = 0; i < this.multiDatesPicker.dates[type].length; i++)
+                        for (var i = 0; i < dates.length; i++)
                             o_dates.push(
                                 dateConvert.call(
                                     this,
-                                    this.multiDatesPicker.dates[type][i],
+                                    dates[i],
                                     format
                                 )
                             );
@@ -478,9 +507,10 @@
                         // @todo: should use altFormat for altField
                         var dates_string = methods.value.call(this);
                         if (altField !== undefined && altField != "") {
-                            $(altField).val(dates_string);
+                            $(altField).val(dates_string).trigger('change');
+                            ;
                         }
-                        $this.val(dates_string);
+                        $this.val(dates_string).trigger('change');
 
                         $.datepicker._refreshDatepicker(this);
                 }

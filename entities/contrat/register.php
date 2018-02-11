@@ -167,6 +167,7 @@ function amapress_register_entities_contrat( $entities ) {
 							'show_column'      => false,
 							'desc'             => 'Sélectionner les dates de distribution fournies par le producteur',
 							'show_dates_count' => true,
+							'show_dates_list'  => true,
 							'before_option'    =>
 								function ( $option ) {
 									if ( ! TitanFrameworkOption::isOnNewScreen() && ! amapress_is_contrat_instance_readonly( $option ) ) {

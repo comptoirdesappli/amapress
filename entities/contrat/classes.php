@@ -183,6 +183,10 @@ class AmapressContrat_instance extends TitanEntity {
 			$liste_dates = $this->getCustomAsDateArray( 'amapress_contrat_instance_commande_liste_dates' );
 		}
 
+		$liste_dates = array_filter( $liste_dates, function ( $d ) {
+			return Amapress::start_of_day( $this->getDate_debut() ) <= $d && $d <= Amapress::end_of_day( $this->getDate_fin() );
+		} );
+
 		return $liste_dates;
 	}
 
