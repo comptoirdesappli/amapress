@@ -51,6 +51,7 @@ class TitanFrameworkOptionActionButtons extends TitanFrameworkOption {
 					'text_is_html' => false,
 					'type'         => 'button',
 					'capability'   => '',
+					'target'       => '',
 				) );
 			if ( ! empty( $button['capability'] ) && ! current_user_can( $button['capability'] ) ) {
 				continue;
@@ -73,10 +74,11 @@ class TitanFrameworkOptionActionButtons extends TitanFrameworkOption {
 			$href = apply_filters( "tf_replace_placeholders_{$post_type}", $href, $postID );
 			$href = apply_filters( "tf_replace_placeholders_{$option_id}", $href, $postID );
 
-			if ( 'link' == $button['type'] ) {
-				printf( '<a class="%s" href="%s">%s</a>',
+			if ( 'link' == $button['type'] || ! empty( $button['target'] ) ) {
+				printf( '<a class="%s" href="%s" %s>%s</a>',
 					esc_attr( $button['class'] ),
 					esc_attr( $href ),
+					! empty( $button['target'] ) ? 'target="' . esc_attr( $button['target'] ) . '"' : '',
 					$button['text_is_html'] ? $text : esc_html( $text ) );
 			} else {
 				printf( '<button type="button" class="%s" onclick="location.href=\'%s\'">%s</button>',
