@@ -1546,8 +1546,9 @@ class AmapressEntities {
 											'name'    => 'Rôles supplémentaires',
 											'buttons' => array(
 												array(
-													'text' => 'Ajouter un rôle',
-													'href' => admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
+													'text'   => 'Ajouter un rôle',
+													'href'   => admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
+													'target' => '_blank',
 												),
 											),
 										),
