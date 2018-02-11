@@ -147,7 +147,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'type'        => 'select',
 				'options'     => array(
 					'panier'   => 'Distributions régulières',
-					'commande' => 'Commandes',
+//					'commande' => 'Commandes',
 				),
 				'required'    => true,
 				'group'       => 'Gestion',
@@ -159,14 +159,15 @@ function amapress_register_entities_contrat( $entities ) {
 					'_default_' => 'panier',
 					'panier'    => array(
 						'liste_dates'           => array(
-							'name'          => amapress__( 'Calendrier des distributions' ),
-							'type'          => 'multidate',
-							'required'      => true,
-							'group'         => 'Distributions',
-							'readonly'      => 'amapress_is_contrat_instance_readonly',
-							'show_column'   => false,
-							'desc'          => 'Sélectionner les dates de distribution fournies par le producteur',
-							'before_option' =>
+							'name'             => amapress__( 'Calendrier des distributions' ),
+							'type'             => 'multidate',
+							'required'         => true,
+							'group'            => 'Distributions',
+							'readonly'         => 'amapress_is_contrat_instance_readonly',
+							'show_column'      => false,
+							'desc'             => 'Sélectionner les dates de distribution fournies par le producteur',
+							'show_dates_count' => true,
+							'before_option'    =>
 								function ( $option ) {
 									if ( ! TitanFrameworkOption::isOnNewScreen() && ! amapress_is_contrat_instance_readonly( $option ) ) {
 										$val_id = $option->getID() . '-validate';
@@ -223,13 +224,14 @@ jQuery(function($) {
 							)
 						),
 						'liste_dates_paiements' => array(
-							'name'        => amapress__( 'Calendrier des remises de chèques' ),
-							'type'        => 'multidate',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'required'    => true,
-							'group'       => 'Paiements',
-							'show_column' => false,
-							'desc'        => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
+							'name'             => amapress__( 'Calendrier des remises de chèques' ),
+							'type'             => 'multidate',
+							'readonly'         => 'amapress_is_contrat_instance_readonly',
+							'required'         => true,
+							'group'            => 'Paiements',
+							'show_column'      => false,
+							'show_dates_count' => true,
+							'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
 						),
 //                        'list_quantites' => array(
 //                            'name' => amapress__('Quantités'),
