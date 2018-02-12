@@ -229,7 +229,7 @@ function amapress_get_mailinglist_queries() {
 
 	$ret["amapress_contrat=intermittent"] = "Intermittents";
 	$ret["amapress_role=referent_lieu"]   = "Référents lieux";
-	$ret["amapress_role=amap_role_any"]   = "Amapiens avec rôles";
+	$ret["amapress_role=collectif"]       = "Membres du collectif";
 	$ret["amapress_role=resp_distrib"]    = "Prochains responsables de distributions";
 
 //    $ret["role=administrator"] = "Prochains responsables de distributions";
