@@ -62,8 +62,8 @@ function amapress_get_wp_posts_labels() {
 //    return $postmeta;
 //}
 
-add_filter( 'amapress_import_users_get_field_name', 'amapress_import_users_get_field_name' );
-function amapress_import_users_get_field_name( $field_name ) {
+add_filter( 'amapress_import_users_get_field_name', 'amapress_import_users_get_field_name', 10, 2 );
+function amapress_import_users_get_field_name( $field_name, $colname ) {
 	$kvs = amapress_get_wp_users_labels();
 	$kvs = array_combine( array_values( $kvs ), array_keys( $kvs ) );
 	if ( isset( $kvs[ $field_name ] ) ) {
@@ -76,7 +76,7 @@ function amapress_import_users_get_field_name( $field_name ) {
 		return $labels[ $field_name ];
 	}
 
-	return new WP_Error( 'unknown_header', "Un utilisateur ne contient pas de champs $field_name" );
+	return new WP_Error( 'unknown_header', "Colonne $colname : un utilisateur ne contient pas de champs $field_name" );
 }
 
 add_filter( 'amapress_import_user_data', 'amapress_import_user_data', 10, 2 );
@@ -166,8 +166,8 @@ function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_k
 	return $postmeta;
 }
 
-add_filter( 'amapress_import_posts_get_field_name', 'amapress_import_posts_get_field_name', 10, 2 );
-function amapress_import_posts_get_field_name( $field_name, $post_type ) {
+add_filter( 'amapress_import_posts_get_field_name', 'amapress_import_posts_get_field_name', 10, 3 );
+function amapress_import_posts_get_field_name( $field_name, $post_type, $colname ) {
 	$kvs = amapress_get_wp_posts_labels();
 	$kvs = array_combine( array_values( $kvs ), array_keys( $kvs ) );
 	if ( isset( $kvs[ $field_name ] ) ) {
@@ -197,7 +197,7 @@ function amapress_import_posts_get_field_name( $field_name, $post_type ) {
 		}
 	}
 
-	return new WP_Error( 'unknown_header', "Un $post_type ne contient pas de champs $field_name" );
+	return new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );
 }
 
 add_filter( 'amapress_import_posts_data', 'amapress_import_posts_data', 10, 2 );

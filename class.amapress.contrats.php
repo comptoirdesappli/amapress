@@ -976,7 +976,7 @@ class AmapressContrats {
 
 			$end_time = Amapress::end_of_day( amapress_time() );
 			if ( amapress_current_user_id() == $user_id ) {
-				$in = implode( ',', amapress_prepare_in( $res ) );
+				$in = amapress_prepare_in_sql( $res );
 
 				global $wpdb;
 				$res = array_merge( $res,

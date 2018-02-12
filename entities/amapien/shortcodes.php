@@ -339,7 +339,11 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 					'role' => $role['title'],
 				);
 			} else {
-				foreach ( AmapressUsers::get_user_lieu_ids( $user->ID ) as $lieu_id ) {
+				$user_lieu_ids = AmapressUsers::get_user_lieu_ids( $user->ID );
+				if ( empty( $user_lieu_ids ) ) {
+					$user_lieu_ids = $all_lieu_ids;
+				}
+				foreach ( $user_lieu_ids as $lieu_id ) {
 					$data[] = array(
 						'user' => $amapien->getDisplay( $atts ),
 						'lieu' => $lieux_by_ids[ $lieu_id ]->getShortName(),
@@ -475,6 +479,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		[
 			'nowrap'     => false,
 			'responsive' => false,
+//			'init_as_html' => true,
 		],
 		array( Amapress::DATATABLES_EXPORT_EXCEL, Amapress::DATATABLES_EXPORT_PDF ) );
 }

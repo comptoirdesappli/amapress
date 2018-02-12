@@ -223,11 +223,8 @@ function amapress_amap_role_user_query( $query ) {
 		}
 	}
 	if ( isset( $ids ) ) {
-		$ids = implode( ',', wp_parse_id_list( $ids ) );
-		if ( empty( $ids ) ) {
-			$ids = '0';
-		}
-		$query->query_where .= " AND $wpdb->users.ID IN ($ids)";
+		$ids_sql            = amapress_prepare_in_sql( wp_parse_id_list( $ids ) );
+		$query->query_where .= " AND $wpdb->users.ID IN ($ids_sql)";
 	}
 }
 
