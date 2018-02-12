@@ -814,13 +814,16 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 //    echo '<td>';
 	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
 //        echo '<fieldset>';
+		if ( $contrat_instance->isQuantiteVariable() ) {
+			echo "<div><label>Quantité: </label><input type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Quantité' value='$quantite' /></div>";
+		}
 		echo "<div><label>Unité: </label><select class='required' name='amapress_quant_data[$id][unit]'>";
 		echo '<option value="">--Unité de prix--</option>';
 		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">A l\'unité</option>';
 		echo '<option ' . selected( 'kg', $unit, false ) . ' value="kg">Au kg</option>';
 		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">Au litre</option>';
 		echo '</select></div>';
-		echo "<div><label>Quantité(s): </label><input type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' /></div>";
+		echo "<div><label>Quantité(s) poss.: </label><input type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' /></div>";
 		if ( $contrat_instance->isPanierVariable() ) {
 			echo "<div><label>Dispo de </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_from]' placeholder='Date début' value='$from' /></div>";
 			echo "<div><label> - à </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_to]' placeholder='Date fin' value='$to' /></div>";
@@ -966,7 +969,6 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 //    global $amapress_save_contrat_quantite_editor;
 
 //    if ($amapress_save_contrat_quantite_editor) return;
-
 	if ( isset( $_POST['amapress_quant_data'] ) && isset( $_POST['amapress_quant_data_contrat_instance_id'] ) ) {
 //        $amapress_save_contrat_quantite_editor = true;
 
@@ -1004,7 +1006,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 			} else {
 				$my_post['ID'] = $quant_id;
 //                $my_post['post_status'] = 'publish';
-				wp_update_post( $my_post, true );
+				$r = wp_update_post( $my_post );
 			}
 		}
 		unset( $_POST['amapress_quant_data'] );

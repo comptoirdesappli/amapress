@@ -223,6 +223,8 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function cloneContrat( $as_draft = true ) {
+		$this->ensure_init();
+
 		$add_weeks = Amapress::datediffInWeeks( $this->getDate_debut(), $this->getDate_fin() );
 		$meta      = array();
 		foreach ( $this->custom as $k => $v ) {
@@ -451,7 +453,9 @@ class AmapressContrat_quantite extends TitanEntity {
 		}
 	}
 
-	public function cloneForContrat( $contrat_instance_id, $as_draft = true ) {
+	public function cloneForContrat( $contrat_instance_id ) {
+		$this->ensure_init();
+
 		$meta = array();
 		foreach ( $this->custom as $k => $v ) {
 			$meta[ $k ] = $v;
@@ -462,7 +466,7 @@ class AmapressContrat_quantite extends TitanEntity {
 			'post_title'   => $this->getTitle(),
 			'post_type'    => AmapressContrat_quantite::INTERNAL_POST_TYPE,
 			'post_content' => '',
-			'post_status'  => $as_draft ? 'draft' : 'publish',
+			'post_status'  => 'publish',
 			'meta_input'   => $meta,
 		);
 		$new_id  = wp_insert_post( $my_post );
