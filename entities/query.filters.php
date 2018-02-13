@@ -628,12 +628,12 @@ function amapress_filter_posts( WP_Query $query ) {
 					array(
 						'key'     => "amapress_{$pt}_adherent",
 						'compare' => 'IN',
-						'value'   => get_users(
+						'value'   => amapress_prepare_in( get_users(
 							array(
 								'fields'           => 'ids',
 								'amapress_contrat' => 'with_coadherent',
 							)
-						)
+						) ),
 					),
 				),
 			) );
