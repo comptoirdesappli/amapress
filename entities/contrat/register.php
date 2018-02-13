@@ -613,6 +613,13 @@ function amapress_import_adhesion_apply_default_values_to_posts_meta( $postmeta 
 		$postmeta['amapress_adhesion_date_debut'] = call_user_func( $val, $_REQUEST['amapress_import_adhesion_default_date_debut'] );
 	}
 
+	$contrat_instance = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
+	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
+	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
+		$postmeta['amapress_adhesion_date_debut'] = $contrat_instance->getDate_debut();
+	}
+	$postmeta['amapress_adhesion_status'] = 'confirmed';
+
 	return $postmeta;
 }
 
@@ -686,7 +693,7 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 		}
 
 		$id = amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name );
-		if ( $id !== - 1 ) {
+		if ( $id ) {
 			return [ $id ];
 		}
 	}
@@ -724,8 +731,8 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
 	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 	if ( ! empty( $quants ) && count( $quants ) == 1 && Amapress::toBool( $contrat_quantite_name ) ) {
-		$quants_val            = array_values( $quants );
-		$contrat_quantite_name = $quants_val[0];
+		$fquant                = from( $quants )->first();
+		$contrat_quantite_name = $fquant->getCode();
 	}
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 //    $cn = $contrat_quantite_name;

@@ -261,6 +261,7 @@ jQuery(function($) {
 				'custom'      => 'amapress_paiements_count_editor',
 				'show_on'     => 'edit-only',
 				'show_column' => false,
+				'csv'         => false,
 //                'csv_required' => true,
 			),
 			'paiements_editor' => array(

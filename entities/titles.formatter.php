@@ -123,13 +123,14 @@ add_filter( 'amapress_adhesion_title_formatter', 'amapress_adhesion_title_format
 function amapress_adhesion_title_formatter( $post_title, WP_Post $post ) {
 	$post_id = $post->ID;
 
-	$adh = AmapressAdhesion::getBy( $post );
-	if ( $adh->getContrat_instance() == null ) {
+	$adh = AmapressAdhesion::getBy( $post, true );
+	if ( ! $adh->getContrat_instanceId() ) {
 		return $post->post_title;
 	}
-	if ( $adh->getAdherent() == null ) {
+	if ( ! $adh->getAdherentId() ) {
 		return $post->post_title;
 	}
+
 
 	return sprintf( '%s - %s - %s > %s (%s) (%d)',
 		( $adh->hasDate_fin() ? '[arrêté] ' : '' ) . $adh->getAdherent()->getDisplayName(),
@@ -193,7 +194,7 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 //}
 add_filter( 'amapress_intermittence_panier_title_formatter', 'amapress_intermittence_panier_title_formatter', 10, 2 );
 function amapress_intermittence_panier_title_formatter( $post_title, WP_Post $post ) {
-	$adh = AmapressIntermittence_panier::getBy( $post->ID );
+	$adh = AmapressIntermittence_panier::getBy( $post->ID, true );
 	if ( ! $adh->hasPaniers() ) {
 		return $post->post_title;
 	}
@@ -205,7 +206,7 @@ function amapress_intermittence_panier_title_formatter( $post_title, WP_Post $po
 
 add_filter( 'amapress_contrat_instance_title_formatter', 'amapress_contrat_instance_title_formatter', 10, 2 );
 function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post ) {
-	$adh = AmapressContrat_instance::getBy( $post );
+	$adh = AmapressContrat_instance::getBy( $post, true );
 	if ( $adh->getModel() == null ) {
 		return $post->post_title;
 	}

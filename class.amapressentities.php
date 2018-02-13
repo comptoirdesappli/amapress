@@ -1687,14 +1687,32 @@ class AmapressEntities {
 									'name' => amapress__( 'Date de début par défaut' ),
 									'type' => 'date',
 									'desc' => 'Date de début',
+//                                    'default' => function($option) {
+//									        return Amapress::start_of_day(amapress_time());
+//                                    }
 								),
 								array(
 									'id'                => 'import_adhesion_default_contrat_instance',
 									'name'              => amapress__( 'Contrat par défaut' ),
-									'type'              => 'select-posts',
+									'type'              => 'select',
 									'post_type'         => 'amps_contrat_inst',
 									'autoselect_single' => true,
 									'desc'              => 'Contrat',
+									'options'           => function ( $option ) {
+										$ret      = [];
+										$ret[]    = '-- Sélectionner un contrat --';
+										$contrats = AmapressContrats::get_active_contrat_instances( null, null, true );
+										usort( $contrats, function ( $a, $b ) {
+											/** @var AmapressContrat_instance $a */
+											/** @var AmapressContrat_instance $b */
+											return strcmp( $a->getTitle(), $b->getTitle() );
+										} );
+										foreach ( $contrats as $c ) {
+											$ret[ $c->ID ] = $c->getTitle();
+										}
+
+										return $ret;
+									}
 								),
 								array(
 									'id'                => 'import_adhesion_default_lieu',

@@ -160,7 +160,13 @@ function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_k
 				return $id['quant'];
 			}, $multi_value )
 	);
-//	$postmeta['amapress_adhesion_contrat_quantite'] = array_keys($multi_value);
+	$contrat_instance                                       = AmapressContrat_instance::getBy( $multi_key );
+	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
+	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
+		$postmeta['amapress_adhesion_date_debut'] = $contrat_instance->getDate_debut();
+	}
+	$postmeta['amapress_adhesion_status'] = 'confirmed';
+
 //	$postmeta['amapress_adhesion_contrat_quantite_factors'] = $multi_value;
 
 	return $postmeta;
@@ -263,15 +269,14 @@ function amapress_import_posts_meta( $postmeta, $postdata, $posttaxo, $post_type
 	return $postmeta;
 }
 
-
 function amapress_get_validator( $post_type, $field_name, $settings ) {
-	if ( ! isset( $settings['type'] ) ) {
-		var_dump( $post_type );
-		var_dump( $field_name );
-		unset( $settings['tf_option'] );
-		var_dump( $settings );
-		die();
-	}
+//	if ( ! isset( $settings['type'] ) ) {
+//		var_dump( $post_type );
+//		var_dump( $field_name );
+//		unset( $settings['tf_option'] );
+//		var_dump( $settings );
+//		die();
+//	}
 
 	$type  = $settings['type'];
 	$label = $settings['name'];
@@ -325,7 +330,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 					}, array_values( $settings['options'] ) ),
 					array_keys( $settings['options'] ) );
 				if ( ! array_key_exists( $v, $labels ) ) {
-					return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label'" );
+					return new WP_Error( 'cannot_parse', "Valeur '$value' non trouvée pour '$label'" );
 				} else {
 					return $labels[ $v ];
 				}
@@ -361,8 +366,8 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				if ( $id <= 0 ) {
 					$post_type = amapress_unsimplify_post_type( $settings['post_type'] );
 					$pt        = amapress_simplify_post_type( $settings['post_type'] );
-					$url       = apply_filters( "amapress_get_edit_url_for_$pt", admin_url( "edit.php?post_type=$post_type" ) );
-					$errors[]  = "Valeur '$v' non valide pour '$label' (Voir <$url>)";
+					$url       = apply_filters( "amapress_get_edit_url_for_$pt", add_query_arg( 's', $v, admin_url( "edit.php?post_type=$post_type" ) ) );
+					$errors[]  = "Valeur '$v' non trouvée/non unique pour '$label' (Voir <$url>)";
 				} else {
 					$res[] = $id;
 				}
@@ -409,8 +414,8 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				}
 				$id = Amapress::resolve_user_id( $v );
 				if ( $id <= 0 ) {
-					$url      = admin_url( 'users.php' );
-					$errors[] = "Valeur '$v' non valide pour '$label' (Voir <$url>)";
+					$url      = add_query_arg( 's', $v, admin_url( 'users.php' ) );
+					$errors[] = "Valeur '$v' non trouvée/non unique pour '$label' (Voir <$url>)";
 				} else {
 					$res[] = $id;
 				}

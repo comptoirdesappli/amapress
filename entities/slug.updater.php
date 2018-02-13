@@ -48,10 +48,8 @@ add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
  * @param WP_Post $post
  */
 function amapress_compute_post_slug_and_title( WP_Post $post ) {
-//    var_dump($post);
 	$types = AmapressEntities::getPostTypes();
 	$pt    = amapress_simplify_post_type( $post->post_type );
-//    if($pt != 'contrat_quantite') die($pt);
 	if ( array_key_exists( $pt, $types ) ) {
 		$t              = $types[ $pt ];
 		$post_title     = $post->post_title;
@@ -82,7 +80,9 @@ function amapress_compute_post_slug_and_title( WP_Post $post ) {
 	}
 }
 
-add_action( 'amapress_post_import', 'amapress_after_post_import' );
-function amapress_after_post_import( $post_id ) {
-	amapress_compute_post_slug_and_title( get_post( $post_id ) );
+add_action( 'amapress_posts_import', 'amapress_after_post_import' );
+function amapress_after_post_import( $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		amapress_compute_post_slug_and_title( get_post( $post_id ) );
+	}
 }

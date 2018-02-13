@@ -101,7 +101,7 @@ class AmapressAdhesion extends TitanEntity {
 	 *
 	 * @return AmapressAdhesion
 	 */
-	public static function getBy( $post_or_id ) {
+	public static function getBy( $post_or_id, $no_cache = false ) {
 		if ( is_a( $post_or_id, 'WP_Post' ) ) {
 			$post_id = $post_or_id->ID;
 		} else if ( is_a( $post_or_id, 'AmapressAdhesion' ) ) {
@@ -109,7 +109,7 @@ class AmapressAdhesion extends TitanEntity {
 		} else {
 			$post_id = intval( $post_or_id );
 		}
-		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+		if ( ! isset( self::$entities_cache[ $post_id ] ) || $no_cache ) {
 			$post = get_post( $post_id );
 			if ( ! $post ) {
 				self::$entities_cache[ $post_id ] = null;

@@ -23,7 +23,7 @@ class AmapressUser extends TitanUserEntity {
 	 *
 	 * @return AmapressUser
 	 */
-	public static function getBy( $user_or_id ) {
+	public static function getBy( $user_or_id, $no_cache = false ) {
 		if ( is_a( $user_or_id, 'WP_User' ) ) {
 			$user_id = $user_or_id->ID;
 			if ( ! isset( self::$users_cache[ $user_id ] ) ) {
@@ -37,7 +37,7 @@ class AmapressUser extends TitanUserEntity {
 		} else {
 			$user_id = intval( $user_or_id );
 		}
-		if ( ! isset( self::$users_cache[ $user_id ] ) ) {
+		if ( ! isset( self::$users_cache[ $user_id ] ) || $no_cache ) {
 			$user = get_user_by( 'id', $user_id );
 			if ( ! $user ) {
 				self::$users_cache[ $user_id ] = null;
