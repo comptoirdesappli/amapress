@@ -135,27 +135,47 @@ function amapress_register_entities_contrat( $entities ) {
 				'searchable'        => true,
 			),
 			'nb_visites'     => array(
-				'name'     => amapress__( 'Nombre de visites obligatoires' ),
-				'group'    => 'Information',
-				'type'     => 'number',
-				'required' => true,
-				'desc'     => 'Nombre de visites obligatoires chez le producteur',
-				'max'      => 12,
+				'name'        => amapress__( 'Nombre de visites obligatoires' ),
+				'group'       => 'Information',
+				'type'        => 'number',
+				'required'    => true,
+				'show_column' => false,
+				'desc'        => 'Nombre de visites obligatoires chez le producteur',
+				'max'         => 12,
 			),
 			'type'           => array(
-				'name'        => amapress__( 'Type de contrat' ),
-				'type'        => 'select',
-				'options'     => array(
-					'panier'   => 'Distributions régulières',
+				'name'          => amapress__( 'Type de contrat' ),
+				'type'          => 'select',
+				'options'       => array(
+					'panier' => 'Distributions régulières',
 //					'commande' => 'Commandes',
 				),
-				'required'    => true,
-				'group'       => 'Gestion',
-				'desc'        => 'Type de contrat',
-				'import_key'  => true,
-				'default'     => 'panier',
-				'readonly'    => 'amapress_is_contrat_instance_readonly',
-				'conditional' => array(
+				'required'      => true,
+				'group'         => 'Gestion',
+				'desc'          => 'Type de contrat',
+				'import_key'    => true,
+				'default'       => 'panier',
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'custom_column' => function ( $option, $post_id ) {
+					$status           = [];
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+					if ( $contrat_instance->isPanierVariable() ) {
+						$status[] = 'Paniers variables';
+					} else if ( $contrat_instance->isQuantiteVariable() ) {
+						$status[] = 'Quantités variables';
+					} else {
+						$status[] = 'Quantités fixes';
+					}
+					if ( $contrat_instance->isPrincipal() ) {
+						$status[] = 'Principal';
+					}
+					if ( $contrat_instance->isEnded() ) {
+						$status[] = 'Clôturé';
+					}
+
+					echo implode( ', ', $status );
+				},
+				'conditional'   => array(
 					'_default_' => 'panier',
 					'panier'    => array(
 						'liste_dates'           => array(
@@ -164,7 +184,8 @@ function amapress_register_entities_contrat( $entities ) {
 							'required'         => true,
 							'group'            => 'Distributions',
 							'readonly'         => 'amapress_is_contrat_instance_readonly',
-							'show_column'      => false,
+							'show_column'      => true,
+							'column_value'     => 'dates_count',
 							'desc'             => 'Sélectionner les dates de distribution fournies par le producteur',
 							'show_dates_count' => true,
 							'show_dates_list'  => true,
@@ -187,20 +208,22 @@ jQuery(function($) {
 								},
 						),
 						'panier_variable'       => array(
-							'name'     => amapress__( 'Paniers personnalisés' ),
-							'type'     => 'checkbox',
-							'group'    => 'Gestion',
-							'readonly' => 'amapress_is_contrat_instance_readonly',
-							'required' => true,
-							'desc'     => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
+							'name'        => amapress__( 'Paniers personnalisés' ),
+							'type'        => 'checkbox',
+							'group'       => 'Gestion',
+							'readonly'    => 'amapress_is_contrat_instance_readonly',
+							'required'    => true,
+							'show_column' => false,
+							'desc'        => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
 						'quantite_variable'     => array(
-							'name'     => amapress__( 'Quantités personnalisées' ),
-							'type'     => 'checkbox',
-							'group'    => 'Gestion',
-							'readonly' => 'amapress_is_contrat_instance_readonly',
-							'required' => true,
-							'desc'     => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
+							'name'        => amapress__( 'Quantités personnalisées' ),
+							'type'        => 'checkbox',
+							'group'       => 'Gestion',
+							'readonly'    => 'amapress_is_contrat_instance_readonly',
+							'required'    => true,
+							'show_column' => false,
+							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
 						),
 						'paiements'             => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
@@ -344,11 +367,12 @@ jQuery(function($) {
 					},
 			),
 			'ended'          => array(
-				'name'    => amapress__( 'Clôturer' ),
-				'type'    => 'checkbox',
-				'group'   => 'Gestion',
-				'desc'    => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
-				'show_on' => 'edit-only',
+				'name'        => amapress__( 'Clôturer' ),
+				'type'        => 'checkbox',
+				'group'       => 'Gestion',
+				'desc'        => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
 			),
 			'date_ouverture' => array(
 				'name'          => amapress__( 'Ouverture des inscriptions' ),
@@ -424,13 +448,14 @@ jQuery(function($) {
 				'show_on' => 'edit-only',
 			),
 			'quant_editor'   => array(
-				'name'    => amapress__( 'Quantités' ),
-				'type'    => 'custom',
-				'group'   => 'Gestion',
-				'column'  => null,
-				'custom'  => 'amapress_get_contrat_quantite_editor',
-				'save'    => 'amapress_save_contrat_quantite_editor',
-				'show_on' => 'edit-only',
+				'name'        => amapress__( 'Quantités' ),
+				'type'        => 'custom',
+				'group'       => 'Gestion',
+				'column'      => null,
+				'custom'      => 'amapress_get_contrat_quantite_editor',
+				'save'        => 'amapress_save_contrat_quantite_editor',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
 //                'desc' => 'Quantités',
 			),
 			'max_adherents'  => array(
@@ -450,10 +475,11 @@ jQuery(function($) {
 				'readonly'   => 'amapress_is_contrat_instance_readonly',
 			),
 			'is_principal'   => array(
-				'name'     => amapress__( 'Contrat principal' ),
-				'type'     => 'checkbox',
-				'required' => true,
-				'desc'     => 'Contrat principal',
+				'name'        => amapress__( 'Contrat principal' ),
+				'type'        => 'checkbox',
+				'show_column' => false,
+				'required'    => true,
+				'desc'        => 'Contrat principal',
 			),
 		),
 	);
