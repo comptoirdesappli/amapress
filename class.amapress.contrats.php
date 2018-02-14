@@ -43,23 +43,28 @@ class AmapressContrats {
 		return Amapress::add_days( $date, - $renouv_days );
 	}
 
-	public static function get_contrat_status( $contrat_id, &$result ) {
+	public static function get_contrat_status( $contrat_id, &$need_generate ) {
+		if ( 'draft' == get_post_status( $contrat_id ) ) {
+			$need_generate = 'draft';
+
+			return 'Brouillon, pas encore disponible';
+		}
 		$dists   = AmapressDistributions::generate_distributions( $contrat_id, false, true );
 		$paniers = AmapressPaniers::generate_paniers( $contrat_id, false, true );
 		//$commands = AmapressCommandes::generate_commandes($contrat_id, true, true);
 
 		if ( ! isset( $dists[ $contrat_id ] ) ) {
-			$res = 'no';
+			$need_generate = 'no';
 
-			return 'Infos non dispo';
+			return 'Pas de distributions';
 		}
 
-		$result = count( $dists[ $contrat_id ]['missing'] ) > 0
-		          || count( $dists[ $contrat_id ]['associate'] ) > 0
-		          || count( $dists[ $contrat_id ]['unassociate'] ) > 0
+		$need_generate = count( $dists[ $contrat_id ]['missing'] ) > 0
+		                 || count( $dists[ $contrat_id ]['associate'] ) > 0
+		                 || count( $dists[ $contrat_id ]['unassociate'] ) > 0
 		          //|| count($commands[$contrat_id]['missing']) > 0
-		          //|| count($commands[$contrat_id]['orphan']) > 0
-		          || count( $paniers[ $contrat_id ] ) > 0;
+		                 //|| count($commands[$contrat_id]['orphan']) > 0
+		                 || count( $paniers[ $contrat_id ] ) > 0;
 
 		return sprintf( 'Distributions : %d manquantes ; %d à associer ; %d à déassocier\n
                         Paniers : %d manquants\n
@@ -76,8 +81,10 @@ class AmapressContrats {
 		$tt  = self::get_contrat_status( $contrat_id, $res );
 		if ( $res === true ) {
 			return '<div class="status"><div class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">Mettre à jour distributions et paniers</button><div></div>';
-		} else if ( $res == 'no' ) {
+		} else if ( $res === 'no' ) {
 			return '<div class="status"><div class="contrat-status" style="color: red;">Pas de dates</div></div>';
+		} else if ( $res === 'draft' ) {
+			return '<div class="status"><div class="contrat-status" style="color: orange;">Brouillon</div></div>';
 		} else {
 			return '<div class="status"><div class="contrat-status" style="color: green;">OK</div></div>';
 		}

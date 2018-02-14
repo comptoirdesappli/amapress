@@ -94,6 +94,11 @@ function amapress_register_entities_contrat( $entities ) {
 		'menu_icon'       => 'flaticon-interface',
 		'default_orderby' => 'post_title',
 		'default_order'   => 'ASC',
+		'groups'          => array(
+			'Status' => [
+				'context' => 'side',
+			],
+		),
 		'row_actions'     => array(
 			'renew' => array(
 				'label'     => 'Renouveler',
@@ -143,7 +148,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
-			'type'           => array(
+			'type'          => array(
 				'name'          => amapress__( 'Type de contrat' ),
 				'type'          => 'select',
 				'options'       => array(
@@ -178,7 +183,15 @@ function amapress_register_entities_contrat( $entities ) {
 				'conditional'   => array(
 					'_default_' => 'panier',
 					'panier'    => array(
-						'liste_dates'           => array(
+						'is_principal' => array(
+							'name'        => amapress__( 'Contrat principal' ),
+							'type'        => 'checkbox',
+							'show_column' => false,
+							'required'    => true,
+							'group'       => 'Status',
+							'desc'        => 'Contrat principal',
+						),
+						'liste_dates'  => array(
 							'name'             => amapress__( 'Calendrier des distributions' ),
 							'type'             => 'multidate',
 							'required'         => true,
@@ -191,9 +204,10 @@ function amapress_register_entities_contrat( $entities ) {
 							'show_dates_list'  => true,
 							'before_option'    =>
 								function ( $option ) {
-									if ( ! TitanFrameworkOption::isOnNewScreen() && ! amapress_is_contrat_instance_readonly( $option ) ) {
+									$is_readonly = amapress_is_contrat_instance_readonly( $option );
+									if ( ! TitanFrameworkOption::isOnNewScreen() && ! $is_readonly ) {
 										$val_id = $option->getID() . '-validate';
-										echo '<p><input type="checkbox" id="' . $val_id . '" /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
+										echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
 <br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</label></p>';
 										echo '<script type="text/javascript">
 jQuery(function($) {
@@ -366,14 +380,6 @@ jQuery(function($) {
 						}
 					},
 			),
-			'ended'          => array(
-				'name'        => amapress__( 'Clôturer' ),
-				'type'        => 'checkbox',
-				'group'       => 'Gestion',
-				'desc'        => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-			),
 			'date_ouverture' => array(
 				'name'          => amapress__( 'Ouverture des inscriptions' ),
 				'type'          => 'date',
@@ -422,7 +428,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'lieux'          => array(
+			'lieux'         => array(
 				'name'       => amapress__( 'Lieux' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_lieu',
@@ -438,16 +444,25 @@ jQuery(function($) {
 					'placeholder' => 'Tous les lieux'
 				),
 			),
-			'status'         => array(
+			'status'        => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => array( 'AmapressContrats', "contratStatus" ),
-				'group'   => 'Gestion',
+				'custom'  => array( 'AmapressContrats', "contratStatus" ),
+				'group'   => 'Status',
 				'save'    => null,
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'quant_editor'   => array(
+			'ended'         => array(
+				'name'        => amapress__( 'Clôturer' ),
+				'type'        => 'checkbox',
+				'group'       => 'Status',
+				'desc'        => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+			),
+			'quant_editor'  => array(
 				'name'        => amapress__( 'Quantités' ),
 				'type'        => 'custom',
 				'group'       => 'Gestion',
@@ -458,7 +473,7 @@ jQuery(function($) {
 				'show_column' => false,
 //                'desc' => 'Quantités',
 			),
-			'max_adherents'  => array(
+			'max_adherents' => array(
 				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
 				'type'     => 'number',
 				'group'    => 'Gestion',
@@ -473,13 +488,6 @@ jQuery(function($) {
 				'wpautop'    => false,
 				'searchable' => true,
 				'readonly'   => 'amapress_is_contrat_instance_readonly',
-			),
-			'is_principal'   => array(
-				'name'        => amapress__( 'Contrat principal' ),
-				'type'        => 'checkbox',
-				'show_column' => false,
-				'required'    => true,
-				'desc'        => 'Contrat principal',
 			),
 		),
 	);
