@@ -71,6 +71,19 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return ( count( $this->getPanierIds() ) > 1 ? 'Paniers' : 'Panier' ) . ' de ' . $this->getContratTitles() . ' du ' . date_i18n( 'd/m/Y', $this->getDate() );
 	}
 
+	public function getPaniersDescription() {
+		$quantites = array();
+		foreach ( $this->getContrat_instances() as $contrat_instance ) {
+			$adhesions = AmapressAdhesion::getUserActiveAdhesions( $this->getAdherent()->ID, $contrat_instance->ID );
+			/** @var AmapressAdhesion $adhesion */
+			$adhesion    = array_shift( $adhesions );
+			$quantites[] = $contrat_instance->getModel()->getTitle() .
+			               '(' . $adhesion->getContrat_quantites_AsString( $this->getDate() ) . ')';
+		}
+
+		return implode( ', ', $quantites );
+	}
+
 	/** @return AmapressPanier[] */
 	public function getPaniers() {
 		return $this->getCustomAsEntityArray( 'amapress_intermittence_panier_panier', 'AmapressPanier' );
@@ -420,6 +433,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 
 	public function getProperty( $name ) {
 		switch ( $name ) {
+			case 'lien-liste-paniers':
 			case 'liste-paniers':
 				if ( ! $this->hasPaniers() ) {
 					return '';
@@ -472,8 +486,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					$user = $this->getRepreneur();
 				}
 
-				if ( ! $user )
+				if ( ! $user ) {
 					return '';
+				}
 
 				return $user->getDisplayName();
 			case 'repreneur':
