@@ -64,7 +64,10 @@ function amapress_get_users_for_message( $users_query, $users_query_fields ) {
 	return $all_users;
 }
 
-function amapress_send_message( $subject, $content, $content_sms, $opt, TitanEntity $entity = null ) {
+function amapress_send_message(
+	$subject, $content, $content_sms, $opt, TitanEntity $entity = null,
+	$attachments = array(), $cc = null, $bcc = null, $headers = ''
+) {
 	$new_id = null;
 	/** @var AmapressUser $current_user */
 	$current_user = AmapressUser::getBy( amapress_current_user_id() );
@@ -166,7 +169,7 @@ function amapress_send_message( $subject, $content, $content_sms, $opt, TitanEnt
 					$to          = "{$name->getDisplayName()} <$email>";
 					$new_subject = amapress_replace_mail_placeholders( $subject, $name, $entity );
 					$new_content = amapress_replace_mail_placeholders( $content, $name, $entity );
-					amapress_wp_mail( $to, $new_subject, $new_content, $headers );
+					amapress_wp_mail( $to, $new_subject, $new_content, $headers, $attachments, $cc, $bcc );
 				}
 				break;
 			case "cc":
@@ -177,7 +180,7 @@ function amapress_send_message( $subject, $content, $content_sms, $opt, TitanEnt
 				$headers[] = 'Cc: ' . implode( ',', $emails );
 				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
 				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
-				amapress_wp_mail( $to, $subject, $content, $headers );
+				amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
 				break;
 			case "bcc":
 			default:
@@ -188,7 +191,7 @@ function amapress_send_message( $subject, $content, $content_sms, $opt, TitanEnt
 				$headers[] = 'Bcc: ' . implode( ',', $emails );
 				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
 				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
-				amapress_wp_mail( $to, $subject, $content, $headers );
+				amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
 		}
 
 		if ( isset( $opt['send_from_me'] ) && $opt['send_from_me'] ) {

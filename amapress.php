@@ -50,7 +50,7 @@ define( 'AMAPRESS_VERSION', '0.35.5' );
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
-function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
+function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array(), $cc = null, $bcc = null ) {
 //    add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 	if ( empty( $headers ) ) {
 		$headers = array();
@@ -59,6 +59,15 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		$headers = explode( "\n", $headers );
 	}
 	$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	if ( ! empty( $cc ) ) {
+		$headers[] = 'Cc:' . implode( ', ', $cc );
+	}
+	if ( ! empty( $bcc ) ) {
+		$headers[] = 'Bcc:' . implode( ', ', $bcc );
+	}
+	if ( null == $attachments ) {
+		$attachments = [];
+	}
 	wp_mail( $to, $subject, wpautop( $message ), $headers, $attachments );
 //    remove_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 }

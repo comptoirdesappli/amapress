@@ -226,7 +226,7 @@ function amapress_handle_actions() {
 	}
 }
 
-function amapress_mail_to_admin( $subject, $message, TitanEntity $post = null ) {
+function amapress_mail_to_admin( $subject, $message, TitanEntity $post = null, $attachments = array(), $cc = null, $bcc = null, $headers = '' ) {
 	$admin_email = get_option( 'admin_email' );
 	$admin_user  = get_user_by( 'email', $admin_email );
 	if ( $admin_user ) {
@@ -234,17 +234,17 @@ function amapress_mail_to_admin( $subject, $message, TitanEntity $post = null ) 
 		$subject = amapress_replace_mail_placeholders( $subject, $user, $post );
 		$message = amapress_replace_mail_placeholders( $message, $user, $post );
 	}
-	amapress_wp_mail( $admin_email, $subject, $message );
+	amapress_wp_mail( $admin_email, $subject, $message, $headers, $attachments, $cc, $bcc );
 }
 
-function amapress_mail_to_current_user( $subject, $message, $user_id = null, TitanEntity $post = null ) {
+function amapress_mail_to_current_user( $subject, $message, $user_id = null, TitanEntity $post = null, $attachments = array(), $cc = null, $bcc = null, $headers = '' ) {
 	if ( ! $user_id ) {
 		$user_id = amapress_current_user_id();
 	}
 	$user    = AmapressUser::getBy( $user_id );
 	$subject = amapress_replace_mail_placeholders( $subject, $user, $post );
 	$message = amapress_replace_mail_placeholders( $message, $user, $post );
-	amapress_wp_mail( implode( ',', $user->getAllEmails() ), $subject, $message );
+	amapress_wp_mail( implode( ',', $user->getAllEmails() ), $subject, $message, $headers, $attachments, $cc, $bcc );
 }
 
 function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $event_type = 'event' ) {
