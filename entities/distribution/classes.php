@@ -528,6 +528,16 @@ class AmapressDistribution extends Amapress_EventBase {
 					Amapress_Agenda_ICAL_Export::get_link_href() );
 			case  'lien-distrib-ical':
 				return parent::getProperty( 'lien-evenement-ical' );
+			case 'lien-liste-paniers':
+			case 'liste-paniers':
+				return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $this->getSlug() );
+			case 'nb-paniers-intermittents':
+				return count( $this->getPaniersIntermittents() );
+			case 'paniers-intermittents':
+				return implode( ', ', array_map( function ( $p ) {
+					/** @var AmapressIntermittence_panier $p */
+					return $p->getPaniersDescription();
+				}, $this->getPaniersIntermittents() ) );
 		}
 
 
@@ -562,5 +572,12 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		return $ret;
+	}
+
+	/** @return AmapressIntermittence_panier[] */
+	public function getPaniersIntermittents() {
+		return AmapressPaniers::getPanierIntermittents(
+			[ 'date' => $this->getDate() ]
+		);
 	}
 }
