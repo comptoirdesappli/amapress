@@ -33,6 +33,16 @@ defined( 'TF_PATH' ) or define( 'TF_PATH', trailingslashit( dirname( __FILE__ ) 
 // Used for testing and checking plugin slug name.
 defined( 'TF_PLUGIN_BASENAME' ) or define( 'TF_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
+add_action( 'tf_sync_scheduler_options', function () {
+
+} );
+
+add_action( 'admin_init', function () {
+	if ( ! wp_next_scheduled( 'tf_sync_scheduler_options' ) ) {
+		wp_schedule_event( time(), 'hourly', 'tf_sync_scheduler_options' );
+	}
+} );
+
 require_once( TF_PATH . 'lib/class-admin-notification.php' );
 //require_once( TF_PATH . 'lib/class-amapress-posts-list-table.php');
 require_once( TF_PATH . 'lib/class-admin-notification.php' );
@@ -55,6 +65,7 @@ require_once( TF_PATH . 'lib/class-option-code.php' );
 require_once( TF_PATH . 'lib/class-option-color.php' );
 require_once( TF_PATH . 'lib/class-option-custom.php' );
 require_once( TF_PATH . 'lib/class-option-edd-license.php' );
+require_once( TF_PATH . 'lib/class-option-event-scheduler.php' );
 require_once( TF_PATH . 'lib/class-option-date.php' );
 require_once( TF_PATH . 'lib/class-option-multidate.php' );
 require_once( TF_PATH . 'lib/class-option-enable.php' );
