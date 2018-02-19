@@ -122,10 +122,10 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                     center: pos,
                     zoom: 14
                   });
-                var bikeLayer = new google.maps.BicyclingLayer();
-                bikeLayer.setMap(map);
-                var transitLayer = new google.maps.TransitLayer();
-                transitLayer.setMap(map);
+//                var bikeLayer = new google.maps.BicyclingLayer();
+//                bikeLayer.setMap(map);
+//                var transitLayer = new google.maps.TransitLayer();
+//                transitLayer.setMap(map);
                 var markers = [' . $js_markers . '];//some array
 
                 for (var i = 0; i < markers.length; i++) {
