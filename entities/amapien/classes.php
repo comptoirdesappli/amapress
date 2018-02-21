@@ -49,8 +49,10 @@ class AmapressUser extends TitanUserEntity {
 		return self::$users_cache[ $user_id ];
 	}
 
+	//TODO gérer l'enregistrement de AMAP_ROLES avant le premier appel wp_set_current_user
+	private $amap_roles_errored = false;
 	private function ensure_amap_roles() {
-		if ( null !== $this->amap_roles ) {
+		if ( null !== $this->amap_roles && ! $this->amap_roles_errored ) {
 			return;
 		}
 
@@ -63,17 +65,19 @@ ON tr.term_taxonomy_id = tt.term_taxonomy_id
 WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		}
 		if ( ! in_array( $this->getID(), self::$user_ids_with_roles ) ) {
-			$this->amap_roles = [];
-
+			$this->amap_roles         = [];
+			$this->amap_roles_errored = false;
 			return;
 		}
 
-		$res = wp_get_post_terms( $this->ID, self::AMAP_ROLE,
+		$res = wp_get_object_terms( $this->getID(), self::AMAP_ROLE,
 			array( 'fields' => 'all', 'orderby' => 'term_id' ) );
 		if ( ! is_wp_error( $res ) ) {
-			$this->amap_roles = $res;
+			$this->amap_roles         = $res;
+			$this->amap_roles_errored = false;
 		} else {
-			$this->amap_roles = [];
+			$this->amap_roles         = [];
+			$this->amap_roles_errored = true;
 		}
 	}
 
