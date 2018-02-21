@@ -7,11 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_get_custom_content_distribution', 'amapress_get_custom_content_distribution' );
 function amapress_get_custom_content_distribution( $content ) {
 	$dist_id = get_the_ID();
-	$dist    = new AmapressDistribution( $dist_id );
+	$dist    = AmapressDistribution::getBy( $dist_id );
 
 	$dist_date     = intval( get_post_meta( $dist_id, 'amapress_distribution_date', true ) );
 	$dist_contrats = $dist->getContratIds();
 	$user_contrats = AmapressContrat_instance::getContratInstanceIdsForUser();
+	$user_contrats = array_filter( $user_contrats, function ( $cid ) use ( $dist_contrats ) {
+		return in_array( $cid, $dist_contrats );
+	} );
 
 	$resp_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
 	if ( $resp_ids && count( $resp_ids ) > 0 ) {
@@ -167,11 +170,14 @@ function amapress_get_custom_content_distribution( $content ) {
 
 		amapress_echo_panel_start( 'En cas d\'absence - Espace intermittents' );
 		$paniers       = AmapressPaniers::getPaniersForDist( $dist->getDate() );
-		$ceder_title   = count( $paniers ) > 1 ? 'Céder mes ' . count( $paniers ) . ' paniers' : 'Céder mon panier';
+		$ceder_title   = count( $user_contrats ) > 1 ? 'Céder mes ' . count( $user_contrats ) . ' paniers' : 'Céder mon panier';
 		$can_subscribe = Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() );
 
 		$is_intermittent = 'exchangeable';
 		foreach ( $paniers as $panier ) {
+			if ( ! in_array( $panier->getContrat_instanceId(), $user_contrats ) ) {
+				continue;
+			}
 			$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId() );
 			if ( ! empty( $status ) ) {
 				$is_intermittent = $status;
