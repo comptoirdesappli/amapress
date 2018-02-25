@@ -8,3 +8,8 @@ tmp.php
 .project
 .buildpath
 .settings
+
+# OS
+Thumbs.db
+desktop.ini
+Thumbs.db

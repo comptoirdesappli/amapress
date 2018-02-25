@@ -62,7 +62,7 @@ class AmapressContrats {
 		$need_generate = count( $dists[ $contrat_id ]['missing'] ) > 0
 		                 || count( $dists[ $contrat_id ]['associate'] ) > 0
 		                 || count( $dists[ $contrat_id ]['unassociate'] ) > 0
-		          //|| count($commands[$contrat_id]['missing']) > 0
+		                 //|| count($commands[$contrat_id]['missing']) > 0
 		                 //|| count($commands[$contrat_id]['orphan']) > 0
 		                 || count( $paniers[ $contrat_id ] ) > 0;
 
@@ -518,6 +518,35 @@ class AmapressContrats {
 
 		return $res;
 	}
+
+	public static function getReferentsForLieu( $lieu_id ) {
+		return from( self::getAllReferentProducteursAndLieux() )->where( function ( $r ) use ( $lieu_id ) {
+			return $r['lieu'] == $lieu_id;
+		} )->toArray();
+	}
+
+	public static function getReferentsForProducteur( $producteur_id ) {
+		return from( self::getAllReferentProducteursAndLieux() )->where( function ( $r ) use ( $producteur_id ) {
+			return $r['producteur'] == $producteur_id;
+		} )->toArray();
+	}
+
+	public static function getReferentsForContratInstance( $contrat_instance_id ) {
+		return from( self::getAllReferentProducteursAndLieux() )->where( function ( $r ) use ( $contrat_instance_id ) {
+			return in_array( $contrat_instance_id, $r['contrat_instance_ids'] );
+		} )->toArray();
+	}
+
+	public static function getReferentsForContrat( $contrat_id ) {
+		return from( self::getAllReferentProducteursAndLieux() )->where( function ( $r ) use ( $contrat_id ) {
+			return in_array( $contrat_id, $r['contrat_instance_ids'] );
+		} )->toArray();
+	}
+
+	public static function getAllReferentProducteursAndLieux() {
+		return self::getReferentProducteursAndLieux( 'all' );
+	}
+
 
 	public static function getReferentProducteursAndLieux( $user_id = null ) {
 		if ( ! $user_id ) {

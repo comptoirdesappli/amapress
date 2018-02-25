@@ -131,8 +131,9 @@ class File_Iterator extends FilterIterator
 
     /**
      * @param  string $filename
-     * @param  array  $subString
+     * @param  array $subStrings
      * @param  int    $type
+     *
      * @return bool
      * @since  Method available since Release 1.1.0
      */

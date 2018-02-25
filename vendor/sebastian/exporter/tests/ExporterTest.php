@@ -10,12 +10,10 @@
 
 namespace SebastianBergmann\Exporter;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * @covers SebastianBergmann\Exporter\Exporter
  */
-class ExporterTest extends TestCase
+class ExporterTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Exporter

@@ -1,10 +1,5 @@
 # CHANGELOG
 
-* Added response first-line to response string exception (fixes #145)
-* Fix `AppendStream::detach` to not close streams
-* Clarify exception message when stream is detached
-* Added a test for #129 behavior
-
 ## 1.4.2 - 2017-03-20
 
 * Reverted BC break to `Uri::resolve` and `Uri::removeDotSegments` by removing 

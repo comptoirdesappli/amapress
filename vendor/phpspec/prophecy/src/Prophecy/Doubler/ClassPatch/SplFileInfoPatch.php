@@ -34,7 +34,6 @@ class SplFileInfoPatch implements ClassPatchInterface
         if (null === $node->getParentClass()) {
             return false;
         }
-
         return 'SplFileInfo' === $node->getParentClass()
             || is_subclass_of($node->getParentClass(), 'SplFileInfo')
         ;
@@ -66,6 +65,13 @@ class SplFileInfoPatch implements ClassPatchInterface
 
             return;
         }
+
+	    if ( $this->nodeIsSymfonySplFileInfo( $node ) ) {
+		    $filePath = str_replace( '\\', '\\\\', __FILE__ );
+		    $constructor->setCode( 'return parent::__construct("' . $filePath . '", "", "");' );
+
+		    return;
+	    }
 
         $constructor->useParentCode();
     }
@@ -103,4 +109,15 @@ class SplFileInfoPatch implements ClassPatchInterface
         return 'SplFileObject' === $parent
             || is_subclass_of($parent, 'SplFileObject');
     }
+
+	/**
+	 * @param ClassNode $node
+	 *
+	 * @return boolean
+	 */
+	private function nodeIsSymfonySplFileInfo( ClassNode $node ) {
+		$parent = $node->getParentClass();
+
+		return 'Symfony\\Component\\Finder\\SplFileInfo' === $parent;
+	}
 }

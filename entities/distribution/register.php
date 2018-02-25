@@ -117,7 +117,7 @@ function amapress_register_entities_distribution( $entities ) {
 				),
 				'type'            => 'related-posts',
 				'query'           => function ( $postID ) {
-					$dist = new AmapressDistribution( $postID );
+					$dist = AmapressDistribution::getBy( $postID );
 
 					return array(
 						'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,

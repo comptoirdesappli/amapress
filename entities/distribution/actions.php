@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'amapress_do_query_action_distribution_inscr_resp', 'amapress_do_query_action_distribution_inscr_resp' );
 function amapress_do_query_action_distribution_inscr_resp() {
-	$amap_event = new AmapressDistribution( get_the_ID() );
+	$amap_event = AmapressDistribution::getBy( get_the_ID() );
 	$res        = $amap_event->inscrireResponsable( amapress_current_user_id() );
 	if ( 'list_full' == $res ) {
 		wp_redirect_and_exit( add_query_arg( array( 'message' => 'list_full' ), $amap_event->getPermalink() ) );
@@ -19,7 +19,7 @@ function amapress_do_query_action_distribution_inscr_resp() {
 
 add_action( 'amapress_do_query_action_distribution_desinscr_resp', 'amapress_do_query_action_distribution_desinscr_resp' );
 function amapress_do_query_action_distribution_desinscr_resp() {
-	$amap_event = new AmapressDistribution( get_the_ID() );
+	$amap_event = AmapressDistribution::getBy( get_the_ID() );
 	$res        = $amap_event->desinscrireResponsable( amapress_current_user_id() );
 	if ( 'not_inscr' == $res ) {
 		wp_redirect_and_exit( add_query_arg( array( 'message' => 'not_inscr' ), $amap_event->getPermalink() ) );
@@ -39,13 +39,17 @@ function amapress_get_custom_title_distribution_liste_emargement( $content ) {
 		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 	}
 
-	$dist                = new AmapressDistribution( get_the_ID() );
+	$dist                = AmapressDistribution::getBy( get_the_ID() );
 	$amapress_contrat    = get_query_var( 'amapress_contrat' );
 	$amapress_contrat_qt = get_query_var( 'amapress_contrat_qt' );
 
 	if ( ! empty( $amapress_contrat ) ) {
-		$contrat       = get_post( Amapress::resolve_post_id( $amapress_contrat, AmapressContrat::INTERNAL_POST_TYPE ) );
-		$contrat_names = array( $contrat->post_title );
+		$contrat = get_post( Amapress::resolve_post_id( $amapress_contrat, AmapressContrat::INTERNAL_POST_TYPE ) );
+		if ( $contrat ) {
+			$contrat_names = array( $contrat->post_title );
+		} else {
+			$contrat_names = array();
+		}
 	} else {
 		$contrat_names = array_map( function ( $c ) {
 			/** @var AmapressContrat_instance $c */
@@ -93,16 +97,22 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 	}
 
-	$dist = new AmapressDistribution( get_the_ID() );
+	$dist = AmapressDistribution::getBy( get_the_ID() );
 	if ( ! AmapressDistributions::isCurrentUserResponsable( $dist->ID )
 	     && ! amapress_can_access_admin()
 	) {
 		wp_die( 'Accès non autorisé' );
 	}
 
+	return getListeEmargement( get_the_ID(), isset( $_GET['all'] ) );
+}
+
+function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
+	$dist = AmapressDistribution::getBy( $dist_id );
+
 	$date                     = $dist->getDate();
 	$dist_contrat_ids         = $dist->getContratIds();
-	$all_contrat_instances    = ! isset( $_GET['all'] ) ?
+	$all_contrat_instances    = ! $show_all_contrats ?
 		$dist->getContrats() :
 		AmapressContrats::get_active_contrat_instances( null, $date );
 	$all_contrat_instance_ids = array_map(
@@ -125,7 +135,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		$show_phone = Amapress::toBool( $_GET['show_phone'] );
 	}
 
-	$columns = array(
+	$columns          = array(
 		array(
 			'title' => 'Pris',
 			'data'  => 'check',
@@ -150,8 +160,8 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		$columns[] = array(
 			'title' => 'Adresse',
 			'data'  => array(
-				'_'    => 'adresse.full',
-				'sort' => 'adresse.ville',
+				'_'    => 'adresse_full',
+				'sort' => 'adresse_ville',
 			)
 		);
 	}
@@ -193,13 +203,13 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		'data'  => 'comment',
 	);
 
-	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true );
-	$liste     = array();
-	$adhesions = array_group_by(
+	$all_adhs = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true );
+	$liste    = array();
+	$adhesions        = array_group_by(
 		$all_adhs,
 		function ( $adh ) {
 			/** @var AmapressAdhesion $adh */
-			$user     = $adh->getAdherent()->getUser();
+			$user = $adh->getAdherent()->getUser();
 			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID ) );
 
 			return implode( '_', $user_ids );
@@ -217,9 +227,9 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		$line['first_name'] = implode( ' / ', array_map( function ( $user ) {
 			return $user->first_name;
 		}, $users ) );
-		$line['last_name']  = implode( ' / ', array_map( function ( $user ) {
+		$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
 			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
-			if ( current_user_can( 'edit_users' ) ) {
+			if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
 				return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val );
 			}
 
@@ -240,19 +250,17 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			}, $users ) );
 		}
 		if ( $show_address ) {
-			$line['adresse'] =
-				array(
-					'full'  => implode( '<br/>', array_map( function ( $user ) {
-						$adh = AmapressUser::getBy( $user );
+			$line['adresse_full'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
 
-						return $adh->getAdresse();
-					}, $users ) ),
-					'ville' => implode( '<br/>', array_map( function ( $user ) {
-						$adh = AmapressUser::getBy( $user );
+				return $adh->getAdresse();
+			}, $users ) );
 
-						return $adh->getVille();
-					}, $users ) )
-				);
+			$line['adresse_ville'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
+
+				return $adh->getVille();
+			}, $users ) );
 		}
 		foreach ( $adhs as $adh ) {
 			if ( ! isset( $line[ 'contrat_' . $adh->getContrat_instance()->ID ] ) ) {
@@ -274,13 +282,17 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 		}
 
 		$principal_user = AmapressUser::getBy( $users[0] );
-		$line['check']  = '<span style="display: inline-block; width: 32px"> </span>';
+		$line['check']  = '<span style="display: inline-block; width: 32px">&#xA0;</span>';
 
-		$comment = esc_html( $principal_user->getCommentEmargement() );
-		if ( empty( $comment ) ) {
-			$comment = '<span class="edit-user-comment">Editer</span>';
+		if ( $for_pdf ) {
+			$line['comment'] = '';
+		} else {
+			$comment = esc_html( $principal_user->getCommentEmargement() );
+			if ( empty( $comment ) ) {
+				$comment = '<span class="edit-user-comment">Editer</span>';
+			}
+			$line['comment'] = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $principal_user->ID . '#amapress_user_comment_emargement' ), $comment, false );//;
 		}
-		$line['comment'] = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $principal_user->ID . '#amapress_user_comment_emargement' ), $comment, false );//;
 
 		$liste[] = $line;
 	}
@@ -290,7 +302,28 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	} )->toArray();
 
 	ob_start();
-	echo '<style type="text/css">
+	if ( $for_pdf ) {
+		echo '<style type="text/css">
+table, td, th { 
+	border: 1px solid black; 
+	border-collapse: collapse; 
+	padding: 2px; 
+}
+.odd { 
+	background-color: #EEEEEE; 
+}
+.distrib-resp-missing {
+	display: none;
+}
+.distrib-inscr-closed {
+	display: none;
+}
+.inscr-list-contrats {
+	font-size: 0.6em;
+}
+</style>';
+	} else {
+		echo '<style type="text/css">
             p {
                 margin: 0 !important;
                 padding:0 !important;
@@ -329,25 +362,28 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
                 @page { margin: 0 !important; }
             }
             </style>';
+	}
 
-	the_title( '<h2>', '</h2>' );
+	echo '<h2>' . esc_html( $dist->getTitle() ) . '</h2>';
 	echo '<br/>';
-	echo '<div class="btns">';
-	echo '<a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>';
-	if ( current_user_can( 'edit_distribution' ) ) {
-		echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
-		echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
+	if ( ! $for_pdf ) {
+		echo '<div class="btns">';
+		echo '<a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>';
+		if ( current_user_can( 'edit_distribution' ) ) {
+			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
+			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
+		}
+		if ( current_user_can( 'edit_lieu_distribution' ) ) {
+			echo '<a href="' . esc_attr( $dist->getLieu()->getAdminEditLink() ) . '" class="btn btn-default">Editer les infos du lieu</a>';
+		}
+		if ( isset( $_GET['all'] ) ) {
+			echo '<a href="' . esc_attr( remove_query_arg( 'all' ) ) . '" class="btn btn-default btn-print">Contrats à cette distribution</a>';
+		} else {
+			echo '<a href="' . esc_attr( add_query_arg( 'all', '' ) ) . '" class="btn btn-default btn-print">Tous les contrats</a>';
+		}
+		echo '</div>';
+		echo '<br/>';
 	}
-	if ( current_user_can( 'edit_lieu_distribution' ) ) {
-		echo '<a href="' . esc_attr( $dist->getLieu()->getAdminEditLink() ) . '" class="btn btn-default">Editer les infos du lieu</a>';
-	}
-	if ( isset( $_GET['all'] ) ) {
-		echo '<a href="' . esc_attr( remove_query_arg( 'all' ) ) . '" class="btn btn-default btn-print">Contrats à cette distribution</a>';
-	} else {
-		echo '<a href="' . esc_attr( add_query_arg( 'all', '' ) ) . '" class="btn btn-default btn-print">Tous les contrats</a>';
-	}
-	echo '</div>';
-	echo '<br/>';
 
 	echo Amapress::getOption( 'liste-emargement-general-message' );
 	echo '<br/>';
@@ -368,7 +404,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			function ( $state, $status, $adh ) {
 				return $state;
 			},
-			array( 'paging' => false, 'searching' => false ),
+			array( 'paging' => false, 'searching' => false, 'no_script' => $for_pdf ),
 			array(
 				'show_avatar'     => 'false',
 				'show_email'      => 'false',
@@ -395,11 +431,13 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<h3 class="liste-emargement">Liste</h3>';
 	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
 		array(
-			'paging'     => false,
-			'searching'  => false,
-			'nowrap'     => false,
-			'responsive' => false,
-			'aaSorting'  => [ [ 1, 'asc' ] ]
+			'paging'       => false,
+			'searching'    => false,
+			'nowrap'       => false,
+			'responsive'   => false,
+			'init_as_html' => true,
+			'no_script'    => $for_pdf,
+			'aaSorting'    => [ [ 1, 'asc' ] ]
 		),
 		array(
 			Amapress::DATATABLES_EXPORT_EXCEL
@@ -414,7 +452,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 				echo '<h3 class="liste-emargement-contrat-variable">Détails des paniers - ' . esc_html( $contrat->getTitle() ) . '</h3>';
 				amapress_echo_datatable( 'liste-emargement-contrat-variable-' . $contrat->ID,
 					$panier_commandes['columns'], $panier_commandes['data'],
-					array( 'paging' => false, 'searching' => false ),
+					array( 'paging' => false, 'searching' => false, 'no_script' => $for_pdf, 'init_as_html' => true ),
 					array(
 						Amapress::DATATABLES_EXPORT_EXCEL,
 						Amapress::DATATABLES_EXPORT_PDF,
@@ -428,7 +466,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
 	echo '<br/>';
-	echo do_shortcode( '[inscription-distrib show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
+	echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
@@ -439,7 +477,7 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 			if ( $lieu_id == $dist_lieu_id ) {
 				continue;
 			}
-			echo do_shortcode( '[inscription-distrib show_past=false show_for_resp=true max_dates=3 show_adresse=false show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+			echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=3 show_adresse=false show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
 		}
 	}
 
@@ -469,3 +507,14 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 //function amapress_get_query_action_template_distribution_liste_emargement($template) {
 //    return AMAPRESS__PLUGIN_DIR . 'templates/blank_page.php';
 //}
+
+add_action( 'amapress_do_query_action_distribution_liste-emargement-pdf', function () {
+	$dist = AmapressDistribution::getBy( get_the_ID() );
+	Amapress::sendPdfFromHtml(
+		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' . getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) . '</div>',
+		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
+	die();
+} );
+add_action( 'amapress_do_query_action_distribution_liste-emargement-excel', function () {
+
+} );

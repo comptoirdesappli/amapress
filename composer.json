@@ -1,7 +1,6 @@
 {
   "name": "sharevb/amapress",
   "description": "Gestion d'AMAP",
-  "minimum-stability": "dev",
   "license": "GPL-2.0+",
   "authors": [
     {
@@ -15,12 +14,12 @@
     }
   },
   "require": {
-    "spipu/html2pdf": "v4.6.1",
+    "tecnickcom/tcpdf": ">=6.0",
     "guzzlehttp/guzzle": "v6.3.0",
     "phpoffice/phpexcel": "1.8.1",
     "athari/yalinqo": "~2.0",
     "phpunit/phpunit": "4.8.36",
     "squizlabs/php_codesniffer": "*",
-    "wp-coding-standards/wpcs": "0.10.0"
+    "wp-coding-standards/wpcs": "*"
   }
 }

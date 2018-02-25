@@ -10,9 +10,9 @@
 
 namespace SebastianBergmann\Environment;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_TestCase;
 
-class RuntimeTest extends TestCase
+class RuntimeTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var \SebastianBergmann\Environment\Runtime

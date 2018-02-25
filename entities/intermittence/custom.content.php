@@ -50,7 +50,7 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 	if ( ! empty( $atts['contrat'] ) ) {
 		$dist_id = Amapress::resolve_post_id( $atts['contrat'], AmapressDistribution::INTERNAL_POST_TYPE );
 		if ( $dist_id ) {
-			$dist                         = new AmapressDistribution( $dist_id );
+			$dist                         = AmapressDistribution::getBy( $dist_id );
 			$query['contrat_instance_id'] = array_map( function ( $a ) {
 				return $a->ID;
 			},
@@ -238,6 +238,7 @@ function amapress_get_paniers_intermittents_table(
 	ob_start();
 
 	$table_options['initComplete'] = 'function() { amapress_init_front_end_ajax_buttons(); }';
+	$table_options['init_as_html'] = true;
 
 	amapress_echo_datatable( $id, $columns, $data, $table_options );
 	$content = ob_get_clean();

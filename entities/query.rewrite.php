@@ -29,6 +29,8 @@ function amapress_add_rewrite_rules() {
 	add_rewrite_rule( '^distributions/([^/]+)/(desinscription|desinscrire)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=desinscr_resp', 'top' );
 	add_rewrite_rule( '^distributions/([^/]+)/garder/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=panier_garder', 'top' );
 	add_rewrite_rule( '^distributions/([^/]+)/liste-emargement/([^/]+)/([^/]+)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amapress_contrat=$matches[2]&amapress_contrat_qt=$matches[3]&amp_action=liste-emargement', 'top' );
+	add_rewrite_rule( '^distributions/([^/]+)/liste-emargement/excel/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=liste-emargement-excel', 'top' );
+	add_rewrite_rule( '^distributions/([^/]+)/liste-emargement/pdf/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=liste-emargement-pdf', 'top' );
 	add_rewrite_rule( '^distributions/([^/]+)/liste-emargement/([^/]+)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amapress_contrat=$matches[2]&amp_action=liste-emargement', 'top' );
 	add_rewrite_rule( '^distributions/([^/]+)/liste-emargement/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=liste-emargement', 'top' );
 	//add_rewrite_rule('^distributions/([^/]+)/(inscription|s-inscrire|participer|devenir-responsable)/?', 'index.php?post_type=distribution&name=$matches[1]&amp_action=resp_distrib', 'top');

@@ -1,0 +1,8 @@
+<?php
+if ( ! $someVar || ! $x instanceOf 'stdClass') {
+}
+if ( ! $someVar || ! $x instanceOf 'stdClass') {
+}
+if ( ! foo() && ( ! $x || true ) ) {
+}
+$var = ! ( $x || $y );

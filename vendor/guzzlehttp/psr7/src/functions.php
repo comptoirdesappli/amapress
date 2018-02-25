@@ -72,7 +72,7 @@ function uri_for($uri)
  * @param resource|string|null|int|float|bool|StreamInterface|callable $resource Entity body data
  * @param array                                                        $options  Additional options
  *
- * @return StreamInterface
+ * @return Stream
  * @throws \InvalidArgumentException if the $resource arg is not valid.
  */
 function stream_for($resource = '', array $options = [])
@@ -431,7 +431,7 @@ function hash(
  * @param StreamInterface $stream    Stream to read from
  * @param int             $maxLength Maximum buffer length
  *
- * @return string
+ * @return string|bool
  */
 function readline(StreamInterface $stream, $maxLength = null)
 {
@@ -495,7 +495,7 @@ function parse_response($message)
     // between status-code and reason-phrase is required. But browsers accept
     // responses without space and reason as well.
     if (!preg_match('/^HTTP\/.* [0-9]{3}( .*|$)/', $data['start-line'])) {
-        throw new \InvalidArgumentException('Invalid response string: ' . $data['start-line']);
+	    throw new \InvalidArgumentException( 'Invalid response string' );
     }
     $parts = explode(' ', $data['start-line'], 3);
 

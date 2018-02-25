@@ -7,6 +7,10 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Sniffs\VIP;
+
+use WordPress\AbstractArrayAssignmentRestrictionsSniff;
+
 /**
  * Flag returning high or infinite posts_per_page.
  *
@@ -15,22 +19,24 @@
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.3.0
+ * @since   0.13.0 Class name changed: this class is now namespaced.
+ * @since   0.14.0 Added the posts_per_page property.
  */
-class WordPress_Sniffs_VIP_PostsPerPageSniff extends WordPress_AbstractArrayAssignmentRestrictionsSniff {
+class PostsPerPageSniff extends AbstractArrayAssignmentRestrictionsSniff {
+
+	/**
+	 * Posts per page property
+	 *
+	 * Posts per page limit to check against.
+	 *
+	 * @since 0.14.0
+	 *
+	 * @var int
+	 */
+	public $posts_per_page = 100;
 
 	/**
 	 * Groups of variables to restrict.
-	 * This should be overridden in extending classes.
-	 *
-	 * Example: groups => array(
-	 * 	'wpdb' => array(
-	 * 		'type'          => 'error' | 'warning',
-	 * 		'message'       => 'Dont use this one please!',
-	 * 		'variables'     => array( '$val', '$var' ),
-	 * 		'object_vars'   => array( '$foo->bar', .. ),
-	 * 		'array_members' => array( '$foo['bar']', .. ),
-	 * 	)
-	 * )
 	 *
 	 * @return array
 	 */
@@ -59,18 +65,20 @@ class WordPress_Sniffs_VIP_PostsPerPageSniff extends WordPress_AbstractArrayAssi
 	 *                       with custom error message passed to ->process().
 	 */
 	public function callback( $key, $val, $line, $group ) {
-		$key = strtolower( $key );
+		$key                  = strtolower( $key );
+		$this->posts_per_page = (int) $this->posts_per_page;
+
 		if (
 			( 'nopaging' === $key && ( 'true' === $val || 1 === $val ) )
 			||
-			( in_array( $key, array( 'numberposts', 'posts_per_page' ), true ) && '-1' == $val )
-			) {
+			( in_array( $key, array( 'numberposts', 'posts_per_page' ), true ) && '-1' === $val )
+		) {
 
 			return 'Disabling pagination is prohibited in VIP context, do not set `%s` to `%s` ever.';
 
 		} elseif ( in_array( $key, array( 'posts_per_page', 'numberposts' ), true ) ) {
 
-			if ( $val > 100 ) {
+			if ( $val > $this->posts_per_page ) {
 				return 'Detected high pagination limit, `%s` is set to `%s`';
 			}
 		}

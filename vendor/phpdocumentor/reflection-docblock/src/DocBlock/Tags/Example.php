@@ -12,147 +12,157 @@
 
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
+use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\Tag;
+use Webmozart\Assert\Assert;
 
 /**
  * Reflection class for a {@}example tag in a Docblock.
  */
 final class Example extends BaseTag
 {
-    /**
-     * @var string Path to a file to use as an example. May also be an absolute URI.
-     */
-    private $filePath = '';
+	/**
+	 * @var string Path to a file to use as an example. May also be an absolute URI.
+	 */
+	private $filePath;
 
-    /**
-     * @var bool Whether the file path component represents an URI. This determines how the file portion
-     *     appears at {@link getContent()}.
-     */
-    private $isURI = false;
+	/**
+	 * @var bool Whether the file path component represents an URI. This determines how the file portion
+	 *     appears at {@link getContent()}.
+	 */
+	private $isURI = false;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getContent()
-    {
-        if (null === $this->description) {
-            $filePath = '"' . $this->filePath . '"';
-            if ($this->isURI) {
-                $filePath = $this->isUriRelative($this->filePath)
-                    ? str_replace('%2F', '/', rawurlencode($this->filePath))
-                    :$this->filePath;
-            }
+	/**
+	 * @var int
+	 */
+	private $startingLine;
 
-            $this->description = $filePath . ' ' . parent::getContent();
-        }
+	/**
+	 * @var int
+	 */
+	private $lineCount;
 
-        return $this->description;
-    }
+	public function __construct( $filePath, $isURI, $startingLine, $lineCount, $description ) {
+		Assert::notEmpty( $filePath );
+		Assert::integer( $startingLine );
+		Assert::greaterThanEq( $startingLine, 0 );
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function create($body)
-    {
-        // File component: File path in quotes or File URI / Source information
-        if (! preg_match('/^(?:\"([^\"]+)\"|(\S+))(?:\s+(.*))?$/sux', $body, $matches)) {
-            return null;
-        }
+		$this->filePath     = $filePath;
+		$this->startingLine = $startingLine;
+		$this->lineCount    = $lineCount;
+		$this->name         = 'example';
+		if ( $description !== null ) {
+			$this->description = trim( $description );
+		}
 
-        $filePath = null;
-        $fileUri  = null;
-        if ('' !== $matches[1]) {
-            $filePath = $matches[1];
-        } else {
-            $fileUri = $matches[2];
-        }
+		$this->isURI = $isURI;
+	}
 
-        $startingLine = 1;
-        $lineCount    = null;
-        $description  = null;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getContent() {
+		if ( null === $this->description) {
+			$filePath = '"' . $this->filePath . '"';
+			if ($this->isURI) {
+				$filePath = $this->isUriRelative($this->filePath)
+					? str_replace('%2F', '/', rawurlencode($this->filePath))
+					:$this->filePath;
+			}
 
-        // Starting line / Number of lines / Description
-        if (preg_match('/^([1-9]\d*)\s*(?:((?1))\s+)?(.*)$/sux', $matches[3], $matches)) {
-            $startingLine = (int)$matches[1];
-            if (isset($matches[2]) && $matches[2] !== '') {
-                $lineCount = (int)$matches[2];
-            }
-            $description = $matches[3];
-        }
+			return trim( $filePath . ' ' . parent::getDescription() );
+		}
 
-        return new static($filePath, $fileUri, $startingLine, $lineCount, $description);
-    }
+		return $this->description;
+	}
 
-    /**
-     * Returns the file path.
-     *
-     * @return string Path to a file to use as an example.
-     *     May also be an absolute URI.
-     */
-    public function getFilePath()
-    {
-        return $this->filePath;
-    }
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function create($body) {
+		// File component: File path in quotes or File URI / Source information
+		if (! preg_match('/^(?:\"([^\"]+)\"|(\S+))(?:\s+(.*))?$/sux', $body, $matches)) {
+			return null;
+		}
 
-    /**
-     * Sets the file path.
-     *
-     * @param string $filePath The new file path to use for the example.
-     *
-     * @return $this
-     */
-    public function setFilePath($filePath)
-    {
-        $this->isURI = false;
-        $this->filePath = trim($filePath);
+		$filePath = null;
+		$fileUri  = null;
+		if ( '' !== $matches[1]) {
+			$filePath = $matches[1];
+		} else {
+			$fileUri = $matches[2];
+		}
 
-        $this->description = null;
-        return $this;
-    }
+		$startingLine = 1;
+		$lineCount    = null;
+		$description  = null;
 
-    /**
-     * Sets the file path as an URI.
-     *
-     * This function is equivalent to {@link setFilePath()}, except that it
-     * converts an URI to a file path before that.
-     *
-     * There is no getFileURI(), as {@link getFilePath()} is compatible.
-     *
-     * @param string $uri The new file URI to use as an example.
-     *
-     * @return $this
-     */
-    public function setFileURI($uri)
-    {
-        $this->isURI   = true;
-        $this->description = null;
+		if ( array_key_exists( 3, $matches ) ) {
+			$description = $matches[3];
 
-        $this->filePath = $this->isUriRelative($uri)
-            ? rawurldecode(str_replace(array('/', '\\'), '%2F', $uri))
-            : $this->filePath = $uri;
+			// Starting line / Number of lines / Description
+			if ( preg_match( '/^([1-9]\d*)(?:\s+((?1))\s*)?(.*)$/sux', $matches[3], $contentMatches ) ) {
+				$startingLine = (int) $contentMatches[1];
+				if ( isset( $contentMatches[2] ) && $contentMatches[2] !== '' ) {
+					$lineCount = (int) $contentMatches[2];
+				}
 
-        return $this;
-    }
+				if ( array_key_exists( 3, $contentMatches ) ) {
+					$description = $contentMatches[3];
+				}
+			}
+		}
 
-    /**
-     * Returns a string representation for this tag.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->filePath . ($this->description ? ' ' . $this->description->render() : '');
-    }
+		return new static(
+			$filePath !== null ? $filePath : $fileUri,
+			$fileUri !== null,
+			$startingLine,
+			$lineCount,
+			$description
+		);
+	}
 
-    /**
-     * Returns true if the provided URI is relative or contains a complete scheme (and thus is absolute).
-     *
-     * @param string $uri
-     *
-     * @return bool
-     */
-    private function isUriRelative($uri)
-    {
-        return false === strpos($uri, ':');
-    }
+	/**
+	 * Returns the file path.
+	 *
+	 * @return string Path to a file to use as an example.
+	 *     May also be an absolute URI.
+	 */
+	public function getFilePath() {
+		return $this->filePath;
+	}
+
+	/**
+	 * Returns a string representation for this tag.
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->filePath . ( $this->description ? ' ' . $this->description : '' );
+	}
+
+	/**
+	 * Returns true if the provided URI is relative or contains a complete scheme (and thus is absolute).
+	 *
+	 * @param string $uri
+	 *
+	 * @return bool
+	 */
+	private function isUriRelative($uri) {
+		return false === strpos($uri, ':');
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getStartingLine() {
+		return $this->startingLine;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLineCount() {
+		return $this->lineCount;
+	}
 }

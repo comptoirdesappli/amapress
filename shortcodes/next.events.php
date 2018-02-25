@@ -307,7 +307,7 @@ function amapress_get_event_html( $ev_date, $arr, $lieu_hour_dic, $first_lieu, $
 			if ( $type == 'distribution' && count( $ids ) > 0 ) {
 				$dist_id = Amapress::resolve_post_id( $ids[0], AmapressDistribution::INTERNAL_POST_TYPE );
 				if ( $dist_id ) {
-					$dist = new AmapressDistribution( $dist_id );
+					$dist = AmapressDistribution::getBy( $dist_id );
 
 					$query = array(
 						'status' => 'to_exchange',

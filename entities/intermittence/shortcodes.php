@@ -200,7 +200,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
-		return $a->getContrat_instance()->ID;
+		return $a->getContrat_instanceId();
 	}, $adhesions );
 //    $contrat_instances = AmapressContrats::get_active_contrat_instances();
 	$from_date = amapress_time();

@@ -832,8 +832,9 @@ function amapress_get_contrat_quantite_datatable(
 	       amapress_get_datatable( 'contrat-instance-recap-' . $contrat_instance_id,
 		       $columns, $data,
 		       array(
-			       'paging' => false,
-			       'bSort'  => true,
+			       'paging'       => false,
+			       'bSort'        => true,
+			       'init_as_html' => true,
 		       ),
 		       array(
 			       Amapress::DATATABLES_EXPORT_EXCEL,

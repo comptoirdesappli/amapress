@@ -160,6 +160,14 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 		return AmapressContrats::get_contrats( $this->ID );
 	}
 
+	/** @return string */
+	public function getContratsNames() {
+		return implode( ', ', array_map( function ( $c ) {
+			/** @var AmapressContrat $c */
+			return $c->getTitle();
+		}, $this->getContrats() ) );
+	}
+
 
 	/** @return AmapressProduit[] */
 	public function getProduits() {

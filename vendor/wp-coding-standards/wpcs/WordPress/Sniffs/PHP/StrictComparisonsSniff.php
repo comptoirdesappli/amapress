@@ -7,19 +7,24 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Sniffs\PHP;
+
+use WordPress\Sniff;
+
 /**
  * Enforces Strict Comparison checks, based upon Squiz code.
  *
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.4.0
+ * @since   0.13.0 Class name changed: this class is now namespaced.
  *
  * Last synced with base class ?[unknown date]? at commit ?[unknown commit]?.
  * It is currently unclear whether this sniff is actually based on Squiz code on whether the above
  * reference to it is a copy/paste oversight.
  * @link    Possibly: https://github.com/squizlabs/PHP_CodeSniffer/blob/master/CodeSniffer/Standards/Squiz/Sniffs/Operators/ComparisonOperatorUsageSniff.php
  */
-class WordPress_Sniffs_PHP_StrictComparisonsSniff extends WordPress_Sniff {
+class StrictComparisonsSniff extends Sniff {
 
 	/**
 	 * Returns an array of tokens this test wants to listen for.
@@ -37,18 +42,15 @@ class WordPress_Sniffs_PHP_StrictComparisonsSniff extends WordPress_Sniff {
 	/**
 	 * Processes this test, when one of its tokens is encountered.
 	 *
-	 * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-	 * @param int                  $stackPtr  The position of the current token in the
-	 *                                        stack passed in $tokens.
+	 * @param int $stackPtr The position of the current token in the stack.
 	 *
 	 * @return void
 	 */
-	public function process( PHP_CodeSniffer_File $phpcsFile, $stackPtr ) {
-		$this->init( $phpcsFile );
+	public function process_token( $stackPtr ) {
 
 		if ( ! $this->has_whitelist_comment( 'loose comparison', $stackPtr ) ) {
-			$error  = 'Found: ' . $this->tokens[ $stackPtr ]['content'] . '. Use strict comparisons (=== or !==).';
-			$phpcsFile->addWarning( $error, $stackPtr, 'LooseComparison' );
+			$error = 'Found: ' . $this->tokens[ $stackPtr ]['content'] . '. Use strict comparisons (=== or !==).';
+			$this->phpcsFile->addWarning( $error, $stackPtr, 'LooseComparison' );
 		}
 
 	}

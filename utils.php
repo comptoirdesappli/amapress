@@ -69,6 +69,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			'nowrap'       => true,
 			'data'         => $data,
 			'init_as_html' => false,
+			'no_script'    => false,
 			'table-layout' => 'auto',
 			'language'     => array( 'url' => '//cdn.datatables.net/plug-ins/1.10.11/i18n/French.json' ),
 		) );
@@ -106,8 +107,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 		$table_content .= '</tr></thead>';
 
 		$table_content .= '<tbody>';
+		$row           = 0;
 		foreach ( $data as $d ) {
-			$table_content .= '<tr>';
+			$table_content .= '<tr class="' . ( $row ++ % 2 == 0 ? 'even' : 'odd' ) . '">';
 			foreach ( $columns as $col ) {
 				$data_k      = is_array( $col['data'] ) ? $col['data']['_'] : $col['data'];
 				$data_sort_k = is_array( $col['data'] ) ? $col['data']['sort'] : $col['data'];
@@ -130,13 +132,15 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
 	$ret .= "<table id='$id' class='display $nowrap' style='$style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
-	$ret .= "<script type='text/javascript'>\n";
-	$ret .= "    //<![CDATA[\n";
-	$ret .= "    jQuery(document).ready(function ($) {\n";
-	$ret .= "        $('#$id')$init.DataTable(" . json_encode( $options ) . ")\n";
-	$ret .= "    });\n";
-	$ret .= "    //]]>\n";
-	$ret .= "</script>";
+	if ( ! $options['no_script'] ) {
+		$ret .= "<script type='text/javascript'>\n";
+		$ret .= "    //<![CDATA[\n";
+		$ret .= "    jQuery(document).ready(function ($) {\n";
+		$ret .= "        $('#$id')$init.DataTable(" . json_encode( $options ) . ")\n";
+		$ret .= "    });\n";
+		$ret .= "    //]]>\n";
+		$ret .= "</script>";
+	}
 
 	return $ret;
 }

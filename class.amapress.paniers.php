@@ -518,7 +518,7 @@ class AmapressPaniers {
 			),
 		) );
 		if ( count( $dists ) ) {
-			return new AmapressDistribution( $dists[0] );
+			return AmapressDistribution::getBy( $dists[0] );
 		}
 
 		return null;
@@ -730,7 +730,7 @@ class AmapressPaniers {
 				$ret,
 				function ( $ip ) use ( $args ) {
 					/** @var AmapressIntermittence_panier $ip */
-					return $ip->getDate() == Amapress::start_of_day( $args['date'] );
+					return Amapress::start_of_day( $ip->getDate() ) == Amapress::start_of_day( $args['date'] );
 				}
 			);
 		} else {

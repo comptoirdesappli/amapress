@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'wp_ajax_echanger_panier', function () {
 	$dist_id = intval( $_POST['dist'] );
 	$user_id = isset( $_POST['user'] ) ? intval( $_POST['user'] ) : null;
-	$dist    = new AmapressDistribution( $dist_id );
+	$dist    = AmapressDistribution::getBy( $dist_id );
 
 	$contrat_ids = array_map( function ( $c ) {
 		/** @var AmapressAdhesion $c */

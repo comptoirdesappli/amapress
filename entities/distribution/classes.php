@@ -8,6 +8,33 @@ class AmapressDistribution extends Amapress_EventBase {
 	const INTERNAL_POST_TYPE = 'amps_distribution';
 	const POST_TYPE = 'distribution';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressDistribution
+	 */
+	public static function getBy( $post_or_id, $no_cache = false ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressDistribution' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) || $no_cache ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressDistribution( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}
@@ -507,6 +534,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			case 'lien_liste_emargement':
 				return Amapress::makeLink( $this->getListeEmargementHref() );
 			case 'lieu_instruction':
+			case 'lieu_instructions':
 				return $this->getLieu()->getInstructions_privee();
 			case  'liste_contrats':
 				return implode( ', ', array_map(
@@ -517,6 +545,9 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			case 'lien_distrib':
 				return Amapress::makeLink( $this->getPermalink() );
+			case 'lien_distrib_title':
+			case 'lien_distrib_titre':
+				return Amapress::makeLink( $this->getPermalink(), $this->getTitle() );
 			case 'lien_instructions_lieu':
 				return Amapress::makeLink( $this->getPermalink() . '#instructions-lieu' );
 			case  'lien-resp-distrib-ical':
@@ -538,6 +569,17 @@ class AmapressDistribution extends Amapress_EventBase {
 					/** @var AmapressIntermittence_panier $p */
 					return $p->getPaniersDescription();
 				}, $this->getPaniersIntermittents() ) );
+			case 'paniers_modifies':
+				$paniers_modifies = array_merge(
+					$this->getCancelledPaniers(),
+					$this->getDelayedToThisPaniers()
+				);
+				$paniers_modifies = array_map( function ( $p ) {
+					/** @var AmapressPanier $p */
+					return '<li>' . esc_html( $p->getTitle() ) . '</li>';
+				}, $paniers_modifies );
+
+				return '<ul>' . implode( '', $paniers_modifies ) . '</ul>';
 		}
 
 
