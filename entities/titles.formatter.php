@@ -109,14 +109,25 @@ function amapress_adhesion_request_title_formatter( $post_title, WP_Post $post )
 
 add_filter( 'amapress_panier_title_formatter', 'amapress_panier_title_formatter', 10, 2 );
 function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
-	$post_id = $post->ID;
+	$panier = AmapressPanier::getBy( $post );
+	if ( ! $panier ) {
+		return $post_title;
+	}
+	if ( ! $panier->getContrat_instanceId() ) {
+		return $post_title;
+	}
 
-	$date          = get_post_meta( $post_id, 'amapress_panier_date', true );
-	$contrat_model = get_post( get_post_meta( get_post_meta( $post_id, 'amapress_panier_contrat_instance', true ), 'amapress_contrat_instance_model', true ) );
+	$modif = '';
+	if ( 'delayed' == $panier->getStatus() ) {
+		$modif = ' reporté au ' . date_i18n( 'd/m/Y', $panier->getDateSubst() );
+	} else if ( 'cancelled' == $panier->getStatus() ) {
+		$modif = ' annulé';
+	}
 
-	return sprintf( 'Panier de %s du %s',
-		$contrat_model->post_title,
-		date_i18n( 'd/m/Y', intval( $date ) ) );
+	return sprintf( 'Panier de %s du %s%s',
+		$panier->getContrat_instance()->getModel()->getTitle(),
+		date_i18n( 'd/m/Y', intval( $panier->getDate() ) ),
+		$modif );
 }
 
 add_filter( 'amapress_adhesion_title_formatter', 'amapress_adhesion_title_formatter', 10, 2 );
