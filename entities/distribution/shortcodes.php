@@ -206,9 +206,9 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) ) {
 			$ret .= '<p style="text-align: center"><a class="btn btn-default" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
 		}
-		$ret .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed" cellspacing="0">';
-		$ret .= '<thead>';
-		$ret .= '<tr>';
+		$ret                     .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
+		$ret                     .= '<thead>';
+		$ret                     .= '<tr>';
 		if ( $for_pdf ) {
 			$ret .= '<th>Date</th>';
 		} else {
@@ -291,7 +291,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$colspan_cls     = 'resp-col resp-col-' . ( $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {
-					$arr = array( '' => '--Sélectionner un amapien--' );
+					$arr = array( '' => '-amapien-' );
 					/** @var WP_User $user */
 					foreach (
 						get_users_cached( array(

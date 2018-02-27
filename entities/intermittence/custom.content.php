@@ -100,8 +100,8 @@ function amapress_get_paniers_intermittents_table(
 			'responsivePriority' => 1,
 			'title'              => 'Date',
 			'data'               => array(
-				'_'    => 'date.display',
-				'sort' => 'date.value',
+				'_'    => 'date_display',
+				'sort' => 'date_value',
 			)
 		);
 	}
@@ -219,19 +219,17 @@ function amapress_get_paniers_intermittents_table(
 			}
 		}
 		$data[] = array(
-			'panier'    => implode( ', ', $paniers ),
-			'lieu'      => "<a href='{$lieu->getPermalink()}'>{$lieu->getShortName()}</a>",
-			'quantite'  => implode( ', ', $quantites ),
-			'price'     => implode( ' + ', $prices ),
-			'adherent'  => $ad->getAdherent()->getDisplay( $show_options ),
+			'panier'       => implode( ', ', $paniers ),
+			'lieu'         => "<a href='{$lieu->getPermalink()}'>{$lieu->getShortName()}</a>",
+			'quantite'     => implode( ', ', $quantites ),
+			'price'        => implode( ' + ', $prices ),
+			'adherent'     => $ad->getAdherent()->getDisplay( $show_options ),
 			//"<a href='mailto:{$ad->getAdherent()->getUser()->user_email}'>" . $ad->getAdherent()->getDisplayName() . '</a> (' . $ad->getAdherent()->getTelephone() . ')',
-			'repreneur' => $repreneur,
-			'message'   => $ad->getMessage(),
-			'date'      => array(
-				'display' => date_i18n( 'd/m/Y', $date ),
-				'value'   => $date
-			),
-			'state'     => $state,
+			'repreneur'    => $repreneur,
+			'message'      => $ad->getMessage(),
+			'date_display' => date_i18n( 'd/m/Y', $date ),
+			'date_value'   => $date,
+			'state'        => $state,
 		);
 	}
 
@@ -265,10 +263,10 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 		function ( $state, $status, $adh ) {
 			if ( 'to_exchange' == $status || 'exch_valid_wait' == $status || 'exchanged' == $status ) {
 				/** @var AmapressIntermittence_panier $ad */
-				$ad        = $adh[0];
-				$id        = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
-				$state     .= '<div class="cancel-echange-panier amapress-ajax-parent"><h4>Motif d\'annulation</h4><textarea id="' . $id . '"></textarea><br/>';
-				$state     .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
+				$ad    = $adh[0];
+				$id    = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
+				$state .= '<div class="cancel-echange-panier amapress-ajax-parent"><h4>Motif d\'annulation</h4><textarea id="' . $id . '"></textarea><br/>';
+				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
 				data-message="val:#' . $id . '" data-confirm="Etes-vous sûr d\'annuler votre proposition?" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
 					}, $adh ) ) . '">Annuler échange</button></div>';

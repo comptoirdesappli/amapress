@@ -236,11 +236,11 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			return $val;
 		}, $users ) );
 		if ( $show_phone ) {
-			$line['tel'] = implode( '<br/>', array_map( function ( $user ) {
+			$line['tel'] = implode( '<br/>', array_unique( array_map( function ( $user ) {
 				$adh = AmapressUser::getBy( $user );
 
 				return $adh->getTelTo();
-			}, $users ) );
+			}, $users ) ) );
 		}
 		if ( $show_emails ) {
 			$line['email'] = implode( '<br/>', array_map( function ( $user ) {
@@ -304,6 +304,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	ob_start();
 	if ( $for_pdf ) {
 		echo '<style type="text/css">
+a {
+	color: black;
+	text-decoration: none;
+}
 table, td, th { 
 	border: 1px solid black; 
 	border-collapse: collapse; 
@@ -316,6 +320,9 @@ table, td, th {
 	display: none;
 }
 .distrib-inscr-closed {
+	display: none;
+}
+.distrib-not-part-of {
 	display: none;
 }
 .inscr-list-contrats {
@@ -404,7 +411,14 @@ table, td, th {
 			function ( $state, $status, $adh ) {
 				return $state;
 			},
-			array( 'paging' => false, 'searching' => false, 'no_script' => $for_pdf ),
+			array(
+				'paging'       => false,
+				'searching'    => false,
+				'nowrap'       => false,
+				'responsive'   => false,
+				'init_as_html' => true,
+				'no_script'    => $for_pdf,
+			),
 			array(
 				'show_avatar'     => 'false',
 				'show_email'      => 'false',
@@ -452,7 +466,14 @@ table, td, th {
 				echo '<h3 class="liste-emargement-contrat-variable">Détails des paniers - ' . esc_html( $contrat->getTitle() ) . '</h3>';
 				amapress_echo_datatable( 'liste-emargement-contrat-variable-' . $contrat->ID,
 					$panier_commandes['columns'], $panier_commandes['data'],
-					array( 'paging' => false, 'searching' => false, 'no_script' => $for_pdf, 'init_as_html' => true ),
+					array(
+						'paging'       => false,
+						'searching'    => false,
+						'nowrap'       => false,
+						'responsive'   => false,
+						'init_as_html' => true,
+						'no_script'    => $for_pdf,
+					),
 					array(
 						Amapress::DATATABLES_EXPORT_EXCEL,
 						Amapress::DATATABLES_EXPORT_PDF,
@@ -466,7 +487,7 @@ table, td, th {
 	echo '<br/>';
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
 	echo '<br/>';
-	echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
+	echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( ! $for_pdf ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
@@ -477,7 +498,7 @@ table, td, th {
 			if ( $lieu_id == $dist_lieu_id ) {
 				continue;
 			}
-			echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=3 show_adresse=false show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+			echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=3 show_adresse=false show_avatar=' . ( ! $for_pdf ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
 		}
 	}
 
@@ -485,7 +506,7 @@ table, td, th {
 		$lieu = ( $dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu() );
 
 		if ( strlen( trim( strip_tags( $lieu->getInstructions_privee() ) ) ) > 0 ) {
-			echo '<br/>';
+			echo '<br pagebreak="true"/>';
 			echo '<h3 class="liste-emargement-instructions">' . esc_html( 'Instructions pour ' . $lieu->getShortName() ) . '</h3>';
 			echo $lieu->getInstructions_privee();
 			echo '<br/>';
@@ -500,6 +521,12 @@ table, td, th {
 
 	//$cnt[$lieu_id] -= 1;
 
+	if ( $for_pdf ) {
+		$content = preg_replace( '/\<div[^\>]*\>/', '', $content );
+		$content = preg_replace( '#(\</div\>)+#', '<br/>', $content );
+		$content = preg_replace( '#\<br\/\>\<\/td\>#', '</td>', $content );
+	}
+
 	return $content;
 }
 
@@ -511,7 +538,9 @@ table, td, th {
 add_action( 'amapress_do_query_action_distribution_liste-emargement-pdf', function () {
 	$dist = AmapressDistribution::getBy( get_the_ID() );
 	Amapress::sendPdfFromHtml(
-		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' . getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) . '</div>',
+		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
+		getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) .
+		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
 	die();
 } );
