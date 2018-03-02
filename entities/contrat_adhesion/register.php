@@ -779,10 +779,10 @@ function amapress_get_contrat_quantite_datatable(
 					$row["lieu_{$lieu->ID}"]     = '';
 					$row["lieu_{$lieu->ID}_txt"] = '';
 				} else if ( empty( $lieu_quant_count ) || ! $show_equiv_quantite ) {
-					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ? "$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count $quant_title";
+					$row["lieu_{$lieu->ID}"]     = ( $show_adherents && $lieu_quant_count != $lieu_quant_adh_count ? "$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count $quant_title";
 					$row["lieu_{$lieu->ID}_txt"] = "$lieu_quant_count $quant_title";
 				} else {
-					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ? "$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count $quant_title équivalent quantité : $lieu_quant_sum";
+					$row["lieu_{$lieu->ID}"]     = ( $show_adherents && $lieu_quant_count != $lieu_quant_adh_count ? "$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count $quant_title équivalent quantité : $lieu_quant_sum";
 					$row["lieu_{$lieu->ID}_txt"] = "$lieu_quant_count $quant_title";
 				}
 			}
@@ -805,10 +805,10 @@ function amapress_get_contrat_quantite_datatable(
 			$row['all']     = '';
 			$row['all_txt'] = '';
 		} else if ( empty( $all_quant_sum ) || ! $show_equiv_quantite ) {
-			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) . "$all_quant_count $quant_title";
+			$row['all']     = ( $show_adherents && $all_quant_count != $all_quant_adh_count ? "$all_quant_adh_count adhérents ; " : '' ) . "$all_quant_count $quant_title";
 			$row['all_txt'] = "$all_quant_count $quant_title";
 		} else {
-			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) . "$all_quant_count $quant_title équivalent quantité : $all_quant_sum";
+			$row['all']     = ( $show_adherents && $all_quant_count != $all_quant_adh_count ? "$all_quant_adh_count adhérents ; " : '' ) . "$all_quant_count $quant_title équivalent quantité : $all_quant_sum";
 			$row['all_txt'] = "$all_quant_count $quant_title équivalent quantité : $all_quant_sum";
 		}
 		$data[] = $row;
