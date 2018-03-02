@@ -128,10 +128,11 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 			'for_pdf'                 => true,
 		) );
 
-	$contrat = AmapressContrat_instance::getBy( $contrat_instance_id );
-	$lieu    = AmapressLieu_distribution::getBy( $lieu_id );
-	$date    = date_i18n( 'd-m-Y' );
-	Amapress::sendPdfFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date.pdf" ) ), 'L', $format );
+	$contrat  = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$lieu     = AmapressLieu_distribution::getBy( $lieu_id );
+	$date     = date_i18n( 'd-m-Y' );
+	$filename = strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date.pdf" ) );
+	Amapress::sendPdfFromHtml( $html, $filename, 'L', $format );
 } );
 
 add_action( 'admin_post_paiement_table_xlsx', function () {
