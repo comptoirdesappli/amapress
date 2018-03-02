@@ -694,8 +694,14 @@ function amapress_get_contrat_quantite_datatable(
 		array(
 			'show_next_distrib'       => true,
 			'show_contact_producteur' => true,
+			'show_adherents'          => true,
+			'show_equiv_quantite'     => true,
+			'mode'                    => 'both',
 		)
 	);
+
+	$show_adherents      = $options['show_adherents'];
+	$show_equiv_quantite = $options['show_equiv_quantite'];
 
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 
@@ -735,6 +741,7 @@ function amapress_get_contrat_quantite_datatable(
 	foreach ( $quants as $quant ) {
 		/** @var AmapressContrat_quantite $quant */
 		$row          = array();
+		$quant_title  = $quant ? $quant->getTitle() : '-toutes-';
 		$row['quant'] = $quant ? $quant->getTitle() : '¤-Toutes-¤';
 		$quand_id     = $quant ? $quant->getID() : 0;
 		if ( count( $lieux ) > 1 ) {
@@ -768,7 +775,16 @@ function amapress_get_contrat_quantite_datatable(
 						}
 					}
 				}
-				$row["lieu_{$lieu->ID}"] = "$lieu_quant_count ($lieu_quant_sum)";
+				if ( empty( $lieu_quant_adh_count ) ) {
+					$row["lieu_{$lieu->ID}"]     = '';
+					$row["lieu_{$lieu->ID}_txt"] = '';
+				} else if ( empty( $lieu_quant_count ) || ! $show_equiv_quantite ) {
+					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ? "$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count $quant_title";
+					$row["lieu_{$lieu->ID}_txt"] = "$lieu_quant_count $quant_title";
+				} else {
+					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ? "$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count $quant_title équivalent quantité : $lieu_quant_sum";
+					$row["lieu_{$lieu->ID}_txt"] = "$lieu_quant_count $quant_title";
+				}
 			}
 		}
 		$all_quant_adh_count = 0;
@@ -785,13 +801,15 @@ function amapress_get_contrat_quantite_datatable(
 				$all_quant_sum       += $adh_quant->getQuantite();
 			}
 		}
-		$quant_title = $quant ? $quant->getTitle() : '-toutes-';
 		if ( empty( $all_quant_adh_count ) ) {
-			$row['all'] = '';
-		} else if ( empty( $all_quant_sum ) ) {
-			$row['all'] = "$all_quant_adh_count adhérents ; $all_quant_count $quant_title";
+			$row['all']     = '';
+			$row['all_txt'] = '';
+		} else if ( empty( $all_quant_sum ) || ! $show_equiv_quantite ) {
+			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) . "$all_quant_count $quant_title";
+			$row['all_txt'] = "$all_quant_count $quant_title";
 		} else {
-			$row['all'] = "$all_quant_adh_count adhérents ; $all_quant_count $quant_title équivalent quantité : $all_quant_sum";
+			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) . "$all_quant_count $quant_title équivalent quantité : $all_quant_sum";
+			$row['all_txt'] = "$all_quant_count $quant_title équivalent quantité : $all_quant_sum";
 		}
 		$data[] = $row;
 	}
@@ -825,22 +843,51 @@ function amapress_get_contrat_quantite_datatable(
 			                      ) ) . '</div>';
 	}
 
+	$output = '';
+	if ( 'table' == $options['mode'] || 'both' == $options['mode'] ) {
+		$output .= amapress_get_datatable( 'contrat-instance-recap-' . $contrat_instance_id,
+			$columns, $data,
+			array(
+				'paging'       => false,
+				'bSort'        => true,
+				'init_as_html' => true,
+			),
+			array(
+				Amapress::DATATABLES_EXPORT_EXCEL,
+				Amapress::DATATABLES_EXPORT_PDF,
+				Amapress::DATATABLES_EXPORT_PRINT
+			) );
+	}
+	if ( 'text' == $options['mode'] || 'both' == $options['mode'] ) {
+		if ( count( $lieux ) > 1 ) {
+			foreach ( $lieux as $lieu ) {
+				$output        .= '<p>A ' . esc_html( $lieu->getShortName() ) . ' : ';
+				$output_quants = [];
+				foreach ( $data as $row ) {
+					if ( ! empty( $row["lieu_{$lieu->ID}_txt"] ) ) {
+						$output_quants[] = esc_html( $row["lieu_{$lieu->ID}_txt"] );
+					}
+				}
+				$output .= implode( ', ', $output_quants );
+				$output .= '</p>';
+			}
+		}
+		$output        .= '<p>En tout : ';
+		$output_quants = [];
+		foreach ( $data as $row ) {
+			if ( ! empty( $row["all_txt"] ) ) {
+				$output_quants[] = esc_html( $row["all_txt"] );
+			}
+		}
+		$output .= implode( ', ', $output_quants );
+		$output .= '</p>';
+	}
+
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">' .
 	       $next_distrib_text .
 	       $contact_producteur .
 	       //	       '<p class="producteur">' . $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay() . '</p>' .
-	       amapress_get_datatable( 'contrat-instance-recap-' . $contrat_instance_id,
-		       $columns, $data,
-		       array(
-			       'paging'       => false,
-			       'bSort'        => true,
-			       'init_as_html' => true,
-		       ),
-		       array(
-			       Amapress::DATATABLES_EXPORT_EXCEL,
-			       Amapress::DATATABLES_EXPORT_PDF,
-			       Amapress::DATATABLES_EXPORT_PRINT
-		       ) ) . '</div>';
+	       $output . '</div>';
 }
 
 //function amapress_echo_all_contrat_paiements_by_date() {
