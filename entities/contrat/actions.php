@@ -133,3 +133,22 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 	$date    = date_i18n( 'd-m-Y' );
 	Amapress::sendPdfFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date.pdf" ) ), 'L', $format );
 } );
+
+add_action( 'admin_post_paiement_table_xlsx', function () {
+	$contrat_instance_id = intval( $_GET['contrat'] );
+	$lieu_id             = intval( $_GET['lieu'] );
+	$format              = isset( $_GET['format'] ) ? $_GET['format'] : 'A3';
+	$html                = amapress_get_paiement_table_by_dates(
+		$contrat_instance_id,
+		$lieu_id,
+		array(
+			'show_next_distrib'       => false,
+			'show_contact_producteur' => false,
+			'for_pdf'                 => true,
+		) );
+
+	$contrat = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$lieu    = AmapressLieu_distribution::getBy( $lieu_id );
+	$date    = date_i18n( 'd-m-Y' );
+	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModel()->getTitle()} - {$lieu->getShortName()}" );
+} );

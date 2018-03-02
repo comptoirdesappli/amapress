@@ -918,6 +918,7 @@ function amapress_get_paiement_table_by_dates(
 	$lien_export_pdf = '';
 	if ( ! $for_pdf ) {
 		$lien_export_pdf = '<p><a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en PDF</a></p>';
+		$lien_export_pdf .= '<p><a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en Excel</a></p>';
 	}
 
 	$title      = 'Calendrier des paiements';
