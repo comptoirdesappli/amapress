@@ -910,8 +910,15 @@ function amapress_get_paiement_table_by_dates(
 		array(
 			'show_next_distrib'       => true,
 			'show_contact_producteur' => true,
+			'for_pdf'                 => false,
 		)
 	);
+
+	$for_pdf         = $options['for_pdf'];
+	$lien_export_pdf = '';
+	if ( ! $for_pdf ) {
+		$lien_export_pdf = '<p><a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en PDF</a></p>';
+	}
 
 	$title      = 'Calendrier des paiements';
 	$lieu_title = '';
@@ -1120,8 +1127,8 @@ function amapress_get_paiement_table_by_dates(
 			                      ) ) . '</div>';
 	}
 
-	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
-' . $lieu_title . $next_distrib_text . $contact_producteur .
+	$ret = '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
+' . $lieu_title . $next_distrib_text . $contact_producteur . $lien_export_pdf .
 	       amapress_get_datatable(
 		       $id,
 		       $columns, $data,
@@ -1134,12 +1141,30 @@ function amapress_get_paiement_table_by_dates(
 			       'scrollX'      => true,
 			       'fixedColumns' => array( 'leftColumns' => 1 ),
 			       'initComplete' => $fn,
+			       'init_as_html' => true,
+			       'no_script'    => $for_pdf,
 			       'dom'          => 'Bfrtip',
 			       'buttons'      => [],
 		       )
-	       ) .
-
-	       '
+	       );
+	if ( $for_pdf ) {
+		$ret .= '<style type="text/css">
+a {
+	color: black;
+	text-decoration: none;
+}
+table, td, th { 
+	border: 1px solid black; 
+	border-collapse: collapse; 
+	padding: 2px; 
+	font-size: 8pt;
+}
+.odd { 
+	background-color: #EEEEEE; 
+}
+</style>';
+	} else {
+		$ret .= '
 <script type="text/javascript">
 function ' . $fn . '() {
 var table = jQuery(\'#' . $id . '\').DataTable();
@@ -1173,6 +1198,9 @@ new jQuery.fn.dataTable.Buttons( table, {
 }
 </script>
 </div>';
+	}
+
+	return $ret;
 }
 
 add_action( 'tf_custom_admin_amapress_action_existing_user', function () {
