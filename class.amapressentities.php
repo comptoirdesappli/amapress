@@ -206,7 +206,24 @@ class AmapressEntities {
 							'desc' => 'ici vous pouvez gérer...'
 						),
 					),
-					'tabs'     => array(),
+					'tabs'     => array(
+						'Mails - Responsables de distribution - Rappel'   => array(
+							'desc'    => '',
+							'options' => amapress_distribution_responsable_recall_options(),
+						),
+						'Mails - Envoi liste émargement Excel/PDF'        => array(
+							'desc'    => '',
+							'options' => amapress_distribution_emargement_recall_options(),
+						),
+						'Distribution - Modification livraisons - Rappel' => array(
+							'desc'    => '',
+							'options' => amapress_distribution_changes_recall_options(),
+						),
+						'Visite - Inscription - Rappel'                   => array(
+							'desc'    => '',
+							'options' => amapress_visite_inscription_recall_options(),
+						),
+					),
 					'subpages' => array(
 						array(
 							'title'      => 'Distributions hebdomadaires',
@@ -315,7 +332,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription' => array(
+						'Ajouter une inscription'              => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -329,7 +346,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'           => array(
+						'Renouvèlement'                        => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -343,6 +360,14 @@ class AmapressEntities {
 									'type' => 'save',
 								),
 							)
+						),
+						'Mails - Envoi liste des chèques'      => array(
+							'desc'    => '',
+							'options' => amapress_contrat_paiements_recall_options(),
+						),
+						'Mails - Envoi des quantités à livrer' => array(
+							'desc'    => '',
+							'options' => amapress_contrat_quantites_recall_options(),
 						),
 					),
 					'subpages' => array(
@@ -658,6 +683,10 @@ class AmapressEntities {
 								),
 							)
 						),
+						'Mail - Paniers disponibles - Rappels'     => array(
+							'desc'    => '',
+							'options' => amapress_intermittence_dispo_recall_options(),
+						),
 						'Mail - Panier reprise - demande'          => array(
 							'desc'    => '',
 							'options' => array(
@@ -697,6 +726,10 @@ class AmapressEntities {
 									'type' => 'save',
 								),
 							)
+						),
+						'Mail - Panier reprise - demande - Rappel' => array(
+							'desc'    => '',
+							'options' => amapress_intermittence_validation_recall_options(),
 						),
 						'Mail - Panier reprise - validation'       => array(
 							'desc'    => '',
@@ -1068,6 +1101,22 @@ class AmapressEntities {
 										<?php
 										return ob_get_clean();
 									},
+									'capability' => 'manage_options',
+								),
+								array(
+									'type' => 'save',
+								),
+							),
+						),
+						'Tests'      => array(
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'         => 'test_mail_key',
+									'name'       => 'Clé de test mails',
+									'type'       => 'text',
+									'default'    => uniqid(),
+									'desc'       => '',
 									'capability' => 'manage_options',
 								),
 								array(

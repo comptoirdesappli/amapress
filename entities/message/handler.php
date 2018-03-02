@@ -66,7 +66,7 @@ function amapress_get_users_for_message( $users_query, $users_query_fields ) {
 
 function amapress_send_message(
 	$subject, $content, $content_sms, $opt, TitanEntity $entity = null,
-	$attachments = array(), $cc = null, $bcc = null, $headers = ''
+	$attachments = array(), $cc = null, $bcc = null, $headers = array()
 ) {
 	$new_id = null;
 	/** @var AmapressUser $current_user */
@@ -159,7 +159,7 @@ function amapress_send_message(
 
 
 //        add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type' );
-		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+		$headers[] = array( 'Content-Type: text/html; charset=UTF-8' );
 		switch ( isset( $opt['send_mode'] ) ? $opt['send_mode'] : '' ) {
 			case "indiv":
 				$headers[] = "From: $from_dn <$from_email>";

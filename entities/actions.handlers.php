@@ -4,6 +4,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+add_action( 'admin_post_test_mail', function () {
+	$key = Amapress::getOption( 'test_mail_key' );
+	if ( empty( $_GET['key'] ) || $_GET['key'] != $key ) {
+		wp_die( 'Access denied' );
+	}
+
+	$args = $_GET;
+	do_action( $_GET['call'], $args );
+	die();
+} );
+
 function wp_redirect_and_exit( $location, $status = 302 ) {
 	if ( headers_sent() || ! wp_redirect( $location, $status ) ) {
 		die( 'Bad redirect usage' );

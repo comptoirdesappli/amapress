@@ -137,6 +137,13 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/intermittence/actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/contrat/actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/amapien/actions.php' );
 
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/distribution/recalls.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/visite/recalls.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/amap_event/recalls.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/intermittence/recalls.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/contrat/recalls.php' );
+
+
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/produit/pager.views.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/recette/pager.views.php' );
 
