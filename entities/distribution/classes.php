@@ -90,7 +90,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return int */
 	public function getLieuSubstitutionId() {
-		return $this->getCustomAsInt( 'amapress_distribution_lieu_substitution', - 1 );
+		return $this->getCustomAsInt( 'amapress_distribution_lieu_substitution', 0 );
 	}
 
 	/** @return AmapressUser[] */
@@ -535,7 +535,10 @@ class AmapressDistribution extends Amapress_EventBase {
 				return Amapress::makeLink( $this->getListeEmargementHref() );
 			case 'lieu_instruction':
 			case 'lieu_instructions':
-				return $this->getLieu()->getInstructions_privee();
+				$instructions = $this->getLieu()->getInstructions_privee();
+				$instructions = str_replace( '[liste-emargement-button]', Amapress::makeLink( $this->getListeEmargementHref() ), $instructions );
+
+				return $instructions;
 			case  'liste_contrats':
 				return implode( ', ', array_map(
 					function ( $c ) {
@@ -545,8 +548,10 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			case 'lien_distrib':
 				return Amapress::makeLink( $this->getPermalink() );
-			case 'lien_distrib_title':
+			case 'lien_distribution_title':
+			case 'lien_distribution_titre':
 			case 'lien_distrib_titre':
+			case 'lien_distrib_title':
 				return Amapress::makeLink( $this->getPermalink(), $this->getTitle() );
 			case 'lien_instructions_lieu':
 				return Amapress::makeLink( $this->getPermalink() . '#instructions-lieu' );
@@ -619,7 +624,19 @@ class AmapressDistribution extends Amapress_EventBase {
 	/** @return AmapressIntermittence_panier[] */
 	public function getPaniersIntermittents() {
 		return AmapressPaniers::getPanierIntermittents(
-			[ 'date' => $this->getDate() ]
+			[
+				'date' => $this->getDate()
+			]
+		);
+	}
+
+	/** @return AmapressIntermittence_panier[] */
+	public function getPaniersIntermittentsDispo() {
+		return AmapressPaniers::getPanierIntermittents(
+			[
+				'date'   => $this->getDate(),
+				'status' => 'to_exchange',
+			]
 		);
 	}
 }

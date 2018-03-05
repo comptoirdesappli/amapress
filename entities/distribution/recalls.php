@@ -21,6 +21,8 @@ function amapress_get_next_distributions_cron() {
 	foreach ( $next_distribs as $dist ) {
 		$ret[ $dist->getStartDateAndHour() ] = [ 'id' => $dist->getID() ];
 	}
+
+	return $ret;
 }
 
 add_action( 'amapress_recall_resp_distrib', function ( $args ) {
@@ -88,13 +90,13 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 
 	$dist_id     = $dist->ID;
 	$contrat_ids = implode( ',', $dist->getContratIds() );
-	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3|amapress_post=$dist_id|amapress_distribution_date";
+	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3|amapress_post=$dist_id|amapress_distribution_date";
 
-	if ( $dist->getLieuSubstitutionId() ) {
-		$amapien_users = amapress_prepare_message_target( $query, "Amapiens de " . $dist->getTitle(), "distribution" );
+	if ( $dist->getLieuSubstitutionId() > 0 && $dist->getLieuSubstitutionId() != $dist->getLieuId() ) {
+		$amapien_users = amapress_prepare_message_target( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
 		amapress_send_message(
-			Amapress::getOption( 'distribution-lieu-change-recal-mail-subject' ),
-			Amapress::getOption( 'distribution-lieu-change-recal-mail-content' ),
+			Amapress::getOption( 'distribution-lieu-change-recall-mail-subject' ),
+			Amapress::getOption( 'distribution-lieu-change-recall-mail-content' ),
 			'', $amapien_users, $dist, array(),
 			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ) );
 	}
@@ -104,10 +106,10 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 		$dist->getDelayedToThisPaniers()
 	);
 	if ( ! empty( $paniers_modifies ) ) {
-		$amapien_users = amapress_prepare_message_target( $query, "Amapiens de " . $dist->getTitle(), "distribution" );
+		$amapien_users = amapress_prepare_message_target( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
 		amapress_send_message(
-			Amapress::getOption( 'distribution-paniers-change-recal-mail-subject' ),
-			Amapress::getOption( 'distribution-paniers-change-recal-mail-content' ),
+			Amapress::getOption( 'distribution-paniers-change-recall-mail-subject' ),
+			Amapress::getOption( 'distribution-paniers-change-recall-mail-content' ),
 			'', $amapien_users, $dist, array(),
 			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ) );
 	}
@@ -155,10 +157,13 @@ function amapress_distribution_responsable_recall_options() {
 			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
 		),
 		array(
-			'id'   => 'distribution-resp-recall-cc',
-			'name' => amapress__( 'Cc' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails en copie',
+			'id'           => 'distribution-resp-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -208,16 +213,22 @@ function amapress_distribution_emargement_recall_options() {
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
 		),
 		array(
-			'id'   => 'distribution-emargement-recall-to',
-			'name' => amapress__( 'Envoyer à' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails de tous destinataires. Chaque destinataire recevra la liste d\'émargement de son lieu de distribution.',
+			'id'           => 'distribution-emargement-recall-to',
+			'name'         => amapress__( 'Envoyer à' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails de tous destinataires. Chaque destinataire recevra la liste d\'émargement de son lieu de distribution.',
 		),
 		array(
-			'id'   => 'distribution-emargement-recall-cc',
-			'name' => amapress__( 'Cc' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails en copie',
+			'id'           => 'distribution-emargement-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -265,7 +276,7 @@ function amapress_distribution_changes_recall_options() {
 			'default' => '[Rappel] Changement de lieu pour %%post:title%%',
 		),
 		array(
-			'id'      => 'distribution-lieu-change-recal-mail-content',
+			'id'      => 'distribution-lieu-change-recall-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement de lieu pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
@@ -281,7 +292,7 @@ function amapress_distribution_changes_recall_options() {
 			'default' => '[Rappel] Modification de livraison à %%post:title%%',
 		),
 		array(
-			'id'      => 'distribution-paniers-change-recal-mail-content',
+			'id'      => 'distribution-paniers-change-recall-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nLa %%lien_distrib_titre%% comprendra les modifications suivantes :\n%%paniers_modifies%%\n%%nom_site%%" ),
@@ -291,9 +302,12 @@ function amapress_distribution_changes_recall_options() {
 			'type' => 'heading',
 		),
 		'distribution-changes-recall-cc' => array(
-			'name' => amapress__( 'Cc' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails en copie',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
 		),
 		array(
 			'type' => 'save',

@@ -233,15 +233,23 @@ function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, 
 							break;
 
 						default:
-							if ( $post != null ) {
+							if ( null != $post ) {
 								return $post->getProperty( $subopt );
-							} else {
+							} else if ( null != $user ) {
 								return $user->getProperty( $subopt );
+							} else {
+								return $m[0];
 							}
 					}
 					break;
 				default:
-					return $m[0];
+					if ( null != $post ) {
+						return $post->getProperty( $opt );
+					} else if ( null != $user ) {
+						return $user->getProperty( $opt );
+					} else {
+						return $m[0];
+					}
 			}
 		}, $mail_content );
 
