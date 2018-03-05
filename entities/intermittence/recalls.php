@@ -35,7 +35,7 @@ add_action( 'amapress_recall_dispo_panier_intermittent', function ( $args ) {
 	if ( null == $dist ) {
 		return;
 	}
-	$paniers = $dist->getPaniersIntermittents();
+	$paniers = $dist->getPaniersIntermittentsDispo();
 	if ( empty( $paniers ) ) {
 		return;
 	}
@@ -59,12 +59,26 @@ add_action( 'amapress_recall_validation_panier_intermittent', function ( $args )
 	}
 
 	foreach ( $paniers as $panier ) {
-		amapress_mail_to_current_user(
-			Amapress::getOption( 'intermittence-panier-repris-recall-adherent-mail-subject' ),
-			Amapress::getOption( 'intermittence-panier-repris-recall-adherent-mail-content' ),
-			$panier->getAdherentId(),
-			$panier, null, null,
-			amapress_get_recall_cc_from_option( 'intermittence-recall-validation-bcc' ) );
+		if ( 'exch_valid_wait' != $panier->getStatus() ) {
+			continue;
+		}
+
+		foreach ( $panier->getAsk() as $user_id => $user_info ) {
+			$panier->setLastAskId( $user_id );
+
+			$subject = Amapress::getOption( 'intermittence-panier-repris-recall-adherent-mail-subject' );
+			$content = Amapress::getOption( 'intermittence-panier-repris-recall-adherent-mail-content' );
+
+			$subject = str_replace( '%%attente_depuis%%', date_i18n( 'd/m/Y', $user_info['date'] ), $subject );
+			$content = str_replace( '%%attente_depuis%%', date_i18n( 'd/m/Y', $user_info['date'] ), $content );
+
+			amapress_mail_to_current_user(
+				$subject,
+				$content,
+				$panier->getAdherentId(),
+				$panier, null, null,
+				amapress_get_recall_cc_from_option( 'intermittence-recall-validation-bcc' ) );
+		}
 	}
 
 } );
@@ -99,10 +113,19 @@ function amapress_intermittence_dispo_recall_options() {
 			},
 		),
 		array(
+			'id'                  => 'intermittence-dispo-recall-4',
+			'name'                => 'Rappel 4',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_dispo_panier_intermittent',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
 			'id'      => 'intermittence-recall-dispo-mail-subject',
 			'name'    => 'Sujet du mail',
 			'type'    => 'text',
-			'default' => 'Il reste encore %%nb-paniers-intermittents%% à échanger',
+			'default' => 'Il reste encore %%nb-paniers-intermittents%% panier(s) à échanger à %%post:title%%',
 		),
 		array(
 			'id'      => 'intermittence-recall-dispo-mail-content',
@@ -111,10 +134,13 @@ function amapress_intermittence_dispo_recall_options() {
 			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% proposés à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : xxxx.\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à xxxx.\n\n%%nom_site%%" ),
 		),
 		array(
-			'id'   => 'intermittence-recall-dispo-cc',
-			'name' => amapress__( 'Cc' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails en copie',
+			'id'           => 'intermittence-recall-dispo-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -146,19 +172,22 @@ function amapress_intermittence_validation_recall_options() {
 			'id'      => 'intermittence-panier-repris-recall-adherent-mail-subject',
 			'name'    => 'Sujet du mail',
 			'type'    => 'text',
-			'default' => '[Rappel] Demande de reprise %%post:panier%% par %%post:repreneur-nom%% à valider',
+			'default' => '[Rappel] Demande de reprise %%post:panier%% par %%post:repreneur-nom%% à valider depuis le %%attente_depuis%%',
 		),
 		array(
 			'id'      => 'intermittence-panier-repris-recall-adherent-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% le %%attente_depuis%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 		),
 		array(
-			'id'   => 'intermittence-recall-validation-bcc',
-			'name' => amapress__( 'Bcc' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails en copie',
+			'id'           => 'intermittence-recall-validation-bcc',
+			'name'         => amapress__( 'Bcc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
 		),
 		array(
 			'type' => 'save',

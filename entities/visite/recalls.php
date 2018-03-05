@@ -74,10 +74,13 @@ function amapress_visite_inscription_recall_options() {
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 		),
 		array(
-			'id'   => 'visite-inscription-recall-cc',
-			'name' => amapress__( 'Cc' ),
-			'type' => 'multicheck-users',
-			'desc' => 'Mails en copie',
+			'id'           => 'visite-inscription-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
 		),
 		array(
 			'type' => 'save',

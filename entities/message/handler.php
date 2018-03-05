@@ -8,7 +8,7 @@ function amapress_get_query_for_message( $users_query, $users_query_fields ) {
 
 }
 
-function amapress_get_users_for_message( $users_query, $users_query_fields ) {
+function amapress_get_users_for_message( $users_query, $users_query_fields, $with_coadherents = false ) {
 	$users = array();
 	if ( $users_query == 'no_adhesion' ) {
 		$users = get_users(
@@ -40,7 +40,6 @@ function amapress_get_users_for_message( $users_query, $users_query_fields ) {
 		$query->parse_query( $users_query . '&posts_per_page=-1' );
 		foreach ( $query->get_posts() as $post ) {
 			foreach ( $users_query_fields as $query_field ) {
-				//TODO : handle amapress_adhesion_adherents with AmapressContrats::get_related_users
 				$o = Amapress::get_post_meta_array( $post->ID, $query_field );
 				if ( is_array( $o ) ) {
 					$users = array_merge( $users, $o );
@@ -57,6 +56,16 @@ function amapress_get_users_for_message( $users_query, $users_query_fields ) {
 				$all_users[ $user_id->ID ] = $user_id;
 			} else {
 				$all_users[ $user_id ] = get_user_by( 'id', $user_id );
+			}
+		}
+	}
+
+	if ( $with_coadherents ) {
+		foreach ( $all_users as $user_id => $user ) {
+			foreach ( AmapressContrats::get_related_users( $user_id ) as $related_user_id ) {
+				if ( ! isset( $all_users[ $related_user_id ] ) ) {
+					$all_users[ $related_user_id ] = get_user_by( 'id', $related_user_id );
+				}
 			}
 		}
 	}
@@ -110,7 +119,7 @@ function amapress_send_message(
 		}
 	}
 	if ( ! empty( $opt['users_query'] ) ) {
-		$all_users = amapress_get_users_for_message( $opt['users_query'], $opt['users_query_fields'] );
+		$all_users = amapress_get_users_for_message( $opt['users_query'], $opt['users_query_fields'], $opt['with_coadherents'] );
 
 		$emails       = array();
 		$user_ids     = array();
@@ -143,10 +152,13 @@ function amapress_send_message(
 			update_post_meta( $new_id, 'amapress_message_user_ids', $user_ids );
 		}
 
-		$from_dn    = amapress_get_user_display_name();
-		$from_email = $current_user->getUser()->user_email;
+		$from_email = amapress_mail_from( null );
+		$from_dn    = amapress_mail_from_name( null );
 
 		if ( ! empty( $opt['send_from_me'] ) ) {
+			$from_dn    = $current_user->getDisplayName();
+			$from_email = $current_user->getUser()->user_email;
+
 			$set_from      = function ( $old ) use ( $from_email ) {
 				return $from_email;
 			};
@@ -173,7 +185,9 @@ function amapress_send_message(
 				}
 				break;
 			case "cc":
-				$emails[]  = $current_user->getUser()->user_email;
+				if ( $current_user ) {
+					$emails[] = $current_user->getUser()->user_email;
+				}
 				$to        = "{$opt['target_name']} <$from_email>";
 				$headers[] = "From: $from_dn <$from_email>";
 				$headers[] = "Reply-to: $from_dn <$from_email>";
@@ -187,7 +201,9 @@ function amapress_send_message(
 				$to        = "{$opt['target_name']} <$from_email>";
 				$headers[] = "From: $from_dn <$from_email>";
 				$headers[] = "Reply-to: $from_dn <$from_email>";
-				$headers[] = 'Cc: ' . $current_user->getEmail();
+				if ( $current_user ) {
+					$headers[] = 'Cc: ' . $current_user->getEmail();
+				}
 				$headers[] = 'Bcc: ' . implode( ',', $emails );
 				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
 				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
@@ -234,7 +250,7 @@ function amapress_handle_send_message() {
 	wp_redirect_and_exit( admin_url( 'edit.php?post_type=amps_message&order=post_date&orderby=DESC&message=mail_sent' ) );
 }
 
-function amapress_prepare_message_target( $query_string, $title, $target_type ) {
+function amapress_prepare_message_target( $query_string, $title, $target_type, $with_coadherents = false ) {
 	$opt                = array();
 	$s                  = explode( '|', $query_string );
 	$opt['users_query'] = $s[0];
@@ -250,7 +266,8 @@ function amapress_prepare_message_target( $query_string, $title, $target_type ) 
 	if ( isset( $s[3] ) ) {
 		$opt['post_date_query_field'] = $s[3];
 	}
-	$opt['target_name'] = $title;
+	$opt['target_name']      = $title;
+	$opt['with_coadherents'] = $with_coadherents;
 
 	return $opt;
 }

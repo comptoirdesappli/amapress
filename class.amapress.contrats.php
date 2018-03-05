@@ -990,6 +990,7 @@ class AmapressContrats {
 
 	private static $related_user_cache = null;
 
+	/* @return int[] */
 	public static function get_related_users( $user_id ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return [];
