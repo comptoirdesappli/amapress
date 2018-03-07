@@ -696,6 +696,7 @@ function amapress_get_contrat_quantite_datatable(
 			'show_contact_producteur' => true,
 			'show_adherents'          => true,
 			'show_equiv_quantite'     => true,
+			'no_script'               => false,
 			'mode'                    => 'both',
 		)
 	);
@@ -855,6 +856,7 @@ function amapress_get_contrat_quantite_datatable(
 				'paging'       => false,
 				'bSort'        => true,
 				'init_as_html' => true,
+				'no_script'    => $options['no_script'],
 			),
 			array(
 				Amapress::DATATABLES_EXPORT_EXCEL,

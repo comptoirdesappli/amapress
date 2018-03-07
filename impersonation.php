@@ -25,7 +25,7 @@ function amapress_is_user_logged_in() {
 		}
 	}
 
-	return is_user_logged_in();
+	return is_user_logged_in() || Amapress::isDoingCron();
 }
 
 function amapress_current_user_can( $capability ) {

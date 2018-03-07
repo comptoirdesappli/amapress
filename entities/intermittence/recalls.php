@@ -40,7 +40,7 @@ add_action( 'amapress_recall_dispo_panier_intermittent', function ( $args ) {
 		return;
 	}
 
-	$intermit = amapress_prepare_message_target( "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
+	$intermit = amapress_prepare_message_target_bcc( "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-recall-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-recall-dispo-mail-content' ),
@@ -131,7 +131,7 @@ function amapress_intermittence_dispo_recall_options() {
 			'id'      => 'intermittence-recall-dispo-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% proposés à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : xxxx.\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à xxxx.\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% panier(s) proposés à la distribution de %%post:title-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : xxxx.\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à xxxx.\n\n%%nom_site%%" ),
 		),
 		array(
 			'id'           => 'intermittence-recall-dispo-cc',

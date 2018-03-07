@@ -15,6 +15,10 @@ function amapress_can_access_admin_roles() {
 }
 
 function amapress_can_access_admin() {
+	if ( Amapress::isDoingCron() ) {
+		return true;
+	}
+
 	$user = wp_get_current_user();
 	if ( isset( $user->roles ) && is_array( $user->roles ) ) {
 		foreach ( amapress_can_access_admin_roles() as $r ) {

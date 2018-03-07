@@ -13,9 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
+
 	if ( null == $dist ) {
 		return;
 	}
+
 	$contrats_by_producteurs = from( $dist->getContrats() )->groupBy( function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->getModel()->getProducteurId();
@@ -46,6 +48,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$contrat->ID, null,
 				$dist->getDate(), [
 				'show_contact_producteur' => false,
+				'no_script'               => true,
 			] );
 		}
 		$replacements['producteur_paniers_quantites_text'] = '';
@@ -55,6 +58,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$dist->getDate(), [
 				'show_contact_producteur' => false,
 				'mode'                    => 'text',
+				'no_script'               => true,
 			] );
 		}
 
@@ -69,7 +73,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 			}, AmapressContrats::getReferentsForProducteur( $producteur_id )
 		);
 
-		$target_users = amapress_prepare_message_target( "user:include=" . implode( ',', $referent_ids ), "Référents " . $producteur->getTitle(), 'referents' );
+		$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), "Référents " . $producteur->getTitle(), 'referents' );
 		$subject      = Amapress::getOption( 'distribution-quantites-recall-mail-subject' );
 		$content      = Amapress::getOption( 'distribution-quantites-recall-mail-content' );
 		foreach ( $replacements as $k => $v ) {
@@ -153,7 +157,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 			}, AmapressContrats::getReferentsForContratInstance( $contrat->ID )
 		);
 
-		$target_users = amapress_prepare_message_target( "user:include=" . implode( ',', $referent_ids ), "Référents " . $producteur->getTitle(), 'referents' );
+		$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), "Référents " . $producteur->getTitle(), 'referents' );
 		$subject      = Amapress::getOption( 'contrats-liste-paiements-recall-mail-subject' );
 		$content      = Amapress::getOption( 'contrats-liste-paiements-recall-mail-content' );
 		foreach ( $replacements as $k => $v ) {

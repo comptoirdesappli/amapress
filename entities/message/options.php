@@ -104,7 +104,14 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 	}
 }
 
-function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, TitanEntity $post = null ) {
+/**
+ * @param string $mail_content
+ * @param AmapressUser|null $user
+ * @param TitanEntity|null $post
+ *
+ * @return string
+ */
+function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $post = null ) {
 	$res = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
 		function ( $m ) use ( $user, $post ) {
 			/** @var TitanEntity $post */
@@ -159,10 +166,22 @@ function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, 
 				case "me":
 					$curr = AmapressUser::getBy( amapress_current_user_id() );
 
+					if ( ! $curr ) {
+						return '';
+					}
+
 					return amapress_replace_mail_user_placeholder( $curr, $subopt, $fmt );
 				case "user":
 				case "dest":
+					if ( ! $user ) {
+						return '';
+					}
+
 					$curr = AmapressUser::getBy( $user->ID );
+
+					if ( ! $curr ) {
+						return '';
+					}
 
 					return amapress_replace_mail_user_placeholder( $curr, $subopt, $fmt );
 				case "login_url":
@@ -172,13 +191,25 @@ function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, 
 
 					return "<a href='mailto:{$url}'>{$url}</a>";
 				case "password_url":
+					if ( ! $user ) {
+						return '';
+					}
+
 					$url = amapress_get_user_reset_password_url( $user->getUser() );
 
 					return '<a href="' . esc_attr( $url ) . '">' . esc_html( $url ) . '</a>';
 					break;
 				case "password_url_raw":
+					if ( ! $user ) {
+						return '';
+					}
+
 					return amapress_get_user_reset_password_url( $user->getUser() );
 				case "registration_text":
+					if ( ! $user ) {
+						return '';
+					}
+
 					$message = sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
 					$message .= __( 'To set your password, visit the following address:' ) . "\r\n\r\n";
 					$message .= '<' . amapress_get_user_reset_password_url( $user->getUser() ) . ">\r\n\r\n";
@@ -198,6 +229,10 @@ function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, 
 							if ( $post != null ) {
 								return $post->ID;
 							} else {
+								if ( ! $user ) {
+									return '';
+								}
+
 								return $user->ID;
 							}
 						case 'title':
@@ -205,6 +240,10 @@ function amapress_replace_mail_placeholders( $mail_content, AmapressUser $user, 
 							if ( $post != null ) {
 								return $post->getTitle();
 							} else {
+								if ( ! $user ) {
+									return '';
+								}
+
 								return $user->getDisplayName();
 							}
 							break;

@@ -33,11 +33,11 @@ defined( 'TF_PATH' ) or define( 'TF_PATH', trailingslashit( dirname( __FILE__ ) 
 // Used for testing and checking plugin slug name.
 defined( 'TF_PLUGIN_BASENAME' ) or define( 'TF_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-add_action( 'tf_scheduler_option_changed', function () {
-	if ( ! wp_next_scheduled( 'tf_force_sync_scheduler_options' ) ) {
-		wp_schedule_single_event( time() + 15, 'tf_force_sync_scheduler_options' );
-	}
-} );
+//add_action( 'tf_scheduler_option_changed', function () {
+//	if ( ! wp_next_scheduled( 'tf_force_sync_scheduler_options' ) ) {
+//		wp_schedule_single_event( time() + 15, 'tf_force_sync_scheduler_options' );
+//	}
+//} );
 
 add_action( 'tf_force_sync_scheduler_options', function () {
 	TitanFrameworkOptionEventScheduler::updateAllSchedulers();

@@ -146,7 +146,7 @@ function amapress_send_panier_intermittent_available( $intermittence_panier_id )
 //    $dist = AmapressPaniers::getDistribution($panier->getDate(), $inter->getLieu()->ID);
 	//amapress_contrat=intermittent
 	//$intermit = amapress_prepare_message_target("post_type=amps_inter_adhe&amapress_date=active|amapress_adhesion_intermittence_user", "Les intermittents", "intermittent");
-	$intermit = amapress_prepare_message_target( "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
+	$intermit = amapress_prepare_message_target_bcc( "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-panier-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-panier-dispo-mail-content' ),

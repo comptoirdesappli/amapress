@@ -17,7 +17,7 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 		return;
 	}
 
-	$participants_users = amapress_prepare_message_target( "user:include=" . implode( ',', $participants ), "Participants " . $visite->getTitle(), "visite" );
+	$participants_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $participants ), "Participants " . $visite->getTitle(), "visite" );
 	amapress_send_message(
 		Amapress::getOption( 'visite-inscription-recall-subject' ),
 		Amapress::getOption( 'visite-inscription-recall-content' ),

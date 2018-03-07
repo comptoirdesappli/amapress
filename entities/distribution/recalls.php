@@ -43,7 +43,7 @@ add_action( 'amapress_recall_resp_distrib', function ( $args ) {
 		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
 
-	$responsable_users = amapress_prepare_message_target( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
+	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
 	amapress_send_message(
 		Amapress::getOption( 'distribution-resp-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-resp-recall-mail-content' ),
@@ -69,7 +69,7 @@ add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
 
-	$responsable_users = amapress_prepare_message_target( "user:include=" . implode( ',', $responsable_ids ), "Emargement de " . $dist->getTitle(), "distribution" );
+	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Emargement de " . $dist->getTitle(), "distribution" );
 	amapress_send_message(
 		Amapress::getOption( 'distribution-emargement-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-emargement-recall-mail-content' ),
@@ -93,7 +93,7 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3|amapress_post=$dist_id|amapress_distribution_date";
 
 	if ( $dist->getLieuSubstitutionId() > 0 && $dist->getLieuSubstitutionId() != $dist->getLieuId() ) {
-		$amapien_users = amapress_prepare_message_target( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
+		$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
 		amapress_send_message(
 			Amapress::getOption( 'distribution-lieu-change-recall-mail-subject' ),
 			Amapress::getOption( 'distribution-lieu-change-recall-mail-content' ),
@@ -106,7 +106,7 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 		$dist->getDelayedToThisPaniers()
 	);
 	if ( ! empty( $paniers_modifies ) ) {
-		$amapien_users = amapress_prepare_message_target( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
+		$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
 		amapress_send_message(
 			Amapress::getOption( 'distribution-paniers-change-recall-mail-subject' ),
 			Amapress::getOption( 'distribution-paniers-change-recall-mail-content' ),
