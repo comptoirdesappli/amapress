@@ -10,6 +10,9 @@ add_action( 'admin_post_test_mail', function () {
 		wp_die( 'Access denied' );
 	}
 
+	if ( ! defined( 'DOING_CRON' ) ) {
+		define( 'DOING_CRON', true );
+	}
 	$args = $_GET;
 	do_action( $_GET['call'], $args );
 	die();
