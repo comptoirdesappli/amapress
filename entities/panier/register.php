@@ -29,6 +29,8 @@ function amapress_register_entities_panier( $entities ) {
 				'context' => 'side',
 			]
 		],
+		'default_orderby'  => 'amapress_panier_date',
+		'default_order'    => 'ASC',
 		'fields'           => array(
 			'date'              => array(
 				'name'       => amapress__( 'Date du panier' ),
