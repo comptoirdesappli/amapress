@@ -362,17 +362,47 @@ function amapress_can_delete_user( $can, $user_id ) {
 
 add_filter( 'amapress_register_admin_bar_menu_items', 'amapress_register_admin_bar_menu_items' );
 function amapress_register_admin_bar_menu_items( $items ) {
-	$contrat_to_renew       = get_posts_count( 'post_type=amps_contrat_inst&amapress_date=renew' );
-	$next_distribs          = AmapressDistribution::getNextDistribs( null, 2, null );
-	$liste_emargement_items = [];
+	$contrat_to_renew = get_posts_count( 'post_type=amps_contrat_inst&amapress_date=renew' );
+	$this_week_start  = Amapress::start_of_week( amapress_time() );
+	$this_week_end    = Amapress::end_of_week( amapress_time() );
+	$next_distribs    = AmapressDistribution::getNextDistribs( Amapress::add_a_week( amapress_time(), - 1 ), 3, null );
+	usort( $next_distribs, function ( $a, $b ) {
+		/** @var AmapressDistribution $a */
+		/** @var AmapressDistribution $b */
+		if ( $b->getDate() == $a->getDate() ) {
+			return 0;
+		}
+
+		return $a->getDate() < $b->getDate() ? - 1 : 1;
+	} );
+	$liste_emargement_items   = [];
+	$liste_emargement_items[] = array(
+		'id'         => 'amapress_emargement_last_week',
+		'title'      => 'Semaine dernière',
+		'capability' => 'edit_distribution',
+		'href'       => admin_url( 'edit.php?post_type=amps_distribution&amapress_date=lastweek' ),
+	);
 	foreach ( $next_distribs as $dist ) {
+		if ( $dist->getDate() < $this_week_start ) {
+			continue;
+		}
+		$tit = esc_html( $dist->getTitle() );
+		if ( $this_week_start < $dist->getDate() && $dist->getDate() < $this_week_end ) {
+			$tit = '<strong><em>' . $tit . '</em></strong>';
+		}
 		$liste_emargement_items[] = array(
 			'id'         => 'amapress_emargement_' . $dist->ID,
-			'title'      => $dist->getTitle(),
+			'title'      => $tit,
 			'capability' => 'edit_distribution',
 			'href'       => $dist->getListeEmargementHref(),
 		);
 	}
+	$liste_emargement_items[] = array(
+		'id'         => 'amapress_emargement_other',
+		'title'      => 'Autres',
+		'capability' => 'edit_distribution',
+		'href'       => admin_url( 'edit.php?post_type=amps_distribution&amapress_date=active' ),
+	);
 
 	$dist_items = [];
 	$dist_dates = [];
@@ -380,32 +410,61 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		if ( ! in_array( $dist->getDate(), $dist_dates ) ) {
 			$dist_dates[] = $dist->getDate();
 		}
+		$tit = esc_html( $dist->getTitle() );
+		if ( $this_week_start < $dist->getDate() && $dist->getDate() < $this_week_end ) {
+			$tit = '<strong><em>' . $tit . '</em></strong>';
+		}
 		$dist_items[] = array(
 			'id'         => 'amapress_dist_' . $dist->ID,
-			'title'      => $dist->getTitle(),
+			'title'      => $tit,
 			'capability' => 'edit_distribution',
 			'href'       => $dist->getAdminEditLink(),
 		);
 	}
+	$dist_items[] = array(
+		'id'         => 'amapress_dist_other',
+		'title'      => 'Autres',
+		'capability' => 'edit_distribution',
+		'href'       => admin_url( 'edit.php?post_type=amps_distribution&amapress_date=active' ),
+	);
 
 	$panier_rens_items = [];
 	$panier_edit_items = [];
 	foreach ( $dist_dates as $dist_date ) {
 		foreach ( AmapressPaniers::getPaniersForDist( $dist_date ) as $panier ) {
+			if ( $panier->getRealDate() != $dist_date ) {
+				continue;
+			}
+			$tit = esc_html( $panier->getTitle() );
+			if ( $this_week_start < $panier->getRealDate() && $panier->getRealDate() < $this_week_end ) {
+				$tit = '<strong><em>' . $tit . '</em></strong>';
+			}
 			$panier_rens_items[] = array(
 				'id'         => 'amapress_rens_panier_' . $panier->ID,
-				'title'      => $panier->getTitle(),
+				'title'      => $tit,
 				'capability' => 'edit_panier',
 				'href'       => $panier->getAdminEditLink(),
 			);
 			$panier_edit_items[] = array(
 				'id'         => 'amapress_edit_panier_' . $panier->ID,
-				'title'      => $panier->getTitle(),
+				'title'      => $tit,
 				'capability' => 'edit_panier',
 				'href'       => $panier->getAdminEditLink(),
 			);
 		}
 	}
+	$panier_rens_items[] = array(
+		'id'         => 'amapress_rens_panier_other',
+		'title'      => 'Autres',
+		'capability' => 'edit_panier',
+		'href'       => admin_url( 'edit.php?post_type=amps_panier&amapress_date=active' ),
+	);
+	$panier_edit_items[] = array(
+		'id'         => 'amapress_edit_panier_other',
+		'title'      => 'Autres',
+		'capability' => 'edit_panier',
+		'href'       => admin_url( 'edit.php?post_type=amps_panier&amapress_date=active' ),
+	);
 
 	$items[] = array(
 		'id'        => 'amapress-site-name',

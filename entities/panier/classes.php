@@ -69,6 +69,14 @@ class AmapressPanier extends Amapress_EventBase {
 		return $ret;
 	}
 
+	public function getRealDate() {
+		if ( $this->isDelayed() ) {
+			return $this->getDateSubst();
+		}
+
+		return $this->getDate();
+	}
+
 	public function isDelayed() {
 		return 'delayed' == $this->getStatus();
 	}
