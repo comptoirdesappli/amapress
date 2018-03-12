@@ -109,7 +109,7 @@ function amapress_adhesion_request_title_formatter( $post_title, WP_Post $post )
 
 add_filter( 'amapress_panier_title_formatter', 'amapress_panier_title_formatter', 10, 2 );
 function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
-	$panier = AmapressPanier::getBy( $post );
+	$panier = AmapressPanier::getBy( $post, true );
 	if ( ! $panier ) {
 		return $post_title;
 	}

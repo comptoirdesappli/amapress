@@ -21,12 +21,6 @@ function amapress_set_slugs_and_titles_on_save( $post_id, WP_Post $post = null )
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
-//
-//    if (wp_is_post_revision( $post_id )) return;
-
-	//Perform permission checks! For example:
-//    if ( !current_user_can('edit_post', $post_id) )
-//        return;
 
 	//If calling wp_update_post, unhook this function so it doesn't loop infinitely
 	remove_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12 );
@@ -40,7 +34,6 @@ function amapress_set_slugs_and_titles_on_save( $post_id, WP_Post $post = null )
 	// re-hook this function
 	add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
 }
-
 add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
 
 /**
