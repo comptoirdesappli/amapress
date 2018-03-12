@@ -127,6 +127,7 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/csv.export.php' );
 
 
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/distribution/actions.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/contrat_adhesion/actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/panier/actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/commande/actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/recette/actions.php' );

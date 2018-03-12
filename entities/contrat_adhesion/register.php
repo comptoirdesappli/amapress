@@ -28,6 +28,17 @@ function amapress_register_entities_adhesion( $entities ) {
 			'renew'    => 'Renouveler',
 			'no_renew' => 'Ne pas renouveler',
 		),
+		'bulk_actions'       => array(
+			'amp_accept_contrat_adhesion' => array(
+				'label'    => 'Confirmer inscription',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant l\'opération',
+					'0'  => 'Une erreur s\'est produit pendant l\'opération',
+					'1'  => 'Une inscription a été confirmée avec succès',
+					'>1' => '%s inscriptions ont été confirmée avec succès',
+				),
+			),
+		),
 		'default_orderby'    => 'post_title',
 		'default_order'      => 'ASC',
 		'edit_header'        => function ( $post ) {

@@ -95,6 +95,8 @@ class AmapressAdhesion extends TitanEntity {
 	const POST_TYPE = 'adhesion';
 
 	private static $entities_cache = array();
+	const TO_CONFIRM = 'to_confirm';
+	const CONFIRMED = 'confirmed';
 
 	/**
 	 * @param $post_or_id
@@ -383,9 +385,9 @@ class AmapressAdhesion extends TitanEntity {
 	public function getStatusDisplay() {
 		switch ( $this->getCustom( 'amapress_adhesion_status' ) ) {
 
-			case 'to_confirm':
+			case self::TO_CONFIRM:
 				return 'En attente de confirmation';
-			case 'confirmed':
+			case self::CONFIRMED:
 				return 'Confirmée';
 			default:
 				return $this->getCustom( 'amapress_adhesion_status' );
@@ -394,6 +396,10 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function getStatus() {
 		return $this->getCustom( 'amapress_adhesion_status' );
+	}
+
+	public function setStatus( $status ) {
+		$this->setCustom( 'amapress_adhesion_status', $status );
 	}
 
 	/** @return float */
