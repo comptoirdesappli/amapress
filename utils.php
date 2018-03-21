@@ -101,8 +101,12 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	if ( $init_as_html ) {
 		$table_content .= '<thead><tr>';
 		foreach ( $columns as $col ) {
-			$title         = isset( $col['title'] ) ? $col['title'] : '&#xA0;';
-			$table_content .= '<th>' . $title . '</th>';
+			$title = isset( $col['title'] ) ? $col['title'] : '&#xA0;';
+			$attr  = '';
+			if ( ! empty( $col['responsivePriority'] ) ) {
+				$attr = 'data-priority="' . $col['responsivePriority'] . '"';
+			}
+			$table_content .= "<th $attr>" . $title . '</th>';
 		}
 		$table_content .= '</tr></thead>';
 
