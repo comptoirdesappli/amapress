@@ -195,11 +195,16 @@ function amapress_import_posts_get_field_name( $field_name, $post_type, $colname
 			return 'amapress_adhesion_contrat_quantite';
 		}
 		$id = Amapress::resolve_post_id( $field_name, AmapressContrat_instance::POST_TYPE );
-//        var_dump($id);
-//        var_dump($field_name);
-//        die();
 		if ( $id > 0 ) {
 			return $id;
+		}
+
+		if ( ! empty( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] ) ) {
+			$contrat_instance = AmapressContrat_instance::getBy( intval( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] ) );
+			$quant            = amapress_resolve_contrat_quantite_id( $contrat_instance->ID, $field_name );
+			if ( ! empty( $quant ) ) {
+				return 'contrat_quant_' . $quant['id'];
+			}
 		}
 	}
 
@@ -246,17 +251,6 @@ function amapress_import_posts_meta( $postmeta, $postdata, $posttaxo, $post_type
 		unset( $postmeta[ $excluded_field ] );
 	}
 
-	//TODO place in right entity
-//    if ($post_type == AmapressAdhesion::POST_TYPE) {
-//        $value = $postmeta['amapress_adhesion_contrat_instance'];
-//        $id = Amapress::resolve_post_id($value, amapress_unsimplify_post_type($post_type));
-//        if ($id <= 0) return new WP_Error('cannot_parse', "Valeur '$value' non valide pour 'Contrat'");
-//        $postmeta['amapress_adhesion_contrat_instance'] = $id;
-//        $contrat_instance = AmapressContrat_instance::getBy($id);
-//
-//        if ($field_name == 'Quantité') return 'amapress_adhesion_contrat_quantite';
-//    }
-
 	$validators = AmapressEntities::getPostFieldsValidators();
 	foreach ( $postmeta as $k => $v ) {
 		if ( ! empty( $validators[ $k ] ) ) {
@@ -270,14 +264,6 @@ function amapress_import_posts_meta( $postmeta, $postdata, $posttaxo, $post_type
 }
 
 function amapress_get_validator( $post_type, $field_name, $settings ) {
-//	if ( ! isset( $settings['type'] ) ) {
-//		var_dump( $post_type );
-//		var_dump( $field_name );
-//		unset( $settings['tf_option'] );
-//		var_dump( $settings );
-//		die();
-//	}
-
 	$type  = $settings['type'];
 	$label = $settings['name'];
 	if ( $type == 'date' ) {
@@ -336,7 +322,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				}
 			}
 
-			return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label'" );
+			return $v;
 		};
 	} else if ( $type == 'select-posts' ) {
 		return function ( $value ) use ( $label, $settings ) {
@@ -519,9 +505,12 @@ add_filter( 'amapress_csv_posts_adhesion_import_required_headers', 'amapress_csv
 function amapress_csv_posts_adhesion_import_required_headers( $required_headers, $headers ) {
 	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
 
-	$has_multi = false;
+	$has_multi_quant_columns = false;
+	$has_multi               = false;
 	foreach ( $headers as $h ) {
-		$has_multi = $has_multi || is_int( $h );
+		$has_multi               = $has_multi || is_int( $h );
+		$has_multi_quant_columns = $has_multi_quant_columns
+		                           || strpos( $h, 'contrat_quant_' ) !== false;
 	}
 
 	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] ) ) {
@@ -532,6 +521,11 @@ function amapress_csv_posts_adhesion_import_required_headers( $required_headers,
 	}
 	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) ) {
 		unset( $required_headers['amapress_adhesion_date_debut'] );
+	}
+
+	if ( $has_multi_quant_columns ) {
+		unset( $required_headers['amapress_adhesion_contrat_quantite'] );
+		unset( $required_headers['amapress_adhesion_contrat_quantite_factors'] );
 	}
 
 	if ( $has_multi ) {

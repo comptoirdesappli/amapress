@@ -121,7 +121,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
-			'model'          => array(
+			'model'         => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -139,7 +139,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'searchable'        => true,
 			),
-			'nb_visites'     => array(
+			'nb_visites'    => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => 'Information',
 				'type'        => 'number',
@@ -404,7 +404,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'   => array(
+			'date_cloture'  => array(
 				'name'          => amapress__( 'Clôture des inscriptions' ),
 				'type'          => 'date',
 				'group'         => 'Gestion',
@@ -480,7 +480,7 @@ jQuery(function($) {
 				'required' => true,
 				'desc'     => 'Nombre maximum d\'amapiens',
 			),
-			'contrat'        => array(
+			'contrat'       => array(
 				'name'       => amapress__( 'Contrat en ligne' ),
 				'type'       => 'editor',
 //                'required' => true,
@@ -685,8 +685,33 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 	$postmeta = apply_filters( "amapress_import_adhesion_apply_default_values_to_posts_meta", $postmeta, $postdata );
 	$postmeta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $postmeta, $postdata );
 
-	if ( empty( $postmeta['amapress_adhesion_contrat_instance'] ) || empty( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
+	if ( empty( $postmeta['amapress_adhesion_contrat_instance'] ) ) {
 		return new WP_Error( 'ignore_contrat', "Colonne contrat vide. La ligne sera ignorée." );
+	}
+
+	$quants = [];
+	foreach ( $postmeta as $k => $v ) {
+		if ( strpos( $k, 'contrat_quant_' ) === 0 ) {
+			$quant_id = intval( substr( $k, 14 ) );
+			$quant    = AmapressContrat_quantite::getBy( $quant_id );
+			if ( null == $quant ) {
+				return new WP_Error( 'cannot_find_quant', "Impossible de résoudre la quantité {$quant_id}" );
+			}
+
+			if ( Amapress::toBool( $v ) ) {
+				$quants[] = $quant->getCode();
+			} else {
+				$quants[] = $v . ' ' . $quant->getCode();
+			}
+			unset( $postmeta[ $k ] );
+		}
+	}
+	if ( ! empty( $quants ) ) {
+		$postmeta['amapress_adhesion_contrat_quantite'] = implode( ', ', $quants );
+	}
+
+	if ( empty( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
+		return new WP_Error( 'ignore_contrat_quantite', "Colonne quantité vide. La ligne sera ignorée." );
 	}
 
 	$contrat_instance = Amapress::resolve_post_id( $postmeta['amapress_adhesion_contrat_instance'], AmapressContrat_instance::INTERNAL_POST_TYPE );
@@ -742,7 +767,7 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 	foreach ( $values as $v ) {
 //        $v = trim($v);
 		$id = amapress_resolve_contrat_quantite_id( $contrat_instance_id, $v );
-		if ( $id === - 1 ) {
+		if ( empty( $id ) ) {
 			$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 			$url              = admin_url( "post.php?post=$contrat_instance_id&action=edit" );
 			$errors[]         = "Valeur '$v' non valide pour '{$contrat_instance->getTitle()}' (Voir <$url>)";
@@ -803,7 +828,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 				if ( empty( $raw ) ) {
 					continue;
 				}
-				foreach ( [ $raw, $fmt, $raw . ' ', $fmt . ' ' ] as $prefix ) {
+				foreach ( [ $raw, $fmt, $raw . ' ', $fmt . ' ', $raw . ' x ', $fmt . ' x ' ] as $prefix ) {
 					if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $prefix . $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
 						return [
 							'id'    => $quant->ID,
@@ -832,7 +857,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 //    var_dump($contrat_quantite_name);
 //    var_dump($cn);
 //    die();
-	return - 1;
+	return null;
 }
 
 function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo ) {
