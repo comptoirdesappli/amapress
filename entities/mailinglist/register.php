@@ -214,6 +214,8 @@ function amapress_get_mailinglist_queries() {
 		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
 	}
 
+	$ret["role=producteur"] = "Producteurs";
+
 	$ret["amapress_role=access_admin"] = "Responsables AMAP";
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
