@@ -1100,9 +1100,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 				$prod = $contrat->getModel()->getProducteur();
 				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-					$user_ids = $user_ids + $prod->getReferentsIds( $lieu_id );
+					$user_ids = array_merge( $user_ids, $prod->getReferentsIds( $lieu_id ) );
 				}
-				$user_ids = $user_ids + $prod->getReferentsIds();
+				$user_ids = array_merge( $user_ids, $prod->getReferentsIds() );
 			}
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
 			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
