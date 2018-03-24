@@ -11,6 +11,7 @@ function amapress_can_access_admin_roles() {
 		'referent',
 		'tresorier',
 		'coordinateur_amap',
+		'producteur',
 	);
 }
 
