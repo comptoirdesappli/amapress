@@ -234,6 +234,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			return 'already';
 		}
 
+		if ( $this->getStartDateAndHour() < amapress_time() ) {
+			return 'too_late';
+		}
+
 		$ask = $this->getAsk();
 		if ( ! isset( $ask[ $repreneur_id ] ) ) {
 			return 'unknown';
@@ -262,6 +266,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	public function validateReprise( $repreneur_id ) {
 		if ( $this->getRepreneur() != null || 'exch_valid_wait' != $this->getStatus() ) {
 			return 'already';
+		}
+
+		if ( $this->getStartDateAndHour() < amapress_time() ) {
+			return 'too_late';
 		}
 
 		$ask = $this->getAsk();
@@ -332,6 +340,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			return 'already';
 		}
 
+		if ( $this->getStartDateAndHour() < amapress_time() ) {
+			return 'too_late';
+		}
+
 		$ask             = $this->getAsk();
 		$ask[ $user_id ] = array(
 			'user' => $user_id,
@@ -361,6 +373,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	public function cancelFromAdherent( $user_id = null, $message = null ) {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
+		}
+
+		if ( $this->getStartDateAndHour() < amapress_time() ) {
+			return 'too_late';
 		}
 
 		$this->setStatus( 'cancelled' );
@@ -396,6 +412,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	public function cancelFromRepreneur( $user_id = null, $message = null ) {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
+		}
+
+		if ( $this->getStartDateAndHour() < amapress_time() ) {
+			return 'too_late';
 		}
 
 		$repreneur = $this->getRepreneur();

@@ -145,8 +145,8 @@ class AmapressDistribution extends Amapress_EventBase {
 			/** @var AmapressPanier $p */
 			return $p->getContrat_instanceId();
 		}, $this->getDelayedToThisPaniers() );
-		$res                   = array_merge( $res, $delayed_contrat_ids );
 		$res                   = array_diff( $res, $cancelled_contrat_ids );
+		$res                   = array_merge( $res, $delayed_contrat_ids );
 
 		return array_unique( $res );
 	}

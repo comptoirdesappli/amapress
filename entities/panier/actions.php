@@ -31,16 +31,16 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$contrat_ids = array_map( function ( $c ) {
 		/** @var AmapressAdhesion $c */
 		return $c->getContrat_instanceId();
-	}, AmapressAdhesion::getUserActiveAdhesions( $user_id ) );
+	}, AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $dist->getDate() ) );
 //	$cnt         = 0;
 	$panier_ids = [];
 //	$failed      = 0;
-	foreach ( $dist->getContrats() as $contrat ) {
-		if ( ! in_array( $contrat->ID, $contrat_ids ) ) {
+	$paniers = AmapressPaniers::getPaniersForDist( $dist->getDate() );
+	foreach ( $paniers as $panier ) {
+		if ( ! in_array( $panier->getContrat_instanceId(), $contrat_ids ) ) {
 			continue;
 		}
-		$panier = AmapressPaniers::getPanierForDist( $dist->getDate(), $contrat->ID );
-		if ( $panier == null ) {
+		if ( $panier->isDelayed() && Amapress::start_of_day( $panier->getRealDate() ) != Amapress::start_of_day( $dist->getDate() ) ) {
 			continue;
 		}
 		$panier_ids[] = $panier->ID;
@@ -97,8 +97,14 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 	$lieu_id              = 0;
 	$contrat_instance_ids = [];
 	foreach ( $panier_ids as $panier_id ) {
-		$panier      = AmapressPanier::getBy( $panier_id );
-		$panier_date = $panier->getDate();
+		$panier = AmapressPanier::getBy( $panier_id );
+
+		//TODO : parametre pour date limite
+		if ( Amapress::hour_of_day( $panier->getRealDate(), 16 ) < amapress_time() ) {
+			return 'too_late';
+		}
+
+		$panier_date = $panier->getRealDate();
 //    $redir_url = $panier->getPermalink();
 		$contrat_instance       = $panier->getContrat_instance();
 		$contrat_instance_ids[] = $contrat_instance->ID;
@@ -112,6 +118,18 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 		$lieu_id  = $adhesion->getLieuId();
 
 		if ( AmapressPaniers::isIntermittent( $panier->ID, $lieu_id ) ) {
+			return 'already';
+		}
+	}
+
+	$existing_paniers = AmapressPaniers::getPanierIntermittents(
+		[
+			'date'     => $panier_date,
+			'adherent' => amapress_current_user_id(),
+		]
+	);
+	foreach ( $existing_paniers as $p ) {
+		if ( $p->getStatus() != AmapressIntermittence_panier::CANCELLED ) {
 			return 'already';
 		}
 	}

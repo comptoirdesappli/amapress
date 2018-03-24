@@ -535,13 +535,14 @@ class AmapressPaniers {
 	static function isIntermittent(
 		$panier_id, $lieu_id, $user_id = null
 	) {
-//        $panier = AmapressPanier::getBy($panier_id);
+		$panier = AmapressPanier::getBy( $panier_id );
 		if ( empty( $user_id ) ) {
 			$user_id = amapress_current_user_id();
 		}
 		$paniers = self::getPanierIntermittents(
 			[
 				'panier_id' => $panier_id,
+				'date'      => $panier->getRealDate(),
 				'adherent'  => $user_id,
 				'lieu_id'   => $lieu_id,
 			]

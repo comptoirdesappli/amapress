@@ -165,7 +165,7 @@ class AmapressPanier extends Amapress_EventBase {
 				$ret,
 				function ( $p ) use ( $date_delayed ) {
 					/** @var AmapressPanier $p */
-					return $p->getDateSubst() == Amapress::start_of_day( $date_delayed );
+					return Amapress::start_of_day( $p->getDateSubst() ) == Amapress::start_of_day( $date_delayed );
 				}
 			);
 		}
@@ -174,7 +174,7 @@ class AmapressPanier extends Amapress_EventBase {
 				$ret,
 				function ( $p ) use ( $date_orig ) {
 					/** @var AmapressPanier $p */
-					return $p->getDate() == Amapress::start_of_day( $date_orig );
+					return Amapress::start_of_day( $p->getDate() ) == Amapress::start_of_day( $date_orig );
 				}
 			);
 		}

@@ -171,7 +171,7 @@ function amapress_send_message(
 
 
 //        add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type' );
-		$headers[] = array( 'Content-Type: text/html; charset=UTF-8' );
+		$headers[] = 'Content-Type: text/html; charset=UTF-8';
 		switch ( isset( $opt['send_mode'] ) ? $opt['send_mode'] : '' ) {
 			case "indiv":
 				$headers[] = "From: $from_dn <$from_email>";
