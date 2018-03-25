@@ -140,21 +140,9 @@ function amapress_visite_views() {
 		"post_type=amps_visite&amapress_date=thismonth",
 		'Ce mois' );
 	amapress_add_view_button(
-		$ret, 'thismonth',
+		$ret, 'nnext',
 		"post_type=amps_visite&amapress_date=next",
 		'A venir' );
-
-	$lieux = get_posts( array(
-			'posts_per_page' => - 1,
-			'post_type'      => 'amps_lieu'
-		)
-	);
-	foreach ( $lieux as $lieu ) {
-		amapress_add_view_button(
-			$ret, 'for_' . $lieu->ID,
-			"post_type=amps_visite&amapress_date=active&amapress_lieu={$lieu->ID}",
-			$lieu->post_title );
-	}
 
 	return $ret;
 }
@@ -169,6 +157,10 @@ function amapress_assemblee_views() {
 		$ret, 'thismonth',
 		"post_type=amps_assemblee&amapress_date=thismonth",
 		'Ce mois' );
+	amapress_add_view_button(
+		$ret, 'nnext',
+		"post_type=amps_assemblee&amapress_date=next",
+		'A venir' );
 
 	return $ret;
 }
@@ -211,6 +203,10 @@ function amapress_panier_views() {
 		$ret, 'thismonth',
 		"post_type=amps_panier&amapress_date=thismonth",
 		'Ce mois' );
+	amapress_add_view_button(
+		$ret, 'nextmonth',
+		"post_type=amps_panier&amapress_date=nextmonth",
+		'Mois prochain' );
 
 	amapress_add_view_button(
 		$ret, 'delayed',
@@ -280,16 +276,14 @@ function amapress_adhesion_views() {
 			$contrat->getTitle() );
 	}
 
-	$lieux = get_posts( array(
-			'posts_per_page' => - 1,
-			'post_type'      => 'amps_lieu'
-		)
-	);
-	foreach ( $lieux as $lieu ) {
-		amapress_add_view_button(
-			$ret, 'for_' . $lieu->ID,
-			"post_type=amps_adhesion&amapress_date=active&amapress_lieu={$lieu->ID}",
-			$lieu->post_title );
+	$lieux = Amapress::get_lieux();
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+			amapress_add_view_button(
+				$ret, 'for_' . $lieu->ID,
+				"post_type=amps_adhesion&amapress_date=active&amapress_lieu={$lieu->ID}",
+				$lieu->getTitle() );
+		}
 	}
 	amapress_add_view_button(
 		$ret, 'with_coadh',
@@ -444,17 +438,15 @@ function amapress_user_views( $ret ) {
 			}
 		}
 
-		$lieux = get_posts( array(
-				'posts_per_page' => - 1,
-				'post_type'      => 'amps_lieu'
-			)
-		);
-		foreach ( $lieux as $lieu ) {
-			amapress_add_view_button(
-				$ret, 'for_' . $lieu->ID,
-				"amapress_lieu={$lieu->ID}$query_add",
-				$lieu->post_title,
-				true );
+		$lieux = Amapress::get_lieux();
+		if ( count( $lieux ) > 1 ) {
+			foreach ( $lieux as $lieu ) {
+				amapress_add_view_button(
+					$ret, 'for_' . $lieu->ID,
+					"amapress_lieu={$lieu->ID}$query_add",
+					$lieu->getShortName(),
+					true );
+			}
 		}
 	}
 
@@ -509,13 +501,23 @@ function amapress_intermittence_panier_views() {
 		$ret, 'actives',
 		"post_type=amps_inter_adhe&amapress_date=active",
 		'En cours' );
+	amapress_add_view_button(
+		$ret, 'thismonth',
+		"post_type=amps_inter_adhe&amapress_date=thismonth",
+		'Ce mois' );
+	amapress_add_view_button(
+		$ret, 'nextmonth',
+		"post_type=amps_inter_adhe&amapress_date=nextmonth",
+		'Mois prochain' );
 
 	$lieux = Amapress::get_lieux();
-	foreach ( $lieux as $lieu ) {
-		amapress_add_view_button(
-			$ret, 'for_' . $lieu->ID,
-			"post_type=amps_inter_adhe&amapress_date=active&amapress_lieu={$lieu->ID}",
-			$lieu->getShortName() );
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+			amapress_add_view_button(
+				$ret, 'for_' . $lieu->ID,
+				"post_type=amps_inter_adhe&amapress_date=active&amapress_lieu={$lieu->ID}",
+				$lieu->getShortName() );
+		}
 	}
 //
 //    $contrats = AmapressContrats::get_active_contrat_instances();
