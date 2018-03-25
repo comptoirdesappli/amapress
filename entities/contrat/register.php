@@ -121,7 +121,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
-			'model'         => array(
+			'model'          => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -139,7 +139,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'searchable'        => true,
 			),
-			'nb_visites'    => array(
+			'nb_visites'     => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => 'Information',
 				'type'        => 'number',
@@ -148,7 +148,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
-			'type'          => array(
+			'type'           => array(
 				'name'          => amapress__( 'Type de contrat' ),
 				'type'          => 'select',
 				'options'       => array(
@@ -404,7 +404,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'  => array(
+			'date_cloture'   => array(
 				'name'          => amapress__( 'Clôture des inscriptions' ),
 				'type'          => 'date',
 				'group'         => 'Gestion',
@@ -428,7 +428,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'lieux'         => array(
+			'lieux'          => array(
 				'name'       => amapress__( 'Lieux' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_lieu',
@@ -444,7 +444,7 @@ jQuery(function($) {
 					'placeholder' => 'Tous les lieux'
 				),
 			),
-			'status'        => array(
+			'status'         => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => array( 'AmapressContrats', "contratStatus" ),
@@ -454,7 +454,7 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'         => array(
+			'ended'          => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'group'       => 'Status',
@@ -462,7 +462,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'quant_editor'  => array(
+			'quant_editor'   => array(
 				'name'        => amapress__( 'Quantités' ),
 				'type'        => 'custom',
 				'group'       => 'Gestion',
@@ -473,14 +473,14 @@ jQuery(function($) {
 				'show_column' => false,
 //                'desc' => 'Quantités',
 			),
-			'max_adherents' => array(
+			'max_adherents'  => array(
 				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
 				'type'     => 'number',
 				'group'    => 'Gestion',
 				'required' => true,
 				'desc'     => 'Nombre maximum d\'amapiens',
 			),
-			'contrat'       => array(
+			'contrat'        => array(
 				'name'       => amapress__( 'Contrat en ligne' ),
 				'type'       => 'editor',
 //                'required' => true,
@@ -647,12 +647,12 @@ function amapress_import_adhesion_apply_default_values_to_posts_meta( $postmeta 
 		$postmeta['amapress_adhesion_date_debut'] = call_user_func( $val, $_REQUEST['amapress_import_adhesion_default_date_debut'] );
 	}
 
-	$contrat_instance = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
-	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
-	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
-		$postmeta['amapress_adhesion_date_debut'] = $contrat_instance->getDate_debut();
-	}
-	$postmeta['amapress_adhesion_status'] = 'confirmed';
+//	$contrat_instance = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
+//	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
+//	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
+//		$postmeta['amapress_adhesion_date_debut'] = $contrat_instance->getDate_debut();
+//	}
+//	$postmeta['amapress_adhesion_status'] = 'confirmed';
 
 	return $postmeta;
 }
@@ -714,14 +714,14 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 		return new WP_Error( 'ignore_contrat_quantite', "Colonne quantité vide. La ligne sera ignorée." );
 	}
 
-	$contrat_instance = Amapress::resolve_post_id( $postmeta['amapress_adhesion_contrat_instance'], AmapressContrat_instance::INTERNAL_POST_TYPE );
-	if ( empty( $contrat_instance ) || $contrat_instance <= 0 ) {
+	$contrat_instance_id = Amapress::resolve_post_id( $postmeta['amapress_adhesion_contrat_instance'], AmapressContrat_instance::INTERNAL_POST_TYPE );
+	if ( empty( $contrat_instance_id ) || $contrat_instance_id <= 0 ) {
 		return new WP_Error( 'cannot_find_contrat', "Impossible de trouver le contrat '{$postmeta['amapress_adhesion_contrat_instance']}'" );
 	}
 
-	$postmeta['amapress_adhesion_contrat_instance'] = $contrat_instance;
+	$postmeta['amapress_adhesion_contrat_instance'] = $contrat_instance_id;
 
-	$ids = amapress_resolve_contrat_quantite_ids( $contrat_instance, $postmeta['amapress_adhesion_contrat_quantite'] );
+	$ids = amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $postmeta['amapress_adhesion_contrat_quantite'] );
 	if ( is_wp_error( $ids ) ) {
 		return $ids;
 	}
@@ -740,6 +740,41 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 				return $id['quant'];
 			}, $ids )
 	);
+
+	$postmeta['amapress_adhesion_status'] = 'confirmed';
+
+	return $postmeta;
+}
+
+add_filter( 'amapress_import_posts_meta', 'amapress_import_adhesion_meta2', 15, 4 );
+function amapress_import_adhesion_meta2( $postmeta, $postdata, $posttaxo, $post_type ) {
+	if ( $post_type != AmapressAdhesion::POST_TYPE ) {
+		return $postmeta;
+	}
+	if ( ! empty( $postmulti ) ) {
+		return $postmeta;
+	}
+
+	if ( is_wp_error( $postmeta ) ) {
+		return $postmeta;
+	}
+
+	if ( is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] )
+	     || is_wp_error( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
+		return $postmeta;
+	}
+
+	$contrat_instance = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
+	$date_debut       = Amapress::start_of_day( $postmeta['amapress_adhesion_date_debut'] );
+	if ( $date_debut < Amapress::start_of_day( $contrat_instance->getDate_debut() )
+	     || $date_debut > Amapress::start_of_day( $contrat_instance->getDate_fin() ) ) {
+		$dt            = date_i18n( 'd/m/Y', $postmeta['amapress_adhesion_date_debut'] );
+		$contrat_debut = date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() );
+		$contrat_fin   = date_i18n( 'd/m/Y', $contrat_instance->getDate_fin() );
+
+		return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates ($contrat_debut - $contrat_fin) du contrat '{$contrat_instance->getTitle()}'" );
+	}
+	$postmeta['amapress_adhesion_status'] = 'confirmed';
 
 	return $postmeta;
 }

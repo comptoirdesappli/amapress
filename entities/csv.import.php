@@ -163,7 +163,9 @@ function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_k
 	$contrat_instance                                       = AmapressContrat_instance::getBy( $multi_key );
 	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
 	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
-		$postmeta['amapress_adhesion_date_debut'] = $contrat_instance->getDate_debut();
+		$dt = date_i18n( 'd/m/Y', $postmeta['amapress_adhesion_date_debut'] );
+
+		return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates du contrat '{$contrat_instance->getTitle()}'" );
 	}
 	$postmeta['amapress_adhesion_status'] = 'confirmed';
 
