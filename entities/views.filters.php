@@ -200,6 +200,10 @@ function amapress_panier_views() {
 		"post_type=amps_panier&amapress_date=thisweek",
 		'Cette semaine' );
 	amapress_add_view_button(
+		$ret, 'nextweek',
+		"post_type=amps_panier&amapress_date=nextweek",
+		'Semaine prochaine' );
+	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_panier&amapress_date=thismonth",
 		'Ce mois' );
