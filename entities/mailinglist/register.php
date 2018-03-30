@@ -170,7 +170,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 
 add_filter( 'tf_select_users_title', 'amapress_mailinglist_user_mails', 10, 3 );
 function amapress_mailinglist_user_mails( $display_name, WP_User $user, TitanFrameworkOptionSelectUsers $option ) {
-	if ( in_array( Amapress_MailingListConfiguration::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) {
+	if ( isset( $option->owner->settings['post_type'] ) && in_array( Amapress_MailingListConfiguration::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) {
 		$amapien = AmapressUser::getBy( $user->ID );
 
 		return sprintf( '%s (%s)', $user->display_name, implode( ',', $amapien->getAllEmails() ) );

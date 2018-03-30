@@ -94,13 +94,21 @@ function amapress_register_entities_distribution( $entities ) {
 //                'searchable' => true,
 			),
 			'responsables'      => array(
-				'name'         => amapress__( 'Responsables' ),
-				'group'        => '2/ Responsables',
-				'type'         => 'select-users',
-				'autocomplete' => true,
-				'multiple'     => true,
-				'tags'         => true,
-				'desc'         => 'Responsables',
+				'name'          => amapress__( 'Responsables' ),
+				'group'         => '2/ Responsables',
+				'type'          => 'select-users',
+				'autocomplete'  => true,
+				'multiple'      => true,
+				'tags'          => true,
+				'desc'          => 'Responsables',
+				'before_option' => function ( $o ) {
+					if ( Amapress::hasRespDistribRoles() ) {
+						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
+					}
+				},
+				'readonly'      => function ( $o ) {
+					return Amapress::hasRespDistribRoles();
+				}
 //                'searchable' => true,
 			),
 			'paniers'           => array(
@@ -177,4 +185,27 @@ function amapress_get_active_contrat_month_options( $args ) {
 	}
 
 	return $months;
+}
+
+function amapress_distribution_responsable_roles_options() {
+	$ret = [];
+	for ( $i = 1; $i < 6; $i ++ ) {
+		$ret[] = array(
+			'id'   => "resp_role_$i-name",
+			'name' => amapress__( "Nom du rôle $i" ),
+			'type' => 'text',
+			'desc' => 'Nom du rôle de responsable de distribution',
+		);
+		$ret[] = array(
+			'id'   => "resp_role_$i-desc",
+			'name' => amapress__( "Description du rôle $i" ),
+			'type' => 'editor',
+			'desc' => 'Description du rôle de responsable de distribution',
+		);
+	}
+	$ret[] = array(
+		'type' => 'save',
+	);
+
+	return $ret;
 }

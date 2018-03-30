@@ -6,31 +6,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function amapress_handle_and_get_action_messages() {
 	static $messages = array(
-		'inscr_success'               => array(
+		'inscr_success'        => array(
 			'content' => 'Votre participation a été enregistrée.',
 			'type'    => 'success',
 		),
-		'desinscr_success'            => array(
+		'desinscr_success'     => array(
 			'content' => 'Votre participation a été desenregistrée.',
 			'type'    => 'success',
 		),
-		'already_in_list'             => array(
+		'already_in_list'      => array(
 			'content' => 'Vous êtes déjà dans la liste des participants.',
 			'type'    => 'warn',
 		),
-		'list_full'                   => array(
+		'already_taken'        => array(
+			'content' => 'Rôle déjà pris',
+			'type'    => 'error',
+		),
+		'list_full'            => array(
 			'content' => 'La liste des participants est déjà complète.',
 			'type'    => 'error',
 		),
-		'not_inscr'                   => array(
+		'not_inscr'            => array(
 			'content' => 'Vous n\'êtes pas inscrit.',
 			'type'    => 'error',
 		),
-		'already_inscr'               => array(
+		'already_inscr'        => array(
 			'content' => 'Vous êtes déjà inscrit.',
 			'type'    => 'error',
 		),
-		'panier_echange_saved'        => array(
+		'panier_echange_saved' => array(
 			'content' => 'Votre panier a bien été ajouté dans la liste des paniers intermittents.',
 			'type'    => 'success',
 		),

@@ -173,7 +173,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		return in_array( $this->getLieuId(), $user_lieu_ids );
 	}
 
-	public function inscrireResponsable( $user_id ) {
+	public function inscrireResponsable( $user_id, $role = 0 ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
@@ -182,7 +182,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			wp_die( 'Vous ne faites pas partie de cette distribution.' );
 		}
 
-		$responsables        = Amapress::get_post_meta_array( $this->ID, 'amapress_distribution_responsables' );
+		$responsables        = $this->getResponsablesIds();
 		$needed_responsables = AmapressDistributions::get_required_responsables( $this->ID );
 		if ( ! $responsables ) {
 			$responsables = array();
@@ -193,9 +193,29 @@ class AmapressDistribution extends Amapress_EventBase {
 			return 'list_full';
 		} else {
 			$responsables[] = $user_id;
-			update_post_meta( $this->ID, 'amapress_distribution_responsables', $responsables );
+			if ( $role > 0 ) {
+				$this->ensure_init();
+				foreach ( $this->custom as $k => $v ) {
+					if ( strpos( $k, 'amapress_distribution_resp_' ) === 0 ) {
+						if ( $v == $role ) {
+							return 'already_taken';
+						}
+					}
+				}
+				$this->setCustom( 'amapress_distribution_resp_' . $user_id, $role );
+			}
+			$this->setCustom( 'amapress_distribution_responsables', $responsables );
 
-			amapress_mail_current_user_inscr( $this, $user_id, 'distrib' );
+			amapress_mail_current_user_inscr( $this, $user_id, 'distrib',
+				function ( $cnt, $user_id, $post ) {
+					$role = $this->getResponsableRoleId( $user_id );
+					if ( ! $role ) {
+						return $cnt;
+					}
+					$cnt = str_replace( '%%resp_role%%', esc_html( $this->getResponsableRoleName( $user_id ) ), $cnt );
+
+					return str_replace( '%%resp_role_desc%%', $this->getResponsableRoleDesc( $user_id ), $cnt );
+				} );
 
 			return 'ok';
 		}
@@ -206,7 +226,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		$responsables = Amapress::get_post_meta_array( $this->ID, 'amapress_distribution_responsables' );
+		$responsables = $this->getResponsablesIds();
 		if ( ! $responsables ) {
 			$responsables = array();
 		}
@@ -214,7 +234,8 @@ class AmapressDistribution extends Amapress_EventBase {
 		if ( ( $key = array_search( $user_id, $responsables ) ) !== false ) {
 			unset( $responsables[ $key ] );
 
-			update_post_meta( $this->ID, 'amapress_distribution_responsables', $responsables );
+			$this->setCustom( 'amapress_distribution_responsables', $responsables );
+			$this->deleteCustom( 'amapress_distribution_resp_' . $user_id );
 
 			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib' );
 
@@ -223,6 +244,34 @@ class AmapressDistribution extends Amapress_EventBase {
 			return 'not_inscr';
 		}
 	}
+
+	public function getResponsableRoleId( $user_id ) {
+		$role = $this->getCustom( 'amapress_distribution_resp_' . $user_id );
+		if ( empty( $role ) ) {
+			return '';
+		}
+
+		return $role;
+	}
+
+	public function getResponsableRoleName( $user_id ) {
+		$role = $this->getResponsableRoleId( $user_id );
+		if ( empty( $role ) ) {
+			return '';
+		}
+
+		return Amapress::getOption( "resp_role_$role-name" );
+	}
+
+	public function getResponsableRoleDesc( $user_id ) {
+		$role = $this->getResponsableRoleId( $user_id );
+		if ( empty( $role ) ) {
+			return '';
+		}
+
+		return Amapress::getOption( "resp_role_$role-desc" );
+	}
+//
 
 	/**
 	 * @param int $lieu_id

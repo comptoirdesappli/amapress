@@ -207,19 +207,23 @@ class AmapressEntities {
 						),
 					),
 					'tabs'     => array(
-						'Mails - Responsables de distribution - Rappel'   => array(
+						'Roles des Responsables de distribution'                  => array(
+							'desc'    => '',
+							'options' => amapress_distribution_responsable_roles_options(),
+						),
+						'Mails - Responsables de distribution - Rappel'           => array(
 							'desc'    => '',
 							'options' => amapress_distribution_responsable_recall_options(),
 						),
-						'Mails - Envoi liste émargement Excel/PDF'        => array(
+						'Mails - Envoi liste émargement Excel/PDF'                => array(
 							'desc'    => '',
 							'options' => amapress_distribution_emargement_recall_options(),
 						),
-						'Distribution - Modification livraisons - Rappel' => array(
+						'Mails - Distribution - Modification livraisons - Rappel' => array(
 							'desc'    => '',
 							'options' => amapress_distribution_changes_recall_options(),
 						),
-						'Visite - Inscription - Rappel'                   => array(
+						'Mails - Visite - Inscription - Rappel'                   => array(
 							'desc'    => '',
 							'options' => amapress_visite_inscription_recall_options(),
 						),

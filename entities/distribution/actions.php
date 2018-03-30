@@ -10,6 +10,8 @@ function amapress_do_query_action_distribution_inscr_resp() {
 	$res        = $amap_event->inscrireResponsable( amapress_current_user_id() );
 	if ( 'list_full' == $res ) {
 		wp_redirect_and_exit( add_query_arg( array( 'message' => 'list_full' ), $amap_event->getPermalink() ) );
+	} else if ( 'already_taken' == $res ) {
+		wp_redirect_and_exit( add_query_arg( array( 'message' => 'already_taken' ), $amap_event->getPermalink() ) );
 	} else if ( 'already_in_list' == $res ) {
 		wp_redirect_and_exit( add_query_arg( array( 'message' => 'already_in_list' ), $amap_event->getPermalink() ) );
 	} else {

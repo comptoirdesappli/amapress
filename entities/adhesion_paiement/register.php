@@ -224,9 +224,10 @@ function amapress_save_adhesion_paiements_categories( $paiement_id ) {
 
 add_filter( 'tf_select_users_title', 'amapress_adhesion_paiement_select_user_title', 10, 3 );
 function amapress_adhesion_paiement_select_user_title( $title, $user, $option ) {
-	if ( in_array( AmapressAdhesion_paiement::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] )
+	if ( isset( $option->owner->settings['post_type'] )
+	     && ( in_array( AmapressAdhesion_paiement::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] )
 	     || in_array( AmapressAmapien_paiement::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] )
-	     || in_array( AmapressAdhesion::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) {
+	          || in_array( AmapressAdhesion::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) ) {
 //    if ($option_id == 'amapress_adhesion_paiement_user') {
 		$amapien = AmapressUser::getBy( $user->ID );
 		$co      = $amapien->getCoAdherents();

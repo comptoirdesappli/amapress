@@ -261,7 +261,7 @@ function amapress_mail_to_current_user( $subject, $message, $user_id = null, Tit
 	amapress_wp_mail( implode( ',', $user->getAllEmails() ), $subject, $message, $headers, $attachments, $cc, $bcc );
 }
 
-function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $event_type = 'event' ) {
+function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $event_type = 'event', $replace_callback = null ) {
 	$subject = Amapress::getOption( "inscr-$event_type-mail-subject" );
 	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
 		$subject = Amapress::getOption( 'inscr-event-mail-subject' );
@@ -270,6 +270,12 @@ function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $
 	if ( empty( $content ) || empty( trim( $content ) ) ) {
 		$content = Amapress::getOption( 'inscr-event-mail-content' );
 	}
+
+	if ( $replace_callback && is_callable( $replace_callback, false ) ) {
+		$subject = call_user_func( $replace_callback, $subject, $user_id, $post );
+		$content = call_user_func( $replace_callback, $content, $user_id, $post );
+	}
+
 	amapress_mail_to_current_user( $subject, $content, $user_id, $post );
 }
 

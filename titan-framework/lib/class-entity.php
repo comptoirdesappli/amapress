@@ -135,6 +135,13 @@ class TitanEntity {
 		$this->ID = $this->post_id;
 	}
 
+	protected function deleteCustom( $name ) {
+		if ( delete_post_meta( $this->ID, $name ) !== false ) {
+			unset( $this->custom[ $name ] );
+			unset( $this->customEntities[ $name ] );
+		}
+	}
+
 	protected function setCustom( $name, $value ) {
 		if ( update_post_meta( $this->ID, $name, $value ) !== false ) {
 			$this->custom[ $name ] = $value;

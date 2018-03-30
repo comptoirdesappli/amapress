@@ -3,7 +3,8 @@
         var $this = jQuery(this);
         var data = {
             'action': 'inscrire_distrib_action',
-            'dist': $this.data('dist')
+            'dist': $this.data('dist'),
+            'role': $this.data('role'),
         };
         var $parentForm = $this.parent('form');
         if ($parentForm.length > 0) {

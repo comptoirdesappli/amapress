@@ -96,6 +96,9 @@ add_action( 'wp_ajax_inscrire_amap_event_action', function () {
 		case 'list_full':
 			echo '<p class="error">La distribution est déjà complête</p>';
 			break;
+		case 'already_taken':
+			echo '<p class="error">Rôle déjà pris</p>';
+			break;
 		case 'ok':
 			echo '<p class="success">Votre inscription a bien été prise en compte</p>';
 			break;
