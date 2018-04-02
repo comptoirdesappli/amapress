@@ -430,7 +430,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 						$inscr_self = '<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
-							if ( $has_role_names && ! $is_resp ) {
+							if ( ( $has_role_names || 1 == $i ) && ! $is_resp ) {
 								$missing = $inscr_self;
 							} else {
 								$missing = "<span class='distrib-resp-missing'>manquant</span>";
