@@ -6,6 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_intermittence_inscription_shortcode( $atts ) {
+	if ( ! amapress_is_user_logged_in() ) {
+		return '';
+	}
+
 	$atts = shortcode_atts(
 		array(
 			'view'      => 'me',
@@ -30,19 +34,20 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
 					$ret .= '';
 				}
 				$ret .= do_shortcode( '[intermittents-desinscription]' );
-			} else {
+			} else if ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) ) {
 				$my_email = wp_get_current_user()->user_email;
 				$ret      .= "<p class='intermittence inscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=inscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('Confirmez-vous votre inscription ?')\">Devenir intermittent</a></p>";
 			}
 			break;
 		case 'other':
 		case 'other_user':
-			if ( 'ok' == $inscription_intermittent ) {
-				$ret .= '<div class="alert alert-success">Inscription dans l\'espace intermittents prise en compte</div>';
-			} else if ( 'already' == $inscription_intermittent ) {
-				$ret .= '<div class="alert alert-success">Déjà inscrit dans l\'espace intermittents</div>';
-			}
-			$ret .= '<form action="' . $admin_post_url . '?action=inscription_intermittent&return_sender&confirm=yes" method="post">
+			if ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) || amapress_can_access_admin() ) {
+				if ( 'ok' == $inscription_intermittent ) {
+					$ret .= '<div class="alert alert-success">Inscription dans l\'espace intermittents prise en compte</div>';
+				} else if ( 'already' == $inscription_intermittent ) {
+					$ret .= '<div class="alert alert-success">Déjà inscrit dans l\'espace intermittents</div>';
+				}
+				$ret .= '<form action="' . $admin_post_url . '?action=inscription_intermittent&return_sender&confirm=yes" method="post">
   <div class="form-group">
     <label for="email">Email:</label>
     <input type="email" class="form-control required" id="email" name="email">
@@ -57,6 +62,9 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
   </div>
   <button type="submit" class="btn btn-default" onclick="return confirm(\'Confirmez-vous votre inscription ?\')">Inscrire</button>
 </form>';
+			} else {
+				$ret .= '<p class="intermittence inscr-collectif">L\'inscription à l\'Espace intermittents est gérée par le collectif</p>';
+			}
 			break;
 
 	}
@@ -136,7 +144,6 @@ function amapress_intermittence_desinscription_link( $atts = null ) {
 		'desinter_nonce'
 	);
 }
-
 
 
 //function amapress_intermittents_paniers_list_shortcode()

@@ -598,10 +598,16 @@ class AmapressEntities {
 									'default' => false,
 								),
 								array(
-									'id'   => 'intermittence_contrat_model',
-									'name' => 'Modèle de contrat des intermittents',
-									'type' => 'editor',
+									'id'      => 'intermit_self_inscr',
+									'name'    => 'Autoriser les amapiens à inscrire des intermittents',
+									'type'    => 'checkbox',
+									'default' => true,
 								),
+//								array(
+//									'id'   => 'intermittence_contrat_model',
+//									'name' => 'Modèle de contrat des intermittents',
+//									'type' => 'editor',
+//								),
 								array(
 									'type' => 'save',
 								),

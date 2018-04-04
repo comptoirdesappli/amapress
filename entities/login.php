@@ -28,7 +28,7 @@ function amapress_can_access_admin() {
 			}
 		}
 	}
-	if ( $user->has_cap( 'access_admin' ) ) {
+	if ( $user && $user->has_cap( 'access_admin' ) ) {
 		return true;
 	}
 
