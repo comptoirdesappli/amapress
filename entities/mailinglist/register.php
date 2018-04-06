@@ -229,10 +229,11 @@ function amapress_get_mailinglist_queries() {
 //        $ret["amapress_contrat={$contrat->ID}&amapress_role=access_admin"] = "Responsables AMAP - {$contrat->getModel()->getTitle()}";
 //    }
 
-	$ret["amapress_contrat=intermittent"] = "Intermittents";
-	$ret["amapress_role=referent_lieu"]   = "Référents lieux";
-	$ret["amapress_role=collectif"]       = "Membres du collectif";
-	$ret["amapress_role=resp_distrib"]    = "Prochains responsables de distributions";
+	$ret["amapress_contrat=intermittent"]   = "Intermittents";
+	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
+	$ret["amapress_role=collectif_no_prod"] = "Membres du collectif (sans les producteurs)";
+	$ret["amapress_role=collectif"]         = 'Membres du collectif (avec les producteurs)';
+	$ret["amapress_role=resp_distrib"]      = 'Prochains responsables de distributions';
 
 //    $ret["role=administrator"] = "Prochains responsables de distributions";
 
@@ -620,7 +621,7 @@ add_action( 'init', function () {
 function amapress_mailinglists_autosync( $force = false ) {
 	$messages = array();
 	foreach ( Amapress_MailingListConfiguration::getAll() as $conf ) {
-		$ml   = $conf->getMailingList();
+		$ml = $conf->getMailingList();
 		if ( $force ) {
 			$sync = 'not_sync';
 		} else {
