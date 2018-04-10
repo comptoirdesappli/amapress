@@ -246,6 +246,10 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getResponsableRoleId( $user_id ) {
+		if ( is_a( $user_id, 'AmapressUser' ) || is_a( $user_id, 'WP_User' ) ) {
+			$user_id = $user_id->ID;
+		}
+
 		$role = $this->getCustom( 'amapress_distribution_resp_' . $user_id );
 		if ( empty( $role ) ) {
 			return '';

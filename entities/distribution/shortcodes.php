@@ -206,7 +206,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) ) {
 			$ret .= '<p style="text-align: center"><a class="btn btn-default" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
 		}
-		$ret .= '<table class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
+		$ret .= '<table id="inscr-distrib-table" class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
 		$ret .= '<thead>';
 		$ret .= '<tr>';
 		if ( $for_pdf ) {
@@ -228,7 +228,10 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$has_role_names = true;
 			}
 			$role_desc = Amapress::getOption( "resp_role_$i-desc" );
-			$ret       .= '<th class="distrib-resp-head" style="' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . '</th>';
+			if ( $has_role_names ) {
+				$role_desc = '<br/><span class="role-distrib-desc">' . $role_desc . '</span>';
+			}
+			$ret .= '<th class="distrib-resp-head" style="' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
 		}
 		$ret .= '</tr>';
 		$ret .= '</thead>';
@@ -482,6 +485,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 
 		$ret .= '</tbody>';
 		$ret .= '</table>';
+
+		//$ret .= '<script type="text/javascript">jQuery(function($) {$("#inscr-distrib-table").DataTable().fixedHeader.enable(true);});</script>';
 	}
 
 //    $ret .= '</div>';
