@@ -361,7 +361,14 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					$start = $max_resp_role;
 					foreach ( $resps as $r ) {
 						if ( $start >= $needed ) {
-							break;
+							if ( ! is_array( $row_resps[ $needed - 1 ] ) ) {
+								$row_resps[ $needed - 1 ] = [ $row_resps[ $needed - 1 ] ];
+							}
+							$role = $dist->getResponsableRoleId( $r->ID );
+							if ( $role <= 0 ) {
+								$row_resps[ $needed - 1 ][] = $r;
+							}
+							continue;
 						}
 						$role = $dist->getResponsableRoleId( $r->ID );
 						if ( $role <= 0 ) {
@@ -393,35 +400,6 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				foreach ( $row_resps as $resp ) {
 					$resp_idx = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
-//						$inscr_another = '';
-//						if ( ( $is_resp_distrib || $is_current_user_resp_amap ) && $can_subscribe ) {
-//							$inscr_another = '<form class="inscription-distrib-other-user" action="#">
-//<select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-//<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
-//</form>';
-//						}
-//						if ( $is_resp ) {
-//							$missing = ! $for_pdf ? "<span class='distrib-resp-missing'>manquant</span>" : '';
-//							$ret     .= "<td class='$colspan_cls incr-list-resp'>$missing$inscr_another</td>";
-////                        $ret .= "<div class='$colspan_cls incr-list-resp'><span class='distrib-resp-missing'>manquant</span></div>";
-//						} else {
-//							$inscr_self = '<button type="button" class="btn btn-default dist-inscrire-button" data-role=' . $resp_idx . ' data-dist="' . $dist->ID . '">M\'inscrire</button>';
-//							$ret        .= "<td class='$colspan_cls incr-list-resp'>";
-//							if ( $is_user_part_of ) {
-//								if ( $can_subscribe ) {
-//									$ret .= $inscr_self;
-//									$ret .= $inscr_another;
-//								} else {
-//									$ret .= '<span class="distrib-inscr-closed">Inscriptions closes</span>';
-//								}
-//							} else if ( ! empty( $inscr_another ) ) {
-//								$ret .= $inscr_another;
-//							} else {
-//								$ret .= '<span class="distrib-not-part-of">Inscription impossible</span>';
-//							}
-////                        $ret .= '</div>';
-//							$ret .= '</td>';
-//						}
 						$inscr_another = '';
 						if ( ( $is_resp_distrib || $is_current_user_resp_amap ) && $can_subscribe ) {
 							$inscr_another = '<form class="inscription-distrib-other-user" action="#">
@@ -445,15 +423,18 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 							$ret .= "<td class='$colspan_cls incr-list-resp incr-not-part'>$inscr_another</td>";
 						}
 					} else {
-						$ret .= '<td style="text-align: center">';
-						$ret .= $resp->getDisplay( $atts );
-						if ( $is_user_part_of || $is_current_user_resp_amap ) {
-							$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
-							if ( $can_unsubscribe ) {
-								if ( $resp->ID == amapress_current_user_id() ) {
-									$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
-								} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
-									$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '" data-user="' . $resp->ID . '">Désinscrire</button>';
+						$ret      .= '<td style="text-align: center">';
+						$td_resps = is_array( $resp ) ? $resp : [ $resp ];
+						foreach ( $td_resps as $r ) {
+							$ret .= $r->getDisplay( $atts );
+							if ( $is_user_part_of || $is_current_user_resp_amap ) {
+								$is_resp = $is_resp || $r->ID == amapress_current_user_id();
+								if ( $can_unsubscribe ) {
+									if ( $r->ID == amapress_current_user_id() ) {
+										$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
+									} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
+										$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
+									}
 								}
 							}
 						}
