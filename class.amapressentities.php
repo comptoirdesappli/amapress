@@ -1130,6 +1130,23 @@ class AmapressEntities {
 									'capability' => 'manage_options',
 								),
 								array(
+									'id'         => 'test_mail_mode',
+									'name'       => 'Mode de test',
+									'type'       => 'checkbox',
+									'desc'       => 'Envoie tous les mails aux adresses ci-dessous',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'test_mail_target',
+									'name'       => 'Emails test',
+									'type'       => 'text',
+									'default'    => function () {
+										return get_option( 'admin_email' );
+									},
+									'desc'       => 'Emails destinataire du mode de test',
+									'capability' => 'manage_options',
+								),
+								array(
 									'type' => 'save',
 								),
 							),
