@@ -141,6 +141,12 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'       => 'Co-adhérent(s) - sans mail',
 				'searchable' => true,
 			),
+			'co-adherents-infos' => array(
+				'name'       => amapress__( 'Co-adhérent(s) - sans mail - infos' ),
+				'type'       => 'text',
+				'desc'       => 'Co-adhérent(s) - sans mail - autres infos',
+				'searchable' => true,
+			),
 //            'co-adherents-mail' => array(
 //                'name' => amapress__('Co-adhérent - email'),
 //                'type' => 'text',

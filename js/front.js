@@ -114,7 +114,7 @@ jQuery(function ($) {
             'paging': false,
             'info': false,
             'ordering': false,
-            'responsive': true,
+            //'responsive': true,
             'searching': false,
             'fnInitComplete': function () {
                 initSelect2();

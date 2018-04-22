@@ -6,7 +6,8 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.40.7
+Version: 0.40.30
+Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
@@ -44,8 +45,8 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 67 );
-define( 'AMAPRESS_VERSION', '0.40.7' );
+define( 'AMAPRESS_DB_VERSION', 68 );
+define( 'AMAPRESS_VERSION', '0.40.30' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -1110,3 +1111,41 @@ function get_posts_by_meta_query( $meta_query ) {
 
 	return $wpdb->get_col( "SELECT DISTINCT $wpdb->posts.ID FROM $wpdb->posts {$meta_sql['join']} WHERE 1=1 AND $wpdb->posts.post_status = 'publish' {$meta_sql['where']}" );
 }
+
+function amapress_display_post_types_nav_box() {
+
+	$hidden_nav_boxes = get_user_option( 'metaboxhidden_nav-menus' );
+
+	if ( empty( $hidden_nav_boxes ) ) {
+		return;
+	}
+
+	$need_save = false;
+	foreach (
+		[
+			'post-type-' . AmapressProducteur::INTERNAL_POST_TYPE,
+			'post-type-' . AmapressContrat::INTERNAL_POST_TYPE,
+			'post-type-' . AmapressLieu_distribution::INTERNAL_POST_TYPE,
+			'post-type-' . AmapressProduit::INTERNAL_POST_TYPE,
+			'post-type-' . AmapressRecette::INTERNAL_POST_TYPE,
+			AmapressProduit::CATEGORY,
+			AmapressRecette::CATEGORY,
+		] as $post_type
+	) {
+		$post_type_nav_box = 'add-' . $post_type;
+
+		if ( in_array( $post_type_nav_box, $hidden_nav_boxes ) ):
+			$need_save = true;
+			foreach ( $hidden_nav_boxes as $i => $nav_box ):
+				if ( $nav_box == $post_type_nav_box ) {
+					unset( $hidden_nav_boxes[ $i ] );
+				}
+			endforeach;
+		endif;
+	}
+	if ( $need_save ) {
+		update_user_option( get_current_user_id(), 'metaboxhidden_nav-menus', $hidden_nav_boxes );
+	}
+}
+
+add_action( 'admin_init', 'amapress_display_post_types_nav_box' );

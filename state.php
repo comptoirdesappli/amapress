@@ -277,7 +277,7 @@ function amapress_echo_and_check_amapress_state_page() {
 			return "<a href='{$l}'>{$dn->getDisplayName()}</a>";
 		}, $prod_users ) )
 	);
-	$users               = get_users( array( 'role' => 'referent' ) );
+	$users = get_users( 'amapress_role=referent_producteur' );
 	$state['03_users'][] = amapress_get_check_state(
 		count( $users ) == 0 ? 'error' : 'success',
 		'Compte Référent Producteur',
@@ -361,9 +361,9 @@ function amapress_echo_and_check_amapress_state_page() {
 		}, $contrat_types ) )
 	);
 
-	$posts               = AmapressContrats::get_subscribable_contrat_instances();
-	$state['04_posts'][] = amapress_get_check_state(
-		count( $posts ) == 0 ? 'error' : ( count( $posts ) < count( $contrat_types ) ? 'warning' : 'success' ),
+	$subscribable_contrat_instances = AmapressContrats::get_subscribable_contrat_instances();
+	$state['04_posts'][]            = amapress_get_check_state(
+		count( $subscribable_contrat_instances ) == 0 ? 'error' : ( count( $subscribable_contrat_instances ) < count( $contrat_types ) ? 'warning' : 'success' ),
 		'Modèles de contrats',
 		'Créer au moins un modèle de contrat par contrat pour permettre au amapien d\'adhérer',
 		admin_url( 'post-new.php?post_type=' . AmapressContrat_instance::INTERNAL_POST_TYPE ),
@@ -371,7 +371,7 @@ function amapress_echo_and_check_amapress_state_page() {
 			$l = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			return "<a href='{$l}'>{$dn->getTitle()}</a>";
-		}, $posts ) )
+		}, $subscribable_contrat_instances ) )
 	);
 
 	$state['05_import']   = array();
@@ -382,9 +382,9 @@ function amapress_echo_and_check_amapress_state_page() {
 		admin_url( 'admin.php?page=amapress_import_page' )
 	);
 	$state['05_import'][] = amapress_get_check_state(
-		'do',
+		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
-		'Importer des adhésions',
+		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des adhésions',
 		admin_url( 'admin.php?page=amapress_import_page&tab=adhésions' )
 	);
 
