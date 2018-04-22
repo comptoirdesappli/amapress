@@ -37,7 +37,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'name'         => amapress__( 'Amapien' ),
 				'type'         => 'select-users',
 				'required'     => true,
-				'desc'         => 'Sélectionner un amapien. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la vue en cours (raccourci : F5)',
+				'desc'         => 'Sélectionner un amapien. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
 				'import_key'   => true,
 				'csv_required' => true,
 				'autocomplete' => true,

@@ -137,7 +137,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$show_phone = Amapress::toBool( $_GET['show_phone'] );
 	}
 
-	$columns          = array(
+	$columns = array(
 		array(
 			'title' => 'Pris',
 			'data'  => 'check',
@@ -205,13 +205,13 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		'data'  => 'comment',
 	);
 
-	$all_adhs = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true );
-	$liste    = array();
-	$adhesions        = array_group_by(
+	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true );
+	$liste     = array();
+	$adhesions = array_group_by(
 		$all_adhs,
 		function ( $adh ) {
 			/** @var AmapressAdhesion $adh */
-			$user = $adh->getAdherent()->getUser();
+			$user     = $adh->getAdherent()->getUser();
 			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID ) );
 
 			return implode( '_', $user_ids );
@@ -232,16 +232,21 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
 			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
 			if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
-				return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val );
+				$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val );
+			}
+			$adh = AmapressUser::getBy( $user );
+			if ( ! empty( $adh->getCoAdherents() ) ) {
+				$val .= ' / ' . esc_html( $adh->getCoAdherents() );
 			}
 
 			return $val;
 		}, $users ) );
+
 		if ( $show_phone ) {
 			$line['tel'] = implode( '<br/>', array_unique( array_map( function ( $user ) {
 				$adh = AmapressUser::getBy( $user );
 
-				return $adh->getTelTo();
+				return $adh->getTelTo() . ( ! empty( $adh->getCoAdherents() ) ? '<br/>' . esc_html( $adh->getCoAdherents() ) : '' );
 			}, $users ) ) );
 		}
 		if ( $show_emails ) {

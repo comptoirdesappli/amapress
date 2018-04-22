@@ -315,7 +315,12 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 							'fields'        => 'all_with_meta',
 						) ) as $user
 					) {
-						$arr[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+						$amapien   = AmapressUser::getBy( $user->ID );
+						$user_name = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+						if ( ! empty( $amapien->getCoAdherents() ) ) {
+							$user_name .= ' (' . $amapien->getCoAdherents() . ')';
+						}
+						$arr[ $user->ID ] = $user_name;
 					}
 					$lieu_users[ $lieu_id ] = $arr;
 				}

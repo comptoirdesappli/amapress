@@ -367,6 +367,13 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	}
 
 	public
+	function getCoAdherentsInfos() {
+		$this->ensure_init();
+
+		return isset( $this->custom['amapress_user_co-adherents-infos'] ) ? $this->custom['amapress_user_co-adherents-infos'] : '';
+	}
+
+	public
 	function getMoyenDisplay() {
 		$this->ensure_init();
 		$m = isset( $this->custom['amapress_user_moyen'] ) ? $this->custom['amapress_user_moyen'] : null;
