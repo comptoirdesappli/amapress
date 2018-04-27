@@ -541,7 +541,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			array(
 				'id'         => 'amapress_edit_collectif',
 				'title'      => 'Editer le collectif',
-				'capability' => 'edit_user',
+				'capability' => 'edit_users',
 				'href'       => admin_url( 'admin.php?page=amapress_collectif' ),
 			),
 //admin.php?page=amapress_collectif

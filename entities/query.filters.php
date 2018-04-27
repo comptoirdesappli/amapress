@@ -8,6 +8,9 @@ function amapress_prepare_in_sql( $in ) {
 }
 
 function amapress_prepare_in( $in ) {
+	if ( ! is_array( $in ) ) {
+		$in = [ $in ];
+	}
 	$in = array_unique( array_filter( $in, function ( $v ) {
 		return ! empty( $v );
 	} ) );

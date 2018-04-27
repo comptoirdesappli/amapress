@@ -1588,7 +1588,7 @@ class AmapressEntities {
 							'settings' => array(
 								'name'       => 'Le collectif',
 								'position'   => '25.17',
-								'capability' => 'edit_user',
+								'capability' => 'edit_users',
 //								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(
