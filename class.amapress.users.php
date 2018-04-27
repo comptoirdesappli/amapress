@@ -955,6 +955,12 @@ jQuery(function() {
 							'compare' => 'IN',
 							'type'    => 'NUMERIC'
 						),
+						array(
+							'key'     => 'amapress_adhesion_adherent4',
+							'value'   => $user_ids,
+							'compare' => 'IN',
+							'type'    => 'NUMERIC'
+						),
 					),
 				)
 			) ) );

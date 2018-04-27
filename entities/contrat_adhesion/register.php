@@ -331,7 +331,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'adherent3'        => array(
+			'adherent3' => array(
 				'name'         => amapress__( 'Co-Adhérent 2' ),
 				'type'         => 'select-users',
 				'required'     => false,
@@ -340,7 +340,16 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'date_fin'         => array(
+			'adherent4' => array(
+				'name'         => amapress__( 'Co-Adhérent 3' ),
+				'type'         => 'select-users',
+				'required'     => false,
+				'desc'         => 'Sélectionner un Co-Adhérent 3. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'group'        => '1/ Informations',
+				'autocomplete' => true,
+				'searchable'   => true,
+			),
+			'date_fin'  => array(
 				'name'          => amapress__( 'Date de fin' ),
 				'type'          => 'date',
 				'group'         => '4/ Fin de contrat avant terme',

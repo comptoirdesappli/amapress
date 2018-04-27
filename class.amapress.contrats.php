@@ -1008,6 +1008,9 @@ class AmapressContrats {
 				if ( $user->getCoAdherent2Id() ) {
 					$res[] = $user->getCoAdherent2Id();
 				}
+				if ( $user->getCoAdherent3Id() ) {
+					$res[] = $user->getCoAdherent3Id();
+				}
 				$res = array_merge( $res, $user->getPrincipalUserIds() );
 			}
 
@@ -1029,7 +1032,7 @@ LEFT JOIN $wpdb->postmeta AS mt3
 ON ( $wpdb->postmeta.post_id = mt3.post_id 
 AND mt3.meta_key = 'amapress_adhesion_adherent' ) 
 WHERE 1=1 
-AND $wpdb->postmeta.meta_key IN ('amapress_adhesion_adherent','amapress_adhesion_adherent2','amapress_adhesion_adherent3')
+AND $wpdb->postmeta.meta_key IN ('amapress_adhesion_adherent','amapress_adhesion_adherent2','amapress_adhesion_adherent3','amapress_adhesion_adherent4')
 AND CAST($wpdb->postmeta.meta_value AS SIGNED) IN ($in)  
 AND ( mt1.post_id IS NULL 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
@@ -1054,7 +1057,7 @@ ON ( $wpdb->postmeta.post_id = mt3.post_id
 AND mt3.meta_key = 'amapress_adhesion_adherent' ) 
 WHERE 1=1 
 AND mt3.meta_value <> $wpdb->postmeta.meta_value
-AND $wpdb->postmeta.meta_key IN ('amapress_adhesion_adherent', 'amapress_adhesion_adherent2', 'amapress_adhesion_adherent3') 
+AND $wpdb->postmeta.meta_key IN ('amapress_adhesion_adherent', 'amapress_adhesion_adherent2', 'amapress_adhesion_adherent3','amapress_adhesion_adherent4') 
 AND ( mt1.post_id IS NULL 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) = 0 ) 

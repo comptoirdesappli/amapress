@@ -135,6 +135,15 @@ function amapress_register_entities_amapien( $entities ) {
 				'autocomplete' => true,
 				'show_on'      => 'edit-only',
 			),
+			'co-adherent-3'      => array(
+				'name'         => amapress__( 'Co-adhérent 3' ),
+				'type'         => 'select-users',
+				'desc'         => 'Co-adhérent 3',
+				'show_column'  => false,
+				'searchable'   => true,
+				'autocomplete' => true,
+				'show_on'      => 'edit-only',
+			),
 			'co-adherents'       => array(
 				'name'       => amapress__( 'Co-adhérent(s) - sans mail' ),
 				'type'       => 'text',
@@ -278,6 +287,7 @@ function amapress_amapien_affect_coadherents( TitanFrameworkMetaBox $metabox, $u
 		if ( $adh->getAdherentId() == $userID ) {
 			$adh->setAdherent2( $user->getCoAdherent1() );
 			$adh->setAdherent3( $user->getCoAdherent2() );
+			$adh->setAdherent4( $user->getCoAdherent3() );
 		}
 	}
 }
@@ -304,6 +314,7 @@ function amapress_can_delete_user( $can, $user_id ) {
 			'amapress_adhesion_adherent',
 			'amapress_adhesion_adherent2',
 			'amapress_adhesion_adherent3',
+			'amapress_adhesion_adherent4',
 			'amapress_intermittence_panier_repreneur',
 			'amapress_intermittence_panier_adherent',
 			'amapress_lieu_distribution_referent',

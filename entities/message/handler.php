@@ -338,7 +338,7 @@ function amapress_message_get_targets() {
 	//amapiens incrits lieu
 	foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
 		$lieu = get_post( $lieu_id );
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3", "Les amapiens de {$lieu->post_title}", "lieu lieu-{$lieu->ID}" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens de {$lieu->post_title}", "lieu lieu-{$lieu->ID}" );
 		//contrats
 		foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 			$lieux = Amapress::get_post_meta_array( $contrat->ID, 'amapress_contrat_instance_lieux' );
@@ -346,14 +346,14 @@ function amapress_message_get_targets() {
 				continue;
 			}
 			$contrat_id = $contrat->ID;
-			amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3", "Les amapiens \"{$contrat->getTitle()}\" de {$lieu->post_title}", "lieu lieu-{$lieu->ID} contrat contrat-{$contrat->ID}" );
+			amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens \"{$contrat->getTitle()}\" de {$lieu->post_title}", "lieu lieu-{$lieu->ID} contrat contrat-{$contrat->ID}" );
 		}
 	}
 
 	//amapiens contrats
 	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 		$contrat_id = $contrat->ID;
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3", "Les amapiens \"{$contrat->getTitle()}\"", "contrat contrat-{$contrat->ID}" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens \"{$contrat->getTitle()}\"", "contrat contrat-{$contrat->ID}" );
 	}
 	$res['Lieux et contrats'] = $ret;
 
@@ -374,7 +374,7 @@ function amapress_message_get_targets() {
 		$contrat_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' );
 		$contrat_ids = implode( ',', $contrat_ids );
 
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3|amapress_post=$dist_id|amapress_distribution_date", "Les amapiens inscrit à {$distrib->post_title}", "distribution" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date", "Les amapiens inscrit à {$distrib->post_title}", "distribution" );
 
 		$cnt[ $lieu_id ] -= 1;
 	}
@@ -458,7 +458,7 @@ function amapress_message_get_targets() {
 
 		$contrat_id = intval( get_post_meta( $cmd_id, 'amapress_commande_contrat_instance', true ) );
 
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3|amapress_post=$cmd_id|amapress_commande_date_distrib", "Les amapiens inscrit à {$commande->post_title}", "commande" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$cmd_id|amapress_commande_date_distrib", "Les amapiens inscrit à {$commande->post_title}", "commande" );
 
 		$cnt[ $lieu_id ] -= 1;
 	}
@@ -466,7 +466,7 @@ function amapress_message_get_targets() {
 
 	$ret = array();
 	//avec adhésion
-	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3", "Les amapiens avec contrats", "with-contrats" );
+	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens avec contrats", "with-contrats" );
 	//intermittants
 //    amapress_add_message_target($ret, "post_type=amps_inter_adhe&amapress_date=active|amapress_adhesion_intermittence_user", "Les intermittents", "intermittent");
 	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );

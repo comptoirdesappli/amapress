@@ -439,6 +439,18 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		return $v;
 	}
 
+	public
+	function getCoAdherent3Id() {
+		$this->ensure_init();
+
+		$v = intval( isset( $this->custom['amapress_user_co-adherent-3'] ) ? $this->custom['amapress_user_co-adherent-3'] : null );
+		if ( empty( $v ) ) {
+			return null;
+		}
+
+		return $v;
+	}
+
 	private
 		$adherent1 = null;
 
@@ -463,6 +475,18 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		return $this->adherent2;
 	}
 
+	private
+		$adherent3 = null;
+
+	public
+	function getCoAdherent3() {
+		if ( $this->adherent3 == null ) {
+			$this->adherent3 = AmapressUser::getBy( $this->getCoAdherent3Id() );
+		}
+
+		return $this->adherent3;
+	}
+
 	private $principal_user_ids = null;
 
 	private static $coadherents = null;
@@ -474,7 +498,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 				$wpdb->get_results(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ),
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ),
 				function ( $o ) {
 					return intval( $o->meta_value );
 				} );

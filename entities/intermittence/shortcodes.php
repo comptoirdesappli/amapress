@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+
 function amapress_intermittence_inscription_shortcode( $atts ) {
 	if ( ! amapress_is_user_logged_in() ) {
 		return '';

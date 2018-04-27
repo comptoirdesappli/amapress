@@ -1214,7 +1214,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 				$wpdb->get_col(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ) as $user_id
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );
 			}
@@ -1224,6 +1224,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				}
 				if ( $adh->getAdherent3Id() ) {
 					$user_ids[] = $adh->getAdherent3Id();
+				}
+				if ( $adh->getAdherent4Id() ) {
+					$user_ids[] = $adh->getAdherent4Id();
 				}
 			}
 
@@ -1240,12 +1243,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$wpdb->get_col(
 					"SELECT DISTINCT $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ) as $user_id
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );
 			}
 			foreach ( $adhs as $adh ) {
-				if ( $adh->getAdherent2Id() || $adh->getAdherent3Id() ) {
+				if ( $adh->getAdherent2Id() || $adh->getAdherent3Id() || $adh->getAdherent4Id() ) {
 					$user_ids[] = $adh->getAdherentId();
 				}
 			}
@@ -1289,7 +1292,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
-                                                   WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3')
+                                                   WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3' OR amps_pmach.meta_key='amapress_adhesion_adherent4')
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
@@ -1302,7 +1305,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$wpdb->get_col(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );
@@ -1329,7 +1332,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_adhesion ON amps_pm_adhesion.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
-                                                   WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3')
+                                                   WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3' OR amps_pmach.meta_key='amapress_adhesion_adherent4')
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND amps_pm_adhesion.meta_key = 'amapress_adhesion_lieu'
                                                    AND amps_pmach.meta_value IS NOT NULL
@@ -1344,7 +1347,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			$wpdb->get_col(
 				"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		) {
 			$user_ids[] = intval( $user_id );

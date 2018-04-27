@@ -365,8 +365,20 @@ class AmapressAdhesion extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_adhesion_adherent3' );
 	}
 
+	public function getAdherent4() {
+		return $this->getCustomAsEntity( 'amapress_adhesion_adherent4', 'AmapressUser' );
+	}
+
+	public function getAdherent4Id() {
+		return $this->getCustomAsInt( 'amapress_adhesion_adherent4' );
+	}
+
 	public function setAdherent3( $value ) {
 		$this->setCustom( 'amapress_adhesion_adherent3', $value );
+	}
+
+	public function setAdherent4( $value ) {
+		$this->setCustom( 'amapress_adhesion_adherent4', $value );
 	}
 
 	/** @return AmapressLieu_distribution */
@@ -435,7 +447,7 @@ class AmapressAdhesion extends TitanEntity {
 				$wpdb->get_results(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2')" ),
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ),
 				function ( $o ) {
 					return intval( $o->user_id );
 				} );
@@ -448,6 +460,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				}
 				if ( $adh->getAdherent3Id() ) {
 					$user_ids[] = $adh->getAdherent3Id();
+				}
+				if ( $adh->getAdherent4Id() ) {
+					$user_ids[] = $adh->getAdherent4Id();
 				}
 				foreach ( $user_ids as $user_id ) {
 					if ( isset( $coadhs[ $user_id ] ) ) {
