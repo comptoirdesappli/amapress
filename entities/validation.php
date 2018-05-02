@@ -12,26 +12,28 @@ function amapress_admin_add_validation_js() {
 
 add_action( 'admin_footer', 'amapress_post_validation' );
 function amapress_post_validation() {
-	if ( isset( $_GET['import_users'] ) ) {
-		?>
-        <style type="text/css">form#createuser, #create-new-user, #create-new-user ~ p {
-                display: none;
-            }
+	if ( ! is_super_admin() ) {
+		if ( isset( $_GET['import_users'] ) ) {
+			?>
+            <style type="text/css">form#createuser, #create-new-user, #create-new-user ~ p {
+                    display: none;
+                }
 
-            form#adduser, #add-existing-user, #add-existing-user ~ p {
-                display: block;
-            }</style>
-		<?php
-	} else {
-		?>
-        <style type="text/css">form#createuser, #create-new-user, #create-new-user ~ p {
-                display: block;
-            }
+                form#adduser, #add-existing-user, #add-existing-user ~ p {
+                    display: block;
+                }</style>
+			<?php
+		} else {
+			?>
+            <style type="text/css">form#createuser, #create-new-user, #create-new-user ~ p {
+                    display: block;
+                }
 
-            form#adduser, #add-existing-user, #add-existing-user ~ p {
-                display: none;
-            }</style>
-		<?php
+                form#adduser, #add-existing-user, #add-existing-user ~ p {
+                    display: none;
+                }</style>
+			<?php
+		}
 	}
 	?>
     <style type="text/css">

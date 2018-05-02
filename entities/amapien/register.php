@@ -125,6 +125,8 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'         => 'Co-adhérent 1',
 				'autocomplete' => true,
 				'searchable'   => true,
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
 			),
 			'co-adherent-2'      => array(
 				'name'         => amapress__( 'Co-adhérent 2' ),
@@ -134,6 +136,8 @@ function amapress_register_entities_amapien( $entities ) {
 				'searchable'   => true,
 				'autocomplete' => true,
 				'show_on'      => 'edit-only',
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
 			),
 			'co-adherent-3'      => array(
 				'name'         => amapress__( 'Co-adhérent 3' ),
@@ -143,6 +147,8 @@ function amapress_register_entities_amapien( $entities ) {
 				'searchable'   => true,
 				'autocomplete' => true,
 				'show_on'      => 'edit-only',
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
 			),
 			'co-adherents'       => array(
 				'name'       => amapress__( 'Co-adhérent(s) - sans mail' ),

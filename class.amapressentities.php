@@ -670,7 +670,7 @@ class AmapressEntities {
 									'id'      => 'intermittence-panier-dispo-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site des Lapereaux, sur la page %%post:liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : xxxx.\n\nSi vous avez des questions plus générale sur l’AMAP des Lapereaux, vous pouvez écrire à xxxx.\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : [[à remplir]].\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à [[à remplir]].\n\n%%nom_site%%" ),
 								),
 								array(
 									'name' => 'Mail à l\'amapien proposant son panier',

@@ -105,15 +105,19 @@ function amapress_login_message( $message ) {
 
 function wpmu_no_username_error( $result ) {
 	$error_name = $result['errors']->get_error_messages( 'user_name' );
-	if ( empty ( $error_name )
-	     || ( false === ( $key = array_search( __( 'Only lowercase letters (a-z) and numbers are allowed.' ), $error_name ) )
-	          && false === ( $key = array_search( __( 'Usernames can only contain lowercase letters (a-z) and numbers.' ), $error_name ) ) )
-	) {
+	if ( empty ( $error_name ) ) {
 		return $result;
 	}
 
 //  only remove the error we are disabling, leaving all others
-	unset ( $result['errors']->errors['user_name'][ $key ] );
+	if ( false !== ( $key = array_search( __( 'Only lowercase letters (a-z) and numbers are allowed.' ), $error_name ) ) ) {
+		unset ( $result['errors']->errors['user_name'][ $key ] );
+		unset ( $result['errors']->error_data['user_name'][ $key ] );
+	}
+	if ( false !== ( $key = array_search( __( 'Usernames can only contain lowercase letters (a-z) and numbers.' ), $error_name ) ) ) {
+		unset ( $result['errors']->errors['user_name'][ $key ] );
+		unset ( $result['errors']->error_data['user_name'][ $key ] );
+	}
 	/**
 	 *  re-sequence errors in case a non sequential array matters
 	 *  e.g. if a core change put this message in element 0 then get_error_message() would not behave as expected)

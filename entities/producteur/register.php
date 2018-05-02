@@ -87,6 +87,8 @@ function amapress_register_entities_producteur( $entities ) {
 //                'required' => true,
 				'desc'       => 'Référent',
 				'searchable' => true,
+				'orderby'    => 'display_name',
+				'order'      => 'ASC',
 			),
 			'referent2' => array(
 				'name'       => amapress__( 'Référent 2' ),
@@ -96,6 +98,8 @@ function amapress_register_entities_producteur( $entities ) {
 //                'required' => true,
 				'desc'       => 'Référent 2',
 				'searchable' => true,
+				'orderby'    => 'display_name',
+				'order'      => 'ASC',
 			),
 			'referent3' => array(
 				'name'       => amapress__( 'Référent 3' ),
@@ -105,6 +109,8 @@ function amapress_register_entities_producteur( $entities ) {
 //                'required' => true,
 				'desc'       => 'Référent 3',
 				'searchable' => true,
+				'orderby'    => 'display_name',
+				'order'      => 'ASC',
 			),
 //            'actions' => array(
 //                'name' => amapress__('Actions'),
@@ -148,12 +154,14 @@ function amapress_producteur_fields( $fields ) {
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
 			$fields[ 'referent_' . $lieu->ID ] = array(
-				'name'  => amapress__( 'Référent ' . $lieu->getShortName() ),
-				'type'  => 'select-users',
-				'role'  => amapress_can_access_admin_roles(),
-				'group' => 'Référents',
+				'name'    => amapress__( 'Référent ' . $lieu->getShortName() ),
+				'type'    => 'select-users',
+				'role'    => amapress_can_access_admin_roles(),
+				'group'   => 'Référents',
 //                'required' => true,
-				'desc'  => 'Référent',
+				'desc'    => 'Référent',
+				'orderby' => 'display_name',
+				'order'   => 'ASC',
 			);
 		}
 	}

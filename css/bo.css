@@ -11,6 +11,10 @@
     display: none;
 }
 
+.titan-framework-panel-wrap .tf-form-table {
+    table-layout: auto;
+}
+
 .amapress-check a {
     color: black;
 }

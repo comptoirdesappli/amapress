@@ -148,7 +148,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		! Amapress::userCanRegister() ? 'success' : ( ! amapress_is_plugin_active( 'new-user-approve' ) ? 'error' : 'warning' ),
 		'Création de compte sur le site',
 		'<strong>Non recommandé</strong> : Cette option permet aux nouveaux visiteurs de créer un compte utilisateur en direct. Sans cette option, seuls les responsables pourront créer des comptes utilisateurs. ',
-		admin_url( 'customize.php?autofocus[section]=title_tagline' )
+		admin_url( 'options-general.php#users_can_register' )
 	);
 //    $blog_desc = get_theme_mod('custom_logo');
 //    $state['02_config'][] = amapress_get_check_state(
