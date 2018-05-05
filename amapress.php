@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.41.5
+Version: 0.42.1
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 68 );
-define( 'AMAPRESS_VERSION', '0.41.5' );
+define( 'AMAPRESS_VERSION', '0.42.1' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -1149,3 +1149,44 @@ function amapress_display_post_types_nav_box() {
 }
 
 add_action( 'admin_init', 'amapress_display_post_types_nav_box' );
+
+function amapress_feedback_footer() {
+	if ( ! Amapress::getOption( 'feedback' ) ) {
+		return;
+	}
+
+	$options = [
+		'context'        => [
+			'user' => amapress_is_user_logged_in() ? admin_url( 'user-edit.php?user_id=' . wp_get_current_user()->ID ) : 'Not logged',
+		],
+		'h2cPath'        => 'https://html2canvas.hertzen.com/dist/html2canvas.min.js',
+		//plugins_url( '/js/html2canvas.min.js', __FILE__ ),
+		'label'          => 'Feedback',
+		'header'         => 'Envoyer un retour sur Amapress',
+		'url'            => admin_url( 'admin-ajax.php?action=send_feedback' ),
+		'action'         => 'send_feedback',
+		'nextLabel'      => 'Continuer',
+		'reviewLabel'    => 'Finaliser',
+		'sendLabel'      => 'Envoyer',
+		'closeLabel'     => 'Fermer',
+		'messageSuccess' => 'Feedback envoyé avec succès',
+		'messageError'   => "Une erreur s'est produite pendant l'envoi",
+	];
+	echo '<script type="text/javascript">
+            jQuery(document).ready(function() {
+                Feedback(' . wp_json_encode( $options ) . ');
+            });      
+    </script>';
+}
+
+add_action( 'wp_footer', 'amapress_feedback_footer', 9999 );
+add_action( 'admin_footer', 'amapress_feedback_footer', 9999 );
+
+function amapress_send_feedback() {
+	wp_mail( 'support@amapress.fr', 'Feedback', var_export( $_POST, true ) );
+	echo 'ok';
+	wp_die();
+}
+
+add_action( 'wp_ajax_send_feedback', 'amapress_send_feedback' );
+add_action( 'wp_ajax_nopriv_send_feedback', 'amapress_send_feedback' );
