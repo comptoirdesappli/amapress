@@ -1147,6 +1147,13 @@ class AmapressEntities {
 									'capability' => 'manage_options',
 								),
 								array(
+									'id'         => 'feedback',
+									'name'       => 'Activer le bouton Feedback',
+									'type'       => 'checkbox',
+									'desc'       => 'Activer le bouton Feedback',
+									'capability' => 'manage_options',
+								),
+								array(
 									'type' => 'save',
 								),
 							),
