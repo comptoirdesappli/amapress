@@ -4,6 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function amapress_is_admin_or_responsable() {
+	return amapress_current_user_can( 'administrator' )
+	       || amapress_current_user_can( 'responsable_amap' );
+}
+
 function amapress_can_access_admin_roles() {
 	return array(
 		'administrator',

@@ -116,7 +116,7 @@ function amapress_filter_posts( WP_Query $query ) {
 	}
 
 	global $amapress_getting_referent_infos;
-	if ( ! $amapress_getting_referent_infos && is_admin() && amapress_can_access_admin() ) {
+	if ( ! $amapress_getting_referent_infos && is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$meta = array();
