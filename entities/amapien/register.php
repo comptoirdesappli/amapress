@@ -187,6 +187,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
 				'desc'        => 'Rôles dans le Collectif de l\'AMAP',
 				'show_column' => false,
+				'csv'         => false,
 //                'searchable' => true,
 			),
 			'intermittent'       => array(
