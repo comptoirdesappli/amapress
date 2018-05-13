@@ -183,8 +183,7 @@ class Amapress_Import_Posts_CSV {
                 <th scope="row"><label for="posts_csv"><?php _e( 'Fichier CSV', 'amapress' ); ?></label></th>
                 <td>
                     <input type="file" id="posts_csv" name="posts_csv" value="" class="all-options"/><br/>
-                    <span
-                            class="description"><?php echo sprintf( __( 'Vous pouvez voir <a href="%s">un exemple de fichier CSV</a>.', 'amapress' ), plugin_dir_url( __FILE__ ) . 'examples/import_' . $post_type . '.csv' ); ?></span>
+                    <span class="description"><?php echo sprintf( __( 'Vous pouvez télécharger un modèle à l\'aide des boutons Télécharger le modèle ci-dessus.', 'amapress' ) ); ?></span>
                 </td>
             </tr>
             <!--            <tr valign="top">-->
