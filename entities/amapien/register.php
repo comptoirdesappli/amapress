@@ -167,16 +167,16 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Co-adhérent(s) - email',
 //            ),
-//			'moyen'              => array(
-//				'name'        => amapress__( 'Moyen préféré' ),
-//				'type'        => 'select',
-//				'show_column' => false,
-//				'options'     => array(
-//					'mail' => 'Email',
-//					'tel'  => 'Téléphone',
-//				),
-//				'desc'        => 'Moyen préféré',
-//			),
+			'moyen'              => array(
+				'name'        => amapress__( 'Moyen préféré' ),
+				'type'        => 'select',
+				'show_column' => false,
+				'options'     => array(
+					'mail' => 'Email',
+					'tel'  => 'Téléphone',
+				),
+				'desc'        => 'Moyen de communication préféré',
+			),
 			'head_amapress4'     => array(
 				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
