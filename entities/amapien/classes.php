@@ -646,14 +646,14 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return true;
 	}
 
-	public
-	function getDesinscriptionIntermittenceLink() {
-		$admin_post_url = admin_url( 'admin-post.php' );
-		$my_email       = $this->getEmail();
-		$key            = $this->getUserLoginKey();
-
-		return "$admin_post_url?action=desinscription_intermittent&email=$my_email&key=$key";
-	}
+//	public
+//	function getDesinscriptionIntermittenceLink() {
+//		$admin_post_url = admin_url( 'admin-post.php' );
+//		$my_email       = $this->getEmail();
+//		$key            = $this->getUserLoginKey();
+//
+//		return "$admin_post_url?action=desinscription_intermittent&email=$my_email&key=$key";
+//	}
 
 	public
 	function desinscriptionIntermittence() {
@@ -679,7 +679,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			return Amapress::makeLink( $url );
 		}
 		if ( 'lien_desinscription_intermittent' == $name ) {
-			return Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
+			return amapress_intermittence_desinscription_link();//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
 		}
 	}
 
