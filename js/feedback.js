@@ -148,6 +148,8 @@
                     modal = document.createElement("div");
                     document.body.appendChild(glass);
 
+                    document.getElementById('wpadminbar').style.zIndex = 1999;
+
                     // modal close button
                     a.className = "feedback-close";
                     a.onclick = returnMethods.close;
@@ -306,8 +308,6 @@
         glass.className = "feedback-glass";
         glass.style.pointerEvents = "none";
         glass.setAttribute(H2C_IGNORE, true);
-
-        document.getElementById('wpadminbar').style.zIndex = 1999;
 
         options = options || {};
 
