@@ -222,8 +222,14 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 		return $post->post_title;
 	}
 
-	return sprintf( '%s - %s > %s',
+	$subname = '';
+	if ( ! empty( $adh->getSubName() ) ) {
+		$subname = ' - ' . $adh->getSubName();
+	}
+
+	return sprintf( '%s%s - %s > %s',
 		$adh->getModel()->getTitle(),
+		$subname,
 		date_i18n( 'm/Y', intval( $adh->getDate_debut() ) ),
 		date_i18n( 'm/Y', intval( $adh->getDate_fin() ) ) );
 }

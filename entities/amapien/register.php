@@ -167,16 +167,16 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Co-adhérent(s) - email',
 //            ),
-//			'moyen'              => array(
-//				'name'        => amapress__( 'Moyen préféré' ),
-//				'type'        => 'select',
-//				'show_column' => false,
-//				'options'     => array(
-//					'mail' => 'Email',
-//					'tel'  => 'Téléphone',
-//				),
-//				'desc'        => 'Moyen préféré',
-//			),
+			'moyen'              => array(
+				'name'        => amapress__( 'Moyen préféré' ),
+				'type'        => 'select',
+				'show_column' => false,
+				'options'     => array(
+					'mail' => 'Email',
+					'tel'  => 'Téléphone',
+				),
+				'desc'        => 'Moyen de communication préféré',
+			),
 			'head_amapress4'     => array(
 				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
@@ -187,6 +187,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
 				'desc'        => 'Rôles dans le Collectif de l\'AMAP',
 				'show_column' => false,
+				'csv'         => false,
 //                'searchable' => true,
 			),
 			'intermittent'       => array(
@@ -206,7 +207,36 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column' => false,
 				'csv'         => false,
 			),
-
+			'head_amapress6'     => array(
+				'name' => amapress__( 'Contrats et coadhérents' ),
+				'type' => 'heading',
+			),
+			'contrats'           => array(
+				'name'            => amapress__( 'Contrats' ),
+				'show_column'     => true,
+				'include_columns' => array(
+					'title',
+					'amapress_adhesion_quantite',
+					'amapress_adhesion_lieu',
+					'amapress_adhesion_date_debut',
+					'amapress_total_amount',
+				),
+				'type'            => 'related-posts',
+				'query'           => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
+			),
+			'all-coadherents'    => array(
+				'name'            => amapress__( 'Co-adhérents' ),
+				'show_column'     => false,
+				'include_columns' => array(
+					'name',
+					'email',
+					'role',
+					'amapress_user_telephone',
+					'amapress_user_adresse',
+				),
+				'type'            => 'related-users',
+				'query'           => 'amapress_coadherents=%%id%%',
+			),
 //            'allow_show_email' => array(
 //                'name' => amapress__('Autoriser mon email à être affiché'),
 //                'type' => 'select',

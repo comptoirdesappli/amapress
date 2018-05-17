@@ -382,7 +382,7 @@ table, td, th {
 	echo '<br/>';
 	if ( ! $for_pdf ) {
 		echo '<div class="btns">';
-		echo '<a href="javascript:window.print()" class="btn btn-default btn-print">Imprimer</a>';
+		echo '<a href="' . esc_attr( $dist->getPermalink( 'liste-emargement/pdf/' ) ) . '" class="btn btn-default btn-print">Imprimer en PDF</a>';
 		if ( current_user_can( 'edit_distribution' ) ) {
 			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
 			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';

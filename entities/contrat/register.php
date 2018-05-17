@@ -111,6 +111,7 @@ function amapress_register_entities_contrat( $entities ) {
 					return $contrat_instance->canRenew();
 				}
 			),
+			'clone' => 'Dupliquer',
 		),
 		'labels'          => array(
 			'add_new'      => 'Ajouter',
@@ -121,7 +122,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
-			'model'          => array(
+			'model'      => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -139,7 +140,13 @@ function amapress_register_entities_contrat( $entities ) {
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'searchable'        => true,
 			),
-			'nb_visites'     => array(
+			'name'       => array(
+				'name'  => amapress__( 'Nom complémentaire' ),
+				'group' => 'Gestion',
+				'type'  => 'text',
+				'desc'  => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
+			),
+			'nb_visites' => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => 'Information',
 				'type'        => 'number',
@@ -148,7 +155,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
-			'type'           => array(
+			'type'       => array(
 				'name'          => amapress__( 'Type de contrat' ),
 				'type'          => 'select',
 				'options'       => array(
@@ -183,7 +190,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'conditional'   => array(
 					'_default_' => 'panier',
 					'panier'    => array(
-						'is_principal' => array(
+						'is_principal'      => array(
 							'name'        => amapress__( 'Contrat principal' ),
 							'type'        => 'checkbox',
 							'show_column' => false,
@@ -191,7 +198,7 @@ function amapress_register_entities_contrat( $entities ) {
 							'group'       => 'Status',
 							'desc'        => 'Contrat principal',
 						),
-						'liste_dates'  => array(
+						'liste_dates'       => array(
 							'name'             => amapress__( 'Calendrier des distributions' ),
 							'type'             => 'multidate',
 							'required'         => true,
@@ -205,23 +212,45 @@ function amapress_register_entities_contrat( $entities ) {
 							'before_option'    =>
 								function ( $option ) {
 									$is_readonly = amapress_is_contrat_instance_readonly( $option );
-									if ( ! TitanFrameworkOption::isOnNewScreen() && ! $is_readonly ) {
-										$val_id = $option->getID() . '-validate';
-										echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
+									if ( ! TitanFrameworkOption::isOnNewScreen() ) {
+										if ( $is_readonly ) {
+											echo '<p>Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</p>';
+										} else {
+											$val_id = $option->getID() . '-validate';
+											echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
 <br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</label></p>';
-										echo '<script type="text/javascript">
+											echo '<script type="text/javascript">
 jQuery(function($) {
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $("#' . $val_id . '").change(function() {
         $liste_dates.multiDatesPicker("option", {disabled: !$(this).is(\':checked\')});
     });
-    $liste_dates.multiDatesPicker("option", {disabled: true});
+    $liste_dates.multiDatesPicker("option", {disabled: ' . $is_readonly . '});
 });
 </script>';
+										}
 									}
 								},
 						),
-						'panier_variable'       => array(
+						'les-paniers'       => array(
+							'name'              => amapress__( 'Paniers' ),
+							'group'             => 'Distributions',
+							'desc'              => 'Paniers de ce contrat',
+							'show_column'       => false,
+//							'bare'            => true,
+							'include_columns'   => array(
+								'title',
+								'amapress_panier_status',
+								'amapress_panier_date_subst',
+							),
+							'datatable_options' => array(
+								'ordering' => false,
+								'paging'   => true,
+							),
+							'type'              => 'related-posts',
+							'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
+						),
+						'panier_variable'   => array(
 							'name'        => amapress__( 'Paniers personnalisés' ),
 							'type'        => 'checkbox',
 							'group'       => 'Gestion',
@@ -230,7 +259,7 @@ jQuery(function($) {
 							'show_column' => false,
 							'desc'        => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
-						'quantite_variable'     => array(
+						'quantite_variable' => array(
 							'name'        => amapress__( 'Quantités personnalisées' ),
 							'type'        => 'checkbox',
 							'group'       => 'Gestion',
@@ -1150,6 +1179,17 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 	$new_contrat_instance = $contrat_inst->cloneContrat();
 	if ( ! $new_contrat_instance ) {
 		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
+	}
+
+	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
+}
+
+add_action( 'amapress_row_action_contrat_instance_clone', 'amapress_row_action_contrat_instance_clone' );
+function amapress_row_action_contrat_instance_clone( $post_id ) {
+	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
+	$new_contrat_instance = $contrat_inst->cloneContrat( true, false );
+	if ( ! $new_contrat_instance ) {
+		wp_die( 'Une erreur s\'est produit lors de la duplication du contrat. Veuillez réessayer' );
 	}
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
