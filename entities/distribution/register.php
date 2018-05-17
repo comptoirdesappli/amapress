@@ -112,19 +112,23 @@ function amapress_register_entities_distribution( $entities ) {
 //                'searchable' => true,
 			),
 			'paniers'           => array(
-				'name'            => amapress__( 'Panier(s)' ),
-				'group'           => '1/ Livraison',
-				'desc'            => 'Paniers à cette distribution',
-				'show_column'     => false,
-				'bare'            => true,
-				'include_columns' => array(
+				'name'              => amapress__( 'Panier(s)' ),
+				'group'             => '1/ Livraison',
+				'desc'              => 'Paniers à cette distribution',
+				'show_column'       => false,
+				'bare'              => true,
+				'include_columns'   => array(
 					'title',
 					'amapress_panier_contrat_instance',
 					'amapress_panier_status',
 					'amapress_panier_date_subst',
 				),
-				'type'            => 'related-posts',
-				'query'           => function ( $postID ) {
+				'datatable_options' => array(
+					'ordering' => false,
+					'paging'   => true,
+				),
+				'type'              => 'related-posts',
+				'query'             => function ( $postID ) {
 					$dist = AmapressDistribution::getBy( $postID );
 
 					return array(

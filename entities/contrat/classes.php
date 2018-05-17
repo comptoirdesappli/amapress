@@ -112,6 +112,11 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsEntity( 'amapress_contrat_instance_model', 'AmapressContrat' );
 	}
 
+	/** @return string */
+	public function getSubName() {
+		return $this->getCustom( 'amapress_contrat_instance_name' );
+	}
+
 	/** @return int */
 	public function getModelId() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_model' );
@@ -180,6 +185,7 @@ class AmapressContrat_instance extends TitanEntity {
 	public function isEnded() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_ended', 0 );
 	}
+
 	public function getListe_dates() {
 		$liste_dates = $this->getCustomAsDateArray( 'amapress_contrat_instance_liste_dates' );
 		if ( empty( $liste_dates ) || count( $liste_dates ) == 0 ) {
@@ -225,11 +231,15 @@ class AmapressContrat_instance extends TitanEntity {
 		return $res;
 	}
 
-	public function cloneContrat( $as_draft = true ) {
+	public function cloneContrat( $as_draft = true, $for_renew = true ) {
 		$this->ensure_init();
 
-		$add_weeks = Amapress::datediffInWeeks( $this->getDate_debut(), $this->getDate_fin() );
-		$meta      = array();
+		if ( ! $for_renew ) {
+			$add_weeks = 0;
+		} else {
+			$add_weeks = Amapress::datediffInWeeks( $this->getDate_debut(), $this->getDate_fin() );
+		}
+		$meta = array();
 		foreach ( $this->custom as $k => $v ) {
 			$meta[ $k ] = $v;
 		}
@@ -252,8 +262,10 @@ class AmapressContrat_instance extends TitanEntity {
 					return date( 'd/m/Y', $date );
 				}, $new_liste_dates )
 		);
-		unset( $meta['amapress_contrat_instance_liste_dates_paiements'] );
+		if ( $for_renew ) {
+			unset( $meta['amapress_contrat_instance_liste_dates_paiements'] );
 		unset( $meta['amapress_contrat_instance_commande_liste_dates'] );
+		}
 		$meta['amapress_contrat_instance_date_debut'] = $date_debut;
 		$meta['amapress_contrat_instance_date_fin']   = $date_fin;
 		unset( $meta['amapress_contrat_instance_ended'] );
