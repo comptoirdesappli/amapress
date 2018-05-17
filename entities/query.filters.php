@@ -1109,6 +1109,17 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			}
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
 			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
+		} else if ( $amapress_role == 'referent_producteur' ) {
+			$user_ids = array();
+			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
+				$prod = $contrat->getModel()->getProducteur();
+				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+					$user_ids = array_merge( $user_ids, $prod->getReferentsIds( $lieu_id ) );
+				}
+				$user_ids = array_merge( $user_ids, $prod->getReferentsIds() );
+			}
+			$user_id_sql = amapress_prepare_in_sql( $user_ids );
+			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
 
 		} else if ( $amapress_role == 'resp_distrib' ) {
 			$user_ids    = AmapressDistributions::getResponsablesBetween(
@@ -1200,6 +1211,21 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 //            }
 		}
 	}
+	if ( isset( $uqi->query_vars['amapress_coadherents'] ) ) {
+		$user_id  = Amapress::resolve_user_id( $uqi->query_vars['amapress_coadherents'] );
+		$user_ids = AmapressContrats::get_related_users( $user_id );
+		if ( ( $key = array_search( $user_id, $user_ids ) ) !== false ) {
+			unset( $user_ids[ $key ] );
+		}
+
+		if ( count( $user_ids ) > 0 ) {
+			$user_id_sql = amapress_prepare_in_sql( $user_ids );
+			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
+		} else {
+			$where .= " AND 0 = 1";
+		}
+	}
+
 	if ( isset( $uqi->query_vars['amapress_contrat'] ) ) {
 		$amapress_contrat = $uqi->query_vars['amapress_contrat'];
 		if ( $amapress_contrat == 'intermittent' ) {
@@ -1416,6 +1442,9 @@ add_filter( 'users_list_table_query_args', function ( $args ) {
 	}
 	if ( isset( $_GET['amapress_role'] ) ) {
 		$args['amapress_role'] = $_GET['amapress_role'];
+	}
+	if ( isset( $_GET['amapress_coadherents'] ) ) {
+		$args['amapress_coadherents'] = $_GET['amapress_coadherents'];
 	}
 	if ( isset( $_GET['orderby'] ) ) {
 		$args['custom_orderby'] = $_GET['orderby'];

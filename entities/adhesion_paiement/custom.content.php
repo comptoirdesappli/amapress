@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'manage_users_columns', 'adhesion_paiements_manage_users_columns', 15 );
 //add_filter('manage_edit-amps_adhesion_sortable_columns', 'amapress_adhesion_paiements_columns', 15);
 function adhesion_paiements_manage_users_columns( $columns ) {
-	$columns['adh_nb_contrats'] = 'Contrats';
+//	$columns['adh_nb_contrats'] = 'Contrats';
 
 	if ( isset( $_GET['page'] ) ) {
 		if ( $_GET['page'] == 'adhesion_paiements' ) {
@@ -53,12 +53,12 @@ function adhesion_paiements_manage_users_columns( $columns ) {
 add_filter( 'manage_users_custom_column', 'amapress_paiements_column_display', 10, 3 );
 function amapress_paiements_column_display( $output, $colname, $user_id ) {
 	$adhesions = AmapressAdhesion::getAllActiveByUserId();
-	if ( $colname == 'adh_nb_contrats' ) {
-		$cnt  = isset( $adhesions[ $user_id ] ) ? count( $adhesions[ $user_id ] ) : 0;
-		$href = admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active&amapress_user=' . $user_id );
-
-		return "<a href='$href'>$cnt</a>";
-	}
+//	if ( $colname == 'adh_nb_contrats' ) {
+//		$cnt  = isset( $adhesions[ $user_id ] ) ? count( $adhesions[ $user_id ] ) : 0;
+//		$href = admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active&amapress_user=' . $user_id );
+//
+//		return "<a href='$href'>$cnt</a>";
+//	}
 
 	if ( strpos( $colname, 'contrat_amount_' ) === 0 ) {
 		$contrat_id = intval( substr( $colname, 15 ) );
@@ -164,10 +164,9 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 add_filter( 'manage_users_custom_column_export', 'amapress_adhesion_paiements_column_export', 10, 3 );
 function amapress_adhesion_paiements_column_export( $output, $colname, $user_id ) {
 	$adhesions = AmapressAdhesion::getAllActiveByUserId();
-	if ( $colname == 'adh_nb_contrats' ) {
-//        return count(AmapressContrats::get_user_active_contrat_instances($user_id));
-		return isset( $adhesions[ $user_id ] ) ? count( $adhesions[ $user_id ] ) : 0;
-	}
+//	if ( $colname == 'adh_nb_contrats' ) {
+//		return isset( $adhesions[ $user_id ] ) ? count( $adhesions[ $user_id ] ) : 0;
+//	}
 
 	if ( strpos( $colname, 'contrat_amount_' ) === 0 ) {
 		$contrat_id = intval( substr( $colname, 15 ) );

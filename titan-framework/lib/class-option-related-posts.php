@@ -14,6 +14,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 	public $defaultSecondarySettings = array(
 		'query'             => null,
 		'show_link'         => true,
+		'bare'              => false,
 		'link_text'         => 'Voir les (%%count%%) éléments',
 		'show_table'        => true,
 		'include_columns'   => array(),
@@ -60,11 +61,11 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 	}
 
 	public function display() {
-//		if ( ! $this->settings['show_table'] ) {
+		if ( ! $this->settings['bare'] ) {
 			$this->echoOptionHeader();
-//		} else {
-//			$this->echoOptionHeaderBare();
-//		}
+		} else {
+			$this->echoOptionHeaderBare();
+		}
 
 		$query = $this->evalQuery();
 		if ( is_array( $query ) ) {
@@ -136,11 +137,11 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		}
 
 
-//		if ( ! $this->settings['show_table'] ) {
+		if ( ! $this->settings['bare'] ) {
 			$this->echoOptionFooter();
-//		} else {
-//			$this->echoOptionFooterBare();
-//		}
+		} else {
+			$this->echoOptionFooterBare();
+		}
 	}
 
 	/**
