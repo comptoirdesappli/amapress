@@ -153,7 +153,7 @@ function amapress_post_validation() {
                     }
                 }
             });
-            var amapress_validator = jQuery('form#post, form#createuser, .titan-framework-panel-wrap form').validate({
+            var amapress_validator = jQuery('form#post, form#createuser, .titan-framework-panel-wrap form, form form').validate({
                 ignore: ":parentHidden",
                 onkeyup: false,
                 errorPlacement: function (error, element) {
