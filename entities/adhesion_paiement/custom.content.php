@@ -360,13 +360,13 @@ function amapress_paiements_editor( $post_id ) {
 		}, AmapressContrats::get_contrat_quantites( $contrat_instance->ID ) ) );
 	foreach ( $all_paiements_by_dates as $k => $v ) {
 		$all_paiements_by_dates[ $k ] = array_merge( array( '_all' => $v ),
-			array_group_by( $v, function ( AmapressAmapien_paiement $p ) {
+			array_group_by( $v, function ( AmapressAmapien_paiement $p ) use ( $k ) {
 				return implode( ',', array_map( function ( $vv ) {
 					/** @var AmapressAdhesionQuantite $vv */
 					$code = $vv->getContratQuantite()->getCode();
 
 					return ! empty( $code ) ? $code : $vv->getContratQuantite()->getTitle();
-				}, $p->getAdhesion()->getContrat_quantites() ) );
+				}, $p->getAdhesion()->getContrat_quantites( $k ) ) );
 			} )
 		);
 	}

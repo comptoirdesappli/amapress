@@ -418,7 +418,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$adh                   = AmapressAdhesion::getBy( $post_id );
 	$date_debut            = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
 	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
-	$adhesion_quantites    = $adh->getContrat_quantites();
+	$adhesion_quantites    = $adh->getContrat_quantites( $date_debut );
 	$paniers_variables     = $adh->getPaniersVariables();
 	$ret                   .= '<fieldset style="min-width: inherit">';
 	$contrats              = AmapressContrats::get_active_contrat_instances(
@@ -785,7 +785,7 @@ function amapress_get_contrat_quantite_datatable(
 							$lieu_quant_sum       += $adh_quant['quantite'];
 						}
 					} else {
-						foreach ( $adh->getContrat_quantites() as $adh_quant ) {
+						foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
 							if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
 								continue;
 							}
@@ -814,7 +814,7 @@ function amapress_get_contrat_quantite_datatable(
 		$all_quant_count     = 0;
 		$all_quant_sum       = 0;
 		foreach ( $adhesions as $adh ) {
-			foreach ( $adh->getContrat_quantites() as $adh_quant ) {
+			foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
 				if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
 					continue;
 				}

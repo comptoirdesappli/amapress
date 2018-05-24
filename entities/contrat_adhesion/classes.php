@@ -188,18 +188,28 @@ class AmapressAdhesion extends TitanEntity {
 	/**
 	 * @return AmapressAdhesionQuantite[]
 	 */
-	public function getContrat_quantites() {
+	public function getContrat_quantites( $dist_date ) {
 		$factors = $this->getCustomAsFloatArray( 'amapress_adhesion_contrat_quantite_factors' );
 		$quants  = $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
 
 //		amapress_dump($this->getCustom('amapress_adhesion_contrat_quantite'));
+		$date_factor = 1;
+		if ( $this->getContrat_instanceId() ) {
+			$rattrapage = $this->getContrat_instance()->getRattrapage();
+			foreach ( $rattrapage as $r ) {
+				if ( Amapress::start_of_day( intval( $r['date'] ) ) == Amapress::start_of_day( $dist_date ) ) {
+					$date_factor = floatval( $r['quantite'] );
+					break;
+				}
+			}
+		}
 		$ret = [];
 		foreach ( $quants as $quant ) {
 			$factor = 1;
 			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
 				$factor = $factors[ $quant->ID ];
 			}
-			$ret[ $quant->ID ] = new AmapressAdhesionQuantite( $quant, $factor );
+			$ret[ $quant->ID ] = new AmapressAdhesionQuantite( $quant, $factor * $date_factor );
 		}
 
 		return $ret;
@@ -255,7 +265,7 @@ class AmapressAdhesion extends TitanEntity {
 					/** @var AmapressAdhesionQuantite $vv */
 					return $vv->getTitle();
 				}
-				, $this->getContrat_quantites() );
+				, $this->getContrat_quantites( $date ) );
 
 			return implode( ', ', $quant_labels );
 		}
@@ -269,7 +279,7 @@ class AmapressAdhesion extends TitanEntity {
 		$codes = array_map( function ( $vv ) {
 			/** @var AmapressAdhesionQuantite $vv */
 			return $vv->getCode();
-		}, $this->getContrat_quantites() );
+		}, $this->getContrat_quantites( $date ) );
 //		$quants = array_map( function ( $q ) {
 //			/** @var AmapressContrat_quantite $q */
 //			return $q->getQuantite();
@@ -310,7 +320,7 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			}
 		} else {
-			foreach ( $this->getContrat_quantites() as $c ) {
+			foreach ( $this->getContrat_quantites( $date ) as $c ) {
 				$sum += $c->getPrice();
 			}
 		}
@@ -424,16 +434,16 @@ class AmapressAdhesion extends TitanEntity {
 		$dates      = array_filter( $dates, function ( $d ) use ( $start_date ) {
 			return Amapress::start_of_day( $d ) >= $start_date;
 		} );
-		if ( $this->getContrat_instance()->isPanierVariable() ) {
-			$sum = 0;
-			foreach ( $dates as $date ) {
-				$sum += $this->getContrat_quantites_Price( $date );
-			}
-
-			return $sum;
-		} else {
-			return count( $dates ) * $this->getContrat_quantites_Price();
+//		if ( $this->getContrat_instance()->isPanierVariable() ) {
+		$sum = 0;
+		foreach ( $dates as $date ) {
+			$sum += $this->getContrat_quantites_Price( $date );
 		}
+
+		return $sum;
+//		} else {
+//			return count( $dates ) * $this->getContrat_quantites_Price();
+//		}
 	}
 
 
@@ -616,7 +626,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$res = array();
 			foreach ( $ret as $adh ) {
 //                $adh = AmapressAdhesion::getBy($v);
-				foreach ( $adh->getContrat_quantites() as $q ) {
+				foreach ( $adh->getContrat_quantites( $date ) as $q ) {
 					$res[ $q->getId() ] = $q;
 				}
 			}
@@ -682,7 +692,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		unset( $meta['amapress_adhesion_panier_variables'] );
 		$meta['amapress_adhesion_contrat_instance'] = $new_contrat_instance_id;
 
-		$quants     = $this->getContrat_quantites();
+		$quants     = $this->getContrat_quantites( $date_debut );
 		$new_quants = AmapressContrats::get_contrat_quantites( $new_contrat_instance_id );
 
 		$new_quants_ids = array();

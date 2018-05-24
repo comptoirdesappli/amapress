@@ -64,6 +64,10 @@ function amapress_post_validation() {
                 var content = tinymce.get(element.id).getContent({format: 'text'});
                 return jQuery.trim(content) != '';
             }, "Doit être rempli");
+            jQuery.validator.addMethod('positiveNumber',
+                function (value) {
+                    return Number(value) > 0;
+                }, 'Doit être supérieur à 0');
             jQuery.validator.setDefaults({
                 ignore: ''
             });

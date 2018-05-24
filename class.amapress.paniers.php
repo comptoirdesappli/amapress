@@ -355,7 +355,7 @@ class AmapressPaniers {
 				$factor    = 0.0;
 				foreach ( $adhesions as $sous ) {
 					$adh = AmapressAdhesion::getBy( $sous->ID );
-					foreach ( $adh->getContrat_quantites() as $q ) {
+					foreach ( $adh->getContrat_quantites( $panier->getDate() ) as $q ) {
 						$quant  = $q->getQuantite();
 						$factor += $quant;
 					}

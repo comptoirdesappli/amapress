@@ -232,11 +232,96 @@ jQuery(function($) {
 									}
 								},
 						),
+						'rattrapage'        => array(
+							'name'        => amapress__( 'Quantités de rattrapage' ),
+							'type'        => 'custom',
+							'group'       => 'Distributions',
+							'readonly'    => 'amapress_is_contrat_instance_readonly',
+							'show_column' => false,
+							'show_on'     => 'edit-only',
+							'column'      => function ( $post_id ) {
+								$contrat    = AmapressContrat_instance::getBy( $post_id, true );
+								$rattrapage = [];
+								foreach ( $contrat->getRattrapage() as $r ) {
+									$rattrapage[] = sprintf( '%s (%.1f)', date_i18n( 'd/m/Y', intval( $r['date'] ) ), $r['quantite'] );
+								}
+
+								return implode( ', ', $rattrapage );
+							},
+							'custom'      => function ( $post_id ) {
+								$contrat    = AmapressContrat_instance::getBy( $post_id, true );
+								$rattrapage = [];
+								$i          = 0;
+								foreach ( $contrat->getRattrapage() as $r ) {
+									$rattrapage[] = $r;
+									$i ++;
+								}
+								while ( $i < 6 ) {
+									$rattrapage[] = [
+										'date'     => 0,
+										'quantite' => 1,
+									];
+									$i ++;
+								}
+
+								$dates      = [];
+								$dates["0"] = '--Date--';
+								foreach ( $contrat->getListe_dates() as $date ) {
+									$dates[ strval( $date ) ] = date_i18n( 'd/m/Y', $date );
+								}
+
+								ob_start();
+								echo '<table class="display" width="100%"><tbody>';
+								$i = 0;
+								foreach ( $rattrapage as $r ) {
+									?>
+                                    <tr>
+                                        <td>
+                                            <select id="<?php echo "amapress_quantite_rattrapage-date-$i"; ?>"
+                                                    name="<?php echo "amapress_quantite_rattrapage[$i][date]"; ?>"
+                                            ><?php
+												tf_parse_select_options( $dates, $r['date'] );
+												?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input id="<?php echo "amapress_quantite_rattrapage-date-$i"; ?>"
+                                                   name="<?php echo "amapress_quantite_rattrapage[$i][quantite]"; ?>"
+                                                   class="number positiveNumber"
+                                                   value="<?php echo $r['quantite']; ?>"
+                                            />
+                                        </td>
+                                    </tr>
+									<?php
+									$i ++;
+								}
+								echo '</tbody></table>';
+
+								return ob_get_clean();
+							},
+							'save'        => function ( $post_id ) {
+								if ( isset( $_POST['amapress_quantite_rattrapage'] ) ) {
+									$amapress_quantite_rattrapage = $_POST['amapress_quantite_rattrapage'];
+									foreach ( $amapress_quantite_rattrapage as $i => $r ) {
+										if ( "0" == $r['date'] ) {
+											unset( $amapress_quantite_rattrapage[ $i ] );
+										}
+									}
+									update_post_meta(
+										$post_id,
+										'amapress_contrat_instance_rattrapage',
+										$amapress_quantite_rattrapage );
+
+									return true;
+								}
+							}
+						),
 						'les-paniers'       => array(
 							'name'              => amapress__( 'Paniers' ),
 							'group'             => 'Distributions',
 							'desc'              => 'Paniers de ce contrat',
 							'show_column'       => false,
+							'show_on'           => 'edit-only',
 //							'bare'            => true,
 							'include_columns'   => array(
 								'title',
@@ -268,7 +353,7 @@ jQuery(function($) {
 							'show_column' => false,
 							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
 						),
-						'paiements'             => array(
+						'paiements'         => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
 							'type'     => 'multicheck',
 							'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',

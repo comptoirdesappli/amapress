@@ -199,6 +199,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $liste_dates;
 	}
 
+	public function getRattrapage() {
+		return $this->getCustomAsArray( 'amapress_contrat_instance_rattrapage' );
+	}
+
 	public function getPaiements_Liste_dates() {
 		return $this->getCustomAsDateArray( 'amapress_contrat_instance_liste_dates_paiements' );
 	}
