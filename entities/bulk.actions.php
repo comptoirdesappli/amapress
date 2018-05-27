@@ -6,7 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'admin_footer', 'amapress_bulk_actions_admin_footer' );
 function amapress_bulk_actions_admin_footer() {
-	global $post_type, $pagenow;
+	global $typenow, $pagenow;
+	$post_type = $typenow;
 
 	$pt   = amapress_simplify_post_type( 'users.php' == $pagenow ? 'user' : $post_type );
 	$type = AmapressEntities::getPostType( $pt );
