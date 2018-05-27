@@ -20,6 +20,15 @@ function amapress_register_entities_distribution( $entities ) {
 		'slug'             => amapress__( 'distributions' ),
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-store',
+		'row_actions'      => array(
+			'emargement' => [
+				'label'  => 'Liste émargement',
+				'target' => '_blank',
+				'href'   => function ( $dist_id ) {
+					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
+				},
+			],
+		),
 		'views'            => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_distribution_views',

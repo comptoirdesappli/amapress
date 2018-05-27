@@ -74,7 +74,10 @@ function amapress_get_custom_content_distribution( $content ) {
 
 //    amapress_handle_action_messages();
 
-	$btns = [];
+	$btns   = [];
+	$btns[] = amapress_get_button( 'Liste d\'émargement',
+		amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
+		true, null, 'btn-print-liste' );
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
 		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
 	}

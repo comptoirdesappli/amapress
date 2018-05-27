@@ -60,9 +60,15 @@ function amapress_row_actions_registration( $actions, $post_or_user ) {
 					continue;
 				}
 				if ( ! empty( $row_action_config['href'] ) ) {
-					$label                  = $row_action_config['label'];
+					$label = $row_action_config['label'];
+					$href  = $row_action_config['href'];
+					if ( is_callable( $href, false ) ) {
+						$href = call_user_func( $href, $post_or_user->ID );
+					} else {
+						$href = str_replace( '%id%', $post_or_user->ID, $href );
+					}
 					$actions[ $row_action ] = sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s"%5$s>%2$s</a>',
-						str_replace( '%id%', $post_or_user->ID, $row_action_config['href'] ),
+						$href,
 						esc_html( $label ),
 						esc_attr( $row_action ),
 						esc_attr( $label ),
