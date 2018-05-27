@@ -99,6 +99,13 @@ function amapress_register_entities_contrat( $entities ) {
 				'context' => 'side',
 			],
 		),
+		'edit_header'     => function ( $post ) {
+			if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) && TitanFrameworkOption::isOnEditScreen() ) {
+				$class   = 'notice notice-error';
+				$message = 'Veuillez ajouter des quantités au contrat';
+				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+			}
+		},
 		'row_actions'     => array(
 			'renew' => array(
 				'label'     => 'Renouveler',
@@ -190,7 +197,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'conditional'   => array(
 					'_default_' => 'panier',
 					'panier'    => array(
-						'is_principal'      => array(
+						'is_principal'          => array(
 							'name'        => amapress__( 'Contrat principal' ),
 							'type'        => 'checkbox',
 							'show_column' => false,
@@ -198,7 +205,24 @@ function amapress_register_entities_contrat( $entities ) {
 							'group'       => 'Status',
 							'desc'        => 'Contrat principal',
 						),
-						'liste_dates'       => array(
+						'edit_adv'              => array(
+							'bare'        => true,
+							'type'        => 'custom',
+							'show_column' => false,
+							'group'       => 'Status',
+							'custom'      => function ( $post_id ) {
+								$adhs = AmapressContrats::get_active_adhesions( $post_id );
+
+								if ( ! empty( $adhs ) ) {
+									if ( ! isset( $_REQUEST['adv'] ) ) {
+										echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Editer tout</a></p>';
+									} else {
+										echo '<p style="color: red">Edition après saisie des inscription</p>';
+									}
+								}
+							},
+						),
+						'liste_dates'           => array(
 							'name'             => amapress__( 'Calendrier des distributions' ),
 							'type'             => 'multidate',
 							'required'         => true,
@@ -214,11 +238,11 @@ function amapress_register_entities_contrat( $entities ) {
 									$is_readonly = amapress_is_contrat_instance_readonly( $option );
 									if ( ! TitanFrameworkOption::isOnNewScreen() ) {
 										if ( $is_readonly ) {
-											echo '<p>Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</p>';
+											echo '<p>Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</p>';
 										} else {
 											$val_id = $option->getID() . '-validate';
 											echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
-<br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers</label></p>';
+<br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</label></p>';
 											echo '<script type="text/javascript">
 jQuery(function($) {
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
@@ -232,7 +256,7 @@ jQuery(function($) {
 									}
 								},
 						),
-						'rattrapage'        => array(
+						'rattrapage'            => array(
 							'name'        => amapress__( 'Quantités de rattrapage' ),
 							'type'        => 'custom',
 							'group'       => 'Distributions',
@@ -316,7 +340,7 @@ jQuery(function($) {
 								}
 							}
 						),
-						'les-paniers'       => array(
+						'les-paniers'           => array(
 							'name'              => amapress__( 'Paniers' ),
 							'group'             => 'Distributions',
 							'desc'              => 'Paniers de ce contrat',
@@ -335,7 +359,7 @@ jQuery(function($) {
 							'type'              => 'related-posts',
 							'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
 						),
-						'panier_variable'   => array(
+						'panier_variable'       => array(
 							'name'        => amapress__( 'Paniers personnalisés' ),
 							'type'        => 'checkbox',
 							'group'       => 'Gestion',
@@ -344,7 +368,7 @@ jQuery(function($) {
 							'show_column' => false,
 							'desc'        => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
-						'quantite_variable' => array(
+						'quantite_variable'     => array(
 							'name'        => amapress__( 'Quantités personnalisées' ),
 							'type'        => 'checkbox',
 							'group'       => 'Gestion',
@@ -353,7 +377,7 @@ jQuery(function($) {
 							'show_column' => false,
 							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
 						),
-						'paiements'         => array(
+						'paiements'             => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
 							'type'     => 'multicheck',
 							'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
@@ -383,6 +407,7 @@ jQuery(function($) {
 							'group'            => 'Paiements',
 							'show_column'      => false,
 							'show_dates_count' => true,
+							'show_dates_list'  => true,
 							'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
 						),
 //                        'list_quantites' => array(
