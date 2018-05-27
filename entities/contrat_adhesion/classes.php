@@ -639,23 +639,23 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 
 	public function getNextContratInstanceId() {
-		$contrat_instance_id = $this->getContrat_instanceId();
-		if ( empty( $contrat_instance_id ) ) {
-			return null;
-		}
-		$contrat_instances_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $this->getContrat_instance()->getModel()->ID,
-			null, true );
-		$contrat_instances_ids = array_filter(
-			$contrat_instances_ids,
-			function ( $id ) use ( $contrat_instance_id ) {
-				return $id != $contrat_instance_id;
-			}
-		);
-		if ( empty( $contrat_instances_ids ) ) {
-			return null;
+		$contrat_instance = $this->getContrat_instance();
+		if ( ! $contrat_instance ) {
+			return 0;
 		}
 
-		return array_shift( $contrat_instances_ids );
+		$all_contrats = AmapressContrats::get_active_contrat_instances();
+
+		return from( $all_contrats )->where( function ( $c ) use ( $contrat_instance ) {
+			/** @var AmapressContrat_instance $c */
+			return $c->ID != $contrat_instance->ID
+			       && $c->getModelId() == $contrat_instance->getModelId()
+			       && ( $c->getSubName() == $contrat_instance->getSubName() || ( empty( $c->getSubName() ) && empty( $contrat_instance->getSubName() ) ) )
+			       && $c->getDate_debut() > $this->getDate_debut();
+		} )->select( function ( $c ) {
+			/** @var AmapressContrat_instance $c */
+			return $c->ID;
+		} )->firstOrDefault( 0 );
 	}
 
 	public function canRenew() {

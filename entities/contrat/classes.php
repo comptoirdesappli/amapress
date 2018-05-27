@@ -268,7 +268,7 @@ class AmapressContrat_instance extends TitanEntity {
 		);
 		if ( $for_renew ) {
 			unset( $meta['amapress_contrat_instance_liste_dates_paiements'] );
-		unset( $meta['amapress_contrat_instance_commande_liste_dates'] );
+			unset( $meta['amapress_contrat_instance_commande_liste_dates'] );
 		}
 		$meta['amapress_contrat_instance_date_debut'] = $date_debut;
 		$meta['amapress_contrat_instance_date_fin']   = $date_fin;
@@ -300,7 +300,9 @@ class AmapressContrat_instance extends TitanEntity {
 
 		return ! from( $contrat_instances )->any( function ( $a ) {
 			/** @var AmapressContrat_instance $a */
-			return ( $a->getModelId() == $this->getModelId() && $a->getDate_debut() > $this->getDate_debut() );
+			return ( $a->getModelId() == $this->getModelId()
+			         && ( $a->getSubName() == $this->getSubName() || ( empty( $a->getSubName() ) && empty( $this->getSubName() ) ) )
+			         && $a->getDate_debut() > $this->getDate_debut() );
 		} );
 	}
 }
