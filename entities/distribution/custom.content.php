@@ -89,6 +89,10 @@ function amapress_get_custom_content_distribution( $content ) {
 		if ( ! empty( $mailto ) ) {
 			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Mail aux responsables</a>';
 		}
+		$smsto = $dist->getSMStoResponsables();
+		if ( ! empty( $smsto ) ) {
+			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">SMS aux responsables</a>';
+		}
 	}
 	?>
 

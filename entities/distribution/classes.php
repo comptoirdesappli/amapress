@@ -111,6 +111,19 @@ class AmapressDistribution extends Amapress_EventBase {
 		       date_i18n( 'D j M Y' );
 	}
 
+	public function getSMStoResponsables() {
+		$resp_phones = [];
+		foreach ( $this->getResponsables() as $user ) {
+			$resp_phones = array_merge( $resp_phones, $user->getPhoneNumbers() );
+		}
+		if ( empty( $resp_phones ) ) {
+			return '';
+		}
+
+		return 'sms:' . urlencode( implode( ',', $resp_phones ) ) . '&body=Distribution du ' .
+		       date_i18n( 'D j M Y' );
+	}
+
 	/** @return int[] */
 	public function getResponsablesIds() {
 		return $this->getCustomAsIntArray( 'amapress_distribution_responsables' );

@@ -317,17 +317,15 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		return $this->custom['amapress_user_telephone'];
 	}
 
-	public
-	function getTelTo(
-		$mobile = 'both', $sms = false
+	public function getPhoneNumbers(
+		$mobile = 'both'
 	) {
 		$tel = $this->getTelephone() . ' ' . $this->getTelephone2();
 		if ( empty( $tel ) ) {
-			return '';
+			return [];
 		}
 		$matches = array();
 		$ret     = array();
-		$used    = array();
 		preg_match_all( '/(?:\d\s*){10}/', $tel, $matches, PREG_SET_ORDER );
 		foreach ( $matches as $m ) {
 			if ( is_bool( $mobile ) ) {
@@ -339,11 +337,25 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 				}
 			}
 			$tel_norm = str_replace( ' ', '', $m[0] );
-			if ( in_array( $tel_norm, $used ) ) {
+			if ( isset( $ret[ $tel_norm ] ) ) {
 				continue;
 			}
-			$used[] = $tel_norm;
-			$ret[]  = '<a href="' . ( $sms ? 'sms' : 'tel' ) . ':' . $tel_norm . '">' . esc_html( $m[0] ) . '</a>';
+			$ret[ $tel_norm ] = $m[0];
+		}
+
+		return $ret;
+	}
+
+	public function getTelTo(
+		$mobile = 'both', $sms = false
+	) {
+		$phone_numbers = $this->getPhoneNumbers( $mobile );
+		if ( empty( $phone_numbers ) ) {
+			return '';
+		}
+		$ret     = array();
+		foreach ( $phone_numbers as $tel_norm => $tel_display ) {
+			$ret[] = '<a href="' . ( $sms ? 'sms' : 'tel' ) . ':' . $tel_norm . '">' . esc_html( $tel_display ) . '</a>';
 		}
 
 		return implode( '<br/>', $ret );
