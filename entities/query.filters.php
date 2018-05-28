@@ -668,6 +668,56 @@ function amapress_filter_posts( WP_Query $query ) {
 					),
 				) );
 			}
+		} else if ( $amapress_date == 'past' ) {
+			if ( $pt == 'contrat_instance' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date_fin",
+						'value'   => Amapress::end_of_day( amapress_time() ),
+						'compare' => '<=',
+					),
+				) );
+			} else if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite'
+			            || $pt == 'amap_event' || $pt == 'contrat_paiement' || $pt == 'intermittence_panier'
+			) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date",
+						'value'   => Amapress::end_of_day( amapress_time() ),
+						'compare' => '<=',
+					)
+				) );
+			} else if ( $pt == 'adhesion' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_adhesion_contrat_instance",
+						'value'   => amapress_prepare_in( AmapressContrats::get_active_contrat_instances_ids() ),
+						'compare' => 'NOT IN',
+						'type'    => 'NUMERIC',
+					),
+				) );
+				amapress_add_meta_query( $query, array(
+					array(
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'compare' => 'NOT EXISTS',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => 0,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+						array(
+							'key'     => 'amapress_adhesion_date_fin',
+							'value'   => Amapress::end_of_day( amapress_time() ),
+							'compare' => '<=',
+							'type'    => 'NUMERIC',
+						),
+					)
+				) );
+			}
 		} else if ( $amapress_date == 'next' || $amapress_date == 'active' ) {
 			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite'
 			     || $pt == 'amap_event' || $pt == 'contrat_paiement' || $pt == 'intermittence_panier'
@@ -931,16 +981,56 @@ function amapress_filter_posts( WP_Query $query ) {
 				}
 
 				if ( $start_date && $end_date ) {
-					amapress_add_meta_query( $query, array(
-						array(
-							'key'     => "amapress_{$pt}_date" . ( $pt == 'contrat_instance' || $pt == 'adhesion' ? '_debut' : '' ),
-							'value'   => array(
-								$start_date,
-								$end_date,
-							),
-							'compare' => 'BETWEEN',
-						)
-					) );
+					if ( $pt == 'contrat_instance' ) {
+						amapress_add_meta_query( $query, array(
+							array(
+								'relation' => 'OR',
+								array(
+									'relation' => 'AND',
+									array(
+										'key'     => "amapress_{$pt}_date_debut",
+										'value'   => array(
+											$start_date,
+											$end_date,
+										),
+										'compare' => 'BETWEEN',
+									),
+									array(
+										'key'     => "amapress_{$pt}_date_fin",
+										'value'   => array(
+											$start_date,
+											$end_date,
+										),
+										'compare' => 'BETWEEN',
+									)
+								),
+								array(
+									'relation' => 'AND',
+									array(
+										'key'     => "amapress_{$pt}_date_debut",
+										'value'   => $start_date,
+										'compare' => '<',
+									),
+									array(
+										'key'     => "amapress_{$pt}_date_fin",
+										'value'   => $end_date,
+										'compare' => '>',
+									)
+								),
+							)
+						) );
+					} else {
+						amapress_add_meta_query( $query, array(
+							array(
+								'key'     => "amapress_{$pt}_date" . ( $pt == 'adhesion' ? '_debut' : '' ),
+								'value'   => array(
+									$start_date,
+									$end_date,
+								),
+								'compare' => 'BETWEEN',
+							)
+						) );
+					}
 				}
 			}
 		}

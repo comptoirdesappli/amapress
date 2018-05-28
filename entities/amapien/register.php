@@ -211,7 +211,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name' => amapress__( 'Contrats et coadhérents' ),
 				'type' => 'heading',
 			),
-			'contrats'           => array(
+			'contrats'        => array(
 				'name'            => amapress__( 'Contrats' ),
 				'show_column'     => true,
 				'include_columns' => array(
@@ -224,7 +224,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'            => 'related-posts',
 				'query'           => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
 			),
-			'all-coadherents'    => array(
+			'all-coadherents' => array(
 				'name'            => amapress__( 'Co-adhérents' ),
 				'show_column'     => false,
 				'include_columns' => array(
@@ -236,6 +236,19 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'type'            => 'related-users',
 				'query'           => 'amapress_coadherents=%%id%%',
+			),
+			'contrats-past'   => array(
+				'name'            => amapress__( 'Contrats passés' ),
+				'show_column'     => false,
+				'include_columns' => array(
+					'title',
+					'amapress_adhesion_quantite',
+					'amapress_adhesion_lieu',
+					'amapress_adhesion_date_debut',
+					'amapress_total_amount',
+				),
+				'type'            => 'related-posts',
+				'query'           => 'post_type=amps_adhesion&amapress_date=past&amapress_user=%%id%%',
 			),
 //            'allow_show_email' => array(
 //                'name' => amapress__('Autoriser mon email à être affiché'),
