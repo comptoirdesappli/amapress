@@ -119,6 +119,9 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 			//référent producteur
 			foreach ( AmapressContrats::get_contrats() as $contrat ) {
 				$prod                = $contrat->getProducteur();
+				if ( ! $prod ) {
+					continue;
+				}
 				$had_local_referents = false;
 				foreach ( $lieu_ids as $lieu_id ) {
 					if ( ! in_array( $this->ID, $prod->getReferentsIds( $lieu_id ) ) ) {

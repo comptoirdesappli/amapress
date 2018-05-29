@@ -1192,6 +1192,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			$user_ids = array();
 			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 				$prod = $contrat->getModel()->getProducteur();
+				if ( ! $prod ) {
+					continue;
+				}
 				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
 					$user_ids = array_merge( $user_ids, $prod->getReferentsIds( $lieu_id ) );
 				}
@@ -1203,6 +1206,8 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			$user_ids = array();
 			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 				$prod = $contrat->getModel()->getProducteur();
+				if ( ! $prod )
+					continue;
 				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
 					$user_ids = array_merge( $user_ids, $prod->getReferentsIds( $lieu_id ) );
 				}
