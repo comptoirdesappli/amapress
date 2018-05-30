@@ -88,7 +88,8 @@ function amapress_echo_and_check_amapress_state_page() {
 		'02_config'  => '2/ Configuration',
 		'03_users'   => '3/ Comptes utilisateurs',
 		'04_posts'   => '4/ Votre AMAP',
-		'05_import'  => '5/ Import CSV',
+		'05_content' => '5/ Contenus à compléter',
+		'06_import'  => '6/ Import CSV',
 	);
 	$state               = array();
 	$state['01_plugins'] = array();
@@ -182,7 +183,7 @@ function amapress_echo_and_check_amapress_state_page() {
 	);
 	$contact_page         = Amapress::getOption( 'contrat_info_anonymous' );
 	$state['02_config'][] = amapress_get_check_state(
-		empty( $contact_page ) ? 'warning' : 'success',
+		empty( $contact_page ) || strpos( $contact_page, '[[' ) !== false ? 'warning' : 'success',
 		'Contenu de la page de contact',
 		'Ajouter les informations nécessaires pour contacter l’Amap pour une nouvelle inscription.',
 		admin_url( 'admin.php?page=amapress_contact_options_page' )
@@ -227,7 +228,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		! $info_page_menu_item_found ? 'error' : 'success',
 		'Entrée de menu - Mes Infos',
 		'<strong>Important</strong> : Créer obligatoirement une entrée dans le menu principal vers la page « Mes Infos » (menu permettant la connexion).',
-		admin_url( 'customize.php?autofocus[panel]=nav_menus' )
+		admin_url( 'nav-menus.php' )
 	);
 
 //    $state['02_config'][] = amapress_get_check_state(
@@ -248,7 +249,6 @@ function amapress_echo_and_check_amapress_state_page() {
 	);
 
 
-
 	$state['03_users'] = array();
 
 	$users               = get_users( array( 'role' => 'responsable_amap' ) );
@@ -264,8 +264,8 @@ function amapress_echo_and_check_amapress_state_page() {
 			return "<a href='{$l}'>{$dn->getDisplayName()}</a>";
 		}, $users ) )
 	);
-	$prod_users          = get_users( array( 'role' => 'producteur' ) );
-	$state['03_users'][] = amapress_get_check_state(
+	$prod_users           = get_users( array( 'role' => 'producteur' ) );
+	$state['03_users'][]  = amapress_get_check_state(
 		count( $prod_users ) == 0 ? 'error' : 'success',
 		'Compte Producteur',
 		'Créer les comptes des producteurs',
@@ -277,8 +277,8 @@ function amapress_echo_and_check_amapress_state_page() {
 			return "<a href='{$l}'>{$dn->getDisplayName()}</a>";
 		}, $prod_users ) )
 	);
-	$users = get_users( 'amapress_role=referent_producteur' );
-	$state['03_users'][] = amapress_get_check_state(
+	$users                = get_users( 'amapress_role=referent_producteur' );
+	$state['03_users'][]  = amapress_get_check_state(
 		count( $users ) == 0 ? 'error' : 'success',
 		'Compte Référent Producteur',
 		'Créer les comptes des Référents Producteurs',
@@ -374,14 +374,251 @@ function amapress_echo_and_check_amapress_state_page() {
 		}, $subscribable_contrat_instances ) )
 	);
 
-	$state['05_import']   = array();
-	$state['05_import'][] = amapress_get_check_state(
+	$state['05_content'] = array();
+	foreach ( AmapressEntities::getMenu() as $item ) {
+		if ( isset( $item['type'] ) && $item['type'] == 'panel' && isset( $item['id'] ) ) {
+			$page_id = $item['id'];
+			if ( ! empty( $item['tabs'] ) ) {
+				foreach ( $item['tabs'] as $tab_id => $tab ) {
+					if ( isset( $tab['id'] ) ) {
+						$tab_id = $tab['id'];
+					}
+					if ( ! empty( $tab['options'] ) ) {
+						foreach ( $tab['options'] as $option ) {
+							if ( empty( $option['id'] ) ) {
+								continue;
+							}
+							if ( empty( $option['name'] ) ) {
+								continue;
+							}
+
+							$val = Amapress::getOption( $option['id'] );
+							if ( ! is_string( $val ) ) {
+								continue;
+							}
+
+							if ( preg_match( '/\[\[[^\]]+\]\]/', $val ) ) {
+								$tab_href = add_query_arg( [
+										'page' => $page_id,
+										'tab'  => $tab_id,
+									], admin_url( 'admin.php' ) ) . '#' . $option['id'];
+
+								$state['05_content'][] = amapress_get_check_state(
+									'error',
+									$option['name'],
+									'Information à compléter',
+									$tab_href
+								);
+							}
+						}
+					}
+				}
+			}
+			if ( ! empty( $item['options'] ) ) {
+				foreach ( $item['options'] as $option ) {
+					if ( empty( $option['id'] ) ) {
+						continue;
+					}
+					if ( empty( $option['name'] ) ) {
+						continue;
+					}
+
+					$val = Amapress::getOption( $option['id'] );
+					if ( ! is_string( $val ) ) {
+						continue;
+					}
+
+					if ( preg_match( '/\[\[[^\]]+\]\]/', $val ) ) {
+						$tab_href = add_query_arg( [
+								'page' => $page_id,
+							], admin_url( 'admin.php' ) ) . '#' . $option['id'];
+
+						$state['05_content'][] = amapress_get_check_state(
+							'error',
+							$option['name'],
+							'Information [[à compléter]]' . ( ! empty( $option['desc'] ) ? ' : ' . $option['desc'] : '' ),
+							$tab_href
+						);
+					}
+				}
+			}
+		}
+	}
+	foreach (
+		get_pages( [
+			'post_status' => 'publish'
+		] ) as $page
+	) {
+		/** @var WP_Post $page */
+		if ( preg_match( '/\[\[[^\]]+\]\]/', $page->post_content ) ) {
+			$state['05_content'][] = amapress_get_check_state(
+				'error',
+				$page->post_title,
+				'Information [[à compléter]] sur la page ' . $page->post_title,
+				admin_url( 'post.php?post=' . $page->ID . '&action=edit' )
+			);
+		}
+		if ( empty( trim( strip_tags( $page->post_content ) ) ) ) {
+			$state['05_content'][] = amapress_get_check_state(
+				'warning',
+				$page->post_title,
+				'Compléter le contenu de la page ' . $page->post_title,
+				admin_url( 'post.php?post=' . $page->ID . '&action=edit' )
+			);
+		}
+	}
+
+	$front_page_edit_href          = $static_front_id ? admin_url( 'post.php?post=' . $static_front_id . '&action=edit' ) : '';
+	$amapien_mes_infos_edit_href   = admin_url( 'post.php?post=' . Amapress::getOption( 'mes-infos-page' ) . '&action=edit' );
+	$amapien_mes_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'mes-paniers-intermittents-page' ) . '&action=edit' );
+	$amapien_les_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'paniers-intermittents-page' ) . '&action=edit' );
+	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
+	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
+	$needed_shortcodes             = [
+		'trombinoscope'                 => [
+			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
+			'href'  => $new_private_page_href,
+			'categ' => '3/ Info utiles',
+		],
+		'recettes'                      => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les recettes',
+			'href'  => $new_page_href,
+			'categ' => '1/ Site public',
+		],
+		'produits'                      => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les produits',
+			'href'  => $new_page_href,
+			'categ' => '1/ Site public',
+		],
+		'inscription-distrib'           => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de s\'inscrire comme responsable de distribution',
+			'href'  => $new_private_page_href,
+			'categ' => '4/ Gestion AMAP',
+		],
+		'echanger-paniers-list'         => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de proposer leurs paniers en cas d\'absence',
+			'href'  => $new_private_page_href,
+			'categ' => '5/ Espace intermittents',
+		],
+		'intermittents-inscription'     => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens d\'inscrire des intermittents',
+			'href'  => $new_private_page_href,
+			'categ' => '5/ Espace intermittents',
+		],
+		'intermittents-desinscription'  => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux intermittents de se désinscrire',
+			'href'  => $new_private_page_href,
+			'categ' => '5/ Espace intermittents',
+		],
+		'amapress-post-its'             => [
+			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les post-its de gestion de l\'AMAP',
+			'href'  => $front_page_edit_href,
+			'categ' => '2/ Page Accueil - Infos utiles',
+		],
+		'amapien-edit-infos'            => [
+			'desc'  => 'Ajouter le shortcode %s à la page "Mes infos" pour permettre aux amapiens d\'éditer leur profil',
+			'href'  => $amapien_mes_infos_edit_href,
+			'categ' => '4/ Profil amapien',
+		],
+		'amapien-paniers-intermittents' => [
+			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai proposé"',
+			'href'  => $amapien_mes_paniers_edit_href,
+			'categ' => '5/ Espace intermittents',
+		],
+		'les-paniers-intermittents'     => [
+			'desc'  => 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers',
+			'href'  => $amapien_les_paniers_edit_href,
+			'categ' => '5/ Espace intermittents',
+		],
+		'intermittent-paniers'          => [
+			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"',
+			'href'  => $amapien_mes_paniers_edit_href,
+			'categ' => '5/ Espace intermittents',
+		],
+		'amapiens-map'                  => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
+			'href'  => $new_private_page_href,
+			'categ' => '3/ Info utiles',
+		],
+		'amapiens-role-list'            => [
+			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
+			'href'  => $new_private_page_href,
+			'categ' => '3/ Info utiles',
+		],
+		'agenda-url'                    => [
+			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
+			'href'  => $amapien_mes_infos_edit_href,
+			'categ' => '4/ Profil amapien',
+		],
+		'nous-contacter'                => [
+			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
+			'href'  => $new_page_href,
+			'categ' => '1/ Site public',
+		],
+		'front_next_events'             => [
+			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
+			'href'  => $front_page_edit_href,
+			'categ' => '2/ Page Accueil - Infos utiles',
+		],
+		'front_produits'                => [
+			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
+			'href'  => $front_page_edit_href,
+			'categ' => '2/ Page Accueil - Infos utiles',
+		],
+		'front_nous_trouver'            => [
+			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
+			'href'  => $front_page_edit_href,
+			'categ' => '2/ Page Accueil - Infos utiles',
+		],
+		'front_default_grid'            => [
+			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
+			'href'  => $front_page_edit_href,
+			'categ' => '2/ Page Accueil - Infos utiles',
+		],
+	];
+	uasort( $needed_shortcodes, function ( $a, $b ) {
+		return strcmp( $a['categ'], $b['categ'] );
+	} );
+	foreach (
+		get_pages( [
+			'post_status' => 'publish'
+		] ) as $page
+	) {
+		foreach ( $needed_shortcodes as $shortcode => $desc ) {
+			/** @var WP_Post $page */
+			if ( preg_match( '/\[' . $shortcode . '/', $page->post_content ) ) {
+				unset( $needed_shortcodes[ $shortcode ] );
+			}
+		}
+	}
+	if ( ! isset( $needed_shortcodes['front_default_grid'] ) ) {
+		unset( $needed_shortcodes['front_next_events'] );
+		unset( $needed_shortcodes['front_produits'] );
+		unset( $needed_shortcodes['front_nous_trouver'] );
+	}
+	if ( ! isset( $needed_shortcodes['front_next_events'] )
+	     || ! isset( $needed_shortcodes['front_produits'] )
+	     || ! isset( $needed_shortcodes['front_nous_trouver'] ) ) {
+		unset( $needed_shortcodes['front_default_grid'] );
+	}
+	foreach ( $needed_shortcodes as $shortcode => $desc ) {
+		$state['05_content'][] = amapress_get_check_state(
+			'do',
+			$desc['categ'] . ' : ' . $shortcode,
+			sprintf( $desc['desc'], $shortcode ),
+			$desc['href']
+		);
+	}
+	//$state['05_content'][];
+
+	$state['06_import']   = array();
+	$state['06_import'][] = amapress_get_check_state(
 		'do',
 		'Amapiens',
 		'Importer des amapiens',
 		admin_url( 'admin.php?page=amapress_import_page' )
 	);
-	$state['05_import'][] = amapress_get_check_state(
+	$state['06_import'][] = amapress_get_check_state(
 		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
 		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des adhésions',
