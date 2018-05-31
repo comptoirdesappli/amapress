@@ -105,6 +105,15 @@ function amapress_register_entities_contrat( $entities ) {
 				$message = 'Veuillez ajouter des quantités au contrat';
 				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 			}
+			$adhs = AmapressContrats::get_active_adhesions( $post->ID );
+			if ( ! empty( $adhs ) ) {
+				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
+				if ( ! isset( $_REQUEST['adv'] ) ) {
+					echo '<p>Si vous voulez malgrès tout éditer le contrat, utiliser le lien suivant : <a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Editer quand même.</a></p>';
+				} else {
+					echo '<p style="color: red">/!\ Edition après saisie des inscription /!\</p>';
+				}
+			}
 		},
 		'row_actions'     => array(
 			'renew' => array(
@@ -204,23 +213,6 @@ function amapress_register_entities_contrat( $entities ) {
 							'required'    => true,
 							'group'       => 'Status',
 							'desc'        => 'Contrat principal',
-						),
-						'edit_adv'              => array(
-							'bare'        => true,
-							'type'        => 'custom',
-							'show_column' => false,
-							'group'       => 'Status',
-							'custom'      => function ( $post_id ) {
-								$adhs = AmapressContrats::get_active_adhesions( $post_id );
-
-								if ( ! empty( $adhs ) ) {
-									if ( ! isset( $_REQUEST['adv'] ) ) {
-										echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Editer tout</a></p>';
-									} else {
-										echo '<p style="color: red">Edition après saisie des inscription</p>';
-									}
-								}
-							},
 						),
 						'liste_dates'           => array(
 							'name'             => amapress__( 'Calendrier des distributions' ),
