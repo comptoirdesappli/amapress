@@ -377,9 +377,11 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['05_content'] = array();
 	foreach ( AmapressEntities::getMenu() as $item ) {
 		if ( isset( $item['type'] ) && $item['type'] == 'panel' && isset( $item['id'] ) ) {
-			$page_id = $item['id'];
+			$page_name = isset( $item['settings']['name'] ) ? $item['settings']['name'] . ' - ' : '';
+			$page_id   = $item['id'];
 			if ( ! empty( $item['tabs'] ) ) {
 				foreach ( $item['tabs'] as $tab_id => $tab ) {
+					$tab_name = ( isset( $tab['name'] ) ? $tab['name'] : $tab_id ) . ' - ';
 					if ( isset( $tab['id'] ) ) {
 						$tab_id = $tab['id'];
 					}
@@ -405,7 +407,7 @@ function amapress_echo_and_check_amapress_state_page() {
 
 								$state['05_content'][] = amapress_get_check_state(
 									'error',
-									$option['name'],
+									$page_name . $tab_name . $option['name'],
 									'Information à compléter',
 									$tab_href
 								);
@@ -435,7 +437,7 @@ function amapress_echo_and_check_amapress_state_page() {
 
 						$state['05_content'][] = amapress_get_check_state(
 							'error',
-							$option['name'],
+							$page_name . $option['name'],
 							'Information [[à compléter]]' . ( ! empty( $option['desc'] ) ? ' : ' . $option['desc'] : '' ),
 							$tab_href
 						);
@@ -605,7 +607,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		$state['05_content'][] = amapress_get_check_state(
 			'do',
 			$desc['categ'] . ' : ' . $shortcode,
-			sprintf( $desc['desc'], $shortcode ),
+			sprintf( $desc['desc'], '[' . $shortcode . ']' ),
 			$desc['href']
 		);
 	}
