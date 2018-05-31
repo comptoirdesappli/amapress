@@ -13,19 +13,19 @@ function amapress_get_custom_content_contrat_details( $content, $subview ) {
 	} else {
 		$contrat_instances = AmapressContrats::get_active_contrat_instances_by_contrat( get_the_ID() );
 		if ( count( $contrat_instances ) == 0 ) {
-			return Amapress::getOption( 'contrat_info_anonymous' );
+			return Amapress::getContactInfos();
 		}
 		$contrat_instance = $contrat_instances[0];
 	}
 
 	if ( ! amapress_is_user_logged_in() ) {
-		return Amapress::getOption( 'contrat_info_anonymous' );
+		return Amapress::getContactInfos();
 	}
 
 	$contrat_cnt = $contrat_instance->getContratRaw();
 	if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
 //        $ret = '<p>Ce contrat n\'est pas encore souscritible en ligne</p>';
-		$ret = Amapress::getOption( 'contrat_info_anonymous' );
+		$ret = Amapress::getContactInfos();
 
 		return $ret;
 	}

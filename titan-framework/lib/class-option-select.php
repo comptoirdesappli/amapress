@@ -311,7 +311,7 @@ jQuery(function() {
 			if ( ! $multiple ) {
 				$val  = array_shift( $val );
 				$href = $this->getEditLink( $val );
-				if ( ! empty( $href ) ) {
+				if ( ! empty( $href ) && ( ! isset( $this->settings['edit_link'] ) || false != $this->settings['edit_link'] ) ) {
 					$label = isset( $options[ $val ] ) ? "Editer {$options[$val]}" : 'Editer';
 					echo $this->wrapEditLink( $val, $label );
 				}

@@ -1491,7 +1491,9 @@ class AmapressEntities {
 									'id'        => 'preinscription-form',
 									'name'      => 'Formulaire de préinscription',
 									'type'      => 'select-posts',
+									'edit_link' => false,
 									'post_type' => Amapress::WPCF7_POST_TYPE,
+									'desc'      => 'Sélectionner une formulaire de contact dans la liste ci-dessus. Vous les éditer depuis la <a href="' . admin_url( 'admin.php?page=wpcf7' ) . '">page suivante</a>. Ce formulaire sera automatiquement ajouté aux infos de contact ci-dessous.',
 								),
 //                                array(
 //                                    'type' => 'save',
@@ -1501,8 +1503,8 @@ class AmapressEntities {
 									'name'       => 'Information de contact pour les contrats',
 									'type'       => 'editor',
 									'capability' => 'edit_contrat_instances',
-									'default'    => '<p><strong>NOUS RENCONTRER</strong><br />Si vous souhaitez nous rencontrer, vous pouvez nous rendre visite lors d’une distribution :<br /> – à compléter</p>
-<p><strong>NOUS CONTACTER</strong><br /> Et pour nous contacter, vous pouvez nous envoyer un message à :<br /> <a href="mailto:' . get_option( 'admin_email' ) . '">' . get_option( 'admin_email' ) . '</a></p>'
+									'default'    => '<p><strong>NOUS RENCONTRER</strong><br />Si vous souhaitez nous rencontrer, vous pouvez nous rendre visite lors d’une distribution :<br /> – [[à compléter contact distribution]]</p>
+<p><strong>NOUS CONTACTER</strong><br /> Et pour nous contacter, vous pouvez nous envoyer un message à :<br /> [[à définir avec l\'adresse de contact]]<br /> <a href="mailto:' . get_option( 'admin_email' ) . '">' . get_option( 'admin_email' ) . '</a></p>'
 								),
 								array(
 									'type' => 'save',

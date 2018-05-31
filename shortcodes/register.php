@@ -139,7 +139,7 @@ function amapress_register_shortcodes() {
 	} );
 
 	amapress_register_shortcode( 'nous-contacter', function ( $atts ) {
-		return Amapress::getOption( 'contrat_info_anonymous' );
+		return Amapress::getContactInfos();
 	} );
 
 	amapress_register_shortcode( 'agenda-url', function ( $atts ) {

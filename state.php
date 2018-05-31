@@ -181,7 +181,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'Ajouter le texte de présentation de votre Amap',
 		admin_url( 'post.php?post=' . $static_front_id . '&action=edit' )
 	);
-	$contact_page         = Amapress::getOption( 'contrat_info_anonymous' );
+	$contact_page         = Amapress::getContactInfos();
 	$state['02_config'][] = amapress_get_check_state(
 		empty( $contact_page ) || strpos( $contact_page, '[[' ) !== false ? 'warning' : 'success',
 		'Contenu de la page de contact',
