@@ -16,6 +16,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		'show_link'         => true,
 		'bare'              => false,
 		'link_text'         => 'Voir les (%%count%%) éléments',
+		'empty_text'        => '',
 		'show_table'        => true,
 		'include_columns'   => array(),
 		'exclude_columns'   => array(),
@@ -81,6 +82,8 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 				$edit      = admin_url( 'edit.php' );
 				$link_text = esc_html( str_replace( '%%count%%', $count, $this->settings['link_text'] ) );
 				echo "<a href='$edit?{$query}'>{$link_text}</a>";
+			} else if ( ! empty( $this->settings['empty_text'] ) ) {
+				echo $this->settings['empty_text'];
 			}
 		}
 

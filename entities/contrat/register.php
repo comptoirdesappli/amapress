@@ -77,6 +77,18 @@ function amapress_register_entities_contrat( $entities ) {
 				),
 				'searchable'        => true,
 			),
+			'contrats'   => array(
+				'name'            => amapress__( 'Contrats' ),
+				'show_column'     => true,
+				'group'           => 'Contrats',
+				'include_columns' => array(
+					'title',
+					'amapress_contrat_instance_name',
+					'amapress_contrat_instance_type',
+				),
+				'type'            => 'related-posts',
+				'query'           => 'post_type=amps_contrat_inst&amapress_date=active&amapress_contrat=%%id%%',
+			),
 		),
 	);
 	$entities['contrat_instance'] = array(
@@ -138,7 +150,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
-			'model'      => array(
+			'model'         => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -156,13 +168,13 @@ function amapress_register_entities_contrat( $entities ) {
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'searchable'        => true,
 			),
-			'name'       => array(
+			'name'          => array(
 				'name'  => amapress__( 'Nom complémentaire' ),
 				'group' => 'Gestion',
 				'type'  => 'text',
 				'desc'  => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
 			),
-			'nb_visites' => array(
+			'nb_visites'    => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => 'Information',
 				'type'        => 'number',
@@ -171,7 +183,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
-			'type'       => array(
+			'type'          => array(
 				'name'          => amapress__( 'Type de contrat' ),
 				'type'          => 'select',
 				'options'       => array(
@@ -593,7 +605,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'quant_editor'   => array(
+			'quant_editor'  => array(
 				'name'        => amapress__( 'Quantités' ),
 				'type'        => 'custom',
 				'group'       => 'Gestion',
@@ -604,14 +616,29 @@ jQuery(function($) {
 				'show_column' => false,
 //                'desc' => 'Quantités',
 			),
-			'max_adherents'  => array(
+			'max_adherents' => array(
 				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
 				'type'     => 'number',
 				'group'    => 'Gestion',
 				'required' => true,
 				'desc'     => 'Nombre maximum d\'amapiens',
 			),
-			'contrat'        => array(
+			'inscriptions'  => array(
+				'name'        => amapress__( 'Inscriptions' ),
+				'show_column' => true,
+				'show_table'  => false,
+				'empty_text'  => 'Pas encore d\'inscriptions',
+//				'include_columns' => array(
+//					'title',
+//					'amapress_adhesion_quantite',
+//					'amapress_adhesion_lieu',
+//					'amapress_adhesion_date_debut',
+//					'amapress_total_amount',
+//				),
+				'type'        => 'related-posts',
+				'query'       => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
+			),
+			'contrat'       => array(
 				'name'       => amapress__( 'Contrat en ligne' ),
 				'type'       => 'editor',
 //                'required' => true,

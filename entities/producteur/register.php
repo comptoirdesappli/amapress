@@ -23,36 +23,17 @@ function amapress_register_entities_producteur( $entities ) {
 			'remove'  => array( 'mine' ),
 			'exp_csv' => true,
 		),
+		'groups'                  => array(
+			'Infos' => [
+				'context' => 'side',
+			],
+		),
 		'fields'                  => array(
-//			'resume'               => array(
-//				'name'       => amapress__( 'Présentation du producteur' ),
-//				'type'       => 'editor',
-//				'group'      => 'Information',
-//				'required'   => true,
-//				'desc'       => 'Présentation du producteur',
-//				'searchable' => true,
-//			),
-//			'presentation'         => array(
-//				'name'       => amapress__( 'Histoire - En savoir plus' ),
-//				'type'       => 'editor',
-//				'group'      => 'Information',
-//				'required'   => true,
-//				'desc'       => 'Histoire - En savoir plus',
-//				'searchable' => true,
-//			),
-//			'historique'           => array(
-//				'name'       => amapress__( 'Historique' ),
-//				'type'       => 'editor',
-//				'group'      => 'Information',
-//				'required'   => true,
-//				'desc'       => 'Historique',
-//				'searchable' => true,
-//			),
 			'nom_exploitation'     => array(
 				'name'       => amapress__( 'Nom de l\'exploitation' ),
 				'type'       => 'text',
 				'desc'       => 'Nom de la ferme',
-				'group'      => 'Emplacement',
+				'group'      => '1/ Emplacement',
 				'searchable' => true,
 			),
 			'adresse_exploitation' => array(
@@ -60,30 +41,30 @@ function amapress_register_entities_producteur( $entities ) {
 				'type'         => 'address',
 				'use_as_field' => true,
 				'desc'         => 'Adresse de la ferme',
-				'group'        => 'Emplacement',
+				'group'        => '1/ Emplacement',
 				'searchable'   => true,
 			),
 			'acces'                => array(
 				'name'       => amapress__( 'Accès' ),
 				'type'       => 'editor',
-				'group'      => 'Emplacement',
+				'group'      => '1/ Emplacement',
 				'desc'       => 'Accès',
 				'searchable' => true,
 			),
-			'user'      => array(
+			'user'                 => array(
 				'name'       => amapress__( 'Compte utilisateur du producteur' ),
 				'type'       => 'select-users',
 				'role'       => 'producteur',
-				'group'      => 'Gestion',
+				'group'      => 'Infos',
 				'required'   => true,
 				'desc'       => 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
 				'searchable' => true,
 			),
-			'referent'  => array(
+			'referent'             => array(
 				'name'         => amapress__( 'Référent' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_access_admin_roles(),
-				'group'        => 'Référents',
+				'group'        => '2/ Référents',
 //                'required' => true,
 				'desc'         => 'Référent',
 				'searchable'   => true,
@@ -91,11 +72,11 @@ function amapress_register_entities_producteur( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'referent2' => array(
+			'referent2'            => array(
 				'name'         => amapress__( 'Référent 2' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_access_admin_roles(),
-				'group'        => 'Référents',
+				'group'        => '2/ Référents',
 //                'required' => true,
 				'desc'         => 'Référent 2',
 				'searchable'   => true,
@@ -103,11 +84,11 @@ function amapress_register_entities_producteur( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'referent3' => array(
+			'referent3'            => array(
 				'name'         => amapress__( 'Référent 3' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_access_admin_roles(),
-				'group'        => 'Référents',
+				'group'        => '2/ Référents',
 //                'required' => true,
 				'desc'         => 'Référent 3',
 				'searchable'   => true,
@@ -115,34 +96,28 @@ function amapress_register_entities_producteur( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-//            'actions' => array(
-//                'name' => amapress__('Actions'),
-//                'type' => 'action-buttons',
-//                'group' => 'Actions',
-//                'desc' => '',
-//                'buttons' => array(
-//                    'contrats' => array(
-//                        'text' => 'Voir ses contrats',
-//                        'href' => admin_url('edit.php?post_type=amps_contrat_inst&amapress_producteur=%%id%%'),
-//                    )
-//                )
-//            ),
-//            'contrats' => array(
-//                'name' => amapress__('Contrats'),
-//                'type' => 'related-posts',
-//                'group' => 'Contrats',
-//                'desc' => '',
-//                'link_text' => 'Voir ses %%count%% contrats',
-//                'query' => 'post_type=amps_contrat_inst&amapress_producteur=%%id%%',
-//            ),
-//            'other_prods' => array(
-//                'name' => amapress__('Other prods'),
-//                'type' => 'related-users',
-//                'group' => 'Other prods',
-//                'desc' => '',
-//                'link_text' => 'Voir ses %%count%% autres',
-//                'query' => 'role=producteur',
-//            ),
+			'presentations'        => array(
+				'name'            => amapress__( 'Présentations web' ),
+				'show_column'     => true,
+				'group'           => '3/ Présentations et contrats',
+				'include_columns' => array(
+					'title',
+				),
+				'type'            => 'related-posts',
+				'query'           => 'post_type=amps_contrat&amapress_producteur=%%id%%',
+			),
+			'contrats'             => array(
+				'name'            => amapress__( 'Contrats' ),
+				'show_column'     => true,
+				'group'           => '3/ Présentations et contrats',
+				'include_columns' => array(
+					'title',
+					'amapress_contrat_instance_name',
+					'amapress_contrat_instance_type',
+				),
+				'type'            => 'related-posts',
+				'query'           => 'post_type=amps_contrat_inst&amapress_date=active&amapress_producteur=%%id%%',
+			),
 		),
 		'help_edit'               => array(),
 		'help_view'               => array(),
