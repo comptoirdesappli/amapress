@@ -106,10 +106,28 @@ jQuery(function() {
 </script>',
 			),
 			'date_subst'        => array(
-				'name'  => amapress__( 'Date de remplacement' ),
-				'type'  => 'date',
-				'desc'  => 'Date de distribution de remplacement pour les panier dont le <strong>Status</strong> est <strong>Reporté</strong>',
-				'group' => 'Changement',
+				'name'    => amapress__( 'Date de remplacement' ),
+				'type'    => 'select',
+				'options' => function ( $option ) {
+					$ret = [ '' => '--Aucune--' ];
+					/** @var TitanFrameworkOptionSelect $option */
+					$panier = AmapressPanier::getBy( $option->getPostID() );
+					if ( ! $panier ) {
+						return $ret;
+					}
+					$dists = AmapressDistribution::get_distributions(
+						Amapress::add_a_month( $panier->getDate(), - 2 ),
+						Amapress::add_a_month( $panier->getDate(), 2 ),
+						'ASC' );
+
+					foreach ( $dists as $dist ) {
+						$ret[ strval( $dist->getDate() ) ] = date_i18n( 'd/m/Y', $dist->getDate() );
+					}
+
+					return $ret;
+				},
+				'desc'    => 'Date de distribution de remplacement pour les panier dont le <strong>Status</strong> est <strong>Reporté</strong>',
+				'group'   => 'Changement',
 			),
 		),
 	);
