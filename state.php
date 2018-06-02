@@ -84,12 +84,13 @@ function amapress_check_plugin_install( $plugin_slug, $plugin_name, $message_if_
 
 function amapress_echo_and_check_amapress_state_page() {
 	$labels              = array(
-		'01_plugins' => '1/ Plugins',
-		'02_config'  => '2/ Configuration',
-		'03_users'   => '3/ Comptes utilisateurs',
-		'04_posts'   => '4/ Votre AMAP',
-		'05_content' => '5/ Contenus à compléter',
-		'06_import'  => '6/ Import CSV',
+		'01_plugins'    => '1/ Plugins',
+		'02_config'     => '2/ Configuration',
+		'03_users'      => '3/ Comptes utilisateurs',
+		'04_posts'      => '4/ Votre AMAP',
+		'05_content'    => '5/ Contenus à compléter',
+		'06_shortcodes' => '6/ Shortcodes à configurer',
+		'07_import'     => '7/ Import CSV',
 	);
 	$state               = array();
 	$state['01_plugins'] = array();
@@ -293,6 +294,20 @@ function amapress_echo_and_check_amapress_state_page() {
 
 	$state['04_posts'] = array();
 
+	$amap_roles          = amapress_get_amap_roles();
+	$state['04_posts'][] = amapress_get_check_state(
+		count( $amap_roles ) == 0 ? 'warning' : 'success',
+		'Rôle descriptif des membres du collectif',
+		'Créer et <a href="' . admin_url( 'users.php?amapress_role=collectif' ) . '">associer des rôles descriptifs aux utilisateurs</a> (par ex "Responsable des distribution", "Boîte contact", "Accueil des nouveaux")',
+		admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
+		implode( ', ', array_map( function ( $t ) {
+			/** @var WP_Term $t */
+			$l = admin_url( 'users.php?amps_amap_role_category=' . $t->slug );
+
+			return "<a href='{$l}'>{$t->name}</a>";
+		}, $amap_roles ) )
+	);
+
 	$posts               = get_posts( array(
 		'post_type'      => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 		'posts_per_page' => - 1,
@@ -368,11 +383,29 @@ function amapress_echo_and_check_amapress_state_page() {
 		'Créer au moins un modèle de contrat par contrat pour permettre au amapien d\'adhérer',
 		admin_url( 'post-new.php?post_type=' . AmapressContrat_instance::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $dn ) {
+			/** @var AmapressContrat_instance $dn */
 			$l = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			return "<a href='{$l}'>{$dn->getTitle()}</a>";
 		}, $subscribable_contrat_instances ) )
 	);
+
+	$contrat_to_renew = get_posts( 'post_type=amps_contrat_inst&amapress_date=renew' );
+	if ( ! empty( $contrat_to_renew ) ) {
+		$state['04_posts'][] = amapress_get_check_state(
+			'error',
+			'Contrats à renouveller',
+			'Les contrats suivants sont à renouveller/clôturer pour la saison suivante',
+			admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=renew' ),
+			implode( ', ', array_map( function ( $dn ) {
+				/** @var WP_Post $dn */
+				$l = admin_url( 'post.php?post=' . $dn->ID . '&action=edit' );
+				$t = esc_html( $dn->post_title );
+
+				return "<a href='{$l}'>{$t}</a>";
+			}, $contrat_to_renew ) )
+		);
+	}
 
 	$state['05_content'] = array();
 	foreach ( AmapressEntities::getMenu() as $item ) {
@@ -603,8 +636,9 @@ function amapress_echo_and_check_amapress_state_page() {
 	     || ! isset( $needed_shortcodes['front_nous_trouver'] ) ) {
 		unset( $needed_shortcodes['front_default_grid'] );
 	}
+	$state['06_shortcodes'] = array();
 	foreach ( $needed_shortcodes as $shortcode => $desc ) {
-		$state['05_content'][] = amapress_get_check_state(
+		$state['06_shortcodes'][] = amapress_get_check_state(
 			'do',
 			$desc['categ'] . ' : ' . $shortcode,
 			sprintf( $desc['desc'], '[' . $shortcode . ']' ),
@@ -613,14 +647,14 @@ function amapress_echo_and_check_amapress_state_page() {
 	}
 	//$state['05_content'][];
 
-	$state['06_import']   = array();
-	$state['06_import'][] = amapress_get_check_state(
+	$state['07_import']   = array();
+	$state['07_import'][] = amapress_get_check_state(
 		'do',
 		'Amapiens',
 		'Importer des amapiens',
 		admin_url( 'admin.php?page=amapress_import_page' )
 	);
-	$state['06_import'][] = amapress_get_check_state(
+	$state['07_import'][] = amapress_get_check_state(
 		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
 		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des adhésions',
