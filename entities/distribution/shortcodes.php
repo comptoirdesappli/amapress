@@ -19,12 +19,17 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 	$user_id = amapress_current_user_id();
 
-	$next_distribs = AmapressDistribution::getNextDistribs( null, 2, null );
+	$lieux = count( Amapress::get_lieu_ids() );
+	$weeks = 2;
+	do {
+		$next_distribs = AmapressDistribution::getNextDistribs( null, $weeks, null );
+		$weeks         += 1;
+	} while ( $weeks < 10 && count( $next_distribs ) < 2 * $lieux );
 
 	foreach ( $next_distribs as $dist ) {
-//		if ( ! $is_resp_amap && ! in_array( $user_id, $dist->getResponsablesIds() ) ) {
-//			continue;
-//		}
+		if ( empty( $dist->getContratIds() ) ) {
+			continue;
+		}
 
 		$content = '';
 		$lieu    = $dist->getLieu();

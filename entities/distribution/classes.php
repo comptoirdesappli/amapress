@@ -612,6 +612,12 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $c->getModel()->getTitle();
 					}, $this->getContrats()
 				) );
+			case 'jour_date_distrib':
+				return date_i18n( 'l d/m/Y', $this->getDate() );
+			case 'date_distrib':
+				return date_i18n( 'd/m/Y', $this->getDate() );
+			case 'jour_distrib':
+				return date_i18n( 'l', $this->getDate() );
 			case 'lien_distrib':
 				return Amapress::makeLink( $this->getPermalink() );
 			case 'lien_distribution_title':
