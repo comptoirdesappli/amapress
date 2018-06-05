@@ -1358,6 +1358,110 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 </style>';
 }
 
+add_action( 'tf_custom_admin_amapress_action_new_coadherent', function () {
+	$email      = $_POST['email'];
+	$last_name  = $_POST['last_name'];
+	$first_name = $_POST['first_name'];
+	$address    = $_POST['address'];
+	$tel        = $_POST['tel'];
+
+	$co_id = amapress_create_user_if_not_exists( $email, $first_name, $last_name, $address, $tel, 'user' );
+
+	$user_id = intval( $_REQUEST['user_id'] );
+	$user    = AmapressUser::getBy( $user_id );
+	$user->addCoadherent( $co_id );
+
+	wp_redirect_and_exit( add_query_arg( 'user_id', $user_id ) );
+} );
+function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $option ) {
+	if ( isset( $_REQUEST['user_id'] ) ) {
+		$user_id = intval( $_REQUEST['user_id'] );
+		$user    = AmapressUser::getBy( $user_id );
+
+		echo '<h4>3/ Adhérent principal</h4>';
+		echo '<hr />';
+		echo $user->getDisplay();
+		echo '<hr />';
+		echo '<h4>4/ Coadhérents :</h4>';
+
+		foreach ( AmapressContrats::get_related_users( $user_id ) as $co_id ) {
+			$co = AmapressUser::getBy( $co_id );
+			$co->getDisplay();
+		}
+	} else {
+		echo '<form method="post" id="new_coadherent">';
+		echo '<input type="hidden" name="action" value="new_coadherent" />';
+
+		echo '<h4>1/ Choisir l\'adhérent principal</h4>';
+		$options       = [];
+		$all_user_adhs = AmapressContrats::get_active_adhesions();
+		/** @var WP_User $user */
+		foreach ( get_users() as $user ) {
+			$user_adhs            = from( $all_user_adhs )
+				->count( function ( $a ) use ( $user ) {
+					/** @var AmapressAdhesion $a */
+					return $a->getAdherentId() == $user->ID;
+				} );
+			$options[ $user->ID ] = $user->display_name . '[' . $user->user_email . '] (' . $user_adhs . ' contrat(s))';
+		}
+
+		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete required" data-placeholder="Sélectionner un utilisateur">';
+		tf_parse_select_options( $options, isset( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : null );
+		echo '</select><br />';
+
+		echo '<p><strong>2/ Saisir les coordonnées du coadhérent :</strong></p>';
+
+		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
+		echo '<table style="min-width: 50%">';
+		echo '<tr>';
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email: </label></th>
+<td><input style="width: 100%" type="text" id="email" name="email" class="required email" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="last_name">Nom: </label></th>
+<td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="first_name">Prénom: </label></th>
+<td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="tel">Téléphone: </label></th>
+<td><input style="width: 100%" type="text" id="tel" name="tel" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
+<td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
+		echo '</tr>';
+		echo '</table>';
+		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Ajouter le coadhérent" />';
+		echo '</form>';
+	}
+	echo '<hr />';
+	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Associer un autre amapien</a></p>';
+	echo '<script type="text/javascript">jQuery(function() {
+    jQuery("#user_id").select2({
+        allowClear: true,
+		  escapeMarkup: function(markup) {
+		return markup;
+	},
+		  templateResult: function(data) {
+		return jQuery("<span>"+data.text+"</span>");
+	},
+		  templateSelection: function(data) {
+		return jQuery("<span>"+data.text+"</span>");
+	},
+    });
+    jQuery("form#new_coadherent").validate({
+                onkeyup: false,
+        }
+    );
+});
+</script>
+<style type="text/css">
+	.error {
+		font-weight: bold;
+		color: red;
+	}
+</style>';
+}
+
 add_action( 'wp_ajax_check_email_exists', function () {
 	$email = $_POST['email'];
 	$user  = get_user_by( 'email', $email );

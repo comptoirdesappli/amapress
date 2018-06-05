@@ -336,7 +336,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'              => array(
+						'Ajouter une inscription'         => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -350,7 +350,21 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                        => array(
+						'Ajouter un coadhérent'           => array(
+							'id'        => 'add_coadherent',
+							'desc'      => '',
+							'use_form'  => false,
+							'use_table' => false,
+							'options'   => array(
+								array(
+									'id'     => 'add_user_coinscr',
+									'type'   => 'custom',
+									'bare'   => true,
+									'custom' => 'amapress_create_ooadhesion_assistant',
+								)
+							),
+						),
+						'Renouvèlement'                   => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -365,7 +379,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques'      => array(
+						'Mails - Envoi liste des chèques' => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),

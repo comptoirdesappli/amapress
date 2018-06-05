@@ -51,6 +51,7 @@ class AmapressUser extends TitanUserEntity {
 
 	//TODO gérer l'enregistrement de AMAP_ROLES avant le premier appel wp_set_current_user
 	private $amap_roles_errored = false;
+
 	private function ensure_amap_roles() {
 		if ( null !== $this->amap_roles && ! $this->amap_roles_errored ) {
 			return;
@@ -67,6 +68,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		if ( ! in_array( $this->getID(), self::$user_ids_with_roles ) ) {
 			$this->amap_roles         = [];
 			$this->amap_roles_errored = false;
+
 			return;
 		}
 
@@ -118,7 +120,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 
 			//référent producteur
 			foreach ( AmapressContrats::get_contrats() as $contrat ) {
-				$prod                = $contrat->getProducteur();
+				$prod = $contrat->getProducteur();
 				if ( ! $prod ) {
 					continue;
 				}
@@ -356,7 +358,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		if ( empty( $phone_numbers ) ) {
 			return '';
 		}
-		$ret     = array();
+		$ret = array();
 		foreach ( $phone_numbers as $tel_norm => $tel_display ) {
 			$ret[] = '<a href="' . ( $sms ? 'sms' : 'tel' ) . ':' . $tel_norm . '">' . esc_html( $tel_display ) . '</a>';
 		}
@@ -519,6 +521,21 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				} );
 		}
 	}
+
+	public function addCoadherent( $coadhrent_id ) {
+		foreach ( [ '1', '2', '3' ] as $id ) {
+			if ( empty( $this->custom[ 'amapress_user_co-adherent-' . $id ] ) ) {
+				$this->custom[ 'amapress_user_co-adherent-' . $id ] = $coadhrent_id;
+				update_user_meta( $this->ID, 'amapress_user_co-adherent-' . $id, $coadhrent_id );
+				self::$coadherents = null;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function getPrincipalUserIds() {
 		$this->ensureInitCoadherents();
 		if ( null === $this->principal_user_ids ) {
@@ -586,10 +603,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 //			$this->wrapIfNotEmpty(
 //				'<div class="user-sms">SMS: ', $this->getTelTo( true, true ), '</div>' ) :
 //			'' );
-		$ret   .= ( amapress_check_info_visibility( $args['show_adresse'], 'adresse', $this ) ?
+		$ret .= ( amapress_check_info_visibility( $args['show_adresse'], 'adresse', $this ) ?
 			$this->wrapIfNotEmpty( '<div class="user-adresse">', $this->getFormattedAdresseHtml(), '</div>' ) :
 			'' );
-		$ret   .= '</div>';
+		$ret .= '</div>';
 
 		return $ret;
 	}

@@ -553,6 +553,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
 			),
 			array(
+				'id'         => 'amapress_add_coinscription',
+				'title'      => 'Ajouter un coadhérent',
+				'capability' => 'manage_contrats',
+				'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_coadherent' ),
+			),
+			array(
 				'id'         => 'amapress_quantite_contrats',
 				'title'      => 'Quantités prochaine distrib',
 				'capability' => 'edit_distribution',
