@@ -494,7 +494,11 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					return '';
 				}
 
-				return $this->getAdherent()->getDisplay();
+				return $this->getAdherent()->getDisplay(
+					[
+						'show_avatar' => 'false',
+					]
+				);
 			case 'adherent-message':
 				return $this->getAdherentMessage();
 			case 'adherent-cancel-message':
@@ -521,7 +525,11 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					$user = $this->getRepreneur();
 				}
 
-				return $user->getDisplay();
+				return $user->getDisplay(
+					[
+						'show_avatar' => 'false',
+					]
+				);
 			case 'contrat':
 				if ( ! $this->hasPaniers() ) {
 					return '';
