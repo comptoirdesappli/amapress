@@ -17,6 +17,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		'bare'              => false,
 		'link_text'         => 'Voir les (%%count%%) éléments',
 		'empty_text'        => '',
+		'show_on'           => 'edit-only',
 		'show_table'        => true,
 		'include_columns'   => array(),
 		'exclude_columns'   => array(),

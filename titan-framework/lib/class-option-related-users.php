@@ -17,6 +17,7 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 		'show_link'         => true,
 		'link_text'         => 'Voir les (%%count%%) utilisateurs',
 		'show_table'        => true,
+		'show_on'           => 'edit-only',
 		'bare'              => false,
 		'include_columns'   => array(),
 		'exclude_columns'   => array(),

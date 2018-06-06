@@ -207,3 +207,7 @@ select.paiements_details {
 #wp-admin-bar-amapress_publish_admin_bar, #wp-admin-bar-amapress_update_user_admin_bar {
     vertical-align: middle !important;
 }
+
+#createuser .tf-form-table {
+    table-layout: auto !important;
+}
