@@ -246,7 +246,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			$line['tel'] = implode( '<br/>', array_unique( array_map( function ( $user ) {
 				$adh = AmapressUser::getBy( $user );
 
-				return $adh->getTelTo() . ( ! empty( $adh->getCoAdherents() ) ? '<br/>' . esc_html( $adh->getCoAdherents() ) : '' );
+				return $adh->getTelTo() . ( ! empty( $adh->getCoAdherentsInfos() ) ? '<br/>' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
 			}, $users ) ) );
 		}
 		if ( $show_emails ) {
