@@ -162,6 +162,19 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'       => 'Co-adhérent(s) - sans mail - autres infos',
 				'searchable' => true,
 			),
+			'all-coadherents'    => array(
+				'name'            => amapress__( 'Co-adhérents' ),
+				'show_column'     => false,
+				'include_columns' => array(
+					'name',
+					'email',
+					'role',
+					'amapress_user_telephone',
+					'amapress_user_adresse',
+				),
+				'type'            => 'related-users',
+				'query'           => 'amapress_coadherents=%%id%%',
+			),
 //            'co-adherents-mail' => array(
 //                'name' => amapress__('Co-adhérent - email'),
 //                'type' => 'text',
@@ -223,19 +236,6 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'type'            => 'related-posts',
 				'query'           => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
-			),
-			'all-coadherents' => array(
-				'name'            => amapress__( 'Co-adhérents' ),
-				'show_column'     => false,
-				'include_columns' => array(
-					'name',
-					'email',
-					'role',
-					'amapress_user_telephone',
-					'amapress_user_adresse',
-				),
-				'type'            => 'related-users',
-				'query'           => 'amapress_coadherents=%%id%%',
 			),
 			'contrats-past'   => array(
 				'name'            => amapress__( 'Contrats passés' ),
@@ -418,7 +418,9 @@ function amapress_can_delete_user( $can, $user_id ) {
 		wp_cache_set( $key, $used_users );
 	}
 
-	return ! in_array( $user_id, $used_users ) && count( AmapressContrats::get_related_users( $user_id ) ) <= 1;
+	$related_users = AmapressContrats::get_related_users( $user_id );
+
+	return ! in_array( $user_id, $used_users ) && count( $related_users ) < ( in_array( $related_users, $user_id ) ? 2 : 1 );
 }
 
 //function amapress_import_user_data_validate($v, $k) {
