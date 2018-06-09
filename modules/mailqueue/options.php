@@ -204,11 +204,6 @@ function amapress_mailing_queue_mail_list( $id, $invalid = false ) {
 //    var_dump($emails);
 //    var_dump($data);
 	return amapress_get_datatable( $id, $columns, $data,
-		array( 'paging' => false ),
-		array(
-			Amapress::DATATABLES_EXPORT_EXCEL,
-			Amapress::DATATABLES_EXPORT_PDF,
-			Amapress::DATATABLES_EXPORT_PRINT
-		) );
+		array( 'paging' => false ) );
 //            }
 }

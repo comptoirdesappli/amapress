@@ -481,5 +481,5 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 			'responsive' => false,
 //			'init_as_html' => true,
 		],
-		array( Amapress::DATATABLES_EXPORT_EXCEL, Amapress::DATATABLES_EXPORT_PDF ) );
+		array( Amapress::DATATABLES_EXPORT_EXCEL ) );
 }

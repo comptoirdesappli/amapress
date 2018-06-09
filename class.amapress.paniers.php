@@ -253,7 +253,6 @@ class AmapressPaniers {
 				array( 'paging' => false, 'searching' => false ),
 				array(
 					Amapress::DATATABLES_EXPORT_EXCEL,
-					Amapress::DATATABLES_EXPORT_PDF,
 					Amapress::DATATABLES_EXPORT_PRINT
 				) );
 //            }
@@ -916,7 +915,6 @@ class AmapressPaniers {
 				),
 				array(
 					Amapress::DATATABLES_EXPORT_EXCEL,
-					Amapress::DATATABLES_EXPORT_PDF,
 					Amapress::DATATABLES_EXPORT_PRINT
 				) );
 		}

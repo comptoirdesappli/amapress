@@ -880,7 +880,6 @@ function amapress_get_contrat_quantite_datatable(
 			),
 			array(
 				Amapress::DATATABLES_EXPORT_EXCEL,
-				Amapress::DATATABLES_EXPORT_PDF,
 				Amapress::DATATABLES_EXPORT_PRINT
 			) );
 	}

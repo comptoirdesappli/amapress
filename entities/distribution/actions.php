@@ -491,7 +491,6 @@ table, td, th {
 					),
 					array(
 						Amapress::DATATABLES_EXPORT_EXCEL,
-						Amapress::DATATABLES_EXPORT_PDF,
 						Amapress::DATATABLES_EXPORT_PRINT
 					) );
 			}
