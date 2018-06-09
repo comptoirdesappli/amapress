@@ -211,3 +211,34 @@ select.paiements_details {
 #createuser .tf-form-table {
     table-layout: auto !important;
 }
+
+#wpadminbar #wp-admin-bar-amapress .ab-icon:before {
+    display: block;
+    content: "\f511";
+    top: 3px;
+}
+
+@media screen and (max-width: 782px) {
+    #wp-admin-bar-amapress_search_user_admin_bar #amapress_search_user_text {
+        width: 55px;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress {
+        display: block;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress .ab-label {
+        display: none;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress .ab-icon:before {
+        line-height: 46px;
+        height: 46px !important;
+        text-align: center;
+        width: 52px;
+        display: block;
+        content: "\f511";
+        top: 0;
+        font-size: 28px;
+    }
+}

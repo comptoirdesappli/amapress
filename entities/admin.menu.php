@@ -172,7 +172,7 @@ jQuery(function() {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_search_user_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<input id="amapress_search_user_text" style="display: inline" type="text" placeholder="Recherche utilisateur" class=\'amapress_search_user form-control\' />
+			'title'  => '<input id="amapress_search_user_text" style="display: inline" type="text" placeholder="Amapien ?" class=\'amapress_search_user form-control\' />
 <span role="button" id="amapress_search_user_btn" style="display: inline" class="amapress_search_user dashicons-before dashicons-search"></span>' . $style . $script,
 			'href'   => '#',
 		) );

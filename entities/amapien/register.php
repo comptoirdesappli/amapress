@@ -224,7 +224,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name' => amapress__( 'Contrats et coadhérents' ),
 				'type' => 'heading',
 			),
-			'contrats'        => array(
+			'contrats'           => array(
 				'name'            => amapress__( 'Contrats' ),
 				'show_column'     => true,
 				'include_columns' => array(
@@ -237,7 +237,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'            => 'related-posts',
 				'query'           => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
 			),
-			'contrats-past'   => array(
+			'contrats-past'      => array(
 				'name'            => amapress__( 'Contrats passés' ),
 				'show_column'     => false,
 				'include_columns' => array(
@@ -534,32 +534,41 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		'href'       => admin_url( 'edit.php?post_type=amps_panier&amapress_date=active' ),
 	);
 
-	$items[] = array(
+	$items[]    = array(
 		'id'        => 'amapress-site-name',
 		'title'     => 'Bienvenu sur le site de ' . get_bloginfo( 'name' ),
 		'condition' => function () {
 			return ! amapress_can_access_admin();
 		}
 	);
-	$items[] = array(
-		'id'        => 'amapress',
-		'title'     => 'Amapress',
-		'condition' => function () {
-			return amapress_can_access_admin();
-		},
-		'items'     => array(
-			array(
-				'id'         => 'amapress_add_inscription',
-				'title'      => 'Ajouter une inscription',
-				'capability' => 'manage_contrats',
-				'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
-			),
-			array(
-				'id'         => 'amapress_add_coinscription',
-				'title'      => 'Ajouter un coadhérent',
-				'capability' => 'manage_contrats',
-				'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_coadherent' ),
-			),
+	$main_items = array(
+		array(
+			'id'         => 'amapress_add_inscription',
+			'title'      => 'Ajouter une inscription',
+			'capability' => 'manage_contrats',
+			'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
+		),
+		array(
+			'id'         => 'amapress_add_coinscription',
+			'title'      => 'Ajouter un coadhérent',
+			'capability' => 'manage_contrats',
+			'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_coadherent' ),
+		),
+	);
+
+	$inscr_distrib_href = Amapress::get_inscription_distrib_page_href();
+	if ( ! empty( $inscr_distrib_href ) ) {
+		$main_items[] = array(
+			'id'         => 'amapress_inscription_distribution',
+			'title'      => 'Inscription aux distributions',
+			'capability' => 'edit_distribution',
+			'href'       => $inscr_distrib_href,
+		);
+	}
+
+	$main_items = array_merge(
+		$main_items,
+		array(
 			array(
 				'id'         => 'amapress_quantite_contrats',
 				'title'      => 'Quantités prochaine distrib',
@@ -612,13 +621,15 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'capability' => 'edit_users',
 				'href'       => admin_url( 'admin.php?page=amapress_collectif' ),
 			),
-//admin.php?page=amapress_collectif
-//			array(
-//				'id' => 'amapress_',
-//				'title' => '',
-//				'href' => admin_url(),
-//			),
-		),
+		)
+	);
+	$items[]    = array(
+		'id'        => 'amapress',
+		'title'     => '<span class="ab-icon"></span><span class="ab-label">Amapress</span>',
+		'condition' => function () {
+			return amapress_can_access_admin();
+		},
+		'items'     => $main_items,
 	);
 
 	return $items;
