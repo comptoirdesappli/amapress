@@ -221,8 +221,9 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 			),
 			'head_amapress6'     => array(
-				'name' => amapress__( 'Contrats et coadhérents' ),
-				'type' => 'heading',
+				'name'    => amapress__( 'Contrats et coadhérents' ),
+				'type'    => 'heading',
+				'show_on' => 'edit-only',
 			),
 			'contrats'           => array(
 				'name'            => amapress__( 'Contrats' ),
