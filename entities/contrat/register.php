@@ -121,9 +121,9 @@ function amapress_register_entities_contrat( $entities ) {
 			if ( ! empty( $adhs ) ) {
 				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
 				if ( ! isset( $_REQUEST['adv'] ) ) {
-					echo '<p>Si vous voulez malgrès tout éditer le contrat, utiliser le lien suivant : <a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Editer quand même.</a></p>';
+					echo '<p>Si vous voulez malgrès tout éditer le contrat, utiliser le lien suivant : <a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition.</a></p>';
 				} else {
-					echo '<p style="color: red">/!\ Edition après saisie des inscription /!\</p>';
+					echo '<p style="color: red">/!\ Edition après saisie des inscriptions /!\</p>';
 				}
 			}
 		},
