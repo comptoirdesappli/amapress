@@ -25,8 +25,9 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 
 	// Default settings specific to this option
 	public $defaultSecondarySettings = array(
-		'date' => true,
-		'time' => false,
+		'date'        => true,
+		'time'        => false,
+		'column_link' => false,
 	);
 
 	private static $date_epoch;
@@ -227,21 +228,35 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 		$this->echoOptionFooter( false );
 	}
 
-	public function columnDisplayValue( $post_id ) {
-		$dateFormat  = self::$default_date_format . ' ' . self::$default_time_format;
-		$placeholder = self::$default_date_placeholder . ' ' . self::$default_time_placeholder;
-		if ( $this->settings['date'] && ! $this->settings['time'] ) {
-			$dateFormat  = self::$default_date_format;
-			$placeholder = self::$default_date_placeholder;
-		} else if ( ! $this->settings['date'] && $this->settings['time'] ) {
-			$dateFormat  = self::$default_time_format;
-			$placeholder = self::$default_time_placeholder;
+	protected function wrapColumnLink( $display_html, $post_id ) {
+		$column_link = $this->settings['column_link'];
+		$href        = null;
+		if ( is_callable( $column_link, false ) ) {
+			$href = call_user_func( $column_link, $this, $post_id );
 		}
 
-		printf( '<span class="input-date%s%s">%s</span>',
-			( $this->settings['date'] ? ' date' : '' ),
-			( $this->settings['time'] ? ' time' : '' ),
-			( $this->getValue( $post_id ) > 0 ) ? date( $dateFormat, $this->getValue( $post_id ) ) : ''
+		if ( ! empty( $href ) ) {
+			return "<a class='option-link' href='$href' target='_blank'>$display_html</a>";
+		} else {
+			return $display_html;
+		}
+	}
+
+	public function columnDisplayValue( $post_id ) {
+		$dateFormat = self::$default_date_format . ' ' . self::$default_time_format;
+		if ( $this->settings['date'] && ! $this->settings['time'] ) {
+			$dateFormat = self::$default_date_format;
+		} else if ( ! $this->settings['date'] && $this->settings['time'] ) {
+			$dateFormat = self::$default_time_format;
+		}
+
+		$this->wrapColumnLink(
+			printf( '<span class="input-date%s%s">%s</span>',
+				( $this->settings['date'] ? ' date' : '' ),
+				( $this->settings['time'] ? ' time' : '' ),
+				( $this->getValue( $post_id ) > 0 ) ? date( $dateFormat, $this->getValue( $post_id ) ) : ''
+			),
+			$post_id
 		);
 	}
 

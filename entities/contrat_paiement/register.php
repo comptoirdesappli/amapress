@@ -53,6 +53,11 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'placeholder'    => 'Toutes les dates',
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
+				'column_link'  => function ( $option, $post_id ) {
+					$value = $option->getValue( $post_id );
+
+					return add_query_arg( 'amapress_date', date( 'Y-m-d', $value ) );
+				}
 			),
 			'date_emission' => array(
 				'name'         => amapress__( 'Date d\'émission' ),

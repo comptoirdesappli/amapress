@@ -322,7 +322,7 @@ jQuery(function($) {
 				'desc'        => 'Message',
 				'csv'         => false,
 			),
-			'adherent2'        => array(
+			'adherent2' => array(
 				'name'         => amapress__( 'Co-Adhérent 1' ),
 				'type'         => 'select-users',
 				'required'     => false,
@@ -935,6 +935,7 @@ function amapress_get_paiement_table_by_dates(
 		array(
 			'show_next_distrib'       => true,
 			'show_contact_producteur' => true,
+			'show_all_dates'          => true,
 			'for_pdf'                 => false,
 		)
 	);
@@ -942,8 +943,10 @@ function amapress_get_paiement_table_by_dates(
 	$for_pdf         = $options['for_pdf'];
 	$lien_export_pdf = '';
 	if ( ! $for_pdf ) {
-		$lien_export_pdf = '<p><a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en PDF</a></p>';
-		$lien_export_pdf .= '<p><a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en Excel</a></p>';
+		$lien_export_pdf = '<p>';
+		$lien_export_pdf .= '<a class="button button-primary" href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en PDF</a>';
+		$lien_export_pdf .= '<a class="button button-primary" href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en Excel</a>';
+		$lien_export_pdf .= '</p>';
 	}
 
 	$title      = 'Calendrier des paiements';
@@ -951,7 +954,7 @@ function amapress_get_paiement_table_by_dates(
 	if ( ! empty( $lieu_id ) ) {
 		$lieu       = AmapressLieu_distribution::getBy( $lieu_id );
 		$title      .= ' - ' . $lieu->getTitle();
-		$lieu_title = '<h4>' . esc_html( $lieu->getTitle() ) . '</h4>';
+		$lieu_title = '<h1>' . esc_html( $lieu->getTitle() ) . '</h1>';
 	}
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, null, $lieu_id );
@@ -969,6 +972,11 @@ function amapress_get_paiement_table_by_dates(
 		}, $paiements );
 	$dates = array_merge( $dates, $contrat_instance->getPaiements_Liste_dates() );
 	$dates = array_unique( $dates );
+	if ( ! $options['show_all_dates'] ) {
+		$dates = array_filter( $dates, function ( $d ) {
+			return $d > Amapress::start_of_day( amapress_time() );
+		} );
+	}
 	sort( $dates );
 	$emetteurs = array_map(
 		function ( $p ) use ( $paiements ) {
@@ -1009,14 +1017,21 @@ function amapress_get_paiement_table_by_dates(
 				$all_emetteurs
 			);
 
+			$date_debut = date_i18n( 'd/m/Y', $p->getAdhesion()->getDate_debut() );
+			if ( $p->getAdhesion()->hasDate_fin() ) {
+				$date_debut .= '>' . date_i18n( 'd/m/Y', $p->getAdhesion()->getDate_fin() );
+			}
+
 			return array(
-				'emetteur'  => $p->getEmetteur(),
-				'banque'    => $p->getBanque(),
-				'last_name' => $p->getAdhesion()->getAdherent()->getUser()->last_name,
-				'lieu'      => $p->getAdhesion()->getLieu()->getShortName(),
-				'quantite'  => $p->getAdhesion()->getContrat_quantites_Codes_AsString(),
-				'label'     => implode( ', ', $all_emetteurs ),
-				'href'      => $p->getAdhesion()->getAdminEditLink(),
+				'emetteur'       => $p->getEmetteur(),
+				'banque'         => $p->getBanque(),
+				'last_name'      => $p->getAdhesion()->getAdherent()->getUser()->last_name,
+				'lieu'           => $p->getAdhesion()->getLieu()->getShortName(),
+				'quantite'       => $p->getAdhesion()->getContrat_quantites_Codes_AsString(),
+				'label'          => implode( ', ', $all_emetteurs ),
+				'href'           => $p->getAdhesion()->getAdminEditLink(),
+				'date_debut'     => $date_debut,
+				'date_debut_raw' => $p->getAdhesion()->getDate_debut()
 			);
 		}, $paiements );
 	$emitters  = array();
@@ -1049,6 +1064,11 @@ function amapress_get_paiement_table_by_dates(
 		);
 	$columns[] =
 		array(
+			'title' => 'Début',
+			'data'  => 'date_debut',
+		);
+	$columns[] =
+		array(
 			'title' => 'Emetteur',
 			'data'  => 'emetteur',
 		);
@@ -1065,7 +1085,7 @@ function amapress_get_paiement_table_by_dates(
 
 	foreach ( $dates as $date ) {
 		$columns[] = array(
-			'title' => date_i18n( 'd/m/Y', $date ),
+			'title' => Amapress::makeLink( admin_url( 'edit.php?post_type=amps_cont_pmt&amapress_contrat_inst=' . $contrat_instance_id . '&amapress_date=' . date( 'Y-m-d', $date ) . '&amapress_lieu=' . $lieu_id ), date_i18n( 'd/m/Y', $date ), true, true ),
 			'data'  => "date_{$date}",
 		);
 	}
@@ -1076,11 +1096,12 @@ function amapress_get_paiement_table_by_dates(
 		$emetteur_label     = $emetteur_obj['label'];
 		$emetteur_href      = $emetteur_obj['href'];
 		$row                = array(
-			'emetteur'  => Amapress::makeLink( $emetteur_href, $emetteur_label, false ),
-			'last_name' => $emetteur_obj['last_name'],
-			'lieu'      => $emetteur_obj['lieu'],
-			'banque'    => $emetteur_obj['banque'],
-			'quantite'  => $emetteur_obj['quantite'],
+			'emetteur'   => Amapress::makeLink( $emetteur_href, $emetteur_label, false ),
+			'last_name'  => esc_html( $emetteur_obj['last_name'] ),
+			'lieu'       => esc_html( $emetteur_obj['lieu'] ),
+			'banque'     => esc_html( $emetteur_obj['banque'] ),
+			'quantite'   => esc_html( $emetteur_obj['quantite'] ),
+			'date_debut' => Amapress::makeLink( admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $contrat_instance_id . '&amapress_date=' . date( 'Y-m', $emetteur_obj['date_debut_raw'] ) . '&amapress_lieu=' . $lieu_id ), $emetteur_obj['date_debut'], true, true ),
 		);
 		$emetteur_paiements = array_filter(
 			$paiements,
@@ -1104,8 +1125,16 @@ function amapress_get_paiement_table_by_dates(
 				$emetteur_paiements2 = array_values( $emetteur_paiements );
 				$contrat_adhesion    = array_shift( $emetteur_paiements2 )->getAdhesion();
 			}
-			if ( $contrat_adhesion && ( $date < $contrat_adhesion->getDate_debut() || $date > $contrat_adhesion->getDate_fin() ) ) {
-				$val = '###';
+			if ( $contrat_adhesion && $date < $contrat_adhesion->getDate_debut() ) {
+				$val = [
+					'value' => '>>>',
+					'style' => 'background-color: #ccc;',
+				];
+			} else if ( $contrat_adhesion && $date > $contrat_adhesion->getDate_fin() ) {
+				$val = [
+					'value' => '<<<',
+					'style' => 'background-color: #ccc;',
+				];
 			} else {
 				$val = implode( ',', array_map(
 						function ( $p ) use ( $emetteur_obj ) {
@@ -1159,18 +1188,22 @@ function amapress_get_paiement_table_by_dates(
 		       $id,
 		       $columns, $data,
 		       array(
-			       'bSort'        => true,
-			       'paging'       => false,
-			       'searching'    => true,
-			       'bAutoWidth'   => true,
-			       'responsive'   => false,
-			       'scrollX'      => true,
-			       'fixedColumns' => array( 'leftColumns' => 1 ),
-			       'initComplete' => $fn,
-			       'init_as_html' => true,
-			       'no_script'    => $for_pdf,
-			       'dom'          => 'Bfrtip',
-			       'buttons'      => [],
+			       'bSort'          => true,
+			       'paging'         => false,
+			       'searching'      => true,
+			       'bAutoWidth'     => true,
+			       'responsive'     => false,
+			       'scrollX'        => true,
+			       'scrollY'        => '250px',
+			       'scrollCollapse' => true,
+			       'cell-border'    => true,
+			       'fixedColumns'   => array( 'leftColumns' => 1 ),
+			       'fixedHeader'    => true,
+			       //			       'initComplete' => $fn,
+			       'init_as_html'   => true,
+			       'no_script'      => $for_pdf,
+//			       'dom'          => 'Bfrtip',
+//			       'buttons'      => [],
 		       )
 	       );
 	if ( $for_pdf ) {
@@ -1179,7 +1212,7 @@ a {
 	color: black;
 	text-decoration: none;
 }
-table, td, th { 
+table, td { 
 	border: 1px solid black; 
 	border-collapse: collapse; 
 	padding: 2px; 
@@ -1188,42 +1221,49 @@ table, td, th {
 .odd { 
 	background-color: #EEEEEE; 
 }
+th {
+	border: 1px solid black; 
+	border-collapse: collapse; 
+	padding: 2px; 
+	font-size: 8pt;
+	font-weight: bold;
+}
 </style>';
 	} else {
-		$ret .= '
-<script type="text/javascript">
-function ' . $fn . '() {
-var table = jQuery(\'#' . $id . '\').DataTable();
-new jQuery.fn.dataTable.Buttons( table, {
-    buttons: [
-        \'excel\',
-        {
-            extend: \'print\',
-            text: \'Imprimer\',
-            title: \'' . $title . '\',
-            autoPrint: false,
-            exportOptions: {
-                columns: \':visible\',
-                stripHtml: false,
-            },
-            customize: function (win) {
-                jQuery(win.document.body).css(\'background-color\', \'#fff\');
-                jQuery(win.document.body).find(\'table\').addClass(\'display\');/*.css(\'font-size\', \'9px\');*/
-                jQuery(win.document.body).find(\'table td\').css(\'border\', \'1px solid black\');
-                jQuery(win.document.body).find(\'tr:nth-child(odd) td\').each(function(index){
-                    jQuery(this).css(\'background-color\',\'#eee\');
-                });
-                jQuery(win.document.body).find(\'a\').css(\'color\',\'black\').css(\'text-decoration\',\'none\');
-            }
-        }
-    ]
-} );
-    table.buttons( 0, null ).container().prependTo(
-        table.table().container()
-    );
-}
-</script>
-</div>';
+//		$ret .= '
+//<script type="text/javascript">
+//function ' . $fn . '() {
+//var table = jQuery(\'#' . $id . '\').DataTable();
+//new jQuery.fn.dataTable.Buttons( table, {
+//    buttons: [
+//        \'excel\',
+//        {
+//            extend: \'print\',
+//            text: \'Imprimer\',
+//            title: \'' . $title . '\',
+//            autoPrint: false,
+//            exportOptions: {
+//                columns: \':visible\',
+//                stripHtml: false,
+//            },
+//            customize: function (win) {
+//                jQuery(win.document.body).css(\'background-color\', \'#fff\');
+//                jQuery(win.document.body).find(\'table\').addClass(\'display\');/*.css(\'font-size\', \'9px\');*/
+//                jQuery(win.document.body).find(\'table td\').css(\'border\', \'1px solid black\');
+//                jQuery(win.document.body).find(\'tr:nth-child(odd) td\').each(function(index){
+//                    jQuery(this).css(\'background-color\',\'#eee\');
+//                });
+//                jQuery(win.document.body).find(\'a\').css(\'color\',\'black\').css(\'text-decoration\',\'none\');
+//            }
+//        }
+//    ]
+//} );
+//    table.buttons( 0, null ).container().prependTo(
+//        table.table().container()
+//    );
+//}
+//</script>';
+		$ret .= '</div>';
 	}
 
 	return $ret;

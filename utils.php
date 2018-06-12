@@ -68,6 +68,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			'info'         => false,
 			'nowrap'       => true,
 			'data'         => $data,
+			'cell-border'  => false,
 			'init_as_html' => false,
 			'no_script'    => false,
 			'table-layout' => 'auto',
@@ -88,8 +89,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 		$init = ".on('init.dt', $initComplete)";
 	}
 
-	$nowrap = $options['nowrap'] ? 'nowrap' : '';
-	$style  = "table-layout:{$options['table-layout']}";
+	$nowrap     = $options['nowrap'] ? 'nowrap' : '';
+	$cellborder = $options['cell-border'] ? 'cell-border' : '';
+	$style      = "table-layout:{$options['table-layout']}";
 
 	unset( $options['table-layout'] );
 	if ( ! empty( $exports ) ) {
@@ -121,10 +123,19 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 				$data_v      = isset( $d[ $data_k ] ) ? $d[ $data_k ] : '';
 				$data_sort_v = isset( $d[ $data_sort_k ] ) ? $d[ $data_sort_k ] : '';
 
+				$style = '';
+				if ( is_array( $data_v ) ) {
+					$style  = ! empty( $data_v['style'] ) ? $data_v['style'] : '';
+					$data_v = isset( $data_v['value'] ) ? $data_v['value'] : '';
+				}
+				if ( is_array( $data_sort_v ) ) {
+					$data_sort_v = isset( $data_sort_v['value'] ) ? $data_sort_v['value'] : '';
+				}
+
 				if ( $data_v != $data_sort_v ) {
-					$table_content .= '<td data-sort="' . esc_attr( $data_sort_v ) . '">' . $data_v . '</td>';
+					$table_content .= '<td style="' . $style . '" data-sort="' . esc_attr( $data_sort_v ) . '">' . $data_v . '</td>';
 				} else {
-					$table_content .= '<td>' . $data_v . '</td>';
+					$table_content .= '<td style="' . $style . '">' . $data_v . '</td>';
 				}
 			}
 			$table_content .= '</tr>';
@@ -134,7 +145,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
-	$ret .= "<table id='$id' class='display $nowrap' style='$style' width='100%' cellspacing='0'>$table_content</table>";
+	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='$style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	if ( ! $options['no_script'] ) {
 		$ret .= "<script type='text/javascript'>\n";
