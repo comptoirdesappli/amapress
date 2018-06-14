@@ -5,8 +5,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class AmapressAmapien_paiement extends Amapress_EventBase {
+	private static $entities_cache = array();
 	const INTERNAL_POST_TYPE = 'amps_cont_pmt';
 	const POST_TYPE = 'contrat_paiement';
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressAmapien_paiement
+	 */
+	public static function getBy( $post_or_id, $no_cache = false ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressAmapien_paiement' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) || $no_cache ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressAmapien_paiement( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
 
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );

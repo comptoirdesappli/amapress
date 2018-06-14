@@ -853,7 +853,11 @@ function amapress_get_contrat_quantite_datatable(
 
 	$next_distrib_text = '';
 	if ( $options['show_next_distrib'] ) {
-		$next_distrib_text = '<p>Prochaine distribution: ' . ( $dist ? ( $dist && Amapress::end_of_week( amapress_time() ) > $dist->getDate() ? '<strong>Cette semaine</strong> - ' : '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : 'non planifiée' ) . '</p>';
+		$next_distrib_text = '<p>Prochaine distribution: ' .
+		                     ( $dist ? Amapress::makeLink( $dist->getPermalink(), (
+		                                                                          Amapress::end_of_week( amapress_time() ) > $dist->getDate() ?
+			                                                                          '<strong>Cette semaine</strong> - ' :
+			                                                                          '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) ) : 'non planifiée' ) . '</p>';
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {

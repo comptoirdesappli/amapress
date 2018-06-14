@@ -475,16 +475,18 @@ function amapress_paiements_views() {
 
 	$lieux    = Amapress::get_lieux();
 	$contrats = AmapressContrats::get_active_contrat_instances();
-	foreach ( $lieux as $lieu ) {
-		amapress_add_view_button(
-			$ret, 'for_' . $lieu->ID,
-			"post_type=amps_cont_pmt&amapress_lieu={$lieu->ID}",
-			$lieu->getShortName() );
-		foreach ( $contrats as $contrat ) {
-			amapress_add_view_button(
-				$ret, 'for_' . $contrat->ID . '_' . $lieu->ID,
-				"post_type=amps_cont_pmt&amapress_contrat_inst={$contrat->ID}&amapress_lieu={$lieu->ID}",
-				$lieu->getShortName() . ' - ' . $contrat->getTitle() );
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+//		amapress_add_view_button(
+//			$ret, 'for_' . $lieu->ID,
+//			"post_type=amps_cont_pmt&amapress_lieu={$lieu->ID}",
+//			$lieu->getShortName() );
+			foreach ( $contrats as $contrat ) {
+				amapress_add_view_button(
+					$ret, 'for_' . $contrat->ID . '_' . $lieu->ID,
+					"post_type=amps_cont_pmt&amapress_contrat_inst={$contrat->ID}&amapress_lieu={$lieu->ID}",
+					$lieu->getShortName() . ' - ' . $contrat->getTitle() );
+			}
 		}
 	}
 

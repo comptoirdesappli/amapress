@@ -250,41 +250,18 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			$dateFormat = self::$default_time_format;
 		}
 
-		$this->wrapColumnLink(
-			printf( '<span class="input-date%s%s">%s</span>',
+		echo $this->wrapColumnLink(
+			sprintf( '<span class="input-date%s%s">%s</span>',
 				( $this->settings['date'] ? ' date' : '' ),
 				( $this->settings['time'] ? ' time' : '' ),
-				( $this->getValue( $post_id ) > 0 ) ? date( $dateFormat, $this->getValue( $post_id ) ) : ''
+				( $this->getValue( $post_id ) > 0 ) ? date_i18n( $dateFormat, $this->getValue( $post_id ) ) : ''
 			),
 			$post_id
 		);
 	}
 
-	public function echoFilter( $args ) {
-		$placeholder = empty( $args['placeholder'] ) ? '— ' . __( 'Tous', TF_I18NDOMAIN ) . ' —' : $args['placeholder'];
-		$name        = $args['name'];
-
-		if ( is_callable( $args['custom_options'], false ) ) {
-			$options[] = $placeholder;
-			$options   = array_merge( $options, call_user_func( $args['custom_options'], $args ) );
-		} else if ( isset( $args['type'] ) ) {
-			//TODO what options ?
-//            switch ($args['type']) {
-//                case 'month':
-//            }
-//            $month_
-		}
-
-		if ( count( $options ) <= 2 ) {
-			return;
-		}
-
-		?><select id="<?php echo $name ?>"
-                  name="<?php echo $name; ?>"
-                  data-placeholder="<?php echo esc_attr( $placeholder ) ?>"
-        ><?php
-		tf_parse_select_options( $options, isset( $_REQUEST[ $name ] ) ? $_REQUEST[ $name ] : null );
-		?></select><?php
+	public function columnExportValue( $post_id ) {
+		echo ( $this->getValue( $post_id ) > 0 ) ? $this->getValue( $post_id ) : '';
 	}
 
 

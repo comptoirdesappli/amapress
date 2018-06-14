@@ -178,6 +178,9 @@ function amapress_users_export_prepare_value( $value, $field, $user ) {
 function amapress_get_formatter( $post_type, $key, $type, $label ) {
 	if ( $type == 'date' ) {
 		return function ( $value ) use ( $label, $post_type ) {
+			if ( intval( $value ) <= 0 ) {
+				return '';
+			}
 			$ents    = AmapressEntities::getPostTypes();
 			$pt_ents = wp_parse_args( $ents[ $post_type ], array( 'date' => true, 'time' => false ) );
 			if ( $pt_ents['date'] && ! $pt_ents['time'] ) {

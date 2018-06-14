@@ -79,6 +79,67 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'autocomplete' => true,
 				'custom_save'  => 'amapress_contrat_paiement_set_contrat_instance',
 				'searchable'   => true,
+				'show_column'  => false,
+			),
+			'contrat'       => array(
+				'name'   => amapress__( 'Contrat' ),
+				'type'   => 'custom',
+				'hidden' => true,
+				'column' => function ( $post_id ) {
+					$paiement = AmapressAmapien_paiement::getBy( $post_id );
+					if ( ! $paiement || ! $paiement->getAdhesion() ) {
+						return '';
+					}
+
+					return Amapress::makeLink(
+						$paiement->getAdhesion()->getContrat_instance()->getAdminEditLink(),
+						$paiement->getAdhesion()->getContrat_instance()->getTitle() );
+				},
+//				'top_filter'   => array(
+//					'name'           => 'amapress_contrat_inst',
+//					'placeholder'    => 'Tous les contrats',
+//					'custom_options' => function($args) {
+//						$ret = [];
+//						$contrats = AmapressContrats::get_active_contrat_instances();
+//						usort($contrats, function($a, $b) {
+//							return strcmp($a->getTitle(), $b->getTitle());
+//						});
+//						foreach ($contrats as $contrat) {
+//							$ret[strval($contrat->ID)] = $contrat->getTitle();
+//						}
+//						return $ret;
+//					}
+//				),
+			),
+			'lieu'          => array(
+				'name'       => amapress__( 'Lieu' ),
+				'type'       => 'custom',
+				'hidden'     => true,
+				'column'     => function ( $post_id ) {
+					$paiement = AmapressAmapien_paiement::getBy( $post_id );
+					if ( ! $paiement || ! $paiement->getAdhesion() ) {
+						return '';
+					}
+
+					return Amapress::makeLink( add_query_arg( 'amapress_lieu', $paiement->getAdhesion()->getLieuId() ),
+						$paiement->getAdhesion()->getLieu()->getLieuTitle() );
+				},
+				'top_filter' => array(
+					'name'           => 'amapress_lieu',
+					'placeholder'    => 'Tous les lieux',
+					'custom_options' => function ( $args ) {
+						$ret   = [];
+						$lieux = Amapress::get_lieux();
+						usort( $lieux, function ( $a, $b ) {
+							return strcmp( $a->getTitle(), $b->getTitle() );
+						} );
+						foreach ( $lieux as $lieu ) {
+							$ret[ strval( $lieu->ID ) ] = $lieu->getTitle();
+						}
+
+						return $ret;
+					}
+				),
 			),
 			'status'        => array(
 				'name'         => amapress__( 'Statut' ),
