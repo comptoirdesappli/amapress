@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.44.35
+Version: 0.44.36
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 68 );
-define( 'AMAPRESS_VERSION', '0.44.35' );
+define( 'AMAPRESS_VERSION', '0.44.36' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -81,7 +81,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
 		} );
 	}
-	wp_mail( $to, $subject, wpautop( $message ), $headers, $attachments );
+	wp_mail( $to, $subject, wptexturize( wpautop( wp_unslash( $message ) ) ), $headers, $attachments );
 //    remove_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 }
 
