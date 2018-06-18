@@ -61,6 +61,20 @@ function amapress_can_access_admin() {
 //    return $redirect_to;
 //}
 
+function amapress_clean_invalid_login() {
+	if ( ! empty( $_GET['login'] ) ) {
+		$_GET['login'] = rtrim( wp_unslash( $_GET['login'] ), ">" );
+	}
+	if ( ! empty( $_REQUEST['login'] ) ) {
+		$_REQUEST['login'] = rtrim( wp_unslash( $_REQUEST['login'] ), ">" );
+	}
+	if ( ! empty( $_POST['login'] ) ) {
+		$_POST['login'] = rtrim( wp_unslash( $_POST['login'] ), ">" );
+	}
+}
+
+add_action( 'login_form_rp', 'amapress_clean_invalid_login' );
+add_action( 'login_form_resetpass', 'amapress_clean_invalid_login' );
 
 add_action( 'init', 'amapress_check_access' );
 function amapress_check_access() {
