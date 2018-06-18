@@ -60,7 +60,17 @@ function amapress_can_access_admin() {
 //    }
 //    return $redirect_to;
 //}
+function amapress_clean_invalid_login() {
+	$uri         = $_SERVER['REQUEST_URI'];
+	$cleaned_uri = preg_replace( '/%3E$|\>$/', '', $uri );
+	if ( $cleaned_uri != $uri ) {
+		wp_safe_redirect( $cleaned_uri );
+		die();
+	}
+}
 
+add_action( 'login_form_rp', 'amapress_clean_invalid_login' );
+add_action( 'login_form_resetpass', 'amapress_clean_invalid_login' );
 
 add_action( 'init', 'amapress_check_access' );
 function amapress_check_access() {
