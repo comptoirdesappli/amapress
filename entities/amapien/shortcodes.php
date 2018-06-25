@@ -95,7 +95,7 @@ function amapress_amapien_avatar_shortcode( $atts ) {
 		$user = amapress_current_user_id();
 	}
 	if ( is_numeric( $user ) ) {
-		$usr = get_user_by( 'id', intval( $user ) );
+		$usr = amapress_get_user_by_id_or_archived( intval( $user ) );
 	} else {
 		$usr = get_user_by( 'login', $user );
 		if ( ! $usr ) {

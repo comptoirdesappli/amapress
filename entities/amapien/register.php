@@ -356,27 +356,54 @@ function amapress_get_role_list( $role_list, $user_object ) {
 
 add_filter( 'amapress_can_delete_user', 'amapress_can_delete_user', 10, 2 );
 function amapress_can_delete_user( $can, $user_id ) {
-	$key        = 'amapress_can_delete_user';
-	$used_users = wp_cache_get( $key );
-	if ( false === $used_users ) {
+//	$key        = 'amapress_can_delete_user_safe';
+//	$used_users_safe = wp_cache_get( $key );
+//	if ( false === $used_users_safe ) {
+//		$used_users_safe = [];
+//		$single_user_keys = array(
+//			'amapress_adhesion_paiement_user',
+//			'amapress_adhesion_adherent',
+//			'amapress_adhesion_adherent2',
+//			'amapress_adhesion_adherent3',
+//			'amapress_adhesion_adherent4',
+//			'amapress_intermittence_panier_repreneur',
+//			'amapress_intermittence_panier_adherent',
+//			'amapress_user_commande_amapien',
+//			'amapress_visite_participants',
+//			'amapress_distribution_responsables',
+//			'amapress_amap_event_participants',
+//			'amapress_assemblee_generale_participants',
+//		);
+//		global $wpdb;
+//		$meta_query = [];
+//		foreach ( $single_user_keys as $single_user_key ) {
+//			$meta_query[] = $wpdb->prepare( "($wpdb->postmeta.meta_key = %s)", $single_user_key );
+//		}
+//
+//		$where  = implode( ' OR ', $meta_query );
+//		$values = $wpdb->get_col( "SELECT DISTINCT $wpdb->postmeta.meta_value FROM $wpdb->postmeta WHERE $where" );
+//		foreach ( $values as $v ) {
+//			$v = maybe_unserialize( $v );
+//			if ( is_array( $v ) ) {
+//				$used_users_safe += $v;
+//			} else {
+//				$used_users_safe[] = $v;
+//			}
+//		}
+//		$used_users_safe = array_unique( array_map( 'intval', $used_users_safe ) );
+//		wp_cache_set( $key, $used_users_safe );
+//	}
+
+	$key             = 'amapress_can_delete_user_referents';
+	$users_referents = wp_cache_get( $key );
+	if ( false === $users_referents ) {
+		$users_referents  = [];
 		$single_user_keys = array(
-			'amapress_adhesion_paiement_user',
-			'amapress_adhesion_adherent',
-			'amapress_adhesion_adherent2',
-			'amapress_adhesion_adherent3',
-			'amapress_adhesion_adherent4',
-			'amapress_intermittence_panier_repreneur',
-			'amapress_intermittence_panier_adherent',
 			'amapress_lieu_distribution_referent',
 			'amapress_producteur_user',
 			'amapress_producteur_referent',
 			'amapress_producteur_referent2',
 			'amapress_producteur_referent3',
-			'amapress_user_commande_amapien',
-			'amapress_visite_participants',
-			'amapress_distribution_responsables',
-			'amapress_amap_event_participants',
-			'amapress_assemblee_generale_participants',
 		);
 		$lieux_ids        = Amapress::get_lieu_ids();
 		if ( count( $lieux_ids ) > 1 ) {
@@ -391,37 +418,52 @@ function amapress_can_delete_user( $can, $user_id ) {
 		foreach ( $single_user_keys as $single_user_key ) {
 			$meta_query[] = $wpdb->prepare( "($wpdb->postmeta.meta_key = %s)", $single_user_key );
 		}
-//		$posts = get_posts_count( array(
-//			'post_status'    => 'any',
-//			'post_type'      => array(
-//				AmapressAdhesion::INTERNAL_POST_TYPE,
-//				AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
-//				AmapressIntermittence_panier::INTERNAL_POST_TYPE,
-//				AmapressProducteur::INTERNAL_POST_TYPE,
-//				AmapressUser_commande::INTERNAL_POST_TYPE,
-//				AmapressLieu_distribution::INTERNAL_POST_TYPE
-//			),
-//			'posts_per_page' => - 1,
-//			'meta_query'     => array( $meta_query ),
-//		) );
 
 		$where  = implode( ' OR ', $meta_query );
 		$values = $wpdb->get_col( "SELECT DISTINCT $wpdb->postmeta.meta_value FROM $wpdb->postmeta WHERE $where" );
 		foreach ( $values as $v ) {
 			$v = maybe_unserialize( $v );
 			if ( is_array( $v ) ) {
-				$used_users += $v;
+				$users_referents += $v;
 			} else {
-				$used_users[] = $v;
+				$users_referents[] = $v;
 			}
 		}
-		$used_users = array_unique( array_map( 'intval', $used_users ) );
-		wp_cache_set( $key, $used_users );
+		$users_referents = array_unique( array_map( 'intval', $users_referents ) );
+		wp_cache_set( $key, $users_referents );
 	}
 
-	$related_users = AmapressContrats::get_related_users( $user_id );
+//	$key             = 'amapress_can_delete_user_collectif';
+//	$collectif_users = wp_cache_get( $key );
+//	if ( false === $collectif_users ) {
+//		$collectif_users = get_users( wp_parse_args( 'amapress_role=collectif&fields=id' ) );
+//		wp_cache_set( $key, $collectif_users );
+//	}
 
-	return ! in_array( $user_id, $used_users ) && count( $related_users ) < ( in_array( $related_users, $user_id ) ? 2 : 1 );
+	$key                 = 'amapress_can_delete_user_contrats';
+	$users_with_contrats = wp_cache_get( $key );
+	if ( false === $users_with_contrats ) {
+		$users_with_contrats = get_users( wp_parse_args( 'amapress_contrat=active&fields=id' ) );
+		wp_cache_set( $key, $users_with_contrats );
+	}
+
+	$related_users   = AmapressContrats::get_related_users( $user_id );
+	$related_users[] = $user_id;
+
+	$can_delete = true;
+	foreach ( $related_users as $id ) {
+		if ( in_array( $id, $users_with_contrats ) ) {
+			$can_delete = false;
+			break;
+		}
+		if ( in_array( $id, $users_referents ) ) {
+			$can_delete = false;
+			break;
+		}
+	}
+
+	//return ! in_array( $user_id, $users_referents ) && count( $related_users ) < ( in_array( $related_users, $user_id ) ? 2 : 1 );
+	return $can_delete;
 }
 
 //function amapress_import_user_data_validate($v, $k) {

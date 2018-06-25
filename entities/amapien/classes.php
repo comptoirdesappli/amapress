@@ -36,14 +36,12 @@ class AmapressUser extends TitanUserEntity {
 			}
 		} else {
 			$user_id = intval( $user_or_id );
+			if ( $user_id <= 0 ) {
+				return null;
+			}
 		}
 		if ( ! isset( self::$users_cache[ $user_id ] ) || $no_cache ) {
-			$user = get_user_by( 'id', $user_id );
-			if ( ! $user ) {
-				self::$users_cache[ $user_id ] = null;
-			} else {
-				self::$users_cache[ $user_id ] = new AmapressUser( $user );
-			}
+			self::$users_cache[ $user_id ] = new AmapressUser( $user_id );
 		}
 
 		return self::$users_cache[ $user_id ];
@@ -642,6 +640,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		if ( ! empty( $this->custom['email4'] ) ) {
 			$ret[] = trim( $this->custom['email4'] );
 		}
+		$ret = array_filter( $ret, function ( $email ) {
+			return false === strpos( $email, '@nomail.org' );
+		} );
 
 		return array_unique( $ret );
 	}

@@ -30,7 +30,7 @@ function amapress_get_users_for_message( $users_query, $users_query_fields, $wit
 	} else if ( strpos( $users_query, 'user:' ) === 0 ) {
 		$users_query = substr( $users_query, 5 );
 		if ( $users_query == 'me' ) {
-			$users = array( get_user_by( 'id', amapress_current_user_id() ) );
+			$users = array( amapress_get_user_by_id_or_archived( amapress_current_user_id() ) );
 		} else {
 			$query = new WP_User_Query( $users_query );
 			$users = $query->get_results();
@@ -55,7 +55,7 @@ function amapress_get_users_for_message( $users_query, $users_query_fields, $wit
 			if ( is_a( $user_id, "WP_User" ) ) {
 				$all_users[ $user_id->ID ] = $user_id;
 			} else {
-				$all_users[ $user_id ] = get_user_by( 'id', $user_id );
+				$all_users[ $user_id ] = amapress_get_user_by_id_or_archived( $user_id );
 			}
 		}
 	}
@@ -64,7 +64,7 @@ function amapress_get_users_for_message( $users_query, $users_query_fields, $wit
 		foreach ( $all_users as $user_id => $user ) {
 			foreach ( AmapressContrats::get_related_users( $user_id ) as $related_user_id ) {
 				if ( ! isset( $all_users[ $related_user_id ] ) ) {
-					$all_users[ $related_user_id ] = get_user_by( 'id', $related_user_id );
+					$all_users[ $related_user_id ] = amapress_get_user_by_id_or_archived( $related_user_id );
 				}
 			}
 		}

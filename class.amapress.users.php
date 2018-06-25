@@ -423,7 +423,7 @@ class AmapressUsers {
 	public static function amapress_gallery_render_user_cell( $user ) {
 		$usr = $user;
 		if ( is_int( $usr ) ) {
-			$usr = get_user_by( 'id', $usr );
+			$usr = amapress_get_user_by_id_or_archived( $usr );
 		}
 
 		if ( ! $usr ) {
@@ -442,7 +442,7 @@ class AmapressUsers {
 	public static function amapress_gallery_render_user_cell_contact( $user ) {
 		$usr = $user;
 		if ( is_int( $usr ) ) {
-			$usr = get_user_by( 'id', $usr );
+			$usr = amapress_get_user_by_id_or_archived( $usr );
 		}
 
 		if ( ! $usr ) {
@@ -461,7 +461,7 @@ class AmapressUsers {
 	public static function amapress_gallery_render_user_cell_with_role( $user ) {
 		$usr = $user['user'];
 		if ( is_int( $usr ) ) {
-			$usr = get_user_by( 'id', $usr );
+			$usr = amapress_get_user_by_id_or_archived( $usr );
 		}
 		if ( ! $usr ) {
 			return '';
@@ -500,7 +500,7 @@ jQuery(function() {
 	}
 
 	public static function echoUserById( $user_id, $type, $custom_link = null, $custom_role = null ) {
-		$user = get_user_by( 'id', $user_id );
+		$user = amapress_get_user_by_id_or_archived( $user_id );
 		if ( empty( $user ) ) {
 			return;
 		}

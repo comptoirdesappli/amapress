@@ -189,7 +189,7 @@ class AmapressPaniers {
 
 			$user_ids = explode( '_', $user_ids );
 			$users    = array_map( function ( $user_id ) {
-				return get_user_by( 'ID', intval( $user_id ) );
+				return amapress_get_user_by_id_or_archived( intval( $user_id ) );
 			}, $user_ids );
 
 			$line['first_name'] = implode( ' / ', array_map( function ( $user ) {

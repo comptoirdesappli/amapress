@@ -303,7 +303,7 @@ class Amapress_MailingList {
 		$this->info['moderators']        = array();
 		$this->info['moderators_emails'] = array();
 		foreach ( $value as $user_id ) {
-			$u = get_user_by( 'ID', $user_id );
+			$u = amapress_get_user_by_id_or_archived( $user_id );
 			if ( $u ) {
 				$amapien                         = AmapressUser::getBy( $u );
 				$this->info['moderators'][]      = $u->ID;

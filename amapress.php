@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.44.38
+Version: 0.45.1
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 68 );
-define( 'AMAPRESS_VERSION', '0.44.38' );
+define( 'AMAPRESS_VERSION', '0.45.1' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -952,6 +952,21 @@ if ( is_admin() ) {
 
 //add wrapper class around deprecated akismet functions that are referenced elsewhere
 //require_once( AMAPRESS__PLUGIN_DIR . 'wrapper.php' );
+
+function amapress_get_user_by_id_or_archived( $user_id ) {
+	$user = get_user_by( 'ID', $user_id );
+	if ( ! $user ) {
+		$user               = new WP_User();
+		$user->ID           = $user_id;
+		$user->user_email   = "archived$user_id@nomail.org";
+		$user->first_name   = "Archived";
+		$user->last_name    = $user_id;
+		$user->display_name = "Archived $user_id";
+		$user->user_login   = "archived$user_id";
+	}
+
+	return $user;
+}
 
 if ( ! function_exists( 'get_user_by' ) ) :
 	function get_user_by( $field, $value ) {

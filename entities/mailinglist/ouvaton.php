@@ -449,7 +449,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_MailingSystem {
 
 		$j = 0;
 		for ( $i = 0; $i < count( $new_moderators ); $i ++ ) {
-			$mail = get_user_by( 'ID', $new_moderators[ $i ] );
+			$mail = amapress_get_user_by_id_or_archived( $new_moderators[ $i ] );
 			if ( $mail ) {
 				$amapien = AmapressUser::getBy( $mail );
 				foreach ( $amapien->getAllEmails() as $email ) {

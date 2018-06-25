@@ -107,10 +107,10 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		}
 
 		foreach ( $values as $v ) {
-			if ( in_array( $v, $values ) ) {
+			if ( in_array( $v, $used_values ) ) {
 				continue;
 			}
-			$titles[] = $v;
+			$titles[] = "Archivé $v";
 		}
 
 		echo implode( ',', $titles );
@@ -153,10 +153,10 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		}
 
 		foreach ( $values as $v ) {
-			if ( in_array( $v, $values ) ) {
+			if ( in_array( $v, $used_values ) ) {
 				continue;
 			}
-			$titles[] = $v;
+			$titles[] = "Archivé $v";
 		}
 
 		echo implode( ',', $titles );
@@ -203,6 +203,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		if ( empty( $options ) ) {
 			$options = $this->fetchOptions();
 		}
+		$options = $this->addValueToOptionIfNotPresent( $options, $val );
 
 		if ( $multiple ) {
 			foreach ( $options as $k => $v ) {
@@ -228,6 +229,35 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		wp_die();
 	}
 
+	protected function addValueToOptionIfNotPresent( $options, $value ) {
+		if ( ! is_array( $value ) ) {
+			$value = array( $value );
+		}
+		foreach ( $value as $val ) {
+			$found = false;
+			foreach ( $options as $k => $v ) {
+				if ( $val == $k ) {
+					$found = true;
+					break;
+				}
+				if ( is_array( $v ) ) {
+					foreach ( $v as $kk => $vv ) {
+						if ( $val == $kk ) {
+							$found = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if ( ! $found ) {
+				$options[ $val ] = "Archivé $val";
+			}
+		}
+
+		return $options;
+	}
+
 	/*
 	 * Display for options and meta
 	 */
@@ -245,7 +275,10 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 //                $name = "{$name}[]";
 //            }
 
-			$options = $this->fetchOptions();
+			$options     = $this->fetchOptions();
+			$cnt_bef     = count( $options );
+			$options     = $this->addValueToOptionIfNotPresent( $options, $val );
+			$is_archived = count( $options ) != $cnt_bef;
 
 			$autocomplete = $this->settings['autocomplete'] === true || ( is_int( $this->settings['autocomplete'] ) && count( $options ) > $this->settings['autocomplete'] );
 
@@ -308,7 +341,7 @@ jQuery(function() {
 //]]>
 </script>';
 
-			if ( ! $multiple ) {
+			if ( ! $multiple && ! $is_archived ) {
 				$val  = array_shift( $val );
 				$href = $this->getEditLink( $val );
 				if ( ! empty( $href ) && ( ! isset( $this->settings['edit_link'] ) || false != $this->settings['edit_link'] ) ) {

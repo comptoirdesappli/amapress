@@ -47,8 +47,20 @@ class TitanUserEntity {
 		if ( ! $this->user_id ) {
 			return;
 		}
-		if ( $this->user == null ) {
+
+		if ( null == $this->user ) {
 			$this->user = get_user_by( 'ID', $this->user_id );
+			if ( ! $this->user ) {
+				$user_id            = $this->user_id;
+				$user               = new WP_User();
+				$user->ID           = $user_id;
+				$user->user_email   = "archived$user_id@nomail.org";
+				$user->first_name   = "Archived";
+				$user->last_name    = $user_id;
+				$user->display_name = "Archived $user_id";
+				$user->user_login   = "archived$user_id";
+				$this->user         = $user;
+			}
 		}
 		$this->custom      = array_map( function ( $v ) {
 			if ( is_array( $v ) ) {
