@@ -235,7 +235,6 @@ function amapress_get_paniers_intermittents_table(
 
 	ob_start();
 
-	$table_options['initComplete'] = 'function() { amapress_init_front_end_ajax_buttons(); }';
 	$table_options['init_as_html'] = true;
 
 	amapress_echo_datatable( $id, $columns, $data, $table_options );

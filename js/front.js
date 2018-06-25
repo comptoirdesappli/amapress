@@ -72,12 +72,6 @@ function amapress_handle_front_end_ajax_button_click(e) {
     return false;
 }
 
-function amapress_init_front_end_ajax_buttons() {
-    jQuery(".amapress-ajax-button")
-        .unbind("click", amapress_handle_front_end_ajax_button_click)
-        .bind("click", amapress_handle_front_end_ajax_button_click);
-}
-
 jQuery(function ($) {
     var maxHeight = 0;
     var initSelect2 = function () {
@@ -133,5 +127,6 @@ jQuery(function ($) {
     });
     if ('undefined' !== typeof(fakewaffle))
         fakewaffle.responsiveTabs(['xs', 'sm']);
-    amapress_init_front_end_ajax_buttons();
+
+    $('body').on('click', '.amapress-ajax-button', amapress_handle_front_end_ajax_button_click);
 });

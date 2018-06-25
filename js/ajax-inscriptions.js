@@ -1,5 +1,5 @@
 ﻿jQuery(document).ready(function ($) {
-    jQuery('.dist-inscrire-button').click(function () {
+    jQuery('body').on('click', '.dist-inscrire-button', function () {
         var $this = jQuery(this);
         var data = {
             'action': 'inscrire_distrib_action',
@@ -28,8 +28,7 @@
             $this.replaceWith(response);
         });
         return false;
-    });
-    jQuery('.dist-desinscrire-button').click(function () {
+    }).on('click', '.dist-desinscrire-button', function () {
         var $this = jQuery(this);
         var data = {
             'action': 'desinscrire_distrib_action',
@@ -53,8 +52,7 @@
             $this.parent().html(response);
         });
         return false;
-    });
-    jQuery('.event-inscrire-button').click(function () {
+    }).on('click', '.event-inscrire-button', function () {
         var $this = jQuery(this);
         var data = {
             'action': 'inscrire_amap_event_action',
@@ -82,8 +80,7 @@
             $this.replaceWith(response);
         });
         return false;
-    });
-    jQuery('.visite-inscrire-button').click(function () {
+    }).on('click', '.visite-inscrire-button', function () {
         var $this = jQuery(this);
         var data = {
             'action': 'inscrire_visite_action',
@@ -111,8 +108,7 @@
             $this.replaceWith(response);
         });
         return false;
-    });
-    jQuery('.visite-desinscrire-button').click(function () {
+    }).on('click', '.visite-desinscrire-button', function () {
         var $this = jQuery(this);
         var data = {
             'action': 'desinscrire_visite_action',
