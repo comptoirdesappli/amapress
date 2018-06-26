@@ -89,9 +89,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 		$init = ".on('init.dt', $initComplete)";
 	}
 
-	$nowrap     = $options['nowrap'] ? 'nowrap' : '';
-	$cellborder = $options['cell-border'] ? 'cell-border' : '';
-	$style      = "table-layout:{$options['table-layout']}";
+	$nowrap      = $options['nowrap'] ? 'nowrap' : '';
+	$cellborder  = $options['cell-border'] ? 'cell-border' : '';
+	$table_style = "table-layout:{$options['table-layout']}";
 
 	unset( $options['table-layout'] );
 	if ( ! empty( $exports ) ) {
@@ -145,7 +145,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
-	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='$style' width='100%' cellspacing='0'>$table_content</table>";
+	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='$table_style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	if ( ! $options['no_script'] ) {
 		$ret .= "<script type='text/javascript'>\n";
