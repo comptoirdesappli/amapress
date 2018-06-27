@@ -407,6 +407,18 @@ function amapress_echo_and_check_amapress_state_page() {
 		);
 	}
 
+	$all_pages_and_presentations = get_pages( [
+		'post_status' => 'publish'
+	] );
+	$all_pages_and_presentations += get_posts( [
+		'post_status' => 'publish',
+		'post_type'   => [
+			AmapressProducteur::INTERNAL_POST_TYPE,
+			AmapressContrat::INTERNAL_POST_TYPE,
+			AmapressLieu_distribution::INTERNAL_POST_TYPE,
+		]
+	] );
+
 	$state['05_content'] = array();
 	foreach ( AmapressEntities::getMenu() as $item ) {
 		if ( isset( $item['type'] ) && $item['type'] == 'panel' && isset( $item['id'] ) ) {
@@ -480,9 +492,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		}
 	}
 	foreach (
-		get_pages( [
-			'post_status' => 'publish'
-		] ) as $page
+		$all_pages_and_presentations as $page
 	) {
 		/** @var WP_Post $page */
 		if ( preg_match( '/\[\[[^\]]+\]\]/', $page->post_content ) ) {
@@ -615,9 +625,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		return strcmp( $a['categ'], $b['categ'] );
 	} );
 	foreach (
-		get_pages( [
-			'post_status' => 'publish'
-		] ) as $page
+		$all_pages_and_presentations as $page
 	) {
 		foreach ( $needed_shortcodes as $shortcode => $desc ) {
 			/** @var WP_Post $page */
