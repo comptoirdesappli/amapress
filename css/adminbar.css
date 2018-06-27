@@ -1,0 +1,51 @@
+#wp-admin-bar-amapress_publish_admin_bar button.amapress_publish, #wp-admin-bar-amapress_update_user_admin_bar button.amapress_update_user {
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 30px !important;
+}
+
+.ab-top-menu {
+    background-color: rgb(35, 40, 45) !important;
+}
+
+#wp-admin-bar-amapress_search_user_admin_bar, #wp-admin-bar-amapress_publish_admin_bar {
+    display: block !important;
+}
+
+#wp-admin-bar-amapress_publish_admin_bar, #wp-admin-bar-amapress_update_user_admin_bar {
+    vertical-align: middle !important;
+}
+
+#wpadminbar #wp-admin-bar-amapress .ab-icon:before {
+    display: block;
+    content: "\f511";
+    top: 3px;
+}
+
+@media screen and (max-width: 782px) {
+    #wp-admin-bar-amapress_search_user_admin_bar #amapress_search_user_text {
+        width: 55px;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress {
+        display: block;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress .ab-label {
+        display: none;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress .ab-icon:before {
+        line-height: 46px;
+        height: 46px !important;
+        text-align: center;
+        width: 52px;
+        display: block;
+        content: "\f511";
+        top: 0;
+        font-size: 28px;
+    }
+}
