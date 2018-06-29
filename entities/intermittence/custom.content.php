@@ -264,7 +264,8 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 				/** @var AmapressIntermittence_panier $ad */
 				$ad    = $adh[0];
 				$id    = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
-				$state .= '<div class="cancel-echange-panier amapress-ajax-parent"><h4>Motif d\'annulation</h4><textarea id="' . $id . '"></textarea><br/>';
+				$state = '<strong>' . $state . '</strong>';
+				$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">Motif d\'annulation</label><textarea id="' . $id . '"></textarea><br/>';
 				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
 				data-message="val:#' . $id . '" data-confirm="Etes-vous sûr d\'annuler votre proposition?" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
