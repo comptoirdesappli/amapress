@@ -4,12 +4,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function amapress_update_all_posts() {
+function amapress_update_all_posts( $post_types = null ) {
 	foreach ( AmapressEntities::getPostTypes() as $k => $v ) {
+		if ( ! empty( $post_types ) && ! in_array( $k, $post_types ) ) {
+			continue;
+		}
 		if ( $k == 'user' ) {
 			continue;
 		}
-		$posts = get_posts( array( 'post_type' => $k, 'posts_per_page' => - 1 ) );
+		$posts = get_posts( array( 'post_type' => amapress_unsimplify_post_type( $k ), 'posts_per_page' => - 1 ) );
 		foreach ( $posts as $post ) {
 			amapress_compute_post_slug_and_title( $post );
 		}
@@ -34,6 +37,7 @@ function amapress_set_slugs_and_titles_on_save( $post_id, WP_Post $post = null )
 	// re-hook this function
 	add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
 }
+
 add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
 
 /**

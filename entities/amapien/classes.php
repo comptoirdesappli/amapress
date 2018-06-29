@@ -425,6 +425,19 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	}
 
 	public
+	function getSortableDisplayName() {
+		$this->ensure_init();
+		if ( ! empty( $this->getUser()->last_name ) ) {
+			$dn = sprintf( '%s %s', $this->getUser()->last_name, $this->getUser()->first_name );
+		}
+		if ( empty( $dn ) ) {
+			$dn = $this->getUser()->user_login;
+		}
+
+		return $dn;
+	}
+
+	public
 	function resolveAddress() {
 		return AmapressUsers::resolveUserAddress( $this->getID(),
 			$this->getFormattedAdresse() );

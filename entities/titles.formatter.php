@@ -116,6 +116,9 @@ function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 	if ( ! $panier->getContrat_instanceId() ) {
 		return $post_title;
 	}
+	if ( ! $panier->getContrat_instance()->getModel() ) {
+		return $post_title;
+	}
 
 	$modif = '';
 	if ( 'delayed' == $panier->getStatus() ) {
@@ -142,9 +145,8 @@ function amapress_adhesion_title_formatter( $post_title, WP_Post $post ) {
 		return $post->post_title;
 	}
 
-
 	return sprintf( '%s - %s - %s > %s (%s) (%d)',
-		( $adh->hasDate_fin() ? '[arrêté] ' : '' ) . $adh->getAdherent()->getDisplayName(),
+		( $adh->hasDate_fin() ? '[arrêté] ' : '' ) . $adh->getAdherent()->getSortableDisplayName(),
 		$adh->getContrat_instance()->getTitle(),
 		date_i18n( 'd/m/Y', intval( $adh->getDate_debut() ) ),
 		date_i18n( 'd/m/Y', intval( $adh->getDate_fin() ) ),
@@ -160,7 +162,7 @@ function amapress_contrat_paiement_title_formatter( $post_title, WP_Post $post )
 	}
 
 	return sprintf( '%s - %s - %s - %.02f',
-		$pmt->getEmetteur(),
+		$pmt->getAdhesion()->getAdherent()->getSortableDisplayName(),
 		date_i18n( 'd/m/Y', $pmt->getDate() ),
 		$pmt->getNumero(),
 		$pmt->getAmount() );
@@ -188,7 +190,7 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 	}
 
 	return sprintf( '%s - %s - %s - %.02f',
-		$pmt->getUser()->getDisplayName(),
+		$pmt->getUser()->getSortableDisplayName(),
 		date_i18n( 'd/m/Y', $pmt->getDate() ),
 		$pmt->getNumero(),
 		$pmt->getAmount() );
