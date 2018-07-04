@@ -191,8 +191,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		if ( ! $this->isUserMemberOf( $user_id, true ) ) {
-			wp_die( 'Vous ne faites pas partie de cette distribution.' );
+		if ( ! amapress_can_access_admin() ) {
+			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
+				wp_die( 'Vous ne faites pas partie de cette distribution.' );
+			}
 		}
 
 		$responsables        = $this->getResponsablesIds();

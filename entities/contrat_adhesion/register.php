@@ -286,7 +286,7 @@ jQuery(function($) {
 				'csv'         => false,
 				'show_on'     => 'edit-only',
 			),
-			'lieu'             => array(
+			'lieu'      => array(
 				'name'              => amapress__( 'Lieu' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_lieu',
@@ -313,7 +313,7 @@ jQuery(function($) {
 					return 0;
 				}
 			),
-			'message'          => array(
+			'message'   => array(
 				'name'        => amapress__( 'Message' ),
 				'type'        => 'textarea',
 				'readonly'    => true,
@@ -1399,6 +1399,72 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 		color: red;
 	}
 </style>';
+}
+
+add_action( 'tf_custom_admin_amapress_action_new_user_distrib', function () {
+	$email = $_POST['email'];
+	if ( empty( $email ) ) {
+		$email = uniqid( 'm' ) . '@nomail.org';
+	}
+	$last_name  = $_POST['last_name'];
+	$first_name = $_POST['first_name'];
+	$address    = $_POST['address'];
+	$tel        = $_POST['tel'];
+
+	$user_id = amapress_create_user_if_not_exists( $email, $first_name, $last_name, $address, $tel, 'user' );
+
+	wp_redirect_and_exit( add_query_arg( 'user_id', $user_id ) );
+} );
+function amapress_create_user_for_distribution( $post_id, TitanFrameworkOption $option ) {
+	if ( isset( $_REQUEST['user_id'] ) ) {
+		echo '<h4>Utilisateur créé:</h4>';
+
+		$user = AmapressUser::getBy( $_REQUEST['user_id'] );
+
+		echo '<hr />';
+		echo $user->getDisplay();
+		echo '<hr />';
+	} else {
+		echo '<h4>Entrer les informations sur la personne hors AMAP</h4>';
+		echo '<form method="post" id="new_user_distrib">';
+		echo '<input type="hidden" name="action" value="new_user_distrib" />';
+		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
+		echo '<table style="min-width: 50%">';
+		echo '<tr>';
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email: </label></th>
+<td><input style="width: 100%" type="text" id="email" name="email" class="email emailDoesNotExists" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="last_name">Nom: </label></th>
+<td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="first_name">Prénom: </label></th>
+<td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="tel">Téléphone: </label></th>
+<td><input style="width: 100%" type="text" id="tel" name="tel" class="" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
+<td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
+		echo '</tr>';
+		echo '</table>';
+		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Créer la personne" />';
+		echo '</form>';
+		echo '<script type="text/javascript">jQuery(function() {
+    jQuery("form#new_user_distrib").validate({
+                onkeyup: false,
+        }
+    );
+});
+</script>
+<style type="text/css">
+	.error {
+		font-weight: bold;
+		color: red;
+	}
+</style>';
+	}
+	echo '<hr />';
+	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Ajouter une autre personne</a></p>';
 }
 
 add_action( 'tf_custom_admin_amapress_action_new_coadherent', function () {

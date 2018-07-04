@@ -364,6 +364,20 @@ class AmapressEntities {
 								)
 							),
 						),
+						'Ajouter une persone hors AMAP'   => array(
+							'id'        => 'add_other_user',
+							'desc'      => '',
+							'use_form'  => false,
+							'use_table' => false,
+							'options'   => array(
+								array(
+									'id'     => 'add_user_other',
+									'type'   => 'custom',
+									'bare'   => true,
+									'custom' => 'amapress_create_user_for_distribution',
+								)
+							),
+						),
 						'Renouvèlement'                   => array(
 							'desc'    => '',
 							'options' => array(

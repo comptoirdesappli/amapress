@@ -281,6 +281,17 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				}
 			}
 			sort( $contrat_names );
+			$no_contrat_users = [];
+			/** @var WP_User $user */
+			foreach (
+				get_users_cached( array(
+					'amapress_contrat' => 'no',
+					'fields'           => 'all_with_meta',
+				) ) as $user
+			) {
+				$user_name                     = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+				$no_contrat_users[ $user->ID ] = $user_name;
+			}
 			$lieu_users    = array();
 			$contrat_names = implode( ', ', $contrat_names );
 			$ret           .= '<th scope="row" class="inscr-list-info">
@@ -330,6 +341,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					$lieu_users[ $lieu_id ] = $arr;
 				}
 				$users = $lieu_users[ $lieu_id ];
+				$users += $no_contrat_users;
 //                $desinscr_another = '';
 //                if ($is_resp_distrib && $can_subscribe) {
 //                    $desinscr_another = '<button type="button" class="btn btn-default dist-inscrire-button" data-dist="' . $dist->ID . '">Désinscrire</button>';
@@ -416,6 +428,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
 <button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
 </form>';
+							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou mail et/ou téléphone">Ajouter une personne</a></a></p>';
 						}
 
 						$inscr_self = '<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
