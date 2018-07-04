@@ -39,9 +39,14 @@ add_action( 'amapress_recall_resp_distrib', function ( $args ) {
 	$attachments   = [];
 	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
 		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
-		getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) .
+		getListeEmargement( $dist->ID, false, true ) .
 		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
+	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
+		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
+		getListeEmargement( $dist->ID, true, true ) .
+		'</div>',
+		strtolower( sanitize_file_name( 'liste-emargement-tous-contrats-' . $dist->getTitle() . '.pdf' ) ) );
 
 	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
 	amapress_send_message(
@@ -65,9 +70,14 @@ add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 	$attachments   = [];
 	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
 		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
-		getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) .
+		getListeEmargement( $dist->ID, false, true ) .
 		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
+	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
+		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
+		getListeEmargement( $dist->ID, true, true ) .
+		'</div>',
+		strtolower( sanitize_file_name( 'liste-emargement-tous-contrats-' . $dist->getTitle() . '.pdf' ) ) );
 
 	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Emargement de " . $dist->getTitle(), "distribution" );
 	amapress_send_message(

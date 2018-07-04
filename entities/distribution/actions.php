@@ -243,10 +243,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		}, $users ) );
 
 		if ( $show_phone ) {
-			$line['tel'] = implode( '<br/>', array_unique( array_map( function ( $user ) {
+			$line['tel'] = implode( ' / ', array_unique( array_map( function ( $user ) {
 				$adh = AmapressUser::getBy( $user );
 
-				return $adh->getTelTo() . ( ! empty( $adh->getCoAdherentsInfos() ) ? '<br/>' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
+				return $adh->getTelTo() . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
 			}, $users ) ) );
 		}
 		if ( $show_emails ) {
@@ -335,6 +335,7 @@ table, td, th {
 .inscr-list-contrats {
 	font-size: 0.6em;
 }
+.not-this-dist { background-color: #AAA; }
 </style>';
 	} else {
 		echo '<style type="text/css">
@@ -345,7 +346,7 @@ table, td, th {
             body { margin: 15px; }
             .edit-user-comment { color: white; }
             .edit-user-comment:hover { color: black; !important; }
-            .not-this-dist { text-decoration: line-through; }
+            .not-this-dist { background-color: #AAA; }
             @media print {
             	.user-sms { display: none; }
             	.edit-user-comment {display: none;}
@@ -381,8 +382,12 @@ table, td, th {
 	echo '<h2>' . esc_html( $dist->getTitle() ) . '</h2>';
 	echo '<br/>';
 	if ( ! $for_pdf ) {
+		$pdf_url = $dist->getPermalink( 'liste-emargement/pdf/' );
+		if ( isset( $_GET['all'] ) ) {
+			$pdf_url = add_query_arg( 'all', '', $pdf_url );
+		}
 		echo '<div class="btns">';
-		echo '<a href="' . esc_attr( $dist->getPermalink( 'liste-emargement/pdf/' ) ) . '" class="btn btn-default btn-print">Imprimer en PDF</a>';
+		echo '<a href="' . esc_attr( $pdf_url ) . '" class="btn btn-default btn-print">Imprimer en PDF</a>';
 		if ( current_user_can( 'edit_distribution' ) ) {
 			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
 			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
