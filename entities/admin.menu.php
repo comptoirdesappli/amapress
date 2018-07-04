@@ -237,6 +237,9 @@ function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent 
 //					'icon'      => '',
 					'title'      => '',
 					'href'       => '#',
+					'target'     => null,
+					'class'      => null,
+					'html'       => null,
 					'parent'     => $parent,
 					'capability' => null,
 					'condition'  => null,
@@ -256,10 +259,21 @@ function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent 
 //				if ( ! empty( $item_with_default['icon'] ) ) {
 //					$title = amapress_get_font_icon( $item_with_default['icon'] ) . $title;
 //				}
+			$meta = [];
+			if ( ! empty( $item_with_default['target'] ) ) {
+				$meta['target'] = $item_with_default['target'];
+			}
+			if ( ! empty( $item_with_default['html'] ) ) {
+				$meta['html'] = $item_with_default['html'];
+			}
+			if ( ! empty( $item_with_default['class'] ) ) {
+				$meta['class'] = $item_with_default['class'];
+			}
 			$admin_bar->add_menu( array(
 				'id'     => $item_with_default['id'],
 				'parent' => $item_with_default['parent'],
 				'title'  => $title,
+				'meta'   => $meta,
 				'href'   => $item_with_default['href'],
 			) );
 

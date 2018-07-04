@@ -491,6 +491,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		'id'         => 'amapress_emargement_last_week',
 		'title'      => 'Semaine dernière',
 		'capability' => 'edit_distribution',
+		'target'     => '_blank',
 		'href'       => admin_url( 'edit.php?post_type=amps_distribution&amapress_date=lastweek' ),
 	);
 	foreach ( $next_distribs as $dist ) {
@@ -505,6 +506,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			'id'         => 'amapress_emargement_' . $dist->ID,
 			'title'      => $tit,
 			'capability' => 'edit_distribution',
+			'target'     => '_blank',
 			'href'       => $dist->getListeEmargementHref(),
 		);
 	}
@@ -512,6 +514,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		'id'         => 'amapress_emargement_other',
 		'title'      => 'Autres',
 		'capability' => 'edit_distribution',
+		'target'     => '_blank',
 		'href'       => admin_url( 'edit.php?post_type=amps_distribution&amapress_date=active' ),
 	);
 
