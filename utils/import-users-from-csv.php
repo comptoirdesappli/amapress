@@ -57,8 +57,10 @@ class Amapress_Import_Users_CSV {
 //		);
 		$meta_keys = array();
 		foreach ( $post_fields as $k => $v ) {
-			if ( ( ! isset( $v['csv'] ) || $v['csv'] !== false )
-			     && ( ! in_array( $v['type'], TitanFrameworkOption::$csvImportExcludedTypes ) || ( isset( $v['csv'] ) && $v['csv'] === true ) ) ) {
+			if ( ( ( ! isset( $v['csv'] ) || $v['csv'] !== false ) && ( ! isset( $v['csv_import'] ) || $v['csv_import'] !== false ) )
+			     && ( ! in_array( $v['type'], TitanFrameworkOption::$csvImportExcludedTypes )
+			          || ( isset( $v['csv'] ) && $v['csv'] === true )
+			          || ( isset( $v['csv_import'] ) && $v['csv_import'] === true ) ) ) {
 				$meta_keys[ $k ] = $k;
 			}
 		}

@@ -761,4 +761,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		wp_set_auth_cookie( $user_id );
 		do_action( 'wp_login', $user->user_login, $user );
 	}
+
+	public function getEditLink() {
+		return admin_url( 'user-edit.php?user_id=' . $this->getUser()->ID );
+	}
 }

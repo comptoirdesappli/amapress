@@ -80,7 +80,27 @@ function amapress_register_entities_adhesion( $entities ) {
 			'exp_csv' => true,
 		),
 		'fields'             => array(
-			'adherent'         => array(
+			'adherent_display'  => array(
+				'csv_import'    => false,
+				'csv_export'    => true,
+				'hidden'        => true,
+				'group'         => '1/ Informations',
+				'name'          => amapress__( 'Adhérent' ),
+				'join_meta_key' => 'amapress_adhesion_adherent',
+				'sort_column'   => 'display_name',
+				'type'          => 'custom',
+				'column'        => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					return Amapress::makeLink( $adh->getAdherent()->getEditLink(), $adh->getAdherent()->getDisplayName(), true, true );
+				},
+				'export'        => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					return $adh->getAdherent()->getDisplayName();
+				}
+			),
+			'adherent'          => array(
 				'name'         => amapress__( 'Adhérent' ),
 				'type'         => 'select-users',
 				'required'     => true,
@@ -90,8 +110,53 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv_required' => true,
 				'autocomplete' => true,
 				'searchable'   => true,
+				'csv_export'   => false,
+				'show_column'  => false,
 			),
-			'status'           => array(
+			'adherent_lastname' => array(
+				'csv_import'    => false,
+				'csv_export'    => true,
+				'hidden'        => true,
+				'group'         => '1/ Informations',
+				'name'          => amapress__( 'Nom' ),
+				'type'          => 'custom',
+				'join_meta_key' => 'amapress_adhesion_adherent',
+				'sort_column'   => 'last_name',
+				'column'        => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					return $adh->getAdherent()->getUser()->last_name;
+				}
+			),
+			'adherent_email'    => array(
+				'csv_import'    => false,
+				'csv_export'    => true,
+				'hidden'        => true,
+				'group'         => '1/ Informations',
+				'name'          => amapress__( 'Mail' ),
+				'type'          => 'custom',
+				'join_meta_key' => 'amapress_adhesion_adherent',
+				'sort_column'   => 'user_email',
+				'column'        => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					return $adh->getAdherent()->getUser()->user_email;
+				}
+			),
+			'adherent_address'  => array(
+				'csv_import' => false,
+				'csv_export' => true,
+				'hidden'     => true,
+				'group'      => '1/ Informations',
+				'name'       => amapress__( 'Adresse' ),
+				'type'       => 'custom',
+				'column'     => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					return $adh->getAdherent()->getFormattedAdresse();
+				}
+			),
+			'status'            => array(
 				'name'     => amapress__( 'Statut' ),
 				'type'     => 'select',
 				'group'    => '1/ Informations',
@@ -110,7 +175,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'required' => true,
 				'desc'     => 'Statut',
 			),
-			'quantites_editor' => array(
+			'quantites_editor'  => array(
 				'name'        => amapress__( 'Contrat et Quantité(s)' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -122,7 +187,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv'         => false,
 //                'show_on' => 'edit',
 			),
-			'contrat_instance' => array(
+			'contrat_instance'  => array(
 				'name'              => amapress__( 'Contrat' ),
 				'type'              => 'select-posts',
 //                'readonly' => 'edit',
@@ -159,7 +224,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 
 			),
-			'contrat_quantite' => array(
+			'contrat_quantite'  => array(
 				'name'              => amapress__( 'Quantité' ),
 				'type'              => 'custom',
 				'readonly'          => true,
@@ -229,7 +294,7 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'import_key' => true,
 //                'csv_required' => true,
 			),
-			'date_debut'       => array(
+			'date_debut'        => array(
 				'name'          => amapress__( 'Date de début' ),
 				'type'          => 'date',
 				'required'      => true,
@@ -263,7 +328,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'paiements'        => array(
+			'paiements'         => array(
 				'name'        => amapress__( 'Nombre de chèque' ),
 				'type'        => 'custom',
 				'group'       => '3/ Paiements',
@@ -275,7 +340,7 @@ jQuery(function($) {
 				'csv'         => false,
 //                'csv_required' => true,
 			),
-			'paiements_editor' => array(
+			'paiements_editor'  => array(
 				'name'        => amapress__( 'Details des paiements' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -286,7 +351,7 @@ jQuery(function($) {
 				'csv'         => false,
 				'show_on'     => 'edit-only',
 			),
-			'lieu'      => array(
+			'lieu'              => array(
 				'name'              => amapress__( 'Lieu' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_lieu',
@@ -313,7 +378,7 @@ jQuery(function($) {
 					return 0;
 				}
 			),
-			'message'   => array(
+			'message'           => array(
 				'name'        => amapress__( 'Message' ),
 				'type'        => 'textarea',
 				'readonly'    => true,
@@ -322,7 +387,7 @@ jQuery(function($) {
 				'desc'        => 'Message',
 				'csv'         => false,
 			),
-			'adherent2' => array(
+			'adherent2'         => array(
 				'name'         => amapress__( 'Co-Adhérent 1' ),
 				'type'         => 'select-users',
 				'required'     => false,
@@ -331,7 +396,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'adherent3' => array(
+			'adherent3'         => array(
 				'name'         => amapress__( 'Co-Adhérent 2' ),
 				'type'         => 'select-users',
 				'required'     => false,
@@ -340,7 +405,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'adherent4' => array(
+			'adherent4'         => array(
 				'name'         => amapress__( 'Co-Adhérent 3' ),
 				'type'         => 'select-users',
 				'required'     => false,
@@ -349,7 +414,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'date_fin'  => array(
+			'date_fin'          => array(
 				'name'          => amapress__( 'Date de fin' ),
 				'type'          => 'date',
 				'group'         => '4/ Fin de contrat avant terme',
@@ -376,7 +441,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'fin_raison'       => array(
+			'fin_raison'        => array(
 				'name'        => amapress__( 'Motif' ),
 				'type'        => 'textarea',
 				'group'       => '4/ Fin de contrat avant terme',

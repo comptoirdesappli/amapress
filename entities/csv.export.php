@@ -34,7 +34,7 @@ function amapress_posts_export_exclude_data( $exclude_data, $post_type ) {
 	), $exclude_data );
 
 	foreach ( AmapressEntities::getFilteredFields( $post_type ) as $field => $options ) {
-		if ( isset( $options['csv'] ) && $options['csv'] == false ) {
+		if ( ( isset( $options['csv'] ) && $options['csv'] == false ) || ( isset( $options['csv_export'] ) && $options['csv_export'] == false ) ) {
 			$exclude_data[] = "amapress_{$post_type}_{$field}";
 		}
 	}
@@ -112,7 +112,7 @@ function amapress_users_export_exclude_data( $exclude_date ) {
 	), $exclude_date );
 
 	foreach ( AmapressEntities::getFilteredFields( 'user' ) as $field => $options ) {
-		if ( isset( $options['csv'] ) && $options['csv'] == false ) {
+		if ( ( isset( $options['csv'] ) && $options['csv'] == false ) || ( isset( $options['csv_export'] ) && $options['csv_export'] == false ) ) {
 			$exclude_data[] = "amapress_user_{$field}";
 		}
 	}
