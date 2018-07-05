@@ -235,11 +235,13 @@ class AmapressContrat_instance extends TitanEntity {
 		return $res;
 	}
 
-	public function cloneContrat( $as_draft = true, $for_renew = true ) {
+	public function cloneContrat( $as_draft = true, $for_renew = true, $same_period = false ) {
 		$this->ensure_init();
 
 		if ( ! $for_renew ) {
 			$add_weeks = 0;
+		} else if ( $same_period ) {
+			$add_weeks = 52;
 		} else {
 			$add_weeks = Amapress::datediffInWeeks( $this->getDate_debut(), $this->getDate_fin() );
 		}

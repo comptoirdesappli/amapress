@@ -128,8 +128,8 @@ function amapress_register_entities_contrat( $entities ) {
 			}
 		},
 		'row_actions'     => array(
-			'renew' => array(
-				'label'     => 'Renouveler',
+			'renew'             => array(
+				'label'     => 'Renouveler (prolongement)',
 				'condition' => function ( $post_or_user ) {
 					$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
 					if ( ! $contrat_instance ) {
@@ -139,7 +139,20 @@ function amapress_register_entities_contrat( $entities ) {
 					return $contrat_instance->canRenew();
 				}
 			),
-			'clone' => 'Dupliquer',
+			'renew_same_period' => array(
+				'label'     => 'Renouveler (même période)',
+				'condition' => function ( $post_or_user ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
+					if ( ! $contrat_instance ) {
+						return false;
+					}
+
+					$diff = Amapress::datediffInWeeks( $contrat_instance->getDate_debut(), $contrat_instance->getDate_fin() );
+
+					return $diff < 50;
+				}
+			),
+			'clone'             => 'Dupliquer',
 		),
 		'labels'          => array(
 			'add_new'      => 'Ajouter',
@@ -1306,6 +1319,17 @@ add_action( 'amapress_row_action_contrat_instance_renew', 'amapress_row_action_c
 function amapress_row_action_contrat_instance_renew( $post_id ) {
 	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
 	$new_contrat_instance = $contrat_inst->cloneContrat();
+	if ( ! $new_contrat_instance ) {
+		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
+	}
+
+	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
+}
+
+add_action( 'amapress_row_action_contrat_instance_renew_same_period', 'amapress_row_action_contrat_instance_renew_same_period' );
+function amapress_row_action_contrat_instance_renew_same_period( $post_id ) {
+	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
+	$new_contrat_instance = $contrat_inst->cloneContrat( true, true, true );
 	if ( ! $new_contrat_instance ) {
 		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
 	}
