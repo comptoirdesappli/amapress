@@ -182,10 +182,11 @@ function amapress_register_entities_contrat( $entities ) {
 				'searchable'        => true,
 			),
 			'name'          => array(
-				'name'  => amapress__( 'Nom complémentaire' ),
-				'group' => 'Gestion',
-				'type'  => 'text',
-				'desc'  => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
+				'name'     => amapress__( 'Nom complémentaire' ),
+				'group'    => 'Gestion',
+				'type'     => 'text',
+				'desc'     => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
+				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
 			'nb_visites'    => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
