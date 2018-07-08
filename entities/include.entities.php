@@ -100,6 +100,7 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/amapien/shortcodes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/visite/shortcodes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/intermittence/shortcodes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/amap_event/shortcodes.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/contrat_adhesion/shortcodes.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/pages/register.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/produit/register.php' );

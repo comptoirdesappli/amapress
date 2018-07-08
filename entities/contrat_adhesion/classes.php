@@ -133,6 +133,39 @@ class AmapressAdhesion extends TitanEntity {
 				return $this->getContrat_instance()->getTitle();
 			case 'contrat_lien':
 				return $this->getContrat_instance()->getModel()->getPermalink();
+			case 'date_debut':
+				return date_i18n( 'd/m/Y', $this->getDate_debut() );
+			case 'date_fin':
+				return date_i18n( 'd/m/Y', $this->getDate_fin() );
+			case 'date_debut_complete':
+				return date_i18n( 'D j M Y', $this->getDate_debut() );
+			case 'date_fin_complete':
+				return date_i18n( 'D j M Y', $this->getDate_fin() );
+			case 'adherent':
+				return $this->getAdherent()->getDisplayName();
+			case 'adherent.nom':
+				return $this->getAdherent()->getUser()->last_name;
+			case 'adherent.prenom':
+				return $this->getAdherent()->getUser()->first_name;
+			case 'adherent.adresse':
+				return $this->getAdherent()->getFormattedAdresse();
+			case 'adherent.tel':
+				return $this->getAdherent()->getTelephone();
+			case 'adherent.mail':
+			case 'adherent.email':
+				return $this->getAdherent()->getEmail();
+			case 'lieu':
+				return $this->getLieu()->getLieuTitle();
+			case 'nb_paiements':
+				return $this->getPaiements();
+			case 'paiment_option':
+				$o = $this->getContrat_instance()->getChequeOptionsForTotal( $this->getPaiements(), $this->getTotalAmount() );
+
+				return $o['desc'];
+			case 'quantites':
+				return $this->getContrat_quantites_AsString();
+			case 'total':
+				return $this->getTotalAmount();
 			default:
 				return '';
 		}
@@ -695,17 +728,27 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$quants     = $this->getContrat_quantites( $date_debut );
 		$new_quants = AmapressContrats::get_contrat_quantites( $new_contrat_instance_id );
 
-		$new_quants_ids = array();
+		$old_factors = ! empty( $meta['amapress_adhesion_contrat_quantite_factors'] ) ? $meta['amapress_adhesion_contrat_quantite_factors'] : [];
+		unset( $meta['amapress_adhesion_contrat_quantite_factors'] );
+
+		$new_quants_ids     = array();
+		$new_quants_factors = array();
 		foreach ( $quants as $quant ) {
 			foreach ( $new_quants as $new_quant ) {
 				if ( $new_quant->getCode() == $quant->getContratQuantite()->getCode()
 				     || $new_quant->getTitle() == $quant->getContratQuantite()->getTitle()
 				) {
 					$new_quants_ids[] = $new_quant->ID;
+					if ( isset( $old_factors[ $quant->getId() ] ) ) {
+						$new_quants_factors[ $new_quant->ID ] = $old_factors[ $quant->getId() ];
+					}
 				}
 			}
 		}
 		$meta['amapress_adhesion_contrat_quantite'] = $new_quants_ids;
+		if ( ! empty( $new_quants_factors ) ) {
+			$meta['amapress_adhesion_contrat_quantite_factors'] = $new_quants_factors;
+		}
 
 		$my_post = array(
 			'post_title'   => $this->getTitle(),
@@ -722,5 +765,118 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		update_post_meta( $this->ID, 'amapress_adhesion_renewed', 1 );
 
 		return AmapressAdhesion::getBy( $new_id );
+	}
+
+	public function preparePaiements() {
+		$contrat_instance        = $this->getContrat_instance();
+		$contrat_paiements_dates = $contrat_instance->getPaiements_Liste_dates();
+		$nb_paiements            = $this->getPaiements();
+		$contrat_paiements       = $this->getAllPaiements();
+		$all_paiements           = AmapressContrats::get_all_paiements( $contrat_instance->ID );
+
+		$all_paiements_by_dates = array_group_by( $all_paiements,
+			function ( AmapressAmapien_paiement $p ) {
+				return Amapress::start_of_day( $p->getDate() );
+			}
+		);
+		foreach ( $contrat_paiements_dates as $d ) {
+			if ( ! isset( $all_paiements_by_dates[ $d ] ) ) {
+				$all_paiements_by_dates[ $d ] = array();
+			}
+		}
+		$dates_by_cheque_count = array_combine(
+			array_map( function ( $v, $k ) {
+				$unit = count( $v );
+
+				return sprintf( '%05d-%8x', $unit, $k );
+			}, array_values( $all_paiements_by_dates ), array_keys( $all_paiements_by_dates ) ),
+			array_keys( $all_paiements_by_dates )
+		);
+		ksort( $dates_by_cheque_count );
+		$dates_by_cheque_count = array_values( $dates_by_cheque_count );
+//		$all_quants            = array_merge( array( '_all' ),
+//			array_map( function ( AmapressContrat_quantite $p ) {
+//				$code = $p->getCode();
+//
+//				return ! empty( $code ) ? $code : $p->getQuantite();
+//			}, AmapressContrats::get_contrat_quantites( $contrat_instance->ID ) ) );
+//		foreach ( $all_paiements_by_dates as $k => $v ) {
+//			$all_paiements_by_dates[ $k ] = array_merge( array( '_all' => $v ),
+//				array_group_by( $v, function ( AmapressAmapien_paiement $p ) use ( $k ) {
+//					return implode( ',', array_map( function ( $vv ) {
+//						/** @var AmapressAdhesionQuantite $vv */
+//						$code = $vv->getContratQuantite()->getCode();
+//
+//						return ! empty( $code ) ? $code : $vv->getContratQuantite()->getTitle();
+//					}, $p->getAdhesion()->getContrat_quantites( $k ) ) );
+//				} )
+//			);
+//		}
+
+		if ( count( $contrat_paiements ) < $nb_paiements ) {
+			$diff = $nb_paiements - count( $contrat_paiements );
+			for ( $i = 0; $i < $diff; $i ++ ) {
+				$contrat_paiements[] = null;
+			}
+		}
+
+		$new_paiement_date = array();
+		$def_date          = 0;
+		foreach ( $contrat_paiements as $paiement ) {
+			if ( ! $paiement ) {
+				$new_paiement_date[] = ( isset( $dates_by_cheque_count[ $def_date ] ) ? $dates_by_cheque_count[ $def_date ++ ] : 0 );
+			}
+		}
+		sort( $new_paiement_date );
+
+		$nb_paiements      = count( $contrat_paiements );
+		$paiements_options = $contrat_instance->getChequeOptionsForTotal( $nb_paiements, $this->getTotalAmount() );
+		$amounts           = [];
+		if ( $paiements_options['remain_amount'] > 0 ) {
+			for ( $i = 0; $i < $nb_paiements - 1; $i ++ ) {
+				$amounts[] = $paiements_options['main_amount'];
+			}
+			$amounts[] = $paiements_options['remain_amount'];
+		} else {
+			for ( $i = 0; $i < $nb_paiements; $i ++ ) {
+				$amounts[] = $paiements_options['main_amount'];
+			}
+		}
+		$def_date = 0;
+		$def_id   = - 1;
+		foreach ( $contrat_paiements as $paiement ) {
+			$id       = $paiement ? $paiement->ID : $def_id --;
+			$numero   = $paiement ? $paiement->getNumero() : '';
+			$banque   = $paiement ? $paiement->getBanque() : '';
+			$adherent = $paiement ? $paiement->getEmetteur() : $this->getAdherent()->getDisplayName();
+			if ( empty( $adherent ) ) {
+				$adherent = $this->getAdherent()->getDisplayName();
+			}
+			$amount      = array_shift( $amounts );
+			$status      = $paiement ? $paiement->getStatus() : 'not_received';
+			$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
+
+			$my_post = array(
+				'post_type'    => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
+				'post_content' => '',
+				'post_status'  => 'publish',
+				'meta_input'   => array(
+					'amapress_contrat_paiement_adhesion'         => $this->ID,
+					'amapress_contrat_paiement_contrat_instance' => $contrat_instance->ID,
+					'amapress_contrat_paiement_date'             => $paiement_dt,
+					'amapress_contrat_paiement_status'           => $status,
+					'amapress_contrat_paiement_amount'           => $amount,
+					'amapress_contrat_paiement_numero'           => $numero,
+					'amapress_contrat_paiement_emetteur'         => $adherent,
+					'amapress_contrat_paiement_banque'           => $banque,
+				),
+			);
+			if ( $id < 0 ) {
+				wp_insert_post( $my_post );
+			} else {
+				$my_post['ID'] = $id;
+				wp_update_post( $my_post, true );
+			}
+		}
 	}
 }

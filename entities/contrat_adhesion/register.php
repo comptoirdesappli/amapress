@@ -23,6 +23,11 @@ function amapress_register_entities_adhesion( $entities ) {
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajout Inscription',
 		),
+		'groups'             => array(
+			'Infos' => [
+				'context' => 'side',
+			],
+		),
 		'row_actions'        => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
 			'renew'    => 'Renouveler',
@@ -104,7 +109,8 @@ function amapress_register_entities_adhesion( $entities ) {
 				'name'         => amapress__( 'Adhérent' ),
 				'type'         => 'select-users',
 				'required'     => true,
-				'desc'         => 'Sélectionner un amapien. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+//				'desc'         => 'Sélectionner un amapien. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+//				'desc'         => '<a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> et rafraîchir la liste',
 				'group'        => '1/ Informations',
 				'import_key'   => true,
 				'csv_required' => true,
@@ -159,7 +165,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			'status'            => array(
 				'name'     => amapress__( 'Statut' ),
 				'type'     => 'select',
-				'group'    => '1/ Informations',
+				'group'    => 'Infos',
 				'options'  => array(
 					'to_confirm' => 'En attente de confirmation',
 					'confirmed'  => 'Confirmée',
@@ -173,7 +179,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					}
 				},
 				'required' => true,
-				'desc'     => 'Statut',
+//				'desc'     => 'Statut',
 			),
 			'quantites_editor'  => array(
 				'name'        => amapress__( 'Contrat et Quantité(s)' ),
@@ -392,7 +398,7 @@ jQuery(function($) {
 				'type'         => 'select-users',
 				'required'     => false,
 				'desc'         => 'Sélectionner un Co-Adhérent 1. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-				'group'        => '1/ Informations',
+				'group'        => '4/ Coadhérents',
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
@@ -401,7 +407,7 @@ jQuery(function($) {
 				'type'         => 'select-users',
 				'required'     => false,
 				'desc'         => 'Sélectionner un Co-Adhérent 2. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-				'group'        => '1/ Informations',
+				'group'        => '4/ Coadhérents',
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
@@ -410,14 +416,14 @@ jQuery(function($) {
 				'type'         => 'select-users',
 				'required'     => false,
 				'desc'         => 'Sélectionner un Co-Adhérent 3. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-				'group'        => '1/ Informations',
+				'group'        => '4/ Coadhérents',
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
 			'date_fin'          => array(
 				'name'          => amapress__( 'Date de fin' ),
 				'type'          => 'date',
-				'group'         => '4/ Fin de contrat avant terme',
+				'group'         => '5/ Fin de contrat avant terme',
 				'desc'          => 'Date à laquelle se termine le contrat',
 				'show_column'   => false,
 				'show_on'       => 'edit-only',
@@ -444,7 +450,7 @@ jQuery(function($) {
 			'fin_raison'        => array(
 				'name'        => amapress__( 'Motif' ),
 				'type'        => 'textarea',
-				'group'       => '4/ Fin de contrat avant terme',
+				'group'       => '5/ Fin de contrat avant terme',
 				'desc'        => 'Motif de départ (Déménagement, insatisfaction, ...)',
 				'show_column' => false,
 				'show_on'     => 'edit-only',

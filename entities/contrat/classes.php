@@ -138,6 +138,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_debut' );
 	}
 
+	public function isQuantiteMultiple() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_quantite_multi' );
+	}
+
 	public function isQuantiteVariable() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_quantite_variable' );
 	}
@@ -169,17 +173,30 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	/** @return string */
-	public function getContrat() {
+	public function getOnlineContrat() {
 		return wpautop( $this->getCustom( 'amapress_contrat_instance_contrat' ) );
 	}
 
 	/** @return string */
-	public function getContratRaw() {
+	public function getOnlineContratRaw() {
 		return $this->getCustom( 'amapress_contrat_instance_contrat' );
+	}
+
+	public function hasOnlineContrat() {
+		$contrat_cnt = $this->getOnlineContratRaw();
+		if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public function isPrincipal() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_is_principal', 0 );
+	}
+
+	public function canSelfSubscribe() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_self_subscribe', 0 );
 	}
 
 	public function isEnded() {
@@ -203,12 +220,67 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsArray( 'amapress_contrat_instance_rattrapage' );
 	}
 
+	public function getDateFactor( $dist_date ) {
+		$date_factor = 1;
+		$rattrapage  = $this->getRattrapage();
+		foreach ( $rattrapage as $r ) {
+			if ( Amapress::start_of_day( intval( $r['date'] ) ) == Amapress::start_of_day( $dist_date ) ) {
+				$date_factor = floatval( $r['quantite'] );
+				break;
+			}
+		}
+
+		return $date_factor;
+	}
+
 	public function getPaiements_Liste_dates() {
 		return $this->getCustomAsDateArray( 'amapress_contrat_instance_liste_dates_paiements' );
 	}
 
 	public function getPossiblePaiements() {
 		return $this->getCustomAsIntArray( 'amapress_contrat_instance_paiements' );
+	}
+
+	public function getMinChequeAmount() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_min_cheque_amount' );
+	}
+
+	public function getMinEngagement() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_min_engagement' );
+	}
+
+	public function getChequeOptionsForTotal( $nb_cheque, $total ) {
+		$last_cheque = $this->getMinChequeAmount();
+
+		if ( $nb_cheque > 1 ) {
+			$t = $total - $last_cheque;
+			while ( $t / ( $nb_cheque - 1 ) != intval( $t / ( $nb_cheque - 1 ) ) && $last_cheque < $total ) {
+				$last_cheque += 1;
+				$t           = $total - $last_cheque;
+			}
+			$cheque_main_amount = ( $total - $last_cheque ) / ( $nb_cheque - 1 );
+		} else {
+			$last_cheque        = 0;
+			$cheque_main_amount = $total;
+		}
+
+		$nb = $nb_cheque;
+		if ( $cheque_main_amount == $last_cheque ) {
+			$last_cheque = 0;
+			$option      = "$nb chèque(s) de $cheque_main_amount €";
+		} else if ( $last_cheque == 0 ) {
+			$nb     = 1;
+			$option = "1 chèque de $cheque_main_amount €";
+		} else {
+			$nb     = $nb_cheque - 1;
+			$option = "$nb chèque(s) de $cheque_main_amount € et 1 chèque de $last_cheque €";
+		}
+
+		return [
+			'desc'          => $option,
+			'main_amount'   => $cheque_main_amount,
+			'remain_amount' => $last_cheque,
+		];
 	}
 
 	/** @return AmapressAdhesion[] */
@@ -473,6 +545,14 @@ class AmapressContrat_quantite extends TitanEntity {
 			} else {
 				return round( $value, 2 );
 			}
+		}
+	}
+
+	public function getFormattedTitle( $factor ) {
+		if ( $factor != 1 ) {
+			return "$factor x {$this->getTitle()}";
+		} else {
+			return $this->getTitle();
 		}
 	}
 

@@ -22,7 +22,7 @@ function amapress_get_custom_content_contrat_details( $content, $subview ) {
 		return Amapress::getContactInfos();
 	}
 
-	$contrat_cnt = $contrat_instance->getContratRaw();
+	$contrat_cnt = $contrat_instance->getOnlineContratRaw();
 	if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
 //        $ret = '<p>Ce contrat n\'est pas encore souscritible en ligne</p>';
 		$ret = Amapress::getContactInfos();
@@ -90,25 +90,25 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
 	$prod_user    = $prod->getUserId();
 
-	$user_contrats = AmapressAdhesion::getUserActiveAdhesionIds();
-	$links         = '';
-	if ( in_array( $contrat_id, $user_contrats ) ) {
-		$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
-	} else {
-		foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( $contrat_id ) as $contrat_inst ) {
-			$contrat_cnt = $contrat_inst->getContratRaw();
-			if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
-				continue;
-			}
-			$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details/' . $contrat_inst->getSlug() . '" class="btn btn-default btn-abonnement">' . esc_html( $contrat_inst->getTitle() ) . '</a></div>';
-		}
-//        if (empty($links)) {
-//            $links .= '<div><a href="' . trailingslashit(get_permalink(get_the_ID())) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
-//        }
-	}
-	if ( ! empty( $links ) ) {
-		$links = '<h3>Ses contrats</h3>' . $links;
-	}
+//	$user_contrats = AmapressAdhesion::getUserActiveAdhesionIds();
+//	$links         = '';
+//	if ( in_array( $contrat_id, $user_contrats ) ) {
+//		$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
+//	} else {
+//		foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( $contrat_id ) as $contrat_inst ) {
+//			$contrat_cnt = $contrat_inst->getContratRaw();
+//			if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
+//				continue;
+//			}
+//			$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details/' . $contrat_inst->getSlug() . '" class="btn btn-default btn-abonnement">' . esc_html( $contrat_inst->getTitle() ) . '</a></div>';
+//		}
+////        if (empty($links)) {
+////            $links .= '<div><a href="' . trailingslashit(get_permalink(get_the_ID())) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
+////        }
+//	}
+//	if ( ! empty( $links ) ) {
+//		$links = '<h3>Ses contrats</h3>' . $links;
+//	}
 
 	$content = $prod->getContent();
 	$content .= get_the_content();

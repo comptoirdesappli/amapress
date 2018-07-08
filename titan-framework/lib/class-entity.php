@@ -76,6 +76,10 @@ class TitanEntity {
 		return "<a href='{$this->getPermalink($relative_url)}' class='$classes'>$html</a>";
 	}
 
+	public function linkToPermalinkBlank( $html, $classes = '', $relative_url = null ) {
+		return "<a href='{$this->getPermalink($relative_url)}' class='$classes' target='_blank'>$html</a>";
+	}
+
 	public function getPermalink( $relative_url = null ) {
 		if ( ! $this->post ) {
 			$this->ensure_init();

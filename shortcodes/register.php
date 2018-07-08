@@ -53,6 +53,9 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'les-paniers-intermittents', 'amapress_all_paniers_intermittents_shortcode' );
 	amapress_register_shortcode( 'les-paniers-intermittents-count', 'amapress_all_paniers_intermittents_count_shortcode' );
 
+	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription' );
+
+
 //    amapress_register_shortcode('intermittent-adhesions', 'amapress_display_intermittent_adhesions_shortcode');
 //    amapress_register_shortcode('intermittent-inscription', 'amapress_display_intermittent_inscription_shortcode');
 	amapress_register_shortcode( 'intermittent-paniers', 'amapress_intermittent_paniers_shortcode' );
