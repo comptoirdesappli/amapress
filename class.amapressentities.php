@@ -378,7 +378,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                   => array(
+						'Renouvèlement'                            => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -393,13 +393,36 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques' => array(
+						'Mails - Envoi liste des chèques'          => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
-						'Mails - Envoi des quantités à livrer' => array(
+						'Mails - Envoi des quantités à livrer'     => array(
 							'desc'    => '',
 							'options' => amapress_contrat_quantites_recall_options(),
+						),
+						'Mails - Confirmation du contrat en ligne' => array(
+							'desc'    => '',
+							'options' => [
+								array(
+									'id'      => 'online_subscription_confirm-mail-subject',
+									'name'    => 'Sujet du mail',
+									'type'    => 'text',
+									'default' => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
+								),
+								array(
+									'id'      => 'online_subscription_confirm-mail-content',
+									'name'    => 'Contenu du mail',
+									'type'    => 'editor',
+									'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
+									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
+									\n-> pour %%nb_distributions%% distributions
+									\n-> quantités : %%quantites%%
+									\n-> pour un montant de %%total%%€
+									\nMerci de remettre aux référents %%option_paiements%% à la première distribution
+									\n\n%%nom_site%%" ),
+								),
+							]
 						),
 					),
 					'subpages' => array(

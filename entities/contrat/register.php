@@ -163,7 +163,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
-			'model'         => array(
+			'model'             => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -181,14 +181,14 @@ function amapress_register_entities_contrat( $entities ) {
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'searchable'        => true,
 			),
-			'name'          => array(
+			'name'              => array(
 				'name'     => amapress__( 'Nom complémentaire' ),
 				'group'    => 'Gestion',
 				'type'     => 'text',
 				'desc'     => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
-			'nb_visites'    => array(
+			'nb_visites'        => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => 'Information',
 				'type'        => 'number',
@@ -197,7 +197,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
-			'type'          => array(
+			'type'              => array(
 				'name'          => amapress__( 'Type de contrat' ),
 				'type'          => 'select',
 				'options'       => array(
@@ -216,9 +216,17 @@ function amapress_register_entities_contrat( $entities ) {
 					if ( $contrat_instance->isPanierVariable() ) {
 						$status[] = 'Paniers variables';
 					} else if ( $contrat_instance->isQuantiteVariable() ) {
-						$status[] = 'Quantités variables';
+						if ( $contrat_instance->isQuantiteMultiple() ) {
+							$status[] = 'Quantités variables multiples';
+						} else {
+							$status[] = 'Quantités variables';
+						}
 					} else {
-						$status[] = 'Quantités fixes';
+						if ( $contrat_instance->isQuantiteMultiple() ) {
+							$status[] = 'Quantités fixes multiples';
+						} else {
+							$status[] = 'Quantités fixes';
+						}
 					}
 					if ( $contrat_instance->isPrincipal() ) {
 						$status[] = 'Principal';
@@ -232,7 +240,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'conditional'   => array(
 					'_default_' => 'panier',
 					'panier'    => array(
-						'is_principal'          => array(
+						'is_principal'      => array(
 							'name'        => amapress__( 'Contrat principal' ),
 							'type'        => 'checkbox',
 							'show_column' => false,
@@ -358,7 +366,7 @@ jQuery(function($) {
 								}
 							}
 						),
-						'les-paniers'           => array(
+						'les-paniers'       => array(
 							'name'              => amapress__( 'Paniers' ),
 							'group'             => 'Distributions',
 							'desc'              => 'Paniers de ce contrat',
@@ -377,7 +385,17 @@ jQuery(function($) {
 							'type'              => 'related-posts',
 							'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
 						),
-						'panier_variable'       => array(
+						'quantite_multi'    => array(
+							'name'        => amapress__( 'Quantités multiples' ),
+							'type'        => 'checkbox',
+							'group'       => 'Gestion',
+							'readonly'    => 'amapress_is_contrat_instance_readonly',
+							'required'    => true,
+							'show_column' => false,
+							'default'     => 1,
+							'desc'        => 'Cocher cette case si les quantités si plusieurs quantités peuvent être choisies',
+						),
+						'panier_variable'   => array(
 							'name'        => amapress__( 'Paniers personnalisés' ),
 							'type'        => 'checkbox',
 							'group'       => 'Gestion',
@@ -386,7 +404,7 @@ jQuery(function($) {
 							'show_column' => false,
 							'desc'        => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
 						),
-						'quantite_variable'     => array(
+						'quantite_variable' => array(
 							'name'        => amapress__( 'Quantités personnalisées' ),
 							'type'        => 'checkbox',
 							'group'       => 'Gestion',
@@ -601,7 +619,7 @@ jQuery(function($) {
 					'placeholder' => 'Tous les lieux'
 				),
 			),
-			'status'         => array(
+			'status'            => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => array( 'AmapressContrats', "contratStatus" ),
@@ -611,7 +629,7 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'          => array(
+			'ended'             => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'group'       => 'Status',
@@ -619,7 +637,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'quant_editor'  => array(
+			'quant_editor'      => array(
 				'name'        => amapress__( 'Quantités' ),
 				'type'        => 'custom',
 				'group'       => 'Gestion',
@@ -630,14 +648,14 @@ jQuery(function($) {
 				'show_column' => false,
 //                'desc' => 'Quantités',
 			),
-			'max_adherents' => array(
+			'max_adherents'     => array(
 				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
 				'type'     => 'number',
 				'group'    => 'Gestion',
 				'required' => true,
 				'desc'     => 'Nombre maximum d\'amapiens',
 			),
-			'inscriptions'  => array(
+			'inscriptions'      => array(
 				'name'        => amapress__( 'Inscriptions' ),
 				'show_column' => true,
 				'show_table'  => false,
@@ -652,11 +670,33 @@ jQuery(function($) {
 				'type'        => 'related-posts',
 				'query'       => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
 			),
-			'contrat'       => array(
-				'name'       => amapress__( 'Contrat en ligne' ),
+			'self_subscribe'    => array(
+				'name'        => amapress__( 'Clôturer' ),
+				'type'        => 'checkbox',
+				'group'       => 'Souscription en ligne',
+				'desc'        => 'Cocher cette case pour autoriser l\'inscription en ligne par les amapiens',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+			),
+			'min_engagement'    => array(
+				'name'     => amapress__( 'Engagement minimal' ),
+				'type'     => 'number',
+				'group'    => 'Souscription en ligne',
+				'required' => true,
+				'desc'     => 'Montant minimal d\'engagement',
+			),
+			'min_cheque_amount' => array(
+				'name'     => amapress__( 'Montant minimal chèque' ),
+				'type'     => 'number',
+				'group'    => 'Souscription en ligne',
+				'required' => true,
+				'desc'     => 'Montant minimal du plus petit chèque',
+			),
+			'contrat'           => array(
+				'name'       => amapress__( 'Info contrat en ligne' ),
 				'type'       => 'editor',
-//                'required' => true,
-				'desc'       => 'Configurer le contenu du Contrat en ligne',
+				'group'      => 'Souscription en ligne',
+				'desc'       => 'Configurer les informations supplémentaires à afficher lors de la souscription en ligne',
 				'wpautop'    => false,
 				'searchable' => true,
 				'readonly'   => 'amapress_is_contrat_instance_readonly',

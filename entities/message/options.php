@@ -37,6 +37,9 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 	$email = stripslashes( $user->getUser()->user_email );
 	$phone = stripslashes( $user->getTelephone() );
 	switch ( $subopt ) {
+		case "nom_complet":
+		case "display_name":
+			return $user->getDisplayName();
 		case "prenom":
 		case "first_name":
 			return $user->getUser()->first_name;

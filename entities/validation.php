@@ -56,7 +56,7 @@ function amapress_post_validation() {
                 return jQuery.unique(dataExclusives).length <= 1;
             };
             jQuery.validator.addMethod("multicheckReq", function (value, element) {
-                return jQuery('input:checkbox:checked', jQuery(element).closest('fieldset')).length > 0;
+                return jQuery('input:checkbox:checked,input:radio:checked', jQuery(element).closest('fieldset')).length > 0;
             }, "Merci de sélectionner au moins un élément");
             jQuery.validator.addMethod("exclusiveCheckgroup", exclusiveGroupCheckFunction, "Merci de sélectionner des élements dans un seul groupe");
             jQuery.validator.addMethod("exclusiveContrat", exclusiveGroupCheckFunction, "Attention, vous avez sélectionné des produits/quantités concernant des contrats différents !");
@@ -142,7 +142,7 @@ function amapress_post_validation() {
                             "action": "check_inscription_unique",
                             "contrats": function () {
                                 var contrats = [];
-                                jQuery('input.contrat-quantite:checkbox:checked').each(function () {
+                                jQuery('input.contrat-quantite:checked').each(function () {
                                     contrats.push(jQuery(this).data('excl'));
                                 });
                                 return contrats.join(',');

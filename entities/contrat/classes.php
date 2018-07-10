@@ -139,7 +139,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function isQuantiteMultiple() {
-		return $this->getCustomAsInt( 'amapress_contrat_instance_quantite_multi' );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_quantite_multi', 1 );
 	}
 
 	public function isQuantiteVariable() {
@@ -253,12 +253,17 @@ class AmapressContrat_instance extends TitanEntity {
 		$last_cheque = $this->getMinChequeAmount();
 
 		if ( $nb_cheque > 1 ) {
-			$t = $total - $last_cheque;
-			while ( $t / ( $nb_cheque - 1 ) != intval( $t / ( $nb_cheque - 1 ) ) && $last_cheque < $total ) {
-				$last_cheque += 1;
-				$t           = $total - $last_cheque;
+			if ( ( $total / $nb_cheque ) * 2 == intval( $total / $nb_cheque * 2 ) ) {
+				$last_cheque        = $total / $nb_cheque;
+				$cheque_main_amount = $total / $nb_cheque;
+			} else {
+				$t = $total - $last_cheque;
+				while ( $t / ( $nb_cheque - 1 ) != intval( $t / ( $nb_cheque - 1 ) ) && $last_cheque < $total ) {
+					$last_cheque += 1;
+					$t           = $total - $last_cheque;
+				}
+				$cheque_main_amount = ( $total - $last_cheque ) / ( $nb_cheque - 1 );
 			}
-			$cheque_main_amount = ( $total - $last_cheque ) / ( $nb_cheque - 1 );
 		} else {
 			$last_cheque        = 0;
 			$cheque_main_amount = $total;

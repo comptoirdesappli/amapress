@@ -61,7 +61,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 //	}
 
 	if ( strpos( $colname, 'contrat_amount_' ) === 0 ) {
-		$contrat_id = intval( substr( $colname, 15 ) );
+		$contrat_id      = intval( substr( $colname, 15 ) );
 		$expected_amount = 0;
 		/** @var AmapressAdhesion $adh */
 		foreach ( ( isset( $adhesions[ $user_id ] ) ? $adhesions[ $user_id ] : array() ) as $adh ) {
@@ -306,8 +306,10 @@ function amapress_paiements_count_editor( $post_id ) {
 	if ( $adhesion->getContrat_instance() != null ) {
 		$amount = $adhesion->getTotalAmount();
 		$ret    .= '<div><strong>Montant :</strong> ' . sprintf( '%.2f€', $amount ) . '</div>
-                 <div><strong>Chèques prévus :</strong> ' . implode( ', ', array_map( function ( $v ) use ( $amount ) {
-				return sprintf( '%d (%.2f€)', $v, $amount / $v );
+                 <div><strong>Chèques prévus :</strong> ' . implode( ', ', array_map( function ( $v ) use ( $adhesion, $amount ) {
+				$option = $adhesion->getContrat_instance()->getChequeOptionsForTotal( $v, $amount );
+
+				return sprintf( '%d (%s)', $v, $option['desc'] );
 			}, $adhesion->getContrat_instance()->getPossiblePaiements() ) ) . '</div>';
 	}
 

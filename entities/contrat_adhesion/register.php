@@ -629,10 +629,12 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					$quant_var_editor .= '</select>';
 				}
 
-				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="checkbox" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',
+				$type = $contrat_instance->isQuantiteMultiple() ? 'checkbox' : 'radio';
+				$ret  .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="%s" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',
 					$id,
 					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
 					$id,
+					$type,
 					'amapress_adhesion_contrat_quants',
 					esc_attr( $quantite->ID ),
 					checked( in_array( $quantite->ID, $adhesion_quantite_ids ), true, false ),

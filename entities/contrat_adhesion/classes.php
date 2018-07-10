@@ -158,7 +158,13 @@ class AmapressAdhesion extends TitanEntity {
 				return $this->getLieu()->getLieuTitle();
 			case 'nb_paiements':
 				return $this->getPaiements();
-			case 'paiment_option':
+			case 'nb_distributions':
+				return count( $this->getRemainingDates() );
+			case 'dates_distribution':
+				return implode( ', ', array_map( function ( $d ) {
+					return date_i18n( 'd/m/Y', $d );
+				}, $this->getRemainingDates() ) );
+			case 'option_paiements':
 				$o = $this->getContrat_instance()->getChequeOptionsForTotal( $this->getPaiements(), $this->getTotalAmount() );
 
 				return $o['desc'];
@@ -370,6 +376,15 @@ class AmapressAdhesion extends TitanEntity {
 //        return $sum;
 //    }
 
+	public function getRemainingDates() {
+		$dates      = $this->getContrat_instance()->getListe_dates();
+		$start_date = Amapress::start_of_day( $this->getDate_debut() );
+
+		return array_filter( $dates, function ( $d ) use ( $start_date ) {
+			return Amapress::start_of_day( $d ) >= $start_date;
+		} );
+	}
+
 	/** @return int */
 	public function getPaiements() {
 		return $this->getCustom( 'amapress_adhesion_paiements', 0 );
@@ -462,11 +477,7 @@ class AmapressAdhesion extends TitanEntity {
 		if ( ! $this->getContrat_instanceId() ) {
 			return 0;
 		}
-		$dates      = $this->getContrat_instance()->getListe_dates();
-		$start_date = Amapress::start_of_day( $this->getDate_debut() );
-		$dates      = array_filter( $dates, function ( $d ) use ( $start_date ) {
-			return Amapress::start_of_day( $d ) >= $start_date;
-		} );
+		$dates = $this->getRemainingDates();
 //		if ( $this->getContrat_instance()->isPanierVariable() ) {
 		$sum = 0;
 		foreach ( $dates as $date ) {
