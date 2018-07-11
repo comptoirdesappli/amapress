@@ -139,7 +139,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 
 	$columns = array(
 		array(
-			'title' => 'Pris',
+			'title' => 'Passage',
 			'data'  => 'check',
 		),
 		array(
@@ -217,18 +217,35 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			return implode( '_', $user_ids );
 		} );
 
+	$query                        = array(//        'status' => 'to_exchange',
+	);
+	$query['contrat_instance_id'] = $dist->getContratIds();
+	$query['lieu_id']             = $dist_lieu_id;
+	$query['date']                = $date;
+	$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+
+	$users_ids_paniers_intermittents = array_map( function ( $p ) {
+		/** @var AmapressIntermittence_panier $p */
+		return $p->getAdherent()->ID;
+	}, $paniers );
 	/** @var AmapressAdhesion[] $adhs */
 	foreach ( $adhesions as $user_ids => $adhs ) {
 		$line = array();
 
-		$user_ids = explode( '_', $user_ids );
+		$user_ids            = explode( '_', $user_ids );
+		$panier_intermittent = '';
+		foreach ( $user_ids as $user_id ) {
+			if ( in_array( $user_id, $users_ids_paniers_intermittents ) ) {
+				$panier_intermittent = '*';
+			}
+		}
 		$users    = array_map( function ( $user_id ) {
 			return amapress_get_user_by_id_or_archived( intval( $user_id ) );
 		}, $user_ids );
 
 		$line['first_name'] = implode( ' / ', array_map( function ( $user ) {
 			return $user->first_name;
-		}, $users ) );
+			}, $users ) ) . $panier_intermittent;
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
 			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
 			if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
@@ -246,7 +263,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			$line['tel'] = implode( ' / ', array_unique( array_map( function ( $user ) {
 				$adh = AmapressUser::getBy( $user );
 
-				return $adh->getTelTo() . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
+				return $adh->getTelTo( true ) . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
 			}, $users ) ) );
 		}
 		if ( $show_emails ) {
@@ -387,7 +404,13 @@ table, td, th {
 			$pdf_url = add_query_arg( 'all', '', $pdf_url );
 		}
 		echo '<div class="btns">';
+		if ( isset( $_GET['all'] ) ) {
+			echo '<a href="' . esc_attr( remove_query_arg( 'all' ) ) . '" class="btn btn-default btn-print">Uniqument contrats à cette distribution</a>';
+		} else {
+			echo '<a href="' . esc_attr( add_query_arg( 'all', '' ) ) . '" class="btn btn-default btn-print">Afficher tous les contrats</a>';
+		}
 		echo '<a href="' . esc_attr( $pdf_url ) . '" class="btn btn-default btn-print">Imprimer en PDF</a>';
+		echo '<br/>';
 		if ( current_user_can( 'edit_distribution' ) ) {
 			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
 			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
@@ -403,65 +426,23 @@ table, td, th {
 		if ( current_user_can( 'edit_lieu_distribution' ) ) {
 			echo '<a href="' . esc_attr( $dist->getLieu()->getAdminEditLink() ) . '" class="btn btn-default">Editer les infos du lieu</a>';
 		}
-		if ( isset( $_GET['all'] ) ) {
-			echo '<a href="' . esc_attr( remove_query_arg( 'all' ) ) . '" class="btn btn-default btn-print">Contrats à cette distribution</a>';
-		} else {
-			echo '<a href="' . esc_attr( add_query_arg( 'all', '' ) ) . '" class="btn btn-default btn-print">Tous les contrats</a>';
-		}
 		echo '</div>';
 		echo '<br/>';
 	}
 
-	echo Amapress::getOption( 'liste-emargement-general-message' );
-	echo '<br/>';
-	echo $dist->getInformations();
-	echo '<br/>';
+	$general_message = Amapress::getOption( 'liste-emargement-general-message' );
+	if ( strlen( wp_strip_all_tags( $general_message ) ) > 0 ) {
+		echo $general_message;
+		echo '<br/>';
+	}
+	$dist_infos = $dist->getInformations();
+	if ( strlen( wp_strip_all_tags( $dist_infos ) ) > 0 ) {
+		echo $dist_infos;
+		echo '<br/>';
+	}
 
 //    amapress_display_messages_for_post('dist-messages', $dist->ID);
 
-	$query                        = array(//        'status' => 'to_exchange',
-	);
-	$query['contrat_instance_id'] = $dist->getContratIds();
-	$query['lieu_id']             = $dist_lieu_id;
-	$query['date']                = $date;
-	$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
-	if ( count( $paniers ) > 0 ) {
-		echo '<h3 class="liste-emargement-intermittent">Panier(s) intermittent(s)</h3>';
-		echo amapress_get_paniers_intermittents_table( 'paniers-exchs', $paniers,
-			function ( $state, $status, $adh ) {
-				return $state;
-			},
-			array(
-				'paging'       => false,
-				'searching'    => false,
-				'nowrap'       => false,
-				'responsive'   => false,
-				'init_as_html' => true,
-				'no_script'    => $for_pdf,
-			),
-			array(
-				'show_avatar'     => 'false',
-				'show_email'      => 'false',
-				'show_tel'        => 'default',
-				'show_tel_fixe'   => 'default',
-				'show_tel_mobile' => 'default',
-				'show_adresse'    => 'false',
-				'show_roles'      => 'false',
-			),
-			array(
-				'date'      => false,
-				'panier'    => true,
-				'quantite'  => true,
-				'lieu'      => false,
-				'prix'      => false,
-				'adherent'  => true,
-				'repreneur' => true,
-				'etat'      => true,
-				'for_print' => true,
-			) );
-	}
-
-	echo '<br/>';
 	echo '<h3 class="liste-emargement">Liste</h3>';
 	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
 		array(
@@ -504,20 +485,58 @@ table, td, th {
 
 	$from_date = Amapress::start_of_day( $date );
 	echo '<br/>';
-	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions' ) . '</h3>';
+	if ( count( $paniers ) > 0 ) {
+		echo '<h3 class="liste-emargement-intermittent">* Panier(s) intermittent(s)</h3>';
+		echo amapress_get_paniers_intermittents_table( 'paniers-exchs', $paniers,
+			function ( $state, $status, $adh ) {
+				return $state;
+			},
+			array(
+				'paging'       => false,
+				'searching'    => false,
+				'nowrap'       => false,
+				'responsive'   => false,
+				'init_as_html' => true,
+				'no_script'    => $for_pdf,
+			),
+			array(
+				'show_avatar'     => 'false',
+				'show_email'      => 'false',
+				'show_tel'        => 'default',
+				'show_tel_fixe'   => 'default',
+				'show_tel_mobile' => 'default',
+				'show_adresse'    => 'false',
+				'show_roles'      => 'false',
+			),
+			array(
+				'date'      => false,
+				'panier'    => true,
+				'quantite'  => true,
+				'lieu'      => false,
+				'prix'      => false,
+				'adherent'  => true,
+				'repreneur' => true,
+				'etat'      => true,
+				'for_print' => true,
+			) );
+	}
+
 	echo '<br/>';
-	echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( ! $for_pdf ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
+	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions - ' . $dist->getLieu()->getTitle() ) . '</h3>';
+//	echo '<br/>';
+	echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( ! $for_pdf ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
-		echo '<br/>';
-		echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions sur les autres lieux' ) . '</h3>';
 		echo '<br/>';
 		foreach ( $lieux_ids as $lieu_id ) {
 			if ( $lieu_id == $dist_lieu_id ) {
 				continue;
 			}
-			echo do_shortcode( '[inscription-distrib for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=3 show_adresse=false show_avatar=' . ( ! $for_pdf ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+			echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables du jour - ' . $lieu->getTitle() ) . '</h3>';
+//			echo '<br/>';
+			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( ! $for_pdf ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
 		}
 	}
 
