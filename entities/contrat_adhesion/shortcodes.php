@@ -6,8 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'init', function () {
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_coords' == $_REQUEST['inscr_assistant'] ) {
-		if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
-			wp_die( 'Accès interdit' );
+		if ( ! amapress_is_user_logged_in() ) {
+			if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
+				wp_die( 'Accès interdit' );
+			}
 		}
 		$email          = sanitize_email( $_POST['email'] );
 		$user_firt_name = sanitize_text_field( $_POST['first_name'] );
@@ -37,18 +39,31 @@ function amapress_self_inscription( $atts ) {
 
 	$atts = shortcode_atts(
 		[
-			'key' => '',
+			'key'        => '',
+			'for_logged' => 'false',
 		]
 		, $atts );
 
-	//TODO check key + afficher lien vers cette page sécurisée + assistant for logged users
-
 	$key = $atts['key'];
-	if ( empty( $key ) || empty( $_GET['key'] ) || $_GET['key'] != $key ) {
-		return '<div class="alert alert-danger">Accès interdit</div>';
+	if ( Amapress::toBool( $atts['for_logged'] ) ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return '<div class="alert alert-danger">Accès interdit</div>';
+		}
+		if ( ! isset( $_GET['step'] ) ) {
+			$step = 'coords_logged';
+		}
+	} else {
+		if ( empty( $key ) || empty( $_GET['key'] ) || $_GET['key'] != $key ) {
+			return '<div class="alert alert-danger">Accès interdit</div>';
+		}
+		if ( amapress_can_access_admin() ) {
+			echo '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : <pre>' .
+			     add_query_arg( 'key', $key, get_permalink() ) . '</pre></div>';
+		}
 	}
 
 	ob_start();
+
 
 	$min_total                 = 0;
 	$subscribable_contrats     = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
@@ -60,9 +75,11 @@ function amapress_self_inscription( $atts ) {
 		return $c->ID;
 	}, $subscribable_contrats );
 	$principal_contrat         = null;
+	$principal_contrats        = [];
 	foreach ( $subscribable_contrats as $c ) {
 		if ( $c->isPrincipal() ) {
-			$principal_contrat = $c;
+			$principal_contrat    = $c;
+			$principal_contrats[] = $c;
 		}
 	}
 	if ( empty( $subscribable_contrats ) ) {
@@ -70,6 +87,14 @@ function amapress_self_inscription( $atts ) {
 	}
 	if ( empty( $principal_contrat ) ) {
 		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
+	}
+
+	if ( count( $principal_contrats ) > 1 ) {
+		wp_die( 'Il y a plusieurs contrat principaux. Veuillez vérifier la configuration (erreur de cochage, contrat passé non clôturé..) : <br/>' .
+		        implode( '<br/>', array_map( function ( $c ) {
+			        /** @var AmapressContrat_instance $c */
+			        return Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle(), true, true );
+		        }, $principal_contrats ) ) );
 	}
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
@@ -94,7 +119,7 @@ function amapress_self_inscription( $atts ) {
 		}
 	}
 
-	$start_step_url    = add_query_arg( 'step', 'email', remove_query_arg( [ 'contrat_id', 'message' ] ) );
+	$start_step_url = add_query_arg( 'step', 'email', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 
 	if ( ! empty( $_GET['message'] ) ) {
 		$message = '';
@@ -120,10 +145,14 @@ function amapress_self_inscription( $atts ) {
             <input type="submit" value="Valider" class="button button-primary"/>
         </form>
 		<?php
-	} else if ( 'coords' == $step ) {
-		$email = sanitize_email( $_POST['email'] );
-		if ( empty( $email ) ) {
-			wp_safe_redirect( add_query_arg( 'message', 'empty_email' ) );
+	} else if ( 'coords' == $step || 'coords_logged' == $step ) {
+		if ( 'coords_logged' == $step && amapress_is_user_logged_in() ) {
+			$email = wp_get_current_user()->user_email;
+		} else {
+			$email = sanitize_email( $_POST['email'] );
+			if ( empty( $email ) ) {
+				wp_die( 'Aucun email saisi' );
+			}
 		}
 
 		$user           = get_user_by( 'email', $email );
@@ -408,7 +437,7 @@ function amapress_self_inscription( $atts ) {
 			}
 
 			$cheques = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
-			$option  = esc_html( $cheques['desc']);
+			$option  = esc_html( $cheques['desc'] );
 //			$cheque_main_amount = $cheques['main_amount'];
 //			$last_cheque        = $cheques['remain_amount'];
 			echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' value='$nb_cheque' class='required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
@@ -432,9 +461,8 @@ function amapress_self_inscription( $atts ) {
 		}
 
 
-
 		$cheques = intval( $_REQUEST['cheques'] );
-		$quants  = unserialize( stripslashes( $_REQUEST['quants'] ));
+		$quants  = unserialize( stripslashes( $_REQUEST['quants'] ) );
 
 		$referents_ids = $contrat->getModel()->getProducteur()->getReferentsIds( $lieu_id );
 		/** @var AmapressUser[] $referents */
@@ -443,8 +471,9 @@ function amapress_self_inscription( $atts ) {
 		}, $referents_ids );
 		$referents_mails = [];
 		foreach ( $referents as $r ) {
-			if ( ! $r )
+			if ( ! $r ) {
 				continue;
+			}
 			$referents_mails += $r->getAllEmails();
 		}
 
