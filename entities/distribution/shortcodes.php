@@ -66,6 +66,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_avatar'     => 'default',
 		'show_roles'      => 'default',
 		'show_for_resp'   => 'true',
+		'show_title'      => 'true',
+		'for_emargement'  => 'false',
 		'for_pdf'         => 'false',
 		'max_dates'       => - 1,
 		'responsive'      => 'false',
@@ -125,7 +127,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$is_current_user_resp_amap = false;
 	}
 
-	$for_pdf = Amapress::toBool( $atts['for_pdf'] );
+	$for_pdf        = Amapress::toBool( $atts['for_pdf'] );
+	$for_emargement = Amapress::toBool( $atts['for_emargement'] );
 	if ( $for_pdf ) {
 		$is_current_user_resp_amap = false;
 		$is_resp_distrib           = false;
@@ -207,7 +210,9 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	$ret = '';
 	foreach ( $all_user_lieux as $lieu_id ) {
 		$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
-		$ret       .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
+		if ( Amapress::toBool( $atts['show_title'] ) ) {
+			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
+		}
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) ) {
 			$ret .= '<p style="text-align: center"><a class="btn btn-default" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
 		}
@@ -218,6 +223,13 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			$ret .= '<th>Date</th>';
 		} else {
 			$ret .= '<th style="width: 5em">Date</th>';
+		}
+		if ( $for_emargement ) {
+			if ( $for_pdf ) {
+				$ret .= '<th>Produits</th>';
+			} else {
+				$ret .= '<th style="width: 5em">Produits</th>';
+			}
 		}
 
 		$has_role_names = false;
@@ -292,16 +304,23 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$user_name                     = sprintf( '%s (%s)', $user->display_name, $user->user_email );
 				$no_contrat_users[ $user->ID ] = $user_name;
 			}
-			$lieu_users    = array();
-			$contrat_names = implode( ', ', $contrat_names );
-			$ret           .= '<th scope="row" class="inscr-list-info">
-<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>
-<p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
+			$lieu_users       = array();
+			$contrat_names    = implode( ', ', $contrat_names );
+			$contrats_content = '<p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
+			$date_content     = '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>';
+			$ret              .= '<th scope="row" class="inscr-list-info">';
+			$ret              .= $date_content;
+			if ( ! $for_emargement ) {
+				$ret .= $contrats_content;
+			}
 			if ( ! empty( $subst_lieux ) ) {
 				$subst_lieux = implode( ', ', $subst_lieux );
 				$ret         .= '<p class="inscr-list-lieux-substitution">exceptionnellement à ' . esc_html( $subst_lieux ) . '</p>';
 			}
 			$ret .= '</th>';
+			if ( $for_emargement ) {
+				$ret .= '<td>' . $contrats_content . '</td>';
+			}
 //            foreach ($user_lieux as $lieu_id) {
 			$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 			foreach ( $date_dists as $dist ) {
