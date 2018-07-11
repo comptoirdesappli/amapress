@@ -501,7 +501,7 @@ class AmapressContrat_quantite extends TitanEntity {
 		foreach ( explode( ';', $confs ) as $conf ) {
 			$m     = array();
 			$float = '(?:\d+(?:[,\.]\d+)?)';
-			$unit  = '(?:g|kg|l|ml)';
+			$unit  = '(?:g|kg|l|ml|L)';
 			if ( preg_match( "/(?<start>$float)(?<start_unit>$unit)?(?:\\s*\\>\\s*(?<stop>$float)(?<stop_unit>$unit)?(?:\\s*\\:\\s*(?<incr>$float)(?<incr_unit>$unit)?)?)?/", $conf, $m ) !== false ) {
 				$start_unit_factor = isset( $m['start_unit'] ) && ( $m['start_unit'] == 'g' || $m['start_unit'] == 'ml' ) ? 1000 : 1;
 				$start             = isset( $m['start'] ) ? floatval( str_replace( ',', '.', $m['start'] ) ) : 1;
@@ -514,8 +514,10 @@ class AmapressContrat_quantite extends TitanEntity {
 				$incr              = $incr / $incr_unit_factor;
 
 				for ( $i = $start; $i <= $stop; $i += $incr ) {
-					$k             = strval( $i );
-					$options[ $k ] = $this->formatValue( $i );
+					if ( $i > 0 ) {
+						$k             = strval( $i );
+						$options[ $k ] = $this->formatValue( $i );
+					}
 				}
 			}
 		}
@@ -534,7 +536,7 @@ class AmapressContrat_quantite extends TitanEntity {
 			if ( $value < 1 ) {
 				return sprintf( '%d', (int) ( $value * 1000.0 ) ) . 'ml';
 			} else {
-				return round( $value, 2 ) . 'l';
+				return round( $value, 2 ) . 'L';
 			}
 		} else {
 			if ( abs( $value - 0.25 ) < 0.001 ) {

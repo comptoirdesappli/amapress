@@ -332,7 +332,7 @@ function amapress_self_inscription( $atts ) {
 			$id_price         = 'price' . $quantite->ID;
 			$price            = $dates_factors * $quantite->getPrix_unitaire();
 			if ( $contrat->isQuantiteVariable() ) {
-				$quant_var_editor .= "<select id='$id_factor' class='quant-factor' data-quant='$id_quant' data-price='$id_price' data-price-unit='$price' disabled='disabled' name='factors[{$quantite->ID}]' style='display: inline-block'>";
+				$quant_var_editor .= "<select id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
 				$quant_var_editor .= tf_parse_select_options(
 					$quantite->getQuantiteOptions(),
 					null,
@@ -342,7 +342,7 @@ function amapress_self_inscription( $atts ) {
 
 			$type = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
 			echo '<p><label for="' . $id_quant . '">
-			<input id="' . $id_quant . '" name="quants" class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor="' . $id_factor . '" data-price="' . $price . '"/> 
+			<input id="' . $id_quant . '" name="quants[]" class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor-id="' . $id_factor . '" data-price="' . $price . '"/> 
 			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' soit <span id="' . $id_price . '">' . $price . '</span>€</label></p>';
 		}
 		echo '<p>Total: <span id="total">0</span>€</p>';
@@ -540,21 +540,32 @@ function amapress_self_inscription( $atts ) {
                 jQuery('#total').text(total);
             }
 
-            jQuery('.quant-factor').change(function () {
+            function computePrices() {
                 var $this = jQuery(this);
                 var priceUnit = parseFloat($this.data('price-unit'));
                 var val = parseFloat($this.val());
-                var quantElt = jQuery('#' + $this.data('quant'));
-                var priceElt = jQuery('#' + $this.data('price'));
+                var quantElt = jQuery('#' + $this.data('quant-id'));
+                var priceElt = jQuery('#' + $this.data('price-id'));
                 priceElt.text(val * priceUnit);
                 quantElt.data('price', val * priceUnit);
                 computeTotal();
-            });
-            jQuery('.amapress_validate .quant').change(computeTotal).each(function () {
-                jQuery(this).rules('add', {
+            }
+
+            jQuery('.quant-factor').change(computePrices).each(computePrices);
+            jQuery('.amapress_validate .quant').change(function () {
+                var $this = jQuery(this);
+                var factorElt = jQuery('#' + $this.data('factor-id'));
+                factorElt.prop('disabled', !$this.is(':checked'));
+                computeTotal();
+            }).each(function () {
+                var $this = jQuery(this);
+                var factorElt = jQuery('#' + $this.data('factor-id'));
+                factorElt.prop('disabled', !$this.is(':checked'));
+                $this.rules('add', {
                     min_sum: <?php echo $min_total; ?>,
                 });
             });
+            computeTotal();
         });
         //]]>
     </script>
