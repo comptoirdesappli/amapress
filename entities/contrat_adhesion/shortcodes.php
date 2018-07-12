@@ -41,11 +41,17 @@ function amapress_self_inscription( $atts ) {
 		[
 			'key'        => '',
 			'for_logged' => 'false',
+			'admin_mode' => 'false',
 		]
 		, $atts );
 
-	$key = $atts['key'];
-	if ( Amapress::toBool( $atts['for_logged'] ) ) {
+	$admin_mode = Amapress::toBool( $atts['admin_mode'] );
+	$key        = $atts['key'];
+	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
+		if ( ! isset( $_GET['step'] ) ) {
+			$step = 'contrats';
+		}
+	} else if ( Amapress::toBool( $atts['for_logged'] ) ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return '<div class="alert alert-danger">Accès interdit</div>';
 		}
@@ -65,11 +71,17 @@ function amapress_self_inscription( $atts ) {
 	ob_start();
 
 
-	$min_total                 = 0;
-	$subscribable_contrats     = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
+	$min_total             = 0;
+	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
+	if ( ! $admin_mode ) {
+		$subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) {
+			/** @var AmapressContrat_instance $c */
+			return $c->canSelfSubscribe();
+		} );
+	}
 	$subscribable_contrats     = array_filter( $subscribable_contrats, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
-		return $c->canSelfSubscribe();
+		return ! $c->isPanierVariable();
 	} );
 	$subscribable_contrats_ids = array_map( function ( $c ) {
 		return $c->ID;
@@ -89,7 +101,7 @@ function amapress_self_inscription( $atts ) {
 		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
 
-	if ( count( $principal_contrats ) > 1 ) {
+	if ( ! $admin_mode && count( $principal_contrats ) > 1 ) {
 		wp_die( 'Il y a plusieurs contrat principaux. Veuillez vérifier la configuration (erreur de cochage, contrat passé non clôturé..) : <br/>' .
 		        implode( '<br/>', array_map( function ( $c ) {
 			        /** @var AmapressContrat_instance $c */
@@ -115,7 +127,12 @@ function amapress_self_inscription( $atts ) {
 		}, $adhs );
 
 		if ( in_array( $contrat_id, $adhs_contrat_ids ) ) {
-			wp_die( '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '"/></p>' );
+			$amapien = AmapressUser::getBy( $user_id );
+			if ( $admin_mode ) {
+				return '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
+			} else {
+				wp_die( '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>' );
+			}
 		}
 	}
 
@@ -224,23 +241,44 @@ function amapress_self_inscription( $atts ) {
 		usort( $adhs, function ( $a, $b ) {
 			return strcmp( $a->getTitle(), $b->getTitle() );
 		} );
-		?>
-        <h4>Troisième étape : vos contrats</h4>
-		<?php if ( ! $has_principal_contrat ) { ?>
+		$amapien = AmapressUser::getBy( $user_id );
+		if ( ! $admin_mode ) {
+			echo '<h4>Troisième étape : vos contrats</h4>';
+		} else {
+			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
+		}
+		if ( ! $has_principal_contrat ) { ?>
             <p>Une inscription au contrat <strong><?php echo esc_html( $principal_contrat->getTitle() ); ?></strong> est
                 obligatoire
                 avant d'accéder aux autres contrats de l'AMAP. Vous pouvez vous y inscrire ci-dessous :</p>
 		<?php } else if ( ! empty( $adhs ) ) {
-			echo '<p>Vos contrats :</p>';
+			if ( ! $admin_mode ) {
+				echo '<p>Vos contrats :</p>';
+			} else {
+				echo '<p>Ses contrats :</p>';
+			}
 			echo '<ul style="list-style-type: circle">';
 			foreach ( $adhs as $adh ) {
-				echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '</li>';
+				if ( $admin_mode ) {
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')</li>';
+				} else {
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '</li>';
+				}
 			}
 			echo '</ul>';
-			echo '<p>Vous pouvez vous inscrire à d\'autres contrats ci-dessous :</p>';
+			if ( ! $admin_mode ) {
+				echo '<p>Vous pouvez vous inscrire à d\'autres contrats ci-dessous :</p>';
+			} else {
+				echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
+			}
 		} else {
-			echo '<p>Vous n\'avez pas encore de contrats</p>';
-			echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+			if ( ! $admin_mode ) {
+				echo '<p>Vous n\'avez pas encore de contrats</p>';
+				echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+			} else {
+				echo '<p>Il n\'a pas encore de contrats</p>';
+				echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
+			}
 		}
 
 		$adhs_contrat_ids           = array_map( function ( $a ) {
@@ -262,11 +300,19 @@ function amapress_self_inscription( $atts ) {
 					'step'       => 'inscr_contrat_date_lieu',
 					'contrat_id' => $contrat->ID
 				] );
-				echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : <br/><a class="btn btn-default" href="' . esc_attr( $inscription_url ) . '">s\'inscrire</a></li>';
+				if ( $admin_mode ) {
+					echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
+				} else {
+					echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : <br/><a class="btn btn-default" href="' . esc_attr( $inscription_url ) . '">s\'inscrire</a></li>';
+				}
 			}
 			echo '</ul>';
 		} else {
-			echo '<p>Vous êtes inscrit à tous les contrats accessibles en ligne</p>';
+			if ( ! $admin_mode ) {
+				echo '<p>Vous êtes inscrit à tous les contrats accessibles en ligne</p>';
+			} else {
+				echo '<p>Il est inscrit à tous les contrats</p>';
+			}
 		}
 
 
@@ -278,7 +324,7 @@ function amapress_self_inscription( $atts ) {
 
 		?>
         <h4>Date de début d'inscription et lieu de distribution</h4>
-        <p style="margin-bottom: 0">A quelle date souhaitez vous commencer l'inscription au
+        <p style="margin-bottom: 0">A quelle date souhaitez vous faire commencer l'inscription au
             contrat <?php echo esc_html( $contrat->getTitle() ); ?></p>
 		<?php
 		$dates = $contrat->getListe_dates();
@@ -298,7 +344,11 @@ function amapress_self_inscription( $atts ) {
 			<?php
 			$lieux = Amapress::get_lieux();
 			if ( count( $lieux ) > 1 ) {
-				echo '<p>Veuillez chosir votre lieu de distribution :</p>';
+				if ( ! $admin_mode ) {
+					echo '<p>Veuillez chosir votre lieu de distribution :</p>';
+				} else {
+					echo '<p>Veuillez chosir son lieu de distribution :</p>';
+				}
 				foreach ( $lieux as $lieu ) {
 					$lieu_id    = $lieu->ID;
 					$lieu_title = $lieu->linkToPermalinkBlank( esc_html( $lieu->getLieuTitle() ) ) . '(' . esc_html( $lieu->getFormattedAdresse() ) . ')';
@@ -419,14 +469,23 @@ function amapress_self_inscription( $atts ) {
 		$next_step_url = add_query_arg( [ 'step' => 'inscr_contrat_create' ] );
 
 		echo '<h4>Résumé des options choisies</h4>';
-		echo '<p style="margin-bottom: 0">Vous allez vous inscrire au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
+		if ( ! $admin_mode ) {
+			echo '<p style="margin-bottom: 0">Vous allez vous inscrire au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
+		} else {
+			$amapien = AmapressUser::getBy( $user_id );
+			echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
+		}
 		echo '<ul style="list-style-type: circle">';
 		foreach ( $chosen_quants as $q ) {
 			echo '<li style="margin-left: 35px">' . esc_html( $q ) . '</li>';
 		}
 		echo '</ul>';
 
-		echo '<p style="margin-bottom: 0">Vous pouvez régler cette somme en :</p>';
+		if ( ! $admin_mode ) {
+			echo '<p style="margin-bottom: 0">Vous pouvez régler cette somme en :</p>';
+		} else {
+			echo '<p style="margin-bottom: 0">Règlement :</p>';
+		}
 		$serial_quants = esc_attr( serialize( $serial_quants ) );
 		echo '<form method="post" action="' . $next_step_url . '" class="amapress_validate">';
 		echo "<input type='hidden' name='quants' value='$serial_quants'/>";
@@ -443,7 +502,11 @@ function amapress_self_inscription( $atts ) {
 			echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' value='$nb_cheque' class='required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
 		}
 		echo '<br />';
-		echo '<label for="inscr_message">Message aux référents:</label><textarea id="inscr_message" name="message"></textarea>';
+		if ( ! $admin_mode ) {
+			echo '<label for="inscr_message">Message aux référents:</label><textarea id="inscr_message" name="message"></textarea>';
+		} else {
+			echo '<p><input type="checkbox" checked="checked" id="inscr_confirm_mail" name="inscr_confirm_mail" /><label for="inscr_confirm_mail"> Confirmer par mail à l\'adhérent</label></p>';
+		}
 		echo '<input type="submit" value="Validez l\'inscription" class="btn btn-default" />';
 		echo '</form>';
 	} else if ( 'inscr_contrat_create' == $step ) {
@@ -451,7 +514,7 @@ function amapress_self_inscription( $atts ) {
 		$contrat_id = intval( $_GET['contrat_id'] );
 		$lieu_id    = intval( $_GET['lieu_id'] );
 		$start_date = intval( $_REQUEST['start_date'] );
-		$message    = sanitize_textarea_field( $_REQUEST['message'] );
+		$message    = sanitize_textarea_field( isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' );
 
 		$amapien = AmapressUser::getBy( $user_id );
 		$lieu    = AmapressLieu_distribution::getBy( $lieu_id );
@@ -517,18 +580,25 @@ function amapress_self_inscription( $atts ) {
 		$inscription = AmapressAdhesion::getBy( $new_id );
 		$inscription->preparePaiements();
 
-		$mail_subject = Amapress::getOption( 'online_subscription_confirm-mail-subject' );
-		$mail_content = Amapress::getOption( 'online_subscription_confirm-mail-content' );
+		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
+			$mail_subject = Amapress::getOption( 'online_subscription_confirm-mail-subject' );
+			$mail_content = Amapress::getOption( 'online_subscription_confirm-mail-content' );
 
-		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
-		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
+			$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
+			$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
 
-		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content );
+			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content );
+		}
 
 		//TODO contrat en word
 
-		echo '<div class="alert alert-success">Votre inscription a bien été prise en compte. Vous allez recevoir une confirmation par mail d\'ici peu.</div>';
-		echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de vos contrats</a></p>';
+		if ( ! $admin_mode ) {
+			echo '<div class="alert alert-success">Votre inscription a bien été prise en compte. Vous allez recevoir une confirmation par mail d\'ici peu.</div>';
+			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de vos contrats</a></p>';
+		} else {
+			echo '<div class="alert alert-success">Inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
+			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de ses contrats</a></p>';
+		}
 	}
 
 	?>

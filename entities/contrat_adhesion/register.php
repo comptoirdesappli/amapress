@@ -1363,39 +1363,50 @@ add_action( 'tf_custom_admin_amapress_action_new_user', function () {
 
 function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOption $option ) {
 	if ( isset( $_REQUEST['user_id'] ) ) {
-		echo '<h4>2/ Inscrire l\'utilisateur à un contrat</h4>';
+		if ( isset( $_REQUEST['assistant'] ) ) {
+			echo do_shortcode( '[inscription-en-ligne admin_mode=true]' );
+		} else {
 
-		$user = AmapressUser::getBy( $_REQUEST['user_id'] );
+			echo '<h4>2/ Inscrire l\'utilisateur à un contrat</h4>';
 
-		echo '<hr />';
-		echo $user->getDisplay();
-		echo '<hr />';
+			$user = AmapressUser::getBy( $_REQUEST['user_id'] );
 
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user->ID );
-		usort( $adhs, function ( $a, $b ) {
-			return strcmp( $a->getTitle(), $b->getTitle() );
-		} );
-		echo '<p><strong>Ses contrats:</strong></p>';
-		echo '<ul style="list-style-type: circle">';
-		foreach ( $adhs as $adh ) {
-			$renew_url = '';
-			if ( Amapress::start_of_day( $adh->getDate_fin() ) < Amapress::start_of_day( amapress_time() ) ) {
-				$renew_url = 'edit.php?post_type=amps_adhesion&action=renew&amp_id=' . $adh->ID;
-				$renew_url = esc_url( wp_nonce_url( $renew_url,
-						"renew_{$adh->ID}" )
-				);
+			echo '<hr />';
+			echo $user->getDisplay();
+			echo '<p>' . Amapress::makeButtonLink( $user->getEditLink(), 'Modifier', true, true ) . '</p>';
+			echo '<hr />';
+
+
+			$adhs = AmapressAdhesion::getUserActiveAdhesions( $user->ID );
+			usort( $adhs, function ( $a, $b ) {
+				return strcmp( $a->getTitle(), $b->getTitle() );
+			} );
+			echo '<p><strong>Ses contrats:</strong></p>';
+			echo '<ul style="list-style-type: circle">';
+			foreach ( $adhs as $adh ) {
+				$renew_url = '';
+				if ( Amapress::start_of_day( $adh->getDate_fin() ) < Amapress::start_of_day( amapress_time() ) ) {
+					$renew_url = 'edit.php?post_type=amps_adhesion&action=renew&amp_id=' . $adh->ID;
+					$renew_url = esc_url( wp_nonce_url( $renew_url,
+							"renew_{$adh->ID}" )
+					);
+				}
+				echo '<li style="margin-left: 35px">';
+				echo '<a href="' . esc_attr( $adh->getPermalink() ) . '" >Voir</a>&nbsp;:&nbsp;' . esc_html( $adh->getTitle() );
+				if ( ! empty( $renew_url ) ) {
+					echo '<br/><a href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
+				}
+				echo '</li>';
 			}
-			echo '<li style="margin-left: 35px">';
-			echo '<a href="' . esc_attr( $adh->getPermalink() ) . '" >Voir</a>&nbsp;:&nbsp;' . esc_html( $adh->getTitle() );
-			if ( ! empty( $renew_url ) ) {
-				echo '&nbsp;<a href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
-			}
-			echo '</li>';
+			echo '</ul>';
+
+			$add_url = add_query_arg( 'assistant', true );
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Assistant inscription</a></p>';
+			echo '<br />';
+
+			$add_url = admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=' . $user->ID );
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une autre inscription manuellement</a></p>';
 		}
-		echo '</ul>';
-
-		$add_url = admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=' . $user->ID );
-		echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une autre inscription</a></p>';
 	} else {
 		echo '<h4>1/ Choisir un utilisateur ou le créer</h4>';
 		$options       = [];
@@ -1446,7 +1457,11 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 		echo '</form>';
 	}
 	echo '<hr />';
-	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Choisir/ajouter un autre amapien</a></p>';
+	echo '<p><a href="' . remove_query_arg( [
+			'user_id',
+			'step',
+			'assistant'
+		] ) . '" class="button button-primary">Choisir/ajouter un autre amapien</a></p>';
 	echo '<script type="text/javascript">jQuery(function() {
     jQuery("#user_id").select2({
         allowClear: true,
