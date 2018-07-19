@@ -79,10 +79,10 @@ function amapress_self_inscription( $atts ) {
 			return $c->canSelfSubscribe();
 		} );
 	}
-	$subscribable_contrats     = array_filter( $subscribable_contrats, function ( $c ) {
-		/** @var AmapressContrat_instance $c */
-		return ! $c->isPanierVariable();
-	} );
+//	$subscribable_contrats     = array_filter( $subscribable_contrats, function ( $c ) {
+//		/** @var AmapressContrat_instance $c */
+//		return ! $c->isPanierVariable();
+//	} );
 	$subscribable_contrats_ids = array_map( function ( $c ) {
 		return $c->ID;
 	}, $subscribable_contrats );
@@ -421,32 +421,84 @@ function amapress_self_inscription( $atts ) {
 		echo '<p>Il reste “<strong>' . count( $dates ) . '</strong>” distributions avant la fin de la saison : ' . esc_html( implode( ', ', array_map( function ( $d ) {
 				return date_i18n( 'd/m/Y', $d );
 			}, $dates ) ) ) . '</p>';
-		if ( $contrat->isQuantiteMultiple() ) {
+		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {
 			echo '<p>Composez votre panier :</p>';
 		} else {
 			echo '<p>Choisissez la quantité ou la taille de votre panier :</p>';
 		}
 		echo '<form method="post" action="' . $next_step_url . '" class="amapress_validate">';
-		$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );
-		foreach ( $contrat_quants as $quantite ) {
-			$quant_var_editor = '';
-			$id_quant         = 'quant' . $quantite->ID;
-			$id_factor        = 'factor' . $quantite->ID;
-			$id_price         = 'price' . $quantite->ID;
-			$price            = $dates_factors * $quantite->getPrix_unitaire();
-			if ( $contrat->isQuantiteVariable() ) {
-				$quant_var_editor .= "<select id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
-				$quant_var_editor .= tf_parse_select_options(
-					$quantite->getQuantiteOptions(),
-					null,
-					false );
-				$quant_var_editor .= '</select>';
+		if ( $contrat->isPanierVariable() ) {
+			$columns = array(
+				array(
+					'title' => 'Produit',
+					'data'  => 'produit',
+				),
+			);
+			foreach ( $dates as $date ) {
+				$columns[] = array(
+					'title' => date_i18n( 'd/m/y', $date ),
+					'data'  => 'd-' . $date,
+				);
 			}
 
-			$type = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
-			echo '<p><label for="' . $id_quant . '">
+			$data = array();
+			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
+				$row     = array(
+					'produit' => esc_html( $quant->getTitle() ),
+				);
+				$options = $quant->getQuantiteOptions();
+				if ( ! isset( $options['0'] ) ) {
+					$options = [ '0' => '0' ] + $options;
+				}
+				foreach ( $dates as $date ) {
+					$price_unit = esc_attr( $quant->getPrix_unitaire() );
+					$ed         = '';
+					$ed         .= "<select data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var'>";
+					$ed         .= tf_parse_select_options( $options, null, false );
+					$ed         .= '</select>';
+					if ( $quant->getAvailFrom() && $quant->getAvailTo() ) {
+						if ( $date < Amapress::start_of_day( $quant->getAvailFrom() ) || $date > Amapress::end_of_day( $quant->getAvailTo() ) ) {
+							$ed = '<span class="contrat_panier_vars-na">NA</span>';
+						}
+					}
+					$row[ 'd-' . $date ] = $ed;
+				}
+				$data[] = $row;
+			}
+
+			echo amapress_get_datatable( 'quant-commandes', $columns, $data, array(
+				'bSort'        => true,
+				'paging'       => false,
+				'searching'    => true,
+				'bAutoWidth'   => true,
+				'responsive'   => false,
+				'init_as_html' => true,
+				'scrollX'      => true,
+				'fixedColumns' => array( 'leftColumns' => 1 ),
+			) );
+		} else {
+			$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );
+			foreach ( $contrat_quants as $quantite ) {
+				$quant_var_editor   = '';
+				$id_quant           = 'quant' . $quantite->ID;
+				$id_factor          = 'factor' . $quantite->ID;
+				$id_price           = 'price' . $quantite->ID;
+				$price              = $dates_factors * $quantite->getPrix_unitaire();
+				$price_compute_text = esc_html( $dates_factors ) . ' x ' . esc_html( $quantite->getPrix_unitaire() ) . '€';
+				if ( $contrat->isQuantiteVariable() ) {
+					$quant_var_editor .= "<select id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
+					$quant_var_editor .= tf_parse_select_options(
+						$quantite->getQuantiteOptions(),
+						null,
+						false );
+					$quant_var_editor .= '</select>';
+				}
+
+				$type = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
+				echo '<p><label for="' . $id_quant . '">
 			<input id="' . $id_quant . '" name="quants[]" class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor-id="' . $id_factor . '" data-price="' . $price . '"/> 
-			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' soit <span id="' . $id_price . '">' . $price . '</span>€</label></p>';
+			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' ' . $price_compute_text . ' = <span id="' . $id_price . '">' . $price . '</span>€</label></p>';
+			}
 		}
 		echo '<p>Total: <span id="total">0</span>€</p>';
 		echo '<p><input type="submit" class="btn btn-default" value="Valider" /></p>';
@@ -457,57 +509,104 @@ function amapress_self_inscription( $atts ) {
 		$contrat_id = intval( $_GET['contrat_id'] );
 		$start_date = intval( $_REQUEST['start_date'] );
 
-		$quants = isset( $_POST['quants'] ) ? $_POST['quants'] : [];
-		if ( ! is_array( $quants ) ) {
-			$quants = [ $quants ];
-		}
-//		$quants = array_map( 'intval', $quants);
-		$factors = isset( $_POST['factors'] ) ? $_POST['factors'] : [];
-//		$factors = array_map( 'floatval', $factors);
-		$contrat = AmapressContrat_instance::getBy( $contrat_id );
-
-
-		$dates         = $contrat->getListe_dates();
-		$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
-			return $d >= $start_date;
-		} );
-		$dates_factors = 0;
-		foreach ( $dates as $d ) {
-			$dates_factors += $contrat->getDateFactor( $d );
-		}
-
-		$total         = 0;
-		$chosen_quants = [];
-		$serial_quants = [];
-		foreach ( $quants as $q ) {
-			$q_id            = intval( $q );
-			$factor          = isset( $factors[ $q ] ) ? floatval( $factors[ $q ] ) : 1;
-			$serial_quants[] = [
-				'q' => $q_id,
-				'f' => $factor,
-			];
-			$quant           = AmapressContrat_quantite::getBy( $q_id );
-			$chosen_quants[] = $quant->getFormattedTitle( $factor );
-			$total           += $dates_factors * $factor * $quant->getPrix_unitaire();
-		}
+		$contrat       = AmapressContrat_instance::getBy( $contrat_id );
 		$next_step_url = add_query_arg( [ 'step' => 'inscr_contrat_create' ] );
 
 		echo '<h4>Étape 6/7 : Réglement</h4>';
-		if ( count( $chosen_quants ) == 1 && ! $admin_mode ) {
-			echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . esc_html( $chosen_quants[0] ) . '” du contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€</p>';
-		} else {
+		if ( $contrat->isPanierVariable() ) {
+			$panier_vars = isset( $_POST['panier_vars'] ) ? $_POST['panier_vars'] : [];
+
+			$total         = 0;
+			$chosen_quants = [];
+			foreach ( $panier_vars as $date_k => $quant_factors ) {
+				$date_values = [];
+				foreach ( $quant_factors as $quant_k => $factor_v ) {
+					$q_id   = intval( $quant_k );
+					$factor = floatval( $factor_v );
+					if ( $factor <= 0 ) {
+						unset( $panier_vars[ $date_k ][ $quant_k ] );
+						continue;
+					}
+					$quant         = AmapressContrat_quantite::getBy( $q_id );
+					$date_values[] = $quant->getFormattedTitle( $factor );
+					$total         += $factor * $quant->getPrix_unitaire();
+				}
+				if ( ! empty( $date_values ) ) {
+					$chosen_quants[ $date_k ] = $date_values;
+				} else {
+					unset( $panier_vars[ $date_k ] );
+				}
+			}
+			$serial_quants = $panier_vars;
+
 			if ( ! $admin_mode ) {
 				echo '<p style="margin-bottom: 0">Vous allez vous inscrire au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
 			} else {
 				$amapien = AmapressUser::getBy( $user_id );
 				echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
 			}
-			echo '<ul style="list-style-type: circle">';
-			foreach ( $chosen_quants as $q ) {
-				echo '<li style="margin-left: 35px">' . esc_html( $q ) . '</li>';
+			echo '<ul style="list-style-type: square">';
+			foreach ( $chosen_quants as $dt => $quant_descs ) {
+				echo '<li style="margin-left: 35px">' . esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) );
+				echo '<ul style="list-style-type: circle">';
+				foreach ( $quant_descs as $quant_desc ) {
+					echo '<li style="margin-left: 15px">' . esc_html( $quant_desc ) . '</li>';
+				}
+				echo '</ul>';
+				echo '</li>';
 			}
 			echo '</ul>';
+		} else {
+			$quants = isset( $_POST['quants'] ) ? $_POST['quants'] : [];
+			if ( ! is_array( $quants ) ) {
+				$quants = [ $quants ];
+			}
+
+			$factors = isset( $_POST['factors'] ) ? $_POST['factors'] : [];
+//		$factors = array_map( 'floatval', $factors);
+
+
+			$dates         = $contrat->getListe_dates();
+			$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
+				return $d >= $start_date;
+			} );
+			$dates_factors = 0;
+			foreach ( $dates as $d ) {
+				$dates_factors += $contrat->getDateFactor( $d );
+			}
+
+			$total         = 0;
+			$chosen_quants = [];
+			$serial_quants = [];
+			foreach ( $quants as $q ) {
+				$q_id            = intval( $q );
+				$factor          = isset( $factors[ $q ] ) ? floatval( $factors[ $q ] ) : 1;
+				$serial_quants[] = [
+					'q' => $q_id,
+					'f' => $factor,
+				];
+				$quant           = AmapressContrat_quantite::getBy( $q_id );
+				$chosen_quants[] = $quant->getFormattedTitle( $factor );
+				$total           += $dates_factors * $factor * $quant->getPrix_unitaire();
+			}
+
+			if ( count( $chosen_quants ) == 1 && ! $admin_mode ) {
+				echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . esc_html( $chosen_quants[0] ) . '” du contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€</p>';
+			} else {
+				if ( ! $admin_mode ) {
+					echo '<p style="margin-bottom: 0">Vous allez vous inscrire au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
+				} else {
+					$amapien = AmapressUser::getBy( $user_id );
+					echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
+				}
+				echo '<ul style="list-style-type: circle">';
+				foreach ( $chosen_quants as $q ) {
+					echo '<li style="margin-left: 35px">' . esc_html( $q ) . '</li>';
+				}
+				echo '</ul>';
+			}
 		}
+
 
 		if ( ! $admin_mode ) {
 			echo '<p style="margin-bottom: 0">Vous pouvez régler cette somme en :</p>';
@@ -570,12 +669,16 @@ function amapress_self_inscription( $atts ) {
 
 		$quantite_ids     = [];
 		$quantite_factors = [];
-		foreach ( $quants as $q ) {
-			$q_id           = intval( $q['q'] );
-			$quantite_ids[] = $q_id;
-			$f              = intval( $q['f'] );
-			if ( $f > 1 ) {
-				$quantite_factors[ strval( $q_id ) ] = $f;
+		if ( $contrat->isPanierVariable() ) {
+			$quantite_variables = $quants;
+		} else {
+			foreach ( $quants as $q ) {
+				$q_id           = intval( $q['q'] );
+				$quantite_ids[] = $q_id;
+				$f              = intval( $q['f'] );
+				if ( $f > 1 ) {
+					$quantite_factors[ strval( $q_id ) ] = $f;
+				}
 			}
 		}
 
@@ -584,13 +687,18 @@ function amapress_self_inscription( $atts ) {
 			'amapress_adhesion_status'           => 'to_confirm',
 			'amapress_adhesion_date_debut'       => $start_date,
 			'amapress_adhesion_contrat_instance' => $contrat_id,
-			'amapress_adhesion_contrat_quantite' => $quantite_ids,
 			'amapress_adhesion_message'          => $message,
 			'amapress_adhesion_paiements'        => $cheques,
 			'amapress_adhesion_lieu'             => $lieu_id,
 		];
+		if ( ! empty( $quantite_ids ) ) {
+			$meta['amapress_adhesion_contrat_quantite'] = $quantite_ids;
+		}
 		if ( ! empty( $quantite_factors ) ) {
 			$meta['amapress_adhesion_contrat_quantite_factors'] = $quantite_factors;
+		}
+		if ( ! empty( $quantite_variables ) ) {
+			$meta['amapress_adhesion_panier_variables'] = $quantite_variables;
 		}
 		$my_post = array(
 			'post_title'   => 'Inscription',
@@ -631,16 +739,29 @@ function amapress_self_inscription( $atts ) {
 	}
 
 	?>
+    <style type="text/css">
+        #quant-commandes td {
+            text-align: center
+        }
+    </style>
     <script type="text/javascript">
         //<![CDATA[
         jQuery(function ($) {
+            jQuery('#quant-commandes').on('click', 'td', function () {
+                jQuery(this).find(".quant-var").css('visibility', 'visible');
+            });
             jQuery(".amapress_validate").validate({
                     onkeyup: false,
                 errorPlacement: function (error, element) {
-                    if (element.attr("type") == "radio") {
-                        error.insertBefore(element);
+                    var $commandes = element.closest('.dataTables_wrapper');
+                    if ($commandes.length) {
+                        error.insertAfter($commandes);
                     } else {
-                        error.insertAfter(element);
+                        if (element.attr("type") == "radio") {
+                            error.insertBefore(element);
+                        } else {
+                            error.insertAfter(element);
+                        }
                     }
                 }
                 }
@@ -651,7 +772,7 @@ function amapress_self_inscription( $atts ) {
                 function (value, element, params) {
                     var sumOfVals = 0;
                     var parent = $(element).closest("form");
-                    jQuery(parent).find(".quant:checked").each(function () {
+                    jQuery(parent).find(".quant:checked,.quant-var").each(function () {
                         sumOfVals = sumOfVals + parseFloat(jQuery(this).data('price'));
                     });
                     if (sumOfVals > params) return true;
@@ -662,7 +783,7 @@ function amapress_self_inscription( $atts ) {
 
             function computeTotal() {
                 var total = 0;
-                jQuery('.quant:checked').each(function () {
+                jQuery('.quant:checked,.quant-var').each(function () {
                     total += parseFloat(jQuery(this).data('price'));
                 });
                 jQuery('#total').text(total);
@@ -680,6 +801,26 @@ function amapress_self_inscription( $atts ) {
             }
 
             jQuery('.quant-factor').change(computePrices).each(computePrices);
+            jQuery('.quant-var').each(function () {
+                var $this = jQuery(this);
+                var val = parseFloat($this.val());
+                if (val <= 0) {
+                    $this.css('visibility', 'hidden');
+                }
+            }).change(function () {
+                var $this = jQuery(this);
+                var priceUnit = parseFloat($this.data('price-unit'));
+                var val = parseFloat($this.val());
+//                var priceElt = jQuery('#' + $this.data('price-id'));
+//                priceElt.text(val * priceUnit);
+                $this.data('price', val * priceUnit);
+                computeTotal();
+            }).each(function () {
+                var $this = jQuery(this);
+                $this.rules('add', {
+                    min_sum: <?php echo $min_total; ?>,
+                });
+            });
             jQuery('.amapress_validate .quant').change(function () {
                 var $this = jQuery(this);
                 var factorElt = jQuery('#' + $this.data('factor-id'));

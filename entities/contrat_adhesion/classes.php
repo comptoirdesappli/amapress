@@ -169,6 +169,10 @@ class AmapressAdhesion extends TitanEntity {
 
 				return $o['desc'];
 			case 'quantites':
+				if ( $this->getContrat_instance()->isPanierVariable() ) {
+					return $this->getPaniersVariablesDescription();
+				}
+
 				return $this->getContrat_quantites_AsString();
 			case 'total':
 				return $this->getTotalAmount();
@@ -287,6 +291,19 @@ class AmapressAdhesion extends TitanEntity {
 		return $quants;
 	}
 
+	public function getPaniersVariablesDescription() {
+		$dates_desc = [];
+		foreach ( $this->getPaniersVariables() as $k => $v ) {
+			$date         = intval( $k );
+			$quant_labels = $this->getContrat_quantites_AsString( $date );
+			if ( ! empty( $quant_labels ) ) {
+				$dates_desc[] = date_i18n( 'd/m/Y', $date ) . ' : ' . $quant_labels;
+			}
+		}
+
+		return implode( '<br/>', $dates_desc );
+	}
+
 	public function getContrat_quantites_AsString( $date = null ) {
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
 			$quant_labels = array();
@@ -294,10 +311,10 @@ class AmapressAdhesion extends TitanEntity {
 				/** @var AmapressContrat_quantite $contrat_quantite */
 				$contrat_quantite = $q['contrat_quantite'];
 				$quantite         = $q['quantite'];
-				$quant_labels[]   = $contrat_quantite->formatValue( $quantite ) . ' : ' . $contrat_quantite->getTitle();
+				$quant_labels[]   = esc_html( $contrat_quantite->formatValue( $quantite ) . ' x ' . $contrat_quantite->getTitle() );
 			}
 
-			return implode( '<br/>', $quant_labels );
+			return implode( ', ', $quant_labels );
 		} else {
 			$quant_labels = array_map(
 				function ( $vv ) {

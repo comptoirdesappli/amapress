@@ -502,12 +502,12 @@ class AmapressContrat_quantite extends TitanEntity {
 			$m     = array();
 			$float = '(?:\d+(?:[,\.]\d+)?)';
 			$unit  = '(?:g|kg|l|ml|L)';
-			if ( preg_match( "/(?<start>$float)(?<start_unit>$unit)?(?:\\s*\\>\\s*(?<stop>$float)(?<stop_unit>$unit)?(?:\\s*\\:\\s*(?<incr>$float)(?<incr_unit>$unit)?)?)?/", $conf, $m ) !== false ) {
+			if ( preg_match( "/(?<start>$float)(?<start_unit>$unit)?(?:\\s*(?:\\>|-)\\s*(?<stop>$float)(?<stop_unit>$unit)?(?:\\s*\\:\\s*(?<incr>$float)(?<incr_unit>$unit)?)?)?/", $conf, $m ) !== false ) {
 				$start_unit_factor = isset( $m['start_unit'] ) && ( $m['start_unit'] == 'g' || $m['start_unit'] == 'ml' ) ? 1000 : 1;
 				$start             = isset( $m['start'] ) ? floatval( str_replace( ',', '.', $m['start'] ) ) : 1;
 				$start             = $start / $start_unit_factor;
 				$stop_unit_factor  = isset( $m['stop_unit'] ) && ( $m['stop_unit'] == 'g' || $m['stop_unit'] == 'ml' ) ? 1000 : 1;
-				$stop              = isset( $m['stop'] ) ? floatval( str_replace( ',', '.', $m['stop'] ) ) : 1;
+				$stop              = isset( $m['stop'] ) ? floatval( str_replace( ',', '.', $m['stop'] ) ) : $start;
 				$stop              = $stop / $stop_unit_factor;
 				$incr_unit_factor  = isset( $m['incr_unit'] ) && ( $m['incr_unit'] == 'g' || $m['incr_unit'] == 'ml' ) ? 1000 : 1;
 				$incr              = isset( $m['incr'] ) ? floatval( str_replace( ',', '.', $m['incr'] ) ) : 1;
@@ -525,7 +525,10 @@ class AmapressContrat_quantite extends TitanEntity {
 		return $options;
 	}
 
-	public function formatValue( $value ) {
+	public
+	function formatValue(
+		$value
+	) {
 		if ( $this->getPriceUnit() == 'kg' ) {
 			if ( $value < 1 ) {
 				return sprintf( '%d', (int) ( $value * 1000.0 ) ) . 'g';
@@ -555,7 +558,10 @@ class AmapressContrat_quantite extends TitanEntity {
 		}
 	}
 
-	public function getFormattedTitle( $factor ) {
+	public
+	function getFormattedTitle(
+		$factor
+	) {
 		if ( $factor != 1 ) {
 			return "$factor x {$this->getTitle()}";
 		} else {
@@ -563,7 +569,10 @@ class AmapressContrat_quantite extends TitanEntity {
 		}
 	}
 
-	public function cloneForContrat( $contrat_instance_id ) {
+	public
+	function cloneForContrat(
+		$contrat_instance_id
+	) {
 		$this->ensure_init();
 
 		$meta = array();
