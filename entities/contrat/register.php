@@ -671,11 +671,10 @@ jQuery(function($) {
 				'query'       => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
 			),
 			'self_subscribe'    => array(
-				'name'        => amapress__( 'Clôturer' ),
+				'name'        => amapress__( 'Inscriptions en ligne ?' ),
 				'type'        => 'checkbox',
 				'group'       => 'Souscription en ligne',
 				'desc'        => 'Cocher cette case pour autoriser l\'inscription en ligne par les amapiens',
-				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
 			'min_engagement'    => array(
