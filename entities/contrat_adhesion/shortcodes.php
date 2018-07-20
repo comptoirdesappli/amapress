@@ -129,7 +129,7 @@ function amapress_self_inscription( $atts ) {
 		$user_id    = intval( $_GET['user_id'] );
 		$contrat_id = intval( $_GET['contrat_id'] );
 
-		$adhs             = AmapressAdhesion::getUserActiveAdhesions( $user_id );
+		$adhs             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		$adhs             = array_filter( $adhs,
 			function ( $adh ) use ( $subscribable_contrats_ids ) {
 				/** @var AmapressAdhesion $adh */
@@ -197,6 +197,11 @@ function amapress_self_inscription( $atts ) {
 		$user_phones    = '';
 		$user_message   = 'Vous êtes nouveau dans l\'AMAP (si ce n\'est pas le cas c\'est que vous avez saisi une adresse email inconnue). Complétez vos coordonnées :';
 		if ( $user ) {
+//			if ( is_multisite() ) {
+//				if ( ! is_user_member_of_blog( $user->ID ) ) {
+//					add_user_to_blog( get_current_blog_id(), $user->ID, 'amapien' );
+//				}
+//			}
 			$amapien        = AmapressUser::getBy( $user );
 			$user_message   = 'Vous êtes déjà membre de l’Amap, vérifiez vos coordonnées :';
 			$user_firt_name = $user->first_name;
@@ -246,7 +251,7 @@ function amapress_self_inscription( $atts ) {
 		$user_id               = intval( $_GET['user_id'] );
 		$has_principal_contrat = false;
 
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id );
+		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		$adhs = array_filter( $adhs,
 			function ( $adh ) use ( $subscribable_contrats_ids ) {
 				/** @var AmapressAdhesion $adh */
@@ -815,7 +820,8 @@ function amapress_self_inscription( $atts ) {
 //                priceElt.text(val * priceUnit);
                 $this.data('price', val * priceUnit);
                 computeTotal();
-            }).each(function () {
+            });
+            jQuery('.quant-var:first,.quant:first').each(function () {
                 var $this = jQuery(this);
                 $this.rules('add', {
                     min_sum: <?php echo $min_total; ?>,
@@ -830,9 +836,6 @@ function amapress_self_inscription( $atts ) {
                 var $this = jQuery(this);
                 var factorElt = jQuery('#' + $this.data('factor-id'));
                 factorElt.prop('disabled', !$this.is(':checked'));
-                $this.rules('add', {
-                    min_sum: <?php echo $min_total; ?>,
-                });
             });
             computeTotal();
         });

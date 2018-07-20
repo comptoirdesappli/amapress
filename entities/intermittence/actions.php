@@ -8,7 +8,8 @@ function amapress_create_user_if_not_exists(
 	$email_address,
 	$first_name = null, $last_name = null,
 	$address = null, $tel = null,
-	$notify = 'both'
+	$notify = 'both',
+	$update_existing = true
 ) {
 	$user = get_user_by( 'email', $email_address );
 	if ( null == $user ) {
@@ -32,12 +33,6 @@ function amapress_create_user_if_not_exists(
 			)
 		);
 
-		if ( is_multisite() ) {
-			if ( ! is_user_member_of_blog( $user_id, get_current_blog_id() ) ) {
-				add_user_to_blog( get_current_blog_id(), $user_id, 'amapien' );
-			}
-		}
-
 		// Set the role
 		$user = new WP_User( $user_id );
 		$user->set_role( 'amapien' );
@@ -53,7 +48,31 @@ function amapress_create_user_if_not_exists(
 		if ( ! empty( $tel ) ) {
 			update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
 		}
-	} // end if
+	} else if ( $update_existing ) {
+		if ( ! empty( $first_name ) && ! empty( $last_name ) ) {
+			wp_update_user(
+				array(
+					'ID'         => $user->ID,
+					'first_name' => $first_name,
+					'last_name'  => $last_name,
+				)
+			);
+		}
+		if ( ! empty( $address ) ) {
+			update_user_meta( $user->ID, 'amapress_user_adresse', $address );
+			AmapressUsers::resolveUserFullAdress( $user->ID, $address );
+		}
+		if ( ! empty( $tel ) ) {
+			update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
+		}
+	}
+
+
+	if ( is_multisite() ) {
+		if ( ! is_user_member_of_blog( $user->ID, get_current_blog_id() ) ) {
+			add_user_to_blog( get_current_blog_id(), $user->ID, 'amapien' );
+		}
+	}
 
 	return $user->ID;
 }

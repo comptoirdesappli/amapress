@@ -563,11 +563,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$user_id = null,
 		$contrat_instance_id = null,
 		$date = null,
-		$ignore_renouv_delta = false
+		$ignore_renouv_delta = false,
+		$allow_not_logged = false
 	) {
 		return array_map( function ( $p ) {
 			return AmapressAdhesion::getBy( $p );
-		}, self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta ) );
+		}, self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged ) );
 	}
 
 	/**
@@ -577,9 +578,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$user_id = null,
 		$contrat_instance_id = null,
 		$date = null,
-		$ignore_renouv_delta = false
+		$ignore_renouv_delta = false,
+		$allow_not_logged = false
 	) {
-		if ( ! amapress_is_user_logged_in() ) {
+		if ( ! $allow_not_logged && ! amapress_is_user_logged_in() ) {
 			return [];
 		}
 
@@ -593,7 +595,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$key = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$abo_key}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$user_ids = AmapressContrats::get_related_users( $user_id );
+			$user_ids = AmapressContrats::get_related_users( $user_id, $allow_not_logged );
+			if ( empty( $user_ids ) ) {
+				return [];
+			}
 			$query    = array(
 				'posts_per_page' => - 1,
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
