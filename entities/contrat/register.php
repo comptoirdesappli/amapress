@@ -147,9 +147,12 @@ function amapress_register_entities_contrat( $entities ) {
 						return false;
 					}
 
-					$diff = Amapress::datediffInWeeks( $contrat_instance->getDate_debut(), $contrat_instance->getDate_fin() );
+					$diff = Amapress::datediffInWeeks(
+						Amapress::start_of_week( $contrat_instance->getDate_debut() ),
+						Amapress::end_of_week( $contrat_instance->getDate_fin() )
+					);
 
-					return $diff < 50;
+					return $diff < 52;
 				}
 			),
 			'clone'             => 'Dupliquer',
@@ -163,7 +166,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
-			'model'             => array(
+			'model'          => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -197,7 +200,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
-			'type'              => array(
+			'type'           => array(
 				'name'          => amapress__( 'Type de contrat' ),
 				'type'          => 'select',
 				'options'       => array(
@@ -248,7 +251,7 @@ function amapress_register_entities_contrat( $entities ) {
 							'group'       => 'Status',
 							'desc'        => 'Contrat principal',
 						),
-						'liste_dates'           => array(
+						'liste_dates'       => array(
 							'name'             => amapress__( 'Calendrier des distributions' ),
 							'type'             => 'multidate',
 							'required'         => true,
@@ -282,7 +285,7 @@ jQuery(function($) {
 									}
 								},
 						),
-						'rattrapage'            => array(
+						'rattrapage'        => array(
 							'name'        => amapress__( 'Quantités de rattrapage' ),
 							'type'        => 'custom',
 							'group'       => 'Distributions',
@@ -413,7 +416,7 @@ jQuery(function($) {
 							'show_column' => false,
 							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
 						),
-						'paiements'             => array(
+						'paiements'         => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
 							'type'     => 'multicheck',
 							'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
@@ -619,7 +622,7 @@ jQuery(function($) {
 					'placeholder' => 'Tous les lieux'
 				),
 			),
-			'status'            => array(
+			'status'         => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => array( 'AmapressContrats', "contratStatus" ),

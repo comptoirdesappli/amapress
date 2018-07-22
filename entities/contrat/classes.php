@@ -320,7 +320,10 @@ class AmapressContrat_instance extends TitanEntity {
 		} else if ( $same_period ) {
 			$add_weeks = 52;
 		} else {
-			$add_weeks = Amapress::datediffInWeeks( $this->getDate_debut(), $this->getDate_fin() );
+			$add_weeks = Amapress::datediffInWeeks(
+				Amapress::start_of_week( $this->getDate_debut() ),
+				Amapress::end_of_week( $this->getDate_fin() )
+			);
 		}
 		$meta = array();
 		foreach ( $this->custom as $k => $v ) {
@@ -345,8 +348,19 @@ class AmapressContrat_instance extends TitanEntity {
 					return date( 'd/m/Y', $date );
 				}, $new_liste_dates )
 		);
+
+		$new_liste_dates_paiements                               = array_map(
+			function ( $date ) use ( $add_weeks ) {
+				return Amapress::add_a_week( $date, $add_weeks );
+			}, $this->getPaiements_Liste_dates() );
+		$meta['amapress_contrat_instance_liste_dates_paiements'] = implode( ',',
+			array_map(
+				function ( $date ) {
+					return date( 'd/m/Y', $date );
+				}, $new_liste_dates_paiements )
+		);
 		if ( $for_renew ) {
-			unset( $meta['amapress_contrat_instance_liste_dates_paiements'] );
+//			unset( $meta['amapress_contrat_instance_liste_dates_paiements'] );
 			unset( $meta['amapress_contrat_instance_commande_liste_dates'] );
 		}
 		$meta['amapress_contrat_instance_date_debut'] = $date_debut;
