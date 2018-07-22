@@ -28,5 +28,5 @@ function amapress_clean_transients( $post_id ) {
 	}
 }
 
-do_action( 'save_post', 'amapress_clean_transients', 1000 );
+add_action( 'save_post', 'amapress_clean_transients', 1000 );
 
