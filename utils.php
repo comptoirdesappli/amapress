@@ -106,9 +106,12 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			$title = isset( $col['title'] ) ? $col['title'] : '&#xA0;';
 			$attr  = '';
 			if ( ! empty( $col['responsivePriority'] ) ) {
-				$attr = 'data-priority="' . $col['responsivePriority'] . '"';
+				$attr = ' data-priority="' . $col['responsivePriority'] . '"';
 			}
-			$table_content .= "<th $attr>" . $title . '</th>';
+			if ( ! empty( $col['width'] ) ) {
+				$attr .= ' width="' . $col['width'] . '"';
+			}
+			$table_content .= "<th$attr>" . $title . '</th>';
 		}
 		$table_content .= '</tr></thead>';
 
@@ -132,10 +135,14 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 					$data_sort_v = isset( $data_sort_v['value'] ) ? $data_sort_v['value'] : '';
 				}
 
+				$attr = '';
+				if ( ! empty( $col['width'] ) ) {
+					$attr .= ' width="' . $col['width'] . '"';
+				}
 				if ( $data_v != $data_sort_v ) {
-					$table_content .= '<td style="' . $style . '" data-sort="' . esc_attr( $data_sort_v ) . '">' . $data_v . '</td>';
+					$table_content .= '<td' . $attr . ' style="' . $style . '" data-sort="' . esc_attr( $data_sort_v ) . '">' . $data_v . '</td>';
 				} else {
-					$table_content .= '<td style="' . $style . '">' . $data_v . '</td>';
+					$table_content .= '<td' . $attr . ' style="' . $style . '">' . $data_v . '</td>';
 				}
 			}
 			$table_content .= '</tr>';

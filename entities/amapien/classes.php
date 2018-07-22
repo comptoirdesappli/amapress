@@ -350,7 +350,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	}
 
 	public function getTelTo(
-		$mobile = 'both', $sms = false
+		$mobile = 'both', $sms = false, $first_only = false
 	) {
 		$phone_numbers = $this->getPhoneNumbers( $mobile );
 		if ( empty( $phone_numbers ) ) {
@@ -359,6 +359,9 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		$ret = array();
 		foreach ( $phone_numbers as $tel_norm => $tel_display ) {
 			$ret[] = '<a href="' . ( $sms ? 'sms' : 'tel' ) . ':' . $tel_norm . '">' . esc_html( $tel_display ) . '</a>';
+		}
+		if ( $first_only ) {
+			$ret = [ array_shift( $ret ) ];
 		}
 
 		return implode( '<br/>', $ret );

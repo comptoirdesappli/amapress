@@ -230,11 +230,12 @@ class AmapressContrats {
 				'meta_query'     => array(
 					'relation' => 'AND',
 //TODO check
-//                    array(
-//                        'key' => 'amapress_contrat_instance_date_debut',
-//                        'value' => Amapress::start_of_day($date),
-//                        'compare' => '<=',
-//                        'type' => 'NUMERIC'),
+					array(
+						'key'     => 'amapress_contrat_instance_date_debut',
+						'value'   => Amapress::start_of_day( $date ),
+						'compare' => '<=',
+						'type'    => 'NUMERIC'
+					),
 					array(
 						'key'     => 'amapress_contrat_instance_date_fin',
 						'value'   => Amapress::end_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),

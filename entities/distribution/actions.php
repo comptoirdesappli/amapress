@@ -138,10 +138,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	}
 
 	$columns = array(
-		array(
-			'title' => 'Passage',
-			'data'  => 'check',
-		),
+//		array(
+//			'title' => 'Passage',
+//			'data'  => 'check',
+//		),
 		array(
 			'title' => 'Nom',
 			'data'  => array(
@@ -239,12 +239,12 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				$panier_intermittent = '*';
 			}
 		}
-		$users    = array_map( function ( $user_id ) {
+		$users = array_map( function ( $user_id ) {
 			return amapress_get_user_by_id_or_archived( intval( $user_id ) );
 		}, $user_ids );
 
 		$line['first_name'] = implode( ' / ', array_map( function ( $user ) {
-			return $user->first_name;
+				return $user->first_name;
 			}, $users ) ) . $panier_intermittent;
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
 			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
@@ -259,12 +259,20 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			return $val;
 		}, $users ) );
 
+		if ( $for_pdf ) {
+			$line['last_name'] = '<span>[]</span>&nbsp;' . $line['last_name'];
+		}
+
 		if ( $show_phone ) {
-			$line['tel'] = implode( ' / ', array_unique( array_map( function ( $user ) {
+			$phones = array_unique( array_map( function ( $user ) use ( $for_pdf ) {
 				$adh = AmapressUser::getBy( $user );
 
-				return $adh->getTelTo( true ) . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
-			}, $users ) ) );
+				return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
+			}, $users ) );
+			if ( $for_pdf ) {
+				$phones = [ array_shift( $phones ) ];
+			}
+			$line['tel'] = implode( ' / ', $phones );
 		}
 		if ( $show_emails ) {
 			$line['email'] = implode( '<br/>', array_map( function ( $user ) {
@@ -353,6 +361,12 @@ table, td, th {
 	font-size: 0.6em;
 }
 .not-this-dist { background-color: #AAA; }
+h2, h3, h4 {
+font-size: 10pt;
+padding: 0;
+margin: 0;
+line-height: 1.1;
+}
 </style>';
 	} else {
 		echo '<style type="text/css">
@@ -397,8 +411,8 @@ table, td, th {
 	}
 
 	echo '<h2>' . esc_html( $dist->getTitle() ) . '</h2>';
-	echo '<br/>';
 	if ( ! $for_pdf ) {
+		echo '<br/>';
 		$pdf_url = $dist->getPermalink( 'liste-emargement/pdf/' );
 		if ( isset( $_GET['all'] ) ) {
 			$pdf_url = add_query_arg( 'all', '', $pdf_url );
@@ -443,7 +457,9 @@ table, td, th {
 
 //    amapress_display_messages_for_post('dist-messages', $dist->ID);
 
-	echo '<h3 class="liste-emargement">Liste</h3>';
+	if ( ! $for_pdf ) {
+		echo '<h3 class="liste-emargement">Liste</h3>';
+	}
 	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
 		array(
 			'paging'       => false,
@@ -484,7 +500,32 @@ table, td, th {
 	}
 
 	$from_date = Amapress::start_of_day( $date );
-	echo '<br/>';
+	if ( ! $for_pdf ) {
+		echo '<br/>';
+	}
+	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions - ' . $dist->getLieu()->getTitle() ) . '</h3>';
+//	echo '<br/>';
+	echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( ! $for_pdf ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
+
+	$lieux_ids = Amapress::get_lieu_ids();
+	if ( count( $lieux_ids ) > 1 ) {
+		if ( ! $for_pdf ) {
+			echo '<br/>';
+		}
+		foreach ( $lieux_ids as $lieu_id ) {
+			if ( $lieu_id == $dist_lieu_id ) {
+				continue;
+			}
+			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+			echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables du jour - ' . $lieu->getTitle() ) . '</h3>';
+//			echo '<br/>';
+			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( ! $for_pdf ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+		}
+	}
+
+	if ( ! $for_pdf ) {
+		echo '<br/>';
+	}
 	if ( count( $paniers ) > 0 ) {
 		echo '<h3 class="liste-emargement-intermittent">* Panier(s) intermittent(s)</h3>';
 		echo amapress_get_paniers_intermittents_table( 'paniers-exchs', $paniers,
@@ -499,12 +540,14 @@ table, td, th {
 				'init_as_html' => true,
 				'no_script'    => $for_pdf,
 			),
+			//TODO params for other amap
 			array(
 				'show_avatar'     => 'false',
 				'show_email'      => 'false',
-				'show_tel'        => 'default',
-				'show_tel_fixe'   => 'default',
-				'show_tel_mobile' => 'default',
+				'show_sms'        => 'false',
+				'show_tel'        => 'false',
+				'show_tel_fixe'   => 'false',
+				'show_tel_mobile' => 'false',
 				'show_adresse'    => 'false',
 				'show_roles'      => 'false',
 			),
@@ -519,25 +562,6 @@ table, td, th {
 				'etat'      => true,
 				'for_print' => true,
 			) );
-	}
-
-	echo '<br/>';
-	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions - ' . $dist->getLieu()->getTitle() ) . '</h3>';
-//	echo '<br/>';
-	echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( ! $for_pdf ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
-
-	$lieux_ids = Amapress::get_lieu_ids();
-	if ( count( $lieux_ids ) > 1 ) {
-		echo '<br/>';
-		foreach ( $lieux_ids as $lieu_id ) {
-			if ( $lieu_id == $dist_lieu_id ) {
-				continue;
-			}
-			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
-			echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables du jour - ' . $lieu->getTitle() ) . '</h3>';
-//			echo '<br/>';
-			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( ! $for_pdf ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
-		}
 	}
 
 	if ( Amapress::toBool( Amapress::getOption( 'liste-emargement-show-lieu-instructions' ) ) ) {
