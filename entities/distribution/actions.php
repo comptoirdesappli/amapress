@@ -116,7 +116,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$dist_contrat_ids         = $dist->getContratIds();
 	$all_contrat_instances    = ! $show_all_contrats ?
 		$dist->getContrats() :
-		AmapressContrats::get_active_contrat_instances( null, $date );
+		AmapressContrats::get_active_contrat_instances( null, $date, false, false );
 	$all_contrat_instance_ids = array_map(
 		function ( $c ) {
 			return $c->ID;
@@ -205,7 +205,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		'data'  => 'comment',
 	);
 
-	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true );
+	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true, false );
 	$liste     = array();
 	$adhesions = array_group_by(
 		$all_adhs,

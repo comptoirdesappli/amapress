@@ -579,66 +579,80 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$contrat_instance_id = null,
 		$date = null,
 		$ignore_renouv_delta = false,
-		$allow_not_logged = false
+		$allow_not_logged = false,
+		$include_futur = true
 	) {
 		if ( ! $allow_not_logged && ! amapress_is_user_logged_in() ) {
 			return [];
+		}
+
+		if ( empty( $date ) ) {
+			$date = Amapress::end_of_day( amapress_time() );
 		}
 
 		if ( $user_id == null ) {
 			$user_id = amapress_current_user_id();
 		}
 
-		$abo_ids = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta );
+		$abo_ids = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta, $include_futur );
 		$abo_key = implode( '-', $abo_ids );
 
-		$key = "AmapressAdhesion::getUserActiveAdhesions_{$user_id}_{$abo_key}";
+		$key = "AmapressAdhesion::getUserActiveAdhesions_{$date}_{$user_id}_{$abo_key}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$user_ids = AmapressContrats::get_related_users( $user_id, $allow_not_logged );
 			if ( empty( $user_ids ) ) {
 				return [];
 			}
-			$query    = array(
+			$meta_query = array(
+				'relation' => 'AND',
+				array(
+					'key'     => 'amapress_adhesion_adherent',
+					'value'   => $user_ids,
+					'compare' => 'IN',
+					'type'    => 'NUMERIC'
+				),
+				array(
+					'key'     => 'amapress_adhesion_contrat_instance',
+					'value'   => $abo_ids,
+					'compare' => 'IN',
+					'type'    => 'NUMERIC'
+				),
+				array(
+					'relation' => 'OR',
+					array(
+						'key'     => 'amapress_adhesion_date_fin',
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => 'amapress_adhesion_date_fin',
+						'value'   => 0,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
+					array(
+						'key'     => 'amapress_adhesion_date_fin',
+						'value'   => Amapress::end_of_day( $date ),
+						'compare' => '>=',
+						'type'    => 'NUMERIC',
+					),
+				)
+			);
+			if ( ! $include_futur ) {
+				$meta_query[] = array(
+					'key'     => 'amapress_adhesion_date_debut',
+					'value'   => Amapress::end_of_day( $date ),
+					'compare' => '<=',
+					'type'    => 'NUMERIC',
+				);
+			}
+			$query = array(
 				'posts_per_page' => - 1,
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
 				'fields'         => 'ids',
-				'meta_query'     => array(
-					'relation' => 'AND',
-					array(
-						'key'     => 'amapress_adhesion_adherent',
-						'value'   => $user_ids,
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
-					array(
-						'key'     => 'amapress_adhesion_contrat_instance',
-						'value'   => $abo_ids,
-						'compare' => 'IN',
-						'type'    => 'NUMERIC'
-					),
-					array(
-						'relation' => 'OR',
-						array(
-							'key'     => 'amapress_adhesion_date_fin',
-							'compare' => 'NOT EXISTS',
-						),
-						array(
-							'key'     => 'amapress_adhesion_date_fin',
-							'value'   => 0,
-							'compare' => '=',
-							'type'    => 'NUMERIC',
-						),
-						array(
-							'key'     => 'amapress_adhesion_date_fin',
-							'value'   => Amapress::end_of_day( amapress_time() ),
-							'compare' => '>=',
-							'type'    => 'NUMERIC',
-						),
-					)
-				)
+				'meta_query'     => $meta_query
 			);
-			$res      = get_posts( $query );
+			$res   = get_posts( $query );
 
 			wp_cache_set( $key, $res );
 		}

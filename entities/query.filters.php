@@ -1388,7 +1388,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			} else if ( $amapress_contrat == 'active' ) {
 				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 			} else if ( $amapress_contrat == 'lastyear' ) {
-				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::remove_a_year( amapress_time() ) );
+				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::remove_a_year( amapress_time() ), false, false );
 			} else {
 				$id = Amapress::resolve_post_id( $amapress_contrat, AmapressContrat::INTERNAL_POST_TYPE );
 				if ( ! $id ) {
