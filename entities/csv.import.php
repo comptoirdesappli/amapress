@@ -40,7 +40,7 @@ function amapress_get_wp_posts_labels() {
 		'post_title'    => 'Titre',
 		'post_date'     => 'Date de publication',
 //        'post_date_gmt' => '',
-		'post_content'  => 'Contenu de l\'article',
+		'post_content'  => 'Contenu',
 		'post_excerpt'  => 'Résumé de l\'article',
 		'post_status'   => 'Statut de l\'article',
 //        'comment_status' => '',
@@ -482,7 +482,10 @@ function amapress_process_generate_model() {
 //            Amapress_Import_Posts_CSV::generateModel(AmapressAdhesion_intermittence::POST_TYPE, 'inscriptions_intermittents', array());
 //            break;
 		case 'generate_model_' . AmapressContrat_quantite::POST_TYPE:
-			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_quantite::POST_TYPE, 'contrats_quantites' );
+			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_quantite::POST_TYPE, 'contrats_quantites', [
+				'post_title',
+				'post_content'
+			] );
 			break;
 		case 'generate_model_user':
 			Amapress_Import_Users_CSV::generateModel( 'amapiens', array(

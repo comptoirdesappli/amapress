@@ -336,7 +336,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'         => array(
+						'Ajouter une inscription'       => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -350,7 +350,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'           => array(
+						'Ajouter un coadhérent'         => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -364,7 +364,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une persone hors AMAP'   => array(
+						'Ajouter une persone hors AMAP' => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -378,7 +378,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                            => array(
+						'Renouvèlement'                 => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -1869,9 +1869,14 @@ class AmapressEntities {
 							)
 						),
 						'Quantités des paniers' => array(
+							'id'         => 'import_quant_paniers',
 							'desc'       => '',
 							'capability' => 'edit_contrat_instance',
 							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du produit et la colonne "Contenu" à sa description.'
+								),
 								array(
 									'type'      => 'save',
 									'use_reset' => false,

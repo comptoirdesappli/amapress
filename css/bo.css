@@ -190,3 +190,19 @@ select.paiements_details {
 #createuser .tf-form-table {
     table-layout: auto !important;
 }
+
+#quant_editor_table {
+    border-collapse: collapse;
+}
+
+#quant_editor_table td {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 2px;
+    line-height: 1.1;
+    vertical-align: top;
+}
+
+#quant_editor_table td {
+    border-top: 1pt solid #000;
+}
