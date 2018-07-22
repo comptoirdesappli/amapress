@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.46.5
+Version: 0.46.8
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 71 );
-define( 'AMAPRESS_VERSION', '0.46.5' );
+define( 'AMAPRESS_VERSION', '0.46.8' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -466,15 +466,16 @@ function amapress_global_init() {
 	if ( ! empty( $key ) ) {
 		TitanFrameworkOptionAddress::$google_map_api_key = $key;
 	}
+
+	global $amapress_smtpMailingQueue;
+	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );
+	$amapress_smtpMailingQueue = new AmapressSMTPMailingQueue();
 //    global $typenow;
 //    var_dump(get_post_types( array( 'show_ui' => true ) ));
 //    var_dump($typenow);
 //    var_dump(amp_user_can_access_admin_page());
 	do_action( 'amapress_init' );
 
-	global $amapress_smtpMailingQueue;
-	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );
-	$amapress_smtpMailingQueue = new AmapressSMTPMailingQueue();
 //    $users = get_users(
 //        array('amapress_contrat' => 'no')
 //    );

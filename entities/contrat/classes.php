@@ -272,13 +272,13 @@ class AmapressContrat_instance extends TitanEntity {
 		$nb = $nb_cheque;
 		if ( $cheque_main_amount == $last_cheque ) {
 			$last_cheque = 0;
-			$option      = "$nb chèque(s) de $cheque_main_amount €";
+			$option      = sprintf( "$nb chèque(s) de %0.2f €", $cheque_main_amount );
 		} else if ( $last_cheque == 0 ) {
 			$nb     = 1;
-			$option = "1 chèque de $cheque_main_amount €";
+			$option = sprintf( "1 chèque de %0.2f €", $cheque_main_amount );
 		} else {
 			$nb     = $nb_cheque - 1;
-			$option = "$nb chèque(s) de $cheque_main_amount € et 1 chèque de $last_cheque €";
+			$option = sprintf( "$nb chèque(s) de %0.2f € et 1 chèque de %0.2f €", $cheque_main_amount, $last_cheque );
 		}
 
 		return [
