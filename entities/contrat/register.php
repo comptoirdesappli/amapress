@@ -273,13 +273,15 @@ function amapress_register_entities_contrat( $entities ) {
 											echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
 <br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</label></p>';
 											echo '<script type="text/javascript">
+//<![CDATA[
 jQuery(function($) {
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $("#' . $val_id . '").change(function() {
         $liste_dates.multiDatesPicker("option", {disabled: !$(this).is(\':checked\')});
     });
-    $liste_dates.multiDatesPicker("option", {disabled: ' . $is_readonly . '});
+    $liste_dates.multiDatesPicker("option", {disabled: ' . ( $is_readonly ? 'true' : 'false' ) . '});
 });
+//]]>
 </script>';
 										}
 									}
@@ -516,6 +518,7 @@ jQuery(function($) {
 					function ( $option ) {
 						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
 							echo '<script type="text/javascript">
+//<![CDATA[
 jQuery(function($) {
     var $date_debut = $("#amapress_contrat_instance_date_debut");
     var $date_fin = $("#amapress_contrat_instance_date_fin");
@@ -527,6 +530,7 @@ jQuery(function($) {
     $liste_dates.multiDatesPicker("option", {minDate: $date_debut.val()});
     $date_fin.datepicker("option","minDate", $date_debut.val());
 });
+//]]>
 </script>';
 						}
 					},
@@ -543,6 +547,7 @@ jQuery(function($) {
 					function ( $option ) {
 						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
 							echo '<script type="text/javascript">
+//<![CDATA[
 jQuery(function($) {
     var $date_debut = $("#amapress_contrat_instance_date_debut");
     var $date_fin = $("#amapress_contrat_instance_date_fin");
@@ -554,6 +559,7 @@ jQuery(function($) {
     $liste_dates.multiDatesPicker("option", {maxDate: $date_fin.val()});
     $date_debut.datepicker("option","maxDate", $date_fin.val());
 });
+//]]>
 </script>';
 						}
 					},
@@ -570,6 +576,7 @@ jQuery(function($) {
 					function ( $option ) {
 						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
 							echo '<script type="text/javascript">
+//<![CDATA[
 jQuery(function($) {
     var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
     var $date_cloture = $("#amapress_contrat_instance_date_cloture");
@@ -578,6 +585,7 @@ jQuery(function($) {
     });
     $date_cloture.datepicker("option","minDate", $date_ouverture.val());
 });
+//]]>
 </script>';
 						}
 					},
@@ -594,6 +602,7 @@ jQuery(function($) {
 					function ( $option ) {
 						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
 							echo '<script type="text/javascript">
+//<![CDATA[
 jQuery(function($) {
     var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
     var $date_cloture = $("#amapress_contrat_instance_date_cloture");
@@ -602,6 +611,7 @@ jQuery(function($) {
     });
     $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
 });
+//]]>
 </script>';
 						}
 					},
