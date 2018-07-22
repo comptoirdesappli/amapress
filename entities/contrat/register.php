@@ -184,14 +184,14 @@ function amapress_register_entities_contrat( $entities ) {
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'searchable'        => true,
 			),
-			'name'              => array(
+			'name'           => array(
 				'name'     => amapress__( 'Nom complémentaire' ),
 				'group'    => 'Gestion',
 				'type'     => 'text',
 				'desc'     => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
-			'nb_visites'        => array(
+			'nb_visites'     => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => 'Information',
 				'type'        => 'number',
@@ -642,7 +642,7 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'             => array(
+			'ended'          => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'group'       => 'Status',
@@ -650,7 +650,14 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'quant_editor'      => array(
+			'max_adherents'  => array(
+				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
+				'type'     => 'number',
+				'group'    => 'Information',
+				'required' => true,
+				'desc'     => 'Nombre maximum d\'amapiens',
+			),
+			'quant_editor'   => array(
 				'name'        => amapress__( 'Quantités' ),
 				'type'        => 'custom',
 				'group'       => 'Gestion',
@@ -659,16 +666,10 @@ jQuery(function($) {
 				'save'        => 'amapress_save_contrat_quantite_editor',
 				'show_on'     => 'edit-only',
 				'show_column' => false,
+				'bare'        => true,
 //                'desc' => 'Quantités',
 			),
-			'max_adherents'     => array(
-				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
-				'type'     => 'number',
-				'group'    => 'Gestion',
-				'required' => true,
-				'desc'     => 'Nombre maximum d\'amapiens',
-			),
-			'inscriptions'      => array(
+			'inscriptions'   => array(
 				'name'        => amapress__( 'Inscriptions' ),
 				'show_column' => true,
 				'show_table'  => false,
@@ -1129,58 +1130,44 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	foreach ( $contrat_instance->getModel()->getProducteur()->getProduits() as $prod ) {
 		$contrat_produits[ $prod->ID ] = $prod->getTitle();
 	}
-	echo '<tr>';
-	echo '<td style="border-top: 1pt solid #8c8c8c; border-collapse: collapse" class="quant-conf">';
-	echo "<div><label>Intitulé: </label><input type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' /></div>";
-	echo "<div><label>Code: </label><input type='text' class='required' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></div>";
-	echo "<div><label>Description: </label><textarea class='' name='amapress_quant_data[$id][desc]' placeholder='Description'>{$description}</textarea></div>";
-//    echo '</td>';
-//    echo '<td>';
-	echo "<div><label>Prix: </label><input type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></div>";
-//    echo '</td>';
-//    echo '<td>';
+	echo '<tr style="vertical-align: top">';
+	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' /></td>";
+	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></td>";
+	echo "<td><textarea style='width: 100%' class='' name='amapress_quant_data[$id][desc]' placeholder='Description'>{$description}</textarea></td>";
+	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></td>";
+	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Facteur quantité' value='$quantite' /></td>";
 	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
-//        echo '<fieldset>';
-		if ( $contrat_instance->isQuantiteVariable() ) {
-			echo "<div><label>Quantité: </label><input type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Quantité' value='$quantite' /></div>";
-		}
-		echo "<div><label>Unité: </label><select class='required' name='amapress_quant_data[$id][unit]'>";
+		echo "<td><select style='width: 100%' class='required' name='amapress_quant_data[$id][unit]'>";
 		echo '<option value="">--Unité de prix--</option>';
-		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">A l\'unité</option>';
-		echo '<option ' . selected( 'kg', $unit, false ) . ' value="kg">Au kg</option>';
-		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">Au litre</option>';
-		echo '</select></div>';
-		echo "<div><label>Quantité(s) poss.: </label><input type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' /></div>";
-		if ( $contrat_instance->isPanierVariable() ) {
-			echo "<div><label>Dispo de </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_from]' placeholder='Date début' value='$from' /></div>";
-			echo "<div><label> - à </label><input type='text' class='input-date date' name='amapress_quant_data[$id][avail_to]' placeholder='Date fin' value='$to' /></div>";
-		}
-//        echo '</fieldset>';
-	} else {
-		echo "<div><label>Quantité: </label><input type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Quantité' value='$quantite' /></div>";
+		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">pièce</option>';
+		echo '<option ' . selected( 'kg', $unit, false ) . ' value="kg">kg</option>';
+		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">L</option>';
+		echo '</select></td>';
+		echo "<td><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' /></td>";
 	}
-//    echo '</td>';
-//    echo '<td>';
+	if ( $contrat_instance->isPanierVariable() ) {
+		echo "<td><input style='width: 100%' type='text' class='input-date date' name='amapress_quant_data[$id][avail_from]' placeholder='Date début' value='$from' /></td>";
+		echo "<td><input style='width: 100%' type='text' class='input-date date' name='amapress_quant_data[$id][avail_to]' placeholder='Date fin' value='$to' /></td>";
+	}
 	?>
-    <div><label>Produits: </label><select id="<?php echo 'amapress_quant_data[$id][produits]' ?>"
-                                          name="<?php echo 'amapress_quant_data[$id][produits]'; ?>"
-                                          class="quant-produit" multiple="multiple"
-                                          data-placeholder="Produits associés"
-    ><?php
-		tf_parse_select_options( $contrat_produits, $produits );
-		?></select></div><?php
-	echo '</td>';
-//            echo "<td><input type='number' class='required number' name='amapress_quant_data[$id][max_quant]' placeholder='Quantité commandable max' value='$max' /></td>";
-
-	echo "<td class='tf-upload'  style='border-top: 1pt solid #8c8c8c; border-collapse: collapse'>";
-	TitanFrameworkOptionUpload::echo_uploader( "amapress_quant_data[$id][photo]", $photo, '' );
-	echo "</td>";
+    <td><select style='width: 100%' id="<?php echo 'amapress_quant_data[$id][produits]' ?>"
+                name="<?php echo 'amapress_quant_data[$id][produits]'; ?>"
+                class="quant-produit" multiple="multiple"
+                data-placeholder="Produits associés">
+			<?php
+			tf_parse_select_options( $contrat_produits, $produits );
+			?>
+        </select>
+    </td>
+	<?php
+//	echo "<td class='quant-upload'  style='border-top: 1pt solid #8c8c8c; border-collapse: collapse'>";
+//	TitanFrameworkOptionUpload::echo_uploader( "amapress_quant_data[$id][photo]", $photo, '' );
+//	echo "</td>";
 	if ( amapress_can_delete_contrat_quantite( '', $id ) === true ) {
 		echo "<td><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_quant(this)'></span></td>";
 	} else {
 		echo "<td></td>";
 	}
-
 	echo '</tr>';
 }
 
@@ -1193,20 +1180,31 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 	ob_start();
 	?>
     <input type="hidden" name="amapress_quant_data_contrat_instance_id" value="<?php echo $contrat_instance_id; ?>"/>
-    <table class="table" style="width: 100%;">
+    <table id="quant_editor_table" class="table" style="table-layout: fixed; overflow: scroll; width: 100%">
         <thead>
         <tr>
-            <th>Configuration</th>
-            <th style="width: 60px">Photo</th>
-            <th style="width: 35px"></th>
+            <th>Intitulé</th>
+            <th style="width: 100px">Code</th>
+            <th title="Description">Desc.</th>
+            <th style="width: 50px">Prix</th>
+            <th style="width: 40px" title="Facteur quantité">Fact. quant.</th>
+	        <?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
+                <th style="width: 60px">Unité</th>
+                <th style="width: 70px">Quantités config</th>
+	        <?php } ?>
+	        <?php if ( $contrat_instance->isPanierVariable() ) { ?>
+                <th style="width: 80px">Dispo de</th>
+                <th style="width: 80px"> - à</th>
+	        <?php } ?>
+            <th>Produits</th>
+            <!--            <th style="width: 30px">Photo</th>-->
+            <th style="width: 30px"></th>
         </tr>
         </thead>
         <tbody>
         <?php
         foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance_id ) as $quant ) {
-	        $id = $quant->ID;
-
-
+	        $id   = $quant->ID;
 	        $tit  = esc_attr( $quant->getTitle() );
 	        $q    = esc_attr( $quant->getQuantite() );
 	        $c    = esc_attr( $quant->getCode() );
@@ -1215,44 +1213,23 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 	        $desc = esc_textarea( stripslashes( $quant->getDescription() ) );
 	        $af   = esc_attr( $quant->getAvailFrom() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailFrom() ) ) : null );
 	        $at   = esc_attr( $quant->getAvailTo() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailTo() ) ) : null );
-//            $max = esc_attr($quant->getMax_Commandable());
 
 	        amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
 		        $qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ) );
         }
         ?>
-        <tr>
-            <td colspan="3"><span class="btn add-model dashicons dashicons-plus-alt"
-                                  onclick="amapress_add_quant(this)"></span> Ajouter une quantité
-            </td>
-        </tr>
         </tbody>
     </table>
-
+    <p><span class="btn add-model dashicons dashicons-plus-alt"
+             onclick="amapress_add_quant(this)"></span> Ajouter une quantité</p>
 	<?php
-	$contents = ob_get_contents();
-	ob_clean();
+	$contents = ob_get_clean();
 
 	ob_start();
-//    echo '<tr>';
-//
-//    echo  "<td><input type='text' class='required' name='amapress_quant_data[%%id%%][title]' placeholder='Intitulé' /></td>";
-//    echo  "<td><input type='text' class='required' name='amapress_quant_data[%%id%%][code]' placeholder='Code' /></td>";
-//    echo  "<td><input type='number' class='required number' name='amapress_quant_data[%%id%%][quant]' placeholder='Quantité' /></td>";
-//    echo  "<td><input type='number' class='required number' name='amapress_quant_data[%%id%%][price]' placeholder='Prix unitaire' /></td>";
-////    echo  "<td><input type='number' class='required number' name='amapress_quant_data[%%id%%][max_quant]' placeholder='Quantité commandable max' /></td>";
-//
-//    echo  "<td  class='tf-upload'>";
-//    TitanFrameworkOptionUpload::echo_uploader("amapress_quant_data[%%id%%][photo]", '', '');
-//    echo  "</td>";
-//    echo  "<td><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_quant(this)'></span></td>";
-//
-//    echo  '</tr>';
 	amapress_quantite_editor_line( $contrat_instance, '%%id%%', '', '', '', 0, 0,
 		'', null, null, 0, '', '' );
 
-	$new_row = ob_get_contents();
-	ob_clean();
+	$new_row = ob_get_clean();
 
 	$new_row  = json_encode( array( 'html' => $new_row ) );
 	$contents .= "<script type='text/javascript'>//<![CDATA[
@@ -1279,7 +1256,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         jQuery(e).data('max', max);
         var html = {$new_row}['html'];
         html = html.replace(/%%id%%/g, max);
-        jQuery(html).insertBefore(jQuery(e).closest('tr'));
+        jQuery('#quant_editor_table tbody').append(jQuery(html));
         amapress_quant_load_tags();
     };
     function amapress_del_quant(e) {
