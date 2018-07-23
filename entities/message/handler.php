@@ -77,6 +77,10 @@ function amapress_send_message(
 	$subject, $content, $content_sms, $opt, TitanEntity $entity = null,
 	$attachments = array(), $cc = null, $bcc = null, $headers = array()
 ) {
+	$subject     = wp_unslash( $subject );
+	$content     = wp_unslash( $content );
+	$content_sms = wp_unslash( $content_sms );
+
 	$new_id = null;
 	/** @var AmapressUser $current_user */
 	$current_user = AmapressUser::getBy( amapress_current_user_id() );
