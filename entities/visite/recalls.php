@@ -37,7 +37,7 @@ function amapress_get_next_visites_cron() {
 
 	$ret = [];
 	foreach ( $next_visites as $visite ) {
-		$ret[ $visite->getStartDateAndHour() ] = [ 'id' => $visite->getID() ];
+		$ret[] = [ 'id' => $visite->getID(), 'time' => $visite->getStartDateAndHour() ];
 	}
 
 	return $ret;

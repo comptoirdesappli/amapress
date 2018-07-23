@@ -19,7 +19,7 @@ function amapress_get_next_distributions_cron() {
 
 	$ret = [];
 	foreach ( $next_distribs as $dist ) {
-		$ret[ $dist->getStartDateAndHour() ] = [ 'id' => $dist->getID() ];
+		$ret[] = [ 'id' => $dist->getID(), 'time' => $dist->getStartDateAndHour() ];
 	}
 
 	return $ret;
@@ -324,7 +324,7 @@ function amapress_distribution_changes_recall_options() {
 				];
 				$ret   = [];
 				foreach ( $weeks as $w ) {
-					$ret[ $w ] = [ 'date' => $w ];
+					$ret[] = [ 'date' => $w, 'time' => $w ];
 				}
 
 				return $ret;
