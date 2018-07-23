@@ -201,7 +201,8 @@ function amapress_self_inscription( $atts ) {
 		$user_address   = '';
 		$user_phones    = '';
 		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
-		$member_message = '';
+		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
+<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 		if ( $user ) {
 //			if ( is_multisite() ) {
 //				if ( ! is_user_member_of_blog( $user->ID ) ) {
@@ -214,8 +215,7 @@ function amapress_self_inscription( $atts ) {
 			$user_last_name = $user->last_name;
 			$user_address   = $amapien->getFormattedAdresse();
 			$user_phones    = implode( '/', $amapien->getPhoneNumbers() );
-			$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
-<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+			$member_message = '';
 		}
 		?>
         <h4>Étape 2/7 : Coordonnées</h4>

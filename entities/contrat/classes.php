@@ -250,19 +250,15 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getChequeOptionsForTotal( $nb_cheque, $total ) {
-		$last_cheque = $this->getMinChequeAmount();
+//		$last_cheque = $this->getMinChequeAmount();
 
 		if ( $nb_cheque > 1 ) {
 			if ( ( $total / $nb_cheque ) * 2 == intval( $total / $nb_cheque * 2 ) ) {
 				$last_cheque        = $total / $nb_cheque;
 				$cheque_main_amount = $total / $nb_cheque;
 			} else {
-				$t = $total - $last_cheque;
-				while ( $t / ( $nb_cheque - 1 ) != intval( $t / ( $nb_cheque - 1 ) ) && $last_cheque < $total ) {
-					$last_cheque += 1;
-					$t           = $total - $last_cheque;
-				}
-				$cheque_main_amount = ( $total - $last_cheque ) / ( $nb_cheque - 1 );
+				$cheque_main_amount = floor( $total / $nb_cheque );
+				$last_cheque        = $total - $cheque_main_amount * ( $nb_cheque - 1 );
 			}
 		} else {
 			$last_cheque        = 0;
