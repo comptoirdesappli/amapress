@@ -191,8 +191,9 @@ select.paiements_details {
     table-layout: auto !important;
 }
 
-#quant_editor_table {
+#quant_editor_table, #quant_rattrapage {
     border-collapse: collapse;
+    table-layout: auto !important;
 }
 
 #quant_editor_table td {

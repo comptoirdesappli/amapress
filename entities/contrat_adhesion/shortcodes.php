@@ -520,7 +520,7 @@ function amapress_self_inscription( $atts ) {
 		}
 
 		//TODO lien vers contrat PDF ?
-		echo $contrat->getOnlineContrat();
+//		echo $contrat->getOnlineContrat();
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
 			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . count( $dates ) . '</strong>” distributions :</p>';
 		} else {

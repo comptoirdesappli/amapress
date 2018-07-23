@@ -276,7 +276,7 @@ function amapress_distribution_emargement_recall_options() {
 			'id'      => 'distribution-emargement-recall-mail-subject',
 			'name'    => 'Sujet du mail',
 			'type'    => 'text',
-			'default' => '[Emargement] Liste d\'émargment de %%post:title%%',
+			'default' => '[Emargement] Liste d\'émargement de %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-emargement-recall-mail-content',

@@ -164,18 +164,18 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsIntArray( 'amapress_contrat_instance_lieux' );
 	}
 
-	public function getType() {
-		return $this->getCustom( 'amapress_contrat_instance_type' );
-	}
+//	public function getType() {
+//		return $this->getCustom( 'amapress_contrat_instance_type' );
+//	}
 
 	public function getNb_visites() {
 		return floatval( $this->getCustom( 'amapress_contrat_instance_nb_visites', 0 ) );
 	}
 
 	/** @return string */
-	public function getOnlineContrat() {
-		return wpautop( $this->getCustom( 'amapress_contrat_instance_contrat' ) );
-	}
+//	public function getOnlineContrat() {
+//		return wpautop( $this->getCustom( 'amapress_contrat_instance_contrat' ) );
+//	}
 
 	/** @return string */
 	public function getOnlineContratRaw() {

@@ -229,7 +229,7 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 		$subname = ' - ' . $adh->getSubName();
 	}
 
-	return sprintf( '%s%s - %s > %s',
+	return sprintf( '%s%s - %s ~ %s',
 		$adh->getModel()->getTitle(),
 		$subname,
 		date_i18n( 'm/Y', intval( $adh->getDate_debut() ) ),
