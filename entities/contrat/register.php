@@ -243,7 +243,156 @@ function amapress_register_entities_contrat( $entities ) {
 				'conditional'   => array(
 					'_default_' => 'panier',
 					'panier'    => array(
-						'is_principal'      => array(
+						'quant_type'   => array(
+							'name'        => amapress__( 'Type de quantités' ),
+							'type'        => 'custom',
+							'group'       => 'Gestion',
+							'readonly'    => 'amapress_is_contrat_instance_readonly',
+							'show_column' => false,
+							'column'      => function ( $post_id ) {
+								$status           = [];
+								$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+								if ( $contrat_instance->isPanierVariable() ) {
+									$status[] = 'Paniers variables';
+								} else if ( $contrat_instance->isQuantiteVariable() ) {
+									if ( $contrat_instance->isQuantiteMultiple() ) {
+										$status[] = 'Quantités variables multiples';
+									} else {
+										$status[] = 'Quantités variables';
+									}
+								} else {
+									if ( $contrat_instance->isQuantiteMultiple() ) {
+										$status[] = 'Quantités fixes multiples';
+									} else {
+										$status[] = 'Quantités fixes';
+									}
+								}
+								if ( $contrat_instance->isPrincipal() ) {
+									$status[] = 'Principal';
+								}
+								if ( $contrat_instance->isEnded() ) {
+									$status[] = 'Clôturé';
+								}
+
+								echo implode( ', ', $status );
+							},
+							'custom'      => function ( $post_id ) {
+								$type             = 'quant_fix';
+								$contrat_instance = AmapressContrat_instance::getBy( $post_id, true );
+								if ( $contrat_instance ) {
+									if ( $contrat_instance->isPanierVariable() ) {
+										$type = 'panier_var';
+									} else if ( $contrat_instance->isQuantiteVariable() ) {
+										if ( $contrat_instance->isQuantiteMultiple() ) {
+											$type = 'quant_var_multi';
+										} else {
+											$type = 'quant_var';
+										}
+									} else {
+										if ( $contrat_instance->isQuantiteMultiple() ) {
+											$type = 'quant_fix_multi';
+										} else {
+											$type = 'quant_fix';
+										}
+									}
+								}
+
+								$types = [
+									'quant_fix'       => 'Quantités fixes',
+									'quant_fix_multi' => 'Quantités fixes multiples',
+									'quant_var'       => 'Quantités variables',
+									'quant_var_multi' => 'Quantités variables multiples',
+									'panier_var'      => 'Paniers variables',
+								];
+								ob_start();
+								?>
+                                <select id="amapress_quantite_type"
+                                        name="amapress_quantite_type"
+                                ><?php
+									tf_parse_select_options( $types, $type );
+									?>
+                                </select>
+                                <p class="description"><strong>Fixes</strong> : si les quantités sont fixes (par ex,
+                                    petit, moyen, grand ; demi, entier...)<br/>
+                                    <strong>Variables</strong> : si les quantités peuvent être modulées (par ex, 1L,
+                                    1.5L, 3L...)<br/>
+                                    <strong>Multiple</strong> : si plusieurs quantités peuvent être choisies<br/>
+                                    <strong>Paniers variables</strong> : si les paniers sont spécifiques pour chacune
+                                    des distributions</p>
+								<?php
+								return ob_get_clean();
+							},
+							'save'        => function ( $post_id ) {
+								if ( isset( $_POST['amapress_quantite_type'] ) ) {
+									$amapress_quantite_type = $_POST['amapress_quantite_type'];
+									delete_post_meta(
+										$post_id,
+										'amapress_contrat_instance_panier_variable'
+									);
+									switch ( $amapress_quantite_type ) {
+										case 'quant_fix':
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_multi',
+												0 );
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_variable',
+												0 );
+											break;
+										case 'quant_fix_multi':
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_multi',
+												1 );
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_variable',
+												0 );
+											break;
+										case 'quant_var':
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_multi',
+												0 );
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_variable',
+												1 );
+											break;
+										case 'quant_var_multi':
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_multi',
+												1 );
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_variable',
+												1 );
+											break;
+										case 'panier_var':
+											delete_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_multi' );
+											delete_post_meta(
+												$post_id,
+												'amapress_contrat_instance_quantite_variable' );
+											update_post_meta(
+												$post_id,
+												'amapress_contrat_instance_panier_variable',
+												1
+											);
+											break;
+									}
+
+									return true;
+								}
+							},
+							'desc'        => '
+							
+							'
+						),
+						'is_principal' => array(
 							'name'        => amapress__( 'Contrat principal' ),
 							'type'        => 'checkbox',
 							'show_column' => false,
@@ -251,7 +400,7 @@ function amapress_register_entities_contrat( $entities ) {
 							'group'       => 'Status',
 							'desc'        => 'Contrat principal',
 						),
-						'liste_dates'       => array(
+						'liste_dates'  => array(
 							'name'             => amapress__( 'Calendrier des distributions' ),
 							'type'             => 'multidate',
 							'required'         => true,
@@ -287,7 +436,7 @@ jQuery(function($) {
 									}
 								},
 						),
-						'rattrapage'        => array(
+						'rattrapage'   => array(
 							'name'        => amapress__( 'Quantités de rattrapage' ),
 							'type'        => 'custom',
 							'group'       => 'Distributions',
@@ -371,7 +520,7 @@ jQuery(function($) {
 								}
 							}
 						),
-						'les-paniers'       => array(
+						'les-paniers'  => array(
 							'name'              => amapress__( 'Paniers' ),
 							'group'             => 'Distributions',
 							'desc'              => 'Paniers de ce contrat',
@@ -390,35 +539,35 @@ jQuery(function($) {
 							'type'              => 'related-posts',
 							'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
 						),
-						'quantite_multi'    => array(
-							'name'        => amapress__( 'Quantités multiples' ),
-							'type'        => 'checkbox',
-							'group'       => 'Gestion',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'required'    => true,
-							'show_column' => false,
-							'default'     => 1,
-							'desc'        => 'Cocher cette case si les quantités si plusieurs quantités peuvent être choisies',
-						),
-						'panier_variable'   => array(
-							'name'        => amapress__( 'Paniers personnalisés' ),
-							'type'        => 'checkbox',
-							'group'       => 'Gestion',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'required'    => true,
-							'show_column' => false,
-							'desc'        => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
-						),
-						'quantite_variable' => array(
-							'name'        => amapress__( 'Quantités personnalisées' ),
-							'type'        => 'checkbox',
-							'group'       => 'Gestion',
-							'readonly'    => 'amapress_is_contrat_instance_readonly',
-							'required'    => true,
-							'show_column' => false,
-							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
-						),
-						'paiements'         => array(
+//						'quantite_multi'        => array(
+//							'name'        => amapress__( 'Quantités multiples' ),
+//							'type'        => 'checkbox',
+//							'group'       => 'Gestion',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'required'    => true,
+//							'show_column' => false,
+//							'default'     => 1,
+//							'desc'        => 'Cocher cette case si les quantités ',
+//						),
+//						'panier_variable'       => array(
+//							'name'        => amapress__( 'Paniers personnalisés' ),
+//							'type'        => 'checkbox',
+//							'group'       => 'Gestion',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'required'    => true,
+//							'show_column' => false,
+//							'desc'        => 'Cocher cette case si les paniers sont spécifiques pour chacun des adhérents',
+//						),
+//						'quantite_variable'     => array(
+//							'name'        => amapress__( 'Quantités personnalisées' ),
+//							'type'        => 'checkbox',
+//							'group'       => 'Gestion',
+//							'readonly'    => 'amapress_is_contrat_instance_readonly',
+//							'required'    => true,
+//							'show_column' => false,
+//							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
+//						),
+						'paiements'    => array(
 							'name'     => amapress__( 'Nombres de chèques' ),
 							'type'     => 'multicheck',
 							'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
@@ -691,7 +840,7 @@ jQuery(function($) {
 				'desc'        => 'Cocher cette case pour autoriser l\'inscription en ligne par les amapiens',
 				'show_column' => false,
 			),
-			'min_engagement'    => array(
+			'min_engagement' => array(
 				'name'        => amapress__( 'Engagement minimal' ),
 				'type'        => 'number',
 				'group'       => 'Souscription en ligne',
