@@ -119,27 +119,33 @@ class AmapressPanier extends Amapress_EventBase {
 		$key = "amapress_get_delayed_paniers";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$post_ids = get_posts( array(
-				'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
-				'posts_per_page' => - 1,
-				'fields'         => 'ids',
-				'meta_query'     => array(
-					array(
-						'key'     => 'amapress_panier_status',
-						'value'   => [ 'delayed', 'cancelled' ],
-						'compare' => 'IN',
-					),
-				)
-			) );
-			$res = array_map( function ( $p ) {
-				return AmapressPanier::getBy( $p );
-			}, get_posts(
-				array(
+			$ress = get_option( 'amps_delay_pan' );
+			if ( false === $ress ) {
+				$post_ids = get_posts( array(
 					'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
 					'posts_per_page' => - 1,
-					'post__in'       => array_unique( $post_ids ),
-				)
-			) );
+					'fields'         => 'ids',
+					'meta_query'     => array(
+						array(
+							'key'     => 'amapress_panier_status',
+							'value'   => [ 'delayed', 'cancelled' ],
+							'compare' => 'IN',
+						),
+					)
+				) );
+				$res      = array_map( function ( $p ) {
+					return AmapressPanier::getBy( $p );
+				}, get_posts(
+					array(
+						'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+						'post__in'       => array_unique( $post_ids ),
+					)
+				) );
+				update_option( 'amps_delay_pan', $res );
+			} else {
+				$res = maybe_unserialize( $ress );
+			}
 			wp_cache_set( $key, $res );
 		}
 

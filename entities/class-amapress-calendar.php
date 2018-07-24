@@ -121,35 +121,35 @@ class Amapress_Calendar {
 		$events = array();
 		$t      = AmapressDistribution::get_next_distributions( $date );
 		if ( $t ) {
-			$events = array_merge( $events, $t );
+			$events = $events + $t;
 		}
 		$t = AmapressVisite::get_next_visites( $date );
 		if ( $t ) {
-			$events = array_merge( $events, $t );
+			$events = $events + $t;
 		}
 		$t = AmapressAssemblee_generale::get_next_assemblees( $date );
 		if ( $t ) {
-			$events = array_merge( $events, $t );
+			$events = $events + $t;
 		}
 		$t = AmapressAmapien_paiement::get_next_paiements( $user_id, $date );
 		if ( $t ) {
-			$events = array_merge( $events, $t );
+			$events = $events + $t;
 		}
 		$t = AmapressAdhesion_paiement::get_next_paiements( $user_id, $date );
 		if ( $t ) {
-			$events = array_merge( $events, $t );
+			$events = $events + $t;
 		}
 		$t = AmapressAmap_event::get_next_amap_events( $date );
 		if ( $t ) {
-			$events = array_merge( $events, $t );
+			$events = $events + $t;
 		}
 //		$t = AmapressCommande::get_next_orderable_commandes( $date );
 //		if ( $t ) {
-//			$events = array_merge( $events, $t );
+//			$events = $events + $t;
 //		}
 //		$t = AmapressUser_commande::get_next_user_commandes( $date );
 //		if ( $t ) {
-//			$events = array_merge( $events, $t );
+//			$events = $events + $t;
 //		}
 //        $t = AmapressIntermittence_panier::get_next_panier_intermittent($date);
 //        if ($t) $events = array_merge($events, $t);

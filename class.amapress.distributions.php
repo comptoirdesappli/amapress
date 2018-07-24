@@ -143,6 +143,12 @@ class AmapressDistributions {
 	}
 
 	public static function generate_distributions( $contrat_id, $from_now = true, $eval = false ) {
+		$key = 'amps_gen_dist_' . $contrat_id;
+		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
+		if ( ! empty( $res ) ) {
+			return $res;
+		}
+
 		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
 		$res      = array();
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
@@ -298,6 +304,8 @@ class AmapressDistributions {
 				}
 			}
 		}
+
+		update_option( $key, $res );
 
 		return $res;
 	}

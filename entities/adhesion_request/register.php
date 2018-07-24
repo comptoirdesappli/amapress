@@ -15,15 +15,15 @@ function amapress_register_entities_adhesion_request( $entities ) {
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
 		'special_options'  => array(),
-		'slug'               => 'adhesions_requests',
-		'title_format'       => 'amapress_adhesion_request_title_formatter',
-		'slug_format'        => 'from_title',
-		'title'              => false,
-		'editor'             => false,
+		'slug'             => 'adhesions_requests',
+		'title_format'     => 'amapress_adhesion_request_title_formatter',
+		'slug_format'      => 'from_title',
+		'title'            => false,
+		'editor'           => false,
 //        'menu_icon' => 'flaticon-business',
-		'redirect_archive'   => 'amapress_redirect_agenda',
+		'redirect_archive' => 'amapress_redirect_agenda',
 //        'menu_icon' => 'fa-menu fa-university',
-		'views'              => array(
+		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_request_views',
 			'exp_csv' => true,
@@ -32,7 +32,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 		'default_orderby'    => 'post_date',
 		'default_order'      => 'ASC',
 		'show_date_column'   => true,
-		'fields'             => array(
+		'fields'           => array(
 			'first_name'        => array(
 				'name'       => amapress__( 'Prénom' ),
 				'type'       => 'text',
@@ -76,7 +76,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'lieux'            => array(
+			'lieux'             => array(
 				'name'              => amapress__( 'Lieux de distribution' ),
 				'type'              => 'multicheck-posts',
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
@@ -89,18 +89,18 @@ function amapress_register_entities_adhesion_request( $entities ) {
 					'placeholder' => 'Tous les lieux',
 				),
 			),
-			'contrat_intances' => array(
+			'contrat_intances'  => array(
 				'name'      => amapress__( 'Contrats' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'desc'      => 'Contrats',
 			),
-			'intermittent'     => array(
+			'intermittent'      => array(
 				'name' => amapress__( 'Intermittent' ),
 				'type' => 'checkbox',
 				'desc' => 'Le contact souhaite devenir intermittent',
 			),
-			'status'           => array(
+			'status'            => array(
 				'name'       => amapress__( 'Statut' ),
 				'type'       => 'select',
 				'group'      => '1/ Informations',
@@ -122,24 +122,28 @@ function amapress_register_entities_adhesion_request( $entities ) {
 }
 
 function amapress_adhesion_request_count_shortcode( $atts ) {
-	$cnt = get_posts_count(
-		array(
-			'posts_per_page' => - 1,
-			'post_type'      => 'amps_adh_req',
-			'meta_query'     => array(
-				'relation' => 'OR',
-				array(
-					'key'     => 'amapress_adhesion_request_status',
-					'value'   => 'to_confirm',
-					'compare' => '=',
-				),
-				array(
-					'key'     => 'amapress_adhesion_request_status',
-					'compare' => 'NOT EXISTS',
-				),
+	$cnt = get_option( 'amps_adh_req_count' );
+	if ( false === $cnt ) {
+		$cnt = get_posts_count(
+			array(
+				'posts_per_page' => - 1,
+				'post_type'      => 'amps_adh_req',
+				'meta_query'     => array(
+					'relation' => 'OR',
+					array(
+						'key'     => 'amapress_adhesion_request_status',
+						'value'   => 'to_confirm',
+						'compare' => '=',
+					),
+					array(
+						'key'     => 'amapress_adhesion_request_status',
+						'compare' => 'NOT EXISTS',
+					),
+				)
 			)
-		)
-	);
+		);
+		update_option( 'amps_adh_req_count', $cnt );
+	}
 
 	return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
 }

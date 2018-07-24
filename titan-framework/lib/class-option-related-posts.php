@@ -12,17 +12,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 
 	public $defaultSecondarySettings = array(
-		'query'             => null,
-		'show_link'         => true,
-		'bare'              => false,
-		'link_text'         => 'Voir les (%%count%%) éléments',
-		'empty_text'        => '',
-		'show_on'           => 'edit-only',
-		'show_table'        => true,
-		'include_columns'   => array(),
-		'exclude_columns'   => array(),
-		'datatable_options' => array(),
-		'column_options'    => array(),
+		'query'                    => null,
+		'show_link'                => true,
+		'bare'                     => false,
+		'link_text'                => 'Voir les (%%count%%) éléments',
+		'empty_text'               => '',
+		'show_on'                  => 'edit-only',
+		'show_table'               => true,
+		'include_columns'          => array(),
+		'exclude_columns'          => array(),
+		'datatable_options'        => array(),
+		'column_options'           => array(),
+		'related_posts_count_func' => null,
 	);
 
 	private function evalQuery( $postID = null ) {
@@ -51,15 +52,28 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		return $query;
 	}
 
+	private function getRelatedPostsCount( $post_id ) {
+		$related_posts_count_func = $this->settings['related_posts_count_func'];
+		if ( ! empty( $related_posts_count_func ) && is_callable( $related_posts_count_func, false ) ) {
+			$ret = call_user_func( $related_posts_count_func, $post_id );
+			if ( false !== $ret ) {
+				return $ret;
+			}
+		}
+		$query = $this->evalQuery( $post_id );
+
+		return get_posts_count( $query );
+	}
+
 	public function columnDisplayValue( $post_id ) {
 		$query = $this->evalQuery( $post_id );
-		$count = get_posts_count( $query );
+		$count = $this->getRelatedPostsCount( $post_id );
 		$edit  = admin_url( 'edit.php' );
 		echo "<a href='$edit?{$query}'>{$count}</a>";
 	}
 
 	public function columnExportValue( $post_id ) {
-		echo get_posts_count( $this->evalQuery( $post_id ) );
+		echo $this->getRelatedPostsCount( $post_id );
 	}
 
 	public function display() {
@@ -78,7 +92,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		$args['posts_per_page'] = - 1;
 
 		if ( $this->settings['show_link'] && ! is_array( $query ) ) {
-			$count = get_posts_count( $query );
+			$count = $this->getRelatedPostsCount( $this->getPostID() );
 			if ( $count > 0 ) {
 				$edit      = admin_url( 'edit.php' );
 				$link_text = esc_html( str_replace( '%%count%%', $count, $this->settings['link_text'] ) );

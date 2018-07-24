@@ -29,5 +29,6 @@ function amapress_output_permalink_option( $args ) {
 	echo '<input type="text" id="' . $args['id'] . '" name="' . $args['id'] . '" value="' . $option . '" class="regular-text" />';
 }
 
-add_action( 'admin_init', 'amapress_register_permalien_options' );
+//TODO do it faster if needed
+//add_action( 'admin_init', 'amapress_register_permalien_options' );
 

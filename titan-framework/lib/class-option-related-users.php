@@ -13,16 +13,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 
 	public $defaultSecondarySettings = array(
-		'query'             => null,
-		'show_link'         => true,
-		'link_text'         => 'Voir les (%%count%%) utilisateurs',
-		'show_table'        => true,
-		'show_on'           => 'edit-only',
-		'bare'              => false,
-		'include_columns'   => array(),
-		'exclude_columns'   => array(),
-		'datatable_options' => array(),
-		'column_options'    => array(),
+		'query'                    => null,
+		'show_link'                => true,
+		'link_text'                => 'Voir les (%%count%%) utilisateurs',
+		'show_table'               => true,
+		'show_on'                  => 'edit-only',
+		'bare'                     => false,
+		'include_columns'          => array(),
+		'exclude_columns'          => array(),
+		'datatable_options'        => array(),
+		'column_options'           => array(),
+		'related_users_count_func' => null,
 	);
 
 	private function evalQuery( $postID = null ) {
@@ -49,15 +50,28 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 		return $query;
 	}
 
+	private function getRelatedUsersCount( $post_id ) {
+		$related_users_count_func = $this->settings['related_users_count_func'];
+		if ( ! empty( $related_users_count_func ) && is_callable( $related_users_count_func, false ) ) {
+			$ret = call_user_func( $related_users_count_func, $post_id );
+			if ( false !== $ret ) {
+				return $ret;
+			}
+		}
+		$query = $this->evalQuery( $post_id );
+
+		return get_users_count( $query );
+	}
+
 	public function columnDisplayValue( $post_id ) {
 		$query = $this->evalQuery( $post_id );
-		$count = get_users_count( $query );
+		$count = $this->getRelatedUsersCount( $post_id );
 		$edit  = admin_url( 'users.php' );
 		echo "<a href='$edit?{$query}'>{$count}</a>";
 	}
 
 	public function columnExportValue( $post_id ) {
-		echo get_users_count( $this->evalQuery( $post_id ) );
+		echo $this->getRelatedUsersCount( $post_id );
 	}
 
 	public function display() {
@@ -72,7 +86,7 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 		$args['count_total'] = false;
 
 		if ( $this->settings['show_link'] ) {
-			$count = get_users_count( $query );
+			$count = $this->getRelatedUsersCount( $this->getPostID() );
 			if ( $count > 0 ) {
 				$edit      = admin_url( 'users.php' );
 				$link_text = esc_html( str_replace( '%%count%%', $count, $this->settings['link_text'] ) );

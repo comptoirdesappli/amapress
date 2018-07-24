@@ -1490,19 +1490,6 @@ function amapress_can_delete_contrat_instance( $can, $post_id ) {
 
 add_filter( 'amapress_can_delete_contrat_quantite', 'amapress_can_delete_contrat_quantite', 10, 2 );
 function amapress_can_delete_contrat_quantite( $can, $post_id ) {
-//    $posts = get_posts(
-//        array(
-//            'post_type' => AmapressAdhesion::INTERNAL_POST_TYPE,
-//            'post_status' => 'any',
-//            'meta_query' => array(
-//                array(
-//                    'key' => 'amapress_adhesion_lieu',
-//                    'value' => $post_id,
-//                )
-//            ),
-//        )
-//    );
-
 	return count( AmapressContrats::get_all_adhesions( null, $post_id ) ) == 0;
 }
 

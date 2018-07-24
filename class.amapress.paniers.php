@@ -14,7 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class AmapressPaniers {
 	public static function generate_paniers( $contrat_id, $from_now = true, $eval = false ) {
-		$res      = array();
+		$key = 'amps_gen_pan_' . $contrat_id;
+		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
+		if ( ! empty( $res ) ) {
+			return $res;
+		}
+
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
@@ -135,6 +140,8 @@ class AmapressPaniers {
 				}
 			}
 		}
+
+		update_option( $key, $res );
 
 		return $res;
 	}
@@ -554,7 +561,8 @@ class AmapressPaniers {
 			}
 		);
 		if ( count( $paniers ) > 0 ) {
-			$echange = array_shift( $paniers);
+			$echange = array_shift( $paniers );
+
 			return $echange->getStatus();
 		}
 

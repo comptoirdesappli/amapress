@@ -56,15 +56,11 @@ class AmapressAdhesionQuantite {
 	 */
 	public function getTitle() {
 		$quant = $this->getContratQuantite();
-		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
 			if ( $this->getFactor() != 1 ) {
 				return $this->getFactor() . ' x ' . $quant->getTitle();
 			} else {
 				return $quant->getTitle();
 			}
-		} else {
-			return $quant->getTitle();
-		}
 	}
 
 	/**

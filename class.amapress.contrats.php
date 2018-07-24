@@ -221,12 +221,12 @@ class AmapressContrats {
 		$ignore_renouv_delta = false,
 		$include_futur = true
 	) {
-		if ( $date == null ) {
-			$date = amapress_time();
-		}
 		$key = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
+			if ( $date == null ) {
+				$date = amapress_time();
+			}
 			$meta_query = array(
 				'relation' => 'AND',
 				array(

@@ -226,17 +226,25 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on' => 'edit-only',
 			),
 			'contrats'           => array(
-				'name'            => amapress__( 'Contrats' ),
-				'show_column'     => true,
-				'include_columns' => array(
+				'name'                     => amapress__( 'Contrats' ),
+				'show_column'              => true,
+				'related_posts_count_func' => function ( $user_id ) {
+					$adhesions = AmapressAdhesion::getAllActiveByUserId();
+					if ( isset( $adhesions[ $user_id ] ) ) {
+						return count( $adhesions[ $user_id ] );
+					}
+
+					return 0;
+				},
+				'include_columns'          => array(
 					'title',
 					'amapress_adhesion_quantite',
 					'amapress_adhesion_lieu',
 					'amapress_adhesion_date_debut',
 					'amapress_total_amount',
 				),
-				'type'            => 'related-posts',
-				'query'           => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
+				'type'                     => 'related-posts',
+				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
 			),
 			'contrats-past'      => array(
 				'name'            => amapress__( 'Contrats passés' ),
