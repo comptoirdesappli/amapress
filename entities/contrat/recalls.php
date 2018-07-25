@@ -140,13 +140,24 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 						'for_pdf'                 => true,
 					) );
 
-				$lieu     = AmapressLieu_distribution::getBy( $lieu_id );
-				$date     = date_i18n( 'd-m-Y' );
-				$filename = strtolower( sanitize_file_name( "cheques-{$contrat_instance->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date" ) );
-				$title    = "Chèques - {$contrat_instance->getModel()->getTitle()} - {$lieu->getShortName()}";
+				$lieu               = AmapressLieu_distribution::getBy( $lieu_id );
+				$date               = date_i18n( 'd-m-Y' );
+				$filename_cheques   = strtolower( sanitize_file_name( "cheques-{$contrat_instance->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date" ) );
+				$filename_adherents = strtolower( sanitize_file_name( "adherents-{$contrat_instance->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date" ) );
+				$title_cheques      = "Chèques - {$contrat_instance->getModel()->getTitle()} - {$lieu->getShortName()}";
+				if ( strlen( $title_cheques ) > 27 ) {
+					$title_cheques = substr( $title_cheques, 0, 27 ) . '...';
+				}
+				$title_adherents = "Adhérents - {$contrat_instance->getModel()->getTitle()} - {$lieu->getShortName()}";
+				if ( strlen( $title_adherents ) > 27 ) {
+					$title_adherents = substr( $title_adherents, 0, 27 ) . '...';
+				}
 
-				$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment( $html, $filename . '.pdf', 'L', $format );
-				$attachments[] = Amapress::createXLSXFromHtmlAsMailAttachment( $html, $filename . '.xlsx', $title );
+				$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment( $html, $filename_cheques . '.pdf', 'L', $format );
+				$attachments[] = Amapress::createXLSXFromHtmlAsMailAttachment( $html, $filename_cheques . '.xlsx', $title_cheques );
+				$attachments[] = Amapress::createXLSXFromPostQueryAsMailAttachment(
+					'post_type=amps_adhesion&amapress_contrat_inst=' . $contrat_instance->ID . '&amapress_lieu=' . $lieu_id,
+					$filename_adherents . '.xlsx', $title_adherents );
 			}
 		}
 

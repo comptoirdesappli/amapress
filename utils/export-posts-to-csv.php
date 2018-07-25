@@ -73,7 +73,7 @@ class AmapressExport_Posts {
 	 *
 	 * @return PHPExcel
 	 */
-	public static function generate_phpexcel_sheet( $query_string, $base_export_name = null ) {
+	public static function generate_phpexcel_sheet( $query_string, $base_export_name = null, $title = null ) {
 		$args = array(
 			'fields'         => 'all_with_meta',
 			'posts_per_page' => - 1,
@@ -169,7 +169,7 @@ class AmapressExport_Posts {
 		$objPHPExcel = new PHPExcel();
 		$objPHPExcel->getProperties()->setCreator( "Amapress" )
 		            ->setLastModifiedBy( "Amapress" )
-		            ->setTitle( $export_name );
+		            ->setTitle( ! empty( $title ) ? $title : $export_name );
 		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( $csv_data );
 		$objPHPExcel->getActiveSheet()->setTitle( $export_name );
 		$objPHPExcel->setActiveSheetIndex( 0 );
