@@ -174,6 +174,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	}
 
 	public function cleanValueForGetting( $value ) {
+		$value = maybe_unserialize( $value );
 		if ( ! is_array( $value ) ) {
 			$value = array( $value );
 		}
