@@ -645,6 +645,73 @@ jQuery(function($) {
 				'show_dates_list'  => true,
 				'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
 			),
+			'options_paiements'     => array(
+				'name'        => amapress__( 'Options de paiement' ),
+				'type'        => 'custom',
+				'group'       => 'Paiements',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+				'custom'      => function ( $post_id ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+					if ( ! $contrat_instance ) {
+						return '';
+					}
+
+					if ( $contrat_instance->isQuantiteVariable() ) {
+						return '<p style="font-weight: bold">Les options de chèques ne sont pas disponibles pour les contrats variables car elles dépendent des quantités choisies oar les amapiens</p>';
+					}
+
+					$columns = array(
+						array(
+							'title' => 'Date de début contrat',
+							'data'  => 'date',
+						),
+					);
+					$quants  = AmapressContrats::get_contrat_quantites( $contrat_instance->ID );
+					foreach ( $quants as $quant ) {
+						$columns[] = array(
+							'title' => $quant->getTitle(),
+							'data'  => 'quant_' . $quant->ID,
+						);
+					}
+					$data = [];
+					foreach ( $contrat_instance->getListe_dates() as $date ) {
+						if ( Amapress::end_of_day( $date ) > $contrat_instance->getDate_cloture() ) {
+							continue;
+						}
+
+						$row = array(
+							'date' => date_i18n( 'd/m/y', $date ),
+						);
+						foreach ( $quants as $quant ) {
+							$remaining_dates_factors = $contrat_instance->getRemainingDatesWithFactors( $date );
+							$price                   = $quant->getPrix_unitaire();
+							$total                   = $remaining_dates_factors * $price;
+							$options                 = '';
+							foreach ( $contrat_instance->getPossiblePaiements() as $nb_cheque ) {
+								$o = $contrat_instance->getChequeOptionsForTotal( $nb_cheque, $total );
+								if ( empty( o ) ) {
+									continue;
+								}
+								$options .= '<li>' . esc_html( $o['desc'] ) . '</li>';
+							}
+
+							$row[ 'quant_' . $quant->ID ] = "<p>{$remaining_dates_factors} x {$price}€ = {$total}€</p><ul>{$options}</ul>";
+						}
+//					    foreach ($contrat_instance->gett)
+						$data[] = $row;
+					}
+
+					return amapress_get_datatable( 'options_cheques', $columns, $data,
+						array(
+							'paging' => true,
+							'bSort'  => false,
+						),
+						array(
+							Amapress::DATATABLES_EXPORT_EXCEL,
+						) );
+				}
+			),
 //                        'list_quantites' => array(
 //                            'name' => amapress__('Quantités'),
 //                            'type' => 'show-posts',

@@ -394,6 +394,19 @@ class AmapressContrat_instance extends TitanEntity {
 			         && $a->getDate_debut() > $this->getDate_debut() );
 		} );
 	}
+
+	public function getRemainingDatesWithFactors( $start_date ) {
+		$dates         = $this->getListe_dates();
+		$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
+			return $d >= $start_date;
+		} );
+		$dates_factors = 0;
+		foreach ( $dates as $d ) {
+			$dates_factors += $this->getDateFactor( $d );
+		}
+
+		return $dates_factors;
+	}
 }
 
 class AmapressContrat_quantite extends TitanEntity {
