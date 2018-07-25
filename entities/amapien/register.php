@@ -205,8 +205,30 @@ function amapress_register_entities_amapien( $entities ) {
 			),
 			'intermittent'       => array(
 				'name'        => amapress__( 'Intermittent' ),
-				'type'        => 'checkbox',
-				'desc'        => 'Cocher pour que l\'utilisateur devienne intermittent et reçoive des alertes lorsque des paniers sont occasionnellement disponibles',
+				'type'        => 'custom',
+				'custom'      => function ( $user_id ) {
+					$ret     = '';
+					$amapien = AmapressUser::getBy( $user_id, true );
+					if ( $amapien->isIntermittent() ) {
+						$ret .= '<p>L\'utilisateur est intermittent et reçoit des alertes lorsque des paniers sont occasionnellement disponibles</p>';
+						$ret .= '<input class="button button-secondary" type="submit" name="desinscr_intermittent" value="Désinscrire de la liste des intermittents" />';
+					} else {
+						$ret .= '<p>L\'utilisateur n\'est pas intermittent</p>';
+						$ret .= '<input class="button button-secondary" type="submit" name="inscr_intermittent" value="Inscrire sur la liste des intermittents" />';
+					}
+
+					return $ret;
+				},
+				'save'        => function ( $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+					if ( ! $amapien->isIntermittent() && isset( $_REQUEST['inscr_intermittent'] ) ) {
+						$amapien->inscriptionIntermittence( true );
+					} else if ( $amapien->isIntermittent() && isset( $_REQUEST['desinscr_intermittent'] ) ) {
+						$amapien->desinscriptionIntermittence();
+					}
+
+					return true;
+				},
 				'show_column' => false,
 			),
 			'head_amapress5'     => array(
@@ -326,7 +348,7 @@ function amapress_register_entities_amapien( $entities ) {
 		'row_actions'         => array(
 			'add_inscription' => [
 				'label'  => 'Ajouter une inscription',
-				'href'   => admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=%id%' ),
+				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
 				'target' => '_blank',
 			],
 		),
