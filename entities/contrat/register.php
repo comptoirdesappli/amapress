@@ -1286,7 +1286,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	}
 	echo '<tr style="vertical-align: top">';
 	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' /></td>";
-	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></td>";
+	echo "<td><input style='width: 100%' type='text' class='' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></td>";
 	echo "<td><textarea style='width: 100%' class='' name='amapress_quant_data[$id][desc]' placeholder='Description'>{$description}</textarea></td>";
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></td>";
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Facteur quantité' value='$quantite' /></td>";
