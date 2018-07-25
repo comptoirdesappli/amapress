@@ -603,6 +603,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
 		),
 		array(
+			'id'         => 'amapress_inscriptions',
+			'title'      => 'Inscriptions',
+			'capability' => 'manage_contrats',
+			'href'       => admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active' ),
+		),
+		array(
 			'id'         => 'amapress_add_coinscription',
 			'title'      => 'Ajouter un coadhérent',
 			'capability' => 'manage_contrats',
@@ -674,6 +680,25 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'title'      => 'Editer le collectif',
 				'capability' => 'edit_users',
 				'href'       => admin_url( 'admin.php?page=amapress_collectif' ),
+			),
+			array(
+				'id'         => 'amapress_edit_intermittents',
+				'title'      => 'Intermittents',
+				'capability' => 'edit_users',
+				'href'       => admin_url( 'users.php?amapress_contrat=intermittent' ),
+			),
+			array(
+				'id'         => 'amapress_admin_submenu',
+				'title'      => 'Admin',
+				'capability' => 'manage_options',
+				'items'      => [
+					array(
+						'id'         => 'amapress_state',
+						'title'      => 'Etat Amapress',
+						'capability' => 'manage_options',
+						'href'       => admin_url( 'admin.php?page=amapress_state' ),
+					),
+				]
 			),
 		)
 	);

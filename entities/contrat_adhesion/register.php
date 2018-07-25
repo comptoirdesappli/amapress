@@ -18,7 +18,7 @@ function amapress_register_entities_adhesion( $entities ) {
 		'title_format'       => 'amapress_adhesion_title_formatter',
 		'slug_format'        => 'from_title',
 		'menu_icon'          => 'flaticon-signature',
-		'show_admin_bar_new' => true,
+//		'show_admin_bar_new' => true,
 		'labels'             => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajout Inscription',

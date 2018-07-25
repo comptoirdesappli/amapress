@@ -336,7 +336,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'       => array(
+						'Ajouter une inscription'         => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -350,7 +350,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'         => array(
+						'Ajouter un coadhérent'           => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -364,7 +364,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une persone hors AMAP' => array(
+						'Ajouter une personne hors AMAP'  => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -378,7 +378,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                 => array(
+						'Renouvèlement'                   => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -393,7 +393,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques'          => array(
+						'Mails - Envoi liste des chèques' => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
@@ -1659,6 +1659,7 @@ class AmapressEntities {
 							),
 							'tabs'     => array(
 								'Rôles dans l\'Amap'    => array(
+									'id'      => 'amapress_edit_roles_collectif',
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -1692,6 +1693,7 @@ class AmapressEntities {
 									)
 								),
 								'Référents producteurs' => array(
+									'id'      => 'amapress_edit_ref_prods',
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -1704,7 +1706,8 @@ class AmapressEntities {
 										)
 									),
 								),
-								'Rôles Amapress'        => array(
+								'Roles Amapress'        => array(
+									'id'      => 'amapress_edit_wp_roles',
 									'desc'    => '',
 									'options' => array(
 										array(
