@@ -21,12 +21,40 @@ function amapress_register_entities_distribution( $entities ) {
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-store',
 		'row_actions'      => array(
-			'emargement' => [
+			'emargement'  => [
 				'label'  => 'Liste émargement',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
 				},
+			],
+			'mailto_resp' => [
+				'label'     => 'Mail aux responsable',
+				'target'    => '_blank',
+				'href'      => function ( $dist_id ) {
+					$dist = AmapressDistribution::getBy( $dist_id );
+
+					return $dist->getMailtoResponsables();
+				},
+				'condition' => function ( $dist_id ) {
+					$dist = AmapressDistribution::getBy( $dist_id );
+
+					return ! empty( $dist->getMailtoResponsables() );
+				}
+			],
+			'smsto_resp'  => [
+				'label'     => 'Sms aux responsables',
+				'target'    => '_blank',
+				'href'      => function ( $dist_id ) {
+					$dist = AmapressDistribution::getBy( $dist_id );
+
+					return $dist->getSMStoResponsables();
+				},
+				'condition' => function ( $dist_id ) {
+					$dist = AmapressDistribution::getBy( $dist_id );
+
+					return ! empty( $dist->getSMStoResponsables() );
+				}
 			],
 		),
 		'views'            => array(
