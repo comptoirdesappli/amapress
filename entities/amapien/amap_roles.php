@@ -39,7 +39,10 @@ function amapress_get_amap_roles_editor() {
 	}
 //	}
 
-	$ret = '<table id="amap_role_editor_table" class="table display nowrap" width="100%" style="table-layout: auto" cellspacing="0">
+	$ret = '<p>Pour éditer les rôles au sein du collectif utiliser le tableau ci-dessous.</p>';
+	$ret .= '<p>Pour donner des droits d\'accès aux membres du collectif, modifier directement son profil utilisateur en le recherchant depuis le bandeau du site ou depuis la <a href="' . admin_url( 'users.php' ) . '">liste des utilisateurs</a></p>';
+	$ret .= '<p>Pour modifier les référents producteurs, utiliser l\'onglet <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" class="button button-secondary">Référents producteurs</a></p>';
+	$ret .= '<table id="amap_role_editor_table" class="table display nowrap" width="100%" style="table-layout: auto" cellspacing="0">
 <thead><tr><th>Rôle</th>';
 	foreach ( $lieux as $lieu ) {
 		$ret .= '<th>Amapiens de ' . esc_html( $lieu->getTitle() ) . '</th>';
@@ -147,9 +150,9 @@ function amapress_get_referent_prods_grid() {
 
 			foreach ( $contrat_instances as $contrat_instance ) {
 				$ret .= '<tr>';
-				$ret .= '<td>' . Amapress::makeLink( $prod->getAdminEditLink(), $prod->getTitle() ) . '</td>';
-				$ret .= '<td>' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . '</td>';
-				$ret .= '<td>' . Amapress::makeLink( $contrat_instance->getAdminEditLink(), $contrat_instance->getTitle() ) . '</td>';
+				$ret .= '<td>' . esc_html( $prod->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $prod->getAdminEditLink(), 'Modifier ses référents', true, true ) . '</td>';
+				$ret .= '<td>' . esc_html( $contrat->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat->getAdminEditLink(), 'Editer sa présentation', true, true ) . '</td>';
+				$ret .= '<td>' . esc_html( $contrat_instance->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat_instance->getAdminEditLink(), 'Editer le modèle de contrat', true, true ) . '</td>';
 
 				foreach ( $lieux as $lieu ) {
 					$ret .= '<td>';
