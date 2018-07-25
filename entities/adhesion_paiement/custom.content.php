@@ -436,6 +436,8 @@ function amapress_paiements_editor( $post_id ) {
 
 	echo '<input id="amapress_paiements" name="amapress_paiements" type="hidden" value="">';
 
+	echo '<p><strong>Astuces</strong> : Faites un clic droit dans le champs <em>Numéro de chèque</em> pour recopier et incrémenter le numéro dans les cases en dessous</p>';
+	echo '<p><strong>Astuces</strong> : Faites un clic droit dans les champs <em>Adhérent</em> ou <em>Banque</em> pour recopier la valeur dans les cases en dessous</p>';
 	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" width="100%" style="">';
 	echo "<tr>
 <th>Numéro de chèque</th>
