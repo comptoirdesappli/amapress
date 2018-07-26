@@ -11,11 +11,11 @@ add_action( 'amapress_init', function () {
 				wp_die( 'Accès interdit' );
 			}
 		}
-		$email          = sanitize_email( $_POST['email'] );
-		$user_firt_name = sanitize_text_field( $_POST['first_name'] );
-		$user_last_name = sanitize_text_field( $_POST['last_name'] );
-		$user_address   = sanitize_textarea_field( $_POST['address'] );
-		$user_phones    = sanitize_text_field( $_POST['tel'] );
+		$email          = sanitize_email( $_REQUEST['email'] );
+		$user_firt_name = sanitize_text_field( $_REQUEST['first_name'] );
+		$user_last_name = sanitize_text_field( $_REQUEST['last_name'] );
+		$user_address   = sanitize_textarea_field( $_REQUEST['address'] );
+		$user_phones    = sanitize_text_field( $_REQUEST['tel'] );
 
 		$user_id = amapress_create_user_if_not_exists( $email, $user_firt_name, $user_last_name, $user_address, $user_phones );
 		if ( ! $user_id ) {
@@ -35,7 +35,7 @@ add_action( 'amapress_init', function () {
  * @param $atts
  */
 function amapress_self_inscription( $atts ) {
-	$step = isset( $_GET['step'] ) ? $_GET['step'] : 'email';
+	$step = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 
 	$atts = shortcode_atts(
 		[
@@ -49,18 +49,18 @@ function amapress_self_inscription( $atts ) {
 	$admin_mode = Amapress::toBool( $atts['admin_mode'] );
 	$key        = $atts['key'];
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
-		if ( ! isset( $_GET['step'] ) ) {
+		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
 		}
 	} else if ( Amapress::toBool( $atts['for_logged'] ) ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return '<div class="alert alert-danger">Accès interdit</div>';
 		}
-		if ( ! isset( $_GET['step'] ) ) {
+		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'coords_logged';
 		}
 	} else {
-		if ( empty( $key ) || empty( $_GET['key'] ) || $_GET['key'] != $key ) {
+		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 			return '<div class="alert alert-danger">Accès interdit</div>';
 		}
 		if ( amapress_can_access_admin() ) {
@@ -126,9 +126,9 @@ function amapress_self_inscription( $atts ) {
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 
-	if ( isset( $_GET['contrat_id'] ) && isset( $_GET['user_id'] ) ) {
-		$user_id    = intval( $_GET['user_id'] );
-		$contrat_id = intval( $_GET['contrat_id'] );
+	if ( isset( $_REQUEST['contrat_id'] ) && isset( $_REQUEST['user_id'] ) ) {
+		$user_id    = intval( $_REQUEST['user_id'] );
+		$contrat_id = intval( $_REQUEST['contrat_id'] );
 
 		$adhs             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		$adhs             = array_filter( $adhs,
@@ -157,9 +157,9 @@ function amapress_self_inscription( $atts ) {
 	] ) ) );
 	$invalid_access_message = '<p>Accès invalide : veuillez repartir de la <a href="' . $start_step_url . '">première étape</a></p>';
 
-	if ( ! empty( $_GET['message'] ) ) {
+	if ( ! empty( $_REQUEST['message'] ) ) {
 		$message = '';
-		switch ( $_GET['message'] ) {
+		switch ( $_REQUEST['message'] ) {
 			case 'empty_email':
 				$message = 'Le mail saisi est invalide';
 				break;
@@ -182,17 +182,17 @@ function amapress_self_inscription( $atts ) {
                 , renseignez votre
                 adresse mail :</label>
             <input id="email" name="email" type="text" class="email required" placeholder="email"/>
-            <input type="submit" value="Valider" class="btn btn-default"/>
+            <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
 	} else if ( 'coords' == $step || 'coords_logged' == $step ) {
 		if ( 'coords_logged' == $step && amapress_is_user_logged_in() ) {
 			$email = wp_get_current_user()->user_email;
 		} else {
-			if ( empty( $_POST['email'] ) ) {
+			if ( empty( $_REQUEST['email'] ) ) {
 				wp_die( $invalid_access_message );
 			}
-			$email = sanitize_email( $_POST['email'] );
+			$email = sanitize_email( $_REQUEST['email'] );
 		}
 
 		$user           = get_user_by( 'email', $email );
@@ -254,14 +254,14 @@ function amapress_self_inscription( $atts ) {
             </table>
             <p style="color:red">* Champ obligatoire</p>
 	        <?php echo $member_message; ?>
-            <input style="min-width: 50%" type="submit" class="btn btn-default" value="Valider"/>
+            <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
         </form>
 		<?php
 	} else if ( 'contrats' == $step ) {
-		if ( empty( $_GET['user_id'] ) ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$user_id               = intval( $_GET['user_id'] );
+		$user_id               = intval( $_REQUEST['user_id'] );
 		$has_principal_contrat = false;
 
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
@@ -298,7 +298,13 @@ function amapress_self_inscription( $atts ) {
 						'step'       => 'inscr_contrat_date_lieu',
 						'contrat_id' => $principal_contrats[0]->ID
 					] );
-					echo '<a class="btn btn-default" href="' . esc_attr( $inscription_url ) . '">Confirmer</a>';
+	                echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="contrat_id" value="' . $principal_contrats[0]->ID . '"/>
+<input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
+</form>';
 					?>
                 </p>
 				<?php
@@ -315,7 +321,7 @@ function amapress_self_inscription( $atts ) {
 			} else {
 				echo '<p>Ses contrats :</p>';
 			}
-			echo '<ul style="list-style-type: circle">';
+			echo '<ul style="list-style-type: disc">';
 			foreach ( $adhs as $adh ) {
 				if ( $admin_mode ) {
 					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')</li>';
@@ -324,10 +330,12 @@ function amapress_self_inscription( $atts ) {
 				}
 			}
 			echo '</ul>';
-			if ( ! $admin_mode ) {
-				echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
-			} else {
-				echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+			if ( ! empty( $user_subscribable_contrats ) ) {
+				if ( ! $admin_mode ) {
+					echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
+				} else {
+					echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+				}
 			}
 		} else {
 			if ( ! $admin_mode ) {
@@ -353,7 +361,7 @@ function amapress_self_inscription( $atts ) {
 				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
-				echo '<ul style="list-style-type: circle">';
+				echo '<ul style="list-style-type: disc">';
 				foreach ( $user_subscribable_contrats as $contrat ) {
 					$inscription_url = add_query_arg( [
 						'step'       => 'inscr_contrat_date_lieu',
@@ -362,7 +370,15 @@ function amapress_self_inscription( $atts ) {
 					if ( $admin_mode ) {
 						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
 					} else {
-						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : <br/><a class="btn btn-default" href="' . esc_attr( $inscription_url ) . '">m\'inscrire</a></li>';
+						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
+<br/>
+<form method="get" action="' . esc_attr( $inscription_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="inscr_contrat_date_lieu" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="contrat_id" value="' . $contrat->ID . '" />
+<input type="submit" value="M\'inscrire" class="btn btn-default btn-assist-inscr" />
+</form></li>';
 					}
 				}
 				echo '</ul>';
@@ -376,10 +392,10 @@ function amapress_self_inscription( $atts ) {
 		}
 	} else if ( 'inscr_contrat_date_lieu' == $step ) {
 		$next_step_url = add_query_arg( 'step', 'inscr_contrat_engage' );
-		if ( empty( $_GET['contrat_id'] ) ) {
+		if ( empty( $_REQUEST['contrat_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$contrat_id = intval( $_GET['contrat_id'] );
+		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		$contrat    = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
 			wp_die( $invalid_access_message );
@@ -457,14 +473,14 @@ function amapress_self_inscription( $atts ) {
 			//			}
 			?>
             <br/>
-            <input type="submit" value="Valider" class="btn btn-default"/>
+            <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
 	} else if ( 'inscr_contrat_engage' == $step ) {
-		if ( empty( $_GET['contrat_id'] ) ) {
+		if ( empty( $_REQUEST['contrat_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$contrat_id = intval( $_GET['contrat_id'] );
+		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		if ( empty( $_REQUEST['lieu_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
@@ -526,7 +542,7 @@ function amapress_self_inscription( $atts ) {
 		} else {
 			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . count( $dates ) . '</strong>” distributions avant la fin de la saison :</p>';
 		}
-		echo '<ul style="list-style-type: circle; padding-top: 0; margin-top: 0">';
+		echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
 		foreach ( $grouped_dates_array as $entry ) {
 			echo '<li style="margin-left: 35px">' . esc_html( $entry ) . '</li>';
 		}
@@ -612,18 +628,18 @@ function amapress_self_inscription( $atts ) {
 			}
 		}
 		echo '<p>Total: <span id="total">0</span>€</p>';
-		echo '<p><input type="submit" class="btn btn-default" value="Valider" /></p>';
+		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="Valider" /></p>';
 		echo '</form>';
 
 	} else if ( 'inscr_contrat_paiements' == $step ) {
-		if ( empty( $_GET['user_id'] ) ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$user_id = intval( $_GET['user_id'] );
-		if ( empty( $_GET['contrat_id'] ) ) {
+		$user_id = intval( $_REQUEST['user_id'] );
+		if ( empty( $_REQUEST['contrat_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$contrat_id = intval( $_GET['contrat_id'] );
+		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		if ( empty( $_REQUEST['start_date'] ) ) {
 			wp_die( $invalid_access_message );
 		}
@@ -637,7 +653,7 @@ function amapress_self_inscription( $atts ) {
 
 		echo '<h4>Étape 6/7 : Règlement</h4>';
 		if ( $contrat->isPanierVariable() ) {
-			$panier_vars = isset( $_POST['panier_vars'] ) ? $_POST['panier_vars'] : [];
+			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? $_REQUEST['panier_vars'] : [];
 			if ( empty( $panier_vars ) ) {
 				wp_die( $invalid_access_message );
 			}
@@ -674,7 +690,7 @@ function amapress_self_inscription( $atts ) {
 			echo '<ul style="list-style-type: square">';
 			foreach ( $chosen_quants as $dt => $quant_descs ) {
 				echo '<li style="margin-left: 35px">' . esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) );
-				echo '<ul style="list-style-type: circle">';
+				echo '<ul style="list-style-type: disc">';
 				foreach ( $quant_descs as $quant_desc ) {
 					echo '<li style="margin-left: 15px">' . esc_html( $quant_desc ) . '</li>';
 				}
@@ -683,7 +699,7 @@ function amapress_self_inscription( $atts ) {
 			}
 			echo '</ul>';
 		} else {
-			$quants = isset( $_POST['quants'] ) ? $_POST['quants'] : [];
+			$quants = isset( $_REQUEST['quants'] ) ? $_REQUEST['quants'] : [];
 			if ( ! is_array( $quants ) ) {
 				$quants = [ $quants ];
 			}
@@ -692,7 +708,7 @@ function amapress_self_inscription( $atts ) {
 				wp_die( $invalid_access_message );
 			}
 
-			$factors = isset( $_POST['factors'] ) ? $_POST['factors'] : [];
+			$factors = isset( $_REQUEST['factors'] ) ? $_REQUEST['factors'] : [];
 
 			$dates         = $contrat->getListe_dates();
 			$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
@@ -727,7 +743,7 @@ function amapress_self_inscription( $atts ) {
 					$amapien = AmapressUser::getBy( $user_id );
 					echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant de ' . $total . '€ avec les options suivantes:</p>';
 				}
-				echo '<ul style="list-style-type: circle">';
+				echo '<ul style="list-style-type: disc">';
 				foreach ( $chosen_quants as $q ) {
 					echo '<li style="margin-left: 35px">' . esc_html( $q ) . '</li>';
 				}
@@ -762,17 +778,17 @@ function amapress_self_inscription( $atts ) {
 		} else {
 			echo '<p><input type="checkbox" checked="checked" id="inscr_confirm_mail" name="inscr_confirm_mail" /><label for="inscr_confirm_mail"> Confirmer par mail à l\'adhérent</label></p>';
 		}
-		echo '<input type="submit" value="Valider" class="btn btn-default" />';
+		echo '<input type="submit" value="Valider" class="btn btn-default btn-assist-inscr" />';
 		echo '</form>';
 	} else if ( 'inscr_contrat_create' == $step ) {
-		if ( empty( $_GET['user_id'] ) ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$user_id = intval( $_GET['user_id'] );
-		if ( empty( $_GET['contrat_id'] ) ) {
+		$user_id = intval( $_REQUEST['user_id'] );
+		if ( empty( $_REQUEST['contrat_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$contrat_id = intval( $_GET['contrat_id'] );
+		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		if ( empty( $_REQUEST['lieu_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
@@ -791,9 +807,11 @@ function amapress_self_inscription( $atts ) {
 			wp_die( $invalid_access_message );
 		}
 
-
+		if ( empty( $_REQUEST['cheques'] ) ) {
+			wp_die( $invalid_access_message );
+		}
 		$cheques = intval( $_REQUEST['cheques'] );
-		if ( empty( $cheques ) ) {
+		if ( empty( $_REQUEST['quants'] ) ) {
 			wp_die( $invalid_access_message );
 		}
 		$quants = unserialize( stripslashes( $_REQUEST['quants'] ) );
@@ -878,7 +896,14 @@ function amapress_self_inscription( $atts ) {
 		if ( ! $admin_mode ) {
 			echo '<h4>étape 7/7 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. Vous allez recevoir un mail de confirmation dans quelques minutes.</div>';
-			echo '<p>Je souhaite adhérer à d’autres contrats <br/><a class="btn btn-default" href="' . esc_attr( $contrats_step_url ) . '" >Poursuivre</a></p>';
+			echo '<p>Je souhaite adhérer à d’autres contrats 
+<br/>
+<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="contrats" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+</form></p>';
 		} else {
 			echo '<div class="alert alert-success">L\'inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
 			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de ses contrats</a></p>';
@@ -933,7 +958,7 @@ function amapress_self_inscription( $atts ) {
                 jQuery('.quant:checked,.quant-var').each(function () {
                     total += parseFloat(jQuery(this).data('price'));
                 });
-                jQuery('#total').text(total);
+                jQuery('#total').text(total.toFixed(2));
             }
 
             function computePrices() {
@@ -942,7 +967,7 @@ function amapress_self_inscription( $atts ) {
                 var val = parseFloat($this.val());
                 var quantElt = jQuery('#' + $this.data('quant-id'));
                 var priceElt = jQuery('#' + $this.data('price-id'));
-                priceElt.text(val * priceUnit);
+                priceElt.text((val * priceUnit).toFixed(2));
                 quantElt.data('price', val * priceUnit);
                 computeTotal();
             }
