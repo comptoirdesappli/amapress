@@ -215,6 +215,14 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_distribution_responsable_recall_options(),
 						),
+						'Mails - Vérification de distribution - Rappel'           => array(
+							'desc'    => '',
+							'options' => amapress_distribution_verify_recall_options(),
+						),
+						'Mails - A tous les amapiens à la distribution - Rappel'  => array(
+							'desc'    => '',
+							'options' => amapress_distribution_all_amapiens_recall_options(),
+						),
 						'Mails - Envoi liste émargement Excel/PDF'                => array(
 							'desc'    => '',
 							'options' => amapress_distribution_emargement_recall_options(),

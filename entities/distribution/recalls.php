@@ -187,6 +187,167 @@ add_action( 'amapress_recall_distrib_thisday', function ( $args ) {
 	}
 } );
 
+add_action( 'amapress_recall_verify_distrib', function ( $args ) {
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		return;
+	}
+
+	$responsable_ids = Amapress::get_array( Amapress::getOption( 'distribution-verify-recall-to' ) );
+	if ( empty( $responsable_ids ) ) {
+//		return;
+	}
+
+	$attachments   = [];
+	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
+		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
+		getListeEmargement( $dist->ID, false, true ) .
+		'</div>',
+		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ) );
+	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
+		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
+		getListeEmargement( $dist->ID, true, true ) .
+		'</div>',
+		strtolower( sanitize_file_name( 'liste-emargement-tous-contrats-' . $dist->getTitle() . '.pdf' ) ) );
+
+	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Vérification de " . $dist->getTitle(), "distribution" );
+	amapress_send_message(
+		Amapress::getOption( 'distribution-verify-recall-mail-subject' ),
+		Amapress::getOption( 'distribution-verify-recall-mail-content' ),
+		'', $responsable_users, $dist, $attachments );
+} );
+
+add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		return;
+	}
+
+	$dist_id     = $dist->ID;
+	$contrat_ids = implode( ',', $dist->getContratIds() );
+	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+
+	$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
+	amapress_send_message(
+		Amapress::getOption( 'distribution-amapiens-recall-mail-subject' ),
+		Amapress::getOption( 'distribution-amapiens-recall-mail-content' ),
+		'', $amapien_users, $dist, array(),
+		amapress_get_recall_cc_from_option( 'distribution-amapiens-recall-cc' )
+	);
+} );
+
+function amapress_distribution_all_amapiens_recall_options() {
+	return array(
+		array(
+			'id'                  => 'distribution-amapiens-recall-1',
+			'name'                => 'Rappel 1',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_amapiens_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-amapiens-recall-2',
+			'name'                => 'Rappel 2',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_amapiens_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-amapiens-recall-3',
+			'name'                => 'Rappel 3',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_amapiens_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'      => 'distribution-amapiens-recall-mail-subject',
+			'name'    => 'Sujet du mail',
+			'type'    => 'text',
+			'default' => '[Rappel] Infos sur %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-amapiens-recall-mail-content',
+			'name'    => 'Contenu du mail',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
+		),
+		array(
+			'id'           => 'distribution-amapiens-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
+function amapress_distribution_verify_recall_options() {
+	return array(
+		array(
+			'id'                  => 'distribution-verify-recall-1',
+			'name'                => 'Rappel 1',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_verify_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-verify-recall-2',
+			'name'                => 'Rappel 2',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_verify_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-verify-recall-3',
+			'name'                => 'Rappel 3',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_verify_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'      => 'distribution-verify-recall-mail-subject',
+			'name'    => 'Sujet du mail',
+			'type'    => 'text',
+			'default' => '[Rappel] Vérifier les infos de la %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-verify-recall-mail-content',
+			'name'    => 'Contenu du mail',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour le collectif,\nPouvez-vous vérifier les infos suivantes de %%lien_distrib_titre_admin%% (vous pouvez modifier les infos depuis le lien précédent):\n-> que cette distribution est bien à %%post:lieu%%\n-> que les contrats suivants seront distribués : %%post:liste-paniers-lien%%\n-> que les responsables %%post:resp-inscrits%%/%%post:resp-requis%% sont : %%post:liste-resp-email-phone%%\n-> que la liste d'émargement ci-jointe est correcte\n\nMerci\n\n%%nom_site%%" ),
+		),
+		array(
+			'id'           => 'distribution-verify-recall-to',
+			'name'         => amapress__( 'Destinataire(s)' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Destinataire(s)',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
 function amapress_distribution_responsable_recall_options() {
 	return array(
 		array(

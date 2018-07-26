@@ -350,7 +350,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	}
 
 	public function getTelTo(
-		$mobile = 'both', $sms = false, $first_only = false
+		$mobile = 'both', $sms = false, $first_only = false, $separator = '<br/>'
 	) {
 		$phone_numbers = $this->getPhoneNumbers( $mobile );
 		if ( empty( $phone_numbers ) ) {
@@ -364,7 +364,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 			$ret = [ array_shift( $ret ) ];
 		}
 
-		return implode( '<br/>', $ret );
+		return implode( $separator, $ret );
 	}
 
 	public
@@ -537,6 +537,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function addCoadherent( $coadhrent_id ) {
+		$this->ensure_init();
 		foreach ( [ '1', '2', '3' ] as $id ) {
 			if ( empty( $this->custom[ 'amapress_user_co-adherent-' . $id ] ) ) {
 				$this->custom[ 'amapress_user_co-adherent-' . $id ] = $coadhrent_id;

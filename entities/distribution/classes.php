@@ -601,6 +601,8 @@ class AmapressDistribution extends Amapress_EventBase {
 		switch ( $name ) {
 			case 'lien_liste_emargement':
 				return Amapress::makeLink( $this->getListeEmargementHref() );
+			case 'lieu':
+				return $this->getRealLieu()->getTitle();
 			case 'lieu_instruction':
 			case 'lieu_instructions':
 				$instructions = $this->getLieu()->getInstructions_privee();
@@ -627,8 +629,19 @@ class AmapressDistribution extends Amapress_EventBase {
 			case 'lien_distrib_titre':
 			case 'lien_distrib_title':
 				return Amapress::makeLink( $this->getPermalink(), $this->getTitle() );
+			case 'lien_distribution_title_admin':
+			case 'lien_distribution_titre_admin':
+			case 'lien_distrib_titre_admin':
+			case 'lien_distrib_title_admin':
+				return Amapress::makeLink( $this->getAdminEditLink(), $this->getTitle() );
 			case 'lien_instructions_lieu':
 				return Amapress::makeLink( $this->getPermalink() . '#instructions-lieu' );
+			case 'resp-inscrits':
+				return count( $this->getResponsables() );
+			case 'resp-requis':
+				return count( AmapressDistributions::get_required_responsables( $this->ID ) );
+			case 'resp-manquants':
+				return count( AmapressDistributions::get_required_responsables( $this->ID ) ) - count( $this->getResponsables() );
 			case  'lien-resp-distrib-ical':
 				return add_query_arg(
 					[
@@ -638,9 +651,38 @@ class AmapressDistribution extends Amapress_EventBase {
 					Amapress_Agenda_ICAL_Export::get_link_href() );
 			case  'lien-distrib-ical':
 				return parent::getProperty( 'lien-evenement-ical' );
-			case 'lien-liste-paniers':
+			case 'liste-resp-email-phone':
+				$responsables = $this->getResponsables();
+				$responsables = array_map( function ( $p ) {
+					/** @var AmapressUser $p */
+					return '<li>' . sprintf( '<a href="mailto:%s">%s</a> (%s)', implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+				}, $responsables );
+
+				return '<ul>' . implode( '', $responsables ) . '</ul>';
+			case 'liste-resp-phone':
+				$responsables = $this->getResponsables();
+				$responsables = array_map( function ( $p ) {
+					/** @var AmapressUser $p */
+					return '<li>' . sprintf( '%s (%s)', esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+				}, $responsables );
+
+				return '<ul>' . implode( '', $responsables ) . '</ul>';
+			case 'liste-paniers-lien':
+				$paniers = AmapressPaniers::getPaniersForDist( $this->getDate() );
+				$paniers = array_map( function ( $p ) {
+					/** @var AmapressPanier $p */
+					return '<li>' . Amapress::makeLink( $p->getAdminEditLink(), $p->getTitle() ) . '</li>';
+				}, $paniers );
+
+				return '<ul>' . implode( '', $paniers ) . '</ul>';
 			case 'liste-paniers':
-				return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $this->getSlug() );
+				$paniers = AmapressPaniers::getPaniersForDist( $this->getDate() );
+				$paniers = array_map( function ( $p ) {
+					/** @var AmapressPanier $p */
+					return '<li>' . esc_html( $p->getTitle() ) . '</li>';
+				}, $paniers );
+
+				return '<ul>' . implode( '', $paniers ) . '</ul>';
 			case 'nb-paniers-intermittents':
 				return count( $this->getPaniersIntermittents() );
 			case 'paniers-intermittents':
