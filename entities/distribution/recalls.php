@@ -478,14 +478,16 @@ function amapress_distribution_changes_recall_options() {
 			'scheduler_type'      => 'some_day',
 			'hook_name'           => 'amapress_recall_distrib_thisday',
 			'hook_args_generator' => function ( $option ) {
-				$weeks = [
-					Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 0 ) ),
-					Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 1 ) ),
-					Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 2 ) ),
-				];
-				$ret   = [];
-				foreach ( $weeks as $w ) {
-					$ret[] = [ 'date' => $w, 'time' => $w ];
+				$ret = [];
+				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+					$weeks = [
+						Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 0 ) ),
+						Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 1 ) ),
+						Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 2 ) ),
+					];
+					foreach ( $weeks as $w ) {
+						$ret[] = [ 'date' => $w, 'lieu' => $lieu_id, 'time' => $w ];
+					}
 				}
 
 				return $ret;
