@@ -114,13 +114,13 @@ class AmapressDistribution extends Amapress_EventBase {
 	public function getSMStoResponsables() {
 		$resp_phones = [];
 		foreach ( $this->getResponsables() as $user ) {
-			$resp_phones = array_merge( $resp_phones, $user->getPhoneNumbers() );
+			$resp_phones = array_merge( $resp_phones, array_keys( $user->getPhoneNumbers() ) );
 		}
 		if ( empty( $resp_phones ) ) {
 			return '';
 		}
 
-		return 'sms:' . urlencode( implode( ',', $resp_phones ) ) . '&body=Distribution du ' .
+		return 'sms:' . urlencode( implode( ',', $resp_phones ) ) . '?body=Distribution du ' .
 		       date_i18n( 'D j M Y' );
 	}
 
