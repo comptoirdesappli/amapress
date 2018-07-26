@@ -7,33 +7,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_adhesion' );
 function amapress_register_entities_adhesion( $entities ) {
 	$entities['adhesion'] = array(
-		'singular'           => amapress__( 'Inscription Contrat' ),
-		'plural'             => amapress__( 'Inscriptions Contrat' ),
-		'public'             => 'adminonly',
-		'show_in_menu'       => false,
-		'show_in_nav_menu'   => false,
-		'title'              => false,
-		'editor'             => false,
-		'slug'               => 'adhesions',
-		'title_format'       => 'amapress_adhesion_title_formatter',
-		'slug_format'        => 'from_title',
-		'menu_icon'          => 'flaticon-signature',
+		'singular'         => amapress__( 'Inscription Contrat' ),
+		'plural'           => amapress__( 'Inscriptions Contrat' ),
+		'public'           => 'adminonly',
+		'show_in_menu'     => false,
+		'show_in_nav_menu' => false,
+		'title'            => false,
+		'editor'           => false,
+		'slug'             => 'adhesions',
+		'title_format'     => 'amapress_adhesion_title_formatter',
+		'slug_format'      => 'from_title',
+		'menu_icon'        => 'flaticon-signature',
 //		'show_admin_bar_new' => true,
-		'labels'             => array(
+		'labels'           => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajout Inscription',
 		),
-		'groups'             => array(
+		'groups'           => array(
 			'Infos' => [
 				'context' => 'side',
 			],
 		),
-		'row_actions'        => array(
+		'row_actions'      => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
 			'renew'    => 'Renouveler',
 			'no_renew' => 'Ne pas renouveler',
 		),
-		'bulk_actions'       => array(
+		'bulk_actions'     => array(
 			'amp_accept_contrat_adhesion' => array(
 				'label'    => 'Confirmer inscription',
 				'messages' => array(
@@ -44,9 +44,9 @@ function amapress_register_entities_adhesion( $entities ) {
 				),
 			),
 		),
-		'default_orderby'    => 'post_title',
-		'default_order'      => 'ASC',
-		'edit_header'        => function ( $post ) {
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
+		'edit_header'      => function ( $post ) {
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
@@ -79,12 +79,12 @@ function amapress_register_entities_adhesion( $entities ) {
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 		},
-		'views'              => array(
+		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_views',
 			'exp_csv' => true,
 		),
-		'fields'             => array(
+		'fields'           => array(
 			'adherent_display'  => array(
 				'csv_import'    => false,
 				'csv_export'    => true,
@@ -1582,8 +1582,11 @@ function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $o
 		echo '<h4>4/ Coadhérents :</h4>';
 
 		foreach ( AmapressContrats::get_related_users( $user_id ) as $co_id ) {
+			if ( $co_id == $user_id ) {
+				continue;
+			}
 			$co = AmapressUser::getBy( $co_id );
-			$co->getDisplay();
+			echo $co->getDisplay();
 		}
 	} else {
 		echo '<form method="post" id="new_coadherent">';
