@@ -195,7 +195,7 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 
 	$responsable_ids = Amapress::get_array( Amapress::getOption( 'distribution-verify-recall-to' ) );
 	if ( empty( $responsable_ids ) ) {
-//		return;
+		return;
 	}
 
 	$attachments   = [];
@@ -275,7 +275,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'id'      => 'distribution-amapiens-recall-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc',

@@ -616,6 +616,10 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $c->getModel()->getTitle();
 					}, $this->getContrats()
 				) );
+			case 'heure_debut':
+				return date_i18n( 'H:i', $this->getStartDateAndHour() );
+			case 'heure_fin':
+				return date_i18n( 'H:i', $this->getEndDateAndHour() );
 			case 'jour_date_distrib':
 				return date_i18n( 'l d/m/Y', $this->getDate() );
 			case 'date_distrib':
