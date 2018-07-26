@@ -59,6 +59,24 @@ function amapress_register_entities_panier( $entities ) {
 					'placeholder' => 'Toutes les contrats',
 				),
 			),
+			'paniers'           => array(
+				'name'              => amapress__( 'Distribution(s)' ),
+				'group'             => '1/ Informations',
+				'show_column'       => false,
+				'include_columns'   => array(
+					'title',
+				),
+				'datatable_options' => array(
+					'ordering' => false,
+					'paging'   => false,
+				),
+				'type'              => 'related-posts',
+				'query'             => function ( $postID ) {
+					$panier = AmapressPanier::getBy( $postID );
+
+					return 'post_type=amps_distribution&amapress_date=' . date( 'Y-m-d', $panier->getDate() );
+				}
+			),
 			'produits_selected' => array(
 				'name'         => amapress__( 'Produits associés' ),
 				'type'         => 'select-posts',
