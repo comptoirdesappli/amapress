@@ -118,6 +118,9 @@ function amapress_register_entities_adhesion( $entities ) {
 				'searchable'   => true,
 				'csv_export'   => false,
 				'show_column'  => false,
+				'readonly'     => function ( $post_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				}
 			),
 			'adherent_lastname' => array(
 				'csv_import'    => false,
@@ -392,6 +395,24 @@ jQuery(function($) {
 				'hidden'      => true,
 				'desc'        => 'Message',
 				'csv'         => false,
+			),
+			'all-coadherents'   => array(
+				'name'            => amapress__( 'Co-adhérents' ),
+				'group'           => '4/ Coadhérents',
+				'show_column'     => false,
+				'include_columns' => array(
+					'name',
+					'email',
+					'role',
+					'amapress_user_telephone',
+					'amapress_user_adresse',
+				),
+				'type'            => 'related-users',
+				'query'           => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					return 'amapress_coadherents=' . $adh->getAdherent()->ID;
+				},
 			),
 			'adherent2'         => array(
 				'name'         => amapress__( 'Co-Adhérent 1' ),
