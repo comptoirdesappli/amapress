@@ -36,6 +36,9 @@ class TitanFrameworkOptionHeading extends TitanFrameworkOption {
 	 */
 	public function display() {
 		$headingID = str_replace( ' ', '-', strtolower( $this->settings['name'] ) );
+		if ( ! empty( $this->settings['id'] ) ) {
+			$headingID = $this->settings['id'];
+		}
 		?>
         <tr valign="top" class="even first tf-heading">
             <th scope="row" class="first last" colspan="2">
