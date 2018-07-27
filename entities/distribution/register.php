@@ -153,7 +153,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'group'             => '1/ Livraison',
 				'desc'              => 'Paniers à cette distribution',
 				'show_column'       => false,
-				'bare'              => true,
+//				'bare'              => true,
 				'include_columns'   => array(
 					'title',
 					'amapress_panier_contrat_instance',
