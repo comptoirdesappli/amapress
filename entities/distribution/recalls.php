@@ -159,7 +159,7 @@ add_action( 'amapress_recall_distrib_thisday', function ( $args ) {
 		$amapien_users = amapress_prepare_message_target_bcc( 'post_type=amps_adhesion&amapress_date=active&amapress_lieu=' . $lieu,
 			'Amapiens de ' . $lieu_name, "distribution", true );
 
-		$dt      = date_i18n( 'l d/m/Y' );
+		$dt      = date_i18n( 'l d/m/Y', $date );
 		$subject = str_replace( '%%date%%', $dt, $subject );
 		$content = str_replace( '%%date%%', $dt, $content );
 		amapress_send_message(
@@ -175,7 +175,7 @@ add_action( 'amapress_recall_distrib_thisday', function ( $args ) {
 		$amapien_users = amapress_prepare_message_target_bcc( 'post_type=amps_adhesion&amapress_date=active&amapress_lieu=' . $lieu . '&amapress_contrat_inst=' . implode( ',', $contrat_ids ),
 			'Amapiens de ' . $lieu_name, "distribution", true );
 
-		$dt      = date_i18n( 'l d/m/Y' );
+		$dt      = date_i18n( 'l d/m/Y', $date );
 		$subject = str_replace( '%%date%%', $dt, $subject );
 		$content = str_replace( '%%date%%', $dt, $content );
 		amapress_send_message(
@@ -469,33 +469,64 @@ function amapress_distribution_emargement_recall_options() {
 	);
 }
 
+function amapress_generate_weeks_cron( $option ) {
+	$dist_weekday = Amapress::getOption( 'dist_weekday' );
+	$ret          = [];
+	foreach ( Amapress::get_lieux() as $lieu ) {
+		$weeks = [
+			Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 0 ) ),
+			Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 1 ) ),
+			Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 2 ) ),
+		];
+		foreach ( $weeks as $w ) {
+			$w     = strtotime( 'next ' . $dist_weekday, $w );
+			$w     = Amapress::make_date_and_hour( $w, $lieu->getHeure_debut() );
+			$ret[] = [ 'date' => $w, 'lieu' => $lieu->ID, 'time' => $w ];
+		}
+	}
+
+	return $ret;
+}
+
 function amapress_distribution_changes_recall_options() {
 	return array(
 		array(
+			'id'      => 'dist_weekday',
+			'name'    => 'Jour de distribution',
+			'type'    => 'select',
+			'desc'    => 'Jour de distribution habituel',
+			'options' => [
+				'Monday'    => 'Lundi',
+				'Tuesday'   => 'Mardi',
+				'Wednesday' => 'Mercredi',
+				'Thursday'  => 'Jeudi',
+				'Friday'    => 'Vendredi',
+				'Saturday'  => 'Samedi',
+				'Sunday'    => 'Dimanche',
+			],
+			'default' => 'Thursday',
+		),
+		array(
 			'id'                  => 'distribution-day-recall',
-			'name'                => 'Jour de distribution habituel',
+			'name'                => 'Rappel jour de distribution 1',
 			'type'                => 'event-scheduler',
-			'scheduler_type'      => 'some_day',
+			'desc'                => 'Envoyer un rappels si pas de distribution ou changement du jour habituel',
+//			'scheduler_type'      => 'some_day',
 			'hook_name'           => 'amapress_recall_distrib_thisday',
-			'hook_args_generator' => function ( $option ) {
-				$ret = [];
-				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-					$weeks = [
-						Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 0 ) ),
-						Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 1 ) ),
-						Amapress::start_of_week( Amapress::add_a_week( amapress_time(), 2 ) ),
-					];
-					foreach ( $weeks as $w ) {
-						$ret[] = [ 'date' => $w, 'lieu' => $lieu_id, 'time' => $w ];
-					}
-				}
-
-				return $ret;
-			},
+			'hook_args_generator' => 'amapress_generate_weeks_cron',
+		),
+		array(
+			'id'                  => 'distribution-day-recall2',
+			'name'                => 'Rappel jour de distribution 2',
+			'type'                => 'event-scheduler',
+			'desc'                => 'Envoyer un rappels si pas de distribution ou changement du jour habituel',
+//			'scheduler_type'      => 'some_day',
+			'hook_name'           => 'amapress_recall_distrib_thisday',
+			'hook_args_generator' => 'amapress_generate_weeks_cron',
 		),
 		array(
 			'id'                  => 'distribution-changes-recall-1',
-			'name'                => 'Rappel 1',
+			'name'                => 'Rappel changement distribution 1',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_distrib_changes',
 			'hook_args_generator' => function ( $option ) {
@@ -504,22 +535,22 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'                  => 'distribution-changes-recall-2',
-			'name'                => 'Rappel 2',
+			'name'                => 'Rappel changement distribution 2',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_distrib_changes',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},
 		),
-		array(
-			'id'                  => 'distribution-changes-recall-3',
-			'name'                => 'Rappel 3',
-			'type'                => 'event-scheduler',
-			'hook_name'           => 'amapress_recall_distrib_changes',
-			'hook_args_generator' => function ( $option ) {
-				return amapress_get_next_distributions_cron();
-			},
-		),
+//		array(
+//			'id'                  => 'distribution-changes-recall-3',
+//			'name'                => 'Rappel 3',
+//			'type'                => 'event-scheduler',
+//			'hook_name'           => 'amapress_recall_distrib_changes',
+//			'hook_args_generator' => function ( $option ) {
+//				return amapress_get_next_distributions_cron();
+//			},
+//		),
 		array(
 			'name' => 'En cas de changement de lieu',
 			'type' => 'heading',
@@ -560,13 +591,13 @@ function amapress_distribution_changes_recall_options() {
 			'id'      => 'distribution-none-this-day-recall-mail-subject',
 			'name'    => 'Sujet du mail',
 			'type'    => 'text',
-			'default' => '[Rappel] Pas de distribution aujourd\'hui (%%date%%)',
+			'default' => '[Rappel] Pas de distribution le %%date%%',
 		),
 		array(
 			'id'      => 'distribution-none-this-day-recall-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\n\nPour rappel : Pas de distribution aujourd'hui %%date%%\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\n\nPour rappel : Pas de distribution le %%date%%\n%%nom_site%%" ),
 		),
 		array(
 			'name' => 'En cas de changement de jour de distribution',
