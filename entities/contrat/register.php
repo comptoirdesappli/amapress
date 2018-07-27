@@ -9,6 +9,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function amapress_can_renew_contrat_instance( $post_or_user ) {
+	$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
+	if ( ! $contrat_instance ) {
+		return false;
+	}
+
+	return $contrat_instance->canRenew();
+}
+
+function amapress_can_renew_same_period_contrat_instance( $post_or_user ) {
+	$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
+	if ( ! $contrat_instance ) {
+		return false;
+	}
+
+	$diff = Amapress::datediffInWeeks(
+		Amapress::start_of_week( $contrat_instance->getDate_debut() ),
+		Amapress::end_of_week( $contrat_instance->getDate_fin() )
+	);
+
+	return $diff < 52;
+}
+
 add_filter( 'amapress_register_entities', 'amapress_register_entities_contrat' );
 function amapress_register_entities_contrat( $entities ) {
 	$entities['contrat']          = array(
@@ -130,30 +153,13 @@ function amapress_register_entities_contrat( $entities ) {
 		'row_actions'     => array(
 			'renew'             => array(
 				'label'     => 'Renouveler (prolongement)',
-				'condition' => function ( $post_or_user ) {
-					$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
-					if ( ! $contrat_instance ) {
-						return false;
-					}
-
-					return $contrat_instance->canRenew();
-				}
+				'condition' => 'amapress_can_renew_contrat_instance',
+				'show_on'   => 'list',
 			),
 			'renew_same_period' => array(
 				'label'     => 'Renouveler (même période)',
-				'condition' => function ( $post_or_user ) {
-					$contrat_instance = AmapressContrat_instance::getBy( $post_or_user );
-					if ( ! $contrat_instance ) {
-						return false;
-					}
-
-					$diff = Amapress::datediffInWeeks(
-						Amapress::start_of_week( $contrat_instance->getDate_debut() ),
-						Amapress::end_of_week( $contrat_instance->getDate_fin() )
-					);
-
-					return $diff < 52;
-				}
+				'condition' => 'amapress_can_renew_same_period_contrat_instance',
+				'show_on'   => 'list',
 			),
 			'clone'             => 'Dupliquer',
 		),
@@ -167,13 +173,42 @@ function amapress_register_entities_contrat( $entities ) {
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
 		'fields'          => array(
+			//renouvellement
+			'renouv'                => array(
+				'name'        => amapress__( 'Options de renouvellement' ),
+				'show_column' => false,
+				'show_on'     => 'edit-only',
+				'group'       => '> Renouvellement',
+//				'bare'        => true,
+				'type'        => 'custom',
+				'custom'      => function ( $post_id ) {
+					$ret = '';
+					if ( amapress_can_renew_contrat_instance( $post_id ) ) {
+						$ret .= '<p><a href="' . amapress_get_row_action_href( 'renew', $post_id ) . '">Prolongation</a> : Dates continues - Durée identique <span class="description">(Par ex : contrats trimestriels)</span></p>';
+					}
+					if ( amapress_can_renew_same_period_contrat_instance( $post_id ) ) {
+						$ret .= '<p><a href="' . amapress_get_row_action_href( 'renew_same_period', $post_id ) . '">Cyclique</a> : Même période - Année suivante <span class="description">(Par ex : contrats annuels)</span></p>';
+					}
+					if ( empty( $ret ) ) {
+						$ret .= '<p>Contrat déjà renouvellé</p>';
+					}
+
+					return $ret;
+
+//					return '<tr><td colspan="2" style="margin: 0; padding: 0">' .
+//					       $ret
+//					       . '</td></tr>';
+				}
+			),
+
+			// 1/6 contrat
 			'model'                 => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
-				'group'             => 'Gestion',
+				'group'             => '1/6 - Contrat',
 				'required'          => true,
-				'desc'              => 'Sélectionner la présentation web. Si elle n’est pas présente dans la liste ci-dessus, la créer ici « <a href="' . admin_url( 'post-new.php?post_type=amps_contrat' ) . '" target="_blank">présentation web</a> »',
+				'desc'              => 'Sélectionner la présentation web du producteur.',
 				'import_key'        => true,
 				'autoselect_single' => true,
 				'orderby'           => 'post_title',
@@ -182,25 +217,127 @@ function amapress_register_entities_contrat( $entities ) {
 					'name'        => 'amapress_contrat',
 					'placeholder' => 'Toutes les présentations web',
 				),
-				'readonly'          => 'amapress_is_contrat_instance_readonly',
+				'readonly'          => function ( $post_id ) {
+					if ( TitanFrameworkOption::isOnEditScreen() ) {
+						return true;
+					}
+
+					return amapress_is_contrat_instance_readonly( $post_id );
+				},
 				'searchable'        => true,
+			),
+			'date_debut'            => array(
+				'name'          => amapress__( 'Début du contrat' ),
+				'type'          => 'date',
+				'group'         => '1/6 - Contrat',
+				'required'      => true,
+				'desc'          => 'Date de début du contrat',
+				'import_key'    => true,
+				'top_filter'    => array(
+					'name'           => 'amapress_date',
+					'placeholder'    => 'Toutes les dates',
+					'custom_options' => 'amapress_get_active_contrat_month_options'
+				),
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'before_option' =>
+					function ( $option ) {
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
+//<![CDATA[
+jQuery(function($) {
+    var $date_debut = $("#amapress_contrat_instance_date_debut");
+    var $date_fin = $("#amapress_contrat_instance_date_fin");
+    var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
+    $date_debut.change(function() {
+        $liste_dates.multiDatesPicker("option", {minDate: $(this).val()});
+        $date_fin.datepicker("option","minDate", $date_debut.val());
+    });
+    $liste_dates.multiDatesPicker("option", {minDate: $date_debut.val()});
+    $date_fin.datepicker("option","minDate", $date_debut.val());
+});
+//]]>
+</script>';
+						}
+					},
+			),
+			'date_fin'              => array(
+				'name'          => amapress__( 'Fin du contrat' ),
+				'type'          => 'date',
+				'group'         => '1/6 - Contrat',
+				'required'      => true,
+				'desc'          => 'Date de fin du contrat',
+				'import_key'    => true,
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'before_option' =>
+					function ( $option ) {
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
+//<![CDATA[
+jQuery(function($) {
+    var $date_debut = $("#amapress_contrat_instance_date_debut");
+    var $date_fin = $("#amapress_contrat_instance_date_fin");
+    var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
+    $date_fin.on("change", function() {
+        $liste_dates.multiDatesPicker("option", {maxDate: $(this).val()});
+        $date_debut.datepicker("option","maxDate", $date_fin.val());
+    });
+    $liste_dates.multiDatesPicker("option", {maxDate: $date_fin.val()});
+    $date_debut.datepicker("option","maxDate", $date_fin.val());
+});
+//]]>
+</script>';
+						}
+					},
+			),
+			'model_name'            => array(
+				'name'        => amapress__( 'Nom générique' ),
+				'show_column' => false,
+				'show_on'     => 'edit-only',
+				'group'       => '1/6 - Contrat',
+				'type'        => 'custom',
+				'custom'      => function ( $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					if ( ! $contrat ) {
+						return '';
+					}
+
+					return $contrat->getTitle();
+				}
 			),
 			'name'                  => array(
 				'name'     => amapress__( 'Nom complémentaire' ),
-				'group'    => 'Gestion',
+				'group'    => '1/6 - Contrat',
 				'type'     => 'text',
-				'desc'     => '(Facultatif) Complément de nom pour le contrat (par ex, "Semaine A")',
+				'desc'     => 'Lorsque 2 contrats de même type coexistent (Par ex : ”Semaine A”, “Semaine B”)',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
+			'max_adherents'         => array(
+				'name'     => amapress__( 'Nombre d’amapiens maximum' ),
+				'type'     => 'number',
+				'group'    => '1/6 - Contrat',
+				'required' => true,
+				'desc'     => 'Nombre maximum d’inscriptions autorisées par le producteur',
+			),
+			'min_engagement'        => array(
+				'name'        => amapress__( 'Engagement minimum' ),
+				'type'        => 'number',
+				'group'       => '1/6 - Contrat',
+				'required'    => true,
+				'show_column' => false,
+				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
+			),
+
+			// 2/6 ferme
 			'nb_visites'            => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
-				'group'       => 'Information',
+				'group'       => '2/6 - Ferme',
 				'type'        => 'number',
 				'required'    => true,
 				'show_column' => false,
 				'desc'        => 'Nombre de visites obligatoires chez le producteur',
 				'max'         => 12,
 			),
+
 //			'type'           => array(
 //				'name'          => amapress__( 'Type de contrat' ),
 //				'type'          => 'select',
@@ -286,10 +423,86 @@ function amapress_register_entities_contrat( $entities ) {
 ////					),
 //				)
 //			),
+
+			// 3/6 Distributions
+			'lieux'                 => array(
+				'name'       => amapress__( 'Lieu(x)' ),
+				'type'       => 'multicheck-posts',
+				'post_type'  => 'amps_lieu',
+				'group'      => '3/6 - Distributions',
+				'required'   => true,
+				'desc'       => 'Lieux de distribution',
+				'select_all' => true,
+				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'orderby'    => 'post_title',
+				'order'      => 'ASC',
+				'top_filter' => array(
+					'name'        => 'amapress_lieu',
+					'placeholder' => 'Tous les lieux'
+				),
+			),
+			'liste_dates'           => array(
+				'name'             => amapress__( 'Calendrier initial' ),
+				'type'             => 'multidate',
+				'required'         => true,
+				'group'            => '3/6 - Distributions',
+				'readonly'         => 'amapress_is_contrat_instance_readonly',
+				'show_column'      => true,
+				'column_value'     => 'dates_count',
+				'desc'             => 'Sélectionner les dates de distribution fournies par le producteur',
+				'show_dates_count' => true,
+				'show_dates_list'  => true,
+				'before_option'    =>
+					function ( $option ) {
+						$is_readonly = amapress_is_contrat_instance_readonly( $option );
+						if ( ! TitanFrameworkOption::isOnNewScreen() ) {
+							if ( $is_readonly ) {
+								echo '<p>Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</p>';
+							} else {
+								$val_id = $option->getID() . '-validate';
+								echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
+<br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</label></p>';
+								echo '<script type="text/javascript">
+//<![CDATA[
+jQuery(function($) {
+    var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
+    $("#' . $val_id . '").change(function() {
+        $liste_dates.multiDatesPicker("option", {disabled: !$(this).is(\':checked\')});
+    });
+    $liste_dates.multiDatesPicker("option", {disabled: ' . ( $is_readonly ? 'true' : 'false' ) . '});
+});
+//]]>
+</script>';
+							}
+						}
+					},
+			),
+			'les-paniers'           => array(
+				'name'              => amapress__( 'Panier Report' ),
+				'group'             => '3/6 - Distributions',
+				'desc'              => 'Paniers de ce contrat',
+				'show_column'       => false,
+				'show_on'           => 'edit-only',
+//							'bare'            => true,
+				'include_columns'   => array(
+					'title',
+					'amapress_panier_status',
+					'amapress_panier_date_subst',
+				),
+				'datatable_options' => array(
+					'ordering' => false,
+					'paging'   => true,
+				),
+				'type'              => 'related-posts',
+				'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
+			),
+
+
+			// 4/6 Paniers
 			'quant_type'            => array(
 				'name'     => amapress__( 'Type de quantités' ),
 				'type'     => 'custom',
-				'group'    => 'Gestion',
+				'group'    => '4/6 - Paniers',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 				'column'   => function ( $post_id ) {
 					$status           = [];
@@ -434,54 +647,23 @@ function amapress_register_entities_contrat( $entities ) {
 							
 							'
 			),
-			'is_principal'          => array(
-				'name'        => amapress__( 'Contrat principal' ),
-				'type'        => 'checkbox',
+			'quant_editor'          => array(
+				'name'        => amapress__( 'Quantités / Taille des paniers' ),
+				'type'        => 'custom',
+				'group'       => '4/6 - Paniers',
+				'column'      => null,
+				'custom'      => 'amapress_get_contrat_quantite_editor',
+				'save'        => 'amapress_save_contrat_quantite_editor',
+				'show_on'     => 'edit-only',
 				'show_column' => false,
-				'required'    => true,
-				'group'       => 'Statut',
-				'desc'        => 'Obligatoire (Par ex : Contrat légumes)',
-			),
-			'liste_dates'           => array(
-				'name'             => amapress__( 'Calendrier des distributions' ),
-				'type'             => 'multidate',
-				'required'         => true,
-				'group'            => 'Distributions',
-				'readonly'         => 'amapress_is_contrat_instance_readonly',
-				'show_column'      => true,
-				'column_value'     => 'dates_count',
-				'desc'             => 'Sélectionner les dates de distribution fournies par le producteur',
-				'show_dates_count' => true,
-				'show_dates_list'  => true,
-				'before_option'    =>
-					function ( $option ) {
-						$is_readonly = amapress_is_contrat_instance_readonly( $option );
-						if ( ! TitanFrameworkOption::isOnNewScreen() ) {
-							if ( $is_readonly ) {
-								echo '<p>Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</p>';
-							} else {
-								$val_id = $option->getID() . '-validate';
-								echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
-<br />Pour annuler ou reporter une distribution déjà planifiée, veuillez modifier la date dans le panier correspondant via le menu Contenus/Paniers ou la liste de paniers ci-dessous</label></p>';
-								echo '<script type="text/javascript">
-//<![CDATA[
-jQuery(function($) {
-    var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
-    $("#' . $val_id . '").change(function() {
-        $liste_dates.multiDatesPicker("option", {disabled: !$(this).is(\':checked\')});
-    });
-    $liste_dates.multiDatesPicker("option", {disabled: ' . ( $is_readonly ? 'true' : 'false' ) . '});
-});
-//]]>
-</script>';
-							}
-						}
-					},
+				'bare'        => true,
+//                'desc' => 'Quantités',
 			),
 			'rattrapage'            => array(
-				'name'        => amapress__( 'Quantités de rattrapage' ),
+				'name'        => amapress__( 'Rattrapage' ),
+				'desc'        => 'Date(s) où les quantités sont multipliées pour rattraper une distribution manquée',
 				'type'        => 'custom',
-				'group'       => 'Distributions',
+				'group'       => '4/6 - Paniers',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'show_column' => false,
 				'bare'        => true,
@@ -565,25 +747,97 @@ jQuery(function($) {
 					}
 				}
 			),
-			'les-paniers'           => array(
-				'name'              => amapress__( 'Paniers' ),
-				'group'             => 'Distributions',
-				'desc'              => 'Paniers de ce contrat',
-				'show_column'       => false,
-				'show_on'           => 'edit-only',
-//							'bare'            => true,
-				'include_columns'   => array(
-					'title',
-					'amapress_panier_status',
-					'amapress_panier_date_subst',
-				),
-				'datatable_options' => array(
-					'ordering' => false,
-					'paging'   => true,
-				),
-				'type'              => 'related-posts',
-				'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
+
+			// 5/6 - Pré-inscription en ligne
+			'self_subscribe'        => array(
+				'name'        => amapress__( 'Activer' ),
+				'type'        => 'checkbox',
+				'group'       => '5/6 - Pré-inscription en ligne',
+				'desc'        => 'Rendre accessible les pré-inscriptions en ligne pour ce contrat',
+				'show_column' => false,
 			),
+			'date_ouverture'        => array(
+				'name'          => amapress__( 'Ouverture des inscriptions' ),
+				'type'          => 'date',
+				'group'         => '5/6 - Pré-inscription en ligne',
+				'required'      => true,
+				'desc'          => 'Date d\'ouverture des inscriptions en ligne',
+				'import_key'    => true,
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'before_option' =>
+					function ( $option ) {
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
+//<![CDATA[
+jQuery(function($) {
+    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
+    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
+    $date_ouverture.change(function() {
+        $date_cloture.datepicker("option","minDate", $(this).val());
+    });
+    $date_cloture.datepicker("option","minDate", $date_ouverture.val());
+});
+//]]>
+</script>';
+						}
+					},
+			),
+			'date_cloture'          => array(
+				'name'          => amapress__( 'Clôture des inscriptions' ),
+				'type'          => 'date',
+				'group'         => '5/6 - Pré-inscription en ligne',
+				'required'      => true,
+				'desc'          => 'Date de clôture des inscriptions en ligne',
+				'import_key'    => true,
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'before_option' =>
+					function ( $option ) {
+						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+							echo '<script type="text/javascript">
+//<![CDATA[
+jQuery(function($) {
+    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
+    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
+    $date_cloture.on("change", function() {
+        $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
+    });
+    $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
+});
+//]]>
+</script>';
+						}
+					},
+			),
+
+
+			//Statut
+			'is_principal'          => array(
+				'name'        => amapress__( 'Contrat principal' ),
+				'type'        => 'checkbox',
+				'show_column' => false,
+				'required'    => true,
+				'group'       => 'Statut',
+				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
+			),
+			'status'                => array(
+				'name'    => amapress__( 'Statut' ),
+				'type'    => 'custom',
+				'column'  => array( 'AmapressContrats', "contratStatus" ),
+				'custom'  => array( 'AmapressContrats', "contratStatus" ),
+				'group'   => 'Statut',
+				'save'    => null,
+				'desc'    => 'Statut',
+				'show_on' => 'edit-only',
+			),
+			'ended'                 => array(
+				'name'        => amapress__( 'Clôturer' ),
+				'type'        => 'checkbox',
+				'group'       => 'Statut',
+				'desc'        => 'Ferme le contrat (<strong>Renouveler le contrat avant de cocher cette case</strong>)',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+			),
+
 //						'quantite_multi'        => array(
 //							'name'        => amapress__( 'Quantités multiples' ),
 //							'type'        => 'checkbox',
@@ -612,11 +866,13 @@ jQuery(function($) {
 //							'show_column' => false,
 //							'desc'        => 'Cocher cette case si les quantités peuvent être modulées (par ex, 1L, 1.5L, 3L...)',
 //						),
+
+			// 6/6 - reglements
 			'paiements'             => array(
-				'name'     => amapress__( 'Nombres de chèques' ),
+				'name'     => amapress__( 'Nombre de chèques' ),
 				'type'     => 'multicheck',
 				'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
-				'group'    => 'Paiements',
+				'group'    => '6/6 - Règlement',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 				'required' => true,
 				'options'  => array(
@@ -639,16 +895,24 @@ jQuery(function($) {
 				'type'             => 'multidate',
 				'readonly'         => 'amapress_is_contrat_instance_readonly',
 				'required'         => true,
-				'group'            => 'Paiements',
+				'group'            => '6/6 - Règlement',
 				'show_column'      => false,
 				'show_dates_count' => true,
 				'show_dates_list'  => true,
 				'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
 			),
+			'min_cheque_amount'     => array(
+				'name'        => amapress__( 'Montant minimal' ),
+				'type'        => 'number',
+				'group'       => '6/6 - Règlement',
+				'required'    => true,
+				'show_column' => false,
+				'desc'        => 'Montant minimum du plus petit chèque pour les paiements en plusieurs fois',
+			),
 			'options_paiements'     => array(
 				'name'        => amapress__( 'Options de paiement' ),
 				'type'        => 'custom',
-				'group'       => 'Paiements',
+				'group'       => '6/6 - Règlement',
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 				'custom'      => function ( $post_id ) {
@@ -690,7 +954,7 @@ jQuery(function($) {
 							$options                 = '';
 							foreach ( $contrat_instance->getPossiblePaiements() as $nb_cheque ) {
 								$o = $contrat_instance->getChequeOptionsForTotal( $nb_cheque, $total );
-								if ( empty( o ) ) {
+								if ( empty( $o ) ) {
 									continue;
 								}
 								$options .= '<li>' . esc_html( $o['desc'] ) . '</li>';
@@ -712,6 +976,8 @@ jQuery(function($) {
 						) );
 				}
 			),
+
+
 //                        'list_quantites' => array(
 //                            'name' => amapress__('Quantités'),
 //                            'type' => 'show-posts',
@@ -720,126 +986,11 @@ jQuery(function($) {
 //                            'post_type' => 'amps_contrat_quant',
 //                            'parent' => 'amapress_contrat_quantite_contrat_instance',
 //                        ),
-			'date_debut'            => array(
-				'name'          => amapress__( 'Début du contrat' ),
-				'type'          => 'date',
-				'group'         => 'Gestion',
-				'required'      => true,
-				'desc'          => 'Date de début du contrat',
-				'import_key'    => true,
-				'top_filter'    => array(
-					'name'           => 'amapress_date',
-					'placeholder'    => 'Toutes les dates',
-					'custom_options' => 'amapress_get_active_contrat_month_options'
-				),
-				'readonly'      => 'amapress_is_contrat_instance_readonly',
-				'before_option' =>
-					function ( $option ) {
-						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
-							echo '<script type="text/javascript">
-//<![CDATA[
-jQuery(function($) {
-    var $date_debut = $("#amapress_contrat_instance_date_debut");
-    var $date_fin = $("#amapress_contrat_instance_date_fin");
-    var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
-    $date_debut.change(function() {
-        $liste_dates.multiDatesPicker("option", {minDate: $(this).val()});
-        $date_fin.datepicker("option","minDate", $date_debut.val());
-    });
-    $liste_dates.multiDatesPicker("option", {minDate: $date_debut.val()});
-    $date_fin.datepicker("option","minDate", $date_debut.val());
-});
-//]]>
-</script>';
-						}
-					},
-			),
-			'date_fin'              => array(
-				'name'          => amapress__( 'Fin du contrat' ),
-				'type'          => 'date',
-				'group'         => 'Gestion',
-				'required'      => true,
-				'desc'          => 'Date de fin du contrat',
-				'import_key'    => true,
-				'readonly'      => 'amapress_is_contrat_instance_readonly',
-				'before_option' =>
-					function ( $option ) {
-						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
-							echo '<script type="text/javascript">
-//<![CDATA[
-jQuery(function($) {
-    var $date_debut = $("#amapress_contrat_instance_date_debut");
-    var $date_fin = $("#amapress_contrat_instance_date_fin");
-    var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
-    $date_fin.on("change", function() {
-        $liste_dates.multiDatesPicker("option", {maxDate: $(this).val()});
-        $date_debut.datepicker("option","maxDate", $date_fin.val());
-    });
-    $liste_dates.multiDatesPicker("option", {maxDate: $date_fin.val()});
-    $date_debut.datepicker("option","maxDate", $date_fin.val());
-});
-//]]>
-</script>';
-						}
-					},
-			),
-			'lieux'                 => array(
-				'name'       => amapress__( 'Lieux' ),
-				'type'       => 'multicheck-posts',
-				'post_type'  => 'amps_lieu',
-				'group'      => 'Gestion',
-				'required'   => true,
-				'desc'       => 'Lieux de distribution',
-				'select_all' => true,
-				'readonly'   => 'amapress_is_contrat_instance_readonly',
-				'orderby'    => 'post_title',
-				'order'      => 'ASC',
-				'top_filter' => array(
-					'name'        => 'amapress_lieu',
-					'placeholder' => 'Tous les lieux'
-				),
-			),
-			'status'                => array(
-				'name'    => amapress__( 'Statut' ),
-				'type'    => 'custom',
-				'column'  => array( 'AmapressContrats', "contratStatus" ),
-				'custom'  => array( 'AmapressContrats', "contratStatus" ),
-				'group'   => 'Statut',
-				'save'    => null,
-				'desc'    => 'Statut',
-				'show_on' => 'edit-only',
-			),
-			'ended'                 => array(
-				'name'        => amapress__( 'Clôturer' ),
-				'type'        => 'checkbox',
-				'group'       => 'Statut',
-				'desc'        => 'Cocher cette case lorsque le contrat est terminé, penser à le renouveler d\'abord',
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-			),
-			'max_adherents'         => array(
-				'name'     => amapress__( 'Nombre maximum d\'amapiens' ),
-				'type'     => 'number',
-				'group'    => 'Information',
-				'required' => true,
-				'desc'     => 'Nombre maximum d\'amapiens',
-			),
-			'quant_editor'          => array(
-				'name'        => amapress__( 'Quantités' ),
-				'type'        => 'custom',
-				'group'       => 'Gestion',
-				'column'      => null,
-				'custom'      => 'amapress_get_contrat_quantite_editor',
-				'save'        => 'amapress_save_contrat_quantite_editor',
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-				'bare'        => true,
-//                'desc' => 'Quantités',
-			),
 			'inscriptions'          => array(
 				'name'        => amapress__( 'Inscriptions' ),
 				'show_column' => true,
 				'show_table'  => false,
+				'group'       => 'Inscriptions',
 				'empty_text'  => 'Pas encore d\'inscriptions',
 //				'include_columns' => array(
 //					'title',
@@ -850,81 +1001,6 @@ jQuery(function($) {
 //				),
 				'type'        => 'related-posts',
 				'query'       => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
-			),
-			'self_subscribe'        => array(
-				'name'        => amapress__( 'Inscriptions en ligne' ),
-				'type'        => 'checkbox',
-				'group'       => 'Pré-inscription en ligne',
-				'desc'        => 'Activer',
-				'show_column' => false,
-			),
-			'date_ouverture'        => array(
-				'name'          => amapress__( 'Ouverture des inscriptions' ),
-				'type'          => 'date',
-				'group'         => 'Pré-inscription en ligne',
-				'required'      => true,
-				'desc'          => 'Date d\'ouverture des inscriptions en ligne',
-				'import_key'    => true,
-				'readonly'      => 'amapress_is_contrat_instance_readonly',
-				'before_option' =>
-					function ( $option ) {
-						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
-							echo '<script type="text/javascript">
-//<![CDATA[
-jQuery(function($) {
-    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
-    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
-    $date_ouverture.change(function() {
-        $date_cloture.datepicker("option","minDate", $(this).val());
-    });
-    $date_cloture.datepicker("option","minDate", $date_ouverture.val());
-});
-//]]>
-</script>';
-						}
-					},
-			),
-			'date_cloture'          => array(
-				'name'          => amapress__( 'Clôture des inscriptions' ),
-				'type'          => 'date',
-				'group'         => 'Pré-inscription en ligne',
-				'required'      => true,
-				'desc'          => 'Date de clôture des inscriptions en ligne',
-				'import_key'    => true,
-				'readonly'      => 'amapress_is_contrat_instance_readonly',
-				'before_option' =>
-					function ( $option ) {
-						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
-							echo '<script type="text/javascript">
-//<![CDATA[
-jQuery(function($) {
-    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
-    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
-    $date_cloture.on("change", function() {
-        $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
-    });
-    $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
-});
-//]]>
-</script>';
-						}
-					},
-			),
-			'min_engagement'        => array(
-				'name'        => amapress__( 'Engagement minimal' ),
-				'type'        => 'number',
-				'group'       => 'Pré-inscription en ligne',
-				'required'    => true,
-				'show_column' => false,
-				'desc'        => 'Montant minimal d\'engagement',
-			),
-			'min_cheque_amount'     => array(
-				'name'        => amapress__( 'Montant minimal chèque' ),
-				'type'        => 'number',
-				'group'       => 'Pré-inscription en ligne',
-				'required'    => true,
-				'show_column' => false,
-				'desc'        => 'Montant minimal du plus petit chèque',
 			),
 //			'contrat'           => array(
 //				'name'       => amapress__( 'Info contrat en ligne' ),

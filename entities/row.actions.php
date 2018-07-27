@@ -5,17 +5,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function amapress_get_row_action_html( $action, $id, $label ) {
+function amapress_get_row_action_href( $action, $id ) {
 	global $pagenow;
 	$g_query = $_SERVER['QUERY_STRING'];
 	$href    = "$pagenow?$g_query";
 
+	return wp_nonce_url( add_query_arg( array(
+		'action' => $action,
+		'amp_id' => $id,
+	), admin_url( $href ) ), "{$action}_{$id}" );
+}
+
+function amapress_get_row_action_html( $action, $id, $label ) {
+
 	return sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s">%2$s</a>',
-		esc_url( wp_nonce_url( add_query_arg( array(
-				'action' => $action,
-				'amp_id' => $id,
-			), admin_url( $href ) ), "{$action}_{$id}" )
-		),
+		esc_url( amapress_get_row_action_href( $action, $id ) ),
 		esc_html( $label ),
 		esc_attr( $action ),
 		esc_attr( $label ) );
@@ -24,7 +28,7 @@ function amapress_get_row_action_html( $action, $id, $label ) {
 add_filter( 'user_row_actions', 'amapress_row_actions_registration', 10, 2 );
 add_filter( 'post_row_actions', 'amapress_row_actions_registration', 10, 2 );
 add_filter( 'page_row_actions', 'amapress_row_actions_registration', 10, 2 );
-function amapress_row_actions_registration( $actions, $post_or_user ) {
+function amapress_row_actions_registration( $actions, $post_or_user, $type = 'list' ) {
 	if ( is_a( $post_or_user, 'WP_User' ) ) {
 		$post_type = 'user';
 	} else {
@@ -52,6 +56,10 @@ function amapress_row_actions_registration( $actions, $post_or_user ) {
 				}
 				if ( ! empty( $row_action_config['capability'] )
 				     && ! current_user_can( $row_action_config['capability'] ) ) {
+					continue;
+				}
+				if ( ! empty( $row_action_config['show_on'] ) &&
+				     ! in_array( $type, explode( ',', $row_action_config['show_on'] ) ) ) {
 					continue;
 				}
 				if ( ! empty( $row_action_config['condition'] )
@@ -112,7 +120,7 @@ function amapress_row_actions_handler() {
 
 add_action( 'edit_form_after_title', 'amapress_add_row_actions_to_post_editor', 15 );
 function amapress_add_row_actions_to_post_editor( WP_Post $post ) {
-	$actions = amapress_row_actions_registration( [], $post );
+	$actions = amapress_row_actions_registration( [], $post, 'editor' );
 	if ( ! empty( $actions ) ) {
 		$actions = implode( ', ', $actions );
 		echo "<p>Actions possibles : $actions</p>";
@@ -121,7 +129,7 @@ function amapress_add_row_actions_to_post_editor( WP_Post $post ) {
 
 add_action( 'personal_options', 'amapress_add_row_actions_to_user_editor', 15 );
 function amapress_add_row_actions_to_user_editor( WP_User $user ) {
-	$actions = amapress_row_actions_registration( [], $user );
+	$actions = amapress_row_actions_registration( [], $user, 'editor' );
 	if ( ! empty( $actions ) ) {
 		$actions = implode( ', ', $actions );
 		echo "<tr class='row-action-wrap'><th scope='row'><label>Actions possibles</label></th><td>$actions</td></tr>";
