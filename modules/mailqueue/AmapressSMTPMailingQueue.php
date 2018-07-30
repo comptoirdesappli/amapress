@@ -35,6 +35,11 @@ class AmapressSMTPMailingQueue {
 			$this->refreshWpCron();
 		}
 
+		if ( ! wp_next_scheduled( 'amps_smq_clean_log' ) ) {
+			wp_schedule_event( time(), 'daily', 'amps_smq_clean_log' );
+		}
+		add_action( 'amps_smq_clean_log', [ $this, 'cleanLogs' ] );
+
 		add_action( 'tf_set_value_amapress_mail_queue_interval', [ $this, 'refreshWpCron' ] );
 //		add_action('tf_set_value_amapress_mail_queue_limit', [$this, 'refreshWpCron']);
 //        $this->refreshWpCron();
@@ -96,15 +101,32 @@ class AmapressSMTPMailingQueue {
 
 			return empty( $errors );
 		} else {
-			return self::storeMail( $to, $subject, $message, $headers, $attachments );
+			return self::storeMail( 'waiting', $to, $subject, $message, $headers, $attachments );
 		}
 //		else {
 //		}
 	}
 
+	public function cleanLogs() {
+		$mail_queue_log_clean_days = Amapress::getOption( 'mail_queue_log_clean_days' );
+		if ( $mail_queue_log_clean_days < 0 ) {
+			return;
+		}
+		$clean_date = Amapress::add_days( Amapress::start_of_day( time() ), - $mail_queue_log_clean_days );
+		foreach (
+			AmapressSMTPMailingQueue::loadDataFromFiles( true, 'logged' )
+			as $filename => $email
+		) {
+			if ( $email['time'] < $clean_date ) {
+				@unlink( $filename );
+			}
+		}
+	}
+
 	/**
 	 * Writes mail data to json file.
 	 *
+	 * @param string $type
 	 * @param string $to
 	 * @param string $subject
 	 * @param string $message
@@ -114,7 +136,7 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return bool
 	 */
-	public static function storeMail( $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $subdir = null ) {
+	public static function storeMail( $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null ) {
 		require_once ABSPATH . WPINC . '/class-phpmailer.php';
 
 		$time = $time ?: amapress_time();
@@ -130,7 +152,7 @@ class AmapressSMTPMailingQueue {
 			}
 		}
 
-		$fileName = self::getUploadDir( ! empty( $subdir ) ? $subdir : ! empty( $errors ) ) . microtime( true ) . '.json';
+		$fileName = self::getUploadDir( $type ) . microtime( true ) . '.json';
 		// @todo: not happy with doing the same thing 2x. Should write that to a separate method
 		if ( count( $validEmails ) ) {
 			$data['to'] = implode( ',', $validEmails );
@@ -158,21 +180,31 @@ class AmapressSMTPMailingQueue {
 	 * Creates upload dir if it not existing.
 	 * Adds htaccess protection to upload dir.
 	 *
-	 * @param bool $invalid
+	 * @param string $type
 	 *
 	 * @return string upload dir
 	 */
-	public static function getUploadDir( $invalid = false ) {
-		$subfolder = is_string( $invalid ) ? $invalid : ( $invalid ? 'invalid/' : '' );
-		$dir       = wp_upload_dir()['basedir'] . '/amapress-smtp-mailing-queue/';
-		$created   = wp_mkdir_p( $dir );
+	public static function getUploadDir( $type = 'waiting' ) {
+		$subfolder = '';
+		switch ( $type ) {
+//			case 'waiting':
+//				break;
+			case 'errored':
+				$subfolder = 'invalid/';
+				break;
+			case 'logged':
+				$subfolder = 'logs/';
+				break;
+		}
+		$dir     = wp_upload_dir()['basedir'] . '/amapress-smtp-mailing-queue/';
+		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
 			$handle = @fopen( $dir . '.htaccess', "w" );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
 		}
 
-		if ( $invalid ) {
+		if ( ! empty( $subfolder ) ) {
 			$dir = $dir . $subfolder;
 			wp_mkdir_p( $dir );
 		}
@@ -188,29 +220,34 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return array Mail data
 	 */
-	public static function loadDataFromFiles( $ignoreLimit = false, $invalid = false ) {
+	public static function loadDataFromFiles( $ignoreLimit = false, $types = [ 'waiting' ] ) {
 		$queue_limit = Amapress::getOption( 'mail_queue_limit' );
 		$emails      = [];
 		$i           = 0;
+		if ( ! is_array( $types ) ) {
+			$types = [ $types ];
+		}
 
-		if ( 'both' === $invalid || false === $invalid ) {
-			foreach ( glob( self::getUploadDir( false ) . '*.json' ) as $filename ) {
-				$emails[ $filename ] = json_decode( file_get_contents( $filename ), true );
-				$i ++;
-				if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
-					break;
+		foreach ( $types as $type ) {
+			if ( 'waiting' == $type || 'errored' == $type || 'logged' == $type ) {
+				foreach ( glob( self::getUploadDir( $type ) . '*.json' ) as $filename ) {
+					$emails[ $filename ] = json_decode( file_get_contents( $filename ), true );
+					$i ++;
+					if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
+						break;
+					}
 				}
 			}
 		}
-		if ( 'both' === $invalid || true === $invalid ) {
-			foreach ( glob( self::getUploadDir( true ) . '*.json' ) as $filename ) {
-				$emails[ $filename ] = json_decode( file_get_contents( $filename ), true );
-				$i ++;
-				if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
-					break;
-				}
-			}
-		}
+//		if ( 'both' === $invalid || true === $invalid ) {
+//			foreach ( glob( self::getUploadDir( true ) . '*.json' ) as $filename ) {
+//				$emails[ $filename ] = json_decode( file_get_contents( $filename ), true );
+//				$i ++;
+//				if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
+//					break;
+//				}
+//			}
+//		}
 
 		return $emails;
 	}
@@ -219,7 +256,7 @@ class AmapressSMTPMailingQueue {
 	 * Processes mailing queue.
 	 */
 	public function processQueue() {
-		$mails = $this->loadDataFromFiles( false, 'both' );
+		$mails = $this->loadDataFromFiles( false, [ 'errored', 'waiting' ] );
 		foreach ( $mails as $file => $data ) {
 			$this->sendMail( $data );
 //			if(!empty($errors)) {
@@ -242,8 +279,9 @@ class AmapressSMTPMailingQueue {
 		require_once( 'AmapressSMTPMailingQueueOriginal.php' );
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
-			self::storeMail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors );
-//			self::storeMail($data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, 'error-logs');
+			self::storeMail( 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors );
+		} else {
+			self::storeMail( 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		}
 
 		return $errors;

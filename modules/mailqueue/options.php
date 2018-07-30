@@ -113,7 +113,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'Mails en attente'               => array(
+			'Mails en attente' => array(
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -124,7 +124,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Mails en erreur'                => array(
+			'Mails en erreur'  => array(
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -135,19 +135,41 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
+			'Log des mails'    => array(
+				'desc'    => '',
+				'options' => array(
+					array(
+						'id'      => 'mail_queue_log_clean_days',
+						'type'    => 'number',
+						'step'    => 1,
+						'default' => 90,
+						'name'    => 'Nettoyer les logs (jours)',
+					),
+					array(
+						'id'     => 'mail_queue_logged_list',
+						'type'   => 'custom',
+						'name'   => 'Logs',
+						'custom' => 'amapress_mailing_queue_logged_mail_list',
+					),
+				),
+			),
 		),
 	);
 }
 
 function amapress_mailing_queue_waiting_mail_list() {
-	return amapress_mailing_queue_mail_list( 'waiting-mails', false );
+	return amapress_mailing_queue_mail_list( 'waiting-mails', 'waiting' );
 }
 
 function amapress_mailing_queue_errored_mail_list() {
-	return amapress_mailing_queue_mail_list( 'errored-mails', true );
+	return amapress_mailing_queue_mail_list( 'errored-mails', 'errored' );
 }
 
-function amapress_mailing_queue_mail_list( $id, $invalid = false ) {
+function amapress_mailing_queue_logged_mail_list() {
+	return amapress_mailing_queue_mail_list( 'logged-mails', 'logged' );
+}
+
+function amapress_mailing_queue_mail_list( $id, $type ) {
 	//compact('to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors')
 	$columns   = array();
 	$columns[] = array(
@@ -169,7 +191,7 @@ function amapress_mailing_queue_mail_list( $id, $invalid = false ) {
 		'title' => 'Message',
 		'data'  => 'message',
 	);
-	if ( $invalid ) {
+	if ( 'errored' == $type ) {
 		$columns[] = array(
 			'title' => 'Erreurs',
 			'data'  => 'errors',
@@ -184,7 +206,7 @@ function amapress_mailing_queue_mail_list( $id, $invalid = false ) {
 //            'data' => '',
 //        ),
 //);
-	$emails = AmapressSMTPMailingQueue::loadDataFromFiles( true, $invalid );
+	$emails = AmapressSMTPMailingQueue::loadDataFromFiles( true, $type );
 	$data   = array();
 	foreach ( $emails as $email ) {
 		$data[] = array(
@@ -194,16 +216,19 @@ function amapress_mailing_queue_mail_list( $id, $invalid = false ) {
 			),
 			'to'      => esc_html( $email['to'] ),
 			'subject' => esc_html( $email['subject'] ),
-			'message' => esc_html( $email['message'] ),
+//			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
+			'message' => wpautop( $email['message'] ),
 			'errors'  => esc_html( $email['errors'] ),
 			'headers' => implode( '<br/>', array_map( function ( $h ) {
 				return esc_html( $h );
 			}, $email['headers'] ) ),
 		);
 	}
-//    var_dump($emails);
-//    var_dump($data);
+
 	return amapress_get_datatable( $id, $columns, $data,
-		array( 'paging' => false ) );
-//            }
+		array(
+			'paging' => true,
+			'nowrap' => false,
+		)
+	);
 }
