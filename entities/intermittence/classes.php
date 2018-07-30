@@ -451,138 +451,212 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return 'ok';
 	}
 
-	public function getProperty( $name ) {
-		switch ( $name ) {
-			case 'lien-liste-paniers':
-			case 'liste-paniers':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
-				$dist = $this->getDistribution();
-				if ( $dist == null ) {
-					return '';
-				}
+	private static $properties = null;
 
-				return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret = array_merge( parent::getProperties(), [
+				'lien-liste-paniers'               => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+						$dist = $panier->getDistribution();
+						if ( $dist == null ) {
+							return '';
+						}
 
-			case 'mes-echanges':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
-				$dist = $this->getDistribution();
-				if ( $dist == null ) {
-					return '';
-				}
+						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
+					}
+				],
+				'liste-paniers'                    => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+						$dist = $panier->getDistribution();
+						if ( $dist == null ) {
+							return '';
+						}
 
-				return Amapress::makeLink( Amapress::getPageLink( 'mes-paniers-intermittents-page' ) . '#' . $dist->getSlug() );
-			case 'date':
-				return date_i18n( 'd/m/Y', $this->getDate() );
-			case 'panier':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
+						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
+					}
+				],
+				'mes-echanges'                     => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+						$dist = $panier->getDistribution();
+						if ( $dist == null ) {
+							return '';
+						}
 
-				return $this->getPaniersTitles();
-			case 'adherent-nom':
-				if ( $this->getAdherent() == null ) {
-					return '';
-				}
+						return Amapress::makeLink( Amapress::getPageLink( 'mes-paniers-intermittents-page' ) . '#' . $dist->getSlug() );
+					}
+				],
+				'date'                             => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						return date_i18n( 'd/m/Y', $panier->getDate() );
+					}
+				],
+				'panier'                           => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
 
-				return $this->getAdherent()->getDisplayName();
-			case 'adherent':
-				if ( $this->getAdherent() == null ) {
-					return '';
-				}
+						return $panier->getPaniersTitles();
+					}
+				],
+				'adherent-nom'                     => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( $panier->getAdherent() == null ) {
+							return '';
+						}
 
-				return $this->getAdherent()->getDisplay(
-					[
-						'show_avatar' => 'false',
-					]
-				);
-			case 'adherent-message':
-				return $this->getAdherentMessage();
-			case 'adherent-cancel-message':
-				return $this->getAdherentCancelMessage();
-			case 'repreneur-nom':
-				if ( $this->last_ask_id ) {
-					$user = AmapressUser::getBy( $this->last_ask_id );
-				} else {
-					$user = $this->getRepreneur();
-				}
+						return $panier->getAdherent()->getDisplayName();
+					}
+				],
+				'adherent'                         => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( $panier->getAdherent() == null ) {
+							return '';
+						}
 
-				if ( ! $user ) {
-					return '';
-				}
+						return $panier->getAdherent()->getDisplay(
+							[
+								'show_avatar' => 'false',
+							]
+						);
+					}
+				],
+				'adherent-message'                 => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						return $panier->getAdherentMessage();
+					}
+				],
+				'adherent-cancel-message'          => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						return $panier->getAdherentCancelMessage();
+					}
+				],
+				'repreneur-nom'                    => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( $panier->last_ask_id ) {
+							$user = AmapressUser::getBy( $panier->last_ask_id );
+						} else {
+							$user = $panier->getRepreneur();
+						}
 
-				return $user->getDisplayName();
-			case 'repreneur':
-				if ( $this->last_ask_id ) {
-					$user = AmapressUser::getBy( $this->last_ask_id );
-				} else {
-					if ( $this->getRepreneur() == null ) {
+						if ( ! $user ) {
+							return '';
+						}
+
+						return $user->getDisplayName();
+					}
+				],
+				'repreneur'                        => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( $panier->last_ask_id ) {
+							$user = AmapressUser::getBy( $panier->last_ask_id );
+						} else {
+							if ( $panier->getRepreneur() == null ) {
+								return '';
+							}
+							$user = $panier->getRepreneur();
+						}
+
+						return $user->getDisplay(
+							[
+								'show_avatar' => 'false',
+							]
+						);
+					}
+				],
+				'contrat'                          => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+
+						return $panier->getContratTitles();
+					}
+				],
+				'distribution'                     => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+						$dist = $panier->getDistribution();
+						if ( $dist == null ) {
+							return '';
+						}
+
+						return $dist->getTitle();
+					}
+				],
+				'distribution-href'                => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+						$dist = $panier->getDistribution();
+						if ( $dist == null ) {
+							return '';
+						}
+
+						return $dist->getPermalink();
+					}
+				],
+				'distribution-link'                => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( ! $panier->hasPaniers() ) {
+							return '';
+						}
+						$dist = $panier->getDistribution();
+						if ( $dist == null ) {
+							return '';
+						}
+
+						return Amapress::makeLink( $dist->getPermalink(), $dist->getTitle() );
+					}
+				],
+				'lien_desinscription_intermittent' => [
+					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return '';
 					}
-					$user = $this->getRepreneur();
-				}
+				],
+			] );
 
-				return $user->getDisplay(
-					[
-						'show_avatar' => 'false',
-					]
-				);
-			case 'contrat':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
+			foreach ( AmapressUser::getProperties() as $prop_name => $prop ) {
+				$pn         = "adherent-$prop_name";
+				$ret[ $pn ] = [
+					'func' => function ( AmapressIntermittence_panier $panier ) use ( $pn ) {
+						return $panier->getAdherent()->getProperty( substr( $pn, strlen( 'adherent-' ) ) );
+					}
+				];
+				$pn         = "repreneur-$prop_name";
+				$ret[ $pn ] = [
+					'func' => function ( AmapressIntermittence_panier $panier ) use ( $pn ) {
+						if ( ! $panier->getRepreneurId() ) {
+							return '';
+						}
 
-				return $this->getContratTitles();
-			case 'distribution':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
-				$dist = $this->getDistribution();
-				if ( $dist == null ) {
-					return '';
-				}
-
-				return $dist->getTitle();
-			case 'distribution-href':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
-				$dist = $this->getDistribution();
-				if ( $dist == null ) {
-					return '';
-				}
-
-				return $dist->getPermalink();
-			case 'distribution-link':
-				if ( ! $this->hasPaniers() ) {
-					return '';
-				}
-				$dist = $this->getDistribution();
-				if ( $dist == null ) {
-					return '';
-				}
-
-				return Amapress::makeLink( $dist->getPermalink(), $dist->getTitle() );
-			case 'lien_desinscription_intermittent':
-				return '';
-//				$current_amapien = AmapressUser::getBy(amapress_current_user_id());
-//				return $current_amapien->getProperty($name);
-			default:
-				if ( strpos( $name, 'adherent-' ) === 0 ) {
-					return $this->getAdherent()->getProperty( substr( $name, strlen( 'adherent-' ) ) );
-				}
-				if ( strpos( $name, 'repreneur-' ) === 0 ) {
-					return $this->getAdherent()->getProperty( substr( $name, strlen( 'repreneur-' ) ) );
-				}
-
-				return parent::getProperty( $name );
+						return $panier->getRepreneur()->getProperty( substr( $pn, strlen( 'repreneur-' ) ) );
+					}
+				];
+			}
+			self::$properties = $ret;
 		}
+
+		return self::$properties;
 	}
 
-	public static function get_next_panier_intermittent( $date = null, $order = 'NONE' ) {
+	public
+	static function get_next_panier_intermittent(
+		$date = null, $order = 'NONE'
+	) {
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
@@ -600,7 +674,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	}
 
 	/** @return Amapress_EventEntry */
-	public function get_related_events( $user_id ) {
+	public
+	function get_related_events(
+		$user_id
+	) {
 		$ret = array();
 		if ( empty( $user_id ) || $user_id <= 0 ) {
 

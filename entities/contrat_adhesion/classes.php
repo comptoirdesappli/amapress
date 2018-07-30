@@ -56,11 +56,11 @@ class AmapressAdhesionQuantite {
 	 */
 	public function getTitle() {
 		$quant = $this->getContratQuantite();
-			if ( $this->getFactor() != 1 ) {
-				return $this->getFactor() . ' x ' . $quant->getTitle();
-			} else {
-				return $quant->getTitle();
-			}
+		if ( $this->getFactor() != 1 ) {
+			return $this->getFactor() . ' x ' . $quant->getTitle();
+		} else {
+			return $quant->getTitle();
+		}
 	}
 
 	/**
@@ -123,58 +123,123 @@ class AmapressAdhesion extends TitanEntity {
 		parent::__construct( $post_id );
 	}
 
-	public function getProperty( $name ) {
-		switch ( $name ) {
-			case 'contrat_titre':
-				return $this->getContrat_instance()->getTitle();
-			case 'contrat_lien':
-				return $this->getContrat_instance()->getModel()->getPermalink();
-			case 'date_debut':
-				return date_i18n( 'd/m/Y', $this->getDate_debut() );
-			case 'date_fin':
-				return date_i18n( 'd/m/Y', $this->getDate_fin() );
-			case 'date_debut_complete':
-				return date_i18n( 'D j M Y', $this->getDate_debut() );
-			case 'date_fin_complete':
-				return date_i18n( 'D j M Y', $this->getDate_fin() );
-			case 'adherent':
-				return $this->getAdherent()->getDisplayName();
-			case 'adherent.nom':
-				return $this->getAdherent()->getUser()->last_name;
-			case 'adherent.prenom':
-				return $this->getAdherent()->getUser()->first_name;
-			case 'adherent.adresse':
-				return $this->getAdherent()->getFormattedAdresse();
-			case 'adherent.tel':
-				return $this->getAdherent()->getTelephone();
-			case 'adherent.mail':
-			case 'adherent.email':
-				return $this->getAdherent()->getEmail();
-			case 'lieu':
-				return $this->getLieu()->getLieuTitle();
-			case 'nb_paiements':
-				return $this->getPaiements();
-			case 'nb_distributions':
-				return count( $this->getRemainingDates() );
-			case 'dates_distribution':
-				return implode( ', ', array_map( function ( $d ) {
-					return date_i18n( 'd/m/Y', $d );
-				}, $this->getRemainingDates() ) );
-			case 'option_paiements':
-				$o = $this->getContrat_instance()->getChequeOptionsForTotal( $this->getPaiements(), $this->getTotalAmount() );
+	private static $properties = null;
 
-				return $o['desc'];
-			case 'quantites':
-				if ( $this->getContrat_instance()->isPanierVariable() ) {
-					return $this->getPaniersVariablesDescription();
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret                        = [];
+			$ret['contrat_titre']       = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getTitle();
 				}
+			];
+			$ret['contrat_lien']        = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getPermalink();
+				}
+			];
+			$ret['date_debut']          = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['date_fin']            = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['date_debut_complete'] = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'D j M Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['date_fin_complete']   = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'D j M Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['adherent']            = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getDisplayName();
+				}
+			];
+			$ret['adherent.nom']        = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getUser()->last_name;
+				}
+			];
+			$ret['adherent.prenom']     = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getUser()->first_name;
+				}
+			];
+			$ret['adherent.adresse']    = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getFormattedAdresse();
+				}
+			];
+			$ret['adherent.tel']        = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getTelephone();
+				}
+			];
+			$ret['adherent.mail']       = [
+				'func' => function ( AmapressAdhesion $adh ) {
+				}
+			];
 
-				return $this->getContrat_quantites_AsString();
-			case 'total':
-				return $this->getTotalAmount();
-			default:
-				return '';
+			$ret['adherent.email']     = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					$adh->getAdherent()->getEmail();
+				}
+			];
+			$ret['lieu']               = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getLieu()->getLieuTitle();
+				}
+			];
+			$ret['nb_paiements']       = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getPaiements();
+				}
+			];
+			$ret['nb_distributions']   = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return count( $adh->getRemainingDates() );
+				}
+			];
+			$ret['dates_distribution'] = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return implode( ', ', array_map( function ( $d ) {
+						return date_i18n( 'd/m/Y', $d );
+					}, $adh->getRemainingDates() ) );
+				}
+			];
+			$ret['option_paiements']   = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
+
+					return $o['desc'];
+				}
+			];
+			$ret['quantites']          = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( $adh->getContrat_instance()->isPanierVariable() ) {
+						return $adh->getPaniersVariablesDescription();
+					}
+
+					return $adh->getContrat_quantites_AsString();
+				}
+			];
+			$ret['total']              = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getTotalAmount();
+				}
+			];
+			self::$properties          = ret;
 		}
+
+		return self::$properties;
 	}
 
 	public function getDate_debut() {

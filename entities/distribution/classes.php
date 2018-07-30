@@ -597,126 +597,239 @@ class AmapressDistribution extends Amapress_EventBase {
 		return $ret;
 	}
 
-	public function getProperty( $name ) {
-		switch ( $name ) {
-			case 'lien_liste_emargement':
-				return Amapress::makeLink( $this->getListeEmargementHref() );
-			case 'lieu':
-				return $this->getRealLieu()->getTitle();
-			case 'lieu_instruction':
-			case 'lieu_instructions':
-				$instructions = $this->getLieu()->getInstructions_privee();
-				$instructions = str_replace( '[liste-emargement-button]', Amapress::makeLink( $this->getListeEmargementHref() ), $instructions );
+	private static $properties = null;
 
-				return $instructions;
-			case  'liste_contrats':
-				return implode( ', ', array_map(
-					function ( $c ) {
-						/** @var AmapressContrat_instance $c */
-						return $c->getModel()->getTitle();
-					}, $this->getContrats()
-				) );
-			case 'heure_debut':
-				return date_i18n( 'H:i', $this->getStartDateAndHour() );
-			case 'heure_fin':
-				return date_i18n( 'H:i', $this->getEndDateAndHour() );
-			case 'jour_date_distrib':
-				return date_i18n( 'l d/m/Y', $this->getDate() );
-			case 'date_distrib':
-				return date_i18n( 'd/m/Y', $this->getDate() );
-			case 'jour_distrib':
-				return date_i18n( 'l', $this->getDate() );
-			case 'lien_distrib':
-				return Amapress::makeLink( $this->getPermalink() );
-			case 'lien_distribution_title':
-			case 'lien_distribution_titre':
-			case 'lien_distrib_titre':
-			case 'lien_distrib_title':
-				return Amapress::makeLink( $this->getPermalink(), $this->getTitle() );
-			case 'lien_distribution_title_admin':
-			case 'lien_distribution_titre_admin':
-			case 'lien_distrib_titre_admin':
-			case 'lien_distrib_title_admin':
-				return Amapress::makeLink( $this->getAdminEditLink(), $this->getTitle() );
-			case 'lien_instructions_lieu':
-				return Amapress::makeLink( $this->getPermalink() . '#instructions-lieu' );
-			case 'resp-inscrits':
-				return count( $this->getResponsables() );
-			case 'resp-requis':
-				return count( AmapressDistributions::get_required_responsables( $this->ID ) );
-			case 'resp-manquants':
-				return count( AmapressDistributions::get_required_responsables( $this->ID ) ) - count( $this->getResponsables() );
-			case  'lien-resp-distrib-ical':
-				return add_query_arg(
-					[
-						'events_id'    => $this->ID,
-						'events_types' => 'distribution,resp-distribution'
-					],
-					Amapress_Agenda_ICAL_Export::get_link_href() );
-			case  'lien-distrib-ical':
-				return parent::getProperty( 'lien-evenement-ical' );
-			case 'liste-resp-email-phone':
-				$responsables = $this->getResponsables();
-				$responsables = array_map( function ( $p ) {
-					/** @var AmapressUser $p */
-					return '<li>' . sprintf( '<a href="mailto:%s">%s</a> (%s)', implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
-				}, $responsables );
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret = array_merge( parent::getProperties(), [
+				'lien_liste_emargement'         => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getListeEmargementHref() );
+					}
+				],
+				'lieu'                          => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return $distrib->getRealLieu()->getTitle();
+					}
+				],
+				'lieu_instruction'              => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$instructions = $distrib->getLieu()->getInstructions_privee();
+						$instructions = str_replace( '[liste-emargement-button]', Amapress::makeLink( $distrib->getListeEmargementHref() ), $instructions );
 
-				return '<ul>' . implode( '', $responsables ) . '</ul>';
-			case 'liste-resp-phone':
-				$responsables = $this->getResponsables();
-				$responsables = array_map( function ( $p ) {
-					/** @var AmapressUser $p */
-					return '<li>' . sprintf( '%s (%s)', esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
-				}, $responsables );
+						return $instructions;
+					}
+				],
+				'lieu_instructions'             => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$instructions = $distrib->getLieu()->getInstructions_privee();
+						$instructions = str_replace( '[liste-emargement-button]', Amapress::makeLink( $distrib->getListeEmargementHref() ), $instructions );
 
-				return '<ul>' . implode( '', $responsables ) . '</ul>';
-			case 'liste-paniers-lien':
-				$paniers = AmapressPaniers::getPaniersForDist( $this->getDate() );
-				$paniers = array_map( function ( $p ) {
-					/** @var AmapressPanier $p */
-					return '<li>' . Amapress::makeLink( $p->getAdminEditLink(), $p->getTitle() ) . '</li>';
-				}, $paniers );
+						return $instructions;
+					}
+				],
+				'liste_contrats'                => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return implode( ', ', array_map(
+							function ( $c ) {
+								/** @var AmapressContrat_instance $c */
+								return $c->getModel()->getTitle();
+							}, $distrib->getContrats()
+						) );
+					}
+				],
+				'heure_debut'                   => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return date_i18n( 'H:i', $distrib->getStartDateAndHour() );
+					}
+				],
+				'heure_fin'                     => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return date_i18n( 'H:i', $distrib->getEndDateAndHour() );
+					}
+				],
+				'jour_date_distrib'             => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return date_i18n( 'l d/m/Y', $distrib->getDate() );
+					}
+				],
+				'date_distrib'                  => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return date_i18n( 'd/m/Y', $distrib->getDate() );
+					}
+				],
+				'jour_distrib'                  => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return date_i18n( 'l', $distrib->getDate() );
+					}
+				],
+				'lien_distrib'                  => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getPermalink() );
+					}
+				],
+				'lien_distribution_title'       => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
+					}
+				],
+				'lien_distribution_titre'       => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
+					}
+				],
+				'lien_distrib_titre'            => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
+					}
+				],
+				'lien_distrib_title'            => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
+					}
+				],
+				'lien_distribution_title_admin' => [
+					'func' => function ( AmapressDistribution $distrib ) {
+					}
+				],
+				'lien_distribution_titre_admin' => [
+					'func' => function ( AmapressDistribution $distrib ) {
+					}
+				],
+				'lien_distrib_titre_admin'      => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getAdminEditLink(), $distrib->getTitle() );
+					}
+				],
+				'lien_distrib_title_admin'      => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getAdminEditLink(), $distrib->getTitle() );
+					}
+				],
+				'lien_instructions_lieu'        => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return Amapress::makeLink( $distrib->getPermalink() . '#instructions-lieu' );
+					}
+				],
+				'resp-inscrits'                 => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return count( $distrib->getResponsables() );
+					}
+				],
+				'resp-requis'                   => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return count( AmapressDistributions::get_required_responsables( $distrib->ID ) );
+					}
+				],
+				'resp-manquants'                => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return count( AmapressDistributions::get_required_responsables( $distrib->ID ) ) - count( $distrib->getResponsables() );
+					}
+				],
+				'lien-resp-distrib-ical'        => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return add_query_arg(
+							[
+								'events_id'    => $distrib->ID,
+								'events_types' => 'distribution,resp-distribution'
+							],
+							Amapress_Agenda_ICAL_Export::get_link_href() );
+					}
+				],
+				'lien-distrib-ical'             => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return $distrib->getProperty( 'lien-evenement-ical' );
+					}
+				],
+				'liste-resp-email-phone'        => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$responsables = $distrib->getResponsables();
+						$responsables = array_map( function ( $p ) {
+							/** @var AmapressUser $p */
+							return '<li>' . sprintf( '<a href="mailto:%s">%s</a> (%s)', implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+						}, $responsables );
 
-				return '<ul>' . implode( '', $paniers ) . '</ul>';
-			case 'liste-paniers':
-				$paniers = AmapressPaniers::getPaniersForDist( $this->getDate() );
-				$paniers = array_map( function ( $p ) {
-					/** @var AmapressPanier $p */
-					return '<li>' . esc_html( $p->getTitle() ) . '</li>';
-				}, $paniers );
+						return '<ul>' . implode( '', $responsables ) . '</ul>';
+					}
+				],
+				'liste-resp-phone'              => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$responsables = $distrib->getResponsables();
+						$responsables = array_map( function ( $p ) {
+							/** @var AmapressUser $p */
+							return '<li>' . sprintf( '%s (%s)', esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+						}, $responsables );
 
-				return '<ul>' . implode( '', $paniers ) . '</ul>';
-			case 'nb-paniers-intermittents':
-				return count( $this->getPaniersIntermittents() );
-			case 'paniers-intermittents':
-				return implode( ', ', array_map( function ( $p ) {
-					/** @var AmapressIntermittence_panier $p */
-					return $p->getPaniersDescription();
-				}, $this->getPaniersIntermittents() ) );
-			case 'paniers_modifies':
-				$paniers_modifies = array_merge(
-					$this->getCancelledPaniers(),
-					$this->getDelayedToThisPaniers()
-				);
-				$paniers_modifies = array_map( function ( $p ) {
-					/** @var AmapressPanier $p */
-					return '<li>' . esc_html( $p->getTitle() ) . '</li>';
-				}, $paniers_modifies );
+						return '<ul>' . implode( '', $responsables ) . '</ul>';
+					}
+				],
+				'liste-paniers-lien'            => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$paniers = AmapressPaniers::getPaniersForDist( $distrib->getDate() );
+						$paniers = array_map( function ( $p ) {
+							/** @var AmapressPanier $p */
+							return '<li>' . Amapress::makeLink( $p->getAdminEditLink(), $p->getTitle() ) . '</li>';
+						}, $paniers );
 
-				return '<ul>' . implode( '', $paniers_modifies ) . '</ul>';
+						return '<ul>' . implode( '', $paniers ) . '</ul>';
+					}
+				],
+				'liste-paniers'                 => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$paniers = AmapressPaniers::getPaniersForDist( $distrib->getDate() );
+						$paniers = array_map( function ( $p ) {
+							/** @var AmapressPanier $p */
+							return '<li>' . esc_html( $p->getTitle() ) . '</li>';
+						}, $paniers );
+
+						return '<ul>' . implode( '', $paniers ) . '</ul>';
+					}
+				],
+				'nb-paniers-intermittents'      => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return count( $distrib->getPaniersIntermittents() );
+					}
+				],
+				'paniers-intermittents'         => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						return implode( ', ', array_map( function ( $p ) {
+							/** @var AmapressIntermittence_panier $p */
+							return $p->getPaniersDescription();
+						}, $distrib->getPaniersIntermittents() ) );
+					}
+				],
+				'paniers_modifies'              => [
+					'func' => function ( AmapressDistribution $distrib ) {
+						$paniers_modifies = array_merge(
+							$distrib->getCancelledPaniers(),
+							$distrib->getDelayedToThisPaniers()
+						);
+						$paniers_modifies = array_map( function ( $p ) {
+							/** @var AmapressPanier $p */
+							return '<li>' . esc_html( $p->getTitle() ) . '</li>';
+						}, $paniers_modifies );
+
+						return '<ul>' . implode( '', $paniers_modifies ) . '</ul>';
+					}
+				]
+			] );
+
+			self::$properties = $ret;
 		}
 
-
-		return parent::getProperty( $name );
+		return self::$properties;
 	}
 
-	public function getListeEmargementHref() {
+	public
+	function getListeEmargementHref() {
 		return $this->getPermalink( 'liste-emargement' );
 	}
 
 	/** @return AmapressDistribution[] */
-	public static function getNextDistribs( $date = null, $weeks = 1, $user_id = null ) {
+	public
+	static function getNextDistribs(
+		$date = null, $weeks = 1, $user_id = null
+	) {
 		$is_resp_amap = amapress_can_access_admin();
 
 		if ( ! $date ) {
@@ -742,7 +855,8 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	/** @return AmapressIntermittence_panier[] */
-	public function getPaniersIntermittents() {
+	public
+	function getPaniersIntermittents() {
 		return AmapressPaniers::getPanierIntermittents(
 			[
 				'date' => $this->getDate()
@@ -751,7 +865,8 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	/** @return AmapressIntermittence_panier[] */
-	public function getPaniersIntermittentsDispo() {
+	public
+	function getPaniersIntermittentsDispo() {
 		return AmapressPaniers::getPanierIntermittents(
 			[
 				'date'   => $this->getDate(),

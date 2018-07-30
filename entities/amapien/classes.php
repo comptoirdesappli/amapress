@@ -719,18 +719,46 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 	}
 
-	public
-	function getProperty(
-		$name
-	) {
-		if ( 'lien_intermittence' == $name || 'lien_paniers_intermittence' == $name ) {
-			$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
+	private static $properties = null;
 
-			return Amapress::makeLink( $url );
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret = [
+				'lien_intermittence'               => [
+					'function' => function ( AmapressUser $amapien ) {
+						$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
+
+						return Amapress::makeLink( $url );
+					}
+				],
+				'lien_paniers_intermittence'       => [
+					'function' => function ( AmapressUser $amapien ) {
+						$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
+
+						return Amapress::makeLink( $url );
+					}
+				],
+				'lien_desinscription_intermittent' => [
+					'function' => function ( AmapressUser $amapien ) {
+						return amapress_intermittence_desinscription_link();//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
+					}
+				],
+			];
+
+			self::$properties = $ret;
 		}
-		if ( 'lien_desinscription_intermittent' == $name ) {
-			return amapress_intermittence_desinscription_link();//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
+
+		return self::$properties;
+	}
+
+	public function getProperty( $name ) {
+		$this->ensure_init();
+		$props = static::getProperties();
+		if ( isset( $props[ $name ] ) ) {
+			return call_user_func( $props[ $name ]['func'], $this );
 		}
+
+		return "##UNKNOW:$name##";
 	}
 
 	public

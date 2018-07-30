@@ -62,14 +62,18 @@ class TitanEntity {
 		return 0;
 	}
 
-	public function getPropertiesDescriptions() {
+	public static function getProperties() {
 		return [];
 	}
 
 	public function getProperty( $name ) {
 		$this->ensure_init();
+		$props = static::getProperties();
+		if ( isset( $props[ $name ] ) ) {
+			return call_user_func( $props[ $name ]['func'], $this );
+		}
 
-		return '';
+		return "##UNKNOW:$name##";
 	}
 
 	public function linkToPermalink( $html, $classes = '', $relative_url = null ) {
