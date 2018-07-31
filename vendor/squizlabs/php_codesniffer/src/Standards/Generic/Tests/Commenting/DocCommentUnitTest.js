@@ -1,3 +1,4 @@
+
 /**
  * Short description.
  *
@@ -184,6 +185,26 @@
  * @param boolean $foo blah
  * @return boolean
  * @param boolean $bar Blah.
+ */
+
+/**
+ * Short description.
+ *
+ * @tag    one
+ * @param  int    $number
+ * @param  string $text
+ * @return something
+ */
+
+/**
+ *
+ * @param  int    $number
+ * @param  string $text
+ * @return something
+ */
+
+/**
+ * @param int $number
  */
 
 /**

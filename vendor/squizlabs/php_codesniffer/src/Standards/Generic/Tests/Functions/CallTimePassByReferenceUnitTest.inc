@@ -1,5 +1,4 @@
 <?php
-
 class myclass extends yourclass implements someint {
 	function myfunc( $var ) {
 		echo $var;

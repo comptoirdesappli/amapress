@@ -21,10 +21,10 @@ if (ini_get('phar.readonly') === '1') {
     exit(1);
 }
 
-$scripts = array(
-            'phpcs',
-            'phpcbf',
-           );
+$scripts = [
+	'phpcs',
+	'phpcbf',
+];
 
 foreach ($scripts as $script) {
     echo "Building $script phar".PHP_EOL;
@@ -82,7 +82,7 @@ foreach ($scripts as $script) {
 	*/
 
     echo "\t=> adding stub... ";
-    $stub = '#!/usr/bin/env php'."\n";
+	$stub = '#!/usr/bin/env php' . "\n";
     $stub .= '<?php'."\n";
 	$stub .= 'Phar::mapPhar(\'' . $pharName . '\');' . "\n";
 	$stub .= 'require_once "phar://' . $pharName . '/autoload.php";' . "\n";
@@ -92,5 +92,5 @@ foreach ($scripts as $script) {
     $stub .= '__HALT_COMPILER();';
     $phar->setStub($stub);
 
-	echo 'done'.PHP_EOL;
+	echo 'done' . PHP_EOL;
 }//end foreach

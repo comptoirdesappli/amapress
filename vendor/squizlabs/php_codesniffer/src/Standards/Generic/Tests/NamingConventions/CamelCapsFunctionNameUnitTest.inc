@@ -231,7 +231,6 @@ class Foo extends \SoapClient {
 
 function __debugInfo() {
 }
-
 class Foo {
 	function __debugInfo() {
 	}

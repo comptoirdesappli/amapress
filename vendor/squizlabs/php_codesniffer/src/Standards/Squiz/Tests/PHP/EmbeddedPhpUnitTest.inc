@@ -101,8 +101,8 @@ foreach ( $root->section as $section ) {
 			?>
 
             <strong><?php
-				echo 'foo';
-				?></strong>
+	            echo 'foo';
+	            ?></strong>
 
             ?>
 

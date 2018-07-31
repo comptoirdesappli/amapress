@@ -1,5 +1,4 @@
 <?php
-
 namespace A\B {
 	class MyClass {
 	}

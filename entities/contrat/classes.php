@@ -245,6 +245,59 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_min_cheque_amount' );
 	}
 
+	public function getContratWordModelId() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_word_model' );
+	}
+
+	public function getContratModelDocFileName() {
+		return get_attached_file( $this->getContratWordModelId(), true );
+	}
+
+//	public function getContratDocFileName($date_first_distrib) {
+//		$model_filename = $this->getContratModelDocFileName();
+//		$ext = strpos($model_filename, '.docx') !== false ? '.docx' : '.odt';
+//		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
+//				'inscription-' . $this->ID . '-' . date_i18n('Y-m-d', $date_first_distrib) . '-' . $this->getTitle() . $ext );
+//	}
+
+//	public function generateContratDoc($date_first_distrib) {
+//		$out_filename = $this->getContratDocFileName($date_first_distrib);
+//		$model_filename = $this->getContratModelDocFileName();
+//
+//		$placeholders = [];
+//		foreach ( self::getProperties() as $prop_name => $prop_config ) {
+//			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
+//		}
+//
+//		$remaining_dates = $this->getRemainingDatesWithFactors($date_first_distrib);
+//		$quants = $this->get( null );
+////		if ( ! $this->getContrat_instance()->isPanierVariable() ) {
+//		$i = 1;
+//		foreach ( $quants as $quant ) {
+//			$placeholders["quantite#$i"]               = $quant->getTitle();
+//			$placeholders["quantite_code#$i"]          = $quant->getCode();
+//			$placeholders["quantite_total#$i"]         = $quant->getPrice();
+//			$placeholders["quantite_nombre#$i"]        = $quant->getFactor();
+//			$placeholders["quantite_prix_unitaire#$i"] = $quant->getContratQuantite()->getPrix_unitaire();
+//			$placeholders["quantite_description#$i"]   = $quant->getContratQuantite()->getDescription();
+//			$placeholders["quantite_unite#$i"]         = $quant->getContratQuantite()->getPriceUnitDisplay();
+//			$i                                         += 1;
+//		}
+////		}
+//
+//
+//		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+//		$templateProcessor->cloneRow( 'quantite', count( $quants ) );
+//		foreach ( $placeholders as $k => $v ) {
+//			$templateProcessor->setValue( $k, $v );
+//		}
+//
+//		$templateProcessor->saveAs( $out_filename );
+//
+//		return $out_filename;
+//	}
+//
+
 	public function getMinEngagement() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_min_engagement' );
 	}

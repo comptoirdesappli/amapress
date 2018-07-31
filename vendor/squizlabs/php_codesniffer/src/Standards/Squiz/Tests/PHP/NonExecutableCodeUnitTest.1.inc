@@ -135,12 +135,10 @@ switch ( $var ) {
 }
 
 defined( 'FOO' ) or die( 'error' );
-defined( 'FOO' ) || die( 'error' );
-
+defined( 'FOO' ) || die( 'error');
 interface myInterface {
 	function myFunc();
 }
-
 echo 'hello';
 
 function foo( $color ) {

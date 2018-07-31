@@ -87,11 +87,14 @@ class SideEffectsSniff implements Sniff {
 			T_ELSEIF => T_ELSEIF,
 		];
 
+		$checkAnnotations = $phpcsFile->config->annotations;
+
 		$firstSymbol = null;
 		$firstEffect = null;
 		for ( $i = $start; $i <= $end; $i ++ ) {
 			// Respect phpcs:disable comments.
-			if ( $tokens[ $i ]['code'] === T_PHPCS_DISABLE
+			if ( $checkAnnotations === true
+			     && $tokens[ $i ]['code'] === T_PHPCS_DISABLE
 			     && ( empty( $tokens[ $i ]['sniffCodes'] ) === true
 			          || isset( $tokens[ $i ]['sniffCodes']['PSR1'] ) === true
 			          || isset( $tokens[ $i ]['sniffCodes']['PSR1.Files'] ) === true
@@ -128,6 +131,11 @@ class SideEffectsSniff implements Sniff {
 
 			// Ignore shebang.
 			if ( substr( $tokens[ $i ]['content'], 0, 2 ) === '#!' ) {
+				continue;
+			}
+
+			// Ignore logical operators.
+			if ( isset( Tokens::$booleanOperators[ $tokens[ $i ]['code'] ] ) === true ) {
 				continue;
 			}
 
@@ -173,9 +181,10 @@ class SideEffectsSniff implements Sniff {
 			} else if ( $tokens[ $i ]['code'] === T_STRING
 			            && strtolower( $tokens[ $i ]['content'] ) === 'define'
 			) {
-				$prev = $phpcsFile->findPrevious( T_WHITESPACE, ( $i - 1 ), null, true );
+				$prev = $phpcsFile->findPrevious( Tokens::$emptyTokens, ( $i - 1 ), null, true );
 				if ( $tokens[ $prev ]['code'] !== T_OBJECT_OPERATOR
 				     && $tokens[ $prev ]['code'] !== T_DOUBLE_COLON
+				     && $tokens[ $prev ]['code'] !== T_FUNCTION
 				) {
 					if ( $firstSymbol === null ) {
 						$firstSymbol = $i;
@@ -187,6 +196,27 @@ class SideEffectsSniff implements Sniff {
 					}
 
 					continue;
+				}
+			}//end if
+
+			// Special case for defined() as it can be used to see
+			// if a constant (a symbol) should be defined or not and
+			// doesn't need to use a full conditional block.
+			if ( $tokens[ $i ]['code'] === T_STRING
+			     && strtolower( $tokens[ $i ]['content'] ) === 'defined'
+			) {
+				$openBracket = $phpcsFile->findNext( Tokens::$emptyTokens, ( $i + 1 ), null, true );
+				if ( $tokens[ $openBracket ]['code'] === T_OPEN_PARENTHESIS
+				     && isset( $tokens[ $openBracket ]['parenthesis_closer'] ) === true
+				) {
+					$prev = $phpcsFile->findPrevious( Tokens::$emptyTokens, ( $i - 1 ), null, true );
+					if ( $tokens[ $prev ]['code'] !== T_OBJECT_OPERATOR
+					     && $tokens[ $prev ]['code'] !== T_DOUBLE_COLON
+					     && $tokens[ $prev ]['code'] !== T_FUNCTION
+					) {
+						$i = $tokens[ $openBracket ]['parenthesis_closer'];
+						continue;
+					}
 				}
 			}//end if
 

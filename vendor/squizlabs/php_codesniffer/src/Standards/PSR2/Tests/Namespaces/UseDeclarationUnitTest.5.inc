@@ -1,5 +1,4 @@
 <?php
-
 namespace MyProject;
 
 use Single\ClassA as A;
@@ -31,6 +30,33 @@ use foo\math\{
 	Math, const PI, function sin, function cos, function cosh
 };
 
-class PHP7 {
+use Grouped\TrailingComma\ {
+	ClassL,
+	const ConstM,
+	function func_n,
+	ClassO as O,
+};
 
-}
+use function foo\math\trailingcomma\no\whitespace\{
+	sin, cos, cosh,
+};
+
+use function foo\math\multipleonnewline\{
+	sin, cos, /* comment */
+	cosh
+};
+
+// phpcs:disable Standard.Cat.Sniff -- for reasons.
+use Grouped\TrailingCommaWithCommentsAndAnnotations\ {
+	// A comment.
+	ClassP,
+	/* Another comment. */
+	const ConstQ, // A trailing comment.
+
+	function func_r, // phpcs:ignore Standard.Cat.Sniff -- for reasons.
+	// phpcs:ignore Standard.Cat.Sniff -- for reasons.
+	ClassS as S,
+	// Some other comment.
+};
+
+// phpcs:enable

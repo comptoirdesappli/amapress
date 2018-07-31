@@ -136,3 +136,8 @@ function foo( // comment
 ) { // comment
 	// ...
 }
+
+function myFunc(/*...*/ ) {
+}
+function myFunc( /*...*/ ) {
+}

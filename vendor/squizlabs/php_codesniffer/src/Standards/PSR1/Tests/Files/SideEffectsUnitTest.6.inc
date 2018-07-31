@@ -1,5 +1,4 @@
 <?php
-
 namespace Bar;
 
 use some\foo\{

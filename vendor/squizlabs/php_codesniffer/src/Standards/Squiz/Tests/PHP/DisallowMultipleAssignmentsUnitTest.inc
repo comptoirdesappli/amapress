@@ -11,15 +11,18 @@ function getVar( $varname = 'var', $var = 'var' ) {
 	for ( $i = $var; ( null !== ( $key = key( $i ) ) ); next( $i ) ) {
 		while ( $i = true ) {
 			echo $i = getVar();
+			echo \A\B\C::$d = getVar();
 		}
 	}
 
 	while ( $row = $query->fetch( PDO::FETCH_NUM ) ) {
-		$result[ $row[0] ]   = array()
-        $result[ $row[0] ][] = $current;
+		$result[ $row[0] ]   = array();
+		$result[ $row[0] ][] = $current;
 
-        self::$_inTransaction = true;
-        $$varName             = $varValue;
+		self::$_inTransaction   = true;
+		parent::$_inTransaction = true;
+		static::$_inTransaction = true;
+		$$varName               = $varValue;
     }
 
 }//end getVar()
@@ -31,13 +34,24 @@ class myClass {
 	var $dbh = null; // Old PHP4 compatible code.
 }
 
+A::$a      = 'b';
+\A::$a     = 'c';
+\A\B\C::$d = 'd';
+B\C::$d    = 'e';
+
+@$a = 1;
+
+$a = [];
+foreach ( $a as $b ) {
+	$c = 'd';
+}
+
 $var = $var2;
-list ( $a, $b ) = explode( ',', $c );
+list ( $a, $b ) = explode( ',', $c);
 $var1 ? $var2 = 0 : $var2 = 1;
 
 $obj->$classVar = $prefix . '-' . $type;
 
-$closureWithDefaultParamter = function ( array $testArray = array() ) {
-};
+$closureWithDefaultParamter = function ( array $testArray = array() ) {};
 ?>
 <?php $var = false; ?>

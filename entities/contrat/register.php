@@ -311,14 +311,14 @@ jQuery(function($) {
 				'desc'     => 'Lorsque 2 contrats de même type coexistent (Par ex : ”Semaine A”, “Semaine B”)',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
-			'max_adherents'         => array(
+			'max_adherents'  => array(
 				'name'     => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'     => 'number',
 				'group'    => '1/6 - Contrat',
 				'required' => true,
 				'desc'     => 'Nombre maximum d’inscriptions autorisées par le producteur',
 			),
-			'min_engagement'        => array(
+			'min_engagement' => array(
 				'name'        => amapress__( 'Engagement minimum' ),
 				'type'        => 'number',
 				'group'       => '1/6 - Contrat',
@@ -326,9 +326,17 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
 			),
+			'word_model'     => array(
+				'name'            => amapress__( 'Modèle - inscriptions' ),
+				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'type'            => 'upload',
+				'selector-button' => 'Utiliser ce modèle',
+				'group'           => '1/6 - Contrat',
+				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions (préparé avec des "${xxx}")',
+			),
 
 			// 2/6 ferme
-			'nb_visites'            => array(
+			'nb_visites'     => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => '2/6 - Ferme',
 				'type'        => 'number',
@@ -1690,3 +1698,22 @@ function amapress_is_contrat_instance_readonly( $option ) {
 
 	return ! empty( $adhs );
 }
+
+function amapress_modify_post_mime_types( $post_mime_types ) {
+
+	$post_mime_types['application/pdf']                                                                                                 = array(
+		__( 'PDFs' ),
+		__( 'Gérer les PDFs' ),
+		_n_noop( 'PDF <span class="count">(%s)</span>', 'PDFs <span class="count">(%s)</span>' )
+	);
+	$post_mime_types['application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document'] = array(
+		__( 'Documents' ),
+		__( 'Gérer les Documents' ),
+		_n_noop( 'Document <span class="count">(%s)</span>', 'Documents <span class="count">(%s)</span>' )
+	);
+
+	return $post_mime_types;
+
+}
+
+add_filter( 'post_mime_types', 'amapress_modify_post_mime_types' );

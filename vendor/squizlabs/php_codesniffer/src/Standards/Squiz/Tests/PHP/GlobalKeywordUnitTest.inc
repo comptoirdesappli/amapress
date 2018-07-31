@@ -9,5 +9,4 @@ function func1() {
 	echo $var;
 	echo $GLOBALS['var'];
 }
-
 ?>

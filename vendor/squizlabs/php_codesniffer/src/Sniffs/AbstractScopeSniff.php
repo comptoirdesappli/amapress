@@ -119,23 +119,33 @@ abstract class AbstractScopeSniff implements Sniff {
 	 * @param int $stackPtr The position in the stack where this
 	 *                                               token was found.
 	 *
-	 * @return void
+	 * @return void|int Optionally returns a stack pointer. The sniff will not be
+	 *                  called again on the current file until the returned stack
+	 *                  pointer is reached. Return (count($tokens) + 1) to skip
+	 *                  the rest of the file.
 	 * @see    processTokenWithinScope()
 	 */
 	final public function process( File $phpcsFile, $stackPtr ) {
 		$tokens = $phpcsFile->getTokens();
 
 		$foundScope = false;
+		$skipPtrs   = [];
 		foreach ( $tokens[ $stackPtr ]['conditions'] as $scope => $code ) {
 			if ( isset( $this->scopeTokens[ $code ] ) === true ) {
-				$this->processTokenWithinScope( $phpcsFile, $stackPtr, $scope );
+				$skipPtrs[] = $this->processTokenWithinScope( $phpcsFile, $stackPtr, $scope );
 				$foundScope = true;
 			}
 		}
 
 		if ( $this->listenOutside === true && $foundScope === false ) {
-			$this->processTokenOutsideScope( $phpcsFile, $stackPtr );
+			$skipPtrs[] = $this->processTokenOutsideScope( $phpcsFile, $stackPtr );
 		}
+
+		if ( empty( $skipPtrs ) === false ) {
+			return min( $skipPtrs );
+		}
+
+		return;
 
 	}//end process()
 
@@ -151,7 +161,10 @@ abstract class AbstractScopeSniff implements Sniff {
 	 *                                               opened the scope that this test is
 	 *                                               listening for.
 	 *
-	 * @return void
+	 * @return void|int Optionally returns a stack pointer. The sniff will not be
+	 *                  called again on the current file until the returned stack
+	 *                  pointer is reached. Return (count($tokens) + 1) to skip
+	 *                  the rest of the file.
 	 */
 	abstract protected function processTokenWithinScope( File $phpcsFile, $stackPtr, $currScope );
 
@@ -164,7 +177,10 @@ abstract class AbstractScopeSniff implements Sniff {
 	 * @param int $stackPtr The position in the stack where this
 	 *                                               token was found.
 	 *
-	 * @return void
+	 * @return void|int Optionally returns a stack pointer. The sniff will not be
+	 *                  called again on the current file until the returned stack
+	 *                  pointer is reached. Return (count($tokens) + 1) to skip
+	 *                  the rest of the file.
 	 */
 	abstract protected function processTokenOutsideScope( File $phpcsFile, $stackPtr );
 

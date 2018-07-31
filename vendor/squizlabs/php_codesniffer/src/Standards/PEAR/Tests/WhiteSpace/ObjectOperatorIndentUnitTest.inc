@@ -47,3 +47,26 @@ $response
 	->CompletedTrackDetails
 	->TrackDetails
 	->Events;
+
+$var = get_object(
+	$foo->something()
+	    ->query()
+)->two()
+ ->three();
+
+$foo->one(
+	$foo
+		->two()
+);
+
+get_object()->one()
+            ->two()
+            ->three();
+
+someclass::one()
+         ->two()
+         ->three();
+
+( new someclass() )->one()
+                   ->two()
+                   ->three();

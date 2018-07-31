@@ -17,6 +17,7 @@
     "tecnickcom/tcpdf": ">=6.0",
     "guzzlehttp/guzzle": "v6.3.0",
     "phpoffice/phpexcel": "1.8.1",
+    "phpoffice/phpword": "v0.14.*",
     "athari/yalinqo": "~2.0",
     "phpunit/phpunit": "4.8.36",
     "squizlabs/php_codesniffer": "*",

@@ -25,5 +25,4 @@ class foo {
 qux
 BAZ;
 }
-
 ?>

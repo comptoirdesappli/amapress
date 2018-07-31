@@ -767,7 +767,8 @@ switch ( $foo ) {
 // phpcs:set Squiz.Commenting.LongConditionClosingComment lineLimit 5
 // phpcs:set Squiz.Commenting.LongConditionClosingComment commentFormat //Dragonbait-%s
 
-function quite_long_function() {
+function quite_long_function()
+{
 	// Ok - below limit
 	if ( $longFunction ) {
 		$variable = 'hello';

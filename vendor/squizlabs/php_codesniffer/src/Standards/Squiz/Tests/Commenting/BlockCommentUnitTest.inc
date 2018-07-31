@@ -86,8 +86,8 @@ function func() {
 	 **/
 	echo 'test';
 	/**
-	 * Test
-	 * here
+	Test
+	here
 	 **/
 
 }//end func()
@@ -204,7 +204,7 @@ class TabTest {
 		 * Comment line 2.
 		*/
 
-		if ( $foo ) {
+		if ( $foo) {
 			echo 'foo';
 		}
 
@@ -212,8 +212,33 @@ class TabTest {
 			Comment line 2.
 		*/
 
-		if ( $foo ) {
+		if ( $foo) {
 			echo 'foo';
 		}
 	}
 }
+
+/*
+ * Test distinguishing between two distinct block comments which directly follow each other.
+ */
+/*
+ *
+*/
+
+// Mid-line inline comment style should not be auto-fixed.
+if ( true || /* test */
+     - 1 == $b ) {
+}
+$y = 10 + /* test */
+     - 2;
+
+/*
+ * When the comment contains PHPCS annotations, the comment closer was being misidentified.
+ * phpcs:disable Standard.Category.Sniff
+ */
+
+/*
+ * When the comment contains PHPCS annotations, the comment closer was being misidentified.
+ * See: {@link https://github.com/squizlabs/PHP_CodeSniffer/issues/1918}
+ * @phpcs:disable Standard.Category.Sniff
+ */

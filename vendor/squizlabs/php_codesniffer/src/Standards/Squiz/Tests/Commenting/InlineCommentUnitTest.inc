@@ -27,6 +27,7 @@ function test() {
 # that is banned.
 
 
+
 // some code goes here!
 
 // This comment contains # multiple
@@ -124,6 +125,16 @@ echo $foo; // An unrelated comment.
 
 // An unrelated comment.
 echo $foo; // some comment without capital or full stop
+
+class Foo {
+	// This is fine.
+
+	/**
+	 * Spacing is ignored above.
+	 */
+	function bar() {
+	}
+}
 
 /*
  * N.B.: The below test line must be the last test in the file.

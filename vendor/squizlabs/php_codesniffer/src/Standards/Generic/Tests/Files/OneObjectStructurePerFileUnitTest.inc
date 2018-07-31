@@ -1,5 +1,4 @@
 <?php
-
 class foo {
 
 }
@@ -19,5 +18,4 @@ trait barTrait {
 interface barInterface {
 
 }
-
 ?>

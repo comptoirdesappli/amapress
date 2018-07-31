@@ -5,5 +5,4 @@ class MyClass {
 
 interface MyInterface {
 }
-
 ?>

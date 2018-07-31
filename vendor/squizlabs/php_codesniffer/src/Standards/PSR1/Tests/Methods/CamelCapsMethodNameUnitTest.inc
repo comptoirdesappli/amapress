@@ -119,5 +119,4 @@ class triple {
 	public function ___tripleUnderscore() {
 	} // Ok.
 }
-
 ?>

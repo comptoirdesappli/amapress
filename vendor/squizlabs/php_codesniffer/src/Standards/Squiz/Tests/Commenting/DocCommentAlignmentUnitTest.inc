@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Some info about the class here
  *
@@ -80,5 +79,4 @@ class MyClass2 {
 /** ************************************************************************
  * Example with no errors.
  **************************************************************************/
-function example() {
-}
+function example() {}

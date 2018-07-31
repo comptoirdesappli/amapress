@@ -137,7 +137,7 @@ $y = 1
      - 3;
 
 $y = 1 +
-     2 -
+     2 - 
      3;
 
 $y = 1
@@ -249,3 +249,17 @@ $x = $foo ? function ( $foo ) use /* comment */
 $x = ! $foo ? $bar : function (): int {
 	return 1;
 };
+
+$a =
+	// Comment.
+	[
+		'a',
+		'b',
+	];
+
+$a =
+// phpcs:ignore Standard.Category.Sniff -- for reasons.
+	[
+		'a',
+		'b',
+	];

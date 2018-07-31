@@ -81,10 +81,20 @@ class File implements \Zend_Auth_Storage_Interface, \Zend_Auth_Storage, \Zend_Fo
 interface MyInterface {
 
 }
-
 ?>
 
 <?php
+
+class MyClass2 {
+	var $x;
+}
+
+
+/**
+ * No error.
+ */
+function example() {
+}
 
 class CorrectClassDeclaration {
 

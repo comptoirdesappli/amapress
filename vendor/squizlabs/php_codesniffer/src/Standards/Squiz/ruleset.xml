@@ -19,6 +19,7 @@
     <rule ref="Generic.PHP.LowerCaseConstant"/>
     <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
     <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+    <rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
     <rule ref="Generic.WhiteSpace.ScopeIndent"/>
     <rule ref="PEAR.ControlStructures.MultiLineCondition"/>
     <rule ref="PEAR.Files.IncludingFile"/>
@@ -48,6 +49,19 @@
         <properties>
             <property name="maxPadding" value="20"/>
             <property name="error" value="true"/>
+        </properties>
+    </rule>
+
+    <!-- Ban some functions -->
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="sizeof" value="count"/>
+                <element key="delete" value="unset"/>
+                <element key="print" value="echo"/>
+                <element key="is_null" value="null"/>
+                <element key="create_function" value="null"/>
+            </property>
         </properties>
     </rule>
 
@@ -89,4 +103,13 @@
         <severity>0</severity>
     </rule>
 
+    <!-- Squiz.WhiteSpace.LanguageConstructSpacing is deprecated -->
+    <rule ref="Squiz.WhiteSpace.LanguageConstructSpacing">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Prevent fixer conflict for conflicting rules. -->
+    <rule ref="Squiz.Commenting.InlineComment">
+        <exclude name="Squiz.Commenting.InlineComment.SpacingAfterAtFunctionEnd"/>
+    </rule>
 </ruleset>

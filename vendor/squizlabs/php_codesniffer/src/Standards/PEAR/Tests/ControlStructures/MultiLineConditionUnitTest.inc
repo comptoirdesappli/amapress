@@ -121,7 +121,7 @@ if ( $condition1
 if ( ! empty( $post )
      && ( ! empty( $context['header'] )
           xor stripos( $context['header'], 'Content-Type' ) )
-) {
+) { 
 // ...
 }
 
@@ -135,7 +135,7 @@ if ( $foo ) {
 if ( array_key_exists( $key, $value )
      && array_key_exists(
 	     $key, $value2
-     )
+    )
 ) {
 }
 
@@ -192,7 +192,7 @@ if ( $a
 <?php
 
 if ( $IPP->errorCode() == 401 || // phpcs:ignore Standard.Category.Sniff -- for reasons.
-     $IPP->errorCode() == 3200 )  /*
+     $IPP->errorCode() == 3200)  /*
                                    phpcs:ignore Standard.Category.Sniff -- for reasons.
                                  */ {
 	return false;

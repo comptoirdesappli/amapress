@@ -89,25 +89,29 @@ abstract class Test implements
 	TestInterface2 {
 }
 
-interface MyInterface extends LongInterfaceName1, LongInterfaceName2, LongInterfaceName3, LoginInterfaceName4 {
+interface MyInterface extends LongInterfaceName1, LongInterfaceName2, LongInterfaceName3, LoginInterfaceName4
+{
 }
 
 interface MyInterface extends
 	LongInterfaceName1,
 	LongInterfaceName2,
 	LongInterfaceName3,
-	LoginInterfaceName4 {
+	LoginInterfaceName4
+{
 }
 
 interface MyInterface extends
 	LongInterfaceName1,
 	LongInterfaceName2,
 	LongInterfaceName3,
-	LongInterfaceName4 {
+	LongInterfaceName4
+{
 }
 
 abstract
-class Test {
+class Test
+{
 }
 
 class ClassName implements
@@ -117,7 +121,8 @@ class ClassName implements
 	// constants, properties, methods
 }
 
-class C1 {
+class C1
+{
 
 } // C1
 
@@ -137,6 +142,7 @@ class A extends B
 	implements C {
 }
 
-class C2 {
+class C2
+{
 
 } // phpcs:ignore Standard.Category.Sniff

@@ -1,5 +1,4 @@
 <?php
-
 // A few keywords. Obviously not valid syntax.
 class Something extends SomethingElse implements Whatever
 abstract public private protected function whatever() {
@@ -16,8 +15,7 @@ if ( $a and $b or $c xor $d ) {
 }
 
 Class Something EXTENDS SomethingElse implementS Whatever
-Abstract Public Private Protected function whatever() {
-}
+Abstract Public Private Protected function whatever() {}
 CONST array()
 For ( $var As $var) {
 	Exit;
@@ -28,8 +26,7 @@ If ( $a AND $b OR $c XOR $d ) {
 } Else {
 	GOTO a;
 }
-function ( Array $a ) {
-}
+function ( Array $a ) {}
 const PRIVATE;
 HttpStatus::CONTINUE;
 Function ( $f ) {

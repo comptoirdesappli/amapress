@@ -1,5 +1,4 @@
 <?php
-
 namespace MyProject;
 
 use BarClass as Bar;

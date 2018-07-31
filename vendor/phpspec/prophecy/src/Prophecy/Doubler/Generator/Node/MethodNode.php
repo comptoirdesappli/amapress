@@ -56,13 +56,13 @@ class MethodNode
 	/**
 	 * @param string $visibility
 	 */
-	public function setVisibility($visibility) {
-		$visibility = strtolower($visibility);
+	public function setVisibility( $visibility ) {
+		$visibility = strtolower( $visibility );
 
-		if (!in_array($visibility, array('public', 'private', 'protected'))) {
-			throw new InvalidArgumentException(sprintf(
+		if ( ! in_array( $visibility, array( 'public', 'private', 'protected' ) ) ) {
+			throw new InvalidArgumentException( sprintf(
 				'`%s` method visibility is not supported.', $visibility
-			));
+			) );
 		}
 
 		$this->visibility = $visibility;
@@ -72,7 +72,7 @@ class MethodNode
 		return $this->static;
 	}
 
-	public function setStatic($static = true) {
+	public function setStatic( $static = true ) {
 		$this->static = (bool) $static;
 	}
 
@@ -88,7 +88,7 @@ class MethodNode
 		return $this->name;
 	}
 
-	public function addArgument(ArgumentNode $argument) {
+	public function addArgument( ArgumentNode $argument ) {
 		$this->arguments[] = $argument;
 	}
 
@@ -106,7 +106,7 @@ class MethodNode
 	/**
 	 * @param string $type
 	 */
-	public function setReturnType($type = null) {
+	public function setReturnType( $type = null ) {
 		if ( $type === '' || $type === null ) {
 			$this->returnType = null;
 
@@ -133,7 +133,7 @@ class MethodNode
 	/**
 	 * @param bool $bool
 	 */
-	public function setNullableReturnType($bool = true) {
+	public function setNullableReturnType( $bool = true ) {
 		$this->nullableReturnType = (bool) $bool;
 	}
 
@@ -147,12 +147,12 @@ class MethodNode
 	/**
 	 * @param string $code
 	 */
-	public function setCode($code) {
+	public function setCode( $code ) {
 		$this->code = $code;
 	}
 
 	public function getCode() {
-		if ($this->returnsReference) {
+		if ( $this->returnsReference ) {
 			return "throw new \Prophecy\Exception\Doubler\ReturnByReferenceException('Returning by reference not supported', get_class(\$this), '{$this->name}');";
 		}
 
@@ -161,17 +161,17 @@ class MethodNode
 
 	public function useParentCode() {
 		$this->code = sprintf(
-			'return parent::%s(%s);', $this->getName(), implode(', ',
-				array_map(array($this, 'generateArgument'), $this->arguments)
+			'return parent::%s(%s);', $this->getName(), implode( ', ',
+				array_map( array( $this, 'generateArgument' ), $this->arguments )
 			)
 		);
 	}
 
-	private function generateArgument(ArgumentNode $arg) {
-		$argument = '$'.$arg->getName();
+	private function generateArgument( ArgumentNode $arg ) {
+		$argument = '$' . $arg->getName();
 
-		if ($arg->isVariadic()) {
-			$argument = '...'.$argument;
+		if ( $arg->isVariadic() ) {
+			$argument = '...' . $argument;
 		}
 
 		return $argument;

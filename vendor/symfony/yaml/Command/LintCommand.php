@@ -12,6 +12,8 @@
 namespace Symfony\Component\Yaml\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,11 +52,11 @@ class LintCommand extends Command
     protected function configure()
     {
         $this
-	        ->setDescription('Lints a file and outputs encountered errors')
-	        ->addArgument('filename', null, 'A file or a directory or STDIN')
-	        ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
+	        ->setDescription( 'Lints a file and outputs encountered errors' )
+	        ->addArgument( 'filename', null, 'A file or a directory or STDIN' )
+	        ->addOption( 'format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt' )
 	        ->addOption( 'parse-tags', null, InputOption::VALUE_NONE, 'Parse custom tags' )
-	        ->setHelp(<<<EOF
+	        ->setHelp( <<<EOF
 The <info>%command.name%</info> command lints a YAML file and outputs to STDOUT
 the first encountered syntax error.
 
@@ -78,22 +80,22 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io                        = new SymfonyStyle($input, $output);
-        $filename                  = $input->getArgument('filename');
-        $this->format              = $input->getOption('format');
+	    $io                        = new SymfonyStyle( $input, $output );
+	    $filename                  = $input->getArgument( 'filename' );
+	    $this->format              = $input->getOption( 'format' );
         $this->displayCorrectFiles = $output->isVerbose();
 	    $flags                     = $input->getOption( 'parse-tags' ) ? Yaml::PARSE_CUSTOM_TAGS : 0;
 
         if (!$filename) {
             if (!$stdin = $this->getStdin()) {
-                throw new \RuntimeException('Please provide a filename or pipe file content to STDIN.');
+	            throw new RuntimeException( 'Please provide a filename or pipe file content to STDIN.' );
             }
 
 	        return $this->display( $io, array( $this->validate( $stdin, $flags ) ) );
         }
 
         if (!$this->isReadable($filename)) {
-            throw new \RuntimeException(sprintf('File or directory "%s" is not readable.', $filename));
+	        throw new RuntimeException( sprintf( 'File or directory "%s" is not readable.', $filename ) );
         }
 
         $filesInfo = array();
@@ -133,7 +135,7 @@ EOF
             case 'json':
                 return $this->displayJson($io, $files);
             default:
-                throw new \InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format));
+	            throw new InvalidArgumentException( sprintf( 'The format "%s" is not supported.', $this->format ) );
         }
     }
 

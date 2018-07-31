@@ -148,18 +148,21 @@ class PHP_CodeSniffer_File {
  * @return void
  */
 public
-function functionOutsideClass( &$str, &$foo ) {
-	return;
+function functionOutsideClass( &$str, &$foo )
+{
+    return;
 }//end functionOutsideClass()
 
-function missingCommentOutsideClass() {
-	return;
+function missingCommentOutsideClass()
+{
+    return;
 }//end missingCommentOutsideClass()
 
 
 ?><?php
-function tagBeforeComment() {
-	return;
+function tagBeforeComment()
+{
+    return;
 }//end tagBeforeComment()
 
 
@@ -170,7 +173,8 @@ function tagBeforeComment() {
  *
  */
 public
-function noReturnOutsideClass() {
+function noReturnOutsideClass()
+{
 
 }//end noReturnOutsideClass()
 
@@ -184,7 +188,8 @@ function noReturnOutsideClass() {
  * @fine  Unknown tag
  */
 public
-function missingTwoParamComment( $one, $two, $three ) {
+function missingTwoParamComment( $one, $two, $three)
+{
 
 }//end missingTwoParamComment()
 
@@ -192,7 +197,8 @@ function missingTwoParamComment( $one, $two, $three ) {
 /**
  *
  */
-function emptyFunctionDocComment() {
+function emptyFunctionDocComment()
+{
 }//end emptyFunctionDocComment()
 
 
@@ -204,8 +210,7 @@ function emptyFunctionDocComment() {
  * @access public
  * @return bool
  */
-function myFunction( $arg1 ) {
-}
+function myFunction($arg1) {}
 
 
 /**
@@ -219,8 +224,7 @@ function myFunction( $arg1 ) {
 
 echo $blah;
 
-function myFunction( $arg1 ) {
-}
+function myFunction($arg1) {}
 
 /**
  * Test function.
@@ -238,7 +242,7 @@ class MyClass(){
 	 * An abstract function.
 	 *
 	 * @return string[]
-	 */
+     */
     abstract final protected function myFunction();
 }
 
@@ -251,7 +255,8 @@ class MyClass(){
  *
  * @return void
  */
-public function foo( &$tokens, $tokenizer, $eolChar ) {
+public function foo( &$tokens, $tokenizer, $eolChar)
+{
 
 }//end foo()
 
@@ -271,7 +276,7 @@ class Baz {
 	 */
 	public function __construct() {
 
-	}
+    }
 }
 
 /**
@@ -290,12 +295,12 @@ public function completeStep( $status, array $array = [ Class1::class, 'test' ],
 /**
  * Variadic function.
  *
- * @param string $name1 Comment.
+ * @param string $name1    Comment.
  * @param string ...$name2 Comment.
  *
  * @return void
  */
-public function myFunction( string $name1, string ...$name2 ) {
+public function myFunction( string $name1, string ...$name2) {
 }
 
 
@@ -307,7 +312,7 @@ public function myFunction( string $name1, string ...$name2 ) {
  *
  * @return void
  */
-public function myFunction( string $name1, string ...$name2 ) {
+public function myFunction( string $name1, string ...$name2) {
 }
 
 /**
@@ -322,7 +327,7 @@ public function myFunction( string $name1, string ...$name2 ) {
  *   Return value
  *
  */
-function foo( $bar ) {
+function foo($bar) {
 }
 
 /**
@@ -337,7 +342,8 @@ function foo( $bar ) {
  * @return void
  * @see    register()
  */
-function process( File $phpcsFile, $stackPtr ) {
+function process( File $phpcsFile, $stackPtr)
+{
 
 }//end process()
 
@@ -354,6 +360,7 @@ function process( File $phpcsFile, $stackPtr ) {
  * @return void
  * @see    register()
  */
-function process( File $phpcsFile, $stackPtr ) {
+function process( File $phpcsFile, $stackPtr)
+{
 
 }//end process()

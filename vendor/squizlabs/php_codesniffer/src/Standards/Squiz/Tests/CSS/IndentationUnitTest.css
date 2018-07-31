@@ -4,7 +4,7 @@ body {
     margin: 40px 0 0 0;
     padding: 0;
     background: #8FB7DB url(diag_lines_bg.gif) top left;
-
+    
 }
 
 td {
@@ -50,6 +50,7 @@ td {
     margin: 40px;
 
     padding: 20px;
+
 
 }
 

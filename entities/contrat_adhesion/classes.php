@@ -188,41 +188,90 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 
-			$ret['adherent.email']     = [
+			$ret['adherent.email']              = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					$adh->getAdherent()->getEmail();
 				}
 			];
-			$ret['lieu']               = [
+			$ret['lieu']                        = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
-			$ret['nb_paiements']       = [
+			$ret['contrat_debut']               = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'm/Y', $adh->getContrat_instance()->getDate_debut() );
+				}
+			];
+			$ret['contrat_fin']                 = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'm/Y', $adh->getContrat_instance()->getDate_fin() );
+				}
+			];
+			$ret['contrat_debut_annee']         = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_debut() );
+				}
+			];
+			$ret['contrat_fin_annee']           = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_fin() );
+				}
+			];
+			$ret['nb_paiements']                = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getPaiements();
 				}
 			];
-			$ret['nb_distributions']   = [
+			$ret['nb_distributions']            = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					return count( $adh->getRemainingDates() );
 				}
 			];
-			$ret['dates_distribution'] = [
+			$ret['dates_distribution_par_mois'] = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					$dates         = $adh->getRemainingDates();
+					$grouped_dates = from( $dates )->groupBy( function ( $d ) {
+						return date_i18n( 'F Y', $d );
+					} );
+
+					$grouped_dates_array = [];
+					foreach ( $grouped_dates as $k => $v ) {
+						$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+								function ( $d ) {
+									return date_i18n( 'd', $d );
+								}, $v
+							) );
+					}
+
+					return implode( ' ; ', $grouped_dates_array );
+				}
+			];
+			$ret['premiere_date']               = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates() )->firstOrDefault() );
+				}
+			];
+			$ret['derniere_date']               = [
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates() )->lastOrDefault() );
+				}
+			];
+			$ret['dates_distribution']          = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_map( function ( $d ) {
 						return date_i18n( 'd/m/Y', $d );
 					}, $adh->getRemainingDates() ) );
 				}
 			];
-			$ret['option_paiements']   = [
+			$ret['option_paiements']            = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
 
 					return $o['desc'];
 				}
 			];
-			$ret['quantites']          = [
+			$ret['quantites']                   = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
 						return $adh->getPaniersVariablesDescription();
@@ -231,15 +280,72 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString();
 				}
 			];
-			$ret['total']              = [
+			$ret['total']                       = [
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getTotalAmount();
 				}
 			];
-			self::$properties          = ret;
+			self::$properties                   = $ret;
 		}
 
 		return self::$properties;
+	}
+
+	public function getContratDocFileName() {
+		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
+		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
+
+		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
+				'inscription-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
+	}
+
+	public function generateContratDoc() {
+		$out_filename   = $this->getContratDocFileName();
+		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
+		if ( empty( $model_filename ) ) {
+			return '';
+		}
+
+		$placeholders = [];
+		foreach ( self::getProperties() as $prop_name => $prop_config ) {
+			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
+		}
+
+		$remaining_distrib = count( $this->getRemainingDates() );
+		$quants            = $this->getContrat_quantites( null );
+//		if ( ! $this->getContrat_instance()->isPanierVariable() ) {
+		$i = 1;
+		foreach ( $quants as $quant ) {
+			$placeholders["quantite#$i"]               = $quant->getTitle();
+			$placeholders["quantite_code#$i"]          = $quant->getCode();
+			$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
+			$placeholders["quantite_sous_total#$i"]    = $quant->getPrice();
+			$placeholders["quantite_total#$i"]         = $quant->getPrice() * $remaining_distrib;
+			$placeholders["quantite_nombre#$i"]        = $quant->getFactor();
+			$placeholders["quantite_prix_unitaire#$i"] = $quant->getContratQuantite()->getPrix_unitaire();
+			$placeholders["quantite_description#$i"]   = $quant->getContratQuantite()->getDescription();
+			$placeholders["quantite_unite#$i"]         = $quant->getContratQuantite()->getPriceUnitDisplay();
+			$i                                         += 1;
+		}
+//		}
+
+//		amapress_dump($model_filename);
+//		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getAttachmentDir() );
+
+		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+		try {
+			$templateProcessor->cloneRow( 'quantite', count( $quants ) );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+		}
+//		amapress_dump( $placeholders );
+//		die();
+		foreach ( $placeholders as $k => $v ) {
+			$templateProcessor->setValue( $k, $v );
+		}
+
+		$templateProcessor->saveAs( $out_filename );
+
+		return $out_filename;
 	}
 
 	public function getDate_debut() {

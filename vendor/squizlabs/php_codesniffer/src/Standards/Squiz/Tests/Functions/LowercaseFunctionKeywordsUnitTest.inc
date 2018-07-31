@@ -16,5 +16,4 @@ function MyFunction() {
 
 Static function MyFunction() {
 }
-
 ?>

@@ -1,5 +1,4 @@
 <?php
-
 use Foo\Bar;
 
 // This should pass.

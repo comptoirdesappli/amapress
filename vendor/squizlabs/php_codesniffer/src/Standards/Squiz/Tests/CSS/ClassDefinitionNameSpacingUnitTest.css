@@ -4,6 +4,7 @@
 }
 
 .AssetListingEditWidgetType-BottomPanel select,
+
 #EditEditingModeWidgetType-assetEditor-filters-assetTypes-addNew {
     float: left;
 }
@@ -15,6 +16,7 @@
 }
 
 .AssetListingEditWidgetType-BottomPanel select,
+
 .AssetListingEditWidgetType-BottomPanel ul,
 #EditEditingModeWidgetType-assetEditor-filters-assetTypes-addNew {
     float: left;

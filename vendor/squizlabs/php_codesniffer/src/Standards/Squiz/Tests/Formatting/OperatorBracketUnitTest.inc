@@ -157,7 +157,7 @@ if ( empty( $foo[ - 1 ] ) === true ) {
 }
 
 try {
-} catch ( AException | BException $e ) {
+} catch ( AException | BException $e) {
 }
 
 $var = $foo['blah'] + [];

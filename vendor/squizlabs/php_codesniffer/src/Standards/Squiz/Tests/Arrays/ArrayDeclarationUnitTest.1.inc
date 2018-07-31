@@ -1,4 +1,5 @@
 <?php
+array( $a, array( $b ) ) = $array;
 
 function test() {
 	$a = array();
@@ -9,7 +10,6 @@ function test() {
 		'a' => 1,
 	);
 }
-
 
 class TestClass {
 	public $good = array(
@@ -361,4 +361,46 @@ $a = array /* comment */
 (
 	'a',
 	'b'
+);
+
+$x = array(
+	'a' => false
+);
+
+$x = array(
+	'xxxx' => array(
+		'aaaaaaaaaa' => 'ccccccccccc',
+		'bbbbbbbb'   => false
+	),
+);
+
+$foo = array
+(
+	'foo' => array
+	(
+		'bar1' => 1
+	,
+		'bar2' => 1
+	,
+		'bar3' => 1
+	,
+		'bar4' => 1
+	,
+		'bar5' => 1
+	)
+);
+
+$foo = array(
+	'1' => $row['status'] === 'rejected'
+		? self::REJECTED_CODE
+		: self::VERIFIED_CODE,
+	'2' => in_array( $row['status'], array( 'notverified', 'unverified' ), true )
+		? self::STATUS_PENDING
+		: self::STATUS_VERIFIED,
+	'3' => strtotime( $row['date'] ),
+);
+
+$foo = foo(
+	array(// comment
+	)
 );

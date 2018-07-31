@@ -32,9 +32,8 @@ class ArrayKeySpacingRestrictionsSniff extends Sniff {
 	 */
 	public function register() {
 		return array(
-			T_OPEN_SQUARE_BRACKET,
+			\T_OPEN_SQUARE_BRACKET,
 		);
-
 	}
 
 	/**
@@ -49,19 +48,18 @@ class ArrayKeySpacingRestrictionsSniff extends Sniff {
 		$token = $this->tokens[ $stackPtr ];
 		if ( ! isset( $token['bracket_closer'] ) ) {
 			$this->phpcsFile->addWarning( 'Missing bracket closer.', $stackPtr, 'MissingBracketCloser' );
-
 			return;
 		}
 
 		$need_spaces = $this->phpcsFile->findNext(
-			array( T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_WHITESPACE, T_MINUS ),
+			array( \T_CONSTANT_ENCAPSED_STRING, \T_LNUMBER, \T_WHITESPACE, \T_MINUS ),
 			( $stackPtr + 1 ),
 			$token['bracket_closer'],
 			true
 		);
 
-		$spaced1 = ( T_WHITESPACE === $this->tokens[ ( $stackPtr + 1 ) ]['code'] );
-		$spaced2 = ( T_WHITESPACE === $this->tokens[ ( $token['bracket_closer'] - 1 ) ]['code'] );
+		$spaced1 = ( \T_WHITESPACE === $this->tokens[ ( $stackPtr + 1 ) ]['code'] );
+		$spaced2 = ( \T_WHITESPACE === $this->tokens[ ( $token['bracket_closer'] - 1 ) ]['code'] );
 
 		// It should have spaces unless if it only has strings or numbers as the key.
 		if ( false !== $need_spaces && ! ( $spaced1 && $spaced2 ) ) {
@@ -87,7 +85,6 @@ class ArrayKeySpacingRestrictionsSniff extends Sniff {
 				}
 			}
 		}
+	}
 
-	} // End process().
-
-} // End class.
+}

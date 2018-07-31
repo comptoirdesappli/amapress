@@ -118,7 +118,7 @@ if (condition1
 if (!a(post)
     && (!a(context.header)
         ^ a(context.header, 'Content-Type'))
-) {
+) { 
 // ...
 }
 

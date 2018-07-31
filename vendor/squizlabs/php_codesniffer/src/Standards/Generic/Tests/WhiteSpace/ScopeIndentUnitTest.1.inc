@@ -1,7 +1,6 @@
 phpcs:set Generic.WhiteSpace.ScopeIndent tabIndent false
 <meta name="twitter:site" content="<?php echo $metaTagsData['twitter:site']; ?>">
 <?php
-
 class Test {
 	function __construct() {
 		$this->hello();
@@ -982,7 +981,7 @@ class AnonymousFn {
 								return 'foo';
 							}
 
-    if ( true ) {
+    if ( true) {
     }
 }
 
@@ -993,14 +992,14 @@ class AnonymousFn {
 								return 'foo';
 							}
 
-    if ( true ) {
+    if (true) {
     }
 } else {
 							$foo = function () {
 								return 'foo';
 							}
 
-    if ( true ) {
+    if (true) {
     }
 }
 
@@ -1075,7 +1074,7 @@ $foo = foo(
 );
 
 if ( somethingIsTrue() ) {
-	?>
+    ?>
     <div>
 		<?php
 		$someVar = doSomething(
@@ -1115,7 +1114,7 @@ $foo = [
 $foo
 	->bar( foo( function () {
 	} ), foo( function () {
-	} ) );
+	}));
 
 echo 'foo';
 
@@ -1129,7 +1128,7 @@ class Test {
 		$a
 	) {
 		echo $a;
-	}
+    }
 }
 
 $foo = foo(
@@ -1173,7 +1172,7 @@ class Test {
 		if ( false ) {
 			echo 0;
 		}
-	}
+    }
 }
 
 return [
@@ -1200,7 +1199,7 @@ switch ( $sContext ) {
 	// Fall through
 	default: {
 		do_something();
-	}
+    }
 }
 
 array_map(
@@ -1215,16 +1214,16 @@ array_map(
  */
 ( function () use ( $app ) {
 	echo 'hi';
-} )();
+})();
 
 $app->run();
 
 public function foo() {
-							$foo( 'some
+							$foo('some
     long description', function () {
 							} );
 
-							$foo( 'some
+							$foo('some
     long
     description', function () {
 							} );
@@ -1233,6 +1232,49 @@ public function foo() {
 								'some long description', function () {
 							} );
 						}
+
+switch ( $a ) {
+	case 'a':
+		$b = 2;
+		/**
+		 * A comment.
+		 */
+		apply_filter( 'something', $b );
+		break;
+
+	case 'aa':
+		$b = 2;
+		/*
+		 * A comment.
+		 */
+		apply_filter( 'something', $b );
+		break;
+
+	case 'b':
+		$b = 3;
+		?>
+        <input name="something" value="<?php echo $b; ?>">
+		<?php
+		$b = 4;
+		break;
+
+	default:
+		$b = 3;
+		?>
+        <input name="something" value="<?php echo $b; ?>">
+		<?php
+		$b = 4;
+		break;
+}
+
+if ( $foo ) {
+	if ( $oo ) {
+		/*
+		 *
+		 *
+	   */
+	}
+}
 
     function foo() {
 	    $foo = array();
@@ -1248,7 +1290,7 @@ public function foo() {
 <?php
 if ( true ) {
 } else if ( true ) {
-}
+    }
 
 $a = 1;
 

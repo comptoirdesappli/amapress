@@ -149,18 +149,21 @@ class PHP_CodeSniffer_File {
  * @return
  */
 public
-function functionOutsideClass( &$str, &$foo ) {
-	return;
+function functionOutsideClass( &$str, &$foo )
+{
+    return;
 }//end functionOutsideClass()
 
-function missingCommentOutsideClass() {
-	return;
+function missingCommentOutsideClass()
+{
+    return;
 }//end missingCommentOutsideClass()
 
 
 ?><?php
-function tagBeforeComment() {
-	return;
+function tagBeforeComment()
+{
+    return;
 }//end tagBeforeComment()
 
 
@@ -170,7 +173,8 @@ function tagBeforeComment() {
  * @see    FunctionCommentSniff.php
  */
 public
-function noReturnOutsideClass() {
+function noReturnOutsideClass()
+{
 
 }//end noReturnOutsideClass()
 
@@ -187,7 +191,8 @@ function noReturnOutsideClass() {
  * @throws UnknownException unknown
  */
 public
-function missingTwoParamComment( $one, $two, $three ) {
+function missingTwoParamComment( $one, $two, $three)
+{
 
 }//end missingTwoParamComment()
 
@@ -199,7 +204,8 @@ function missingTwoParamComment( $one, $two, $three ) {
  * @return
  */
 public
-function missingReturnType() {
+function missingReturnType()
+{
 
 }//end missingReturnType()
 
@@ -218,7 +224,8 @@ function missingReturnType() {
  * @return int|object|double|float|array(int=>MyClass)
  */
 public
-function caseSensitive( $a1, $a2, $a3, arRay $a4, $a5, $a6, myclas $a7 ) {
+function caseSensitive( $a1, $a2, $a3, arRay $a4, $a5, $a6, myclas $a7)
+{
 
 }//end caseSensitive()
 
@@ -273,21 +280,23 @@ function mixedType( $a1, $a2, $a3, $a4 ) {
  */
 public
 function mixedArrayType( $a1, $a2, array $a3, $a4, $a5, $a6, $a7, unknownTypeHint $a8 ) {
-	return 1;
+    return 1;
 
 }//end mixedArrayType()
 
 
 /**
  */
-function empty1() {
+function empty1()
+{
 }//end empty1()
 
 
 /**
  *
  */
-function empty2() {
+function empty2()
+{
 }//end empty2()
 
 
@@ -296,7 +305,8 @@ function empty2() {
  *
  *
  */
-function empty3() {
+function empty3()
+{
 }//end empty3
 
 
@@ -328,7 +338,7 @@ class Another_Class {
 	 */
 	function __construct() {
 		return;
-	}
+    }
 
 }//end class
 
@@ -338,12 +348,13 @@ class Another_Class {
  *
  * @param string $varrr1 Comment1..
  * @param string $vr2 Comment2.
- * @param string $var3 Comment3..
+ * @param string $var3  Comment3..
  *
  * @return void
  */
 public
-static function paramAlign( $varrr1, $vr2, $var3 ) {
+static function paramAlign( $varrr1, $vr2, $var3)
+{
 
 }//end paramAlign()
 
@@ -351,13 +362,14 @@ static function paramAlign( $varrr1, $vr2, $var3 ) {
 /**
  * Comment.
  *
- * @param string $id Comment.
+ * @param string $id    Comment.
  * @param array $design Comment.
  *
  * @return void
  */
 public
-static function paint( $id, array $design ) {
+static function paint( $id, array $design)
+{
 
 }//end paint()
 
@@ -372,7 +384,7 @@ public
 function myFunction() {
 	if ( $condition === false ) {
 		echo 'hi';
-	}
+    }
 
 }//end myFunction()
 
@@ -429,7 +441,7 @@ class MyClass(){
 	 * An abstract function.
 	 *
 	 * @return string[]
-	 */
+     */
     abstract final protected function myFunction();
 }
 
@@ -455,7 +467,8 @@ function test( $test ) {
  * @return mixed
  *
  */
-function test() {
+function test()
+{
 
 }//end test()
 
@@ -560,8 +573,8 @@ public function variableArgs( $a1, $a2 ) {
  */
 public function containsClosure() {
 	function ( $e ) {
-		return new Event( $e );
-	},
+		return new Event($e);
+    },
 
 }//end containsClosure()
 
@@ -570,7 +583,8 @@ public function containsClosure() {
  *
  * @return void
  */
-public function test() {
+public function test()
+{
 
 }//end variableArgs()
 
@@ -581,8 +595,8 @@ public function test() {
  *
  * @return void
  */
-public function usesCallable( callable $cb ) {
-	$cb();
+public function usesCallable( callable $cb) {
+    $cb();
 }//end usesCallable()
 
 /**
@@ -597,20 +611,22 @@ public function usesCallable( callable $cb ) {
  * @throws Exception If something really bad
  *                   happens while doing foo.
  */
-public function foo( array &$tokens, $tokenizer, $eolChar ) {
+public function foo( array &$tokens, $tokenizer, $eolChar)
+{
 
 }//end foo()
 
 /**
  * Some description.
  *
- * @param \Vendor\Package\SomeClass $someclass Some class.
+ * @param \Vendor\Package\SomeClass $someclass  Some class.
  * @param \OtherVendor\Package\SomeClass2 $someclass2 Some class.
  * @param \OtherVendor\Package\SomeClass2 $someclass3 Some class.
  *
  * @return void
  */
-public function foo( SomeClass $someclass, \OtherVendor\Package\SomeClass2 $someclass2, SomeClass3 $someclass3 ) {
+public function foo( SomeClass $someclass, \OtherVendor\Package\SomeClass2 $someclass2, SomeClass3 $someclass3)
+{
 }
 
 /**
@@ -630,7 +646,7 @@ class Baz {
 	 */
 	public function __construct() {
 
-	}
+    }
 }
 
 /**
@@ -639,8 +655,7 @@ class Baz {
  * @return void
  * @throws E
  */
-function myFunction() {
-}
+function myFunction() {}
 
 /**
  * Yield test
@@ -650,7 +665,7 @@ function myFunction() {
 function yieldTest() {
 	for ( $i = 0; $i < 5; $i ++ ) {
 		yield $i;
-	}
+    }
 }
 
 /**
@@ -661,7 +676,7 @@ function yieldTest() {
 function yieldTest() {
 	for ( $i = 0; $i < 5; $i ++ ) {
 		yield $i;
-	}
+    }
 }
 
 /**
@@ -671,7 +686,7 @@ function yieldTest() {
  *
  * @return void
  */
-public function specifiedArray( array $values ) {
+public function specifiedArray( array $values) {
 
 }// end specifiedArray()
 
@@ -682,7 +697,7 @@ public function specifiedArray( array $values ) {
  *
  * @return void
  */
-public function callableCallback( callable $cb ) {
+public function callableCallback( callable $cb) {
 
 }// end callableCallback()
 
@@ -696,18 +711,18 @@ public function callableCallback( callable $cb ) {
  *
  * @return void
  */
-public function myFunction( string $name1, int $name2, float $name3, bool $name4 ) {
+public function myFunction( string $name1, int $name2, float $name3, bool $name4) {
 }
 
 /**
  * Variadic function.
  *
- * @param string $name1 Comment.
+ * @param string $name1    Comment.
  * @param string ...$name2 Comment.
  *
  * @return void
  */
-public function myFunction( string $name1, string ...$name2 ) {
+public function myFunction( string $name1, string ...$name2) {
 }
 
 
@@ -719,7 +734,7 @@ public function myFunction( string $name1, string ...$name2 ) {
  *
  * @return void
  */
-public function myFunction( string $name1, string ...$name2 ) {
+public function myFunction( string $name1, string ...$name2) {
 }
 
 /**
@@ -728,7 +743,7 @@ public function myFunction( string $name1, string ...$name2 ) {
  * @return integer This is a description.
  */
 public function myFunction() {
-	return 5;
+    return 5;
 }
 
 /**
@@ -737,7 +752,7 @@ public function myFunction() {
  * @return int This is a description.
  */
 public function myFunction() {
-	return 5;
+    return 5;
 }
 
 /**
@@ -768,7 +783,7 @@ public function myFunction() {
  *   Return value
  *
  */
-function foo( $bar ) {
+function foo($bar) {
 }
 
 /**
@@ -786,7 +801,7 @@ public function someFunc(): void {
 		public function getString(): string {
 			return 'some string';
 		}
-	};
+    };
 }
 
 /**
@@ -795,7 +810,7 @@ public function someFunc(): void {
  * @return bool|int This is a description.
  */
 function returnTypeWithDescriptionA() {
-	return 5;
+    return 5;
 
 }//end returnTypeWithDescriptionA()
 
@@ -806,7 +821,7 @@ function returnTypeWithDescriptionA() {
  * @return real|bool This is a description.
  */
 function returnTypeWithDescriptionB() {
-	return 5;
+    return 5;
 
 }//end returnTypeWithDescriptionB()
 
@@ -817,7 +832,7 @@ function returnTypeWithDescriptionB() {
  * @return int|object|string[]|real|double|float|bool|array(int=>MyClass)|callable And here we have a description
  */
 function returnTypeWithDescriptionC() {
-	return 5;
+    return 5;
 
 }//end returnTypeWithDescriptionC()
 
@@ -827,7 +842,8 @@ function returnTypeWithDescriptionC() {
  *
  * @return array(int=>bool)|\OtherVendor\Package\SomeClass2|MyClass[]|void And here we have a description
  */
-function returnTypeWithDescriptionD() {
+function returnTypeWithDescriptionD()
+{
 
 }//end returnTypeWithDescriptionD()
 
@@ -870,11 +886,9 @@ function audio(
 function returnArrayWithClosure() {
 	function () {
 		return;
-	}
+	};
 
-	;
-
-	return [];
+    return [];
 }
 
 /**
@@ -892,7 +906,7 @@ function returnArrayWithAnonymousClass() {
 		}
 	};
 
-	return [];
+    return [];
 }
 
 /**
@@ -901,9 +915,7 @@ function returnArrayWithAnonymousClass() {
 function returnVoidWithClosure() {
 	function () {
 		return 1;
-	}
-
-	;
+    };
 }
 
 /**
@@ -927,10 +939,8 @@ class TestReturnVoid {
 	public function test() {
 		function () {
 			return 4;
-		}
-
-		;
-	}
+        };
+    }
 }
 
 /**
@@ -941,8 +951,7 @@ class TestReturnVoid {
  *
  * @return void
  */
-public static function foo( ?int $a, ?array $b ) {
-}
+public static function foo( ?int $a, ?array $b) {}
 
 /**
  * Comment here.
@@ -952,5 +961,4 @@ public static function foo( ?int $a, ?array $b ) {
  *
  * @return void
  */
-public function foo( object $a, ?object $b ) {
-}
+public function foo( object $a, ?object $b) {}

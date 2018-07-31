@@ -118,7 +118,7 @@ if ( $this->allowShopping !== true ):
 		endswitch;
 	endif;
 else:
-	echo 'foo';
+    echo 'foo';
 endif;
 
 // ELSE IF split over multiple lines (not inline)
@@ -138,13 +138,12 @@ switch ( $response = \Bar::baz( 'bat', function ( $foo ) {
 }
 
 $stuff = [ 1, 2, 3 ];
-foreach ( $stuff as $num ) {
+foreach ( $stuff as $num )
 	if ( $num % 2 ) {
 		echo "even";
 	} else {
 		echo "odd";
 	}
-}
 
 $i = 0;
 foreach ( $stuff as $num ) {
@@ -204,54 +203,87 @@ if ( $bar ) {
 	}
 } // lol
 
-if ( $level == 'district' ) {
+if ( $level == 'district' )
 	\DB::update( <<<EOD
 some
 text
 here
 EOD
-	);
-}
+    );
 
-if ( $level == 'district' ) {
-	$var = <<<EOD
+if ( $level == 'district')
+    $var = <<<EOD
 some
 text
 here
-EOD;}
+EOD;
 
-if ($a && $a === Foo::VARIABLE && ($a === Foo::METHOD || $a === Foo::FUNCTION))
-    {echo 'hi';}
+if ($a && $a === Foo::VARIABLE && ( $a === Foo::METHOD || $a === Foo::FUNCTION ) )
+	echo 'hi';
 
-$out = array_map(function ($test) { if ($test) {return 1;} else {return 2;} }, $input); // comment
+$out = array_map( function ( $test ) {
+	if ($test) return 1; else return 2;
+}, $input ); // comment
 
 for ($x=0;$x<5;$x++):
-    if ($x) {continue;}
+    if ($x) continue;
 endfor;
 
-for ($x=0;$x<5;$x++):
-    if ($x) continue ?> <?php
+for ($x=0;$x<5;$x ++ ):
+	if ($x) continue ?> <?php
 endfor;
 
 if (true)
-    {try {
+    try {
     }
     catch(Exception $e) {
-    }}
+    }
 
-switch ($num) {
-    case 0:
+switch ( $num ) {
+	case 0:
         if (1 > $num)
-            {return bar(
+            return bar(
                 baz(
-                    "foobarbaz"
+	                "foobarbaz"
                 )
-            );}
-        break;
+            );
+		break;
 }
 
 do {
-	$i++;
+	$i ++;
+} // Comment
+while ( $i < 10 );
+
+if ( $this ) {
+	if ( $that ) {
+		foo( ${$a[ $b ]} );
+	}
 }
-// Comment
-while ($i < 10);
+
+while ( ! $this->readLine( $tokens, $tag ) ) {
+	;
+} //phpcs:ignore Standard.Category.Sniff
+
+while ( ! $this->readLine( $tokens, $tag ) ) {
+	;
+} // comment
+
+while ( ! $this->readLine( $tokens, $tag ) ) {
+	;
+} /* comment */
+
+foreach ( $stringParade as $hit ) {
+	$hitParade[] = $hit + 0;
+} // phpcs:ignore Standard.Category.Sniff
+
+if ( $bar ) {
+	if ( $foo ) {
+		echo 'hi';
+	}
+}
+/* @phpcs:ignore Standard.Category.Sniff */
+
+if (true) $callable = function () {
+    return true;
+};

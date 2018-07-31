@@ -68,9 +68,9 @@ switch ( $blah ) {
 
     <body>
     <div>
-		<?php if ( true == false ) : ?>
+	    <?php if ( true == false ) : ?>
             <h1>o hai!</h1>
-		<?php endif; ?>
+	    <?php endif; ?>
     </div>
     </body>
 
