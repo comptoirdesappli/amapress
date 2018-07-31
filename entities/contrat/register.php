@@ -326,14 +326,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
 			),
-			'word_model'     => array(
-				'name'            => amapress__( 'Modèle - inscriptions' ),
-				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-				'type'            => 'upload',
-				'selector-button' => 'Utiliser ce modèle',
-				'group'           => '1/6 - Contrat',
-				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions (préparé avec des "${xxx}")',
-			),
+
 
 			// 2/6 ferme
 			'nb_visites'     => array(
@@ -917,7 +910,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit chèque pour les paiements en plusieurs fois',
 			),
-			'options_paiements'     => array(
+			'options_paiements' => array(
 				'name'        => amapress__( 'Options de paiement' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlement',
@@ -985,6 +978,16 @@ jQuery(function($) {
 				}
 			),
 
+			// Génération des contrats
+			'word_model'        => array(
+				'name'            => amapress__( 'Modèle - inscriptions' ),
+				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'type'            => 'upload',
+				'selector-button' => 'Utiliser ce modèle',
+				'group'           => 'Génération des contrats',
+				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions préparé avec les placeholders "${xxx}" suivants:' .
+				                     AmapressAdhesion::getPlaceholdersHelp(),
+			),
 
 //                        'list_quantites' => array(
 //                            'name' => amapress__('Quantités'),
@@ -994,7 +997,7 @@ jQuery(function($) {
 //                            'post_type' => 'amps_contrat_quant',
 //                            'parent' => 'amapress_contrat_quantite_contrat_instance',
 //                        ),
-			'inscriptions'          => array(
+			'inscriptions'      => array(
 				'name'        => amapress__( 'Inscriptions' ),
 				'show_column' => true,
 				'show_table'  => false,

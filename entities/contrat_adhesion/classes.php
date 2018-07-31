@@ -128,107 +128,134 @@ class AmapressAdhesion extends TitanEntity {
 	public static function getProperties() {
 		if ( null == self::$properties ) {
 			$ret                        = [];
+			$ret['contrat_type']        = [
+				'desc' => 'Type du contrat (par ex, Légumes)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getTitle();
+				}
+			];
 			$ret['contrat_titre']       = [
+				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
 			$ret['contrat_lien']        = [
+				'desc' => 'Lien vers la présentation du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
 				}
 			];
 			$ret['date_debut']          = [
+				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
 			$ret['date_fin']            = [
+				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 				}
 			];
 			$ret['date_debut_complete'] = [
+				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'D j M Y', $adh->getDate_debut() );
 				}
 			];
 			$ret['date_fin_complete']   = [
+				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'D j M Y', $adh->getDate_fin() );
 				}
 			];
 			$ret['adherent']            = [
+				'desc' => 'Prénom Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getDisplayName();
 				}
 			];
 			$ret['adherent.nom']        = [
+				'desc' => 'Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			];
 			$ret['adherent.prenom']     = [
+				'desc' => 'Prénom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->first_name;
 				}
 			];
 			$ret['adherent.adresse']    = [
+				'desc' => 'Adresse adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
 			];
 			$ret['adherent.tel']        = [
+				'desc' => 'Téléphone adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getTelephone();
 				}
 			];
 			$ret['adherent.mail']       = [
+				'desc' => 'Email adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 				}
 			];
 
 			$ret['adherent.email']              = [
+				'desc' => 'Email adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$adh->getAdherent()->getEmail();
 				}
 			];
 			$ret['lieu']                        = [
+				'desc' => 'Lieu de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
 			$ret['contrat_debut']               = [
+				'desc' => 'Début du contrat (mois/année)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'm/Y', $adh->getContrat_instance()->getDate_debut() );
 				}
 			];
 			$ret['contrat_fin']                 = [
+				'desc' => 'Fin du contrat (mois/année)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'm/Y', $adh->getContrat_instance()->getDate_fin() );
 				}
 			];
 			$ret['contrat_debut_annee']         = [
+				'desc' => 'Année de début du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_debut() );
 				}
 			];
 			$ret['contrat_fin_annee']           = [
+				'desc' => 'Année de fin du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_fin() );
 				}
 			];
 			$ret['nb_paiements']                = [
+				'desc' => 'Nombre de chèques choisi',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getPaiements();
 				}
 			];
 			$ret['nb_distributions']            = [
+				'desc' => 'Nombre de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return count( $adh->getRemainingDates() );
 				}
 			];
 			$ret['dates_distribution_par_mois'] = [
+				'desc' => 'Dates de distributions regroupées par mois',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$dates         = $adh->getRemainingDates();
 					$grouped_dates = from( $dates )->groupBy( function ( $d ) {
@@ -248,16 +275,19 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['premiere_date']               = [
+				'desc' => 'Première date de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates() )->firstOrDefault() );
 				}
 			];
 			$ret['derniere_date']               = [
+				'desc' => 'Dernière date de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates() )->lastOrDefault() );
 				}
 			];
 			$ret['dates_distribution']          = [
+				'desc' => 'Liste des dates de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_map( function ( $d ) {
 						return date_i18n( 'd/m/Y', $d );
@@ -265,6 +295,7 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['option_paiements']            = [
+				'desc' => 'Option de paiement choisie',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
 
@@ -272,6 +303,7 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['quantites']                   = [
+				'desc' => 'Quantité(s) choisie(s)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
 						return $adh->getPaniersVariablesDescription();
@@ -281,6 +313,7 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['total']                       = [
+				'desc' => 'Total du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getTotalAmount();
 				}
@@ -297,6 +330,33 @@ class AmapressAdhesion extends TitanEntity {
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
 				'inscription-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
+	}
+
+	public static function getPlaceholdersHelp() {
+		$ret = [];
+
+		foreach ( self::getProperties() as $prop_name => $prop ) {
+			if ( ! isset( $prop['desc'] ) ) {
+				continue;
+			}
+
+			$ret[ $prop_name ] = $prop['desc'];
+		}
+		$ret["quantite"]               = '(Tableau quantité) Libellé quantité';
+		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
+		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
+		$ret["quantite_sous_total"]    = '(Tableau quantité) Prix pour la quantité choisie';
+		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
+		$ret["quantite_nombre"]        = '(Tableau quantité) Facteur quantité choisi';
+		$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
+		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
+		$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
+
+		return '<table id="contrat-placeholders"><thead><tr><th>Placeholder</th><th>Description</th></tr></thead>' .
+		       implode( '', array_map( function ( $pn, $p ) {
+			       return '<tr><td>${' . esc_html( $pn ) . '}</td><td>' . esc_html( $p ) . '</td></tr>';
+		       }, array_keys( $ret ), array_values( $ret ) ) )
+		       . '</table>';
 	}
 
 	public function generateContratDoc() {

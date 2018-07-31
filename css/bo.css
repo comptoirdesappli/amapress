@@ -207,3 +207,9 @@ select.paiements_details {
 #quant_editor_table td {
     border-top: 1pt solid #000;
 }
+
+#contrat-placeholders, #contrat-placeholders th, #contrat-placeholders td {
+    border-collapse: collapse;
+    border: 1pt solid black;
+    padding: 2pt;
+}
