@@ -515,18 +515,18 @@ jQuery(function($) {
 					$status           = [];
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat_instance->isPanierVariable() ) {
-						$status[] = 'Paniers variables';
+						$status[] = 'Paniers modulables';
 					} else if ( $contrat_instance->isQuantiteVariable() ) {
 						if ( $contrat_instance->isQuantiteMultiple() ) {
-							$status[] = 'Quantités variables multiples';
+							$status[] = 'Quantités (choix multiple)';
 						} else {
-							$status[] = 'Quantités variables';
+							$status[] = 'Quantités (choix unique)';
 						}
 					} else {
 						if ( $contrat_instance->isQuantiteMultiple() ) {
-							$status[] = 'Quantités fixes multiples';
+							$status[] = 'Taille du panier (choix multiple)';
 						} else {
-							$status[] = 'Quantités fixes';
+							$status[] = 'Taille du panier (choix unique)';
 						}
 					}
 					if ( $contrat_instance->isPrincipal() ) {
@@ -560,27 +560,36 @@ jQuery(function($) {
 					}
 
 					$types = [
-						'quant_fix'       => 'Quantités fixes',
-						'quant_fix_multi' => 'Quantités fixes multiples',
-						'quant_var'       => 'Quantités variables',
-						'quant_var_multi' => 'Quantités variables multiples',
-						'panier_var'      => 'Paniers variables',
+						'quant_fix'       => 'Taille du panier (choix unique)',
+						'quant_fix_multi' => 'Taille du panier (choix multiple)',
+						'quant_var'       => 'Quantités (choix unique)',
+						'quant_var_multi' => 'Quantités (choix multiples)',
+						'panier_var'      => 'Paniers modulables',
 					];
 					ob_start();
 					?>
+                    <p>Choisissez le type d’option(s) proposé(es) dans le contrat d’origine concernant la taille des
+                        paniers ou les quantités.</p>
                     <select id="amapress_quantite_type"
                             name="amapress_quantite_type"
                     ><?php
 						tf_parse_select_options( $types, $type );
 						?>
                     </select>
-                    <p class="description"><strong>Fixes</strong> : si les quantités sont fixes (par ex,
-                        petit, moyen, grand ; demi, entier...)<br/>
-                        <strong>Variables</strong> : si les quantités peuvent être modulées (par ex, 1L,
-                        1.5L, 3L...)<br/>
-                        <strong>Multiple</strong> : si plusieurs quantités peuvent être choisies<br/>
-                        <strong>Paniers variables</strong> : si les paniers sont spécifiques pour chacune
-                        des distributions</p>
+                    <p>
+                        <strong>Taille du panier (choix unique)</strong> : L’adhérent choisit <strong>une taille de
+                            panier</strong> pour toute la durée du contrat <span class="description">( Par ex “Légumes”, “Champignons” : Petit ou Moyen ou Grand ou Demi ou Entier...)</span><br/>
+                        <strong>Taille du panier (choix multiple)</strong> : L’adhérent peut choisir <strong>différents
+                            produits associés à différentes tailles de panier</strong> pour toute la durée du contrat
+                        <span class="description">(Par ex  “Fruits” : Petit Panier Pommes et  Grand Panier Poires et  Panier moyen mixte...)</span><br/>
+                        <strong>Quantités (choix unique)</strong> : L’adhérent choisit <strong>une quantité d’un
+                            produit</strong> pour toute la durée du contrat <span class="description">(Par ex : 1L, 1.5L, 3L, 200g, 500g, 1 unité, 4 unités…)</span><br/>
+                        <strong>Quantités (choix multiples)</strong> : L’adhérent peut choisir <strong>différents
+                            produits et différentes quantités</strong> pour toute la durée du contrat <span
+                                class="description">(Par ex “Miel”, “Pain” : 1L, 1.5L, 3L, 200g, 500g, 1 unité, 4 unités…)</span><br/>
+                        <strong>Paniers modulables</strong> : L’adhérent compose à l’avance un <strong>panier
+                            spécifique</strong> pour chaque distribution <span class="description">(Par ex : “Pain”, “Fromage”...)</span><br/>
+                    </p>
 					<?php
 					return ob_get_clean();
 				},
@@ -650,9 +659,6 @@ jQuery(function($) {
 						return true;
 					}
 				},
-				'desc'     => '
-							
-							'
 			),
 			'quant_editor'          => array(
 				'name'        => amapress__( 'Quantités / Taille des paniers' ),
@@ -995,6 +1001,7 @@ jQuery(function($) {
 				'name'            => amapress__( 'Modèle - inscriptions' ),
 				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
+				'show_column'     => false,
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Génération des contrats',
 				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions préparé avec les placeholders "${xxx}" suivants:' .
@@ -1004,6 +1011,7 @@ jQuery(function($) {
 				'name'            => amapress__( 'Modèle - contrat papier' ),
 				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
+				'show_column'     => false,
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Génération des contrats',
 				'desc'            => 'Modèle DOCX/ODT pour le contrat papier généré à une date donnée préparé avec les placeholders "${xxx}" suivants:' .

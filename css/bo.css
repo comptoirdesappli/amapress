@@ -213,3 +213,7 @@ select.paiements_details {
     border: 1pt solid black;
     padding: 2pt !important;
 }
+
+span.description {
+    color: #aaa;
+}
