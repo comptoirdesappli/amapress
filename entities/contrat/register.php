@@ -162,6 +162,12 @@ function amapress_register_entities_contrat( $entities ) {
 				'show_on'   => 'list',
 			),
 			'clone'             => 'Dupliquer',
+			'generate_contrat'  => [
+				'label'     => 'Générer le contrat papier',
+				'condition' => function ( $adh_id ) {
+					return ! empty( AmapressContrat_instance::getBy( $adh_id )->getContratPapierModelDocFileName() );
+				},
+			],
 		),
 		'labels'          => array(
 			'add_new'      => 'Ajouter',
@@ -311,14 +317,14 @@ jQuery(function($) {
 				'desc'     => 'Lorsque 2 contrats de même type coexistent (Par ex : ”Semaine A”, “Semaine B”)',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
-			'max_adherents'  => array(
+			'max_adherents'         => array(
 				'name'     => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'     => 'number',
 				'group'    => '1/6 - Contrat',
 				'required' => true,
 				'desc'     => 'Nombre maximum d’inscriptions autorisées par le producteur',
 			),
-			'min_engagement' => array(
+			'min_engagement'        => array(
 				'name'        => amapress__( 'Engagement minimum' ),
 				'type'        => 'number',
 				'group'       => '1/6 - Contrat',
@@ -329,7 +335,7 @@ jQuery(function($) {
 
 
 			// 2/6 ferme
-			'nb_visites'     => array(
+			'nb_visites'            => array(
 				'name'        => amapress__( 'Nombre de visites obligatoires' ),
 				'group'       => '2/6 - Ferme',
 				'type'        => 'number',
@@ -910,7 +916,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit chèque pour les paiements en plusieurs fois',
 			),
-			'options_paiements' => array(
+			'options_paiements'     => array(
 				'name'        => amapress__( 'Options de paiement' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlement',
@@ -945,9 +951,15 @@ jQuery(function($) {
 							continue;
 						}
 
-						$row = array(
-							'date' => date_i18n( 'd/m/y', $date ),
-						);
+						if ( ! empty( $contrat_instance->getContratPapierModelDocFileName() ) ) {
+							$row = array(
+								'date' => Amapress::makeLink( amapress_get_row_action_href( 'generate_contrat', $post_id ), date_i18n( 'd/m/y', $date ), true, true ),
+							);
+						} else {
+							$row = array(
+								'date' => date_i18n( 'd/m/y', $date ),
+							);
+						}
 						foreach ( $quants as $quant ) {
 							$remaining_dates_factors = $contrat_instance->getRemainingDatesWithFactors( $date );
 							$price                   = $quant->getPrix_unitaire();
@@ -979,7 +991,7 @@ jQuery(function($) {
 			),
 
 			// Génération des contrats
-			'word_model'        => array(
+			'word_model'            => array(
 				'name'            => amapress__( 'Modèle - inscriptions' ),
 				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -987,6 +999,15 @@ jQuery(function($) {
 				'group'           => 'Génération des contrats',
 				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions préparé avec les placeholders "${xxx}" suivants:' .
 				                     AmapressAdhesion::getPlaceholdersHelp( [], true ),
+			),
+			'word_paper_model'      => array(
+				'name'            => amapress__( 'Modèle - contrat papier' ),
+				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'type'            => 'upload',
+				'selector-button' => 'Utiliser ce modèle',
+				'group'           => 'Génération des contrats',
+				'desc'            => 'Modèle DOCX/ODT pour le contrat papier généré à une date donnée préparé avec les placeholders "${xxx}" suivants:' .
+				                     AmapressContrat_instance::getPlaceholdersHelp( [], true ),
 			),
 
 //                        'list_quantites' => array(
@@ -997,7 +1018,7 @@ jQuery(function($) {
 //                            'post_type' => 'amps_contrat_quant',
 //                            'parent' => 'amapress_contrat_quantite_contrat_instance',
 //                        ),
-			'inscriptions'      => array(
+			'inscriptions'          => array(
 				'name'        => amapress__( 'Inscriptions' ),
 				'show_column' => true,
 				'show_table'  => false,
@@ -1720,3 +1741,12 @@ function amapress_modify_post_mime_types( $post_mime_types ) {
 }
 
 add_filter( 'post_mime_types', 'amapress_modify_post_mime_types' );
+
+add_action( 'amapress_row_action_contrat_instance_generate_contrat', 'amapress_row_action_contrat_instance_generate_contrat' );
+function amapress_row_action_contrat_instance_generate_contrat( $post_id ) {
+	$adhesion       = AmapressContrat_instance::getBy( $post_id );
+	$date           = isset( $_GET['start_date'] ) ? intval( $_GET['start_date'] ) : amapress_time();
+	$full_file_name = $adhesion->generateContratDoc( $date );
+	$file_name      = basename( $full_file_name );
+	Amapress::sendDocumentFile( $full_file_name, $file_name );
+}

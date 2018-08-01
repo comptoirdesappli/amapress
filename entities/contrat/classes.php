@@ -253,6 +253,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return get_attached_file( $this->getContratWordModelId(), true );
 	}
 
+	public function getContratPapierWordModelId() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_word_paper_model' );
+	}
+
+	public function getContratPapierModelDocFileName() {
+		return get_attached_file( $this->getContratPapierWordModelId(), true );
+	}
+
 //	public static function getPlaceholdersHelp() {
 //		$ret = [];
 //
@@ -281,50 +289,236 @@ class AmapressContrat_instance extends TitanEntity {
 //	}
 
 
-//	public function getContratDocFileName($date_first_distrib) {
-//		$model_filename = $this->getContratModelDocFileName();
-//		$ext = strpos($model_filename, '.docx') !== false ? '.docx' : '.odt';
-//		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-//				'inscription-' . $this->ID . '-' . date_i18n('Y-m-d', $date_first_distrib) . '-' . $this->getTitle() . $ext );
-//	}
+	public function getContratDocFileName( $date_first_distrib ) {
+		$model_filename = $this->getContratModelDocFileName();
+		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
-//	public function generateContratDoc($date_first_distrib) {
-//		$out_filename = $this->getContratDocFileName($date_first_distrib);
-//		$model_filename = $this->getContratModelDocFileName();
-//
-//		$placeholders = [];
-//		foreach ( self::getProperties() as $prop_name => $prop_config ) {
-//			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
-//		}
-//
-//		$remaining_dates = $this->getRemainingDatesWithFactors($date_first_distrib);
-//		$quants = $this->get( null );
-////		if ( ! $this->getContrat_instance()->isPanierVariable() ) {
-//		$i = 1;
-//		foreach ( $quants as $quant ) {
-//			$placeholders["quantite#$i"]               = $quant->getTitle();
-//			$placeholders["quantite_code#$i"]          = $quant->getCode();
-//			$placeholders["quantite_total#$i"]         = $quant->getPrice();
-//			$placeholders["quantite_nombre#$i"]        = $quant->getFactor();
-//			$placeholders["quantite_prix_unitaire#$i"] = $quant->getContratQuantite()->getPrix_unitaire();
-//			$placeholders["quantite_description#$i"]   = $quant->getContratQuantite()->getDescription();
-//			$placeholders["quantite_unite#$i"]         = $quant->getContratQuantite()->getPriceUnitDisplay();
-//			$i                                         += 1;
-//		}
-////		}
-//
-//
-//		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
-//		$templateProcessor->cloneRow( 'quantite', count( $quants ) );
-//		foreach ( $placeholders as $k => $v ) {
-//			$templateProcessor->setValue( $k, $v );
-//		}
-//
-//		$templateProcessor->saveAs( $out_filename );
-//
-//		return $out_filename;
-//	}
-//
+		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
+				'contrat-papier-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . '-' . $this->getTitle() . $ext );
+	}
+
+	private static $properties = null;
+
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret                                = [];
+			$ret['contrat_type']                = [
+				'desc' => 'Type du contrat (par ex, Légumes)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return $adh->getModel()->getTitle();
+				}
+			];
+			$ret['contrat_titre']               = [
+				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return $adh->getTitle();
+				}
+			];
+			$ret['contrat_lien']                = [
+				'desc' => 'Lien vers la présentation du contrat',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return $adh->getModel()->getPermalink();
+				}
+			];
+			$ret['date_debut']                  = [
+				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['date_fin']                    = [
+				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['date_debut_complete']         = [
+				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'D j M Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['date_fin_complete']           = [
+				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'D j M Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['lieux']                       = [
+				'desc' => 'Lieu de distribution',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
+						return $l->getTitle();
+					}, $adh->getLieux() ) );
+				}
+			];
+			$ret['contrat_debut']               = [
+				'desc' => 'Début du contrat (mois/année)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'm/Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['contrat_fin']                 = [
+				'desc' => 'Fin du contrat (mois/année)',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'm/Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['contrat_debut_annee']         = [
+				'desc' => 'Année de début du contrat',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['contrat_fin_annee']           = [
+				'desc' => 'Année de fin du contrat',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['nb_paiements']                = [
+				'desc' => 'Nombre de chèques possibles',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return implode( ', ', $adh->getPossiblePaiements() );
+				}
+			];
+			$ret['nb_distributions']            = [
+				'desc' => 'Nombre de distributions restantes',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return $adh->getRemainingDates( amapress_time() );
+				}
+			];
+			$ret['dates_distribution_par_mois'] = [
+				'desc' => 'Dates de distributions regroupées par mois',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					$dates         = $adh->getRemainingDates( self::$props_start_date );
+					$grouped_dates = from( $dates )->groupBy( function ( $d ) {
+						return date_i18n( 'F Y', $d );
+					} );
+
+					$grouped_dates_array = [];
+					foreach ( $grouped_dates as $k => $v ) {
+						$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+								function ( $d ) {
+									return date_i18n( 'd', $d );
+								}, $v
+							) );
+					}
+
+					return implode( ' ; ', $grouped_dates_array );
+				}
+			];
+			$ret['premiere_date']               = [
+				'desc' => 'Première date de distribution',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates( self::$props_start_date ) )->firstOrDefault() );
+				}
+			];
+			$ret['derniere_date']               = [
+				'desc' => 'Dernière date de distribution',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates( self::$props_start_date ) )->lastOrDefault() );
+				}
+			];
+			$ret['dates_distribution']          = [
+				'desc' => 'Liste des dates de distribution',
+				'func' => function ( AmapressContrat_instance $adh ) {
+					return implode( ', ', array_map( function ( $d ) {
+						return date_i18n( 'd/m/Y', $d );
+					}, $adh->getRemainingDates( self::$props_start_date ) ) );
+				}
+			];
+			self::$properties                   = $ret;
+		}
+
+		return self::$properties;
+	}
+
+	private static $props_start_date = null;
+
+	public function getRemainingDates( $date = null ) {
+		if ( empty( $date ) ) {
+			$date = amapress_time();
+		}
+
+		$dates      = $this->getListe_dates();
+		$start_date = Amapress::start_of_day( $date );
+
+		return array_filter( $dates, function ( $d ) use ( $start_date ) {
+			return Amapress::start_of_day( $d ) >= $start_date;
+		} );
+	}
+
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false ) {
+		$ret = [];
+
+		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
+			$ret[ $prop_name ] = $prop_desc;
+		}
+		$ret["quantite"]               = '(Tableau quantité) Libellé quantité';
+		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
+		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
+		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
+		$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
+		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
+		$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
+		$ret["quantite_paiements"]     = '(Tableau quantité) Possibilités de paiements';
+
+		return Amapress::getPlaceholdersHelpTable( 'contrat_inst-placeholders', $ret,
+			'du contrat', $additional_helps,
+			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%' );
+	}
+
+	public function generateContratDoc( $date_first_distrib ) {
+		$out_filename   = $this->getContratDocFileName( $date_first_distrib );
+		$model_filename = $this->getContratPapierModelDocFileName();
+		if ( empty( $model_filename ) ) {
+			return '';
+		}
+
+		$placeholders = [];
+		foreach ( self::getProperties() as $prop_name => $prop_config ) {
+			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
+		}
+
+		$remaining_distrib = $this->getRemainingDatesWithFactors( $date_first_distrib );
+		$quants            = AmapressContrats::get_contrat_quantites( $this->ID );
+		$i                 = 1;
+		foreach ( $quants as $quant ) {
+			$placeholders["quantite#$i"]               = $quant->getTitle();
+			$placeholders["quantite_code#$i"]          = $quant->getCode();
+			$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
+			$placeholders["quantite_total#$i"]         = $quant->getPrix_unitaire() * $remaining_distrib;
+			$placeholders["quantite_prix_unitaire#$i"] = $quant->getPrix_unitaire();
+			$placeholders["quantite_description#$i"]   = $quant->getDescription();
+			$placeholders["quantite_unite#$i"]         = $quant->getPriceUnitDisplay();
+			$paiements                                 = [];
+			foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
+				$ch = $this->getChequeOptionsForTotal( $nb_cheque, $quant->getPrix_unitaire() * $remaining_distrib );
+				if ( ! isset( $ch['desc'] ) ) {
+					continue;
+				}
+				$paiements[] = $ch['desc'];
+			}
+			$placeholders["quantite_paiements#$i"] = implode( ', ', $paiements );
+			$i                                     += 1;
+		}
+
+		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+		try {
+			$templateProcessor->cloneRow( 'quantite', count( $quants ) );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+		}
+
+		foreach ( $placeholders as $k => $v ) {
+			$templateProcessor->setValue( $k, $v );
+		}
+
+		$templateProcessor->saveAs( $out_filename );
+
+		return $out_filename;
+	}
+
 
 	public function getMinEngagement() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_min_engagement' );
