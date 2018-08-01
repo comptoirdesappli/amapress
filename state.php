@@ -90,7 +90,8 @@ function amapress_echo_and_check_amapress_state_page() {
 		'04_posts'      => '4/ Votre AMAP',
 		'05_content'    => '5/ Contenus à compléter',
 		'06_shortcodes' => '6/ Shortcodes à configurer',
-		'07_import'     => '7/ Import CSV',
+		'07_recalls'    => '7/ Rappels',
+		'08_import'     => '8/ Import CSV',
 	);
 	$state               = array();
 	$state['01_plugins'] = array();
@@ -655,14 +656,83 @@ function amapress_echo_and_check_amapress_state_page() {
 	}
 	//$state['05_content'][];
 
-	$state['07_import']   = array();
-	$state['07_import'][] = amapress_get_check_state(
+	$state['07_recalls'] = array();
+	foreach ( AmapressEntities::getMenu() as $item ) {
+		if ( isset( $item['type'] ) && $item['type'] == 'panel' && isset( $item['id'] ) ) {
+			$page_name = isset( $item['settings']['name'] ) ? $item['settings']['name'] . ' - ' : '';
+			$page_id   = $item['id'];
+			if ( ! empty( $item['tabs'] ) ) {
+				foreach ( $item['tabs'] as $tab_id => $tab ) {
+					$tab_name = ( isset( $tab['name'] ) ? $tab['name'] : $tab_id ) . ' - ';
+					if ( isset( $tab['id'] ) ) {
+						$tab_id = $tab['id'];
+					}
+					if ( ! empty( $tab['options'] ) ) {
+						foreach ( $tab['options'] as $option ) {
+							if ( empty( $option['id'] ) ) {
+								continue;
+							}
+							if ( empty( $option['name'] ) ) {
+								continue;
+							}
+							if ( empty( $option['hook_name'] ) ) {
+								continue;
+							}
+
+							$val = Amapress::getOption( $option['id'] );
+
+							$tab_href = add_query_arg( [
+									'page' => $page_id,
+									'tab'  => $tab_id,
+								], admin_url( 'admin.php' ) ) . '#' . $option['id'];
+
+							$state['07_recalls'][] = amapress_get_check_state(
+								'info',
+								$page_name . $tab_name . ( isset( $option['desc'] ) ? ' - ' . $option['desc'] . ' - ' : '' ) . $option['name'],
+								TitanFrameworkOptionEventScheduler::getFormattedEventDate( $val, isset( $option['scheduler_type'] ) ? $option['scheduler_type'] : 'days' ),
+								$tab_href
+							);
+						}
+					}
+				}
+			}
+			if ( ! empty( $item['options'] ) ) {
+				foreach ( $item['options'] as $option ) {
+					if ( empty( $option['id'] ) ) {
+						continue;
+					}
+					if ( empty( $option['name'] ) ) {
+						continue;
+					}
+					if ( empty( $option['hook_name'] ) ) {
+						continue;
+					}
+
+					$val = Amapress::getOption( $option['id'] );
+
+					$tab_href = add_query_arg( [
+							'page' => $page_id,
+						], admin_url( 'admin.php' ) ) . '#' . $option['id'];
+
+					$state['07_recalls'][] = amapress_get_check_state(
+						'error',
+						$page_name . ( isset( $option['desc'] ) ? ' - ' . $option['desc'] . ' - ' : '' ) . $option['name'],
+						TitanFrameworkOptionEventScheduler::getFormattedEventDate( $val, isset( $option['scheduler_type'] ) ? $option['scheduler_type'] : 'days' ),
+						$tab_href
+					);
+				}
+			}
+		}
+	}
+
+	$state['08_import']   = array();
+	$state['08_import'][] = amapress_get_check_state(
 		'do',
 		'Amapiens',
 		'Importer des amapiens',
 		admin_url( 'admin.php?page=amapress_import_page' )
 	);
-	$state['07_import'][] = amapress_get_check_state(
+	$state['08_import'][] = amapress_get_check_state(
 		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
 		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des adhésions',
