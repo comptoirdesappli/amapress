@@ -29,6 +29,26 @@ add_action( 'amapress_init', function () {
 			] )
 		);
 	}
+	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_contrat' == $_REQUEST['inscr_assistant'] ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
+				wp_die( 'Accès interdit' );
+			}
+		}
+
+		$inscr_id = intval( $_REQUEST['inscr_id'] );
+		if ( empty( $inscr_id ) ) {
+			wp_die( 'Accès interdit' );
+		}
+		$adhesion = AmapressAdhesion::getBy( $inscr_id );
+		if ( empty( $adhesion ) ) {
+			wp_die( 'Accès interdit' );
+		}
+
+		$full_file_name = $adhesion->generateContratDoc();
+		$file_name      = basename( $full_file_name );
+		Amapress::sendDocumentFile( $full_file_name, $file_name );
+	}
 } );
 
 /**
@@ -323,10 +343,17 @@ function amapress_self_inscription( $atts ) {
 			}
 			echo '<ul style="list-style-type: disc">';
 			foreach ( $adhs as $adh ) {
+				$print_contrat = '';
+				if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
+					$print_contrat = Amapress::makeButtonLink(
+						add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $adh->ID ] ),
+						'Imprimer ce contrat', true, true, 'btn btn-default'
+					);
+				}
 				if ( $admin_mode ) {
-					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')</li>';
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>';
 				} else {
-					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '</li>';
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/>' . $print_contrat . '</li>';
 				}
 			}
 			echo '</ul>';
@@ -891,8 +918,6 @@ function amapress_self_inscription( $atts ) {
 			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content );
 		}
 
-		//TODO contrat en word
-
 		if ( ! $admin_mode ) {
 			echo '<h4>étape 7/7 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. Vous allez recevoir un mail de confirmation dans quelques minutes.</div>';
@@ -906,6 +931,13 @@ function amapress_self_inscription( $atts ) {
 </form></p>';
 		} else {
 			echo '<div class="alert alert-success">L\'inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
+			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
+				$print_contrat = Amapress::makeLink(
+					add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $inscription->ID ] ),
+					'imprimer le contrat', true, true, 'btn btn-default'
+				);
+				echo '<p>Merci d\'' . $print_contrat . ', y joindre les chèques et transmettre le tout aux référents à la prochaine distribution</p>';
+			}
 			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de ses contrats</a></p>';
 		}
 	}
