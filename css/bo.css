@@ -208,8 +208,8 @@ select.paiements_details {
     border-top: 1pt solid #000;
 }
 
-#contrat-placeholders, #contrat-placeholders th, #contrat-placeholders td {
+.placeholders-help, .placeholders-help th, .placeholders-help td {
     border-collapse: collapse;
     border: 1pt solid black;
-    padding: 2pt;
+    padding: 2pt !important;
 }

@@ -986,7 +986,7 @@ jQuery(function($) {
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Génération des contrats',
 				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions préparé avec les placeholders "${xxx}" suivants:' .
-				                     AmapressAdhesion::getPlaceholdersHelp(),
+				                     AmapressAdhesion::getPlaceholdersHelp( [], true ),
 			),
 
 //                        'list_quantites' => array(

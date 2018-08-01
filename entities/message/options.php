@@ -107,6 +107,33 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 	}
 }
 
+function amapress_replace_mail_user_placeholders_help() {
+	$ret                 = [];
+	$ret["nom_complet"]  = 'Prénom nom de l\'amapien';
+	$ret["display_name"] = 'Prénom nom de l\'amapien';
+	$ret["prenom"]       = 'Prénom de l\'amapien';
+	$ret["first_name"]   = 'Prénom de l\'amapien';
+	$ret["nom"]          = 'Nom de l\'amapien';
+	$ret["last_name"]    = 'Nom de l\'amapien';
+	$ret["mail"]         = 'Email de l\'amapien';
+	$ret["mailto"]       = 'Lien mail de l\'amapien';
+	$ret["sms"]          = 'Téléphone de l\'amapien';
+	$ret["tel"]          = 'Téléphone de l\'amapien';
+	$ret["smsto"]        = 'Lien sms de l\'amapien';
+	$ret["whatsappto"]   = 'Lien vers WhatsApp de l\'amapien';
+	$ret["telto"]        = 'Lien vers d\'appel de l\'amapien';
+	$ret["locto"]        = 'Lien vers la localisation de l\'amapien';
+	$ret["adresse"]      = 'Adresse de l\'amapien';
+	$ret["address"]      = 'Adresse de l\'amapien';
+	$ret["adresse_html"] = 'Adresse de l\'amapien';
+	$ret["address_html"] = 'Adresse de l\'amapien';
+	$ret["login"]        = 'Identifiant de l\'amapien';
+	$ret["identifiant"]  = 'Identifiant de l\'amapien';
+	$ret["avatar"]       = 'Avatar de l\'amapien';
+
+	return $ret;
+}
+
 /**
  * @param string $mail_content
  * @param AmapressUser|null $user
@@ -192,7 +219,7 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 				case "login_url_link":
 					$url = wp_login_url();
 
-					return "<a href='mailto:{$url}'>{$url}</a>";
+					return "<a href='{$url}'>{$url}</a>";
 				case "password_url":
 					if ( ! $user ) {
 						return '';
@@ -296,4 +323,44 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 		}, $mail_content );
 
 	return $res;
+}
+
+function amapress_replace_mail_placeholders_help( $post_type_desc ) {
+	$ret                     = [];
+	$ret["nom_site"]         = 'Nom de l\'AMAP';
+	$ret["site_name"]        = 'Nom de l\'AMAP';
+	$ret["url"]              = 'Url du site de l\'AMAP';
+	$ret["site_url"]         = 'Url du site de l\'AMAP';
+	$ret["description"]      = 'Description du site de l\'AMAP';
+	$ret["site_description"] = 'Description du site de l\'AMAP';
+	$ret["site:admin_email"] = 'Email de l\'admin du site'; //subopt
+//	$ret["site:language"]               = 'Langue du site'; //subopt
+	$ret["site:rss_url"]       = 'Lien RSS du site'; //subopt
+	$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
+	$ret['site_icon_url']      = 'Url du logo du site de l\'AMAP';
+	$ret['site_icon_url_link'] = 'Lien du logo du site de l\'AMAP';
+	foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+		$ret["moi/me:$k"] = 'Expéditeur: ' . $v; //subopt
+	}
+	foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+		$ret["dest/user:$k"] = 'Destinataire: ' . $v; //subopt
+	}
+	$ret["login_url"]         = 'Url de login du site de l\'AMAP';
+	$ret["login_url_link"]    = 'Lien vers la page login du site de l\'AMAP';
+	$ret["password_url"]      = 'Lien de la page de Récupération de mot de passe';
+	$ret["password_url_raw"]  = 'Url de la page de Récupération de mot de passe';
+	$ret["registration_text"] = 'Texte du mail de récupération de mot de passe';
+	$ret["now"]               = 'Date courante';
+	if ( ! empty( $post_type_desc ) ) {
+		$ret['post:id']         = 'ID ' . $post_type_desc;
+		$ret['post:title']      = 'Titre ' . $post_type_desc;
+		$ret['post:titre']      = 'Titre ' . $post_type_desc;
+		$ret['post:link']       = 'Lien vers la page info ' . $post_type_desc;
+		$ret['post:lien']       = 'Lien vers la page info ' . $post_type_desc;
+		$ret['post:title-link'] = 'Lien avec titre vers la page info ' . $post_type_desc;
+		$ret['post:titre-lien'] = 'Lien avec titre vers la page info ' . $post_type_desc;
+		$ret['post:href']       = 'Url de la page info ' . $post_type_desc;
+	}
+
+	return $ret;
 }

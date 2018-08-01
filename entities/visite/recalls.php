@@ -48,6 +48,7 @@ function amapress_visite_inscription_recall_options() {
 		array(
 			'id'                  => 'visite-inscription-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Inscription à une visite',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_visite_inscription',
 			'hook_args_generator' => function ( $option ) {
@@ -57,6 +58,7 @@ function amapress_visite_inscription_recall_options() {
 		array(
 			'id'                  => 'visite-inscription-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Inscription à une visite',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_visite_inscription',
 			'hook_args_generator' => function ( $option ) {
@@ -74,6 +76,7 @@ function amapress_visite_inscription_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp(),
 		),
 		array(
 			'id'           => 'visite-inscription-recall-cc',

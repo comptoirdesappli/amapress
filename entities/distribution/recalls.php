@@ -241,6 +241,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		array(
 			'id'                  => 'distribution-amapiens-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Infos distribution à tous les amapiens',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_amapiens_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -250,6 +251,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		array(
 			'id'                  => 'distribution-amapiens-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Infos distribution à tous les amapiens',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_amapiens_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -259,6 +261,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		array(
 			'id'                  => 'distribution-amapiens-recall-3',
 			'name'                => 'Rappel 3',
+			'desc'                => 'Infos distribution à tous les amapiens',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_amapiens_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -276,6 +279,8 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc',
@@ -297,6 +302,7 @@ function amapress_distribution_verify_recall_options() {
 		array(
 			'id'                  => 'distribution-verify-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Vérification infos distribution',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_verify_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -306,6 +312,7 @@ function amapress_distribution_verify_recall_options() {
 		array(
 			'id'                  => 'distribution-verify-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Vérification infos distribution',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_verify_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -315,6 +322,7 @@ function amapress_distribution_verify_recall_options() {
 		array(
 			'id'                  => 'distribution-verify-recall-3',
 			'name'                => 'Rappel 3',
+			'desc'                => 'Vérification infos distribution',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_verify_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -332,6 +340,8 @@ function amapress_distribution_verify_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour le collectif,\nPouvez-vous vérifier les infos suivantes de %%lien_distrib_titre_admin%% (vous pouvez modifier les infos depuis le lien précédent):\n-> que cette distribution est bien à %%post:lieu%%\n-> que les contrats suivants seront distribués : %%post:liste-paniers-lien%%\n-> que les responsables %%post:resp-inscrits%%/%%post:resp-requis%% sont : %%post:liste-resp-email-phone%%\n-> que la liste d'émargement ci-jointe est correcte\n\nMerci\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
 			'id'           => 'distribution-verify-recall-to',
@@ -353,6 +363,7 @@ function amapress_distribution_responsable_recall_options() {
 		array(
 			'id'                  => 'distribution-resp-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Responsables de distribution',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -362,6 +373,7 @@ function amapress_distribution_responsable_recall_options() {
 		array(
 			'id'                  => 'distribution-resp-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Responsables de distribution',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -371,6 +383,7 @@ function amapress_distribution_responsable_recall_options() {
 		array(
 			'id'                  => 'distribution-resp-recall-3',
 			'name'                => 'Rappel 3',
+			'desc'                => 'Responsables de distribution',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -388,6 +401,8 @@ function amapress_distribution_responsable_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
 			'id'           => 'distribution-resp-recall-cc',
@@ -409,6 +424,7 @@ function amapress_distribution_emargement_recall_options() {
 		array(
 			'id'                  => 'distribution-emargement-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Envoi liste émargement',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_distrib_emargement',
 			'hook_args_generator' => function ( $option ) {
@@ -418,6 +434,7 @@ function amapress_distribution_emargement_recall_options() {
 		array(
 			'id'                  => 'distribution-emargement-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Envoi liste émargement',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_distrib_emargement',
 			'hook_args_generator' => function ( $option ) {
@@ -428,6 +445,7 @@ function amapress_distribution_emargement_recall_options() {
 			'id'                  => 'distribution-emargement-recall-3',
 			'name'                => 'Rappel 3',
 			'type'                => 'event-scheduler',
+			'desc'                => 'Envoi liste émargement',
 			'hook_name'           => 'amapress_recall_distrib_emargement',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -444,6 +462,8 @@ function amapress_distribution_emargement_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
 			'id'           => 'distribution-emargement-recall-to',
@@ -527,6 +547,7 @@ function amapress_distribution_changes_recall_options() {
 		array(
 			'id'                  => 'distribution-changes-recall-1',
 			'name'                => 'Rappel changement distribution 1',
+			'desc'                => 'Changement(s) dans les paniers distribués',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_distrib_changes',
 			'hook_args_generator' => function ( $option ) {
@@ -537,6 +558,7 @@ function amapress_distribution_changes_recall_options() {
 			'id'                  => 'distribution-changes-recall-2',
 			'name'                => 'Rappel changement distribution 2',
 			'type'                => 'event-scheduler',
+			'desc'                => 'Changement(s) dans les paniers distribués',
 			'hook_name'           => 'amapress_recall_distrib_changes',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -566,6 +588,8 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement de lieu pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
 			'name' => 'En cas de modification de livraison',
@@ -582,6 +606,8 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nLa %%lien_distrib_titre%% comprendra les modifications suivantes :\n%%paniers_modifies%%\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
 			'name' => 'En cas d\'abscence de distribution',
@@ -598,6 +624,10 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : Pas de distribution le %%date%%\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp( [
+				             'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
+			             ] ),
 		),
 		array(
 			'name' => 'En cas de changement de jour de distribution',
@@ -614,6 +644,10 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : LLa distribution cette semaine aura lieu le %%jour_date_dist%%\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             AmapressDistribution::getPlaceholdersHelp( [
+				             'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
+			             ] ),
 		),
 		array(
 			'name' => 'En copie',

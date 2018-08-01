@@ -253,6 +253,34 @@ class AmapressContrat_instance extends TitanEntity {
 		return get_attached_file( $this->getContratWordModelId(), true );
 	}
 
+//	public static function getPlaceholdersHelp() {
+//		$ret = [];
+//
+//		foreach ( self::getProperties() as $prop_name => $prop ) {
+//			if ( ! isset( $prop['desc'] ) ) {
+//				continue;
+//			}
+//
+//			$ret[ $prop_name ] = $prop['desc'];
+//		}
+//		$ret["quantite"]               = '(Tableau quantité) Libellé quantité';
+//		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
+//		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
+//		$ret["quantite_sous_total"]    = '(Tableau quantité) Prix pour la quantité choisie';
+//		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
+//		$ret["quantite_nombre"]        = '(Tableau quantité) Facteur quantité choisi';
+//		$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
+//		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
+//		$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
+//
+//		return '<table id="contrat-placeholders"><thead><tr><th>Placeholder</th><th>Description</th></tr></thead>' .
+//		       implode( '', array_map( function ( $pn, $p ) {
+//			       return '<tr><td>${' . esc_html( $pn ) . '}</td><td>' . esc_html( $p ) . '</td></tr>';
+//		       }, array_keys( $ret ), array_values( $ret ) ) )
+//		       . '</table>';
+//	}
+
+
 //	public function getContratDocFileName($date_first_distrib) {
 //		$model_filename = $this->getContratModelDocFileName();
 //		$ext = strpos($model_filename, '.docx') !== false ? '.docx' : '.odt';

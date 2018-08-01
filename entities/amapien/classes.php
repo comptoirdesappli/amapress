@@ -725,21 +725,24 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		if ( null == self::$properties ) {
 			$ret = [
 				'lien_intermittence'               => [
-					'function' => function ( AmapressUser $amapien ) {
+					'desc' => 'Lien vers la page des paniers intermittents disponibles',
+					'func' => function ( AmapressUser $amapien ) {
 						$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
 
 						return Amapress::makeLink( $url );
 					}
 				],
 				'lien_paniers_intermittence'       => [
-					'function' => function ( AmapressUser $amapien ) {
+					'desc' => 'Lien vers la page des paniers intermittents disponibles',
+					'func' => function ( AmapressUser $amapien ) {
 						$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
 
 						return Amapress::makeLink( $url );
 					}
 				],
 				'lien_desinscription_intermittent' => [
-					'function' => function ( AmapressUser $amapien ) {
+					'desc' => 'Lien de désinscription de la liste des intermittents',
+					'func' => function ( AmapressUser $amapien ) {
 						return amapress_intermittence_desinscription_link();//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
 					}
 				],

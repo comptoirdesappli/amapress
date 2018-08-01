@@ -25,7 +25,7 @@ class TitanFrameworkOptionTextarea extends TitanFrameworkOption {
 	 * Display for options and meta
 	 */
 	public function display() {
-		$this->echoOptionHeader( true );
+		$this->echoOptionHeader();
 		printf( "<textarea class='large-text %s %s' name=\"%s\" placeholder=\"%s\" id=\"%s\" rows='10' cols='50'>%s</textarea>",
 			$this->settings['is_code'] ? 'code' : '',
 			$this->settings['required'] ? 'required' : '',
@@ -34,7 +34,7 @@ class TitanFrameworkOptionTextarea extends TitanFrameworkOption {
 			$this->getID(),
 			esc_textarea( stripslashes( $this->getValue() ) )
 		);
-		$this->echoOptionFooter( false );
+		$this->echoOptionFooter();
 	}
 
 	public function columnDisplayValue( $post_id ) {

@@ -332,15 +332,11 @@ class AmapressAdhesion extends TitanEntity {
 				'inscription-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
 	}
 
-	public static function getPlaceholdersHelp() {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false ) {
 		$ret = [];
 
-		foreach ( self::getProperties() as $prop_name => $prop ) {
-			if ( ! isset( $prop['desc'] ) ) {
-				continue;
-			}
-
-			$ret[ $prop_name ] = $prop['desc'];
+		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
+			$ret[ $prop_name ] = $prop_desc;
 		}
 		$ret["quantite"]               = '(Tableau quantité) Libellé quantité';
 		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
@@ -352,11 +348,9 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
 		$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
 
-		return '<table id="contrat-placeholders"><thead><tr><th>Placeholder</th><th>Description</th></tr></thead>' .
-		       implode( '', array_map( function ( $pn, $p ) {
-			       return '<tr><td>${' . esc_html( $pn ) . '}</td><td>' . esc_html( $p ) . '</td></tr>';
-		       }, array_keys( $ret ), array_values( $ret ) ) )
-		       . '</table>';
+		return Amapress::getPlaceholdersHelpTable( 'contrat-placeholders', $ret,
+			'de l\'inscription', $additional_helps,
+			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%' );
 	}
 
 	public function generateContratDoc() {

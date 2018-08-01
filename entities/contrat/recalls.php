@@ -191,6 +191,7 @@ function amapress_contrat_quantites_recall_options() {
 		array(
 			'id'                  => 'distribution-quantites-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Quantités à livrer',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_quantites',
 			'hook_args_generator' => function ( $option ) {
@@ -200,6 +201,7 @@ function amapress_contrat_quantites_recall_options() {
 		array(
 			'id'                  => 'distribution-quantites-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Quantités à livrer',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_quantites',
 			'hook_args_generator' => function ( $option ) {
@@ -209,6 +211,7 @@ function amapress_contrat_quantites_recall_options() {
 		array(
 			'id'                  => 'distribution-quantites-recall-3',
 			'name'                => 'Rappel 3',
+			'desc'                => 'Quantités à livrer',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_quantites',
 			'hook_args_generator' => function ( $option ) {
@@ -226,6 +229,15 @@ function amapress_contrat_quantites_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
+				             'producteur_contrats'               => 'Contrats du producteur',
+				             'producteur_nom'                    => 'Nom du producteur',
+				             'lien_contrats_quantites'           => 'Lien vers les quantités à la prochaine distribution',
+				             'producteur_paniers_quantites_text' => 'Quantités à la prochaine distribution (en texte)',
+				             'producteur_paniers_quantites'      => 'Quantités à la prochaine distribution (en tableau)',
+				             'producteur_contact'                => 'Coordonnées du producteur',
+			             ], null ),
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc',
@@ -256,6 +268,7 @@ function amapress_contrat_paiements_recall_options() {
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-1',
 			'name'                => 'Rappel 1',
+			'desc'                => 'Liste des chèques',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -265,6 +278,7 @@ function amapress_contrat_paiements_recall_options() {
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-2',
 			'name'                => 'Rappel 2',
+			'desc'                => 'Liste des chèques',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -274,6 +288,7 @@ function amapress_contrat_paiements_recall_options() {
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-3',
 			'name'                => 'Rappel 3',
+			'desc'                => 'Liste des chèques',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -291,6 +306,15 @@ function amapress_contrat_paiements_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             Amapress::getPlaceholdersHelpTable( 'liste-paiements-placeholders', [
+				             'prochaine_date_remise_cheques' => 'Prochaine date de remise des chèques',
+				             'producteur_contrats'           => 'Contrats du producteur',
+				             'producteur_nom'                => 'Nom du producteur',
+				             'contrat_nom'                   => 'Nom du contrat',
+				             'lien_contrats_paiements'       => 'Lien vers la liste des chèques à remettre au producteur',
+			             ], null ),
+
 		),
 		array(
 			'id'           => 'contrats-liste-paiements-recall-cc',

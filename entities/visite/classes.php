@@ -188,4 +188,9 @@ class AmapressVisite extends Amapress_EventBase {
 
 		return $ret;
 	}
+
+	public static function getPlaceholdersHelp( $additional_helps = [] ) {
+		return Amapress::getPlaceholdersHelpTable( 'visite-placeholders',
+			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de la distribution', $additional_helps );
+	}
 }
