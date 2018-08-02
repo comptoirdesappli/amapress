@@ -1004,8 +1004,8 @@ jQuery(function($) {
 				'show_column'     => false,
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Génération des contrats',
-				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions préparé avec les placeholders "${xxx}" suivants:' .
-				                     AmapressAdhesion::getPlaceholdersHelp( [], true ),
+				'desc'            => 'Modèle DOCX/ODT pour le contrat généré à partir des inscriptions préparé avec des placeholders "${xxx}".' .
+				                     ( isset( $_REQUEST['placeholders'] ) ? AmapressAdhesion::getPlaceholdersHelp( [], true ) : '' ),
 			),
 			'word_paper_model'      => array(
 				'name'            => amapress__( 'Modèle - contrat papier' ),
@@ -1014,8 +1014,8 @@ jQuery(function($) {
 				'show_column'     => false,
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Génération des contrats',
-				'desc'            => 'Modèle DOCX/ODT pour le contrat papier généré à une date donnée préparé avec les placeholders "${xxx}" suivants:' .
-				                     AmapressContrat_instance::getPlaceholdersHelp( [], true ),
+				'desc'            => 'Modèle DOCX/ODT pour le contrat papier généré à une date donnée préparé avec des placeholders "${xxx}"' .
+				                     ( isset( $_REQUEST['placeholders'] ) ? AmapressContrat_instance::getPlaceholdersHelp( [], true ) : '' ),
 			),
 
 //                        'list_quantites' => array(

@@ -429,8 +429,8 @@ class AmapressEntities {
 									\n-> pour un montant de %%total%%€
 									\nMerci de remettre aux référents %%option_paiements%% à la première distribution
 									\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
 								),
 							]
 						),
@@ -688,8 +688,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nVotre demande d'adhésion à l'espace intermittents (%%post:lien_intermittence%%) a bien été enregistrée\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             Amapress::getPlaceholdersHelpTable( 'amapien-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  Amapress::getPlaceholdersHelpTable( 'amapien-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ) : '',
 								),
 								array(
 									'type' => 'save',
@@ -710,8 +710,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nVotre demande de désincription de l'espace intermittents a bien été enregistrée\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             Amapress::getPlaceholdersHelpTable( 'amapien-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  Amapress::getPlaceholdersHelpTable( 'amapien-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ) : '',
 								),
 								array(
 									'type' => 'save',
@@ -736,8 +736,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : [[à remplir]].\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à [[à remplir]].\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'name' => 'Mail à l\'amapien proposant son panier',
@@ -754,8 +754,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\nVotre %%post:panier%% a été mis sur la liste des paniers à échanger\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'type' => 'save',
@@ -784,8 +784,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'name' => 'Mail à l\'amapien repreneur',
@@ -802,8 +802,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier%%) à la distribution %%post:distribution%% a été envoyée.\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'type' => 'save',
@@ -832,8 +832,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) sera repris par %%post:repreneur%% à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'name' => 'Mail à l\'amapien repreneur',
@@ -850,8 +850,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% a accepté la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'type' => 'save',
@@ -876,8 +876,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'type' => 'save',
@@ -902,8 +902,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) a été retiré de l'espace intermittents\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'name' => 'Mail à l\'amapien repreneur',
@@ -920,8 +920,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n%%post:adherent%% a annulé la reprise de son panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'type' => 'save',
@@ -946,8 +946,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n%%post:repreneur%% a annulé la reprise de votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'name' => 'Mail à l\'amapien repreneur',
@@ -964,8 +964,8 @@ class AmapressEntities {
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\nVous avez annumé la reprise du panier (%%post:panier%%) de %%post:adherent%% à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    => 'Les placeholders suivants sont disponibles:' .
-									             AmapressIntermittence_panier::getPlaceholdersHelp(),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									                                                  AmapressIntermittence_panier::getPlaceholdersHelp() : '',
 								),
 								array(
 									'type' => 'save',
@@ -1338,8 +1338,8 @@ class AmapressEntities {
 											'name'    => 'Contenu du mail',
 											'type'    => 'textarea',
 											'default' => "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
-											'desc'    => 'Les placeholders suivants sont disponibles:' .
-											             Amapress_EventBase::getPlaceholdersHelp(),
+											'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+											                                                  Amapress_EventBase::getPlaceholdersHelp() : '',
 										),
 										array(
 											'type' => 'save',
@@ -1360,8 +1360,8 @@ class AmapressEntities {
 											'name'    => 'Contenu du mail',
 											'type'    => 'textarea',
 											'default' => "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
-											'desc'    => 'Les placeholders suivants sont disponibles:' .
-											             Amapress_EventBase::getPlaceholdersHelp(),
+											'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+											                                                  Amapress_EventBase::getPlaceholdersHelp() : '',
 										),
 										array(
 											'type' => 'save',
