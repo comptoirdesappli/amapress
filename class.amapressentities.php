@@ -344,7 +344,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'         => array(
+						'Ajouter une inscription'                  => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -358,7 +358,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'           => array(
+						'Ajouter un coadhérent'                    => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -372,7 +372,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'  => array(
+						'Ajouter une personne hors AMAP'           => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                   => array(
+						'Renouvèlement'                            => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -401,7 +401,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques' => array(
+						'Mails - Envoi liste des chèques'          => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
@@ -2018,6 +2018,47 @@ class AmapressEntities {
 //                            )
 //                        ),
 					),
+					'subpages' => array(),
+				),
+				array(
+					'id'       => 'amapress_help_page',
+					'type'     => 'panel',
+					'settings' => array(
+						'name'       => 'Aide',
+						'position'   => '80.1',
+						'capability' => 'read',
+						'icon'       => 'dashicons-sos',
+					),
+					'tabs'     => array(
+						'Placeholders - contrat vierge'                => array(
+							'id'      => 'paper_contrat_placeholders',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'     => 'paper_contrat_placeholders_cust',
+									'name'   => 'Placeholders - contrat vierge',
+									'type'   => 'custom',
+									'custom' => function () {
+										return AmapressContrat_instance::getPlaceholdersHelp( [], true );
+									}
+								)
+							)
+						),
+						'Configuration des paniers (Taille/Quantités)' => array(
+							'id'      => 'conf_paniers',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'     => 'conf_paniers_cust',
+									'name'   => 'Configuration des paniers (Taille/Quantités)',
+									'type'   => 'custom',
+									'custom' => function () {
+									}
+								)
+							)
+						),
+					),
+					'options'  => [],
 					'subpages' => array(),
 				),
 				array(

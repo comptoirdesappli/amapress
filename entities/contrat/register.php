@@ -142,16 +142,21 @@ function amapress_register_entities_contrat( $entities ) {
 			}
 			$adhs = AmapressContrats::get_active_adhesions( $post->ID );
 			if ( ! empty( $adhs ) ) {
+				if ( isset( $_REQUEST['adv'] ) ) {
+					echo '<p style="color: red"><span class="dashicons dashicons-warning"></span> Édition d’un contrat actif</p>';
+				}
+
 				echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
 <span class="description">(Par ex : si vous changez le nombre de dates de distribution, le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat modulable seront perdues.)</span></p>';
 //				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
 				if ( ! isset( $_REQUEST['adv'] ) ) {
 //					echo '<p>Si vous voulez malgrès tout éditer le contrat, utiliser le lien suivant : <a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition.</a></p>';
 					echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition</a></p>';
-				} else {
-					echo '<p style="color: red">/!\ Edition après saisie des inscriptions /!\</p>';
 				}
 
+				if ( count( $adhs ) > 0 ) {
+					echo '<p><a href="' . admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID ) . '">Consulter</a> : Voir la liste des ' . count( $adhs ) . ' adhérent(s) inscrits à ce contrat</p>';
+				}
 				echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
 			}
 		},
@@ -215,12 +220,12 @@ function amapress_register_entities_contrat( $entities ) {
 				}
 			),
 
-			// 1/6 contrat
+			// 1/6 - Ferme
 			'model'                 => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
-				'group'             => '1/6 - Contrat',
+				'group'             => '1/6 - Ferme',
 				'required'          => true,
 				'desc'              => 'Sélectionner la présentation web du producteur.',
 				'import_key'        => true,
@@ -240,10 +245,21 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'searchable'        => true,
 			),
+			'nb_visites'            => array(
+				'name'        => amapress__( 'Visite' ),
+				'group'       => '1/6 - Ferme',
+				'type'        => 'number',
+				'required'    => true,
+				'show_column' => false,
+				'desc'        => 'Nombre de visite(s) obligatoire(s) chez le producteur',
+				'max'         => 12,
+			),
+
+			// 2/6 - Paramètres généraux
 			'date_debut'            => array(
 				'name'          => amapress__( 'Début' ),
 				'type'          => 'date',
-				'group'         => '1/6 - Contrat',
+				'group'         => '2/6 - Paramètres généraux',
 				'required'      => true,
 				'desc'          => 'Date de début du contrat',
 				'import_key'    => true,
@@ -277,7 +293,7 @@ jQuery(function($) {
 			'date_fin'              => array(
 				'name'          => amapress__( 'Fin' ),
 				'type'          => 'date',
-				'group'         => '1/6 - Contrat',
+				'group'         => '2/6 - Paramètres généraux',
 				'required'      => true,
 				'desc'          => 'Date de fin du contrat',
 				'import_key'    => true,
@@ -307,7 +323,7 @@ jQuery(function($) {
 				'name'        => amapress__( 'Nom générique' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
-				'group'       => '1/6 - Contrat',
+				'group'       => '2/6 - Paramètres généraux',
 				'type'        => 'custom',
 				'custom'      => function ( $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
@@ -320,7 +336,7 @@ jQuery(function($) {
 			),
 			'name'                  => array(
 				'name'     => amapress__( 'Nom complémentaire' ),
-				'group'    => '1/6 - Contrat',
+				'group'    => '2/6 - Paramètres généraux',
 				'type'     => 'text',
 				'desc'     => 'Lorsque 2 contrats de même type coexistent (Par ex : ”Semaine A”, “Semaine B”)',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
@@ -328,49 +344,28 @@ jQuery(function($) {
 			'max_adherents'         => array(
 				'name'     => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'     => 'number',
-				'group'    => '1/6 - Contrat',
+				'group'    => '2/6 - Paramètres généraux',
 				'required' => true,
 				'desc'     => 'Nombre maximum d’inscriptions autorisées par le producteur',
 			),
 			'min_engagement'        => array(
 				'name'        => amapress__( 'Engagement minimum' ),
 				'type'        => 'number',
-				'group'       => '1/6 - Contrat',
+				'group'       => '2/6 - Paramètres généraux',
 				'required'    => true,
 				'show_column' => false,
 				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
 			),
-			'word_model'            => array(
-				'name'            => amapress__( 'Modèle - inscription adhérent' ),
-				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-				'type'            => 'upload',
-				'show_column'     => false,
-				'selector-button' => 'Utiliser ce modèle',
-				'group'           => '1/6 - Contrat',
-				'desc'            => 'Ajouter votre modèle pour générer des contrats personnalisés pour chaque adhérent (À configurer avec des marquages substitutifs de type "${xxx}")' .
-				                     ( isset( $_REQUEST['placeholders'] ) ? AmapressAdhesion::getPlaceholdersHelp( [], true ) : '' ),
-			),
 			'word_paper_model'      => array(
-				'name'            => amapress__( 'Modèle - contrat papier vierge' ),
+				'name'            => amapress__( 'Contrat vierge' ),
 				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
 				'show_column'     => false,
 				'selector-button' => 'Utiliser ce modèle',
-				'group'           => '1/6 - Contrat',
-				'desc'            => 'Ajouter votre modèle pour générer des contrats papier/vierge à faire remplir aux adhérents (Modèle à configurer avec des marquages substitutifs de type "${xxx}")' .
-				                     ( isset( $_REQUEST['placeholders'] ) ? AmapressContrat_instance::getPlaceholdersHelp( [], true ) : '' ),
+				'group'           => '2/6 - Paramètres généraux',
+				'desc'            => 'Générer un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
 			),
 
-			// 2/6 ferme
-			'nb_visites'            => array(
-				'name'        => amapress__( 'Nombre de visite(s) obligatoire(s)' ),
-				'group'       => '2/6 - Ferme',
-				'type'        => 'number',
-				'required'    => true,
-				'show_column' => false,
-				'desc'        => 'Nombre de visites obligatoires chez le producteur',
-				'max'         => 12,
-			),
 
 //			'type'           => array(
 //				'name'          => amapress__( 'Type de contrat' ),
@@ -491,11 +486,9 @@ jQuery(function($) {
 						$is_readonly = amapress_is_contrat_instance_readonly( $option );
 						if ( ! TitanFrameworkOption::isOnNewScreen() ) {
 							if ( $is_readonly ) {
-								echo '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</p>';
 							} else {
 								$val_id = $option->getID() . '-validate';
-								echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat. 
-<br />Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</label></p>';
+								echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat.</label></p>';
 								echo '<script type="text/javascript">
 //<![CDATA[
 jQuery(function($) {
@@ -514,18 +507,21 @@ jQuery(function($) {
 			'les-paniers'           => array(
 				'name'              => amapress__( 'Report livraison' ),
 				'group'             => '3/6 - Distributions',
+				'table_header_text' => '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</p>',
 				'desc'              => 'Dates de livraison des paniers de ce contrat',
 				'show_column'       => false,
+				'show_link'         => false,
 				'show_on'           => 'edit-only',
-//							'bare'            => true,
 				'include_columns'   => array(
 					'title',
 					'amapress_panier_status',
 					'amapress_panier_date_subst',
 				),
 				'datatable_options' => array(
-					'ordering' => false,
-					'paging'   => true,
+					'paging'    => false,
+					'bSort'     => false,
+					'info'      => false,
+					'searching' => false,
 				),
 				'type'              => 'related-posts',
 				'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
@@ -586,39 +582,50 @@ jQuery(function($) {
 						}
 					}
 
-					$types = [
-						'quant_fix'       => 'Choix unique - quantité déterminée',
-						'quant_fix_multi' => 'Choix multiple - quantités déterminées',
-						'quant_var'       => 'Choix unique - quantité libre',
-						'quant_var_multi' => 'Choix multiple -  quantités libres',
-						'panier_var'      => 'Paniers modulables',
-					];
+//		$types = [
+//			'quant_fix'       => 'Choix unique - quantité déterminée',
+//			'quant_fix_multi' => 'Choix multiple - quantités déterminées',
+//			'quant_var'       => 'Choix unique - quantité libre',
+//			'quant_var_multi' => 'Choix multiple -  quantités libres',
+//			'panier_var'      => 'Paniers modulables',
+//		];
 					ob_start();
 					?>
                     <p>Choisissez le type d’option(s) proposée(s) dans le contrat d’origine concernant la composition
                         des paniers.</p>
-                    <select id="amapress_quantite_type"
-                            name="amapress_quantite_type"
-                    ><?php
-						tf_parse_select_options( $types, $type );
-						?>
-                    </select>
-                    <p>
-                        <strong>Choix unique - quantité déterminée</strong> : L’adhérent choisit <strong>une seule
-                            option</strong> pour toute la durée du contrat. <span class="description">(Par ex : “Légumes - Panier/Demi-panier” , “Champignons - Petit/Moyen/Grand”, “Fruits - Petit/Moyen/Grand”, “Jus - 1L/3L/6L”, “Oeuf - 6/12”...)</span><br/>
-                        <strong>Choix multiple - quantités déterminées</strong> : L’adhérent peut choisir <strong>différents
-                            produits associés à différentes tailles de panier</strong> pour toute la durée du contrat
-                        <span class="description">(Par ex :  “Champignons - Gros fan de champis 1 kg <strong>et</strong>  petit fan de pleurotes 250g <strong>et</strong>  Petit fan de shiitake 250g…”)</span><br/>
-                        <strong>Choix unique - quantité libre</strong> : L’adhérent choisit <strong>la “Quantité” d’un
-                            produit</strong> pour toute durée du contrat
-                        <span class="description">(Par ex : “Quantité  x Poulets”, “Quantité x 6 oeufs”...)</span><br/>
-                        <strong>Choix multiple - quantités libres</strong> : L’adhérent peut choisir <strong>différents
-                            produits et différentes Quantités</strong> pour toute la durée du contrat <span
-                                class="description">(Par ex : “Oeufs - Quantité 6 et 12 oeufs”, “Fromage - Quantité Petit Panier Option 1 et Quantité Grand panier et Quantité Panier Faisselle...”, “Volailles - Quantité Petit poulet/ Quantité Moyen Poulet, Quantité Gros Poulet”...)</span><br/>
-                        <strong>Paniers modulables</strong> : L’adhérent compose <strong>à l’avance un panier spécifique
-                            pour chaque distribution</strong> <span
-                                class="description">(Par ex : “Brie”, “Epicerie”...)</span><br/>
+                    <p><input type="radio" class="required" <?php checked( 'quant_fix', $type ) ?>
+                              name="amapress_quantite_type" id="amp_quant_fix" value="quant_fix"/><label
+                                for="amp_quant_fix"><strong>Choix unique - quantité déterminée</strong> : L’adhérent
+                            choisit une seule
+                            option pour toute la durée du contrat. </label><br/><span class="description">(Par ex : “Légumes - Panier/Demi-panier” , “Champignons - Petit/Moyen/Grand”, “Fruits - Petit/Moyen/Grand”, “Jus - 1L/3L/6L”, “Oeuf - 6/12”...)</span>
                     </p>
+                    <p><input type="radio" class="required" <?php checked( 'quant_fix_multi', $type ) ?>
+                              name="amapress_quantite_type" id="amp_quant_fix_multi" value="quant_fix_multi"/><label
+                                for="amp_quant_fix_multi"><strong>Choix multiple - quantités déterminées</strong> :
+                            L’adhérent peut choisir différents
+                            produits associés à différentes tailles de panier pour toute la durée du contrat
+                        </label><br/><span
+                                class="description">(Par ex :  “Champignons - Gros fan de champis 1 kg <strong>et</strong>  petit fan de pleurotes 250g <strong>et</strong>  Petit fan de shiitake 250g…”)</span>
+                    </p>
+                    <p><input type="radio" class="required" <?php checked( 'quant_var', $type ) ?>
+                              name="amapress_quantite_type" id="amp_quant_var" value="quant_var"/><label
+                                for="amp_quant_var"><strong>Choix unique - quantité libre</strong> : L’adhérent choisit
+                            la “Quantité” d’un
+                            produit pour toute durée du contrat
+                        </label><br/><span
+                                class="description">(Par ex : “Quantité  x Poulets”, “Quantité x 6 oeufs”...)</span></p>
+                    <p><input type="radio" class="required" <?php checked( 'quant_var_multi', $type ) ?>
+                              name="amapress_quantite_type" id="amp_quant_var_multi" value="quant_var_multi"/><label
+                                for="amp_quant_var_multi"><strong>Choix multiple - quantités libres</strong> :
+                            L’adhérent peut choisir différents
+                            produits et différentes Quantités pour toute la durée du contrat </label><br/><span
+                                class="description">(Par ex : “Oeufs - Quantité 6 et 12 oeufs”, “Fromage - Quantité Petit Panier Option 1 et Quantité Grand panier et Quantité Panier Faisselle...”, “Volailles - Quantité Petit poulet/ Quantité Moyen Poulet, Quantité Gros Poulet”...)</span>
+                    <p><input type="radio" class="required" <?php checked( 'panier_var', $type ) ?>
+                              name="amapress_quantite_type" id="amp_panier_var" value="panier_var"/><label
+                                for="amp_panier_var"><strong>Paniers modulables</strong> : L’adhérent compose à l’avance
+                            un panier spécifique
+                            pour chaque distribution </label><br/><span
+                                class="description">(Par ex : “Brie”, “Epicerie”...)</span></p>
 					<?php
 					return ob_get_clean();
 				},
@@ -703,7 +710,7 @@ jQuery(function($) {
 			),
 			'rattrapage'            => array(
 				'name'        => amapress__( 'Rattrapage' ),
-				'desc'        => 'Date(s) où les quantités sont multipliées pour rattraper une distribution manquée',
+				'desc'        => '',
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
@@ -744,6 +751,7 @@ jQuery(function($) {
 					ob_start();
 					echo '<tr><td colspan="2" style="margin: 0; padding: 0">
                             <p style="padding: 20px 10px 20px 0;"><strong>Quantités de rattrapage</strong></p>';
+					echo '<p class="description">Options pour les Amap dont les quantités de rattrapage sont annoncées en début de contrat</p>';
 					echo '<table id="quant_rattrapage" style="width: 100%; border: 1pt solid black">
 <thead><tr><th style="padding-left: 20px">Sélectionner une date</th><th style="padding-left: 20px">Indiquer la quantité</th></tr></thead>
 <tbody>';
@@ -853,6 +861,15 @@ jQuery(function($) {
 						}
 					},
 			),
+			'word_model'            => array(
+				'name'            => amapress__( 'Contrat personnalisé' ),
+				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'type'            => 'upload',
+				'show_column'     => false,
+				'selector-button' => 'Utiliser ce modèle',
+				'group'           => '5/6 - Pré-inscription en ligne',
+				'desc'            => 'Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
+			),
 
 
 			//Statut
@@ -917,7 +934,7 @@ jQuery(function($) {
 				'name'     => amapress__( 'Nombre de chèques' ),
 				'type'     => 'multicheck',
 				'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
-				'group'    => '6/6 - Règlement',
+				'group'    => '6/6 - Règlement en plusieurs fois',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 				'required' => true,
 				'options'  => array(
@@ -940,7 +957,7 @@ jQuery(function($) {
 				'type'             => 'multidate',
 				'readonly'         => 'amapress_is_contrat_instance_readonly',
 				'required'         => true,
-				'group'            => '6/6 - Règlement',
+				'group'            => '6/6 - Règlement en plusieurs fois',
 				'show_column'      => false,
 				'show_dates_count' => true,
 				'show_dates_list'  => true,
@@ -949,15 +966,15 @@ jQuery(function($) {
 			'min_cheque_amount'     => array(
 				'name'        => amapress__( 'Montant minimum' ),
 				'type'        => 'number',
-				'group'       => '6/6 - Règlement',
+				'group'       => '6/6 - Règlement en plusieurs fois',
 				'required'    => true,
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit chèque pour les paiements en plusieurs fois',
 			),
 			'options_paiements'     => array(
-				'name'        => amapress__( 'Options' ),
+				'name'        => amapress__( 'Répartition' ),
 				'type'        => 'custom',
-				'group'       => '6/6 - Règlement',
+				'group'       => '6/6 - Règlement en plusieurs fois',
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 				'custom'      => function ( $post_id ) {
@@ -1017,14 +1034,19 @@ jQuery(function($) {
 						$data[] = $row;
 					}
 
-					return amapress_get_datatable( 'options_cheques', $columns, $data,
+					$ret = '<p>Consulter notre <a href="#" id="show_options_cheques">proposition de répartition</a> du montant des versements pour vos contrats</p>';
+					$ret .= amapress_get_datatable( 'options_cheques', $columns, $data,
 						array(
-							'paging' => true,
-							'bSort'  => false,
-						),
-						array(
-							Amapress::DATATABLES_EXPORT_EXCEL,
-						) );
+							'paging'    => false,
+							'bSort'     => false,
+							'info'      => false,
+							'searching' => false,
+						)
+					);
+					$ret .= '<style>#options_cheques { display: none; }#options_cheques.opened { display: block; }</style>';
+					$ret .= '<script type="text/javascript">jQuery(function() {jQuery("#options_cheques").addClass("closed");jQuery("#show_options_cheques").click(function() { jQuery("#options_cheques").toggleClass("opened"); return false; }); });</script>';
+
+					return $ret;
 				}
 			),
 
@@ -1040,6 +1062,7 @@ jQuery(function($) {
 				'name'        => amapress__( 'Inscriptions' ),
 				'show_column' => true,
 				'show_table'  => false,
+				'hidden'      => true,
 				'group'       => 'Inscriptions',
 				'empty_text'  => 'Pas encore d\'inscriptions',
 //				'include_columns' => array(
@@ -1582,6 +1605,9 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 				?>
                 </tbody>
             </table>
+            <p class="description"><a
+                        href="<?php echo admin_url( 'admin.php?page=amapress_help_page&tab=conf_paniers' ); ?>">*</a>
+                Consulter les instructions spécifiques</p>
         </td>
     </tr>
 	<?php

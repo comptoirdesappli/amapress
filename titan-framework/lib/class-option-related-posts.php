@@ -13,6 +13,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 
 	public $defaultSecondarySettings = array(
 		'query'                    => null,
+		'table_header_text'        => '',
 		'show_link'                => true,
 		'bare'                     => false,
 		'link_text'                => 'Voir les (%%count%%) éléments',
@@ -82,6 +83,8 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		} else {
 			$this->echoOptionHeaderBare();
 		}
+
+		echo $this->settings['table_header_text'];
 
 		$query = $this->evalQuery();
 		if ( is_array( $query ) ) {
