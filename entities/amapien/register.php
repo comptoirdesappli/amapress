@@ -642,6 +642,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			'href'       => admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active' ),
 		),
 		array(
+			'id'         => 'amapress_contrats',
+			'title'      => 'Contrats',
+			'capability' => 'manage_contrats',
+			'href'       => admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
+		),
+		array(
 			'id'         => 'amapress_add_coinscription',
 			'title'      => 'Ajouter un coadhérent',
 			'capability' => 'manage_contrats',
