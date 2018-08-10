@@ -113,9 +113,12 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'unconfirmed', 'Unconfirmed',
 		'<strong>Recommandé</strong> : Permet de gérer les inscriptions en cours (Renvoyer le mail de bienvenue avec le lien pour activer le compte utilisateur…)' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'user-switching', 'User Switching',
-		'<strong>Optionnel</strong> : Permet aux administrateurs de consulter Amapress avec un autre compte utilisateur. Ce plugin est à installer par un webmaster. ',
-		'info' );
+		'<strong>Recommandé</strong> : Permet aux administrateurs de consulter Amapress avec un autre compte utilisateur. Ce plugin est à installer par un webmaster. ',
+		'warning' );
 
+	$state['01_plugins'][] = amapress_check_plugin_install( 'wp-maintenance', 'WP Maintenance',
+		'<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en train d\'être mis en place et d\'éviter l\'affichage de contenu non terminé',
+		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
 		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
 		'info' );
