@@ -915,7 +915,10 @@ function amapress_self_inscription( $atts ) {
 			$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
 			$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
 
-			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content );
+			$attachments   = [];
+			$attachments[] = $inscription->generateContratDoc();
+
+			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
 		}
 
 		if ( ! $admin_mode ) {
