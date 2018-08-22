@@ -237,6 +237,9 @@ function amapress_register_entities_contrat( $entities ) {
 					'placeholder' => 'Toutes les présentations web',
 				),
 				'readonly'          => function ( $post_id ) {
+					if ( TitanFrameworkOption::isOnNewScreen() ) {
+						return false;
+					}
 					if ( TitanFrameworkOption::isOnEditScreen() ) {
 						return true;
 					}
@@ -1755,6 +1758,10 @@ function amapress_row_action_contrat_instance_clone( $post_id ) {
 
 /** @param TitanFrameworkOption $option */
 function amapress_is_contrat_instance_readonly( $option ) {
+	if ( TitanFrameworkOption::isOnNewScreen() ) {
+		return false;
+	}
+
 	if ( isset( $_REQUEST['adv'] ) ) {
 		return false;
 	}

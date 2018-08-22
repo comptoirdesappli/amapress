@@ -22,6 +22,10 @@ class AmapressPaniers {
 
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		foreach ( $contrats as $contrat ) {
+			if ( empty( $contrat ) ) {
+				continue;
+			}
+
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
 			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
 
@@ -29,7 +33,7 @@ class AmapressPaniers {
 			$contrat_model       = $contrat->getModel();
 			$lieux_ids           = $contrat->getLieuxIds();
 			$liste_dates         = array_unique( $contrat->getListe_dates() );
-			if ( empty( $liste_dates ) ) {
+			if ( empty( $liste_dates ) || empty( $contrat_model ) ) {
 				continue;
 			}
 

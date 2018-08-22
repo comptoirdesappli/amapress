@@ -154,6 +154,10 @@ class AmapressDistributions {
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		/** @var AmapressContrat_instance $contrat */
 		foreach ( $contrats as $contrat ) {
+			if ( empty( $contrat ) ) {
+				continue;
+			}
+
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
 			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
 
@@ -166,6 +170,9 @@ class AmapressDistributions {
 			$lieux         = $contrat->getLieux();
 			$lieux_ids     = $contrat->getLieuxIds();
 			$contrat_model = $contrat->getModel();
+			if ( empty( $lieux ) || empty( $contrat_model ) ) {
+				continue;
+			}
 
 			foreach ( $liste_dates as $date ) {
 				if ( $from_now && $date < $now ) {
