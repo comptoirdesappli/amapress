@@ -868,7 +868,7 @@ jQuery(function($) {
 				'show_column'     => false,
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => '5/6 - Pré-inscription en ligne',
-				'desc'            => 'Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
+				'desc'            => 'Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
 			),
 
 

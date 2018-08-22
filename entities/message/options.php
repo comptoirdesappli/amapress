@@ -325,7 +325,11 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 	return $res;
 }
 
-function amapress_replace_mail_placeholders_help( $post_type_desc ) {
+function amapress_replace_mail_placeholders_help(
+	$post_type_desc,
+	$include_sender = true,
+	$include_target = true
+) {
 	$ret                     = [];
 	$ret["nom_site"]         = 'Nom de l\'AMAP';
 	$ret["site_name"]        = 'Nom de l\'AMAP';
@@ -339,18 +343,24 @@ function amapress_replace_mail_placeholders_help( $post_type_desc ) {
 	$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
 	$ret['site_icon_url']      = 'Url du logo du site de l\'AMAP';
 	$ret['site_icon_url_link'] = 'Lien du logo du site de l\'AMAP';
-	foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
-		$ret["moi/me:$k"] = 'Expéditeur: ' . $v; //subopt
+	if ( $include_sender ) {
+		foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+			$ret["moi/me:$k"] = 'Expéditeur: ' . $v; //subopt
+		}
 	}
-	foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
-		$ret["dest/user:$k"] = 'Destinataire: ' . $v; //subopt
+	if ( $include_target ) {
+		foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+			$ret["dest/user:$k"] = 'Destinataire: ' . $v; //subopt
+		}
 	}
-	$ret["login_url"]         = 'Url de login du site de l\'AMAP';
-	$ret["login_url_link"]    = 'Lien vers la page login du site de l\'AMAP';
-	$ret["password_url"]      = 'Lien de la page de Récupération de mot de passe';
-	$ret["password_url_raw"]  = 'Url de la page de Récupération de mot de passe';
-	$ret["registration_text"] = 'Texte du mail de récupération de mot de passe';
-	$ret["now"]               = 'Date courante';
+	$ret["login_url"]      = 'Url de login du site de l\'AMAP';
+	$ret["login_url_link"] = 'Lien vers la page login du site de l\'AMAP';
+	if ( $include_sender ) {
+		$ret["password_url"]      = 'Lien de la page de Récupération de mot de passe';
+		$ret["password_url_raw"]  = 'Url de la page de Récupération de mot de passe';
+		$ret["registration_text"] = 'Texte du mail de récupération de mot de passe';
+	}
+	$ret["now"] = 'Date courante';
 	if ( ! empty( $post_type_desc ) ) {
 		$ret['post:id']         = 'ID ' . $post_type_desc;
 		$ret['post:title']      = 'Titre ' . $post_type_desc;

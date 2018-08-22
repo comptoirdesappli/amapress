@@ -2044,6 +2044,20 @@ class AmapressEntities {
 								)
 							)
 						),
+						'Placeholders - contrat personnalisé'          => array(
+							'id'      => 'adhesion_contrat_placeholders',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'     => 'adhesion_contrat_placeholders_cust',
+									'name'   => 'Placeholders - contrat personnalisé',
+									'type'   => 'custom',
+									'custom' => function () {
+										return AmapressAdhesion::getPlaceholdersHelp( [], true );
+									}
+								)
+							)
+						),
 						'Configuration des paniers (Taille/Quantités)' => array(
 							'id'      => 'conf_paniers',
 							'desc'    => '',

@@ -465,7 +465,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret["quantite_paiements"]     = '(Tableau quantité) Possibilités de paiements';
 
 		return Amapress::getPlaceholdersHelpTable( 'contrat_inst-placeholders', $ret,
-			'du contrat', $additional_helps,
+			'du contrat', $additional_helps, ! $for_contrat,
 			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%' );
 	}
 

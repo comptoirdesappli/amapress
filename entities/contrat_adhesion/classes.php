@@ -349,7 +349,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
 
 		return Amapress::getPlaceholdersHelpTable( 'contrat-placeholders', $ret,
-			'de l\'inscription', $additional_helps,
+			'de l\'inscription', $additional_helps, ! $for_contrat,
 			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%' );
 	}
 
