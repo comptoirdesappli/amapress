@@ -5,15 +5,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function amapress_get_row_action_href( $action, $id ) {
+function amapress_get_row_action_href( $action, $id, $other_args = [] ) {
 	global $pagenow;
 	$g_query = $_SERVER['QUERY_STRING'];
 	$href    = "$pagenow?$g_query";
 
-	return wp_nonce_url( add_query_arg( array(
-		'action' => $action,
-		'amp_id' => $id,
-	), admin_url( $href ) ), "{$action}_{$id}" );
+	$args = array_merge(
+		array(
+			'action' => $action,
+			'amp_id' => $id,
+		),
+		$other_args
+	);
+
+	return wp_nonce_url( add_query_arg(
+		$args, admin_url( $href ) ), "{$action}_{$id}" );
 }
 
 function amapress_get_row_action_html( $action, $id, $label ) {

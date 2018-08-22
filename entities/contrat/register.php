@@ -1008,7 +1008,11 @@ jQuery(function($) {
 
 						if ( ! empty( $contrat_instance->getContratPapierModelDocFileName() ) ) {
 							$row = array(
-								'date' => Amapress::makeLink( amapress_get_row_action_href( 'generate_contrat', $post_id ), date_i18n( 'd/m/y', $date ), true, true ),
+								'date' => Amapress::makeLink(
+									amapress_get_row_action_href( 'generate_contrat', $post_id, [
+										'start_date' => $date
+									] ),
+									date_i18n( 'd/m/y', $date ) . ' (contrat vierge)', true, true ),
 							);
 						} else {
 							$row = array(
