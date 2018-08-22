@@ -637,13 +637,24 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		),
 		array(
 			'id'         => 'amapress_inscriptions',
-			'title'      => 'Inscriptions',
+			'title'      => 'Les inscriptions',
 			'capability' => 'manage_contrats',
 			'href'       => admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active' ),
 		),
+	);
+	$cnt        = AmapressAdhesion::getAdhesionToConfirmCount();
+	if ( $cnt ) {
+		$main_items[] = array(
+			'id'         => 'amapress_inscr_to_confirm',
+			'title'      => "<span class='badge'>$cnt</span> inscriptions à confirmer",
+			'capability' => 'manage_contrats',
+			'href'       => admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm' ),
+		);
+	}
+	$main_items = array_merge( $main_items,
 		array(
 			'id'         => 'amapress_contrats',
-			'title'      => 'Contrats',
+			'title'      => 'Les contrats',
 			'capability' => 'manage_contrats',
 			'href'       => admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
 		),
@@ -652,7 +663,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			'title'      => 'Ajouter un coadhérent',
 			'capability' => 'manage_contrats',
 			'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_coadherent' ),
-		),
+		)
 	);
 
 	$inscr_distrib_href = Amapress::get_inscription_distrib_page_href();

@@ -708,6 +708,7 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function setStatus( $status ) {
 		$this->setCustom( 'amapress_adhesion_status', $status );
+		delete_transient( 'amps_adh_to_confirm' );
 	}
 
 	/** @return float */
@@ -1146,5 +1147,19 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				wp_update_post( $my_post, true );
 			}
 		}
+	}
+
+	public static function getAdhesionToConfirmCount() {
+		$current_user_id = amapress_current_user_id();
+		$cnt             = get_transient( 'amps_adh_to_confirm' );
+		if ( false === $cnt ) {
+			$cnt = [];
+		}
+		if ( ! isset( $cnt[ $current_user_id ] ) ) {
+			$cnt[ $current_user_id ] = get_posts_count( 'post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm' );
+			set_transient( 'amps_adh_to_confirm', $cnt );
+		}
+
+		return $cnt[ $current_user_id ];
 	}
 }

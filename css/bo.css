@@ -217,3 +217,18 @@ select.paiements_details {
 span.description {
     color: #aaa;
 }
+
+.badge {
+    display: inline-block !important;
+    min-width: 10px !important;
+    padding: 3px 7px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    color: #fff !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    vertical-align: baseline !important;
+    background-color: #999 !important;
+    border-radius: 10px !important;
+}

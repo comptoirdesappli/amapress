@@ -34,6 +34,10 @@ function amapress_clean_transients( $post_id ) {
 	     || AmapressLieu_distribution::INTERNAL_POST_TYPE == $post_type ) {
 		delete_transient( 'amps_refs_prods' );
 	}
+
+	if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post_type ) {
+		delete_transient( 'amps_adh_to_confirm' );
+	}
 }
 
 add_action( 'save_post', 'amapress_clean_transients', 1000 );

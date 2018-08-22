@@ -13,3 +13,17 @@ function amapress_accept_contrat_adhesion( $sendback, $post_ids ) {
 
 	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
 }
+
+add_action( 'amapress_row_action_adhesion_accept', 'amapress_row_action_adhesion_accept' );
+function amapress_row_action_adhesion_accept( $post_id ) {
+	$adh = AmapressAdhesion::getBy( $post_id, true );
+	if ( $adh ) {
+		$adh->setStatus( AmapressAdhesion::CONFIRMED );
+	}
+
+	wp_redirect_and_exit( remove_query_arg( [
+		'action',
+		'amp_id',
+		'_wpnonce'
+	] ) );
+}

@@ -294,6 +294,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				return $adh->getVille();
 			}, $users ) );
 		}
+		$to_confirm = false;
 		foreach ( $adhs as $adh ) {
 			if ( ! isset( $line[ 'contrat_' . $adh->getContrat_instance()->ID ] ) ) {
 				$line[ 'contrat_' . $adh->getContrat_instance()->ID ] = '';
@@ -302,6 +303,9 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= ',';
 			}
 			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= $adh->getContrat_quantites_Codes_AsString( $date );
+			if ( AmapressAdhesion::TO_CONFIRM == $adh->getStatus() ) {
+				$to_confirm = true;
+			}
 		}
 		foreach ( $all_contrat_instances as $contrat ) {
 			if ( ! isset( $line[ 'contrat_' . $contrat->ID ] ) ) {
@@ -310,6 +314,9 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				if ( ! in_array( $contrat->ID, $dist_contrat_ids ) ) {
 					$line[ 'contrat_' . $contrat->ID ] = '<span class="not-this-dist">' . esc_html( $line[ 'contrat_' . $contrat->ID ] ) . '</span>';
 				}
+			}
+			if ( $to_confirm ) {
+				$line[ 'contrat_' . $contrat->ID ] = '<em>' . $line[ 'contrat_' . $contrat->ID ] . '</em>';
 			}
 		}
 
