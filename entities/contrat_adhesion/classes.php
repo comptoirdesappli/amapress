@@ -329,7 +329,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-				'inscription-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
+				'inscription-' . $this->getContrat_instance()->getModel()->getTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
 	}
 
 	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false ) {

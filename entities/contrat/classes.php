@@ -294,7 +294,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-				'contrat-papier-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . '-' . $this->getTitle() . $ext );
+				'contrat-papier-' . $this->getTitle() . '-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . $ext );
 	}
 
 	public static function getProperties( $first_date_distrib = null ) {
