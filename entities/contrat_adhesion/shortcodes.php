@@ -350,7 +350,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
 					$print_contrat = Amapress::makeButtonLink(
 						add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $adh->ID ] ),
-						'Imprimer ce contrat', true, true, 'btn btn-default'
+						'Imprimer', true, true, 'btn btn-default'
 					);
 				}
 				if ( $admin_mode ) {
@@ -423,7 +423,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		if ( $has_principal_contrat ) {
-			echo '<p>J\'ai fini mes inscriptions :<br/>
+			echo '<p>J\'ai fini :<br/>
 <form method="get" action="' . esc_attr( $the_end_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="the_end" />
