@@ -410,6 +410,7 @@ class AmapressEntities {
 							'options' => amapress_contrat_quantites_recall_options(),
 						),
 						'Mails - Confirmation du contrat en ligne' => array(
+							'id'      => 'mail_confirm_online_inscr',
 							'desc'    => '',
 							'options' => [
 								array(

@@ -85,7 +85,9 @@ function amapress_self_inscription( $atts ) {
 		}
 		if ( amapress_can_access_admin() ) {
 			echo '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : <pre>' .
-			     add_query_arg( 'key', $key, get_permalink() ) . '</pre></div>';
+			     add_query_arg( 'key', $key, get_permalink() ) . '</pre>
+Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit/ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/><br/>
+Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=mail_confirm_online_inscr' ) . '">ici</a>.</div>';
 		}
 	}
 
