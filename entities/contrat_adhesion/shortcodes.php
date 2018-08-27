@@ -145,6 +145,7 @@ function amapress_self_inscription( $atts ) {
 //	}
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
+	$the_end_url       = add_query_arg( 'step', 'the_end', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 
 	if ( isset( $_REQUEST['contrat_id'] ) && isset( $_REQUEST['user_id'] ) ) {
 		$user_id    = intval( $_REQUEST['user_id'] );
@@ -388,6 +389,7 @@ function amapress_self_inscription( $atts ) {
 				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
+				echo '<p>Contrats disponibles :</p>';
 				echo '<ul style="list-style-type: disc">';
 				foreach ( $user_subscribable_contrats as $contrat ) {
 					$inscription_url = add_query_arg( [
@@ -416,6 +418,16 @@ function amapress_self_inscription( $atts ) {
 					echo '<p>Il est inscrit à tous les contrats</p>';
 				}
 			}
+		}
+
+		if ( $has_principal_contrat ) {
+			echo '<p>J\'ai fini mes inscriptions :<br/>
+<form method="get" action="' . esc_attr( $the_end_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="the_end" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="submit" value="Terminer" class="btn btn-default btn-assist-end" />
+</form></p>';
 		}
 	} else if ( 'inscr_contrat_date_lieu' == $step ) {
 		$next_step_url = add_query_arg( 'step', 'inscr_contrat_engage' );
@@ -922,29 +934,59 @@ function amapress_self_inscription( $atts ) {
 		}
 
 		if ( ! $admin_mode ) {
+			$adhs                               = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+			$adhs_contrat_ids                   = array_map( function ( $a ) {
+				/** @var AmapressAdhesion $a */
+				return $a->getContrat_instance()->ID;
+			}, $adhs );
+			$adhs_contrat_ids[]                 = $inscription->getContrat_instance()->ID;
+			$user_subscribable_contrats         = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
+				return ! in_array( $c->ID, $adhs_contrat_ids );
+			} );
+			$user_subscribable_contrats_display = implode( ', ', array_map( function ( $c ) {
+				/** @var AmapressContrat_instance $c */
+				return $c->getModel()->getTitle();
+			}, $user_subscribable_contrats ) );
 			echo '<h4>étape 7/7 : Félicitations !</h4>';
-			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. Vous allez recevoir un mail de confirmation dans quelques minutes.</div>';
-			echo '<p>Je souhaite adhérer à d’autres contrats 
-<br/>
+			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 
+Vous allez recevoir un mail de confirmation avec votre contrat dans quelques minutes.</div>';
+			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
+				$print_contrat = Amapress::makeButtonLink(
+					add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $inscription->ID ] ),
+					'Imprimer', true, true, 'btn btn-default'
+				);
+				echo '<p>Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (' . $inscription->getProperty( 'referents' ) . ') avec les chèques correspondants lors de la prochaine distribution<br />
+' . $print_contrat . '</p>';
+			}
+			if ( ! empty( $user_subscribable_contrats ) ) {
+				echo '<p>Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (' . $user_subscribable_contrats_display . ') :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
 </form></p>';
+			} else {
+				echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
+			}
+			echo '<p>J\'ai fini :<br/>
+<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="the_end" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Terminer" />
+</form></p>';
 		} else {
 			echo '<div class="alert alert-success">L\'inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
-			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
-				$print_contrat = Amapress::makeLink(
-					add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $inscription->ID ] ),
-					'imprimer le contrat', true, true, 'btn btn-default'
-				);
-				echo '<p>Merci d\'' . $print_contrat . ', y joindre les chèques et transmettre le tout aux référents à la prochaine distribution</p>';
-			}
 			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de ses contrats</a></p>';
 		}
-	}
 
+	} else if ( 'the_end' == $step ) {
+		echo '<h4>Félicitations, vous avez terminé vos inscriptions !</h4>';
+		echo '<p>Si vous êtes nouvel adhérent vous allez recevoir un mail vous indiquant comment vous connecter au site et choisir votre mot de passe.</p>';
+		echo '<p>Vous allez recevoir un mail de confirmation pour chacune de vos inscriptions avec le contrat à imprimer et les instructions pour remettre vos chèques aux référents.</p>';
+		echo '<p>Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie</p>';
+	}
 	?>
     <style type="text/css">
         #quant-commandes td {

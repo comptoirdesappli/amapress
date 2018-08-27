@@ -427,7 +427,7 @@ class AmapressEntities {
 									\n-> pour %%nb_distributions%% distributions
 									\n-> quantités : %%quantites%%
 									\n-> pour un montant de %%total%%€
-									\nMerci de remettre aux référents %%option_paiements%% à la première distribution
+									\nMerci d'imprimer le contrat joint à ce mail et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution
 									\n\n%%nom_site%%" ),
 									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
 									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
