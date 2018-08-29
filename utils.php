@@ -267,3 +267,31 @@ function amapress_get_html_end_tag( $tag ) {
 	return "</$tag>";
 }
 
+function amapress_print_qrcode( $text, $size = 4, $level = 'Q' ) {
+	return '<img alt="' . esc_attr( $text ) . '" src="' . esc_attr( admin_url( 'admin-post.php?action=qrcode&text=' . urlencode( $text ) . '&level=' . $level . '&size=' . $size ) ) . '" />';
+}
+
+add_action( 'admin_post_qrcode', function () {
+	$text  = isset( $_REQUEST['text'] ) ? $_REQUEST['text'] : '';
+	$size  = intval( isset( $_REQUEST['size'] ) ? $_REQUEST['size'] : '4' );
+	$level = isset( $_REQUEST['level'] ) ? $_REQUEST['level'] : 'Q';
+	switch ( $level ) {
+		case 'L':
+			$level = QR_ECLEVEL_L;
+			break;
+		case 'M':
+			$level = QR_ECLEVEL_M;
+			break;
+		case 'Q':
+			$level = QR_ECLEVEL_Q;
+			break;
+		case 'H':
+			$level = QR_ECLEVEL_H;
+			break;
+	}
+
+	include AMAPRESS__PLUGIN_DIR . 'utils/phpqrcode.php';
+
+	QRcode::png( $text, false, $level, $size );
+} );
+

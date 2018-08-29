@@ -66,6 +66,7 @@ function amapress_self_inscription( $atts ) {
 		]
 		, $atts );
 
+	$ret        = '';
 	$admin_mode = Amapress::toBool( $atts['admin_mode'] );
 	$key        = $atts['key'];
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
@@ -80,19 +81,30 @@ function amapress_self_inscription( $atts ) {
 			$step = 'coords_logged';
 		}
 	} else {
-		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
-			return '<div class="alert alert-danger">Accès interdit</div>';
-		}
 		if ( amapress_can_access_admin() ) {
-			echo '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : <pre>' .
-			     add_query_arg( 'key', $key, get_permalink() ) . '</pre>
-Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit/ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/><br/>
+			$url = add_query_arg( 'key', $key, get_permalink() );
+			if ( empty( $_REQUEST['key'] ) ) {
+				$ret .= '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : 
+<pre>' . $url . '</pre>
+Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
+Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit/ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
+Vous pouvez également utiliser l\'un des QRCode suivants : 
+<div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
 Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=mail_confirm_online_inscr' ) . '">ici</a>.</div>';
+			} else {
+				$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">Afficher les instructions d\'accès à cet assistant.</a></div>';
+			}
+		}
+		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
+			$ret .= '<div class="alert alert-danger">Accès interdit sans clé</div>';
+
+			return $ret;
 		}
 	}
 
 	ob_start();
 
+	echo $ret;
 
 	$min_total             = 0;
 	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
