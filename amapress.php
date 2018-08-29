@@ -1210,3 +1210,21 @@ function amapress_send_feedback() {
 
 add_action( 'wp_ajax_send_feedback', 'amapress_send_feedback' );
 add_action( 'wp_ajax_nopriv_send_feedback', 'amapress_send_feedback' );
+
+include AMAPRESS__PLUGIN_DIR . 'utils/CustomPostStatus.php';
+CustomPostStatus::register( 'archived', [
+	AmapressLieu_distribution::INTERNAL_POST_TYPE,
+	AmapressContrat::INTERNAL_POST_TYPE,
+	AmapressProducteur::INTERNAL_POST_TYPE,
+	AmapressProduit::INTERNAL_POST_TYPE,
+	AmapressRecette::INTERNAL_POST_TYPE
+],
+	array(
+		'label'                     => _x( 'Archivé', 'post' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Archivé <span class="count">(%s)</span>', 'Archivés <span class="count">(%s)</span>' ),
+	)
+);
