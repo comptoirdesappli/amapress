@@ -281,6 +281,18 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
+			$ret['lieu_heure_debut'] = [
+				'desc' => 'Heure de début de distribution',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'H:i', $adh->getLieu()->getHeure_debut() );
+				}
+			];
+			$ret['lieu_heure_fin'] = [
+				'desc' => 'Heure de fin de distribution',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'H:i', $adh->getLieu()->getHeure_fin() );
+				}
+			];
 			$ret['contrat_debut']        = [
 				'desc' => 'Début du contrat (mois/année)',
 				'func' => function ( AmapressAdhesion $adh ) {
