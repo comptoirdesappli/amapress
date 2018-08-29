@@ -767,7 +767,7 @@ class AmapressAdhesion extends TitanEntity {
 		switch ( $this->getCustom( 'amapress_adhesion_status' ) ) {
 
 			case self::TO_CONFIRM:
-				return 'En attente de confirmation';
+				return 'A confirmer';
 			case self::CONFIRMED:
 				return 'Confirmée';
 			default:

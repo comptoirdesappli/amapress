@@ -105,7 +105,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'type'       => 'select',
 				'group'      => '1/ Informations',
 				'options'    => array(
-					'to_confirm' => 'En attente de confirmation',
+					'to_confirm' => 'A confirmer',
 					'confirmed'  => 'Confirmée',
 				),
 				'required'   => true,

@@ -184,7 +184,7 @@ function amapress_adhesion_request_views() {
 	amapress_add_view_button(
 		$ret, 'to_confirm',
 		"post_type=amps_adh_req&amapress_date=active&amapress_status=to_confirm",
-		'En attente de confirmation' );
+		'A confirmer' );
 
 	return $ret;
 }

@@ -182,7 +182,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'type'     => 'select',
 				'group'    => 'Infos',
 				'options'  => array(
-					'to_confirm' => 'En attente de confirmation',
+					'to_confirm' => 'A confirmer',
 					'confirmed'  => 'Confirmée',
 				),
 				'default'  => function ( $option ) {
