@@ -276,6 +276,13 @@ class AmapressSMTPMailingQueue {
 	 * @return array Success
 	 */
 	public function sendMail( $data ) {
+		if ( ! empty( $data['attachments'] ) ) {
+			$data['attachments'] = array_filter( $data['attachments'],
+				function ( $v ) {
+					return ! empty( $v ) && file_exists( $v );
+				}
+			);
+		}
 		require_once( 'AmapressSMTPMailingQueueOriginal.php' );
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {

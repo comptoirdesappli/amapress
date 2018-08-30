@@ -218,7 +218,7 @@ function amapress_mailing_queue_mail_list( $id, $type ) {
 			'subject' => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
 			'message' => wpautop( $email['message'] ),
-			'errors'  => esc_html( $email['errors'] ),
+			'errors'  => var_export( $email['errors'], true ),
 			'headers' => implode( '<br/>', array_map( function ( $h ) {
 				return esc_html( $h );
 			}, $email['headers'] ) ),
