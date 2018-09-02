@@ -230,6 +230,9 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		wp_die();
 	}
 
+	protected function getArchived( $id ) {
+		return "Archivé $id";
+	}
 	protected function addValueToOptionIfNotPresent( $options, $value ) {
 		if ( ! is_array( $value ) ) {
 			$value = array( $value );
@@ -252,7 +255,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 			}
 
 			if ( ! $found ) {
-				$options[ $val ] = "Archivé $val";
+				$options[ $val ] = $this->getArchived( $val );
 			}
 		}
 
