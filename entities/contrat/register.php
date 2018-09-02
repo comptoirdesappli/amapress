@@ -987,7 +987,7 @@ jQuery(function($) {
 					}
 
 					if ( $contrat_instance->isQuantiteVariable() ) {
-						return '<p style="font-weight: bold">Les options de chèques ne sont pas disponibles pour les contrats variables car elles dépendent des quantités choisies oar les amapiens</p>';
+						return '<p>Pas de proposition de répartition pour ce type de paniers</p>';
 					}
 
 					$columns = array(
