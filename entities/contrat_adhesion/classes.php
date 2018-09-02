@@ -530,8 +530,13 @@ class AmapressAdhesion extends TitanEntity {
 		if ( $this->isNotRenewable() ) {
 			return;
 		}
-		$this->setCustom( 'amapress_adhesion_date_fin', Amapress::start_of_day( amapress_time() ) );
+		$date = Amapress::start_of_day( amapress_time() );
+		if ( $this->getContrat_instance()->getDate_fin() < $date ) {
+			$date = $this->getContrat_instance()->getDate_fin();
+		}
+		$this->setCustom( 'amapress_adhesion_date_fin', $date );
 		$this->setCustom( 'amapress_adhesion_fin_raison', 'Non renouvellement' );
+		amapress_compute_post_slug_and_title( $this->post );
 	}
 
 	/**
