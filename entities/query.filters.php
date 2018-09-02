@@ -690,31 +690,28 @@ function amapress_filter_posts( WP_Query $query ) {
 			} else if ( $pt == 'adhesion' ) {
 				amapress_add_meta_query( $query, array(
 					array(
-						'key'     => "amapress_adhesion_contrat_instance",
-						'value'   => amapress_prepare_in( AmapressContrats::get_active_contrat_instances_ids() ),
-						'compare' => 'NOT IN',
-						'type'    => 'NUMERIC',
-					),
-				) );
-				amapress_add_meta_query( $query, array(
-					array(
 						'relation' => 'OR',
 						array(
-							'key'     => 'amapress_adhesion_date_fin',
-							'compare' => 'NOT EXISTS',
-						),
-						array(
-							'key'     => 'amapress_adhesion_date_fin',
-							'value'   => 0,
-							'compare' => '=',
+							'key'     => "amapress_adhesion_contrat_instance",
+							'value'   => amapress_prepare_in( AmapressContrats::get_active_contrat_instances_ids() ),
+							'compare' => 'NOT IN',
 							'type'    => 'NUMERIC',
 						),
 						array(
-							'key'     => 'amapress_adhesion_date_fin',
-							'value'   => Amapress::end_of_day( amapress_time() ),
-							'compare' => '<=',
-							'type'    => 'NUMERIC',
-						),
+							'relation' => 'AND',
+							array(
+								'key'     => "amapress_adhesion_contrat_instance",
+								'value'   => amapress_prepare_in( AmapressContrats::get_active_contrat_instances_ids() ),
+								'compare' => 'IN',
+								'type'    => 'NUMERIC',
+							),
+							array(
+								'key'     => 'amapress_adhesion_date_fin',
+								'value'   => Amapress::end_of_day( amapress_time() ),
+								'compare' => '<=',
+								'type'    => 'NUMERIC',
+							)
+						)
 					)
 				) );
 			}
@@ -1385,7 +1382,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$where .= " AND 0 = 1";
 			}
 		} else {
-			$op = 'IN';
+			$op   = 'IN';
+			$date = Amapress::end_of_day( amapress_time() );
 			if ( $amapress_contrat == 'no' || $amapress_contrat == 'none' ) {
 				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 				$op          = 'NOT IN';
@@ -1393,6 +1391,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 			} else if ( $amapress_contrat == 'lastyear' ) {
 				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::remove_a_year( amapress_time() ), false, false );
+				$date        = Amapress::remove_a_year( $date );
 			} else {
 				$id = Amapress::resolve_post_id( $amapress_contrat, AmapressContrat::INTERNAL_POST_TYPE );
 				if ( ! $id ) {
@@ -1416,9 +1415,11 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
+                                                   LEFT JOIN $wpdb->postmeta as amps_pm_date_fin ON amps_pm_date_fin.post_id = amps_pmach.post_id AND amps_pm_date_fin.meta_key='amapress_adhesion_date_fin'
                                                    INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
                                                    WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3' OR amps_pmach.meta_key='amapress_adhesion_adherent4')
                                                    AND amps_posts.post_status = 'publish'
+                                                   AND (amps_pm_date_fin.meta_value IS NULL OR CAST(amps_pm_date_fin.meta_value as SIGNED) = 0 OR CAST(amps_pm_date_fin.meta_value as SIGNED) > $date)
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND CAST(amps_pm_contrat.meta_value as SIGNED) IN ($contrat_ids)" ) as $user_id
@@ -1440,6 +1441,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		}
 	}
 	if ( isset( $uqi->query_vars['amapress_lieu'] ) ) {
+		$date          = Amapress::end_of_day( amapress_time() );
 		$amapress_lieu = $uqi->query_vars['amapress_lieu'];
 		if ( ! is_array( $amapress_lieu ) ) {
 			$amapress_lieu = array( $amapress_lieu );
@@ -1455,11 +1457,13 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
+                                                   LEFT JOIN $wpdb->postmeta as amps_pm_date_fin ON amps_pm_date_fin.post_id = amps_pmach.post_id AND amps_pm_date_fin.meta_key='amapress_adhesion_date_fin'
                                                    INNER JOIN $wpdb->postmeta as amps_pm_adhesion ON amps_pm_adhesion.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->posts as amps_posts ON amps_posts.ID = amps_pmach.post_id
                                                    WHERE (amps_pmach.meta_key='amapress_adhesion_adherent' OR amps_pmach.meta_key='amapress_adhesion_adherent2' OR amps_pmach.meta_key='amapress_adhesion_adherent3' OR amps_pmach.meta_key='amapress_adhesion_adherent4')
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_contrat_instance'
                                                    AND amps_pm_adhesion.meta_key = 'amapress_adhesion_lieu'
+                                                   AND (amps_pm_date_fin.meta_value IS NULL OR CAST(amps_pm_date_fin.meta_value as SIGNED) = 0 OR CAST(amps_pm_date_fin.meta_value as SIGNED) > $date)
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids)
