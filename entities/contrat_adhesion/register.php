@@ -71,7 +71,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			$principal_contrat_date_debut = 0;
 			$contrats                     = AmapressContrats::get_active_contrat_instances( null, $adh->getDate_debut(), true );
 			foreach ( $contrats as $contrat ) {
-				if ( $contrat->isPrincipal() && $contrat->getDate_debut() > $principal_contrat_date_debut ) {
+				if ( $contrat->isPrincipal() && $contrat->getDate_debut() < $adh->getDate_fin() && $contrat->getDate_debut() > $principal_contrat_date_debut ) {
 					$principal_contrat            = $contrat;
 					$principal_contrat_date_debut = $contrat->getDate_debut();
 				}
