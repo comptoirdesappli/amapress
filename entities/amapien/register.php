@@ -183,21 +183,31 @@ function amapress_register_entities_amapien( $entities ) {
 					'amapress_adhesion_date_debut',
 					'amapress_total_amount',
 				),
+				'datatable_options'        => array(
+					'paging' => false,
+					'bSort'  => false,
+					'info'   => false,
+				),
 				'type'                     => 'related-posts',
-				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%',
+				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%&orderby=title&order=asc',
 			),
 			'contrats-past'      => array(
-				'name'            => amapress__( 'Contrats passés' ),
-				'show_column'     => false,
-				'include_columns' => array(
+				'name'              => amapress__( 'Contrats passés' ),
+				'show_column'       => false,
+				'include_columns'   => array(
 					'title',
 					'amapress_adhesion_quantite',
 					'amapress_adhesion_lieu',
 					'amapress_adhesion_date_debut',
 					'amapress_total_amount',
 				),
-				'type'            => 'related-posts',
-				'query'           => 'post_type=amps_adhesion&amapress_date=past&amapress_user=%%id%%',
+				'datatable_options' => array(
+					'paging' => false,
+					'bSort'  => false,
+					'info'   => false,
+				),
+				'type'              => 'related-posts',
+				'query'             => 'post_type=amps_adhesion&amapress_date=past&amapress_user=%%id%%&orderby=amapress_adhesion_date_debut&order=desc',
 			),
 			'head_amapress3'     => array(
 				'id'   => 'coadh_sect',
