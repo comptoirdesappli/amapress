@@ -53,8 +53,8 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 		}
 	}
 
-	public function isNumericForSort() {
-		return true;
+	public function getSQLOrderBy( $order, $type ) {
+		return ( 'user' == $type ? 'ORDER BY' : '' ) . ' CAST(amp_pm.meta_value as SIGNED) ' . ( strpos( $order, ' DESC' ) === false ? 'ASC' : 'DESC' );
 	}
 
 	public function getSamplesForCSV( $arg = null ) {

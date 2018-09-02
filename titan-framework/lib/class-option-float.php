@@ -37,8 +37,8 @@ class TitanFrameworkOptionFloat extends TitanFrameworkOption {
 	}
 
 
-	public function isNumericForSort() {
-		return true;
+	public function getSQLOrderBy( $order, $type ) {
+		return ( 'user' == $type ? 'ORDER BY' : '' ) . ' CAST(amp_pm.meta_value as DECIMAL(10,6)) ' . ( strpos( $order, ' DESC' ) === false ? 'ASC' : 'DESC' );
 	}
 
 	/**
