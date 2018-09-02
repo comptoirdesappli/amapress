@@ -707,6 +707,16 @@ function amapress_filter_posts( WP_Query $query ) {
 							),
 							array(
 								'key'     => 'amapress_adhesion_date_fin',
+								'value'   => 0,
+								'compare' => '>',
+								'type'    => 'NUMERIC',
+							),
+							array(
+								'key'     => 'amapress_adhesion_date_fin',
+								'compare' => 'EXISTS',
+							),
+							array(
+								'key'     => 'amapress_adhesion_date_fin',
 								'value'   => Amapress::end_of_day( amapress_time() ),
 								'compare' => '<=',
 								'type'    => 'NUMERIC',
