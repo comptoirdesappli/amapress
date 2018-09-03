@@ -28,7 +28,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 		),
 		'views'            => array(
 			'remove' => array( 'mine' ),
-//            '_dyn_' => 'amapress_adhesion_views',
+			'_dyn_'  => 'amapress_adhesion_period_views',
 //            'exp_csv' => true,
 		),
 		'fields'           => array(

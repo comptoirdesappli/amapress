@@ -29,7 +29,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 		),
 		'views'            => array(
 			'remove'  => array( 'mine' ),
-//            '_dyn_' => 'amapress_adhesion_paiements_views',
+			'_dyn_'   => 'amapress_adhesion_paiement_views',
 			'exp_csv' => true,
 		),
 		'fields'           => array(

@@ -179,6 +179,26 @@ function amapress_amap_event_views() {
 	return $ret;
 }
 
+function amapress_adhesion_paiement_views() {
+	$ret = array();
+	amapress_add_view_button(
+		$ret, 'active',
+		"post_type=amps_adh_pmt&amapress_date=active",
+		'En cours' );
+
+	return $ret;
+}
+
+function amapress_adhesion_period_views() {
+	$ret = array();
+	amapress_add_view_button(
+		$ret, 'active',
+		"post_type=amps_adh_per&amapress_date=active",
+		'En cours' );
+
+	return $ret;
+}
+
 function amapress_adhesion_request_views() {
 	$ret = array();
 	amapress_add_view_button(
