@@ -428,9 +428,10 @@ class AmapressEntities {
 									\n-> pour %%nb_distributions%% distributions
 									\n-> quantités : %%quantites%%
 									\n-> pour un montant de %%total%%€
-									\nMerci d'imprimer le contrat joint à ce mail et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution
+									\n[avec_contrat]Merci d'imprimer le contrat joint à ce mail et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
+									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
 									\n\n%%nom_site%%" ),
-									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les placeholders suivants sont disponibles:' .
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
 									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
 								),
 							]

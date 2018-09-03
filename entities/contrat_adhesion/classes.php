@@ -173,7 +173,7 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['tous_referents']       = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return implode( ', ', array_map(
+					return implode( ', ', array_unique( array_map(
 						function ( $ref_id ) {
 							$ref = AmapressUser::getBy( $ref_id );
 							if ( empty( $ref ) ) {
@@ -183,13 +183,13 @@ class AmapressAdhesion extends TitanEntity {
 							return $ref->getDisplayName();
 						},
 						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds()
-					) );
+					) ) );
 				}
 			];
 			$ret['tous_referents_email'] = [
 				'desc' => 'Nom des référents du contrat avec emails',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return implode( ', ', array_map(
+					return implode( ', ', array_unique( array_map(
 						function ( $ref_id ) {
 							$ref = AmapressUser::getBy( $ref_id );
 							if ( empty( $ref ) ) {
@@ -199,13 +199,13 @@ class AmapressAdhesion extends TitanEntity {
 							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
 						},
 						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds()
-					) );
+					) ) );
 				}
 			];
 			$ret['referents']            = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return implode( ', ', array_map(
+					return implode( ', ', array_unique( array_map(
 						function ( $ref_id ) {
 							$ref = AmapressUser::getBy( $ref_id );
 							if ( empty( $ref ) ) {
@@ -215,13 +215,13 @@ class AmapressAdhesion extends TitanEntity {
 							return $ref->getDisplayName();
 						},
 						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds( $adh->getLieuId() )
-					) );
+					) ) );
 				}
 			];
 			$ret['referents_email']      = [
 				'desc' => 'Nom des référents du contrat avec emails',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return implode( ', ', array_map(
+					return implode( ', ', array_unique( array_map(
 						function ( $ref_id ) {
 							$ref = AmapressUser::getBy( $ref_id );
 							if ( empty( $ref ) ) {
@@ -231,7 +231,7 @@ class AmapressAdhesion extends TitanEntity {
 							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
 						},
 						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds( $adh->getLieuId() )
-					) );
+					) ) );
 				}
 			];
 			$ret['adherent']             = [
