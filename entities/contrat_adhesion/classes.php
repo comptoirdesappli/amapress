@@ -264,15 +264,52 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getTelephone();
 				}
 			];
-			$ret['adherent.mail']        = [
-				'desc' => 'Email adhérent',
-				'func' => function ( AmapressAdhesion $adh ) {
-				}
-			];
 			$ret['adherent.email']       = [
 				'desc' => 'Email adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$adh->getAdherent()->getEmail();
+					return $adh->getAdherent()->getEmail();
+				}
+			];
+			$ret['producteur.nom'] = [
+				'desc' => 'Nom producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->last_name;
+				}
+			];
+			$ret['producteur.prenom'] = [
+				'desc' => 'Prénom producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->first_name;
+				}
+			];
+			$ret['producteur.ferme'] = [
+				'desc' => 'Nom de la ferme producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getNomExploitation();
+				}
+			];
+			$ret['producteur.ferme.adresse'] = [
+				'desc' => 'Adresse de la ferme producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getAdresseExploitation();
+				}
+			];
+			$ret['producteur.adresse'] = [
+				'desc' => 'Adresse producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getFormattedAdresse();
+				}
+			];
+			$ret['producteur.tel'] = [
+				'desc' => 'Téléphone producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getTelephone();
+				}
+			];
+			$ret['producteur.email'] = [
+				'desc' => 'Email producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getEmail();
 				}
 			];
 			$ret['lieu']                 = [
