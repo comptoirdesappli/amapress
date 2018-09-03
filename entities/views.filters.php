@@ -261,7 +261,8 @@ function amapress_adhesion_views() {
 		"post_type=amps_adhesion&amapress_date=active",
 		'En cours' );
 
-	$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
+//	$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
+	$contrats = AmapressContrats::get_active_contrat_instances();
 	usort( $contrats, function ( $c1, $c2 ) {
 		/** @var AmapressContrat_instance $c1 */
 		/** @var AmapressContrat_instance $c2 */
@@ -302,7 +303,13 @@ function amapress_adhesion_views() {
 		$ret, 'to_renew',
 		"post_type=amps_adhesion&amapress_date=active&amapress_date=renew",
 		'A renouveller' );
-//    amapress_add_view_button(
+
+	amapress_add_view_button(
+		$ret, 'ended',
+		"post_type=amps_adhesion&amapress_date=ended",
+		'Arrêtées' );
+
+	//    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",
 //        'Année précédente');
@@ -421,7 +428,8 @@ function amapress_user_views( $ret ) {
 				'Responsable Distribution - Mois',
 				true );
 
-			$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
+//			$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
+			$contrats = AmapressContrats::get_active_contrat_instances();
 			usort( $contrats, function ( $c1, $c2 ) {
 				/** @var AmapressContrat_instance $c1 */
 				/** @var AmapressContrat_instance $c2 */
