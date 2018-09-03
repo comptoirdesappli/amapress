@@ -22,13 +22,23 @@ function amapress_register_entities_amap_event( $entities ) {
 		'default_orderby'    => 'amapress_amap_event_date',
 		'default_order'      => 'ASC',
 		'show_admin_bar_new' => true,
+		'groups'             => array(
+			'Visibilité' => [
+				'context' => 'side',
+			],
+		),
 		'views'              => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_amap_event_views',
 			'exp_csv' => true,
 		),
 		'fields'             => array(
-			'date'         => array(
+			'public'      => array(
+				'desc'  => 'Publique ?',
+				'group' => 'Visibilité',
+				'type'  => 'checkbox',
+			),
+			'date'        => array(
 				'name'       => amapress__( 'Date de l\'évènement' ),
 				'type'       => 'date',
 				'time'       => true,
@@ -41,7 +51,7 @@ function amapress_register_entities_amap_event( $entities ) {
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
 			),
-			'heure_debut'  => array(
+			'heure_debut' => array(
 				'name'     => amapress__( 'Heure début' ),
 				'type'     => 'date',
 				'date'     => false,
@@ -59,7 +69,7 @@ function amapress_register_entities_amap_event( $entities ) {
 				'desc'     => 'Heure fin',
 				'group'    => '1/ Horaires',
 			),
-			'type'         => array(
+			'type'        => array(
 				'name'        => amapress__( 'Emplacement' ),
 				'type'        => 'select',
 				'options'     => array(
@@ -79,6 +89,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'group'             => '2/ Emplacement',
 							'autoselect_single' => true,
 							'searchable'        => true,
+							'required'          => true,
 						),
 					),
 					'lieu_externe' => array(
@@ -88,6 +99,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'desc'       => 'Lieu externe',
 							'group'      => '2/ Emplacement',
 							'searchable' => true,
+							'required'   => true,
 						),
 						'lieu_externe_adresse'       => array(
 							'name'         => amapress__( 'Adresse ext.' ),
@@ -96,6 +108,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'desc'         => 'Adresse',
 							'group'        => '2/ Emplacement',
 							'searchable'   => true,
+							'required'     => true,
 						),
 						'lieu_externe_acces'         => array(
 							'name'        => amapress__( 'Accès' ),

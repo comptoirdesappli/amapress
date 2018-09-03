@@ -11,6 +11,14 @@ function amapress_get_custom_content_amap_event( $content ) {
 
 	ob_start();
 
+	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-event amap-panel-event-hours' );
+	echo '<p>' .
+	     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
+	     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
+	     ' à ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
+	     '</p>';
+	amapress_echo_panel_end();
+
 	amapress_echo_panel_start( 'Description', null, 'amap-panel-event amap-panel-event-desc' );
 	echo $content;
 	amapress_echo_panel_end();
@@ -87,29 +95,25 @@ function amapress_get_custom_content_amap_event( $content ) {
 		amapress_echo_panel_end();
 	}
 
-	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-event amap-panel-event-hours' );
-	echo '<p>' .
-	     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
-	     ' è ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
-	     '</p>';
-	amapress_echo_panel_end();
+	if ( amapress_is_user_logged_in() ) {
 
-	$responsables = array_map( function ( $u ) {
-		return $u->getUser();
-	}, $amap_event->getParticipants() );
+		$responsables = array_map( function ( $u ) {
+			return $u->getUser();
+		}, $amap_event->getParticipants() );
 
-	amapress_display_messages_for_post( 'amap-event-messages', $amap_event->ID );
+		amapress_display_messages_for_post( 'amap-event-messages', $amap_event->ID );
 
-	amapress_echo_panel_start( 'Participants', null, 'amap-panel-event amap-panel-event-amapiens' );
-	if ( count( $responsables ) > 0 ) {
-		echo amapress_generic_gallery( $responsables, 'resp', 'user_cell', 'Pas de participants' );
-	} else { ?>
-        <p>Aucun participants</p>
-	<?php }
+		amapress_echo_panel_start( 'Participants', null, 'amap-panel-event amap-panel-event-amapiens' );
+		if ( count( $responsables ) > 0 ) {
+			echo amapress_generic_gallery( $responsables, 'resp', 'user_cell', 'Pas de participants' );
+		} else { ?>
+            <p>Aucun participants</p>
+		<?php }
 
-	amapress_echo_button( 'Participer', amapress_action_link( $amap_event->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+		amapress_echo_button( 'Participer', amapress_action_link( $amap_event->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
 
-	amapress_echo_panel_end();
+		amapress_echo_panel_end();
+	}
 
 	$content = ob_get_contents();
 

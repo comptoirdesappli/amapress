@@ -202,7 +202,22 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	public function get_related_events( $user_id ) {
 		$ret = array();
 		if ( empty( $user_id ) || $user_id <= 0 ) {
-
+			$date     = $this->getStartDateAndHour();
+			$date_end = $this->getEndDateAndHour();
+			$ret[]    = new Amapress_EventEntry( array(
+				'ev_id'    => "ev-{$this->ID}",
+				'date'     => $date,
+				'date_end' => $date_end,
+				'class'    => "agenda-inscription-amap-event",
+				'type'     => 'amap_event',
+				'category' => 'Évènements',
+				'lieu'     => $this,
+				'priority' => 60,
+				'label'    => $this->getTitle(),
+				'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_amap_event_inscription_icon" ) ),
+				'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
+				'href'     => $this->getPermalink()
+			) );
 		} else {
 			$resps    = $this->getParticipantsIds();
 			$date     = $this->getStartDateAndHour();
