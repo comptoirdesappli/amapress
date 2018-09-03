@@ -136,11 +136,11 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return bool
 	 */
-	public static function storeMail( $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null ) {
+	public static function storeMail( $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0 ) {
 		require_once ABSPATH . WPINC . '/class-phpmailer.php';
 
 		$time = $time ?: amapress_time();
-		$data = compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors' );
+		$data = compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors', 'retries_count' );
 
 		$validEmails   = [];
 		$invalidEmails = [];
@@ -231,7 +231,8 @@ class AmapressSMTPMailingQueue {
 		foreach ( $types as $type ) {
 			if ( 'waiting' == $type || 'errored' == $type || 'logged' == $type ) {
 				foreach ( glob( self::getUploadDir( $type ) . '*.json' ) as $filename ) {
-					$emails[ $filename ] = json_decode( file_get_contents( $filename ), true );
+					$emails[ $filename ]         = json_decode( file_get_contents( $filename ), true );
+					$emails[ $filename ]['type'] = $type;
 					$i ++;
 					if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
 						break;
@@ -258,10 +259,18 @@ class AmapressSMTPMailingQueue {
 	public function processQueue() {
 		$mails = $this->loadDataFromFiles( false, [ 'errored', 'waiting' ] );
 		foreach ( $mails as $file => $data ) {
+			if ( 'errored' == $data['type'] ) {
+				$retries = isset( $data['retries_count'] ) ? $data['retries_count'] : 0;
+				if ( $retries > 16 ) {
+					$data['retries_count'] = 0;
+					continue;
+				}
+				$time = isset( $data['time'] ) ? $data['time'] : 0;
+				if ( amapress_time() < $time + $retries * 2 * 60 ) {
+					continue;
+				}
+			}
 			$this->sendMail( $data );
-//			if(!empty($errors)) {
-//				self::storeMail($data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors);
-//            }
 			$this->deleteFile( $file );
 		}
 
@@ -286,7 +295,7 @@ class AmapressSMTPMailingQueue {
 		require_once( 'AmapressSMTPMailingQueueOriginal.php' );
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
-			self::storeMail( 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors );
+			self::storeMail( 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
 		} else {
 			self::storeMail( 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		}

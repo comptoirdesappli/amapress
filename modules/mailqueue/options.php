@@ -50,7 +50,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'SMTP externe'                   => array(
+			'SMTP externe'     => array(
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -196,6 +196,10 @@ function amapress_mailing_queue_mail_list( $id, $type ) {
 			'title' => 'Erreurs',
 			'data'  => 'errors',
 		);
+		$columns[] = array(
+			'title' => 'Essais',
+			'data'  => 'retries_count',
+		);
 	}
 	$columns[] = array(
 		'title' => 'Headers',
@@ -210,16 +214,17 @@ function amapress_mailing_queue_mail_list( $id, $type ) {
 	$data   = array();
 	foreach ( $emails as $email ) {
 		$data[] = array(
-			'time'    => array(
+			'time'          => array(
 				'val'     => $email['time'],
 				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) ),
 			),
-			'to'      => esc_html( $email['to'] ),
-			'subject' => esc_html( $email['subject'] ),
+			'to'            => esc_html( $email['to'] ),
+			'subject'       => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
-			'message' => wpautop( $email['message'] ),
-			'errors'  => var_export( $email['errors'], true ),
-			'headers' => implode( '<br/>', array_map( function ( $h ) {
+			'message'       => wpautop( $email['message'] ),
+			'errors'        => var_export( $email['errors'], true ),
+			'retries_count' => isset( $email['retries_count'] ) ? $email['retries_count'] : 0,
+			'headers'       => implode( '<br/>', array_map( function ( $h ) {
 				return esc_html( $h );
 			}, $email['headers'] ) ),
 		);
