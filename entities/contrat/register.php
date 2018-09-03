@@ -1575,13 +1575,13 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
             <table id="quant_editor_table" class="table" style="width: 100%; border: 1pt solid black">
                 <thead>
                 <tr>
-                    <th style="padding-left: 10px">Intitulé</th>
+                    <th style="padding-left: 10px">Intitulé*</th>
                     <th style="width: 100px">Code</th>
                     <th title="Description">Desc.</th>
-                    <th style="width: 50px">Prix</th>
+                    <th style="width: 50px">Prix*</th>
                     <th style="width: 40px" title="Facteur quantité">Fact. quant.</th>
 					<?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
-                        <th style="width: 60px">Unité</th>
+                        <th style="width: 60px">Unité*</th>
                         <th style="width: 70px">Quantités config</th>
 					<?php } ?>
 					<?php if ( $contrat_instance->isPanierVariable() ) { ?>
