@@ -348,6 +348,32 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				?>
                 <p>Pour vous engager dans l’AMAP et accéder à tous nos contrats en ligne, vous devez d’abord vous
                     inscrire à l’un des contrats suivants :</p>
+                <li>
+					<?php
+					foreach ( $principal_contrats as $principal_contrat ) {
+						?>
+                        <p>
+                            “<strong><?php echo esc_html( $principal_contrat->getTitle() ); ?></strong>”
+                            (<?php echo $principal_contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
+                        </p>
+                        <p><?php
+							$inscription_url = add_query_arg( [
+								'step'       => 'inscr_contrat_date_lieu',
+								'contrat_id' => $principal_contrat->ID
+							] );
+							echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="contrat_id" value="' . $principal_contrat->ID . '"/>
+<input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
+</form>';
+							?>
+                        </p>
+						<?php
+					}
+					?>
+                </li>
 				<?php
 			}
 		} else if ( ! empty( $adhs ) ) {
