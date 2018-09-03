@@ -501,7 +501,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}
 				$paiements[] = $ch['desc'];
 			}
-			$placeholders["quantite_paiements#$i"] = '[] ' . implode( ', [] ', $paiements );
+			$placeholders["quantite_paiements#$i"] = '[] ' . implode( "\n[] ", $paiements );
 			$i                                     += 1;
 		}
 
