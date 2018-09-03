@@ -59,10 +59,11 @@ function amapress_self_inscription( $atts ) {
 
 	$atts = shortcode_atts(
 		[
-			'key'        => '',
-			'for_logged' => 'false',
-			'admin_mode' => 'false',
-			'email'      => get_option( 'admin_email' ),
+			'key'                  => '',
+			'for_logged'           => 'false',
+			'filter_multi_contrat' => 'false',
+			'admin_mode'           => 'false',
+			'email'                => get_option( 'admin_email' ),
 		]
 		, $atts );
 
@@ -418,7 +419,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( $display_remaining_contrats ) {
 			$adhs_contrat_ids           = array_map( function ( $a ) {
 				/** @var AmapressAdhesion $a */
-				return $a->getContrat_instance()->ID;
+				return $a->getContrat_instanceId();
 			}, $adhs );
 			$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
 				return ! in_array( $c->ID, $adhs_contrat_ids );
@@ -426,6 +427,16 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			if ( ! $has_principal_contrat ) {
 				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $principal_contrats_ids ) {
 					return in_array( $c->ID, $principal_contrats_ids );
+				} );
+			}
+			if ( Amapress::toBool( $atts['filter_multi_contrat'] ) ) {
+				$adhs_contrat_ids           = array_map( function ( $a ) {
+					/** @var AmapressAdhesion $a */
+					return $a->getContrat_instance()->getModelId();
+				}, $adhs );
+				$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
+					/** @var AmapressContrat_instance $c */
+					return ! in_array( $c->getModel()->ID, $adhs_contrat_ids );
 				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
