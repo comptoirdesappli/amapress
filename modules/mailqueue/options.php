@@ -136,6 +136,7 @@ function amapress_mailing_queue_menu_options() {
 				),
 			),
 			'Log des mails'    => array(
+				'id'      => 'mail_logs',
 				'desc'    => '',
 				'options' => array(
 					array(
