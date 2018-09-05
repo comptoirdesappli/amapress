@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.51.60
+Version: 0.51.62
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 73 );
-define( 'AMAPRESS_VERSION', '0.51.60' );
+define( 'AMAPRESS_VERSION', '0.51.62' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -732,7 +732,9 @@ function mc_edit_permission_check() {
 	}
 }
 
-add_filter( 'admin_head', 'mc_edit_permission_check', 1, 4 );
+if ( is_multisite() ) {
+	add_filter( 'admin_head', 'mc_edit_permission_check', 1, 4 );
+}
 
 
 add_filter( 'user_has_cap', 'amapress_check_permissions', 10, 3 );
