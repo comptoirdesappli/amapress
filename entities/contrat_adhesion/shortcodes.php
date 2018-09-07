@@ -442,7 +442,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		if ( ! empty( $adh_paiement->getPeriod()->getModelDocFileName() ) ) {
 			$print_bulletin = Amapress::makeButtonLink(
-				add_query_arg( [ 'inscr_assistant' => 'generate_bulletin', 'adh_id' => $adh_paiement->ID ] ),
+				add_query_arg( [
+					'inscr_assistant' => 'generate_bulletin',
+					'adh_id'          => $adh_paiement->ID,
+					'inscr_key'       => $key
+				] ),
 				'Imprimer', true, true, 'btn btn-default'
 			);
 			echo '<p>Veuillez imprimer le bulletin et le remettre avec votre chèque lors de la première distribution<br/>' . $print_bulletin . '</p>';
@@ -552,7 +556,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$print_contrat = '';
 				if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
 					$print_contrat = Amapress::makeButtonLink(
-						add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $adh->ID ] ),
+						add_query_arg( [
+							'inscr_assistant' => 'generate_contrat',
+							'inscr_id'        => $adh->ID,
+							'inscr_key'       => $key
+						] ),
 						'Imprimer', true, true, 'btn btn-default'
 					);
 				}
@@ -1175,7 +1183,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 Vous allez recevoir un mail de confirmation avec votre contrat dans quelques minutes.</div>';
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
 				$print_contrat = Amapress::makeButtonLink(
-					add_query_arg( [ 'inscr_assistant' => 'generate_contrat', 'inscr_id' => $inscription->ID ] ),
+					add_query_arg( [
+						'inscr_assistant' => 'generate_contrat',
+						'inscr_id'        => $inscription->ID,
+						'inscr_key'       => $key
+					] ),
 					'Imprimer', true, true, 'btn btn-default'
 				);
 				echo '<p>Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (' . $inscription->getProperty( 'referents' ) . ') avec les chèques correspondants lors de la prochaine distribution<br />
