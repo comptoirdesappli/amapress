@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                            => array(
+						'Renouvèlement'                                     => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -401,15 +401,15 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques'          => array(
+						'Mails - Envoi liste des chèques'                   => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
-						'Mails - Envoi des quantités à livrer'     => array(
+						'Mails - Envoi des quantités à livrer'              => array(
 							'desc'    => '',
 							'options' => amapress_contrat_quantites_recall_options(),
 						),
-						'Mails - Confirmation du contrat en ligne' => array(
+						'Mails - Confirmation du contrat/adhésion en ligne' => array(
 							'id'      => 'mail_confirm_online_inscr',
 							'desc'    => '',
 							'options' => [
@@ -433,6 +433,27 @@ class AmapressEntities {
 									\n\n%%nom_site%%" ),
 									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
 									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
+								),
+								array(
+									'id'      => 'online_adhesion_confirm-mail-subject',
+									'name'    => 'Sujet du mail',
+									'type'    => 'text',
+									'default' => 'Confirmation de votre adhésion à %%nom_site%%',
+								),
+								array(
+									'id'      => 'online_adhesion_confirm-mail-content',
+									'name'    => 'Contenu du mail',
+									'type'    => 'editor',
+									'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
+Nous vous confirmons votre adhésion à %%nom_site%%\n
+[avec_bulletin]Merci d'imprimer le bulletin joint à ce mail et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
+[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
+\n\n%%nom_site%%" ),
+									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+									                                                  AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ) : '',
+								),
+								array(
+									'type' => 'save',
 								),
 							]
 						),
@@ -2046,7 +2067,7 @@ class AmapressEntities {
 								)
 							)
 						),
-						'Placeholders - contrat personnalisé'          => array(
+						'Placeholders - contrat personnalisé'           => array(
 							'id'      => 'adhesion_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2060,7 +2081,7 @@ class AmapressEntities {
 								)
 							)
 						),
-						'Configuration des paniers (Taille/Quantités)' => array(
+						'Configuration des paniers (Taille/Quantités)'  => array(
 							'id'      => 'conf_paniers',
 							'desc'    => '',
 							'options' => array(
@@ -2069,6 +2090,20 @@ class AmapressEntities {
 									'name'   => 'Configuration des paniers (Taille/Quantités)',
 									'type'   => 'custom',
 									'custom' => function () {
+									}
+								)
+							)
+						),
+						'Placeholders - bulletin adhésion personnalisé' => array(
+							'id'      => 'adhesion_placeholders',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'     => 'adhesion_placeholders_cust',
+									'name'   => 'Placeholders - bulletin adhésion personnalisé',
+									'type'   => 'custom',
+									'custom' => function () {
+										return AmapressAdhesion_paiement::getPlaceholdersHelp( [], true );
 									}
 								)
 							)

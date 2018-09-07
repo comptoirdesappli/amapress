@@ -20,6 +20,26 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return $this->getCustom( 'amapress_adhesion_period_date_fin' );
 	}
 
+	public function getOnlineDescription() {
+		return $this->getCustom( 'amapress_adhesion_period_online_desc' );
+	}
+
+	public function getWordModelId() {
+		return $this->getCustomAsInt( 'amapress_adhesion_period_word_model' );
+	}
+
+	public function getModelDocFileName() {
+		return get_attached_file( $this->getWordModelId(), true );
+	}
+
+	public function getMontantReseau() {
+		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_reseau' );
+	}
+
+	public function getMontantAmap() {
+		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_amap' );
+	}
+
 	/**
 	 * @return AmapressAdhesionPeriod
 	 */

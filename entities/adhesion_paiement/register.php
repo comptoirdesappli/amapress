@@ -13,26 +13,34 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
-		'special_options'  => array(),
-		'slug'             => 'adhesions_paiements',
-		'title_format'     => 'amapress_adhesion_paiement_title_formatter',
-		'slug_format'      => 'from_title',
-		'title'            => false,
-		'editor'           => false,
-		'menu_icon'        => 'flaticon-business',
-		'default_orderby'  => 'post_title',
-		'default_order'    => 'ASC',
-		'labels'           => array(
+		'special_options' => array(),
+		'slug'            => 'adhesions_paiements',
+		'title_format'    => 'amapress_adhesion_paiement_title_formatter',
+		'slug_format'     => 'from_title',
+		'title'           => false,
+		'editor'          => false,
+		'menu_icon'       => 'flaticon-business',
+		'default_orderby' => 'post_title',
+		'default_order'   => 'ASC',
+		'labels'          => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Saisie chèques adhésion',
 //            'items_list' => 'xxx',
 		),
-		'views'            => array(
+		'row_actions'     => array(
+			'generate_bulletin' => [
+				'label'     => 'Générer le bulletin',
+				'condition' => function ( $adh_id ) {
+					return ! empty( AmapressAdhesion_paiement::getBy( $adh_id )->getBulletinDocFileName() );
+				},
+			],
+		),
+		'views'           => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_paiement_views',
 			'exp_csv' => true,
 		),
-		'fields'           => array(
+		'fields'          => array(
 			'user'         => array(
 				'name'         => amapress__( 'Amapien' ),
 				'type'         => 'select-users',
@@ -249,3 +257,10 @@ function amapress_adhesion_paiement_select_user_title( $title, $user, $option ) 
 //    return $title;
 }
 
+add_action( 'amapress_row_action_adhesion_paiement_generate_bulletin', 'amapress_row_action_adhesion_paiement_generate_bulletin' );
+function amapress_row_action_adhesion_paiement_generate_bulletin( $post_id ) {
+	$adhesion       = AmapressAdhesion_paiement::getBy( $post_id );
+	$full_file_name = $adhesion->generateBulletinDoc();
+	$file_name      = basename( $full_file_name );
+	Amapress::sendDocumentFile( $full_file_name, $file_name );
+}

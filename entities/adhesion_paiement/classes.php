@@ -12,6 +12,34 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		parent::__construct( $post_id );
 	}
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressAdhesion_paiement
+	 */
+	public static function getBy( $post_or_id, $no_cache = false ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressAdhesion_paiement' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) || $no_cache ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressAdhesion_paiement( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
+	/** @return AmapressUser */
 	public function getUser() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_paiement_user', 'AmapressUser' );
 	}
@@ -20,6 +48,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $this->getCustomAsInt( 'amapress_adhesion_paiement_user' );
 	}
 
+	/** @return AmapressAdhesionPeriod */
 	public function getPeriod() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_paiement_period', 'AmapressAdhesionPeriod' );
 	}
@@ -161,13 +190,13 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $ret;
 	}
 
-	private static $paiement_cache = null;
-
-	public static function getAllActiveByUserId() {
-		if ( null === self::$paiement_cache ) {
-			$period               = AmapressAdhesionPeriod::getCurrent();
-			$period_id            = $period ? $period->ID : 0;
-			self::$paiement_cache = array_group_by( array_map(
+	public static function getAllActiveByUserId( $date = null ) {
+		$key = "amapress_AmapressAdhesionPaiement_getAllActiveByUserId_{$date}";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$period    = AmapressAdhesionPeriod::getCurrent( $date );
+			$period_id = $period ? $period->ID : 0;
+			$res       = array_group_by( array_map(
 				function ( $p ) {
 					return new AmapressAdhesion_paiement( $p );
 				},
@@ -198,9 +227,229 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $p->getUserId();
 				}
 			);
+			wp_cache_set( $key, $res );
 		}
 
-		return self::$paiement_cache;
+		return $res;
+	}
+
+	/** @return AmapressAdhesion_paiement */
+	public static function getForUser( $user_id, $date = null, $create = true ) {
+		$adhs = AmapressAdhesion_paiement::getAllActiveByUserId( $date );
+		if ( empty( $adhs[ $user_id ] ) ) {
+			if ( ! $create ) {
+				return null;
+			}
+			$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
+			if ( empty( $adh_period ) ) {
+				return null;
+			}
+			$my_post          = array(
+				'post_type'    => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
+				'post_content' => '',
+				'post_status'  => 'publish',
+				'meta_input'   => array(
+					'amapress_adhesion_paiement_user'   => $user_id,
+					'amapress_adhesion_paiement_period' => $adh_period->ID,
+					'amapress_adhesion_paiement_date'   => $date,
+					'amapress_adhesion_paiement_status' => 'not_received',
+				),
+			);
+			$adh_pmt_id       = wp_insert_post( $my_post );
+			$adhs[ $user_id ] = [ AmapressAdhesion_paiement::getBy( $adh_pmt_id ) ];
+		}
+
+		$adhs[ $user_id ] = array_values( $adhs[ $user_id ] );
+
+		return $adhs[ $user_id ][0];
+	}
+
+	public function getBulletinDocFileName() {
+		if ( ! $this->getUser() ) {
+			return '';
+		}
+		$model_filename = $this->getPeriod()->getModelDocFileName();
+		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
+
+		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
+				'bulletin-adhesion-' . $this->ID . '-' . $this->getUser()->getSortableDisplayName() . '-' . date_i18n( 'Y-m-d', $this->getPeriod()->getDate_debut() ) . $ext );
+	}
+
+	public function generateBulletinDoc() {
+		$out_filename   = $this->getBulletinDocFileName();
+		$model_filename = $this->getPeriod()->getModelDocFileName();
+		if ( empty( $model_filename ) ) {
+			return '';
+		}
+
+		$placeholders = [];
+		foreach ( self::getProperties() as $prop_name => $prop_config ) {
+			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
+		}
+
+		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+		foreach ( $placeholders as $k => $v ) {
+			$templateProcessor->setValue( $k, $v );
+		}
+
+		$templateProcessor->saveAs( $out_filename );
+
+		return $out_filename;
+	}
+
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_word = false ) {
+		$ret = [];
+
+		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
+			$ret[ $prop_name ] = $prop_desc;
+		}
+
+		return Amapress::getPlaceholdersHelpTable( 'adhesion-placeholders', $ret,
+			'de l\'adhésion', $additional_helps, ! $for_word,
+			$for_word ? '${' : '%%', $for_word ? '}' : '%%' );
+	}
+
+	private static $properties = null;
+
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret                      = [];
+			$ret['date_debut']        = [
+				'desc' => 'Date début de l\'adhésion (par ex, 01/09/2018)',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_debut() );
+				}
+			];
+			$ret['date_fin']          = [
+				'desc' => 'Date fin de l\'adhésion (par ex, 31/08/2019)',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_fin() );
+				}
+			];
+			$ret['date_debut_annee']  = [
+				'desc' => 'Année de début de l\'adhésion',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return date_i18n( 'Y', $adh->getPeriod()->getDate_debut() );
+				}
+			];
+			$ret['date_fin_annee']    = [
+				'desc' => 'Année de fin de l\'adhésion',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
+				}
+			];
+			$ret['montant_amap']      = [
+				'desc' => 'Montant versé à l\'AMAP',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getPeriod()->getMontantAmap();
+				}
+			];
+			$ret['montant_reseau']    = [
+				'desc' => 'Montant versé au réseau de l\'AMAP',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getPeriod()->getMontantReseau();
+				}
+			];
+			$ret['tresoriers']        = [
+				'desc' => 'Nom des référents de l\'adhésion',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return implode( ', ', array_unique( array_map(
+						function ( $ref_id ) {
+							$ref = AmapressUser::getBy( $ref_id );
+							if ( empty( $ref ) ) {
+								return '';
+							}
+
+							return $ref->getDisplayName();
+						},
+						get_users( "role=tresorier" )
+					) ) );
+				}
+			];
+			$ret['tresoriers_emails'] = [
+				'desc' => 'Nom des trésoriers avec emails',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return implode( ', ', array_unique( array_map(
+						function ( $ref_id ) {
+							$ref = AmapressUser::getBy( $ref_id );
+							if ( empty( $ref ) ) {
+								return '';
+							}
+
+							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
+						},
+						get_users( "role=tresorier" )
+					) ) );
+				}
+			];
+			$ret['adherent']          = [
+				'desc' => 'Prénom Nom adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getDisplayName();
+				}
+			];
+			$ret['adherent.nom']      = [
+				'desc' => 'Nom adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getUser()->last_name;
+				}
+			];
+			$ret['adherent.prenom']   = [
+				'desc' => 'Prénom adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getUser()->first_name;
+				}
+			];
+			$ret['adherent.adresse']  = [
+				'desc' => 'Adresse adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getFormattedAdresse();
+				}
+			];
+			$ret['adherent.tel']      = [
+				'desc' => 'Téléphone adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getTelephone();
+				}
+			];
+			$ret['adherent.email']    = [
+				'desc' => 'Email adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getEmail();
+				}
+			];
+			$taxes                    = get_categories( array(
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+				'taxonomy'   => 'amps_paiement_category',
+				'hide_empty' => false,
+			) );
+			/** @var WP_Term $tax */
+			foreach ( $taxes as $tax ) {
+				$tax_id                             = $tax->term_id;
+				$ret[ 'montant_cat_' . $tax->slug ] = [
+					'desc' => 'Montant relatif à ' . $tax->name,
+					'func' => function ( AmapressAdhesion_paiement $adh ) use ( $tax_id ) {
+						return $adh->getAmount( $tax_id );
+					}
+				];
+			}
+			$ret['total']     = [
+				'desc' => 'Total de l\'adhésion',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getAmount();
+				}
+			];
+			$ret['montant']   = [
+				'desc' => 'Total de l\'adhésion',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getAmount();
+				}
+			];
+			self::$properties = $ret;
+		}
+
+		return self::$properties;
 	}
 }
 

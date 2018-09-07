@@ -24,7 +24,7 @@ add_action( 'amapress_init', function () {
 
 		wp_redirect_and_exit(
 			add_query_arg( [
-				'step'    => 'contrats',
+				'step'    => ! empty( $_REQUEST['activate_adhesion'] ) ? 'adhesion' : 'contrats',
 				'user_id' => $user_id,
 			] )
 		);
@@ -49,6 +49,26 @@ add_action( 'amapress_init', function () {
 		$file_name      = basename( $full_file_name );
 		Amapress::sendDocumentFile( $full_file_name, $file_name );
 	}
+	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_bulletin' == $_REQUEST['inscr_assistant'] ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
+				wp_die( 'Accès interdit' );
+			}
+		}
+
+		$adh_id = intval( $_REQUEST['adh_id'] );
+		if ( empty( $adh_id ) ) {
+			wp_die( 'Accès interdit' );
+		}
+		$adhesion_paiement = AmapressAdhesion_paiement::getBy( $adh_id );
+		if ( empty( $adhesion_paiement ) ) {
+			wp_die( 'Accès interdit' );
+		}
+
+		$full_file_name = $adhesion_paiement->generateBulletinDoc();
+		$file_name      = basename( $full_file_name );
+		Amapress::sendDocumentFile( $full_file_name, $file_name );
+	}
 } );
 
 /**
@@ -63,13 +83,15 @@ function amapress_self_inscription( $atts ) {
 			'for_logged'           => 'false',
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
+			'adhesion'             => 'false',
 			'email'                => get_option( 'admin_email' ),
 		]
 		, $atts );
 
-	$ret        = '';
-	$admin_mode = Amapress::toBool( $atts['admin_mode'] );
-	$key        = $atts['key'];
+	$ret               = '';
+	$admin_mode        = Amapress::toBool( $atts['admin_mode'] );
+	$activate_adhesion = Amapress::toBool( $atts['adhesion'] );
+	$key               = $atts['key'];
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -150,6 +172,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 	if ( empty( $principal_contrats ) ) {
 		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
+	$adh_period_date = Amapress::add_a_month( $min_contrat_date, 2 );
 
 //	if ( ! $admin_mode && count( $principal_contrats ) > 1 ) {
 //		wp_die( 'Il y a plusieurs contrat principaux. Veuillez vérifier la configuration (erreur de dates d\'ouverture/clôture) : <br/>' .
@@ -253,6 +276,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$user_phones    = implode( '/', $amapien->getPhoneNumbers() );
 			$member_message = '';
 		}
+
+		$adh_pmt = AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false );
 		?>
         <h4>Étape 2/7 : Coordonnées</h4>
         <p><?php echo $user_message; ?></p>
@@ -260,6 +285,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
             <input type="hidden" name="email" value="<?php echo esc_attr( $email ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
+	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+                <input type="hidden" name="activate_adhesion" value="true"/>
+	        <?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
@@ -293,6 +321,142 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
             <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
         </form>
 		<?php
+	} else if ( 'adhesion' == $step ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
+		if ( $adh_paiement ) {
+			wp_die( 'Vous avez déjà une adhésion' );
+		}
+
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		if ( empty( $adh_period ) ) {
+			wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
+		}
+
+		echo '<h4>Étape obligatoire : Bulletin d\'adhésion</h4>';
+		echo $adh_period->getOnlineDescription();
+
+		$taxes            = get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => 'amps_paiement_category',
+			'hide_empty' => false,
+		) );
+		$ret              = '';
+		$ret              .= '<form method="post" id="inscr_adhesion" class="amapress_validate" action="' . esc_attr( add_query_arg( 'step', 'save_adhesion' ) ) . '">';
+		$ret              .= '<input type="hidden" name="user_id" value="' . esc_attr( $user_id ) . '"/>';
+		$amap_term        = Amapress::getOption( 'adhesion_amap_term' );
+		$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+		$ret              .= '<table style="max-width: 50%">';
+		foreach ( $taxes as $tax ) {
+			$tax_amount = 0;
+			if ( $tax->term_id == $amap_term ) {
+				$tax_amount = $adh_period->getMontantAmap();
+			}
+			if ( $tax->term_id == $reseau_amap_term ) {
+				$tax_amount = $adh_period->getMontantReseau();
+			}
+			$ret .= '<tr>';
+			$ret .= '<th style="text-align: left; width: auto">
+<label for="amapress_pmt_amount-' . $tax->term_id . '">' . esc_html( $tax->name ) . '</label>
+' . ( ! empty( $tax->description ) ? '<p style="font-style: italic; font-weight: normal">' . $tax->description . '</p>' : '' ) . '
+</th>';
+			if ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) {
+				$ret .= '<td><input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />' . $tax_amount . '&nbsp;€</td>';
+			} else {
+				$ret .= '<td><input type="number" id="amapress_pmt_amount-' . $tax->term_id . '" style="width: 80%" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="price required amapress_pmt_cat_amount" value="' . $tax_amount . '" />&nbsp;€</td>';
+			}
+			$ret .= '</tr>';
+		}
+		$ret .= '</table>';
+		$ret .= '<p>Total du chèque : <span id="amapress_adhesion_paiement_amount"></span></p>';
+		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
+		$ret .= '</form>';
+
+		echo $ret;
+
+	} else if ( 'save_adhesion' == $step ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+
+		if ( empty( $_REQUEST['amapress_pmt_amounts'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		if ( empty( $adh_period ) ) {
+			wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
+		}
+
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
+
+		$terms   = array();
+		$amounts = array();
+		foreach ( $_POST['amapress_pmt_amounts'] as $tax_id => $amount ) {
+			if ( $amount > 0 ) {
+				$terms[]            = intval( $tax_id );
+				$amounts[ $tax_id ] = floatval( $amount );
+			}
+		}
+		$total_amount = 0;
+		foreach ( $amounts as $k => $v ) {
+			$total_amount += $v;
+		}
+		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_repartition', $amounts );
+		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_amount', $total_amount );
+		wp_set_post_terms( $adh_paiement->ID, $terms, 'amps_paiement_category' );
+
+		amapress_compute_post_slug_and_title( $adh_paiement->getPost() );
+
+		$amapien      = AmapressUser::getBy( $user_id );
+		$mail_subject = Amapress::getOption( 'online_adhesion_confirm-mail-subject' );
+		$mail_content = Amapress::getOption( 'online_adhesion_confirm-mail-content' );
+
+		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $adh_paiement );
+		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $adh_paiement );
+
+		$attachments = [];
+		$doc_file    = $adh_paiement->generateBulletinDoc();
+		if ( ! empty( $doc_file ) ) {
+			$attachments[] = $doc_file;
+			$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );
+			$mail_content  = preg_replace( '/\[\/?avec_bulletin\]/', '', $mail_content );
+		} else {
+			$mail_content = preg_replace( '/\[avec_bulletin\].+?\[\/avec_bulletin\]/', '', $mail_content );
+			$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
+		}
+
+		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+
+		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
+
+		echo '<p>Merci pour votre adhésion à l\'AMAP !</p>';
+
+		echo '<p>Un mail de confirmation vient de vous être envoyé.</p>';
+
+		if ( ! empty( $adh_paiement->getPeriod()->getModelDocFileName() ) ) {
+			$print_bulletin = Amapress::makeButtonLink(
+				add_query_arg( [ 'inscr_assistant' => 'generate_bulletin', 'adh_id' => $adh_paiement->ID ] ),
+				'Imprimer', true, true, 'btn btn-default'
+			);
+			echo '<p>Veuillez imprimer le bulletin et le remettre avec votre chèque lors de la première distribution<br/>' . $print_bulletin . '</p>';
+		} else {
+			echo '<p>Veuillez remettre le chèque lors de la première distribution</p>';
+		}
+
+		echo '<p>Vous pouvez maintenant vous inscrires aux contrats de l\'AMAP :<br/>
+<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="contrats" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+</form></p>';
 	} else if ( 'contrats' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
 			wp_die( $invalid_access_message );
@@ -334,7 +498,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 						'step'       => 'inscr_contrat_date_lieu',
 						'contrat_id' => $principal_contrats[0]->ID
 					] );
-	                echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
+					echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -1141,6 +1305,16 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
                 factorElt.prop('disabled', !$this.is(':checked'));
             });
             computeTotal();
+
+            var updateAmount = function () {
+                var sum = 0;
+                jQuery(".amapress_pmt_cat_amount").each(function () {
+                    sum += parseFloat(jQuery(this).val());
+                });
+                jQuery("#amapress_adhesion_paiement_amount").text(sum.toFixed(2));
+            };
+            jQuery(".amapress_pmt_cat_amount").on("change paste keyup", updateAmount);
+            updateAmount();
         });
         //]]>
     </script>
