@@ -387,10 +387,16 @@ class AmapressContrat_instance extends TitanEntity {
 				return implode( ', ', $adh->getPossiblePaiements() );
 			}
 		];
+		$ret['nb_dates'] = [
+			'desc' => 'Nombre de dates de distributions restantes',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				return $adh->getRemainingDates( $first_date_distrib );
+			}
+		];
 		$ret['nb_distributions']            = [
 			'desc' => 'Nombre de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
-				return $adh->getRemainingDates( $first_date_distrib );
+				return $adh->getRemainingDatesWithFactors( $first_date_distrib );
 			}
 		];
 		$ret['dates_distribution_par_mois'] = [
