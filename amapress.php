@@ -84,7 +84,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
 		} );
 	}
-	wp_mail( $to, $subject, wptexturize( wpautop( wp_unslash( $message ) ) ), $headers, $attachments );
+	wp_mail( $to, wp_unslash( $subject ), wptexturize( wpautop( wp_unslash( $message ) ) ), $headers, $attachments );
 //    remove_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 }
 
