@@ -517,25 +517,25 @@ function amapress_filter_posts( WP_Query $query ) {
 //            var_dump($user_ids);
 			amapress_add_meta_query( $query, array(
 				array(
-//					'relation' => 'OR',
+					'relation' => 'OR',
 					array(
 						'key'     => "amapress_{$pt}_adherent",
 						'value'   => amapress_prepare_in( $user_ids ),
 						'compare' => 'IN',
 						'type'    => 'NUMERIC'
 					),
-//					array(
-//						'key'     => "amapress_{$pt}_adherent2",
-//						'value'   => amapress_prepare_in( $user_ids ),
-//						'compare' => 'IN',
-//						'type'    => 'NUMERIC'
-//					),
-//					array(
-//						'key'     => "amapress_{$pt}_adherent3",
-//						'value'   => amapress_prepare_in( $user_ids ),
-//						'compare' => 'IN',
-//						'type'    => 'NUMERIC'
-//					),
+					array(
+						'key'     => "amapress_{$pt}_adherent2",
+						'value'   => amapress_prepare_in( $user_ids ),
+						'compare' => 'IN',
+						'type'    => 'NUMERIC'
+					),
+					array(
+						'key'     => "amapress_{$pt}_adherent3",
+						'value'   => amapress_prepare_in( $user_ids ),
+						'compare' => 'IN',
+						'type'    => 'NUMERIC'
+					),
 				),
 			) );
 		} else if ( $pt == 'amap_event' || $pt == 'visite' || $pt == 'assemblee' ) {
