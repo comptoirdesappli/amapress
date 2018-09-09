@@ -66,7 +66,7 @@ class AmapressPanier extends Amapress_EventBase {
 			$ret = $this->getCustom( 'amapress_panier_contenu' );
 		}
 
-		return $ret;
+		return stripslashes( $ret );
 	}
 
 	public function getRealDate() {

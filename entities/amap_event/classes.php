@@ -46,11 +46,11 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	}
 
 	public function getLieu_externe_acces() {
-		return $this->getCustom( 'amapress_amap_event_lieu_externe_acces' );
+		return stripslashes( $this->getCustom( 'amapress_amap_event_lieu_externe_acces' ) );
 	}
 
 	public function getLieu_externe_adresse_acces() {
-		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces' );
+		return stripslashes( $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces' ) );
 	}
 
 	public function isLieu_externe_AdresseLocalized() {

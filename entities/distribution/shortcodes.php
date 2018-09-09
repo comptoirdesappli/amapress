@@ -238,13 +238,13 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 //        foreach ($user_lieux as $lieu_id) {
 		for ( $i = 1; $i <= $lieux_needed_resps[ $lieu_id ]; $i ++ ) {
 			$width     = ! $for_pdf ? 'width: calc(100 / ' . $lieux_needed_resps[ $lieu_id ] . ' - 5em)' : '';
-			$role_name = Amapress::getOption( "resp_role_$i-name" );
+			$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name" ) );
 			if ( empty( $role_name ) ) {
 				$role_name = "Responsable $i";
 			} else {
 				$has_role_names = true;
 			}
-			$role_desc = Amapress::getOption( "resp_role_$i-desc" );
+			$role_desc = stripslashes( Amapress::getOption( "resp_role_$i-desc" ) );
 			if ( $has_role_names ) {
 				$role_desc = '<br/><span class="role-distrib-desc">' . $role_desc . '</span>';
 			}

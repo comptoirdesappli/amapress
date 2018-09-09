@@ -451,7 +451,7 @@ line-height: 1.1;
 		echo '<br/>';
 	}
 
-	$general_message = Amapress::getOption( 'liste-emargement-general-message' );
+	$general_message = stripslashes( Amapress::getOption( 'liste-emargement-general-message' ) );
 	if ( strlen( wp_strip_all_tags( $general_message ) ) > 0 ) {
 		echo $general_message;
 		echo '<br/>';

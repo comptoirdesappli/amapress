@@ -21,7 +21,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	public function getOnlineDescription() {
-		return $this->getCustom( 'amapress_adhesion_period_online_desc' );
+		return stripslashes( $this->getCustom( 'amapress_adhesion_period_online_desc' ) );
 	}
 
 	public function getWordModelId() {

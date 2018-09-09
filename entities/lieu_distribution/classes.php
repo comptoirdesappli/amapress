@@ -47,7 +47,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	public function getContact_externe() {
 		$this->ensure_init();
 
-		return wpautop( $this->getCustom( 'amapress_lieu_distribution_contact_externe' ) );
+		return wpautop( stripslashes( $this->getCustom( 'amapress_lieu_distribution_contact_externe' ) ) );
 	}
 
 	/** @return AmapressUser */
@@ -74,7 +74,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	}
 
 	public function getInstructions_privee() {
-		return wpautop( $this->getCustom( 'amapress_lieu_distribution_instructions_privee' ) );
+		return wpautop( stripslashes( $this->getCustom( 'amapress_lieu_distribution_instructions_privee' ) ) );
 	}
 
 	public function getHeure_debut() {
@@ -112,15 +112,15 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	}
 
 	public function getAcces() {
-		return wpautop( $this->getCustom( 'amapress_lieu_distribution_acces' ) );
+		return wpautop( stripslashes( $this->getCustom( 'amapress_lieu_distribution_acces' ) ) );
 	}
 
 	public function getAccesRaw() {
-		return $this->getCustom( 'amapress_lieu_distribution_acces' );
+		return stripslashes( $this->getCustom( 'amapress_lieu_distribution_acces' ) );
 	}
 
 	public function getAdresseAcces() {
-		return $this->getCustom( 'amapress_lieu_distribution_adresse_acces' );
+		return stripslashes( $this->getCustom( 'amapress_lieu_distribution_adresse_acces' ) );
 	}
 
 	public function getAdresseAccesLatitude() {

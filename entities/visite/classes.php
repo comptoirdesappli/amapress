@@ -47,7 +47,7 @@ class AmapressVisite extends Amapress_EventBase {
 	}
 
 	public function getAu_programme() {
-		return wpautop( $this->custom['amapress_visite_au_programme'] );
+		return wpautop( stripslashes( $this->custom['amapress_visite_au_programme'] ) );
 	}
 
 	/** @return AmapressUser[] */

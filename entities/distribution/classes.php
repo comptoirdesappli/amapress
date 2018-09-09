@@ -56,7 +56,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getInformations() {
-		return $this->getCustom( 'amapress_distribution_info', '' );
+		return stripslashes( $this->getCustom( 'amapress_distribution_info', '' ) );
 	}
 
 	public function getDate() {
@@ -279,7 +279,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		return Amapress::getOption( "resp_role_$role-name" );
+		return stripslashes( Amapress::getOption( "resp_role_$role-name" ) );
 	}
 
 	public function getResponsableRoleDesc( $user_id ) {
@@ -288,7 +288,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		return Amapress::getOption( "resp_role_$role-desc" );
+		return stripslashes( Amapress::getOption( "resp_role_$role-desc" ) );
 	}
 //
 

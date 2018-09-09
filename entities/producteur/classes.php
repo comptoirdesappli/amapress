@@ -58,7 +58,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	public function getAcces() {
 		$this->ensure_init();
 
-		return wpautop( $this->getCustom( 'amapress_producteur_acces' ) );
+		return wpautop( stripslashes( $this->getCustom( 'amapress_producteur_acces' ) ) );
 	}
 
 	/** @return int */

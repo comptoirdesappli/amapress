@@ -37,7 +37,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 	}
 
 	public function getOrdre_du_jour() {
-		return wpautop( $this->getCustom( 'amapress_assemblee_generale_ordre_du_jour' ) );
+		return wpautop( stripslashes( $this->getCustom( 'amapress_assemblee_generale_ordre_du_jour' ) ) );
 	}
 
 	public function getLieu() {
