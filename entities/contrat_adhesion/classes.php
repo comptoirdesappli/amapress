@@ -1293,9 +1293,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 		if ( ! isset( $cnt[ $current_user_id ] ) ) {
 			$cnt[ $current_user_id ] = get_posts_count( 'post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm' );
-			set_transient( 'amps_adh_to_confirm', $cnt );
+			set_transient( 'amps_adh_to_confirm', $cnt, HOUR_IN_SECONDS );
 		}
 
+		amapress_dump( $cnt );
 		return $cnt[ $current_user_id ];
 	}
 }
