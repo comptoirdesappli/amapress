@@ -250,11 +250,20 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 		return '';
 	}
 
-//    amapress_handle_action_messages();
+	$atts = shortcode_atts(
+		array(
+			'show_history' => 'false',
+			'history_days' => '180',
+			'show_futur'   => 'true',
+		), $atts
+	);
 
 	$adhs = AmapressPaniers::getPanierIntermittents(
 		array(
-			'adherent' => amapress_current_user_id()
+			'adherent'     => amapress_current_user_id(),
+			'history_days' => intval( $atts['history_days'] ),
+			'show_history' => Amapress::toBool( $atts['show_history'] ),
+			'show_futur'   => Amapress::toBool( $atts['show_futur'] ),
 		)
 	);
 
@@ -265,11 +274,13 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 				$ad    = $adh[0];
 				$id    = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
 				$state = '<strong>' . $state . '</strong>';
-				$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">Motif d\'annulation</label><textarea id="' . $id . '"></textarea><br/>';
-				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
+				if ( $ad->getDate() >= Amapress::end_of_day( amapress_time() ) ) {
+					$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">Motif d\'annulation</label><textarea id="' . $id . '"></textarea><br/>';
+					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
 				data-message="val:#' . $id . '" data-confirm="Etes-vous sûr d\'annuler votre proposition?" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
-						return $a->ID;
-					}, $adh ) ) . '">Annuler échange</button></div>';
+							return $a->ID;
+						}, $adh ) ) . '">Annuler échange</button></div>';
+				}
 				foreach ( $ad->getAsk() as $ask ) {
 					$user = AmapressUser::getBy( $ask['user'] );
 					if ( ! $user ) {
@@ -289,6 +300,12 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 						}, $adh ) ) . '">Rejet échange (' . $user->getDisplayName() . ')</button>';
 					$state .= '</div>';
 				}
+				if ( $ad->getRepreneurId() ) {
+					$state .= $ad->getRepreneur()->getDisplay( array(
+						'show_tel'   => 'force',
+						'show_email' => 'force',
+					) );
+				}
 			}
 
 			return $state;
@@ -305,128 +322,6 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 			'repreneur' => true,
 			'etat'      => true,
 		) );
-
-//	$columns = array(
-//		array(
-//			'responsivePriority' => 1,
-//			'title'              => 'Date',
-//			'data'               => array(
-//				'_'    => 'date.display',
-//				'sort' => 'date.value',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 4,
-//			'title'              => 'Panier',
-//			'data'               => array(
-//				'_'    => 'panier',
-//				'sort' => 'panier',
-//			)
-//		),
-//		array(
-//			'title' => 'Quantité',
-//			'data'  => array(
-//				'_'    => 'quantite',
-//				'sort' => 'quantite',
-//			)
-//		),
-//		array(
-//			'title' => 'Prix',
-//			'data'  => array(
-//				'_'    => 'price',
-//				'sort' => 'price',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 2,
-//			'title'              => 'Repreneur',
-//			'data'               => array(
-//				'_'    => 'repreneur',
-//				'sort' => 'repreneur',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 2,
-//			'title'              => 'Message',
-//			'data'               => array(
-//				'_'    => 'message',
-//				'sort' => 'message',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 3,
-//			'title'              => 'Etat',
-//			'data'               => array(
-//				'_'    => 'state',
-//				'sort' => 'state',
-//			)
-//		),
-//	);
-//
-//	$ahs_by_date = array_group_by( $adhs,
-//		function ( $a ) {
-//			/** @var AmapressIntermittence_panier $a */
-//			return "{$a->getDate()}-{$a->getAdherent()->ID}-{$a->getRealLieu()->ID}";
-//		} );
-//	$data        = array();
-//	foreach ( $ahs_by_date as $adh ) {
-//		/** @var AmapressIntermittence_panier[] $adh */
-//		$ad          = $adh[0];
-//		$date        = $ad->getDate();
-//		$dist        = AmapressPaniers::getDistribution( $date, $ad->getLieu()->ID );
-//		$status      = $ad->getStatus();
-//		$status_text = $ad->getStatusDisplay();
-//		$state       = "<span class='$status'>$status_text</span>";
-//		if ( ! isset( $show_columns['for_print'] ) || $show_columns['for_print'] === false ) {
-//
-//		}
-//		$lieu      = ( $dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu() );
-//		$repreneur = '';
-//		if ( $ad->getRepreneur() != null ) {
-//			$repreneur = $ad->getRepreneur()->getDisplay(
-//				array( 'show_tel' => 'force', 'show_email' => 'force' )
-//			); //"<a href='mailto:{$ad->getRepreneur()->getUser()->user_email}'>" . $ad->getRepreneur()->getDisplayName() . '</a> (' . $ad->getRepreneur()->getTelephone() . ')';
-//		}
-//		$paniers   = array();
-//		$quantites = array();
-//		$prices    = array();
-//		foreach ( $adh as $a ) {
-//			$adhesions = AmapressContrats::get_user_active_adhesion( $a->getAdherent()->ID, $a->getContrat_instance()->ID );
-//			/** @var AmapressAdhesion $adhesion */
-//			$adhesion = array_shift( $adhesions );
-//
-//			$paniers[]   = "<a href='{$dist->getPermalink()}'>{$a->getContrat_instance()->getModel()->getTitle()}</a>";
-//			$quantites[] = $adhesion->getContrat_quantites_AsString( $date );
-//			$prices[]    = $adhesion->getContrat_quantites_Price( $date );
-//		}
-//		$data[] = array(
-//			'panier'    => implode( ', ', $paniers ),
-//			'lieu'      => "<a href='{$lieu->getPermalink()}'>{$lieu->getShortName()}</a>",
-//			'quantite'  => implode( ', ', $quantites ),
-//			'price'     => implode( ' + ', $prices ),
-//			'message'   => $adhesion->getMessage(),
-//			'adherent'  => $ad->getAdherent()->getDisplay(
-//				array( 'show_tel' => 'force', 'show_email' => 'force' )
-//			),
-//			//"<a href='mailto:{$ad->getAdherent()->getUser()->user_email}'>" . $ad->getAdherent()->getDisplayName() . '</a> (' . $ad->getAdherent()->getTelephone() . ')',
-//			'repreneur' => $repreneur,
-//			'date'      => array(
-//				'display' => date_i18n( 'd/m/Y', $date ),
-//				'value'   => $date
-//			),
-//			'state'     => $state,
-//		);
-//	}
-//
-//	ob_start();
-//
-//	$table_options['initComplete'] = 'function() { amapress_init_front_end_ajax_buttons(); }';
-//
-//	amapress_echo_datatable( 'my-echanges', $columns, $data, $table_options );
-//	$content = ob_get_contents();
-//	ob_clean();
-//
-//	return $content;
 }
 
 function amapress_intermittent_paniers_shortcode( $atts ) {
@@ -434,21 +329,34 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 		return '';
 	}
 
-//    amapress_handle_action_messages();
+	$atts = shortcode_atts(
+		array(
+			'show_history' => 'false',
+			'history_days' => '30',
+			'show_futur'   => 'true',
+		), $atts
+	);
 
 	$adhs = AmapressPaniers::getPanierIntermittents(
 		array(
-			'repreneur' => amapress_current_user_id()
+			'repreneur'    => amapress_current_user_id(),
+			'history_days' => intval( $atts['history_days'] ),
+			'show_history' => Amapress::toBool( $atts['show_history'] ),
+			'show_futur'   => Amapress::toBool( $atts['show_futur'] ),
 		)
 	);
 
 	return amapress_get_paniers_intermittents_table( 'my-recups', $adhs,
 		function ( $state, $status, $adh ) {
 			if ( 'exch_valid_wait' == $status || 'exchanged' == $status ) {
+				/** @var AmapressIntermittence_panier $ad */
+				$ad    = $adh[0];
 				$state = '<div class="amapress-ajax-parent"><span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>En attente de validation</strong>' : 'A récupérer' ) . '</span>';
-				$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="Etes-vous sûr de vouloir annuler l\'échange ?" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
-						return $a->ID;
-					}, $adh ) ) . '">Annuler échange</button></div>';
+				if ( $ad->getDate() >= Amapress::end_of_day( amapress_time() ) ) {
+					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="Etes-vous sûr de vouloir annuler l\'échange ?" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
+							return $a->ID;
+						}, $adh ) ) . '">Annuler échange</button></div>';
+				}
 			}
 
 			return $state;
@@ -465,101 +373,6 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 			'repreneur' => false,
 			'etat'      => true,
 		) );
-
-//	$columns = array(
-//		array(
-//			'responsivePriority' => 1,
-//			'title'              => 'Date',
-//			'data'               => array(
-//				'_'    => 'date.display',
-//				'sort' => 'date.value',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 2,
-//			'title'              => 'Adhérent',
-//			'data'               => array(
-//				'_'    => 'adherent',
-//				'sort' => 'adherent',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 3,
-//			'title'              => 'Message',
-//			'data'               => array(
-//				'_'    => 'message',
-//				'sort' => 'message',
-//			)
-//		),
-//		array(
-//			'responsivePriority' => 4,
-//			'title'              => 'Panier',
-//			'data'               => array(
-//				'_'    => 'panier',
-//				'sort' => 'panier',
-//			)
-//		),
-//		array(
-//			'title' => 'Quantité',
-//			'data'  => array(
-//				'_'    => 'quantite',
-//				'sort' => 'quantite',
-//			)
-//		),
-//		array(
-//			'title' => 'Prix',
-//			'data'  => array(
-//				'_'    => 'price',
-//				'sort' => 'price',
-//			)
-//		),
-//		array(
-//			'title' => 'Etat',
-//			'data'  => array(
-//				'_'    => 'state',
-//				'sort' => 'state',
-//			)
-//		),
-//	);
-//	$data    = array();
-//	foreach ( $adhs as $ad ) {
-//		$date      = $ad->getDate();
-//		$dist      = AmapressPaniers::getDistribution( $date, $ad->getLieu()->ID );
-//		$adhesions = AmapressContrats::get_user_active_adhesion( $ad->getAdherent()->ID, $ad->getContrat_instance()->ID );
-//		/** @var AmapressAdhesion $adhesion */
-//		$adhesion    = array_shift( $adhesions );
-//		$status      = $ad->getStatus();
-//		$status_text = $ad->getStatusDisplay();
-//		$state       = "<span class='$status'>$status_text</span>";
-//		if ( ! isset( $show_columns['for_print'] ) || $show_columns['for_print'] === false ) {
-//
-//		}
-//
-//		$data[] = array(
-//			'panier'    => '<a href="' . esc_attr( $dist->getPermalink() ) . '">' . esc_html( $ad->getContrat_instance()->getModel()->getTitle() ) . '</a>',
-//			'quantite'  => $adhesion->getContrat_quantites_AsString( $date ),
-//			'price'     => $adhesion->getContrat_quantites_Price( $date ),
-//			'message'   => $adhesion->getMessage(),
-//			'date'      => array(
-//				'display' => date_i18n( 'd/m/Y', $date ),
-//				'value'   => $date
-//			),
-//			'adherent'  => $ad->getAdherent()->getDisplay(
-//				array( 'show_tel' => 'force', 'show_email' => 'force' )
-//			),
-//			'repreneur' => $ad->getRepreneur() != null ? $ad->getRepreneur()->getDisplay(
-//				array( 'show_tel' => 'force', 'show_email' => 'force' )
-//			) : '',
-//			'state'     => $state,
-//		);
-//	}
-//
-//	ob_start();
-//	amapress_echo_datatable( 'my-recups', $columns, $data );
-//	$content = ob_get_contents();
-//	ob_clean();
-//
-//	return $content;
 }
 
 function amapress_user_paniers_intermittents_count_shortcode( $atts ) {

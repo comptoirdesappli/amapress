@@ -604,6 +604,9 @@ class AmapressPaniers {
 				'lieu_id'             => null,
 				'status'              => null,
 				'date'                => null,
+				'show_history'        => false,
+				'show_futur'          => true,
+				'history_days'        => 365,
 			) );
 
 //		$dt  = Amapress_Calendar::$get_next_events_start_date ?
@@ -612,7 +615,7 @@ class AmapressPaniers {
 //		if ($args['date'] && $args['date'] < $dt){
 //			$dt = $args['date'];
 //		}
-		$key = "amapress_getPanierIntermittents";
+		$key = "amapress_getPanierIntermittents_{$args['history_days']}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res = array_map( function ( $p ) {
@@ -623,7 +626,7 @@ class AmapressPaniers {
 				'meta_query'     => array(
 					array(
 						'key'     => 'amapress_intermittence_panier_date',
-						'value'   => Amapress::start_of_day( Amapress::add_days( amapress_time(), - 365 * 2 ) ),
+						'value'   => Amapress::start_of_day( Amapress::add_days( amapress_time(), - intval( $args['history_days'] ) ) ),
 						'compare' => '>=',
 						'type'    => 'NUMERIC'
 					)
@@ -746,19 +749,30 @@ class AmapressPaniers {
 				}
 			);
 		} else {
+			if ( ! $args['show_history'] ) {
 //			$meta_query[] = array(
 //				'key'     => 'amapress_intermittence_panier_date',
 //				'value'   => Amapress::start_of_day( amapress_time() ),
 //				'compare' => '>=',
 //				'type'    => 'NUMERIC'
 //			);
-			$ret = array_filter(
-				$ret,
-				function ( $ip ) use ( $args ) {
-					/** @var AmapressIntermittence_panier $ip */
-					return $ip->getDate() >= Amapress::start_of_day( amapress_time() );
-				}
-			);
+				$ret = array_filter(
+					$ret,
+					function ( $ip ) use ( $args ) {
+						/** @var AmapressIntermittence_panier $ip */
+						return $ip->getDate() >= Amapress::start_of_day( amapress_time() );
+					}
+				);
+			}
+			if ( ! $args['show_futur'] ) {
+				$ret = array_filter(
+					$ret,
+					function ( $ip ) use ( $args ) {
+						/** @var AmapressIntermittence_panier $ip */
+						return $ip->getDate() <= Amapress::end_of_day( amapress_time() );
+					}
+				);
+			}
 		}
 
 //		$args  = array(
