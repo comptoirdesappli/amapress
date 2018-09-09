@@ -183,6 +183,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 //	}
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
+	$adhesion_step_url = add_query_arg( 'step', 'adhesion', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 	$the_end_url       = add_query_arg( 'step', 'the_end', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 
 	if ( isset( $_REQUEST['contrat_id'] ) && isset( $_REQUEST['user_id'] ) ) {
@@ -488,6 +489,35 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		} else {
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
 		}
+
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		if ( empty( $adh_period ) ) {
+			wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
+		}
+
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
+
+		if ( empty( $adh_paiement ) ) {
+			echo '<p><strong>Vous n\'avez pas encore effectué votre adhésion obligatoire à l\'AMAP.</strong><br/>
+<form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="adhesion" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer maintenant" />
+</form></p>';
+		} else {
+			$print_bulletin = Amapress::makeButtonLink(
+				add_query_arg( [
+					'inscr_assistant' => 'generate_bulletin',
+					'adh_id'          => $adh_paiement->ID,
+					'inscr_key'       => $key
+				] ),
+				'Imprimer', true, true, 'btn btn-default'
+			);
+			echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_debut() ) . '.<br />
+' . $print_bulletin . '</p>';
+		}
+
 		$display_remaining_contrats = true;
 		if ( ! $has_principal_contrat ) {
 			if ( count( $principal_contrats ) == 1 ) {
