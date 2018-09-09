@@ -540,6 +540,10 @@ class AmapressAdhesion extends TitanEntity {
 		return ! empty( $fin );
 	}
 
+	public function hasBeforeEndDate_fin() {
+		return Amapress::start_of_week( $this->getDate_fin() ) < Amapress::start_of_week( $this->getContrat_instance()->getDate_fin() );
+	}
+
 	public function getDate_fin() {
 		$fin = $this->getCustomAsDate( 'amapress_adhesion_date_fin' );
 		if ( ! empty( $fin ) ) {
@@ -566,19 +570,15 @@ class AmapressAdhesion extends TitanEntity {
 
 	/** @return int */
 	public function isNotRenewable() {
-		return $this->hasDate_fin();
+		return $this->hasBeforeEndDate_fin();
 	}
 
-	public function markNotRenewable() {
-		if ( $this->isNotRenewable() ) {
+	public function markClosed() {
+		if ( $this->hasDate_fin() ) {
 			return;
 		}
-		$date = Amapress::start_of_day( amapress_time() );
-		if ( $this->getContrat_instance()->getDate_fin() < $date ) {
-			$date = $this->getContrat_instance()->getDate_fin();
-		}
+		$date = $this->getContrat_instance()->getDate_fin();
 		$this->setCustom( 'amapress_adhesion_date_fin', $date );
-		$this->setCustom( 'amapress_adhesion_fin_raison', 'Non renouvellement' );
 		amapress_compute_post_slug_and_title( $this->post );
 	}
 

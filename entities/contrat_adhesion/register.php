@@ -31,7 +31,12 @@ function amapress_register_entities_adhesion( $entities ) {
 		'row_actions'      => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
 			'renew'            => 'Renouveler',
-			'no_renew'         => 'Ne pas renouveler',
+			'close'            => [
+				'label'     => 'Clôturer à la fin',
+				'condition' => function ( $adh_id ) {
+					return AmapressAdhesion::CONFIRMED == AmapressAdhesion::getBy( $adh_id )->getStatus();
+				},
+			],
 			'generate_contrat' => [
 				'label'     => 'Générer le contrat',
 				'condition' => function ( $adh_id ) {
@@ -769,10 +774,10 @@ function amapress_row_action_adhesion_generate_contrat( $post_id ) {
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }
 
-add_action( 'amapress_row_action_adhesion_no_renew', 'amapress_row_action_adhesion_no_renew' );
-function amapress_row_action_adhesion_no_renew( $post_id ) {
+add_action( 'amapress_row_action_adhesion_close', 'amapress_row_action_adhesion_close' );
+function amapress_row_action_adhesion_close( $post_id ) {
 	$adhesion = AmapressAdhesion::getBy( $post_id );
-	$adhesion->markNotRenewable();
+	$adhesion->markClosed();
 	wp_redirect_and_exit( wp_get_referer() );
 }
 
