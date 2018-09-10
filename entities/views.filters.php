@@ -327,7 +327,7 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'ended',
 		"post_type=amps_adhesion&amapress_date=ended",
-		'Arrêtées' );
+		'Arrêtées/Clotûrées' );
 
 	//    amapress_add_view_button(
 //        $ret, 'lastyear',
