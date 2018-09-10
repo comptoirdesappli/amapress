@@ -81,6 +81,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 		[
 			'key'                  => '',
 			'for_logged'           => 'false',
+			'show_contrats'        => 'false',
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
 			'adhesion'             => 'false',
@@ -90,6 +91,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 		]
 		, $atts );
 
+	$for_logged        = Amapress::toBool( $atts['for_logged'] );
 	$ret               = '';
 	$admin_mode        = Amapress::toBool( $atts['admin_mode'] );
 	$activate_adhesion = Amapress::toBool( $atts['adhesion'] );
@@ -98,12 +100,16 @@ function amapress_self_inscription( $atts, $content = null ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
 		}
-	} else if ( Amapress::toBool( $atts['for_logged'] ) ) {
+	} else if ( $for_logged ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return '<div class="alert alert-danger">Accès interdit</div>';
 		}
 		if ( ! isset( $_REQUEST['step'] ) ) {
-			$step = 'coords_logged';
+			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
+				$step = 'contrats';
+			} else {
+				$step = 'coords_logged';
+			}
 		}
 	} else {
 		if ( amapress_can_access_admin() ) {
@@ -484,10 +490,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
 </form></p>';
 	} else if ( 'contrats' == $step ) {
-		if ( empty( $_REQUEST['user_id'] ) ) {
-			wp_die( $invalid_access_message );
+		if ( $for_logged && amapress_is_user_logged_in() ) {
+			$user_id = wp_get_current_user()->ID;
+		} else {
+			if ( empty( $_REQUEST['user_id'] ) ) {
+				wp_die( $invalid_access_message );
+			}
+			$user_id = intval( $_REQUEST['user_id'] );
 		}
-		$user_id               = intval( $_REQUEST['user_id'] );
 		$has_principal_contrat = false;
 
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
@@ -506,7 +516,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		} );
 		$amapien = AmapressUser::getBy( $user_id );
 		if ( ! $admin_mode ) {
-			echo '<h4>Étape 3/7 : les contrats</h4>';
+			if ( ! Amapress::toBool( $atts['show_contrats'] ) ) {
+				echo '<h4>Étape 3/7 : les contrats</h4>';
+			}
 		} else {
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
 		}
@@ -694,7 +706,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			}
 		}
 
-		if ( $has_principal_contrat ) {
+		if ( $has_principal_contrat && ! Amapress::toBool( $atts['show_contrats'] ) ) {
 			echo '<p>J\'ai fini :<br/>
 <form method="get" action="' . esc_attr( $the_end_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
@@ -722,7 +734,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$dates              = $contrat->getListe_dates();
 			$first_contrat_date = $dates[0];
 			$dates              = array_filter( $dates, function ( $d ) use ( $contrat ) {
-				return Amapress::end_of_week( amapress_time() ) < $d && $d < $contrat->getDate_cloture();
+				return Amapress::start_of_day( Amapress::add_days( amapress_time(), - 2 ) ) < $d && $d < $contrat->getDate_cloture();
 			} );
 			$dates              = array_values( $dates );
 			$first_avail_date   = $dates[0];
@@ -1258,8 +1270,8 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
 				echo '<p>Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (' . $inscription->getProperty( 'referents' ) . ') avec les chèques correspondants lors de la prochaine distribution<br />
 ' . $print_contrat . '</p>';
 			}
-			if ( ! empty( $user_subscribable_contrats ) ) {
-				echo '<p>Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (' . $user_subscribable_contrats_display . ') :<br/>
+			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
+				echo '<p>Retourner à la liste de mes contrats :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
@@ -1267,15 +1279,28 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
 </form></p>';
 			} else {
-				echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
+				if ( ! empty( $user_subscribable_contrats ) ) {
+					echo '<p>Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (' . $user_subscribable_contrats_display . ') :<br/>
+<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="contrats" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+</form></p>';
+				} else {
+					echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
+				}
 			}
-			echo '<p>J\'ai fini :<br/>
+
+			if ( ! Amapress::toBool( $atts['show_contrats'] ) ) {
+				echo '<p>J\'ai fini :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="the_end" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Terminer" />
 </form></p>';
+			}
 		} else {
 			echo '<div class="alert alert-success">L\'inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
 			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de ses contrats</a></p>';
