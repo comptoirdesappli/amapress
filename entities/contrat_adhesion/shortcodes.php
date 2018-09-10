@@ -84,6 +84,8 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
 			'adhesion'             => 'false',
+			'send_referents'       => 'false',
+			'send_tresoriers'      => 'false',
 			'email'                => get_option( 'admin_email' ),
 		]
 		, $atts );
@@ -439,6 +441,20 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+
+		if ( Amapress::toBool( $atts['send_tresoriers'] ) ) {
+			$tresoriers = [];
+			foreach ( get_users( "role=tresorier" ) as $user ) {
+				$user_obj   = AmapressUser::getBy( $user );
+				$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
+			}
+
+			amapress_wp_mail(
+				$tresoriers,
+				'Nouvelle adhésion ' . $amapien->getDisplayName(),
+				wpautop( "Bonjour,\nUne nouvelle adhésion est en attente : " . Amapress::makeLink( $adh_paiement->getAdminEditLink(), $amapien->getDisplayName() ) . "\n\n" . get_bloginfo( 'name' ) )
+			);
+		}
 
 		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
 
@@ -1200,6 +1216,20 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		if ( ! $admin_mode ) {
+			if ( Amapress::toBool( $atts['send_referents'] ) ) {
+				$referents = [];
+				foreach ( $inscription->getContrat_instance()->getModel()->getProducteur()->getReferentsIds() as $user_id ) {
+					$user_obj  = AmapressUser::getBy( $user_id );
+					$referents = array_merge( $referents, $user_obj->getAllEmails() );
+				}
+
+				amapress_wp_mail(
+					$referents,
+					'Nouvelle inscription - ' . $inscription->getContrat_instance()->getTitle() . ' - ' . $inscription->getAdherent()->getDisplayName(),
+					wpautop( "Bonjour,\nUne nouvelle inscription est en attente de validation : " . Amapress::makeLink( $inscription->getAdminEditLink(), $inscription->getTitle() ) . "\n\n" . get_bloginfo( 'name' ) )
+				);
+			}
+
 			$adhs                               = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 			$adhs_contrat_ids                   = array_map( function ( $a ) {
 				/** @var AmapressAdhesion $a */
