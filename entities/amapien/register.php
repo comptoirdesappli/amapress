@@ -758,6 +758,24 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_state' ),
 					),
+					array(
+						'id'         => 'amapress_welcome_mail',
+						'title'      => 'Mail de bienvenue',
+						'capability' => 'manage_amapress',
+						'href'       => admin_url( 'admin.php?page=amapress_mail_options_page&tab=welcome_mail' ),
+					),
+					array(
+						'id'         => 'amapress_public_contacts',
+						'title'      => 'Contacts public',
+						'capability' => 'manage_amapress',
+						'href'       => admin_url( 'admin.php?page=amapress_contact_options_page' ),
+					),
+					array(
+						'id'         => 'amapress_log_mails',
+						'title'      => 'Logs des mails envoyés',
+						'capability' => 'manage_options',
+						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=mail_logs' ),
+					),
 				]
 			),
 		)

@@ -344,7 +344,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'                  => array(
+						'Ajouter une inscription'        => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -358,7 +358,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'                    => array(
+						'Ajouter un coadhérent'          => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -372,7 +372,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'           => array(
+						'Ajouter une personne hors AMAP' => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                                     => array(
+						'Renouvèlement'                  => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -1318,6 +1318,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							),
 							'tabs'     => array(
 								'Mail de bienvenue'                                      => array(
+									'id'      => 'welcome_mail',
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -2053,7 +2054,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
-						'Placeholders - contrat vierge'                => array(
+						'Placeholders - contrat vierge'       => array(
 							'id'      => 'paper_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2067,7 +2068,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								)
 							)
 						),
-						'Placeholders - contrat personnalisé'           => array(
+						'Placeholders - contrat personnalisé' => array(
 							'id'      => 'adhesion_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
