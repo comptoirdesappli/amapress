@@ -87,6 +87,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'adhesion'             => 'false',
 			'send_referents'       => 'false',
 			'send_tresoriers'      => 'false',
+			'before_close_hours'   => 24,
 			'email'                => get_option( 'admin_email' ),
 		]
 		, $atts );
@@ -731,10 +732,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
         <h4>Étape 4/7 : Date et lieu</h4>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
 			<?php
+			$before_close_hours = 0;
+			if ( 0 == $before_close_hours ) {
+				$before_close_hours = intval( $atts['before_close_hours'] );
+			}
 			$dates              = $contrat->getListe_dates();
 			$first_contrat_date = $dates[0];
-			$dates              = array_filter( $dates, function ( $d ) use ( $contrat ) {
-				return Amapress::start_of_day( Amapress::add_days( amapress_time(), - 2 ) ) < $d && $d < $contrat->getDate_cloture();
+			$dates              = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+				return ( Amapress::start_of_day( $d ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && $d < $contrat->getDate_cloture();
 			} );
 			$dates              = array_values( $dates );
 			$first_avail_date   = $dates[0];
