@@ -534,8 +534,10 @@ line-height: 1.1;
 		echo '<br/>';
 	}
 	if ( count( $paniers ) > 0 ) {
+		static $id_incr = 0;
+		$id_incr += 1;
 		echo '<h3 class="liste-emargement-intermittent">* Panier(s) intermittent(s)</h3>';
-		echo amapress_get_paniers_intermittents_table( 'paniers-exchs', $paniers,
+		echo amapress_get_paniers_intermittents_table( 'paniers-exchs' . $id_incr, $paniers,
 			function ( $state, $status, $adh ) {
 				return $state;
 			},

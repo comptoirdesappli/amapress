@@ -5,7 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_get_paniers_intermittents_exchange_table( $adhs ) {
-	return amapress_get_paniers_intermittents_table( 'paniers-a-echanger', $adhs,
+	static $id_incr = 0;
+	$id_incr += 1;
+
+	return amapress_get_paniers_intermittents_table( 'paniers-a-echanger' . $id_incr, $adhs,
 		function ( $state, $status, $adh ) {
 			if ( $status == 'to_exchange' ) {
 				$ad = $adh[0];
@@ -267,7 +270,10 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 		)
 	);
 
-	return amapress_get_paniers_intermittents_table( 'my-echanges', $adhs,
+	static $id_incr = 0;
+	$id_incr += 1;
+
+	return amapress_get_paniers_intermittents_table( 'my-echanges' . $id_incr, $adhs,
 		function ( $state, $status, $adh ) {
 			if ( 'to_exchange' == $status || 'exch_valid_wait' == $status || 'exchanged' == $status ) {
 				/** @var AmapressIntermittence_panier $ad */
@@ -346,7 +352,10 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 		)
 	);
 
-	return amapress_get_paniers_intermittents_table( 'my-recups', $adhs,
+	static $id_incr = 0;
+	$id_incr += 1;
+
+	return amapress_get_paniers_intermittents_table( 'my-recups' . $id_incr, $adhs,
 		function ( $state, $status, $adh ) {
 			if ( 'exch_valid_wait' == $status || 'exchanged' == $status ) {
 				/** @var AmapressIntermittence_panier $ad */
