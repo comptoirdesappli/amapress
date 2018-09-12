@@ -783,6 +783,7 @@ add_action( 'amapress_row_action_adhesion_send_confirmation', 'amapress_row_acti
 function amapress_row_action_adhesion_send_confirmation( $post_id ) {
 	$adhesion = AmapressAdhesion::getBy( $post_id );
 	$adhesion->sendConfirmationMail();
+	wp_redirect_and_exit( wp_get_referer() );
 }
 
 add_action( 'amapress_row_action_adhesion_close', 'amapress_row_action_adhesion_close' );
