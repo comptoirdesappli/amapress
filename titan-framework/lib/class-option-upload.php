@@ -16,6 +16,8 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
 		'selector-title'  => '',
 		'selector-button' => '',
 		'multiselect'     => false,
+		'show_title'      => false,
+		'show_download'   => false,
 	);
 
 
@@ -141,12 +143,16 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
 		}
 
 		self::echo_uploader( $this->getID(), $values, $this->settings['placeholder'],
-			$wnd_title, $button_text, $media_type, $multiselect );
+			$wnd_title, $button_text, $media_type, $multiselect, $this->settings['show_title'], $this->settings['show_download'] );
 
 		$this->echoOptionFooter();
 	}
 
-	public static function echo_uploader( $id, $values, $placeholder, $wnd_title = null, $button_text = null, $media_type = null, $multiselect = false ) {
+	public static function echo_uploader(
+		$id, $values, $placeholder,
+		$wnd_title = null, $button_text = null, $media_type = null,
+		$multiselect = false, $show_attachment_title = false, $show_download_button = false
+	) {
 		self::createUploaderScript();
 
 		$wnd_title   = empty( $wnd_title ) ? __( 'Select Image', TF_I18NDOMAIN ) : $wnd_title;
@@ -170,6 +176,7 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
 					$value = wp_get_attachment_image_src( $val, 'thumbnail', true );
 				}
 			}
+
 			if ( ! is_array( $value ) ) {
 				$value = $val;
 			} else {
@@ -180,7 +187,20 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
 			if ( ! empty( $value ) ) {
 				$previewImage = "<i class='dashicons dashicons-no-alt remove'></i><img src='" . esc_url( $value ) . "' style='display: none'/>";
 			}
+			if ( $show_attachment_title ) {
+				$attachment = get_post( $val );
+				if ( $attachment ) {
+					$previewImage .= '<div class="tf-upload-title">' . $attachment->post_title . '</div>';
+				}
+			}
+			if ( $show_download_button ) {
+				$dwn_url = wp_get_attachment_url( $val );
+				if ( ! empty( $dwn_url ) ) {
+					$previewImage .= '<div class="tf-upload-dl-btn"><a target="_blank" href="' . $dwn_url . '"><span class="dashicons dashicons-welcome-write-blog"></span></a></div>';
+				}
+			}
 			echo "<div class='thumbnail tf-image-preview'>" . $previewImage . '</div>';
+
 
 			printf( '<input name="%s%s" placeholder="%s" type="hidden" value="%s" />',
 				$id,
@@ -188,6 +208,7 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
 				$placeholder,
 				esc_attr( $val )
 			);
+
 			echo '</div>';
 		}
 		echo '</div>';
@@ -327,9 +348,15 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
                 };
                 // remove the image when the remove link is clicked
                 $('body').on('click', '.tf-upload i.remove', onImageDeleteClick);
+//                $('body').on('click', '.tf-upload .tf-upload-dl-btn', function() {
+//                    return false;
+//                });
 
 
                 var onImageClick = function (event) {
+                    if ($(event.target).is('.tf-upload-dl-btn') || $(event.target).closest('.tf-upload-dl-btn').length > 0)
+                        return true;
+
                     event.preventDefault();
 
                     var $tfUpload = $(this).parents('.tf-upload-container');
@@ -355,6 +382,15 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
                         button: {text: $tfUploadInner.data('selector-button')}
                     });
 
+                    frame.on('open', function () {
+                        var selection = frame.state().get('selection');
+                        var ids = o_input.val().split(',');
+                        ids.forEach(function (id) {
+                            var attachment = wp.media.attachment(id);
+                            attachment.fetch();
+                            selection.add(attachment ? [attachment] : []);
+                        });
+                    });
 
                     // get the url when done
                     frame.on('select', function () {
