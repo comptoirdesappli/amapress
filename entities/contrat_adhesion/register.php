@@ -40,6 +40,10 @@ function amapress_register_entities_adhesion( $entities ) {
 			'generate_contrat' => [
 				'label'     => 'Générer le contrat',
 				'condition' => function ( $adh_id ) {
+					if ( TitanFrameworkOption::isOnNewScreen() ) {
+						return false;
+					}
+
 					return ! empty( AmapressAdhesion::getBy( $adh_id )->getContrat_instance()->getContratModelDocFileName() );
 				},
 			],
@@ -1447,6 +1451,9 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 					echo '<br/><a href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
 				}
 				echo '</li>';
+			}
+			if ( empty( $adhs ) ) {
+				echo '<li>Aucun contrat</li>';
 			}
 			echo '</ul>';
 
