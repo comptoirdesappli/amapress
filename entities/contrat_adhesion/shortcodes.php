@@ -751,7 +751,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			if ( ! $is_started && ! $admin_mode ) {
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
 				echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $first_contrat_date ) . ' au ' . date_i18n( 'l d F Y', $contrat->getDate_fin() ) . '
- (' . count( $contrat->getListe_dates() ) . ' distributions)</p>';
+ (' . count( $contrat->getListe_dates() ) . ' dates de distributions)</p>';
 			} else {
 				?>
                 <p><?php
@@ -820,7 +820,6 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
 
-
 		$next_step_url = add_query_arg( [
 			'step'       => 'inscr_contrat_paiements',
 			'start_date' => $start_date,
@@ -832,13 +831,31 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			wp_die( $invalid_access_message );
 		}
 
-		$dates         = $contrat->getListe_dates();
-		$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
+		$dates             = $contrat->getListe_dates();
+		$dates             = array_filter( $dates, function ( $d ) use ( $start_date ) {
 			return $d >= $start_date;
 		} );
-		$dates_factors = 0;
+		$rattrapage        = [];
+		$double_rattrapage = [];
+		$un5_rattrapage    = [];
+		$dates_factors     = 0;
 		foreach ( $dates as $d ) {
-			$dates_factors += $contrat->getDateFactor( $d );
+			$the_factor = $contrat->getDateFactor( $d );
+			if ( abs( $the_factor - 2 ) < 0.001 ) {
+				$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
+			} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
+				$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
+			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
+				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
+			}
+			$dates_factors += $the_factor;
+		}
+
+		if ( ! empty( $double_rattrapage ) ) {
+			$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
+		}
+		if ( ! empty( $un5_rattrapage ) ) {
+			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
 		}
 
 		if ( ! $admin_mode ) {
@@ -868,7 +885,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		//TODO lien vers contrat PDF ?
 //		echo $contrat->getOnlineContrat();
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
-			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . count( $dates ) . '</strong>” distributions :</p>';
+			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) :</p>';
 		} else {
 			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . count( $dates ) . '</strong>” distributions avant la fin de la saison :</p>';
 		}
@@ -877,6 +894,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			echo '<li style="margin-left: 35px">' . esc_html( $entry ) . '</li>';
 		}
 		echo '</ul>';
+
+		if ( ! empty( $rattrapage ) ) {
+			echo '<p>Distributions de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
+		}
+
 		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {
 			echo '<p>Composez votre panier :</p>';
 		} else {
