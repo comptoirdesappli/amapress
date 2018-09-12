@@ -357,6 +357,22 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
+		$ret['lieux'] = [
+			'desc' => 'Lieux de distribution (nom court)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
+					return $l->getShortName();
+				}, $adh->getLieux() ) );
+			}
+		];
+		$ret['lieu'] = [
+			'desc' => 'Lieu de distribution (nom court)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
+					return $l->getShortName();
+				}, $adh->getLieux() ) );
+			}
+		];
 		$ret['contrat_debut']               = [
 			'desc' => 'Début du contrat (mois/année)',
 			'func' => function ( AmapressContrat_instance $adh ) {
@@ -385,6 +401,36 @@ class AmapressContrat_instance extends TitanEntity {
 			'desc' => 'Nombre de chèques possibles',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getPossiblePaiements() );
+			}
+		];
+		$ret['dates_rattrapages'] = [
+			'desc' => 'Description des dates de distribution de rattrapage',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				$rattrapage        = [];
+				$double_rattrapage = [];
+				$un5_rattrapage    = [];
+				$dates_factors     = 0;
+				$dates             = $adh->getRemainingDates();
+				foreach ( $dates as $d ) {
+					$the_factor = $adh->getDateFactor( $d );
+					if ( abs( $the_factor - 2 ) < 0.001 ) {
+						$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
+					} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
+						$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
+					} else if ( abs( $the_factor - 1 ) > 0.001 ) {
+						$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
+					}
+					$dates_factors += $the_factor;
+				}
+
+				if ( ! empty( $double_rattrapage ) ) {
+					$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
+				}
+				if ( ! empty( $un5_rattrapage ) ) {
+					$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
+				}
+
+				return implode( ', ', $rattrapage );
 			}
 		];
 		$ret['nb_dates'] = [

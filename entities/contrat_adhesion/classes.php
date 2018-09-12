@@ -318,6 +318,12 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
+			$ret['lieu_court'] = [
+				'desc' => 'Lieu de distribution (nom court)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getLieu()->getShortName();
+				}
+			];
 			$ret['lieu_heure_debut']            = [
 				'desc' => 'Heure de début de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -370,6 +376,36 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => 'Nombre de dates de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return count( $adh->getRemainingDates() );
+				}
+			];
+			$ret['dates_rattrapages'] = [
+				'desc' => 'Description des dates de distribution de rattrapage',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$rattrapage        = [];
+					$double_rattrapage = [];
+					$un5_rattrapage    = [];
+					$dates_factors     = 0;
+					$dates             = $adh->getRemainingDates();
+					foreach ( $dates as $d ) {
+						$the_factor = $adh->getContrat_instance()->getDateFactor( $d );
+						if ( abs( $the_factor - 2 ) < 0.001 ) {
+							$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
+						} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
+							$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
+						} else if ( abs( $the_factor - 1 ) > 0.001 ) {
+							$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
+						}
+						$dates_factors += $the_factor;
+					}
+
+					if ( ! empty( $double_rattrapage ) ) {
+						$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
+					}
+					if ( ! empty( $un5_rattrapage ) ) {
+						$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
+					}
+
+					return implode( ', ', $rattrapage );
 				}
 			];
 			$ret['dates_distribution_par_mois'] = [
