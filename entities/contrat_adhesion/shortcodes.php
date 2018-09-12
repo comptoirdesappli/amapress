@@ -1238,24 +1238,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$inscription->preparePaiements();
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
-			$mail_subject = Amapress::getOption( 'online_subscription_confirm-mail-subject' );
-			$mail_content = Amapress::getOption( 'online_subscription_confirm-mail-content' );
-
-			$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
-			$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
-
-			$attachments = [];
-			$doc_file    = $inscription->generateContratDoc();
-			if ( ! empty( $doc_file ) ) {
-				$attachments[] = $doc_file;
-				$mail_content  = preg_replace( '/\[sans_contrat\].+?\[\/sans_contrat\]/', '', $mail_content );
-				$mail_content  = preg_replace( '/\[\/?avec_contrat\]/', '', $mail_content );
-			} else {
-				$mail_content = preg_replace( '/\[avec_contrat\].+?\[\/avec_contrat\]/', '', $mail_content );
-				$mail_content = preg_replace( '/\[\/?sans_contrat\]/', '', $mail_content );
-			}
-
-			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+			$inscription->sendConfirmationMail();
 		}
 
 		if ( ! $admin_mode ) {

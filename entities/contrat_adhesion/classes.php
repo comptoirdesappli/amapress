@@ -1208,6 +1208,30 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return AmapressAdhesion::getBy( $new_id );
 	}
 
+	public function sendConfirmationMail() {
+		$inscription = $this;
+		$amapien     = $inscription->getAdherent();
+
+		$mail_subject = Amapress::getOption( 'online_subscription_confirm-mail-subject' );
+		$mail_content = Amapress::getOption( 'online_subscription_confirm-mail-content' );
+
+		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
+		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
+
+		$attachments = [];
+		$doc_file    = $inscription->generateContratDoc();
+		if ( ! empty( $doc_file ) ) {
+			$attachments[] = $doc_file;
+			$mail_content  = preg_replace( '/\[sans_contrat\].+?\[\/sans_contrat\]/', '', $mail_content );
+			$mail_content  = preg_replace( '/\[\/?avec_contrat\]/', '', $mail_content );
+		} else {
+			$mail_content = preg_replace( '/\[avec_contrat\].+?\[\/avec_contrat\]/', '', $mail_content );
+			$mail_content = preg_replace( '/\[\/?sans_contrat\]/', '', $mail_content );
+		}
+
+		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+	}
+
 	public function preparePaiements() {
 		$contrat_instance        = $this->getContrat_instance();
 		$contrat_paiements_dates = $contrat_instance->getPaiements_Liste_dates();

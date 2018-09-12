@@ -31,13 +31,13 @@ function amapress_register_entities_adhesion( $entities ) {
 		'row_actions'      => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
 			'renew'            => 'Renouveler',
-			'close'            => [
+			'close'             => [
 				'label'     => 'Clôturer à la fin',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::CONFIRMED == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},
 			],
-			'generate_contrat' => [
+			'generate_contrat'  => [
 				'label'     => 'Générer le contrat',
 				'condition' => function ( $adh_id ) {
 					if ( TitanFrameworkOption::isOnNewScreen() ) {
@@ -47,7 +47,8 @@ function amapress_register_entities_adhesion( $entities ) {
 					return ! empty( AmapressAdhesion::getBy( $adh_id )->getContrat_instance()->getContratModelDocFileName() );
 				},
 			],
-			'accept'           => [
+			'send_confirmation' => 'Envoyer mail confirmation',
+			'accept'            => [
 				'label'     => 'Confimer inscription',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::TO_CONFIRM == AmapressAdhesion::getBy( $adh_id )->getStatus();
@@ -776,6 +777,12 @@ function amapress_row_action_adhesion_generate_contrat( $post_id ) {
 	$full_file_name = $adhesion->generateContratDoc();
 	$file_name      = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
+}
+
+add_action( 'amapress_row_action_adhesion_send_confirmation', 'amapress_row_action_adhesion_send_confirmation' );
+function amapress_row_action_adhesion_send_confirmation( $post_id ) {
+	$adhesion = AmapressAdhesion::getBy( $post_id );
+	$adhesion->sendConfirmationMail();
 }
 
 add_action( 'amapress_row_action_adhesion_close', 'amapress_row_action_adhesion_close' );
