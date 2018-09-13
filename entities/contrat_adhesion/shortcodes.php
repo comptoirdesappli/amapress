@@ -467,7 +467,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		echo '<p>Merci pour votre adhésion à l\'AMAP !</p>';
 
-		echo '<p>Un mail de confirmation vient de vous être envoyé.</p>';
+		echo '<p>Un mail de confirmation vient de vous être envoyé. (Pensez à regarder vos spams, ces mails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 
 		if ( ! empty( $adh_paiement->getPeriod()->getModelDocFileName() ) ) {
 			$print_bulletin = Amapress::makeButtonLink(
@@ -970,6 +970,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					$dates_factors += $contrat->getDateFactor( $d, $quantite->ID );
 				}
 
+				if ( abs( $dates_factors ) < 0.001 ) {
+					continue;
+				}
+
 				$quant_var_editor   = '';
 				$id_quant           = 'quant' . $quantite->ID;
 				$id_factor          = 'factor' . $quantite->ID;
@@ -1304,7 +1308,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			}, $user_subscribable_contrats ) );
 			echo '<h4>étape 7/7 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 
-Vous allez recevoir un mail de confirmation avec votre contrat dans quelques minutes.</div>';
+Vous allez recevoir un mail de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, ce mail peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</div>';
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
 				$print_contrat = Amapress::makeButtonLink(
 					add_query_arg( [
@@ -1357,6 +1361,7 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
 		echo '<h4>Félicitations, vous avez terminé vos inscriptions !</h4>';
 		echo '<p>Si vous êtes nouvel adhérent vous allez recevoir un mail vous indiquant comment vous connecter au site et choisir votre mot de passe.</p>';
 		echo '<p>Vous allez recevoir un mail de confirmation pour chacune de vos inscriptions avec le contrat à imprimer et les instructions pour remettre vos chèques aux référents.</p>';
+		echo '<p>(Pensez à regarder vos spams, ces mails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 		echo '<p>Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie</p>';
 	}
 	?>
