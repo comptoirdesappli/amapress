@@ -414,10 +414,11 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => [
 								array(
-									'id'      => 'online_subscription_confirm-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
+									'id'       => 'online_subscription_confirm-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
 								),
 								array(
 									'id'      => 'online_subscription_confirm-mail-content',
@@ -435,10 +436,11 @@ class AmapressEntities {
 									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
 								),
 								array(
-									'id'      => 'online_adhesion_confirm-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Confirmation de votre adhésion à %%nom_site%%',
+									'id'       => 'online_adhesion_confirm-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
 								),
 								array(
 									'id'      => 'online_adhesion_confirm-mail-content',
@@ -701,10 +703,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'desc'    => '',
 							'options' => array(
 								array(
-									'id'      => 'intermittence-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Votre demande d\'adhésion à l\'espace intermittents',
+									'id'       => 'intermittence-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Votre demande d\'adhésion à l\'espace intermittents',
 								),
 								array(
 									'id'      => 'intermittence-mail-content',
@@ -723,10 +726,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'desc'    => '',
 							'options' => array(
 								array(
-									'id'      => 'intermittence-desincr-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Votre demande de désinscription de l\'espace intermittents',
+									'id'       => 'intermittence-desincr-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Votre demande de désinscription de l\'espace intermittents',
 								),
 								array(
 									'id'      => 'intermittence-desincr-mail-content',
@@ -749,10 +753,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-dispo-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => '%%post:panier%% à réserver',
+									'id'       => 'intermittence-panier-dispo-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => '%%post:panier%% à réserver',
 								),
 								array(
 									'id'      => 'intermittence-panier-dispo-mail-content',
@@ -767,10 +772,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-on-list-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Votre %%post:panier%% a été mis sur la liste des paniers à échanger',
+									'id'       => 'intermittence-panier-on-list-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Votre %%post:panier%% a été mis sur la liste des paniers à échanger',
 								),
 								array(
 									'id'      => 'intermittence-panier-on-list-mail-content',
@@ -797,10 +803,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-ask-adherent-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Demande de reprise %%post:panier%% par %%post:repreneur-nom%%',
+									'id'       => 'intermittence-panier-repris-ask-adherent-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Demande de reprise %%post:panier%% par %%post:repreneur-nom%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-repris-ask-adherent-mail-content',
@@ -815,10 +822,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-ask-repreneur-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'La demande de reprise %%post:panier%% a été envoyée',
+									'id'       => 'intermittence-panier-repris-ask-repreneur-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'La demande de reprise %%post:panier%% a été envoyée',
 								),
 								array(
 									'id'      => 'intermittence-panier-repris-ask-repreneur-mail-content',
@@ -845,10 +853,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-validation-adherent-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => '%%post:panier%% repris par %%post:repreneur-nom%%',
+									'id'       => 'intermittence-panier-repris-validation-adherent-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => '%%post:panier%% repris par %%post:repreneur-nom%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-repris-validation-adherent-mail-content',
@@ -863,10 +872,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-validation-repreneur-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => '%%post:adherent-nom%% a accepté la reprise de %%post:panier%%',
+									'id'       => 'intermittence-panier-repris-validation-repreneur-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => '%%post:adherent-nom%% a accepté la reprise de %%post:panier%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-repris-validation-repreneur-mail-content',
@@ -889,10 +899,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => '%%post:adherent-nom%% a refusé la reprise de %%post:panier%%',
+									'id'       => 'intermittence-panier-repris-rejet-repreneur-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => '%%post:adherent-nom%% a refusé la reprise de %%post:panier%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-content',
@@ -915,10 +926,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-cancel-from-adherent-adherent-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Annulation de votre proposition de reprise %%post:panier%%',
+									'id'       => 'intermittence-panier-cancel-from-adherent-adherent-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Annulation de votre proposition de reprise %%post:panier%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-cancel-from-adherent-adherent-mail-content',
@@ -933,10 +945,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Annulation de repise %%post:panier%% de %%post:adherent-nom%%',
+									'id'       => 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Annulation de repise %%post:panier%% de %%post:adherent-nom%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-cancel-from-adherent-repreneur-mail-content',
@@ -959,10 +972,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Annulation de repise %%post:panier%% par %%post:repreneur-nom%%',
+									'id'       => 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Annulation de repise %%post:panier%% par %%post:repreneur-nom%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-cancel-from-repreneur-adherent-mail-content',
@@ -977,10 +991,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type' => 'heading',
 								),
 								array(
-									'id'      => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject',
-									'name'    => 'Sujet du mail',
-									'type'    => 'text',
-									'default' => 'Confirmation d\'annulation de repise de %%post:panier%% de %%post:adherent-nom%%',
+									'id'       => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject',
+									'name'     => 'Sujet du mail',
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => 'Confirmation d\'annulation de repise de %%post:panier%% de %%post:adherent-nom%%',
 								),
 								array(
 									'id'      => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content',
@@ -1352,10 +1367,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'desc'    => '',
 									'options' => array(
 										array(
-											'id'      => 'inscr-event-mail-subject',
-											'name'    => 'Sujet du mail',
-											'type'    => 'text',
-											'default' => 'Votre inscription à %%post:title%%',
+											'id'       => 'inscr-event-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre inscription à %%post:title%%',
 										),
 										array(
 											'id'      => 'inscr-event-mail-content',
@@ -1374,10 +1390,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'desc'    => '',
 									'options' => array(
 										array(
-											'id'      => 'desinscr-event-mail-subject',
-											'name'    => 'Sujet du mail',
-											'type'    => 'text',
-											'default' => 'Désinscription de %%post:title%%',
+											'id'       => 'desinscr-event-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Désinscription de %%post:title%%',
 										),
 										array(
 											'id'      => 'desinscr-event-mail-content',

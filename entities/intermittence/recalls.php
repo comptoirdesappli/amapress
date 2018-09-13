@@ -126,10 +126,11 @@ function amapress_intermittence_dispo_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'intermittence-recall-dispo-mail-subject',
-			'name'    => 'Sujet du mail',
-			'type'    => 'text',
-			'default' => 'Il reste encore %%nb-paniers-intermittents%% panier(s) à échanger à %%post:title%%',
+			'id'       => 'intermittence-recall-dispo-mail-subject',
+			'name'     => 'Sujet du mail',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => 'Il reste encore %%nb-paniers-intermittents%% panier(s) à échanger à %%post:title%%',
 		),
 		array(
 			'id'      => 'intermittence-recall-dispo-mail-content',
@@ -179,10 +180,11 @@ function amapress_intermittence_validation_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'intermittence-panier-repris-recall-adherent-mail-subject',
-			'name'    => 'Sujet du mail',
-			'type'    => 'text',
-			'default' => '[Rappel] Demande de reprise %%post:panier%% par %%post:repreneur-nom%% à valider depuis le %%attente_depuis%%',
+			'id'       => 'intermittence-panier-repris-recall-adherent-mail-subject',
+			'name'     => 'Sujet du mail',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Demande de reprise %%post:panier%% par %%post:repreneur-nom%% à valider depuis le %%attente_depuis%%',
 		),
 		array(
 			'id'      => 'intermittence-panier-repris-recall-adherent-mail-content',

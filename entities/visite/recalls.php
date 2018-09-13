@@ -66,10 +66,11 @@ function amapress_visite_inscription_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'visite-inscription-recall-mail-subject',
-			'name'    => 'Sujet du mail',
-			'type'    => 'text',
-			'default' => '[Rappel] Vous êtes inscrit à %%post:title%%',
+			'id'       => 'visite-inscription-recall-mail-subject',
+			'name'     => 'Sujet du mail',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Vous êtes inscrit à %%post:title%%',
 		),
 		array(
 			'id'      => 'visite-inscription-recall-mail-content',

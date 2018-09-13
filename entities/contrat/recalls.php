@@ -219,10 +219,11 @@ function amapress_contrat_quantites_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'distribution-quantites-recall-mail-subject',
-			'name'    => 'Sujet du mail',
-			'type'    => 'text',
-			'default' => 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%',
+			'id'       => 'distribution-quantites-recall-mail-subject',
+			'name'     => 'Sujet du mail',
+			'type'     => 'text',
+			'sanitize' => false,
+			'default'  => 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-quantites-recall-mail-content',
@@ -296,10 +297,11 @@ function amapress_contrat_paiements_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'contrats-liste-paiements-recall-mail-subject',
-			'name'    => 'Sujet du mail',
-			'type'    => 'text',
-			'default' => '[Chèques au producteur] Liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%',
+			'id'       => 'contrats-liste-paiements-recall-mail-subject',
+			'name'     => 'Sujet du mail',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Chèques au producteur] Liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%',
 		),
 		array(
 			'id'      => 'contrats-liste-paiements-recall-mail-content',
