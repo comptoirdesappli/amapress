@@ -43,11 +43,13 @@ class TitanFrameworkCSS {
 
 		// Trigger new compile when theme customizer settings were saved
 		add_action( 'customize_save_after', array( $this, 'generateSaveCSS' ) );
-		// Trigger new compile when admin option settings were saved
-		add_action( 'tf_admin_options_saved_' . $frameworkInstance->optionNamespace, array(
-			$this,
-			'generateSaveCSS'
-		) );
+		if ( TitanFramework::$hasCSSInAdminPage ) {
+			// Trigger new compile when admin option settings were saved
+			add_action( 'tf_admin_options_saved_' . $frameworkInstance->optionNamespace, array(
+				$this,
+				'generateSaveCSS'
+			) );
+		}
 		// Trigger compile when there are no default options saved yet
 		add_action( 'tf_init_no_options_' . $frameworkInstance->optionNamespace, array( $this, 'generateMissingCSS' ) );
 	}

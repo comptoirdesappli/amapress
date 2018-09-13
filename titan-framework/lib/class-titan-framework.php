@@ -22,6 +22,8 @@ class TitanFramework {
 	 */
 	private static $instances = array();
 
+	public static $hasCSSInAdminPage = false;
+
 	/**
 	 * The current option namespace.
 	 * Options will be prefixed with this in the database
