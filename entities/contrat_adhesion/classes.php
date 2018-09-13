@@ -18,7 +18,7 @@ class AmapressAdhesionQuantite {
 	 */
 	public function __construct( AmapressContrat_quantite $quantite, $factor ) {
 		$this->quantite = $quantite;
-		$this->factor   = ! empty( $factor ) ? $factor : 1;
+		$this->factor   = $factor;
 	}
 
 	/**
@@ -41,7 +41,9 @@ class AmapressAdhesionQuantite {
 	public function getCode() {
 		$quant = $this->getContratQuantite();
 		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
-			if ( $this->getFactor() != 1 ) {
+			if ( abs( $this->getFactor() ) < 0.001 ) {
+				return 'Aucun';
+			} else if ( $this->getFactor() != 1 ) {
 				return $this->getFactor() . ' x ' . $quant->getCode();
 			} else {
 				return $quant->getCode();
@@ -529,13 +531,15 @@ class AmapressAdhesion extends TitanEntity {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
 
-		$remaining_distrib = count( $this->getRemainingDates() );
-		$quants            = $this->getContrat_quantites( null );
+		$quants = $this->getContrat_quantites( null );
 //		if ( ! $this->getContrat_instance()->isPanierVariable() ) {
 		$i = 1;
 		foreach ( $quants as $quant ) {
+			$remaining_dates                           = count( $this->getRemainingDates( $quant->getId() ) );
+			$remaining_distrib                         = $this->getRemainingDatesWithFactors( $quant->getId() );
 			$placeholders["quantite#$i"]               = $quant->getTitle();
 			$placeholders["quantite_code#$i"]          = $quant->getCode();
+			$placeholders["quantite_nb_dates#$i"]      = $remaining_dates;
 			$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
 			$placeholders["quantite_sous_total#$i"]    = $quant->getPrice();
 			$placeholders["quantite_total#$i"]         = $quant->getPrice() * $remaining_distrib;
@@ -623,21 +627,17 @@ class AmapressAdhesion extends TitanEntity {
 	 */
 	public function getContrat_quantites( $dist_date ) {
 		$factors = $this->getCustomAsFloatArray( 'amapress_adhesion_contrat_quantite_factors' );
-		$quants  = $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
+		/** @var AmapressContrat_quantite[] $quants */
+		$quants = $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
 
 //		amapress_dump($this->getCustom('amapress_adhesion_contrat_quantite'));
-		$date_factor = 1;
-		if ( $this->getContrat_instanceId() ) {
-			$rattrapage = $this->getContrat_instance()->getRattrapage();
-			foreach ( $rattrapage as $r ) {
-				if ( Amapress::start_of_day( intval( $r['date'] ) ) == Amapress::start_of_day( $dist_date ) ) {
-					$date_factor = floatval( $r['quantite'] );
-					break;
-				}
-			}
-		}
+
 		$ret = [];
 		foreach ( $quants as $quant ) {
+			$date_factor = 1;
+			if ( $this->getContrat_instanceId() ) {
+				$date_factor = $this->getContrat_instance()->getDateFactor( $dist_date, $quant->ID );
+			}
 			$factor = 1;
 			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
 				$factor = $factors[ $quant->ID ];
@@ -783,16 +783,16 @@ class AmapressAdhesion extends TitanEntity {
 //        return $sum;
 //    }
 
-	public function getRemainingDates() {
+	public function getRemainingDates( $quantite_id = null ) {
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		return $this->getContrat_instance()->getRemainingDates( $start_date );
+		return $this->getContrat_instance()->getRemainingDates( $start_date, $quantite_id );
 	}
 
-	public function getRemainingDatesWithFactors() {
+	public function getRemainingDatesWithFactors( $quantite_id = null ) {
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		return $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date );
+		return $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
 	}
 
 	/** @return int */
@@ -1355,6 +1355,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$cnt[ $current_user_id ] = get_posts_count( 'post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm' );
 			set_transient( 'amps_adh_to_confirm', $cnt, HOUR_IN_SECONDS );
 		}
+
 		return $cnt[ $current_user_id ];
 	}
 }

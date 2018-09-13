@@ -220,9 +220,17 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsArray( 'amapress_contrat_instance_rattrapage' );
 	}
 
-	public function getDateFactor( $dist_date ) {
+	public function getDateFactor( $dist_date, $quantite_id = null ) {
 		$date_factor = 1;
-		$rattrapage  = $this->getRattrapage();
+		if ( $dist_date && $quantite_id ) {
+			$quantite = AmapressContrat_quantite::getBy( $quantite_id );
+			if ( $quantite ) {
+				if ( ! $quantite->isInDistributionDates( $dist_date ) ) {
+					return 0;
+				}
+			}
+		}
+		$rattrapage = $this->getRattrapage();
 		foreach ( $rattrapage as $r ) {
 			if ( Amapress::start_of_day( intval( $r['date'] ) ) == Amapress::start_of_day( $dist_date ) ) {
 				$date_factor = floatval( $r['quantite'] );
@@ -436,7 +444,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['nb_dates'] = [
 			'desc' => 'Nombre de dates de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
-				return $adh->getRemainingDates( $first_date_distrib );
+				return count( $adh->getRemainingDates( $first_date_distrib ) );
 			}
 		];
 		$ret['nb_distributions']            = [
@@ -489,7 +497,7 @@ class AmapressContrat_instance extends TitanEntity {
 		return $ret;
 	}
 
-	public function getRemainingDates( $date = null ) {
+	public function getRemainingDates( $date = null, $quantite_id = null ) {
 		if ( empty( $date ) ) {
 			$date = amapress_time();
 		}
@@ -497,7 +505,12 @@ class AmapressContrat_instance extends TitanEntity {
 		$dates      = $this->getListe_dates();
 		$start_date = Amapress::start_of_day( $date );
 
-		return array_filter( $dates, function ( $d ) use ( $start_date ) {
+		return array_filter( $dates, function ( $d ) use ( $start_date, $quantite_id ) {
+			$factor = $this->getDateFactor( $d, $quantite_id );
+			if ( abs( $factor ) < 0.001 ) {
+				return false;
+			}
+
 			return Amapress::start_of_day( $d ) >= $start_date;
 		} );
 	}
@@ -534,12 +547,14 @@ class AmapressContrat_instance extends TitanEntity {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
 
-		$remaining_distrib = $this->getRemainingDatesWithFactors( $date_first_distrib );
-		$quants            = AmapressContrats::get_contrat_quantites( $this->ID );
-		$i                 = 1;
+		$quants = AmapressContrats::get_contrat_quantites( $this->ID );
+		$i      = 1;
 		foreach ( $quants as $quant ) {
+			$remaining_dates                           = count( $this->getRemainingDates( $date_first_distrib, $quant->ID ) );
+			$remaining_distrib                         = $this->getRemainingDatesWithFactors( $date_first_distrib, $quant->ID );
 			$placeholders["quantite#$i"]               = $quant->getTitle();
 			$placeholders["quantite_code#$i"]          = $quant->getCode();
+			$placeholders["quantite_nb_dates#$i"]      = $remaining_dates;
 			$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
 			$placeholders["quantite_total#$i"]         = $quant->getPrix_unitaire() * $remaining_distrib;
 			$placeholders["quantite_prix_unitaire#$i"] = $quant->getPrix_unitaire();
@@ -723,14 +738,14 @@ class AmapressContrat_instance extends TitanEntity {
 		} );
 	}
 
-	public function getRemainingDatesWithFactors( $start_date ) {
+	public function getRemainingDatesWithFactors( $start_date, $quantite_id = null ) {
 		$dates         = $this->getListe_dates();
 		$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
 			return $d >= $start_date;
 		} );
 		$dates_factors = 0;
 		foreach ( $dates as $d ) {
-			$dates_factors += $this->getDateFactor( $d );
+			$dates_factors += $this->getDateFactor( $d, $quantite_id );
 		}
 
 		return $dates_factors;
@@ -945,5 +960,22 @@ class AmapressContrat_quantite extends TitanEntity {
 		}
 
 		return AmapressContrat_quantite::getBy( $new_id );
+	}
+
+	public function getSpecificDistributionDates() {
+		return $this->getCustomAsDateArray( 'amapress_contrat_quantite_liste_dates' );
+	}
+
+	public function isInDistributionDates( $dist_date ) {
+		$quantite_liste_dates = $this->getSpecificDistributionDates();
+		if ( empty( $quantite_liste_dates ) ) {
+			return true;
+		}
+
+		$quantite_liste_dates = array_map( function ( $d ) {
+			return Amapress::start_of_day( $d );
+		}, $quantite_liste_dates );
+
+		return in_array( Amapress::start_of_day( $dist_date ), $quantite_liste_dates );
 	}
 }

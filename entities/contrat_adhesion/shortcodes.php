@@ -842,7 +842,6 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$rattrapage        = [];
 		$double_rattrapage = [];
 		$un5_rattrapage    = [];
-		$dates_factors     = 0;
 		foreach ( $dates as $d ) {
 			$the_factor = $contrat->getDateFactor( $d );
 			if ( abs( $the_factor - 2 ) < 0.001 ) {
@@ -852,7 +851,6 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
 				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
 			}
-			$dates_factors += $the_factor;
 		}
 
 		if ( ! empty( $double_rattrapage ) ) {
@@ -886,12 +884,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				) );
 		}
 
+		$dates_factors = 0;
+		foreach ( $dates as $d ) {
+			$dates_factors += $contrat->getDateFactor( $d );
+		}
+
 		//TODO lien vers contrat PDF ?
 //		echo $contrat->getOnlineContrat();
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
 			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) :</p>';
 		} else {
-			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . count( $dates ) . '</strong>” distributions avant la fin de la saison :</p>';
+			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) avant la fin de la saison :</p>';
 		}
 		echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
 		foreach ( $grouped_dates_array as $entry ) {
@@ -962,6 +965,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		} else {
 			$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );
 			foreach ( $contrat_quants as $quantite ) {
+				$dates_factors = 0;
+				foreach ( $dates as $d ) {
+					$dates_factors += $contrat->getDateFactor( $d, $quantite->ID );
+				}
+
 				$quant_var_editor   = '';
 				$id_quant           = 'quant' . $quantite->ID;
 				$id_factor          = 'factor' . $quantite->ID;
@@ -978,12 +986,35 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				}
 
 				$type = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
-				echo '<p><label for="' . $id_quant . '">
+				echo '<p style="margin-top: 1em; margin-bottom: 0"><label for="' . $id_quant . '">
 			<input id="' . $id_quant . '" name="quants[]" class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor-id="' . $id_factor . '" data-price="' . $price . '"/> 
 			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' ' . $price_compute_text . ' = <span id="' . $id_price . '">' . $price . '</span>€</label></p>';
+
+				$spec_dates = $quantite->getSpecificDistributionDates();
+				if ( ! empty( $spec_dates ) ) {
+					$spec_dates = array_filter( $spec_dates, function ( $d ) use ( $start_date ) {
+						return $d >= $start_date;
+					} );
+				}
+				if ( ! empty( $spec_dates ) ) {
+
+					$grouped_dates = from( $spec_dates )->groupBy( function ( $d ) {
+						return date_i18n( 'F Y', $d );
+					} );
+
+					$grouped_dates_array = [];
+					foreach ( $grouped_dates as $k => $v ) {
+						$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+								function ( $d ) {
+									return date_i18n( 'd', $d );
+								}, $v
+							) );
+					}
+					echo '<p style="font-style: italic; font-size: 0.8em; padding-left: 15pt; padding-top: 0; margin-top: 0">Dates spécifiques : ' . implode( ' ; ', $grouped_dates_array ) . '</p>';
+				}
 			}
 		}
-		echo '<p>Total: <span id="total">0</span>€</p>';
+		echo '<p style="margin-top: 1em;">Total: <span id="total">0</span>€</p>';
 		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="Valider" /></p>';
 		echo '</form>';
 
@@ -1066,20 +1097,22 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 			$factors = isset( $_REQUEST['factors'] ) ? $_REQUEST['factors'] : [];
 
-			$dates         = $contrat->getListe_dates();
-			$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
+			$dates = $contrat->getListe_dates();
+			$dates = array_filter( $dates, function ( $d ) use ( $start_date ) {
 				return $d >= $start_date;
 			} );
-			$dates_factors = 0;
-			foreach ( $dates as $d ) {
-				$dates_factors += $contrat->getDateFactor( $d );
-			}
 
 			$total         = 0;
 			$chosen_quants = [];
 			$serial_quants = [];
 			foreach ( $quants as $q ) {
-				$q_id            = intval( $q );
+				$q_id = intval( $q );
+
+				$dates_factors = 0;
+				foreach ( $dates as $d ) {
+					$dates_factors += $contrat->getDateFactor( $d, $q_id );
+				}
+
 				$factor          = isset( $factors[ $q ] ) ? floatval( $factors[ $q ] ) : 1;
 				$serial_quants[] = [
 					'q' => $q_id,
