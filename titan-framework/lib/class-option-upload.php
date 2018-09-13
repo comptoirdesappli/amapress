@@ -187,7 +187,7 @@ class TitanFrameworkOptionUpload extends TitanFrameworkOption {
 			if ( ! empty( $value ) ) {
 				$previewImage = "<i class='dashicons dashicons-no-alt remove'></i><img src='" . esc_url( $value ) . "' style='display: none'/>";
 			}
-			if ( $show_attachment_title ) {
+			if ( $show_attachment_title && $val ) {
 				$attachment = get_post( $val );
 				if ( $attachment ) {
 					$previewImage .= '<div class="tf-upload-title">' . $attachment->post_title . '</div>';
