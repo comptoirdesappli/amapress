@@ -146,7 +146,7 @@ function amapress_adhesion_title_formatter( $post_title, WP_Post $post ) {
 	}
 
 	return sprintf( '%s - %s - %s > %s (%s) (%d)',
-		( $adh->hasBeforeEndDate_fin() ? '[arrêté] ' : ( $adh->hasDate_fin() ? '[clotûré] ' : '' ) ) . $adh->getAdherent()->getSortableDisplayName(),
+		( $adh->hasBeforeEndDate_fin() ? ( $adh->hasPaiementDateFin() ? '[partiel]' : '[arrêté] ' ) : ( $adh->hasDate_fin() ? '[clotûré] ' : '' ) ) . $adh->getAdherent()->getSortableDisplayName(),
 		$adh->getContrat_instance()->getTitle(),
 		date_i18n( 'd/m/Y', intval( $adh->getDate_debut() ) ),
 		date_i18n( 'd/m/Y', intval( $adh->getDate_fin() ) ),
