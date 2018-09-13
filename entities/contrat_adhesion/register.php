@@ -31,13 +31,13 @@ function amapress_register_entities_adhesion( $entities ) {
 		'row_actions'      => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
 			'renew'            => 'Renouveler',
-			'close'             => [
+			'close'            => [
 				'label'     => 'Clôturer à la fin',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::CONFIRMED == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},
 			],
-			'generate_contrat'  => [
+			'generate_contrat' => [
 				'label'     => 'Générer le contrat',
 				'condition' => function ( $adh_id ) {
 					if ( TitanFrameworkOption::isOnNewScreen() ) {
@@ -463,7 +463,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'date_fin'          => array(
+			'date_fin'   => array(
 				'name'          => amapress__( 'Date de fin' ),
 				'type'          => 'date',
 				'group'         => '5/ Fin de contrat avant terme',
@@ -490,7 +490,17 @@ jQuery(function($) {
 						}
 					},
 			),
-			'fin_raison'        => array(
+			'pmt_fin'    => array(
+				'name'        => amapress__( 'Date fin des paiements' ),
+				'type'        => 'checkbox',
+				'default'     => 0,
+				'group'       => '5/ Fin de contrat avant terme',
+				'desc'        => 'Prendre en compte la date de fin pour recalculer le montant de l\'inscription',
+				'show_column' => false,
+				'show_on'     => 'edit-only',
+				'csv'         => false,
+			),
+			'fin_raison' => array(
 				'name'        => amapress__( 'Motif' ),
 				'type'        => 'textarea',
 				'group'       => '5/ Fin de contrat avant terme',

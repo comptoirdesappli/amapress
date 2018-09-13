@@ -786,18 +786,34 @@ class AmapressAdhesion extends TitanEntity {
 	public function getRemainingDates( $quantite_id = null ) {
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		return $this->getContrat_instance()->getRemainingDates( $start_date, $quantite_id );
+		$dates = $this->getContrat_instance()->getRemainingDates( $start_date, $quantite_id );
+		if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
+			$dates = array_filter( $dates, function ( $d ) {
+				return Amapress::start_of_day( $d ) < Amapress::end_of_day( $this->getDate_fin() );
+			} );
+		}
+
+		return $dates;
 	}
 
 	public function getRemainingDatesWithFactors( $quantite_id = null ) {
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		return $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
+		$val = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
+		if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
+			$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( $this->getDate_fin(), $quantite_id );
+		}
+
+		return $val;
 	}
 
 	/** @return int */
 	public function getPaiements() {
 		return $this->getCustom( 'amapress_adhesion_paiements', 0 );
+	}
+
+	public function hasPaiementDateFin() {
+		return $this->getCustom( 'amapress_adhesion_pmt_fin', 0 );
 	}
 
 	/** @return AmapressUser */
