@@ -52,6 +52,12 @@ function amapress_get_check_state( $state, $name, $message, $link, $values = nul
 }
 
 function amapress_is_plugin_active( $plugin_slug ) {
+// Check if get_plugins() function exists. This is required on the front end of the
+// site, since it is in a file that is normally only loaded in the admin.
+	if ( ! function_exists( 'get_plugins' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
 	$installed_plugins      = array_keys( get_plugins() );
 	$network_active_plugins = array_keys( get_site_option( 'active_sitewide_plugins', array() ) );
 	$active_plugins         = array_values( get_option( 'active_plugins', array() ) );
@@ -398,7 +404,7 @@ function amapress_echo_and_check_amapress_state_page() {
 	if ( ! empty( $contrat_to_renew ) ) {
 		$state['04_posts'][] = amapress_get_check_state(
 			'error',
-			'Contrats à renouveller',
+			'Contrats à renouveller/clôturer',
 			'Les contrats suivants sont à renouveller/clôturer pour la saison suivante',
 			admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=renew' ),
 			implode( ', ', array_map( function ( $dn ) {

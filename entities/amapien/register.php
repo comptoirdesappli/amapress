@@ -705,7 +705,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			),
 			array(
 				'id'         => 'amapress_contrat_to_renew',
-				'title'      => '<span class="badge">' . $contrat_to_renew . '</span> Contrats à renouveller',
+				'title'      => '<span class="badge">' . $contrat_to_renew . '</span> Contrats à renouveler/clôturer',
 				'capability' => 'edit_contrat_instance',
 				'condition'  => function () use ( $contrat_to_renew ) {
 					return $contrat_to_renew > 0;

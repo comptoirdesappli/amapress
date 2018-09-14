@@ -1010,7 +1010,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$abo_ids = AmapressContrats::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta, $include_futur );
 		$abo_key = implode( '-', $abo_ids );
 
-		$key = "AmapressAdhesion::getUserActiveAdhesions_{$date}_{$user_id}_{$abo_key}";
+		$key = "AmapressAdhesion::getUserActiveAdhesions_{$date}_{$user_id}_{$abo_key}_{$include_futur}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$user_ids = AmapressContrats::get_related_users( $user_id, $allow_not_logged );

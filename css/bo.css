@@ -218,7 +218,7 @@ span.description {
     color: #aaa;
 }
 
-.badge {
+.ab-item .badge {
     display: inline-block !important;
     min-width: 10px !important;
     padding: 3px 7px !important;
