@@ -222,7 +222,7 @@ function amapress_next_events_shortcode( $atts ) {
 	if ( $navigable ) {
 		$ret .= '<script type="text/javascript">jQuery(function($) {
 $(".next-events-slick").slick({
-  adaptativeHeight: true,
+  adaptiveHeight: true,
   infinite: false,
 //  variableWidth: true,
   initialSlide: ' . $first_visible_event . ',
