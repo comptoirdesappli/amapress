@@ -50,7 +50,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'SMTP externe'     => array(
+			'SMTP externe'                   => array(
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -113,7 +113,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'Mails en attente' => array(
+			'Mails en attente'               => array(
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -124,7 +124,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Mails en erreur'  => array(
+			'Mails en erreur'                => array(
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -135,7 +135,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Log des mails'    => array(
+			'Log des mails'                  => array(
 				'id'      => 'mail_logs',
 				'desc'    => '',
 				'options' => array(
@@ -167,10 +167,12 @@ function amapress_mailing_queue_errored_mail_list() {
 }
 
 function amapress_mailing_queue_logged_mail_list() {
-	return amapress_mailing_queue_mail_list( 'logged-mails', 'logged' );
+	return amapress_mailing_queue_mail_list( 'logged-mails', 'logged', [
+		'order' => [ 0, 'desc' ],
+	] );
 }
 
-function amapress_mailing_queue_mail_list( $id, $type ) {
+function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 	//compact('to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors')
 	$columns   = array();
 	$columns[] = array(
@@ -214,6 +216,16 @@ function amapress_mailing_queue_mail_list( $id, $type ) {
 	$emails = AmapressSMTPMailingQueue::loadDataFromFiles( true, $type );
 	$data   = array();
 	foreach ( $emails as $email ) {
+		$headers = implode( '<br/>', array_map( function ( $h ) {
+			return esc_html( $h );
+		}, $email['headers'] ) );
+		$msg     = $email['message'];
+		if ( false === strpos( $headers, 'text/html' )
+		     && false === strpos( $msg, '<p>' )
+		     && false === strpos( $msg, '<br />' ) ) {
+			$msg = esc_html( $msg );
+		}
+		$msg    = wpautop( $msg );
 		$data[] = array(
 			'time'          => array(
 				'val'     => $email['time'],
@@ -222,19 +234,20 @@ function amapress_mailing_queue_mail_list( $id, $type ) {
 			'to'            => esc_html( $email['to'] ),
 			'subject'       => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
-			'message'       => wpautop( $email['message'] ),
+			'message'       => $msg,
 			'errors'        => var_export( $email['errors'], true ),
 			'retries_count' => isset( $email['retries_count'] ) ? $email['retries_count'] : 0,
-			'headers'       => implode( '<br/>', array_map( function ( $h ) {
-				return esc_html( $h );
-			}, $email['headers'] ) ),
+			'headers'       => $headers,
 		);
 	}
 
 	return amapress_get_datatable( $id, $columns, $data,
-		array(
-			'paging' => true,
-			'nowrap' => false,
+		array_merge(
+			$options,
+			array(
+				'paging' => true,
+				'nowrap' => false,
+			)
 		)
 	);
 }
