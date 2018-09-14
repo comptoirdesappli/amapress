@@ -642,6 +642,9 @@ class AmapressAdhesion extends TitanEntity {
 			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
 				$factor = $factors[ $quant->ID ];
 			}
+			if ( abs( $factor * $date_factor ) < 0.001 ) {
+				continue;
+			}
 			$ret[ $quant->ID ] = new AmapressAdhesionQuantite( $quant, $factor * $date_factor );
 		}
 

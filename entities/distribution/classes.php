@@ -473,6 +473,10 @@ class AmapressDistribution extends Amapress_EventBase {
 				if ( $adhesion->getLieuId() == $this->getLieuId()
 				     && in_array( $adhesion->getContrat_instanceId(), $contrats )
 				) {
+					$quants = $adhesion->getContrat_quantites( $dist_date );
+					if ( empty( $quants ) ) {
+						continue;
+					}
 					$ret[] = new Amapress_EventEntry( array(
 						'ev_id'    => "dist-{$this->ID}",
 						'id'       => $this->ID,
@@ -603,6 +607,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	private static $properties = null;
+
 	public static function getProperties() {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
