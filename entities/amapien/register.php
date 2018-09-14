@@ -67,6 +67,7 @@ function amapress_register_entities_amapien( $entities ) {
 							$amapien->desinscriptionIntermittence();
 						}
 					}
+
 					return true;
 				},
 				'show_column' => false,
@@ -775,6 +776,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'title'      => 'Logs des mails envoyés',
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=mail_logs' ),
+					),
+					array(
+						'id'         => 'amapress_backup',
+						'title'      => ( amapress_is_plugin_active( 'backupwordpress' ) ? '<span class="dashicons dashicons-yes" style="color: green"></span>' : '<span class="dashicons dashicons-warning" style="color:red"></span>' ) . 'Sauvegardes',
+						'capability' => 'manage_options',
+						'href'       => amapress_is_plugin_active( 'backupwordpress' ) ? admin_url( 'tools.php?page=backupwordpress' ) : admin_url( 'admin.php?page=amapress_state' ),
 					),
 				]
 			),

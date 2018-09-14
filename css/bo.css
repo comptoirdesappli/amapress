@@ -232,3 +232,19 @@ span.description {
     background-color: #999 !important;
     border-radius: 10px !important;
 }
+
+.ab-item .dashicons {
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 20px !important;
+    font-family: dashicons !important;
+    text-decoration: inherit !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    vertical-align: top !important;
+    text-align: center !important;
+    transition: color .1s ease-in 0 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
