@@ -71,6 +71,17 @@ add_action( 'amapress_init', function () {
 	}
 } );
 
+function amapress_mes_contrats( $atts, $content = null ) {
+	$atts = shortcode_atts(
+		[
+			'for_logged'    => 'true',
+			'show_contrats' => 'true',
+		]
+		, $atts );
+
+	return amapress_self_inscription( $atts, $content );
+}
+
 /**
  * @param $atts
  */

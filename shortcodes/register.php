@@ -53,6 +53,7 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'les-paniers-intermittents', 'amapress_all_paniers_intermittents_shortcode' );
 	amapress_register_shortcode( 'les-paniers-intermittents-count', 'amapress_all_paniers_intermittents_count_shortcode' );
 
+	amapress_register_shortcode( 'mes-contrats', 'amapress_mes_contrats' );
 	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription' );
 
 
