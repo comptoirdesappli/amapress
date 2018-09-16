@@ -95,9 +95,9 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'show_contrats'        => 'false',
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
-			'adhesion'             => 'false',
-			'send_referents'       => 'false',
-			'send_tresoriers'      => 'false',
+			'adhesion'             => 'true',
+			'send_referents'       => 'true',
+			'send_tresoriers'      => 'true',
 			'before_close_hours'   => 24,
 			'email'                => get_option( 'admin_email' ),
 		]
