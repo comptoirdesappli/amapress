@@ -81,8 +81,9 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 
 		$empty_display = ! empty( $this->settings['empty_display'] ) ? $this->settings['empty_display'] : '';
 
-		foreach ( $this->fetchOptionsWithCache() as $value => $label ) {
+		$options = $this->fetchOptionsWithCache();
 
+		foreach ( $options as $value => $label ) {
 			// this is if we have option groupings
 			if ( is_array( $label ) ) {
 				foreach ( $label as $subValue => $subLabel ) {
@@ -110,13 +111,17 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 			if ( in_array( $v, $used_values ) ) {
 				continue;
 			}
-			$titles[] = "Archivé $v";
+
+			$titles[] = $this->getArchived( $v );
 		}
 
 		echo implode( ',', $titles );
 	}
 
-	public function columnExportValue( $post_id ) {
+	public
+	function columnExportValue(
+		$post_id
+	) {
 		$values = $this->getValue( $post_id );
 		if ( ! is_array( $values ) ) {
 			$values = array( $values );
@@ -156,13 +161,16 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 			if ( in_array( $v, $used_values ) ) {
 				continue;
 			}
-			$titles[] = "Archivé $v";
+			$titles[] = $this->getArchived( $v );
 		}
 
 		echo implode( ',', $titles );
 	}
 
-	public function cleanValueForSaving( $value ) {
+	public
+	function cleanValueForSaving(
+		$value
+	) {
 		$value = array_filter( (array) $value, function ( $v ) {
 			return ! empty( $v );
 		} );
@@ -173,7 +181,10 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		}
 	}
 
-	public function cleanValueForGetting( $value ) {
+	public
+	function cleanValueForGetting(
+		$value
+	) {
 		$value = maybe_unserialize( $value );
 		if ( ! is_array( $value ) ) {
 			$value = array( $value );
@@ -189,7 +200,10 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	}
 
 
-	public function echoSelect( $options = null, $post_id = null ) {
+	public
+	function echoSelect(
+		$options = null, $post_id = null
+	) {
 		$multiple = isset( $this->settings['multiple'] ) && true == $this->settings['multiple'] ? 'multiple' : '';
 		$name     = $this->getID();
 		$val      = $this->getValue( $post_id );
@@ -225,15 +239,23 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		<?php
 	}
 
-	public function ajaxRefresh() {
+	public
+	function ajaxRefresh() {
 		$this->echoSelect( null, intval( $_POST['post_id'] ) );
 		wp_die();
 	}
 
-	protected function getArchived( $id ) {
+	protected
+	function getArchived(
+		$id
+	) {
 		return "Archivé $id";
 	}
-	protected function addValueToOptionIfNotPresent( $options, $value ) {
+
+	protected
+	function addValueToOptionIfNotPresent(
+		$options, $value
+	) {
 		if ( ! is_array( $value ) ) {
 			$value = array( $value );
 		}
@@ -265,7 +287,8 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	/*
 	 * Display for options and meta
 	 */
-	public function display() {
+	public
+	function display() {
 		$this->echoOptionHeader();
 
 		if ( $this->isReadonly() ) {
@@ -358,7 +381,10 @@ jQuery(function() {
 		$this->echoOptionFooter();
 	}
 
-	public function echoFilter( $args ) {
+	public
+	function echoFilter(
+		$args
+	) {
 		$placeholder = empty( $args['placeholder'] ) ? '— ' . __( 'Tous', TF_I18NDOMAIN ) . ' —' : $args['placeholder'];
 		$name        = $args['name'];
 
@@ -392,7 +418,8 @@ jQuery(function() {
 	}
 
 
-	public function generateMember() {
+	public
+	function generateMember() {
 		$mn    = $this->getMemberName();
 		$cases = '';
 		foreach ( $this->fetchOptions() as $k => $v ) {
@@ -427,7 +454,10 @@ jQuery(function() {
 	/*
 	 * Display for theme customizer
 	 */
-	public function registerCustomizerControl( $wp_customize, $section, $priority = 1 ) {
+	public
+	function registerCustomizerControl(
+		$wp_customize, $section, $priority = 1
+	) {
 //		$isAssociativeArray = false;
 //
 //		if ( count( $this->settings['options'] ) ) {
