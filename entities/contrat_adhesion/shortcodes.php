@@ -753,12 +753,18 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			}
 			$dates              = $contrat->getListe_dates();
 			$first_contrat_date = $dates[0];
-			$dates              = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
-				return ( Amapress::start_of_day( $d ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && $d < $contrat->getDate_cloture();
-			} );
-			$dates              = array_values( $dates );
-			$first_avail_date   = $dates[0];
-			$is_started         = $first_avail_date != $first_contrat_date;
+			if ( ! $admin_mode ) {
+				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+					return ( Amapress::start_of_day( $d ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && $d < $contrat->getDate_cloture();
+				} );
+			} else {
+				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+					return Amapress::end_of_week( $d ) > amapress_time();
+				} );
+			}
+			$dates            = array_values( $dates );
+			$first_avail_date = $dates[0];
+			$is_started       = $first_avail_date != $first_contrat_date;
 			if ( ! $admin_mode ) {
 				echo '<p>Les inscriptions en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je contacte l\'AMAP pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
 			}
