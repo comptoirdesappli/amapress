@@ -127,8 +127,9 @@ function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 		$modif = ' annulé';
 	}
 
-	return sprintf( 'Panier de %s du %s%s',
+	return sprintf( 'Panier de %s%s du %s%s',
 		$panier->getContrat_instance()->getModel()->getTitle(),
+		! empty( $panier->getContrat_instance()->getSubName() ) ? ' - ' . $panier->getContrat_instance()->getSubName() : '',
 		date_i18n( 'd/m/Y', intval( $panier->getDate() ) ),
 		$modif );
 }

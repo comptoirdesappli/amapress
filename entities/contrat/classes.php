@@ -319,6 +319,12 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getTitle();
 			}
 		];
+		$ret['contrat_sous_titre']          = [
+			'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
+			'func' => function ( AmapressAdhesion $adh ) {
+				return $adh->getContrat_instance()->getSubName();
+			}
+		];
 		$ret['contrat_lien']                = [
 			'desc' => 'Lien vers la présentation du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
@@ -365,7 +371,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieux'] = [
+		$ret['lieux']                       = [
 			'desc' => 'Lieux de distribution (nom court)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -373,7 +379,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu'] = [
+		$ret['lieu']                        = [
 			'desc' => 'Lieu de distribution (nom court)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -411,7 +417,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return implode( ', ', $adh->getPossiblePaiements() );
 			}
 		];
-		$ret['dates_rattrapages'] = [
+		$ret['dates_rattrapages']           = [
 			'desc' => 'Description des dates de distribution de rattrapage',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				$rattrapage        = [];
@@ -441,7 +447,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return implode( ', ', $rattrapage );
 			}
 		];
-		$ret['nb_dates'] = [
+		$ret['nb_dates']                    = [
 			'desc' => 'Nombre de dates de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return count( $adh->getRemainingDates( $first_date_distrib ) );

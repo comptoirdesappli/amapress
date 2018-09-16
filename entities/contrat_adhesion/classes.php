@@ -129,32 +129,38 @@ class AmapressAdhesion extends TitanEntity {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                                = [];
-			$ret['contrat_type']                = [
+			$ret                       = [];
+			$ret['contrat_type']       = [
 				'desc' => 'Type du contrat (par ex, Légumes)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getTitle();
 				}
 			];
-			$ret['contrat_titre']               = [
+			$ret['contrat_titre']      = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
-			$ret['contrat_lien']                = [
+			$ret['contrat_sous_titre'] = [
+				'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getSubName();
+				}
+			];
+			$ret['contrat_lien']       = [
 				'desc' => 'Lien vers la présentation du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
 				}
 			];
-			$ret['date_debut']                  = [
+			$ret['date_debut']         = [
 				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin']                    = [
+			$ret['date_fin']           = [
 				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );

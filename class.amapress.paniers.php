@@ -21,6 +21,7 @@ class AmapressPaniers {
 		}
 
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
+		/** @var AmapressContrat_instance $contrat */
 		foreach ( $contrats as $contrat ) {
 			if ( empty( $contrat ) ) {
 				continue;
@@ -68,8 +69,9 @@ class AmapressPaniers {
 				}
 				if ( count( $paniers ) == 0 ) {
 					$my_post = array(
-						'post_title'   => sprintf( 'Panier de %s du %02d-%02d-%04d',
+						'post_title'   => sprintf( 'Panier de %s%s du %02d-%02d-%04d',
 							$contrat_model->getTitle(),
+							! empty( $contrat->getSubName() ) ? ' - ' . $contrat->getSubName() : '',
 							date( 'd', $date ), date( 'm', $date ), date( 'Y', $date ) ),
 						'post_type'    => AmapressPanier::INTERNAL_POST_TYPE,
 						'post_content' => '',
