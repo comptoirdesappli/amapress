@@ -224,8 +224,8 @@ class AmapressContrats {
 		$key = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			if ( $date == null ) {
-				$date = amapress_time();
+			if ( empty( $date ) ) {
+				$date = Amapress::end_of_day( amapress_time() );
 			}
 			$meta_query = array(
 				'relation' => 'AND',
@@ -683,7 +683,15 @@ class AmapressContrats {
 	/**
 	 * @return AmapressAdhesion[]
 	 */
-	public static function get_active_adhesions( $contrat_id = null, $contrat_quantite_id = null, $lieu_id = null, $date = null, $ignore_renouv_delta = false, $include_futur = true ) {
+	public static function get_active_adhesions(
+		$contrat_id = null,
+		$contrat_quantite_id = null,
+		$lieu_id = null,
+		$date = null,
+		$ignore_renouv_delta = false,
+		$include_futur = true
+	) {
+
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
 		$key     = "amapress_get_active_adhesions_{$key_ids}_{$contrat_quantite_id}_{$lieu_id}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
@@ -700,8 +708,16 @@ class AmapressContrats {
 					'value'   => amapress_prepare_in( $abo_ids ),
 					'compare' => 'IN',
 					'type'    => 'NUMERIC',
-				)
+				),
 			);
+			if ( ! $include_futur ) {
+				$meta_query[] = array(
+					'key'     => 'amapress_adhesion_date_debut',
+					'value'   => Amapress::end_of_day( $date ),
+					'compare' => '<=',
+					'type'    => 'NUMERIC'
+				);
+			}
 			if ( $lieu_id ) {
 				$meta_query[] = array(
 					'key'     => 'amapress_adhesion_lieu',

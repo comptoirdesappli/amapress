@@ -205,7 +205,8 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		'data'  => 'comment',
 	);
 
-	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids, null, $dist_lieu_id, $date, true, false );
+	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids,
+		null, $dist_lieu_id, $date, true, false );
 	$liste     = array();
 	$adhesions = array_group_by(
 		$all_adhs,
