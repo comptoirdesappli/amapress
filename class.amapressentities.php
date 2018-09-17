@@ -484,7 +484,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'options'  => array(),
 							'tabs'     => function () {
 								$tabs              = array();
-								$contrat_instances = AmapressContrats::get_active_contrat_instances();
+								$contrat_instances = AmapressContrats::get_active_contrat_instances(
+									null, Amapress::add_a_month( amapress_time(), - 3 )
+								);
 								usort( $contrat_instances, function ( $a, $b ) {
 									return strcmp( $a->getTitle(), $b->getTitle() );
 								} );
