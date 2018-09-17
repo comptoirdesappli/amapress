@@ -21,14 +21,14 @@ function amapress_register_entities_distribution( $entities ) {
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-store',
 		'row_actions'      => array(
-			'emargement'  => [
+			'emargement'             => [
 				'label'  => 'Liste émargement',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
 				},
 			],
-			'mailto_resp' => [
+			'mailto_resp'            => [
 				'label'     => 'Mail aux responsable',
 				'target'    => '_blank',
 				'href'      => function ( $dist_id ) {
@@ -42,7 +42,7 @@ function amapress_register_entities_distribution( $entities ) {
 					return ! empty( $dist->getMailtoResponsables() );
 				}
 			],
-			'smsto_resp'  => [
+			'smsto_resp'             => [
 				'label'     => 'Sms aux responsables',
 				'target'    => '_blank',
 				'href'      => function ( $dist_id ) {
@@ -55,6 +55,14 @@ function amapress_register_entities_distribution( $entities ) {
 
 					return ! empty( $dist->getSMStoResponsables() );
 				}
+			],
+			'resend_liste_to_resp'   => [
+				'label'   => 'Renvoyer la liste d\'émargement aux responsables',
+				'show_on' => 'editor',
+			],
+			'resend_liste_to_verify' => [
+				'label'   => 'Envoyer les infos de distribution à vérifier',
+				'show_on' => 'editor',
 			],
 		),
 		'views'            => array(
@@ -249,4 +257,20 @@ function amapress_distribution_responsable_roles_options() {
 	);
 
 	return $ret;
+}
+
+add_action( 'amapress_row_action_distribution_resend_liste_to_resp', 'amapress_row_action_distribution_resend_liste_to_resp' );
+function amapress_row_action_distribution_resend_liste_to_resp( $post_id ) {
+	do_action( 'amapress_recall_resp_distrib', [
+		'id' => $post_id
+	] );
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_distribution_resend_liste_to_verify', 'amapress_row_action_distribution_resend_liste_to_verify' );
+function amapress_row_action_distribution_resend_liste_to_verify( $post_id ) {
+	do_action( 'amapress_recall_verify_distrib', [
+		'id' => $post_id
+	] );
+	wp_redirect_and_exit( wp_get_referer() );
 }
