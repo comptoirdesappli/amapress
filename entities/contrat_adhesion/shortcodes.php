@@ -755,7 +755,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$first_contrat_date = $dates[0];
 			if ( ! $admin_mode ) {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
-					return ( Amapress::start_of_day( $d ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && $d < $contrat->getDate_cloture();
+					return ( Amapress::start_of_day( $d ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $d ) < Amapress::end_of_day( $contrat->getDate_cloture() );
 				} );
 			} else {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
