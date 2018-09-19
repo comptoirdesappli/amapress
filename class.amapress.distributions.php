@@ -146,10 +146,13 @@ class AmapressDistributions {
 		$key = 'amps_gen_dist_' . $contrat_id;
 		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
 		if ( ! empty( $res ) ) {
+//foreach ($res[$contrat_id]['unassociate'] as $a) {
+//	amapress_dump(date_i18n('d/m/Y', $a['date']));
+//}
 			return $res;
 		}
 
-		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
+//		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
 		$res      = array();
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		/** @var AmapressContrat_instance $contrat */
@@ -159,7 +162,10 @@ class AmapressDistributions {
 			}
 
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
-			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			global $amapress_getting_referent_infos;
+			$amapress_getting_referent_infos = true;
+			$all_contrat_ids                 = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			$amapress_getting_referent_infos = false;
 
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
 			$liste_dates         = array_unique( $contrat->getListe_dates() );
@@ -238,8 +244,8 @@ class AmapressDistributions {
 			}
 
 			$start     = Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() );
-			$stop      = Amapress::end_of_day( $contrat->getDate_fin() );
-			$cache_key = "amapress_generate_distribs2_$start-$stop";
+			//$stop      = Amapress::end_of_day( $contrat->getDate_fin() );
+			$cache_key = "amapress_generate_distribs2_$start";
 			$distribs  = wp_cache_get( $cache_key );
 			if ( false == $distribs ) {
 				$distribs = get_posts( array(
@@ -250,11 +256,8 @@ class AmapressDistributions {
 							'relation' => 'AND',
 							array(
 								'key'     => 'amapress_distribution_date',
-								'value'   => array(
-									$start,
-									$stop
-								),
-								'compare' => 'BETWEEN',
+								'value'   => $start,
+								'compare' => '>=',
 								'type'    => 'NUMERIC',
 							),
 						)
@@ -273,13 +276,13 @@ class AmapressDistributions {
 				$keys[ $k ]     = true;
 
 				$dist_contrats = array_map( 'intval', Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' ) );
-				if ( ! $is_ref ) {
+//				if ( ! $is_ref ) {
 					$diff_contrats = array_diff( $dist_contrats, $all_contrat_ids );
 					if ( ! empty( $diff_contrats ) ) {
 						$clean         = true;
 						$dist_contrats = array_diff( $dist_contrats, $diff_contrats );
 					}
-				}
+//				}
 				$rem = false;
 				$add = false;
 				if ( in_array( $dist_date, $liste_dates ) ) {
@@ -295,15 +298,19 @@ class AmapressDistributions {
 					$dist_contrats[]                    = $contrat->ID;
 					$res[ $contrat->ID ]['associate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
 				}
+				$add_to_unassociate = false;
 				if ( $rem && in_array( $contrat->ID, $dist_contrats ) ) {
-					$dist_contrats                        = array_diff( $dist_contrats, array( $contrat->ID ) );
-					$res[ $contrat->ID ]['unassociate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
+					$add_to_unassociate = true;
+					$dist_contrats      = array_diff( $dist_contrats, array( $contrat->ID ) );
 				}
 				if ( empty( $dist_contrats ) || $clean ) {
-					$res[ $contrat->ID ]['unassociate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
+					$add_to_unassociate = true;
 					if ( ! $eval && ( empty( $dist_contrats ) || $already_exists ) ) {
 						wp_delete_post( $dist_id );
 					}
+				}
+				if ( $add_to_unassociate ) {
+					$res[ $contrat->ID ]['unassociate'][] = array( 'lieu' => $dist_lieu, 'date' => $dist_date );
 				}
 				//
 				if ( ! $eval && ( $add || $rem || $clean ) ) {
@@ -312,7 +319,11 @@ class AmapressDistributions {
 			}
 		}
 
-		update_option( $key, $res );
+		if ( ! $eval ) {
+			delete_option( $key );
+		} else {
+			update_option( $key, $res );
+		}
 
 		return $res;
 	}

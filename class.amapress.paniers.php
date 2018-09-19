@@ -28,7 +28,10 @@ class AmapressPaniers {
 			}
 
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
-			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			global $amapress_getting_referent_infos;
+			$amapress_getting_referent_infos = true;
+			$all_contrat_ids                 = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			$amapress_getting_referent_infos = false;
 
 			$res[ $contrat->ID ] = array();
 			$contrat_model       = $contrat->getModel();
@@ -109,11 +112,8 @@ class AmapressPaniers {
 							'relation' => 'AND',
 							array(
 								'key'     => 'amapress_panier_date',
-								'value'   => array(
-									Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ),
-									Amapress::end_of_day( $contrat->getDate_fin() )
-								),
-								'compare' => 'BETWEEN',
+								'value'   => Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ),
+								'compare' => '>=',
 								'type'    => 'NUMERIC',
 							),
 						)
@@ -147,7 +147,11 @@ class AmapressPaniers {
 			}
 		}
 
-		update_option( $key, $res );
+		if ( ! $eval ) {
+			delete_option( $key );
+		} else {
+			update_option( $key, $res );
+		}
 
 		return $res;
 	}
