@@ -205,24 +205,24 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 						'post_type'      => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
 						'posts_per_page' => - 1,
 						'meta_query'     => array(
-							'relation' => 'OR',
+//							'relation' => 'OR',
 							array(
 								'key'     => 'amapress_adhesion_paiement_period',
 								'value'   => $period_id,
 								'compare' => '=',
 							),
-							array(
-								'key'     => 'amapress_adhesion_paiement_period',
-								'compare' => 'NOT EXISTS',
-							),
+//							array(
+//								'key'     => 'amapress_adhesion_paiement_period',
+//								'compare' => 'NOT EXISTS',
+//							),
 						),
 					)
 				) ),
 				function ( $p ) use ( $period ) {
 					/** @var AmapressAdhesion_paiement $p */
-					if ( $period && ! $p->getPeriodId() ) {
-						update_post_meta( $p->ID, 'amapress_adhesion_paiement_period', $period->ID );
-					}
+//					if ( $period && ! $p->getPeriodId() ) {
+//						update_post_meta( $p->ID, 'amapress_adhesion_paiement_period', $period->ID );
+//					}
 
 					return $p->getUserId();
 				}

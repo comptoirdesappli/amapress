@@ -30,14 +30,14 @@ function amapress_register_entities_adhesion( $entities ) {
 		),
 		'row_actions'      => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
-			'renew'            => 'Renouveler',
-			'close'            => [
+			'renew'             => 'Renouveler',
+			'close'             => [
 				'label'     => 'Clôturer à la fin',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::CONFIRMED == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},
 			],
-			'generate_contrat' => [
+			'generate_contrat'  => [
 				'label'     => 'Générer le contrat',
 				'condition' => function ( $adh_id ) {
 					if ( TitanFrameworkOption::isOnNewScreen() ) {
@@ -69,6 +69,11 @@ function amapress_register_entities_adhesion( $entities ) {
 		'default_orderby'  => 'post_title',
 		'default_order'    => 'ASC',
 		'edit_header'      => function ( $post ) {
+			/** @var WP_Post $post */
+			$author = get_user_by( 'ID', $post->post_author );
+			if ( $author ) {
+				echo '<p>Créé par ' . esc_html( $author->display_name ) . '</p>';
+			}
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
@@ -118,11 +123,17 @@ function amapress_register_entities_adhesion( $entities ) {
 				'type'          => 'custom',
 				'column'        => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
+					if ( ! $adh->getAdherentId() ) {
+						return '';
+					}
 
 					return Amapress::makeLink( $adh->getAdherent()->getEditLink(), $adh->getAdherent()->getDisplayName(), true, true );
 				},
 				'export'        => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
+					if ( ! $adh->getAdherentId() ) {
+						return '';
+					}
 
 					return $adh->getAdherent()->getDisplayName();
 				}
@@ -131,8 +142,6 @@ function amapress_register_entities_adhesion( $entities ) {
 				'name'         => amapress__( 'Adhérent' ),
 				'type'         => 'select-users',
 				'required'     => true,
-//				'desc'         => 'Sélectionner un amapien. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-//				'desc'         => '<a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> et rafraîchir la liste',
 				'group'        => '1/ Informations',
 				'import_key'   => true,
 				'csv_required' => true,
@@ -155,6 +164,9 @@ function amapress_register_entities_adhesion( $entities ) {
 				'sort_column'   => 'last_name',
 				'column'        => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
+					if ( ! $adh->getAdherentId() ) {
+						return '';
+					}
 
 					return $adh->getAdherent()->getUser()->last_name;
 				}
@@ -170,6 +182,9 @@ function amapress_register_entities_adhesion( $entities ) {
 				'sort_column'   => 'user_email',
 				'column'        => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
+					if ( ! $adh->getAdherentId() ) {
+						return '';
+					}
 
 					return $adh->getAdherent()->getUser()->user_email;
 				}
@@ -183,6 +198,9 @@ function amapress_register_entities_adhesion( $entities ) {
 				'type'       => 'custom',
 				'column'     => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
+					if ( ! $adh->getAdherentId() ) {
+						return '';
+					}
 
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
@@ -463,7 +481,7 @@ jQuery(function($) {
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
-			'date_fin'   => array(
+			'date_fin'          => array(
 				'name'          => amapress__( 'Date de fin' ),
 				'type'          => 'date',
 				'group'         => '5/ Fin de contrat avant terme',
@@ -490,7 +508,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'pmt_fin'    => array(
+			'pmt_fin'           => array(
 				'name'        => amapress__( 'Date fin des paiements' ),
 				'type'        => 'checkbox',
 				'default'     => 0,
@@ -500,7 +518,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'csv'         => false,
 			),
-			'fin_raison' => array(
+			'fin_raison'        => array(
 				'name'        => amapress__( 'Motif' ),
 				'type'        => 'textarea',
 				'group'       => '5/ Fin de contrat avant terme',
@@ -597,6 +615,10 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					);
 				}
 
+				if ( ! TitanFrameworkOption::isOnNewScreen() ) {
+					$ret .= '<input id="amapress_adhesion_adherent" name="amapress_adhesion_adherent" type="hidden" value="' . $adh->getAdherentId() . '" />';
+				}
+
 				$data = array();
 				foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance->ID ) as $quant ) {
 					$row     = array(
@@ -630,7 +652,6 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 
 //                $ret .= '<table class="display nowrap dataTable no-footer" width="100%" cellspacing="0" role="grid" style="margin-left: 0px; width: 9875px;"><thead><tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 60px;">Produit</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">03/09/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">10/09/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">17/09/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">24/09/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">01/10/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">08/10/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">15/10/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">22/10/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">29/10/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">05/11/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">12/11/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">19/11/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">26/11/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">03/12/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">10/12/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">17/12/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">24/12/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">31/12/15</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">07/01/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">14/01/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">21/01/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">28/01/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">04/02/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">11/02/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">18/02/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">25/02/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">03/03/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">10/03/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">17/03/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">24/03/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">31/03/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">07/04/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">14/04/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">21/04/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">28/04/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">05/05/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">12/05/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">19/05/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">26/05/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">02/06/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">09/06/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">16/06/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">23/06/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">30/06/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">07/07/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">14/07/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">21/07/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">28/07/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">04/08/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">11/08/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">18/08/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">25/08/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">21/09/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">22/09/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">06/10/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">13/10/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">20/10/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">27/10/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">03/11/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">10/11/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">17/11/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">24/11/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">01/12/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">08/12/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">15/12/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">22/12/16</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">05/01/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">12/01/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">19/01/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">26/01/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">02/02/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">09/02/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">16/02/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">23/02/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">02/03/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">09/03/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">16/03/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">23/03/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">30/03/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">06/04/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">13/04/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">20/04/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">27/04/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">04/05/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">11/05/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">18/05/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">25/05/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">01/06/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">08/06/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">15/06/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">22/06/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">29/06/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">06/07/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">13/07/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">20/07/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">27/07/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">03/08/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 61px;">10/08/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 62px;">17/08/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 62px;">24/08/17</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 62px;">31/08/17</th></tr></thead></table>';
 
-				$ret .= '<input id="amapress_adhesion_adherent" name="amapress_adhesion_adherent" type="hidden" value="' . $adh->getAdherentId() . '" />';
 
 				$had_contrat = true;
 				$ret         .= amapress_get_datatable( 'quant-commandes', $columns, $data, array(
@@ -669,6 +690,10 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$had_contrat = true;
 			$ret         .= '<b>' . Amapress::makeLink( $contrat_instance->getAdminEditLink(), $contrat_instance->getTitle(), true, true ) . '</b>';
 			$ret         .= '<div>';
+			if ( ! TitanFrameworkOption::isOnNewScreen() ) {
+				$ret .= '<input id="amapress_adhesion_adherent" name="amapress_adhesion_adherent" type="hidden" value="' . $adh->getAdherentId() . '" />';
+			}
+
 			foreach ( $contrat_quants as $quantite ) {
 				$id        = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
 				$id_factor = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID . '-factor';
@@ -684,7 +709,6 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					$quant_var_editor .= '</select>';
 				}
 
-				$ret .= '<input id="amapress_adhesion_adherent" name="amapress_adhesion_adherent" type="hidden" value="' . $adh->getAdherentId() . '" />';
 
 				$type = $contrat_instance->isQuantiteMultiple() ? 'checkbox' : 'radio';
 				$ret  .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="%s" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',

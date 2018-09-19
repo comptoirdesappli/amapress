@@ -23,6 +23,10 @@ function amapress_create_user_if_not_exists(
 		$username = AmapressUsers::generate_unique_username( $username );
 		$user_id  = wp_create_user( $username, $password, $email_address );
 
+		if ( empty( $user_id ) ) {
+			return null;
+		}
+
 		// Set the nickname
 		wp_update_user(
 			array(

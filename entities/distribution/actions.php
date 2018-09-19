@@ -212,6 +212,9 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$all_adhs,
 		function ( $adh ) {
 			/** @var AmapressAdhesion $adh */
+			if ( ! $adh->getAdherentId() ) {
+				return '';
+			}
 			$user     = $adh->getAdherent()->getUser();
 			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID ) );
 

@@ -381,7 +381,7 @@ class AmapressUsers {
 		if ( ! username_exists( $new_username ) ) {
 			return $new_username;
 		} else {
-			return call_user_func( __FUNCTION__, $username );
+			return self::generate_unique_username( $username );
 		}
 	}
 

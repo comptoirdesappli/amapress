@@ -197,6 +197,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 	if ( empty( $principal_contrats ) ) {
 		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
+	//TODO better ???
 	$adh_period_date = Amapress::add_a_month( $min_contrat_date, 2 );
 
 //	if ( ! $admin_mode && count( $principal_contrats ) > 1 ) {
@@ -303,7 +304,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$member_message = '';
 		}
 
-		$adh_pmt = AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false );
+		$adh_pmt = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false ) : null;
 		?>
         <h4>Étape 2/7 : Coordonnées</h4>
         <p><?php echo $user_message; ?></p>
@@ -559,7 +560,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					] ),
 					'Imprimer', true, true, 'btn btn-default'
 				);
-				echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_debut() ) . '.<br />
+				echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
 			}
 		}
