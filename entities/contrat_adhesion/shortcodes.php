@@ -98,6 +98,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
+			'adhesion_shift_weeks' => 5,
 			'before_close_hours'   => 24,
 			'email'                => get_option( 'admin_email' ),
 		]
@@ -198,7 +199,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
 	//TODO better ???
-	$adh_period_date = Amapress::add_a_month( $min_contrat_date, 2 );
+	$adh_period_date = Amapress::add_a_week( $min_contrat_date, $atts['adhesion_shift_weeks'] );
 
 //	if ( ! $admin_mode && count( $principal_contrats ) > 1 ) {
 //		wp_die( 'Il y a plusieurs contrat principaux. Veuillez vérifier la configuration (erreur de dates d\'ouverture/clôture) : <br/>' .
@@ -260,7 +261,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		?>
         <h2>Bienvenue dans l’assistant d’inscription aux contrats producteurs
             de <?php echo get_bloginfo( 'name' ); ?></h2>
-        <h4>Étape 1/7 : Email</h4>
+        <h4>Étape 1/8 : Email</h4>
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
             <label for="email">Pour démarrer votre inscription à l’AMAP pour la saison
@@ -306,7 +307,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		$adh_pmt = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false ) : null;
 		?>
-        <h4>Étape 2/7 : Coordonnées</h4>
+        <h4>Étape 2/8 : Coordonnées</h4>
         <p><?php echo $user_message; ?></p>
         <form method="post" id="inscr_coords" class="amapress_validate"
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
@@ -364,7 +365,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
 		}
 
-		echo '<h4>Étape obligatoire : Bulletin d\'adhésion</h4>';
+		echo '<h4>Étape 3/8 : Adhésion (obligatoire)</h4>';
 		echo $adh_period->getOnlineDescription();
 
 		$taxes            = get_categories( array(
@@ -400,7 +401,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$ret .= '</tr>';
 		}
 		$ret .= '</table>';
-		$ret .= '<p>Total du chèque : <span id="amapress_adhesion_paiement_amount"></span></p>';
+		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span></p>';
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
 		$ret .= '</form>';
 
@@ -530,7 +531,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$amapien = AmapressUser::getBy( $user_id );
 		if ( ! $admin_mode ) {
 			if ( ! Amapress::toBool( $atts['show_contrats'] ) ) {
-				echo '<h4>Étape 3/7 : les contrats</h4>';
+				echo '<h4>Étape 4/8 : les contrats</h4>';
 			}
 		} else {
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
@@ -544,12 +545,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
 
 			if ( empty( $adh_paiement ) ) {
-				echo '<p><strong>Vous n\'avez pas encore effectué votre adhésion obligatoire à l\'AMAP.</strong><br/>
+				echo '<p><strong>Pour vous engager dans l’AMAP, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="adhesion" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer maintenant" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
 			} else {
 				$print_bulletin = Amapress::makeButtonLink(
@@ -569,7 +570,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( ! $admin_mode && ! $has_principal_contrat ) {
 			if ( count( $principal_contrats ) == 1 ) {
 				?>
-                <p>Pour vous engager dans l’AMAP et accéder à tous nos contrats en ligne,
+                <p>Pour accéder à tous nos contrats en ligne,
                     vous devez d’abord vous inscrire au contrat
                     “<strong><?php echo esc_html( $principal_contrats[0]->getTitle() ); ?></strong>”
                     (<?php echo $principal_contrats[0]->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
@@ -592,7 +593,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$display_remaining_contrats = false;
 			} else {
 				?>
-                <p>Pour vous engager dans l’AMAP et accéder à tous nos contrats en ligne, vous devez d’abord vous
+                <p>Pour accéder à tous nos contrats en ligne, vous devez d’abord vous
                     inscrire à l’un des contrats suivants :</p>
                 <li>
 					<?php
@@ -742,7 +743,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		$lieux = $contrat->getLieux();
 		?>
-        <h4>Étape 4/7 : Date et lieu</h4>
+        <h4>Étape 5/8 : Date et lieu</h4>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
 			<?php
 			$before_close_hours = 0;
@@ -880,11 +881,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		if ( ! $admin_mode ) {
 			?>
-            <h4>Étape 5/7 : Panier</h4>
+            <h4>Étape 6/8 : Panier</h4>
 			<?php
 		} else {
 			?>
-            <h4>Étape 5/7 : Panier - <?php echo esc_html( $contrat->getTitle() ); ?></h4>
+            <h4>Étape 6/8 : Panier - <?php echo esc_html( $contrat->getTitle() ); ?></h4>
 			<?php
 		}
 		$min_total = $contrat->getMinEngagement();
@@ -1060,7 +1061,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 		$next_step_url = add_query_arg( [ 'step' => 'inscr_contrat_create' ] );
 
-		echo '<h4>Étape 6/7 : Règlement</h4>';
+		echo '<h4>Étape 7/8 : Règlement</h4>';
 		if ( $contrat->isPanierVariable() ) {
 			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? $_REQUEST['panier_vars'] : [];
 			if ( empty( $panier_vars ) ) {
@@ -1324,7 +1325,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				/** @var AmapressContrat_instance $c */
 				return $c->getModel()->getTitle();
 			}, $user_subscribable_contrats ) );
-			echo '<h4>étape 7/7 : Félicitations !</h4>';
+			echo '<h4>étape 8/8 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 
 Vous allez recevoir un mail de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, ce mail peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</div>';
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
