@@ -2341,12 +2341,12 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						foreach ( $value['conditional'] as $kk => $opt ) {
 							if ( is_array( $opt ) ) {
 								foreach ( $opt as $k => $v ) {
-									$labels["amapress_{$post_type}_$k"] = amapress_get_formatter( $post_type, $k, $v['type'], $v['name'] );
+									$labels["amapress_{$post_type}_$k"] = amapress_get_formatter( $post_type, $k, $v['type'], isset( $v['name'] ) ? $v['name'] : '' );
 								}
 							}
 						}
 					}
-					$labels["amapress_{$post_type}_$key"] = amapress_get_formatter( $post_type, $key, $value['type'], $value['name'] );
+					$labels["amapress_{$post_type}_$key"] = amapress_get_formatter( $post_type, $key, $value['type'], isset( $value['name'] ) ? $value['name'] : '' );
 				}
 			}
 			wp_cache_set( $key, $labels );

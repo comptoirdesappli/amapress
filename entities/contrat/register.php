@@ -1259,9 +1259,7 @@ function amapress_import_adhesion_apply_default_values_to_posts_meta( $postmeta 
 	}
 	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_date_debut'] )
 	     && empty( $postmeta['amapress_adhesion_date_debut'] ) ) {
-		$vals                                     = AmapressEntities::getPostFieldsValidators();
-		$val                                      = $vals['amapress_adhesion_date_debut'];
-		$postmeta['amapress_adhesion_date_debut'] = call_user_func( $val, $_REQUEST['amapress_import_adhesion_default_date_debut'] );
+		$postmeta['amapress_adhesion_date_debut'] = $_REQUEST['amapress_import_adhesion_default_date_debut'];
 	}
 
 //	$contrat_instance = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
@@ -1385,7 +1383,7 @@ function amapress_import_adhesion_meta2( $postmeta, $postdata, $posttaxo, $post_
 	$date_debut       = Amapress::start_of_day( $postmeta['amapress_adhesion_date_debut'] );
 	if ( $date_debut < Amapress::start_of_day( $contrat_instance->getDate_debut() )
 	     || $date_debut > Amapress::start_of_day( $contrat_instance->getDate_fin() ) ) {
-		$dt            = date_i18n( 'd/m/Y', $postmeta['amapress_adhesion_date_debut'] );
+		$dt            = date_i18n( 'd/m/Y', $date_debut );
 		$contrat_debut = date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() );
 		$contrat_fin   = date_i18n( 'd/m/Y', $contrat_instance->getDate_fin() );
 
