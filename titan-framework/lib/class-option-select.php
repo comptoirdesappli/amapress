@@ -249,6 +249,10 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	function getArchived(
 		$id
 	) {
+		if ( null == $id ) {
+			return '';
+		}
+
 		return "Archivé $id";
 	}
 
@@ -276,7 +280,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 				}
 			}
 
-			if ( ! $found ) {
+			if ( ! $found && null != $val ) {
 				$options[ $val ] = $this->getArchived( $val );
 			}
 		}
