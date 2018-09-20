@@ -114,9 +114,19 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 
 	$date                     = $dist->getDate();
 	$dist_contrat_ids         = $dist->getContratIds();
+	$active_contrats          = AmapressContrats::get_active_contrat_instances( null, $date, false, false );
+	$active_contrats_ids      = array_map(
+		function ( $c ) {
+			return $c->ID;
+		}, $active_contrats
+	);
 	$all_contrat_instances    = ! $show_all_contrats ?
 		$dist->getContrats() :
-		AmapressContrats::get_active_contrat_instances( null, $date, false, false );
+		$active_contrats;
+	$all_contrat_instances    = array_filter( $all_contrat_instances,
+		function ( $c ) use ( $active_contrats_ids ) {
+			return in_array( $c->ID, $active_contrats_ids );
+		} );
 	$all_contrat_instance_ids = array_map(
 		function ( $c ) {
 			return $c->ID;
@@ -306,7 +316,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			if ( ! empty( $line[ 'contrat_' . $adh->getContrat_instance()->ID ] ) ) {
 				$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= ',';
 			}
-			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= $adh->getContrat_quantites_Codes_AsString( $date );
+			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= $adh->getContrat_quantites_Codes_AsString( ! $show_all_contrats ? $date : null );
 			if ( AmapressAdhesion::TO_CONFIRM == $adh->getStatus() ) {
 				$to_confirm = true;
 			}
