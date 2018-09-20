@@ -538,6 +538,19 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 	public function addCoadherent( $coadhrent_id ) {
 		$this->ensure_init();
+
+		if ( empty( $coadhrent_id ) ) {
+			return false;
+		}
+
+		foreach ( [ '1', '2', '3' ] as $id ) {
+			if ( ! empty( $this->custom[ 'amapress_user_co-adherent-' . $id ] ) ) {
+				if ( $this->custom[ 'amapress_user_co-adherent-' . $id ] == $coadhrent_id ) {
+					return true;
+				}
+			}
+		}
+
 		foreach ( [ '1', '2', '3' ] as $id ) {
 			if ( empty( $this->custom[ 'amapress_user_co-adherent-' . $id ] ) ) {
 				$this->custom[ 'amapress_user_co-adherent-' . $id ] = $coadhrent_id;

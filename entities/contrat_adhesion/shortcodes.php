@@ -22,6 +22,30 @@ add_action( 'amapress_init', function () {
 			wp_redirect_and_exit( add_query_arg( 'message', 'cannot_create_user' ) );
 		}
 
+		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
+			$coadh1_email          = sanitize_email( $_REQUEST['coadh1_email'] );
+			$coadh1_user_firt_name = sanitize_text_field( $_REQUEST['coadh1_first_name'] );
+			$coadh1_user_last_name = sanitize_text_field( $_REQUEST['coadh1_last_name'] );
+
+			$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, null, null );
+			if ( $coadh1_user_id ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->addCoadherent( $coadh1_user_id );
+			}
+		}
+
+		if ( ! empty( $_REQUEST['coadh2_email'] ) ) {
+			$coadh2_email          = sanitize_email( $_REQUEST['coadh2_email'] );
+			$coadh2_user_firt_name = sanitize_text_field( $_REQUEST['coadh2_first_name'] );
+			$coadh2_user_last_name = sanitize_text_field( $_REQUEST['coadh2_last_name'] );
+
+			$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, null, null );
+			if ( $coadh2_user_id ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->addCoadherent( $coadh2_user_id );
+			}
+		}
+
 		wp_redirect_and_exit(
 			add_query_arg( [
 				'step'    => ! empty( $_REQUEST['activate_adhesion'] ) ? 'adhesion' : 'contrats',
@@ -287,6 +311,15 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$user_last_name = '';
 		$user_address   = '';
 		$user_phones    = '';
+
+		$coadh1_user_firt_name = '';
+		$coadh1_user_last_name = '';
+		$coadh1_email          = '';
+
+		$coadh2_user_firt_name = '';
+		$coadh2_user_last_name = '';
+		$coadh2_email          = '';
+
 		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
 		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
@@ -303,6 +336,18 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$user_address   = $amapien->getFormattedAdresse();
 			$user_phones    = implode( '/', $amapien->getPhoneNumbers() );
 			$member_message = '';
+
+			if ( $amapien->getCoAdherent1() ) {
+				$coadh1_user_firt_name = $amapien->getCoAdherent1()->getUser()->first_name;
+				$coadh1_user_last_name = $amapien->getCoAdherent1()->getUser()->last_name;
+				$coadh1_email          = $amapien->getCoAdherent1()->getUser()->user_email;
+			}
+
+			if ( $amapien->getCoAdherent2() ) {
+				$coadh2_user_firt_name = $amapien->getCoAdherent2()->getUser()->first_name;
+				$coadh2_user_last_name = $amapien->getCoAdherent2()->getUser()->last_name;
+				$coadh2_email          = $amapien->getCoAdherent2()->getUser()->user_email;
+			}
 		}
 
 		$adh_pmt = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false ) : null;
@@ -326,22 +371,97 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 <tr>
                     <th style="text-align: left; width: auto"><label for="last_name">Nom* : </label></th>
                     <td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required"
-                               value="<?php echo esc_attr( $user_last_name ) ?>"/>
+                               value="<?php echo esc_attr( $user_last_name ) ?>"/></td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="first_name">Prénom* : </label></th>
                     <td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required"
-                               value="<?php echo esc_attr( $user_firt_name ) ?>"/>
+                               value="<?php echo esc_attr( $user_firt_name ) ?>"/></td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="tel">Téléphone : </label></th>
                     <td><input style="width: 100%" type="text" id="tel" name="tel" class=""
-                               value="<?php echo esc_attr( $user_phones ) ?>"/>
+                               value="<?php echo esc_attr( $user_phones ) ?>"/></td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="address">Adresse : </label></th>
-                    <td><textarea style="width: 100%" rows="8" id="address" name="address"
-                                  class=""><?php echo esc_textarea( $user_address ); ?></textarea>
+                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
+                                  class=""><?php echo esc_textarea( $user_address ); ?></textarea></td>
+                </tr>
+            </table>
+            <table style="min-width: 50%">
+                <tr>
+                    <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label style="width: 10%" for="coadh1_email">Son email
+                            : </label>
+                    </th>
+                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh1_email" name="coadh1_email"
+                                                                              class=""
+                                                                              value="<?php echo esc_attr( $coadh1_email ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh1_last_name">Son nom : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh1_last_name"
+                                                                              name="coadh1_last_name"
+                                                                              class="required_if_not_empty"
+                                                                              data-if-id="coadh1_email"
+                                                                              value="<?php echo esc_attr( $coadh1_user_last_name ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh1_first_name">Son prénom : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh1_first_name"
+                                                                              name="coadh1_first_name"
+                                                                              class="required_if_not_empty"
+                                                                              data-if-id="coadh1_email"
+                                                                              value="<?php echo esc_attr( $coadh1_user_firt_name ) ?>"/>
+                    </td>
+                </tr>
+            </table>
+	        <?php
+	        //            if (!empty($coadh1_email)) {
+	        //                echo '<p></p>';
+	        //            }
+	        ?>
+            <table style="min-width: 50%">
+                <tr>
+                    <th colspan="2">Co adhérent 2 <em>(si vous payez les contrats à plusieurs)</em></th>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label style="width: 10%" for="coadh2_email">Son email
+                            : </label>
+                    </th>
+                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh2_email" name="coadh2_email"
+                                                                              class=""
+                                                                              value="<?php echo esc_attr( $coadh2_email ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh2_last_name">Son nom : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh2_last_name"
+                                                                              name="coadh2_last_name"
+                                                                              class="required_if_not_empty"
+                                                                              data-if-id="coadh2_email"
+                                                                              value="<?php echo esc_attr( $coadh2_user_last_name ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh2_first_name">Son prénom : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh2_first_name"
+                                                                              name="coadh2_first_name"
+                                                                              class="required_if_not_empty"
+                                                                              data-if-id="coadh2_email"
+                                                                              value="<?php echo esc_attr( $coadh2_user_firt_name ) ?>"/>
+                    </td>
                 </tr>
             </table>
             <p style="color:red">* Champ obligatoire</p>
@@ -1411,6 +1531,13 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
                 }
                 }
             );
+
+            jQuery.validator.addMethod("required_if_not_empty", function (value, element) {
+                if (jQuery('#' + jQuery(element).data('if-id')).val().length > 0) {
+                    return jQuery(element).val().trim().length > 0;
+                }
+                return true;
+            }, "Champ requis");
 
             jQuery.validator.addMethod(
                 "min_sum",
