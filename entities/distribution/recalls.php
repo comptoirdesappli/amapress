@@ -198,6 +198,16 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 		return;
 	}
 
+	if ( Amapress::getOption( 'distribution-verify-recall-send-refs', true ) ) {
+		foreach ( $dist->getContrats() as $c ) {
+			if ( empty( $c ) ) {
+				continue;
+			}
+
+			$responsable_ids = array_merge( $responsable_ids, $c->getModel()->getProducteur()->getReferentsIds() );
+		}
+	}
+
 	$attachments   = [];
 	$attachments[] = Amapress::createPdfFromHtmlAsMailAttachment(
 		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
@@ -353,6 +363,12 @@ function amapress_distribution_verify_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Destinataire(s)',
+		),
+		array(
+			'id'      => 'distribution-verify-recall-send-refs',
+			'name'    => amapress__( 'Envoyer aux référents' ),
+			'type'    => 'checkbox',
+			'default' => true,
 		),
 		array(
 			'type' => 'save',
@@ -632,7 +648,7 @@ function amapress_distribution_changes_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : Pas de distribution le %%date%%\n%%nom_site%%" ),
 			'desc'    => AmapressDistribution::getPlaceholdersHelp( [
-				             'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
+				'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
 			] ),
 		),
 		array(
@@ -652,7 +668,7 @@ function amapress_distribution_changes_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : LLa distribution cette semaine aura lieu le %%jour_date_dist%%\n%%nom_site%%" ),
 			'desc'    => AmapressDistribution::getPlaceholdersHelp( [
-				             'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
+				'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
 			] ),
 		),
 		array(
