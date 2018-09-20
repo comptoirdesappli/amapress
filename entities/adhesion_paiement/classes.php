@@ -341,13 +341,13 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$ret['montant_amap']      = [
 				'desc' => 'Montant versé à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return $adh->getPeriod()->getMontantAmap();
+					return Amapress::formatPrice( $adh->getPeriod()->getMontantAmap() );
 				}
 			];
 			$ret['montant_reseau']    = [
 				'desc' => 'Montant versé au réseau de l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return $adh->getPeriod()->getMontantReseau();
+					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau() );
 				}
 			];
 			$ret['tresoriers']        = [
@@ -430,20 +430,20 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				$ret[ 'montant_cat_' . $tax->slug ] = [
 					'desc' => 'Montant relatif à ' . $tax->name,
 					'func' => function ( AmapressAdhesion_paiement $adh ) use ( $tax_id ) {
-						return $adh->getAmount( $tax_id );
+						return Amapress::formatPrice( $adh->getAmount( $tax_id ) );
 					}
 				];
 			}
 			$ret['total']     = [
 				'desc' => 'Total de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return $adh->getAmount();
+					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
 			$ret['montant']   = [
 				'desc' => 'Total de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return $adh->getAmount();
+					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
 			self::$properties = $ret;

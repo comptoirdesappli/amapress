@@ -129,56 +129,56 @@ class AmapressAdhesion extends TitanEntity {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                       = [];
-			$ret['contrat_type']       = [
+			$ret                         = [];
+			$ret['contrat_type']         = [
 				'desc' => 'Type du contrat (par ex, Légumes)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getTitle();
 				}
 			];
-			$ret['contrat_titre']      = [
+			$ret['contrat_titre']        = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
-			$ret['contrat_sous_titre'] = [
+			$ret['contrat_sous_titre']   = [
 				'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getSubName();
 				}
 			];
-			$ret['contrat_lien']       = [
+			$ret['contrat_lien']         = [
 				'desc' => 'Lien vers la présentation du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
 				}
 			];
-			$ret['date_debut']         = [
+			$ret['date_debut']           = [
 				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin']           = [
+			$ret['date_fin']             = [
 				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['date_debut_complete']         = [
+			$ret['date_debut_complete']  = [
 				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return date_i18n( 'D j M Y', $adh->getDate_debut() );
+					return date_i18n( 'l j M Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin_complete']           = [
+			$ret['date_fin_complete']    = [
 				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return date_i18n( 'D j M Y', $adh->getDate_fin() );
+					return date_i18n( 'l j M Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['tous_referents']              = [
+			$ret['tous_referents']       = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -194,7 +194,7 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['tous_referents_email']        = [
+			$ret['tous_referents_email'] = [
 				'desc' => 'Nom des référents du contrat avec emails',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -308,37 +308,37 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getFormattedAdresse();
 				}
 			];
-			$ret['producteur.tel']              = [
+			$ret['producteur.tel']       = [
 				'desc' => 'Téléphone producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getTelephone();
 				}
 			];
-			$ret['producteur.email']            = [
+			$ret['producteur.email']     = [
 				'desc' => 'Email producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getEmail();
 				}
 			];
-			$ret['lieu']                        = [
+			$ret['lieu']                 = [
 				'desc' => 'Lieu de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
-			$ret['lieu_court'] = [
+			$ret['lieu_court']           = [
 				'desc' => 'Lieu de distribution (nom court)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getShortName();
 				}
 			];
-			$ret['lieu_heure_debut']            = [
+			$ret['lieu_heure_debut']     = [
 				'desc' => 'Heure de début de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'H:i', $adh->getLieu()->getHeure_debut() );
 				}
 			];
-			$ret['lieu_heure_fin']              = [
+			$ret['lieu_heure_fin']       = [
 				'desc' => 'Heure de fin de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'H:i', $adh->getLieu()->getHeure_fin() );
@@ -368,25 +368,25 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_fin() );
 				}
 			];
-			$ret['nb_paiements']                = [
+			$ret['nb_paiements']         = [
 				'desc' => 'Nombre de chèques choisi',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getPaiements();
 				}
 			];
-			$ret['nb_distributions']            = [
+			$ret['nb_distributions']     = [
 				'desc' => 'Nombre de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getRemainingDatesWithFactors();
 				}
 			];
-			$ret['nb_dates']                    = [
+			$ret['nb_dates']             = [
 				'desc' => 'Nombre de dates de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return count( $adh->getRemainingDates() );
 				}
 			];
-			$ret['dates_rattrapages'] = [
+			$ret['dates_rattrapages']    = [
 				'desc' => 'Description des dates de distribution de rattrapage',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$rattrapage        = [];
@@ -464,7 +464,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $o['desc'];
 				}
 			];
-			$ret['quantites']                   = [
+			$ret['quantites']            = [
 				'desc' => 'Quantité(s) choisie(s)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -474,7 +474,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString();
 				}
 			];
-			$ret['quantites_prix']              = [
+			$ret['quantites_prix']       = [
 				'desc' => 'Quantité(s) choisie(s) avec prix unitaire',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -484,13 +484,13 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString( null, true );
 				}
 			];
-			$ret['total']                       = [
+			$ret['total']                = [
 				'desc' => 'Total du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getTotalAmount();
+					return Amapress::formatPrice( $adh->getTotalAmount() );
 				}
 			];
-			self::$properties                   = $ret;
+			self::$properties            = $ret;
 		}
 
 		return self::$properties;
@@ -510,7 +510,8 @@ class AmapressAdhesion extends TitanEntity {
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
 			$ret[ $prop_name ] = $prop_desc;
 		}
-		$ret["quantite"]               = '(Tableau quantité) Libellé quantité';
+		$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
+		$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
 		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
 		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
 		$ret["quantite_sous_total"]    = '(Tableau quantité) Prix pour la quantité choisie';
@@ -544,13 +545,14 @@ class AmapressAdhesion extends TitanEntity {
 			$remaining_dates                           = count( $this->getRemainingDates( $quant->getId() ) );
 			$remaining_distrib                         = $this->getRemainingDatesWithFactors( $quant->getId() );
 			$placeholders["quantite#$i"]               = $quant->getTitle();
+			$placeholders["quantite_simple#$i"]        = $quant->getContratQuantite()->getTitle();
 			$placeholders["quantite_code#$i"]          = $quant->getCode();
 			$placeholders["quantite_nb_dates#$i"]      = $remaining_dates;
 			$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
-			$placeholders["quantite_sous_total#$i"]    = $quant->getPrice();
-			$placeholders["quantite_total#$i"]         = $quant->getPrice() * $remaining_distrib;
+			$placeholders["quantite_sous_total#$i"]    = Amapress::formatPrice( $quant->getPrice() );
+			$placeholders["quantite_total#$i"]         = Amapress::formatPrice( $quant->getPrice() * $remaining_distrib );
 			$placeholders["quantite_nombre#$i"]        = $quant->getFactor();
-			$placeholders["quantite_prix_unitaire#$i"] = $quant->getContratQuantite()->getPrix_unitaire();
+			$placeholders["quantite_prix_unitaire#$i"] = Amapress::formatPrice( $quant->getContratQuantite()->getPrix_unitaire() );
 			$placeholders["quantite_description#$i"]   = $quant->getContratQuantite()->getDescription();
 			$placeholders["quantite_unite#$i"]         = $quant->getContratQuantite()->getPriceUnitDisplay();
 			$i                                         += 1;
@@ -564,6 +566,14 @@ class AmapressAdhesion extends TitanEntity {
 		try {
 			$templateProcessor->cloneRow( 'quantite', count( $quants ) );
 		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'quantite_simple', count( $quants ) );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				try {
+					$templateProcessor->cloneRow( 'quantite_description', count( $quants ) );
+				} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				}
+			}
 		}
 //		amapress_dump( $placeholders );
 //		die();
@@ -718,7 +728,7 @@ class AmapressAdhesion extends TitanEntity {
 			$quant_labels = array_map(
 				function ( $vv ) use ( $show_price_unit ) {
 					/** @var AmapressAdhesionQuantite $vv */
-					return $vv->getTitle() . ( $show_price_unit ? ' à ' . $vv->getPrice() . '€' : '' );
+					return $vv->getTitle() . ( $show_price_unit ? ' à ' . Amapress::formatPrice( $vv->getPrice() ) . '€' : '' );
 				}
 				, $this->getContrat_quantites( $date ) );
 

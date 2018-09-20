@@ -346,13 +346,13 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['date_debut_complete']         = [
 			'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				return date_i18n( 'D j M Y', $adh->getDate_debut() );
+				return date_i18n( 'l j M Y', $adh->getDate_debut() );
 			}
 		];
 		$ret['date_fin_complete']           = [
 			'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				return date_i18n( 'D j M Y', $adh->getDate_fin() );
+				return date_i18n( 'l j M Y', $adh->getDate_fin() );
 			}
 		];
 		$ret['lieux']                       = [
@@ -527,7 +527,8 @@ class AmapressContrat_instance extends TitanEntity {
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
 			$ret[ $prop_name ] = $prop_desc;
 		}
-		$ret["quantite"]               = '(Tableau quantité) Libellé quantité';
+		$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
+		$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
 		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
 		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
 		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
@@ -559,11 +560,12 @@ class AmapressContrat_instance extends TitanEntity {
 			$remaining_dates                           = count( $this->getRemainingDates( $date_first_distrib, $quant->ID ) );
 			$remaining_distrib                         = $this->getRemainingDatesWithFactors( $date_first_distrib, $quant->ID );
 			$placeholders["quantite#$i"]               = $quant->getTitle();
+			$placeholders["quantite_simple#$i"]        = $quant->getTitle();
 			$placeholders["quantite_code#$i"]          = $quant->getCode();
 			$placeholders["quantite_nb_dates#$i"]      = $remaining_dates;
 			$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
-			$placeholders["quantite_total#$i"]         = $quant->getPrix_unitaire() * $remaining_distrib;
-			$placeholders["quantite_prix_unitaire#$i"] = $quant->getPrix_unitaire();
+			$placeholders["quantite_total#$i"]         = Amapress::formatPrice( $quant->getPrix_unitaire() * $remaining_distrib );
+			$placeholders["quantite_prix_unitaire#$i"] = Amapress::formatPrice( $quant->getPrix_unitaire() );
 			$placeholders["quantite_description#$i"]   = $quant->getDescription();
 			$placeholders["quantite_unite#$i"]         = $quant->getPriceUnitDisplay();
 			$paiements                                 = [];
@@ -582,6 +584,14 @@ class AmapressContrat_instance extends TitanEntity {
 		try {
 			$templateProcessor->cloneRow( 'quantite', count( $quants ) );
 		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'quantite_simple', count( $quants ) );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				try {
+					$templateProcessor->cloneRow( 'quantite_description', count( $quants ) );
+				} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				}
+			}
 		}
 
 		foreach ( $placeholders as $k => $v ) {
