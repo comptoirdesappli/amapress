@@ -714,6 +714,9 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function getContrat_quantites_AsString( $date = null, $show_price_unit = false ) {
+		if ( empty( $this->getContrat_instance() ) ) {
+			return '';
+		}
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
 			$quant_labels = array();
 			foreach ( $this->getVariables_Contrat_quantites( $date ) as $q ) {
@@ -803,6 +806,9 @@ class AmapressAdhesion extends TitanEntity {
 //    }
 
 	public function getRemainingDates( $quantite_id = null ) {
+		if ( empty( $this->getContrat_instance() ) )
+			return [];
+
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
 		$dates = $this->getContrat_instance()->getRemainingDates( $start_date, $quantite_id );

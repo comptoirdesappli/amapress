@@ -44,7 +44,15 @@ function amapress_register_entities_adhesion( $entities ) {
 						return false;
 					}
 
-					return ! empty( AmapressAdhesion::getBy( $adh_id )->getContrat_instance()->getContratModelDocFileName() );
+					$adh = AmapressAdhesion::getBy( $adh_id );
+					if ( empty( $adh ) ) {
+						return false;
+					}
+					if ( empty( $adh->getContrat_instance() ) ) {
+						return false;
+					}
+
+					return ! empty( $adh->getContrat_instance()->getContratModelDocFileName() );
 				},
 			],
 			'send_confirmation' => 'Envoyer mail confirmation',
@@ -695,6 +703,9 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			}
 
 			foreach ( $contrat_quants as $quantite ) {
+				if ( empty( $quantite ) ) {
+					continue;
+				}
 				$id        = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID;
 				$id_factor = 'contrat-' . $contrat_instance->ID . '-quant-' . $quantite->ID . '-factor';
 
@@ -702,16 +713,20 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				if ( $contrat_instance->isQuantiteVariable() ) {
 					$disabled         = disabled( in_array( $quantite->ID, $adhesion_quantite_ids ), false, false );
 					$quant_var_editor .= "<select id='$id_factor' name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block;min-width: auto' $disabled>";
+
 					$quant_var_editor .= tf_parse_select_options(
 						$quantite->getQuantiteOptions(),
-						isset( $adhesion_quantites[ $quantite->ID ] ) ? $adhesion_quantites[ $quantite->ID ]->getFactor() : null,
+						! empty( $adhesion_quantites[ $quantite->ID ] ) ? $adhesion_quantites[ $quantite->ID ]->getFactor() : null,
 						false );
 					$quant_var_editor .= '</select>';
 				}
 
 
 				$type = $contrat_instance->isQuantiteMultiple() ? 'checkbox' : 'radio';
-				$ret  .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="%s" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',
+				if ( empty( $quantite->getContrat_instance() ) || empty( $contrat_instance ) ) {
+					continue;
+				}
+				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="%s" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',
 					$id,
 					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
 					$id,
@@ -1772,3 +1787,29 @@ add_action( 'wp_ajax_check_email_exists', function () {
 
 	wp_die();
 } );
+
+add_action( 'delete_post', function ( $post_id ) {
+	$post_type = get_post_type( $post_id );
+
+	if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post_type ) {
+		$paiements_ids = get_posts(
+			[
+				'fields'         => 'ids',
+				'posts_per_page' => - 1,
+				'post_type'      => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'amapress_contrat_paiement_adhesion',
+						'value'   => $post_id,
+						'compare' => '=',
+						'type'    => 'NUMERIC'
+					),
+				)
+			]
+		);
+		foreach ( $paiements_ids as $id ) {
+			wp_delete_post( $id );
+		}
+	}
+}, 1000 );
