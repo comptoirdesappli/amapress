@@ -9,6 +9,15 @@ function amapress_is_admin_or_responsable() {
 	       || amapress_current_user_can( 'responsable_amap' );
 }
 
+function amapress_can_be_referent_roles() {
+	return array(
+		'administrator',
+		'responsable_amap',
+		'referent',
+		'producteur',
+	);
+}
+
 function amapress_can_access_admin_roles() {
 	return array(
 		'administrator',

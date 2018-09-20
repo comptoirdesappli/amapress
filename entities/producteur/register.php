@@ -63,7 +63,7 @@ function amapress_register_entities_producteur( $entities ) {
 			'referent'             => array(
 				'name'         => amapress__( 'Référent' ),
 				'type'         => 'select-users',
-				'role'         => amapress_can_access_admin_roles(),
+				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
 //                'required' => true,
 				'desc'         => 'Référent',
@@ -75,7 +75,7 @@ function amapress_register_entities_producteur( $entities ) {
 			'referent2'            => array(
 				'name'         => amapress__( 'Référent 2' ),
 				'type'         => 'select-users',
-				'role'         => amapress_can_access_admin_roles(),
+				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
 //                'required' => true,
 				'desc'         => 'Référent 2',
@@ -87,7 +87,7 @@ function amapress_register_entities_producteur( $entities ) {
 			'referent3'            => array(
 				'name'         => amapress__( 'Référent 3' ),
 				'type'         => 'select-users',
-				'role'         => amapress_can_access_admin_roles(),
+				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
 //                'required' => true,
 				'desc'         => 'Référent 3',
@@ -134,7 +134,7 @@ function amapress_producteur_fields( $fields ) {
 			$fields[ 'referent_' . $lieu->ID ] = array(
 				'name'         => amapress__( 'Référent ' . $lieu->getShortName() ),
 				'type'         => 'select-users',
-				'role'         => amapress_can_access_admin_roles(),
+				'role'         => amapress_can_be_referent_roles(),
 				'group'        => 'Référents',
 				'searchable'   => true,
 				'autocomplete' => true,
