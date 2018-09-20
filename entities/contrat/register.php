@@ -737,11 +737,10 @@ jQuery(function($) {
 				'custom'      => function ( $post_id ) {
 					$contrat    = AmapressContrat_instance::getBy( $post_id, true );
 					$rattrapage = [];
-					$i          = 0;
 					foreach ( $contrat->getRattrapage() as $r ) {
 						$rattrapage[] = $r;
-						$i ++;
 					}
+					$i = 0;
 					while ( $i < 6 ) {
 						$rattrapage[] = [
 							'date'     => 0,
