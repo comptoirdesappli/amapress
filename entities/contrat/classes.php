@@ -107,6 +107,10 @@ class AmapressContrat_instance extends TitanEntity {
 		parent::__construct( $post_id );
 	}
 
+	public function getManage_Cheques() {
+		return $this->getCustom( 'amapress_contrat_manage_paiements', 1 );
+	}
+
 	/** @return AmapressContrat */
 	public function getModel() {
 		return $this->getCustomAsEntity( 'amapress_contrat_instance_model', 'AmapressContrat' );
@@ -502,6 +506,7 @@ class AmapressContrat_instance extends TitanEntity {
 
 		return $ret;
 	}
+
 
 	public function getRemainingDates( $date = null, $quantite_id = null ) {
 		if ( empty( $date ) ) {

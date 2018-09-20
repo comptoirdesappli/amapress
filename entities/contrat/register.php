@@ -962,6 +962,16 @@ jQuery(function($) {
 					'12' => '12 chèques',
 				)
 			),
+			'manage_paiements'      => array(
+				'name'        => amapress__( 'Répartition des chèques' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlement en plusieurs fois',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => true,
+				'show_column' => false,
+				'desc'        => 'Gérer la répartition des chèques dans Amapress',
+			),
 			'liste_dates_paiements' => array(
 				'name'             => amapress__( 'Calendrier des remises de chèques' ),
 				'type'             => 'multidate',

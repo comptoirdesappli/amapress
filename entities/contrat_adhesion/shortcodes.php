@@ -1416,7 +1416,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		$inscription = AmapressAdhesion::getBy( $new_id );
-		$inscription->preparePaiements();
+		if ( $inscription->getContrat_instance()->getManage_Cheques() ) {
+			$inscription->preparePaiements();
+		}
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
 			$inscription->sendConfirmationMail();
