@@ -765,7 +765,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				if ( $admin_mode ) {
 					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>';
 				} else {
-					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/>' . $print_contrat . '</li>';
+					$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
+					$contrat_info = 'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour '
+					                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' € (' . $adh->getProperty( 'option_paiements' ) . ')'
+					                . '<br/>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
+					                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em><br/>' . $print_contrat . '</li>';
 				}
 			}
 			echo '</ul>';
