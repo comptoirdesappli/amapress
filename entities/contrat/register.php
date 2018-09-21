@@ -244,7 +244,7 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 1/6 - Ferme
-			'model'                 => array(
+			'model'      => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -271,7 +271,54 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'searchable'        => true,
 			),
-			'nb_visites'            => array(
+			'producteur' => array(
+				'name'        => amapress__( 'Producteur' ),
+				'type'        => 'custom',
+				'group'       => '1/6 - Ferme',
+				'show_column' => false,
+				'custom'      => function ( $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					if ( empty( $contrat )
+					     || empty( $contrat->getModel() )
+					     || empty( $contrat->getModel()->getProducteur() )
+					     || empty( $contrat->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return Amapress::makeLink(
+							$contrat->getModel()->getProducteur()->getAdminEditLink(),
+							$contrat->getModel()->getProducteur()->getTitle() )
+					       . ' (' . Amapress::makeLink(
+							$contrat->getModel()->getProducteur()->getUser()->getEditLink(),
+							$contrat->getModel()->getProducteur()->getUser()->getDisplayName() ) . ')';
+				}
+			),
+			'refs'       => array(
+				'name'                 => amapress__( 'Référents' ),
+				'type'                 => 'custom',
+				'group'                => '1/6 - Ferme',
+				'use_custom_as_column' => true,
+				'custom'               => function ( $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					if ( empty( $contrat )
+					     || empty( $contrat->getModel() )
+					     || empty( $contrat->getModel()->getProducteur() )
+					     || empty( $contrat->getModel()->getProducteur()->getReferentsIds() ) ) {
+						return '';
+					}
+
+					$refs = [];
+					foreach ( $contrat->getModel()->getProducteur()->getReferentsIds() as $user_id ) {
+						$ref    = AmapressUser::getBy( $user_id );
+						$refs[] = Amapress::makeLink(
+							$ref->getEditLink(),
+							$ref->getDisplayName() );
+					}
+
+					return implode( ', ', $refs );
+				},
+			),
+			'nb_visites' => array(
 				'name'        => amapress__( 'Visite' ),
 				'group'       => '1/6 - Ferme',
 				'type'        => 'number',
@@ -282,7 +329,7 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 2/6 - Paramètres généraux
-			'date_debut'            => array(
+			'date_debut' => array(
 				'name'          => amapress__( 'Début' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -1162,7 +1209,7 @@ jQuery(function($) {
 					return $ret;
 				}
 			),
-			'code'             => array(
+			'code'            => array(
 				'name'         => amapress__( 'Code' ),
 				'type'         => 'text',
 				'csv_required' => true,
@@ -1170,7 +1217,7 @@ jQuery(function($) {
 				'import_key'   => true,
 				'searchable'   => true,
 			),
-			'prix_unitaire'    => array(
+			'prix_unitaire'   => array(
 				'name'         => amapress__( 'Prix unitaire' ),
 				'type'         => 'price',
 				'required'     => true,
@@ -1179,7 +1226,7 @@ jQuery(function($) {
 				'desc'         => 'Prix unitaire',
 			),
 			//que distrib
-			'quantite'         => array(
+			'quantite'        => array(
 				'name' => amapress__( 'Facteur quantité' ),
 				'type' => 'float',
 //                'required' => true,
