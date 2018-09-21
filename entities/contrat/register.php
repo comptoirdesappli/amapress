@@ -1167,7 +1167,7 @@ jQuery(function($) {
 //                'import_key' => true,
 			),
 			//commandes
-			'produits'         => array(
+			'produits'        => array(
 				'name'         => amapress__( 'Produits' ),
 				'type'         => 'select-posts',
 				'post_type'    => AmapressProduit::INTERNAL_POST_TYPE,
@@ -1176,7 +1176,7 @@ jQuery(function($) {
 				'tags'         => true,
 				'csv'          => false,
 			),
-			'unit'             => array(
+			'unit'            => array(
 				'name'    => amapress__( 'Unité' ),
 				'type'    => 'select',
 				'options' => array(
@@ -1859,4 +1859,38 @@ function amapress_row_action_contrat_instance_generate_contrat( $post_id ) {
 	$full_file_name = $adhesion->generateContratDoc( $date );
 	$file_name      = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
+}
+
+add_filter( 'amapress_can_delete_attachment', 'amapress_can_delete_attachment', 10, 2 );
+function amapress_can_delete_attachment( $can, $post_id ) {
+	$key         = 'amapress_can_delete_attachment';
+	$attachments = wp_cache_get( $key );
+	if ( false === $attachments ) {
+		$attachments            = [];
+		$single_attachment_keys = array(
+			'amapress_contrat_instance_word_model',
+			'amapress_contrat_instance_word_paper_model',
+			'amapress_adhesion_period_word_model',
+		);
+		global $wpdb;
+		$meta_query = [];
+		foreach ( $single_attachment_keys as $single_attachment_key ) {
+			$meta_query[] = $wpdb->prepare( "($wpdb->postmeta.meta_key = %s)", $single_attachment_key );
+		}
+
+		$where  = implode( ' OR ', $meta_query );
+		$values = $wpdb->get_col( "SELECT DISTINCT $wpdb->postmeta.meta_value FROM $wpdb->postmeta WHERE $where" );
+		foreach ( $values as $v ) {
+			$v = maybe_unserialize( $v );
+			if ( is_array( $v ) ) {
+				$attachments += $v;
+			} else {
+				$attachments[] = $v;
+			}
+		}
+		$attachments = array_unique( array_map( 'intval', $attachments ) );
+		wp_cache_set( $key, $attachments );
+	}
+
+	return ! in_array( $post_id, $attachments );
 }

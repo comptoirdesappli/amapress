@@ -476,7 +476,7 @@ function amapress_can_delete_user( $can, $user_id ) {
 		foreach ( $values as $v ) {
 			$v = maybe_unserialize( $v );
 			if ( is_array( $v ) ) {
-				$users_referents += $v;
+				$users_referents = array_merge( $users_referents, $v );
 			} else {
 				$users_referents[] = $v;
 			}
