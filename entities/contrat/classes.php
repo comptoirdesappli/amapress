@@ -300,6 +300,41 @@ class AmapressContrat_instance extends TitanEntity {
 //		       . '</table>';
 //	}
 
+	public function getMailtoAmapiens() {
+		$mails = [];
+		foreach (
+			get_users( [
+				'amapress_contrat' => $this->ID,
+			] ) as $user
+		) {
+			/** @var WP_User $user */
+			$amapien = AmapressUser::getBy( $user );
+			$mails   = array_merge( $mails, $amapien->getAllEmails() );
+		}
+		if ( empty( $mails ) ) {
+			return '';
+		}
+
+		return 'mailto:' . urlencode( implode( ',', $mails ) ) . '&subject=Contrat ' . $this->getTitle();
+	}
+
+	public function getSMStoAmapiens() {
+		$phones = [];
+		foreach (
+			get_users( [
+				'amapress_contrat' => $this->ID,
+			] ) as $user
+		) {
+			/** @var WP_User $user */
+			$amapien = AmapressUser::getBy( $user );
+			$phones  = array_merge( $phones, $amapien->getPhoneNumbers( true ) );
+		}
+		if ( empty( $phones ) ) {
+			return '';
+		}
+
+		return 'sms:' . urlencode( implode( ',', $phones ) ) . '?body=Contrat ' . $this->getTitle();
+	}
 
 	public function getContratDocFileName( $date_first_distrib ) {
 		$model_filename = $this->getContratModelDocFileName();

@@ -184,6 +184,26 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
 				},
 			],
+			'mailto_amapiens'   => [
+				'label'   => 'Mail aux amapiens',
+				'target'  => '_blank',
+				'href'    => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->getMailtoAmapiens();
+				},
+				'show_on' => 'editor',
+			],
+			'smsto_amapiens'    => [
+				'label'   => 'Sms aux amapiens',
+				'target'  => '_blank',
+				'href'    => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->getSMStoAmapiens();
+				},
+				'show_on' => 'editor',
+			],
 		),
 		'labels'          => array(
 			'add_new'      => 'Ajouter',

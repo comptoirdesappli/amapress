@@ -29,7 +29,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 			],
 			'mailto_resp'            => [
-				'label'     => 'Mail aux responsable',
+				'label'     => 'Mail aux responsables',
 				'target'    => '_blank',
 				'href'      => function ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
@@ -40,10 +40,11 @@ function amapress_register_entities_distribution( $entities ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
 
 					return ! empty( $dist->getMailtoResponsables() );
-				}
+				},
+				'show_on'   => 'editor',
 			],
 			'smsto_resp'             => [
-				'label'     => 'Sms aux responsables',
+				'label'     => 'SMS aux responsables',
 				'target'    => '_blank',
 				'href'      => function ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
@@ -54,7 +55,28 @@ function amapress_register_entities_distribution( $entities ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
 
 					return ! empty( $dist->getSMStoResponsables() );
-				}
+				},
+				'show_on'   => 'editor',
+			],
+			'mailto_amapiens'        => [
+				'label'   => 'Mail aux amapiens',
+				'target'  => '_blank',
+				'href'    => function ( $dist_id ) {
+					$dist = AmapressDistribution::getBy( $dist_id );
+
+					return $dist->getMailtoAmapiens();
+				},
+				'show_on' => 'editor',
+			],
+			'smsto_amapiens'         => [
+				'label'   => 'Sms aux amapiens',
+				'target'  => '_blank',
+				'href'    => function ( $dist_id ) {
+					$dist = AmapressDistribution::getBy( $dist_id );
+
+					return $dist->getSMStoAmapiens();
+				},
+				'show_on' => 'editor',
 			],
 			'resend_liste_to_resp'   => [
 				'label'   => 'Renvoyer la liste d\'émargement aux responsables',

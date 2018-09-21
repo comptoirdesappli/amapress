@@ -110,17 +110,72 @@ class AmapressDistribution extends Amapress_EventBase {
 		return 'mailto:' . urlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
 		       date_i18n( 'D j M Y' );
 	}
-
 	public function getSMStoResponsables() {
 		$resp_phones = [];
 		foreach ( $this->getResponsables() as $user ) {
-			$resp_phones = array_merge( $resp_phones, array_keys( $user->getPhoneNumbers() ) );
+			$resp_phones = array_merge( $resp_phones, array_keys( $user->getPhoneNumbers( true ) ) );
 		}
 		if ( empty( $resp_phones ) ) {
 			return '';
 		}
 
 		return 'sms:' . urlencode( implode( ',', $resp_phones ) ) . '?body=Distribution du ' .
+		       date_i18n( 'D j M Y' );
+	}
+
+	public function getMailtoAmapiens() {
+		$mails = [];
+		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
+			/** @var AmapressAdhesion $adh */
+			if ( ! empty( $adh->getAdherent() ) ) {
+				$mails = array_merge( $mails, $adh->getAdherent()->getAllEmails() );
+			}
+		}
+
+		$query                        = array();
+		$query['contrat_instance_id'] = $this->getContratIds();
+		$query['lieu_id']             = $this->getLieuId();
+		$query['date']                = $this->getDate();
+		$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+		foreach ( $paniers as $panier ) {
+			if ( ! empty( $panier->getRepreneur() ) ) {
+				$mails = array_merge( $mails, $panier->getRepreneur()->getAllEmails() );
+			}
+		}
+
+		if ( empty( $mails ) ) {
+			return '';
+		}
+
+		return 'mailto:' . urlencode( implode( ',', $mails ) ) . '&subject=Distribution du ' .
+		       date_i18n( 'D j M Y' );
+	}
+
+	public function getSMStoAmapiens() {
+		$phones = [];
+		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
+			/** @var AmapressAdhesion $adh */
+			if ( ! empty( $adh->getAdherent() ) ) {
+				$phones = array_merge( $phones, $adh->getAdherent()->getPhoneNumbers( true ) );
+			}
+		}
+
+		$query                        = array();
+		$query['contrat_instance_id'] = $this->getContratIds();
+		$query['lieu_id']             = $this->getLieuId();
+		$query['date']                = $this->getDate();
+		$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+		foreach ( $paniers as $panier ) {
+			if ( ! empty( $panier->getRepreneur() ) ) {
+				$phones = array_merge( $phones, $panier->getRepreneur()->getPhoneNumbers( true ) );
+			}
+		}
+
+		if ( empty( $phones ) ) {
+			return '';
+		}
+
+		return 'sms:' . urlencode( implode( ',', $phones ) ) . '?body=Distribution du ' .
 		       date_i18n( 'D j M Y' );
 	}
 
