@@ -115,18 +115,18 @@ class TitanFrameworkAdminPage {
 
 		add_action( 'load-' . $this->panelID, array( $this, 'saveOptions' ) );
 
-		add_action( 'load-' . $this->panelID, array( $this, 'addTitanCredit' ) );
+//		add_action( 'load-' . $this->panelID, array( $this, 'addTitanCredit' ) );
 	}
 
 
-	public function addTitanCredit() {
-		add_filter( 'admin_footer_text', array( $this, 'addTitanCreditText' ) );
-	}
-
-
-	public function addTitanCreditText() {
-		echo __( "<em>Options Page Created with <a href='http://titanframework.net?utm_source=admin&utm_medium=admin footer'>Titan Framework</a></em>", TF_I18NDOMAIN );
-	}
+//	public function addTitanCredit() {
+//		add_filter( 'admin_footer_text', array( $this, 'addTitanCreditText' ) );
+//	}
+//
+//
+//	public function addTitanCreditText() {
+//		echo __( "<em>Options Page Created with <a href='http://titanframework.net?utm_source=admin&utm_medium=admin footer'>Titan Framework</a></em>", TF_I18NDOMAIN );
+//	}
 
 
 	public function getOptionNamespace() {
