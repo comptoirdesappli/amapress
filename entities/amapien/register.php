@@ -129,14 +129,14 @@ function amapress_register_entities_amapien( $entities ) {
 				'searchable' => true,
 //                'required' => true,
 			),
-			'code_postal'        => array(
+			'code_postal'    => array(
 				'name'       => amapress__( 'Code postal' ),
 				'type'       => 'text',
 				'desc'       => 'Code postal',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'ville'              => array(
+			'ville'          => array(
 				'name'       => amapress__( 'Ville' ),
 				'type'       => 'text',
 				'desc'       => 'Ville',
@@ -844,9 +844,29 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 	$user_infos .= ' ; Dernière connexion : ' . ( empty( $last_login ) ? 'jamais' : date_i18n( 'd/m/Y H:i:s', intval( $last_login ) ) );
 	echo "<tr class='row-action-wrap'><th scope='row'><label>Infos</label></th><td>$user_infos</td></tr>";
 
+	$is_ref_prod_list   = AmapressContrats::getReferentProducteursAndLieux( $user->ID );
+	$is_ref_prod        = ! empty( $is_ref_prod_list );
+	$ref_prod_message   = implode( ', ', array_unique( array_map(
+		function ( $r ) {
+			$prod = AmapressProducteur::getBy( $r['producteur'] );
+			if ( empty( $prod ) ) {
+				return '';
+			}
+
+			return 'référent de <a href=\'' . $prod->getAdminEditLink() . '\'>' . esc_html( $prod->getTitle() ) . '</a>';
+		}, $is_ref_prod_list
+	) ) );
+	$check_role_js_code = 'return true;';
+	if ( $is_ref_prod ) {
+		$check_role_js_code = 'return ("referent" === value) || ("responsable_amap" === value) || ("producteur" === value);';
+	}
 	echo '<script type="text/javascript">
 jQuery(function() {
   jQuery(".user-role-wrap").insertAfter(jQuery("#fonctions_role_desc").closest("tr"));
+  jQuery("#role").addClass("check_amap_role");
+  jQuery.validator.addMethod("check_amap_role", function (value, element) {
+	' . $check_role_js_code . '
+  }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement ' . $ref_prod_message . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");
 });
 </script>';
 }

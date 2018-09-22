@@ -182,7 +182,7 @@ select.paiements_details {
     height: initial;
 }
 
-.adhesion-date-error {
+.adhesion-date-error, .error * {
     font-weight: bold;
     color: red;
 }
