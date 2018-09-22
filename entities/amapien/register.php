@@ -35,12 +35,44 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Rôle dans l\'AMAP',
 //            ),
-			'head_amapress0'     => array(
-				'id'   => 'amapress_sect',
-				'name' => amapress__( 'Amapress' ),
+			'head_amapress4' => array(
+				'id'   => 'fonctions_sect',
+				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
 			),
-			'intermittent'       => array(
+			'role_desc'      => array(
+				'type'   => 'custom',
+				'name'   => amapress__( 'Rôle sur le site' ),
+				'custom' => function ( $user_id ) {
+					return '
+<p id="fonctions_role_desc">Les rôles suivants donnent des accès spécifiques selon l’intitulé sélectionné</p>
+<p><strong>Amap Référent producteur</strong> : <em>Accède aux informations relatives au producteur dont il est référent : contrats, inscriptions…</em>
+<br/><span style="text-decoration: underline">Important :</span> Sélectionner et compléter la fiche producteur avec l’utilisateur correspondant</p>
+<p><strong>Amap Coordinateur</strong> : <em>Peut éditer le collectif, créer un compte utilisateur, accède aux listes d’émargement, ...</em>
+<br /><span style="text-decoration: underline">Important :</span> Membre du collectif, cocher l’étiquette Fonction correspondante ci-dessous</p>
+<p><strong>Amapien</strong> : <em>Accède aux information personnalisées disponible sur le site vitrine</em>
+<br />Rôle par défaut</p>
+<p><strong>Amap Trésorier</strong> : <em>Accède au menu “Gestion adhésion”</em></p>
+<p><strong>Amap Producteur</strong> : <em>Accès  à son contrat, aux liste des inscriptions à son contrat, aux produits</em></p>
+<p><strong>Amap Responsable</strong> : <em>Accède à toutes les fonctions de gestion de l\'AMAP.</em></p>
+<p><strong>Abonné, Contributeur, Auteur, Editeur</strong> sont des rôles Wordpress : ne pas utiliser </p>
+<p><strong>Amap Administrateur</strong> : <em>Responsable informatique</em>
+<br />Ouvre tous les droits sur le site</p>';
+				}
+			),
+			'amap_roles'     => array(
+				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
+				'type'        => 'multicheck-categories',
+				'taxonomy'    => AmapressUser::AMAP_ROLE,
+				'desc'        => '
+<p>Pour identifier ou contacter un membre du collectif via la fonctionnalité trombinoscope du site, sélectionner l’étiquette correspondante ci-dessous ou la <a href="' . admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ) . '">créer</a> :</p>
+<p><em>Exemple : Accueil nouveaux,  Boite Contact,  Convivialité-apéro,  Coordination associative,  Distributions, Feuille de chou,  Responsable Intermittents,  Ouverture vers l\'extérieur,  Panier solidaire,  Référent miel,  Relais Réseau AMAP IdF,  Responsable légal,  Site internet,  Sortie à la ferme…</em></p>
+<p>Pour modifier le collectif : <a href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Editer le collectif</a></p>',
+				'show_column' => false,
+				'csv'         => false,
+//                'searchable' => true,
+			),
+			'intermittent'   => array(
 				'name'        => amapress__( 'Intermittent' ),
 				'type'        => 'custom',
 				'custom'      => function ( $user_id ) {
@@ -72,19 +104,25 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 				'show_column' => false,
 			),
-			'avatar'             => array(
+
+			'head_amapress0' => array(
+				'id'   => 'amapress_sect',
+				'name' => amapress__( 'Amapress' ),
+				'type' => 'heading',
+			),
+			'avatar'         => array(
 				'name'        => amapress__( 'Avatar' ),
 				'type'        => 'upload',
 				'custom_save' => 'amapress_save_user_avatar',
 				'desc'        => 'Avatar',
 				'show_column' => false,
 			),
-			'head_amapress'      => array(
+			'head_amapress'  => array(
 				'id'   => 'address_sect',
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
 			),
-			'adresse'            => array(
+			'adresse'        => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
@@ -277,20 +315,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'desc' => 'Co-adhérent(s) - email',
 //            ),
 
-			'head_amapress4'     => array(
-				'id'   => 'fonctions_sect',
-				'name' => amapress__( 'Fonctions' ),
-				'type' => 'heading',
-			),
-			'amap_roles'         => array(
-				'name'        => amapress__( 'Rôles dans l\'AMAP' ),
-				'type'        => 'multicheck-categories',
-				'taxonomy'    => AmapressUser::AMAP_ROLE,
-				'desc'        => 'Rôles dans le Collectif de l\'AMAP. Pour modifier le collectif : <a href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Editer le collectif</a>',
-				'show_column' => false,
-				'csv'         => false,
-//                'searchable' => true,
-			),
+
 			'head_amapress5'     => array(
 				'id'   => 'emarg_sect',
 				'name' => amapress__( 'Liste émargement' ),
@@ -814,4 +839,14 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 	echo "<tr class='row-action-wrap'><th scope='row'><label>Liens</label></th><td>
 <a href='#contrats_sect'>Contrats</a>, <a href='#fonctions_sect'>Fonctions</a>, <a href='#address_sect'>Coordonnées</a>, <a href='#phones_sect'>Téléphones</a>, <a href='#coadh_sect'>Co-adhérents</a>, 
 	</td></tr>";
+	$last_login = get_user_meta( $user->ID, 'last_login', true );
+	$user_infos = 'Utilisateur créé le ' . date_i18n( 'd/m/Y H:i:s', strtotime( $user->user_registered ) );
+	$user_infos .= ' ; Dernière connexion : ' . ( empty( $last_login ) ? 'jamais' : date_i18n( 'd/m/Y H:i:s', intval( $last_login ) ) );
+	echo "<tr class='row-action-wrap'><th scope='row'><label>Infos</label></th><td>$user_infos</td></tr>";
+
+	echo '<script type="text/javascript">
+jQuery(function() {
+  jQuery(".user-role-wrap").insertAfter(jQuery("#fonctions_role_desc").closest("tr"));
+});
+</script>';
 }
