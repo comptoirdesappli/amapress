@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                  => array(
+						'Renouvèlement'                        => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -401,18 +401,22 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques'                   => array(
+						'Mails - Envoi liste des chèques'      => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
-						'Mails - Envoi des quantités à livrer'              => array(
+						'Mails - Envoi des quantités à livrer' => array(
 							'desc'    => '',
 							'options' => amapress_contrat_quantites_recall_options(),
 						),
-						'Mails - Confirmation du contrat/adhésion en ligne' => array(
-							'id'      => 'mail_confirm_online_inscr',
+						'Assistant inscription en ligne'       => array(
+							'id'      => 'config_online_inscriptions',
 							'desc'    => '',
 							'options' => [
+								array(
+									'type' => 'heading',
+									'name' => 'Mails - Confirmation du contrat en ligne',
+								),
 								array(
 									'id'       => 'online_subscription_confirm-mail-subject',
 									'name'     => 'Sujet du mail',
@@ -436,6 +440,10 @@ class AmapressEntities {
 									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
 								),
 								array(
+									'type' => 'heading',
+									'name' => 'Mails - Confirmation du adhésion en ligne',
+								),
+								array(
 									'id'       => 'online_adhesion_confirm-mail-subject',
 									'name'     => 'Sujet du mail',
 									'sanitize' => false,
@@ -453,6 +461,17 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 \n\n%%nom_site%%" ),
 									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
 									                                                  AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ) : '',
+								),
+								array(
+									'type' => 'heading',
+									'name' => 'Message au sujet des adhésions des co-adhérents',
+								),
+								array(
+									'id'      => 'online_adhesion_coadh_message',
+									'name'    => 'Message',
+									'type'    => 'editor',
+									'default' => wpautop( 'Les co-adhérents qui ne sont pas du même foyer doivent payer chacun une cotisation/adhésion.' ),
+									'desc'    => 'Message au sujet des adhésions des co-adhérents',
 								),
 								array(
 									'type' => 'save',

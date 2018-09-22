@@ -160,7 +160,7 @@ Vous pouvez également utiliser un service de réduction d\'URL tel que <a href=
 Vous pouvez également utiliser l\'un des QRCode suivants : 
 <div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
 <strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet de créer des comptes sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site avec des comptes de SPAM.</strong><br />
-Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=mail_confirm_online_inscr' ) . '">ici</a>.</div>';
+Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' ) . '">ici</a>.</div>';
 				$ret .= amapress_get_panel_end();
 			} else {
 				$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">Afficher les instructions d\'accès à cet assistant.</a></div>';
@@ -389,6 +389,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                   class=""><?php echo esc_textarea( $user_address ); ?></textarea></td>
                 </tr>
             </table>
+            <div>
+		        <?php echo Amapress::getOption( 'online_adhesion_coadh_message' ); ?>
+            </div>
             <table style="min-width: 50%">
                 <tr>
                     <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
