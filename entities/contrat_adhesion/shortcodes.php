@@ -524,7 +524,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$ret .= '</tr>';
 		}
 		$ret .= '</table>';
-		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span></p>';
+		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
 		$ret .= '</form>';
 

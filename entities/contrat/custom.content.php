@@ -110,8 +110,8 @@ function amapress_get_custom_content_contrat_default( $content ) {
 //		$links = '<h3>Ses contrats</h3>' . $links;
 //	}
 
-	$content = $prod->getContent();
-	$content .= get_the_content();
+	$content = wpautop( $prod->getContent() );
+	$content .= wpautop( get_the_content() );
 
 //	<div class="contrat-prod-summary">' . get_post_meta( $prod_id, 'amapress_producteur_resume', true ) . '</div>
 	$content .= amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
@@ -119,9 +119,10 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	            . Amapress::get_know_more( get_permalink( $prod_id ) ) .
 	           amapress_get_panel_end() .
 	           amapress_get_panel_start( Amapress::getOption( 'pres_produits_title' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
-                    <div class="row contrat-produits">
+                    <div class="contrat-produits">
                     ' . $prouits_html .
-	           amapress_get_panel_end();
+	            '</div>' .
+	            amapress_get_panel_end();
 
 	return $content;
 }
