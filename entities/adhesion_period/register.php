@@ -61,6 +61,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column'     => false,
 				'show_download'   => true,
 				'show_title'      => true,
+				'selector-title'  => 'Sélectionnez/téléversez un modèle de bulletin DOCX/ODT',
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Pré-inscription en ligne',
 				'desc'            => 'Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ) . '">Plus d\'info</a>)',

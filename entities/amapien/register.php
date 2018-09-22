@@ -111,11 +111,13 @@ function amapress_register_entities_amapien( $entities ) {
 				'type' => 'heading',
 			),
 			'avatar'         => array(
-				'name'        => amapress__( 'Avatar' ),
-				'type'        => 'upload',
-				'custom_save' => 'amapress_save_user_avatar',
-				'desc'        => 'Avatar',
-				'show_column' => false,
+				'name'            => amapress__( 'Avatar' ),
+				'selector-title'  => 'Sélectionnez/téléversez votre photo',
+				'selector-button' => 'Utiliser cette photo',
+				'type'            => 'upload',
+				'custom_save'     => 'amapress_save_user_avatar',
+				'desc'            => 'Avatar',
+				'show_column'     => false,
 			),
 			'head_amapress'  => array(
 				'id'   => 'address_sect',
