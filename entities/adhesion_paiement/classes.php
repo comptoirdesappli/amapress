@@ -169,6 +169,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$num       = $this->getNumero();
 			$date      = $this->getDate();
 			$adhesions = AmapressAdhesion::getUserActiveAdhesions( $user_id );
+			if ( empty( $adhesions ) ) {
+				return $ret;
+			}
+
 			$adh       = array_shift( $adhesions );
 			//TODO page link
 			$ret[] = new Amapress_EventEntry( array(
