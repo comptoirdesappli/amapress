@@ -802,7 +802,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'id'         => 'amapress_log_mails',
 						'title'      => 'Logs des mails envoyés',
 						'capability' => 'manage_options',
-						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=mail_logs' ),
+						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_mail_logs' ),
 					),
 					array(
 						'id'         => 'amapress_backup',

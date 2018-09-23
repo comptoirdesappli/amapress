@@ -65,7 +65,7 @@ class AmapressSMTPMailingQueue {
 	public function addWpCronInterval( $schedules ) {
 //		$interval = get_option('smtp_mailing_queue_advanced')['wpcron_interval'];
 		$mail_queue_interval   = Amapress::getOption( 'mail_queue_interval' );
-		$interval              = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 60;
+		$interval              = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 30;
 		$schedules['amps_smq'] = [
 			'interval' => $interval,
 			'display'  => __( 'Interval for sending mail', 'smtp-mailing-queue' )

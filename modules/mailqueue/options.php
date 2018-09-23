@@ -23,27 +23,28 @@ function amapress_mailing_queue_menu_options() {
 		),
 		'tabs'     => array(
 			'Options de la file de messages' => array(
+				'id'      => 'amapress_mailqueue_options',
 				'desc'    => '',
 				'options' => array(
 					array(
 						'id'      => 'mail_queue_use_queue',
-						'name'    => 'Use Queue',
+						'name'    => 'Utiliser la file d\'envoi de mails',
 						'type'    => 'checkbox',
 						'default' => '1',
 					),
 					array(
 						'id'      => 'mail_queue_limit',
-						'name'    => 'Queue Limit',
+						'name'    => 'Mails par interval',
 						'type'    => 'number',
-						'desc'    => 'Amount of mails processed per cronjob execution.',
-						'default' => '1',
+						'desc'    => 'Nombre de mails envoyés à chaque interval d\'exécution de la file d\'envoi de mails',
+						'default' => '2',
 					),
 					array(
 						'id'      => 'mail_queue_interval',
-						'name'    => 'wp_cron interval',
+						'name'    => 'Interval',
 						'type'    => 'number',
-						'desc'    => 'Time in seconds wp_cron waits until next execution.',
-						'default' => '60',
+						'desc'    => 'Interval d\'exécution de la file d\'envoi de mails',
+						'default' => '30',
 					),
 					array(
 						'type' => 'save',
@@ -51,6 +52,7 @@ function amapress_mailing_queue_menu_options() {
 				)
 			),
 			'SMTP externe'                   => array(
+				'id'      => 'amapress_mailqueue_stmp',
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -114,6 +116,7 @@ function amapress_mailing_queue_menu_options() {
 				)
 			),
 			'Mails en attente'               => array(
+				'id'      => 'amapress_mailqueue_waiting_mails',
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -125,6 +128,7 @@ function amapress_mailing_queue_menu_options() {
 				),
 			),
 			'Mails en erreur'                => array(
+				'id'      => 'amapress_mailqueue_errored_mails',
 				'desc'    => '',
 				'options' => array(
 					array(
@@ -136,7 +140,7 @@ function amapress_mailing_queue_menu_options() {
 				),
 			),
 			'Log des mails'                  => array(
-				'id'      => 'mail_logs',
+				'id'      => 'amapress_mailqueue_mail_logs',
 				'desc'    => '',
 				'options' => array(
 					array(
