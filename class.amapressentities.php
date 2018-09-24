@@ -1142,6 +1142,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //							)
 //						),
 						'Pages'      => array(
+							'id'         => 'amp_pages_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
 							'options'    => array(
@@ -1186,6 +1187,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							)
 						),
 						'Général'    => array(
+							'id'      => 'amp_general_config',
 							'desc'    => '',
 							'options' => array(
 //                                array(
@@ -1235,6 +1237,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							)
 						),
 						'Google API' => array(
+							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -1263,6 +1266,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							),
 						),
 						'Tests'      => array(
+							'id'      => 'amp_tests_config',
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -1304,6 +1308,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						),
 						//
 						'Paiements'  => array(
+							'id'      => 'amp_paiements_config',
 							'desc'    => '',
 							'options' => array(
 								array(

@@ -76,17 +76,17 @@ class AmapressContrats {
 		);
 	}
 
-	public static function contratStatus( $contrat_id ) {
+	public static function contratStatus( $contrat_id, $tag = 'div' ) {
 		$res = false;
 		$tt  = self::get_contrat_status( $contrat_id, $res );
 		if ( $res === true ) {
-			return '<div class="status"><div class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">Mettre à jour distributions et paniers</button><div></div>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">Mettre à jour distributions et paniers</button></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'no' ) {
-			return '<div class="status"><div class="contrat-status" style="color: red;">Pas de dates</div></div>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Pas de dates</span></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'draft' ) {
-			return '<div class="status"><div class="contrat-status" style="color: orange;">Brouillon</div></div>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: orange;"><span>Brouillon</span></' . $tag . '></' . $tag . '>';
 		} else {
-			return '<div class="status"><div class="contrat-status" style="color: green;">OK</div></div>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>OK</span></' . $tag . '></' . $tag . '>';
 		}
 	}
 
