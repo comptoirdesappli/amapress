@@ -2105,7 +2105,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'name'   => 'Placeholders - contrat vierge',
 									'type'   => 'custom',
 									'custom' => function () {
-										return AmapressContrat_instance::getPlaceholdersHelp( [], true );
+										return AmapressContrat_instance::getPlaceholdersHelp( [], true, false );
 									}
 								)
 							)
@@ -2119,7 +2119,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'name'   => 'Placeholders - contrat personnalisé',
 									'type'   => 'custom',
 									'custom' => function () {
-										return AmapressAdhesion::getPlaceholdersHelp( [], true );
+										return AmapressAdhesion::getPlaceholdersHelp( [], true, false );
 									}
 								)
 							)
@@ -2146,7 +2146,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'name'   => 'Placeholders - bulletin adhésion personnalisé',
 									'type'   => 'custom',
 									'custom' => function () {
-										return AmapressAdhesion_paiement::getPlaceholdersHelp( [], true );
+										return AmapressAdhesion_paiement::getPlaceholdersHelp( [], true, false );
 									}
 								)
 							)

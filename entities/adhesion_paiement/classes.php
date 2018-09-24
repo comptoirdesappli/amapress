@@ -301,7 +301,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $out_filename;
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [], $for_word = false ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_word = false, $show_toggler = true ) {
 		$ret = [];
 
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
@@ -310,7 +310,8 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 		return Amapress::getPlaceholdersHelpTable( 'adhesion-placeholders', $ret,
 			'de l\'adhésion', $additional_helps, ! $for_word,
-			$for_word ? '${' : '%%', $for_word ? '}' : '%%' );
+			$for_word ? '${' : '%%', $for_word ? '}' : '%%',
+			$show_toggler );
 	}
 
 	private static $properties = null;

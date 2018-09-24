@@ -504,7 +504,7 @@ class AmapressAdhesion extends TitanEntity {
 				'inscription-' . $this->getContrat_instance()->getModel()->getTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false, $show_toggler = true ) {
 		$ret = [];
 
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
@@ -523,7 +523,8 @@ class AmapressAdhesion extends TitanEntity {
 
 		return Amapress::getPlaceholdersHelpTable( 'contrat-placeholders', $ret,
 			'de l\'inscription', $additional_helps, ! $for_contrat,
-			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%' );
+			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%',
+			$show_toggler );
 	}
 
 	public function generateContratDoc() {
