@@ -1072,13 +1072,42 @@ function amapress_filter_posts( WP_Query $query ) {
 									array(
 										'key'     => "amapress_{$pt}_date_debut",
 										'value'   => $start_date,
-										'compare' => '<',
+										'compare' => '<=',
 									),
 									array(
 										'key'     => "amapress_{$pt}_date_fin",
 										'value'   => $end_date,
-										'compare' => '>',
+										'compare' => '>=',
 									)
+								),
+							)
+						) );
+					} else if ( 'adhesion' == $pt ) {
+						$active_contrat_instance_ids = AmapressContrats::get_active_contrat_instances_ids( null, $start_date, true, false );
+						amapress_add_meta_query( $query, array(
+							array(
+								'key'     => "amapress_adhesion_contrat_instance",
+								'value'   => amapress_prepare_in( $active_contrat_instance_ids ),
+								'compare' => 'IN',
+								'type'    => 'NUMERIC',
+							),
+							array(
+								'relation' => 'OR',
+								array(
+									'key'     => 'amapress_adhesion_date_fin',
+									'compare' => 'NOT EXISTS',
+								),
+								array(
+									'key'     => 'amapress_adhesion_date_fin',
+									'value'   => 0,
+									'compare' => '=',
+									'type'    => 'NUMERIC',
+								),
+								array(
+									'key'     => 'amapress_adhesion_date_fin',
+									'value'   => Amapress::end_of_day( $end_date ),
+									'compare' => '>=',
+									'type'    => 'NUMERIC',
 								),
 							)
 						) );
