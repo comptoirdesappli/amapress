@@ -807,6 +807,124 @@ class AmapressContrat_instance extends TitanEntity {
 
 		return $dates_factors;
 	}
+
+	public function getInscriptionsStats() {
+		$stored = $this->getCustom( 'stats' );
+		if ( ! empty( $stored ) ) {
+			return $stored;
+		}
+
+		$inscriptions = AmapressContrats::get_all_adhesions( $this->getID() );
+
+		$lieux = [];
+		foreach ( $inscriptions as $inscription ) {
+			$k = strval( $inscription->getLieuId() );
+			if ( ! isset( $lieux[ $k ] ) ) {
+				$lieux[ $k ] = $inscription->getLieu()->getShortName();
+			}
+		}
+		$quantites = AmapressContrats::get_contrat_quantites( $this->getID() );
+
+		$columns   = [];
+		$columns[] = array(
+			'title' => 'Date',
+			'data'  => 'date',
+		);
+		if ( count( $lieux ) > 1 ) {
+			foreach ( $lieux as $lieu_key => $lieu_name ) {
+				$lieu_id   = intval( $lieu_key );
+				$columns[] = array(
+					'title' => $lieu_name . ' - Inscriptions',
+					'data'  => 'lieu_' . $lieu_id . '_inscriptions',
+				);
+				foreach ( $quantites as $quantite ) {
+					$columns[] = array(
+						'title' => $lieu_name . ' - ' . $quantite->getTitle(),
+						'data'  => 'lieu_' . $lieu_id . '_q' . $quantite->getID(),
+					);
+				}
+			}
+		}
+		$columns[] = array(
+			'title' => 'Inscriptions',
+			'data'  => 'lieu_all_inscriptions',
+		);
+		foreach ( $quantites as $quantite ) {
+			$columns[] = array(
+				'title' => $quantite->getTitle(),
+				'data'  => 'lieu_all_q' . $quantite->getID(),
+			);
+		}
+
+		$lines = [];
+		foreach ( $this->getListe_dates() as $date ) {
+			$date_inscriptions = array_filter( $inscriptions,
+				function ( $inscription ) use ( $date ) {
+					/** @var AmapressAdhesion $inscription */
+					return Amapress::start_of_day( $inscription->getDate_debut() ) <= Amapress::start_of_day( $date )
+					       && Amapress::end_of_day( $date ) <= Amapress::end_of_day( $inscription->getDate_fin() );
+				} );
+			$line              = [
+				'date'                  => date_i18n( 'd/m/Y', $date ),
+				'lieu_all_inscriptions' => count( $date_inscriptions )
+			];
+
+
+			if ( count( $lieux ) > 1 ) {
+				foreach ( $lieux as $lieu_key => $lieu_name ) {
+					$lieu_id                                      = intval( $lieu_key );
+					$lieu_inscriptions                            = array_filter( $date_inscriptions,
+						function ( $inscription ) use ( $lieu_id ) {
+							/** @var AmapressAdhesion $inscription */
+							return $inscription->getLieuId() == $lieu_id;
+						} );
+					$line[ 'lieu_' . $lieu_id . '_inscriptions' ] = count( $lieu_inscriptions );
+
+					foreach ( $quantites as $quantite ) {
+						$quantite_sum                                           = from( $lieu_inscriptions )->sum(
+							function ( $inscription ) use ( $quantite, $date ) {
+								/** @var AmapressAdhesion $inscription */
+								foreach ( $inscription->getContrat_quantites( null ) as $q ) {
+									if ( $q->getId() == $quantite->ID ) {
+										return $q->getFactor();
+									}
+								}
+
+								return 0;
+							} );
+						$line[ 'lieu_' . $lieu_id . '_q' . $quantite->getID() ] = $quantite_sum;
+					}
+				}
+			}
+
+			foreach ( $quantites as $quantite ) {
+				$quantite_sum                              = from( $date_inscriptions )->sum(
+					function ( $inscription ) use ( $quantite, $date ) {
+						/** @var AmapressAdhesion $inscription */
+						foreach ( $inscription->getContrat_quantites( null ) as $q ) {
+							if ( $q->getId() == $quantite->ID ) {
+								return $q->getFactor();
+							}
+						}
+
+						return 0;
+					} );
+				$line[ 'lieu_all_q' . $quantite->getID() ] = $quantite_sum;
+			}
+
+			$lines[] = $line;
+		}
+
+		$ret = [
+			'columns' => $columns,
+			'lines'   => $lines,
+		];
+		if ( amapress_time() > Amapress::end_of_day( $this->getDate_fin() ) ) {
+			$this->setCustom( 'stats', $ret );
+		}
+
+		return $ret;
+	}
 }
 
 class AmapressContrat_quantite extends TitanEntity {

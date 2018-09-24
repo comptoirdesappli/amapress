@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                        => array(
+						'Renouvèlement'                  => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -581,6 +581,78 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 
 								return $tabs;
 							},
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'contrats_quantites_stats',
+							'settings' => array(
+								'name'       => 'Statistiques des contrats',
+								'menu_title' => 'Statistiques',
+								'position'   => '25.2',
+								'capability' => 'edit_distribution',
+								'icon'       => 'dashicons-none flaticon-pen',
+							),
+							'options'  => array(
+								array(
+									'id'     => 'contrat_quantite_stats',
+									'bare'   => true,
+									'type'   => 'custom',
+									'custom' => function () {
+										/** @var WP_Post[] $contrat_instances */
+										$contrat_instances = get_posts(
+											[
+												'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
+												'post_status'    => [ 'publish', 'archived' ],
+												'posts_per_page' => - 1,
+												'orderby'        => 'title',
+												'order'          => 'ASC',
+											]
+										);
+										$options           = [];
+										foreach ( $contrat_instances as $contrat_instance ) {
+											$options[ strval( $contrat_instance->ID ) ] = $contrat_instance->post_title;
+										}
+
+										ob_start();
+										echo '<label for="amp_stats_contrat">Obtenir des statistisque pour le contrat suivant :</label>';
+										echo '<select id="amp_stats_contrat" name="amp_stats_contrat">';
+										tf_parse_select_options( $options, isset( $_REQUEST['amp_stats_contrat'] ) ? [ $_REQUEST['amp_stats_contrat'] ] : null );
+										echo '</select>';
+										echo '<input type="submit" class="button button-primary" value="Voir les statistiques" />';
+										echo '<hr />';
+
+										if ( ! empty( $_REQUEST['amp_stats_contrat'] ) ) {
+											$contrat_instance = AmapressContrat_instance::getBy( intval( $_REQUEST['amp_stats_contrat'] ) );
+											if ( ! empty( $contrat_instance ) ) {
+												echo '<h4>Inscriptions au contrat "' . esc_html( $contrat_instance->getTitle() ) . '"</h4>';
+											}
+
+											$stats = $contrat_instance->getInscriptionsStats();
+											amapress_echo_datatable( 'amp_contrat_stats_table',
+												$stats['columns'], $stats['lines'],
+												array(
+													'paging'       => false,
+													'sorting'      => false,
+													'searching'    => true,
+													'nowrap'       => false,
+													'responsive'   => false,
+													'init_as_html' => true,
+													'fixedHeader'  => array(
+														'headerOffset' => 32
+													),
+												),
+												array(
+													Amapress::DATATABLES_EXPORT_EXCEL
+												)
+											);
+										}
+
+										return ob_get_clean();
+//									    return amapress_get_datatable()
+									}
+								),
+							),
+							'tabs'     => array(),
 						),
 						//Calendrier
 						array(
@@ -2096,7 +2168,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
-						'Placeholders - contrat vierge'       => array(
+						'Placeholders - contrat vierge'                => array(
 							'id'      => 'paper_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2110,7 +2182,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								)
 							)
 						),
-						'Placeholders - contrat personnalisé' => array(
+						'Placeholders - contrat personnalisé'          => array(
 							'id'      => 'adhesion_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2124,7 +2196,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								)
 							)
 						),
-						'Configuration des paniers (Taille/Quantités)'  => array(
+						'Configuration des paniers (Taille/Quantités)' => array(
 							'id'      => 'conf_paniers',
 							'desc'    => '',
 							'options' => array(
