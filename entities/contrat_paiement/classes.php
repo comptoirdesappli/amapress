@@ -95,6 +95,51 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_contrat_paiement_emetteur', '' );
 	}
 
+	public static function cleanOrphans() {
+		global $wpdb;
+		$orphans = $wpdb->get_col( "SELECT $wpdb->posts.ID
+FROM $wpdb->posts 
+INNER JOIN $wpdb->postmeta
+ON ( $wpdb->posts.ID = $wpdb->postmeta.post_id )
+WHERE 1=1 
+AND ( ( $wpdb->postmeta.meta_key = 'amapress_contrat_paiement_adhesion'
+AND CAST($wpdb->postmeta.meta_value as SIGNED) NOT IN (
+SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_type = '" . AmapressAdhesion::INTERNAL_POST_TYPE . "'
+) ) )
+AND $wpdb->posts.post_type = '" . AmapressAmapien_paiement::INTERNAL_POST_TYPE . "'
+GROUP BY wp_posts.ID" );
+
+		$wpdb->query( 'START TRANSACTION' );
+		foreach ( $orphans as $post_id ) {
+			wp_delete_post( $post_id );
+		}
+		$wpdb->query( 'COMMIT' );
+
+		$count = count( $orphans );
+		if ( $count ) {
+			return "$count chèques orphelins nettoyés";
+		} else {
+			return "Aucun chèque orphelin";
+		}
+//		$orphans = get_posts(
+//			[
+//				'post_type' => self::INTERNAL_POST_TYPE,
+//				'posts_per_page' => -1,
+//				'fields' => 'ids',
+//				'meta_query' => [
+//					[
+//						'key' => 'amapress_contrat_paiement_adhesion',
+//						'value' => [
+//							12, 24
+//						],
+//						'compare' => 'NOT IN'
+//					]
+//				]
+//			]
+//		);
+		return $orphans;
+	}
+
 	/** @return AmapressAmapien_paiement[] */
 	public static function get_next_paiements( $user_id = null, $date = null, $order = 'NONE' ) {
 		if ( ! amapress_is_user_logged_in() ) {

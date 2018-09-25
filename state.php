@@ -41,13 +41,14 @@ function amapress_get_plugin_activate_link( $plugin_slug ) {
 	);
 }
 
-function amapress_get_check_state( $state, $name, $message, $link, $values = null ) {
+function amapress_get_check_state( $state, $name, $message, $link, $values = null, $target_blank = true ) {
 	return array(
-		'state'   => $state,
-		'name'    => $name,
-		'message' => $message,
-		'link'    => $link,
-		'values'  => $values,
+		'state'        => $state,
+		'name'         => $name,
+		'message'      => $message,
+		'link'         => $link,
+		'values'       => $values,
+		'target_blank' => $target_blank,
 	);
 }
 
@@ -98,6 +99,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'06_shortcodes' => '6/ Shortcodes à configurer',
 		'07_recalls'    => '7/ Rappels',
 		'08_import'     => '8/ Import CSV',
+		'09_clean'      => '9/ Nettoyage',
 	);
 	$state               = array();
 	$state['01_plugins'] = array();
@@ -957,6 +959,23 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'admin.php?page=amapress_import_page&tab=adhésions' )
 	);
 
+	$clean_messages = '';
+	if ( isset( $_REQUEST['clean'] ) ) {
+		if ( 'orphans' == $_REQUEST['clean'] ) {
+			$clean_messages .= AmapressAmapien_paiement::cleanOrphans();
+		}
+	}
+	$state['09_clean']   = array();
+	$state['09_clean'][] = amapress_get_check_state(
+		'do',
+		'Nettoyer les éléments orphelins',
+		'<p>Permet de nettoyer la base de donnée</p>
+<p style="font-family: monospace">' . $clean_messages . '</p>',
+		admin_url( 'admin.php?page=amapress_state&clean=orphans' ),
+		null,
+		false
+	);
+
 	foreach ( $state as $categ => $checks ) {
 		amapress_echo_panel_start( $labels[ $categ ] );
 
@@ -966,8 +985,13 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			$desc   = $check['message'];
 			$link   = $check['link'];
 			$values = isset( $check['values'] ) ? $check['values'] : '';
+			$target = "target='_blank'";
+			if ( isset( $check['target_blank'] ) && ! $check['target_blank'] ) {
+				$target = '';
+			}
+
 			echo "<div class='amapress-check'>";
-			echo "<p class='check-item state {$state}'><a href='$link' target='_blank'>{$title}</a><span class='dashicons dashicons-external'></span></p>";
+			echo "<p class='check-item state {$state}'><a href='$link' $target>{$title}</a><span class='dashicons dashicons-external'></span></p>";
 			echo "<div class='amapress-check-content'>";
 			if ( ! empty( $values ) ) {
 				echo "<p class='values'>{$values}</p>";
