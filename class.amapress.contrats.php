@@ -102,7 +102,7 @@ class AmapressContrats {
 		AmapressPaniers::generate_paniers( $contrat_id, false, false );
 //		AmapressCommandes::generate_commandes( $contrat_id, true, false );
 		$wpdb->query( 'COMMIT' );
-		echo self::contratStatus( $contrat_id );// this is passed back to the javascript function
+		echo self::contratStatus( $contrat_id, 'div' );// this is passed back to the javascript function
 		die();// wordpress may print out a spurious zero without this - can be particularly bad if using json
 	}
 
@@ -221,7 +221,8 @@ class AmapressContrats {
 		$ignore_renouv_delta = false,
 		$include_futur = true
 	) {
-		$key = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}";
+		global $amapress_no_filter_referent;
+		$key = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}_$amapress_no_filter_referent";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( empty( $date ) ) {
@@ -563,9 +564,8 @@ class AmapressContrats {
 		$key = "amps_refs_prods";
 		$res = get_transient( $key );
 		if ( false === $res ) {
-			global $amapress_getting_referent_infos;
+			Amapress::setFilterForReferent( false );
 
-			$amapress_getting_referent_infos = true;
 			$lieu_ids                        = Amapress::get_lieu_ids();
 			$res                             = array();
 			foreach ( Amapress::get_producteurs() as $prod ) {
@@ -595,7 +595,7 @@ class AmapressContrats {
 					}
 				}
 			}
-			$amapress_getting_referent_infos = false;
+			Amapress::setFilterForReferent( true );
 			set_transient( $key, $res, HOUR_IN_SECONDS );
 		}
 

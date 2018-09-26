@@ -92,7 +92,9 @@ function amapress_register_entities_adhesion( $entities ) {
 
 			$principal_contrat            = null;
 			$principal_contrat_date_debut = 0;
-			$contrats                     = AmapressContrats::get_active_contrat_instances( null, $adh->getDate_debut(), true );
+			Amapress::setFilterForReferent( false );
+			$contrats = AmapressContrats::get_active_contrat_instances( null, $adh->getDate_debut(), true );
+			Amapress::setFilterForReferent( true );
 			foreach ( $contrats as $contrat ) {
 				if ( $contrat->isPrincipal() && $contrat->getDate_debut() < $adh->getDate_fin() && $contrat->getDate_debut() > $principal_contrat_date_debut ) {
 					$principal_contrat            = $contrat;
@@ -101,7 +103,9 @@ function amapress_register_entities_adhesion( $entities ) {
 			}
 
 			if ( $principal_contrat ) {
+				Amapress::setFilterForReferent( false );
 				$other_adhs = AmapressAdhesion::getUserActiveAdhesions( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
+				Amapress::setFilterForReferent( true );
 				if ( ! empty( $other_adhs ) ) {
 					return;
 				}
@@ -1152,7 +1156,6 @@ function amapress_get_paiement_table_by_dates(
 	}, $paiements );
 	update_meta_cache( 'user', $user_ids );
 	cache_users( $user_ids );
-//	amapress_dump($paiements);
 	$dates = array_map(
 		function ( $p ) {
 			/** @var AmapressAmapien_paiement $p */
@@ -1165,6 +1168,9 @@ function amapress_get_paiement_table_by_dates(
 			return $d > Amapress::start_of_day( amapress_time() );
 		} );
 	}
+	$dates = array_filter( $dates, function ( $d ) {
+		return ! empty( $d );
+	} );
 	sort( $dates );
 	$emetteurs = array_map(
 		function ( $p ) use ( $paiements ) {
@@ -1193,6 +1199,10 @@ function amapress_get_paiement_table_by_dates(
 				$all_emetteurs[] = $p->getAdhesion()->getAdherent3()->getDisplayName();
 			}
 			$all_emetteurs = array_unique( $all_emetteurs );
+			$all_emetteurs = array_filter( $all_emetteurs,
+				function ( $em ) {
+					return ! empty( $em );
+				} );
 			sort( $all_emetteurs );
 			$all_emetteurs = array_map(
 				function ( $em ) use ( $p ) {
@@ -1324,7 +1334,8 @@ function amapress_get_paiement_table_by_dates(
 					'style' => 'background-color: #ccc;',
 				];
 			} else {
-				$val = implode( ',', array_map(
+				$val = implode( ',', array_filter(
+					array_map(
 						function ( $p ) use ( $emetteur_obj ) {
 							/** @var AmapressAmapien_paiement $p */
 							$banque = $p->getBanque();
@@ -1334,7 +1345,9 @@ function amapress_get_paiement_table_by_dates(
 								return "{$p->getNumero()}";
 							}
 						}, $emetteur_date_paiements )
-				);
+					, function ( $e ) {
+					return ! empty( $e );
+				} ) );
 			}
 			$row["date_{$date}"] = $val;
 		}
@@ -1488,7 +1501,9 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			echo '<hr />';
 
 
+			Amapress::setFilterForReferent( false );
 			$adhs = AmapressAdhesion::getUserActiveAdhesions( $user->ID );
+			Amapress::setFilterForReferent( true );
 			usort( $adhs, function ( $a, $b ) {
 				return strcmp( $a->getTitle(), $b->getTitle() );
 			} );
@@ -1503,7 +1518,9 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 					);
 				}
 				echo '<li style="margin-left: 35px">';
-				echo '<a href="' . esc_attr( $adh->getPermalink() ) . '" >Voir</a>&nbsp;:&nbsp;' . esc_html( $adh->getTitle() );
+				$lnk = current_user_can( 'edit_post', $adh->ID ) ?
+					'<a href="' . esc_attr( $adh->getAdminEditLink() ) . '" >Voir</a>&nbsp;:&nbsp;' : '';
+				echo $lnk . esc_html( $adh->getTitle() );
 				if ( ! empty( $renew_url ) ) {
 					echo '<br/><a href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
 				}
@@ -1523,8 +1540,10 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 		}
 	} else {
 		echo '<h4>1/ Choisir un utilisateur ou le créer</h4>';
-		$options       = [];
+		$options = [];
+		Amapress::setFilterForReferent( false );
 		$all_user_adhs = AmapressContrats::get_active_adhesions();
+		Amapress::setFilterForReferent( true );
 		/** @var WP_User $user */
 		foreach ( get_users() as $user ) {
 			$user_adhs            = from( $all_user_adhs )
@@ -1813,3 +1832,33 @@ add_action( 'delete_post', function ( $post_id ) {
 		}
 	}
 }, 1000 );
+
+add_filter( 'hidden_meta_boxes', function ( $hidden ) {
+	return array_filter( $hidden,
+		function ( $v ) {
+			return ! preg_match( '/^\d+\/-/', $v );
+		}
+	);
+
+	return $hidden;
+} );
+
+add_filter( 'amapress_can_edit_adhesion', function ( $can, $post_id ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+		$refs = AmapressContrats::getReferentProducteursAndLieux();
+		if ( count( $refs ) > 0 ) {
+			$adhesion = AmapressAdhesion::getBy( $post_id );
+			if ( $adhesion ) {
+				foreach ( $refs as $r ) {
+					if ( in_array( $adhesion->getContrat_instanceId(), $r['contrat_instance_ids'] ) ) {
+						return $can;
+					}
+				}
+			}
+
+			return false;
+		}
+	}
+
+	return $can;
+}, 10, 2 );

@@ -219,3 +219,20 @@ add_filter( 'tf_replace_placeholders_' . AmapressProducteur::INTERNAL_POST_TYPE,
 
 	return $text;
 }, 10, 2 );
+
+add_filter( 'amapress_can_edit_producteur', function ( $can, $post_id ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+		$refs = AmapressContrats::getReferentProducteursAndLieux();
+		if ( count( $refs ) > 0 ) {
+			foreach ( $refs as $r ) {
+				if ( $post_id == $r['producteur'] ) {
+					return $can;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	return $can;
+}, 10, 2 );

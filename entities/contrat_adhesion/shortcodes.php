@@ -180,7 +180,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 	echo $ret;
 
 	$min_total             = 0;
+	Amapress::setFilterForReferent( false );
 	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
+	Amapress::setFilterForReferent( true );
 	if ( ! $admin_mode ) {
 		$subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) {
 			/** @var AmapressContrat_instance $c */
@@ -219,7 +221,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 	if ( empty( $subscribable_contrats ) ) {
 		wp_die( 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
-	if ( empty( $principal_contrats ) ) {
+	if ( ! $admin_mode && empty( $principal_contrats ) ) {
 		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
 	//TODO better ???
@@ -241,7 +243,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$user_id    = intval( $_REQUEST['user_id'] );
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 
+		Amapress::setFilterForReferent( false );
 		$adhs             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+		Amapress::setFilterForReferent( true );
 		$adhs             = array_filter( $adhs,
 			function ( $adh ) use ( $subscribable_contrats_ids ) {
 				/** @var AmapressAdhesion $adh */
@@ -637,7 +641,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 		$has_principal_contrat = false;
 
+		Amapress::setFilterForReferent( false );
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+		Amapress::setFilterForReferent( true );
 		$adhs = array_filter( $adhs,
 			function ( $adh ) use ( $subscribable_contrats_ids ) {
 				/** @var AmapressAdhesion $adh */
@@ -766,7 +772,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					);
 				}
 				if ( $admin_mode ) {
-					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>';
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) .
+					     ( current_user_can( 'edit_post', $adh->ID ) ?
+						     ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>' : '' );
 				} else {
 					$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
 					$contrat_info = 'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour '
@@ -802,7 +810,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
 				return ! in_array( $c->ID, $adhs_contrat_ids );
 			} );
-			if ( ! $has_principal_contrat ) {
+			if ( ! $admin_mode && ! $has_principal_contrat ) {
 				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $principal_contrats_ids ) {
 					return in_array( $c->ID, $principal_contrats_ids );
 				} );
@@ -815,6 +823,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
 					/** @var AmapressContrat_instance $c */
 					return ! in_array( $c->getModel()->ID, $adhs_contrat_ids );
+				} );
+			}
+			if ( $admin_mode ) {
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $principal_contrats_ids ) {
+					return current_user_can( 'edit_post', $c->ID );
 				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
@@ -844,7 +857,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				if ( ! $admin_mode ) {
 					echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
 				} else {
-					echo '<p>Il est inscrit à tous les contrats</p>';
+					echo '<p>Il est inscrit à tous les contrats que vous gérez.</p>';
 				}
 			}
 		}
@@ -1085,7 +1098,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				foreach ( $dates as $date ) {
 					$price_unit = esc_attr( $quant->getPrix_unitaire() );
 					$ed         = '';
-					$ed         .= "<select data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var'>";
+					$ed         .= "<select style='max-width: none;min-width: 0' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var'>";
 					$ed         .= tf_parse_select_options( $options, null, false );
 					$ed         .= '</select>';
 					if ( $quant->getAvailFrom() && $quant->getAvailTo() ) {
@@ -1128,7 +1141,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$price              = $dates_factors * $quantite->getPrix_unitaire();
 				$price_compute_text = esc_html( $dates_factors ) . ' x ' . esc_html( $quantite->getPrix_unitaire() ) . '€';
 				if ( $contrat->isQuantiteVariable() ) {
-					$quant_var_editor .= "<select id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
+					$quant_var_editor .= "<select  style='max-width: none;min-width: 0' id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
 					$quant_var_editor .= tf_parse_select_options(
 						$quantite->getQuantiteOptions(),
 						null,

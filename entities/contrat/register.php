@@ -216,7 +216,7 @@ function amapress_register_entities_contrat( $entities ) {
 		),
 		'fields'          => array(
 			//renouvellement
-			'renouv'                => array(
+			'renouv'       => array(
 				'name'        => amapress__( 'Options' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -244,7 +244,7 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 1/6 - Ferme
-			'model'      => array(
+			'model'        => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -271,7 +271,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'searchable'        => true,
 			),
-			'producteur' => array(
+			'producteur'   => array(
 				'name'        => amapress__( 'Producteur' ),
 				'type'        => 'custom',
 				'group'       => '1/6 - Ferme',
@@ -293,7 +293,7 @@ function amapress_register_entities_contrat( $entities ) {
 							$contrat->getModel()->getProducteur()->getUser()->getDisplayName() ) . ')';
 				}
 			),
-			'refs'       => array(
+			'refs'         => array(
 				'name'                 => amapress__( 'Référents' ),
 				'type'                 => 'custom',
 				'group'                => '1/6 - Ferme',
@@ -318,7 +318,7 @@ function amapress_register_entities_contrat( $entities ) {
 					return implode( ', ', $refs );
 				},
 			),
-			'nb_visites' => array(
+			'nb_visites'   => array(
 				'name'        => amapress__( 'Visite' ),
 				'group'       => '1/6 - Ferme',
 				'type'        => 'number',
@@ -329,7 +329,7 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 2/6 - Paramètres généraux
-			'date_debut' => array(
+			'date_debut'   => array(
 				'name'          => amapress__( 'Début' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -936,7 +936,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'word_model'            => array(
+			'word_model'   => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
 				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -951,7 +951,7 @@ jQuery(function($) {
 
 
 			//Statut
-			'is_principal'          => array(
+			'is_principal' => array(
 				'name'        => amapress__( 'Contrat principal' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
@@ -959,17 +959,21 @@ jQuery(function($) {
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'                => array(
+			'status'       => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
-				'column'  => array( 'AmapressContrats', "contratStatus" ),
-				'custom'  => array( 'AmapressContrats', "contratStatus" ),
+				'column'  => function ( $post_id ) {
+					return AmapressContrats::contratStatus( $post_id );
+				},
+				'custom'  => function ( $post_id ) {
+					return AmapressContrats::contratStatus( $post_id );
+				},
 				'group'   => 'Statut',
 				'save'    => null,
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'                 => array(
+			'ended'        => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'group'       => 'Statut',
@@ -1211,7 +1215,7 @@ jQuery(function($) {
 					return $ret;
 				}
 			),
-			'code'            => array(
+			'code'             => array(
 				'name'         => amapress__( 'Code' ),
 				'type'         => 'text',
 				'csv_required' => true,
@@ -1219,7 +1223,7 @@ jQuery(function($) {
 				'import_key'   => true,
 				'searchable'   => true,
 			),
-			'prix_unitaire'   => array(
+			'prix_unitaire'    => array(
 				'name'         => amapress__( 'Prix unitaire' ),
 				'type'         => 'price',
 				'required'     => true,
@@ -1228,7 +1232,7 @@ jQuery(function($) {
 				'desc'         => 'Prix unitaire',
 			),
 			//que distrib
-			'quantite'        => array(
+			'quantite'         => array(
 				'name' => amapress__( 'Facteur quantité' ),
 				'type' => 'float',
 //                'required' => true,
@@ -1236,7 +1240,7 @@ jQuery(function($) {
 //                'import_key' => true,
 			),
 			//commandes
-			'produits'        => array(
+			'produits'         => array(
 				'name'         => amapress__( 'Produits' ),
 				'type'         => 'select-posts',
 				'post_type'    => AmapressProduit::INTERNAL_POST_TYPE,
@@ -1245,7 +1249,7 @@ jQuery(function($) {
 				'tags'         => true,
 				'csv'          => false,
 			),
-			'unit'            => array(
+			'unit'             => array(
 				'name'    => amapress__( 'Unité' ),
 				'type'    => 'select',
 				'options' => array(
@@ -1254,7 +1258,7 @@ jQuery(function($) {
 					'l'    => 'Au litre',
 				),
 			),
-			'quantite_config' => array(
+			'quantite_config'  => array(
 				'name'              => amapress__( 'Config quantités disponibles' ),
 				'type'              => 'text',
 				'csv'               => false,
@@ -1268,15 +1272,15 @@ jQuery(function($) {
 					return $ret;
 				}
 			),
-			'avail_from'      => array(
+			'avail_from'       => array(
 				'name' => amapress__( 'Dispo de' ),
 				'type' => 'date',
 			),
-			'avail_to'        => array(
+			'avail_to'         => array(
 				'name' => amapress__( 'Dispo jusqu\'à' ),
 				'type' => 'date',
 			),
-			'liste_dates'     => array(
+			'liste_dates'      => array(
 				'name' => amapress__( 'Calendrier spécifique' ),
 				'type' => 'multidate',
 			),
@@ -1963,3 +1967,41 @@ function amapress_can_delete_attachment( $can, $post_id ) {
 
 	return ! in_array( $post_id, $attachments );
 }
+
+
+add_filter( 'amapress_can_edit_contrat_instance', function ( $can, $post_id ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+		$refs = AmapressContrats::getReferentProducteursAndLieux();
+		if ( count( $refs ) > 0 ) {
+			foreach ( $refs as $r ) {
+				$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+				if ( $contrat_instance ) {
+					if ( in_array( $contrat_instance->getModelId(), $r['contrat_ids'] ) ) {
+						return $can;
+					}
+				}
+			}
+
+			return false;
+		}
+	}
+
+	return $can;
+}, 10, 2 );
+
+add_filter( 'amapress_can_edit_contrat', function ( $can, $post_id ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+		$refs = AmapressContrats::getReferentProducteursAndLieux();
+		if ( count( $refs ) > 0 ) {
+			foreach ( $refs as $r ) {
+				if ( in_array( $post_id, $r['contrat_ids'] ) ) {
+					return $can;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	return $can;
+}, 10, 2 );

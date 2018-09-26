@@ -203,6 +203,7 @@ function amapress_contrat_paiement_set_contrat_instance( $contrat_paiement_id ) 
 		update_post_meta( $contrat_paiement_id, 'amapress_contrat_paiement_contrat_instance', $adh->getContrat_instanceId() );
 	}
 }
+
 //
 //
 //function amapress_get_contrat_paiements_categories($paiement_id)
@@ -250,3 +251,23 @@ function amapress_contrat_paiement_set_contrat_instance( $contrat_paiement_id ) 
 //        wp_set_post_terms($paiement_id, $terms, 'amps_paiement_category');
 //    }
 //}
+
+add_filter( 'amapress_can_edit_contrat_paiement', function ( $can, $post_id ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+		$refs = AmapressContrats::getReferentProducteursAndLieux();
+		if ( count( $refs ) > 0 ) {
+			$paiement = AmapressAmapien_paiement::getBy( $post_id );
+			if ( $paiement && $paiement->getAdhesion() ) {
+				foreach ( $refs as $r ) {
+					if ( in_array( $paiement->getAdhesion()->getContrat_instanceId(), $r['contrat_instance_ids'] ) ) {
+						return $can;
+					}
+				}
+			}
+
+			return false;
+		}
+	}
+
+	return $can;
+}, 10, 2 );

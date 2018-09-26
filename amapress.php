@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.57.5
+Version: 0.57.10
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -45,8 +45,8 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 75 );
-define( 'AMAPRESS_VERSION', '0.57.5' );
+define( 'AMAPRESS_DB_VERSION', 76 );
+define( 'AMAPRESS_VERSION', '0.57.10' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -1056,6 +1056,19 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 		$allcaps[ $caps[0] ] = apply_filters( "amapress_can_delete_$post_type", true, $post_id );
 //        $post_types = AmapressEntities::getPostTypes();
 //        if (isset($post))
+	} else if ( isset( $args[2] ) && strpos( $cap, 'edit_' ) === 0 ) {
+		if ( ! isset( $allcaps[ $cap ] ) || ! $allcaps[ $cap ] ) {
+			return $allcaps;
+		}
+
+		$post_id = isset( $args[2] ) ? $args[2] : 0;
+
+		$post_type = amapress_simplify_post_type( get_post_type( $post_id ) );
+
+//        die($post_type);
+		$allcaps[ $caps[0] ] = apply_filters( "amapress_can_edit_$post_type", true, $post_id );
+//        $post_types = AmapressEntities::getPostTypes();
+//        if (isset($post))
 	} else if ( isset( $args[1] ) ) {
 		$user_id = isset( $args[1] ) ? $args[1] : amapress_current_user_id();
 		$user    = AmapressUser::getBy( $user_id );
@@ -1069,6 +1082,8 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 		}
 	}
 
+//	if ('delete_post' == $cap)
+//	    die('aa');
 //	$allcaps[$cap] = false;
 //    var_dump($cap);
 //    var_dump($allcaps[$cap]);

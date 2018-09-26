@@ -162,10 +162,9 @@ class AmapressDistributions {
 			}
 
 			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
-			global $amapress_getting_referent_infos;
-			$amapress_getting_referent_infos = true;
+			Amapress::setFilterForReferent( false );
 			$all_contrat_ids                 = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
-			$amapress_getting_referent_infos = false;
+			Amapress::setFilterForReferent( true );
 
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
 			$liste_dates         = array_unique( $contrat->getListe_dates() );
