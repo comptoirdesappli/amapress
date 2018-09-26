@@ -266,6 +266,12 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 		<?php
 	}
 
+	/** @var WP_Post $post */
+	$author = get_user_by( 'ID', $post->post_author );
+	if ( $author ) {
+		echo '<p>Créé par ' . esc_html( $author->display_name ) . ' à ' . date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ) . '</p>';
+	}
+
 	$pt      = amapress_simplify_post_type( $post->post_type );
 	$options = AmapressEntities::getPostType( $pt );
 	if ( isset( $options['edit_header'] ) && is_callable( $options['edit_header'], false ) ) {

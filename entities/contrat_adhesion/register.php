@@ -77,11 +77,6 @@ function amapress_register_entities_adhesion( $entities ) {
 		'default_orderby'  => 'post_title',
 		'default_order'    => 'ASC',
 		'edit_header'      => function ( $post ) {
-			/** @var WP_Post $post */
-			$author = get_user_by( 'ID', $post->post_author );
-			if ( $author ) {
-				echo '<p>Créé par ' . esc_html( $author->display_name ) . '</p>';
-			}
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
