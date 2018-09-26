@@ -40,6 +40,16 @@ function amapress_register_entities_amapien( $entities ) {
 				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
 			),
+			'all_roles'      => array(
+				'name'   => amapress__( 'Fonctions actuelles' ),
+				'type'   => 'custom',
+				'custom' => function ( $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+					$roles   = esc_html( $amapien->getAmapRolesString() );
+
+					return $roles;
+				}
+			),
 			'role_desc'      => array(
 				'type'   => 'custom',
 				'name'   => amapress__( 'Rôle sur le site' ),
@@ -105,12 +115,12 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column' => false,
 			),
 
-			'head_amapress0' => array(
+			'head_amapress0'    => array(
 				'id'   => 'amapress_sect',
 				'name' => amapress__( 'Amapress' ),
 				'type' => 'heading',
 			),
-			'avatar'         => array(
+			'avatar'            => array(
 				'name'            => amapress__( 'Avatar' ),
 				'selector-title'  => 'Sélectionnez/téléversez votre photo',
 				'selector-button' => 'Utiliser cette photo',
@@ -119,33 +129,33 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'            => 'Avatar',
 				'show_column'     => false,
 			),
-			'head_amapress'  => array(
+			'head_amapress'     => array(
 				'id'   => 'address_sect',
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
 			),
-			'adresse'        => array(
+			'adresse'           => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'code_postal'    => array(
+			'code_postal'       => array(
 				'name'       => amapress__( 'Code postal' ),
 				'type'       => 'text',
 				'desc'       => 'Code postal',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'ville'          => array(
+			'ville'             => array(
 				'name'       => amapress__( 'Ville' ),
 				'type'       => 'text',
 				'desc'       => 'Ville',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'adresse_localized'  => array(
+			'adresse_localized' => array(
 				'name'                   => amapress__( 'Localisé' ),
 				'type'                   => 'address',
 				'use_as_field'           => false,
@@ -836,8 +846,6 @@ add_filter( 'tf_replace_placeholders_user', function ( $text, $post_id ) {
 add_action( 'personal_options', 'amapress_add_infos_to_user_editor', 20 );
 function amapress_add_infos_to_user_editor( WP_User $user ) {
 	$amapien = AmapressUser::getBy( $user );
-	$roles   = esc_html( $amapien->getAmapRolesString() );
-	echo "<tr class='row-action-wrap'><th scope='row'><label>Rôles</label></th><td>$roles</td></tr>";
 	echo "<tr class='row-action-wrap'><th scope='row'><label>Liens</label></th><td>
 <a href='#contrats_sect'>Contrats</a>, <a href='#fonctions_sect'>Fonctions</a>, <a href='#address_sect'>Coordonnées</a>, <a href='#phones_sect'>Téléphones</a>, <a href='#coadh_sect'>Co-adhérents</a>, 
 	</td></tr>";
