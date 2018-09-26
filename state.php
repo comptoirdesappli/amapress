@@ -221,7 +221,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'info',
 		'Configuration de la liste d\'émargement',
 		'Personnaliser les infos affichées (téléphones, mails, instructions...) sur la liste d\'émargement et sa taille d\'impression.',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_general_config#amapress_below_login_message' )
+		admin_url( 'admin.php?page=amapress_emargement_options_page' )
 	);
 
 //    $contrat_anon = Amapress::getOption('contrat_info_anonymous');
