@@ -43,12 +43,28 @@ class AmapressDistribution extends Amapress_EventBase {
 		return $this->getDate();
 	}
 
+	public function getSpecialHeure_debut() {
+		return $this->getCustomAsInt( 'amapress_distribution_heure_debut_spec' );
+	}
+
+	public function getSpecialHeure_fin() {
+		return $this->getCustomAsInt( 'amapress_distribution_heure_fin_spec' );
+	}
+
 	public function getStartDateAndHour() {
-		return Amapress::make_date_and_hour( $this->getDate(), $this->getLieu()->getHeure_debut() );
+		if ( ! empty( $this->getSpecialHeure_debut() ) ) {
+			return Amapress::make_date_and_hour( $this->getDate(), $this->getSpecialHeure_debut() );
+		} else {
+			return Amapress::make_date_and_hour( $this->getDate(), $this->getRealLieu()->getHeure_debut() );
+		}
 	}
 
 	public function getEndDateAndHour() {
-		return Amapress::make_date_and_hour( $this->getDate(), $this->getLieu()->getHeure_fin() );
+		if ( ! empty( $this->getSpecialHeure_fin() ) ) {
+			return Amapress::make_date_and_hour( $this->getDate(), $this->getSpecialHeure_fin() );
+		} else {
+			return Amapress::make_date_and_hour( $this->getDate(), $this->getRealLieu()->getHeure_fin() );
+		}
 	}
 
 	public function getNb_responsables_Supplementaires() {

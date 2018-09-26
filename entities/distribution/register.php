@@ -141,6 +141,22 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'       => 'Lieu de substitution',
 				'searchable' => true,
 			),
+			'heure_debut_spec'  => array(
+				'name'  => amapress__( 'Heure début de substitution' ),
+				'type'  => 'date',
+				'date'  => false,
+				'time'  => true,
+				'desc'  => 'Heure début particulière pour cette livraison',
+				'group' => '1/ Livraison',
+			),
+			'heure_fin_spec'    => array(
+				'name'  => amapress__( 'Heure fin de substitution' ),
+				'type'  => 'date',
+				'date'  => false,
+				'time'  => true,
+				'desc'  => 'Heure fin particulière pour cette livraison',
+				'group' => '1/ Livraison',
+			),
 			'nb_resp_supp'      => array(
 				'name'        => amapress__( 'Nombre de responsables de distributions supplémentaires' ),
 				'type'        => 'number',
