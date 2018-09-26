@@ -255,7 +255,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'meta_input'   => array(
 					'amapress_adhesion_paiement_user'   => $user_id,
 					'amapress_adhesion_paiement_period' => $adh_period->ID,
-					'amapress_adhesion_paiement_date'   => $date,
+					'amapress_adhesion_paiement_date'   => amapress_time(),
 					'amapress_adhesion_paiement_status' => 'not_received',
 				),
 			);
