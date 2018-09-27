@@ -1597,8 +1597,10 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		return '';
 	}
 	$contrat_produits = array();
-	foreach ( $contrat_instance->getModel()->getProducteur()->getProduits() as $prod ) {
-		$contrat_produits[ $prod->ID ] = $prod->getTitle();
+	if ( ! empty( $contrat_instance->getModel()->getProducteur() ) ) {
+		foreach ( $contrat_instance->getModel()->getProducteur()->getProduits() as $prod ) {
+			$contrat_produits[ $prod->ID ] = $prod->getTitle();
+		}
 	}
 	echo '<tr style="vertical-align: top">';
 	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' /></td>";
