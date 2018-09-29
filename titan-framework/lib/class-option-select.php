@@ -71,6 +71,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	}
 
 	public function columnDisplayValue( $post_id ) {
+		$this->setPostID( $post_id );
 		$values = $this->getValue( $post_id );
 		if ( ! is_array( $values ) ) {
 			$values = array( $values );
@@ -122,6 +123,8 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 	function columnExportValue(
 		$post_id
 	) {
+		$this->setPostID( $post_id );
+
 		$values = $this->getValue( $post_id );
 		if ( ! is_array( $values ) ) {
 			$values = array( $values );
@@ -253,7 +256,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 			return '';
 		}
 
-		return "Archivé $id";
+		return $id;
 	}
 
 	protected
