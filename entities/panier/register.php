@@ -126,6 +126,7 @@ jQuery(function() {
 			'date_subst'        => array(
 				'name'    => amapress__( 'Date de remplacement' ),
 				'type'    => 'select',
+				'cache'   => false,
 				'options' => function ( $option ) {
 					$ret = [ '' => '--Aucune--' ];
 					/** @var TitanFrameworkOptionSelect $option */
