@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_update_all_posts( $post_types = null ) {
+	global $wpdb;
+	$wpdb->query( 'START TRANSACTION' );
 	foreach ( AmapressEntities::getPostTypes() as $k => $v ) {
 		if ( ! empty( $post_types ) && ! in_array( $k, $post_types ) ) {
 			continue;
@@ -13,10 +15,12 @@ function amapress_update_all_posts( $post_types = null ) {
 			continue;
 		}
 		$posts = get_posts( array( 'post_type' => amapress_unsimplify_post_type( $k ), 'posts_per_page' => - 1 ) );
+
 		foreach ( $posts as $post ) {
 			amapress_compute_post_slug_and_title( $post );
 		}
 	}
+	$wpdb->query( 'COMMIT' );
 }
 
 function amapress_set_slugs_and_titles_on_save( $post_id, WP_Post $post = null ) {
@@ -66,20 +70,29 @@ function amapress_compute_post_slug_and_title( WP_Post $post ) {
 		$upt = array( 'ID' => $post->ID );
 		if ( $new_post_slug ) {
 			$upt['post_name'] = $new_post_slug;
+			$post->post_name  = $new_post_slug;
 		}
 		if ( $new_post_title ) {
 			$upt['post_title'] = $new_post_title;
+			$post->post_title  = $new_post_title;
 		}
 
 		if ( count( $upt ) > 1 ) {
+			global $wpdb;
+			$wpdb->query( 'START TRANSACTION' );
 			wp_update_post( $upt );
+			do_action( "amapress_update_title_$pt", $post );
+			$wpdb->query( 'COMMIT' );
 		}
 	}
 }
 
 add_action( 'amapress_posts_import', 'amapress_after_post_import' );
 function amapress_after_post_import( $post_ids ) {
+	global $wpdb;
+	$wpdb->query( 'START TRANSACTION' );
 	foreach ( $post_ids as $post_id ) {
 		amapress_compute_post_slug_and_title( get_post( $post_id ) );
 	}
+	$wpdb->query( 'COMMIT' );
 }

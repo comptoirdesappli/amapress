@@ -107,13 +107,50 @@ function amapress_adhesion_request_title_formatter( $post_title, WP_Post $post )
 		$first_name, $last_name, $email );
 }
 
+add_action( 'amapress_update_title_contrat_instance', 'amapress_update_title_contrat_instance' );
+function amapress_update_title_contrat_instance( WP_Post $post ) {
+	$posts = get_posts( [
+		'post_type'      => AmapressPanier::INTERNAL_POST_TYPE,
+		'posts_per_page' => - 1,
+		'meta_query'     => [
+			[
+				'key'     => 'amapress_panier_contrat_instance',
+				'value'   => $post->ID,
+				'compare' => '='
+			]
+		]
+	] );
+	$posts = array_merge( $posts, get_posts( [
+		'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+		'posts_per_page' => - 1,
+		'meta_query'     => [
+			[
+				'key'     => 'amapress_adhesion_contrat_instance',
+				'value'   => $post->ID,
+				'compare' => '='
+			]
+		]
+	] ) );
+
+	foreach ( $posts as $p ) {
+		amapress_compute_post_slug_and_title( $p );
+	}
+}
+
+add_filter( 'amapress_contrat_title_formatter', 'amapress_contrat_title_formatter', 10, 2 );
+function amapress_contrat_title_formatter( $post_title, WP_Post $post ) {
+	$contrat = AmapressContrat::getBy( $post, true );
+
+	return $contrat->getTitle();
+}
+
 add_filter( 'amapress_panier_title_formatter', 'amapress_panier_title_formatter', 10, 2 );
 function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 	$panier = AmapressPanier::getBy( $post, true );
 	if ( ! $panier ) {
 		return $post_title;
 	}
-	if ( ! $panier->getContrat_instanceId() ) {
+	if ( ! $panier->getContrat_instance() ) {
 		return $post_title;
 	}
 	if ( ! $panier->getContrat_instance()->getModel() ) {
@@ -235,6 +272,26 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 		$subname,
 		date_i18n( 'm/Y', intval( $adh->getDate_debut() ) ),
 		date_i18n( 'm/Y', intval( $adh->getDate_fin() ) ) );
+}
+
+add_action( 'amapress_update_title_contrat', 'amapress_update_title_contrat' );
+function amapress_update_title_contrat( WP_Post $post ) {
+//    AmapressContrat::getBy($post->ID, true);
+	$posts = get_posts( [
+		'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
+		'posts_per_page' => - 1,
+		'meta_query'     => [
+			[
+				'key'     => 'amapress_contrat_instance_model',
+				'value'   => $post->ID,
+				'compare' => '='
+			]
+		]
+	] );
+
+	foreach ( $posts as $p ) {
+		amapress_compute_post_slug_and_title( $p );
+	}
 }
 
 add_action( 'edit_form_after_title', 'amapress_edit_post_title_handler' );
