@@ -62,10 +62,10 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'import_key'        => true,
 //                'required' => true,
 				'autoselect_single' => true,
-//                'top_filter' => array(
-//                    'name' => 'amapress_contrat_inst',
-//                    'placeholder' => 'Tous les contrats'
-//                ),
+				'top_filter'        => array(
+					'name'        => 'amapress_adhesion_period',
+					'placeholder' => 'Toutes les périodes'
+				),
 				'csv_required'      => true,
 			),
 			'date'         => array(
@@ -91,6 +91,10 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'not_received' => 'Non reçu',
 					'received'     => 'Reçu',
 					'bank'         => 'Remis',
+				),
+				'top_filter'   => array(
+					'name'        => 'amapress_status',
+					'placeholder' => 'Toutes les statuts'
 				),
 				'required'     => true,
 				'desc'         => 'Sélectionner l’option qui convient : Reçu à l’Amap, non reçu à l’Amap, Remis',
@@ -264,3 +268,13 @@ function amapress_row_action_adhesion_paiement_generate_bulletin( $post_id ) {
 	$file_name      = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }
+
+add_action( 'init', function () {
+	global $pagenow;
+	if ( is_main_query() && 'admin.php' == $pagenow
+	     && count( $_GET ) == 1
+	     && isset( $_GET['page'] )
+	     && 'adhesion_paiements' == $_GET['page'] ) {
+		wp_redirect_and_exit( add_query_arg( 'amapress_contrat', 'active' ) );
+	}
+} );

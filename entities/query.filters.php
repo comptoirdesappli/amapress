@@ -243,6 +243,17 @@ function amapress_filter_posts( WP_Query $query ) {
 			)
 		) );
 	}
+	if ( ! empty( $query->query_vars['amapress_adhesion_period'] ) ) {
+		if ( $pt == 'adhesion_paiement' ) {
+			amapress_add_meta_query( $query, array(
+				array(
+					'key'     => "amapress_{$pt}_period",
+					'value'   => $query->query_vars['amapress_adhesion_period'],
+					'compare' => '=',
+				)
+			) );
+		}
+	}
 	if ( ! empty( $query->query_vars['amapress_recette_produits'] ) ) {
 		$amapress_recette_produits = array_map( function ( $a ) {
 			return Amapress::resolve_post_id( $a, AmapressProduit::INTERNAL_POST_TYPE );

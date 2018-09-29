@@ -15,6 +15,7 @@ function adhesion_paiements_manage_users_columns( $columns ) {
 			unset( $columns['pw_user_status'] );
 			unset( $columns['amapress_user_telephone2'] );
 			unset( $columns['amapress_user_adresse_localized'] );
+			unset( $columns['amapress_user_all_roles'] );
 			unset( $columns['amapress_user_role_desc'] );
 			unset( $columns['amapress_user_moyen'] );
 			unset( $columns['role'] );
@@ -32,6 +33,7 @@ function adhesion_paiements_manage_users_columns( $columns ) {
 			unset( $columns['pw_user_status'] );
 			unset( $columns['amapress_user_telephone2'] );
 			unset( $columns['amapress_user_adresse_localized'] );
+			unset( $columns['amapress_user_all_roles'] );
 			unset( $columns['amapress_user_role_desc'] );
 			unset( $columns['amapress_user_moyen'] );
 			unset( $columns['role'] );

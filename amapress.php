@@ -1042,7 +1042,8 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 //    var_dump($cap);
 	if ( isset( $args[2] ) && ( 'delete_users' == $cap || 'remove_users' == $cap || 'delete_user' == $cap || 'remove_user' == $cap ) ) {
 		$allcaps[ $caps[0] ] = apply_filters( 'amapress_can_delete_user', true, $args[2] );
-//        var_dump($allcaps[$cap[0]]);
+	} else if ( isset( $args[2] ) && ( 'edit_users' == $cap || 'edit_user' == $cap ) ) {
+		//do nothing
 	} else if ( isset( $args[2] ) && strpos( $cap, 'delete_' ) === 0 ) {
 		if ( ! isset( $allcaps[ $cap ] ) || ! $allcaps[ $cap ] ) {
 			return $allcaps;

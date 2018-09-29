@@ -186,6 +186,11 @@ function amapress_adhesion_paiement_views() {
 		"post_type=amps_adh_pmt&amapress_date=active",
 		'En cours' );
 
+	amapress_add_view_button(
+		$ret, 'not_received',
+		"post_type=amps_adh_pmt&amapress_date=active&amapress_status=not_received",
+		'Non reçu' );
+
 	return $ret;
 }
 

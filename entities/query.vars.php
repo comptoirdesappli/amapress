@@ -24,6 +24,7 @@ function amapress_add_query_vars( $query_vars ) {
 	$query_vars[] = 'amapress_coadherents';
 	$query_vars[] = 'amapress_post';
 	$query_vars[] = 'amapress_status';
+	$query_vars[] = 'amapress_adhesion_period';
 	$query_vars[] = 'amapress_info';
 	$query_vars[] = 'amapress_recette_produits';
 	$query_vars[] = 'amapress_recette_tag';

@@ -41,9 +41,10 @@ function amapress_register_entities_amapien( $entities ) {
 				'type' => 'heading',
 			),
 			'all_roles'      => array(
-				'name'   => amapress__( 'Fonctions actuelles' ),
-				'type'   => 'custom',
-				'custom' => function ( $user_id ) {
+				'name'        => amapress__( 'Fonctions actuelles' ),
+				'show_column' => false,
+				'type'        => 'custom',
+				'custom'      => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
 					$roles   = esc_html( $amapien->getAmapRolesString() );
 
@@ -51,9 +52,10 @@ function amapress_register_entities_amapien( $entities ) {
 				}
 			),
 			'role_desc'      => array(
-				'type'   => 'custom',
-				'name'   => amapress__( 'Rôle sur le site' ),
-				'custom' => function ( $user_id ) {
+				'type'        => 'custom',
+				'name'        => amapress__( 'Rôle sur le site' ),
+				'show_column' => false,
+				'custom'      => function ( $user_id ) {
 					return '
 <p id="fonctions_role_desc">Les rôles suivants donnent des accès spécifiques selon l’intitulé sélectionné</p>
 <p><strong>Amap Référent producteur</strong> : <em>Accède aux informations relatives au producteur dont il est référent : contrats, inscriptions…</em>
