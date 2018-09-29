@@ -962,7 +962,10 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$clean_messages = '';
 	if ( isset( $_REQUEST['clean'] ) ) {
 		if ( 'orphans' == $_REQUEST['clean'] ) {
-			$clean_messages .= AmapressAmapien_paiement::cleanOrphans();
+			$clean_messages = implode( '<br />', [
+				AmapressAmapien_paiement::cleanOrphans(),
+				AmapressContrat_quantite::cleanOrphans()
+			] );
 		}
 	}
 	$state['09_clean']   = array();

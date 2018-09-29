@@ -137,7 +137,6 @@ GROUP BY wp_posts.ID" );
 //				]
 //			]
 //		);
-		return $orphans;
 	}
 
 	/** @return AmapressAmapien_paiement[] */

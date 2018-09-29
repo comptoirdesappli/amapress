@@ -1159,4 +1159,32 @@ class AmapressContrat_quantite extends TitanEntity {
 
 		return in_array( Amapress::start_of_day( $dist_date ), $quantite_liste_dates );
 	}
+
+	public static function cleanOrphans() {
+		global $wpdb;
+		$orphans = $wpdb->get_col( "SELECT $wpdb->posts.ID
+FROM $wpdb->posts 
+INNER JOIN $wpdb->postmeta
+ON ( $wpdb->posts.ID = $wpdb->postmeta.post_id )
+WHERE 1=1 
+AND ( ( $wpdb->postmeta.meta_key = 'amapress_contrat_quantite_contrat_instance'
+AND CAST($wpdb->postmeta.meta_value as SIGNED) NOT IN (
+SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_type = '" . AmapressContrat_instance::INTERNAL_POST_TYPE . "'
+) ) )
+AND $wpdb->posts.post_type = '" . AmapressContrat_quantite::INTERNAL_POST_TYPE . "'
+GROUP BY wp_posts.ID" );
+
+		$wpdb->query( 'START TRANSACTION' );
+		foreach ( $orphans as $post_id ) {
+			wp_delete_post( $post_id );
+		}
+		$wpdb->query( 'COMMIT' );
+
+		$count = count( $orphans );
+		if ( $count ) {
+			return "$count quantités orphelines nettoyées";
+		} else {
+			return "Aucun quantité orpheline";
+		}
+	}
 }

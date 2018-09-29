@@ -2009,3 +2009,29 @@ add_filter( 'amapress_can_edit_contrat', function ( $can, $post_id ) {
 
 	return $can;
 }, 10, 2 );
+
+add_action( 'delete_post', function ( $post_id ) {
+	$post_type = get_post_type( $post_id );
+
+	if ( AmapressContrat_instance::INTERNAL_POST_TYPE == $post_type ) {
+		$quants_ids = get_posts(
+			[
+				'fields'         => 'ids',
+				'posts_per_page' => - 1,
+				'post_type'      => AmapressContrat_quantite::INTERNAL_POST_TYPE,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'amapress_contrat_quantite_contrat_instance',
+						'value'   => $post_id,
+						'compare' => '=',
+						'type'    => 'NUMERIC'
+					),
+				)
+			]
+		);
+		foreach ( $quants_ids as $id ) {
+			wp_delete_post( $id );
+		}
+	}
+}, 1000 );
