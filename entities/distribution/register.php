@@ -99,16 +99,10 @@ function amapress_register_entities_distribution( $entities ) {
 		'default_orderby'  => 'amapress_distribution_date',
 		'default_order'    => 'ASC',
 		'fields'           => array(
-			'info'              => array(
-				'name'  => amapress__( 'Informations spécifiques' ),
-				'type'  => 'editor',
-				'group' => '3/ Informations',
-				'desc'  => 'Informations complémentaires',
-			),
 			'date'              => array(
 				'name'       => amapress__( 'Date de distribution' ),
 				'type'       => 'date',
-				'time'       => true,
+				'time'       => false,
 				'top_filter' => array(
 					'name'           => 'amapress_date',
 					'placeholder'    => 'Toutes les dates',
@@ -133,70 +127,47 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'       => 'Lieu de distribution',
 				'searchable' => true,
 			),
+
 			'lieu_substitution' => array(
-				'name'       => amapress__( 'Lieu de substitution' ),
+				'name'       => amapress__( 'Lieu' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
-				'group'      => '1/ Livraison',
+				'group'      => '1/ Partage',
 				'desc'       => 'Lieu de substitution',
+				'hidden'     => function ( $option ) {
+					return count( Amapress::get_lieu_ids() ) <= 1;
+				},
 				'searchable' => true,
 			),
 			'heure_debut_spec'  => array(
-				'name'  => amapress__( 'Heure début de substitution' ),
+				'name'  => amapress__( 'Heure de début' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
 				'desc'  => 'Heure début particulière pour cette livraison',
-				'group' => '1/ Livraison',
+				'group' => '1/ Partage',
 			),
 			'heure_fin_spec'    => array(
-				'name'  => amapress__( 'Heure fin de substitution' ),
+				'name'  => amapress__( 'Heure de fin' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
 				'desc'  => 'Heure fin particulière pour cette livraison',
-				'group' => '1/ Livraison',
-			),
-			'nb_resp_supp'      => array(
-				'name'        => amapress__( 'Nombre de responsables de distributions supplémentaires' ),
-				'type'        => 'number',
-				'required'    => true,
-				'desc'        => 'Nombre de responsables de distributions supplémentaires',
-				'group'       => '2/ Responsables',
-				'default'     => 0,
-				'show_column' => false,
+				'group' => '1/ Partage',
 			),
 			'contrats'          => array(
 				'name'      => amapress__( 'Contrats' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => 'amps_contrat_inst',
-				'group'     => '1/ Livraison',
+				'group'     => '1/ Partage',
 				'readonly'  => true,
 				'hidden'    => true,
 				'desc'      => 'Contrats',
 //                'searchable' => true,
 			),
-			'responsables'      => array(
-				'name'          => amapress__( 'Responsables' ),
-				'group'         => '2/ Responsables',
-				'type'          => 'select-users',
-				'autocomplete'  => true,
-				'multiple'      => true,
-				'tags'          => true,
-				'desc'          => 'Responsables',
-				'before_option' => function ( $o ) {
-					if ( Amapress::hasRespDistribRoles() ) {
-						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
-					}
-				},
-				'readonly'      => function ( $o ) {
-					return Amapress::hasRespDistribRoles();
-				}
-//                'searchable' => true,
-			),
 			'paniers'           => array(
 				'name'              => amapress__( 'Panier(s)' ),
-				'group'             => '1/ Livraison',
+				'group'             => '1/ Partage',
 				'desc'              => 'Paniers à cette distribution',
 				'show_column'       => false,
 //				'bare'              => true,
@@ -207,8 +178,9 @@ function amapress_register_entities_distribution( $entities ) {
 					'amapress_panier_date_subst',
 				),
 				'datatable_options' => array(
-					'ordering' => false,
-					'paging'   => true,
+					'ordering'  => false,
+					'paging'    => false,
+					'searching' => false,
 				),
 				'type'              => 'related-posts',
 				'query'             => function ( $postID ) {
@@ -243,7 +215,42 @@ function amapress_register_entities_distribution( $entities ) {
 						)
 					);
 				}
-			)
+			),
+
+			'nb_resp_supp'      => array(
+				'name'        => amapress__( 'Nombre' ),
+				'type'        => 'number',
+				'required'    => true,
+				'desc'        => 'Indiquer le nombre de responsables de distributions supplémentaires',
+				'group'       => '2/ Responsables',
+				'default'     => 0,
+				'show_column' => false,
+			),
+			'responsables'      => array(
+				'name'          => amapress__( 'Responsables' ),
+				'group'         => '2/ Responsables',
+				'type'          => 'select-users',
+				'autocomplete'  => true,
+				'multiple'      => true,
+				'tags'          => true,
+				'desc'          => 'Indiquer tous les responsables de distribution',
+				'before_option' => function ( $o ) {
+					if ( Amapress::hasRespDistribRoles() ) {
+						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
+					}
+				},
+				'readonly'      => function ( $o ) {
+					return Amapress::hasRespDistribRoles();
+				}
+//                'searchable' => true,
+			),
+
+			'info' => array(
+				'name'  => amapress__( 'Informations spécifiques' ),
+				'type'  => 'editor',
+				'group' => '3/ Informations',
+				'desc'  => 'Informations complémentaires',
+			),
 		),
 	);
 

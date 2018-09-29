@@ -34,7 +34,7 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 	$date              = get_post_meta( $post_id, 'amapress_distribution_date', true );
 	$lieu_id           = get_post_meta( $post_id, 'amapress_distribution_lieu', true );
 	$lieu_substitution = get_post_meta( $post_id, 'amapress_distribution_lieu_substitution', true );
-	if ( ! empty( $lieu_substitution ) ) {
+	if ( ! empty( $lieu_substitution ) && $lieu_substitution != $lieu_id ) {
 		$lieu = get_post( intval( $lieu_substitution ) );
 
 		return sprintf( 'Distribution du %s exceptionnellement à %s',

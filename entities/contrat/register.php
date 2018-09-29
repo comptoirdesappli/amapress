@@ -137,7 +137,7 @@ function amapress_register_entities_contrat( $entities ) {
 		'edit_header'     => function ( $post ) {
 			if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) && TitanFrameworkOption::isOnEditScreen() ) {
 				$class   = 'notice notice-error';
-				$message = 'Veuillez ajouter des quantités au contrat';
+				$message = 'Vous devez configurer les quantités et tarifs des paniers';
 				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 			}
 			$adhs = AmapressContrats::get_active_adhesions( $post->ID );
@@ -275,6 +275,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'name'        => amapress__( 'Producteur' ),
 				'type'        => 'custom',
 				'group'       => '1/6 - Ferme',
+				'show_on'     => 'edit-only',
 				'show_column' => false,
 				'custom'      => function ( $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
@@ -297,6 +298,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'name'                 => amapress__( 'Référents' ),
 				'type'                 => 'custom',
 				'group'                => '1/6 - Ferme',
+				'show_on'              => 'edit-only',
 				'use_custom_as_column' => true,
 				'custom'               => function ( $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
