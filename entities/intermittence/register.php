@@ -98,18 +98,22 @@ function amapress_register_entities_intermittence( $entities ) {
 				'searchable' => true,
 			),
 			'status'             => array(
-				'name'     => amapress__( 'Statut' ),
-				'type'     => 'select',
-				'options'  => array(
+				'name'       => amapress__( 'Statut' ),
+				'type'       => 'select',
+				'top_filter' => array(
+					'name'        => 'amapress_status',
+					'placeholder' => 'Tous les états',
+				),
+				'options'    => array(
 					'to_exchange'     => 'A réserver',
 					'exch_valid_wait' => 'En attente de validation de l\'échange',
 					'exchanged'       => 'Réservé',
 					'closed'          => 'Cloturé',
 					'cancelled'       => 'Annulé',
 				),
-				'required' => true,
-				'desc'     => 'Statut',
-				'readonly' => true,
+				'required'   => true,
+				'desc'       => 'Statut',
+				'readonly'   => true,
 			),
 		),
 	);

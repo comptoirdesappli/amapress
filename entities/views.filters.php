@@ -538,15 +538,15 @@ function amapress_intermittence_panier_views() {
 
 	amapress_add_view_button(
 		$ret, 'actives',
-		"post_type=amps_inter_adhe&amapress_date=active",
+		"post_type=amps_inter_panier&amapress_date=active",
 		'En cours' );
 	amapress_add_view_button(
 		$ret, 'thismonth',
-		"post_type=amps_inter_adhe&amapress_date=thismonth",
+		"post_type=amps_inter_panier&amapress_date=thismonth",
 		'Ce mois' );
 	amapress_add_view_button(
 		$ret, 'nextmonth',
-		"post_type=amps_inter_adhe&amapress_date=nextmonth",
+		"post_type=amps_inter_panier&amapress_date=nextmonth",
 		'Mois prochain' );
 
 	$lieux = Amapress::get_lieux();
@@ -554,7 +554,31 @@ function amapress_intermittence_panier_views() {
 		foreach ( $lieux as $lieu ) {
 			amapress_add_view_button(
 				$ret, 'for_' . $lieu->ID,
-				"post_type=amps_inter_adhe&amapress_date=active&amapress_lieu={$lieu->ID}",
+				"post_type=amps_inter_panier&amapress_date=active&amapress_lieu={$lieu->ID}",
+				$lieu->getShortName() );
+		}
+	}
+	amapress_add_view_button(
+		$ret, 'to_exchange',
+		"post_type=amps_inter_panier&amapress_status=to_exchange",
+		'A réserver' );
+	amapress_add_view_button(
+		$ret, 'exch_valid_wait',
+		"post_type=amps_inter_panier&amapress_status=exch_valid_wait",
+		'En attente validation' );
+	amapress_add_view_button(
+		$ret, 'exchanged',
+		"post_type=amps_inter_panier&amapress_status=exchanged",
+		'Réservé' );
+	amapress_add_view_button(
+		$ret, 'exchanged',
+		"post_type=amps_inter_panier&amapress_status=cancelled",
+		'Annulé' );
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+			amapress_add_view_button(
+				$ret, 'for_all_' . $lieu->ID,
+				"post_type=amps_inter_panier&amapress_lieu={$lieu->ID}",
 				$lieu->getShortName() );
 		}
 	}
