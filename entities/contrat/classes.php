@@ -251,6 +251,17 @@ class AmapressContrat_instance extends TitanEntity {
 		return $date_factor;
 	}
 
+	public function getRealDateForDistribution( $date ) {
+		$paniers = AmapressPanier::get_delayed_paniers( null, null, $date, [ 'delayed' ] );
+		foreach ( $paniers as $p ) {
+			if ( $p->getContrat_instanceId() == $this->ID ) {
+				return Amapress::start_of_day( $p->getDateSubst() );
+			}
+		}
+
+		return Amapress::start_of_day( $date );
+	}
+
 	public function getPaiements_Liste_dates() {
 		return $this->getCustomAsDateArray( 'amapress_contrat_instance_liste_dates_paiements' );
 	}

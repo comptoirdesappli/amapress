@@ -115,6 +115,18 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$date                     = $dist->getDate();
 	$dist_contrat_ids         = $dist->getContratIds();
 	$active_contrats          = AmapressContrats::get_active_contrat_instances( null, $date, false, false );
+	foreach ( $dist->getDelayedToThisContrats() as $c ) {
+		$found = false;
+		foreach ( $active_contrats as $cc ) {
+			if ( $c && $c->ID == $cc->ID ) {
+				$found = true;
+				break;
+			}
+		}
+		if ( ! $found ) {
+			$active_contrats[] = $c;
+		}
+	}
 	$active_contrats_ids      = array_map(
 		function ( $c ) {
 			return $c->ID;
@@ -316,7 +328,8 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			if ( ! empty( $line[ 'contrat_' . $adh->getContrat_instance()->ID ] ) ) {
 				$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= ',';
 			}
-			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= $adh->getContrat_quantites_Codes_AsString( ! $show_all_contrats ? $date : null );
+			$panier_date                                          = ! $show_all_contrats ? $dist->getRealDateForContrat( $adh->getContrat_instanceId() ) : null;
+			$line[ 'contrat_' . $adh->getContrat_instance()->ID ] .= $adh->getContrat_quantites_Codes_AsString( $panier_date );
 			if ( AmapressAdhesion::TO_CONFIRM == $adh->getStatus() ) {
 				$to_confirm = true;
 			}
@@ -497,7 +510,7 @@ line-height: 1.1;
 			'responsive'   => false,
 			'init_as_html' => true,
 			'no_script'    => $for_pdf,
-			'aaSorting'    => [ [ 1, 'asc' ] ]
+			'aaSorting'    => [ [ 0, 'asc' ] ]
 		),
 		array(
 			Amapress::DATATABLES_EXPORT_EXCEL
@@ -505,7 +518,8 @@ line-height: 1.1;
 
 	foreach ( $dist->getContrats() as $contrat ) {
 		if ( $contrat->isPanierVariable() ) {
-			$panier_commandes = AmapressPaniers::getPanierVariableCommandes( $contrat->ID, $date );
+			$panier_date      = ! $show_all_contrats ? $dist->getRealDateForContrat( $contrat->ID ) : null;
+			$panier_commandes = AmapressPaniers::getPanierVariableCommandes( $contrat->ID, $panier_date );
 
 			if ( ! empty( $panier_commandes['data'] ) ) {
 				echo '<br/>';

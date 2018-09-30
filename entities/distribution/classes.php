@@ -209,8 +209,49 @@ class AmapressDistribution extends Amapress_EventBase {
 		);
 	}
 
+	public function getRealDateForContrat( $contrat_id ) {
+		$paniers = $this->getDelayedToThisPaniers();
+		foreach ( $paniers as $p ) {
+			if ( $p->getContrat_instanceId() == $contrat_id ) {
+				return Amapress::start_of_day( $p->getDate() );
+			}
+		}
+
+		return Amapress::start_of_day( $this->getDate() );
+	}
+
+	/** @return AmapressPanier[] */
 	public function getDelayedToThisPaniers() {
-		return AmapressPanier::get_delayed_paniers( null, $this->getDate(), null, [ 'delayed' ] );
+		$key     = 'AmapressDistribution-getDelayedToThisPaniers-' . $this->ID;
+		$paniers = wp_cache_get( $key );
+		if ( false === $paniers ) {
+			$paniers = AmapressPanier::get_delayed_paniers( null, $this->getDate(), null, [ 'delayed' ] );
+			wp_cache_set( $key, $paniers );
+		}
+
+		return $paniers;
+	}
+
+	/** @return AmapressContrat_instance[] */
+	public function getDelayedToThisContrats() {
+		return array_map(
+			function ( $p ) {
+				/** @var AmapressPanier $p */
+				return $p->getContrat_instance();
+			},
+			$this->getDelayedToThisPaniers()
+		);
+	}
+
+	/** @return int[] */
+	public function getDelayedToThisContratIds() {
+		return array_map(
+			function ( $p ) {
+				/** @var AmapressPanier $p */
+				return $p->getContrat_instanceId();
+			},
+			$this->getDelayedToThisPaniers()
+		);
 	}
 
 	public function getCancelledPaniers() {

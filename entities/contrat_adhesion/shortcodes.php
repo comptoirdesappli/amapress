@@ -179,7 +179,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 	echo $ret;
 
-	$min_total             = 0;
+	$min_total = 0;
 	Amapress::setFilterForReferent( false );
 	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
 	Amapress::setFilterForReferent( true );
@@ -244,7 +244,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 
 		Amapress::setFilterForReferent( false );
-		$adhs             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		Amapress::setFilterForReferent( true );
 		$adhs             = array_filter( $adhs,
 			function ( $adh ) use ( $subscribable_contrats_ids ) {
@@ -394,7 +394,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 </tr>
             </table>
             <div>
-		        <?php echo Amapress::getOption( 'online_adhesion_coadh_message' ); ?>
+	            <?php echo Amapress::getOption( 'online_adhesion_coadh_message' ); ?>
             </div>
             <table style="min-width: 50%">
                 <tr>
@@ -898,11 +898,15 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$first_contrat_date = $dates[0];
 			if ( ! $admin_mode ) {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
-					return ( Amapress::start_of_day( $d ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $d ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+					$real_date = $contrat->getRealDateForDistribution( $d );
+
+					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
 				} );
 			} else {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
-					return Amapress::end_of_week( $d ) > amapress_time();
+					$real_date = $contrat->getRealDateForDistribution( $d );
+
+					return Amapress::end_of_week( $real_date ) > amapress_time();
 				} );
 			}
 			$dates            = array_values( $dates );
@@ -914,7 +918,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			echo '<p><strong>Date</strong></p>';
 			if ( ! $is_started && ! $admin_mode ) {
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
-				echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $first_contrat_date ) . ' au ' . date_i18n( 'l d F Y', $contrat->getDate_fin() ) . '
+				echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $contrat->getRealDateForDistribution( $first_contrat_date ) ) . ' au ' . date_i18n( 'l d F Y', $contrat->getDate_fin() ) . '
  (' . count( $contrat->getListe_dates() ) . ' dates de distributions)</p>';
 			} else {
 				?>
@@ -930,7 +934,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                     <select name="start_date" id="start_date" class="required">
 						<?php
 						foreach ( $dates as $date ) {
-							$val_date = date_i18n( 'd/m/Y', $date );
+							$real_date = $contrat->getRealDateForDistribution( $date );
+							$val_date  = date_i18n( 'd/m/Y', $real_date );
+							if ( Amapress::start_of_day( $date ) != Amapress::start_of_day( $real_date ) ) {
+								$val_date .= ' initialement le ' . date_i18n( 'd/m/Y', $date );
+							}
 							if ( $date == $first_avail_date ) {
 								if ( $is_started ) {
 									$val_date = "Prochaine distribution ($val_date)";
@@ -1062,8 +1070,19 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 		echo '</ul>';
 
+		$reports = [];
+		foreach ( $dates as $d ) {
+			$real_date = $contrat->getRealDateForDistribution( $d );
+			if ( Amapress::start_of_day( $real_date ) != Amapress::start_of_day( $d ) ) {
+				$reports[] = 'livraison du ' . date_i18n( 'd/m/Y', $d ) . ' reportée au ' . date_i18n( 'd/m/Y', $real_date );
+			}
+		}
+		if ( ! empty( $reports ) ) {
+			echo '<p>Report(s) de livraison : ' . implode( ', ', $reports ) . '</p>';
+		}
+
 		if ( ! empty( $rattrapage ) ) {
-			echo '<p>Distributions de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
+			echo '<p>Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
 		}
 
 		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {

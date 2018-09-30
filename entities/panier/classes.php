@@ -106,6 +106,7 @@ class AmapressPanier extends Amapress_EventBase {
 		return $this->getCustomAsInt( 'amapress_panier_contrat_instance', 0 );
 	}
 
+	/** @return AmapressPanier[] */
 	public static function get_delayed_paniers(
 		$contrat_instance_id = null,
 		$date_delayed = null,
