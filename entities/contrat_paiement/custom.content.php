@@ -127,11 +127,11 @@ function amapress_user_paiments_column_display( $colname, $post_id ) {
 
 	$href = admin_url( "post.php?post={$post_id}&action=edit" );
 
-	if ( round( $amount ) == 0 ) {
+	if ( abs( $amount ) < 0.001 ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-no-alt', 'status' => 'paiement-not-paid' );
-	} else if ( round( $amount ) < $adh->getTotalAmount() ) {
+	} else if ( ( $amount - $adh->getTotalAmount() ) < - 0.001 ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-star-half', 'status' => 'paiement-partial-paid' );
-	} else if ( round( $amount ) > $adh->getTotalAmount() ) {
+	} else if ( ( $amount - $adh->getTotalAmount() ) > 0.001 ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-arrow-up-alt', 'status' => 'paiement-too-paid' );
 	} else {
 		$status = array( 'icon' => 'dashicons-before dashicons-yes', 'status' => 'paiement-ok' );

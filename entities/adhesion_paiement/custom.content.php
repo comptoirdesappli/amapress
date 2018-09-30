@@ -101,14 +101,14 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 				}
 			}
 
-			if ( round( $amount ) == 0 ) {
+			if ( abs( $amount ) < 0.001 ) {
 				$status = array( 'icon' => 'dashicons-before dashicons-no-alt', 'status' => 'paiement-not-paid' );
-			} else if ( round( $amount ) < $expected_amount ) {
+			} else if ( ( $amount - $expected_amount ) < - 0.001 ) {
 				$status = array(
 					'icon'   => 'dashicons-before dashicons-star-half',
 					'status' => 'paiement-partial-paid'
 				);
-			} else if ( round( $amount ) > $expected_amount ) {
+			} else if ( ( $amount - $expected_amount ) > 0.001 ) {
 				$status = array( 'icon' => 'dashicons-before dashicons-arrow-up-alt', 'status' => 'paiement-too-paid' );
 			} else {
 				$status = array( 'icon' => 'dashicons-before dashicons-yes', 'status' => 'paiement-ok' );
