@@ -344,7 +344,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'        => array(
+						'Ajouter une inscription'         => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -358,7 +358,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'          => array(
+						'Ajouter un coadhérent'           => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -372,7 +372,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP' => array(
+						'Ajouter une personne hors AMAP'  => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                  => array(
+						'Renouvèlement'                   => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -401,7 +401,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques'      => array(
+						'Mails - Envoi liste des chèques' => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
@@ -568,12 +568,18 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 												'bare'   => true,
 												'type'   => 'custom',
 												'custom' => function () use ( $contrat_id ) {
-													return amapress_get_contrat_quantite_datatable( $contrat_id );
+													$date = null;
+													if ( isset( $_GET['date'] ) ) {
+														$date = DateTime::createFromFormat( 'Y-m-d', $_GET['date'] );
+														if ( $date ) {
+															$date = $date->getTimestamp();
+														} else {
+															$date = null;
+														}
+													}
+
+													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date );
 												},
-											),
-											array(
-												'type' => 'note',
-												'desc' => 'ici vous pouvez gérer...'
 											),
 										)
 									);
@@ -2168,7 +2174,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
-						'Placeholders - contrat vierge'                => array(
+						'Placeholders - contrat vierge'                 => array(
 							'id'      => 'paper_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2182,7 +2188,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								)
 							)
 						),
-						'Placeholders - contrat personnalisé'          => array(
+						'Placeholders - contrat personnalisé'           => array(
 							'id'      => 'adhesion_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2196,7 +2202,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								)
 							)
 						),
-						'Configuration des paniers (Taille/Quantités)' => array(
+						'Configuration des paniers (Taille/Quantités)'  => array(
 							'id'      => 'conf_paniers',
 							'desc'    => '',
 							'options' => array(
