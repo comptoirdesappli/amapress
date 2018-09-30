@@ -49,7 +49,7 @@ function amapress_can_access_admin() {
 	return false;
 }
 
-//add_filter('login_redirect', 'amapress_redirect_on_login', 10, 3);
+add_filter( 'login_redirect', 'amapress_redirect_on_login', 10, 3 );
 ///**
 // * Redirect user after successful login.
 // *
@@ -58,8 +58,7 @@ function amapress_can_access_admin() {
 // * @param object $user Logged user's data.
 // * @return string
 // */
-//function amapress_redirect_on_login($redirect_to, $request, $user)
-//{
+function amapress_redirect_on_login( $redirect_to, $request, $user ) {
 //    if (is_admin()) {
 //        if (amapress_can_access_admin()) {
 //            return $redirect_to;
@@ -67,8 +66,13 @@ function amapress_can_access_admin() {
 //            return home_url();
 //        }
 //    }
-//    return $redirect_to;
-//}
+	if ( isset( $_GET['action'] ) && 'switch_to_user' == $_GET['action'] ) {
+		$redirect_to = wp_get_referer();
+	}
+
+	return $redirect_to;
+}
+
 function amapress_clean_invalid_login() {
 	$uri         = $_SERVER['REQUEST_URI'];
 	$cleaned_uri = preg_replace( '/%3E$|\>$/', '', $uri );
