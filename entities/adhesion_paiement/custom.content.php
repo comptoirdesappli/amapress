@@ -283,10 +283,11 @@ add_action( 'admin_footer', function () {
 //    return $terms;
 //}
 function amapress_paiements_count_editor( $post_id ) {
-	$adhesion = AmapressAdhesion::getBy( $post_id );
-	$ret      = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" min="0" max="12" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
-	$ret      .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">Préparer la saisie des chèques</button></div>';
-	$ret      .= '<script type="text/javascript">
+	$adhesion    = AmapressAdhesion::getBy( $post_id );
+	$min_cheques = count( $adhesion->getAllPaiements() );
+	$ret         = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" min="' . $min_cheques . '" max="12" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
+	$ret         .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">Préparer la saisie des chèques</button></div>';
+	$ret         .= '<script type="text/javascript">
         //<![CDATA[        
         jQuery(function ($) {
             var publishBtn = jQuery("form#post #publish");
@@ -383,10 +384,11 @@ function amapress_paiements_editor( $post_id ) {
 	}
 	//AmapressContrats::
 
+	echo '<tr><td colspan="2">';
 	echo '<script type="text/javascript">
-        //<![CDATA[
+        //<![CDATA[   
         jQuery(function ($) {
-                        $.contextMenu({
+               $.contextMenu({
 	            selector: \'.recopy-context-menu\', 
 	            callback: function(key, options) {
 	                var val = $(this).val();
@@ -438,9 +440,10 @@ function amapress_paiements_editor( $post_id ) {
 
 	echo '<input id="amapress_paiements" name="amapress_paiements" type="hidden" value="">';
 
+	echo '<p><strong>Astuces</strong> : Pour supprimer un ou plusieurs chèques, cliquer sur le bouton <span class="dashicons dashicons-dismiss"></span> de la ligne du chèque à supprimer puis cliquer sur Enregistrer.</p>';
 	echo '<p><strong>Astuces</strong> : Faites un clic droit dans le champs <em>Numéro de chèque</em> pour recopier et incrémenter le numéro dans les cases en dessous</p>';
 	echo '<p><strong>Astuces</strong> : Faites un clic droit dans les champs <em>Adhérent</em> ou <em>Banque</em> pour recopier la valeur dans les cases en dessous</p>';
-	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" width="100%" style="">';
+	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" style="table-layout: auto; width: 100%;">';
 	echo "<tr>
 <th>Numéro de chèque</th>
 <th>Adhérent</th>
@@ -515,11 +518,11 @@ function amapress_paiements_editor( $post_id ) {
 <td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
 <td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>
 <td class='paiement-banque'><input class='recopy-context-menu' style=\"width: 100%\" name='amapress_paiements_details[$id][banque]' placeholder='' maxlength='1000' type='text' value='$banque' /></td>
-<td class='paiement-amount'><input class='small-text paiement-amount-val' style=\"width: 100%\" name='amapress_paiements_details[$id][amount]' placeholder='' type='number' min='0' step='0.01' value='$amount' />&nbsp;€</td>
+<td class='paiement-amount'><input class='small-text paiement-amount-val' style=\"width: 100%\" name='amapress_paiements_details[$id][amount]' placeholder='' type='number' min='0' step='0.01' value='$amount' /></td>
 <td><select name='amapress_paiements_details[$id][date]' class='paiements_details' style=\"width: 100%\">
 $date_options
 </select>
-<td><select name='amapress_paiements_details[$id][status]' class=''>
+<td><select name='amapress_paiements_details[$id][status]' class='' style='width: 150px'>
 $status_options
 </select></td>
 <td style='width: 32px'><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_paiement(this)'></span></td>
@@ -527,6 +530,7 @@ $status_options
 	}
 	echo '<tr><td></td><td></td><td id="paiement-amount-total" data-sum="' . $adhesion->getTotalAmount() . '"></td><td></td><td></td><td></td></tr>';
 	echo '</table>';
+	echo '</td></tr>';
 }
 
 function amapress_save_paiements_editor( $adhesion_id ) {

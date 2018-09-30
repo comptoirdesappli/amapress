@@ -94,12 +94,17 @@
     border-left: 1pt solid gray;
 }
 
-.adhesion_paiement_table {
-    width: 100%;
-}
+/*.adhesion_paiement_table {*/
+/*width: 100%;*/
+/*}*/
 
-select.paiements_details {
-    width: 100%;
+/*select.paiements_details {*/
+/*width: 25%;*/
+/*}*/
+#adhesion_paiement_table td {
+    font-size: 0.8em;
+    padding: 5px;
+    margin: 5px;
 }
 
 .paiement-date {
