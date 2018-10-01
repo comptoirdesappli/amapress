@@ -36,6 +36,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::CONFIRMED == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},
+				'confirm'   => true,
 			],
 			'generate_contrat'  => [
 				'label'     => 'Générer le contrat',

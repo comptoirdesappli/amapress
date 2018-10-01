@@ -92,7 +92,7 @@ function amapress_add_page_if_not_exists( $option_name, $title, $slug, $protecte
 		return;
 	}
 	$option_value = intval( Amapress::getOption( $option_name ) );
-	if ( empty( $option_value ) || $option_value == 0 || get_post( $option_value ) == null ) {
+	if ( empty( $option_value ) || false == get_post_status( $option_value ) ) {
 //        var_dump($option_name);
 //        var_dump(Amapress::getOption($option_name));
 //        die();

@@ -31,6 +31,7 @@ function amapress_register_entities_distribution( $entities ) {
 			'mailto_resp'            => [
 				'label'     => 'Mail aux responsables',
 				'target'    => '_blank',
+				'confirm'   => true,
 				'href'      => function ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
 
@@ -46,6 +47,7 @@ function amapress_register_entities_distribution( $entities ) {
 			'smsto_resp'             => [
 				'label'     => 'SMS aux responsables',
 				'target'    => '_blank',
+				'confirm'   => true,
 				'href'      => function ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
 
@@ -61,6 +63,7 @@ function amapress_register_entities_distribution( $entities ) {
 			'mailto_amapiens'        => [
 				'label'   => 'Mail aux amapiens',
 				'target'  => '_blank',
+				'confirm' => true,
 				'href'    => function ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
 
@@ -71,6 +74,7 @@ function amapress_register_entities_distribution( $entities ) {
 			'smsto_amapiens'         => [
 				'label'   => 'Sms aux amapiens',
 				'target'  => '_blank',
+				'confirm' => true,
 				'href'    => function ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
 
@@ -81,10 +85,12 @@ function amapress_register_entities_distribution( $entities ) {
 			'resend_liste_to_resp'   => [
 				'label'   => 'Renvoyer la liste d\'émargement aux responsables',
 				'show_on' => 'editor',
+				'confirm' => true,
 			],
 			'resend_liste_to_verify' => [
 				'label'   => 'Envoyer les infos de distribution à vérifier',
 				'show_on' => 'editor',
+				'confirm' => true,
 			],
 		),
 		'views'            => array(

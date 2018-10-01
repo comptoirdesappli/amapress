@@ -1448,7 +1448,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										array(
 											'id'      => 'welcome_mail',
 											'name'    => 'Contenu du mail d\'enregistrement',
-											'type'    => 'textarea',
+											'type'    => 'editor',
 											'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
 											'desc'    => Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
 //                                            'capability' => 'manage_amapress',
@@ -1463,7 +1463,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										array(
 											'id'      => 'password_lost_mail',
 											'name'    => 'Contenu du mail de récupération de mot de passe',
-											'type'    => 'textarea',
+											'type'    => 'editor',
 											'default' => wpautop( "Bonjour %%dest%%\n\nQuelqu'un a demandé la récupération de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message et votre mot de passe restera inchangé.\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour changer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
 											'desc'    => Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
 										),

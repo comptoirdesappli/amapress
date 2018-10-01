@@ -24,7 +24,10 @@ function amapress_register_entities_adhesion_period( $entities ) {
 			'add_new_item' => 'Ajouter une période d\'adhésion',
 		),
 		'row_actions'      => array(
-			'renew' => 'Renouveler',
+			'renew' => [
+				'label'   => 'Renouveler',
+				'confirm' => true,
+			],
 		),
 		'views'            => array(
 			'remove' => array( 'mine' ),

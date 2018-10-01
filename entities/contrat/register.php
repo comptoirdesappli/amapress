@@ -165,15 +165,18 @@ function amapress_register_entities_contrat( $entities ) {
 				'label'     => 'Renouveler (prolongement)',
 				'condition' => 'amapress_can_renew_contrat_instance',
 				'show_on'   => 'list',
+				'confirm'   => true,
 			),
 			'renew_same_period' => array(
 				'label'     => 'Renouveler (même période)',
 				'condition' => 'amapress_can_renew_same_period_contrat_instance',
 				'show_on'   => 'list',
+				'confirm'   => true,
 			),
 			'clone'             => [
 				'label'   => 'Dupliquer',
 				'show_on' => 'list',
+				'confirm' => true,
 			],
 			'generate_contrat'  => [
 				'label'     => 'Générer le contrat papier',

@@ -22,13 +22,16 @@ function amapress_get_row_action_href( $action, $id, $other_args = [] ) {
 		$args, admin_url( $href ) ), "{$action}_{$id}" );
 }
 
-function amapress_get_row_action_html( $action, $id, $label ) {
+function amapress_get_row_action_html( $action, $id, $row_action_config ) {
+	$label = $row_action_config['label'];
 
-	return sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s">%2$s</a>',
+	return sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s"%5$s>%2$s</a>',
 		esc_url( amapress_get_row_action_href( $action, $id ) ),
-		esc_html( $label ),
+		esc_html( $row_action_config['label'] ),
 		esc_attr( $action ),
-		esc_attr( $label ) );
+		esc_attr( $label ),
+		( ! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' ) .
+		( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( 'Êtes-vous sur de vouloir : ' . $label . ' ?' ) . '\');"' : '' ) );
 }
 
 add_filter( 'user_row_actions', 'amapress_row_actions_registration', 10, 2 );
@@ -86,9 +89,10 @@ function amapress_row_actions_registration( $actions, $post_or_user, $type = 'li
 						esc_html( $label ),
 						esc_attr( $row_action ),
 						esc_attr( $label ),
-						! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' );
+						( ! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' ) .
+						( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( 'Êtes-vous sur de vouloir : ' . $label . ' ?' ) . '\');"' : '' ) );
 				} else {
-					$actions[ $row_action ] = amapress_get_row_action_html( $row_action, $post_or_user->ID, $row_action_config['label'] );
+					$actions[ $row_action ] = amapress_get_row_action_html( $row_action, $post_or_user->ID, $row_action_config );
 				}
 			}
 		}
