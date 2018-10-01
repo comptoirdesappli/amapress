@@ -20,6 +20,7 @@ class AmapressContrat extends TitanEntity {
 			$post_id = $post_or_id->ID;
 		} else if ( is_a( $post_or_id, 'AmapressContrat' ) ) {
 			$post_id = $post_or_id->ID;
+			$post    = $post_or_id;
 		} else {
 			$post_id = intval( $post_or_id );
 		}

@@ -109,7 +109,10 @@ class AmapressAdhesion extends TitanEntity {
 		} else {
 			$post_id = intval( $post_or_id );
 		}
-		if ( ! isset( self::$entities_cache[ $post_id ] ) || $no_cache ) {
+		if ( $no_cache ) {
+			unset( self::$entities_cache[ $post_id ] );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
 			$post = get_post( $post_id );
 			if ( ! $post ) {
 				self::$entities_cache[ $post_id ] = null;

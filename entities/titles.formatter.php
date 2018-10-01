@@ -27,6 +27,7 @@ function amapress_mailinglist_title_formatter( $post_title, WP_Post $post ) {
 	return get_post_meta( $post_id, 'amapress_mailinglist_name', true );
 }
 
+
 add_filter( 'amapress_distribution_title_formatter', 'amapress_distribution_title_formatter', 10, 2 );
 function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 	$post_id = $post->ID;
@@ -132,16 +133,40 @@ function amapress_update_title_contrat_instance( WP_Post $post ) {
 		]
 	] ) );
 
+	//clean cache
+	AmapressContrat_instance::getBy( $post, true );
 	foreach ( $posts as $p ) {
 		amapress_compute_post_slug_and_title( $p );
 	}
 }
 
+add_action( 'amapress_update_title_lieu_distribution', 'amapress_update_title_lieu_distribution', 10, 2 );
+function amapress_update_title_lieu_distribution( WP_Post $post ) {
+	//clean cache
+	AmapressLieu_distribution::getBy( $post, true );
+	amapress_update_all_posts(
+		[
+			AmapressDistribution::POST_TYPE,
+			AmapressAssemblee_generale::POST_TYPE,
+			AmapressAdhesion::POST_TYPE,
+		]
+	);
+}
+
 add_filter( 'amapress_contrat_title_formatter', 'amapress_contrat_title_formatter', 10, 2 );
 function amapress_contrat_title_formatter( $post_title, WP_Post $post ) {
+	//clear post cache...
 	$contrat = AmapressContrat::getBy( $post, true );
 
 	return $contrat->getTitle();
+}
+
+add_filter( 'amapress_lieu_distribution_title_formatter', 'amapress_lieu_distribution_title_formatter', 10, 2 );
+function amapress_lieu_distribution_title_formatter( $post_title, WP_Post $post ) {
+	//clear post cache...
+	$lieu = AmapressLieu_distribution::getBy( $post, true );
+
+	return $lieu->getTitle();
 }
 
 add_filter( 'amapress_panier_title_formatter', 'amapress_panier_title_formatter', 10, 2 );
@@ -276,7 +301,7 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 
 add_action( 'amapress_update_title_contrat', 'amapress_update_title_contrat' );
 function amapress_update_title_contrat( WP_Post $post ) {
-//    AmapressContrat::getBy($post->ID, true);
+	AmapressContrat::getBy( $post, true );
 	$posts = get_posts( [
 		'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
 		'posts_per_page' => - 1,
