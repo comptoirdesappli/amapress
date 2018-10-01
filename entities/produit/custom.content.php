@@ -28,7 +28,7 @@ function amapress_get_custom_content_produit( $content ) {
 ////    echo '</div>';
 //
 	$producteur_id = get_post_meta( $prod_id, 'amapress_produit_producteur', true );
-	echo '<h3>' . Amapress::getOption( 'producteur_title' ) . '</h3>';
+	echo '<h3>' . Amapress::getOption( 'producteur_title', 'Producteur' ) . '</h3>';
 	echo '<p><a href="' . get_post_permalink( $producteur_id ) . '">' . get_post( $producteur_id )->post_title . '</a></p>';
 
 	echo '<h3>Recettes</h3>';

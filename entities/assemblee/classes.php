@@ -95,7 +95,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 					'category' => 'Assemblées générales',
 					'priority' => 70,
 					'label'    => 'Assemblée',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_assemblee_icon" ) ),
+					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_assemblee_icon", 'dashicons dashicons-admin-post' ) ),
 					'alt'      => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );

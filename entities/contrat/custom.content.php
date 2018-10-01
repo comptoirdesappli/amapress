@@ -114,11 +114,11 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$content .= wpautop( get_the_content() );
 
 //	<div class="contrat-prod-summary">' . get_post_meta( $prod_id, 'amapress_producteur_resume', true ) . '</div>
-	$content .= amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
+	$content .= amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation du producteur' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
 	            '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>'
 	            . Amapress::get_know_more( get_permalink( $prod_id ) ) .
-	           amapress_get_panel_end() .
-	           amapress_get_panel_start( Amapress::getOption( 'pres_produits_title' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
+	            amapress_get_panel_end() .
+	            amapress_get_panel_start( Amapress::getOption( 'pres_produits_title', 'Ses produits' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
                     <div class="contrat-produits">
                     ' . $prouits_html .
 	            '</div>' .

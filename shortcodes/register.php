@@ -160,7 +160,7 @@ function amapress_register_shortcodes() {
 			),
 			$atts );
 
-		$max            = amapress_is_user_logged_in() ? Amapress::getOption( 'agenda_max_dates' ) : Amapress::getOption( 'agenda_max_public_dates' );
+		$max            = amapress_is_user_logged_in() ? Amapress::getOption( 'agenda_max_dates', 5 ) : Amapress::getOption( 'agenda_max_public_dates', 5 );
 		$agenda_content = do_shortcode( '[next_events max=' . $max . ']' );
 		if ( ! Amapress::toBool( $atts['title'] ) ) {
 			return $agenda_content;
@@ -168,7 +168,7 @@ function amapress_register_shortcodes() {
 //    $agenda = '';
 //    if (trim(wp_strip_all_tags($agenda_content, true)) != '') {
 //    (amapress_is_user_logged_in() ? ' (<a href="' . Amapress_Agenda_ICAL_Export::get_link_href() . '"><i class="fa fa-calendar" aria-hidden="true"></i> iCal</a>)' : '') . '</h2>' .
-		$agenda = '<h3 id="front-adgenda-title">' . ( amapress_is_user_logged_in() ? Amapress::getOption( 'front_agenda_title' ) : Amapress::getOption( 'front_agenda_public_title' ) ) . '</h3>' .
+		$agenda = '<h3 id="front-adgenda-title">' . ( amapress_is_user_logged_in() ? Amapress::getOption( 'front_agenda_title', 'Cette semaine dans mon panier...' ) : Amapress::getOption( 'front_agenda_public_title', 'Agenda' ) ) . '</h3>' .
 		          $agenda_content;
 
 //    }
@@ -184,7 +184,7 @@ function amapress_register_shortcodes() {
 		$produits_content = Amapress::get_contrats_list();
 		$produits         = '';
 		if ( Amapress::toBool( $atts['title'] ) ) {
-			$produits = '<h3 id="front-produits-title">' . Amapress::getOption( 'front_produits_title' ) . '</h3>';
+			$produits = '<h3 id="front-produits-title">' . Amapress::getOption( 'front_produits_title', 'Les produits de l\'Amap...' ) . '</h3>';
 		}
 		if ( trim( wp_strip_all_tags( $produits_content, true ) ) != '' ) {
 			$interm = '';
@@ -211,7 +211,7 @@ function amapress_register_shortcodes() {
 		if ( ! Amapress::toBool( $atts['title'] ) ) {
 			return $map_content;
 		}
-		$map = '<h3 id="front-map-title">' . Amapress::getOption( 'front_map_title' ) . '</h3>' . $map_content;
+		$map = '<h3 id="front-map-title">' . Amapress::getOption( 'front_map_title', 'Où nous trouver ?' ) . '</h3>' . $map_content;
 
 		return $map;
 	} );

@@ -164,7 +164,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'priority' => 90,
 					'lieu'     => $producteur,
 					'label'    => 'Visite ' . $producteur->getTitle(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_visite_icon" ) ),
+					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_visite_icon", 'dashicons dashicons-admin-post' ) ),
 					'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
