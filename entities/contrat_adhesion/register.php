@@ -568,7 +568,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$adh                   = AmapressAdhesion::getBy( $post_id );
 	$date_debut            = $adh->getDate_debut() ? $adh->getDate_debut() : amapress_time();
 	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
-	$adhesion_quantites    = $adh->getContrat_quantites( $date_debut );
+	$adhesion_quantites    = $adh->getContrat_quantites( null );
 	$paniers_variables     = $adh->getPaniersVariables();
 	$ret                   .= '<fieldset style="min-width: inherit">';
 	$contrats              = AmapressContrats::get_active_contrat_instances(
