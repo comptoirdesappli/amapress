@@ -68,11 +68,11 @@ function amapress_compute_post_slug_and_title( WP_Post $post ) {
 			}
 		}
 		$upt = array( 'ID' => $post->ID );
-		if ( $new_post_slug ) {
+		if ( $new_post_slug && $new_post_slug != $post->post_name ) {
 			$upt['post_name'] = $new_post_slug;
 			$post->post_name  = $new_post_slug;
 		}
-		if ( $new_post_title ) {
+		if ( $new_post_title && $new_post_title != $post->post_title ) {
 			$upt['post_title'] = $new_post_title;
 			$post->post_title  = $new_post_title;
 		}
