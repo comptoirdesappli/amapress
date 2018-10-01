@@ -168,7 +168,6 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 			_deprecated_argument( __FUNCTION__, '4.3.1' );
 		}
 
-		global $wpdb, $wp_hasher;
 		$user = AmapressUser::getBy( $user_id );
 
 		// The blogname option is escaped with esc_html on the way into the database in sanitize_option
@@ -176,19 +175,13 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
 		if ( 'user' !== $notify ) {
-//            $switched_locale = switch_to_locale( get_locale() );
 			$message = sprintf( __( 'New user registration on your site %s:' ), $blogname ) . "\r\n\r\n";
 			$message .= sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
 			$message .= sprintf( __( 'Email: %s' ), $user->getUser()->user_email ) . "\r\n";
 
 			@wp_mail( get_option( 'admin_email' ), sprintf( __( '[%s] New User Registration' ), $blogname ), $message );
-
-//            if ( $switched_locale ) {
-//                restore_previous_locale();
-//            }
 		}
 
-		// `$deprecated was pre-4.3 `$plaintext_pass`. An empty `$plaintext_pass` didn't sent a user notification.
 		if ( 'admin' === $notify || ( empty( $deprecated ) && empty( $notify ) ) ) {
 			return;
 		}
@@ -197,9 +190,44 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 		$message = amapress_replace_mail_placeholders( Amapress::getOption( 'welcome_mail' ), $user );
 
 		amapress_wp_mail( $user->getUser()->user_email, $subject, $message );
-
-//        if ( $switched_locale ) {
-//            restore_previous_locale();
-//        }
 	}
 }
+
+add_filter( 'retrieve_password_title', function ( $title ) {
+	if ( empty( $_POST['user_login'] ) ) {
+		return $title;
+	}
+
+	if ( strpos( $_POST['user_login'], '@' ) ) {
+		$user_data = get_user_by( 'email', trim( wp_unslash( $_POST['user_login'] ) ) );
+	} else {
+		$login     = trim( $_POST['user_login'] );
+		$user_data = get_user_by( 'login', $login );
+	}
+	$user = AmapressUser::getBy( $user_data->ID );
+
+	return amapress_replace_mail_placeholders( Amapress::getOption( 'password_lost_mail_subject' ), $user );
+} );
+
+add_filter( 'retrieve_password_message', function ( $message, $key ) {
+	if ( empty( $_POST['user_login'] ) ) {
+		return $message;
+	}
+
+	if ( strpos( $_POST['user_login'], '@' ) ) {
+		$user_data = get_user_by( 'email', trim( wp_unslash( $_POST['user_login'] ) ) );
+	} else {
+		$login     = trim( $_POST['user_login'] );
+		$user_data = get_user_by( 'login', $login );
+	}
+	$user = AmapressUser::getBy( $user_data->ID );
+
+	add_filter( 'wp_mail_content_type', function ( $t ) {
+		return 'text/html';
+	} );
+	add_filter( 'amapress_mail_queue_bypass', function ( $t ) {
+		return true;
+	} );
+
+	return amapress_replace_mail_placeholders( Amapress::getOption( 'password_lost_mail' ), $user );
+}, 10, 2 );

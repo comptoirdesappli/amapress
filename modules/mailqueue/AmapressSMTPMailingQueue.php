@@ -86,16 +86,22 @@ class AmapressSMTPMailingQueue {
 	 * @return bool
 	 */
 	public function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-		//TODO handle wp_mail hooks, ie content type at this time and not at time of sending out of queue
-//		$advancedOptions = get_option('smtp_mailing_queue_advanced');
-//		$minRecipients = isset($advancedOptions['min_recipients']) ? $advancedOptions['min_recipients'] : 1;
-//
-//		if(is_array($to))
-//			$to = implode(',', $to);
-//
-//		if(count(explode(',', $to)) >= $minRecipients)
+		if ( empty( $headers ) ) {
+			$headers = array();
+		}
+		if ( is_string( $headers ) ) {
+			$headers = explode( "\n", $headers );
+		}
+		$headers = array_filter( $headers,
+			function ( $h ) {
+				return ! empty( $h ) && ! empty( trim( $h ) );
+			} );
+		if ( 'text/html' == apply_filters( 'wp_mail_content_type', 'text/plain' ) ) {
+			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+		}
+
 		$use = Amapress::getOption( 'mail_queue_use_queue' );
-		if ( empty( $use ) || ! $use ) {
+		if ( empty( $use ) || ! $use || apply_filters( 'amapress_mail_queue_bypass', false ) ) {
 			$time   = amapress_time();
 			$errors = self::sendMail( compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ) );
 

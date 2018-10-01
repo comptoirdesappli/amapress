@@ -344,7 +344,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'         => array(
+						'Ajouter une inscription'              => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -358,7 +358,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'           => array(
+						'Ajouter un coadhérent'                => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -372,7 +372,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'  => array(
+						'Ajouter une personne hors AMAP'       => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -386,7 +386,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                   => array(
+						'Renouvèlement'                        => array(
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -401,7 +401,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques' => array(
+						'Mails - Envoi liste des chèques'      => array(
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
@@ -1449,9 +1449,23 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'welcome_mail',
 											'name'    => 'Contenu du mail d\'enregistrement',
 											'type'    => 'textarea',
-											'default' => "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%\n%%site_icon_url_link%%",
+											'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
 											'desc'    => Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
 //                                            'capability' => 'manage_amapress',
+										),
+										array(
+											'id'      => 'password_lost_mail_subject',
+											'name'    => 'Sujet du mail de récupération de mot de passe',
+											'type'    => 'text',
+											'default' => '[%%nom_site%%] Récupération de votre mot de passe',
+//                                            'capability' => 'manage_amapress',
+										),
+										array(
+											'id'      => 'password_lost_mail',
+											'name'    => 'Contenu du mail de récupération de mot de passe',
+											'type'    => 'textarea',
+											'default' => wpautop( "Bonjour %%dest%%\n\nQuelqu'un a demandé la récupération de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message et votre mot de passe restera inchangé.\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour changer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
 										),
 										array(
 											'id'      => 'welcome-mail-expiration',
