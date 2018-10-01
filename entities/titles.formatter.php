@@ -351,7 +351,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	/** @var WP_Post $post */
 	$author = get_user_by( 'ID', $post->post_author );
 	if ( $author ) {
-		echo '<p>Créé par ' . esc_html( $author->display_name ) . ' à ' . date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ) . '</p>';
+		echo '<p>Créé par ' . esc_html( $author->display_name ) . ' à ' . date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ) . ' ; Dernière modification le ' . date_i18n( 'd/m/Y H:i', @strtotime( $post->post_modified ) ) . '</p>';
 	}
 
 	$pt      = amapress_simplify_post_type( $post->post_type );
