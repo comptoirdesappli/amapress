@@ -830,7 +830,7 @@ class AmapressAdhesion extends TitanEntity {
 
 		$val = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
 		if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
-			$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( $this->getDate_fin(), $quantite_id );
+			$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id );
 		}
 
 		return $val;
