@@ -1533,10 +1533,10 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 				}
 				echo '<li style="margin-left: 35px">';
 				$lnk = current_user_can( 'edit_post', $adh->ID ) ?
-					'<a href="' . esc_attr( $adh->getAdminEditLink() ) . '" >Voir</a>&nbsp;:&nbsp;' : '';
+					'<a target="_blank" href="' . esc_attr( $adh->getAdminEditLink() ) . '" >Voir</a>&nbsp;:&nbsp;' : '';
 				echo $lnk . esc_html( $adh->getTitle() );
 				if ( ! empty( $renew_url ) ) {
-					echo '<br/><a href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
+					echo '<br/><a target="_blank" href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
 				}
 				echo '</li>';
 			}
@@ -1546,10 +1546,11 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			echo '</ul>';
 
 			$add_url = add_query_arg( 'assistant', true );
-			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Assistant inscription</a></p>';
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une inscription par l\'assistant d\'inscription</a></p>';
 			echo '<br />';
 
 			$add_url = admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=' . $user->ID );
+			echo '<h4>Utilisateurs avancés</h4>';
 			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une autre inscription manuellement</a></p>';
 		}
 	} else {
