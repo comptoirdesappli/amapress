@@ -175,6 +175,21 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsIntArray( 'amapress_contrat_instance_lieux' );
 	}
 
+	/** @return string[] */
+	public function getAllReferentsEmails( $lieu_id = null ) {
+		return array_unique( array_map(
+			function ( $ref_id ) {
+				$ref = AmapressUser::getBy( $ref_id );
+				if ( empty( $ref ) ) {
+					return '';
+				}
+
+				return $ref->getEmail();
+			},
+			$this->getModel()->getProducteur()->getReferentsIds( $lieu_id )
+		) );
+	}
+
 //	public function getType() {
 //		return $this->getCustom( 'amapress_contrat_instance_type' );
 //	}

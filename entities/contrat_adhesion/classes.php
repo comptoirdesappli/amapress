@@ -1274,7 +1274,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$mail_content = preg_replace( '/\[\/?sans_contrat\]/', '', $mail_content );
 		}
 
-		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+		$refs_mails = $inscription->getContrat_instance()->getAllReferentsEmails();
+		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
+			'Reply-To: ' . implode( ',', $refs_mails )
+		], $attachments );
 	}
 
 	public function preparePaiements() {
