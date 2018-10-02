@@ -46,6 +46,9 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'        => 'custom',
 				'custom'      => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
+					if ( ! $amapien ) {
+						return '';
+					}
 					$roles   = esc_html( $amapien->getAmapRolesString() );
 
 					return $roles;
