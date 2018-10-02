@@ -56,7 +56,12 @@ function amapress_register_entities_adhesion( $entities ) {
 					return ! empty( $adh->getContrat_instance()->getContratModelDocFileName() );
 				},
 			],
-			'send_confirmation' => 'Envoyer mail confirmation',
+			'send_confirmation' => [
+				'label'     => 'Envoyer mail confirmation',
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+			],
 			'accept'            => [
 				'label'     => 'Confimer inscription',
 				'condition' => function ( $adh_id ) {
@@ -1853,7 +1858,7 @@ add_filter( 'hidden_meta_boxes', function ( $hidden ) {
 } );
 
 add_filter( 'amapress_can_edit_adhesion', function ( $can, $post_id ) {
-	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() && ! TitanFrameworkOption::isOnNewScreen() ) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$adhesion = AmapressAdhesion::getBy( $post_id );

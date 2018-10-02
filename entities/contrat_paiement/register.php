@@ -253,7 +253,7 @@ function amapress_contrat_paiement_set_contrat_instance( $contrat_paiement_id ) 
 //}
 
 add_filter( 'amapress_can_edit_contrat_paiement', function ( $can, $post_id ) {
-	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() && ! TitanFrameworkOption::isOnNewScreen() ) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$paiement = AmapressAmapien_paiement::getBy( $post_id );
