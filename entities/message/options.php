@@ -165,6 +165,8 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 						default:
 							return get_bloginfo( $subopt );
 					}
+				case 'expiration_reset_pass':
+					return Amapress::getOption( 'welcome-mail-expiration' );
 				case 'site_icon_url':
 					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
 					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
@@ -330,14 +332,15 @@ function amapress_replace_mail_placeholders_help(
 	$include_sender = true,
 	$include_target = true
 ) {
-	$ret                     = [];
-	$ret["nom_site"]         = 'Nom de l\'AMAP';
-	$ret["site_name"]        = 'Nom de l\'AMAP';
-	$ret["url"]              = 'Url du site de l\'AMAP';
-	$ret["site_url"]         = 'Url du site de l\'AMAP';
-	$ret["description"]      = 'Description du site de l\'AMAP';
-	$ret["site_description"] = 'Description du site de l\'AMAP';
-	$ret["site:admin_email"] = 'Email de l\'admin du site'; //subopt
+	$ret                          = [];
+	$ret["nom_site"]              = 'Nom de l\'AMAP';
+	$ret["site_name"]             = 'Nom de l\'AMAP';
+	$ret["expiration_reset_pass"] = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
+	$ret["url"]                   = 'Url du site de l\'AMAP';
+	$ret["site_url"]              = 'Url du site de l\'AMAP';
+	$ret["description"]           = 'Description du site de l\'AMAP';
+	$ret["site_description"]      = 'Description du site de l\'AMAP';
+	$ret["site:admin_email"]      = 'Email de l\'admin du site'; //subopt
 //	$ret["site:language"]               = 'Langue du site'; //subopt
 	$ret["site:rss_url"]       = 'Lien RSS du site'; //subopt
 	$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
