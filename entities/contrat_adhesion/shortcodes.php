@@ -122,6 +122,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
+			'shorturl'             => '',
 			'adhesion_shift_weeks' => 5,
 			'before_close_hours'   => 24,
 			'email'                => get_option( 'admin_email' ),
@@ -156,7 +157,8 @@ function amapress_self_inscription( $atts, $content = null ) {
 				$ret .= '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : 
 <pre>' . $url . '</pre>
 Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
-Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit/ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
+Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
+' . ( ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '' ) . '
 Vous pouvez également utiliser l\'un des QRCode suivants : 
 <div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
 <strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet de créer des comptes sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site avec des comptes de SPAM.</strong><br />
