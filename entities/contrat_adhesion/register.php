@@ -754,7 +754,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_debut() ),
 					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_fin() ),
 					$quant_var_editor,
-					esc_html( $quantite->getTitle() )
+					esc_html( $quantite->getTitle() . ' ( ' . Amapress::formatPrice( $quantite->getPrix_unitaire() ) . ' € ' . $quantite->getPriceUnitDisplay() . ')' )
 				);
 
 				$ret .= "<script type='text/javascript'>jQuery('#$id').change(function() {

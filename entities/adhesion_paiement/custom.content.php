@@ -307,8 +307,10 @@ function amapress_paiements_count_editor( $post_id ) {
         //]]>
 </script>';
 	if ( $adhesion->getContrat_instance() != null ) {
-		$amount = $adhesion->getTotalAmount();
-		$ret    .= '<div><strong>Montant :</strong> ' . sprintf( '%.2f€', $amount ) . '</div>
+		$remaining_dates = $adhesion->getRemainingDates();
+		$amount          = $adhesion->getTotalAmount();
+		$ret             .= '<div><strong>Montant :</strong> ' . sprintf( '%.2f€', $amount ) . '</div>
+				 <div><strong>Livraisons (' . count( $remaining_dates ) . ' dates / ' . $adhesion->getRemainingDatesWithFactors() . ' distributions)</strong> : ' . $adhesion->getProperty( 'dates_distribution_par_mois' ) . '</div>
                  <div><strong>Chèques prévus :</strong> ' . implode( ', ', array_map( function ( $v ) use ( $adhesion, $amount ) {
 				$option = $adhesion->getContrat_instance()->getChequeOptionsForTotal( $v, $amount );
 
