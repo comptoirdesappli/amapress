@@ -354,9 +354,31 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 		echo '<p>Créé par ' . esc_html( $author->display_name ) . ' à ' . date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ) . ' ; Dernière modification le ' . date_i18n( 'd/m/Y H:i', @strtotime( $post->post_modified ) ) . '</p>';
 	}
 
+	$amp_back_to_list = wp_get_referer();
+	if ( isset( $_REQUEST['amp_back_to_list'] ) ) {
+		$amp_back_to_list = $_REQUEST['amp_back_to_list'];
+	}
+
+	if ( ! empty( $amp_back_to_list ) ) {
+		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_attr( $amp_back_to_list ) . '" />';
+		$title = 'Retourner à la page précédente';
+		if ( false !== strpos( $amp_back_to_list, 'edit.php' ) ) {
+			$title = 'Retourner à la liste des ' . get_post_type_object( $post->post_type )->label;
+		}
+		echo '<p><span class="dashicons dashicons-arrow-left-alt"></span> <a href="' . $amp_back_to_list . '">' . esc_html( $title ) . '</a></p>';
+	}
+
 	$pt      = amapress_simplify_post_type( $post->post_type );
 	$options = AmapressEntities::getPostType( $pt );
 	if ( isset( $options['edit_header'] ) && is_callable( $options['edit_header'], false ) ) {
 		call_user_func( $options['edit_header'], $post );
 	}
 }
+
+add_filter( 'redirect_post_location', function ( $location ) {
+	if ( isset( $_POST['amp_back_to_list'] ) ) {
+		$location = add_query_arg( 'amp_back_to_list', $_POST['amp_back_to_list'], $location );
+	}
+
+	return $location;
+} );
