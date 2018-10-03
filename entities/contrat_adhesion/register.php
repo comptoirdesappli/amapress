@@ -58,12 +58,14 @@ function amapress_register_entities_adhesion( $entities ) {
 			],
 			'send_confirmation' => [
 				'label'     => 'Envoyer mail confirmation',
+				'confirm'   => true,
 				'condition' => function ( $adh_id ) {
 					return TitanFrameworkOption::isOnEditScreen();
 				},
 			],
 			'accept'            => [
-				'label'     => 'Confimer inscription',
+				'label'     => 'Confirmer inscription',
+				'confirm'   => true,
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::TO_CONFIRM == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},

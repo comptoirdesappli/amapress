@@ -190,6 +190,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'mailto_amapiens'   => [
 				'label'   => 'Mail aux amapiens',
 				'target'  => '_blank',
+				'confirm' => true,
 				'href'    => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
@@ -200,6 +201,7 @@ function amapress_register_entities_contrat( $entities ) {
 			'smsto_amapiens'    => [
 				'label'   => 'Sms aux amapiens',
 				'target'  => '_blank',
+				'confirm' => true,
 				'href'    => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
