@@ -58,22 +58,23 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'show_past'       => 'false',
 		'show_next'       => 'true',
-		'show_email'      => 'default',
-		'show_tel'        => 'default',
-		'show_tel_fixe'   => 'default',
-		'show_tel_mobile' => 'default',
-		'show_adresse'    => 'default',
-		'show_avatar'     => 'default',
-		'show_roles'      => 'default',
-		'show_for_resp'   => 'true',
-		'show_title'      => 'true',
-		'for_emargement'  => 'false',
-		'for_pdf'         => 'false',
-		'max_dates'       => - 1,
-		'responsive'      => 'false',
-		'user'            => null,
-		'lieu'            => null,
-		'date'            => null,
+		'show_email'        => 'default',
+		'show_tel'          => 'default',
+		'show_tel_fixe'     => 'default',
+		'show_tel_mobile'   => 'default',
+		'show_adresse'      => 'default',
+		'show_avatar'       => 'default',
+		'show_roles'        => 'default',
+		'show_for_resp'     => 'true',
+		'show_title'        => 'true',
+		'for_emargement'    => 'false',
+		'for_pdf'           => 'false',
+		'max_dates'         => - 1,
+		'responsive'        => 'false',
+		'user'              => null,
+		'lieu'              => null,
+		'date'              => null,
+		'inscr_all_distrib' => 'false'
 	), $atts );
 
 	if ( ! amapress_is_user_logged_in() ) {
@@ -84,6 +85,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	if ( ! empty( $atts['user'] ) ) {
 		$user_id = Amapress::resolve_user_id( $atts['user'] );
 	}
+
+	$inscr_all_distrib = Amapress::toBool( $atts['inscr_all_distrib'] );
 
 	$required_lieu_id = null;
 	if ( ! empty( $atts['lieu'] ) ) {
@@ -330,7 +333,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				}
 
 //                $ret .= '<td>';
-				$is_user_part_of = $dist->isUserMemberOf( amapress_current_user_id(), true ); // || (in_array($dist->getDate(), $user_date_substs) && in_array($dist->getLieuId(), $user_lieux_substs));
+				$is_user_part_of = $inscr_all_distrib || $dist->isUserMemberOf( amapress_current_user_id(), true );
 				$resps           = $dist->getResponsables();
 				$needed          = AmapressDistributions::get_required_responsables( $dist->ID );
 				$row_resps       = [];
