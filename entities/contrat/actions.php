@@ -128,10 +128,14 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 			'for_pdf'                 => true,
 		) );
 
-	$contrat  = AmapressContrat_instance::getBy( $contrat_instance_id );
-	$lieu     = AmapressLieu_distribution::getBy( $lieu_id );
+	$contrat   = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$lieu      = AmapressLieu_distribution::getBy( $lieu_id );
+	$lieu_name = 'tous';
+	if ( $lieu ) {
+		$lieu_name = $lieu->getShortName();
+	}
 	$date     = date_i18n( 'd-m-Y' );
-	$filename = strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date.pdf" ) );
+	$filename = strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu_name}-au-$date.pdf" ) );
 	Amapress::sendPdfFromHtml( $html, $filename, 'L', $format );
 } );
 
@@ -148,8 +152,12 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 			'for_pdf'                 => true,
 		) );
 
-	$contrat = AmapressContrat_instance::getBy( $contrat_instance_id );
-	$lieu    = AmapressLieu_distribution::getBy( $lieu_id );
+	$contrat   = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$lieu      = AmapressLieu_distribution::getBy( $lieu_id );
+	$lieu_name = 'tous';
+	if ( $lieu ) {
+		$lieu_name = $lieu->getShortName();
+	}
 	$date    = date_i18n( 'd-m-Y' );
-	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModel()->getTitle()} - {$lieu->getShortName()}" );
+	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModel()->getTitle()} - {$lieu_name}" );
 } );

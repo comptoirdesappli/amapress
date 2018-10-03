@@ -15,8 +15,13 @@ class AmapressExport_Posts {
 	 *
 	 * @since 0.1
 	 **/
-	public static function get_export_url( $name = null ) {
-		$url = add_query_arg( 'amapress_export', 'csv' );
+	public static function get_export_url( $name = null, $url = null ) {
+		if ( empty( $url ) ) {
+			$url = add_query_arg( 'amapress_export', 'csv' );
+		} else {
+			$url = add_query_arg( 'amapress_export', 'csv', $url );
+		}
+
 		if ( ! empty( $name ) ) {
 			$url = add_query_arg( 'amapress_export_name', $name, $url );
 		}

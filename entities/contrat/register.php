@@ -178,7 +178,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'show_on' => 'list',
 				'confirm' => true,
 			],
-			'generate_contrat'  => [
+			'generate_contrat' => [
 				'label'     => 'Générer le contrat papier',
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -187,27 +187,80 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
 				},
 			],
-			'mailto_amapiens'   => [
-				'label'   => 'Mail aux amapiens',
-				'target'  => '_blank',
-				'confirm' => true,
-				'href'    => function ( $adh_id ) {
+			'mailto_amapiens'  => [
+				'label'     => 'Mail aux amapiens',
+				'target'    => '_blank',
+				'confirm'   => true,
+				'href'      => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
 					return $contrat->getMailtoAmapiens();
 				},
-				'show_on' => 'editor',
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
 			],
-			'smsto_amapiens'    => [
-				'label'   => 'Sms aux amapiens',
-				'target'  => '_blank',
-				'confirm' => true,
-				'href'    => function ( $adh_id ) {
+			'smsto_amapiens'   => [
+				'label'     => 'Sms aux amapiens',
+				'target'    => '_blank',
+				'confirm'   => true,
+				'href'      => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
 					return $contrat->getSMStoAmapiens();
 				},
-				'show_on' => 'editor',
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
+			],
+			'export_inscr'     => [
+				'label'     => 'Exporter les inscriptions',
+				'target'    => '_blank',
+				'confirm'   => true,
+				'href'      => function ( $adh_id ) {
+					return AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $adh_id . '&amapress_export=csv' ) );
+				},
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
+			],
+			'export_pmt_xlsx'  => [
+				'label'     => 'Exporter les chèques (XLSX)',
+				'target'    => '_blank',
+				'confirm'   => true,
+				'href'      => function ( $adh_id ) {
+					return admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $adh_id );
+				},
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
+			],
+			'export_pmt_pdf'   => [
+				'label'     => 'Exporter les chèques (PDF)',
+				'target'    => '_blank',
+				'confirm'   => true,
+				'href'      => function ( $adh_id ) {
+					return admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $adh_id );
+				},
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
+			],
+			'view_stats'       => [
+				'label'     => 'Voir les stats',
+				'target'    => '_blank',
+				'href'      => function ( $adh_id ) {
+					return admin_url( 'admin.php?amp_stats_contrat=' . $adh_id . '&page=contrats_quantites_stats' );
+				},
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
 			],
 		),
 		'labels'          => array(
@@ -917,7 +970,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'          => array(
+			'date_cloture' => array(
 				'name'          => amapress__( 'Clôture' ),
 				'type'          => 'date',
 				'group'         => '5/6 - Pré-inscription en ligne',
