@@ -27,6 +27,13 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		return '';
 	}
 
+	$atts       = shortcode_atts(
+		[
+			'edit_names' => 'true'
+		], $atts
+	);
+	$edit_names = Amapress::toBool( $atts['edit_names'] );
+
 	ob_start();
 
 //    do_action('amapress_process_user_profile');
@@ -47,17 +54,18 @@ function amapress_edit_user_info_shortcode( $atts ) {
         <div class="form-group">
             <label for="first_name">Prénom</label>
             <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Prénom"
-                   value="<?php echo $user_info->first_name; ?>">
+                   value="<?php echo $user_info->first_name; ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
             <label for="last_name">Nom</label>
             <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Nom"
-                   value="<?php echo $user_info->last_name; ?>">
+                   value="<?php echo $user_info->last_name; ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
             <label for="last_name">Nom d'affichage</label>
             <input type="text" class="form-control" id="display_name" name="display_name"
-                   placeholder="Nom d'affichage" value="<?php echo $user_info->display_name; ?>">
+                   placeholder="Nom d'affichage"
+                   value="<?php echo $user_info->display_name; ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
             <label for="amapress_user_telephone"><?php _e( 'Téléphone', 'amapress' ) ?></label>

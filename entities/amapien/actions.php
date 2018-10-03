@@ -132,6 +132,16 @@ function amapress_process_user_profile_data() {
 			'user_pass'                 => isset( $_POST['pass1'] ) ? $_POST['pass1'] : null,
 		);
 
+		if ( empty( $user_data['first_name'] ) ) {
+			unset( $user_data['first_name'] );
+		}
+		if ( empty( $user_data['last_name'] ) ) {
+			unset( $user_data['last_name'] );
+		}
+		if ( empty( $user_data['display_name'] ) ) {
+			unset( $user_data['display_name'] );
+		}
+
 		if ( ! empty( $user_data['user_pass'] ) ) {
 
 			// Validate the passwords to check they are the same

@@ -122,6 +122,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
+			'edit_names'           => 'true',
 			'shorturl'             => '',
 			'adhesion_shift_weeks' => 5,
 			'before_close_hours'   => 24,
@@ -312,6 +313,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$email = sanitize_email( $_REQUEST['email'] );
 		}
 
+		$edit_names = Amapress::toBool( $atts['edit_names'] );
+
 		$user           = get_user_by( 'email', $email );
 		$user_firt_name = '';
 		$user_last_name = '';
@@ -377,12 +380,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 <tr>
                     <th style="text-align: left; width: auto"><label for="last_name">Nom* : </label></th>
                     <td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required"
-                               value="<?php echo esc_attr( $user_last_name ) ?>"/></td>
+                               value="<?php echo esc_attr( $user_last_name ) ?>" <?php disabled( ! $edit_names ) ?>/>
+                    </td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="first_name">Prénom* : </label></th>
                     <td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required"
-                               value="<?php echo esc_attr( $user_firt_name ) ?>"/></td>
+                               value="<?php echo esc_attr( $user_firt_name ) ?>" <?php disabled( ! $edit_names ) ?>/>
+                    </td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="tel">Téléphone : </label></th>
