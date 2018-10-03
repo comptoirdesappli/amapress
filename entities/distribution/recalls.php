@@ -193,19 +193,21 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 		return;
 	}
 
-	$responsable_ids = Amapress::get_array( Amapress::getOption( 'distribution-verify-recall-to' ) );
-	if ( empty( $responsable_ids ) ) {
-		return;
-	}
-
+	$responsable_ids = amapress_get_groups_user_ids_from_option( 'distribution-verify-recall-to' );
 	if ( Amapress::getOption( 'distribution-verify-recall-send-refs', true ) ) {
 		foreach ( $dist->getContrats() as $c ) {
 			if ( empty( $c ) ) {
 				continue;
 			}
 
-			$responsable_ids = array_merge( $responsable_ids, $c->getModel()->getProducteur()->getReferentsIds() );
+			$responsable_ids = array_merge( $responsable_ids, $c->getModel()->getProducteur()->getAllReferentsIds() );
 		}
+	}
+
+	$responsable_ids = array_unique( $responsable_ids );
+
+	if ( empty( $responsable_ids ) ) {
+		return;
 	}
 
 	$attachments   = [];
@@ -224,7 +226,8 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 	amapress_send_message(
 		Amapress::getOption( 'distribution-verify-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-verify-recall-mail-content' ),
-		'', $responsable_users, $dist, $attachments );
+		'', $responsable_users, $dist, $attachments,
+		amapress_get_recall_cc_from_option( 'distribution-verify-recall-cc' ) );
 } );
 
 add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
@@ -303,6 +306,16 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'desc'         => 'Mails en copie',
 		),
 		array(
+			'id'           => 'distribution-amapiens-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
 			'type' => 'save',
 		),
 	);
@@ -356,19 +369,29 @@ function amapress_distribution_verify_recall_options() {
 				AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
-			'id'           => 'distribution-verify-recall-to',
-			'name'         => amapress__( 'Destinataire(s)' ),
-			'type'         => 'select-users',
-			'autocomplete' => true,
-			'multiple'     => true,
-			'tags'         => true,
-			'desc'         => 'Destinataire(s)',
-		),
-		array(
 			'id'      => 'distribution-verify-recall-send-refs',
 			'name'    => amapress__( 'Envoyer aux référents' ),
 			'type'    => 'checkbox',
 			'default' => true,
+		),
+		array(
+			'id'           => 'distribution-verify-recall-to',
+			'name'         => amapress__( 'Destinataire(s)' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) destinataire(s)',
+		),
+		array(
+			'id'           => 'distribution-verify-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Destinataire(s) en copie',
 		),
 		array(
 			'type' => 'save',
@@ -431,6 +454,16 @@ function amapress_distribution_responsable_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Mails en copie',
+		),
+		array(
+			'id'           => 'distribution-resp-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
 		),
 		array(
 			'type' => 'save',
@@ -502,6 +535,16 @@ function amapress_distribution_emargement_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Mails en copie',
+		),
+		array(
+			'id'           => 'distribution-emargement-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
 		),
 		array(
 			'type' => 'save',
@@ -675,7 +718,8 @@ function amapress_distribution_changes_recall_options() {
 			'name' => 'En copie',
 			'type' => 'heading',
 		),
-		'distribution-changes-recall-cc' => array(
+		array(
+			'id'           => 'distribution-changes-recall-cc',
 			'name'         => amapress__( 'Cc' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,

@@ -280,6 +280,36 @@ function amapress_prepare_message_target_bcc( $query_string, $title, $target_typ
 	return $ret;
 }
 
+function amapress_get_collectif_target_queries() {
+	$ret = array();
+
+	$ret["amapress_role=referent_producteur"] = "Référents producteurs";
+	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
+		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
+	}
+
+	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
+	$ret["amapress_role=collectif_no_prod"] = "Membres du collectif (sans les producteurs)";
+	$ret["amapress_role=collectif"]         = 'Membres du collectif (avec les producteurs)';
+	$ret["role=administrator"]              = "Administrateurs";
+	$ret["role=tresorier"]                  = "Trésoriers";
+
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAP_ROLE,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Rôle "' . $role->name . '"';
+	}
+
+	return $ret;
+}
+
+
 function amapress_prepare_message_target( $query_string, $title, $target_type, $with_coadherents = false ) {
 	$opt                = array();
 	$s                  = explode( '|', $query_string );

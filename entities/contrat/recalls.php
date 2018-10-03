@@ -250,6 +250,16 @@ function amapress_contrat_quantites_recall_options() {
 			'desc'         => 'Mails en copie',
 		),
 		array(
+			'id'           => 'distribution-quantites-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
 			'id'        => 'distribution-quantites-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
 			'name'      => 'Producteurs',
@@ -326,6 +336,16 @@ function amapress_contrat_paiements_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Mails en copie',
+		),
+		array(
+			'id'           => 'contrats-liste-paiements-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
 		),
 		array(
 			'id'        => 'contrats-liste-paiements-recall-excl-producteurs',

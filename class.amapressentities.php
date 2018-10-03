@@ -208,30 +208,37 @@ class AmapressEntities {
 					),
 					'tabs'     => array(
 						'Roles des Responsables de distribution'                  => array(
+							'id'      => 'amp_tab_role_resp_distrib',
 							'desc'    => '',
 							'options' => amapress_distribution_responsable_roles_options(),
 						),
 						'Mails - Responsables de distribution - Rappel'           => array(
+							'id'      => 'amp_tab_recall_resp_distrib',
 							'desc'    => '',
 							'options' => amapress_distribution_responsable_recall_options(),
 						),
 						'Mails - Vérification de distribution - Rappel'           => array(
+							'id'      => 'amp_tab_recall_verif_distrib',
 							'desc'    => '',
 							'options' => amapress_distribution_verify_recall_options(),
 						),
 						'Mails - A tous les amapiens à la distribution - Rappel'  => array(
+							'id'      => 'amp_tab_recall_all_amapiens',
 							'desc'    => '',
 							'options' => amapress_distribution_all_amapiens_recall_options(),
 						),
 						'Mails - Envoi liste émargement Excel/PDF'                => array(
+							'id'      => 'amp_tab_recall_emarg',
 							'desc'    => '',
 							'options' => amapress_distribution_emargement_recall_options(),
 						),
 						'Mails - Distribution - Modification livraisons - Rappel' => array(
+							'id'      => 'amp_tab_recall_modif_distrib',
 							'desc'    => '',
 							'options' => amapress_distribution_changes_recall_options(),
 						),
 						'Mails - Visite - Inscription - Rappel'                   => array(
+							'id'      => 'amp_tab_recall_visite_inscr',
 							'desc'    => '',
 							'options' => amapress_visite_inscription_recall_options(),
 						),
@@ -402,10 +409,12 @@ class AmapressEntities {
 							)
 						),
 						'Mails - Envoi liste des chèques'      => array(
+							'id'      => 'amp_tab_recall_liste_cheques',
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
 						),
 						'Mails - Envoi des quantités à livrer' => array(
+							'id'      => 'amp_tab_recall_quantites_distrib',
 							'desc'    => '',
 							'options' => amapress_contrat_quantites_recall_options(),
 						),

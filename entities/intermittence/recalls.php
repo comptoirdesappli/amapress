@@ -10,8 +10,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+function amapress_get_groups_user_ids_from_option( $option_name ) {
+	$responsable_ids = [];
+	$to_groups       = Amapress::get_array( Amapress::getOption( $option_name ) );
+	foreach ( $to_groups as $g ) {
+		$args            = wp_parse_args( $g );
+		$args['fields']  = 'ids';
+		$responsable_ids = array_merge( $responsable_ids,
+			get_users( $args ) );
+	}
+
+	return $responsable_ids;
+}
+
 function amapress_get_recall_cc_from_option( $option_name ) {
 	$ids = Amapress::getOption( $option_name );
+	if ( empty( $ids ) ) {
+		$ids = [];
+	}
+	$ids = array_merge( $ids, amapress_get_groups_user_ids_from_option( $option_name . '-groups' ) );
 	if ( empty( $ids ) ) {
 		return '';
 	}
@@ -191,7 +208,7 @@ function amapress_intermittence_validation_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% le %%attente_depuis%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
-				             'attente_depuis' => 'Date de demande de reprise du panier (par ex, 22/09/2018)'
+				'attente_depuis' => 'Date de demande de reprise du panier (par ex, 22/09/2018)'
 			] ),
 		),
 		array(
