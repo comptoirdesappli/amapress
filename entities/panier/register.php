@@ -25,7 +25,7 @@ function amapress_register_entities_panier( $entities ) {
 			'_dyn_'  => 'amapress_panier_views',
 		),
 		'groups'           => [
-			'Changement' => [
+			'Modification' => [
 				'context' => 'side',
 			]
 		],
@@ -33,7 +33,7 @@ function amapress_register_entities_panier( $entities ) {
 		'default_order'    => 'ASC',
 		'fields'           => array(
 			'date'              => array(
-				'name'       => amapress__( 'Date du panier' ),
+				'name'       => amapress__( 'Livraison du panier' ),
 				'type'       => 'date',
 				'readonly'   => true,
 				'desc'       => 'Date de distribution',
@@ -95,10 +95,10 @@ function amapress_register_entities_panier( $entities ) {
 //				'desc'   => 'Produits',
 //			),
 			'status'            => array(
-				'name'          => amapress__( 'Status' ),
+				'name'          => amapress__( 'Statut' ),
 				'type'          => 'select',
 				'options'       => array(
-					''          => 'En temps',
+					''          => 'Date prévue',
 					'cancelled' => 'Annulé',
 					'delayed'   => 'Reporté',
 				),
@@ -106,7 +106,7 @@ function amapress_register_entities_panier( $entities ) {
 					'name'        => 'amapress_status',
 					'placeholder' => 'Tous les status',
 				),
-				'group'         => 'Changement',
+				'group'         => 'Modification',
 				'before_option' => '<script type="text/javascript">
 jQuery(function() {
     var $status_field = jQuery("#amapress_panier_status");
@@ -124,7 +124,7 @@ jQuery(function() {
 </script>',
 			),
 			'date_subst'        => array(
-				'name'    => amapress__( 'Date de remplacement' ),
+				'name'    => amapress__( 'Nouvelle date' ),
 				'type'    => 'select',
 				'cache'   => false,
 				'options' => function ( $option ) {
@@ -145,8 +145,8 @@ jQuery(function() {
 
 					return $ret;
 				},
-				'desc'    => 'Date de distribution de remplacement pour les panier dont le <strong>Status</strong> est <strong>Reporté</strong>',
-				'group'   => 'Changement',
+				'desc'    => 'Choisir une nouvelle date pour une livraison de panier dont le statut est "<strong>Reporté</strong>"',
+				'group'   => 'Modification',
 			),
 		),
 	);
