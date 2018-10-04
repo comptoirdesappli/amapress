@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function amapress_generate_map( $markers, $mode = 'map' ) {
 	if ( count( $markers ) == 0 ) {
-		return '';
+		return '<p>Aucune localisation disponible</p>';
 	}
 
 	static $amapress_map_instance = 0;
