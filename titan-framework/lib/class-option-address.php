@@ -120,7 +120,11 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$lng = call_user_func( $get_fn, $postID, "{$id}_long", true );
 			echo '<p class="' . $id . ' localized-address">Localisé <a href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">Voir sur Google Maps</a></p>';
 		} else {
-			echo '<p class="' . $id . ' unlocalized-address">Adresse non localisée</p>';
+			if ( empty( self::$google_map_api_key ) ) {
+				echo '<p class="' . $id . ' unlocalized-address"><strong>Pas de clé Google API configurée</strong> - Adresse non localisée</p>';
+			} else {
+				echo '<p class="' . $id . ' unlocalized-address">Adresse non localisée</p>';
+			}
 		}
 	}
 
