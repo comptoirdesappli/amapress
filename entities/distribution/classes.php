@@ -550,7 +550,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'label'    => $contrat->getModel()->getTitle(),
 					'alt'      => 'Distribution de ' . $contrat->getModel()->getTitle() . ' à ' . $lieu->getShortName(),
 					'class'    => "agenda-contrat-{$contrat->getModel()->ID}",
-					'icon'     => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$contrat->getModel()->ID}_icon" ), amapress_get_avatar_url( $contrat->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
+					'icon'     => Amapress::coalesce_icons( amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat->getModel()->ID}_icon" ), amapress_get_avatar_url( $contrat->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 					'href'     => $this->getPermalink()
 				) );
 			}

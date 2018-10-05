@@ -125,6 +125,7 @@ function amapress_register_entities_contrat( $entities ) {
 		'title_format'    => 'amapress_contrat_instance_title_formatter',
 		'title'           => false,
 		'slug_format'     => 'from_title',
+		'thumb'           => true,
 		'editor'          => false,
 		'menu_icon'       => 'flaticon-interface',
 		'default_orderby' => 'post_title',
@@ -178,7 +179,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'show_on' => 'list',
 				'confirm' => true,
 			],
-			'generate_contrat' => [
+			'generate_contrat'  => [
 				'label'     => 'Générer le contrat papier',
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -187,7 +188,7 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
 				},
 			],
-			'mailto_amapiens'  => [
+			'mailto_amapiens'   => [
 				'label'     => 'Mail aux amapiens',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -201,7 +202,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'smsto_amapiens'   => [
+			'smsto_amapiens'    => [
 				'label'     => 'Sms aux amapiens',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -215,7 +216,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'export_inscr'     => [
+			'export_inscr'      => [
 				'label'     => 'Exporter les inscriptions',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -227,7 +228,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'export_pmt_xlsx'  => [
+			'export_pmt_xlsx'   => [
 				'label'     => 'Exporter les chèques (XLSX)',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -239,7 +240,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'export_pmt_pdf'   => [
+			'export_pmt_pdf'    => [
 				'label'     => 'Exporter les chèques (PDF)',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -251,7 +252,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'view_stats'       => [
+			'view_stats'        => [
 				'label'     => 'Voir les stats',
 				'target'    => '_blank',
 				'href'      => function ( $adh_id ) {
@@ -274,7 +275,7 @@ function amapress_register_entities_contrat( $entities ) {
 		),
 		'fields'          => array(
 			//renouvellement
-			'renouv'       => array(
+			'renouv'         => array(
 				'name'        => amapress__( 'Options' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -302,7 +303,7 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 1/6 - Ferme
-			'model'        => array(
+			'model'          => array(
 				'name'              => amapress__( 'Présentation web' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -329,7 +330,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'searchable'        => true,
 			),
-			'producteur'   => array(
+			'producteur'     => array(
 				'name'        => amapress__( 'Producteur' ),
 				'type'        => 'custom',
 				'group'       => '1/6 - Ferme',
@@ -352,7 +353,7 @@ function amapress_register_entities_contrat( $entities ) {
 							$contrat->getModel()->getProducteur()->getUser()->getDisplayName() ) . ')';
 				}
 			),
-			'refs'         => array(
+			'refs'           => array(
 				'name'                 => amapress__( 'Référents' ),
 				'type'                 => 'custom',
 				'group'                => '1/6 - Ferme',
@@ -378,7 +379,7 @@ function amapress_register_entities_contrat( $entities ) {
 					return implode( ', ', $refs );
 				},
 			),
-			'nb_visites'   => array(
+			'nb_visites'     => array(
 				'name'        => amapress__( 'Visite' ),
 				'group'       => '1/6 - Ferme',
 				'type'        => 'number',
@@ -389,7 +390,7 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 2/6 - Paramètres généraux
-			'date_debut'   => array(
+			'date_debut'     => array(
 				'name'          => amapress__( 'Début' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -944,7 +945,7 @@ jQuery(function($) {
 				'desc'        => 'Rendre accessible les pré-inscriptions en ligne pour ce contrat',
 				'show_column' => false,
 			),
-			'date_ouverture'        => array(
+			'date_ouverture' => array(
 				'name'          => amapress__( 'Ouverture' ),
 				'type'          => 'date',
 				'group'         => '5/6 - Pré-inscription en ligne',
@@ -970,7 +971,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture' => array(
+			'date_cloture'   => array(
 				'name'          => amapress__( 'Clôture' ),
 				'type'          => 'date',
 				'group'         => '5/6 - Pré-inscription en ligne',
@@ -996,7 +997,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'word_model'   => array(
+			'word_model'     => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
 				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -1011,7 +1012,7 @@ jQuery(function($) {
 
 
 			//Statut
-			'is_principal' => array(
+			'is_principal'   => array(
 				'name'        => amapress__( 'Contrat principal' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
@@ -1019,7 +1020,7 @@ jQuery(function($) {
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'       => array(
+			'status'         => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1033,7 +1034,7 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'        => array(
+			'ended'          => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'group'       => 'Statut',

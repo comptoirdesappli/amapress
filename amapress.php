@@ -604,36 +604,42 @@ function amapress_updated_postmeta( $meta_id, $object_id, $meta_key, $meta_value
 }
 
 function amapress_get_avatar_url( $id, $meta_name, $size, $default_image, $user = 0 ) {
-	if ( empty( $meta_name ) ) {
-		$meta_name = '_thumbnail_id';
-	}
-	if ( $user ) {
-		$avatar = get_user_meta( $id, $meta_name, true );
-	} else {
-		$avatar = get_post_meta( $id, $meta_name, true );
-	}
-	if ( ! $avatar ) {
-		$meta_name = 'amapress_icon_id';
+	$key = "amapress_get_avatar_url_$id";
+	$url = wp_cache_get( $key );
+	if ( false === $url ) {
+		if ( empty( $meta_name ) ) {
+			$meta_name = '_thumbnail_id';
+		}
 		if ( $user ) {
 			$avatar = get_user_meta( $id, $meta_name, true );
 		} else {
 			$avatar = get_post_meta( $id, $meta_name, true );
 		}
-	}
-
-	$url = null;
-	if ( $avatar ) {
-		if ( is_array( $avatar ) ) {
-			$avatar = $avatar[0];
+		if ( ! $avatar ) {
+			$meta_name = 'amapress_icon_id';
+			if ( $user ) {
+				$avatar = get_user_meta( $id, $meta_name, true );
+			} else {
+				$avatar = get_post_meta( $id, $meta_name, true );
+			}
 		}
-		$url = wp_get_attachment_image_src( $avatar, $size );
-		if ( $url ) {
-			$url = $url[0];
-		}
-	}
 
-	if ( empty( $url ) ) {
-		$url = AMAPRESS__PLUGIN_URL . 'images/' . $default_image;
+		$url = null;
+		if ( $avatar ) {
+			if ( is_array( $avatar ) ) {
+				$avatar = $avatar[0];
+			}
+			$url = wp_get_attachment_image_src( $avatar, $size );
+			if ( $url ) {
+				$url = $url[0];
+			}
+		}
+
+		if ( empty( $url ) && ! empty( $default_image ) ) {
+			$url = AMAPRESS__PLUGIN_URL . 'images/' . $default_image;
+		}
+
+		wp_cache_set( $key, $url );
 	}
 
 	return $url;
