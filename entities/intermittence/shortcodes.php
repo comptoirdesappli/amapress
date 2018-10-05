@@ -89,7 +89,7 @@ function amapress_intermittence_desinscription_shortcode( $atts ) {
 			} else {
 				$my_email = wp_get_current_user()->user_email;
 
-				return "<p class='intermittence desinscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=desinscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('Confirmez-vous votre désinscription ?')\">Se désinscrire de la liste des intermittents</a></p>";
+				return "<p class='intermittence desinscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=desinscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('Confirmez-vous votre désinscription ?')\">Se désinscrire</a></p>";
 				//admin-post.php?action=inscription_intermittent&confirm=true&email=
 			}
 			break;

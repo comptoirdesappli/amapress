@@ -191,9 +191,9 @@ function amapress_register_shortcodes() {
 //        if (Amapress::isIntermittenceEnabled() && Amapress::userCanRegister()) {
 //            $interm = amapress_get_button('Devenir intermittent', Amapress::getMesInfosSublink('adhesions/intermittence/inscription'));
 //        }
-			if ( Amapress::isIntermittenceEnabled() ) {
-				$interm = do_shortcode( '[intermittents-inscription view=me show_info=no]' );
-			}
+//			if ( Amapress::isIntermittenceEnabled() ) {
+//				$interm = do_shortcode( '[intermittents-inscription view=me show_info=no]' );
+//			}
 
 			$produits .= $produits_content . $interm;
 		}
