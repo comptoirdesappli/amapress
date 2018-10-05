@@ -73,6 +73,13 @@ function amapress_get_users_for_message( $users_query, $users_query_fields, $wit
 	return $all_users;
 }
 
+function amapress_send_message_and_record(
+	$subject, $content, $content_sms, $opt, TitanEntity $entity = null,
+	$attachments = array(), $cc = null, $bcc = null, $headers = array()
+) {
+	$opt['record'] = true;
+	amapress_send_message( $subject, $content, $content_sms, $opt, $entity, $attachments, $cc, $bcc, $headers );
+}
 function amapress_send_message(
 	$subject, $content, $content_sms, $opt, TitanEntity $entity = null,
 	$attachments = array(), $cc = null, $bcc = null, $headers = array()
@@ -85,7 +92,8 @@ function amapress_send_message(
 	/** @var AmapressUser $current_user */
 	$current_user = AmapressUser::getBy( amapress_current_user_id() );
 	$is_indiv     = ( isset( $opt['send_mode'] ) && $opt['send_mode'] == 'indiv' );
-	if ( ! $is_indiv ) {
+	$record       = ( isset( $opt['record'] ) && $opt['record'] );
+	if ( ! $is_indiv && $record ) {
 		$my_post = array(
 			'post_title'   => amapress_replace_mail_placeholders( $subject, $current_user, $entity ),
 			'post_type'    => 'amps_message',
@@ -104,7 +112,7 @@ function amapress_send_message(
 		}
 	}
 
-	if ( ! $is_indiv && ! empty( $opt['post_query'] ) ) {
+	if ( ! $is_indiv && $record && ! empty( $opt['post_query'] ) ) {
 		$query = new WP_Query( $opt['post_query'] );
 		foreach ( $query->get_posts() as $post ) {
 			$pt       = amapress_simplify_post_type( $post->post_type );
@@ -129,7 +137,7 @@ function amapress_send_message(
 		$user_ids     = array();
 		$emails_indiv = array();
 		foreach ( $all_users as $user ) {
-			if ( ! $is_indiv ) {
+			if ( ! $is_indiv && $record ) {
 				$messages = Amapress::get_user_meta_array( $user->ID, "amapress_user_messages" );
 				if ( ! $messages ) {
 					$messages = array();
@@ -256,7 +264,7 @@ function amapress_handle_send_message() {
 	$content     = $_REQUEST['amapress_msg_content'];
 	$content_sms = $_REQUEST['amapress_msg_content_for_sms'];
 
-	amapress_send_message( $subject, $content, $content_sms, $opt );
+	amapress_send_message_and_record( $subject, $content, $content_sms, $opt );
 //    'target_name' => array(
 //            'target_type' => array(
 //            'target_ids' => array(
