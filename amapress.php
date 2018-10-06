@@ -581,7 +581,7 @@ function get_image_height( $size ) {
 add_filter( 'post_thumbnail_html', function ( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
 	$post_type = get_post_type( $post_id );
 
-	if ( AmapressContrat::INTERNAL_POST_TYPE == $post_type ) {
+	if ( AmapressContrat::INTERNAL_POST_TYPE == $post_type || AmapressContrat_instance::INTERNAL_POST_TYPE == $post_type ) {
 		if ( get_image_height( $size ) !== get_image_width( $size ) ) {
 			return '';
 		}

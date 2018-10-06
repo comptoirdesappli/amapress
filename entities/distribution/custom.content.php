@@ -237,13 +237,16 @@ function amapress_get_custom_content_distribution( $content ) {
 					continue;
 				}
 
-				$url = amapress_get_avatar_url( $contrat_model->ID, null, 'produit-thumb', 'default_contrat.jpg' );
+				$icon = Amapress::coalesce_icons( amapress_get_avatar_url( $contrat_id, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat_model->ID}_icon" ), amapress_get_avatar_url( $contrat_model->ID, null, 'produit-thumb', 'default_contrat.jpg' ) );
+				if ( ! empty( $icon ) && false !== strpos( $icon, '://' ) ) {
+					$icon = '<img src="' . esc_attr( $icon ) . '" class="dist-panier-contrat-img" alt="' . esc_attr( $contrat_model->post_title ) . '" />';
+				}
 
 				$panier_btns = '';
 				if ( $is_resp_amap || current_user_can( 'edit_panier' ) ) {
 					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">Editer le contenu/Déplacer</a>';
 				}
-				amapress_echo_panel_start_no_esc( esc_html( $contrat_model->post_title ) . $panier_btns, '<img class="dist-panier-contrat-img" src="' . $url . '" alt="" />',
+				amapress_echo_panel_start_no_esc( esc_html( $contrat_model->post_title ) . $panier_btns, $icon,
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
 				echo AmapressPaniers::getPanierContentHtml( $panier->ID, $lieu_id );
 				amapress_echo_panel_end();
