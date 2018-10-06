@@ -22,6 +22,12 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 		'views'                   => array(
 			'remove' => array( 'mine' ),
 		),
+		'edit_header'             => function ( $post ) {
+			$lieu = AmapressLieu_distribution::getBy( $post, true );
+			if ( $lieu && ! $lieu->isAdresseLocalized() ) {
+				amapress_add_admin_notice( 'Adresse du lieu non localisée', 'warning', false );
+			}
+		},
 		'fields'                  => array(
 			'shortname'           => array(
 				'name'       => amapress__( 'Nom court' ),

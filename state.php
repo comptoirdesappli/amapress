@@ -392,21 +392,30 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}, $amap_roles ) )
 	);
 
-	$posts               = get_posts( array(
-		'post_type'      => AmapressLieu_distribution::INTERNAL_POST_TYPE,
-		'posts_per_page' => - 1,
-	) );
+	$lieux               = Amapress::get_lieux();
+	$not_localized_lieux = array_filter( $lieux,
+		function ( $lieu ) {
+			/** @var AmapressLieu_distribution $lieu */
+			return ! $lieu->isAdresseLocalized();
+		} );
 	$state['15_posts'][] = amapress_get_check_state(
-		count( $posts ) == 0 ? 'error' : 'success',
+		count( $lieux ) == 0 ? 'error' : ( ! empty( $not_localized_lieux ) ? 'warning' : 'success' ),
 		'Lieu de distribution',
 		'Créer au moins un lieu de distribution',
 		admin_url( 'post-new.php?post_type=' . AmapressLieu_distribution::INTERNAL_POST_TYPE ),
-		implode( ', ', array_map( function ( $u ) {
-			$dn = AmapressLieu_distribution::getBy( $u );
-			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+		implode( ', ', array_map( function ( $dn ) {
+			/** @var AmapressLieu_distribution $dn */
+			$l = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			return "<a href='{$l}' target='_blank'>{$dn->getTitle()}</a>";
-		}, $posts ) )
+		}, $lieux ) ) .
+		( ! empty( $not_localized_lieux ) ? '<br /><strong>Lieux non localisés :</strong> ' . implode( ', ', array_map( function ( $dn ) {
+					/** @var AmapressLieu_distribution $dn */
+					$l = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+
+					return "<a href='{$l}' target='_blank'>{$dn->getTitle()}</a>";
+				}, $not_localized_lieux )
+			) : '' )
 	);
 
 	$adh_period          = AmapressAdhesionPeriod::getCurrent();
@@ -822,17 +831,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'                => [
+		'nous-contacter'       => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'             => [
+		'front_next_events'    => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'                => [
+		'front_produits'       => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
