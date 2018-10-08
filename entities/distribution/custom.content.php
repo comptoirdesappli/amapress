@@ -40,7 +40,9 @@ function amapress_get_custom_content_distribution( $content ) {
 		$can_subscribe = Amapress::end_of_day( $dist_date ) > amapress_time();
 		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
 		if ( count( $responsables ) > 0 ) {
-			echo '<div>' . amapress_generic_gallery( $responsables, 'resp', 'user_cell_contact', 'Pas de responsables' ) . '</div><br style="clear:both" />';
+			echo '<div>' . amapress_generic_gallery( $responsables, 'user_cell_contact', [
+					'if_empty' => 'Pas de responsables'
+				] ) . '</div><br style="clear:both" />';
 		} else { ?>
             <p class="dist-no-resp">Aucun responsable</p>
 		<?php } ?>

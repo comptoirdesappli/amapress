@@ -414,10 +414,36 @@ class AmapressUsers {
 		add_filter( 'amapress_gallery_render_user_cell_with_role', 'AmapressUsers::amapress_gallery_render_user_cell_with_role' );
 
 
+		add_filter( 'amapress_gallery_sort_user_cell', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_sort_user_cell_contact', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_sort_user_cell_with_role', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
+
+		add_filter( 'amapress_gallery_category_user_cell', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_category_user_cell_contact', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_category_user_cell_with_role', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
+
 //        if (!self::$vp) self::$vp = new Virtual_Themed_Pages_BC();
 //		self::$vp->add('#/amapiens-autour-de-(moi|.+)#i', array('AmapressUsers','virtual_aroundme'));
 //		self::$vp->add('#/mon-profile#i', array('AmapressUsers','virtual_mon_profile'));
 //		self::$vp->add('#/trombinoscope#i', array('AmapressUsers','virtual_trombi'));
+	}
+
+	public static function amapress_gallery_sort_user_cell( $sort, $user ) {
+		return strtolower( $user->last_name );
+	}
+
+	public static function amapress_gallery_category_user_cell( $sort, $user ) {
+		$classes   = [];
+		$last_name = strtolower( $user->last_name );
+		if ( ! empty( $last_name ) ) {
+			$classes[] = 'letter-' . substr( $last_name, 0, 1 );
+		}
+		$amapien = AmapressUser::getBy( $user );
+		foreach ( $amapien->getAmapRoles() as $r ) {
+			$classes[] = sanitize_html_class( $r['title'] );
+		}
+
+		return implode( ' ', $classes );
 	}
 
 	public static function amapress_gallery_render_user_cell( $user ) {
@@ -516,6 +542,10 @@ jQuery(function() {
 			$types[] = $type;
 		}
 
+		if ( empty( $custom_link ) && amapress_can_access_admin() ) {
+			$custom_link = admin_url( 'user-edit.php?user_id=' . $user->ID );
+		}
+
 		$amapien = AmapressUser::getBy( $user );
 
 		echo '<div class="user user-' . implode( '_', $user->roles ) . '">';
@@ -531,7 +561,7 @@ jQuery(function() {
 
 		//echo '<p><a href="'.get_author_posts_url($user->ID).'">'.$user->display_name.'</a></p>';
 		if ( ! in_array( 'no-name', $types ) ) {
-			echo '<p class="user-name">' . ( ! empty( $custom_link ) ? '<a href="' . $custom_link . '">' . $dn . '</a>' : $dn ) . '</p>';
+			echo '<p class="user-name">' . ( ! empty( $custom_link ) ? '<a target="_blank" href="' . $custom_link . '">' . $dn . '</a>' : $dn ) . '</p>';
 			//echo '<p class="user-name">'.$dn.'</p>';
 		}
 		if ( ! empty( $custom_role ) ) {
@@ -699,8 +729,9 @@ jQuery(function() {
 		}
 
 		$atts = shortcode_atts( array(
-			'role' => 'all',
-			'lieu' => null,
+			'role'      => 'all',
+			'lieu'      => null,
+			'searchbox' => true,
 		), $atts, 'trombinoscope_role' );
 
 		if ( ! empty( $atts['lieu'] ) ) {
@@ -740,21 +771,10 @@ jQuery(function() {
 			unset( $args['amapress_lieu'] );
 			$users = get_users( $args );
 		} else if ( $role == 'responsables' ) {
-			$users    = get_users( wp_parse_args(
-				array( 'amapress_role' => 'amap_role_any' ),
-				$base_query ) );
-			$user_ids = array_map( function ( $u ) {
-				return $u->ID;
-			}, $users );
-			$admins   = get_users( wp_parse_args(
-				array( 'amapress_role' => 'access_admin' ),
-				$base_query ) );
-			foreach ( $admins as $user ) {
-				if ( in_array( $user->ID, $user_ids ) ) {
-					continue;
-				}
-				$users[] = $user;
-			}
+			$users = get_users( wp_parse_args(
+					array( 'amapress_role' => 'collectif' ),
+					$base_query )
+			);
 		} else if ( $role == 'referents_lieux' ) {
 			$users = get_users( wp_parse_args(
 				array( 'amapress_role' => 'referent_lieu' ),
@@ -784,9 +804,9 @@ jQuery(function() {
 			return strcmp( $a->display_name, $b->display_name );
 		} );
 
-		$n = implode( '-', $lieu_ids );
-
-		return amapress_generic_gallery( $users, "trombi-$n-$role", 'user_cell' );
+		return amapress_generic_gallery( $users, 'user_cell', [
+			'searchbox' => $atts['searchbox'],
+		] );
 	}
 
 	public static function get_user_id( $user ) {
@@ -866,6 +886,11 @@ jQuery(function() {
 		amapress_echo_panel_start( 'Les responsables à la prochaine distribution', null, 'amap-panel-resp-dist' );
 		echo do_shortcode( '[trombinoscope_role role=prochaine_distrib lieu=' . $lieu_id . ']' );
 		amapress_echo_panel_end();
+		if ( count( Amapress::get_lieux() ) > 1 ) {
+			amapress_echo_panel_start( 'Les responsables de l\'AMAP dans ce lieu' );
+			echo do_shortcode( '[trombinoscope_role role=responsables lieu=' . $lieu_id . ']' );
+			amapress_echo_panel_end();
+		}
 		amapress_echo_panel_start( 'Les amapiens', null, 'amap-panel-amapiens' );
 		echo do_shortcode( '[trombinoscope_role role=amapiens lieu=' . $lieu_id . ']' );
 		amapress_echo_panel_end();

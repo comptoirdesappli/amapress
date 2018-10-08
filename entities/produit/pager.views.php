@@ -4,6 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+add_filter( 'amapress_gallery_sort_produit_panier_cell', 'amapress_gallery_sort_produit_panier_cell', 10, 2 );
+function amapress_gallery_sort_produit_panier_cell( $sort, $produit ) {
+	return strtolower( $produit['produit']->post_title );
+}
+
 add_filter( 'amapress_gallery_render_produit_panier_cell', 'amapress_gallery_render_produit_panier_cell' );
 function amapress_gallery_render_produit_panier_cell( $produit, $add_class = null ) {
 	$produit_id = $produit['produit']->ID;

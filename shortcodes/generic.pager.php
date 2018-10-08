@@ -5,67 +5,50 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-function amapress_generic_gallery( $objects, $id = '0', $render_func = null, $if_empty = '', $columns = 5, $size = 'thumbnail' ) {
+function amapress_generic_gallery(
+	$objects,
+	$render_func = null, $options = []
+) {
+	$options = wp_parse_args(
+		$options,
+		[
+			'size'      => 'thumbnail',
+			'if_empty'  => '',
+			'searchbox' => false,
+		]
+	);
+
 	static $amapress_gallery_instance = 0;
 	$amapress_gallery_instance ++;
 
 	$output = '';
 
-	$selector = "slick-gallery-{$amapress_gallery_instance}";
-//    $float = 'left';
-//    $itemwidth = 100.0 / $columns;
+	$selector        = "iso-gallery-{$amapress_gallery_instance}";
+	$selector_search = $selector . '-search';
 
-	$gallery_style = $gallery_div = '';
-//    if (apply_filters('use_default_gallery_style', true))
-//        $gallery_style = "
-//            <style type='text/css'>
-//                    #{$selector} {
-//                            margin: auto;
-//                    }
-//                    #{$selector} .gallery-item {
-//                            float: {$float};
-//                            margin-top: 10px;
-//                            text-align: center;
-//                            width: {$itemwidth}%;
-//                    }
-//                    .clearfix {
-//                        clear:both;
-//                    }
-//                    #{$selector} img {
-//                            border: 2px solid #cfcfcf;
-//                    }
-//                    #{$selector} .gallery-caption {
-//                            margin-left: 0;
-//                    }
-//                    #{$selector}-pag-nav {
-//                    }
-//            </style>";
-	$size_class  = sanitize_html_class( $size );
-	$gallery_div = "<div id='$selector' class='slick-gallery slick-galleryid-{$id} slick-gallery-columns-{$columns} slick-gallery-size-{$size_class}'>";
-//    $gallery_clearfix = '<br class="clearfix" />';
+	if ( $options['searchbox'] && ! empty( $options ) ) {
+		$output .= "<div><label for='$selector_search'>Rechercher: </label><input type='text' data-gallery='$selector' id='$selector_search' class='iso-gallery-search' /></div>";
+	}
 
-	$cols               = $columns;
+	$gallery_div = "<div id='$selector' class='iso-gallery'><div class='iso-gallery-sizer'></div>";
+
 	$has_custom_content = ! empty( $render_func );
 	if ( count( $objects ) > 0 ) {
-//        $output .= apply_filters('gallery_style', $gallery_style . "\n\t\t" . $gallery_div);
 		$output .= $gallery_div;
 		foreach ( $objects as $o ) {
-			$output .= '<div class="slick-gallery-item">';
+			$category = apply_filters( "amapress_gallery_category_{$render_func}", '', $o );
+			$sort     = esc_attr( apply_filters( "amapress_gallery_sort_{$render_func}", '', $o ) );
+			$output   .= "<div class='iso-gallery-item $category' data-sort='$sort'>";
 			if ( $has_custom_content ) {
 				$output .= apply_filters( "amapress_gallery_render_{$render_func}", $o );
 			} else {
-				$output .= wp_get_attachment_image( $o->ID, $size );
+				$output .= wp_get_attachment_image( $o->ID, $options['size'] );
 			}
 			$output .= '</div>';
-			$cols --;
-//            if ($cols == 0) {
-//                $output .= $gallery_clearfix;
-//                $cols = $columns;
-//            }
 		}
 		$output .= '</div>';
 	} else {
-		$output .= urldecode( $if_empty );
+		$output .= urldecode( $options['if_empty'] );
 	}
 
 	return $output;
@@ -85,24 +68,20 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 		}
 	}
 
-	$id      = $post ? $post->ID : 0;
-	$order   = 'ASC';
-	$columns = 3;
-	$rows    = 2;
-	$orderby = 'title';
-//    $posts_per_page = -1;
-	$query_uri   = '';
-	$query_func  = '';
-	$render_func = '';
-	$post_type   = 'post';
-	$size        = 'thumbnail';
-//    $gallery_page_name = 'gallery_page';
-//    $gallery_page_slug = 'page';
+	$id           = $post ? $post->ID : 0;
+	$order        = 'ASC';
+	$columns      = 3;
+	$rows         = 2;
+	$orderby      = 'title';
+	$query_uri    = '';
+	$query_func   = '';
+	$render_func  = '';
+	$post_type    = 'post';
+	$size         = 'thumbnail';
 	$if_empty     = '';
 	$post__in     = '';
 	$post__not_in = '';
 	extract( shortcode_atts( array(
-//        'posts_per_page' => $posts_per_page,
 		'order'        => $order,
 		'orderby'      => $orderby,
 		'id'           => $id,
@@ -116,8 +95,6 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 		'render_func'  => $render_func,
 		'columns'      => $columns,
 		'rows'         => $rows,
-//        'gallery_page_name' => $gallery_page_name,
-//        'gallery_page_slug' => $gallery_page_slug,
 	), $attr ), EXTR_OVERWRITE );
 
 	if ( ! empty( $post__in ) ) {
@@ -135,40 +112,11 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 
 	$output = '';
 
-	$selector = "slick-gallery-{$amapress_gallery_instance}";
-//    $float = 'left';
-//    $itemwidth = 100.0 / $columns;
-
-	$gallery_style = $gallery_div = '';
-//    if (apply_filters('use_default_gallery_style', true))
-//        $gallery_style = "
-//            <style type='text/css'>
-//                    #{$selector} {
-//                            margin: auto;
-//                    }
-//                    #{$selector} .gallery-item {
-//                            float: {$float};
-//                            margin-top: 10px;
-//                            text-align: center;
-//                            width: {$itemwidth}%;
-//                    }
-//                    .clearfix {
-//                        clear:both;
-//                    }
-//                    #{$selector} img {
-//                            border: 2px solid #cfcfcf;
-//                    }
-//                    #{$selector} .gallery-caption {
-//                            margin-left: 0;
-//                    }
-//                    #{$selector}-pag-nav {
-//                    }
-//            </style>";
+	$selector      = "slick-gallery-{$amapress_gallery_instance}";
 	$slick_options = array(
 		'slidesPerRow' => $columns,
 		'rows'         => $rows,
 		'infinite'     => false,
-//        'adaptiveHeight' => true,
 		'responsive'   => array(
 			array(
 				'breakpoint' => 1024,
@@ -195,12 +143,9 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 	);
 	$slick_options = json_encode( $slick_options );
 
-	$size_class  = sanitize_html_class( $size );
-	$gallery_div = "<div id='$selector' class='slick-gallery slick-galleryid-{$id} slick-gallery-columns-{$columns} slick-gallery-size-{$size_class}' data-slick='{$slick_options}'>";
-//    $gallery_clearfix = '<br class="clearfix"/>';
+	$size_class      = sanitize_html_class( $size );
+	$gallery_div     = "<div id='$selector' class='slick-gallery slick-galleryid-{$id} slick-gallery-columns-{$columns} slick-gallery-size-{$size_class}' data-slick='{$slick_options}'>";
 	$gallery_nav_div = "<div id='{$selector}-pag-nav' class='slick-gallery slick-galleryid-{$id} slick-gallery-size-{$size_class}'>";
-
-//    $gallery_page = (get_query_var($gallery_page_name)) ? get_query_var($gallery_page_name) : 1;
 
 	if ( ! empty( $query_func ) ) {
 		$gallery = apply_filters( "amapress_gallery_query_{$query_func}", $attr );
@@ -218,7 +163,6 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 			'order'          => $order,
 			'orderby'        => $orderby,
 			'post_type'      => $post_type,
-//            'paged' => $gallery_page,
 			'post__in'       => $post__in,
 			'post__not_in'   => $post__not_in,
 		);
@@ -230,8 +174,6 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 		$gallery->parse_query( $args );
 	}
 
-//    if (!empty($posts_per_page)) $gallery->set('posts_per_page', $posts_per_page);
-//    if (!empty($gallery_page)) $gallery->set('paged', $gallery_page);
 	if ( ! empty( $post_type ) ) {
 		$gallery->set( 'post_type', $post_type );
 	}
@@ -251,7 +193,6 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 	$cols               = $columns;
 	$has_custom_content = ! empty( $render_func );
 	if ( $gallery->have_posts() ) :
-//        $output .= apply_filters('gallery_style', $gallery_style . "\n\t\t" . $gallery_div);
 		$output .= $gallery_div;
 		while ( $gallery->have_posts() ) : $gallery->the_post();
 			$output .= '<div class="slick-gallery-item">';
@@ -262,28 +203,9 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 			}
 			$output .= '</div>';
 			$cols --;
-//            if ($cols == 0) {
-//                $output .= $gallery_clearfix;
-//                $cols = $columns;
-//            }
 		endwhile;
 		$output .= '</div>';
 		$output .= $gallery_nav_div;
-//        if (get_option('permalink_structure')) {
-//            $format = '?' . $gallery_page_name . '=%#%';
-//            $format = $gallery_page_slug.'/%#%';
-//        } else {
-//            $format = '&' . $gallery_page_name . '=%#%';
-//        }
-//        $args = array(
-//            'base' => $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . '%_%',
-//            'format' => $format,
-//            'current' => $gallery_page,
-//            'total' => $gallery->max_num_pages
-//        );
-//        $output .= '<div style="clear:both">';
-//        $output .= paginate_links($args);
-//        $output .= '</div>';
 		wp_reset_postdata();
 		$output .= '</div>';
 	else:

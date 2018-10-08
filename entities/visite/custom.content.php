@@ -53,7 +53,9 @@ function amapress_get_custom_content_visite( $content ) {
 
 	amapress_echo_panel_start( 'Participants', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-amapiens' );
 	if ( count( $responsables ) > 0 ) {
-		echo amapress_generic_gallery( $responsables, 'resp', 'user_cell', 'Pas de participants' );
+		echo amapress_generic_gallery( $responsables, 'user_cell', [
+			'if_empty' => 'Pas de participants'
+		] );
 	} else { ?>
         <p>Aucun participants</p>
 	<?php }

@@ -27,9 +27,9 @@ class AmapressPaniers {
 				continue;
 			}
 
-			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
+			$now = Amapress::start_of_day( $contrat->getDate_debut() );
 			Amapress::setFilterForReferent( false );
-			$all_contrat_ids                 = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
 			Amapress::setFilterForReferent( true );
 
 			$res[ $contrat->ID ] = array();
@@ -1104,7 +1104,10 @@ class AmapressPaniers {
 									'unit'     => null,
 								];
 							}
-							, $produits ), 'panier', 'produit_panier_cell', 'Contenu du panier de cette distribution non rempli.' );
+							, $produits ),
+						'produit_panier_cell', [
+						'if_empty' => 'Contenu du panier de cette distribution non rempli.'
+					] );
 				}
 
 				echo '</div>';
