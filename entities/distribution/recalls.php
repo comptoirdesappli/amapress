@@ -62,7 +62,15 @@ add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 		return;
 	}
 
-	$responsable_ids = Amapress::get_array( Amapress::getOption( 'distribution-emargement-recall-to' ) );
+	$all_responsable_ids = amapress_get_groups_user_ids_from_option( 'distribution-emargement-recall-to' );
+	$responsable_ids     = [];
+	foreach ( $all_responsable_ids as $responsable_id ) {
+		$user_lieu_ids = AmapressUsers::get_user_lieu_ids( $responsable_id,
+			$dist->getDate() );
+		if ( empty( $user_lieu_ids ) || in_array( $dist->getLieuId(), $user_lieu_ids ) ) {
+			$responsable_ids[] = $responsable_id;
+		}
+	}
 	if ( empty( $responsable_ids ) ) {
 		return;
 	}
@@ -520,12 +528,13 @@ function amapress_distribution_emargement_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-emargement-recall-to',
-			'name'         => amapress__( 'Envoyer à' ),
-			'type'         => 'select-users',
+			'name'         => amapress__( 'Destinataire(s)' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails de tous destinataires. Chaque destinataire recevra la liste d\'émargement de son lieu de distribution.',
+			'desc'         => 'Groupe(s) destinataire(s)',
 		),
 		array(
 			'id'           => 'distribution-emargement-recall-cc',
@@ -535,16 +544,6 @@ function amapress_distribution_emargement_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Mails en copie',
-		),
-		array(
-			'id'           => 'distribution-emargement-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
-			'type'         => 'select',
-			'options'      => 'amapress_get_collectif_target_queries',
-			'autocomplete' => true,
-			'multiple'     => true,
-			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
 		),
 		array(
 			'type' => 'save',
