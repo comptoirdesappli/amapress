@@ -379,7 +379,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
-                    <th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email : </label>
+                    <th style="text-align: left; width: auto"><label for="email">Email : </label>
                     </th>
                     <td><span style="width: 100%"><?php echo esc_html( $email ) ?></span></td>
                 </tr>
@@ -414,7 +414,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                     <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label style="width: 10%" for="coadh1_email">Son email
+                    <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
                             : </label>
                     </th>
                     <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
@@ -454,7 +454,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                     <th colspan="2">Co adhérent 2 <em>(si vous payez les contrats à plusieurs)</em></th>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label style="width: 10%" for="coadh2_email">Son email
+                    <th style="text-align: left; width: auto"><label for="coadh2_email">Son email
                             : </label>
                     </th>
                     <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
@@ -604,8 +604,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		if ( Amapress::toBool( $atts['send_tresoriers'] ) ) {
 			$tresoriers = [];
-			foreach ( get_users( "role=tresorier" ) as $user ) {
-				$user_obj   = AmapressUser::getBy( $user );
+			foreach ( get_users( "role=tresorier" ) as $tresorier ) {
+				$user_obj   = AmapressUser::getBy( $tresorier );
 				$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
 			}
 
@@ -1474,8 +1474,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( ! $admin_mode ) {
 			if ( Amapress::toBool( $atts['send_referents'] ) ) {
 				$referents = [];
-				foreach ( $inscription->getContrat_instance()->getModel()->getProducteur()->getReferentsIds() as $user_id ) {
-					$user_obj  = AmapressUser::getBy( $user_id );
+				foreach ( $inscription->getContrat_instance()->getModel()->getProducteur()->getReferentsIds() as $ref_id ) {
+					$user_obj  = AmapressUser::getBy( $ref_id );
 					$referents = array_merge( $referents, $user_obj->getAllEmails() );
 				}
 
@@ -1495,10 +1495,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$user_subscribable_contrats         = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
 				return ! in_array( $c->ID, $adhs_contrat_ids );
 			} );
-			$user_subscribable_contrats_display = implode( ', ', array_map( function ( $c ) {
+			$user_subscribable_contrats_display = implode( ', ', array_unique( array_map( function ( $c ) {
 				/** @var AmapressContrat_instance $c */
-				return $c->getModel()->getTitle();
-			}, $user_subscribable_contrats ) );
+				return $c->getModel()->getTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
+			}, $user_subscribable_contrats ) ) );
 			echo '<h4>étape 8/8 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 
 Vous allez recevoir un mail de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, ce mail peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</div>';
@@ -1561,6 +1561,10 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
     <style type="text/css">
         #quant-commandes td {
             text-align: center
+        }
+
+        label {
+            display: inline !important;
         }
     </style>
     <script type="text/javascript">
