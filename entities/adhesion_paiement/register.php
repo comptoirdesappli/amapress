@@ -31,7 +31,9 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 			'generate_bulletin' => [
 				'label'     => 'Générer le bulletin',
 				'condition' => function ( $adh_id ) {
-					return ! empty( AmapressAdhesion_paiement::getBy( $adh_id )->getBulletinDocFileName() );
+					$adh = AmapressAdhesion_paiement::getBy( $adh_id );
+
+					return ! empty( $adh ) && ! empty( $adh->getPeriod() ) && ! empty( $adh->getPeriod()->getWordModelId() );
 				},
 			],
 		),

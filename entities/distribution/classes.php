@@ -863,13 +863,13 @@ class AmapressDistribution extends Amapress_EventBase {
 				'resp-requis'                   => [
 					'desc' => 'Nombre de responsable de distribution requis pour cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
-						return count( AmapressDistributions::get_required_responsables( $distrib->ID ) );
+						return AmapressDistributions::get_required_responsables( $distrib->ID );
 					}
 				],
 				'resp-manquants'                => [
 					'desc' => 'Nombre de responsable de distribution manquants pour cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
-						return count( AmapressDistributions::get_required_responsables( $distrib->ID ) ) - count( $distrib->getResponsables() );
+						return AmapressDistributions::get_required_responsables( $distrib->ID ) - count( $distrib->getResponsables() );
 					}
 				],
 				'lien-resp-distrib-ical'        => [

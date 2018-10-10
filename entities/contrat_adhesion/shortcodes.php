@@ -192,6 +192,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			return $c->canSelfSubscribe();
 		} );
 	}
+	usort( $subscribable_contrats, function ( $a, $b ) {
+		/** @var AmapressContrat_instance $a */
+		/** @var AmapressContrat_instance $b */
+		return strcmp( $a->getTitle(), $b->getTitle() );
+	} );
 //	$subscribable_contrats     = array_filter( $subscribable_contrats, function ( $c ) {
 //		/** @var AmapressContrat_instance $c */
 //		return ! $c->isPanierVariable();
@@ -313,8 +318,6 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$email = sanitize_email( $_REQUEST['email'] );
 		}
 
-		$edit_names = Amapress::toBool( $atts['edit_names'] );
-
 		$user           = get_user_by( 'email', $email );
 		$user_firt_name = '';
 		$user_last_name = '';
@@ -332,6 +335,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
 		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+
+		$edit_names = Amapress::toBool( $atts['edit_names'] ) || empty( $user );
+
 		if ( $user ) {
 //			if ( is_multisite() ) {
 //				if ( ! is_user_member_of_blog( $user->ID ) ) {
@@ -616,7 +622,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		echo '<p>Un mail de confirmation vient de vous être envoyé. (Pensez à regarder vos spams, ces mails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 
-		if ( ! empty( $adh_paiement->getPeriod()->getModelDocFileName() ) ) {
+		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
 			$print_bulletin = Amapress::makeButtonLink(
 				add_query_arg( [
 					'inscr_assistant' => 'generate_bulletin',
@@ -689,14 +695,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
 			} else {
-				$print_bulletin = Amapress::makeButtonLink(
-					add_query_arg( [
-						'inscr_assistant' => 'generate_bulletin',
-						'adh_id'          => $adh_paiement->ID,
-						'inscr_key'       => $key
-					] ),
-					'Imprimer', true, true, 'btn btn-default'
-				);
+				$print_bulletin = '';
+				if ( $adh_paiement->getPeriod()->getWordModelId() ) {
+					$print_bulletin = Amapress::makeButtonLink(
+						add_query_arg( [
+							'inscr_assistant' => 'generate_bulletin',
+							'adh_id'          => $adh_paiement->ID,
+							'inscr_key'       => $key
+						] ),
+						'Imprimer', true, true, 'btn btn-default'
+					);
+				}
 				echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
 			}
@@ -704,6 +713,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		$display_remaining_contrats = true;
 		if ( ! $admin_mode && ! $has_principal_contrat ) {
+			$display_remaining_contrats = false;
 			if ( count( $principal_contrats ) == 1 ) {
 				?>
                 <p>Pour accéder à tous nos contrats en ligne,
@@ -726,38 +736,33 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					?>
                 </p>
 				<?php
-				$display_remaining_contrats = false;
 			} else {
 				?>
                 <p>Pour accéder à tous nos contrats en ligne, vous devez d’abord vous
                     inscrire à l’un des contrats suivants :</p>
-                <li>
-					<?php
-					foreach ( $principal_contrats as $principal_contrat ) {
-						?>
-                        <p>
-                            “<strong><?php echo esc_html( $principal_contrat->getTitle() ); ?></strong>”
-                            (<?php echo $principal_contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
-                        </p>
-                        <p><?php
-							$inscription_url = add_query_arg( [
-								'step'       => 'inscr_contrat_date_lieu',
-								'contrat_id' => $principal_contrat->ID
-							] );
-							echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
+				<?php
+				foreach ( $principal_contrats as $principal_contrat ) {
+					?>
+                    <p>
+                        “<strong><?php echo esc_html( $principal_contrat->getTitle() ); ?></strong>”
+                        (<?php echo $principal_contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
+                    </p>
+                    <p><?php
+						$inscription_url = add_query_arg( [
+							'step'       => 'inscr_contrat_date_lieu',
+							'contrat_id' => $principal_contrat->ID
+						] );
+						echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrat->ID . '"/>
 <input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
 </form>';
-							?>
-                        </p>
-						<?php
-					}
-					?>
-                </li>
-				<?php
+						?>
+                    </p>
+					<?php
+				}
 			}
 		} else if ( ! empty( $adhs ) ) {
 			if ( ! $admin_mode ) {
