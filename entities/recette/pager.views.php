@@ -17,13 +17,30 @@ function amapress_simple_recette_cell( $recette, $add_class = '' ) {
 		', ',
 		'</span>' );
 
-	return '<div class="recette-cell ' . $add_class . '">
-                    <div class="thumbnail">
+	return '<div class="thumbnail">
                         ' . $prod_photo . '
                         <div class="caption">
                             <h3><a href="' . get_post_permalink( $recette->ID ) . '">' . $recette->post_title . '</a></h3>
                             ' . ( ! empty( $tags ) ? '<p class="recette-tags">' . $tags . '</p>' : '' ) . '
                         </div>
-                    </div>
-                </div>';
+                    </div>';
+}
+
+
+add_filter( 'amapress_gallery_sort_simple_recette_cell', 'amapress_gallery_sort_simple_recette_cell', 10, 2 );
+function amapress_gallery_sort_simple_recette_cell( $sort, $recette ) {
+	return strtolower( $recette->post_title );
+}
+
+
+add_filter( 'amapress_gallery_category_simple_recette_cell', 'amapress_gallery_category_simple_recette_cell', 10, 2 );
+function amapress_gallery_category_simple_recette_cell( $categories, $recette ) {
+	$tags = get_the_terms(
+		$recette->ID,
+		AmapressRecette::CATEGORY );
+
+	return 'recette-cell ' . ( $tags ? implode( ' ', array_map( function ( $t ) {
+			/** @var WP_Term $t */
+			return sanitize_html_class( $t->name );
+		}, $tags ) ) : '' );
 }
