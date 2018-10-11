@@ -13,23 +13,41 @@ function amapress_register_entities_intermittence( $entities ) {
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
-		'title'            => false,
-		'editor'           => false,
-		'slug'             => 'intermittences_paniers',
-		'title_format'     => 'amapress_intermittence_panier_title_formatter',
-		'slug_format'      => 'from_title',
-		'menu_icon'        => 'fa-menu fa-shopping-basket',
-		'default_orderby'  => 'amapress_intermittence_panier_date',
-		'default_order'    => 'ASC',
-		'views'            => array(
+		'title'           => false,
+		'editor'          => false,
+		'slug'            => 'intermittences_paniers',
+		'title_format'    => 'amapress_intermittence_panier_title_formatter',
+		'slug_format'     => 'from_title',
+		'menu_icon'       => 'fa-menu fa-shopping-basket',
+		'default_orderby' => 'amapress_intermittence_panier_date',
+		'default_order'   => 'ASC',
+		'views'           => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_intermittence_panier_views',
 			'exp_csv' => true,
 		),
-//        'row_actions' => array(
-//            'resend_mail' => 'amapress_get_send_panier_intermittent_available',
-//        ),
-		'fields'           => array(
+		'row_actions'     => array(
+			'validate_repreneur' => array(
+				'label'     => 'Valider le repreneur',
+				'condition' => function ( $post_id ) {
+					$panier = AmapressIntermittence_panier::getBy( $post_id );
+
+					return ! empty( $panier )
+					       && AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT == $panier->getStatus()
+					       && ! empty( $panier->getAsk() )
+					       && 1 == count( $panier->getAsk() );
+				},
+				'confirm'   => true,
+			),
+			'switch_adherent'    => [
+				'label'     => 'Changer pour Adhérent',
+				'condition' => function ( $post_id ) {
+					return class_exists( 'user_switching' );
+				},
+				'confirm'   => true,
+			]
+		),
+		'fields'          => array(
 			'date'               => array(
 				'name'       => amapress__( 'Date' ),
 				'type'       => 'date',
@@ -42,12 +60,12 @@ function amapress_register_entities_intermittence( $entities ) {
 				),
 			),
 			'panier'             => array(
-				'name'      => amapress__( 'Panier(s)' ),
-				'type'      => 'multicheck-posts',
-				'post_type' => AmapressPanier::INTERNAL_POST_TYPE,
-				'readonly'  => true,
-				'desc'      => 'Panier(s)',
-//				'searchable' => true,
+				'name'        => amapress__( 'Panier(s)' ),
+				'type'        => 'multicheck-posts',
+				'post_type'   => AmapressPanier::INTERNAL_POST_TYPE,
+				'readonly'    => true,
+				'desc'        => 'Panier(s)',
+				'show_column' => false,
 			),
 			'contrat_instance'   => array(
 				'name'      => amapress__( 'Contrat(s)' ),
@@ -55,22 +73,6 @@ function amapress_register_entities_intermittence( $entities ) {
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'readonly'  => true,
 				'desc'      => 'Contrat(s)',
-//				'autoselect_single' => true,
-//				'searchable'        => true,
-			),
-			'repreneur'          => array(
-				'name'       => amapress__( 'Repreneur' ),
-				'type'       => 'select-users',
-				'desc'       => 'Repreneur',
-				'searchable' => true,
-				'readonly'   => true,
-			),
-			'adherent'           => array(
-				'name'       => amapress__( 'Adherent' ),
-				'type'       => 'select-users',
-				'readonly'   => true,
-				'desc'       => 'Adherent',
-				'searchable' => true,
 			),
 			'lieu'               => array(
 				'name'              => amapress__( 'Lieu' ),
@@ -85,16 +87,19 @@ function amapress_register_entities_intermittence( $entities ) {
 					'placeholder' => 'Toutes les lieux',
 				),
 			),
-			'adh_message'        => array(
-				'name'       => amapress__( 'Message aux repreneurs' ),
-				'type'       => 'readonly',
-				'desc'       => 'Message',
-				'searchable' => true,
+			'repreneur'          => array(
+				'name'        => amapress__( 'Repreneur' ),
+				'type'        => 'select-users',
+				'desc'        => 'Repreneur',
+				'searchable'  => true,
+				'readonly'    => true,
+				'show_column' => false,
 			),
-			'adh_cancel_message' => array(
-				'name'       => amapress__( 'Message d\'annulation' ),
-				'type'       => 'readonly',
-				'desc'       => 'Message',
+			'adherent'           => array(
+				'name'       => amapress__( 'Adherent' ),
+				'type'       => 'select-users',
+				'readonly'   => true,
+				'desc'       => 'Adherent',
 				'searchable' => true,
 			),
 			'status'             => array(
@@ -115,8 +120,74 @@ function amapress_register_entities_intermittence( $entities ) {
 				'desc'       => 'Statut',
 				'readonly'   => true,
 			),
+			'waiters'            => array(
+				'name'                 => amapress__( 'Repreneur' ),
+				'type'                 => 'custom',
+				'use_custom_as_column' => true,
+				'custom'               => function ( $post_id ) {
+					$panier_inter = AmapressIntermittence_panier::getBy( $post_id );
+					if ( empty( $panier_inter ) ) {
+						return '';
+					}
+					$repreneur = $panier_inter->getRepreneur();
+					if ( ! empty( $repreneur ) ) {
+						return Amapress::makeLink( $repreneur->getEditLink(), $repreneur->getDisplayName() . '(' . $repreneur->getUser()->user_email . ')', true, true );
+					}
+					$askers = [];
+					foreach ( $panier_inter->getAsk() as $user_id => $user_info ) {
+						$user = AmapressUser::getBy( $user_id );
+						if ( empty( $user ) ) {
+							continue;
+						}
+						$askers[] = Amapress::makeLink( $user->getEditLink(), $user->getDisplayName() . '(' . $user->getUser()->user_email . ')', true, true ) . ' attente depuis ' . date_i18n( 'd/m/Y', $user_info['date'] );
+					}
+
+					return implode( ', ', $askers );
+				}
+			),
+			'adh_message'        => array(
+				'name'       => amapress__( 'Message aux repreneurs' ),
+				'type'       => 'readonly',
+				'desc'       => 'Message',
+				'searchable' => true,
+			),
+			'adh_cancel_message' => array(
+				'name'       => amapress__( 'Message d\'annulation' ),
+				'type'       => 'readonly',
+				'desc'       => 'Message',
+				'searchable' => true,
+			),
 		),
 	);
 
 	return $entities;
+}
+
+add_action( 'amapress_row_action_intermittence_panier_validate_repreneur', 'amapress_row_action_intermittence_panier_validate_repreneur' );
+function amapress_row_action_intermittence_panier_validate_repreneur( $post_id ) {
+	$panier = AmapressIntermittence_panier::getBy( $post_id );
+	if ( ! empty( $panier )
+	     && AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT == $panier->getStatus()
+	     && ! empty( $panier->getAsk() )
+	     && 1 == count( $panier->getAsk() ) ) {
+		foreach ( $panier->getAsk() as $user_id => $user_info ) {
+			$panier->validateReprise( $user_id, true );
+			break;
+		}
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_intermittence_panier_switch_adherent', 'amapress_row_action_intermittence_panier_switch_adherent' );
+function amapress_row_action_intermittence_panier_switch_adherent( $post_id ) {
+	$panier = AmapressIntermittence_panier::getBy( $post_id );
+	if ( ! empty( $panier ) && ! empty( $panier->getAdherent() ) && class_exists( 'user_switching' ) ) {
+		$link = user_switching::maybe_switch_url( $panier->getAdherent()->getUser() );
+		if ( $link ) {
+			wp_redirect_and_exit( htmlspecialchars_decode( $link ) );
+		}
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
 }

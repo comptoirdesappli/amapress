@@ -263,12 +263,12 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return 'ok';
 	}
 
-	public function validateReprise( $repreneur_id ) {
+	public function validateReprise( $repreneur_id, $force = false ) {
 		if ( $this->getRepreneur() != null || 'exch_valid_wait' != $this->getStatus() ) {
 			return 'already';
 		}
 
-		if ( $this->getStartDateAndHour() < amapress_time() ) {
+		if ( $force || $this->getStartDateAndHour() < amapress_time() ) {
 			return 'too_late';
 		}
 

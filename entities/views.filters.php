@@ -571,7 +571,7 @@ function amapress_intermittence_panier_views() {
 		"post_type=amps_inter_panier&amapress_status=exchanged",
 		'Réservé' );
 	amapress_add_view_button(
-		$ret, 'exchanged',
+		$ret, 'cancelled',
 		"post_type=amps_inter_panier&amapress_status=cancelled",
 		'Annulé' );
 	if ( count( $lieux ) > 1 ) {
