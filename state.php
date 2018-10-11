@@ -141,8 +141,14 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'aryo-activity-log', 'Activity Log',
 		'<strong>Optionnel</strong> : Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
 		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'error-log-monitor', 'Error Log Monitor',
+		'<strong>Optionnel</strong> : Permet de logger les erreurs PHP/Wordpress et de les envoyer automatiquement au support Amapress pour aider à son développement',
+		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
 		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
+		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'latest-post-shortcode', 'Latest Post Shortcode',
+		'<strong>Optionnel</strong> : Permet de créér une gallerie des articles récents (par ex, pour donner des nouvelles de l\'AMAP sur la page d\'Acceuil',
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'external-media', 'External Media',
 		'<strong>Optionnel</strong> : Permet de référencer des documents accessibles sur GoogleDrive, OneDrive, DropBox sans les importer via la «Media Library » de Wordpress',
