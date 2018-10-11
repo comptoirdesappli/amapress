@@ -291,6 +291,154 @@ class AmapressEntities {
 							'capability' => 'edit_amap_event',
 							'slug'       => 'edit-tags.php?taxonomy=amps_amap_event_category',
 						),
+						array(
+							'subpage'  => true,
+							'id'       => 'distrib_page_stats',
+							'settings' => array(
+								'name'       => 'Statistiques des distributions',
+								'menu_title' => 'Statistiques',
+//								'position'   => '25.2',
+								'capability' => 'edit_distribution',
+								'icon'       => 'dashicons-none flaticon-pen',
+							),
+							'options'  => array(
+								array(
+									'id'     => 'distrib_stats',
+									'bare'   => true,
+									'type'   => 'custom',
+									'custom' => function () {
+										$start_date_fmt = ! empty( $_REQUEST['amp_stats_start_date'] ) ? $_REQUEST['amp_stats_start_date'] : date_i18n( 'd/m/Y', Amapress::add_a_month( amapress_time(), - 12 ) );
+										$end_date_fmt   = ! empty( $_REQUEST['amp_stats_end_date'] ) ? $_REQUEST['amp_stats_end_date'] : date_i18n( 'd/m/Y', amapress_time() );
+										ob_start();
+										TitanFrameworkOptionDate::createCalendarScript();
+
+										echo '<p>Obtenir des statistisque pour la période suivante :</p>';
+										echo '<label class="tf-date" for="amp_stats_start_date">Début: <input id="amp_stats_start_date" class="input-date date required " name="amp_stats_start_date" type="text" value="' . $start_date_fmt . '" /></label>';
+										echo '<label class="tf-date" for="amp_stats_end_date">Fin: <input id="amp_stats_end_date" class="input-date date required " name="amp_stats_end_date" type="text" value="' . $end_date_fmt . '" /></label>';
+										echo '<input type="submit" class="button button-primary" value="Voir les statistiques" />';
+										echo '<hr />';
+
+
+										echo '<h4>Inscriptions aux distributions du ' . $start_date_fmt . ' au ' . $end_date_fmt . '</h4>';
+
+										$columns         = [];
+										$columns[]       = array(
+											'title' => 'Amapien',
+											'data'  => array(
+												'_'    => 'user',
+												'sort' => 'sort_user',
+											),
+										);
+										$columns[]       = array(
+											'title' => 'Lieu',
+											'data'  => 'lieu',
+										);
+										$columns[]       = array(
+											'title' => 'Contrats',
+											'data'  => 'contrats',
+										);
+										$columns[]       = array(
+											'title' => 'Dates',
+											'data'  => 'resp_dates',
+										);
+										$columns[]       = array(
+											'title' => 'Inscriptions',
+											'data'  => 'resp_nb',
+										);
+										$user_names      = [];
+										$user_sort_names = [];
+										$user_contrats   = [];
+										$user_lieux      = [];
+										$user_resps      = [];
+										$start_date      = DateTime::createFromFormat( 'd/m/Y', $start_date_fmt )->getTimestamp();
+										$end_date        = DateTime::createFromFormat( 'd/m/Y', $end_date_fmt )->getTimestamp();
+										$contrat_ids     = [];
+										foreach ( AmapressDistribution::get_distributions( $start_date, $end_date, 'ASC' ) as $distribution ) {
+											foreach ( $distribution->getContrats() as $c ) {
+												if ( ! in_array( $c->ID, $contrat_ids ) ) {
+													foreach ( AmapressContrats::get_all_adhesions( $c->ID ) as $adh ) {
+														if ( empty( $adh->getAdherent() ) ) {
+															continue;
+														}
+														$rid = strval( $adh->getAdherentId() );
+														if ( ! isset( $user_resps[ $rid ] ) ) {
+															$user_resps[ $rid ] = [];
+														}
+														if ( ! isset( $user_names[ $rid ] ) ) {
+															$user_names[ $rid ] = Amapress::makeLink( $adh->getAdherent()->getEditLink(), $adh->getAdherent()->getDisplayName() . '(' . $adh->getAdherent()->getUser()->user_email . ')' );
+														}
+														if ( ! isset( $user_sort_names[ $rid ] ) ) {
+															$user_sort_names[ $rid ] = $adh->getAdherent()->getSortableDisplayName();
+														}
+														if ( ! isset( $user_lieux[ $rid ] ) ) {
+															$user_lieux[ $rid ] = $adh->getLieu()->getLieuTitle();
+														}
+														if ( ! isset( $user_contrats[ $rid ] ) ) {
+															$user_contrats[ $rid ] = [];
+														}
+														$user_contrats[ $rid ][] = Amapress::makeLink( $adh->getContrat_instance()->getAdminEditLink(), $adh->getContrat_instance()->getTitle() );
+													}
+													$contrat_ids[] = $c->ID;
+												}
+											}
+											foreach ( $distribution->getResponsables() as $r ) {
+												if ( empty( $r ) ) {
+													continue;
+												}
+												$rid = strval( $r->ID );
+												if ( ! isset( $user_resps[ $rid ] ) ) {
+													$user_resps[ $rid ] = [];
+												}
+												$user_resps[ $rid ][] = Amapress::makeLink( $distribution->getAdminEditLink(), date_i18n( 'd/m/Y', $distribution->getDate() ) );
+												if ( ! isset( $user_names[ $rid ] ) ) {
+													$user_names[ $rid ] = Amapress::makeLink( $r->getEditLink(), $r->getDisplayName() . '(' . $r->getUser()->user_email . ')' );
+												}
+												if ( ! isset( $user_sort_names[ $rid ] ) ) {
+													$user_sort_names[ $rid ] = $r->getSortableDisplayName();
+												}
+												if ( ! isset( $user_lieux[ $rid ] ) ) {
+													$user_lieux[ $rid ] = $distribution->getLieu()->getLieuTitle();
+												}
+												if ( ! isset( $user_contrats[ $rid ] ) ) {
+													$user_contrats[ $rid ] = [];
+												}
+											}
+										}
+//										sort( $user_names );
+										$lines = [];
+										foreach ( $user_names as $user_id => $user_name ) {
+											$lines[] = array(
+												'user'       => $user_name,
+												'sort_user'  => $user_sort_names[ $user_id ],
+												'lieu'       => $user_lieux[ $user_id ],
+												'contrats'   => implode( ', ', $user_contrats[ $user_id ] ),
+												'resp_dates' => implode( ', ', $user_resps[ $user_id ] ),
+												'resp_nb'    => count( $user_resps[ $user_id ] ),
+											);
+										}
+										amapress_echo_datatable( 'amp_distrib_stats_table',
+											$columns, $lines,
+											array(
+												'paging'       => false,
+												'searching'    => true,
+												'nowrap'       => false,
+												'responsive'   => false,
+												'init_as_html' => true,
+												'fixedHeader'  => array(
+													'headerOffset' => 32
+												),
+											),
+											array(
+												Amapress::DATATABLES_EXPORT_EXCEL
+											)
+										);
+
+										return ob_get_clean();
+									}
+								),
+							),
+							'tabs'     => array(),
+						),
 					),
 				),
 //                array(
@@ -2342,15 +2490,20 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 	}
 
 
-	public static $predef_subpages = array();
+	public
+	static $predef_subpages = array();
 
-	public static function getPostType( $type_name ) {
+	public
+	static function getPostType(
+		$type_name
+	) {
 		$post_types = self::getPostTypes();
 
 		return isset( $post_types[ $type_name ] ) ? $post_types[ $type_name ] : array();
 	}
 
-	public static function getPostTypes() {
+	public
+	static function getPostTypes() {
 		if ( ! self::$post_types_initialized ) {
 			self::init_posts();
 			self::$post_types_initialized = true;
@@ -2359,11 +2512,15 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 		return self::$post_types;
 	}
 
-	private static function init_posts() {
+	private
+	static function init_posts() {
 		self::$post_types = apply_filters( 'amapress_register_entities', array() );
 	}
 
-	public static function getPostFieldsLabels( $post_type = null ) {
+	public
+	static function getPostFieldsLabels(
+		$post_type = null
+	) {
 		$key    = "amapress_getPostFieldsLabels_{$post_type}";
 		$labels = wp_cache_get( $key );
 		if ( false === $labels ) {
@@ -2393,7 +2550,8 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 		return $labels;
 	}
 
-	public static function getPostFieldsValidators() {
+	public
+	static function getPostFieldsValidators() {
 		$key    = "amapress_getPostFieldsValidators";
 		$labels = wp_cache_get( $key );
 		if ( false === $labels ) {
@@ -2419,7 +2577,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 		return $labels;
 	}
 
-	public static function getFilteredFields( $post_type ) {
+	public
+	static function getFilteredFields(
+		$post_type
+	) {
 		$key    = "amapress_getFilteredFields_{$post_type}";
 		$fields = wp_cache_get( $key );
 		if ( false === $fields ) {
@@ -2440,7 +2601,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 		return $fields;
 	}
 
-	public static function getPostTypeFields( $post_type ) {
+	public
+	static function getPostTypeFields(
+		$post_type
+	) {
 		$key = "amapress_getPostTypeFields_{$post_type}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
@@ -2463,7 +2627,8 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 		return $res;
 	}
 
-	public static function getPostFieldsFormatters() {
+	public
+	static function getPostFieldsFormatters() {
 		$key    = "amapress_getPostFieldsFormatters";
 		$labels = wp_cache_get( $key );
 		if ( false === $labels ) {
