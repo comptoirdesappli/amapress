@@ -676,6 +676,23 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return self::$properties;
 	}
 
+	/** @return AmapressIntermittence_panier[] */
+	public
+	static function get_paniers_intermittents(
+		$start_date, $end_date, $order = 'NONE'
+	) {
+		return self::query_events(
+			array(
+				array(
+					'key'     => 'amapress_intermittence_panier_date',
+					'value'   => [ Amapress::start_of_day( $start_date ), Amapress::end_of_day( $end_date ) ],
+					'compare' => 'BETWEEN',
+					'type'    => 'NUMERIC'
+				),
+			),
+			$order );
+	}
+
 	public
 	static function get_next_panier_intermittent(
 		$date = null, $order = 'NONE'
