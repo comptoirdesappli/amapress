@@ -186,6 +186,75 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 	//contrats-liste-paiements-recall-mail-
 } );
 
+add_action( 'amapress_recall_contrat_renew', function ( $args ) {
+	$dist               = AmapressDistribution::getBy( $args['id'] );
+	$contrats           = AmapressContrats::get_active_contrat_instances( null, $dist->getDate() );
+	$renewable_contrats = array_filter( $contrats, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->canRenew();
+	} );
+	$expire_delay       = Amapress::getOption( 'contrat-renew-recall-expire-days' );
+	$near_renew         = array_filter( $renewable_contrats, function ( $c ) use ( $expire_delay, $dist ) {
+		/** @var AmapressContrat_instance $c */
+		return Amapress::add_days( $c->getDate_fin(), - $expire_delay ) < Amapress::end_of_day( $dist->getDate() );
+	} );
+	$to_renew           = array_filter( $renewable_contrats, function ( $c ) use ( $dist ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->getDate_fin() < Amapress::end_of_day( $dist->getDate() );
+	} );
+
+	if ( empty( $near_renew ) && empty( $to_renew ) ) {
+		return;
+	}
+
+	$replacements = [];
+
+	$replacements['nb_contrats']            = count( $to_renew ) + count( $near_renew );
+	$replacements['nb_renew_contrats']      = count( $to_renew );
+	$replacements['nb_near_renew_contrats'] = count( $near_renew );
+	$replacements['contrats_to_renew']      = implode( '\n', array_map( function ( $c ) use ( $dist ) {
+		/** @var AmapressContrat_instance $c */
+		return sprintf( '-> Le contrat "%s" est expiré depuis le %s (depuis %d jours)',
+			Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle() ),
+			date_i18n( 'd/m/Y', $c->getDate_fin() ),
+			floor( ( $dist->getDate() - $c->getDate_fin() ) / 3600 / 24 )
+		);
+	}, $near_renew ) );
+	if ( empty( $replacements['contrats_to_renew'] ) ) {
+		$replacements['contrats_to_renew'] = '> aucun';
+	}
+	$replacements['contrats_near_end'] = implode( '\n', array_map( function ( $c ) use ( $dist ) {
+		/** @var AmapressContrat_instance $c */
+		return sprintf( '-> Le contrat "%s" expire le %s (dans %d jours)',
+			Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle() ),
+			date_i18n( 'd/m/Y', $c->getDate_fin() ),
+			floor( ( $c->getDate_fin() - $dist->getDate() ) / 3600 / 24 )
+		);
+	}, $near_renew ) );
+	if ( empty( $replacements['contrats_near_end'] ) ) {
+		$replacements['contrats_near_end'] = 'aucun';
+	}
+
+	$referent_ids = [];
+	foreach ( $renewable_contrats as $c ) {
+		$referent_ids = array_merge( $referent_ids, $c->getModel()->getProducteur()->getAllReferentsIds() );
+	}
+	$referent_ids = array_unique( $referent_ids );
+
+	$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), 'Référents', 'referents' );
+	$subject      = Amapress::getOption( 'contrat-renew-recall-mail-subject' );
+	$content      = Amapress::getOption( 'contrat-renew-recall-mail-content' );
+	foreach ( $replacements as $k => $v ) {
+		$subject = str_replace( "%%$k%%", $v, $subject );
+		$content = str_replace( "%%$k%%", $v, $content );
+	}
+	amapress_send_message(
+		$subject,
+		$content,
+		'', $target_users, $dist, array(),
+		amapress_get_recall_cc_from_option( 'contrat-renew-recall-cc' ) );
+} );
+
 function amapress_contrat_quantites_recall_options() {
 	return array(
 		array(
@@ -355,6 +424,71 @@ function amapress_contrat_paiements_recall_options() {
 			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
+function amapress_contrat_renew_recall_options() {
+	return array(
+		array(
+			'id'                  => 'contrat-renew-recall-1',
+			'name'                => 'Rappel 1',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_renew',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'      => 'contrat-renew-recall-expire-days',
+			'name'    => 'Délai d\'expiration',
+			'type'    => 'number',
+			'desc'    => 'Prévenir x jours avant la fin d\'un contrat',
+			'default' => 45,
+		),
+		array(
+			'id'       => 'contrat-renew-recall-mail-subject',
+			'name'     => 'Sujet du mail',
+			'type'     => 'text',
+			'sanitize' => false,
+			'default'  => '%%nb_contrats%% contrats à renouveler',
+		),
+		array(
+			'id'      => 'contrat-renew-recall-mail-content',
+			'name'    => 'Contenu du mail',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nLes contrats suivants sont à renouvèler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouvèler:\n%%contrats_near_end%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             Amapress::getPlaceholdersHelpTable( 'liste-renew-placeholders', [
+				             'contrats_to_renew'      => 'Contrats à renouvèler',
+				             'contrats_near_end'      => 'Contrats proches de la fin',
+				             'nb_contrats'            => 'Nombre de contrats à renouveler ou proches de la fin',
+				             'nb_renew_contrats'      => 'Nombre de contrats à renouveler',
+				             'nb_near_renew_contrats' => 'Nombre de contrats proches de la fin',
+			             ], null ),
+		),
+		array(
+			'id'           => 'contrat-renew-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Mails en copie',
+		),
+		array(
+			'id'           => 'contrat-renew-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
 		),
 		array(
 			'type' => 'save',

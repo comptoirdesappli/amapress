@@ -566,6 +566,11 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_contrat_quantites_recall_options(),
 						),
+						'Mails - Contrats à renouvèler'        => array(
+							'id'      => 'amp_tab_recall_contrat_renew',
+							'desc'    => '',
+							'options' => amapress_contrat_renew_recall_options(),
+						),
 						'Assistant inscription en ligne'       => array(
 							'id'      => 'config_online_inscriptions',
 							'desc'    => '',
