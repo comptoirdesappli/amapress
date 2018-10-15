@@ -1657,6 +1657,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	if ( $contrat_instance->getModel() == null ) {
 		return '';
 	}
+
 	$contrat_produits = array();
 	if ( ! empty( $contrat_instance->getModel()->getProducteur() ) ) {
 		foreach ( $contrat_instance->getModel()->getProducteur()->getProduits() as $prod ) {
@@ -1803,7 +1804,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	amapress_quantite_editor_line( $contrat_instance, '%%id%%', '', '', '', 0, 0,
-		'', null, null, 0, '', '', '' );
+		'', null, null, 0, '', '', [] );
 
 	$new_row = ob_get_clean();
 
