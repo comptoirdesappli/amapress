@@ -135,7 +135,7 @@ function amapress_register_entities_distribution( $entities ) {
 			),
 
 			'lieu_substitution' => array(
-				'name'       => amapress__( 'Lieu' ),
+				'name'       => amapress__( 'Lieu de substitution' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'group'      => '1/ Partage',

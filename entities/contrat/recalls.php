@@ -194,9 +194,10 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 		return $c->canRenew();
 	} );
 	$expire_delay       = Amapress::getOption( 'contrat-renew-recall-expire-days' );
-	$near_renew         = array_filter( $renewable_contrats, function ( $c ) use ( $expire_delay, $dist ) {
+	$dist_date          = Amapress::end_of_day( $dist->getDate() );
+	$near_renew         = array_filter( $renewable_contrats, function ( $c ) use ( $expire_delay, $dist_date ) {
 		/** @var AmapressContrat_instance $c */
-		return Amapress::add_days( $c->getDate_fin(), - $expire_delay ) < Amapress::end_of_day( $dist->getDate() );
+		return $dist_date <= $c->getDate_fin() && $c->getDate_fin() <= Amapress::add_days( $dist_date, $expire_delay );
 	} );
 	$to_renew           = array_filter( $renewable_contrats, function ( $c ) use ( $dist ) {
 		/** @var AmapressContrat_instance $c */
@@ -212,23 +213,23 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$replacements['nb_contrats']            = count( $to_renew ) + count( $near_renew );
 	$replacements['nb_renew_contrats']      = count( $to_renew );
 	$replacements['nb_near_renew_contrats'] = count( $near_renew );
-	$replacements['contrats_to_renew']      = implode( '\n', array_map( function ( $c ) use ( $dist ) {
+	$replacements['contrats_to_renew']      = implode( '<br/>', array_map( function ( $c ) use ( $dist ) {
 		/** @var AmapressContrat_instance $c */
 		return sprintf( '-> Le contrat "%s" est expiré depuis le %s (depuis %d jours)',
 			Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle() ),
 			date_i18n( 'd/m/Y', $c->getDate_fin() ),
-			floor( ( $dist->getDate() - $c->getDate_fin() ) / 3600 / 24 )
+			floor( abs( $dist->getDate() - $c->getDate_fin() ) / 3600 / 24 )
 		);
-	}, $near_renew ) );
+	}, $to_renew ) );
 	if ( empty( $replacements['contrats_to_renew'] ) ) {
 		$replacements['contrats_to_renew'] = '> aucun';
 	}
-	$replacements['contrats_near_end'] = implode( '\n', array_map( function ( $c ) use ( $dist ) {
+	$replacements['contrats_near_end'] = implode( '<br/>', array_map( function ( $c ) use ( $dist ) {
 		/** @var AmapressContrat_instance $c */
 		return sprintf( '-> Le contrat "%s" expire le %s (dans %d jours)',
 			Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle() ),
 			date_i18n( 'd/m/Y', $c->getDate_fin() ),
-			floor( ( $c->getDate_fin() - $dist->getDate() ) / 3600 / 24 )
+			floor( abs( $dist->getDate() - $c->getDate_fin() ) / 3600 / 24 )
 		);
 	}, $near_renew ) );
 	if ( empty( $replacements['contrats_near_end'] ) ) {
