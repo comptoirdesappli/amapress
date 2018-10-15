@@ -37,12 +37,18 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 	$lieu_substitution = get_post_meta( $post_id, 'amapress_distribution_lieu_substitution', true );
 	if ( ! empty( $lieu_substitution ) && $lieu_substitution != $lieu_id ) {
 		$lieu = get_post( intval( $lieu_substitution ) );
+		if ( empty( $lieu ) ) {
+			return $post_title;
+		}
 
 		return sprintf( 'Distribution du %s exceptionnellement à %s',
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	} else {
 		$lieu = get_post( intval( $lieu_id ) );
+		if ( empty( $lieu ) ) {
+			return $post_title;
+		}
 
 		return sprintf( 'Distribution du %s à %s',
 			date_i18n( 'd/m/Y', intval( $date ) ),

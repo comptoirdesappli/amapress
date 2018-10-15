@@ -187,7 +187,11 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 } );
 
 add_action( 'amapress_recall_contrat_renew', function ( $args ) {
-	$dist               = AmapressDistribution::getBy( $args['id'] );
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		return;
+	}
+
 	$contrats           = AmapressContrats::get_active_contrat_instances( null, $dist->getDate() );
 	$renewable_contrats = array_filter( $contrats, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
