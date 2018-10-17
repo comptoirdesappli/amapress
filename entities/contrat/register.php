@@ -885,8 +885,7 @@ jQuery(function($) {
 					}
 
 					ob_start();
-					echo '<tr><td colspan="2" style="margin: 0; padding: 0">
-                            <p style="padding: 20px 10px 20px 0;"><strong>Quantités de rattrapage</strong></p>';
+					echo '<p style="padding: 20px 10px 20px 0;"><strong>Quantités de rattrapage</strong></p>';
 					echo '<p class="description">Options pour les Amap dont les quantités de rattrapage sont annoncées en début de contrat</p>';
 					echo '<table id="quant_rattrapage" style="width: 100%; border: 1pt solid black">
 <thead><tr><th style="padding-left: 20px">Sélectionner une date</th><th style="padding-left: 20px">Indiquer la quantité</th></tr></thead>
@@ -915,7 +914,7 @@ jQuery(function($) {
 						<?php
 						$i ++;
 					}
-					echo '</tbody></table></td></tr>';
+					echo '</tbody></table>';
 
 					return ob_get_clean();
 				},
@@ -1741,8 +1740,6 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	?>
-    <tr>
-        <td colspan="2" style="margin: 0; padding: 0">
             <p style="padding: 20px 10px 20px 0;"><strong>Configuration des paniers (Taille/Quantités)</strong></p>
             <p>Créer un panier à partir d’un modèle Excel <a
                         href="<?php echo admin_url( 'admin.php?page=amapress_import_page&tab=import_quant_paniers&amapress_import_contrat_quantite_default_contrat_instance=' . $contrat_instance->ID ); ?>"
@@ -1797,8 +1794,6 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
             <p class="description"><a
                         href="<?php echo admin_url( 'admin.php?page=amapress_help_page&tab=conf_paniers' ); ?>">*</a>
                 Consulter les instructions spécifiques</p>
-        </td>
-    </tr>
 	<?php
 	$contents = ob_get_clean();
 

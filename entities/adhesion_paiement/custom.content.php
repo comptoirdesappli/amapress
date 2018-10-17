@@ -386,7 +386,6 @@ function amapress_paiements_editor( $post_id ) {
 	}
 	//AmapressContrats::
 
-	echo '<tr><td colspan="2">';
 	echo '<script type="text/javascript">
         //<![CDATA[   
         jQuery(function ($) {
@@ -532,7 +531,6 @@ $status_options
 	}
 	echo '<tr><td></td><td></td><td id="paiement-amount-total" data-sum="' . $adhesion->getTotalAmount() . '"></td><td></td><td></td><td></td></tr>';
 	echo '</table>';
-	echo '</td></tr>';
 }
 
 function amapress_save_paiements_editor( $adhesion_id ) {

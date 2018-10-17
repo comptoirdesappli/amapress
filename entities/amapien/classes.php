@@ -607,9 +607,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$this->wrapIfNotEmpty( '<div class="user-photo">', $this->getAvatar(), '</div>' ) :
 			'' );
 		if ( amapress_can_access_admin() ) {
-			$ret .= '<div><a href="' . admin_url( 'user-edit.php?user_id=' . $this->ID ) . '">' . esc_html( $this->getDisplayName() ) . '</a></div>';
+			$ret .= '<div class="user-name"><a href="' . admin_url( 'user-edit.php?user_id=' . $this->ID ) . '">' . esc_html( $this->getDisplayName() ) . '</a></div>';
 		} else {
-			$ret .= '<div>' . esc_html( $this->getDisplayName() ) . '</div>';
+			$ret .= '<div class="user-name">' . esc_html( $this->getDisplayName() ) . '</div>';
 		}
 		$ret             .= ( amapress_check_info_visibility( $args['show_email'], 'email', $this ) == true ?
 			$this->wrapIfNotEmpty( '<div class="user-email"><a href="mailto:', esc_attr( $this->getEmail() ) . '">', esc_html( $this->getEmail() ) . '</a></div>' ) :

@@ -1161,8 +1161,8 @@ function amapress_get_paiement_table_by_dates(
 	$lien_export_pdf = '';
 	if ( ! $for_pdf ) {
 		$lien_export_pdf = '<p>';
-		$lien_export_pdf .= '<a class="button button-primary" href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en PDF</a>';
-		$lien_export_pdf .= '<a class="button button-primary" href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) . '">Exporter en Excel</a>';
+		$lien_export_pdf .= '<a class="button button-primary" href="' . esc_attr( admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) ) . '">Exporter en PDF</a>';
+		$lien_export_pdf .= '<a class="button button-primary" href="' . esc_attr( admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) ) . '">Exporter en Excel</a>';
 		$lien_export_pdf .= '</p>';
 	}
 
@@ -1350,12 +1350,12 @@ function amapress_get_paiement_table_by_dates(
 			}
 			if ( $contrat_adhesion && $date < $contrat_adhesion->getDate_debut() ) {
 				$val = [
-					'value' => '>>>',
+					'value' => '&gt;&gt;&gt;',
 					'style' => 'background-color: #ccc;',
 				];
 			} else if ( $contrat_adhesion && $date > $contrat_adhesion->getDate_fin() ) {
 				$val = [
-					'value' => '<<<',
+					'value' => '&lt;&lt;&lt;',
 					'style' => 'background-color: #ccc;',
 				];
 			} else {
@@ -1365,9 +1365,9 @@ function amapress_get_paiement_table_by_dates(
 							/** @var AmapressAmapien_paiement $p */
 							$banque = $p->getBanque();
 							if ( ! empty( $banque ) && $emetteur_obj['banque'] != $banque ) {
-								return "{$p->getNumero()} ({$banque})";
+								return esc_html( "{$p->getNumero()} ({$banque})" );
 							} else {
-								return "{$p->getNumero()}";
+								return esc_html( "{$p->getNumero()}" );
 							}
 						}, $emetteur_date_paiements )
 					, function ( $e ) {
@@ -1409,29 +1409,29 @@ function amapress_get_paiement_table_by_dates(
 	}
 
 	$ret = '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">
-' . $lieu_title . $next_distrib_text . $contact_producteur . $lien_export_pdf .
-	       amapress_get_datatable(
-		       $id,
-		       $columns, $data,
-		       array(
-			       'bSort'          => true,
-			       'paging'         => false,
-			       'searching'      => true,
-			       'bAutoWidth'     => true,
-			       'responsive'     => false,
-			       'scrollX'        => true,
-			       'scrollY'        => '250px',
-			       'scrollCollapse' => true,
-			       'cell-border'    => true,
-			       'fixedColumns'   => array( 'leftColumns' => 1 ),
-			       'fixedHeader'    => true,
-			       //			       'initComplete' => $fn,
-			       'init_as_html'   => true,
-			       'no_script'      => $for_pdf,
+' . $lieu_title . $next_distrib_text . $contact_producteur . $lien_export_pdf;
+	$ret .= amapress_get_datatable(
+		$id,
+		$columns, $data,
+		array(
+			'bSort'          => true,
+			'paging'         => false,
+			'searching'      => true,
+			'bAutoWidth'     => true,
+			'responsive'     => false,
+			'scrollX'        => true,
+			'scrollY'        => '250px',
+			'scrollCollapse' => true,
+			'cell-border'    => true,
+			'fixedColumns'   => array( 'leftColumns' => 1 ),
+			'fixedHeader'    => true,
+			//			       'initComplete' => $fn,
+			'init_as_html'   => true,
+			'no_script'      => $for_pdf,
 //			       'dom'          => 'Bfrtip',
 //			       'buttons'      => [],
-		       )
-	       );
+		)
+	);
 	if ( $for_pdf ) {
 		$ret .= '<style type="text/css">
 a {
@@ -1489,8 +1489,8 @@ th {
 //    );
 //}
 //</script>';
-		$ret .= '</div>';
 	}
+	$ret .= '</div>';
 
 	return $ret;
 }
