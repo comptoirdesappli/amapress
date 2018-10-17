@@ -151,6 +151,9 @@ function amapress_mailing_queue_menu_options() {
 						'name'    => 'Nettoyer les logs (jours)',
 					),
 					array(
+						'type' => 'save',
+					),
+					array(
 						'id'     => 'mail_queue_logged_list',
 						'type'   => 'custom',
 						'name'   => 'Logs',

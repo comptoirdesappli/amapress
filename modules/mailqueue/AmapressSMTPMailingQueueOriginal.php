@@ -362,8 +362,6 @@ class AmapressSMTPMailingQueueOriginal {
 			}
 		} catch ( phpmailerException $e ) {
 			$errors[] = $e->errorMessage();
-
-			return false;
 		}
 
 		return $errors;
