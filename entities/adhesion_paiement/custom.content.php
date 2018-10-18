@@ -154,12 +154,14 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 	}
 
 	$amount_fmt = sprintf( '%.02f', $amount );
-	if ( count( $all_paiements[ $user_id ] ) > 1 ) {
+	if ( ! empty( $all_paiements[ $user_id ] ) && count( $all_paiements[ $user_id ] ) > 1 ) {
 		return "<span class='{$status['status']}'><span class='{$status['icon']}'></span> $amount_fmt</span>";
-	} else {
+	} else if ( ! empty( $all_paiements[ $user_id ] ) ) {
 		$href = admin_url( 'post.php?post=' . $all_paiements[ $user_id ][0]->ID . '&action=edit' );
 
 		return "<a href='$href'><span class='{$status['status']}'><span class='{$status['icon']}'></span> $amount_fmt</span></a>";
+	} else {
+		return "<span class='{$status['status']}'><span class='{$status['icon']}'></span> $amount_fmt</span>";
 	}
 }
 

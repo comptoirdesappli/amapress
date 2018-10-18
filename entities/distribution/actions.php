@@ -657,7 +657,7 @@ add_action( 'amapress_do_query_action_distribution_liste-emargement-excel', func
 		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
 		getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) .
 		'</div>',
-		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.pdf' ) ),
+		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.xlsx' ) ),
 		'Liste d\'émargement - ' . $dist->getTitle() );
 	die();
 } );

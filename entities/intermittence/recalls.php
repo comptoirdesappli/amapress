@@ -24,10 +24,11 @@ function amapress_get_groups_user_ids_from_option( $option_name ) {
 }
 
 function amapress_get_recall_cc_from_option( $option_name ) {
-	$ids = Amapress::getOption( $option_name );
+	$ids = Amapress::get_array( Amapress::getOption( $option_name ) );
 	if ( empty( $ids ) ) {
 		$ids = [];
 	}
+	$ids = array_map( 'intval', $ids );
 	$ids = array_merge( $ids, amapress_get_groups_user_ids_from_option( $option_name . '-groups' ) );
 	if ( empty( $ids ) ) {
 		return '';

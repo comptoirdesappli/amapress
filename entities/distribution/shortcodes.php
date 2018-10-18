@@ -58,21 +58,21 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'show_past'       => 'false',
 		'show_next'       => 'true',
-		'show_email'        => 'default',
-		'show_tel'          => 'default',
-		'show_tel_fixe'     => 'default',
-		'show_tel_mobile'   => 'default',
-		'show_adresse'      => 'default',
-		'show_avatar'       => 'default',
-		'show_roles'        => 'default',
-		'show_for_resp'     => 'true',
-		'show_title'        => 'true',
-		'for_emargement'    => 'false',
-		'for_pdf'           => 'false',
-		'max_dates'         => - 1,
-		'responsive'        => 'false',
-		'user'              => null,
-		'lieu'              => null,
+		'show_email'      => 'default',
+		'show_tel'        => 'default',
+		'show_tel_fixe'   => 'default',
+		'show_tel_mobile' => 'default',
+		'show_adresse'    => 'default',
+		'show_avatar'     => 'default',
+		'show_roles'      => 'default',
+		'show_for_resp'   => 'true',
+		'show_title'      => 'true',
+		'for_emargement'  => 'false',
+		'for_pdf'         => 'false',
+		'max_dates'       => - 1,
+		'responsive'      => 'false',
+		'user'            => null,
+		'lieu'            => null,
 		'date'              => null,
 		'inscr_all_distrib' => 'false'
 	), $atts );
@@ -219,7 +219,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) ) {
 			$ret .= '<p style="text-align: center"><a class="btn btn-default" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
 		}
-		$ret .= '<table id="inscr-distrib-table" class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
+		$ret .= '<table id="inscr-distrib-table-' . $lieu_id . '" class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
 		$ret .= '<thead>';
 		$ret .= '<tr>';
 		if ( $for_pdf ) {
