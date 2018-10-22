@@ -997,7 +997,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					array(
 						'key'     => "amapress_{$pt}_date",
 						'value'   => array(
-							Amapress::start_of_week( amapress_time() ),
+							Amapress::start_of_month( amapress_time() ),
 							Amapress::end_of_month( amapress_time() ),
 						),
 						'compare' => 'BETWEEN',
