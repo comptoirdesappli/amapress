@@ -48,7 +48,20 @@ add_action( 'amapress_init', function () {
 
 		wp_redirect_and_exit(
 			add_query_arg( [
-				'step'    => ! empty( $_REQUEST['activate_adhesion'] ) ? 'adhesion' : 'contrats',
+				'step'    => ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats',
+				'user_id' => $user_id,
+			] )
+		);
+	}
+	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_agreement' == $_REQUEST['inscr_assistant'] ) {
+		$step = ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats';
+		if ( isset( $_REQUEST['accept'] ) && ! $_REQUEST['accept'] ) {
+			$step = 'agreement';
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+		wp_redirect_and_exit(
+			add_query_arg( [
+				'step'    => $step,
 				'user_id' => $user_id,
 			] )
 		);
@@ -119,6 +132,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'show_contrats'        => 'false',
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
+			'agreement'            => 'false',
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
@@ -130,11 +144,12 @@ function amapress_self_inscription( $atts, $content = null ) {
 		]
 		, $atts );
 
-	$for_logged        = Amapress::toBool( $atts['for_logged'] );
-	$ret               = '';
-	$admin_mode        = Amapress::toBool( $atts['admin_mode'] );
-	$activate_adhesion = Amapress::toBool( $atts['adhesion'] );
-	$key               = $atts['key'];
+	$for_logged         = Amapress::toBool( $atts['for_logged'] );
+	$ret                = '';
+	$admin_mode         = Amapress::toBool( $atts['admin_mode'] );
+	$activate_adhesion  = Amapress::toBool( $atts['adhesion'] );
+	$activate_agreement = Amapress::toBool( $atts['agreement'] );
+	$key                = $atts['key'];
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -373,8 +388,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
             <input type="hidden" name="email" value="<?php echo esc_attr( $email ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
-                <input type="hidden" name="activate_adhesion" value="true"/>
+	        <?php if ( $activate_agreement ) { ?>
+                <input type="hidden" name="coords_next_step" value="agreement"/>
+	        <?php } else if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+                <input type="hidden" name="coords_next_step" value="adhesion"/>
 	        <?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
             <table style="min-width: 50%">
@@ -487,6 +504,35 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
             <p style="color:red">* Champ obligatoire</p>
 	        <?php echo $member_message; ?>
             <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
+        </form>
+		<?php
+	} else if ( 'agreement' == $step ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+
+		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false ) : null;
+		?>
+        <h4><?php echo wp_unslash( esc_html( Amapress::getOption( 'online_subscription_agreement_step_name' ) ) ) ?></h4>
+        <form method="post" id="agreement" class="amapress_validate"
+              action="<?php echo esc_attr( add_query_arg( 'step', 'validate_agreement' ) ) ?>">
+            <input type="hidden" name="inscr_assistant" value="validate_agreement"/>
+            <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
+	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+                <input type="hidden" name="coords_next_step" value="adhesion"/>
+			<?php } ?>
+            <div class="amap-agreement">
+				<?php echo Amapress::getOption( 'online_subscription_agreement' ); ?>
+            </div>
+            <p class="accept-agreement">
+                <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
+                                                     class="required"/> <?php echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_checkbox' ) ) ); ?>
+                </label>
+            </p>
+            <p>
+                <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
+            </p>
         </form>
 		<?php
 	} else if ( 'adhesion' == $step ) {

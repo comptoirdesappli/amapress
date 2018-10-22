@@ -577,6 +577,31 @@ class AmapressEntities {
 							'options' => [
 								array(
 									'type' => 'heading',
+									'name' => 'Assistant - Etape réglement de l\'AMAP',
+								),
+								array(
+									'id'      => 'online_subscription_agreement_step_name',
+									'name'    => 'Nom de l\'étape "Charte et réglement"',
+									'type'    => 'text',
+									'default' => 'Charte et règlement intérieur de l\'AMAP',
+								),
+								array(
+									'id'      => 'online_subscription_agreement_step_checkbox',
+									'name'    => 'Texte de la checkbox de validation de l\'étape "Charte et réglement"',
+									'type'    => 'text',
+									'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
+								),
+								array(
+									'id'   => 'online_subscription_agreement',
+									'name' => 'Contenu de règlement de l\'AMAP',
+									'type' => 'editor',
+									'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+								),
+								array(
+									'type' => 'save',
+								),
+								array(
+									'type' => 'heading',
 									'name' => 'Mails - Confirmation du contrat en ligne',
 								),
 								array(
@@ -602,6 +627,9 @@ class AmapressEntities {
 									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
 								),
 								array(
+									'type' => 'save',
+								),
+								array(
 									'type' => 'heading',
 									'name' => 'Mails - Confirmation du adhésion en ligne',
 								),
@@ -623,6 +651,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 \n\n%%nom_site%%" ),
 									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
 									                                                  AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ) : '',
+								),
+								array(
+									'type' => 'save',
 								),
 								array(
 									'type' => 'heading',
