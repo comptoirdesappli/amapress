@@ -631,6 +631,20 @@ class AmapressEntities {
 								),
 								array(
 									'type' => 'heading',
+									'name' => 'Assistant - Etape adhésion à l\'AMAP',
+								),
+								array(
+									'id'      => 'online_subscription_greating_adhesion',
+									'name'    => 'Contenu du message de "remerciement pour votre adhésion"',
+									'type'    => 'editor',
+									'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+									'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
+								),
+								array(
+									'type' => 'save',
+								),
+								array(
+									'type' => 'heading',
 									'name' => 'Mails - Confirmation du adhésion en ligne',
 								),
 								array(

@@ -664,9 +664,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
 
-		echo '<p>Merci pour votre adhésion à l\'AMAP !</p>';
-
-		echo '<p>Un mail de confirmation vient de vous être envoyé. (Pensez à regarder vos spams, ces mails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
+		echo Amapress::getOption( 'online_subscription_greating_adhesion' );
 
 		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
 			$print_bulletin = Amapress::makeButtonLink(
@@ -1115,12 +1113,15 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$dates_factors += $contrat->getDateFactor( $d );
 		}
 
-		//TODO lien vers contrat PDF ?
+		$rattrapage_renvoi = '';
+		if ( ! empty( $rattrapage ) ) {
+			$rattrapage_renvoi = '<a href="#dist_rattrapages">*</a>';
+		}
 //		echo $contrat->getOnlineContrat();
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
-			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) :</p>';
+			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') :</p>';
 		} else {
-			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) avant la fin de la saison :</p>';
+			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') avant la fin de la saison :</p>';
 		}
 		echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
 		foreach ( $grouped_dates_array as $entry ) {
@@ -1140,7 +1141,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		if ( ! empty( $rattrapage ) ) {
-			echo '<p>Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
+			echo '<p><a id="dist_rattrapages">*</a>Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
 		}
 
 		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {
