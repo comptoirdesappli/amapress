@@ -235,13 +235,81 @@ function amapress_filter_posts( WP_Query $query ) {
 		}
 	}
 	if ( ! empty( $query->query_vars['amapress_status'] ) ) {
-		amapress_add_meta_query( $query, array(
-			array(
-				'key'     => "amapress_{$pt}_status",
-				'value'   => $query->query_vars['amapress_status'],
-				'compare' => '=',
-			)
-		) );
+		$amapress_status = $query->query_vars['amapress_status'];
+		if ( AmapressDistribution::POST_TYPE == $pt ) {
+			if ( 'change_lieu' == $amapress_status ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						array(
+							'key'     => "amapress_{$pt}_lieu_substitution",
+							'compare' => 'EXISTS',
+						),
+						array(
+							'key'     => "amapress_{$pt}_lieu_substitution",
+							'value'   => 0,
+							'compare' => '>',
+							'type'    => 'NUMERIC',
+						),
+					)
+				) );
+			} else if ( 'change_hours' == $amapress_status ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'relation' => 'OR',
+						array(
+							array(
+								'key'     => "amapress_{$pt}_heure_debut_spec",
+								'compare' => 'EXISTS',
+							),
+							array(
+								'key'     => "amapress_{$pt}_heure_debut_spec",
+								'value'   => 0,
+								'compare' => '>',
+								'type'    => 'NUMERIC',
+							),
+						),
+						array(
+							array(
+								'key'     => "amapress_{$pt}_heure_fin_spec",
+								'compare' => 'EXISTS',
+							),
+							array(
+								'key'     => "amapress_{$pt}_heure_fin_spec",
+								'value'   => 0,
+								'compare' => '>',
+								'type'    => 'NUMERIC',
+							),
+						),
+					)
+				) );
+			} else if ( 'change_paniers' == $amapress_status ) {
+				$paniers = AmapressPanier::get_delayed_paniers();
+				$dates   = [];
+				foreach ( $paniers as $panier ) {
+					$dates[] = $panier->getDate();
+					if ( $panier->isDelayed() ) {
+						$dates[] = $panier->getDateSubst();
+					}
+				}
+				$dates = array_unique( $dates );
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date",
+						'value'   => $dates,
+						'compare' => 'IN',
+						'type'    => 'NUMERIC',
+					),
+				) );
+			}
+		} else {
+			amapress_add_meta_query( $query, array(
+				array(
+					'key'     => "amapress_{$pt}_status",
+					'value'   => $amapress_status,
+					'compare' => '=',
+				)
+			) );
+		}
 	}
 	if ( ! empty( $query->query_vars['amapress_adhesion_period'] ) ) {
 		if ( $pt == 'adhesion_paiement' ) {
