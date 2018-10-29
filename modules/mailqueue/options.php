@@ -56,6 +56,21 @@ function amapress_mailing_queue_menu_options() {
 				'desc'    => '',
 				'options' => array(
 					array(
+						'id'     => 'mail_queue_send_test_mail',
+						'name'   => 'Tester',
+						'type'   => 'custom',
+						'custom' => function ( $option ) {
+							$url = add_query_arg(
+								array(
+									'action' => 'amapress_test_mail_config',
+								),
+								admin_url( 'admin.php' )
+							);
+
+							return '<p>Cliquez <a href="' . $url . '" target="_blank">ici</a> pour tester la configuraiton mail actuelle</p>';
+						}
+					),
+					array(
 						'type' => 'note',
 						'desc' => 'Saisir la configuration SMTP de votre fournisseur ou laisser vide pour utiliser la configuration mail de l\'hébergement',
 					),
@@ -257,4 +272,25 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 			)
 		)
 	);
+}
+
+add_action( 'admin_action_amapress_test_mail_config', 'amapress_test_mail_config' );
+function amapress_test_mail_config() {
+	$email = wp_get_current_user()->user_email;
+	add_action( 'phpmailer_init', function ( $phpmailer ) {
+		/** @var PHPMailer $phpmailer */
+		$phpmailer->SMTPDebug = 2;
+	} );
+	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php' );
+	$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $email,
+		'Test configuration mail',
+		'<p>Ceci est un test de la configuration mail</p>',
+		'Content-Type: text/html; charset=UTF-8' );
+
+	if ( empty( $errors ) ) {
+		echo '<p>Le mail de test vous a été envoyé avec succès</p>';
+	} else {
+		echo '<p>Des erreurs se sont produites pendant l\'envoi du mail de test (Le transcript SMTP se trouve au dessus) :</p>';
+		echo implode( '<br/>', $errors );
+	}
 }

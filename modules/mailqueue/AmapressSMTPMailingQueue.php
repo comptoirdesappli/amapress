@@ -324,10 +324,8 @@ class AmapressSMTPMailingQueue {
 	 * @param \PHPMailer $phpmailer
 	 */
 	public function initMailer( $phpmailer ) {
-//		$options = get_option('smtp_mailing_queue_options');
-
-//		if(!$options)
-//			return;
+		//fix FROM and Return Path
+		$phpmailer->Sender = $phpmailer->From;
 
 		$host = Amapress::getOption( 'mail_queue_smtp_host' );
 		if ( empty( $host ) ) {
@@ -342,6 +340,8 @@ class AmapressSMTPMailingQueue {
 		// Set sender info
 		$phpmailer->From     = Amapress::getOption( 'mail_queue_from_email' );
 		$phpmailer->FromName = Amapress::getOption( 'mail_queue_from_name' );
+		//fix FROM and Return Path
+		$phpmailer->Sender = $phpmailer->From;
 
 		// Set encryption type
 		$phpmailer->SMTPSecure = Amapress::getOption( 'mail_queue_encryption' );
