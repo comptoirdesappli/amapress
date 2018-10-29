@@ -57,7 +57,7 @@ function amapress_next_events_shortcode( $atts ) {
 		} else {
 			$next_events = Amapress_Calendar::get_next_events( $from_date );
 			if ( empty( $next_events ) || count( $next_events ) == 0 ) {
-				return '<span>Vous n\'avez pas encore de contrat enregistrés</span>';
+				return '<span>Vous n\'avez pas de contrat en cours avec l\'un de nos producteurs</span>';
 			}
 		}
 	}
@@ -214,7 +214,7 @@ function amapress_next_events_shortcode( $atts ) {
 			if ( AmapressContrats::is_user_active_intermittent( $user_id ) ) {
 				return '<span>Il n\'y a pas de paniers disponibles</span>';
 			} else {
-				return '<span>Vous n\'avez pas encore de contrat enregistrés</span>';
+				return '<span>Vous n\'avez pas de contrat en cours avec l\'un de nos producteurs</span>';
 			}
 		}
 	}
