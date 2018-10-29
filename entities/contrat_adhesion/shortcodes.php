@@ -939,6 +939,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		$lieux = $contrat->getLieux();
+		if ( empty( $lieux ) ) {
+			wp_die( '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
+		}
 		?>
         <h4>Étape 5/8 : Date et lieu</h4>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
