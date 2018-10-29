@@ -267,7 +267,7 @@ function amapress_import_posts_meta( $postmeta, $postdata, $posttaxo, $post_type
 
 function amapress_get_validator( $post_type, $field_name, $settings ) {
 	$type  = $settings['type'];
-	$label = $settings['name'];
+	$label = ! empty( $settings['name'] ) ? $settings['name'] : $field_name;
 	if ( $type == 'date' ) {
 		return function ( $value ) use ( $label ) {
 			try {

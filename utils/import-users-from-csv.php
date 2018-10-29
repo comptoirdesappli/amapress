@@ -203,6 +203,7 @@ class Amapress_Import_Users_CSV {
 					wp_redirect( add_query_arg(
 						[
 							'import'   => 'fail',
+							'total'    => $results['total'],
 							'imported' => $results['imported']
 						],
 						wp_get_referer() ) );
@@ -211,6 +212,7 @@ class Amapress_Import_Users_CSV {
 	                wp_redirect( add_query_arg(
 		                [
 			                'import'   => 'errors',
+			                'total'    => $results['total'],
 			                'imported' => $results['imported']
 		                ],
 		                wp_get_referer() ) );
