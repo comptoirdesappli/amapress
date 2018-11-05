@@ -276,7 +276,25 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 
 add_action( 'admin_action_amapress_test_mail_config', 'amapress_test_mail_config' );
 function amapress_test_mail_config() {
-	$email = wp_get_current_user()->user_email;
+	$default_email = wp_get_current_user()->user_email;
+	if ( empty( $_REQUEST['target'] ) ) {
+		$url = add_query_arg(
+			array(
+				'action' => 'amapress_test_mail_config',
+			),
+			admin_url( 'admin.php' )
+		);
+		echo '<form action="' . $url . '">
+	<label for="target">Envoyer le mail de test à :</label>
+	<br/>
+	<input type="email" id="target" name="target" value="' . $default_email . '" />
+	<br/>
+	<input type="submit" value="Envoyer" />
+</form>';
+		die;
+	}
+
+	$email = $_REQUEST['target'];
 	add_action( 'phpmailer_init', function ( $phpmailer ) {
 		/** @var PHPMailer $phpmailer */
 		$phpmailer->SMTPDebug = 2;
