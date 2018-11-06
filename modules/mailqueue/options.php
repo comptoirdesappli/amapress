@@ -284,7 +284,7 @@ function amapress_test_mail_config() {
 			),
 			admin_url( 'admin.php' )
 		);
-		echo '<form action="' . $url . '">
+		echo '<form action="' . $url . '" method="post">
 	<label for="target">Envoyer le mail de test à :</label>
 	<br/>
 	<input type="email" id="target" name="target" value="' . $default_email . '" />
