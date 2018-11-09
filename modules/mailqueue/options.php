@@ -240,7 +240,7 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 	foreach ( $emails as $email ) {
 		$headers = implode( '<br/>', array_map( function ( $h ) {
 			return esc_html( $h );
-		}, $email['headers'] ) );
+		}, is_array( $email['headers'] ) ? $email['headers'] : [] ) );
 		$msg     = $email['message'];
 		if ( false === strpos( $headers, 'text/html' )
 		     && false === strpos( $msg, '<p>' )

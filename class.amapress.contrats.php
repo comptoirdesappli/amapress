@@ -180,6 +180,9 @@ class AmapressContrats {
 			$contrats          = array();
 			foreach ( $contrat_instances as $ci ) {
 				$contrat = $ci->getModel();
+				if ( empty( $contrat ) ) {
+					continue;
+				}
 				if ( in_array( $contrat->ID, $contrats_ids ) ) {
 					continue;
 				}
@@ -301,6 +304,10 @@ class AmapressContrats {
 					)
 				)
 			);
+			$res = array_filter( $res, function ( $c ) {
+				/** @var AmapressContrat_instance $c */
+				return ! empty( $c->getModel() );
+			} );
 			wp_cache_set( $key, $res );
 		}
 
@@ -361,6 +368,10 @@ class AmapressContrats {
 			$res   = array_map( function ( $p ) {
 				return AmapressContrat_instance::getBy( $p );
 			}, get_posts( $query ) );
+			$res   = array_filter( $res, function ( $c ) {
+				/** @var AmapressContrat_instance $c */
+				return ! empty( $c->getModel() );
+			} );
 			wp_cache_set( $key, $res );
 		}
 
@@ -468,6 +479,10 @@ class AmapressContrats {
 			$res = array_map( function ( $p ) {
 				return AmapressContrat_instance::getBy( $p );
 			}, get_posts( $query ) );
+			$res = array_filter( $res, function ( $c ) {
+				/** @var AmapressContrat_instance $c */
+				return ! empty( $c->getModel() );
+			} );
 			wp_cache_set( $key, $res );
 		}
 
@@ -521,6 +536,10 @@ class AmapressContrats {
 			$res   = array_map( function ( $p ) {
 				return AmapressContrat_instance::getBy( $p );
 			}, get_posts( $query ) );
+			$res   = array_filter( $res, function ( $c ) {
+				/** @var AmapressContrat_instance $c */
+				return ! empty( $c->getModel() );
+			} );
 			wp_cache_set( $key, $res );
 		}
 
@@ -566,8 +585,8 @@ class AmapressContrats {
 		if ( false === $res ) {
 			Amapress::setFilterForReferent( false );
 
-			$lieu_ids                        = Amapress::get_lieu_ids();
-			$res                             = array();
+			$lieu_ids = Amapress::get_lieu_ids();
+			$res      = array();
 			foreach ( Amapress::get_producteurs() as $prod ) {
 				$contrats    = self::get_contrats( $prod->ID, false, false );
 				$contrat_ids = array_map( function ( $c ) {

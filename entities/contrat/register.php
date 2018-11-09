@@ -1858,7 +1858,6 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 			wp_delete_post( $qid );
 		}
 		foreach ( $_POST['amapress_quant_data'] as $quant_id => $quant_data ) {
-			amapress_dump( $quant_data['liste_dates'] );
 			$my_post = array(
 				'post_title'   => $quant_data['title'],
 				'post_type'    => AmapressContrat_quantite::INTERNAL_POST_TYPE,

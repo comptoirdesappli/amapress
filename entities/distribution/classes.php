@@ -126,6 +126,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		return 'mailto:' . urlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
 		       date_i18n( 'D j M Y' );
 	}
+
 	public function getSMStoResponsables() {
 		$resp_phones = [];
 		foreach ( $this->getResponsables() as $user ) {
@@ -539,6 +540,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			$dist_date_end = $this->getEndDateAndHour();
 			$contrats      = $this->getContrats();
 			foreach ( $contrats as $contrat ) {
+				if ( empty( $contrat->getModel() ) ) {
+					continue;
+				}
+
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "dist-{$this->ID}",
 					'date'     => $dist_date,

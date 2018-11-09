@@ -12,8 +12,8 @@ add_action( 'amapress_init', function () {
 			}
 		}
 		$email          = sanitize_email( $_REQUEST['email'] );
-		$user_firt_name = sanitize_text_field( $_REQUEST['first_name'] );
-		$user_last_name = sanitize_text_field( $_REQUEST['last_name'] );
+		$user_firt_name = sanitize_text_field( ! empty( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '' );
+		$user_last_name = sanitize_text_field( ! empty( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '' );
 		$user_address   = sanitize_textarea_field( $_REQUEST['address'] );
 		$user_phones    = sanitize_text_field( $_REQUEST['tel'] );
 
@@ -24,8 +24,8 @@ add_action( 'amapress_init', function () {
 
 		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
 			$coadh1_email          = sanitize_email( $_REQUEST['coadh1_email'] );
-			$coadh1_user_firt_name = sanitize_text_field( $_REQUEST['coadh1_first_name'] );
-			$coadh1_user_last_name = sanitize_text_field( $_REQUEST['coadh1_last_name'] );
+			$coadh1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_first_name'] ) ? $_REQUEST['coadh1_first_name'] : '' );
+			$coadh1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_last_name'] ) ? $_REQUEST['coadh1_last_name'] : '' );
 
 			$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, null, null );
 			if ( $coadh1_user_id ) {
@@ -36,8 +36,8 @@ add_action( 'amapress_init', function () {
 
 		if ( ! empty( $_REQUEST['coadh2_email'] ) ) {
 			$coadh2_email          = sanitize_email( $_REQUEST['coadh2_email'] );
-			$coadh2_user_firt_name = sanitize_text_field( $_REQUEST['coadh2_first_name'] );
-			$coadh2_user_last_name = sanitize_text_field( $_REQUEST['coadh2_last_name'] );
+			$coadh2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_first_name'] ) ? $_REQUEST['coadh2_first_name'] : '' );
+			$coadh2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_last_name'] ) ? $_REQUEST['coadh2_last_name'] : '' );
 
 			$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, null, null );
 			if ( $coadh2_user_id ) {
@@ -885,6 +885,37 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $principal_contrats_ids ) {
 					return current_user_can( 'edit_post', $c->ID );
 				} );
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $contrat ) use ( $atts ) {
+					/** @var AmapressContrat_instance $contrat */
+					$before_close_hours = 0;
+					if ( 0 == $before_close_hours ) {
+						$before_close_hours = intval( $atts['before_close_hours'] );
+					}
+					$dates = array_values( $contrat->getListe_dates() );
+					$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+						$real_date = $contrat->getRealDateForDistribution( $d );
+
+						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time();
+					} );
+
+					return ! empty( $dates );
+				} );
+			} else {
+				$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $contrat ) use ( $atts ) {
+					/** @var AmapressContrat_instance $contrat */
+					$before_close_hours = 0;
+					if ( 0 == $before_close_hours ) {
+						$before_close_hours = intval( $atts['before_close_hours'] );
+					}
+					$dates = array_values( $contrat->getListe_dates() );
+					$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+						$real_date = $contrat->getRealDateForDistribution( $d );
+
+						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+					} );
+
+					return ! empty( $dates );
+				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
 				echo '<p>Contrats disponibles :</p>';
@@ -953,8 +984,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			if ( $admin_mode ) {
 				$before_close_hours = - 24;
 			}
-			$dates              = $contrat->getListe_dates();
+			$dates              = array_values( $contrat->getListe_dates() );
 			$first_contrat_date = $dates[0];
+			//			$last_contrat_date = $dates[count($dates) - 1];
 			if ( ! $admin_mode ) {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
 					$real_date = $contrat->getRealDateForDistribution( $d );
