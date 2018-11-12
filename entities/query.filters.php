@@ -1381,6 +1381,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 		} else if ( $amapress_role == 'referent_producteur' ) {
 			$user_ids = array();
 			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
+				if ( empty( $contrat->getModel() ) ) {
+					continue;
+				}
 				$prod = $contrat->getModel()->getProducteur();
 				if ( ! $prod ) {
 					continue;

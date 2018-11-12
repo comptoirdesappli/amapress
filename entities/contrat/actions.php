@@ -135,7 +135,7 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 		$lieu_name = $lieu->getShortName();
 	}
 	$date     = date_i18n( 'd-m-Y' );
-	$filename = strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu_name}-au-$date.pdf" ) );
+	$filename = strtolower( sanitize_file_name( "cheques-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.pdf" ) );
 	Amapress::sendPdfFromHtml( $html, $filename, 'L', $format );
 } );
 
@@ -159,5 +159,5 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 		$lieu_name = $lieu->getShortName();
 	}
 	$date    = date_i18n( 'd-m-Y' );
-	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModel()->getTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModel()->getTitle()} - {$lieu_name}" );
+	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModelTitle()} - {$lieu_name}" );
 } );

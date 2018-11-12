@@ -216,7 +216,7 @@ function amapress_get_paniers_intermittents_table(
 				/** @var AmapressAdhesion $adhesion */
 				$adhesion = array_shift( $adhesions );
 
-				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModel()->getTitle()}</a>";
+				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModelTitle()}</a>";
 				$quantites[] = $adhesion->getContrat_quantites_AsString( $date );
 				$prices[]    = $adhesion->getContrat_quantites_Price( $date );
 			}

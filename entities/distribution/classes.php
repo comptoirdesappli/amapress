@@ -203,11 +203,16 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressContrat_instance[] */
 	public function getContrats() {
-		return array_map(
+		$ret = array_map(
 			function ( $id ) {
 				return AmapressContrat_instance::getBy( $id );
 			}, $this->getContratIds()
 		);
+
+		return array_filter( $ret, function ( $c ) {
+			/** @var AmapressContrat_instance $c */
+			return ! empty( $c->getModel() );
+		} );
 	}
 
 	public function getRealDateForContrat( $contrat_id ) {
@@ -552,8 +557,8 @@ class AmapressDistribution extends Amapress_EventBase {
 					'category' => 'Distributions',
 					'priority' => 30,
 					'lieu'     => $lieu,
-					'label'    => $contrat->getModel()->getTitle(),
-					'alt'      => 'Distribution de ' . $contrat->getModel()->getTitle() . ' à ' . $lieu->getShortName(),
+					'label'    => $contrat->getModelTitle(),
+					'alt'      => 'Distribution de ' . $contrat->getModelTitle() . ' à ' . $lieu->getShortName(),
 					'class'    => "agenda-contrat-{$contrat->getModel()->ID}",
 					'icon'     => Amapress::coalesce_icons( amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat->getModel()->ID}_icon" ), amapress_get_avatar_url( $contrat->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 					'href'     => $this->getPermalink()
@@ -599,14 +604,14 @@ class AmapressDistribution extends Amapress_EventBase {
 						'id'       => $this->ID,
 						'date'     => $dist_date,
 						'date_end' => $dist_date_end,
-						'class'    => "agenda-contrat-{$adhesion->getContrat_instance()->getModel()->getTitle()}",
+						'class'    => "agenda-contrat-{$adhesion->getContrat_instance()->getModelTitle()}",
 						'type'     => 'distribution',
 						'category' => 'Distributions',
 						'priority' => 30,
 						'lieu'     => $lieu,
-						'label'    => $adhesion->getContrat_instance()->getModel()->getTitle(),
+						'label'    => $adhesion->getContrat_instance()->getModelTitle(),
 						'icon'     => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$adhesion->getContrat_instance()->getModel()->ID}_icon" ), amapress_get_avatar_url( $adhesion->getContrat_instance()->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
-						'alt'      => 'Distribution de ' . $adhesion->getContrat_instance()->getModel()->getTitle() . ' à ' . $lieu->getShortName(),
+						'alt'      => 'Distribution de ' . $adhesion->getContrat_instance()->getModelTitle() . ' à ' . $lieu->getShortName(),
 						'href'     => $this->getPermalink()
 					) );
 				}
@@ -764,7 +769,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return implode( ', ', array_map(
 							function ( $c ) {
 								/** @var AmapressContrat_instance $c */
-								return $c->getModel()->getTitle();
+								return $c->getModelTitle();
 							}, $distrib->getContrats()
 						) );
 					}

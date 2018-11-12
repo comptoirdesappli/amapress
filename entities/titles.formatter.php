@@ -196,7 +196,7 @@ function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 	}
 
 	return sprintf( 'Panier de %s%s du %s%s',
-		$panier->getContrat_instance()->getModel()->getTitle(),
+		$panier->getContrat_instance()->getModelTitle(),
 		! empty( $panier->getContrat_instance()->getSubName() ) ? ' - ' . $panier->getContrat_instance()->getSubName() : '',
 		date_i18n( 'd/m/Y', intval( $panier->getDate() ) ),
 		$modif );
@@ -299,7 +299,7 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 	}
 
 	return sprintf( '%s%s - %s ~ %s',
-		$adh->getModel()->getTitle(),
+		$adh->getModelTitle(),
 		$subname,
 		date_i18n( 'm/Y', intval( $adh->getDate_debut() ) ),
 		date_i18n( 'm/Y', intval( $adh->getDate_fin() ) ) );

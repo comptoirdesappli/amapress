@@ -136,7 +136,7 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['contrat_type']             = [
 				'desc' => 'Type du contrat (par ex, Légumes)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getContrat_instance()->getModel()->getTitle();
+					return $adh->getContrat_instance()->getModelTitle();
 				}
 			];
 			$ret['contrat_titre']            = [
@@ -504,7 +504,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-				'inscription-' . $this->getContrat_instance()->getModel()->getTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
+				'inscription-' . $this->getContrat_instance()->getModelTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
 	}
 
 	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false, $show_toggler = true ) {

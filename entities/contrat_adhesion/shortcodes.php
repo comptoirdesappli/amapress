@@ -1579,7 +1579,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			} );
 			$user_subscribable_contrats_display = implode( ', ', array_unique( array_map( function ( $c ) {
 				/** @var AmapressContrat_instance $c */
-				return $c->getModel()->getTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
+				return $c->getModelTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
 			}, $user_subscribable_contrats ) ) );
 			echo '<h4>étape 8/8 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 

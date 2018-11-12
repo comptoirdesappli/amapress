@@ -290,8 +290,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					if ( $c->getModel() == null ) {
 						continue;
 					}
-					if ( ! in_array( $c->getModel()->getTitle(), $contrat_names ) ) {
-						$contrat_names[] = $c->getModel()->getTitle();
+					if ( ! in_array( $c->getModelTitle(), $contrat_names ) ) {
+						$contrat_names[] = $c->getModelTitle();
 					}
 				}
 			}
