@@ -161,6 +161,9 @@ function amapress_order_producteurs_and_contrats( array $posts, WP_Query $query 
 						return intval( $cid );
 					} else if ( $post_type == AmapressProducteur::INTERNAL_POST_TYPE ) {
 						$c = AmapressContrat::getBy( intval( $cid ) );
+						if ( empty( $c ) ) {
+							return 0;
+						}
 
 						return $c->getProducteurId();
 					} else {

@@ -32,7 +32,7 @@ function amapress_producteur_map_shortcode( $atts ) {
 		return '';
 	}
 	$producteur = AmapressProducteur::getBy( $prod_id );
-	if ( ! $producteur->isAdresseExploitationLocalized() ) {
+	if ( empty( $producteur ) || ! $producteur->isAdresseExploitationLocalized() ) {
 		return '';
 	}
 	$markers   = array();

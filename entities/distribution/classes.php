@@ -172,7 +172,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		$phones = [];
 		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
 			/** @var AmapressAdhesion $adh */
-			if ( ! empty( $adh->getAdherent() ) ) {
+			if ( ! empty( $adh ) && ! empty( $adh->getAdherent() ) ) {
 				$phones = array_merge( $phones, $adh->getAdherent()->getPhoneNumbers( true ) );
 			}
 		}
@@ -211,7 +211,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		return array_filter( $ret, function ( $c ) {
 			/** @var AmapressContrat_instance $c */
-			return ! empty( $c->getModel() );
+			return ! empty( $c ) && ! empty( $c->getModel() );
 		} );
 	}
 
@@ -545,7 +545,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			$dist_date_end = $this->getEndDateAndHour();
 			$contrats      = $this->getContrats();
 			foreach ( $contrats as $contrat ) {
-				if ( empty( $contrat->getModel() ) ) {
+				if ( empty( $contrat ) || empty( $contrat->getModel() ) ) {
 					continue;
 				}
 
