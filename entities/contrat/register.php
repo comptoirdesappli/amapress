@@ -845,7 +845,7 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => 'Quantités',
 			),
-			'rattrapage'            => array(
+			'rattrapage'     => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -937,7 +937,7 @@ jQuery(function($) {
 			),
 
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe'        => array(
+			'self_subscribe' => array(
 				'name'        => amapress__( 'Activer' ),
 				'type'        => 'checkbox',
 				'group'       => '5/6 - Pré-inscription en ligne',
@@ -1521,15 +1521,18 @@ function amapress_import_adhesion_meta2( $postmeta, $postdata, $posttaxo, $post_
 		return $postmeta;
 	}
 
-	$contrat_instance = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
-	$date_debut       = Amapress::start_of_day( $postmeta['amapress_adhesion_date_debut'] );
-	if ( $date_debut < Amapress::start_of_day( $contrat_instance->getDate_debut() )
-	     || $date_debut > Amapress::start_of_day( $contrat_instance->getDate_fin() ) ) {
-		$dt            = date_i18n( 'd/m/Y', $date_debut );
-		$contrat_debut = date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() );
-		$contrat_fin   = date_i18n( 'd/m/Y', $contrat_instance->getDate_fin() );
+	$contrat_instance  = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
+	$date_debut_string = $postmeta['amapress_adhesion_date_debut'];
+	if ( ! is_wp_error( $date_debut_string ) ) {
+		$date_debut = Amapress::start_of_day( $date_debut_string );
+		if ( $date_debut < Amapress::start_of_day( $contrat_instance->getDate_debut() )
+		     || $date_debut > Amapress::start_of_day( $contrat_instance->getDate_fin() ) ) {
+			$dt            = date_i18n( 'd/m/Y', $date_debut );
+			$contrat_debut = date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() );
+			$contrat_fin   = date_i18n( 'd/m/Y', $contrat_instance->getDate_fin() );
 
-		return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates ($contrat_debut - $contrat_fin) du contrat '{$contrat_instance->getTitle()}'" );
+			return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates ($contrat_debut - $contrat_fin) du contrat '{$contrat_instance->getTitle()}'" );
+		}
 	}
 	$postmeta['amapress_adhesion_status'] = 'confirmed';
 
@@ -1740,60 +1743,60 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	?>
-            <p style="padding: 20px 10px 20px 0;"><strong>Configuration des paniers (Taille/Quantités)</strong></p>
-            <p>Créer un panier à partir d’un modèle Excel <a
-                        href="<?php echo admin_url( 'admin.php?page=amapress_import_page&tab=import_quant_paniers&amapress_import_contrat_quantite_default_contrat_instance=' . $contrat_instance->ID ); ?>"
-                        target="_blank" class="button button-secondary">Import CSV</a></p>
-            <p style="padding-bottom: 20px"><span class="btn add-model dashicons dashicons-plus-alt"
-                                                  onclick="amapress_add_quant(this)"></span> Ajouter une quantité</p>
-            <input type="hidden" name="amapress_quant_data_contrat_instance_id"
-                   value="<?php echo $contrat_instance_id; ?>"/>
-            <table id="quant_editor_table" class="table" style="width: 100%; border: 1pt solid black">
-                <thead>
-                <tr>
-                    <th style="padding-left: 10px">Intitulé*</th>
-                    <th style="width: 100px">Code</th>
-                    <th title="Description">Desc.</th>
-                    <th style="width: 50px">Prix*</th>
-                    <th style="width: 40px" title="Facteur quantité">Fact. quant.</th>
-					<?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
-                        <th style="width: 60px">Unité*</th>
-                        <th style="width: 70px">Quantités config</th>
-					<?php } ?>
-					<?php if ( $contrat_instance->isPanierVariable() ) { ?>
-                        <th style="width: 80px">Dispo de</th>
-                        <th style="width: 80px"> - à</th>
-					<?php } else { ?>
-                        <th>Dates</th>
-					<?php } ?>
-                    <th>Produits</th>
-                    <!--            <th style="width: 30px">Photo</th>-->
-                    <th style="width: 30px"></th>
-                </tr>
-                </thead>
-                <tbody>
-				<?php
-				foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance_id ) as $quant ) {
-					$id   = $quant->ID;
-					$tit  = esc_attr( $quant->getTitle() );
-					$q    = esc_attr( $quant->getQuantite() );
-					$c    = esc_attr( $quant->getCode() );
-					$pr   = esc_attr( $quant->getPrix_unitaire() );
-					$qc   = esc_attr( $quant->getQuantiteConfig() );
-					$desc = esc_textarea( stripslashes( $quant->getDescription() ) );
-					$af   = esc_attr( $quant->getAvailFrom() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailFrom() ) ) : null );
-					$at   = esc_attr( $quant->getAvailTo() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailTo() ) ) : null );
+    <p style="padding: 20px 10px 20px 0;"><strong>Configuration des paniers (Taille/Quantités)</strong></p>
+    <p>Créer un panier à partir d’un modèle Excel <a
+                href="<?php echo admin_url( 'admin.php?page=amapress_import_page&tab=import_quant_paniers&amapress_import_contrat_quantite_default_contrat_instance=' . $contrat_instance->ID ); ?>"
+                target="_blank" class="button button-secondary">Import CSV</a></p>
+    <p style="padding-bottom: 20px"><span class="btn add-model dashicons dashicons-plus-alt"
+                                          onclick="amapress_add_quant(this)"></span> Ajouter une quantité</p>
+    <input type="hidden" name="amapress_quant_data_contrat_instance_id"
+           value="<?php echo $contrat_instance_id; ?>"/>
+    <table id="quant_editor_table" class="table" style="width: 100%; border: 1pt solid black">
+        <thead>
+        <tr>
+            <th style="padding-left: 10px">Intitulé*</th>
+            <th style="width: 100px">Code</th>
+            <th title="Description">Desc.</th>
+            <th style="width: 50px">Prix*</th>
+            <th style="width: 40px" title="Facteur quantité">Fact. quant.</th>
+			<?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
+                <th style="width: 60px">Unité*</th>
+                <th style="width: 70px">Quantités config</th>
+			<?php } ?>
+			<?php if ( $contrat_instance->isPanierVariable() ) { ?>
+                <th style="width: 80px">Dispo de</th>
+                <th style="width: 80px"> - à</th>
+			<?php } else { ?>
+                <th>Dates</th>
+			<?php } ?>
+            <th>Produits</th>
+            <!--            <th style="width: 30px">Photo</th>-->
+            <th style="width: 30px"></th>
+        </tr>
+        </thead>
+        <tbody>
+		<?php
+		foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance_id ) as $quant ) {
+			$id   = $quant->ID;
+			$tit  = esc_attr( $quant->getTitle() );
+			$q    = esc_attr( $quant->getQuantite() );
+			$c    = esc_attr( $quant->getCode() );
+			$pr   = esc_attr( $quant->getPrix_unitaire() );
+			$qc   = esc_attr( $quant->getQuantiteConfig() );
+			$desc = esc_textarea( stripslashes( $quant->getDescription() ) );
+			$af   = esc_attr( $quant->getAvailFrom() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailFrom() ) ) : null );
+			$at   = esc_attr( $quant->getAvailTo() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailTo() ) ) : null );
 
-					amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
-						$qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
-						$quant->getSpecificDistributionDates() );
-				}
-				?>
-                </tbody>
-            </table>
-            <p class="description"><a
-                        href="<?php echo admin_url( 'admin.php?page=amapress_help_page&tab=conf_paniers' ); ?>">*</a>
-                Consulter les instructions spécifiques</p>
+			amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
+				$qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
+				$quant->getSpecificDistributionDates() );
+		}
+		?>
+        </tbody>
+    </table>
+    <p class="description"><a
+                href="<?php echo admin_url( 'admin.php?page=amapress_help_page&tab=conf_paniers' ); ?>">*</a>
+        Consulter les instructions spécifiques</p>
 	<?php
 	$contents = ob_get_clean();
 
