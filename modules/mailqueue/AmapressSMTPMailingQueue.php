@@ -102,8 +102,12 @@ class AmapressSMTPMailingQueue {
 
 		$use = Amapress::getOption( 'mail_queue_use_queue' );
 		if ( empty( $use ) || ! $use || apply_filters( 'amapress_mail_queue_bypass', false ) ) {
-			$time   = amapress_time();
-			$errors = self::sendMail( compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ) );
+			$retries = apply_filters( 'amapress_mail_queue_retries', 1 );
+			do {
+				$time    = amapress_time();
+				$errors  = self::sendMail( compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ) );
+				$retries -= 1;
+			} while ( $retries > 0 && ! empty( $errors ) );
 
 			return empty( $errors );
 		} else {
@@ -301,6 +305,7 @@ class AmapressSMTPMailingQueue {
 		require_once( 'AmapressSMTPMailingQueueOriginal.php' );
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
+			@error_log( 'Mail send Error : ' . implode( ' ; ', $errors ) );
 			self::storeMail( 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
 		} else {
 			self::storeMail( 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
@@ -315,7 +320,7 @@ class AmapressSMTPMailingQueue {
 	 * @param string $file Absolute path to file
 	 */
 	public function deleteFile( $file ) {
-		unlink( $file );
+		@unlink( $file );
 	}
 
 	/**

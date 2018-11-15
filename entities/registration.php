@@ -228,6 +228,9 @@ add_filter( 'retrieve_password_message', function ( $message, $key ) {
 	add_filter( 'amapress_mail_queue_bypass', function ( $t ) {
 		return true;
 	} );
+	add_filter( 'amapress_mail_queue_retries', function ( $t ) {
+		return 3;
+	} );
 
 	return amapress_replace_mail_placeholders( Amapress::getOption( 'password_lost_mail' ), $user );
 }, 10, 2 );
