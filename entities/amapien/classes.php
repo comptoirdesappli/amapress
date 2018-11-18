@@ -192,6 +192,16 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 								);
 						}
 					}
+				} else if ( 'tresorier' == $r ) {
+					$this_user_roles[ 'role_' . $r ] =
+						array(
+							'title'      => 'Trésorier',
+							'type'       => 'tresorier',
+							'lieu'       => null,
+							'object_id'  => $this->ID,
+							'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+							'other_link' => admin_url( "users.php?role={$r}" ),
+						);
 				} else {
 					$this_user_roles[ 'role_' . $r ] =
 						array(
