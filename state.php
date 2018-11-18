@@ -147,6 +147,12 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'error-log-monitor', 'Error Log Monitor',
 		'<strong>Optionnel</strong> : Permet de logger les erreurs PHP/Wordpress et de les envoyer automatiquement au support Amapress pour aider à son développement',
 		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'uk-cookie-consent', 'Cookie Consent',
+		'<strong>Recommandé</strong> : Affiche un bandeau de consentement à l\'utilisation des cookies sur votre site. Cela est nécessaire pour être en conformité avec la loi RGPD, par exemple, si vous faites des statistiques (ie, Google Analytics) sur les visiteurs.',
+		'warning' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'gprd', 'GPRD',
+		'<strong>Optionnel</strong> : Gestion avancée et suite d\'outils relatifs à la loi d\'accès aux données RGPD.',
+		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
 		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
 		'info' );
@@ -754,6 +760,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 				admin_url( 'post.php?post=' . $page->ID . '&action=edit' )
 			);
 		}
+		if ( 'page' != $page->post_type ) {
+			$thumb_id = get_post_meta( $page->ID, '_thumbnail_id', true );
+			if ( empty( $thumb_id ) ) {
+				$state['20_content'][] = amapress_get_check_state(
+					'warning',
+					$page->post_title,
+					'Ajouter un logo/image dans "L\'image à la une" de la page ' . $page->post_title,
+					admin_url( 'post.php?post=' . $page->ID . '&action=edit' )
+				);
+			}
+		}
 	}
 
 	$front_page_edit_href          = $static_front_id ? admin_url( 'post.php?post=' . $static_front_id . '&action=edit' ) : '';
@@ -818,57 +835,57 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'les-paniers-intermittents'     => [
+		'les-paniers-intermittents' => [
 			'desc'  => 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers',
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'intermittent-paniers'          => [
+		'intermittent-paniers'      => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"',
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'         => [
+		'amapiens-map'              => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'   => [
+		'amapiens-role-list'        => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'           => [
+		'agenda-url'                => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'       => [
+		'nous-contacter'            => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'    => [
+		'front_next_events'         => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'       => [
+		'front_produits'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'   => [
+		'front_nous_trouver'        => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'   => [
+		'front_default_grid'        => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne' => [
+		'inscription-en-ligne'      => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
