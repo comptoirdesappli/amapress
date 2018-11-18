@@ -28,6 +28,12 @@ function amapress_register_entities_producteur( $entities ) {
 				'context' => 'side',
 			],
 		),
+		'edit_header'             => function ( $post ) {
+			$contrat = AmapressProducteur::getBy( $post );
+			if ( empty( $contrat->getUser() ) ) {
+				echo '<div class="notice notice-error"><p>Producteur invalide : pas d\'utilisateur associé</p></div>';
+			}
+		},
 		'fields'                  => array(
 			'nom_exploitation'     => array(
 				'name'       => amapress__( 'Nom de l\'exploitation' ),

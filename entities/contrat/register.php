@@ -56,6 +56,10 @@ function amapress_register_entities_contrat( $entities ) {
 			],
 		],
 		'edit_header'             => function ( $post ) {
+			$contrat = AmapressContrat::getBy( $post );
+			if ( empty( $contrat->getProducteur() ) ) {
+				echo '<div class="notice notice-error"><p>Présentation Web invalide : pas de producteur associée</p></div>';
+			}
 			echo '<h1>Termes du contrat :</h1>';
 		},
 		'fields'                  => array(
@@ -136,6 +140,10 @@ function amapress_register_entities_contrat( $entities ) {
 			],
 		),
 		'edit_header'     => function ( $post ) {
+			$contrat = AmapressContrat_instance::getBy( $post );
+			if ( empty( $contrat->getModel() ) ) {
+				echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Web associée</p></div>';
+			}
 			if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) && TitanFrameworkOption::isOnEditScreen() ) {
 				$class   = 'notice notice-error';
 				$message = 'Vous devez configurer les quantités et tarifs des paniers';
