@@ -650,6 +650,61 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		);
 	}
 
+	foreach (
+		get_posts(
+			[
+				'post_type'      => AmapressProducteur::INTERNAL_POST_TYPE,
+				'posts_per_page' => - 1,
+			]
+		) as $post
+	) {
+		$prod = AmapressProducteur::getBy( $post );
+		if ( empty( $prod->getUser() ) ) {
+			$state['15_posts'][] = amapress_get_check_state(
+				'error',
+				'Producteur invalide',
+				'Le producteur ' . $prod->getTitle() . ' n\'est pas associé à un utilisateur.',
+				$prod->getAdminEditLink()
+			);
+		}
+	}
+	foreach (
+		get_posts(
+			[
+				'post_type'      => AmapressContrat::INTERNAL_POST_TYPE,
+				'posts_per_page' => - 1,
+			]
+		) as $post
+	) {
+		$contrat = AmapressContrat::getBy( $post );
+		if ( empty( $contrat->getProducteur() ) ) {
+			$state['15_posts'][] = amapress_get_check_state(
+				'error',
+				'Présentation Web invalide',
+				'La présentation Web ' . $contrat->getTitle() . ' n\'est pas associée à un producteur.',
+				$contrat->getAdminEditLink()
+			);
+		}
+	}
+	foreach (
+		get_posts(
+			[
+				'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
+				'posts_per_page' => - 1,
+			]
+		) as $post
+	) {
+		$contrat_instance = AmapressContrat_instance::getBy( $post );
+		if ( empty( $contrat_instance->getModel() ) ) {
+			$state['15_posts'][] = amapress_get_check_state(
+				'error',
+				'Modèle de contrat invalide',
+				'Le modèle de contrat ' . $contrat_instance->getTitle() . ' n\'est pas associé à une présentation Web.',
+				$contrat_instance->getAdminEditLink()
+			);
+		}
+	}
+
 	$all_pages_and_presentations = get_pages( [
 		'post_status' => 'publish'
 	] );
