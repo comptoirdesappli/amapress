@@ -647,14 +647,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$all_pages_and_presentations = get_pages( [
 		'post_status' => 'publish'
 	] );
-	$all_pages_and_presentations += get_posts( [
+	$all_pages_and_presentations = array_merge( $all_pages_and_presentations, get_posts( [
 		'post_status' => 'publish',
 		'post_type'   => [
 			AmapressProducteur::INTERNAL_POST_TYPE,
 			AmapressContrat::INTERNAL_POST_TYPE,
 			AmapressLieu_distribution::INTERNAL_POST_TYPE,
 		]
-	] );
+	] ) );
 
 	$state['20_content']   = array();
 	$state['20_content'][] = amapress_get_check_state(
