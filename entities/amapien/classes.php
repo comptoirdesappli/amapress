@@ -823,4 +823,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	public function getEditLink() {
 		return admin_url( 'user-edit.php?user_id=' . $this->getUser()->ID );
 	}
+
+	public function getContacts() {
+		return Amapress::makeLink( 'mailto:' . $this->getAllEmails(), 'Joindre par mail' ) .
+		       ' / Par téléphone : ' . $this->getTelTo( 'both', false, false, ', ' ) .
+		       ' / Par SMS : ' . $this->getTelTo( true, true, false, ', ' );
+	}
 }
