@@ -1096,6 +1096,10 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		false
 	);
 
+	if ( current_user_can( 'update_core' ) ) {
+		echo '<p><a href="' . admin_url( 'options.php?github_updater_refresh_transients=1' ) . '" target="_blank">Vérifier la mise à jour d\'Amapress</a> / <a href="' . admin_url( 'plugins.php' ) . '" target="_blank">Voir les extensions installées</a></p>';
+	}
+
 	foreach ( $state as $categ => $checks ) {
 		amapress_echo_panel_start( $labels[ $categ ] );
 
