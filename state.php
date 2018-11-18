@@ -263,9 +263,12 @@ function amapress_echo_and_check_amapress_state_page() {
 	$info_page_menu_item_found = false;
 	$info_page_id              = Amapress::getOption( 'mes-infos-page' );
 	foreach ( get_nav_menu_locations() as $menu_name => $menu_id ) {
-		foreach ( wp_get_nav_menu_items( $menu_id ) as $menu_item ) {
-			if ( $menu_item->object_id == $info_page_id ) {
-				$info_page_menu_item_found = true;
+		$menus = wp_get_nav_menu_items( $menu_id );
+		if ( ! empty( $menus ) ) {
+			foreach ( $menus as $menu_item ) {
+				if ( $menu_item->object_id == $info_page_id ) {
+					$info_page_menu_item_found = true;
+				}
 			}
 		}
 	}
@@ -825,17 +828,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'                  => [
+		'amapiens-map'         => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'            => [
+		'amapiens-role-list'   => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'                    => [
+		'agenda-url'           => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
