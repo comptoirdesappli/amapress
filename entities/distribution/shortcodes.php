@@ -5,8 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-add_filter( 'amapress_register_post-its', 'amapress_register_resp_distrib_post_its' );
-function amapress_register_resp_distrib_post_its( $post_its ) {
+add_filter( 'amapress_register_post-its', 'amapress_register_resp_distrib_post_its', 10, 2 );
+function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 	if ( ! amapress_is_user_logged_in() ) {
 		return $post_its;
 	}
@@ -19,12 +19,17 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 	$user_id = amapress_current_user_id();
 
-	$lieux = count( Amapress::get_lieu_ids() );
-	$weeks = 2;
+	//$lieux = count( Amapress::get_lieu_ids() );
+	$arg_next_distribs = ! empty( $args['distrib'] ) ? $args['distrib'] : 2;
+	$weeks             = $arg_next_distribs;
 	do {
 		$next_distribs = AmapressDistribution::getNextDistribs( null, $weeks, null );
+		$dates         = array_unique( array_map( function ( $d ) {
+			/** @var AmapressDistribution $d */
+			return Amapress::start_of_day( $d->getDate() );
+		}, $next_distribs ) );
 		$weeks         += 1;
-	} while ( $weeks < 10 && count( $next_distribs ) < 2 * $lieux );
+	} while ( $weeks < 15 && count( $dates ) < $arg_next_distribs );
 
 	foreach ( $next_distribs as $dist ) {
 		if ( empty( $dist->getContratIds() ) ) {
@@ -56,23 +61,23 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 function amapress_inscription_distrib_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
-		'show_past'       => 'false',
-		'show_next'       => 'true',
-		'show_email'      => 'default',
-		'show_tel'        => 'default',
-		'show_tel_fixe'   => 'default',
-		'show_tel_mobile' => 'default',
-		'show_adresse'    => 'default',
-		'show_avatar'     => 'default',
-		'show_roles'      => 'default',
-		'show_for_resp'   => 'true',
-		'show_title'      => 'true',
-		'for_emargement'  => 'false',
-		'for_pdf'         => 'false',
-		'max_dates'       => - 1,
-		'responsive'      => 'false',
-		'user'            => null,
-		'lieu'            => null,
+		'show_past'         => 'false',
+		'show_next'         => 'true',
+		'show_email'        => 'default',
+		'show_tel'          => 'default',
+		'show_tel_fixe'     => 'default',
+		'show_tel_mobile'   => 'default',
+		'show_adresse'      => 'default',
+		'show_avatar'       => 'default',
+		'show_roles'        => 'default',
+		'show_for_resp'     => 'true',
+		'show_title'        => 'true',
+		'for_emargement'    => 'false',
+		'for_pdf'           => 'false',
+		'max_dates'         => - 1,
+		'responsive'        => 'false',
+		'user'              => null,
+		'lieu'              => null,
 		'date'              => null,
 		'inscr_all_distrib' => 'false'
 	), $atts );

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_postits_shortcode( $args ) {
-	$post_its = apply_filters( 'amapress_register_post-its', array() );
+	$post_its = apply_filters( 'amapress_register_post-its', array(), $args );
 	usort( $post_its, function ( $a, $b ) {
 		$da = isset( $a['date'] ) ? $a['date'] : 0;
 		$db = isset( $b['date'] ) ? $b['date'] : 0;
