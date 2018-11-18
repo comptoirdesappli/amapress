@@ -10,6 +10,10 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	private static $entities_cache = array();
 
+	public static function clearCache() {
+		self::$entities_cache = array();
+	}
+
 	/**
 	 * @param $post_or_id
 	 *
@@ -1038,5 +1042,21 @@ class AmapressDistribution extends Amapress_EventBase {
 				'status' => 'to_exchange',
 			]
 		);
+	}
+
+	public function setSpecialHeure_debut( $start_hour_date ) {
+		if ( empty( $start_hour_date ) ) {
+			$this->deleteCustom( 'amapress_distribution_heure_debut_spec' );
+		} else {
+			$this->setCustom( 'amapress_distribution_heure_debut_spec', $start_hour_date );
+		}
+	}
+
+	public function setSpecialHeure_fin( $end_hour_date ) {
+		if ( empty( $end_hour_date ) ) {
+			$this->deleteCustom( 'amapress_distribution_heure_fin_spec' );
+		} else {
+			$this->setCustom( 'amapress_distribution_heure_fin_spec', $end_hour_date );
+		}
 	}
 }

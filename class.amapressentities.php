@@ -242,6 +242,20 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_visite_inscription_recall_options(),
 						),
+						'Distributions - Définir horaires particuliers'           => array(
+							'id'      => 'amp_tab_distrib_hours_setter',
+							'desc'    => '',
+							'options' => [
+								array(
+									'id'     => 'distrib-hours-setter',
+									'bare'   => true,
+//									'name'                => 'Rappel 1',
+//									'desc'                => 'Inscription à une visite',
+									'type'   => 'custom',
+									'custom' => 'amapress_distribution_hours_setter',
+								),
+							],
+						),
 					),
 					'subpages' => array(
 						array(

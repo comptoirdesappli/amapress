@@ -105,7 +105,7 @@ function amapress_register_entities_distribution( $entities ) {
 		'default_orderby'  => 'amapress_distribution_date',
 		'default_order'    => 'ASC',
 		'fields'           => array(
-			'date'              => array(
+			'date' => array(
 				'name'       => amapress__( 'Date de distribution' ),
 				'type'       => 'date',
 				'time'       => false,
@@ -118,7 +118,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'readonly'   => true,
 				'desc'       => 'Date de distribution',
 			),
-			'lieu'              => array(
+			'lieu' => array(
 				'name'       => amapress__( 'Lieu de distribution' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
@@ -223,7 +223,7 @@ function amapress_register_entities_distribution( $entities ) {
 				}
 			),
 
-			'nb_resp_supp'      => array(
+			'nb_resp_supp' => array(
 				'name'        => amapress__( 'Nombre' ),
 				'type'        => 'number',
 				'required'    => true,
@@ -232,7 +232,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'default'     => 0,
 				'show_column' => false,
 			),
-			'responsables'      => array(
+			'responsables' => array(
 				'name'          => amapress__( 'Responsables' ),
 				'group'         => '2/ Responsables',
 				'type'          => 'select-users',
@@ -324,4 +324,109 @@ function amapress_row_action_distribution_resend_liste_to_verify( $post_id ) {
 		'id' => $post_id
 	] );
 	wp_redirect_and_exit( wp_get_referer() );
+}
+
+function amapress_distribution_hours_setter() {
+	$start_date = empty( $_POST['start_date'] ) ? date_i18n( 'd/m/Y', amapress_time() ) : $_POST['start_date'];
+	$end_date   = empty( $_POST['end_date'] ) ? date_i18n( 'd/m/Y', Amapress::add_a_month( amapress_time(), 12 ) ) : $_POST['end_date'];
+	$lieu_id    = empty( $_POST['lieu'] ) ? null : $_POST['lieu'];
+	$incr_date  = empty( $_POST['incr_date'] ) ? 2 : $_POST['incr_date'];
+	$start_hour = empty( $_POST['start_hour'] ) ? null : $_POST['start_hour'];
+	$end_hour   = empty( $_POST['end_hour'] ) ? null : $_POST['end_hour'];
+
+	$lieux_options = [];
+	foreach ( Amapress::get_lieux() as $lieu ) {
+		$lieux_options[ strval( $lieu->ID ) ] = $lieu->getTitle();
+	}
+	?>
+    <h4>Cet outil permet de définir les horaires alternatifs des distributions.</h4>
+
+	<?php
+
+	if ( isset( $_POST['set_hours'] ) || isset( $_POST['reset_hours'] ) ) {
+		$set = isset( $_POST['set_hours'] );
+		if ( ! empty( $_POST['dist'] ) ) {
+			global $wpdb;
+			$wpdb->query( 'START TRANSACTION' );
+
+			foreach ( $_POST['dist'] as $k => $v ) {
+				$dist_id   = intval( $v );
+				$dist_post = AmapressDistribution::getBy( $dist_id, true );
+				if ( $set ) {
+					if ( ! empty( $start_hour ) ) {
+						$start_hour_date = DateTime::createFromFormat( 'd#m#Y H:i', date_i18n( 'd/m/Y', $dist_post->getDate() ) . ' ' . trim( $start_hour ) );
+						if ( $start_hour_date ) {
+							$dist_post->setSpecialHeure_debut( $start_hour_date->getTimestamp() );
+						}
+					}
+					if ( ! empty( $end_hour ) ) {
+						$end_hour_date = DateTime::createFromFormat( 'd#m#Y H:i', date_i18n( 'd/m/Y', $dist_post->getDate() ) . ' ' . trim( $end_date ) );
+						if ( $end_hour_date ) {
+							$dist_post->setSpecialHeure_fin( $end_hour_date->getTimestamp() );
+						}
+					}
+				} else {
+					$dist_post->setSpecialHeure_debut( null );
+					$dist_post->setSpecialHeure_fin( null );
+				}
+				amapress_compute_post_slug_and_title( $dist_post->getPost() );
+			}
+			$wpdb->query( 'COMMIT' );
+			AmapressDistribution::clearCache();
+		}
+	}
+
+	?>
+    <label for="start_date" class="tf-date">Date de début :<input type="text" id="start_date" name="start_date"
+                                                                  class="input-date date required"
+                                                                  value="<?php echo esc_attr( $start_date ); ?>"/></label>
+    <br/>
+    <label for="end_date" class="tf-date">Date de fin :<input type="text" id="end_date" name="end_date"
+                                                              class="input-date date required"
+                                                              value="<?php echo esc_attr( $end_date ); ?>"/></label>
+    <br/>
+    <label for="lieu">Lieu:</label><select id="lieu"
+                                           name="lieu"
+                                           class="required"><?php tf_parse_select_options( $lieux_options, $lieu_id ); ?></select>
+    <br/>
+    <label for="incr_date">Prendre une distribution toute les </label><input type="text" id="incr_date" name="incr_date"
+                                                                             class="number required"
+                                                                             value="<?php echo esc_attr( $incr_date ); ?>"/> dates
+    <br/>
+    <input type="submit" class="button button-primary" name="select_dists" value="Afficher les distributions"/>
+    <br/>
+    <label for="start_hour" class="tf-date">Heure de début : <input type="text" id="start_hour"
+                                                                    name="start_hour"
+                                                                    class="input-date time"
+                                                                    value="<?php echo esc_attr( $start_hour ); ?>"/></label>
+    <br/>
+    <label for="end_hour" class="tf-date">Heure de fin : <input type="text" id="end_hour" name="end_hour"
+                                                                class="input-date time"
+                                                                value="<?php echo esc_attr( $end_hour ); ?>"/></label>
+    <br/>
+    <input type="submit" class="button button-primary" name="set_hours" value="Définir"/>
+    <input type="submit" class="button button-secondary" name="reset_hours" value="Effacer"/>
+	<?php
+
+	$distributions        = AmapressDistribution::get_distributions( TitanEntity::to_date( $start_date ), TitanEntity::to_date( $end_date ), 'ASC' );
+	$distributions        = array_filter( $distributions, function ( $d ) use ( $lieu_id ) {
+		/** @var AmapressDistribution $d */
+		return $d->getLieuId() == $lieu_id;
+	} );
+	$filter_distributions = [];
+	$i                    = 0;
+	echo '<ul>';
+	foreach ( $distributions as $d ) {
+		$hours = ' (' . date_i18n( 'H:i', $d->getStartDateAndHour() ) . ' à ' . date_i18n( 'H:i', $d->getEndDateAndHour() ) . ')';
+		if ( ( $i % $incr_date ) == 0 ) {
+			$filter_distributions[] = $d;
+			echo '<li><input type="checkbox" class="checkbox" id="dist_' . $d->ID . '" name="dist[' . $d->ID . ']" value="' . $d->ID . '" ' . checked( isset( $_POST['dist'][ $d->ID ] ) || isset( $_POST['select_dists'] ), true, false ) . ' /><label for="dist_' . $d->ID . '">' . esc_html( $d->getTitle() ) . $hours . ' (' . Amapress::makeLink( $d->getAdminEditLink(), 'Voir', true, true ) . ')' . '</label></li>';
+		} else {
+			echo '<li style="text-decoration: line-through">' . esc_html( $d->getTitle() ) . $hours . ' (' . Amapress::makeLink( $d->getAdminEditLink(), 'Voir', true, true ) . ')' . '</li>';
+		}
+		$i += 1;
+	}
+	echo '</ul>';
+
+	TitanFrameworkOptionDate::createCalendarScript();
 }
