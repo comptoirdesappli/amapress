@@ -76,10 +76,12 @@ function amapress_get_custom_content_distribution( $content ) {
 
 //    amapress_handle_action_messages();
 
-	$btns   = [];
-	$btns[] = amapress_get_button( 'Liste d\'émargement',
-		amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
-		true, null, 'btn-print-liste' );
+	$btns = [];
+	if ( amapress_is_user_logged_in() ) {
+		$btns[] = amapress_get_button( 'Liste d\'émargement',
+			amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
+			true, null, 'btn-print-liste' );
+	}
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
 		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
 	}
@@ -186,48 +188,50 @@ function amapress_get_custom_content_distribution( $content ) {
 
 		//        amapress_echo_panel_start('Panier(s)', 'fa-shopping-basket', 'amap-panel-dist amap-panel-dist-'.$lieu_id.' ');
 
-		amapress_echo_panel_start( 'En cas d\'absence - Espace intermittents' );
-		$paniers       = AmapressPaniers::getPaniersForDist( $dist->getDate() );
-		$ceder_title   = count( $user_contrats ) > 1 ? 'Céder mes ' . count( $user_contrats ) . ' paniers' : 'Céder mon panier';
-		$can_subscribe = Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() );
+		if ( amapress_is_user_logged_in() ) {
+			amapress_echo_panel_start( 'En cas d\'absence - Espace intermittents' );
+			$paniers       = AmapressPaniers::getPaniersForDist( $dist->getDate() );
+			$ceder_title   = count( $user_contrats ) > 1 ? 'Céder mes ' . count( $user_contrats ) . ' paniers' : 'Céder mon panier';
+			$can_subscribe = Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() );
 
-		$is_intermittent = 'exchangeable';
-		foreach ( $paniers as $panier ) {
-			if ( ! in_array( $panier->getContrat_instanceId(), $user_contrats ) ) {
-				continue;
+			$is_intermittent = 'exchangeable';
+			foreach ( $paniers as $panier ) {
+				if ( ! in_array( $panier->getContrat_instanceId(), $user_contrats ) ) {
+					continue;
+				}
+				$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId() );
+				if ( ! empty( $status ) ) {
+					$is_intermittent = $status;
+				}
 			}
-			$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId() );
-			if ( ! empty( $status ) ) {
-				$is_intermittent = $status;
-			}
-		}
 
-		switch ( $is_intermittent ) {
-			case 'exchangeable':
-				if ( $can_subscribe ) {
-					$id = "info_{$dist->ID}";
-					echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '"></textarea><br/>';
-					echo '<button  type="button" class="btn btn-default amapress-ajax-button" 
+			switch ( $is_intermittent ) {
+				case 'exchangeable':
+					if ( $can_subscribe ) {
+						$id = "info_{$dist->ID}";
+						echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '"></textarea><br/>';
+						echo '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="echanger_panier" data-message="val:#' . $id . '" data-confirm="Etes-vous sûr de vouloir céder votre/vos paniers ?"
 					data-dist="' . $dist->ID . '" data-user="' . amapress_current_user_id() . '">' . $ceder_title . '</button></div>';
-				} else {
-					echo '<span class="echange-closed">Cessions de paniers closes</span>';
-				}
-				break;
-			case 'to_exchange':
-				echo '<span class="panier-to-exchange">Panier(s) en attente de repreneur</span>';
-				break;
-			case 'exchanged':
-				echo '<span class="panier-exchanged">Panier(s) cédé(s)</span>';
-				break;
-			case 'exch_valid_wait':
-				echo '<span class="panier-exchanged">Panier(s) en attente de validation de reprise</span>';
-				break;
-			case 'closed':
-				echo '<span class="echange-done">Cession effectuée</span>';
-				break;
+					} else {
+						echo '<span class="echange-closed">Cessions de paniers closes</span>';
+					}
+					break;
+				case 'to_exchange':
+					echo '<span class="panier-to-exchange">Panier(s) en attente de repreneur</span>';
+					break;
+				case 'exchanged':
+					echo '<span class="panier-exchanged">Panier(s) cédé(s)</span>';
+					break;
+				case 'exch_valid_wait':
+					echo '<span class="panier-exchanged">Panier(s) en attente de validation de reprise</span>';
+					break;
+				case 'closed':
+					echo '<span class="echange-done">Cession effectuée</span>';
+					break;
+			}
+			amapress_echo_panel_end();
 		}
-		amapress_echo_panel_end();
 
 
 		$has_contrats = false;
@@ -248,7 +252,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				if ( $is_resp_amap || current_user_can( 'edit_panier' ) ) {
 					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">Editer le contenu/Déplacer</a>';
 				}
-				amapress_echo_panel_start_no_esc( esc_html( $contrat_model->post_title ) . $panier_btns, $icon,
+				amapress_echo_panel_start_no_esc( Amapress::makeLink( get_permalink( $contrat_model ), $contrat_model->post_title, true, true ) . $panier_btns, $icon,
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
 				echo AmapressPaniers::getPanierContentHtml( $panier->ID, $lieu_id );
 				amapress_echo_panel_end();
