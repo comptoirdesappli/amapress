@@ -635,6 +635,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $adh_paiement );
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $adh_paiement );
 
+		$tresoriers = [];
+		foreach ( get_users( "role=tresorier" ) as $tresorier ) {
+			$user_obj   = AmapressUser::getBy( $tresorier );
+			$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
+		}
+
 		$attachments = [];
 		$doc_file    = $adh_paiement->generateBulletinDoc();
 		if ( ! empty( $doc_file ) ) {
@@ -646,15 +652,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
 		}
 
-		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
+			'Reply-To: ' . implode( ',', $tresoriers )
+		], $attachments );
 
 		if ( Amapress::toBool( $atts['send_tresoriers'] ) ) {
-			$tresoriers = [];
-			foreach ( get_users( "role=tresorier" ) as $tresorier ) {
-				$user_obj   = AmapressUser::getBy( $tresorier );
-				$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
-			}
-
 			amapress_wp_mail(
 				$tresoriers,
 				'Nouvelle adhésion ' . $amapien->getDisplayName(),
