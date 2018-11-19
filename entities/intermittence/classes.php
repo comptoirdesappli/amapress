@@ -258,7 +258,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-content' ),
 			$repreneur->ID,
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+		] );
 
 		return 'ok';
 	}
@@ -297,7 +299,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-content' ),
 				$rejected_repreneur->ID,
-				$this );
+				$this, [], null, null, [
+				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+			] );
 		}
 
 		$this->setAsk( array() );
@@ -306,13 +310,17 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-content' ),
 			$this->getAdherentId(),
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $repreneur->getAllEmails() )
+		] );
 
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-validation-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-repreneur-mail-content' ),
 			$repreneur->ID,
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+		] );
 
 		return 'ok';
 	}
@@ -359,13 +367,17 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-content' ),
 			$this->getAdherentId(),
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getRepreneur()->getAllEmails() )
+		] );
 
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-ask-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-ask-repreneur-mail-content' ),
 			$user_id,
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+		] );
 
 		return 'ok';
 	}
@@ -387,7 +399,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-content' ),
 			$user_id,
-			$this );
+			$this, [], null, null, $this->getRepreneur() ? [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+		] : [] );
 
 
 		if ( $this->getRepreneur() ) {
@@ -395,14 +409,18 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
 				$this->getRepreneurId(),
-				$this );
+				$this, [], null, null, [
+				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+			] );
 		} else {
 			foreach ( $this->getAsk() as $ask ) {
 				amapress_mail_to_current_user(
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
 					$ask['user'],
-					$this );
+					$this, [], null, null, [
+					'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+				] );
 			}
 		}
 
@@ -438,14 +456,18 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-adherent-mail-content' ),
 			$user_id,
-			$this );
+			$this, [], null, null, $repreneur ? [
+			'Reply-To: ' . implode( ',', $repreneur->getAllEmails() )
+		] : [] );
 
 		if ( $repreneur ) {
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content' ),
 				$repreneur->ID,
-				$this );
+				$this, [], null, null, [
+				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmails() )
+			] );
 		}
 
 		return 'ok';
@@ -457,10 +479,11 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	}
 
 	private static $properties = null;
+
 	public static function getProperties() {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
-				'lien-liste-paniers'               => [
+				'lien-liste-paniers'      => [
 					'desc' => 'Lien vers la page "Paniers disponibles"',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -502,13 +525,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'mes-paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'date'                             => [
+				'date'                    => [
 					'desc' => 'Date de distribution de ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return date_i18n( 'd/m/Y', $panier->getDate() );
 					}
 				],
-				'panier'                           => [
+				'panier'                  => [
 					'desc' => 'Panier(s) distribué(s) à cette distribution (titre des paniers)',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -638,7 +661,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $dist->getTitle();
 					}
 				],
-				'distribution-href'                => [
+				'distribution-href'       => [
 					'desc' => 'Url de la distribution auquel appartient ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
