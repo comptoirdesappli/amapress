@@ -687,6 +687,18 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return array_unique( $ret );
 	}
 
+	public function getAllEmailsWithCoAdherents() {
+		$user_ids = AmapressContrats::get_related_users( $this->ID );
+		$ret      = [];
+		foreach ( $user_ids as $user_id ) {
+			$amapien = AmapressUser::getBy( $user_id );
+			if ( $amapien ) {
+				$ret = array_merge( $ret, $amapien->getAllEmails() );
+			}
+		}
+
+		return array_unique( $ret );
+	}
 
 	public
 	function isIntermittent() {
