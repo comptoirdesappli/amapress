@@ -885,3 +885,36 @@ jQuery(function() {
 });
 </script>';
 }
+
+add_filter( 'manage_users_columns', 'amapress_add_user_lastname_column' );
+function amapress_add_user_lastname_column( $columns ) {
+	$columns['last_name'] = 'Nom';
+
+	return $columns;
+}
+
+add_filter( 'manage_users_sortable_columns', 'amapress_add_user_lastname_sort_column' );
+function amapress_add_user_lastname_sort_column( $columns ) {
+	$columns['last_name'] = 'last_name';
+
+	return $columns;
+}
+
+add_action( 'manage_users_custom_column', 'amapress_show_user_lastname_column_content', 10, 3 );
+function amapress_show_user_lastname_column_content( $value, $column_name, $user_id ) {
+	$user = get_userdata( $user_id );
+	if ( $user && 'last_name' == $column_name ) {
+		return $user->last_name;
+	}
+
+	return $value;
+}
+
+add_action( 'pre_user_query', 'amapress_lastname_sort_pre_user_query', 15 );
+function amapress_lastname_sort_pre_user_query( WP_User_Query $query ) {
+	if ( 'last_name' == $query->query_vars['orderby'] ) {
+		global $wpdb;
+		$query->query_from    .= " LEFT OUTER JOIN $wpdb->usermeta amps_last_name ON $wpdb->users.ID = amps_last_name.user_id AND amps_last_name.meta_key='last_name'";
+		$query->query_orderby = "ORDER BY amps_last_name.meta_value " . ( strpos( $query->query_orderby, ' DESC' ) === false ? 'ASC' : 'DESC' );
+	}
+}
