@@ -890,57 +890,57 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'les-paniers-intermittents' => [
+		'les-paniers-intermittents'     => [
 			'desc'  => 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers',
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'intermittent-paniers'      => [
+		'intermittent-paniers'          => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"',
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'              => [
+		'amapiens-map'                  => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'        => [
+		'amapiens-role-list'            => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'                => [
+		'agenda-url'                    => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'            => [
+		'nous-contacter'                => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'         => [
+		'front_next_events'             => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'            => [
+		'front_produits'                => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'        => [
+		'front_nous_trouver'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'        => [
+		'front_default_grid'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne'      => [
+		'inscription-en-ligne'          => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
@@ -1169,7 +1169,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	);
 
 	if ( current_user_can( 'update_core' ) ) {
-		echo '<p><a href="' . admin_url( 'options.php?github_updater_refresh_transients=1' ) . '" target="_blank">Vérifier la mise à jour d\'Amapress</a> / <a href="' . admin_url( 'plugins.php' ) . '" target="_blank">Voir les extensions installées</a></p>';
+		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">Voir les extensions installées</a></p>';
 	}
 
 	foreach ( $state as $categ => $checks ) {
@@ -1202,3 +1202,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		amapress_echo_panel_end();
 	}
 }
+
+add_action( 'pre_current_active_plugins', function ( $plugins ) {
+	echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a></p>';
+} );

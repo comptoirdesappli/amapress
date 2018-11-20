@@ -51,6 +51,10 @@ define( 'AMAPRESS_VERSION', '0.62.25' );
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
+function amapress_get_github_updater_url() {
+	return is_multisite() ? network_admin_url( 'settings.php?page=github-updater' ) : admin_url( 'options-general.php?page=github-updater' );
+}
+
 function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array(), $cc = null, $bcc = null ) {
 //    add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 	if ( is_array( $to ) ) {
