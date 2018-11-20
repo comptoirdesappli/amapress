@@ -364,6 +364,9 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	if ( isset( $_REQUEST['amp_back_to_list'] ) ) {
 		$amp_back_to_list = $_REQUEST['amp_back_to_list'];
 	}
+	if ( ! empty( $amp_back_to_list ) && strpos( $amp_back_to_list, 'post.php' ) !== false ) {
+		$amp_back_to_list = null;
+	}
 
 	if ( ! empty( $amp_back_to_list ) ) {
 		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_attr( $amp_back_to_list ) . '" />';
