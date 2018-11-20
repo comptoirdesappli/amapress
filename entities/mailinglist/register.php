@@ -39,7 +39,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 //        'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-email-alt',
 		'fields'           => array(
-			'name'                   => array(
+			'name'       => array(
 				'group'    => 'Nom',
 				'name'     => amapress__( 'Nom' ),
 				'type'     => 'select',
@@ -47,7 +47,12 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'options'  => 'amapress_get_mailinglists',
 				'required' => true,
 			),
-			'moderation'             => array(
+			'desc'       => array(
+				'group' => 'Description',
+				'name'  => amapress__( 'Description' ),
+				'type'  => 'text',
+			),
+			'moderation' => array(
 				'group'       => 'Modération',
 				'name'        => amapress__( 'Modération' ),
 				'type'        => 'select',

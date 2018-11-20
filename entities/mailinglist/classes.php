@@ -18,6 +18,16 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 		return $this->getCustom( 'amapress_mailinglist_name' );
 	}
 
+	public function getDescription() {
+		return $this->getCustom( 'amapress_mailinglist_desc' );
+	}
+
+	public function getAddress() {
+		$name = $this->getName();
+
+		return explode( ':', $name )[1];
+	}
+
 	public function getMembersQueries() {
 		$ret   = $this->getCustomAsArray( 'amapress_mailinglist_queries' );
 		$users = $this->getCustomAsIntArray( 'amapress_mailinglist_other_users' );
@@ -26,6 +36,21 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 		}
 
 		return $ret;
+	}
+
+	public function getMembersSMSTo() {
+		$phones = [];
+		foreach ( $this->getMembersQueries() as $user_query ) {
+			foreach ( get_users( $user_query ) as $user ) {
+				$amapien = AmapressUser::getBy( $user );
+				$phones  = array_merge( $phones, $amapien->getPhoneNumbers( true ) );
+			}
+		}
+		if ( empty( $phones ) ) {
+			return '';
+		}
+
+		return 'sms:' . implode( ',', $phones );
 	}
 
 	public function getModeratorsQueries() {
