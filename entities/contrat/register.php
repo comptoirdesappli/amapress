@@ -60,6 +60,9 @@ function amapress_register_entities_contrat( $entities ) {
 			if ( empty( $contrat->getProducteur() ) ) {
 				echo '<div class="notice notice-error"><p>Présentation Web invalide : pas de producteur associée</p></div>';
 			}
+
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
+
 			echo '<h1>Termes du contrat :</h1>';
 		},
 		'fields'                  => array(
@@ -103,6 +106,13 @@ function amapress_register_entities_contrat( $entities ) {
 					'placeholder' => 'Toutes les producteurs',
 				),
 				'searchable'        => true,
+				'readonly'          => function ( $post_id ) {
+					if ( TitanFrameworkOption::isOnEditScreen() ) {
+						return true;
+					}
+
+					return false;
+				},
 			),
 			'contrats'   => array(
 				'name'            => amapress__( 'Contrats' ),
@@ -144,6 +154,9 @@ function amapress_register_entities_contrat( $entities ) {
 			if ( empty( $contrat->getModel() ) ) {
 				echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Web associée</p></div>';
 			}
+
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
+
 			if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) && TitanFrameworkOption::isOnEditScreen() ) {
 				$class   = 'notice notice-error';
 				$message = 'Vous devez configurer les quantités et tarifs des paniers';
@@ -366,6 +379,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'type'                 => 'custom',
 				'group'                => '1/6 - Ferme',
 				'show_on'              => 'edit-only',
+				'desc'                 => 'Pour modifier les référents, cliquez sur le lien Producteur ci-dessus',
 				'use_custom_as_column' => true,
 				'custom'               => function ( $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
@@ -674,7 +688,7 @@ jQuery(function($) {
 
 
 			// 4/6 Paniers
-			'quant_type'            => array(
+			'quant_type'     => array(
 				'name'     => amapress__( 'Choix du contenu des paniers' ),
 				'type'     => 'custom',
 				'group'    => '4/6 - Paniers',
@@ -841,7 +855,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor'          => array(
+			'quant_editor'   => array(
 				'name'        => amapress__( 'Configuration des paniers (Taille/Quantités)' ),
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
