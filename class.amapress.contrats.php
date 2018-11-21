@@ -44,10 +44,15 @@ class AmapressContrats {
 	}
 
 	public static function get_contrat_status( $contrat_id, &$need_generate ) {
-		if ( 'draft' == get_post_status( $contrat_id ) ) {
+		$post_status = get_post_status( $contrat_id );
+		if ( 'draft' == $post_status || 'auto-draft' == $post_status ) {
 			$need_generate = 'draft';
 
 			return 'Brouillon, pas encore disponible';
+		} else if ( 'trash' == $post_status ) {
+			$need_generate = 'trash';
+
+			return 'Dans la corbeille, plus disponible';
 		}
 		$dists   = AmapressDistributions::generate_distributions( $contrat_id, false, true );
 		$paniers = AmapressPaniers::generate_paniers( $contrat_id, false, true );
@@ -85,6 +90,8 @@ class AmapressContrats {
 			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Pas de dates</span></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'draft' ) {
 			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: orange;"><span>Brouillon</span></' . $tag . '></' . $tag . '>';
+		} else if ( $res === 'trash' ) {
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Corbeille</span></' . $tag . '></' . $tag . '>';
 		} else {
 			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>OK</span></' . $tag . '></' . $tag . '>';
 		}
