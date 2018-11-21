@@ -445,7 +445,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['15_posts'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : 'success',
 		'Période d\'adhésion',
-		'Créer une période d\'adhésion pour les cotisations',
+		'Créer une période d\'adhésion pour les cotisations de l\'année en cours',
 		admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
@@ -986,15 +986,26 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		);
 	}
 
-	$state['26_online_inscr']   = array();
-	$online_contrats            = array_filter( $subscribable_contrat_instances, function ( $c ) {
+	$state['26_online_inscr'] = array();
+	$online_contrats          = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe();
 	} );
-	$not_online_contrats        = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
+	$not_online_contrats      = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return ! $c->canSelfSubscribe();
 	} );
+	$first_online_date        = 0;
+	foreach ( $online_contrats as $online_contrat ) {
+		if ( $online_contrat->getDate_debut() > $first_online_date ) {
+			$first_online_date = $online_contrat->getDate_debut();
+			break;
+		}
+	}
+	if ( empty( $first_online_date ) ) {
+		$first_online_date = amapress_time();
+	}
+
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		count( $online_contrats ) == 0 ? 'warning' : 'success',
 		'Modèles de contrats accessibles en ligne',
@@ -1031,7 +1042,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'<strong>Contrats avec Word attaché :</strong> ' . ( count( $online_contrats ) == 0 ? 'aucun' : implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
 			$l   = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
-			$tit = esc_html( $dn->getTitle() );
+			$tit                = esc_html( $dn->getTitle() );
 
 			return "<a href='{$l}' target='_blank'>{$tit}</a>";
 		}, $with_word_contrats ) ) ) .
@@ -1043,6 +1054,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 				return "<a href='{$l}' target='_blank'>{$tit}</a>";
 			}, $without_word_contrats ) ) : '' )
 	);
+	$adh_period                 = AmapressAdhesionPeriod::getCurrent( $first_online_date );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : ( ! $adh_period->getWordModelId() ? 'warning' : 'success' ),
 		'Période d\'adhésion',
