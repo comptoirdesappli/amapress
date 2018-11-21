@@ -182,7 +182,8 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
-		'Cette section permet le référencement dans les moteurs de recherche. <br/>Remplir les champs <strong>Titre</strong> et <strong>Slogan</strong>',
+		'Cette section permet le référencement dans les moteurs de recherche. 
+<br/>Remplir les champs <strong>Titre</strong> (Typiquement le nom de votre AMAP) et <strong>Slogan</strong> (Un sous titre pour votre AMAP. Vous pouvez également y indiquer l\'utilisation d\'Amapress, en y ajoutant la mention suivante "Construit avec Amapress, l\'outil pour les AMAP")',
 		admin_url( 'customize.php?autofocus[section]=title_tagline' )
 	);
 	$site_icon            = get_option( 'site_icon' );
