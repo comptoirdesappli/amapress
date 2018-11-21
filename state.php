@@ -1069,6 +1069,19 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
 	);
+	$assistant_conf_url = admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' );
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',
+		'Si vous souhaitez inclure une étape "Règlement de l\'AMAP" préalable à l\'inscription aux contrats, saisir le titre de l\'étape et le règlement <a href="' . $assistant_conf_url . '" target="_blank">ici</a>, puis ajouter "agreement=true dans le shortcode [inscription-en-ligne]".',
+		$assistant_conf_url
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Autres réglages de l\'assistant inscription en ligne',
+		'Vous pouvez y configurer les mails de confirmation ainsi que les messages de certaines étapes.',
+		$assistant_conf_url
+	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		isset( $needed_shortcodes['amapien-edit-infos'] ) ? 'warning' : 'success',
 		'Ajouter le shortcode [amapien-edit-infos] pour permettre aux amapiens de modifier leurs coordonnées.',
