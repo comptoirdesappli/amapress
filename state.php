@@ -125,8 +125,12 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'tinymce-advanced', 'TinyMCE Advanced',
 		'<strong>Recommandé</strong> : Enrichi l\'éditeur de texte intégré de Wordpress afin de faciliter la création de contenu sur le site',
 		'warning' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'google-sitemap-generator', 'Yoast SEO',
+		'<strong>Recommandé</strong> : Utilisation simple, améliore le référencement du site en générant un plan du site et en notifiant les moteurs de recherche des modifications du site. 
+<br/>Après activation rendez-vous dans sa <a href="' . admin_url( 'options-general.php?page=google-sitemap-generator%2Fsitemap.php#sm_includes' ) . '">configuration</a> (Section Contenu du sitemap/Autres types d\'article) et cocher les cases "Inclure les articles de type Produits/Recettes/Producteurs/Lieux de distribution/Présentations Web"',
+		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wordpress-seo', 'Yoast SEO',
-		'<strong>Optionnel</strong> :  Améliore le référencement du site. Ce plugin ajoute de nombreuse options dans le back-office, à installer par un webmaster.',
+		'<strong>Optionnel</strong> : Utilisation avancée, améliore le référencement du site. Ce plugin ajoute de nombreuse options dans le back-office, à installer par un webmaster.',
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'unconfirmed', 'Unconfirmed',
 		'<strong>Recommandé</strong> : Permet de gérer les inscriptions en cours (Renvoyer le mail de bienvenue avec le lien pour activer le compte utilisateur…)',
