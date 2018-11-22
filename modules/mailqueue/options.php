@@ -16,10 +16,10 @@ function amapress_mailing_queue_menu_options() {
 			'icon'       => 'dashicons-admin-tools',
 		),
 		'options'  => array(
-			array(
-				'type' => 'note',
-				'desc' => 'ici vous pouvez gérer...'
-			),
+//			array(
+//				'type' => 'note',
+//				'desc' => 'ici vous pouvez gérer...'
+//			),
 		),
 		'tabs'     => array(
 			'Options de la file de messages' => array(

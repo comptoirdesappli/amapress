@@ -109,10 +109,10 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-tractor',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -151,10 +151,10 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-water',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -201,10 +201,10 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-interface-2',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 						'Roles des Responsables de distribution'                  => array(
@@ -935,10 +935,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-none flaticon-pen',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -987,10 +987,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-none flaticon-business-2',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 						'Configuration de l\'espace intermittents' => array(
@@ -1548,10 +1548,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-none flaticon-food-29',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 //						'Recettes'   => array(
@@ -1848,10 +1848,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(
-								array(
-									'type' => 'note',
-									'desc' => 'ici vous pouvez gérer...'
-								),
+//								array(
+//									'type' => 'note',
+//									'desc' => 'ici vous pouvez gérer...'
+//								),
 							),
 							'tabs'     => array(
 								'Mail de bienvenue'                                      => array(
@@ -2191,10 +2191,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(
-								array(
-									'type' => 'note',
-									'desc' => 'ici vous pouvez gérer...'
-								),
+//								array(
+//									'type' => 'note',
+//									'desc' => 'ici vous pouvez gérer...'
+//								),
 							),
 							'tabs'     => array(
 								'Ouvaton - Sympa'   => array(
@@ -2394,10 +2394,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 						'icon'       => 'dashicons-none flaticon-farmer',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 						'Utilisateurs'          => array(
