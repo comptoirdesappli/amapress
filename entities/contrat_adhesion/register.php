@@ -1519,7 +1519,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			echo do_shortcode( '[inscription-en-ligne admin_mode=true]' );
 		} else {
 
-			echo '<h4>2/ Inscrire l\'utilisateur à un contrat</h4>';
+			echo '<h4>2/ Inscription</h4>';
 
 			$user = AmapressUser::getBy( $_REQUEST['user_id'] );
 
@@ -1535,7 +1535,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			usort( $adhs, function ( $a, $b ) {
 				return strcmp( $a->getTitle(), $b->getTitle() );
 			} );
-			echo '<p><strong>Ses contrats:</strong></p>';
+			echo '<p><strong>Ses contrats :</strong></p>';
 			echo '<ul style="list-style-type: circle">';
 			foreach ( $adhs as $adh ) {
 				$renew_url = '';
@@ -1560,12 +1560,12 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			echo '</ul>';
 
 			$add_url = add_query_arg( 'assistant', true );
-			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une inscription par l\'assistant d\'inscription</a></p>';
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Inscription avec l\'assistant</a></p>';
 			echo '<br />';
 
 			$add_url = admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=' . $user->ID );
-			echo '<h4>Utilisateurs avancés</h4>';
-			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Ajouter une autre inscription manuellement</a></p>';
+			echo '<h4>Configuration avancée</h4>';
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Inscription classique</a></p>';
 		}
 	} else {
 		echo '<h4>1/ Choisir un utilisateur ou le créer</h4>';
@@ -1623,7 +1623,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			'user_id',
 			'step',
 			'assistant'
-		] ) . '" class="button button-primary">Choisir/ajouter un autre amapien</a></p>';
+		] ) . '" class="button button-primary">Choisir un autre amapien</a></p>';
 	echo '<script type="text/javascript">jQuery(function() {
     jQuery("#user_id").select2({
         allowClear: true,
