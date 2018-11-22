@@ -94,6 +94,8 @@ function amapress_register_entities_adhesion( $entities ) {
 		'default_orderby'  => 'post_title',
 		'default_order'    => 'ASC',
 		'edit_header'      => function ( $post ) {
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
+
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
@@ -129,6 +131,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			$class = 'notice notice-warning';
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+
 		},
 		'views'            => array(
 			'remove'  => array( 'mine' ),
@@ -639,7 +642,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					);
 				}
 
-				if ( ! TitanFrameworkOption::isOnNewScreen() ) {
+				if ( ! TitanFrameworkOption::isOnNewScreen() && ! isset( $_REQUEST['full_edit'] ) ) {
 					$ret .= '<input id="amapress_adhesion_adherent" name="amapress_adhesion_adherent" type="hidden" value="' . $adh->getAdherentId() . '" />';
 				}
 
@@ -714,7 +717,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$had_contrat = true;
 			$ret         .= '<b>' . Amapress::makeLink( $contrat_instance->getAdminEditLink(), $contrat_instance->getTitle(), true, true ) . '</b>';
 			$ret         .= '<div>';
-			if ( ! TitanFrameworkOption::isOnNewScreen() ) {
+			if ( ! TitanFrameworkOption::isOnNewScreen() && ! isset( $_REQUEST['full_edit'] ) ) {
 				$ret .= '<input id="amapress_adhesion_adherent" name="amapress_adhesion_adherent" type="hidden" value="' . $adh->getAdherentId() . '" />';
 			}
 
