@@ -1746,12 +1746,19 @@ function amapress_wp_link_query_args( $query ) {
 			$ptt  = amapress_simplify_post_type( $pt );
 			$ents = AmapressEntities::getPostTypes();
 			if ( isset( $ents[ $ptt ]['show_in_nav_menu'] ) && $ents[ $ptt ]['show_in_nav_menu'] === false ) {
-				unset( $query['post_type'][ $pt ] );
+				$query['post_type'] = array_filter( $query['post_type'], function ( $v ) use ( $pt ) {
+					return $v != $pt;
+				} );
 			}
 		}
-		$query['post_type'] = array( 'post', 'pages' ); // show only posts and pages
+	} else {
+		$query['post_type'] = [ $query['post_type'] ];
 	}
-	$query['amapress_date'] = 'active';
+	foreach ( AmapressEntities::getPostTypes() as $pt => $conf ) {
+		if ( ! isset( $conf['show_in_nav_menu'] ) || $conf['show_in_nav_menu'] !== false ) {
+			$query['post_type'][] = amapress_unsimplify_post_type( $pt );
+		}
+	}
 
 	return $query;
 
