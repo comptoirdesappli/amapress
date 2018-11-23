@@ -585,6 +585,11 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_contrat_renew_recall_options(),
 						),
+						'Mails - Inscriptions à valider'       => array(
+							'id'      => 'amp_tab_inscr_validate_distrib',
+							'desc'    => '',
+							'options' => amapress_inscriptions_to_validate_recall_options(),
+						),
 						'Assistant inscription en ligne'       => array(
 							'id'      => 'config_online_inscriptions',
 							'desc'    => '',
