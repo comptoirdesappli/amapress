@@ -415,13 +415,30 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}, $amap_roles ) )
 	);
 
-	$lieux               = Amapress::get_lieux();
-	$not_localized_lieux = array_filter( $lieux,
+	$members_no_desc = array_map( function ( $user ) {
+		$amapien = AmapressUser::getBy( $user );
+
+		return AMapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() . ' (' . $amapien->getEmail() . ')', true, true );
+	}, get_users( [
+		'amapress_role' => 'collectif_no_amap_role',
+	] ) );
+	if ( ! empty( $members_no_desc ) ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			'warning',
+			'Membres du collectif sans rôle descriptif',
+			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice',
+			admin_url( 'admin.php?page=amapress_collectif' ),
+			implode( ', ', $members_no_desc )
+		);
+	}
+
+	$lieux                      = Amapress::get_lieux();
+	$not_localized_lieux        = array_filter( $lieux,
 		function ( $lieu ) {
 			/** @var AmapressLieu_distribution $lieu */
 			return ! $lieu->isAdresseLocalized();
 		} );
-	$state['15_posts'][] = amapress_get_check_state(
+	$state['15_posts'][]        = amapress_get_check_state(
 		count( $lieux ) == 0 ? 'error' : ( ! empty( $not_localized_lieux ) ? 'warning' : 'success' ),
 		'Lieu de distribution',
 		'Créer au moins un lieu de distribution',
@@ -1042,7 +1059,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'<strong>Contrats avec Word attaché :</strong> ' . ( count( $online_contrats ) == 0 ? 'aucun' : implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
 			$l   = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
-			$tit                = esc_html( $dn->getTitle() );
+			$tit = esc_html( $dn->getTitle() );
 
 			return "<a href='{$l}' target='_blank'>{$tit}</a>";
 		}, $with_word_contrats ) ) ) .
@@ -1069,7 +1086,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
 	);
-	$assistant_conf_url = admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' );
+	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',
