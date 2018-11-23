@@ -527,7 +527,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
-                                                     class="required"/> <?php echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_checkbox' ) ) ); ?>
+                                                     class="required"
+                                                     data-msg="Veuillez cocher la case ci-dessous"/> <?php echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_checkbox' ) ) ); ?>
                 </label>
             </p>
             <p>
@@ -1650,6 +1651,10 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
         label {
             display: inline !important;
         }
+
+        label#accept-error {
+            display: block !important;
+        }
     </style>
     <script type="text/javascript">
         //<![CDATA[
@@ -1664,7 +1669,7 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
                     if ($commandes.length) {
                         error.insertAfter($commandes);
                     } else {
-                        if (element.attr("type") == "radio") {
+                        if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
                             error.insertBefore(element);
                         } else {
                             error.insertAfter(element);
