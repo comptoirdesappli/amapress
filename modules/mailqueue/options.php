@@ -253,7 +253,7 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 				'val'     => $email['time'],
 				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) ),
 			),
-			'to'            => esc_html( $email['to'] ),
+			'to'            => esc_html( str_replace( ',', ', ', $email['to'] ) ),
 			'subject'       => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
 			'message'       => $msg,
