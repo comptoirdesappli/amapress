@@ -1059,4 +1059,24 @@ class AmapressDistribution extends Amapress_EventBase {
 			$this->setCustom( 'amapress_distribution_heure_fin_spec', $end_hour_date );
 		}
 	}
+
+	public static function getRespRespDistribEmails( $lieu_id ) {
+		return AmapressUser::getEmailsForAmapRole( intval( Amapress::getOption( 'resp-distrib-amap-role' ), $lieu_id ) );
+	}
+
+	public static function getResponsablesRespDistribReplyto( $lieu_id ) {
+		$emails = self::getRespRespDistribEmails( $lieu_id );
+		if ( empty( $emails ) ) {
+			$emails = self::getRespRespDistribEmails( null );
+		}
+		if ( empty( $emails ) ) {
+			return [];
+		}
+
+		return 'Reply-To: ' . implode( ',', $emails );
+	}
+
+	public function getResponsablesResponsablesDistributionsReplyto() {
+		return self::getResponsablesRespDistribReplyto( $this->getLieuId() );
+	}
 }

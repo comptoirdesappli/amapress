@@ -725,7 +725,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-mail-subject' ),
 				Amapress::getOption( 'intermittence-mail-content' ),
-				$this->ID );
+				$this->ID, null, [], null, null,
+				AmapressIntermittence_panier::getResponsableIntermittentsReplyto( null ) );
 		}
 
 		return true;
@@ -750,7 +751,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-desincr-mail-subject' ),
 				Amapress::getOption( 'intermittence-desincr-mail-content' ),
-				$this->ID );
+				$this->ID, null, [], null, null,
+				AmapressIntermittence_panier::getResponsableIntermittentsReplyto( null ) );
 		}
 	}
 
@@ -837,8 +839,22 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function getContacts() {
-		return Amapress::makeLink( 'mailto:' . $this->getAllEmails(), 'Joindre par mail' ) .
+		return Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par mail' ) .
 		       ' / Par téléphone : ' . $this->getTelTo( 'both', false, false, ', ' ) .
 		       ' / Par SMS : ' . $this->getTelTo( true, true, false, ', ' );
+	}
+
+	public static function getEmailsForAmapRole( $role_id, $lieu_id = null ) {
+		$term = get_term( $role_id, AmapressUser::AMAP_ROLE );
+		if ( empty( $term ) ) {
+			return null;
+		}
+		$users  = get_users( AmapressUser::AMAP_ROLE . '=' . $term->slug . ( $lieu_id ? '&amapress_lieu=' . $lieu_id : '' ) );
+		$emails = [];
+		foreach ( $users as $user ) {
+			$emails = array_merge( $emails, AmapressUser::getBy( $user )->getAllEmails() );
+		}
+
+		return $emails;
 	}
 }

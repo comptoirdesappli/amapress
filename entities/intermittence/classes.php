@@ -363,12 +363,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 
 		$this->setLastAskId( $user_id );
 
+		$asker = AmapressUser::getBy( $user_id );
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-content' ),
 			$this->getAdherentId(),
 			$this, [], null, null, [
-			'Reply-To: ' . implode( ',', $this->getRepreneur()->getAllEmails() )
+			$asker ? 'Reply-To: ' . implode( ',', $asker->getAllEmails() ) : ''
 		] );
 
 		amapress_mail_to_current_user(
@@ -483,7 +484,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	public static function getProperties() {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
-				'lien-liste-paniers'      => [
+				'lien-liste-paniers'               => [
 					'desc' => 'Lien vers la page "Paniers disponibles"',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -497,7 +498,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'liste-paniers'           => [
+				'liste-paniers'                    => [
 					'desc' => 'Lien vers la page "Paniers disponibles"',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -511,7 +512,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'mes-echanges'            => [
+				'mes-echanges'                     => [
 					'desc' => 'Lien vers la page "Mes paniers échangés"',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -525,13 +526,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'mes-paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'date'                    => [
+				'date'                             => [
 					'desc' => 'Date de distribution de ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return date_i18n( 'd/m/Y', $panier->getDate() );
 					}
 				],
-				'panier'                  => [
+				'panier'                           => [
 					'desc' => 'Panier(s) distribué(s) à cette distribution (titre des paniers)',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -541,7 +542,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getPaniersTitles();
 					}
 				],
-				'adherent-nom'            => [
+				'adherent-nom'                     => [
 					'desc' => 'Nom de l\'adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -551,7 +552,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getAdherent()->getDisplayName();
 					}
 				],
-				'adherent'                => [
+				'adherent'                         => [
 					'desc' => 'Adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -565,7 +566,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						);
 					}
 				],
-				'adherent-coords'         => [
+				'adherent-coords'                  => [
 					'desc' => 'Coordonnées adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -575,19 +576,19 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getAdherent()->getContacts();
 					}
 				],
-				'adherent-message'        => [
+				'adherent-message'                 => [
 					'desc' => 'Message de mise à disposition du panier de la part de l\'adhérent',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return $panier->getAdherentMessage();
 					}
 				],
-				'adherent-cancel-message' => [
+				'adherent-cancel-message'          => [
 					'desc' => 'Message d\'annulation de la part de l\'adhérent',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return $panier->getAdherentCancelMessage();
 					}
 				],
-				'repreneur-nom'           => [
+				'repreneur-nom'                    => [
 					'desc' => 'Nom du repreneur du panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
@@ -603,7 +604,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $user->getDisplayName();
 					}
 				],
-				'repreneur'               => [
+				'repreneur'                        => [
 					'desc' => 'Repreneur du panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
@@ -622,7 +623,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						);
 					}
 				],
-				'repreneur-coords'        => [
+				'repreneur-coords'                 => [
 					'desc' => 'Coordonnées du repreneur du panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
@@ -637,7 +638,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $user->getContacts();
 					}
 				],
-				'contrat'                 => [
+				'contrat'                          => [
 					'desc' => 'Panier(s) distribué(s) à cette distribution (nom des contrats)',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -647,7 +648,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getContratTitles();
 					}
 				],
-				'distribution'            => [
+				'distribution'                     => [
 					'desc' => 'Titre de la distribution auquel appartient ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -661,7 +662,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $dist->getTitle();
 					}
 				],
-				'distribution-href'       => [
+				'distribution-href'                => [
 					'desc' => 'Url de la distribution auquel appartient ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -675,7 +676,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $dist->getPermalink();
 					}
 				],
-				'distribution-link'       => [
+				'distribution-link'                => [
 					'desc' => 'Lien html vers la distribution auquel appartient ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -887,5 +888,21 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		}
 
 		return $ret;
+	}
+
+	public static function getRespIntermittentsEmails( $lieu_id ) {
+		return AmapressUser::getEmailsForAmapRole( intval( Amapress::getOption( 'resp-intermittents-amap-role' ), $lieu_id ) );
+	}
+
+	public static function getResponsableIntermittentsReplyto( $lieu_id ) {
+		$emails = self::getRespIntermittentsEmails( $lieu_id );
+		if ( empty( $emails ) ) {
+			$emails = self::getRespIntermittentsEmails( null );
+		}
+		if ( empty( $emails ) ) {
+			return [];
+		}
+
+		return 'Reply-To: ' . implode( ',', $emails );
 	}
 }

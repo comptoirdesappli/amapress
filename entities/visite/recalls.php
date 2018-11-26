@@ -22,7 +22,8 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 		Amapress::getOption( 'visite-inscription-recall-subject' ),
 		Amapress::getOption( 'visite-inscription-recall-content' ),
 		'', $participants_users, $visite, array(),
-		amapress_get_recall_cc_from_option( 'visite-inscription-recall-cc' ) );
+		amapress_get_recall_cc_from_option( 'visite-inscription-recall-cc' ),
+		null, AmapressVisite::getResponsableVisitesReplyto() );
 } );
 
 /** @return array */

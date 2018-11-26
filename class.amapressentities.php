@@ -1680,6 +1680,44 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
+						'Rôles Amap' => array(
+							'id'         => 'amp_amap_roles_config',
+							'desc'       => '',
+							'capability' => 'manage_options',
+							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Etiquettes de rôles Amap particulières. Permet, par ex, d\'affecter les Reply To des mails automatiques aux personnes qui gèrent les visites, les distributions, les intermittents',
+								),
+								array(
+									'id'       => 'resp-distrib-amap-role',
+									'name'     => 'Rôle des responsables des responsables des distributions',
+									'type'     => 'select-categories',
+									'taxonomy' => AmapressUser::AMAP_ROLE,
+								),
+								array(
+									'id'       => 'resp-visite-amap-role',
+									'name'     => 'Rôle des responsables des visites',
+									'type'     => 'select-categories',
+									'taxonomy' => AmapressUser::AMAP_ROLE,
+								),
+								array(
+									'id'       => 'resp-intermittents-amap-role',
+									'name'     => 'Rôle des responsables des intermittents',
+									'type'     => 'select-categories',
+									'taxonomy' => AmapressUser::AMAP_ROLE,
+								),
+								array(
+									'id'       => 'resp-amap_event-amap-role',
+									'name'     => 'Rôle des responsables des évènements Amap',
+									'type'     => 'select-categories',
+									'taxonomy' => AmapressUser::AMAP_ROLE,
+								),
+								array(
+									'type' => 'save',
+								),
+							)
+						),
 						'Général'    => array(
 							'id'      => 'amp_general_config',
 							'desc'    => '',
