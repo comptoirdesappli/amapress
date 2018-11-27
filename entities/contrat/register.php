@@ -663,7 +663,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'les-paniers'           => array(
+			'les-paniers'    => array(
 				'name'              => amapress__( 'Report livraison' ),
 				'group'             => '3/6 - Distributions',
 				'table_header_text' => '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</p>',
@@ -1457,7 +1457,8 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 		return $postmeta;
 	}
 
-	if ( is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] ) || is_wp_error( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
+	if ( ( isset( $postmeta['amapress_adhesion_contrat_instance'] ) && is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] ) )
+	     || ( isset( $postmeta['amapress_adhesion_contrat_quantite'] ) && is_wp_error( $postmeta['amapress_adhesion_contrat_quantite'] ) ) ) {
 		return $postmeta;
 	}
 
@@ -1477,6 +1478,10 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 				return new WP_Error( 'cannot_find_quant', "Impossible de résoudre la quantité {$quant_id}" );
 			}
 
+			$v = trim( $v );
+			if ( empty( $v ) ) {
+				continue;
+			}
 			if ( Amapress::toBool( $v ) ) {
 				$quants[] = $quant->getCode();
 			} else {
@@ -1605,6 +1610,10 @@ function amapress_resolve_contrat_quantite_ids( $contrat_instance_id, $contrat_q
 
 //add_filter('amapress_resolve_contrat_quantite_id','amapress_resolve_contrat_quantite_id', 10, 2);
 function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_quantite_name ) {
+	if ( is_wp_error( $contrat_quantite_name ) ) {
+		return null;
+	}
+
 	$quants = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 	if ( ! empty( $quants ) && count( $quants ) == 1 && Amapress::toBool( $contrat_quantite_name ) ) {
 		$fquant                = from( $quants )->first();
@@ -1618,7 +1627,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 	}
 
 	foreach ( $quants as $quant ) {
-		if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
+		if ( ! empty( $quant->getCode() ) && strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
 			return [
 				'id'    => $quant->ID,
 				'quant' => 1,
@@ -1633,7 +1642,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 				'id'    => $quant->ID,
 				'quant' => 1,
 			];
-		} else if ( str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
+		} else if ( abs( $quant->getQuantite() ) > 0.001 && str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
 			return [
 				'id'    => $quant->ID,
 				'quant' => 1,
@@ -1646,7 +1655,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 					continue;
 				}
 				foreach ( [ $raw, $fmt, $raw . ' ', $fmt . ' ', $raw . ' x ', $fmt . ' x ' ] as $prefix ) {
-					if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $prefix . $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
+					if ( ! empty( $quant->getCode() ) && strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $prefix . $quant->getCode() ) ) ), $contrat_quantite_name ) === 0 ) {
 						return [
 							'id'    => $quant->ID,
 							'quant' => floatval( $raw ),
@@ -1661,7 +1670,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 							'id'    => $quant->ID,
 							'quant' => floatval( $raw ),
 						];
-					} else if ( str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
+					} else if ( abs( $quant->getQuantite() ) > 0.001 && str_replace( ',', '.', strval( $quant->getQuantite() ) ) == str_replace( ',', '.', $contrat_quantite_name ) ) {
 						return [
 							'id'    => $quant->ID,
 							'quant' => floatval( $raw ),
