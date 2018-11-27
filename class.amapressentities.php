@@ -590,29 +590,29 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_inscriptions_to_validate_recall_options(),
 						),
-						'Assistant inscription en ligne'       => array(
+						'Assistant - Pré-inscription en ligne' => array(
 							'id'      => 'config_online_inscriptions',
 							'desc'    => '',
 							'options' => [
 								array(
 									'type' => 'heading',
-									'name' => 'Assistant - Etape réglement de l\'AMAP',
+									'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
 								),
 								array(
 									'id'      => 'online_subscription_agreement_step_name',
-									'name'    => 'Nom de l\'étape "Charte et réglement"',
+									'name'    => 'Nom de l\'étape',
 									'type'    => 'text',
 									'default' => 'Charte et règlement intérieur de l\'AMAP',
 								),
 								array(
 									'id'      => 'online_subscription_agreement_step_checkbox',
-									'name'    => 'Texte de la checkbox de validation de l\'étape "Charte et réglement"',
+									'name'    => 'Texte de la case à cocher',
 									'type'    => 'text',
 									'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
 								),
 								array(
 									'id'   => 'online_subscription_agreement',
-									'name' => 'Contenu de règlement de l\'AMAP',
+									'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
 									'type' => 'editor',
 									'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
 								),
@@ -621,18 +621,18 @@ class AmapressEntities {
 								),
 								array(
 									'type' => 'heading',
-									'name' => 'Mails - Confirmation du contrat en ligne',
+									'name' => 'Mails - Confirmation Inscription Contrat',
 								),
 								array(
 									'id'       => 'online_subscription_confirm-mail-subject',
-									'name'     => 'Sujet du mail',
+									'name'     => 'Objet',
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
 								),
 								array(
 									'id'      => 'online_subscription_confirm-mail-content',
-									'name'    => 'Contenu du mail',
+									'name'    => 'Contenu',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
 									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
@@ -650,11 +650,11 @@ class AmapressEntities {
 								),
 								array(
 									'type' => 'heading',
-									'name' => 'Assistant - Etape adhésion à l\'AMAP',
+									'name' => 'Assistant - Étape Adhésion AMAP',
 								),
 								array(
 									'id'      => 'online_subscription_greating_adhesion',
-									'name'    => 'Contenu du message de "remerciement pour votre adhésion"',
+									'name'    => 'Contenu du message de validation',
 									'type'    => 'editor',
 									'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
 									'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
@@ -664,18 +664,18 @@ class AmapressEntities {
 								),
 								array(
 									'type' => 'heading',
-									'name' => 'Mails - Confirmation du adhésion en ligne',
+									'name' => 'Confirmation - Pré-inscription en ligne',
 								),
 								array(
 									'id'       => 'online_adhesion_confirm-mail-subject',
-									'name'     => 'Sujet du mail',
+									'name'     => 'Objet',
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
 								),
 								array(
 									'id'      => 'online_adhesion_confirm-mail-content',
-									'name'    => 'Contenu du mail',
+									'name'    => 'Contenu',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
 Nous vous confirmons votre adhésion à %%nom_site%%\n
@@ -690,13 +690,13 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 								array(
 									'type' => 'heading',
-									'name' => 'Message au sujet des adhésions des co-adhérents',
+									'name' => 'Message - Cotisation des co-adhérents',
 								),
 								array(
 									'id'      => 'online_adhesion_coadh_message',
 									'name'    => 'Message',
 									'type'    => 'editor',
-									'default' => wpautop( 'Les co-adhérents qui ne sont pas du même foyer doivent payer chacun une cotisation/adhésion.' ),
+									'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
 									'desc'    => 'Message au sujet des adhésions des co-adhérents',
 								),
 								array(
