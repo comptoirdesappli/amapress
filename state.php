@@ -957,15 +957,20 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'            => [
+		'front_default_grid'   => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne'          => [
+		'inscription-en-ligne' => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
+		],
+		'listes-diffusions'    => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP',
+			'href'  => $new_page_href,
+			'categ' => '3/ Info utiles',
 		],
 	];
 	$found_shortcodes              = [];
