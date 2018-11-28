@@ -414,6 +414,27 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			return "<a href='{$l}' target='_blank'>{$t->name}</a>";
 		}, $amap_roles ) )
 	);
+	$empty_resp_roles = false;
+	foreach (
+		[
+			'resp-distrib-amap-role',
+			'resp-visite-amap-role',
+			'resp-intermittents-amap-role',
+			'resp-amap_event-amap-role'
+		] as $option
+	) {
+		if ( empty( Amapress::getOption( $option ) ) ) {
+			$empty_resp_roles = true;
+		}
+	}
+	if ( $empty_resp_roles ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			count( $amap_roles ) == 0 ? 'warning' : 'success',
+			'Rôle descriptif spécifiques des membres du collectif',
+			'<a href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
+			admin_url( 'admin.php?page=amapress_options_page&tab=amp_amap_roles_config' )
+		);
+	}
 
 	$members_no_desc = array_map( function ( $user ) {
 		$amapien = AmapressUser::getBy( $user );
@@ -432,13 +453,13 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		);
 	}
 
-	$lieux                      = Amapress::get_lieux();
-	$not_localized_lieux        = array_filter( $lieux,
+	$lieux               = Amapress::get_lieux();
+	$not_localized_lieux = array_filter( $lieux,
 		function ( $lieu ) {
 			/** @var AmapressLieu_distribution $lieu */
 			return ! $lieu->isAdresseLocalized();
 		} );
-	$state['15_posts'][]        = amapress_get_check_state(
+	$state['15_posts'][] = amapress_get_check_state(
 		count( $lieux ) == 0 ? 'error' : ( ! empty( $not_localized_lieux ) ? 'warning' : 'success' ),
 		'Lieu de distribution',
 		'Créer au moins un lieu de distribution',
@@ -856,7 +877,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$amapien_les_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'paniers-intermittents-page' ) . '&action=edit' );
 	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
 	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
-	$needed_shortcodes             = [
+	$needed_shortcodes   = [
 		'trombinoscope'                 => [
 			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
 			'href'  => $new_private_page_href,
@@ -942,17 +963,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'             => [
+		'front_next_events'    => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'                => [
+		'front_produits'       => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'            => [
+		'front_nous_trouver'   => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
@@ -973,7 +994,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'categ' => '3/ Info utiles',
 		],
 	];
-	$found_shortcodes              = [];
+	$found_shortcodes    = [];
 	uasort( $needed_shortcodes, function ( $a, $b ) {
 		return strcmp( $a['categ'], $b['categ'] );
 	} );
