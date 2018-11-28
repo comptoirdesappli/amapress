@@ -87,6 +87,10 @@ function amapress_send_message(
 	$subject     = wp_unslash( $subject );
 	$content     = wp_unslash( $content );
 	$content_sms = wp_unslash( $content_sms );
+	
+	if (is_string($headers)) {
+		$headers = [$headers];
+	}
 
 	$new_id = null;
 	/** @var AmapressUser $current_user */
