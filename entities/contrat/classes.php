@@ -1109,7 +1109,7 @@ class AmapressContrat_quantite extends TitanEntity {
 				$incr              = $incr / $incr_unit_factor;
 
 				for ( $i = $start; $i <= $stop; $i += $incr ) {
-					if ( $i > 0 ) {
+					if ( ( $i > 0 ) || ( $this->getContrat_instance()->isPanierVariable() && $i >= 0 ) ) {
 						$k             = strval( $i );
 						$options[ $k ] = $this->formatValue( $i );
 					}
