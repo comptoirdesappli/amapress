@@ -300,6 +300,16 @@ class AmapressContrats {
 			$post_ids = self::get_active_contrat_instances_ids( $contrat_instance_id, $date, $ignore_renouv_delta, $include_futur );
 			update_meta_cache( 'post', $post_ids );
 
+			$contrat_ids = array_map( function ( $p ) {
+				return $p->ID;
+			}, get_posts(
+				array(
+					'posts_per_page' => - 1,
+					'post_type'      => AmapressContrat::INTERNAL_POST_TYPE,
+				)
+			) );
+			update_meta_cache( 'post', $contrat_ids );
+
 			$res = array_map( function ( $p ) {
 				return AmapressContrat_instance::getBy( $p );
 			},

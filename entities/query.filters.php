@@ -1636,15 +1636,17 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		if ( ! is_array( $amapress_lieu ) ) {
 			$amapress_lieu = array( $amapress_lieu );
 		}
-		$lieu_ids    = array_map( function ( $l ) {
+		$lieu_ids     = array_map( function ( $l ) {
 			return Amapress::resolve_post_id( $l, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		}, $amapress_lieu );
-		$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
-		$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
-		$lieu_ids    = amapress_prepare_in_sql( $lieu_ids );
-		$user_ids    = array();
-		foreach (
-			$wpdb->get_col( "SELECT amps_pmach.meta_value
+		$all_user_ids = wp_cache_get( 'amps_lieu_all_user_ids' );
+		if ( false === $all_user_ids ) {
+			$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
+			$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
+			$lieu_ids    = amapress_prepare_in_sql( $lieu_ids );
+			$user_ids    = array();
+			foreach (
+				$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    LEFT JOIN $wpdb->postmeta as amps_pm_date_fin ON amps_pm_date_fin.post_id = amps_pmach.post_id AND amps_pm_date_fin.meta_key='amapress_adhesion_date_fin'
@@ -1658,21 +1660,23 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids)
                                                    AND amps_pm_adhesion.meta_value IN ($lieu_ids)" ) as $user_id
-		) {
-			$user_ids[] = intval( $user_id );
-		}
-		$all_user_ids = amapress_prepare_in_sql( $user_ids );
-		foreach (
-			$wpdb->get_col(
-				"SELECT DISTINCT $wpdb->usermeta.meta_value
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = amapress_prepare_in_sql( $user_ids );
+			foreach (
+				$wpdb->get_col(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
 WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
-		) {
-			$user_ids[] = intval( $user_id );
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = amapress_prepare_in_sql( $user_ids );
+			wp_cache_set( 'amps_lieu_all_user_ids', $all_user_ids );
 		}
-		$all_user_ids = amapress_prepare_in_sql( $user_ids );
-		$where        .= " AND $wpdb->users.ID IN ($all_user_ids)";
+		$where .= " AND $wpdb->users.ID IN ($all_user_ids)";
 	}
 	if ( isset( $uqi->query_vars['amapress_adhesion'] ) ) {
 		$amapress_adhesion = $uqi->query_vars['amapress_adhesion'];
