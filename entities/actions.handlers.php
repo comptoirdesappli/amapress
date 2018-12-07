@@ -159,7 +159,7 @@ function amapress_handle_actions() {
 		}
 		if ( $private ) {
 			$the_id = $private->ID;
-			if ( function_exists( 'is_bbpress' ) ) {
+			if ( function_exists( 'is_bbpress' ) && is_bbpress() ) {
 				$the_id = amapress_get_forum_id_from_post_id( $the_id );
 			}
 			$redirect_page = intval( get_post_meta( $the_id, 'amps_rd', true ) );
@@ -185,7 +185,7 @@ function amapress_handle_actions() {
 
 		$the_id = get_the_ID();
 		if ( function_exists( 'is_bbpress' ) ) {
-			if ( is_bbpress() ) {
+			if ( ! empty( $the_id ) && is_bbpress() ) {
 				$the_id = amapress_get_forum_id_from_post_id( $the_id );
 			}
 		}

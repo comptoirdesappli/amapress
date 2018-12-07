@@ -846,7 +846,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 	public static function getEmailsForAmapRole( $role_id, $lieu_id = null ) {
 		$term = get_term( $role_id, AmapressUser::AMAP_ROLE );
-		if ( empty( $term ) ) {
+		if ( empty( $term ) || is_wp_error( $term ) ) {
 			return null;
 		}
 		$users  = get_users( AmapressUser::AMAP_ROLE . '=' . $term->slug . ( $lieu_id ? '&amapress_lieu=' . $lieu_id : '' ) );

@@ -129,27 +129,28 @@ function amapress_register_entities_contrat( $entities ) {
 		),
 	);
 	$entities['contrat_instance'] = array(
-		'internal_name'   => 'amps_contrat_inst',
-		'singular'        => amapress__( 'Modèle de contrat' ),
-		'plural'          => amapress__( 'Modèles de contrat' ),
-		'public'          => 'adminonly',
-		'show_in_menu'    => false,
-		'special_options' => array(),
-		'slug'            => 'contrat_instances',
-		'title_format'    => 'amapress_contrat_instance_title_formatter',
-		'title'           => false,
-		'slug_format'     => 'from_title',
-		'thumb'           => true,
-		'editor'          => false,
-		'menu_icon'       => 'flaticon-interface',
-		'default_orderby' => 'post_title',
-		'default_order'   => 'ASC',
-		'groups'          => array(
+		'internal_name'    => 'amps_contrat_inst',
+		'singular'         => amapress__( 'Modèle de contrat' ),
+		'plural'           => amapress__( 'Modèles de contrat' ),
+		'public'           => 'adminonly',
+		'show_in_menu'     => false,
+		'special_options'  => array(),
+		'slug'             => 'contrat_instances',
+		'title_format'     => 'amapress_contrat_instance_title_formatter',
+		'title'            => false,
+		'slug_format'      => 'from_title',
+		'thumb'            => true,
+		'editor'           => false,
+		'menu_icon'        => 'flaticon-interface',
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
+		'show_in_nav_menu' => false,
+		'groups'           => array(
 			'Statut' => [
 				'context' => 'side',
 			],
 		),
-		'edit_header'     => function ( $post ) {
+		'edit_header'      => function ( $post ) {
 			$contrat = AmapressContrat_instance::getBy( $post );
 			if ( empty( $contrat->getModel() ) ) {
 				echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Web associée</p></div>';
@@ -182,7 +183,7 @@ function amapress_register_entities_contrat( $entities ) {
 				echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
 			}
 		},
-		'row_actions'     => array(
+		'row_actions'      => array(
 			'renew'             => array(
 				'label'     => 'Renouveler (prolongement)',
 				'condition' => 'amapress_can_renew_contrat_instance',
@@ -285,16 +286,16 @@ function amapress_register_entities_contrat( $entities ) {
 				'show_on'   => 'editor',
 			],
 		),
-		'labels'          => array(
+		'labels'           => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajout modèle de contrat',
 			'edit_item'    => 'Éditer - Modèle de contrat',
 		),
-		'views'           => array(
+		'views'            => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
-		'fields'          => array(
+		'fields'           => array(
 			//renouvellement
 			'renouv'         => array(
 				'name'        => amapress__( 'Options' ),
@@ -629,7 +630,7 @@ jQuery(function($) {
 					'placeholder' => 'Tous les lieux'
 				),
 			),
-			'liste_dates'           => array(
+			'liste_dates'    => array(
 				'name'             => amapress__( 'Calendrier initial' ),
 				'type'             => 'multidate',
 				'required'         => true,
