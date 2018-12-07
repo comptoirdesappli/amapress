@@ -564,7 +564,7 @@ class AmapressAdhesion extends TitanEntity {
 //		}
 
 //		amapress_dump($model_filename);
-//		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getAttachmentDir() );
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
 
 		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
 		try {
