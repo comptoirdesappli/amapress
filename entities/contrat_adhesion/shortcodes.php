@@ -879,9 +879,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					/** @var AmapressAdhesion $a */
 					return $a->getContrat_instance()->getModelId();
 				}, $adhs );
-				$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
 					/** @var AmapressContrat_instance $c */
-					return ! in_array( $c->getModel()->ID, $adhs_contrat_ids );
+					return ! in_array( $c->getModelId(), $adhs_contrat_ids );
 				} );
 			}
 			if ( $admin_mode ) {
