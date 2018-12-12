@@ -89,24 +89,7 @@ function amapress_check_plugin_install( $plugin_slug, $plugin_name, $message_if_
 	);
 }
 
-function amapress_echo_and_check_amapress_state_page() {
-	$labels = array(
-		'01_plugins'      => 'Plugins',
-		'05_config'       => 'Configuration',
-		'10_users'        => 'Comptes utilisateurs',
-		'15_posts'        => 'Votre AMAP',
-		'20_content'      => 'Contenus à compléter',
-		'25_shortcodes'   => 'Shortcodes à configurer',
-		'26_online_inscr' => 'Inscriptions en ligne',
-		'30_recalls'      => 'Rappels',
-		'35_import'       => 'Import CSV',
-		'40_clean'        => 'Nettoyage',
-	);
-	$i      = 1;
-	foreach ( $labels as $k => $v ) {
-		$labels[ $k ] = "$i/ $v";
-		$i            += 1;
-	}
+function amapress_get_state() {
 	$state               = array();
 	$state['01_plugins'] = array();
 //    $state['01_plugins'][] = amapress_check_plugin_install('google-sitemap-generator', 'Google XML Sitemaps',
@@ -125,7 +108,7 @@ function amapress_echo_and_check_amapress_state_page() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'tinymce-advanced', 'TinyMCE Advanced',
 		'<strong>Recommandé</strong> : Enrichi l\'éditeur de texte intégré de Wordpress afin de faciliter la création de contenu sur le site',
 		'warning' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'google-sitemap-generator', 'Yoast SEO',
+	$state['01_plugins'][] = amapress_check_plugin_install( 'google-sitemap-generator', 'Google Sitemap Generator',
 		'<strong>Recommandé</strong> : Utilisation simple, améliore le référencement du site en générant un plan du site et en notifiant les moteurs de recherche des modifications du site. 
 <br/>Après activation rendez-vous dans sa <a target="_blank" href="' . admin_url( 'options-general.php?page=google-sitemap-generator%2Fsitemap.php#sm_includes' ) . '">configuration</a> (Section Contenu du sitemap/Autres types d\'article) et cocher les cases "Inclure les articles de type Produits/Recettes/Producteurs/Lieux de distribution/Présentations Web"',
 		'warning' );
@@ -178,8 +161,17 @@ function amapress_echo_and_check_amapress_state_page() {
 
 	$state['05_config'] = array();
 
-	$blog_desc            = get_bloginfo( 'description' );
-	$state['05_config'][] = amapress_get_check_state(
+	if ( version_compare( phpversion(), '7.0', '<' ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'warning',
+			'PHP 7 ou sup recommandée (actuellement ' . phpversion() . ')',
+			'Voir la configuration de votre hébergement (par ex, pour <a href="https://docs.ovh.com/fr/hosting/configurer-le-php-sur-son-hebergement-web-mutu-2014/">OVH</a>). Utiliser la version 7 ou supérieur de PHP est recommandé pour obtenir des performances optimales pour WordPress et Amapress.',
+			''
+		);
+	}
+
+	$blog_desc                     = get_bloginfo( 'description' );
+	$state['05_config'][]          = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
 		'Cette section permet le référencement dans les moteurs de recherche. 
@@ -402,7 +394,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['15_posts'] = array();
 
 	$amap_roles          = amapress_get_amap_roles();
-	$state['15_posts'][] = amapress_get_check_state(
+	$state['15_posts'][]           = amapress_get_check_state(
 		count( $amap_roles ) == 0 ? 'warning' : 'success',
 		'Rôle descriptif des membres du collectif',
 		'Créer et <a href="' . admin_url( 'users.php?amapress_role=collectif' ) . '" target=\'_blank\'>associer des rôles descriptifs aux utilisateurs</a> (par ex "Responsable des distribution", "Boîte contact", "Accueil des nouveaux")',
@@ -414,7 +406,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			return "<a href='{$l}' target='_blank'>{$t->name}</a>";
 		}, $amap_roles ) )
 	);
-	$empty_resp_roles = false;
+	$empty_resp_roles              = false;
 	foreach (
 		[
 			'resp-distrib-amap-role',
@@ -877,18 +869,18 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$amapien_les_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'paniers-intermittents-page' ) . '&action=edit' );
 	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
 	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
-	$needed_shortcodes   = [
-		'trombinoscope'                 => [
+	$needed_shortcodes             = [
+		'trombinoscope'        => [
 			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'recettes'                      => [
+		'recettes'             => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les recettes',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'produits'                      => [
+		'produits'             => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les produits',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
@@ -948,17 +940,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'            => [
+		'amapiens-role-list'   => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'                    => [
+		'agenda-url'           => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'                => [
+		'nous-contacter'       => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
@@ -994,7 +986,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'categ' => '3/ Info utiles',
 		],
 	];
-	$found_shortcodes    = [];
+	$found_shortcodes              = [];
 	uasort( $needed_shortcodes, function ( $a, $b ) {
 		return strcmp( $a['categ'], $b['categ'] );
 	} );
@@ -1241,6 +1233,30 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		false
 	);
 
+	return $state;
+}
+
+function amapress_echo_and_check_amapress_state_page() {
+	$labels = array(
+		'01_plugins'      => 'Plugins',
+		'05_config'       => 'Configuration',
+		'10_users'        => 'Comptes utilisateurs',
+		'15_posts'        => 'Votre AMAP',
+		'20_content'      => 'Contenus à compléter',
+		'25_shortcodes'   => 'Shortcodes à configurer',
+		'26_online_inscr' => 'Inscriptions en ligne',
+		'30_recalls'      => 'Rappels',
+		'35_import'       => 'Import CSV',
+		'40_clean'        => 'Nettoyage',
+	);
+	$i      = 1;
+	foreach ( $labels as $k => $v ) {
+		$labels[ $k ] = "$i/ $v";
+		$i            += 1;
+	}
+
+	$state = amapress_get_state();
+
 	if ( current_user_can( 'update_core' ) ) {
 		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">Voir les extensions installées</a></p>';
 	}
@@ -1260,7 +1276,11 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			}
 
 			echo "<div class='amapress-check'>";
-			echo "<p class='check-item state {$state}'><a href='$link' $target>{$title}</a><span class='dashicons dashicons-external'></span></p>";
+			if ( empty( $link ) ) {
+				echo "<p class='check-item state {$state}'>{$title}<span class='dashicons dashicons-external'></span></p>";
+			} else {
+				echo "<p class='check-item state {$state}'><a href='$link' $target>{$title}</a><span class='dashicons dashicons-external'></span></p>";
+			}
 			echo "<div class='amapress-check-content'>";
 			if ( ! empty( $values ) ) {
 				echo "<p class='values'>{$values}</p>";
