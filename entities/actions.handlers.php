@@ -209,7 +209,7 @@ function amapress_handle_actions() {
 		}
 	}
 
-	if ( is_page() ) {
+	if ( get_the_ID() && is_page() ) {
 //        if (is_page(Amapress::getOption('trombinoscope-page'))) {
 //            if (!amapress_is_user_logged_in()) amapress_redirect_login();
 //        } else
