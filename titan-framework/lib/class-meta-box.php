@@ -261,7 +261,7 @@ class TitanFrameworkMetaBox {
 			}
 			if ( ! empty( $likes ) ) {
 				$query->query_where = preg_replace(
-					'/\(user_\S+\s+LIKE\s*(\'[^\']+\').+/',
+					'/\(user_\S+\s+LIKE\s*(\'(?:[^\']+|\\\')\').+/',
 					"($wpdb->users.user_login LIKE $1 OR $wpdb->users.user_url LIKE $1 OR $wpdb->users.user_email LIKE $1 OR $wpdb->users.user_nicename LIKE $1 OR $wpdb->users.display_name LIKE $1 OR (" . implode( ' OR ', $likes ) . '))', $query->query_where );
 			}
 			$query->query_orderby = preg_replace( '/ORDER\s+BY\s+([^\.]+)\s+/', "ORDER BY $wpdb->users.$1 ", $query->query_orderby );
