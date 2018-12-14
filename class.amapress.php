@@ -2450,6 +2450,9 @@ class Amapress {
 		wp_enqueue_style( 'fullcalendar', plugin_dir_url( __FILE__ ) . 'css/fullcalendar/fullcalendar.min.css' );
 		wp_enqueue_style( 'fullcalendar-print', plugin_dir_url( __FILE__ ) . 'css/fullcalendar/fullcalendar.print.min.css' );
 
+		wp_enqueue_script( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js' );
+		wp_enqueue_style( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css' );
+
 		wp_enqueue_script( 'datatable', plugin_dir_url( __FILE__ ) . 'js/datatables.min.js', array( 'jquery' ), true );
 		wp_enqueue_style( 'datatable', plugin_dir_url( __FILE__ ) . 'css/datatables.min.css' );
 		wp_enqueue_script( 'amapress-front', plugins_url( '/js/front.js?v=' . $plugin_version, __FILE__ ), array( 'jquery' ), true );

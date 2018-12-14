@@ -170,8 +170,8 @@ function amapress_get_state() {
 		);
 	}
 
-	$blog_desc                     = get_bloginfo( 'description' );
-	$state['05_config'][]          = amapress_get_check_state(
+	$blog_desc            = get_bloginfo( 'description' );
+	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
 		'Cette section permet le référencement dans les moteurs de recherche. 
@@ -291,13 +291,22 @@ function amapress_get_state() {
 //        admin_url('post.php?post=' . $static_front_id . '&action=edit')
 //    );
 
-	$google_key           = Amapress::getOption( 'google_map_key' );
 	$state['05_config'][] = amapress_get_check_state(
-		! empty( $google_key ) ? 'success' : 'error',
-		'Clé API Google',
-		'<strong>Requis</strong> : Une clé Google API est nécessaire pour le bon fonctionnement de la géolocalisation ',
+		'info',
+		'Choix de la géolocalisation (actuellement ' . Amapress::getOption( 'geocode_provider' ) . ') et de l\'affichage des cartes (actuellement ' . Amapress::getOption( 'map_provider' ) . ')',
+		'Vous pouvez choisir entre Nominatim/Open Street Map et Google Maps pour la géolocalisation et l\'affichage des cartes',
 		admin_url( 'admin.php?page=amapress_options_page&tab=amp_google_api_config' )
 	);
+
+	if ( 'google' == Amapress::getOption( 'geocode_provider' ) || 'google' == Amapress::getOption( 'map_provider' ) ) {
+		$google_key           = Amapress::getOption( 'google_map_key' );
+		$state['05_config'][] = amapress_get_check_state(
+			! empty( $google_key ) ? 'success' : 'error',
+			'Clé API Google',
+			'<strong>Requis</strong> : Une clé Google API est nécessaire pour le bon fonctionnement de la géolocalisation ',
+			admin_url( 'admin.php?page=amapress_options_page&tab=amp_google_api_config' )
+		);
+	}
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
@@ -393,7 +402,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 
 	$state['15_posts'] = array();
 
-	$amap_roles          = amapress_get_amap_roles();
+	$amap_roles                    = amapress_get_amap_roles();
 	$state['15_posts'][]           = amapress_get_check_state(
 		count( $amap_roles ) == 0 ? 'warning' : 'success',
 		'Rôle descriptif des membres du collectif',
@@ -870,27 +879,27 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
 	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
 	$needed_shortcodes             = [
-		'trombinoscope'        => [
+		'trombinoscope'             => [
 			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'recettes'             => [
+		'recettes'                  => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les recettes',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'produits'             => [
+		'produits'                  => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les produits',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'inscription-distrib'           => [
+		'inscription-distrib'       => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de s\'inscrire comme responsable de distribution',
 			'href'  => $new_private_page_href,
 			'categ' => '4/ Gestion AMAP',
 		],
-		'echanger-paniers-list'         => [
+		'echanger-paniers-list'     => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de proposer leurs paniers en cas d\'absence',
 			'href'  => $new_private_page_href,
 			'categ' => '5/ Espace intermittents',
@@ -925,62 +934,62 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'les-paniers-intermittents'     => [
+		'les-paniers-intermittents' => [
 			'desc'  => 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers',
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'intermittent-paniers'          => [
+		'intermittent-paniers'      => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"',
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'                  => [
+		'amapiens-map'              => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'   => [
+		'amapiens-role-list'        => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'           => [
+		'agenda-url'                => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'       => [
+		'nous-contacter'            => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'    => [
+		'front_next_events'         => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'       => [
+		'front_produits'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'   => [
+		'front_nous_trouver'        => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'   => [
+		'front_default_grid'        => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne' => [
+		'inscription-en-ligne'      => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
 		],
-		'listes-diffusions'    => [
+		'listes-diffusions'         => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP',
 			'href'  => $new_page_href,
 			'categ' => '3/ Info utiles',

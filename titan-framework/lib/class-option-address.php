@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 	public static $google_map_api_key = '';
+	public static $geoprovider = 'google';
 
 	public $defaultSecondarySettings = array(
 		'placeholder'            => '', // show this when blank
@@ -23,27 +24,53 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			return null;
 		}
 
-		$string      = str_replace( " ", "+", urlencode( $string ) );
-		$key         = self::$google_map_api_key;
-		$details_url = "https://maps.googleapis.com/maps/api/geocode/json?address={$string}&sensor=false&key={$key}";
+		if ( 'google' == self::$geoprovider ) {
+			$string      = str_replace( " ", "+", urlencode( $string ) );
+			$key         = self::$google_map_api_key;
+			$details_url = "https://maps.googleapis.com/maps/api/geocode/json?address={$string}&sensor=false&key={$key}";
 
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, $details_url );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		$response = json_decode( curl_exec( $ch ), true );
+			$ch = curl_init();
+			curl_setopt( $ch, CURLOPT_URL, $details_url );
+			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+			$response = json_decode( curl_exec( $ch ), true );
 
-		// If Status Code is ZERO_RESULTS, OVER_QUERY_LIMIT, REQUEST_DENIED or INVALID_REQUEST
-		if ( $response['status'] != 'OK' ) {
+			// If Status Code is ZERO_RESULTS, OVER_QUERY_LIMIT, REQUEST_DENIED or INVALID_REQUEST
+			if ( $response['status'] != 'OK' ) {
+				return null;
+			}
+
+			$geometry = $response['results'][0]['geometry'];
+
+			return array(
+				'latitude'      => $geometry['location']['lat'],
+				'longitude'     => $geometry['location']['lng'],
+				'location_type' => $geometry['location_type'],
+			);
+		} else if ( 'nominatim' == self::$geoprovider ) {
+			$string      = str_replace( " ", "+", urlencode( $string ) );
+			$details_url = "https://nominatim.openstreetmap.org/search?q={$string}&format=json";
+
+			$ch = curl_init();
+			curl_setopt( $ch, CURLOPT_URL, $details_url );
+			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+			curl_setopt( $ch, CURLOPT_REFERER, wp_get_referer() );
+			curl_setopt( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0' );
+			$res      = curl_exec( $ch );
+			$response = json_decode( $res, true );
+
+			// If Status Code is ZERO_RESULTS, OVER_QUERY_LIMIT, REQUEST_DENIED or INVALID_REQUEST
+			if ( ! is_array( $response ) ) {
+				return null;
+			}
+
+			return array(
+				'latitude'      => $response[0]['lat'],
+				'longitude'     => $response[0]['lon'],
+				'location_type' => $response[0]['type'],
+			);
+		} else {
 			return null;
 		}
-
-		$geometry = $response['results'][0]['geometry'];
-
-		return array(
-			'latitude'      => $geometry['location']['lat'],
-			'longitude'     => $geometry['location']['lng'],
-			'location_type' => $geometry['location_type'],
-		);
 	}
 
 	public function customSave( $postID ) {
@@ -118,9 +145,13 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 		if ( ! empty( $loc ) ) {
 			$lat = call_user_func( $get_fn, $postID, "{$id}_lat", true );
 			$lng = call_user_func( $get_fn, $postID, "{$id}_long", true );
-			echo '<p class="' . $id . ' localized-address">Localisé <a href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">Voir sur Google Maps</a></p>';
+			if ( 'nominatim' == self::$geoprovider ) {
+				echo '<p class="' . $id . ' localized-address">Localisé <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng . '">Voir sur Open Street Map</a></p>';
+			} else {
+				echo '<p class="' . $id . ' localized-address">Localisé <a target="_blank" href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">Voir sur Google Maps</a></p>';
+			}
 		} else {
-			if ( empty( self::$google_map_api_key ) ) {
+			if ( 'google' == self::$geoprovider && empty( self::$google_map_api_key ) ) {
 				echo '<p class="' . $id . ' unlocalized-address"><strong>Pas de clé Google API configurée</strong> - Adresse non localisée</p>';
 			} else {
 				echo '<p class="' . $id . ' unlocalized-address">Adresse non localisée</p>';

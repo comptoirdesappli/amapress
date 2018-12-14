@@ -1718,7 +1718,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Général'    => array(
+						'Général'         => array(
 							'id'      => 'amp_general_config',
 							'desc'    => '',
 							'options' => array(
@@ -1777,10 +1777,34 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Google API' => array(
+						'Géolocalisation' => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
+								array(
+									'id'         => 'geocode_provider',
+									'name'       => 'Fournisseur de géocodage',
+									'type'       => 'select',
+									'default'    => 'google',
+									'desc'       => 'Choisissez le fournisseur utilisé pour résoudre les adresses',
+									'options'    => [
+										'google'    => 'Google Maps',
+										'nominatim' => 'Nominatim (Open Street Map)',
+									],
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'map_provider',
+									'name'       => 'Fournisseur de cartes',
+									'type'       => 'select',
+									'default'    => 'google',
+									'desc'       => 'Choisissez le fournisseur utilisé pour afficher les cartes',
+									'options'    => [
+										'google'        => 'Google Maps',
+										'openstreetmap' => 'OpenStreetMap',
+									],
+									'capability' => 'manage_options',
+								),
 								array(
 									'id'         => 'google_map_key',
 									'name'       => 'Clé Google API',

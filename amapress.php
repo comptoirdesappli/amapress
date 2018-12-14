@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.63.55
+Version: 0.64.0
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 80 );
-define( 'AMAPRESS_VERSION', '0.63.55' );
+define( 'AMAPRESS_VERSION', '0.64.0' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
@@ -468,6 +468,7 @@ add_action( 'init', 'amapress_global_init', 15 );
 function amapress_global_init() {
 	$key = Amapress::getOption( 'google_map_key' );
 	if ( ! empty( $key ) ) {
+		TitanFrameworkOptionAddress::$geoprovider        = Amapress::getOption( 'geocode_provider' );
 		TitanFrameworkOptionAddress::$google_map_api_key = $key;
 	}
 
