@@ -27,6 +27,10 @@ function amapress_get_custom_content_distribution( $content ) {
 	$lieu_id             = get_post_meta( $dist_id, 'amapress_distribution_lieu', true );
 	$lieu_subst_id       = get_post_meta( $dist_id, 'amapress_distribution_lieu_substitution', true );
 	$lieu                = $lieu_subst_id ? get_post( $lieu_subst_id ) : get_post( $lieu_id );
+	if ( ! $lieu && $lieu_subst_id ) {
+		$lieu_subst_id = null;
+		$lieu          = get_post( $lieu_id );
+	}
 
 	$is_resp         = AmapressDistributions::isCurrentUserResponsable( $dist_id );
 	$is_resp_amap    = amapress_current_user_can( 'administrator' ) || amapress_current_user_can( 'responsable_amap' );
