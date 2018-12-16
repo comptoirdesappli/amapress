@@ -15,6 +15,7 @@ function amapress_clean_transients( $post_id ) {
 
 	if ( 'page' == $post_type ) {
 		delete_transient( 'amp_inscr_distrib_href' );
+		delete_transient( 'amp_preinscr_href' );
 	}
 	if ( AmapressContrat_instance::INTERNAL_POST_TYPE == $post_type ) {
 		delete_option( 'amps_gen_pan_' . $post_id );

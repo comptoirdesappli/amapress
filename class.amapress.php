@@ -3375,20 +3375,28 @@ class Amapress {
 		return $contact_page;
 	}
 
-	public static function get_inscription_distrib_page_href() {
-		$href = get_transient( 'amp_inscr_distrib_href' );
+	public static function get_page_with_shortcode_href( $shortcode, $transient_name ) {
+		$href = get_transient( $transient_name );
 		if ( empty( $href ) ) {
 			/** @var WP_Post $page */
 			foreach ( get_pages() as $page ) {
-				if ( strpos( $page->post_content, '[inscription-distrib' ) !== false ) {
+				if ( strpos( $page->post_content, '[' . $shortcode ) !== false ) {
 					$href = get_permalink( $page->ID );
 					break;
 				}
 			}
-			set_transient( 'amp_inscr_distrib_href', $href );
+			set_transient( $transient_name, $href );
 		}
 
 		return $href;
+	}
+
+	public static function get_inscription_distrib_page_href() {
+		return self::get_page_with_shortcode_href( 'inscription-distrib', 'amp_inscr_distrib_href' );
+	}
+
+	public static function get_pre_inscription_page_href() {
+		return self::get_page_with_shortcode_href( 'inscription-en-ligne', 'amp_preinscr_href' );
 	}
 
 	public static function formatPrice( $number ) {

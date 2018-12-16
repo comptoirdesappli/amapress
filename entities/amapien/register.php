@@ -49,7 +49,7 @@ function amapress_register_entities_amapien( $entities ) {
 					if ( ! $amapien ) {
 						return '';
 					}
-					$roles   = esc_html( $amapien->getAmapRolesString() );
+					$roles = esc_html( $amapien->getAmapRolesString() );
 
 					return $roles;
 				}
@@ -172,7 +172,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'town_field_name'        => 'amapress_user_ville',
 				'show_on'                => 'edit-only',
 			),
-			'head_amapress2'     => array(
+			'head_amapress2'    => array(
 				'id'   => 'phones_sect',
 				'name' => amapress__( 'Téléphones' ),
 				'type' => 'heading',
@@ -790,6 +790,22 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'capability' => 'edit_users',
 				'href'       => admin_url( 'users.php?amapress_contrat=intermittent' ),
 			),
+		)
+	);
+
+	$pre_inscr_href = Amapress::get_pre_inscription_page_href();
+	if ( ! empty( $pre_inscr_href ) ) {
+		$main_items[] = array(
+			'id'         => 'amapress_goto_preinscr_page',
+			'title'      => 'Accès page pré-inscriptions',
+			'capability' => 'read',
+			'href'       => $pre_inscr_href,
+		);
+	}
+
+	$main_items = array_merge(
+		$main_items,
+		array(
 			array(
 				'id'         => 'amapress_admin_submenu',
 				'title'      => 'Admin',
@@ -800,6 +816,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'title'      => 'Etat Amapress',
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_state' ),
+					),
+					array(
+						'id'         => 'amapress_pages',
+						'title'      => 'Pages du site',
+						'capability' => 'manage_options',
+						'href'       => admin_url( 'edit.php?post_type=page' ),
 					),
 					array(
 						'id'         => 'amapress_welcome_mail',
