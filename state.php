@@ -89,7 +89,18 @@ function amapress_check_plugin_install( $plugin_slug, $plugin_name, $message_if_
 	);
 }
 
+function amapress_clean_state_transient() {
+	static $amapress_clean_state_transient = false;
+
+	if ( ! $amapress_clean_state_transient ) {
+		delete_transient( 'amapress_state_summary' );
+		$amapress_clean_state_transient = true;
+	}
+}
+
 function amapress_get_state() {
+	amapress_clean_state_transient();
+
 	$state               = array();
 	$state['01_plugins'] = array();
 //    $state['01_plugins'][] = amapress_check_plugin_install('google-sitemap-generator', 'Google XML Sitemaps',
@@ -879,27 +890,27 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
 	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
 	$needed_shortcodes             = [
-		'trombinoscope'             => [
+		'trombinoscope'                 => [
 			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'recettes'                  => [
+		'recettes'                      => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les recettes',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'produits'                  => [
+		'produits'                      => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher les produits',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'inscription-distrib'       => [
+		'inscription-distrib'           => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de s\'inscrire comme responsable de distribution',
 			'href'  => $new_private_page_href,
 			'categ' => '4/ Gestion AMAP',
 		],
-		'echanger-paniers-list'     => [
+		'echanger-paniers-list'         => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de proposer leurs paniers en cas d\'absence',
 			'href'  => $new_private_page_href,
 			'categ' => '5/ Espace intermittents',
@@ -934,62 +945,62 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'les-paniers-intermittents' => [
+		'les-paniers-intermittents'     => [
 			'desc'  => 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers',
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'intermittent-paniers'      => [
+		'intermittent-paniers'          => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"',
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'              => [
+		'amapiens-map'                  => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'        => [
+		'amapiens-role-list'            => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'                => [
+		'agenda-url'                    => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'            => [
+		'nous-contacter'                => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'         => [
+		'front_next_events'             => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'            => [
+		'front_produits'                => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'        => [
+		'front_nous_trouver'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'        => [
+		'front_default_grid'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne'      => [
+		'inscription-en-ligne'          => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
 		],
-		'listes-diffusions'         => [
+		'listes-diffusions'             => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP',
 			'href'  => $new_page_href,
 			'categ' => '3/ Info utiles',
@@ -1305,6 +1316,34 @@ function amapress_echo_and_check_amapress_state_page() {
 	}
 }
 
+function amapress_get_state_summary() {
+	$key     = 'amapress_state_summary';
+	$summary = get_transient( $key );
+	if ( false === $summary ) {
+		$summary = [
+			'warning' => 0,
+			'error'   => 0,
+		];
+		$state   = amapress_get_state();
+		foreach ( $state as $categ => $checks ) {
+			foreach ( $checks as $check ) {
+				if ( ! isset( $summary[ $check['state'] ] ) ) {
+					$summary[ $check['state'] ] = 0;
+				}
+				$summary[ $check['state'] ] += 1;
+			}
+		}
+		set_transient( $key, $summary );
+	}
+
+	return $summary;
+}
+
 add_action( 'pre_current_active_plugins', function ( $plugins ) {
 	echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a></p>';
 } );
+
+add_action( 'activate_plugin', 'amapress_clean_state_transient' );
+add_action( 'save_post', 'amapress_clean_state_transient' );
+add_action( 'update_option', 'amapress_clean_state_transient' );
+

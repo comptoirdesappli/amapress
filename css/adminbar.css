@@ -49,3 +49,11 @@
         font-size: 28px;
     }
 }
+
+.ab-icon.amps-error:before {
+    color: red !important;
+}
+
+.ab-icon.amps-warning:before {
+    color: orange !important;
+}

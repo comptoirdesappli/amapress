@@ -177,19 +177,19 @@ function amapress_register_entities_amapien( $entities ) {
 				'name' => amapress__( 'Téléphones' ),
 				'type' => 'heading',
 			),
-			'telephone'          => array(
+			'telephone'         => array(
 				'name'       => amapress__( 'Téléphone' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'telephone2'         => array(
+			'telephone2'        => array(
 				'name'       => amapress__( 'Téléphone 2' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 2',
 				'searchable' => true,
 			),
-			'telephone3'         => array(
+			'telephone3'        => array(
 				'name'        => amapress__( 'Téléphone 3' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 3',
@@ -567,6 +567,21 @@ function amapress_can_delete_user( $can, $user_id ) {
 
 add_filter( 'amapress_register_admin_bar_menu_items', 'amapress_register_admin_bar_menu_items' );
 function amapress_register_admin_bar_menu_items( $items ) {
+	$cls_state  = '';
+	$dash_state = '';
+	if ( current_user_can( 'manage_options' ) ) {
+		$state_summary = amapress_get_state_summary();
+		if ( $state_summary['error'] > 0 ) {
+			$cls_state  = 'amps-error';
+			$dash_state = '<span class="dashicons dashicons-warning" style="color: red"></span>';
+		} else if ( $state_summary['warning'] > 0 ) {
+			$cls_state  = 'amps-warning';
+			$dash_state = '<span class="dashicons dashicons-admin-tools" style="color: orange"></span>';
+		} else {
+			$dash_state = '<span class="dashicons dashicons-yes"></span>';
+		}
+	}
+
 	$contrat_to_renew = get_posts_count( 'post_type=amps_contrat_inst&amapress_date=renew' );
 	$this_week_start  = Amapress::start_of_week( amapress_time() );
 	$this_week_end    = Amapress::end_of_week( amapress_time() );
@@ -813,7 +828,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'items'      => [
 					array(
 						'id'         => 'amapress_state',
-						'title'      => 'Etat Amapress',
+						'title'      => $dash_state . 'Etat Amapress',
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_state' ),
 					),
@@ -851,9 +866,10 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			),
 		)
 	);
-	$items[]    = array(
+
+	$items[] = array(
 		'id'        => 'amapress',
-		'title'     => '<span class="ab-icon"></span><span class="ab-label">Amapress</span>',
+		'title'     => '<span class="ab-icon ' . $cls_state . '"></span><span class="ab-label">Amapress</span>',
 		'condition' => function () {
 			return amapress_can_access_admin();
 		},
