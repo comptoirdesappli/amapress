@@ -117,41 +117,72 @@ function amapress_output_admin_notices() {
 	}
 }
 
+
+function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pretty = true ) {
+	if ( version_compare( PHP_VERSION, '5.2.5', '>=' ) ) {
+		$trace = debug_backtrace( false );
+	} else {
+		$trace = debug_backtrace();
+	}
+
+	$caller      = array();
+	$check_class = ! is_null( $ignore_class );
+	$skip_frames ++; // skip this function
+
+	foreach ( $trace as $call ) {
+		if ( $skip_frames > 0 ) {
+			$skip_frames --;
+		} elseif ( isset( $call['class'] ) ) {
+			if ( $check_class && $ignore_class == $call['class'] ) {
+				continue;
+			} // Filter out calls
+
+			$file = str_replace( array( WP_CONTENT_DIR, ABSPATH ), '', $call['file'] );
+
+			$caller[] = "{$call['class']}{$call['type']}{$call['function']}[{$file}:{$call['line']}]";
+		} else {
+			if ( in_array( $call['function'], array( 'do_action', 'apply_filters' ) ) ) {
+				$caller[] = "{$call['function']}('{$call['args'][0]}')";
+			} elseif ( in_array( $call['function'], array( 'include', 'include_once', 'require', 'require_once' ) ) ) {
+				$caller[] = $call['function'] . "('" . str_replace( array(
+						WP_CONTENT_DIR,
+						ABSPATH
+					), '', $call['args'][0] ) . "')";
+			} else {
+				$file     = str_replace( array( WP_CONTENT_DIR, ABSPATH ), '', $call['file'] );
+				$caller[] = "{$call['function']}[{$file}:{$call['line']}]";
+			}
+		}
+	}
+	if ( $pretty ) {
+		return join( ', ', array_reverse( $caller ) );
+	} else {
+		return $caller;
+	}
+}
 function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext ) {
 	// handle @
 	if ( 0 === error_reporting() ) {
 		return false;
 	}
-	$message = $errstr . ' in ' . $errfile . ' on line ' . $errline . ', backtrace: ' . wp_debug_backtrace_summary( null, 1 );
+	$message = $errstr . ' in ' . $errfile . ' on line ' . $errline .
+	           ', backtrace: ' . amapress_debug_backtrace_summary( null, 1 ) .
+	           ', url: ' . $_SERVER['REQUEST_URI'] .
+	           ', user: ' . get_current_user_id();
 
 	if ( strpos( $message, 'Load_Resend_Welcome_Email' ) !== false ) {
 		return true;
 	}
 
-	if ( WP_DEBUG_DISPLAY || ini_get( 'display_errors' ) ) {
-		echo '<br />' . $message . '<br />';
-	}
-	if ( WP_DEBUG_LOG || ini_get( 'log_errors' ) ) {
+	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
 		error_log( $message );
 	}
 
 	return true;
 }
 
-//function amapress_exception_fatal_error_handler()
-//{
-//    $error = error_get_last();
-//    if ( $error["type"] == E_ERROR ) {
-//        $message = $error["message"] . ' in ' . $error["file"] . ' on line ' . $error["line"] . ', backtrace: ' . wp_debug_backtrace_summary( null, 1 );
-//
-//        if( WP_DEBUG_DISPLAY || ini_get( 'display_errors' ) )
-//            echo '<br />' . $message . '<br />';
-//        if( WP_DEBUG_LOG || ini_get( 'log_errors' ) )
-//            error_log( $message );
-//    }
-//}
-set_error_handler( 'amapress_exception_error_handler' );
-//register_shutdown_function('amapress_exception_fatal_error_handler');
+set_error_handler( 'amapress_exception_error_handler', E_ALL | E_STRICT );
+
 function amapress_wpmail_content_type() {
 	return 'text/html';
 }
