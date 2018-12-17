@@ -156,6 +156,15 @@ function amapress_register_entities_contrat( $entities ) {
 				echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Web associée</p></div>';
 			}
 
+			$max_nb_paiements = 0;
+			foreach ( $contrat->getPossiblePaiements() as $nb_pmt ) {
+				$max_nb_paiements = max( $nb_pmt, $max_nb_paiements );
+			}
+			$nb_dates_paiements = count( $contrat->getPaiements_Liste_dates() );
+			if ( $max_nb_paiements > $nb_dates_paiements ) {
+				echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( 'Il y a moins de dates d\'encaissement (%d) que le nombre de chèque maximum autorisé (%d)', $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
+			}
+
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
 			if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) && TitanFrameworkOption::isOnEditScreen() ) {
