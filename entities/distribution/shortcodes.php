@@ -74,6 +74,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'show_title'        => 'true',
 		'for_emargement'    => 'false',
 		'for_pdf'           => 'false',
+		'past_weeks'        => 5,
 		'max_dates'         => - 1,
 		'responsive'        => 'false',
 		'user'              => null,
@@ -81,6 +82,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'date'              => null,
 		'inscr_all_distrib' => 'false'
 	), $atts );
+
 
 	if ( ! amapress_is_user_logged_in() ) {
 		return '';
@@ -120,6 +122,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$from_date = $contrat_instance->getDate_debut();
 			}
 		}
+		$from_date = max( Amapress::add_a_week( amapress_time(), - intval( $atts['past_weeks'] ) ), $from_date );
 	}
 	$to_date = amapress_time();
 	if ( Amapress::toBool( $atts['show_next'] ) ) {
@@ -461,7 +464,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 						$inscr_self = '<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
-							if ( ( $has_role_names || 1 == $i ) && ! $is_resp ) {
+							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
 								$missing = $inscr_self;
 							} else {
 								$missing = "<span class='distrib-resp-missing'>manquant</span>";
@@ -523,6 +526,14 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 //    $ret .= '</div>';
 
 	return $ret;
+}
+
+function amapress_histo_inscription_distrib_shortcode( $atts ) {
+	$atts              = shortcode_atts( [], $atts );
+	$atts['show_past'] = 'true';
+	$atts['show_next'] = 'false';
+
+	return amapress_inscription_distrib_shortcode( $atts );
 }
 
 //add_action('init', function () {

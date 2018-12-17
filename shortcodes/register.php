@@ -30,6 +30,7 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'user-map', 'amapress_user_map_shortcode' );
 	amapress_register_shortcode( 'producteur-map', 'amapress_producteur_map_shortcode' );
 	amapress_register_shortcode( 'amapien-avatar', 'amapress_amapien_avatar_shortcode' );
+	amapress_register_shortcode( 'histo-inscription-distrib', 'amapress_histo_inscription_distrib_shortcode' );
 	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode' );
 	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode' );
 
