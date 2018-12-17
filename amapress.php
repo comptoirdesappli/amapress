@@ -160,6 +160,7 @@ function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 
 		return $caller;
 	}
 }
+
 function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext ) {
 	// handle @
 	if ( 0 === error_reporting() ) {
@@ -430,13 +431,13 @@ if ( ! function_exists( 'get_posts_count' ) ) {
 if ( ! function_exists( 'get_users_cached' ) ) {
 	/** @return WP_User[] */
 	function get_users_cached( $args = array() ) {
-		$args        = wp_parse_args( $args );
-		$user_search = new WP_User_Query();
-		$user_search->prepare_query( $args );
+		$args = wp_parse_args( $args );
 
-		$query = "SELECT $user_search->query_fields $user_search->query_from $user_search->query_where $user_search->query_orderby $user_search->query_limit";
+		$query = serialize( $args );
 		$res   = wp_cache_get( $query );
 		if ( false === $res ) {
+			$user_search = new WP_User_Query();
+			$user_search->prepare_query( $args );
 			$user_search->query();
 			$res = $user_search->get_results();
 			wp_cache_set( $query, $res );
