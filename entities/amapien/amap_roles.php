@@ -297,3 +297,4 @@ add_action( 'init', function () {
 	add_action( 'admin_menu', 'amapress_amap_role_admin_menu' );
 	add_filter( 'parent_file', 'amapress_amap_role_parent_menu' );
 } );
+

@@ -212,6 +212,8 @@ class AmapressSMTPMailingQueue {
 			$handle = @fopen( $dir . '.htaccess', "w" );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
+			$handle = @fopen( $dir . 'index.php', "w" );
+			fclose( $handle );
 		}
 
 		if ( ! empty( $subfolder ) ) {

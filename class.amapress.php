@@ -3320,6 +3320,8 @@ class Amapress {
 			$handle = @fopen( $dir . '.htaccess', "w" );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
+			$handle = @fopen( $dir . 'index.php', "w" );
+			fclose( $handle );
 		}
 
 		return $dir;
@@ -3337,6 +3339,8 @@ class Amapress {
 			$handle = @fopen( $dir . '.htaccess', "w" );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
+			$handle = @fopen( $dir . 'index.php', "w" );
+			fclose( $handle );
 		}
 
 		return $dir;
@@ -3349,9 +3353,25 @@ class Amapress {
 			$handle = @fopen( $dir . '.htaccess', "w" );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
+			$handle = @fopen( $dir . 'index.php', "w" );
+			fclose( $handle );
 		}
 
 		return $dir;
+	}
+
+	public static function getRolesLogFile() {
+		$dir     = wp_upload_dir()['basedir'] . '/amapress-role-log/';
+		$created = wp_mkdir_p( $dir );
+		if ( $created ) {
+			$handle = @fopen( $dir . '.htaccess', "w" );
+			fwrite( $handle, 'DENY FROM ALL' );
+			fclose( $handle );
+			$handle = @fopen( $dir . 'index.php', "w" );
+			fclose( $handle );
+		}
+
+		return $dir . 'amapress-role-log.log';
 	}
 
 	/** @param PHPExcel_Writer_IWriter $objWriter */
