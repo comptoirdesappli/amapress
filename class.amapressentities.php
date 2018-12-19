@@ -1635,7 +1635,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //								),
 //							)
 //						),
-						'Pages'      => array(
+						'Pages'           => array(
 							'id'         => 'amp_pages_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1680,7 +1680,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Rôles Amap' => array(
+						'Rôles Amap'      => array(
 							'id'         => 'amp_amap_roles_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1830,7 +1830,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Tests'      => array(
+						'Tests'           => array(
 							'id'      => 'amp_tests_config',
 							'desc'    => '',
 							'options' => array(
@@ -1872,7 +1872,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							),
 						),
 						//
-						'Paiements'  => array(
+						'Paiements'       => array(
 							'id'      => 'amp_paiements_config',
 							'desc'    => '',
 							'options' => array(
@@ -2391,7 +2391,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										)
 									),
 								),
-								'Roles Amapress'        => array(
+								'Roles Amapress' => array(
 									'id'      => 'amapress_edit_wp_roles',
 									'desc'    => '',
 									'options' => array(
@@ -2437,6 +2437,26 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'show_header'     => true,
 											'include_columns' => array( 'username', 'name', 'email', 'role' ),
 										),
+									),
+								),
+								'Historique'     => array(
+									'id'      => 'amapress_collectif_history',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'amapress_collectif_history_view',
+											'name'   => '',
+											'type'   => 'custom',
+											'custom' => function ( $option ) {
+												$content  = '';
+												$log_file = Amapress::getRolesLogFile();
+												if ( file_exists( $log_file ) ) {
+													$content = file_get_contents( $log_file );
+												}
+
+												return '<pre>' . $content . '</pre>';
+											}
+										)
 									),
 								),
 							),

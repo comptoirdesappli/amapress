@@ -1741,7 +1741,7 @@ class Amapress {
 			}
 
 			$create_options = array(
-				'labels'       => self::get_post_labels(
+				'labels' => self::get_post_labels(
 					$conf['singular'],
 					$conf['plural'],
 					isset( $conf['labels'] ) ? $conf['labels'] : array() ),
@@ -3371,7 +3371,22 @@ class Amapress {
 			fclose( $handle );
 		}
 
-		return $dir . 'amapress-role-log.log';
+		$log_file = $dir . 'amapress-role-log.log';
+
+		if ( ! file_exists( $log_file ) || 0 == filesize( $log_file ) ) {
+			foreach (
+				get_users(
+					[ 'amapress_role' => 'collectif' ]
+				) as $user
+			) {
+				$amapien = AmapressUser::getBy( $user );
+				error_log( '[' . date_i18n( 'd/m/Y H:i', amapress_time() ) . '] ' . sprintf( '%s est "%s"',
+						amapress_get_user_edit_link( $amapien ),
+						$amapien->getAmapRolesString() ) . "\n", 3, $log_file );
+			}
+		}
+
+		return $log_file;
 	}
 
 	/** @param PHPExcel_Writer_IWriter $objWriter */
