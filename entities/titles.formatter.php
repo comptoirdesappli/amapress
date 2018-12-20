@@ -32,6 +32,7 @@ add_filter( 'amapress_distribution_title_formatter', 'amapress_distribution_titl
 function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 	$post_id = $post->ID;
 
+	$dist              = AmapressDistribution::getBy( $post, true );
 	$date              = get_post_meta( $post_id, 'amapress_distribution_date', true );
 	$lieu_id           = get_post_meta( $post_id, 'amapress_distribution_lieu', true );
 	$lieu_substitution = get_post_meta( $post_id, 'amapress_distribution_lieu_substitution', true );
@@ -41,7 +42,7 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 			return $post_title;
 		}
 
-		return sprintf( 'Distribution du %s exceptionnellement à %s',
+		$ret = sprintf( 'Distribution du %s exceptionnellement à %s',
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	} else {
@@ -50,10 +51,18 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 			return $post_title;
 		}
 
-		return sprintf( 'Distribution du %s à %s',
+		$ret = sprintf( 'Distribution du %s à %s',
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	}
+
+	if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
+		$ret .= sprintf( ' (%s à %s)',
+			date_i18n( 'H:i', $dist->getStartDateAndHour() ),
+			date_i18n( 'H:i', $dist->getEndDateAndHour() ) );
+	}
+
+	return $ret;
 }
 
 add_filter( 'amapress_commande_title_formatter', 'amapress_commande_title_formatter', 10, 2 );

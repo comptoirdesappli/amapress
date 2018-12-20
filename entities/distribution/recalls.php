@@ -122,6 +122,16 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 			null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 	}
 
+	if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
+		$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
+		amapress_send_message(
+			Amapress::getOption( 'distribution-hours-change-recall-mail-subject' ),
+			Amapress::getOption( 'distribution-hours-change-recall-mail-content' ),
+			'', $amapien_users, $dist, array(),
+			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ),
+			null, $dist->getResponsablesResponsablesDistributionsReplyto() );
+	}
+
 	$paniers_modifies = array_merge(
 		$dist->getCancelledPaniers(),
 		$dist->getDelayedToThisPaniers()
@@ -659,6 +669,25 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement de lieu pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
+			'desc'    =>
+				AmapressDistribution::getPlaceholdersHelp(),
+		),
+		array(
+			'name' => 'En cas de changement de d\'horaire',
+			'type' => 'heading',
+		),
+		array(
+			'id'       => 'distribution-hours-change-recall-mail-subject',
+			'name'     => 'Sujet du mail',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Changement d\'horaire pour %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-hours-change-recall-mail-content',
+			'name'    => 'Contenu du mail',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nChangement d'horaire pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
 				AmapressDistribution::getPlaceholdersHelp(),
 		),
