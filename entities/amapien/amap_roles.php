@@ -299,9 +299,15 @@ function amapress_get_user_edit_link( AmapressUser $user ) {
 	return '<a href="' . $user->getEditLink() . '">' . esc_html( $user->getDisplayName() ) . '</a>';
 }
 
-function amapress_log_to_role_log( $message ) {
-	error_log( '[' . date_i18n( 'd/m/Y H:i', amapress_time() ) . '] ' . trim( $message ) . "\n",
-		3, Amapress::getRolesLogFile() );
+function amapress_log_to_role_log_file( $log_file, $message, $categ, $filter ) {
+	$categ  = str_replace( [ '[', ']' ], '', $categ );
+	$filter = str_replace( [ '[', ']' ], '', $filter );
+	error_log( '[' . date_i18n( 'd/m/Y H:i', amapress_time() ) . '][' . $categ . '][' . $filter . '] ' . trim( $message ) . "\n",
+		3, $log_file );
+}
+
+function amapress_log_to_role_log( $message, $categ, $filter ) {
+	amapress_log_to_role_log_file( Amapress::getRolesLogFile(), $message, $categ, $filter );
 }
 
 add_action( 'init', function () {
@@ -322,8 +328,10 @@ add_action( 'set_user_role', function ( $user_id, $role, $old_roles ) {
 	amapress_log_to_role_log( sprintf( '%s a changé le rôle de %s de "%s" à "%s"',
 		amapress_get_user_edit_link( $current_user ),
 		amapress_get_user_edit_link( $user ),
-		implode( ',', $old_roles ),
-		$role ) );
+		implode( ',', array_map( function ( $r ) {
+			return translate_user_role( $r );
+		}, $old_roles ) ),
+		translate_user_role( $role ) ), translate_user_role( $role ), '' );
 }, 10, 3 );
 
 add_action( 'delete_term_relationships', function ( $object_id, $tt_ids, $taxonomy ) {
@@ -347,7 +355,7 @@ add_action( 'delete_term_relationships', function ( $object_id, $tt_ids, $taxono
 	amapress_log_to_role_log( sprintf( '%s a supprimé le(s) rôle(s) descriptif(s) "%s" pour %s',
 		amapress_get_user_edit_link( $current_user ),
 		implode( ',', $terms ),
-		amapress_get_user_edit_link( $user ) ) );
+		amapress_get_user_edit_link( $user ) ), implode( ',', $terms ), '' );
 }, 10, 3 );
 
 add_action( 'added_term_relationship', function ( $object_id, $tt_id, $taxonomy ) {
@@ -368,7 +376,7 @@ add_action( 'added_term_relationship', function ( $object_id, $tt_id, $taxonomy 
 	amapress_log_to_role_log( sprintf( '%s a ajouté le rôle descriptif "%s" pour %s',
 		amapress_get_user_edit_link( $current_user ),
 		$term->name,
-		amapress_get_user_edit_link( $user ) ) );
+		amapress_get_user_edit_link( $user ) ), $term->name, '' );
 }, 10, 3 );
 
 add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_key, $only_delete_these_meta_values ) {
@@ -378,7 +386,8 @@ add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_ke
 
 		amapress_log_to_role_log( sprintf( '%s a supprimé le référent du lieu de distribution "%s"',
 			amapress_get_user_edit_link( $current_user ),
-			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getTitle() ) ) );
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getTitle() ) ),
+			'Référent lieu', $lieu->getShortName() );
 	} else if ( 'amapress_producteur_referent' == $meta_key || 'amapress_producteur_referent2' == $meta_key || 'amapress_producteur_referent3' == $meta_key ) {
 		$current_user = AmapressUser::getBy( amapress_current_user_id() );
 		$producteur   = AmapressProducteur::getBy( $post_id );
@@ -392,7 +401,7 @@ add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_ke
 		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur %d de "%s"',
 			amapress_get_user_edit_link( $current_user ),
 			$number,
-			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ) ) );
+			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() );
 	} else if ( strpos( $meta_key, 'amapress_producteur_referent_' ) === 0 ) {
 		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_producteur_referent_' ) ) );
 		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
@@ -402,7 +411,7 @@ add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_ke
 		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur de "%s" de "%s"',
 			amapress_get_user_edit_link( $current_user ),
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
-			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ) );
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() . ',' . $lieu->getShortName() );
 	}
 }, 10, 4 );
 
@@ -415,7 +424,7 @@ add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_
 		amapress_log_to_role_log( sprintf( '%s a changé le référent du lieu de distribution "%s" pour "%s"',
 			amapress_get_user_edit_link( $current_user ),
 			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getTitle() ),
-			amapress_get_user_edit_link( $user ) ) );
+			amapress_get_user_edit_link( $user ) ), 'Référent lieu', '' );
 	} else if ( 'amapress_producteur_referent' == $meta_key || 'amapress_producteur_referent2' == $meta_key || 'amapress_producteur_referent3' == $meta_key ) {
 		$current_user = AmapressUser::getBy( amapress_current_user_id() );
 		$new_user     = AmapressUser::getBy( intval( $meta_value ) );
@@ -434,7 +443,7 @@ add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_
 			$number,
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
 			amapress_get_user_edit_link( $old_user ),
-			amapress_get_user_edit_link( $new_user ) ) );
+			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() );
 	} else if ( strpos( $meta_key, 'amapress_producteur_referent_' ) === 0 ) {
 		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_producteur_referent_' ) ) );
 		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
@@ -449,6 +458,6 @@ add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
 			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ),
 			amapress_get_user_edit_link( $old_user ),
-			amapress_get_user_edit_link( $new_user ) ) );
+			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() . ',' . $lieu->getShortName() );
 	}
 }, 10, 4 );

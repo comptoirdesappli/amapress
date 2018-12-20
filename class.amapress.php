@@ -3380,9 +3380,11 @@ class Amapress {
 				) as $user
 			) {
 				$amapien = AmapressUser::getBy( $user );
-				error_log( '[' . date_i18n( 'd/m/Y H:i', amapress_time() ) . '] ' . sprintf( '%s est "%s"',
+				amapress_log_to_role_log_file( $log_file,
+					sprintf( '%s est "%s"',
 						amapress_get_user_edit_link( $amapien ),
-						$amapien->getAmapRolesString() ) . "\n", 3, $log_file );
+						$amapien->getAmapRolesString() ) . "\n",
+					$amapien->getAmapRolesString(), '' );
 			}
 		}
 
