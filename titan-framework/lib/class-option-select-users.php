@@ -21,8 +21,10 @@ class TitanFrameworkOptionSelectUsers extends TitanFrameworkOptionSelect {
 	);
 
 	function isReadonly() {
-		if ( ! empty( $this->settings['required'] ) && $this->settings['required'] === true && empty( $this->getValue() ) ) {
-			return false;
+		if ( $this->isOnMeta() && ! empty( $this->settings['required'] ) && $this->settings['required'] === true ) {
+			if ( isset( $_POST[ $this->getID() ] ) || ( empty( $this->getValue() ) && empty( $_POST ) ) ) {
+				return false;
+			}
 		}
 
 		return parent::isReadonly();
