@@ -130,6 +130,13 @@ function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 
 	$skip_frames ++; // skip this function
 
 	foreach ( $trace as $call ) {
+		if ( empty( $call['line'] ) ) {
+			$call['line'] = '0';
+		}
+		if ( empty( $call['file'] ) ) {
+			$call['file'] = 'unknown';
+		}
+
 		if ( $skip_frames > 0 ) {
 			$skip_frames --;
 		} elseif ( isset( $call['class'] ) ) {

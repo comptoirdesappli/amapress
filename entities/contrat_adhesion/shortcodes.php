@@ -109,12 +109,9 @@ add_action( 'amapress_init', function () {
 } );
 
 function amapress_mes_contrats( $atts, $content = null ) {
-	$atts = shortcode_atts(
-		[
-			'for_logged'    => 'true',
-			'show_contrats' => 'true',
-		]
-		, $atts );
+	$atts                  = wp_parse_args( $atts );
+	$atts['for_logged']    = 'true';
+	$atts['show_contrats'] = 'true';
 
 	return amapress_self_inscription( $atts, $content );
 }

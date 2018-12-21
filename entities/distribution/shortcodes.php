@@ -535,7 +535,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 }
 
 function amapress_histo_inscription_distrib_shortcode( $atts ) {
-	$atts              = shortcode_atts( [], $atts );
+	$atts              = wp_parse_args( $atts );
 	$atts['show_past'] = 'true';
 	$atts['show_next'] = 'false';
 
