@@ -307,11 +307,20 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 		$subname = ' - ' . $adh->getSubName();
 	}
 
-	return sprintf( '%s%s - %s ~ %s',
-		$adh->getModelTitle(),
-		$subname,
-		date_i18n( 'm/Y', intval( $adh->getDate_debut() ) ),
-		date_i18n( 'm/Y', intval( $adh->getDate_fin() ) ) );
+	$start_month = date_i18n( 'm/Y', intval( $adh->getDate_debut() ) );
+	$end_month   = date_i18n( 'm/Y', intval( $adh->getDate_fin() ) );
+	if ( $start_month == $end_month ) {
+		return sprintf( '%s%s - %s',
+			$adh->getModelTitle(),
+			$subname,
+			$start_month );
+	} else {
+		return sprintf( '%s%s - %s ~ %s',
+			$adh->getModelTitle(),
+			$subname,
+			$start_month,
+			$end_month );
+	}
 }
 
 add_action( 'amapress_update_title_contrat', 'amapress_update_title_contrat' );

@@ -904,17 +904,23 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					return ! empty( $dates );
 				} );
 			} else {
-				$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $contrat ) use ( $atts ) {
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $contrat ) use ( $atts ) {
 					/** @var AmapressContrat_instance $contrat */
 					$before_close_hours = 0;
 					if ( 0 == $before_close_hours ) {
 						$before_close_hours = intval( $atts['before_close_hours'] );
 					}
-					$dates = array_values( $contrat->getListe_dates() );
-					$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+					$dates                = array_values( $contrat->getListe_dates() );
+					$dates_before_cloture = array_filter( $dates, function ( $d ) use ( $contrat ) {
 						$real_date = $contrat->getRealDateForDistribution( $d );
 
-						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+						return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+					} );
+					$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
+						$real_date = $contrat->getRealDateForDistribution( $d );
+
+						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
+						       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 					} );
 
 					return ! empty( $dates );
@@ -991,10 +997,16 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$first_contrat_date = $dates[0];
 			//			$last_contrat_date = $dates[count($dates) - 1];
 			if ( ! $admin_mode ) {
-				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+				$dates_before_cloture = array_filter( $dates, function ( $d ) use ( $contrat ) {
 					$real_date = $contrat->getRealDateForDistribution( $d );
 
-					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+					return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+				} );
+				$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
+					$real_date = $contrat->getRealDateForDistribution( $d );
+
+					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
+					       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 				} );
 			} else {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
@@ -1012,8 +1024,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			echo '<p><strong>Date</strong></p>';
 			if ( ! $is_started && ! $admin_mode ) {
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
-				echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $contrat->getRealDateForDistribution( $first_contrat_date ) ) . ' au ' . date_i18n( 'l d F Y', $contrat->getDate_fin() ) . '
+				$first_date_dist = $contrat->getRealDateForDistribution( $first_contrat_date );
+				$last_date_dist  = $contrat->getDate_fin();
+				if ( 1 == count( $contrat->getListe_dates() ) ) {
+					echo '<p>Je m’inscris pour la distribution ponctuelle du ' . date_i18n( 'l d F Y', $first_date_dist ) . '</p>';
+				} else {
+					echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $first_date_dist ) . ' au ' . date_i18n( 'l d F Y', $last_date_dist ) . '
  (' . count( $contrat->getListe_dates() ) . ' dates de distributions)</p>';
+				}
 			} else {
 				?>
                 <p><?php
