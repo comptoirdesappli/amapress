@@ -129,7 +129,7 @@ class Amapress_Import_Posts_CSV {
 		?>
 
         <div class="wrap">
-        <h2><?php _e( "Import de $post_type depuis un fichier XLSX/XLS/ODS/CSV", 'amapress' ); ?></h2>
+        <h2><?php _e( "Import de $post_type depuis un fichier XLSX/XLS/ODS", 'amapress' ); ?></h2>
 		<?php
 		$error_log_file = self::$log_dir_path . self::$log_file_name;
 		$error_log_url  = self::$log_dir_url . self::$log_file_name;
@@ -726,7 +726,7 @@ class Amapress_Import_Posts_CSV {
 //			$errors[] = new WP_Error('file_read', 'Unable to open CSV file.');
 //		}
 		} catch ( Exception $e ) {
-			$errors[] = new WP_Error( 'file_read', 'Unable to open CSV file.' );
+			$errors[] = new WP_Error( 'file_read', $e->getMessage() );
 		}
 
 

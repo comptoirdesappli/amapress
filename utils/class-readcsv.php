@@ -26,6 +26,9 @@ class ReadCSV {
 		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
 
 		$inputFileType = PHPExcel_IOFactory::identify( $inputFileName );
+		if ( 'CSV' == $inputFileType ) {
+			throw new Exception( 'Les fichiers CSV ne sont plus supportés pour cause d\'intéropérabilité. Veuillez convertir en XLSX, ODS ou XLS' );
+		}
 		$objReader     = PHPExcel_IOFactory::createReader( $inputFileType );
 		$objPHPExcel   = $objReader->load( $inputFileName );
 		$this->rows    = $objPHPExcel->getActiveSheet()->toArray( null, true, true );

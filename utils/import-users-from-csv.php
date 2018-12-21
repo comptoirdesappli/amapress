@@ -245,7 +245,7 @@ class Amapress_Import_Users_CSV {
 		?>
 
         <div class="wrap">
-        <h2><?php _e( 'Importer des utilisateurs depuis un fichier XLSX/XLS/ODS/CSV', 'amapress' ); ?></h2>
+        <h2><?php _e( 'Importer des utilisateurs depuis un fichier XLSX/XLS/ODS', 'amapress' ); ?></h2>
 		<?php
 		$error_log_file = self::$log_dir_path . self::$log_file_name;
 		$error_log_url  = self::$log_dir_url . self::$log_file_name;
