@@ -401,7 +401,7 @@ add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_ke
 		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur %d de "%s"',
 			amapress_get_user_edit_link( $current_user ),
 			$number,
-			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() );
+			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) );
 	} else if ( strpos( $meta_key, 'amapress_producteur_referent_' ) === 0 ) {
 		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_producteur_referent_' ) ) );
 		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
@@ -411,7 +411,7 @@ add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_ke
 		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur de "%s" de "%s"',
 			amapress_get_user_edit_link( $current_user ),
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
-			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() . ',' . $lieu->getShortName() );
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) . ',' . $lieu->getShortName() );
 	}
 }, 10, 4 );
 
@@ -443,7 +443,7 @@ add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_
 			$number,
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
 			amapress_get_user_edit_link( $old_user ),
-			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() );
+			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) );
 	} else if ( strpos( $meta_key, 'amapress_producteur_referent_' ) === 0 ) {
 		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_producteur_referent_' ) ) );
 		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
@@ -458,6 +458,6 @@ add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
 			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ),
 			amapress_get_user_edit_link( $old_user ),
-			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', $producteur->getUser()->getDisplayName() . ',' . $lieu->getShortName() );
+			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) . ',' . $lieu->getShortName() );
 	}
 }, 10, 4 );
