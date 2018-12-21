@@ -839,6 +839,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'href'       => admin_url( 'edit.php?post_type=page' ),
 					),
 					array(
+						'id'         => 'amapress_renew_config',
+						'title'      => 'Renouvèlement',
+						'capability' => 'manage_options',
+						'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=renew_config' ),
+					),
+					array(
 						'id'         => 'amapress_welcome_mail',
 						'title'      => 'Mail de bienvenue',
 						'capability' => 'manage_amapress',

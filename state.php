@@ -439,14 +439,12 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			$empty_resp_roles = true;
 		}
 	}
-	if ( $empty_resp_roles ) {
 		$state['15_posts'][] = amapress_get_check_state(
 			count( $amap_roles ) == 0 ? 'warning' : 'success',
 			'Rôle descriptif spécifiques des membres du collectif',
 			'<a href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
-			admin_url( 'admin.php?page=amapress_options_page&tab=amp_amap_roles_config' )
+			admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )
 		);
-	}
 
 	$members_no_desc = array_map( function ( $user ) {
 		$amapien = AmapressUser::getBy( $user );

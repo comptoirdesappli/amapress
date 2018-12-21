@@ -556,6 +556,7 @@ class AmapressEntities {
 							),
 						),
 						'Renouvèlement'                        => array(
+							'id'      => 'renew_config',
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -1680,44 +1681,6 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Rôles Amap'      => array(
-							'id'         => 'amp_amap_roles_config',
-							'desc'       => '',
-							'capability' => 'manage_options',
-							'options'    => array(
-								array(
-									'type' => 'note',
-									'desc' => 'Etiquettes de rôles Amap particulières. Permet, par ex, d\'affecter les Reply To des mails automatiques aux personnes qui gèrent les visites, les distributions, les intermittents',
-								),
-								array(
-									'id'       => 'resp-distrib-amap-role',
-									'name'     => 'Rôle des responsables des responsables des distributions',
-									'type'     => 'select-categories',
-									'taxonomy' => AmapressUser::AMAP_ROLE,
-								),
-								array(
-									'id'       => 'resp-visite-amap-role',
-									'name'     => 'Rôle des responsables des visites',
-									'type'     => 'select-categories',
-									'taxonomy' => AmapressUser::AMAP_ROLE,
-								),
-								array(
-									'id'       => 'resp-intermittents-amap-role',
-									'name'     => 'Rôle des responsables des intermittents',
-									'type'     => 'select-categories',
-									'taxonomy' => AmapressUser::AMAP_ROLE,
-								),
-								array(
-									'id'       => 'resp-amap_event-amap-role',
-									'name'     => 'Rôle des responsables des évènements Amap',
-									'type'     => 'select-categories',
-									'taxonomy' => AmapressUser::AMAP_ROLE,
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
 						'Général'         => array(
 							'id'      => 'amp_general_config',
 							'desc'    => '',
@@ -2343,7 +2306,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 //								),
 							),
 							'tabs'     => array(
-								'Rôles dans l\'Amap'    => array(
+								'Rôles dans l\'Amap'             => array(
 									'id'      => 'amapress_edit_roles_collectif',
 									'desc'    => '',
 									'options' => array(
@@ -2377,7 +2340,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 
 									)
 								),
-								'Référents producteurs' => array(
+								'Référents producteurs'          => array(
 									'id'      => 'amapress_edit_ref_prods',
 									'desc'    => '',
 									'options' => array(
@@ -2391,7 +2354,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										)
 									),
 								),
-								'Roles Amapress' => array(
+								'Roles Amapress'                 => array(
 									'id'      => 'amapress_edit_wp_roles',
 									'desc'    => '',
 									'options' => array(
@@ -2439,7 +2402,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									),
 								),
-								'Historique'     => array(
+								'Historique'                     => array(
 									'id'      => 'amapress_collectif_history',
 									'desc'    => '',
 									'options' => array(
@@ -2458,6 +2421,44 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											}
 										)
 									),
+								),
+								'Rôles spécifiques dans l\'Amap' => array(
+									'id'         => 'amp_amap_roles_config',
+									'desc'       => '',
+									'capability' => 'manage_options',
+									'options'    => array(
+										array(
+											'type' => 'note',
+											'desc' => 'Etiquettes de rôles Amap particulières. Permet, par ex, d\'affecter les Reply To des mails automatiques aux personnes qui gèrent les visites, les distributions, les intermittents',
+										),
+										array(
+											'id'       => 'resp-distrib-amap-role',
+											'name'     => 'Rôle des responsables des responsables des distributions',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'id'       => 'resp-visite-amap-role',
+											'name'     => 'Rôle des responsables des visites',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'id'       => 'resp-intermittents-amap-role',
+											'name'     => 'Rôle des responsables des intermittents',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'id'       => 'resp-amap_event-amap-role',
+											'name'     => 'Rôle des responsables des évènements Amap',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'type' => 'save',
+										),
+									)
 								),
 							),
 						),
