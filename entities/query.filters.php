@@ -1639,7 +1639,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		$lieu_ids     = array_map( function ( $l ) {
 			return Amapress::resolve_post_id( $l, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		}, $amapress_lieu );
-		$all_user_ids = wp_cache_get( 'amps_lieu_all_user_ids' );
+		$cache_key    = 'amps_lieu_' . implode( '_', $lieu_ids ) . '_user_ids';
+		$all_user_ids = wp_cache_get( $cache_key );
 		if ( false === $all_user_ids ) {
 			$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 			$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
@@ -1674,7 +1675,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 				$user_ids[] = intval( $user_id );
 			}
 			$all_user_ids = amapress_prepare_in_sql( $user_ids );
-			wp_cache_set( 'amps_lieu_all_user_ids', $all_user_ids );
+			wp_cache_set( $cache_key, $all_user_ids );
 		}
 		$where .= " AND $wpdb->users.ID IN ($all_user_ids)";
 	}
