@@ -455,11 +455,29 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	] ) );
 	if ( ! empty( $members_no_desc ) ) {
 		$state['15_posts'][] = amapress_get_check_state(
-			'warning',
+			'error',
 			'Membres du collectif sans rôle descriptif',
 			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice',
 			admin_url( 'admin.php?page=amapress_collectif' ),
 			implode( ', ', $members_no_desc )
+		);
+	}
+
+	$members_no_contrats = array_map( function ( $user ) {
+		$amapien = AmapressUser::getBy( $user );
+
+		return AMapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() . ' (' . $amapien->getEmail() . ')', true, true );
+	}, get_users( [
+		'amapress_role'    => 'collectif_no_prod',
+		'amapress_contrat' => 'no',
+	] ) );
+	if ( ! empty( $members_no_contrats ) ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			'info',
+			'Membres du collectif sans contrat',
+			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Vérifier</a> les utilisateurs membres du collectif qui n\'ont pas de contrats',
+			admin_url( 'users.php?amapress_contrat=no&amapress_role=collectif_no_prod' ),
+			implode( ', ', $members_no_contrats )
 		);
 	}
 

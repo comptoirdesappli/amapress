@@ -35,6 +35,11 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 			$ret[] = array( 'include' => $users );
 		}
 
+		$users = array_map( 'intval', Amapress::get_array( Amapress::getOption( 'mailing_other_users' ) ) );
+		if ( ! empty( $users ) && count( $users ) > 0 ) {
+			$ret[] = array( 'include' => $users );
+		}
+
 		return $ret;
 	}
 

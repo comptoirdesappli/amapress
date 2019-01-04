@@ -2227,7 +2227,25 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 //								),
 							),
 							'tabs'     => array(
-								'Ouvaton - Sympa'   => array(
+								'Général'                             => array(
+									'id'      => 'amapress_mailinglist_sync_generic_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'           => 'mailing_other_users',
+											'name'         => amapress__( 'Utilisateurs inclus dans toutes les listes' ),
+											'type'         => 'select-users',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Sync by SQL (ie. Ouvaton) - Sympa'   => array(
+									'id'      => 'amapress_mailinglist_sync_sql_tab',
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -2254,7 +2272,8 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									)
 								),
-								'Sud Ouest - Sympa' => array(
+								'Sync by Url (ie. Sud Ouest) - Sympa' => array(
+									'id'      => 'amapress_mailinglist_sync_url_tab',
 									'desc'    => '',
 									'options' => array(
 										array(
