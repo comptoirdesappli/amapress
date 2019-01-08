@@ -242,6 +242,11 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_visite_inscription_recall_options(),
 						),
+						'Mails - Visite - Inscription possible - Rappel'          => array(
+							'id'      => 'amp_tab_recall_visite_avail',
+							'desc'    => '',
+							'options' => amapress_visite_available_recall_options(),
+						),
 						'Distributions - Définir horaires particuliers'           => array(
 							'id'      => 'amp_tab_distrib_hours_setter',
 							'desc'    => '',
