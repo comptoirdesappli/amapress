@@ -844,6 +844,8 @@ jQuery(function() {
 			'include'        => $lieu_ids
 		) );
 
+		ob_start();
+
 		amapress_echo_panel_start( 'Les responsables de l\'AMAP' );
 		echo do_shortcode( '[trombinoscope_role role=responsables]' );
 		amapress_echo_panel_end();

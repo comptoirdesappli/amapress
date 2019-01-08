@@ -250,6 +250,8 @@ function amapress_register_shortcodes() {
 			),
 			$atts );
 
+		ob_start();
+
 		$do_sms_link = Amapress::toBool( $atts['sms'] ) && amapress_can_access_admin();
 		echo '<ul>';
 		foreach ( Amapress_MailingListConfiguration::getAll() as $mailing_list_configuration ) {
@@ -266,6 +268,8 @@ function amapress_register_shortcodes() {
 			echo '</li>';
 		}
 		echo '</ul>';
+
+		return ob_get_clean();
 	} );
 }
 
