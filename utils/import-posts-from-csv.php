@@ -523,14 +523,19 @@ class Amapress_Import_Posts_CSV {
 					} else if ( apply_filters( "amapress_import_posts_{$post_type}_is_multi_field", false, $column_name ) === true ) {
 						$postmulti[ $column_name ] = $column;
 						$has_multi                 = true;
-						$total_posts ++;
 					} else {
 						$postmeta[ $column_name ] = $column;
 					}
 				}
 
-				if ( ! $has_multi ) {
-					$total_posts ++;
+				if ( $has_multi ) {
+					$postdata = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_data", $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti );
+					$postmeta = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_meta", $postmeta, $multi_key, $multi_value, $postdata, $posttaxo, $post_type, $postmulti );
+					$posttaxo = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_taxonomy", $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
+
+					$postdata = apply_filters( "amapress_import_apply_default_values_to_posts_data", $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti );
+					$postmeta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $postmeta, $multi_key, $multi_value, $postdata, $posttaxo, $post_type, $postmulti );
+					$posttaxo = apply_filters( "amapress_import_apply_default_values_to_posts_taxonomy", $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
 				}
 
 				// A plugin may need to filter the data and meta
@@ -617,6 +622,7 @@ class Amapress_Import_Posts_CSV {
 						continue;
 					}
 					$post = $post_id = false;
+					$total_posts ++;
 
 					if ( $multi_key != 'single' ) {
 						unset( $postdata['ID'] );
@@ -628,6 +634,44 @@ class Amapress_Import_Posts_CSV {
 						$postdata = apply_filters( "amapress_import_apply_multi_to_posts_data", $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti );
 						$postmeta = apply_filters( "amapress_import_apply_multi_to_posts_meta", $postmeta, $multi_key, $multi_value, $postdata, $posttaxo, $post_type, $postmulti );
 						$posttaxo = apply_filters( "amapress_import_apply_multi_to_posts_taxonomy", $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
+
+						if ( is_wp_error( $postdata ) ) {
+							$errors[ $rkey ][] = $postdata;
+						}
+
+						if ( is_wp_error( $postmeta ) ) {
+							$errors[ $rkey ][] = $postmeta;
+						}
+
+						if ( is_wp_error( $posttaxo ) ) {
+							$errors[ $rkey ][] = $posttaxo;
+						}
+
+						foreach ( $postdata as $v ) {
+							if ( is_wp_error( $v ) ) {
+								$errors[ $rkey ][] = $v;
+							}
+						}
+						foreach ( $postmeta as $v ) {
+							if ( is_wp_error( $v ) ) {
+								$errors[ $rkey ][] = $v;
+							}
+						}
+						foreach ( $posttaxo as $v ) {
+							if ( is_wp_error( $v ) ) {
+								$errors[ $rkey ][] = $v;
+							}
+						}
+
+						foreach ( $postmulti as $v ) {
+							if ( is_wp_error( $v ) ) {
+								$errors[ $rkey ][] = $v;
+							}
+						}
+
+						if ( ! empty( $errors[ $rkey ] ) ) {
+							continue;
+						}
 					} else {
 						if ( isset( $postdata['ID'] ) ) {
 							$post = get_post( $postdata['ID'] );
@@ -642,8 +686,6 @@ class Amapress_Import_Posts_CSV {
 							}
 						}
 					}
-
-//                    var_dump($post);
 
 					if ( ! $post && $posts_update ) {
 						$post = apply_filters( "amapress_import_resolve_{$post_type}_post", null, $postdata, $postmeta, $posttaxo, $postcustom );

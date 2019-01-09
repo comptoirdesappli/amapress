@@ -142,8 +142,8 @@ function amapress_import_posts_adhesion_is_multi_field( $is_multi, $column_name 
 //function amapress_import_adhesion_apply_multi_to_posts_data($postdata, $multi_key, $multi_value) {
 //    return $postdata;
 //}
-add_filter( 'amapress_import_adhesion_apply_multi_to_posts_meta', 'amapress_import_adhesion_apply_multi_to_posts_meta', 10, 3 );
-function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_key, $multi_value ) {
+add_filter( 'amapress_import_adhesion_apply_multi_to_posts_meta', 'amapress_import_adhesion_apply_multi_to_posts_meta', 10, 4 );
+function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_key, $multi_value, $postdata ) {
 	$postmeta['amapress_adhesion_contrat_instance'] = $multi_key;
 
 	$postmeta['amapress_adhesion_contrat_quantite']         = array_map(
@@ -161,12 +161,25 @@ function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_k
 			}, $multi_value )
 	);
 	$contrat_instance                                       = AmapressContrat_instance::getBy( $multi_key );
-	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
-	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
-		$dt = date_i18n( 'd/m/Y', $postmeta['amapress_adhesion_date_debut'] );
 
-		return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates du contrat '{$contrat_instance->getTitle()}'" );
+	$date_debut_string = isset( $postmeta['amapress_adhesion_date_debut'] ) ? $postmeta['amapress_adhesion_date_debut'] : 0;
+	if ( ! is_wp_error( $date_debut_string ) && ! empty( $date_debut_string ) ) {
+		$date_debut = Amapress::start_of_day( $date_debut_string );
+		if ( $date_debut < Amapress::start_of_day( $contrat_instance->getDate_debut() )
+		     || $date_debut > Amapress::start_of_day( $contrat_instance->getDate_fin() ) ) {
+			$dt            = date_i18n( 'd/m/Y', $date_debut );
+			$contrat_debut = date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() );
+			$contrat_fin   = date_i18n( 'd/m/Y', $contrat_instance->getDate_fin() );
+
+			return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates ($contrat_debut - $contrat_fin) du contrat '{$contrat_instance->getTitle()}'" );
+		}
 	}
+//	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
+//	     || $postmeta['amapress_adhesion_date_debut'] > $contrat_instance->getDate_fin() ) {
+//		$dt = date_i18n( 'd/m/Y', $postmeta['amapress_adhesion_date_debut'] );
+//
+//		return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates du contrat '{$contrat_instance->getTitle()}'" );
+//	}
 	$postmeta['amapress_adhesion_status'] = 'confirmed';
 
 //	$postmeta['amapress_adhesion_contrat_quantite_factors'] = $multi_value;

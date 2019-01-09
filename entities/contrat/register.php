@@ -623,7 +623,7 @@ jQuery(function($) {
 //			),
 
 			// 3/6 Distributions
-			'lieux'                 => array(
+			'lieux'          => array(
 				'name'       => amapress__( 'Lieu(x)' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_lieu',
@@ -1553,14 +1553,20 @@ function amapress_import_adhesion_meta2( $postmeta, $postdata, $posttaxo, $post_
 		return $postmeta;
 	}
 
-	if ( is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] )
+	if ( ! isset( $postmeta['amapress_adhesion_contrat_instance'] ) ) {
+		return $postmeta;
+	}
+
+	if ( empty( is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] ) )
+	     || empty( is_wp_error( $postmeta['amapress_adhesion_contrat_quantite'] ) )
+	     || is_wp_error( $postmeta['amapress_adhesion_contrat_instance'] )
 	     || is_wp_error( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
 		return $postmeta;
 	}
 
 	$contrat_instance  = AmapressContrat_instance::getBy( $postmeta['amapress_adhesion_contrat_instance'] );
-	$date_debut_string = $postmeta['amapress_adhesion_date_debut'];
-	if ( ! is_wp_error( $date_debut_string ) ) {
+	$date_debut_string = isset( $postmeta['amapress_adhesion_date_debut'] ) ? $postmeta['amapress_adhesion_date_debut'] : '';
+	if ( ! is_wp_error( $date_debut_string ) && ! empty( $date_debut_string ) ) {
 		$date_debut = Amapress::start_of_day( $date_debut_string );
 		if ( $date_debut < Amapress::start_of_day( $contrat_instance->getDate_debut() )
 		     || $date_debut > Amapress::start_of_day( $contrat_instance->getDate_fin() ) ) {
