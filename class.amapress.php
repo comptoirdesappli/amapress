@@ -275,6 +275,16 @@ class Amapress {
 			}
 			if ( ! empty( $name ) ) {
 				$args   = array(
+					'meta_key'   => 'last_name',
+					'meta_value' => $name
+				);
+				$user   = new WP_User_Query( $args );
+				$object = $user->get_results();
+				if ( ! empty( $object ) && count( $object ) == 1 ) {
+					return $object[0]->ID;
+				}
+
+				$args   = array(
 					'search'        => '*' . $name . '*', // or login or nicename in this example
 					'search_fields' => array( 'display_name' )
 				);
