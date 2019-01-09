@@ -552,7 +552,9 @@ class Amapress_Import_Users_CSV {
 						$login = strtolower( $userdata['first_name'] . '.' . $userdata['last_name'] );
 						$user  = get_user_by( 'login', $login );
 						if ( $user ) {
-							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', "User with login '$login'' already exists with email $user->user_email" );
+							$user_link         = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $login );
+							$search_link       = Amapress::makeLink( admin_url( 'users.php?s=' . $userdata['last_name'] ), 'Rechercher ' . $userdata['last_name'] );
+							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', "User with login '$user_link' already exists with email {$user->user_email}. $search_link" );
 							continue;
 						}
 					}
