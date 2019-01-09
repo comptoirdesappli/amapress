@@ -553,7 +553,7 @@ class Amapress_Import_Users_CSV {
 						$user  = get_user_by( 'login', $login );
 						if ( $user ) {
 							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', "User with login '$login'' already exists with email $user->user_email" );
-							break;
+							continue;
 						}
 					}
 				}
