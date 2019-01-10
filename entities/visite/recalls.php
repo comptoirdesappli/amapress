@@ -19,8 +19,8 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 
 	$participants_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $participants ), "Participants " . $visite->getTitle(), "visite" );
 	amapress_send_message(
-		Amapress::getOption( 'visite-inscription-recall-subject' ),
-		Amapress::getOption( 'visite-inscription-recall-content' ),
+		Amapress::getOption( 'visite-inscription-recall-mail-subject' ),
+		Amapress::getOption( 'visite-inscription-recall-mail-content' ),
 		'', $participants_users, $visite, array(),
 		amapress_get_recall_cc_from_option( 'visite-inscription-recall-cc' ),
 		null, AmapressVisite::getResponsableVisitesReplyto() );
@@ -111,8 +111,8 @@ add_action( 'amapress_recall_visite_available', function ( $args ) {
 
 	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_contrat=' . $contrat_id . '&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat " . $contrat->getTitle(), "visite" );
 	amapress_send_message(
-		Amapress::getOption( 'visite-available-recall-subject' ),
-		Amapress::getOption( 'visite-available-recall-content' ),
+		Amapress::getOption( 'visite-available-recall-mail-subject' ),
+		Amapress::getOption( 'visite-available-recall-mail-content' ),
 		'', $non_participants_users, $visite, array(),
 		amapress_get_recall_cc_from_option( 'visite-available-recall-cc' ),
 		null, AmapressVisite::getResponsableVisitesReplyto() );
