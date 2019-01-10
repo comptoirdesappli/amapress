@@ -442,7 +442,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$state['15_posts'][] = amapress_get_check_state(
 			count( $amap_roles ) == 0 ? 'warning' : 'success',
 			'Rôle descriptif spécifiques des membres du collectif',
-			'<a href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
+			'<a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
 			admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )
 		);
 
