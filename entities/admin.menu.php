@@ -182,7 +182,7 @@ jQuery(function() {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_publish_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<button class=\'amapress_publish button button-primary\'>Enregistrer</button>',
+			'title'  => '<button class=\'amapress_publish button button-primary\' style="display: none">Enregistrer</button>',
 			'href'   => '#',
 		) );
 	}

@@ -115,7 +115,7 @@ function amapress_post_validation() {
                 } else {
                     alert('Certains champs ne sont pas valides');
                 }
-            });
+            }).css('display', publishBtn.length > 0 ? 'block' : 'none');
 
             jQuery.expr[':'].parentHidden = function (a) {
                 return jQuery(a).parent().is(':hidden');
