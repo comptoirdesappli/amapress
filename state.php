@@ -181,6 +181,23 @@ function amapress_get_state() {
 		);
 	}
 
+	$github_updater = get_option( 'github_updater' );
+	if ( empty( $github_updater ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'error',
+			'Le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
+			'Veuillez utiliser l\'installateur automatique qui est affiché en haut du <a target="_blank" href="' . admin_url( 'index.php' ) . '">tableau de bord</a> ou suivre la <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Installation">procédure d\'installation manuelle</a>',
+			''
+		);
+	} else if ( empty( $github_updater['github_access_token'] ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'error',
+			'Un jeton d\'accès GitHub (Personal Access Token) pour le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
+			'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Messages#personal-github-access-token">lien</a>',
+			admin_url( 'options-general.php?page=github-updater&tab=github_updater_settings&subtab=github' )
+		);
+	}
+
 	$blog_desc            = get_bloginfo( 'description' );
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
