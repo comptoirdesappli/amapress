@@ -387,7 +387,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	}
 
 	if ( ! empty( $amp_back_to_list ) ) {
-		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_attr( $amp_back_to_list ) . '" />';
+		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_url( $amp_back_to_list ) . '" />';
 		$title = 'Retourner à la page précédente';
 		if ( false !== strpos( $amp_back_to_list, 'edit.php' ) ) {
 			$title = 'Retourner à la liste des ' . get_post_type_object( $post->post_type )->label;
@@ -404,7 +404,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 
 add_filter( 'redirect_post_location', function ( $location ) {
 	if ( isset( $_POST['amp_back_to_list'] ) ) {
-		$location = add_query_arg( 'amp_back_to_list', $_POST['amp_back_to_list'], $location );
+		$location = add_query_arg( 'amp_back_to_list', urlencode( $_POST['amp_back_to_list'] ), $location );
 	}
 
 	return $location;
