@@ -109,10 +109,10 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-tractor',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -151,10 +151,10 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-water',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -201,10 +201,10 @@ class AmapressEntities {
 						'icon'       => 'dashicons-none flaticon-interface-2',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 						'Roles des Responsables de distribution'                  => array(
@@ -241,6 +241,25 @@ class AmapressEntities {
 							'id'      => 'amp_tab_recall_visite_inscr',
 							'desc'    => '',
 							'options' => amapress_visite_inscription_recall_options(),
+						),
+						'Mails - Visite - Inscription possible - Rappel'          => array(
+							'id'      => 'amp_tab_recall_visite_avail',
+							'desc'    => '',
+							'options' => amapress_visite_available_recall_options(),
+						),
+						'Distributions - Définir horaires particuliers'           => array(
+							'id'      => 'amp_tab_distrib_hours_setter',
+							'desc'    => '',
+							'options' => [
+								array(
+									'id'     => 'distrib-hours-setter',
+									'bare'   => true,
+//									'name'                => 'Rappel 1',
+//									'desc'                => 'Inscription à une visite',
+									'type'   => 'custom',
+									'custom' => 'amapress_distribution_hours_setter',
+								),
+							],
 						),
 					),
 					'subpages' => array(
@@ -542,6 +561,7 @@ class AmapressEntities {
 							),
 						),
 						'Renouvèlement'                        => array(
+							'id'      => 'renew_config',
 							'desc'    => '',
 							'options' => array(
 								array(
@@ -571,24 +591,54 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_contrat_renew_recall_options(),
 						),
-						'Assistant inscription en ligne'       => array(
+						'Mails - Inscriptions à valider'       => array(
+							'id'      => 'amp_tab_inscr_validate_distrib',
+							'desc'    => '',
+							'options' => amapress_inscriptions_to_validate_recall_options(),
+						),
+						'Assistant - Pré-inscription en ligne' => array(
 							'id'      => 'config_online_inscriptions',
 							'desc'    => '',
 							'options' => [
 								array(
 									'type' => 'heading',
-									'name' => 'Mails - Confirmation du contrat en ligne',
+									'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
+								),
+								array(
+									'id'      => 'online_subscription_agreement_step_name',
+									'name'    => 'Nom de l\'étape',
+									'type'    => 'text',
+									'default' => 'Charte et règlement intérieur de l\'AMAP',
+								),
+								array(
+									'id'      => 'online_subscription_agreement_step_checkbox',
+									'name'    => 'Texte de la case à cocher',
+									'type'    => 'text',
+									'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
+								),
+								array(
+									'id'   => 'online_subscription_agreement',
+									'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
+									'type' => 'editor',
+									'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+								),
+								array(
+									'type' => 'save',
+								),
+								array(
+									'type' => 'heading',
+									'name' => 'Mails - Confirmation Inscription Contrat',
 								),
 								array(
 									'id'       => 'online_subscription_confirm-mail-subject',
-									'name'     => 'Sujet du mail',
+									'name'     => 'Objet',
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
 								),
 								array(
 									'id'      => 'online_subscription_confirm-mail-content',
-									'name'    => 'Contenu du mail',
+									'name'    => 'Contenu',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
 									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
@@ -598,41 +648,61 @@ class AmapressEntities {
 									\n[avec_contrat]Merci d'imprimer le contrat joint à ce mail et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
 									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
 									\n\n%%nom_site%%" ),
-									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-									                                                  AmapressAdhesion::getPlaceholdersHelp( [], false ) : '',
+									'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+									             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+								),
+								array(
+									'type' => 'save',
 								),
 								array(
 									'type' => 'heading',
-									'name' => 'Mails - Confirmation du adhésion en ligne',
+									'name' => 'Assistant - Étape Adhésion AMAP',
+								),
+								array(
+									'id'      => 'online_subscription_greating_adhesion',
+									'name'    => 'Contenu du message de validation',
+									'type'    => 'editor',
+									'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+									'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
+								),
+								array(
+									'type' => 'save',
+								),
+								array(
+									'type' => 'heading',
+									'name' => 'Confirmation - Pré-inscription en ligne',
 								),
 								array(
 									'id'       => 'online_adhesion_confirm-mail-subject',
-									'name'     => 'Sujet du mail',
+									'name'     => 'Objet',
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
 								),
 								array(
 									'id'      => 'online_adhesion_confirm-mail-content',
-									'name'    => 'Contenu du mail',
+									'name'    => 'Contenu',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
 Nous vous confirmons votre adhésion à %%nom_site%%\n
 [avec_bulletin]Merci d'imprimer le bulletin joint à ce mail et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
 [sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
 \n\n%%nom_site%%" ),
-									'desc'    => isset( $_REQUEST['placeholders'] ) ? 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-									                                                  AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ) : '',
+									'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+									             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
+								),
+								array(
+									'type' => 'save',
 								),
 								array(
 									'type' => 'heading',
-									'name' => 'Message au sujet des adhésions des co-adhérents',
+									'name' => 'Message - Cotisation des co-adhérents',
 								),
 								array(
 									'id'      => 'online_adhesion_coadh_message',
 									'name'    => 'Message',
 									'type'    => 'editor',
-									'default' => wpautop( 'Les co-adhérents qui ne sont pas du même foyer doivent payer chacun une cotisation/adhésion.' ),
+									'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
 									'desc'    => 'Message au sujet des adhésions des co-adhérents',
 								),
 								array(
@@ -876,10 +946,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-none flaticon-pen',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -928,10 +998,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-none flaticon-business-2',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 						'Configuration de l\'espace intermittents' => array(
@@ -1072,7 +1142,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-repris-ask-adherent-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% (%%post:repreneur-coords%%) pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1122,7 +1192,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-repris-validation-adherent-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) sera repris par %%post:repreneur%% à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) sera repris par %%post:repreneur%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1141,7 +1211,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-repris-validation-repreneur-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% a accepté la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a accepté la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1168,7 +1238,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1214,7 +1284,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-cancel-from-adherent-repreneur-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:adherent%% a annulé la reprise de son panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\n%%post:adherent%% (%%post:adherent-coords%%) a annulé la reprise de son panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1241,7 +1311,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-cancel-from-repreneur-adherent-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:repreneur%% a annulé la reprise de votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\n%%post:repreneur%% (%%post:repreneur-coords%%) a annulé la reprise de votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1260,7 +1330,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVous avez annumé la reprise du panier (%%post:panier%%) de %%post:adherent%% à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
@@ -1489,10 +1559,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'icon'       => 'dashicons-none flaticon-food-29',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 //						'Recettes'   => array(
@@ -1571,7 +1641,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //								),
 //							)
 //						),
-						'Pages'      => array(
+						'Pages'           => array(
 							'id'         => 'amp_pages_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1616,7 +1686,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Général'    => array(
+						'Général'         => array(
 							'id'      => 'amp_general_config',
 							'desc'    => '',
 							'options' => array(
@@ -1675,10 +1745,34 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Google API' => array(
+						'Géolocalisation' => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
+								array(
+									'id'         => 'geocode_provider',
+									'name'       => 'Fournisseur de géocodage',
+									'type'       => 'select',
+									'default'    => 'google',
+									'desc'       => 'Choisissez le fournisseur utilisé pour résoudre les adresses',
+									'options'    => [
+										'google'    => 'Google Maps',
+										'nominatim' => 'Nominatim (Open Street Map)',
+									],
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'map_provider',
+									'name'       => 'Fournisseur de cartes',
+									'type'       => 'select',
+									'default'    => 'google',
+									'desc'       => 'Choisissez le fournisseur utilisé pour afficher les cartes',
+									'options'    => [
+										'google'        => 'Google Maps',
+										'openstreetmap' => 'OpenStreetMap',
+									],
+									'capability' => 'manage_options',
+								),
 								array(
 									'id'         => 'google_map_key',
 									'name'       => 'Clé Google API',
@@ -1704,7 +1798,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Tests'      => array(
+						'Tests'           => array(
 							'id'      => 'amp_tests_config',
 							'desc'    => '',
 							'options' => array(
@@ -1746,7 +1840,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							),
 						),
 						//
-						'Paiements'  => array(
+						'Paiements'       => array(
 							'id'      => 'amp_paiements_config',
 							'desc'    => '',
 							'options' => array(
@@ -1789,10 +1883,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(
-								array(
-									'type' => 'note',
-									'desc' => 'ici vous pouvez gérer...'
-								),
+//								array(
+//									'type' => 'note',
+//									'desc' => 'ici vous pouvez gérer...'
+//								),
 							),
 							'tabs'     => array(
 								'Mail de bienvenue'                                      => array(
@@ -2132,13 +2226,31 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(
-								array(
-									'type' => 'note',
-									'desc' => 'ici vous pouvez gérer...'
-								),
+//								array(
+//									'type' => 'note',
+//									'desc' => 'ici vous pouvez gérer...'
+//								),
 							),
 							'tabs'     => array(
-								'Ouvaton - Sympa'   => array(
+								'Général'                             => array(
+									'id'      => 'amapress_mailinglist_sync_generic_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'           => 'mailing_other_users',
+											'name'         => amapress__( 'Utilisateurs inclus dans toutes les listes' ),
+											'type'         => 'select-users',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Sync by SQL (ie. Ouvaton) - Sympa'   => array(
+									'id'      => 'amapress_mailinglist_sync_sql_tab',
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -2165,7 +2277,8 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									)
 								),
-								'Sud Ouest - Sympa' => array(
+								'Sync by Url (ie. Sud Ouest) - Sympa' => array(
+									'id'      => 'amapress_mailinglist_sync_url_tab',
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -2217,7 +2330,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 //								),
 							),
 							'tabs'     => array(
-								'Rôles dans l\'Amap'    => array(
+								'Rôles dans l\'Amap'             => array(
 									'id'      => 'amapress_edit_roles_collectif',
 									'desc'    => '',
 									'options' => array(
@@ -2251,7 +2364,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 
 									)
 								),
-								'Référents producteurs' => array(
+								'Référents producteurs'          => array(
 									'id'      => 'amapress_edit_ref_prods',
 									'desc'    => '',
 									'options' => array(
@@ -2265,7 +2378,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										)
 									),
 								),
-								'Roles Amapress'        => array(
+								'Roles Amapress'                 => array(
 									'id'      => 'amapress_edit_wp_roles',
 									'desc'    => '',
 									'options' => array(
@@ -2313,6 +2426,64 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									),
 								),
+								'Historique'                     => array(
+									'id'      => 'amapress_collectif_history',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'amapress_collectif_history_view',
+											'name'   => '',
+											'type'   => 'custom',
+											'custom' => function ( $option ) {
+												$content  = '';
+												$log_file = Amapress::getRolesLogFile();
+												if ( file_exists( $log_file ) ) {
+													$content = file_get_contents( $log_file );
+												}
+
+												return '<pre>' . $content . '</pre>';
+											}
+										)
+									),
+								),
+								'Rôles spécifiques dans l\'Amap' => array(
+									'id'         => 'amp_amap_roles_config',
+									'desc'       => '',
+									'capability' => 'manage_options',
+									'options'    => array(
+										array(
+											'type' => 'note',
+											'desc' => 'Etiquettes de rôles Amap particulières. Permet, par ex, d\'affecter les Reply To des mails automatiques aux personnes qui gèrent les visites, les distributions, les intermittents',
+										),
+										array(
+											'id'       => 'resp-distrib-amap-role',
+											'name'     => 'Rôle des responsables des responsables des distributions',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'id'       => 'resp-visite-amap-role',
+											'name'     => 'Rôle des responsables des visites',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'id'       => 'resp-intermittents-amap-role',
+											'name'     => 'Rôle des responsables des intermittents',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'id'       => 'resp-amap_event-amap-role',
+											'name'     => 'Rôle des responsables des évènements Amap',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
 							),
 						),
 						array(
@@ -2335,10 +2506,10 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 						'icon'       => 'dashicons-none flaticon-farmer',
 					),
 					'options'  => array(
-						array(
-							'type' => 'note',
-							'desc' => 'ici vous pouvez gérer...'
-						),
+//						array(
+//							'type' => 'note',
+//							'desc' => 'ici vous pouvez gérer...'
+//						),
 					),
 					'tabs'     => array(
 						'Utilisateurs'          => array(

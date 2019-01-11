@@ -26,6 +26,7 @@ class TitanFrameworkOptionNumber extends TitanFrameworkOption {
 		'max'         => 1000,
 		'step'        => 1,
 		'default'     => 0,
+		'required'    => false,
 		'unit'        => '',
 	);
 
@@ -192,6 +193,7 @@ class TitanFrameworkOptionNumber extends TitanFrameworkOption {
 			'settings'    => $this->getID(),
 			'description' => $this->settings['desc'],
 			'priority'    => $priority,
+			'required'    => $this->settings['required'],
 			'size'        => $this->settings['size'],
 			'min'         => $this->settings['min'],
 			'max'         => $this->settings['max'],
@@ -222,6 +224,7 @@ function registerTitanFrameworkOptionNumberControl() {
 		public $max;
 		public $step;
 		public $unit;
+		public $required;
 
 		private static $firstLoad = true;
 

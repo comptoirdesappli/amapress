@@ -55,13 +55,15 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 	}
 	$js_markers = trim( $js_markers, ',' );
 
-	$js_acces = 'var acces = pos;';
-	if ( isset( $markers[0]['access'] ) && is_array( $markers[0]['access'] ) ) {
-		$js_acces = 'var acces = new google.maps.LatLng(' .
-		            $markers[0]['access']['latitude'] .
-		            ',' . $markers[0]['access']['longitude'] . ');';
-	}
-	$sv_js = 'var panorama = new google.maps.StreetViewPanorama(
+	$map_provider = Amapress::getOption( 'map_provider' );
+	if ( 'google' == $map_provider ) {
+		$js_acces = 'var acces = pos;';
+		if ( isset( $markers[0]['access'] ) && is_array( $markers[0]['access'] ) ) {
+			$js_acces = 'var acces = new google.maps.LatLng(' .
+			            $markers[0]['access']['latitude'] .
+			            ',' . $markers[0]['access']['longitude'] . ');';
+		}
+		$sv_js = 'var panorama = new google.maps.StreetViewPanorama(
                       document.getElementById(\'pano' . $amapress_map_instance . '\'), {
                         position: acces,
                       });
@@ -70,7 +72,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                     for (var i = 0; i < street_markers.length; i++) {
                         var marker = street_markers[i];
                         var mark_street = new google.maps.Marker({
-                                            position: new google.maps.LatLng(marker.latitude,marker.longitude),
+                                            position: new google.maps.LatLng(parseFloat(marker.latitude),parseFloat(marker.longitude)),
                                             url:marker.url,
                                             title: marker.title,
                                             label: marker.label,
@@ -87,7 +89,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                     }
                     var service = new google.maps.StreetViewService;
                     // call the "getPanoramaByLocation" function of the Streetview Services to return the closest streetview position for the entered coordinates
-                      service.getPanoramaByLocation(panorama.getPosition(), 50, function(panoData) {
+                      service.getPanoramaByLocation(panorama.getPosition(), 25, function(panoData) {
                         // if the function returned a result
                         if (panoData != null) {
                           // the GPS coordinates of the streetview camera position
@@ -101,18 +103,18 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                           panorama.setPov(pov);
                         }
                       });';
-	if ( $mode == 'map+streeview' ) {
-		$htm = '<div id="map' . $amapress_map_instance . '" style="height:450px;" class="col-md-6 col-sm-12"></div>
+		if ( $mode == 'map+streeview' ) {
+			$htm = '<div id="map' . $amapress_map_instance . '" style="height:450px;" class="col-md-6 col-sm-12"></div>
                 <div id="pano' . $amapress_map_instance . '" style="height:450px" class="col-md-6 col-sm-12"></div>';
-	} else if ( $mode == 'streeview' ) {
-		$htm = '<div id="map' . $amapress_map_instance . '" style="display:none"></div>
+		} else if ( $mode == 'streeview' ) {
+			$htm = '<div id="map' . $amapress_map_instance . '" style="display:none"></div>
             <div id="pano' . $amapress_map_instance . '" style="height:450px"></div>';
-	} else {
-		$sv_js = '';
-		$htm   = '<div id="map' . $amapress_map_instance . '" style="height:450px"></div>';
-	}
+		} else {
+			$sv_js = '';
+			$htm   = '<div id="map' . $amapress_map_instance . '" style="height:450px"></div>';
+		}
 
-	return $htm . '<script type="text/javascript">
+		return $htm . '<script type="text/javascript">
                 //<![CDATA[
                 var map;
                 function initMap' . $amapress_map_instance . '() {
@@ -131,7 +133,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                 for (var i = 0; i < markers.length; i++) {
                     var mk = markers[i];
                     var marker = new google.maps.Marker({
-                                        position: new google.maps.LatLng(mk.latitude, mk.longitude),
+                                        position: new google.maps.LatLng(parseFloat(mk.latitude), parseFloat(mk.longitude)),
                                         url:mk.url,
                                         icon:mk.icon,
                                         label:mk.label,
@@ -150,7 +152,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                 var bounds = new google.maps.LatLngBounds();
                 for (var i = 0; i < markers.length; i++) {
                     var mk = markers[i];
-                    bounds.extend(new google.maps.LatLng(mk.latitude, mk.longitude));
+                    bounds.extend(new google.maps.LatLng(parseFloat(mk.latitude), parseFloat(mk.longitude)));
                 }
                 // Don\'t zoom in too far on only one marker
                 if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
@@ -170,6 +172,30 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                 //]]>
             </script>
             <script async="async" defer="defer"
-              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDNfC6bA8KhmZf1HJICEqgJU799lrcW6k&callback=initMap' . $amapress_map_instance . '">
+              src="https://maps.googleapis.com/maps/api/js?key=' . TitanFrameworkOptionAddress::$google_map_api_key . '&callback=initMap' . $amapress_map_instance . '">
             </script>';
+	} else if ( 'openstreetmap' == $map_provider ) {
+		$htm = '<div id="map' . $amapress_map_instance . '" style="height:450px; width: 100%"></div>';
+
+		return $htm . '<script type="text/javascript">
+                //<![CDATA[
+var map = L.map(\'map' . $amapress_map_instance . '\').setView([' . $latitude . ',' . $longitude . '], 17);
+// add an OpenStreetMap tile layer
+L.tileLayer(\'http://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
+    attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+}).addTo(map);
+
+                var markers = [' . $js_markers . '];
+
+                for (var i = 0; i < markers.length; i++) {
+                    var marker = markers[i];
+					// add a marker in the given location, attach some popup content to it and open the popup
+					var m = L.marker([parseFloat(marker.latitude), parseFloat(marker.longitude)], {
+					    title: marker.title, 
+					    icon: marker.icon ? L.icon({iconUrl: marker.icon}) : null}).addTo(map);
+					    m.bindPopup((marker.url ? "<h4><a href="+marker.url+" target=\'_blank\'>"+marker.title+"<a/></h4>" : "<h4>"+marker.title+"</h4>") + (marker.content || ""));
+                }
+                //]]>
+</script>';
+	}
 }

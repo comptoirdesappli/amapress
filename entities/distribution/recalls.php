@@ -53,7 +53,8 @@ add_action( 'amapress_recall_resp_distrib', function ( $args ) {
 		Amapress::getOption( 'distribution-resp-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-resp-recall-mail-content' ),
 		'', $responsable_users, $dist, $attachments,
-		amapress_get_recall_cc_from_option( 'distribution-resp-recall-cc' ) );
+		amapress_get_recall_cc_from_option( 'distribution-resp-recall-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 } );
 add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 	//distribution-emargement-recall-mail-
@@ -92,7 +93,8 @@ add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 		Amapress::getOption( 'distribution-emargement-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-emargement-recall-mail-content' ),
 		'', $responsable_users, $dist, $attachments,
-		amapress_get_recall_cc_from_option( 'distribution-resp-recall-cc' ) );
+		amapress_get_recall_cc_from_option( 'distribution-resp-recall-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 } );
 add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 	//distribution-changes-recall-cc
@@ -116,7 +118,18 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 			Amapress::getOption( 'distribution-lieu-change-recall-mail-subject' ),
 			Amapress::getOption( 'distribution-lieu-change-recall-mail-content' ),
 			'', $amapien_users, $dist, array(),
-			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ) );
+			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ),
+			null, $dist->getResponsablesResponsablesDistributionsReplyto() );
+	}
+
+	if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
+		$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
+		amapress_send_message(
+			Amapress::getOption( 'distribution-hours-change-recall-mail-subject' ),
+			Amapress::getOption( 'distribution-hours-change-recall-mail-content' ),
+			'', $amapien_users, $dist, array(),
+			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ),
+			null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 	}
 
 	$paniers_modifies = array_merge(
@@ -129,7 +142,8 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 			Amapress::getOption( 'distribution-paniers-change-recall-mail-subject' ),
 			Amapress::getOption( 'distribution-paniers-change-recall-mail-content' ),
 			'', $amapien_users, $dist, array(),
-			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ) );
+			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ),
+			null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 	}
 } );
 
@@ -175,7 +189,8 @@ add_action( 'amapress_recall_distrib_thisday', function ( $args ) {
 			$content,
 			'', $amapien_users,
 			null, array(),
-			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ) );
+			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ),
+			null, AmapressDistribution::getResponsablesRespDistribReplyto( $lieu ) );
 	} else if ( ! $has_dist_at_date ) {
 		$subject = Amapress::getOption( 'distribution-moved-recall-mail-subject' );
 		$content = Amapress::getOption( 'distribution-moved-recall-mail-content' );
@@ -191,7 +206,8 @@ add_action( 'amapress_recall_distrib_thisday', function ( $args ) {
 			$content,
 			'', $amapien_users,
 			$other_dist, array(),
-			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ) );
+			amapress_get_recall_cc_from_option( 'distribution-changes-recall-cc' ),
+			null, AmapressDistribution::getResponsablesRespDistribReplyto( $lieu ) );
 	}
 } );
 
@@ -235,7 +251,8 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 		Amapress::getOption( 'distribution-verify-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-verify-recall-mail-content' ),
 		'', $responsable_users, $dist, $attachments,
-		amapress_get_recall_cc_from_option( 'distribution-verify-recall-cc' ) );
+		amapress_get_recall_cc_from_option( 'distribution-verify-recall-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 } );
 
 add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
@@ -253,7 +270,8 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 		Amapress::getOption( 'distribution-amapiens-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-amapiens-recall-mail-content' ),
 		'', $amapien_users, $dist, array(),
-		amapress_get_recall_cc_from_option( 'distribution-amapiens-recall-cc' )
+		amapress_get_recall_cc_from_option( 'distribution-amapiens-recall-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto()
 	);
 } );
 
@@ -651,6 +669,25 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement de lieu pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
+			'desc'    =>
+				AmapressDistribution::getPlaceholdersHelp(),
+		),
+		array(
+			'name' => 'En cas de changement de d\'horaire',
+			'type' => 'heading',
+		),
+		array(
+			'id'       => 'distribution-hours-change-recall-mail-subject',
+			'name'     => 'Sujet du mail',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Changement d\'horaire pour %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-hours-change-recall-mail-content',
+			'name'    => 'Contenu du mail',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nChangement d'horaire pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
 				AmapressDistribution::getPlaceholdersHelp(),
 		),

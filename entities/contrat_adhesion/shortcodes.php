@@ -12,8 +12,8 @@ add_action( 'amapress_init', function () {
 			}
 		}
 		$email          = sanitize_email( $_REQUEST['email'] );
-		$user_firt_name = sanitize_text_field( $_REQUEST['first_name'] );
-		$user_last_name = sanitize_text_field( $_REQUEST['last_name'] );
+		$user_firt_name = sanitize_text_field( ! empty( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '' );
+		$user_last_name = sanitize_text_field( ! empty( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '' );
 		$user_address   = sanitize_textarea_field( $_REQUEST['address'] );
 		$user_phones    = sanitize_text_field( $_REQUEST['tel'] );
 
@@ -24,8 +24,8 @@ add_action( 'amapress_init', function () {
 
 		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
 			$coadh1_email          = sanitize_email( $_REQUEST['coadh1_email'] );
-			$coadh1_user_firt_name = sanitize_text_field( $_REQUEST['coadh1_first_name'] );
-			$coadh1_user_last_name = sanitize_text_field( $_REQUEST['coadh1_last_name'] );
+			$coadh1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_first_name'] ) ? $_REQUEST['coadh1_first_name'] : '' );
+			$coadh1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_last_name'] ) ? $_REQUEST['coadh1_last_name'] : '' );
 
 			$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, null, null );
 			if ( $coadh1_user_id ) {
@@ -36,8 +36,8 @@ add_action( 'amapress_init', function () {
 
 		if ( ! empty( $_REQUEST['coadh2_email'] ) ) {
 			$coadh2_email          = sanitize_email( $_REQUEST['coadh2_email'] );
-			$coadh2_user_firt_name = sanitize_text_field( $_REQUEST['coadh2_first_name'] );
-			$coadh2_user_last_name = sanitize_text_field( $_REQUEST['coadh2_last_name'] );
+			$coadh2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_first_name'] ) ? $_REQUEST['coadh2_first_name'] : '' );
+			$coadh2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_last_name'] ) ? $_REQUEST['coadh2_last_name'] : '' );
 
 			$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, null, null );
 			if ( $coadh2_user_id ) {
@@ -48,7 +48,20 @@ add_action( 'amapress_init', function () {
 
 		wp_redirect_and_exit(
 			add_query_arg( [
-				'step'    => ! empty( $_REQUEST['activate_adhesion'] ) ? 'adhesion' : 'contrats',
+				'step'    => ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats',
+				'user_id' => $user_id,
+			] )
+		);
+	}
+	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_agreement' == $_REQUEST['inscr_assistant'] ) {
+		$step = ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats';
+		if ( isset( $_REQUEST['accept'] ) && ! $_REQUEST['accept'] ) {
+			$step = 'agreement';
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+		wp_redirect_and_exit(
+			add_query_arg( [
+				'step'    => $step,
 				'user_id' => $user_id,
 			] )
 		);
@@ -96,12 +109,9 @@ add_action( 'amapress_init', function () {
 } );
 
 function amapress_mes_contrats( $atts, $content = null ) {
-	$atts = shortcode_atts(
-		[
-			'for_logged'    => 'true',
-			'show_contrats' => 'true',
-		]
-		, $atts );
+	$atts                  = wp_parse_args( $atts );
+	$atts['for_logged']    = 'true';
+	$atts['show_contrats'] = 'true';
 
 	return amapress_self_inscription( $atts, $content );
 }
@@ -119,6 +129,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'show_contrats'        => 'false',
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
+			'agreement'            => 'false',
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
@@ -130,11 +141,12 @@ function amapress_self_inscription( $atts, $content = null ) {
 		]
 		, $atts );
 
-	$for_logged        = Amapress::toBool( $atts['for_logged'] );
-	$ret               = '';
-	$admin_mode        = Amapress::toBool( $atts['admin_mode'] );
-	$activate_adhesion = Amapress::toBool( $atts['adhesion'] );
-	$key               = $atts['key'];
+	$for_logged         = Amapress::toBool( $atts['for_logged'] );
+	$ret                = '';
+	$admin_mode         = Amapress::toBool( $atts['admin_mode'] );
+	$activate_adhesion  = Amapress::toBool( $atts['adhesion'] );
+	$activate_agreement = Amapress::toBool( $atts['agreement'] );
+	$key                = $atts['key'];
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -373,8 +385,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
             <input type="hidden" name="email" value="<?php echo esc_attr( $email ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
-                <input type="hidden" name="activate_adhesion" value="true"/>
+	        <?php if ( $activate_agreement ) { ?>
+                <input type="hidden" name="coords_next_step" value="agreement"/>
+	        <?php } else if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+                <input type="hidden" name="coords_next_step" value="adhesion"/>
 	        <?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
             <table style="min-width: 50%">
@@ -489,6 +503,36 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
             <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
         </form>
 		<?php
+	} else if ( 'agreement' == $step ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+
+		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false ) : null;
+		?>
+        <h4><?php echo wp_unslash( esc_html( Amapress::getOption( 'online_subscription_agreement_step_name' ) ) ) ?></h4>
+        <form method="post" id="agreement" class="amapress_validate"
+              action="<?php echo esc_attr( add_query_arg( 'step', 'validate_agreement' ) ) ?>">
+            <input type="hidden" name="inscr_assistant" value="validate_agreement"/>
+            <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
+	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+                <input type="hidden" name="coords_next_step" value="adhesion"/>
+			<?php } ?>
+            <div class="amap-agreement">
+				<?php echo Amapress::getOption( 'online_subscription_agreement' ); ?>
+            </div>
+            <p class="accept-agreement">
+                <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
+                                                     class="required"
+                                                     data-msg="Veuillez cocher la case ci-dessous"/> <?php echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_checkbox' ) ) ); ?>
+                </label>
+            </p>
+            <p>
+                <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
+            </p>
+        </form>
+		<?php
 	} else if ( 'adhesion' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
 			wp_die( $invalid_access_message );
@@ -589,6 +633,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $adh_paiement );
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $adh_paiement );
 
+		$tresoriers = [];
+		foreach ( get_users( "role=tresorier" ) as $tresorier ) {
+			$user_obj   = AmapressUser::getBy( $tresorier );
+			$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
+		}
+
 		$attachments = [];
 		$doc_file    = $adh_paiement->generateBulletinDoc();
 		if ( ! empty( $doc_file ) ) {
@@ -600,15 +650,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
 		}
 
-		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, '', $attachments );
+		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
+			'Reply-To: ' . implode( ',', $tresoriers )
+		], $attachments );
 
 		if ( Amapress::toBool( $atts['send_tresoriers'] ) ) {
-			$tresoriers = [];
-			foreach ( get_users( "role=tresorier" ) as $tresorier ) {
-				$user_obj   = AmapressUser::getBy( $tresorier );
-				$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
-			}
-
 			amapress_wp_mail(
 				$tresoriers,
 				'Nouvelle adhésion ' . $amapien->getDisplayName(),
@@ -618,9 +664,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
 
-		echo '<p>Merci pour votre adhésion à l\'AMAP !</p>';
-
-		echo '<p>Un mail de confirmation vient de vous être envoyé. (Pensez à regarder vos spams, ces mails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
+		echo Amapress::getOption( 'online_subscription_greating_adhesion' );
 
 		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
 			$print_bulletin = Amapress::makeButtonLink(
@@ -832,14 +876,51 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					/** @var AmapressAdhesion $a */
 					return $a->getContrat_instance()->getModelId();
 				}, $adhs );
-				$user_subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
 					/** @var AmapressContrat_instance $c */
-					return ! in_array( $c->getModel()->ID, $adhs_contrat_ids );
+					return ! in_array( $c->getModelId(), $adhs_contrat_ids );
 				} );
 			}
 			if ( $admin_mode ) {
 				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $principal_contrats_ids ) {
 					return current_user_can( 'edit_post', $c->ID );
+				} );
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $contrat ) use ( $atts ) {
+					/** @var AmapressContrat_instance $contrat */
+					$before_close_hours = 0;
+					if ( 0 == $before_close_hours ) {
+						$before_close_hours = intval( $atts['before_close_hours'] );
+					}
+					$dates = array_values( $contrat->getListe_dates() );
+					$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+						$real_date = $contrat->getRealDateForDistribution( $d );
+
+						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time();
+					} );
+
+					return ! empty( $dates );
+				} );
+			} else {
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $contrat ) use ( $atts ) {
+					/** @var AmapressContrat_instance $contrat */
+					$before_close_hours = 0;
+					if ( 0 == $before_close_hours ) {
+						$before_close_hours = intval( $atts['before_close_hours'] );
+					}
+					$dates                = array_values( $contrat->getListe_dates() );
+					$dates_before_cloture = array_filter( $dates, function ( $d ) use ( $contrat ) {
+						$real_date = $contrat->getRealDateForDistribution( $d );
+
+						return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+					} );
+					$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
+						$real_date = $contrat->getRealDateForDistribution( $d );
+
+						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
+						       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
+					} );
+
+					return ! empty( $dates );
 				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
@@ -895,6 +976,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		$lieux = $contrat->getLieux();
+		if ( empty( $lieux ) ) {
+			wp_die( '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
+		}
 		?>
         <h4>Étape 5/8 : Date et lieu</h4>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
@@ -906,13 +990,20 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			if ( $admin_mode ) {
 				$before_close_hours = - 24;
 			}
-			$dates              = $contrat->getListe_dates();
+			$dates              = array_values( $contrat->getListe_dates() );
 			$first_contrat_date = $dates[0];
+			//			$last_contrat_date = $dates[count($dates) - 1];
 			if ( ! $admin_mode ) {
-				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
+				$dates_before_cloture = array_filter( $dates, function ( $d ) use ( $contrat ) {
 					$real_date = $contrat->getRealDateForDistribution( $d );
 
-					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time() && Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+					return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
+				} );
+				$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
+					$real_date = $contrat->getRealDateForDistribution( $d );
+
+					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
+					       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 				} );
 			} else {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
@@ -930,8 +1021,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			echo '<p><strong>Date</strong></p>';
 			if ( ! $is_started && ! $admin_mode ) {
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
-				echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $contrat->getRealDateForDistribution( $first_contrat_date ) ) . ' au ' . date_i18n( 'l d F Y', $contrat->getDate_fin() ) . '
+				$first_date_dist = $contrat->getRealDateForDistribution( $first_contrat_date );
+				$last_date_dist  = $contrat->getDate_fin();
+				if ( 1 == count( $contrat->getListe_dates() ) ) {
+					echo '<p>Je m’inscris pour la distribution ponctuelle du ' . date_i18n( 'l d F Y', $first_date_dist ) . '</p>';
+				} else {
+					echo '<p>Je m’inscris pour la saison complète : du ' . date_i18n( 'l d F Y', $first_date_dist ) . ' au ' . date_i18n( 'l d F Y', $last_date_dist ) . '
  (' . count( $contrat->getListe_dates() ) . ' dates de distributions)</p>';
+				}
 			} else {
 				?>
                 <p><?php
@@ -1069,12 +1166,15 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$dates_factors += $contrat->getDateFactor( $d );
 		}
 
-		//TODO lien vers contrat PDF ?
+		$rattrapage_renvoi = '';
+		if ( ! empty( $rattrapage ) ) {
+			$rattrapage_renvoi = '<a href="#dist_rattrapages">*</a>';
+		}
 //		echo $contrat->getOnlineContrat();
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
-			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) :</p>';
+			echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') :</p>';
 		} else {
-			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates) avant la fin de la saison :</p>';
+			echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') avant la fin de la saison :</p>';
 		}
 		echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
 		foreach ( $grouped_dates_array as $entry ) {
@@ -1094,7 +1194,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		if ( ! empty( $rattrapage ) ) {
-			echo '<p>Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
+			echo '<p><a id="dist_rattrapages">*</a>Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
 		}
 
 		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {
@@ -1497,7 +1597,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			} );
 			$user_subscribable_contrats_display = implode( ', ', array_unique( array_map( function ( $c ) {
 				/** @var AmapressContrat_instance $c */
-				return $c->getModel()->getTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
+				return $c->getModelTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
 			}, $user_subscribable_contrats ) ) );
 			echo '<h4>étape 8/8 : Félicitations !</h4>';
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 
@@ -1566,6 +1666,10 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
         label {
             display: inline !important;
         }
+
+        label#accept-error {
+            display: block !important;
+        }
     </style>
     <script type="text/javascript">
         //<![CDATA[
@@ -1580,7 +1684,7 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
                     if ($commandes.length) {
                         error.insertAfter($commandes);
                     } else {
-                        if (element.attr("type") == "radio") {
+                        if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
                             error.insertBefore(element);
                         } else {
                             error.insertAfter(element);

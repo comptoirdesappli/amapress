@@ -28,6 +28,14 @@ function amapress_register_entities_producteur( $entities ) {
 				'context' => 'side',
 			],
 		),
+		'edit_header'             => function ( $post ) {
+			$contrat = AmapressProducteur::getBy( $post );
+			if ( empty( $contrat->getUser() ) ) {
+				echo '<div class="notice notice-error"><p>Producteur invalide : pas d\'utilisateur associé</p></div>';
+			}
+
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
+		},
 		'fields'                  => array(
 			'nom_exploitation'     => array(
 				'name'       => amapress__( 'Nom de l\'exploitation' ),
@@ -56,6 +64,13 @@ function amapress_register_entities_producteur( $entities ) {
 				'type'       => 'select-users',
 				'role'       => 'producteur',
 				'group'      => 'Infos',
+				'readonly'   => function ( $post_id ) {
+					if ( TitanFrameworkOption::isOnEditScreen() ) {
+						return true;
+					}
+
+					return false;
+				},
 				'required'   => true,
 				'desc'       => 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
 				'searchable' => true,
@@ -161,6 +176,9 @@ function amapress_order_producteurs_and_contrats( array $posts, WP_Query $query 
 						return intval( $cid );
 					} else if ( $post_type == AmapressProducteur::INTERNAL_POST_TYPE ) {
 						$c = AmapressContrat::getBy( intval( $cid ) );
+						if ( empty( $c ) ) {
+							return 0;
+						}
 
 						return $c->getProducteurId();
 					} else {

@@ -5,8 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-add_filter( 'amapress_register_post-its', 'amapress_register_resp_distrib_post_its' );
-function amapress_register_resp_distrib_post_its( $post_its ) {
+add_filter( 'amapress_register_post-its', 'amapress_register_resp_distrib_post_its', 10, 2 );
+function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 	if ( ! amapress_is_user_logged_in() ) {
 		return $post_its;
 	}
@@ -19,12 +19,17 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 	$user_id = amapress_current_user_id();
 
-	$lieux = count( Amapress::get_lieu_ids() );
-	$weeks = 2;
+	//$lieux = count( Amapress::get_lieu_ids() );
+	$arg_next_distribs = ! empty( $args['distrib'] ) ? $args['distrib'] : 2;
+	$weeks             = $arg_next_distribs;
 	do {
 		$next_distribs = AmapressDistribution::getNextDistribs( null, $weeks, null );
+		$dates         = array_unique( array_map( function ( $d ) {
+			/** @var AmapressDistribution $d */
+			return Amapress::start_of_day( $d->getDate() );
+		}, $next_distribs ) );
 		$weeks         += 1;
-	} while ( $weeks < 10 && count( $next_distribs ) < 2 * $lieux );
+	} while ( $weeks < 15 && count( $dates ) < $arg_next_distribs );
 
 	foreach ( $next_distribs as $dist ) {
 		if ( empty( $dist->getContratIds() ) ) {
@@ -56,26 +61,28 @@ function amapress_register_resp_distrib_post_its( $post_its ) {
 
 function amapress_inscription_distrib_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
-		'show_past'       => 'false',
-		'show_next'       => 'true',
-		'show_email'      => 'default',
-		'show_tel'        => 'default',
-		'show_tel_fixe'   => 'default',
-		'show_tel_mobile' => 'default',
-		'show_adresse'    => 'default',
-		'show_avatar'     => 'default',
-		'show_roles'      => 'default',
-		'show_for_resp'   => 'true',
-		'show_title'      => 'true',
-		'for_emargement'  => 'false',
-		'for_pdf'         => 'false',
-		'max_dates'       => - 1,
-		'responsive'      => 'false',
-		'user'            => null,
-		'lieu'            => null,
+		'show_past'         => 'false',
+		'show_next'         => 'true',
+		'show_email'        => 'default',
+		'show_tel'          => 'default',
+		'show_tel_fixe'     => 'default',
+		'show_tel_mobile'   => 'default',
+		'show_adresse'      => 'default',
+		'show_avatar'       => 'default',
+		'show_roles'        => 'default',
+		'show_for_resp'     => 'true',
+		'show_title'        => 'true',
+		'for_emargement'    => 'false',
+		'for_pdf'           => 'false',
+		'past_weeks'        => 5,
+		'max_dates'         => - 1,
+		'responsive'        => 'false',
+		'user'              => null,
+		'lieu'              => null,
 		'date'              => null,
 		'inscr_all_distrib' => 'false'
 	), $atts );
+
 
 	if ( ! amapress_is_user_logged_in() ) {
 		return '';
@@ -115,6 +122,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$from_date = $contrat_instance->getDate_debut();
 			}
 		}
+		$from_date = max( Amapress::add_a_week( amapress_time(), - intval( $atts['past_weeks'] ) ), $from_date );
 	}
 	$to_date = amapress_time();
 	if ( Amapress::toBool( $atts['show_next'] ) ) {
@@ -290,8 +298,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					if ( $c->getModel() == null ) {
 						continue;
 					}
-					if ( ! in_array( $c->getModel()->getTitle(), $contrat_names ) ) {
-						$contrat_names[] = $c->getModel()->getTitle();
+					if ( ! in_array( $c->getModelTitle(), $contrat_names ) ) {
+						$contrat_names[] = $c->getModelTitle();
 					}
 				}
 			}
@@ -307,10 +315,16 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				$user_name                     = sprintf( '%s (%s)', $user->display_name, $user->user_email );
 				$no_contrat_users[ $user->ID ] = $user_name;
 			}
+			$hours = '';
+			if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
+				$hours .= sprintf( ' (%s à %s)',
+					date_i18n( 'H:i', $dist->getStartDateAndHour() ),
+					date_i18n( 'H:i', $dist->getEndDateAndHour() ) );
+			}
 			$lieu_users       = array();
 			$contrat_names    = implode( ', ', $contrat_names );
 			$contrats_content = '<p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
-			$date_content     = '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>';
+			$date_content     = '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . $hours . '</p>';
 			$ret              .= '<th scope="row" class="inscr-list-info">';
 			$ret              .= $date_content;
 			if ( ! $for_emargement ) {
@@ -456,7 +470,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 						$inscr_self = '<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
-							if ( ( $has_role_names || 1 == $i ) && ! $is_resp ) {
+							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
 								$missing = $inscr_self;
 							} else {
 								$missing = "<span class='distrib-resp-missing'>manquant</span>";
@@ -518,6 +532,14 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 //    $ret .= '</div>';
 
 	return $ret;
+}
+
+function amapress_histo_inscription_distrib_shortcode( $atts ) {
+	$atts              = wp_parse_args( $atts );
+	$atts['show_past'] = 'true';
+	$atts['show_next'] = 'false';
+
+	return amapress_inscription_distrib_shortcode( $atts );
 }
 
 //add_action('init', function () {

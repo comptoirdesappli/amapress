@@ -235,13 +235,81 @@ function amapress_filter_posts( WP_Query $query ) {
 		}
 	}
 	if ( ! empty( $query->query_vars['amapress_status'] ) ) {
-		amapress_add_meta_query( $query, array(
-			array(
-				'key'     => "amapress_{$pt}_status",
-				'value'   => $query->query_vars['amapress_status'],
-				'compare' => '=',
-			)
-		) );
+		$amapress_status = $query->query_vars['amapress_status'];
+		if ( AmapressDistribution::POST_TYPE == $pt ) {
+			if ( 'change_lieu' == $amapress_status ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						array(
+							'key'     => "amapress_{$pt}_lieu_substitution",
+							'compare' => 'EXISTS',
+						),
+						array(
+							'key'     => "amapress_{$pt}_lieu_substitution",
+							'value'   => 0,
+							'compare' => '>',
+							'type'    => 'NUMERIC',
+						),
+					)
+				) );
+			} else if ( 'change_hours' == $amapress_status ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'relation' => 'OR',
+						array(
+							array(
+								'key'     => "amapress_{$pt}_heure_debut_spec",
+								'compare' => 'EXISTS',
+							),
+							array(
+								'key'     => "amapress_{$pt}_heure_debut_spec",
+								'value'   => 0,
+								'compare' => '>',
+								'type'    => 'NUMERIC',
+							),
+						),
+						array(
+							array(
+								'key'     => "amapress_{$pt}_heure_fin_spec",
+								'compare' => 'EXISTS',
+							),
+							array(
+								'key'     => "amapress_{$pt}_heure_fin_spec",
+								'value'   => 0,
+								'compare' => '>',
+								'type'    => 'NUMERIC',
+							),
+						),
+					)
+				) );
+			} else if ( 'change_paniers' == $amapress_status ) {
+				$paniers = AmapressPanier::get_delayed_paniers();
+				$dates   = [];
+				foreach ( $paniers as $panier ) {
+					$dates[] = $panier->getDate();
+					if ( $panier->isDelayed() ) {
+						$dates[] = $panier->getDateSubst();
+					}
+				}
+				$dates = array_unique( $dates );
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date",
+						'value'   => $dates,
+						'compare' => 'IN',
+						'type'    => 'NUMERIC',
+					),
+				) );
+			}
+		} else {
+			amapress_add_meta_query( $query, array(
+				array(
+					'key'     => "amapress_{$pt}_status",
+					'value'   => $amapress_status,
+					'compare' => '=',
+				)
+			) );
+		}
 	}
 	if ( ! empty( $query->query_vars['amapress_adhesion_period'] ) ) {
 		if ( $pt == 'adhesion_paiement' ) {
@@ -997,7 +1065,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					array(
 						'key'     => "amapress_{$pt}_date",
 						'value'   => array(
-							Amapress::start_of_week( amapress_time() ),
+							Amapress::start_of_month( amapress_time() ),
 							Amapress::end_of_month( amapress_time() ),
 						),
 						'compare' => 'BETWEEN',
@@ -1313,6 +1381,9 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 		} else if ( $amapress_role == 'referent_producteur' ) {
 			$user_ids = array();
 			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
+				if ( empty( $contrat->getModel() ) ) {
+					continue;
+				}
 				$prod = $contrat->getModel()->getProducteur();
 				if ( ! $prod ) {
 					continue;
@@ -1360,6 +1431,17 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 				get_users( wp_parse_args( 'amapress_role=referent_producteur&fields=id' ) )
 			);
 			$user_ids    = array_diff( $user_ids,
+				get_users( wp_parse_args( 'role=producteur&fields=id' ) )
+			);
+			$user_id_sql = amapress_prepare_in_sql( $user_ids );
+			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
+		} else if ( 'collectif_no_amap_role' == $amapress_role ) {
+			$user_ids    = array_merge(
+				get_users( wp_parse_args( 'amapress_role=access_admin&fields=id' ) )
+			);
+			$user_ids    = array_diff( $user_ids,
+				get_users( wp_parse_args( 'amapress_role=amap_role_any&fields=id' ) ),
+				get_users( wp_parse_args( 'amapress_role=referent_producteur&fields=id' ) ),
 				get_users( wp_parse_args( 'role=producteur&fields=id' ) )
 			);
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
@@ -1554,15 +1636,18 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		if ( ! is_array( $amapress_lieu ) ) {
 			$amapress_lieu = array( $amapress_lieu );
 		}
-		$lieu_ids    = array_map( function ( $l ) {
+		$lieu_ids     = array_map( function ( $l ) {
 			return Amapress::resolve_post_id( $l, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		}, $amapress_lieu );
-		$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
-		$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
-		$lieu_ids    = amapress_prepare_in_sql( $lieu_ids );
-		$user_ids    = array();
-		foreach (
-			$wpdb->get_col( "SELECT amps_pmach.meta_value
+		$cache_key    = 'amps_lieu_' . implode( '_', $lieu_ids ) . '_user_ids';
+		$all_user_ids = wp_cache_get( $cache_key );
+		if ( false === $all_user_ids ) {
+			$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
+			$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
+			$lieu_ids    = amapress_prepare_in_sql( $lieu_ids );
+			$user_ids    = array();
+			foreach (
+				$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    LEFT JOIN $wpdb->postmeta as amps_pm_date_fin ON amps_pm_date_fin.post_id = amps_pmach.post_id AND amps_pm_date_fin.meta_key='amapress_adhesion_date_fin'
@@ -1576,21 +1661,23 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_posts.post_status = 'publish'
                                                    AND amps_pm_contrat.meta_value IN ($contrat_ids)
                                                    AND amps_pm_adhesion.meta_value IN ($lieu_ids)" ) as $user_id
-		) {
-			$user_ids[] = intval( $user_id );
-		}
-		$all_user_ids = amapress_prepare_in_sql( $user_ids );
-		foreach (
-			$wpdb->get_col(
-				"SELECT DISTINCT $wpdb->usermeta.meta_value
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = amapress_prepare_in_sql( $user_ids );
+			foreach (
+				$wpdb->get_col(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
 WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
-		) {
-			$user_ids[] = intval( $user_id );
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = amapress_prepare_in_sql( $user_ids );
+			wp_cache_set( $cache_key, $all_user_ids );
 		}
-		$all_user_ids = amapress_prepare_in_sql( $user_ids );
-		$where        .= " AND $wpdb->users.ID IN ($all_user_ids)";
+		$where .= " AND $wpdb->users.ID IN ($all_user_ids)";
 	}
 	if ( isset( $uqi->query_vars['amapress_adhesion'] ) ) {
 		$amapress_adhesion = $uqi->query_vars['amapress_adhesion'];
@@ -1675,12 +1762,19 @@ function amapress_wp_link_query_args( $query ) {
 			$ptt  = amapress_simplify_post_type( $pt );
 			$ents = AmapressEntities::getPostTypes();
 			if ( isset( $ents[ $ptt ]['show_in_nav_menu'] ) && $ents[ $ptt ]['show_in_nav_menu'] === false ) {
-				unset( $query['post_type'][ $pt ] );
+				$query['post_type'] = array_filter( $query['post_type'], function ( $v ) use ( $pt ) {
+					return $v != $pt;
+				} );
 			}
 		}
-		$query['post_type'] = array( 'post', 'pages' ); // show only posts and pages
+	} else {
+		$query['post_type'] = [ $query['post_type'] ];
 	}
-	$query['amapress_date'] = 'active';
+	foreach ( AmapressEntities::getPostTypes() as $pt => $conf ) {
+		if ( ! isset( $conf['show_in_nav_menu'] ) || $conf['show_in_nav_menu'] !== false ) {
+			$query['post_type'][] = amapress_unsimplify_post_type( $pt );
+		}
+	}
 
 	return $query;
 

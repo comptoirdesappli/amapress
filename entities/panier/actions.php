@@ -168,11 +168,13 @@ function amapress_send_panier_intermittent_available( $intermittence_panier_id )
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-panier-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-panier-dispo-mail-content' ),
-		'', $intermit, $inter );
+		'', $intermit, $inter, [], null, null,
+		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $inter->getLieuId() ) );
 
 	amapress_mail_to_current_user(
 		Amapress::getOption( 'intermittence-panier-on-list-mail-subject' ),
 		Amapress::getOption( 'intermittence-panier-on-list-mail-content' ),
 		$inter->getAdherent()->ID,
-		$inter );
+		$inter, [], null, null,
+		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $inter->getLieuId() ) );
 }

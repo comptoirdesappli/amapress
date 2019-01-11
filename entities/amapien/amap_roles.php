@@ -42,6 +42,19 @@ function amapress_get_amap_roles_editor() {
 	$ret = '<p>Pour éditer les rôles au sein du collectif utiliser le tableau ci-dessous.</p>';
 	$ret .= '<p>Pour donner des droits d\'accès aux membres du collectif, modifier directement son profil utilisateur en le recherchant depuis le bandeau du site ou depuis la <a href="' . admin_url( 'users.php' ) . '">liste des utilisateurs</a></p>';
 	$ret .= '<p>Pour modifier les référents producteurs, utiliser l\'onglet <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" class="button button-secondary">Référents producteurs</a></p>';
+
+	$members_no_desc = array_map( function ( $user ) {
+		$amapien = AmapressUser::getBy( $user );
+
+		return AMapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() . ' (' . $amapien->getEmail() . ')', true, true );
+	}, get_users( [
+		'amapress_role' => 'collectif_no_amap_role',
+	] ) );
+	if ( ! empty( $members_no_desc ) ) {
+		$ret .= '<p><strong>Les membres suivants du collectif n\'ont pas de rôles</strong>. Il est souhaitable de les associer à un rôle descriptif :<br/>
+' . implode( ', ', $members_no_desc ) . '</p>';
+	}
+
 	$ret .= '<table id="amap_role_editor_table" class="table display nowrap" width="100%" style="table-layout: auto" cellspacing="0">
 <thead><tr><th>Rôle</th>';
 	foreach ( $lieux as $lieu ) {
@@ -278,9 +291,173 @@ function amapress_amap_role_admin_menu() {
 	);
 }
 
+function amapress_get_user_edit_link( AmapressUser $user ) {
+	if ( empty( $user ) ) {
+		return '';
+	}
+
+	return '<a href="' . $user->getEditLink() . '">' . esc_html( $user->getDisplayName() ) . '</a>';
+}
+
+function amapress_log_to_role_log_file( $log_file, $message, $categ, $filter ) {
+	$categ  = str_replace( [ '[', ']' ], '', $categ );
+	$filter = str_replace( [ '[', ']' ], '', $filter );
+	error_log( '[' . date_i18n( 'd/m/Y H:i', amapress_time() ) . '][' . $categ . '][' . $filter . '] ' . trim( $message ) . "\n",
+		3, $log_file );
+}
+
+function amapress_log_to_role_log( $message, $categ, $filter ) {
+	amapress_log_to_role_log_file( Amapress::getRolesLogFile(), $message, $categ, $filter );
+}
+
 add_action( 'init', function () {
 	add_filter( 'users_list_table_query_args', 'amapress_amap_role_table_query_args' );
 	add_action( 'pre_user_query', 'amapress_amap_role_user_query', 12 );
 	add_action( 'admin_menu', 'amapress_amap_role_admin_menu' );
 	add_filter( 'parent_file', 'amapress_amap_role_parent_menu' );
 } );
+
+
+add_action( 'set_user_role', function ( $user_id, $role, $old_roles ) {
+	$current_user = AmapressUser::getBy( amapress_current_user_id() );
+	$user         = AmapressUser::getBy( $user_id );
+	if ( empty( $user ) || empty( $current_user ) ) {
+		return;
+	}
+
+	amapress_log_to_role_log( sprintf( '%s a changé le rôle de %s de "%s" à "%s"',
+		amapress_get_user_edit_link( $current_user ),
+		amapress_get_user_edit_link( $user ),
+		implode( ',', array_map( function ( $r ) {
+			return translate_user_role( $r );
+		}, $old_roles ) ),
+		translate_user_role( $role ) ), translate_user_role( $role ), '' );
+}, 10, 3 );
+
+add_action( 'delete_term_relationships', function ( $object_id, $tt_ids, $taxonomy ) {
+	if ( $taxonomy != AmapressUser::AMAP_ROLE ) {
+		return;
+	}
+
+	$current_user = AmapressUser::getBy( amapress_current_user_id() );
+	$user         = AmapressUser::getBy( $object_id );
+	if ( empty( $user ) || empty( $current_user ) ) {
+		return;
+	}
+
+	$terms = [];
+	foreach ( $tt_ids as $tt_id ) {
+		$term = get_term( $tt_id, $taxonomy );
+		if ( ! empty( $term ) ) {
+			$terms[] = $term->name;
+		}
+	}
+	amapress_log_to_role_log( sprintf( '%s a supprimé le(s) rôle(s) descriptif(s) "%s" pour %s',
+		amapress_get_user_edit_link( $current_user ),
+		implode( ',', $terms ),
+		amapress_get_user_edit_link( $user ) ), implode( ',', $terms ), '' );
+}, 10, 3 );
+
+add_action( 'added_term_relationship', function ( $object_id, $tt_id, $taxonomy ) {
+	if ( $taxonomy != AmapressUser::AMAP_ROLE ) {
+		return;
+	}
+
+	$current_user = AmapressUser::getBy( amapress_current_user_id() );
+	$user         = AmapressUser::getBy( $object_id );
+	if ( empty( $user ) || empty( $current_user ) ) {
+		return;
+	}
+
+	$term = get_term( $tt_id, $taxonomy );
+	if ( empty( $term ) ) {
+		return;
+	}
+	amapress_log_to_role_log( sprintf( '%s a ajouté le rôle descriptif "%s" pour %s',
+		amapress_get_user_edit_link( $current_user ),
+		$term->name,
+		amapress_get_user_edit_link( $user ) ), $term->name, '' );
+}, 10, 3 );
+
+add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_key, $only_delete_these_meta_values ) {
+	if ( 'amapress_lieu_distribution_referent' == $meta_key ) {
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$lieu         = AmapressLieu_distribution::getBy( $post_id );
+
+		amapress_log_to_role_log( sprintf( '%s a supprimé le référent du lieu de distribution "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getTitle() ) ),
+			'Référent lieu', $lieu->getShortName() );
+	} else if ( 'amapress_producteur_referent' == $meta_key || 'amapress_producteur_referent2' == $meta_key || 'amapress_producteur_referent3' == $meta_key ) {
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$producteur   = AmapressProducteur::getBy( $post_id );
+
+		$number = 1;
+		if ( 'amapress_producteur_referent2' == $meta_key ) {
+			$number = 2;
+		} else if ( 'amapress_producteur_referent3' == $meta_key ) {
+			$number = 3;
+		}
+		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur %d de "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			$number,
+			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) );
+	} else if ( strpos( $meta_key, 'amapress_producteur_referent_' ) === 0 ) {
+		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_producteur_referent_' ) ) );
+		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$producteur   = AmapressProducteur::getBy( $post_id );
+
+		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur de "%s" de "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) . ',' . $lieu->getShortName() );
+	}
+}, 10, 4 );
+
+add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_value ) {
+	if ( 'amapress_lieu_distribution_referent' == $meta_key ) {
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$user         = AmapressUser::getBy( intval( $meta_value ) );
+		$lieu         = AmapressLieu_distribution::getBy( $post_id );
+
+		amapress_log_to_role_log( sprintf( '%s a changé le référent du lieu de distribution "%s" pour "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getTitle() ),
+			amapress_get_user_edit_link( $user ) ), 'Référent lieu', '' );
+	} else if ( 'amapress_producteur_referent' == $meta_key || 'amapress_producteur_referent2' == $meta_key || 'amapress_producteur_referent3' == $meta_key ) {
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$new_user     = AmapressUser::getBy( intval( $meta_value ) );
+		$old_meta     = get_post_meta_by_id( $meta_id );
+		$old_user     = AmapressUser::getBy( intval( $old_meta ? $old_meta->meta_value : 0 ) );
+		$producteur   = AmapressProducteur::getBy( $post_id );
+
+		$number = 1;
+		if ( 'amapress_producteur_referent2' == $meta_key ) {
+			$number = 2;
+		} else if ( 'amapress_producteur_referent3' == $meta_key ) {
+			$number = 3;
+		}
+		amapress_log_to_role_log( sprintf( '%s a changé le référent producteur %d de "%s" de "%s" à "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			$number,
+			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
+			amapress_get_user_edit_link( $old_user ),
+			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) );
+	} else if ( strpos( $meta_key, 'amapress_producteur_referent_' ) === 0 ) {
+		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_producteur_referent_' ) ) );
+		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$new_user     = AmapressUser::getBy( intval( $meta_value ) );
+		$old_meta     = get_post_meta_by_id( $meta_id );
+		$old_user     = AmapressUser::getBy( intval( $old_meta ? $old_meta->meta_value : 0 ) );
+		$producteur   = AmapressProducteur::getBy( $post_id );
+
+		amapress_log_to_role_log( sprintf( '%s a changé le référent producteur de "%s" de "%s" de "%s" à "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ),
+			amapress_get_user_edit_link( $old_user ),
+			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) . ',' . $lieu->getShortName() );
+	}
+}, 10, 4 );

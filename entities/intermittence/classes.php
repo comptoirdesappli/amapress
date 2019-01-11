@@ -77,7 +77,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			$adhesions = AmapressAdhesion::getUserActiveAdhesions( $this->getAdherent()->ID, $contrat_instance->ID );
 			/** @var AmapressAdhesion $adhesion */
 			$adhesion    = array_shift( $adhesions );
-			$quantites[] = $contrat_instance->getModel()->getTitle() .
+			$quantites[] = $contrat_instance->getModelTitle() .
 			               '(' . $adhesion->getContrat_quantites_AsString( $this->getDate() ) . ')';
 		}
 
@@ -111,7 +111,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return implode( ', ', array_map(
 			function ( $p ) {
 				/** @var AmapressContrat_instance $p */
-				return $p->getModel()->getTitle();
+				return $p->getModelTitle();
 			},
 			$this->getContrat_instances()
 		) );
@@ -258,7 +258,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-content' ),
 			$repreneur->ID,
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+		] );
 
 		return 'ok';
 	}
@@ -297,7 +299,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-repris-rejet-repreneur-mail-content' ),
 				$rejected_repreneur->ID,
-				$this );
+				$this, [], null, null, [
+				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+			] );
 		}
 
 		$this->setAsk( array() );
@@ -306,13 +310,17 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-content' ),
 			$this->getAdherentId(),
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $repreneur->getAllEmails() )
+		] );
 
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-validation-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-repreneur-mail-content' ),
 			$repreneur->ID,
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+		] );
 
 		return 'ok';
 	}
@@ -355,17 +363,22 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 
 		$this->setLastAskId( $user_id );
 
+		$asker = AmapressUser::getBy( $user_id );
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-ask-adherent-mail-content' ),
 			$this->getAdherentId(),
-			$this );
+			$this, [], null, null, [
+			$asker ? 'Reply-To: ' . implode( ',', $asker->getAllEmails() ) : ''
+		] );
 
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-ask-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-ask-repreneur-mail-content' ),
 			$user_id,
-			$this );
+			$this, [], null, null, [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+		] );
 
 		return 'ok';
 	}
@@ -387,7 +400,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-content' ),
 			$user_id,
-			$this );
+			$this, [], null, null, $this->getRepreneur() ? [
+			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+		] : [] );
 
 
 		if ( $this->getRepreneur() ) {
@@ -395,14 +410,18 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
 				$this->getRepreneurId(),
-				$this );
+				$this, [], null, null, [
+				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+			] );
 		} else {
 			foreach ( $this->getAsk() as $ask ) {
 				amapress_mail_to_current_user(
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
 					$ask['user'],
-					$this );
+					$this, [], null, null, [
+					'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+				] );
 			}
 		}
 
@@ -438,14 +457,18 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-adherent-mail-content' ),
 			$user_id,
-			$this );
+			$this, [], null, null, $repreneur ? [
+			'Reply-To: ' . implode( ',', $repreneur->getAllEmails() )
+		] : [] );
 
 		if ( $repreneur ) {
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content' ),
 				$repreneur->ID,
-				$this );
+				$this, [], null, null, [
+				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
+			] );
 		}
 
 		return 'ok';
@@ -457,6 +480,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	}
 
 	private static $properties = null;
+
 	public static function getProperties() {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
@@ -542,6 +566,16 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						);
 					}
 				],
+				'adherent-coords'                  => [
+					'desc' => 'Coordonnées adhérent proposant son panier',
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( $panier->getAdherent() == null ) {
+							return '';
+						}
+
+						return $panier->getAdherent()->getContacts();
+					}
+				],
 				'adherent-message'                 => [
 					'desc' => 'Message de mise à disposition du panier de la part de l\'adhérent',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
@@ -587,6 +621,21 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 								'show_avatar' => 'false',
 							]
 						);
+					}
+				],
+				'repreneur-coords'                 => [
+					'desc' => 'Coordonnées du repreneur du panier',
+					'func' => function ( AmapressIntermittence_panier $panier ) {
+						if ( $panier->last_ask_id ) {
+							$user = AmapressUser::getBy( $panier->last_ask_id );
+						} else {
+							if ( $panier->getRepreneur() == null ) {
+								return '';
+							}
+							$user = $panier->getRepreneur();
+						}
+
+						return $user->getContacts();
 					}
 				],
 				'contrat'                          => [
@@ -644,8 +693,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				'lien_desinscription_intermittent' => [
 					'desc' => 'Lien vers la page de désinscription de la liste des intermittents',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
-						//TODO ???
-						return '';
+						return amapress_intermittence_desinscription_link();
 					}
 				],
 			] );
@@ -839,5 +887,21 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		}
 
 		return $ret;
+	}
+
+	public static function getRespIntermittentsEmails( $lieu_id ) {
+		return AmapressUser::getEmailsForAmapRole( intval( Amapress::getOption( 'resp-intermittents-amap-role' ), $lieu_id ) );
+	}
+
+	public static function getResponsableIntermittentsReplyto( $lieu_id ) {
+		$emails = self::getRespIntermittentsEmails( $lieu_id );
+		if ( empty( $emails ) ) {
+			$emails = self::getRespIntermittentsEmails( null );
+		}
+		if ( empty( $emails ) ) {
+			return [];
+		}
+
+		return 'Reply-To: ' . implode( ',', $emails );
 	}
 }

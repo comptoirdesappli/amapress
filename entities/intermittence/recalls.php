@@ -63,7 +63,9 @@ add_action( 'amapress_recall_dispo_panier_intermittent', function ( $args ) {
 		Amapress::getOption( 'intermittence-recall-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-recall-dispo-mail-content' ),
 		'', $intermit, $dist, array(),
-		amapress_get_recall_cc_from_option( 'intermittence-recall-dispo-cc' ) );
+		amapress_get_recall_cc_from_option( 'intermittence-recall-dispo-cc' ),
+		null,
+		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $dist->getLieuId() ) );
 } );
 
 add_action( 'amapress_recall_validation_panier_intermittent', function ( $args ) {
@@ -95,7 +97,8 @@ add_action( 'amapress_recall_validation_panier_intermittent', function ( $args )
 				$content,
 				$panier->getAdherentId(),
 				$panier, null, null,
-				amapress_get_recall_cc_from_option( 'intermittence-recall-validation-bcc' ) );
+				amapress_get_recall_cc_from_option( 'intermittence-recall-validation-bcc' ),
+				AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $panier->getLieuId() ) );
 		}
 	}
 

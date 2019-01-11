@@ -44,7 +44,7 @@ function amapress_register_entities_visite( $entities ) {
 			'date'         => array(
 				'name'         => amapress__( 'Date de visite' ),
 				'type'         => 'date',
-				'time'         => true,
+				'time'         => false,
 				'required'     => true,
 				'desc'         => 'Date de visite',
 				'import_key'   => true,

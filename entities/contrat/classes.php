@@ -118,6 +118,15 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_manage_paiements', 1 );
 	}
 
+	public function getModelTitle() {
+		$model = $this->getModel();
+		if ( empty( $model ) ) {
+			return 'Présentation Web Archivée';
+		}
+
+		return $model->getTitle();
+	}
+
 	/** @return AmapressContrat */
 	public function getModel() {
 		return $this->getCustomAsEntity( 'amapress_contrat_instance_model', 'AmapressContrat' );
@@ -177,6 +186,10 @@ class AmapressContrat_instance extends TitanEntity {
 
 	/** @return string[] */
 	public function getAllReferentsEmails( $lieu_id = null ) {
+		if ( empty( $this->getModel() ) ) {
+			return [];
+		}
+
 		return array_unique( array_map(
 			function ( $ref_id ) {
 				$ref = AmapressUser::getBy( $ref_id );
@@ -382,7 +395,11 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['contrat_type']                = [
 			'desc' => 'Type du contrat (par ex, Légumes)',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				return $adh->getModel()->getTitle();
+				if ( empty( $adh->getModel() ) ) {
+					return '';
+				}
+
+				return $adh->getModelTitle();
 			}
 		];
 		$ret['contrat_titre']               = [
@@ -400,6 +417,10 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['contrat_lien']                = [
 			'desc' => 'Lien vers la présentation du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
+				if ( empty( $adh->getModel() ) ) {
+					return '';
+				}
+
 				return $adh->getModel()->getPermalink();
 			}
 		];
@@ -654,6 +675,7 @@ class AmapressContrat_instance extends TitanEntity {
 			$i                                     += 1;
 		}
 
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
 		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
 		try {
 			$templateProcessor->cloneRow( 'quantite', count( $quants ) );
@@ -1088,7 +1110,7 @@ class AmapressContrat_quantite extends TitanEntity {
 				$incr              = $incr / $incr_unit_factor;
 
 				for ( $i = $start; $i <= $stop; $i += $incr ) {
-					if ( $i > 0 ) {
+					if ( ( $i > 0 ) || ( $this->getContrat_instance()->isPanierVariable() && $i >= 0 ) ) {
 						$k             = strval( $i );
 						$options[ $k ] = $this->formatValue( $i );
 					}

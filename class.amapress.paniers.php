@@ -1044,6 +1044,13 @@ class AmapressPaniers {
 			}
 
 			foreach ( $quantites as $quantite ) {
+				if ( ! $quantite->isInDistributionDates( $pani->getDate() ) ) {
+					continue;
+				}
+				if ( empty( $quantite->getContrat_instance() ) ) {
+					continue;
+				}
+
 				if ( ! empty( $user_quantites_ids ) && ! in_array( $quantite->ID, $user_quantites_ids ) ) {
 					continue;
 				}
@@ -1053,8 +1060,17 @@ class AmapressPaniers {
 					$produits_in_panier[] = $prod->getID();
 				}
 
-				$url   = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
-				$title = ! empty( $user_quantites_ids ) ? $user_quantites[ $quantite->getID() ]->getTitle() : $quantite->getTitle();
+				$url    = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
+				$title  = ! empty( $user_quantites_ids ) ? $user_quantites[ $quantite->getID() ]->getTitle() : $quantite->getTitle();
+				$factor = $quantite->getContrat_instance()->getDateFactor( $pani->getDate() );
+				if ( abs( $factor - 2 ) < 0.001 ) {
+					$factor = 'Double distribution - ';
+				} else if ( abs( $factor - 1 ) < 0.001 ) {
+					$factor = '';
+				} else {
+					$factor = "$factor distribution - ";
+				}
+				$title = $factor . $title;
 				echo '<h3><img class="dist-panier-quantite-img" src="' . $url . '" alt="" /> ' . esc_html( $title );
 //                if (amapress_is_user_logged_in()) {
 //                    if ($dist_is_after && !$dist_is_today) {
@@ -1132,7 +1148,7 @@ class AmapressPaniers {
 			echo '<h3>' . amapress_get_font_icon( 'fa-fa' ) . ' Recettes associées</h3>';
 			$recette_edit_link = ( amapress_current_user_can( 'publish_recette' ) ?
 				amapress_get_button( 'Publier une nouvelle recette', admin_url( "post-new.php?post_type=amps_recette" ), 'fa-fa' ) :
-				amapress_get_button( 'Proposer une nouvelle recette', get_post_permalink( Amapress::getOption( 'publier-recette-page' ) ), 'fa-fa' ) );
+				amapress_is_user_logged_in() && ! empty( Amapress::getOption( 'publier-recette-page' ) ) ? amapress_get_button( 'Proposer une nouvelle recette', get_post_permalink( Amapress::getOption( 'publier-recette-page' ) ), 'fa-fa' ) : '' );
 			$recette_empty     = '<span class="recette-empty">Pas de recettes pour les produits présents dans le panier</span> ' . $recette_edit_link;
 			$no_recettes       = urlencode( $recette_empty );
 			echo do_shortcode( "[recettes produits=$produits_in_panier if_empty=$no_recettes]" );

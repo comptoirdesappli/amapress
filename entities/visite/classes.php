@@ -193,4 +193,17 @@ class AmapressVisite extends Amapress_EventBase {
 		return Amapress::getPlaceholdersHelpTable( 'visite-placeholders',
 			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de la distribution', $additional_helps );
 	}
+
+	public static function getRespVisitesEmails( $lieu_id ) {
+		return AmapressUser::getEmailsForAmapRole( intval( Amapress::getOption( 'resp-visite-amap-role' ), $lieu_id ) );
+	}
+
+	public static function getResponsableVisitesReplyto() {
+		$emails = self::getRespVisitesEmails( null );
+		if ( empty( $emails ) ) {
+			return [];
+		}
+
+		return 'Reply-To: ' . implode( ',', $emails );
+	}
 }

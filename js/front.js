@@ -130,62 +130,64 @@ jQuery(function ($) {
 
     $('body').on('click', '.amapress-ajax-button', amapress_handle_front_end_ajax_button_click);
 
-    $('.iso-gallery').isotope({
-        itemSelector: '.iso-gallery-item',
-        layoutMode: 'fitRows',
-        percentPosition: true,
-        fitRows: {
-            columnWidth: '.iso-gallery-sizer'
-        },
-        getSortData: {
-            sort: '[data-sort]',
-        },
-        sortBy: 'sort',
-        filter: function () {
-            var $this = $(this);
-            var $gallery = $this.closest('.iso-gallery');
-            var qsRegex = $gallery.data('regex');
-            var searchResult = qsRegex ? $this.text().match(qsRegex) : true;
-            var buttonFilter = $gallery.data('buttonFilter');
-            var buttonResult = buttonFilter ? $this.is(buttonFilter) : true;
-            return searchResult && buttonResult;
-        },
-    });
-    // use value of search field to filter
-    $('.iso-gallery-search').keyup(debounce(function () {
-        var $this = $(this);
-        var $gallery = $('#' + $this.data('gallery'));
-        $gallery.data('regex', new RegExp($this.val(), 'gi'));
-        $gallery.isotope();
-    }, 200));
-
-    $('.iso-gallery-filters').on('click', '.iso-gallery-filter', function () {
-        var $this = $(this);
-        // get group key
-        var $buttonGroup = $this.parents('.iso-gallery-filters-group');
-        var filterGroup = $buttonGroup.attr('data-filter-group');
-        var $gallery = $('#' + $this.data('gallery'));
-        var buttonFilters = $gallery.data('buttonFilters');
-        if ('undefined' === typeof buttonFilters)
-            buttonFilters = {};
-        var buttonFilter = $gallery.data('buttonFilter');
-        // set filter for group
-        buttonFilters[filterGroup] = $this.attr('data-filter');
-        // combine filters
-        buttonFilter = concatValues(buttonFilters);
-        $gallery.data('buttonFilters', buttonFilters).data('buttonFilter', buttonFilter);
-        // Isotope arrange
-        $gallery.isotope();
-    });
-
-    // change is-checked class on buttons
-    $('.iso-gallery-filters-group').each(function (i, buttonGroup) {
-        var $buttonGroup = $(buttonGroup);
-        $buttonGroup.on('click', 'button', function () {
-            $buttonGroup.find('.is-checked').removeClass('is-checked');
-            $(this).addClass('is-checked');
+    setTimeout(function () {
+        $('.iso-gallery').isotope({
+            itemSelector: '.iso-gallery-item',
+            layoutMode: 'fitRows',
+            percentPosition: true,
+            fitRows: {
+                columnWidth: '.iso-gallery-sizer'
+            },
+            getSortData: {
+                sort: '[data-sort]',
+            },
+            sortBy: 'sort',
+            filter: function () {
+                var $this = $(this);
+                var $gallery = $this.closest('.iso-gallery');
+                var qsRegex = $gallery.data('regex');
+                var searchResult = qsRegex ? $this.text().match(qsRegex) : true;
+                var buttonFilter = $gallery.data('buttonFilter');
+                var buttonResult = buttonFilter ? $this.is(buttonFilter) : true;
+                return searchResult && buttonResult;
+            },
         });
-    });
+        // use value of search field to filter
+        $('.iso-gallery-search').keyup(debounce(function () {
+            var $this = $(this);
+            var $gallery = $('#' + $this.data('gallery'));
+            $gallery.data('regex', new RegExp($this.val(), 'gi'));
+            $gallery.isotope();
+        }, 200));
+
+        $('.iso-gallery-filters').on('click', '.iso-gallery-filter', function () {
+            var $this = $(this);
+            // get group key
+            var $buttonGroup = $this.parents('.iso-gallery-filters-group');
+            var filterGroup = $buttonGroup.attr('data-filter-group');
+            var $gallery = $('#' + $this.data('gallery'));
+            var buttonFilters = $gallery.data('buttonFilters');
+            if ('undefined' === typeof buttonFilters)
+                buttonFilters = {};
+            var buttonFilter = $gallery.data('buttonFilter');
+            // set filter for group
+            buttonFilters[filterGroup] = $this.attr('data-filter');
+            // combine filters
+            buttonFilter = concatValues(buttonFilters);
+            $gallery.data('buttonFilters', buttonFilters).data('buttonFilter', buttonFilter);
+            // Isotope arrange
+            $gallery.isotope();
+        });
+
+        // change is-checked class on buttons
+        $('.iso-gallery-filters-group').each(function (i, buttonGroup) {
+            var $buttonGroup = $(buttonGroup);
+            $buttonGroup.on('click', 'button', function () {
+                $buttonGroup.find('.is-checked').removeClass('is-checked');
+                $(this).addClass('is-checked');
+            });
+        });
+    }, 100);
 
     // flatten object by concatting values
     function concatValues(obj) {

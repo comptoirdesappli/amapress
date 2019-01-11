@@ -132,56 +132,56 @@ class AmapressAdhesion extends TitanEntity {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                         = [];
-			$ret['contrat_type']         = [
+			$ret                                = [];
+			$ret['contrat_type']                = [
 				'desc' => 'Type du contrat (par ex, Légumes)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getContrat_instance()->getModel()->getTitle();
+					return $adh->getContrat_instance()->getModelTitle();
 				}
 			];
-			$ret['contrat_titre']        = [
+			$ret['contrat_titre']               = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
-			$ret['contrat_sous_titre']   = [
+			$ret['contrat_sous_titre']          = [
 				'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getSubName();
 				}
 			];
-			$ret['contrat_lien']         = [
+			$ret['contrat_lien']                = [
 				'desc' => 'Lien vers la présentation du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
 				}
 			];
-			$ret['date_debut']           = [
+			$ret['date_debut']                  = [
 				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin']             = [
+			$ret['date_fin']                    = [
 				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['date_debut_complete']  = [
+			$ret['date_debut_complete']         = [
 				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j M Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin_complete']    = [
+			$ret['date_fin_complete']           = [
 				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j M Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['tous_referents']       = [
+			$ret['tous_referents']              = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -197,7 +197,7 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['tous_referents_email'] = [
+			$ret['tous_referents_email']        = [
 				'desc' => 'Nom des référents du contrat avec emails',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -311,37 +311,37 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getFormattedAdresse();
 				}
 			];
-			$ret['producteur.tel']       = [
+			$ret['producteur.tel']              = [
 				'desc' => 'Téléphone producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getTelephone();
 				}
 			];
-			$ret['producteur.email']     = [
+			$ret['producteur.email']            = [
 				'desc' => 'Email producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getEmail();
 				}
 			];
-			$ret['lieu']                 = [
+			$ret['lieu']                        = [
 				'desc' => 'Lieu de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
-			$ret['lieu_court']           = [
+			$ret['lieu_court']                  = [
 				'desc' => 'Lieu de distribution (nom court)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getShortName();
 				}
 			];
-			$ret['lieu_heure_debut']     = [
+			$ret['lieu_heure_debut']            = [
 				'desc' => 'Heure de début de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'H:i', $adh->getLieu()->getHeure_debut() );
 				}
 			];
-			$ret['lieu_heure_fin']       = [
+			$ret['lieu_heure_fin']              = [
 				'desc' => 'Heure de fin de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'H:i', $adh->getLieu()->getHeure_fin() );
@@ -371,25 +371,25 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_fin() );
 				}
 			];
-			$ret['nb_paiements']         = [
+			$ret['nb_paiements']                = [
 				'desc' => 'Nombre de chèques choisi',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getPaiements();
 				}
 			];
-			$ret['nb_distributions']     = [
+			$ret['nb_distributions']            = [
 				'desc' => 'Nombre de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getRemainingDatesWithFactors();
 				}
 			];
-			$ret['nb_dates']             = [
+			$ret['nb_dates']                    = [
 				'desc' => 'Nombre de dates de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return count( $adh->getRemainingDates() );
 				}
 			];
-			$ret['dates_rattrapages']    = [
+			$ret['dates_rattrapages']           = [
 				'desc' => 'Description des dates de distribution de rattrapage',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$rattrapage        = [];
@@ -467,7 +467,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $o['desc'];
 				}
 			];
-			$ret['quantites']            = [
+			$ret['quantites']                   = [
 				'desc' => 'Quantité(s) choisie(s)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -477,7 +477,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString();
 				}
 			];
-			$ret['quantites_prix']       = [
+			$ret['quantites_prix']              = [
 				'desc' => 'Quantité(s) choisie(s) avec prix unitaire',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -487,13 +487,13 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString( null, true );
 				}
 			];
-			$ret['total']                = [
+			$ret['total']                       = [
 				'desc' => 'Total du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return Amapress::formatPrice( $adh->getTotalAmount() );
 				}
 			];
-			self::$properties            = $ret;
+			self::$properties                   = $ret;
 		}
 
 		return self::$properties;
@@ -504,7 +504,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-				'inscription-' . $this->getContrat_instance()->getModel()->getTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
+				'inscription-' . $this->getContrat_instance()->getModelTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
 	}
 
 	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false, $show_toggler = true ) {
@@ -564,7 +564,7 @@ class AmapressAdhesion extends TitanEntity {
 //		}
 
 //		amapress_dump($model_filename);
-//		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getAttachmentDir() );
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
 
 		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
 		try {
@@ -810,12 +810,20 @@ class AmapressAdhesion extends TitanEntity {
 //    }
 
 	public function getRemainingDates( $quantite_id = null ) {
-		if ( empty( $this->getContrat_instance() ) )
+		if ( empty( $this->getContrat_instance() ) ) {
 			return [];
+		}
 
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		$dates = $this->getContrat_instance()->getRemainingDates( $start_date, $quantite_id );
+		$dates        = [];
+		$quantite_ids = $quantite_id ? [ $quantite_id ] : $this->getContrat_quantites_IDs();
+		foreach ( $quantite_ids as $qid ) {
+			$dates = array_merge( $dates, $this->getContrat_instance()->getRemainingDates( $start_date, $qid ) );
+		}
+		$dates = array_unique( $dates );
+		sort( $dates, SORT_ASC );
+
 		if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
 			$dates = array_filter( $dates, function ( $d ) {
 				return Amapress::start_of_day( $d ) < Amapress::end_of_day( $this->getDate_fin() );
@@ -828,9 +836,19 @@ class AmapressAdhesion extends TitanEntity {
 	public function getRemainingDatesWithFactors( $quantite_id = null ) {
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		$val = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
-		if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
-			$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id );
+		if ( $quantite_id ) {
+			$val = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
+			if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
+				$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id );
+			}
+		} else {
+			$val = 0;
+			foreach ( $this->getContrat_quantites_IDs() as $qid ) {
+				$factor = $this->getRemainingDatesWithFactors( $qid );
+				if ( $factor > $val ) {
+					$val = $factor;
+				}
+			}
 		}
 
 		return $val;
@@ -1005,9 +1023,30 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$ignore_renouv_delta = false,
 		$allow_not_logged = false
 	) {
-		return array_map( function ( $p ) {
-			return AmapressAdhesion::getBy( $p );
-		}, self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged ) );
+		$ids = self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+		if ( empty( $ids ) ) {
+			return [];
+		}
+
+		$key = 'AmapressAdhesion::getUserActiveAdhesionsPosts_' . implode( '_', $ids );
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			update_meta_cache( 'post', $ids );
+
+			$res = array_map( function ( $p ) {
+				return AmapressAdhesion::getBy( $p );
+			}, get_posts(
+				[
+					'posts_per_page' => - 1,
+					'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+					'post__in'       => $ids,
+				]
+			) );
+
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
 	}
 
 	/**

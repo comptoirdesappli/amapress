@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.59.45
+Version: 0.65.50
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,10 +46,14 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 80 );
-define( 'AMAPRESS_VERSION', '0.59.45' );
+define( 'AMAPRESS_VERSION', '0.65.50' );
 //remove_role('responable_amap');
 
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
+
+function amapress_get_github_updater_url() {
+	return is_multisite() ? network_admin_url( 'settings.php?page=github-updater' ) : admin_url( 'options-general.php?page=github-updater' );
+}
 
 function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array(), $cc = null, $bcc = null ) {
 //    add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
@@ -113,41 +117,80 @@ function amapress_output_admin_notices() {
 	}
 }
 
+
+function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pretty = true ) {
+	if ( version_compare( PHP_VERSION, '5.2.5', '>=' ) ) {
+		$trace = debug_backtrace( false );
+	} else {
+		$trace = debug_backtrace();
+	}
+
+	$caller      = array();
+	$check_class = ! is_null( $ignore_class );
+	$skip_frames ++; // skip this function
+
+	foreach ( $trace as $call ) {
+		if ( empty( $call['line'] ) ) {
+			$call['line'] = '0';
+		}
+		if ( empty( $call['file'] ) ) {
+			$call['file'] = 'unknown';
+		}
+
+		if ( $skip_frames > 0 ) {
+			$skip_frames --;
+		} elseif ( isset( $call['class'] ) ) {
+			if ( $check_class && $ignore_class == $call['class'] ) {
+				continue;
+			} // Filter out calls
+
+			$file = str_replace( array( WP_CONTENT_DIR, ABSPATH ), '', $call['file'] );
+
+			$caller[] = "{$call['class']}{$call['type']}{$call['function']}[{$file}:{$call['line']}]";
+		} else {
+			if ( in_array( $call['function'], array( 'do_action', 'apply_filters' ) ) ) {
+				$caller[] = "{$call['function']}('{$call['args'][0]}')";
+			} elseif ( in_array( $call['function'], array( 'include', 'include_once', 'require', 'require_once' ) ) ) {
+				$caller[] = $call['function'] . "('" . str_replace( array(
+						WP_CONTENT_DIR,
+						ABSPATH
+					), '', $call['args'][0] ) . "')";
+			} else {
+				$file     = str_replace( array( WP_CONTENT_DIR, ABSPATH ), '', $call['file'] );
+				$caller[] = "{$call['function']}[{$file}:{$call['line']}]";
+			}
+		}
+	}
+	if ( $pretty ) {
+		return join( ', ', array_reverse( $caller ) );
+	} else {
+		return $caller;
+	}
+}
+
 function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext ) {
 	// handle @
 	if ( 0 === error_reporting() ) {
 		return false;
 	}
-	$message = $errstr . ' in ' . $errfile . ' on line ' . $errline . ', backtrace: ' . wp_debug_backtrace_summary( null, 1 );
+	$message = $errstr . ' in ' . $errfile . ' on line ' . $errline .
+	           ', backtrace: ' . amapress_debug_backtrace_summary( null, 1 ) .
+	           ', url: ' . $_SERVER['REQUEST_URI'] .
+	           ', user: ' . get_current_user_id();
 
 	if ( strpos( $message, 'Load_Resend_Welcome_Email' ) !== false ) {
 		return true;
 	}
 
-	if ( WP_DEBUG_DISPLAY || ini_get( 'display_errors' ) ) {
-		echo '<br />' . $message . '<br />';
-	}
-	if ( WP_DEBUG_LOG || ini_get( 'log_errors' ) ) {
+	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
 		error_log( $message );
 	}
 
 	return true;
 }
 
-//function amapress_exception_fatal_error_handler()
-//{
-//    $error = error_get_last();
-//    if ( $error["type"] == E_ERROR ) {
-//        $message = $error["message"] . ' in ' . $error["file"] . ' on line ' . $error["line"] . ', backtrace: ' . wp_debug_backtrace_summary( null, 1 );
-//
-//        if( WP_DEBUG_DISPLAY || ini_get( 'display_errors' ) )
-//            echo '<br />' . $message . '<br />';
-//        if( WP_DEBUG_LOG || ini_get( 'log_errors' ) )
-//            error_log( $message );
-//    }
-//}
-set_error_handler( 'amapress_exception_error_handler' );
-//register_shutdown_function('amapress_exception_fatal_error_handler');
+set_error_handler( 'amapress_exception_error_handler', E_ALL | E_STRICT );
+
 function amapress_wpmail_content_type() {
 	return 'text/html';
 }
@@ -395,13 +438,13 @@ if ( ! function_exists( 'get_posts_count' ) ) {
 if ( ! function_exists( 'get_users_cached' ) ) {
 	/** @return WP_User[] */
 	function get_users_cached( $args = array() ) {
-		$args        = wp_parse_args( $args );
-		$user_search = new WP_User_Query();
-		$user_search->prepare_query( $args );
+		$args = wp_parse_args( $args );
 
-		$query = "SELECT $user_search->query_fields $user_search->query_from $user_search->query_where $user_search->query_orderby $user_search->query_limit";
+		$query = serialize( $args );
 		$res   = wp_cache_get( $query );
 		if ( false === $res ) {
+			$user_search = new WP_User_Query();
+			$user_search->prepare_query( $args );
 			$user_search->query();
 			$res = $user_search->get_results();
 			wp_cache_set( $query, $res );
@@ -464,6 +507,7 @@ add_action( 'init', 'amapress_global_init', 15 );
 function amapress_global_init() {
 	$key = Amapress::getOption( 'google_map_key' );
 	if ( ! empty( $key ) ) {
+		TitanFrameworkOptionAddress::$geoprovider        = Amapress::getOption( 'geocode_provider' );
 		TitanFrameworkOptionAddress::$google_map_api_key = $key;
 	}
 

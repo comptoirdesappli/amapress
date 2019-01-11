@@ -30,6 +30,7 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'user-map', 'amapress_user_map_shortcode' );
 	amapress_register_shortcode( 'producteur-map', 'amapress_producteur_map_shortcode' );
 	amapress_register_shortcode( 'amapien-avatar', 'amapress_amapien_avatar_shortcode' );
+	amapress_register_shortcode( 'histo-inscription-distrib', 'amapress_histo_inscription_distrib_shortcode' );
 	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode' );
 	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode' );
 
@@ -236,6 +237,39 @@ function amapress_register_shortcodes() {
                         <div class="' . $atts['map-classes'] . '">' . $map . '</div>
                     </div>
                 </div>';
+	} );
+
+	amapress_register_shortcode( 'listes-diffusions', function ( $atts ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return '';
+		}
+
+		$atts = shortcode_atts(
+			array(
+				'sms' => 'yes',
+			),
+			$atts );
+
+		ob_start();
+
+		$do_sms_link = Amapress::toBool( $atts['sms'] ) && amapress_can_access_admin();
+		echo '<ul>';
+		foreach ( Amapress_MailingListConfiguration::getAll() as $mailing_list_configuration ) {
+			echo '<li>';
+			$name = $mailing_list_configuration->getAddress();
+			$desc = $mailing_list_configuration->getDescription();
+			echo Amapress::makeLink( "mailto:$name", $name );
+			if ( $do_sms_link ) {
+				echo ' ; ' . Amapress::makeLink( $mailing_list_configuration->getMembersSMSTo(), 'Envoyer un SMS aux membres' );
+			}
+			if ( ! empty( $desc ) ) {
+				echo "<br/><em>$desc</em>";
+			}
+			echo '</li>';
+		}
+		echo '</ul>';
+
+		return ob_get_clean();
 	} );
 }
 

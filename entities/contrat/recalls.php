@@ -20,6 +20,10 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 	$contrats_by_producteurs = from( $dist->getContrats() )->groupBy( function ( $c ) {
 		/** @var AmapressContrat_instance $c */
+		if ( empty( $c->getModel() ) ) {
+			return null;
+		}
+
 		return $c->getModel()->getProducteurId();
 	} );
 
@@ -32,6 +36,9 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 		$replacements = [];
 		$producteur   = AmapressProducteur::getBy( $producteur_id );
+		if ( empty( $producteur ) ) {
+			continue;
+		}
 
 		$replacements['producteur_contact']           = '<div><h5>Contact producteur:</h5>' .
 		                                                $producteur->getUser()->getDisplay(
@@ -97,6 +104,9 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrats-liste-paiements-recall-excl-producteurs' ) );
 
 	foreach ( $dist->getContrats() as $contrat ) {
+		if ( empty( $contrat->getModel() ) ) {
+			continue;
+		}
 		if ( in_array( $contrat->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
 			continue;
 		}
@@ -125,6 +135,9 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 
 		$attachments = [];
 		foreach ( AmapressContrats::get_active_contrat_instances() as $contrat_instance ) {
+			if ( empty( $contrat_instance->getModel() ) ) {
+				continue;
+			}
 			if ( $contrat_instance->getModel()->getProducteurId() != $producteur->ID ) {
 				continue;
 			}
@@ -142,13 +155,13 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 
 				$lieu               = AmapressLieu_distribution::getBy( $lieu_id );
 				$date               = date_i18n( 'd-m-Y' );
-				$filename_cheques   = strtolower( sanitize_file_name( "cheques-{$contrat_instance->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date" ) );
-				$filename_adherents = strtolower( sanitize_file_name( "adherents-{$contrat_instance->getModel()->getTitle()}-{$lieu->getShortName()}-au-$date" ) );
-				$title_cheques      = "Chèques - {$contrat_instance->getModel()->getTitle()} - {$lieu->getShortName()}";
+				$filename_cheques   = strtolower( sanitize_file_name( "cheques-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
+				$filename_adherents = strtolower( sanitize_file_name( "adherents-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
+				$title_cheques      = "Chèques - {$contrat_instance->getModelTitle()} - {$lieu->getShortName()}";
 				if ( strlen( $title_cheques ) > 27 ) {
 					$title_cheques = substr( $title_cheques, 0, 27 ) . '...';
 				}
-				$title_adherents = "Adhérents - {$contrat_instance->getModel()->getTitle()} - {$lieu->getShortName()}";
+				$title_adherents = "Adhérents - {$contrat_instance->getModelTitle()} - {$lieu->getShortName()}";
 				if ( strlen( $title_adherents ) > 27 ) {
 					$title_adherents = substr( $title_adherents, 0, 27 ) . '...';
 				}

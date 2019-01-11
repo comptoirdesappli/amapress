@@ -291,6 +291,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
 
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
 		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
 		foreach ( $placeholders as $k => $v ) {
 			$templateProcessor->setValue( $k, $v );

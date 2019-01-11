@@ -116,13 +116,13 @@ function amapress_process_user_profile_data() {
 		// Put our data into a better looking array and sanitize it
 		$user_data = array(
 
-			'first_name'                => sanitize_text_field( $_POST['first_name'] ),
-			'last_name'                 => sanitize_text_field( $_POST['last_name'] ),
+			'first_name'                => sanitize_text_field( ! empty( $_POST['first_name'] ) ? $_POST['first_name'] : '' ),
+			'last_name'                 => sanitize_text_field( ! empty( $_POST['last_name'] ) ? $_POST['last_name'] : '' ),
 			'user_email'                => sanitize_email( $_POST['email'] ),
 			'email2'                    => sanitize_email( $_POST['email2'] ),
 			'email3'                    => sanitize_email( $_POST['email3'] ),
 			'email4'                    => sanitize_email( $_POST['email4'] ),
-			'display_name'              => sanitize_email( $_POST['display_name'] ),
+			'display_name'              => sanitize_email( ! empty( $_POST['display_name'] ) ? $_POST['display_name'] : '' ),
 			'amapress_user_adresse'     => sanitize_text_field( $_POST['amapress_user_adresse'] ),
 			'amapress_user_code_postal' => sanitize_text_field( $_POST['amapress_user_code_postal'] ),
 			'amapress_user_ville'       => sanitize_text_field( $_POST['amapress_user_ville'] ),

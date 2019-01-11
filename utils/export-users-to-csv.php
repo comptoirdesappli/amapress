@@ -26,7 +26,7 @@ class AmapressExport_Users {
 	}
 
 	public static function generate_csv() {
-		set_time_limit( 0 );
+		@set_time_limit( 0 );
 		global $wp_query;
 		if ( isset( $_REQUEST['amapress_export'] ) && isset( $_REQUEST['_wpnonce-amapress-export-users-users-page_export'] ) ) {
 			check_admin_referer( 'amapress-export-users-users-page_export', '_wpnonce-amapress-export-users-users-page_export' );

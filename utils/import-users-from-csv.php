@@ -203,6 +203,7 @@ class Amapress_Import_Users_CSV {
 					wp_redirect( add_query_arg(
 						[
 							'import'   => 'fail',
+							'total'    => $results['total'],
 							'imported' => $results['imported']
 						],
 						wp_get_referer() ) );
@@ -211,6 +212,7 @@ class Amapress_Import_Users_CSV {
 	                wp_redirect( add_query_arg(
 		                [
 			                'import'   => 'errors',
+			                'total'    => $results['total'],
 			                'imported' => $results['imported']
 		                ],
 		                wp_get_referer() ) );
@@ -243,7 +245,7 @@ class Amapress_Import_Users_CSV {
 		?>
 
         <div class="wrap">
-        <h2><?php _e( 'Importer des utilisateurs depuis un fichier XLSX/XLS/ODS/CSV', 'amapress' ); ?></h2>
+        <h2><?php _e( 'Importer des utilisateurs depuis un fichier XLSX/XLS/ODS', 'amapress' ); ?></h2>
 		<?php
 		$error_log_file = self::$log_dir_path . self::$log_file_name;
 		$error_log_url  = self::$log_dir_url . self::$log_file_name;
@@ -550,8 +552,10 @@ class Amapress_Import_Users_CSV {
 						$login = strtolower( $userdata['first_name'] . '.' . $userdata['last_name'] );
 						$user  = get_user_by( 'login', $login );
 						if ( $user ) {
-							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', "User with login '$login'' already exists with email $user->user_email" );
-							break;
+							$user_link         = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $login );
+							$search_link       = Amapress::makeLink( admin_url( 'users.php?s=' . $userdata['last_name'] ), 'Rechercher ' . $userdata['last_name'] );
+							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', "User with login '$user_link' already exists with email {$user->user_email}. $search_link" );
+							continue;
 						}
 					}
 				}

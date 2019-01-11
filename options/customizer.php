@@ -139,6 +139,13 @@ function amapress_customizer_init() {
 		'default' => '#9d9d9d',
 		'css'     => '.amap-panel, .amap-panel-heading, .tab-content { border-color: value }',
 	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur des légendes', 'amapress' ),
+		'id'      => "caption_col_fg",
+		'type'    => 'color',
+		'default' => '',
+		'css'     => ".thumbnail .caption * { color: value }",
+	) );
 //    $section->createOption(array(
 //        'name' => __('Couleur du texte des produits', 'amapress'),
 //        'id' => 'front_produits_col_fg',

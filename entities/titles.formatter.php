@@ -32,6 +32,7 @@ add_filter( 'amapress_distribution_title_formatter', 'amapress_distribution_titl
 function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 	$post_id = $post->ID;
 
+	$dist              = AmapressDistribution::getBy( $post, true );
 	$date              = get_post_meta( $post_id, 'amapress_distribution_date', true );
 	$lieu_id           = get_post_meta( $post_id, 'amapress_distribution_lieu', true );
 	$lieu_substitution = get_post_meta( $post_id, 'amapress_distribution_lieu_substitution', true );
@@ -41,7 +42,7 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 			return $post_title;
 		}
 
-		return sprintf( 'Distribution du %s exceptionnellement à %s',
+		$ret = sprintf( 'Distribution du %s exceptionnellement à %s',
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	} else {
@@ -50,10 +51,18 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 			return $post_title;
 		}
 
-		return sprintf( 'Distribution du %s à %s',
+		$ret = sprintf( 'Distribution du %s à %s',
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	}
+
+	if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
+		$ret .= sprintf( ' (%s à %s)',
+			date_i18n( 'H:i', $dist->getStartDateAndHour() ),
+			date_i18n( 'H:i', $dist->getEndDateAndHour() ) );
+	}
+
+	return $ret;
 }
 
 add_filter( 'amapress_commande_title_formatter', 'amapress_commande_title_formatter', 10, 2 );
@@ -196,7 +205,7 @@ function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 	}
 
 	return sprintf( 'Panier de %s%s du %s%s',
-		$panier->getContrat_instance()->getModel()->getTitle(),
+		$panier->getContrat_instance()->getModelTitle(),
 		! empty( $panier->getContrat_instance()->getSubName() ) ? ' - ' . $panier->getContrat_instance()->getSubName() : '',
 		date_i18n( 'd/m/Y', intval( $panier->getDate() ) ),
 		$modif );
@@ -298,11 +307,20 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 		$subname = ' - ' . $adh->getSubName();
 	}
 
-	return sprintf( '%s%s - %s ~ %s',
-		$adh->getModel()->getTitle(),
-		$subname,
-		date_i18n( 'm/Y', intval( $adh->getDate_debut() ) ),
-		date_i18n( 'm/Y', intval( $adh->getDate_fin() ) ) );
+	$start_month = date_i18n( 'm/Y', intval( $adh->getDate_debut() ) );
+	$end_month   = date_i18n( 'm/Y', intval( $adh->getDate_fin() ) );
+	if ( $start_month == $end_month ) {
+		return sprintf( '%s%s - %s',
+			$adh->getModelTitle(),
+			$subname,
+			$start_month );
+	} else {
+		return sprintf( '%s%s - %s ~ %s',
+			$adh->getModelTitle(),
+			$subname,
+			$start_month,
+			$end_month );
+	}
 }
 
 add_action( 'amapress_update_title_contrat', 'amapress_update_title_contrat' );
@@ -364,9 +382,12 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	if ( isset( $_REQUEST['amp_back_to_list'] ) ) {
 		$amp_back_to_list = $_REQUEST['amp_back_to_list'];
 	}
+	if ( ! empty( $amp_back_to_list ) && strpos( $amp_back_to_list, 'post.php' ) !== false ) {
+		$amp_back_to_list = null;
+	}
 
 	if ( ! empty( $amp_back_to_list ) ) {
-		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_attr( $amp_back_to_list ) . '" />';
+		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_url( $amp_back_to_list ) . '" />';
 		$title = 'Retourner à la page précédente';
 		if ( false !== strpos( $amp_back_to_list, 'edit.php' ) ) {
 			$title = 'Retourner à la liste des ' . get_post_type_object( $post->post_type )->label;
@@ -383,7 +404,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 
 add_filter( 'redirect_post_location', function ( $location ) {
 	if ( isset( $_POST['amp_back_to_list'] ) ) {
-		$location = add_query_arg( 'amp_back_to_list', $_POST['amp_back_to_list'], $location );
+		$location = add_query_arg( 'amp_back_to_list', urlencode( $_POST['amp_back_to_list'] ), $location );
 	}
 
 	return $location;

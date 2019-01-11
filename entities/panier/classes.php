@@ -146,12 +146,18 @@ class AmapressPanier extends Amapress_EventBase {
 						'post__in'       => array_unique( $post_ids ),
 					)
 				) );
+
 				update_option( 'amps_delay_pan', $res );
 			} else {
 				$res = maybe_unserialize( $ress );
 			}
 			wp_cache_set( $key, $res );
 		}
+
+		update_meta_cache( 'post', array_map( function ( $p ) {
+			/** @var AmapressPanier $p */
+			return $p->getID();
+		}, $res ) );
 
 		$ret = $res;
 		$ret = array_filter(

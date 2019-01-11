@@ -105,6 +105,21 @@ function amapress_distribution_views() {
 		"post_type=amps_distribution&amapress_date=nextmonth",
 		'Le mois prochain' );
 
+	if ( count( Amapress::get_lieu_ids() ) > 1 ) {
+		amapress_add_view_button(
+			$ret, 'change_lieu',
+			"post_type=amps_distribution&amapress_status=change_lieu",
+			'Changement lieu' );
+	}
+	amapress_add_view_button(
+		$ret, 'change_hours',
+		"post_type=amps_distribution&amapress_status=change_hours",
+		'Changement horaires' );
+	amapress_add_view_button(
+		$ret, 'change_paniers',
+		"post_type=amps_distribution&amapress_status=change_paniers",
+		'Changement livraisons' );
+
 //        $prods = get_posts(array(
 //                'posts_per_page' => -1,
 //                'post_type' => 'amps_producteur')

@@ -32,7 +32,7 @@ function amapress_producteur_map_shortcode( $atts ) {
 		return '';
 	}
 	$producteur = AmapressProducteur::getBy( $prod_id );
-	if ( ! $producteur->isAdresseExploitationLocalized() ) {
+	if ( empty( $producteur ) || ! $producteur->isAdresseExploitationLocalized() ) {
 		return '';
 	}
 	$markers   = array();
@@ -209,6 +209,7 @@ function amapress_amapiens_map_shortcode( $atts ) {
 function amapress_amapiens_role_list_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'lieu'            => null,
+		'show_prod'       => 'false',
 		'show_email'      => 'force',
 		'show_tel'        => 'default',
 		'show_tel_fixe'   => 'default',
@@ -323,6 +324,9 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 			$type    = $role['type'];
 			$lieu_id = $role['lieu'];
 			if ( 'intermittent' == $type ) {
+				continue;
+			}
+			if ( ! Amapress::toBool( $atts['show_prod'] ) && 'producteur' == $type ) {
 				continue;
 			}
 			if ( $lieu_id && ! in_array( $lieu_id, $lieu_ids ) ) {

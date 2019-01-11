@@ -10,6 +10,10 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	private static $entities_cache = array();
 
+	public static function clearCache() {
+		self::$entities_cache = array();
+	}
+
 	/**
 	 * @param $post_or_id
 	 *
@@ -126,6 +130,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		return 'mailto:' . urlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
 		       date_i18n( 'D j M Y' );
 	}
+
 	public function getSMStoResponsables() {
 		$resp_phones = [];
 		foreach ( $this->getResponsables() as $user ) {
@@ -171,7 +176,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		$phones = [];
 		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
 			/** @var AmapressAdhesion $adh */
-			if ( ! empty( $adh->getAdherent() ) ) {
+			if ( ! empty( $adh ) && ! empty( $adh->getAdherent() ) ) {
 				$phones = array_merge( $phones, $adh->getAdherent()->getPhoneNumbers( true ) );
 			}
 		}
@@ -202,11 +207,16 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressContrat_instance[] */
 	public function getContrats() {
-		return array_map(
+		$ret = array_map(
 			function ( $id ) {
 				return AmapressContrat_instance::getBy( $id );
 			}, $this->getContratIds()
 		);
+
+		return array_filter( $ret, function ( $c ) {
+			/** @var AmapressContrat_instance $c */
+			return ! empty( $c ) && ! empty( $c->getModel() );
+		} );
 	}
 
 	public function getRealDateForContrat( $contrat_id ) {
@@ -539,6 +549,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			$dist_date_end = $this->getEndDateAndHour();
 			$contrats      = $this->getContrats();
 			foreach ( $contrats as $contrat ) {
+				if ( empty( $contrat ) || empty( $contrat->getModel() ) ) {
+					continue;
+				}
+
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "dist-{$this->ID}",
 					'date'     => $dist_date,
@@ -547,8 +561,8 @@ class AmapressDistribution extends Amapress_EventBase {
 					'category' => 'Distributions',
 					'priority' => 30,
 					'lieu'     => $lieu,
-					'label'    => $contrat->getModel()->getTitle(),
-					'alt'      => 'Distribution de ' . $contrat->getModel()->getTitle() . ' à ' . $lieu->getShortName(),
+					'label'    => $contrat->getModelTitle(),
+					'alt'      => 'Distribution de ' . $contrat->getModelTitle() . ' à ' . $lieu->getShortName(),
 					'class'    => "agenda-contrat-{$contrat->getModel()->ID}",
 					'icon'     => Amapress::coalesce_icons( amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat->getModel()->ID}_icon" ), amapress_get_avatar_url( $contrat->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 					'href'     => $this->getPermalink()
@@ -594,14 +608,14 @@ class AmapressDistribution extends Amapress_EventBase {
 						'id'       => $this->ID,
 						'date'     => $dist_date,
 						'date_end' => $dist_date_end,
-						'class'    => "agenda-contrat-{$adhesion->getContrat_instance()->getModel()->getTitle()}",
+						'class'    => "agenda-contrat-{$adhesion->getContrat_instance()->getModelTitle()}",
 						'type'     => 'distribution',
 						'category' => 'Distributions',
 						'priority' => 30,
 						'lieu'     => $lieu,
-						'label'    => $adhesion->getContrat_instance()->getModel()->getTitle(),
+						'label'    => $adhesion->getContrat_instance()->getModelTitle(),
 						'icon'     => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$adhesion->getContrat_instance()->getModel()->ID}_icon" ), amapress_get_avatar_url( $adhesion->getContrat_instance()->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
-						'alt'      => 'Distribution de ' . $adhesion->getContrat_instance()->getModel()->getTitle() . ' à ' . $lieu->getShortName(),
+						'alt'      => 'Distribution de ' . $adhesion->getContrat_instance()->getModelTitle() . ' à ' . $lieu->getShortName(),
 						'href'     => $this->getPermalink()
 					) );
 				}
@@ -759,7 +773,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return implode( ', ', array_map(
 							function ( $c ) {
 								/** @var AmapressContrat_instance $c */
-								return $c->getModel()->getTitle();
+								return $c->getModelTitle();
 							}, $distrib->getContrats()
 						) );
 					}
@@ -1028,5 +1042,41 @@ class AmapressDistribution extends Amapress_EventBase {
 				'status' => 'to_exchange',
 			]
 		);
+	}
+
+	public function setSpecialHeure_debut( $start_hour_date ) {
+		if ( empty( $start_hour_date ) ) {
+			$this->deleteCustom( 'amapress_distribution_heure_debut_spec' );
+		} else {
+			$this->setCustom( 'amapress_distribution_heure_debut_spec', $start_hour_date );
+		}
+	}
+
+	public function setSpecialHeure_fin( $end_hour_date ) {
+		if ( empty( $end_hour_date ) ) {
+			$this->deleteCustom( 'amapress_distribution_heure_fin_spec' );
+		} else {
+			$this->setCustom( 'amapress_distribution_heure_fin_spec', $end_hour_date );
+		}
+	}
+
+	public static function getRespRespDistribEmails( $lieu_id ) {
+		return AmapressUser::getEmailsForAmapRole( intval( Amapress::getOption( 'resp-distrib-amap-role' ), $lieu_id ) );
+	}
+
+	public static function getResponsablesRespDistribReplyto( $lieu_id ) {
+		$emails = self::getRespRespDistribEmails( $lieu_id );
+		if ( empty( $emails ) ) {
+			$emails = self::getRespRespDistribEmails( null );
+		}
+		if ( empty( $emails ) ) {
+			return [];
+		}
+
+		return 'Reply-To: ' . implode( ',', $emails );
+	}
+
+	public function getResponsablesResponsablesDistributionsReplyto() {
+		return self::getResponsablesRespDistribReplyto( $this->getLieuId() );
 	}
 }

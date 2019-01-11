@@ -15,6 +15,11 @@ function amapress_get_custom_content_produit( $content ) {
 ////    $url = amapress_get_avatar_url($prod_id, null, 'post-thumb', 'default_produit.jpg');
 ////    $cnt = '<div class="produit-photo"><img src="' . $url . '" alt="Photo de ' . esc_attr(get_the_title()) . '" /></div>' . $content;
 //
+	$producteur_id = get_post_meta( $prod_id, 'amapress_produit_producteur', true );
+	if ( empty( $producteur_id ) ) {
+		return $content;
+	}
+
 	ob_start();
 //
 //	echo $content;
@@ -27,7 +32,6 @@ function amapress_get_custom_content_produit( $content ) {
 ////    echo '</div>';
 ////    echo '</div>';
 //
-	$producteur_id = get_post_meta( $prod_id, 'amapress_produit_producteur', true );
 	echo '<h3>' . Amapress::getOption( 'producteur_title', 'Producteur' ) . '</h3>';
 	echo '<p><a href="' . get_post_permalink( $producteur_id ) . '">' . get_post( $producteur_id )->post_title . '</a></p>';
 

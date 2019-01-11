@@ -49,7 +49,7 @@ function amapress_register_entities_amapien( $entities ) {
 					if ( ! $amapien ) {
 						return '';
 					}
-					$roles   = esc_html( $amapien->getAmapRolesString() );
+					$roles = esc_html( $amapien->getAmapRolesString() );
 
 					return $roles;
 				}
@@ -172,24 +172,24 @@ function amapress_register_entities_amapien( $entities ) {
 				'town_field_name'        => 'amapress_user_ville',
 				'show_on'                => 'edit-only',
 			),
-			'head_amapress2'     => array(
+			'head_amapress2'    => array(
 				'id'   => 'phones_sect',
 				'name' => amapress__( 'Téléphones' ),
 				'type' => 'heading',
 			),
-			'telephone'          => array(
+			'telephone'         => array(
 				'name'       => amapress__( 'Téléphone' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'telephone2'         => array(
+			'telephone2'        => array(
 				'name'       => amapress__( 'Téléphone 2' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 2',
 				'searchable' => true,
 			),
-			'telephone3'         => array(
+			'telephone3'        => array(
 				'name'        => amapress__( 'Téléphone 3' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 3',
@@ -567,6 +567,21 @@ function amapress_can_delete_user( $can, $user_id ) {
 
 add_filter( 'amapress_register_admin_bar_menu_items', 'amapress_register_admin_bar_menu_items' );
 function amapress_register_admin_bar_menu_items( $items ) {
+	$cls_state  = '';
+	$dash_state = '';
+	if ( current_user_can( 'manage_options' ) ) {
+		$state_summary = amapress_get_state_summary();
+		if ( $state_summary['error'] > 0 ) {
+			$cls_state  = 'amps-error';
+			$dash_state = '<span class="dashicons dashicons-warning" style="color: red"></span>';
+		} else if ( $state_summary['warning'] > 0 ) {
+			$cls_state  = 'amps-warning';
+			$dash_state = '<span class="dashicons dashicons-admin-tools" style="color: orange"></span>';
+		} else {
+			$dash_state = '<span class="dashicons dashicons-yes"></span>';
+		}
+	}
+
 	$contrat_to_renew = get_posts_count( 'post_type=amps_contrat_inst&amapress_date=renew' );
 	$this_week_start  = Amapress::start_of_week( amapress_time() );
 	$this_week_end    = Amapress::end_of_week( amapress_time() );
@@ -790,6 +805,22 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'capability' => 'edit_users',
 				'href'       => admin_url( 'users.php?amapress_contrat=intermittent' ),
 			),
+		)
+	);
+
+	$pre_inscr_href = Amapress::get_pre_inscription_page_href();
+	if ( ! empty( $pre_inscr_href ) ) {
+		$main_items[] = array(
+			'id'         => 'amapress_goto_preinscr_page',
+			'title'      => 'Accès page pré-inscriptions',
+			'capability' => 'read',
+			'href'       => $pre_inscr_href,
+		);
+	}
+
+	$main_items = array_merge(
+		$main_items,
+		array(
 			array(
 				'id'         => 'amapress_admin_submenu',
 				'title'      => 'Admin',
@@ -797,9 +828,21 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'items'      => [
 					array(
 						'id'         => 'amapress_state',
-						'title'      => 'Etat Amapress',
+						'title'      => $dash_state . 'Etat Amapress',
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_state' ),
+					),
+					array(
+						'id'         => 'amapress_pages',
+						'title'      => 'Pages du site',
+						'capability' => 'manage_options',
+						'href'       => admin_url( 'edit.php?post_type=page' ),
+					),
+					array(
+						'id'         => 'amapress_renew_config',
+						'title'      => 'Renouvèlement',
+						'capability' => 'manage_options',
+						'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=renew_config' ),
 					),
 					array(
 						'id'         => 'amapress_welcome_mail',
@@ -829,9 +872,10 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			),
 		)
 	);
-	$items[]    = array(
+
+	$items[] = array(
 		'id'        => 'amapress',
-		'title'     => '<span class="ab-icon"></span><span class="ab-label">Amapress</span>',
+		'title'     => '<span class="ab-icon ' . $cls_state . '"></span><span class="ab-label">Amapress</span>',
 		'condition' => function () {
 			return amapress_can_access_admin();
 		},
@@ -884,4 +928,37 @@ jQuery(function() {
   }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement ' . $ref_prod_message . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");
 });
 </script>';
+}
+
+add_filter( 'manage_users_columns', 'amapress_add_user_lastname_column' );
+function amapress_add_user_lastname_column( $columns ) {
+	$columns['last_name'] = 'Nom';
+
+	return $columns;
+}
+
+add_filter( 'manage_users_sortable_columns', 'amapress_add_user_lastname_sort_column' );
+function amapress_add_user_lastname_sort_column( $columns ) {
+	$columns['last_name'] = 'last_name';
+
+	return $columns;
+}
+
+add_action( 'manage_users_custom_column', 'amapress_show_user_lastname_column_content', 10, 3 );
+function amapress_show_user_lastname_column_content( $value, $column_name, $user_id ) {
+	$user = get_userdata( $user_id );
+	if ( $user && 'last_name' == $column_name ) {
+		return $user->last_name;
+	}
+
+	return $value;
+}
+
+add_action( 'pre_user_query', 'amapress_lastname_sort_pre_user_query', 15 );
+function amapress_lastname_sort_pre_user_query( WP_User_Query $query ) {
+	if ( 'last_name' == $query->query_vars['orderby'] ) {
+		global $wpdb;
+		$query->query_from    .= " LEFT OUTER JOIN $wpdb->usermeta amps_last_name ON $wpdb->users.ID = amps_last_name.user_id AND amps_last_name.meta_key='last_name'";
+		$query->query_orderby = "ORDER BY amps_last_name.meta_value " . ( strpos( $query->query_orderby, ' DESC' ) === false ? 'ASC' : 'DESC' );
+	}
 }

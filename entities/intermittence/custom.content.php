@@ -216,9 +216,17 @@ function amapress_get_paniers_intermittents_table(
 				/** @var AmapressAdhesion $adhesion */
 				$adhesion = array_shift( $adhesions );
 
-				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModel()->getTitle()}</a>";
+				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModelTitle()}</a>";
 				$quantites[] = $adhesion->getContrat_quantites_AsString( $date );
 				$prices[]    = $adhesion->getContrat_quantites_Price( $date );
+			}
+		}
+		$users     = AmapressContrats::get_related_users( $ad->getAdherentId() );
+		$adherents = '';
+		foreach ( $users as $user ) {
+			$amapien = AmapressUser::getBy( $user );
+			if ( ! empty( $amapien ) ) {
+				$adherents .= $amapien->getDisplay( $show_options );
 			}
 		}
 		$data[] = array(
@@ -226,7 +234,7 @@ function amapress_get_paniers_intermittents_table(
 			'lieu'         => "<a href='{$lieu->getPermalink()}'>{$lieu->getShortName()}</a>",
 			'quantite'     => implode( ', ', $quantites ),
 			'price'        => implode( ' + ', $prices ),
-			'adherent'     => $ad->getAdherent()->getDisplay( $show_options ),
+			'adherent'     => $adherents,
 			//"<a href='mailto:{$ad->getAdherent()->getUser()->user_email}'>" . $ad->getAdherent()->getDisplayName() . '</a> (' . $ad->getAdherent()->getTelephone() . ')',
 			'repreneur'    => $repreneur,
 			'message'      => $ad->getMessage(),
