@@ -1295,3 +1295,10 @@ CustomPostStatus::register( 'archived', [
 		'label_count'               => _n_noop( 'Archivé <span class="count">(%s)</span>', 'Archivés <span class="count">(%s)</span>' ),
 	)
 );
+
+add_action( 'amapress_init', function () {
+	require_once AMAPRESS__PLUGIN_DIR . 'modules/docspace/AmapressDocSpace.php';
+	new AmapressDocSpace( 'responsables', 'edit_posts', 'edit_posts', 'edit_posts' );
+	new AmapressDocSpace( 'amapiens', 'read', 'edit_posts', 'read' );
+	new AmapressDocSpace( 'public', '', 'edit_posts', '' );
+} );

@@ -890,3 +890,100 @@ a.btn.disabled, fieldset[disabled] a.btn {
     margin-bottom: 0;
     font-size: 12px !important;
 }
+
+
+table.docspace_list a.name {
+    text-decoration: underline !important;
+    box-shadow: none !important;
+}
+
+table.docspace_list th a {
+    padding-left: 0
+}
+
+table.docspace_list td:first-of-type a {
+    background: url(../images/file.png) no-repeat 10px 50%;
+    padding-left: 35px;
+    text-decoration: underline !important;
+}
+
+table.docspace_list th:first-of-type {
+    padding-left: 35px;
+}
+
+table.docspace_list td:not(:first-of-type) a {
+    background-image: none !important;
+}
+
+/* icons for file types (icons by famfamfam) */
+
+/* images */
+table.docspace_list tr td:first-of-type a[href$=".jpg"],
+table.docspace_list tr td:first-of-type a[href$=".png"],
+table.docspace_list tr td:first-of-type a[href$=".gif"],
+table.docspace_list tr td:first-of-type a[href$=".svg"],
+table.docspace_list tr td:first-of-type a[href$=".jpeg"] {
+    background-image: url(../images/image.png);
+}
+
+/* zips */
+table.docspace_list tr td:first-of-type a[href$=".zip"] {
+    background-image: url(../images/zip.png);
+}
+
+/* css */
+table.docspace_list tr td:first-of-type a[href$=".css"] {
+    background-image: url(../images/css.png);
+}
+
+/* docs */
+table.docspace_list tr td:first-of-type a[href$=".odt"],
+table.docspace_list tr td:first-of-type a[href$=".ods"],
+table.docspace_list tr td:first-of-type a[href$=".odp"],
+table.docspace_list tr td:first-of-type a[href$=".doc"],
+table.docspace_list tr td:first-of-type a[href$=".docx"],
+table.docspace_list tr td:first-of-type a[href$=".ppt"],
+table.docspace_list tr td:first-of-type a[href$=".pptx"],
+table.docspace_list tr td:first-of-type a[href$=".pps"],
+table.docspace_list tr td:first-of-type a[href$=".ppsx"],
+table.docspace_list tr td:first-of-type a[href$=".xls"],
+table.docspace_list tr td:first-of-type a[href$=".xlsx"] {
+    background-image: url(../images/office.png)
+}
+
+/* videos */
+table.docspace_list tr td:first-of-type a[href$=".avi"],
+table.docspace_list tr td:first-of-type a[href$=".wmv"],
+table.docspace_list tr td:first-of-type a[href$=".mp4"],
+table.docspace_list tr td:first-of-type a[href$=".mov"],
+table.docspace_list tr td:first-of-type a[href$=".m4a"] {
+    background-image: url(../images/video.png);
+}
+
+/* audio */
+table.docspace_list tr td:first-of-type a[href$=".mp3"],
+table.docspace_list tr td:first-of-type a[href$=".ogg"],
+table.docspace_list tr td:first-of-type a[href$=".aac"],
+table.docspace_list tr td:first-of-type a[href$=".wma"] {
+    background-image: url(../images/sound.png);
+}
+
+/* web pages */
+table.docspace_list tr td:first-of-type a[href$=".html"],
+table.docspace_list tr td:first-of-type a[href$=".htm"],
+table.docspace_list tr td:first-of-type a[href$=".xml"] {
+    background-image: url(../images/xml.png);
+}
+
+table.docspace_list tr td:first-of-type a[href$=".php"] {
+    background-image: url(../images/php.png);
+}
+
+table.docspace_list tr td:first-of-type a[href$=".js"] {
+    background-image: url(../images/script.png);
+}
+
+/* directories */
+table.docspace_list tr.dir td:first-of-type a {
+    background-image: url(../images/folder.png);
+}
