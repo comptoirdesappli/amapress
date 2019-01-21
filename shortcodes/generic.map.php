@@ -21,20 +21,20 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 	$longitude = $markers[0]['longitude'];
 
 	$icons              = array();
-	$icons['arrow']     = 'http://maps.google.com/mapfiles/arrow.png';
-	$icons['flag']      = 'http://maps.google.com/mapfiles/kml/pal2/icon13.png';
-	$icons['home']      = 'http://maps.google.com/mapfiles/kml/pal3/icon31.png';
-	$icons['yellow']    = 'http://maps.google.com/mapfiles/ms/micons/yellow-dot.png';
-	$icons['blue']      = 'http://maps.google.com/mapfiles/ms/micons/blue-dot.png';
-	$icons['green']     = 'http://maps.google.com/mapfiles/ms/micons/green-dot.png';
-	$icons['lightblue'] = 'http://maps.google.com/mapfiles/ms/micons/ltblue-dot.png';
-	$icons['orange']    = 'http://maps.google.com/mapfiles/ms/micons/orange-dot.png';
-	$icons['pink']      = 'http://maps.google.com/mapfiles/ms/micons/pink-dot.png';
-	$icons['purple']    = 'http://maps.google.com/mapfiles/ms/micons/purple-dot.png';
-	$icons['red']       = 'http://maps.google.com/mapfiles/ms/micons/red-dot.png';
-	$icons['lieu']      = 'http://maps.google.com/mapfiles/ms/micons/convienancestore.png';
-	$icons['man']       = 'http://maps.google.com/mapfiles/ms/micons/man.png';
-	$icons['tree']      = 'http://maps.google.com/mapfiles/ms/micons/tree.png';
+	$icons['arrow']     = 'https://maps.google.com/mapfiles/arrow.png';
+	$icons['flag']      = 'https://maps.google.com/mapfiles/kml/pal2/icon13.png';
+	$icons['home']      = 'https://maps.google.com/mapfiles/kml/pal3/icon31.png';
+	$icons['yellow']    = 'https://maps.google.com/mapfiles/ms/micons/yellow-dot.png';
+	$icons['blue']      = 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png';
+	$icons['green']     = 'https://maps.google.com/mapfiles/ms/micons/green-dot.png';
+	$icons['lightblue'] = 'https://maps.google.com/mapfiles/ms/micons/ltblue-dot.png';
+	$icons['orange']    = 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png';
+	$icons['pink']      = 'https://maps.google.com/mapfiles/ms/micons/pink-dot.png';
+	$icons['purple']    = 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png';
+	$icons['red']       = 'https://maps.google.com/mapfiles/ms/micons/red-dot.png';
+	$icons['lieu']      = 'https://maps.google.com/mapfiles/ms/micons/convienancestore.png';
+	$icons['man']       = 'https://maps.google.com/mapfiles/ms/micons/man.png';
+	$icons['tree']      = 'https://maps.google.com/mapfiles/ms/micons/tree.png';
 
 	$js_markers = '';
 	foreach ( $markers as $marker ) {
@@ -181,7 +181,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
                 //<![CDATA[
 var map = L.map(\'map' . $amapress_map_instance . '\').setView([' . $latitude . ',' . $longitude . '], 17);
 // add an OpenStreetMap tile layer
-L.tileLayer(\'http://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
+L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
     attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
 }).addTo(map);
 
