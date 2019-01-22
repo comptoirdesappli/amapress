@@ -839,9 +839,13 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function getContacts() {
-		return Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par mail' ) .
-		       ' / Par téléphone : ' . $this->getTelTo( 'both', false, false, ', ' ) .
-		       ' / Par SMS : ' . $this->getTelTo( true, true, false, ', ' );
+		$mailto = Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par mail' );
+		$telto  = $this->getTelTo( 'both', false, false, ', ' );
+		$smsto  = $this->getTelTo( true, true, false, ', ' );
+
+		return $mailto .
+		       ( ! empty( $telto ) ? ' / Par téléphone : ' . $telto : '' ) .
+		       ( ! empty( $smsto ) ? ' / Par SMS : ' . $smsto : '' );
 	}
 
 	public static function getEmailsForAmapRole( $role_id, $lieu_id = null ) {
