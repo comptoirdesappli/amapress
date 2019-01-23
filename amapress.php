@@ -271,6 +271,7 @@ require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/options.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapressentities.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'impersonation.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapressmeseventswidget.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'class.amapresscopyleftwidget.php' );
 //require_once(AMAPRESS__PLUGIN_DIR . 'class.amapressmenuwidget.php');
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.users.php' );
@@ -488,6 +489,7 @@ function array_mode( $arr ) {
 
 function amapress_register_widgets() {
 	register_widget( 'Amapress_Next_Events_Widget' );
+	register_widget( 'Amapress_Copyleft_Widget' );
 //    register_widget('Amapress_Menu_Widget');
 }
 
