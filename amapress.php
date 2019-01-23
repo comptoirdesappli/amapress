@@ -1304,3 +1304,7 @@ add_action( 'amapress_init', function () {
 	new AmapressDocSpace( 'amapiens', 'read', 'edit_posts', 'read' );
 	new AmapressDocSpace( 'public', '', 'edit_posts', '' );
 } );
+
+if ( defined( 'WP_CORRECT_OB_END_FLUSH_ALL' ) ) {
+	remove_action( 'shutdown', 'wp_ob_end_flush_all', 1 );
+}
