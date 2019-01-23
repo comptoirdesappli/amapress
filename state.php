@@ -1053,6 +1053,11 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $new_page_href,
 			'categ' => '7/ Stockage',
 		],
+		'inscription-visite'    => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs',
+			'href'  => $new_page_href,
+			'categ' => '7/ Stockage',
+		],
 	];
 	$found_shortcodes              = [];
 	uasort( $needed_shortcodes, function ( $a, $b ) {
