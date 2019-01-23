@@ -337,9 +337,11 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		if ( empty( $tel ) ) {
 			return [];
 		}
+		$tel     = preg_replace( '/\s+/', '', $tel );
+		$tel     = preg_replace( '/\+33/', '0', $tel );
 		$matches = array();
 		$ret     = array();
-		preg_match_all( '/(?:\d\s*){10}/', $tel, $matches, PREG_SET_ORDER );
+		preg_match_all( '/\d{10}/', $tel, $matches, PREG_SET_ORDER );
 		foreach ( $matches as $m ) {
 			if ( is_bool( $mobile ) ) {
 				if ( $mobile && ! preg_match( '/^(?:06|07)/', $m[0] ) ) {
