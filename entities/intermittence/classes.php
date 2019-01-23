@@ -562,6 +562,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getAdherent()->getDisplay(
 							[
 								'show_avatar' => 'false',
+								'show_roles'  => 'false',
 							]
 						);
 					}
@@ -619,6 +620,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $user->getDisplay(
 							[
 								'show_avatar' => 'false',
+								'show_roles'  => 'false',
 							]
 						);
 					}
