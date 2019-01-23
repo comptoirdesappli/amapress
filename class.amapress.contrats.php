@@ -241,9 +241,9 @@ class AmapressContrats {
 			$date = Amapress::end_of_day( amapress_time() );
 		}
 
-		global $amapress_no_filter_referent;
-		$key = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}_$amapress_no_filter_referent";
-		$res = wp_cache_get( $key );
+		$filter = Amapress::getFilterForReferent();
+		$key    = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}_{$filter}";
+		$res    = wp_cache_get( $key );
 		if ( false === $res ) {
 			$meta_query = array(
 				'relation' => 'AND',
@@ -733,9 +733,9 @@ class AmapressContrats {
 		$ignore_renouv_delta = false,
 		$include_futur = true
 	) {
-
+		$filter  = Amapress::getFilterForReferent();
 		$key_ids = is_array( $contrat_id ) ? implode( '-', $contrat_id ) : $contrat_id;
-		$key     = "amapress_get_active_adhesions_{$key_ids}_{$contrat_quantite_id}_{$lieu_id}_{$date}_{$ignore_renouv_delta}";
+		$key     = "amapress_get_active_adhesions_{$filter}_{$key_ids}_{$contrat_quantite_id}_{$lieu_id}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( is_array( $contrat_id ) ) {

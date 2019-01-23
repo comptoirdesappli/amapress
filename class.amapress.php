@@ -3478,6 +3478,12 @@ class Amapress {
 		}
 	}
 
+	public static function getFilterForReferent() {
+		global $amapress_no_filter_referent;
+
+		return $amapress_no_filter_referent;
+	}
+
 	public static function setFilterForReferent( $set ) {
 		global $amapress_no_filter_referent;
 		global $amapress_no_filter_referent_nesting;
