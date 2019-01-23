@@ -2212,16 +2212,16 @@ class Amapress {
 				'bare_id' => true,
 //                'name' => amapress__('Amapiens seulement'),
 				'type'    => 'checkbox',
-				'desc'    => 'Amapiens seulement',
+				'desc'    => 'Amapiens connectés',
 			)
 		);
 		$m->createOption(
 			array(
 				'id'          => 'amps_rd',
 				'bare_id'     => true,
-				'name'        => amapress__( 'Rediriger non loggué vers' ),
+				'name'        => amapress__( 'Rediriger non connectés vers' ),
 				'type'        => 'select-pages',
-				'desc'        => 'Redirection non amapien',
+				'desc'        => 'Rediriger les amapiens non connectés vers',
 				'show_column' => false,
 			)
 		);
