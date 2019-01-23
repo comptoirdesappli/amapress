@@ -275,7 +275,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
 			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
 			if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
-				$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val );
+				$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val, true, true );
 			}
 			$adh = AmapressUser::getBy( $user );
 			if ( ! empty( $adh->getCoAdherents() ) ) {
