@@ -276,7 +276,7 @@ add_action( 'init', function () {
 	if ( is_main_query() && 'admin.php' == $pagenow
 	     && count( $_GET ) == 1
 	     && isset( $_GET['page'] )
-	     && 'adhesion_paiements' == $_GET['page'] ) {
+	     && ( 'adhesion_paiements' == $_GET['page'] || 'contrat_paiements' == $_GET['page'] ) ) {
 		wp_redirect_and_exit( add_query_arg( 'amapress_contrat', 'active' ) );
 	}
 } );

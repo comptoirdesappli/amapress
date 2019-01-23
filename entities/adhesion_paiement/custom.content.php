@@ -40,7 +40,7 @@ function adhesion_paiements_manage_users_columns( $columns ) {
 			unset( $columns['bbp_user_role'] );
 
 			$contrat_id = null;
-			if ( isset( $_GET['amapress_contrat'] ) ) {
+			if ( isset( $_GET['amapress_contrat'] ) && 'active' != $_GET['amapress_contrat'] ) {
 				$contrat_id = Amapress::resolve_post_id( $_GET['amapress_contrat'], AmapressContrat_instance::INTERNAL_POST_TYPE );
 			}
 			foreach ( AmapressContrats::get_active_contrat_instances( $contrat_id ) as $c ) {
