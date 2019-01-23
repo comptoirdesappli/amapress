@@ -1028,15 +1028,30 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne'          => [
+		'inscription-en-ligne'  => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
 		],
-		'listes-diffusions'             => [
+		'listes-diffusions'     => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP',
 			'href'  => $new_page_href,
 			'categ' => '3/ Info utiles',
+		],
+		'docspace-responsables' => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers entre les membres du collectif',
+			'href'  => $new_page_href,
+			'categ' => '7/ Stockage',
+		],
+		'docspace-amapiens'     => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers avec les amapiens',
+			'href'  => $new_page_href,
+			'categ' => '7/ Stockage',
+		],
+		'docspace-public'       => [
+			'desc'  => 'Ajouter le shortcode %s sur une page non protégée pour permettre au collectif de partager des fichiers publiquement',
+			'href'  => $new_page_href,
+			'categ' => '7/ Stockage',
 		],
 	];
 	$found_shortcodes              = [];
