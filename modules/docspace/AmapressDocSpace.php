@@ -346,6 +346,10 @@ ENDFORM;
 					$download_href = $this->getDownloadLink( $name );
 					$esc_name      = esc_attr( $name );
 
+					$btn_delete = '';
+					if ( $this->hasCurrentUserUploadRight() ) {
+						$btn_delete = "<span class='btn docspace-remove dashicons dashicons-dismiss' data-name='$esc_name'></span>";
+					}
 					// Output
 					echo( "
 		<tr class='$class'>
@@ -353,7 +357,9 @@ ENDFORM;
 			<td>$extn</td>
 			<td sorttable_customkey='$sizekey'>$size</td>
 			<td sorttable_customkey='$timekey'>$modtime</td>
-			<td><span class='btn docspace-remove dashicons dashicons-dismiss' data-name='$esc_name'></span></td>
+			<td>
+			$btn_delete
+			</td>
 		</tr>" );
 				}
 			}
