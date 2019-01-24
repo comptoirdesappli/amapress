@@ -650,6 +650,9 @@ jQuery(function() {
 	}
 
 	public static function users_near_shortcode( $atts ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return '';
+		}
 		$atts = shortcode_atts( array(
 			'count' => 10,
 			'user'  => amapress_current_user_id(),
