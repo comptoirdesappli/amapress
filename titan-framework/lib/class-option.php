@@ -226,11 +226,18 @@ class TitanFrameworkOption {
 		         || ( $pagenow == 'post.php' && isset( $_REQUEST['original_post_status'] ) && $_REQUEST['original_post_status'] == 'publish' ) );
 	}
 
-	public static function echoFullEditLinkAndWarning() {
+	public static function echoFullEditLinkAndWarning(
+		$link_title = 'Passer en mode Édition avancée',
+		$state_title = 'Mode Édition avancée'
+	) {
 		if ( ! isset( $_REQUEST['full_edit'] ) ) {
-			echo '<p><a href="' . esc_attr( add_query_arg( 'full_edit', 'true' ) ) . '">Passer en mode Édition complète</a></p>';
+			if ( ! empty( $link_title ) ) {
+				echo '<p><a href="' . esc_attr( add_query_arg( 'full_edit', 'true' ) ) . '">' . $link_title . '</a></p>';
+			}
 		} else {
-			echo '<p style="color:red"><span class="dashicons dashicons-warning"></span> Mode Édition complète</p>';
+			if ( ! empty( $state_title ) ) {
+				echo '<p style="color:red"><span class="dashicons dashicons-warning"></span> ' . $state_title . '</p>';
+			}
 		}
 	}
 
@@ -567,7 +574,7 @@ jQuery('#$id').change(function(){
 		if ( ! empty( $desc ) && $showDesc ) :
 			?>
             <p class='description'><?php echo $desc ?></p>
-			<?php
+		<?php
 		endif;
 
 		if ( isset( $this->settings['before_option'] ) ) {
@@ -603,7 +610,7 @@ jQuery('#$id').change(function(){
 		if ( ! empty( $desc ) && $showDesc ) :
 			?>
             <p class='description'><?php echo $desc ?></p>
-			<?php
+		<?php
 		endif;
 
 		if ( isset( $this->settings['before_option'] ) ) {
@@ -641,13 +648,13 @@ jQuery('#$id').change(function(){
 		if ( ! empty( $desc ) && $showDesc ) :
 			?>
             <p class='description'><?php echo $desc ?></p>
-			<?php
+		<?php
 		endif;
 		$example = $this->getExample();
 		if ( ! empty( $example ) ) :
 			?>
             <p class="description"><code><?php echo htmlentities( $example ) ?></code></p>
-			<?php
+		<?php
 		endif;
 		?>
         </td>

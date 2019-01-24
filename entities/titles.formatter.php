@@ -390,7 +390,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_url( $amp_back_to_list ) . '" />';
 		$title = 'Retourner à la page précédente';
 		if ( false !== strpos( $amp_back_to_list, 'edit.php' ) ) {
-			$title = 'Revenir à la liste des ' . get_post_type_object( $post->post_type )->label;
+			$title = 'Revenir aux ' . get_post_type_object( $post->post_type )->label;
 		}
 		echo '<p><span class="dashicons dashicons-arrow-left-alt"></span> <a href="' . $amp_back_to_list . '">' . esc_html( $title ) . '</a></p>';
 	}
