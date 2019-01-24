@@ -34,8 +34,9 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 			$response = json_decode( curl_exec( $ch ), true );
 
-			// If Status Code is ZERO_RESULTS, OVER_QUERY_LIMIT, REQUEST_DENIED or INVALID_REQUEST
 			if ( $response['status'] != 'OK' ) {
+				$res = $response['status'];
+				error_log( "Google Maps resolution failed: $res" );
 				return null;
 			}
 
@@ -58,8 +59,8 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$res      = curl_exec( $ch );
 			$response = json_decode( $res, true );
 
-			// If Status Code is ZERO_RESULTS, OVER_QUERY_LIMIT, REQUEST_DENIED or INVALID_REQUEST
 			if ( ! is_array( $response ) ) {
+				error_log( "Nominatim resolution failed: $res" );
 				return null;
 			}
 
