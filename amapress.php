@@ -49,6 +49,12 @@ define( 'AMAPRESS_DB_VERSION', 80 );
 define( 'AMAPRESS_VERSION', '0.67.50' );
 //remove_role('responable_amap');
 
+function amapress_ensure_no_cache() {
+	if ( ! defined( 'DONOTCACHEPAGE ' ) ) {
+		define( 'DONOTCACHEPAGE ', true );
+	}
+}
+
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
 function amapress_get_github_updater_url() {

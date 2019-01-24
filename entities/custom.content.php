@@ -107,13 +107,9 @@ function amapress_custom_post_content( $content ) {
 	}
 
 	if ( is_main_query() ) {
+		$old_content = $content;
 		if ( is_front_page() && get_the_ID() == get_option( 'page_on_front' ) ) {
 			$content = apply_filters( 'amapress_get_custom_content_page_front', $content );
-//        } else if (is_author()) {
-//            ob_start();
-//            AmapressUsers::echoUserById(get_the_ID(), 'thumb');
-//            $content = ob_get_contents();
-//            ob_end_clean();
 		} else if ( is_single() || is_search() ) {
 			$post_type = amapress_simplify_post_type( get_post_type() );
 			$action    = get_query_var( 'amp_action' );
@@ -134,6 +130,10 @@ function amapress_custom_post_content( $content ) {
 			$content   = apply_filters( "amapress_get_custom_archive_content_{$post_type}", $content );
 		}
 		$content = amapress_handle_and_get_action_messages() . $content;
+
+		if ( $old_content != $content ) {
+			amapress_ensure_no_cache();
+		}
 	}
 
 	return $content;

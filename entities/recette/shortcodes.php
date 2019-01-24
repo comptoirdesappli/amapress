@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_recettes_shortcode( $atts ) {
+	amapress_ensure_no_cache();
+
 	$atts = shortcode_atts( array(
 //		'columns'        => 4,
 		'produits'    => '',

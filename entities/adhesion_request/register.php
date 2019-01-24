@@ -122,6 +122,8 @@ function amapress_register_entities_adhesion_request( $entities ) {
 }
 
 function amapress_adhesion_request_count_shortcode( $atts ) {
+	amapress_ensure_no_cache();
+
 	$cnt = get_option( 'amps_adh_req_count' );
 	if ( false === $cnt ) {
 		$cnt = get_posts_count(

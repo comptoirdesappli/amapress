@@ -58,6 +58,8 @@ class AmapressDocSpace {
 	}
 
 	public function echoDropZone( $atts ) {
+		amapress_ensure_no_cache();
+
 		$url             = admin_url( 'admin-ajax.php' );
 		$nonce_files     = wp_nonce_field( 'amp_upload_file', 'amp_upload_file_nonce', true, false );
 		$sanitized_name  = sanitize_html_class( $this->name );

@@ -166,6 +166,8 @@ function amapress_register_shortcodes() {
 	} );
 
 	amapress_register_shortcode( 'nous-contacter', function ( $atts ) {
+		amapress_ensure_no_cache();
+
 		return Amapress::getContactInfos();
 	} );
 
@@ -177,6 +179,8 @@ function amapress_register_shortcodes() {
 	} );
 
 	amapress_register_shortcode( 'front_next_events', function ( $atts ) {
+		amapress_ensure_no_cache();
+
 		$atts = shortcode_atts(
 			array(
 				'title' => 'yes',
@@ -198,6 +202,8 @@ function amapress_register_shortcodes() {
 		return $agenda;
 	} );
 	amapress_register_shortcode( 'front_produits', function ( $atts ) {
+		amapress_ensure_no_cache();
+
 		$atts = shortcode_atts(
 			array(
 				'title' => 'yes',
@@ -224,6 +230,8 @@ function amapress_register_shortcodes() {
 		return $produits;
 	} );
 	amapress_register_shortcode( 'front_nous_trouver', function ( $atts ) {
+		amapress_ensure_no_cache();
+
 		$atts = shortcode_atts(
 			array(
 				'title' => 'yes',
@@ -239,6 +247,8 @@ function amapress_register_shortcodes() {
 		return $map;
 	} );
 	amapress_register_shortcode( 'front_default_grid', function ( $atts ) {
+		amapress_ensure_no_cache();
+
 		$atts = shortcode_atts(
 			array(
 				'title'            => 'yes',

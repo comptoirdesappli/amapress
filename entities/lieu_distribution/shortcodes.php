@@ -7,6 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 function amapress_lieu_map_shortcode( $atts ) {
+	amapress_ensure_no_cache();
+
 	global $post;
 	static $amapress_map_instance = 0;
 	$amapress_map_instance ++;
@@ -46,6 +48,8 @@ function amapress_lieu_map_shortcode( $atts ) {
 }
 
 function amapress_where_to_find_us_shortcode( $attr ) {
+	amapress_ensure_no_cache();
+
 	$lieux = Amapress::get_lieux();
 	if ( empty( $lieux ) ) {
 		return '<p class="">Aucun lieux configuré</p>';

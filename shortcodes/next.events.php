@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_next_events_shortcode( $atts ) {
+	amapress_ensure_no_cache();
+
 	$atts           = shortcode_atts( array(
 		'user'           => amapress_current_user_id(),
 		'date_separator' => '',

@@ -14,6 +14,8 @@ function amapress_user_info_shortcode( $atts ) {
 }
 
 function amapress_producteur_map_shortcode( $atts ) {
+	amapress_ensure_no_cache();
+
 	$atts = shortcode_atts( array(
 		'producteur'      => null,
 		'show_email'      => 'false',

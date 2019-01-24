@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 function amapress_produits_shortcode( $atts ) {
+	amapress_ensure_no_cache();
+
 	$atts = shortcode_atts( array(
 //		'columns'        => 4,
 		'producteur'  => '',

@@ -120,6 +120,8 @@ function amapress_mes_contrats( $atts, $content = null ) {
  * @param $atts
  */
 function amapress_self_inscription( $atts, $content = null ) {
+	amapress_ensure_no_cache();
+
 	$step = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 
 	$atts = shortcode_atts(

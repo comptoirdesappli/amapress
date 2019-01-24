@@ -55,6 +55,8 @@ function amapress_generic_gallery(
 }
 
 function amapress_generic_paged_gallery_shortcode( $attr ) {
+	amapress_ensure_no_cache();
+
 	global $post;
 
 	static $amapress_gallery_instance = 0;

@@ -612,6 +612,8 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 } );
 
 function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) {
+	amapress_ensure_no_cache();
+
 	$atts    = shortcode_atts(
 		array(
 			'lieu'    => null,
