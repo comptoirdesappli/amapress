@@ -418,12 +418,12 @@ function amapress_user_views( $ret ) {
 			true );
 		amapress_add_view_button(
 			$ret, 'no_loc',
-			"amapress_info=address_unk$query_add",
+			"amapress_info=address_unk&amapress_contrat=active$query_add",
 			'Amapiens non localisés',
 			true );
 		amapress_add_view_button(
 			$ret, 'no_tel',
-			"amapress_info=phone_unk$query_add",
+			"amapress_info=phone_unk&amapress_contrat=active$query_add",
 			'Amapiens sans téléphone',
 			true );
 		amapress_add_view_button(
