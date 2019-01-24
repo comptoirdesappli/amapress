@@ -478,6 +478,10 @@
             destroy: function () {
                 this.multiDatesPicker = null;
                 $(this).datepicker('destroy');
+            },
+            refresh: function () {
+                // $.datepicker._refreshDatepicker(this);
+                $(this).datepicker('refresh');
             }
         };
 
@@ -497,6 +501,7 @@
             if (methods[method]) {
                 var exec_result = methods[method].apply(this, Array.prototype.slice.call(mdp_arguments, 1));
                 switch (method) {
+                    case 'refresh':
                     case 'option':
                     case 'removeDates':
                     case 'removeIndexes':

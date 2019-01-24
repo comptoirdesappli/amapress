@@ -461,13 +461,16 @@ function amapress_register_entities_contrat( $entities ) {
 jQuery(function($) {
     var $date_debut = $("#amapress_contrat_instance_date_debut");
     var $date_fin = $("#amapress_contrat_instance_date_fin");
+    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $date_debut.change(function() {
-        $liste_dates.multiDatesPicker("option", {minDate: $(this).val()});
         $date_fin.datepicker("option","minDate", $date_debut.val());
+        $date_ouverture.datepicker("option","maxDate", $date_debut.val());
+        $liste_dates.multiDatesPicker("option", {minDate: $(this).val()});
     });
-    $liste_dates.multiDatesPicker("option", {minDate: $date_debut.val()});
     $date_fin.datepicker("option","minDate", $date_debut.val());
+    $date_ouverture.datepicker("option","maxDate", $date_debut.val());
+    $liste_dates.multiDatesPicker("option", {minDate: $date_debut.val()});
 });
 //]]>
 </script>';
@@ -490,13 +493,16 @@ jQuery(function($) {
 jQuery(function($) {
     var $date_debut = $("#amapress_contrat_instance_date_debut");
     var $date_fin = $("#amapress_contrat_instance_date_fin");
+    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
     var $liste_dates = $("#amapress_contrat_instance_liste_dates-cal");
     $date_fin.on("change", function() {
-        $liste_dates.multiDatesPicker("option", {maxDate: $(this).val()});
         $date_debut.datepicker("option","maxDate", $date_fin.val());
+        $date_cloture.datepicker("option","maxDate", $date_fin.val());
+        $liste_dates.multiDatesPicker("option", {maxDate: $(this).val()});
     });
-    $liste_dates.multiDatesPicker("option", {maxDate: $date_fin.val()});
     $date_debut.datepicker("option","maxDate", $date_fin.val());
+    $date_cloture.datepicker("option","maxDate", $date_fin.val());
+    $liste_dates.multiDatesPicker("option", {maxDate: $date_fin.val()});
 });
 //]]>
 </script>';
@@ -1028,23 +1034,23 @@ jQuery(function($) {
 				'desc'          => 'Date de clôture des inscriptions en ligne',
 				'import_key'    => true,
 				'readonly'      => 'amapress_is_contrat_instance_readonly',
-				'before_option' =>
-					function ( $option ) {
-						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
-							echo '<script type="text/javascript">
-//<![CDATA[
-jQuery(function($) {
-    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
-    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
-    $date_cloture.on("change", function() {
-        $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
-    });
-    $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
-});
-//]]>
-</script>';
-						}
-					},
+//				'before_option' =>
+//					function ( $option ) {
+//						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+//							echo '<script type="text/javascript">
+////<![CDATA[
+//jQuery(function($) {
+//    var $date_ouverture = $("#amapress_contrat_instance_date_ouverture");
+//    var $date_cloture = $("#amapress_contrat_instance_date_cloture");
+//    $date_cloture.on("change", function() {
+//        $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
+//    });
+//    $date_ouverture.datepicker("option","maxDate", $date_cloture.val());
+//});
+////]]>
+//</script>';
+//						}
+//					},
 			),
 			'word_model'     => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
@@ -2012,7 +2018,7 @@ function amapress_is_contrat_instance_readonly( $option ) {
 		return false;
 	}
 
-	if ( isset( $_REQUEST['adv'] ) ) {
+	if ( isset( $_REQUEST['adv'] ) || isset( $_REQUEST['full_edit'] ) ) {
 		return false;
 	}
 	$referer = parse_url( wp_get_referer() );

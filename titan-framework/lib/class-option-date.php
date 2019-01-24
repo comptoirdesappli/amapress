@@ -25,9 +25,10 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 
 	// Default settings specific to this option
 	public $defaultSecondarySettings = array(
-		'date'        => true,
-		'time'        => false,
-		'column_link' => false,
+		'date'         => true,
+		'time'         => false,
+		'column_link'  => false,
+		'autocomplete' => false,
 	);
 
 	private static $date_epoch;
@@ -215,7 +216,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			$placeholder = self::$default_time_placeholder;
 		}
 
-		printf( '<input class="input-date%s%s %s" name="%s" placeholder="%s" id="%s" type="text" value="%s" /> <p class="description">%s</p>',
+		printf( '<input class="input-date%s%s %s" name="%s" placeholder="%s" id="%s" type="text" value="%s" autocomplete="%s" /> <p class="description">%s</p>',
 			( $this->settings['date'] ? ' date' : '' ),
 			( $this->settings['time'] ? ' time' : '' ),
 			$this->settings['required'] ? 'required' : '',
@@ -223,6 +224,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			$placeholder,
 			$this->getID(),
 			esc_attr( ( $this->getValue() > 0 ) ? date( $dateFormat, $this->getValue() ) : '' ),
+			isset( $this->settings['autocomplete'] ) && $this->settings['autocomplete'] ? 'on' : 'off',
 			$this->settings['desc']
 		);
 		$this->echoOptionFooter( false );
