@@ -239,10 +239,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 	}
 	if ( empty( $subscribable_contrats ) ) {
-		wp_die( 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
+		ob_clean();
+
+		return ( 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
 	if ( ! $admin_mode && empty( $principal_contrats ) ) {
-		wp_die( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
+		ob_clean();
+
+		return ( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
 	//TODO better ???
 	$adh_period_date = Amapress::add_a_week( $min_contrat_date, $atts['adhesion_shift_weeks'] );
@@ -279,9 +283,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( in_array( $contrat_id, $adhs_contrat_ids ) ) {
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $admin_mode ) {
+				ob_clean();
 				return '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
 			} else {
-				wp_die( '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>' );
+				ob_clean();
+
+				return ( '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>' );
 			}
 		}
 	}
@@ -541,12 +548,16 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
 		if ( $adh_paiement ) {
-			wp_die( 'Vous avez déjà une adhésion' );
+			ob_clean();
+
+			return ( 'Vous avez déjà une adhésion' );
 		}
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
 		if ( empty( $adh_period ) ) {
-			wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
+			ob_clean();
+
+			return ( 'Aucune période d\'adhésion n\'est configurée.' );
 		}
 
 		echo '<h4>Étape 3/8 : Adhésion (obligatoire)</h4>';
@@ -603,7 +614,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
 		if ( empty( $adh_period ) ) {
-			wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
+			ob_clean();
+
+			return ( 'Aucune période d\'adhésion n\'est configurée.' );
 		}
 
 		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
@@ -725,7 +738,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( ! $admin_mode ) {
 			$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
 			if ( empty( $adh_period ) ) {
-				wp_die( 'Aucune période d\'adhésion n\'est configurée.' );
+				ob_clean();
+
+				return ( 'Aucune période d\'adhésion n\'est configurée.' );
 			}
 
 			$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
@@ -977,7 +992,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		$lieux = $contrat->getLieux();
 		if ( empty( $lieux ) ) {
-			wp_die( '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
+			ob_clean();
+
+			return ( '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
 		}
 		?>
         <h4>Étape 5/8 : Date et lieu</h4>
