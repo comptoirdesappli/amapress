@@ -16,7 +16,7 @@ function amapress_add_rewrite_rules() {
 	add_rewrite_tag( '%amapress_contrat_inst%', '([^&]+)' );
 	add_rewrite_tag( '%amapress_post%', '([^&]+)' );
 
-	amapress_add_page_if_not_exists( 'mes-infos-page', 'mes-infos', 'mes-infos' );
+	amapress_add_page_if_not_exists( 'mes-infos-page', 'Mes infos', 'mes-infos', false, '[amapien-edit-infos]' );
 //    $infos_slug = get_post(Amapress::getOption('mes-infos-page'))->post_name;
 
 //    add_rewrite_rule('^contrats/([^/]+)/details/(\d+)/?', 'index.php?post_type=amps_contrat&name=$matches[1]&paged=$matches[2]&viewmode=details', 'top');
@@ -44,8 +44,18 @@ function amapress_add_rewrite_rules() {
 	add_rewrite_rule( '^commandes/([^/]+)/(commander)/?', 'index.php?post_type=amps_commande&name=$matches[1]&amp_action=commander', 'top' );
 //    add_rewrite_rule('^recettes/([^/]+)/(commander)/?', 'index.php?post_type=amps_commande&name=$matches[1]&amp_action=commander', 'top');
 
-	amapress_add_page_if_not_exists( 'paniers-intermittents-page', 'Paniers intermittents', 'paniers-intermittents', true );
-	amapress_add_page_if_not_exists( 'mes-paniers-intermittents-page', 'Mes paniers intermittents', 'mes-paniers-intermittents', true );
+	amapress_add_page_if_not_exists( 'paniers-intermittents-page',
+		'Intermittent - Réserver un panier',
+		'intermittent-reserver-un-panier',
+		true, '[les-paniers-intermittents]' );
+	amapress_add_page_if_not_exists(
+		'mes-paniers-intermittents-page',
+		'Mes paniers échangés',
+		'mes-paniers-echanges',
+		true, '<h2>Les paniers&nbsp;que j\'ai proposé</h2>
+[amapien-paniers-intermittents]
+<h2>Les paniers&nbsp;que j\'ai réservé</h2>
+[intermittent-paniers]' );
 
 //    amapress_add_page_if_not_exists('agenda-page','Agenda','agenda');
 //    $agenda_slug = get_post(Amapress::getOption('agenda-page'))->post_name;
