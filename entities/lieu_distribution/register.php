@@ -24,8 +24,13 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 		),
 		'edit_header'             => function ( $post ) {
 			$lieu = AmapressLieu_distribution::getBy( $post, true );
-			if ( $lieu && ! $lieu->isAdresseLocalized() ) {
-				amapress_add_admin_notice( 'Adresse du lieu non localisée', 'warning', false );
+			if ( $lieu ) {
+				if ( ! $lieu->isAdresseLocalized() ) {
+					amapress_add_admin_notice( 'Adresse du lieu non localisée', 'warning', false );
+				}
+				if ( ! empty( $lieu->getAdresseAcces() ) && ! $lieu->isAdresseAccesLocalized() ) {
+					amapress_add_admin_notice( 'Adresse d\'accès du lieu non localisée', 'warning', false );
+				}
 			}
 		},
 		'fields'                  => array(
@@ -148,7 +153,8 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 add_filter( 'amapress_can_delete_lieu_distribution', 'amapress_can_delete_lieu_distribution', 10, 2 );
 function amapress_can_delete_lieu_distribution( $can, $post_id ) {
 	$lieux = get_posts(
-		'post_type='.AmapressContrat_instance::INTERNAL_POST_TYPE.'&amapress_lieu='.$post_id
+		'post_type=' . AmapressContrat_instance::INTERNAL_POST_TYPE . '&amapress_lieu=' . $post_id
 	);
-	return empty($lieux);
+
+	return empty( $lieux );
 }

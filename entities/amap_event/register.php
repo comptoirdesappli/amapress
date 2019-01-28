@@ -32,6 +32,19 @@ function amapress_register_entities_amap_event( $entities ) {
 			'_dyn_'   => 'amapress_amap_event_views',
 			'exp_csv' => true,
 		),
+		'edit_header'        => function ( $post ) {
+			$event = AmapressAmap_event::getBy( $post, true );
+			if ( $event ) {
+				if ( 'lieu_externe' == $event->getType() ) {
+					if ( ! $event->isLieu_externe_AdresseLocalized() ) {
+						amapress_add_admin_notice( 'Adresse du lieu externe non localisée', 'warning', false );
+					}
+					if ( ! empty( $event->getLieu_externe_adresse_acces() ) && ! $event->isLieu_externe_AdresseAccesLocalized() ) {
+						amapress_add_admin_notice( 'Adresse d\'accès du lieu externe non localisée', 'warning', false );
+					}
+				}
+			}
+		},
 		'fields'             => array(
 			'public'      => array(
 				'desc'  => 'Publique ?',
@@ -60,7 +73,7 @@ function amapress_register_entities_amap_event( $entities ) {
 				'desc'     => 'Heure début',
 				'group'    => '1/ Horaires',
 			),
-			'heure_fin'    => array(
+			'heure_fin'   => array(
 				'name'     => amapress__( 'Heure fin' ),
 				'type'     => 'date',
 				'date'     => false,

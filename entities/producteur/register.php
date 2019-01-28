@@ -29,9 +29,12 @@ function amapress_register_entities_producteur( $entities ) {
 			],
 		),
 		'edit_header'             => function ( $post ) {
-			$contrat = AmapressProducteur::getBy( $post );
-			if ( empty( $contrat->getUser() ) ) {
+			$producteur = AmapressProducteur::getBy( $post );
+			if ( empty( $producteur->getUser() ) ) {
 				echo '<div class="notice notice-error"><p>Producteur invalide : pas d\'utilisateur associé</p></div>';
+			}
+			if ( ! $producteur->isAdresseExploitationLocalized() ) {
+				amapress_add_admin_notice( 'Adresse du producteur non localisée', 'warning', false );
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
