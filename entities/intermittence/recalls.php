@@ -157,7 +157,7 @@ function amapress_intermittence_dispo_recall_options() {
 			'id'      => 'intermittence-recall-dispo-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% panier(s) proposés à la distribution de %%post:title-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : xxxx.\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à xxxx.\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% panier(s) proposés à la distribution de %%post:title-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : [[à remplir]].\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à [[à remplir]].\n\n%%nom_site%%" ),
 			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
 
 			] ),
