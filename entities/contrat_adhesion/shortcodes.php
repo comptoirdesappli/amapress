@@ -132,6 +132,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
 			'agreement'            => 'false',
+			'check_principal'      => 'true',
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
@@ -286,6 +287,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $admin_mode ) {
 				ob_clean();
+
 				return '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
 			} else {
 				ob_clean();
@@ -721,10 +723,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				/** @var AmapressAdhesion $adh */
 				return in_array( $adh->getContrat_instanceId(), $subscribable_contrats_ids );
 			} );
-		foreach ( $adhs as $adh ) {
-			if ( $adh->getContrat_instance()->isPrincipal() ) {
-				$has_principal_contrat = true;
+		if ( Amapress::toBool( $atts['check_principal'] ) ) {
+			foreach ( $adhs as $adh ) {
+				if ( $adh->getContrat_instance()->isPrincipal() ) {
+					$has_principal_contrat = true;
+				}
 			}
+		} else {
+			$has_principal_contrat = true;
 		}
 		usort( $adhs, function ( $a, $b ) {
 			return strcmp( $a->getTitle(), $b->getTitle() );
