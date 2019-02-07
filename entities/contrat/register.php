@@ -57,8 +57,10 @@ function amapress_register_entities_contrat( $entities ) {
 		],
 		'edit_header'             => function ( $post ) {
 			$contrat = AmapressContrat::getBy( $post );
-			if ( empty( $contrat->getProducteur() ) ) {
-				echo '<div class="notice notice-error"><p>Présentation Web invalide : pas de producteur associée</p></div>';
+			if ( TitanFrameworkOption::isOnEditScreen() ) {
+				if ( empty( $contrat->getProducteur() ) ) {
+					echo '<div class="notice notice-error"><p>Présentation Web invalide : pas de producteur associée</p></div>';
+				}
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
@@ -152,34 +154,38 @@ function amapress_register_entities_contrat( $entities ) {
 		),
 		'edit_header'      => function ( $post ) {
 			$contrat = AmapressContrat_instance::getBy( $post );
-			if ( empty( $contrat->getModel() ) ) {
-				echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Web associée</p></div>';
+			if ( TitanFrameworkOption::isOnEditScreen() ) {
+				if ( empty( $contrat->getModel() ) ) {
+					echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Web associée</p></div>';
+				}
 			}
 
-			$max_nb_paiements = 0;
-			foreach ( $contrat->getPossiblePaiements() as $nb_pmt ) {
-				$max_nb_paiements = max( $nb_pmt, $max_nb_paiements );
-			}
-			$nb_dates_paiements = count( $contrat->getPaiements_Liste_dates() );
-			if ( $max_nb_paiements > $nb_dates_paiements ) {
-				echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( 'Il y a moins de dates d\'encaissement (%d) que le nombre de chèque maximum autorisé (%d)', $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
-			}
-
-			if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) && TitanFrameworkOption::isOnEditScreen() ) {
-				$class   = 'notice notice-error';
-				$message = 'Vous devez configurer les quantités et tarifs des paniers';
-				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
-			}
-
-			echo '<h4>EDITER</h4>';
-
-			$adhs = AmapressContrats::get_active_adhesions( $post->ID );
-			if ( ! empty( $adhs ) ) {
-				if ( isset( $_REQUEST['adv'] ) || isset( $_REQUEST['full_edit'] ) ) {
-					echo '<p style="color: red"><span class="dashicons dashicons-warning"></span> Édition d’un contrat actif</p>';
+			if ( TitanFrameworkOption::isOnEditScreen() ) {
+				$max_nb_paiements = 0;
+				foreach ( $contrat->getPossiblePaiements() as $nb_pmt ) {
+					$max_nb_paiements = max( $nb_pmt, $max_nb_paiements );
+				}
+				$nb_dates_paiements = count( $contrat->getPaiements_Liste_dates() );
+				if ( $max_nb_paiements > $nb_dates_paiements ) {
+					echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( 'Il y a moins de dates d\'encaissement (%d) que le nombre de chèque maximum autorisé (%d)', $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
 				}
 
-				echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
+
+				if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) ) {
+					$class   = 'notice notice-error';
+					$message = 'Vous devez configurer les quantités et tarifs des paniers';
+					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+				}
+
+				echo '<h4>EDITER</h4>';
+
+				$adhs = AmapressContrats::get_active_adhesions( $post->ID );
+				if ( ! empty( $adhs ) ) {
+					if ( isset( $_REQUEST['adv'] ) || isset( $_REQUEST['full_edit'] ) ) {
+						echo '<p style="color: red"><span class="dashicons dashicons-warning"></span> Édition d’un contrat actif</p>';
+					}
+
+					echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
 <span class="description">(Par ex : si vous changez le nombre de dates de distribution, le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat modulable seront perdues.)</span></p>';
 //				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
 //				if ( ! isset( $_REQUEST['adv'] ) ) {
@@ -187,26 +193,27 @@ function amapress_register_entities_contrat( $entities ) {
 //					echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition</a></p>';
 //				}
 
-				TitanFrameworkOption::echoFullEditLinkAndWarning(
-					'Edition avancée', ''
-				);
+					TitanFrameworkOption::echoFullEditLinkAndWarning(
+						'Edition avancée', ''
+					);
 
 
-				echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
+					echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
+				}
+
+				echo '<h4>CONSULTER</h4>';
+				if ( count( $adhs ) > 0 ) {
+					echo '<p><a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID ) . '">La liste des ' . count( $adhs ) . ' adhérent(s) inscrits à ce contrat</a></p>';
+				}
+				echo '<p><a target="_blank" href="' . admin_url( 'admin.php?amp_stats_contrat=' . $post->ID . '&page=contrats_quantites_stats' ) . '">Les statistiques annuelles</a></p>';
+
+				echo '<h4>EXPORTER FICHIERS</h4>';
+				echo '<p>';
+				echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">Adhérents (XLSX)</a>,';
+				echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">Chèques (XLSX)</a>,';
+				echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques (PDF)</a>';
+				echo '</p>';
 			}
-
-			echo '<h4>CONSULTER</h4>';
-			if ( count( $adhs ) > 0 ) {
-				echo '<p><a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID ) . '">La liste des ' . count( $adhs ) . ' adhérent(s) inscrits à ce contrat</a></p>';
-			}
-			echo '<p><a target="_blank" href="' . admin_url( 'admin.php?amp_stats_contrat=' . $post->ID . '&page=contrats_quantites_stats' ) . '">Les statistiques annuelles</a></p>';
-
-			echo '<h4>EXPORTER FICHIERS</h4>';
-			echo '<p>';
-			echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">Adhérents (XLSX)</a>,';
-			echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">Chèques (XLSX)</a>,';
-			echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques (PDF)</a>';
-			echo '</p>';
 
 			echo '<h4>AUTRES ACTIONS</h4>';
 		},
@@ -1027,13 +1034,13 @@ jQuery(function($) {
 					},
 			),
 			'date_cloture'   => array(
-				'name'          => amapress__( 'Clôture' ),
-				'type'          => 'date',
-				'group'         => '5/6 - Pré-inscription en ligne',
-				'required'      => true,
-				'desc'          => 'Date de clôture des inscriptions en ligne',
-				'import_key'    => true,
-				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'name'       => amapress__( 'Clôture' ),
+				'type'       => 'date',
+				'group'      => '5/6 - Pré-inscription en ligne',
+				'required'   => true,
+				'desc'       => 'Date de clôture des inscriptions en ligne',
+				'import_key' => true,
+				'readonly'   => 'amapress_is_contrat_instance_readonly',
 //				'before_option' =>
 //					function ( $option ) {
 //						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
