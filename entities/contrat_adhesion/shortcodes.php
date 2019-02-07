@@ -1543,8 +1543,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			foreach ( $quants as $q ) {
 				$q_id           = intval( $q['q'] );
 				$quantite_ids[] = $q_id;
-				$f              = intval( $q['f'] );
-				if ( $f > 1 ) {
+				$f              = floatval( $q['f'] );
+				if ( abs( $f - 1.0 ) > 0.001 ) {
 					$quantite_factors[ strval( $q_id ) ] = $f;
 				}
 			}

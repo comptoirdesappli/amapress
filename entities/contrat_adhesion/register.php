@@ -816,7 +816,7 @@ function amapress_save_adhesion_contrat_quantite_editor( $adhesion_id ) {
 			update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_quantite', $quants );
 
 			if ( isset( $_REQUEST['amapress_adhesion_contrat_quants_factors'] ) ) {
-				$factors = array_map( 'intval', $_REQUEST['amapress_adhesion_contrat_quants_factors'] );
+				$factors = array_map( 'floatval', $_REQUEST['amapress_adhesion_contrat_quants_factors'] );
 				update_post_meta( $adhesion_id, 'amapress_adhesion_contrat_quantite_factors', $factors );
 			}
 		}
