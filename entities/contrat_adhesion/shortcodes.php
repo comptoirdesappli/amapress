@@ -139,7 +139,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'edit_names'           => 'true',
 			'only_contrats'        => '',
 			'shorturl'             => '',
-			'adhesion_shift_weeks' => 5,
+			'adhesion_shift_weeks' => 0,
 			'before_close_hours'   => 24,
 			'email'                => get_option( 'admin_email' ),
 		]
