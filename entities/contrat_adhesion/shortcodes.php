@@ -137,6 +137,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
 			'edit_names'           => 'true',
+			'only_contrats'        => '',
 			'shorturl'             => '',
 			'adhesion_shift_weeks' => 5,
 			'before_close_hours'   => 24,
@@ -206,6 +207,15 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			/** @var AmapressContrat_instance $c */
 			return $c->canSelfSubscribe();
 		} );
+		if ( ! empty( $atts['only_contrats'] ) ) {
+			$only_contrats         = array_map( function ( $c ) {
+				return Amapress::resolve_post_id( $c, AmapressContrat::INTERNAL_POST_TYPE );
+			}, explode( ',', $atts['only_contrats'] ) );
+			$subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) use ( $only_contrats ) {
+				/** @var AmapressContrat_instance $c */
+				return in_array( $c->getModelId(), $only_contrats );
+			} );
+		}
 	}
 	usort( $subscribable_contrats, function ( $a, $b ) {
 		/** @var AmapressContrat_instance $a */
