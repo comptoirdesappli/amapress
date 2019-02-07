@@ -39,14 +39,14 @@ class Amapress_Agenda_ICAL_Export {
 		add_feed( 'agenda-ical', array( __CLASS__, 'export_events' ) );
 	}
 
-	public static function get_link_href() {
+	public static function get_link_href( $public_ics = false ) {
 		$lnk = get_feed_link( 'agenda-ical' );
-		if ( amapress_is_user_logged_in() ) {
+		if ( ! $public_ics && amapress_is_user_logged_in() ) {
 			$user = AmapressUser::getBy( amapress_current_user_id() );
 
 			return $user->addUserLoginKey( $lnk );
 		} else {
-			return $lnk;
+			return add_query_arg( 'public', '', $lnk );
 		}
 	}
 
@@ -60,7 +60,12 @@ class Amapress_Agenda_ICAL_Export {
 		if ( isset( $_GET['key'] ) ) {
 			AmapressUser::logUserByLoginKey( $_GET['key'] );
 		}
-		$events_types = explode( ',', ! empty( $_GET['events_types'] ) ? $_GET['events_types'] : '' );
+
+		if ( isset( $_GET['public'] ) ) {
+			amapress_consider_logged( false );
+		}
+
+		$events_types = ! empty( $_GET['events_types'] ) ? explode( ',', $_GET['events_types'] ) : [];
 		$events       = [];
 		if ( ! empty( $_GET['events_id'] ) ) {
 			$events_id  = $_GET['events_id'];

@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/generic.map.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/generic.pager.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/ics.fullcalendar.php' );
 //require_once(AMAPRESS__PLUGIN_DIR . 'shortcodes/where.to.find.us.php');
 //require_once(AMAPRESS__PLUGIN_DIR . 'shortcodes/lieu.map.php');
 //require_once(AMAPRESS__PLUGIN_DIR . 'shortcodes/contrat.info.php');
@@ -66,6 +67,22 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'adhesion-request-count', 'amapress_adhesion_request_count_shortcode' );
 
 	amapress_register_shortcode( 'amapress-post-its', 'amapress_postits_shortcode' );
+	amapress_register_shortcode( 'amapress-ics-viewer', 'amapress_fullcalendar' );
+	amapress_register_shortcode( 'amapress-amapien-agenda-viewer', function ( $atts ) {
+		$atts        = wp_parse_args( $atts );
+		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( false );
+
+		return amapress_fullcalendar( $atts );
+	} );
+	amapress_register_shortcode( 'amapress-public-agenda-viewer', function ( $atts ) {
+		$atts        = wp_parse_args( $atts );
+		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( true );
+		amapress_consider_logged( false );
+		$ret = amapress_fullcalendar( $atts );
+		amapress_consider_logged( true );
+
+		return $ret;
+	} );
 
 	amapress_register_shortcode( 'amapien-adhesions', 'amapress_display_user_adhesions_shortcode' );
 	amapress_register_shortcode( 'amapien-edit-infos', 'amapress_edit_user_info_shortcode' );

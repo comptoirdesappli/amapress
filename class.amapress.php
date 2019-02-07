@@ -2457,8 +2457,14 @@ class Amapress {
 			'jquery',
 			'moment'
 		) );
+		wp_enqueue_script( 'fullcalendar-locale', plugin_dir_url( __FILE__ ) . 'js/fullcalendar/locale-all.js', array(
+			'fullcalendar'
+		) );
 		wp_enqueue_style( 'fullcalendar', plugin_dir_url( __FILE__ ) . 'css/fullcalendar/fullcalendar.min.css' );
-		wp_enqueue_style( 'fullcalendar-print', plugin_dir_url( __FILE__ ) . 'css/fullcalendar/fullcalendar.print.min.css' );
+		wp_enqueue_style( 'fullcalendar-print', plugin_dir_url( __FILE__ ) . 'css/fullcalendar/fullcalendar.print.min.css', array( 'fullcalendar' ), false, 'print' );
+		wp_enqueue_script( 'ical', plugin_dir_url( __FILE__ ) . 'js/fullcalendar/ical.min.js', array(
+			'fullcalendar'
+		) );
 
 		wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js' );
 		wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.css' );

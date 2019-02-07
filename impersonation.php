@@ -5,6 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function amapress_current_user_id() {
+	global $amapress_not_logged;
+	if ( $amapress_not_logged ) {
+		return 0;
+	}
+
 	if ( isset( $_SESSION['amapress_current_user'] ) ) {
 		if ( $_SESSION['amapress_current_user'] == '_everyone_' ) {
 			return 0;
@@ -16,7 +21,16 @@ function amapress_current_user_id() {
 	return get_current_user_id();
 }
 
+function amapress_consider_logged( $logged ) {
+	global $amapress_not_logged;
+	$amapress_not_logged = ! $logged;
+}
+
 function amapress_is_user_logged_in() {
+	global $amapress_not_logged;
+	if ( $amapress_not_logged )
+		return false;
+
 	if ( isset( $_SESSION['amapress_current_user'] ) ) {
 		if ( $_SESSION['amapress_current_user'] == '_everyone_' ) {
 			return false;
