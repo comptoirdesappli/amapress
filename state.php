@@ -433,8 +433,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 
 	$state['15_posts'] = array();
 
-	$amap_roles                    = amapress_get_amap_roles();
-	$state['15_posts'][]           = amapress_get_check_state(
+	$amap_roles          = amapress_get_amap_roles();
+	$state['15_posts'][] = amapress_get_check_state(
 		count( $amap_roles ) == 0 ? 'warning' : 'success',
 		'Rôle descriptif des membres du collectif',
 		'Créer et <a href="' . admin_url( 'users.php?amapress_role=collectif' ) . '" target=\'_blank\'>associer des rôles descriptifs aux utilisateurs</a> (par ex "Responsable des distribution", "Boîte contact", "Accueil des nouveaux")',
@@ -446,7 +446,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			return "<a href='{$l}' target='_blank'>{$t->name}</a>";
 		}, $amap_roles ) )
 	);
-	$empty_resp_roles              = false;
+	$empty_resp_roles    = false;
 	foreach (
 		[
 			'resp-distrib-amap-role',
@@ -459,12 +459,12 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			$empty_resp_roles = true;
 		}
 	}
-		$state['15_posts'][] = amapress_get_check_state(
-			count( $amap_roles ) == 0 ? 'warning' : 'success',
-			'Rôle descriptif spécifiques des membres du collectif',
-			'<a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
-			admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )
-		);
+	$state['15_posts'][] = amapress_get_check_state(
+		count( $amap_roles ) == 0 ? 'warning' : 'success',
+		'Rôle descriptif spécifiques des membres du collectif',
+		'<a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
+		admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )
+	);
 
 	$members_no_desc = array_map( function ( $user ) {
 		$amapien = AmapressUser::getBy( $user );
@@ -796,6 +796,55 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}
 	}
 
+	$all_producteurs           = array_map( function ( $p ) {
+		return AmapressProducteur::getBy( $p );
+	}, $all_producteurs );
+	$not_localized_producteurs = array_filter( $all_producteurs, function ( $p ) {
+		/** @var AmapressProducteur $p */
+		return ! $p->isAdresseExploitationLocalized();
+	} );
+	if ( ! empty( $not_localized_producteurs ) ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			'warning',
+			'Producteurs non localisés',
+			'Les producteurs suivants ne sont pas localisés',
+			'',
+			implode( ', ', array_map( function ( $p ) {
+				/** @var AmapressProducteur $p */
+				$l = admin_url( 'post.php?post=' . $p->ID . '&action=edit' );
+				$t = esc_html( $p->getTitle() );
+
+				return "<a href='{$l}' target='_blank'>{$t}</a>";
+			}, $not_localized_producteurs ) )
+		);
+	}
+
+	if ( ! empty( $not_localized_lieux ) ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			'error',
+			'Lieux de distribution non localisés',
+			'Les lieux de distribution suivants ne sont pas localisés',
+			'',
+			implode( ', ', array_map( function ( $lieu ) {
+				/** @var AmapressLieu_distribution $lieu */
+				$l = admin_url( 'post.php?post=' . $lieu->ID . '&action=edit' );
+				$t = esc_html( $lieu->getTitle() );
+
+				return "<a href='{$l}' target='_blank'>{$t}</a>";
+			}, $not_localized_lieux ) )
+		);
+	}
+
+	$not_localized_amapiens_count = get_users_count( 'amapress_info=address_unk&amapress_contrat=active' );
+	if ( $not_localized_amapiens_count > 0 ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			'info',
+			'Amapiens non localisés',
+			"$not_localized_amapiens_count amapien(s) ne sont pas localisés",
+			admin_url( 'users.php?amapress_info=address_unk&amapress_contrat=active' )
+		);
+	}
+
 	$all_pages_and_presentations = get_pages( [
 		'post_status' => 'publish'
 	] );
@@ -1021,12 +1070,12 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'            => [
+		'front_nous_trouver'    => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'            => [
+		'front_default_grid'    => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
