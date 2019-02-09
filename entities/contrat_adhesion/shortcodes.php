@@ -256,7 +256,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		return ( 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
 	}
-	if ( ! $admin_mode && empty( $principal_contrats ) ) {
+	if ( Amapress::toBool( $atts['check_principal'] ) && ! $admin_mode && empty( $principal_contrats ) ) {
 		ob_clean();
 
 		return ( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
