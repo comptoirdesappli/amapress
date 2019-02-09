@@ -1244,6 +1244,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					'title' => 'Produit',
 					'data'  => 'produit',
 				),
+				array(
+					'title' => 'Prix',
+					'data'  => 'prix_unitaire',
+				),
 			);
 			foreach ( $dates as $date ) {
 				$columns[] = array(
@@ -1256,6 +1260,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
 				$row     = array(
 					'produit' => esc_html( $quant->getTitle() ),
+					'prix_unitaire' => esc_html( $quant->getPrix_unitaire() ),
 				);
 				$options = $quant->getQuantiteOptions();
 				if ( ! isset( $options['0'] ) ) {
@@ -1285,7 +1290,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				'responsive'   => false,
 				'init_as_html' => true,
 				'scrollX'      => true,
-				'fixedColumns' => array( 'leftColumns' => 1 ),
+				'fixedColumns' => array( 'leftColumns' => 2 ),
 			) );
 			echo '<p>* Cliquez sur la case pour faire apparaître le choix de quantités</p>';
 		} else {
