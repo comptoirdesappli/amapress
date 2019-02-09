@@ -3,16 +3,16 @@
  * @package Amapress
  */
 /*
-Plugin Name: Amapress
-Plugin URI: http://amapress.fr/
-Description: 
+Plugin Name: Amapress (forked by LoicC04)
+Plugin URI: https://github.com/LoicC04/amapress/
+Description:
 Version: 0.68.15
 Requires PHP: 5.6
-Author: ShareVB
-Author URI: http://amapress.fr/
+Author: LoicC04
+Author URI: https://github.com/LoicC04/
 License: GPLv2 or later
 Text Domain: amapress
-GitHub Plugin URI: comptoirdesappli/amapress
+GitHub Plugin URI: LoicC04/amapress
 */
 
 /*
