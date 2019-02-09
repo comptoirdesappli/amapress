@@ -1260,7 +1260,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
 				$row     = array(
 					'produit' => esc_html( $quant->getTitle() ),
-					'prix_unitaire' => esc_html( $quant->getPrix_unitaire() ),
+					'prix_unitaire' => esc_html( sprintf( '%.2f€', $quant->getPrix_unitaire()) ),
 				);
 				$options = $quant->getQuantiteOptions();
 				if ( ! isset( $options['0'] ) ) {
