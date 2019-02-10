@@ -96,6 +96,8 @@ class AmapressAdhesion extends TitanEntity {
 	const TO_CONFIRM = 'to_confirm';
 	const CONFIRMED = 'confirmed';
 
+	private $print_doc = false;
+
 	/**
 	 * @param $post_or_id
 	 *
@@ -531,6 +533,7 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function generateContratDoc() {
+	    $this->print_doc = true;
 		$out_filename   = $this->getContratDocFileName();
 		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
 		if ( empty( $model_filename ) ) {
@@ -586,6 +589,8 @@ class AmapressAdhesion extends TitanEntity {
 		}
 
 		$templateProcessor->saveAs( $out_filename );
+
+        $this->print_doc = false;
 
 		return $out_filename;
 	}
@@ -704,7 +709,7 @@ class AmapressAdhesion extends TitanEntity {
 		return $quants;
 	}
 
-	public function getPaniersVariablesDescription($show_price_unit = false ) {
+	public function getPaniersVariablesDescription($show_price_unit = false) {
 		$dates_desc = [];
 		foreach ( $this->getPaniersVariables() as $k => $v ) {
 			$date         = intval( $k );
@@ -713,8 +718,10 @@ class AmapressAdhesion extends TitanEntity {
 				$dates_desc[] = '* '.date_i18n( 'd/m/Y', $date ) . ' : ' . $quant_labels;
 			}
 		}
-
-		return implode( '<w:br/>', $dates_desc );
+		if( $this->print_doc ) {
+		    return implode( '<w:br/>', $dates_desc );
+		}
+		return implode( '<br/>', $dates_desc );
 	}
 
 	public function getContrat_quantites_AsString( $date = null, $show_price_unit = false ) {
