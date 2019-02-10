@@ -481,7 +481,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => 'Quantité(s) choisie(s) avec prix unitaire',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
-						return $adh->getPaniersVariablesDescription();
+						return $adh->getPaniersVariablesDescription(true);
 					}
 
 					return $adh->getContrat_quantites_AsString( null, true );
@@ -704,17 +704,17 @@ class AmapressAdhesion extends TitanEntity {
 		return $quants;
 	}
 
-	public function getPaniersVariablesDescription() {
+	public function getPaniersVariablesDescription($show_price_unit = false ) {
 		$dates_desc = [];
 		foreach ( $this->getPaniersVariables() as $k => $v ) {
 			$date         = intval( $k );
-			$quant_labels = $this->getContrat_quantites_AsString( $date );
+			$quant_labels = $this->getContrat_quantites_AsString( $date, $show_price_unit );
 			if ( ! empty( $quant_labels ) ) {
-				$dates_desc[] = date_i18n( 'd/m/Y', $date ) . ' : ' . $quant_labels;
+				$dates_desc[] = '* '.date_i18n( 'd/m/Y', $date ) . ' : ' . $quant_labels;
 			}
 		}
 
-		return implode( '<br/>', $dates_desc );
+		return implode( '<w:br/>', $dates_desc );
 	}
 
 	public function getContrat_quantites_AsString( $date = null, $show_price_unit = false ) {
@@ -772,7 +772,10 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function getContrat_quantites_IDs() {
-		return $this->getCustomAsIntArray( 'amapress_adhesion_contrat_quantite' );
+		if ( ! $this->getContrat_instance()->isPanierVariable() ) {
+		    return $this->getCustomAsIntArray( 'amapress_adhesion_contrat_quantite' );
+		}
+	    return $this->getCustomAsIntArray( 'amapress_adhesion_panier_variables' );
 	}
 
 	public function getContrat_quantites_Price( $date = null ) {
