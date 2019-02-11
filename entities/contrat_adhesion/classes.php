@@ -481,7 +481,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => 'Quantité(s) choisie(s) avec prix unitaire',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
-						return $adh->getPaniersVariablesDescription();
+						return $adh->getPaniersVariablesDescription( true );
 					}
 
 					return $adh->getContrat_quantites_AsString( null, true );
@@ -704,11 +704,11 @@ class AmapressAdhesion extends TitanEntity {
 		return $quants;
 	}
 
-	public function getPaniersVariablesDescription() {
+	public function getPaniersVariablesDescription( $show_price_unit = false ) {
 		$dates_desc = [];
 		foreach ( $this->getPaniersVariables() as $k => $v ) {
 			$date         = intval( $k );
-			$quant_labels = $this->getContrat_quantites_AsString( $date );
+			$quant_labels = $this->getContrat_quantites_AsString( $date, $show_price_unit );
 			if ( ! empty( $quant_labels ) ) {
 				$dates_desc[] = date_i18n( 'd/m/Y', $date ) . ' : ' . $quant_labels;
 			}
