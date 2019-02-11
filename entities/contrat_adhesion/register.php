@@ -1027,16 +1027,30 @@ function amapress_get_contrat_quantite_datatable(
 			if ( empty( $quand_id ) ) {
 				$all_quant_adh_count += 1;
 			}
-			foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
-				if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
-					continue;
-				}
+			if ( $contrat_instance->isPanierVariable() ) {
+				foreach ( $adh->getVariables_Contrat_quantites( $date ) as $adh_quant ) {
+					if ( ! empty( $quand_id ) && $adh_quant['contrat_quantite']->ID != $quand_id ) {
+						continue;
+					}
 
-				if ( ! empty( $quand_id ) ) {
-					$all_quant_adh_count += 1;
+					if ( ! empty( $quand_id ) ) {
+						$all_quant_adh_count += 1;
+					}
+					$all_quant_count += 1;
+					$all_quant_sum   += $adh_quant['quantite'];
 				}
-				$all_quant_count += $adh_quant->getFactor();
-				$all_quant_sum   += $adh_quant->getQuantite();
+			} else {
+				foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
+					if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
+						continue;
+					}
+
+					if ( ! empty( $quand_id ) ) {
+						$all_quant_adh_count += 1;
+					}
+					$all_quant_count += $adh_quant->getFactor();
+					$all_quant_sum   += $adh_quant->getQuantite();
+				}
 			}
 		}
 		if ( empty( $all_quant_adh_count ) ) {
