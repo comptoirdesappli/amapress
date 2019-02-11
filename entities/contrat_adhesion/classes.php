@@ -816,10 +816,14 @@ class AmapressAdhesion extends TitanEntity {
 
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
-		$dates        = [];
-		$quantite_ids = $quantite_id ? [ $quantite_id ] : $this->getContrat_quantites_IDs();
-		foreach ( $quantite_ids as $qid ) {
-			$dates = array_merge( $dates, $this->getContrat_instance()->getRemainingDates( $start_date, $qid ) );
+		$dates = [];
+		if ( $this->getContrat_instance()->isPanierVariable() ) {
+			$dates = $this->getContrat_instance()->getRemainingDates( $start_date, null );
+		} else {
+			$quantite_ids = $quantite_id ? [ $quantite_id ] : $this->getContrat_quantites_IDs();
+			foreach ( $quantite_ids as $qid ) {
+				$dates = array_merge( $dates, $this->getContrat_instance()->getRemainingDates( $start_date, $qid ) );
+			}
 		}
 		$dates = array_unique( $dates );
 		sort( $dates, SORT_ASC );
@@ -841,6 +845,8 @@ class AmapressAdhesion extends TitanEntity {
 			if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
 				$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id );
 			}
+		} else if ( $this->getContrat_instance()->isPanierVariable() ) {
+			return $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, null );
 		} else {
 			$val = 0;
 			foreach ( $this->getContrat_quantites_IDs() as $qid ) {

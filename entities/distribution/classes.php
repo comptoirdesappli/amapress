@@ -599,7 +599,11 @@ class AmapressDistribution extends Amapress_EventBase {
 				if ( $adhesion->getLieuId() == $this->getLieuId()
 				     && in_array( $adhesion->getContrat_instanceId(), $contrats )
 				) {
-					$quants = $adhesion->getContrat_quantites( $dist_date );
+					if ( $adhesion->getContrat_instance()->isPanierVariable() ) {
+						$quants = $adhesion->getVariables_Contrat_quantites( $dist_date );
+					} else {
+						$quants = $adhesion->getContrat_quantites( $dist_date );
+					}
 					if ( empty( $quants ) ) {
 						continue;
 					}
