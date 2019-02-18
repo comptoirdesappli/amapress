@@ -207,7 +207,7 @@ class TitanFrameworkOption {
 		global $pagenow;
 
 		return ( $pagenow == 'post-new.php' || $pagenow == 'user-new.php'
-		         || strpos( isset( $_REQUEST['_wp_http_referer'] ) ? $_REQUEST['_wp_http_referer'] : '', 'post-new.php' ) !== false
+		         || strpos( isset( $_REQUEST['_wp_http_referer'] ) ? $_REQUEST['_wp_http_referer'] : '', '/post-new.php' ) !== false
 		         || ( isset( $_REQUEST['original_post_status'] )
 		              && $_REQUEST['original_post_status'] != 'publish'
 		              && ( ! isset( $_REQUEST['action'] ) || 'editpost' != $_REQUEST['action'] ) ) );
@@ -216,7 +216,7 @@ class TitanFrameworkOption {
 	public static function isOnEditScreen() {
 		global $pagenow;
 
-		if ( strpos( isset( $_REQUEST['_wp_http_referer'] ) ? $_REQUEST['_wp_http_referer'] : '', 'post-new.php' ) !== false ) {
+		if ( strpos( isset( $_REQUEST['_wp_http_referer'] ) ? $_REQUEST['_wp_http_referer'] : '', '/post-new.php' ) !== false ) {
 			return false;
 		}
 
