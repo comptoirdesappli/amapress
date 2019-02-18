@@ -555,13 +555,13 @@ jQuery(function($) {
 			),
 			'word_paper_model'      => array(
 				'name'            => amapress__( 'Contrat vierge' ),
-				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
 				'show_column'     => false,
 				'show_download'   => true,
 				'show_title'      => true,
 				'selector-button' => 'Utiliser ce modèle',
-				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX/ODT',
+				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
 				'group'           => '2/6 - Paramètres généraux',
 				'desc'            => 'Générer un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
 			),
@@ -1061,13 +1061,13 @@ jQuery(function($) {
 			),
 			'word_model'     => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
-				'media-type'      => 'application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
 				'show_column'     => false,
 				'show_download'   => true,
 				'show_title'      => true,
 				'selector-button' => 'Utiliser ce modèle',
-				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX/ODT',
+				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
 				'group'           => '5/6 - Pré-inscription en ligne',
 				'desc'            => 'Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
 			),
@@ -2047,12 +2047,12 @@ function amapress_is_contrat_instance_readonly( $option ) {
 
 function amapress_modify_post_mime_types( $post_mime_types ) {
 
-	$post_mime_types['application/pdf']                                                                                                 = array(
+	$post_mime_types['application/pdf']                                                         = array(
 		__( 'PDFs' ),
 		__( 'Gérer les PDFs' ),
 		_n_noop( 'PDF <span class="count">(%s)</span>', 'PDFs <span class="count">(%s)</span>' )
 	);
-	$post_mime_types['application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.wordprocessingml.document'] = array(
+	$post_mime_types['application/vnd.openxmlformats-officedocument.wordprocessingml.document'] = array(
 		__( 'Documents' ),
 		__( 'Gérer les Documents' ),
 		_n_noop( 'Document <span class="count">(%s)</span>', 'Documents <span class="count">(%s)</span>' )
