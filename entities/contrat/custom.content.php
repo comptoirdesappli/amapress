@@ -90,20 +90,26 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
 	$prod_user    = $prod->getUserId();
 
-	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation du producteur' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
-	           '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>'
-	           . '<div class="contrat-pres-prod">' . wpautop( get_the_content() ) . '</div>'
-	           . Amapress::get_know_more( get_permalink( $prod_id ) ) .
-	           amapress_get_panel_end() .
-	           amapress_get_panel_start( Amapress::getOption( 'pres_produits_title', 'Ses produits' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
-                    <div class="contrat-produits">
-                    ' . $prouits_html .
-	           '</div>' .
-	           amapress_get_panel_end();
+	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation du producteur' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id );
+	$content .= '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>';
+	$content .= '<div class="contrat-pres-prod">' . wpautop( get_the_content() ) . '</div>';
+	if ( $edit_contrat_url = get_edit_post_link( get_the_ID() ) ) {
+		$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier cette présentation</a></div>';
+	}
+	$content .= Amapress::get_know_more( get_permalink( $prod_id ) );
+	$content .= amapress_get_panel_end();
+	$content .= amapress_get_panel_start( Amapress::getOption( 'pres_produits_title', 'Ses produits' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id );
+	$content .= '<div class="contrat-produits">';
+	$content .= $prouits_html;
+	$content .= '</div>';
+	$content .= amapress_get_panel_end();
 
 	foreach ( AmapressContrats::get_active_contrat_instances_by_contrat( $contrat_id ) as $c ) {
 		$content .= amapress_get_panel_start( 'Contrat - ' . esc_html( $c->getTitle() ) );
 		$content .= wpautop( $c->getContratInfo() );
+		if ( $edit_contrat_url = get_edit_post_link( $c->ID ) ) {
+			$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier ce contrat</a></div>';
+		}
 		$content .= amapress_get_panel_end();
 	}
 
