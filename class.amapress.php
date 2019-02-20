@@ -3059,18 +3059,19 @@ class Amapress {
 				Amapress::getOption( 'front_produits_button_text_if_adherent', 'Adhérent' ) :
 				Amapress::getOption( 'front_produits_button_text_if_not_adherent', 'Découvrir' );
 			//$btn_url = in_array($contrat->ID, $active_contrats) ? trailingslashit(get_post_permalink($contrat->ID)).'details/' : 'Je m\'inscris';
-			$btn_url = trailingslashit( get_post_permalink( $contrat->ID ) ) . 'details/';
+			$btn_url = trailingslashit( get_post_permalink( $contrat->ID ) );
 			$url     = amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', 'default_contrat.jpg' );
 			$ret     .= '<li>
                 <div class="contrat-img"><img src="' . $url . '" alt="Photo de ' . esc_attr( $contrat->getTitle() ) . '"  /></div>
                 <div class="contrat-desc">
                     <div>
-                    <div class="contrat-link"><a href="' . get_permalink( $contrat->ID ) . '" >' . $contrat->getTitle() . '</a></div>
+                    <div class="contrat-link">' . $contrat->getTitle() . '</div>
                     <div><a href="' . $btn_url . '" class="btn btn-default btn-abonnement">' . esc_html( $lbl ) . '</a></div>
                     </div>
                 </div>
             </li>';
 		}
+//		<div class="contrat-link"><a href="' . get_permalink( $contrat->ID ) . '" >' . $contrat->getTitle() . '</a></div>
 		$ret .= '</ul>';
 
 		return $ret;

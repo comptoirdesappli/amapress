@@ -913,7 +913,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						array(
 							'title'      => 'Présentations des contrats',
 							'menu_icon'  => 'post_type',
-							'menu_title' => 'Présentations web',
+							'menu_title' => 'Présentations producteur',
 							'post_type'  => 'amps_contrat',
 							'capability' => 'edit_contrat',
 							'slug'       => 'edit.php?post_type=amps_contrat',

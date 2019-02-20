@@ -90,39 +90,22 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
 	$prod_user    = $prod->getUserId();
 
-//	$user_contrats = AmapressAdhesion::getUserActiveAdhesionIds();
-//	$links         = '';
-//	if ( in_array( $contrat_id, $user_contrats ) ) {
-//		$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
-//	} else {
-//		foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( $contrat_id ) as $contrat_inst ) {
-//			$contrat_cnt = $contrat_inst->getContratRaw();
-//			if ( empty( $contrat_cnt ) || strlen( wp_strip_all_tags( $contrat_cnt ) ) < 15 ) {
-//				continue;
-//			}
-//			$links .= '<div><a href="' . trailingslashit( get_permalink( $contrat_id ) ) . 'details/' . $contrat_inst->getSlug() . '" class="btn btn-default btn-abonnement">' . esc_html( $contrat_inst->getTitle() ) . '</a></div>';
-//		}
-////        if (empty($links)) {
-////            $links .= '<div><a href="' . trailingslashit(get_permalink(get_the_ID())) . 'details' . '" class="btn btn-default btn-abonnement">S\'abonner</a></div>';
-////        }
-//	}
-//	if ( ! empty( $links ) ) {
-//		$links = '<h3>Ses contrats</h3>' . $links;
-//	}
-
-	$content = wpautop( $prod->getContent() );
-	$content .= wpautop( get_the_content() );
-
-//	<div class="contrat-prod-summary">' . get_post_meta( $prod_id, 'amapress_producteur_resume', true ) . '</div>
-	$content .= amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation du producteur' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
-	            '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>'
-	            . Amapress::get_know_more( get_permalink( $prod_id ) ) .
-	            amapress_get_panel_end() .
-	            amapress_get_panel_start( Amapress::getOption( 'pres_produits_title', 'Ses produits' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
+	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation du producteur' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id ) .
+	           '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>'
+	           . '<div class="contrat-pres-prod">' . wpautop( get_the_content() ) . '</div>'
+	           . Amapress::get_know_more( get_permalink( $prod_id ) ) .
+	           amapress_get_panel_end() .
+	           amapress_get_panel_start( Amapress::getOption( 'pres_produits_title', 'Ses produits' ), null, 'amap-panel-produits amap-panel-produits-' . $prod_id ) . '
                     <div class="contrat-produits">
                     ' . $prouits_html .
-	            '</div>' .
-	            amapress_get_panel_end();
+	           '</div>' .
+	           amapress_get_panel_end();
+
+	foreach ( AmapressContrats::get_active_contrat_instances_by_contrat( $contrat_id ) as $c ) {
+		$content .= amapress_get_panel_start( 'Contrat - ' . esc_html( $c->getTitle() ) );
+		$content .= wpautop( $c->getContratInfo() );
+		$content .= amapress_get_panel_end();
+	}
 
 	return $content;
 }

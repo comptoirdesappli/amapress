@@ -40,6 +40,8 @@ function amapress_register_entities_producteur( $entities ) {
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
+
+			echo '<h2>Historique de la ferme et du producteur</h2>';
 		},
 		'fields'                  => array(
 			'nom_exploitation'     => array(
@@ -117,7 +119,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'order'        => 'ASC',
 			),
 			'presentations'        => array(
-				'name'            => amapress__( 'Présentations web' ),
+				'name'            => amapress__( 'Présentations producteur' ),
 				'show_column'     => true,
 				'group'           => '3/ Présentations et contrats',
 				'include_columns' => array(

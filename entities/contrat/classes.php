@@ -121,7 +121,7 @@ class AmapressContrat_instance extends TitanEntity {
 	public function getModelTitle() {
 		$model = $this->getModel();
 		if ( empty( $model ) ) {
-			return 'Présentation Web Archivée';
+			return 'Présentation Archivée';
 		}
 
 		return $model->getTitle();
@@ -148,6 +148,10 @@ class AmapressContrat_instance extends TitanEntity {
 
 	public function getDate_ouverture() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_ouverture' );
+	}
+
+	public function getContratInfo() {
+		return $this->getCustom( 'amapress_contrat_instance_contrat_info' );
 	}
 
 	public function getDate_cloture() {

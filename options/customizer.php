@@ -571,7 +571,7 @@ function amapress_customizer_init() {
 		'default' => 'Présentation du producteur',
 	) );
 	$section->createOption( array(
-		'name'    => __( 'Présentation du cotrant', 'amapress' ),
+		'name'    => __( 'Présentation du contrant', 'amapress' ),
 		'id'      => 'pres_contrat_title',
 		'type'    => 'text',
 		'default' => 'Présentation du contrat',
