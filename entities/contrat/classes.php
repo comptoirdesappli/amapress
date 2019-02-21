@@ -151,7 +151,30 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getContratInfo() {
-		return $this->getCustom( 'amapress_contrat_instance_contrat_info' );
+		$info = $this->getCustom( 'amapress_contrat_instance_contrat_info' );
+
+		$placeholders = [];
+		foreach ( self::getProperties( amapress_time() ) as $prop_name => $prop ) {
+			$placeholders[ $prop_name ] = $prop;
+		}
+		foreach ( self::getProperties( $this->getDate_debut() ) as $prop_name => $prop ) {
+			$placeholders[ 'total_' . $prop_name ] = $prop;
+		}
+
+		$info = $res = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
+			function ( $m ) use ( $placeholders ) {
+				$opt = isset( $m['opt'] ) ? $m['opt'] : '';
+//				$subopt = isset( $m['subopt'] ) ? $m['subopt'] : '';
+//				$fmt    = isset( $m['fmt'] ) ? $m['fmt'] : '';
+
+				if ( isset( $placeholders[ $opt ] ) ) {
+					return call_user_func( $placeholders[ $opt ]['func'], $this );
+				} else {
+					return "%%UNK:$opt%%";
+				}
+			}, $info );
+
+		return $info;
 	}
 
 	public function getDate_cloture() {
@@ -394,9 +417,55 @@ class AmapressContrat_instance extends TitanEntity {
 				'contrat-papier-' . $this->getTitle() . '-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . $ext );
 	}
 
+	public function getFormattedRattrapages() {
+		$rattrapage        = [];
+		$double_rattrapage = [];
+		$un5_rattrapage    = [];
+		$dates_factors     = 0;
+		$dates             = $this->getRemainingDates();
+		foreach ( $dates as $d ) {
+			$the_factor = $this->getDateFactor( $d );
+			if ( abs( $the_factor - 2 ) < 0.001 ) {
+				$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
+			} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
+				$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
+			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
+				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
+			}
+			$dates_factors += $the_factor;
+		}
+
+		if ( ! empty( $double_rattrapage ) ) {
+			$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
+		}
+		if ( ! empty( $un5_rattrapage ) ) {
+			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
+		}
+
+		return $rattrapage;
+	}
+
+	public function getFormattedDatesDistribMois( $first_date_distrib ) {
+		$dates         = $this->getRemainingDates( $first_date_distrib );
+		$grouped_dates = from( $dates )->groupBy( function ( $d ) {
+			return date_i18n( 'F Y', $d );
+		} );
+
+		$grouped_dates_array = [];
+		foreach ( $grouped_dates as $k => $v ) {
+			$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+					function ( $d ) {
+						return date_i18n( 'd', $d );
+					}, $v
+				) );
+		}
+
+		return $grouped_dates_array;
+	}
+
 	public static function getProperties( $first_date_distrib = null ) {
-		$ret                                = [];
-		$ret['contrat_type']                = [
+		$ret                                     = [];
+		$ret['contrat_type']                     = [
 			'desc' => 'Type du contrat (par ex, Légumes)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				if ( empty( $adh->getModel() ) ) {
@@ -406,19 +475,19 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getModelTitle();
 			}
 		];
-		$ret['contrat_titre']               = [
+		$ret['contrat_titre']                    = [
 			'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getTitle();
 			}
 		];
-		$ret['contrat_sous_titre']          = [
+		$ret['contrat_sous_titre']               = [
 			'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
 			'func' => function ( AmapressAdhesion $adh ) {
 				return $adh->getContrat_instance()->getSubName();
 			}
 		];
-		$ret['contrat_lien']                = [
+		$ret['contrat_lien']                     = [
 			'desc' => 'Lien vers la présentation du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				if ( empty( $adh->getModel() ) ) {
@@ -428,31 +497,31 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getModel()->getPermalink();
 			}
 		];
-		$ret['date_debut']                  = [
+		$ret['date_debut']                       = [
 			'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['date_fin']                    = [
+		$ret['date_fin']                         = [
 			'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['date_debut_complete']         = [
+		$ret['date_debut_complete']              = [
 			'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'l j M Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['date_fin_complete']           = [
+		$ret['date_fin_complete']                = [
 			'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'l j M Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['lieux']                       = [
+		$ret['lieux']                            = [
 			'desc' => 'Lieux de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -460,7 +529,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu']                        = [
+		$ret['lieu']                             = [
 			'desc' => 'Lieu de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -468,7 +537,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieux']                       = [
+		$ret['lieux']                            = [
 			'desc' => 'Lieux de distribution (nom court)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -476,7 +545,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu']                        = [
+		$ret['lieu']                             = [
 			'desc' => 'Lieu de distribution (nom court)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -484,111 +553,111 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['contrat_debut']               = [
+		$ret['contrat_debut']                    = [
 			'desc' => 'Début du contrat (mois/année)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'm/Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['contrat_fin']                 = [
+		$ret['contrat_fin']                      = [
 			'desc' => 'Fin du contrat (mois/année)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'm/Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['contrat_debut_annee']         = [
+		$ret['contrat_debut_annee']              = [
 			'desc' => 'Année de début du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['contrat_fin_annee']           = [
+		$ret['contrat_fin_annee']                = [
 			'desc' => 'Année de fin du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['nb_paiements']                = [
+		$ret['nb_paiements']                     = [
 			'desc' => 'Nombre de chèques possibles',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getPossiblePaiements() );
 			}
 		];
-		$ret['dates_rattrapages']           = [
+		$ret['dates_rattrapages']                = [
 			'desc' => 'Description des dates de distribution de rattrapage',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				$rattrapage        = [];
-				$double_rattrapage = [];
-				$un5_rattrapage    = [];
-				$dates_factors     = 0;
-				$dates             = $adh->getRemainingDates();
-				foreach ( $dates as $d ) {
-					$the_factor = $adh->getDateFactor( $d );
-					if ( abs( $the_factor - 2 ) < 0.001 ) {
-						$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
-					} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
-						$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
-					} else if ( abs( $the_factor - 1 ) > 0.001 ) {
-						$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
-					}
-					$dates_factors += $the_factor;
-				}
-
-				if ( ! empty( $double_rattrapage ) ) {
-					$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
-				}
-				if ( ! empty( $un5_rattrapage ) ) {
-					$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
-				}
-
-				return implode( ', ', $rattrapage );
+				return implode( ', ', $adh->getFormattedRattrapages() );
 			}
 		];
-		$ret['nb_dates']                    = [
+		$ret['dates_rattrapages_list']           = [
+			'desc' => 'Listes html des dates de distribution de rattrapage',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return implode( '<br />', array_map( function ( $s ) {
+					return '* ' . $s;
+				}, $adh->getFormattedRattrapages() ) );
+			}
+		];
+		$ret['prochaine_date_distrib_complete']  = [
+			'desc' => 'Prochaine date de distribution complète',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				$date = from( $adh->getRemainingDates( $first_date_distrib ) )->firstOrDefault();
+				if ( $date ) {
+					return date_i18n( 'l j M Y', $date );
+				} else {
+					return 'Aucune';
+				}
+			}
+		];
+		$ret['prochaine_date_distrib']           = [
+			'desc' => 'Prochaine date de distribution',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				$date = from( $adh->getRemainingDates( $first_date_distrib ) )->firstOrDefault();
+				if ( $date ) {
+					return date_i18n( 'd/m/Y', $date );
+				} else {
+					return 'Aucune';
+				}
+			}
+		];
+		$ret['nb_dates']                         = [
 			'desc' => 'Nombre de dates de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return count( $adh->getRemainingDates( $first_date_distrib ) );
 			}
 		];
-		$ret['nb_distributions']            = [
+		$ret['nb_distributions']                 = [
 			'desc' => 'Nombre de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return $adh->getRemainingDatesWithFactors( $first_date_distrib );
 			}
 		];
-		$ret['dates_distribution_par_mois'] = [
+		$ret['dates_distribution_par_mois']      = [
 			'desc' => 'Dates de distributions regroupées par mois',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
-				$dates         = $adh->getRemainingDates( $first_date_distrib );
-				$grouped_dates = from( $dates )->groupBy( function ( $d ) {
-					return date_i18n( 'F Y', $d );
-				} );
-
-				$grouped_dates_array = [];
-				foreach ( $grouped_dates as $k => $v ) {
-					$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
-							function ( $d ) {
-								return date_i18n( 'd', $d );
-							}, $v
-						) );
-				}
-
-				return implode( ' ; ', $grouped_dates_array );
+				return implode( ' ; ', $adh->getFormattedDatesDistribMois( $first_date_distrib ) );
 			}
 		];
-		$ret['premiere_date']               = [
+		$ret['dates_distribution_par_mois_list'] = [
+			'desc' => 'Liste html des dates de distributions regroupées par mois',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				return implode( '<br />', array_map( function ( $s ) {
+					return '* ' . $s;
+				}, $adh->getFormattedDatesDistribMois( $first_date_distrib ) ) );
+			}
+		];
+		$ret['premiere_date']                    = [
 			'desc' => 'Première date de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return date_i18n( 'd/m/Y', from( $adh->getRemainingDates( $first_date_distrib ) )->firstOrDefault() );
 			}
 		];
-		$ret['derniere_date']               = [
+		$ret['derniere_date']                    = [
 			'desc' => 'Dernière date de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return date_i18n( 'd/m/Y', from( $adh->getRemainingDates( $first_date_distrib ) )->lastOrDefault() );
 			}
 		];
-		$ret['dates_distribution']          = [
+		$ret['dates_distribution']               = [
 			'desc' => 'Liste des dates de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return implode( ', ', array_map( function ( $d ) {
@@ -596,10 +665,121 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getRemainingDates( $first_date_distrib ) ) );
 			}
 		];
+		$ret['quantites_table']                  = [
+			'desc' => 'Table des quantités',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				$columns   = [];
+				$columns[] = array(
+					'title' => 'Quantité',
+					'data'  => 'quantite',
+				);
+				$columns[] = array(
+					'title' => 'Description',
+					'data'  => 'quantite_description',
+				);
+				$columns[] = array(
+					'title' => 'Nombre de distributions',
+					'data'  => 'quantite_nb_distrib',
+				);
+				$columns[] = array(
+					'title' => 'Prix unitaire',
+					'data'  => 'quantite_prix_unitaire',
+				);
+				if ( $adh->isPanierVariable() || $adh->isQuantiteVariable() ) {
+					$columns[] = array(
+						'title' => 'Unité',
+						'data'  => 'quantite_unite',
+					);
+				}
+				$lines = $adh->getQuantiteTables( $first_date_distrib );
+				static $id = 1;
+
+				return amapress_get_datatable( 'quant-table' . ( $id ++ ), $columns, $lines,
+					array(
+						'paging'       => false,
+						'searching'    => false,
+						'nowrap'       => false,
+						'responsive'   => false,
+						'init_as_html' => true,
+					) );
+			}
+		];
+		$ret['quantites_table_total']            = [
+			'desc' => 'Table des quantités avec total',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				$columns   = [];
+				$columns[] = array(
+					'title' => 'Quantité',
+					'data'  => 'quantite',
+				);
+				$columns[] = array(
+					'title' => 'Description',
+					'data'  => 'quantite_description',
+				);
+				$columns[] = array(
+					'title' => 'Nombre de distributions',
+					'data'  => 'quantite_nb_distrib',
+				);
+				$columns[] = array(
+					'title' => 'Prix unitaire',
+					'data'  => 'quantite_prix_unitaire',
+				);
+				if ( $adh->isPanierVariable() || $adh->isQuantiteVariable() ) {
+					$columns[] = array(
+						'title' => 'Unité',
+						'data'  => 'quantite_unite',
+					);
+				}
+				$columns[] = array(
+					'title' => 'Total',
+					'data'  => 'quantite_total',
+				);
+				$lines     = $adh->getQuantiteTables( $first_date_distrib );
+				static $id = 1;
+
+				return amapress_get_datatable( 'quant-table' . ( $id ++ ), $columns, $lines,
+					array(
+						'paging'       => false,
+						'searching'    => false,
+						'nowrap'       => false,
+						'responsive'   => false,
+						'init_as_html' => true,
+					) );
+			}
+		];
 
 		return $ret;
 	}
 
+	public function getQuantiteTables( $first_date_distrib ) {
+		$lines  = [];
+		$quants = AmapressContrats::get_contrat_quantites( $this->ID );
+		foreach ( $quants as $quant ) {
+			$row                           = [];
+			$remaining_dates               = count( $this->getRemainingDates( $first_date_distrib, $quant->ID ) );
+			$remaining_distrib             = $this->getRemainingDatesWithFactors( $first_date_distrib, $quant->ID );
+			$row["quantite"]               = $quant->getTitle();
+			$row["quantite_code"]          = $quant->getCode();
+			$row["quantite_nb_dates"]      = $remaining_dates;
+			$row["quantite_nb_distrib"]    = $remaining_distrib;
+			$row["quantite_total"]         = Amapress::formatPrice( $quant->getPrix_unitaire() * $remaining_distrib );
+			$row["quantite_prix_unitaire"] = Amapress::formatPrice( $quant->getPrix_unitaire() );
+			$row["quantite_description"]   = $quant->getDescription();
+			$row["quantite_unite"]         = $quant->getPriceUnitDisplay();
+			$paiements                     = [];
+			foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
+				$ch = $this->getChequeOptionsForTotal( $nb_cheque, $quant->getPrix_unitaire() * $remaining_distrib );
+				if ( ! isset( $ch['desc'] ) ) {
+					continue;
+				}
+				$paiements[] = $ch['desc'];
+			}
+			$row["quantite_paiements"] = '[] ' . implode( "<br />[] ", $paiements );
+			$lines[]                   = $row;
+		}
+
+		return $lines;
+	}
 
 	public function getRemainingDates( $date = null, $quantite_id = null ) {
 		if ( empty( $date ) ) {
@@ -619,25 +799,32 @@ class AmapressContrat_instance extends TitanEntity {
 		} );
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false, $show_toggler = true ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $context = '', $show_toggler = true ) {
 		$ret = [];
 
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
 			$ret[ $prop_name ] = $prop_desc;
 		}
-		$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
-		$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
-		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
-		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
-		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
-		$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
-		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
-		$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
-		$ret["quantite_paiements"]     = '(Tableau quantité) Possibilités de paiements';
+		if ( 'pres' == $context ) {
+			foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
+				$ret[ 'total_' . $prop_name ] = '(Durée total) ' . $prop_desc;
+			}
+		}
+		if ( 'paper' == $context ) {
+			$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
+			$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
+			$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
+			$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
+			$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
+			$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
+			$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
+			$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
+			$ret["quantite_paiements"]     = '(Tableau quantité) Possibilités de paiements';
+		}
 
 		return Amapress::getPlaceholdersHelpTable( 'contrat_inst-placeholders', $ret,
-			'du contrat', $additional_helps, ! $for_contrat,
-			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%',
+			'du contrat', $additional_helps, false,
+			'paper' == $context ? '${' : '%%', 'paper' == $context ? '}' : '%%',
 			$show_toggler );
 	}
 
