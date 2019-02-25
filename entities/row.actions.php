@@ -132,8 +132,10 @@ add_action( 'edit_form_after_title', 'amapress_add_row_actions_to_post_editor', 
 function amapress_add_row_actions_to_post_editor( WP_Post $post ) {
 	$actions = amapress_row_actions_registration( [], $post, 'editor' );
 	if ( ! empty( $actions ) ) {
-		$actions = implode( ', ', $actions );
-		echo "<p>Actions possibles : $actions</p>";
+		$actions   = implode( ', ', $actions );
+		$post_type = amapress_simplify_post_type( $post->post_type );
+		$label     = apply_filters( "amapress_row_actions_label_{$post_type}", 'Actions possibles : ', $post );
+		echo "<p>$label $actions</p>";
 	}
 }
 
