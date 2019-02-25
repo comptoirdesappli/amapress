@@ -185,6 +185,10 @@ function amapress_register_entities_contrat( $entities ) {
 						echo '<p style="color: red"><span class="dashicons dashicons-warning"></span> Édition d’un contrat actif</p>';
 					}
 
+					TitanFrameworkOption::echoFullEditLinkAndWarning(
+						'Edition avancée', ''
+					);
+
 					echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
 <span class="description">(Par ex : si vous changez le nombre de dates de distribution, le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat modulable seront perdues.)</span></p>';
 //				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
@@ -192,11 +196,6 @@ function amapress_register_entities_contrat( $entities ) {
 ////					echo '<p>Si vous voulez malgrès tout éditer le contrat, utiliser le lien suivant : <a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition.</a></p>';
 //					echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition</a></p>';
 //				}
-
-					TitanFrameworkOption::echoFullEditLinkAndWarning(
-						'Edition avancée', ''
-					);
-
 
 					echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
 				}
@@ -331,7 +330,7 @@ function amapress_register_entities_contrat( $entities ) {
 		),
 		'fields'           => array(
 			//renouvellement
-			'renouv'           => array(
+			'renouv'     => array(
 				'name'        => amapress__( 'Options' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -359,7 +358,30 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 1/6 - Ferme
-			'model'            => array(
+			'producteur' => array(
+				'name'        => amapress__( 'Producteur' ),
+				'type'        => 'custom',
+				'group'       => '1/6 - Ferme',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+				'custom'      => function ( $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					if ( empty( $contrat )
+					     || empty( $contrat->getModel() )
+					     || empty( $contrat->getModel()->getProducteur() )
+					     || empty( $contrat->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return Amapress::makeLink(
+							$contrat->getModel()->getProducteur()->getAdminEditLink(),
+							$contrat->getModel()->getProducteur()->getTitle() )
+					       . ' (' . Amapress::makeLink(
+							$contrat->getModel()->getProducteur()->getUser()->getEditLink(),
+							$contrat->getModel()->getProducteur()->getUser()->getDisplayName() ) . ')';
+				}
+			),
+			'model'      => array(
 				'name'              => amapress__( 'Présentation producteur' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -385,29 +407,6 @@ function amapress_register_entities_contrat( $entities ) {
 					return amapress_is_contrat_instance_readonly( $post_id );
 				},
 				'searchable'        => true,
-			),
-			'producteur'       => array(
-				'name'        => amapress__( 'Présentation exploitation' ),
-				'type'        => 'custom',
-				'group'       => '1/6 - Ferme',
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-				'custom'      => function ( $post_id ) {
-					$contrat = AmapressContrat_instance::getBy( $post_id );
-					if ( empty( $contrat )
-					     || empty( $contrat->getModel() )
-					     || empty( $contrat->getModel()->getProducteur() )
-					     || empty( $contrat->getModel()->getProducteur()->getUser() ) ) {
-						return '';
-					}
-
-					return Amapress::makeLink(
-							$contrat->getModel()->getProducteur()->getAdminEditLink(),
-							$contrat->getModel()->getProducteur()->getTitle() )
-					       . ' (' . Amapress::makeLink(
-							$contrat->getModel()->getProducteur()->getUser()->getEditLink(),
-							$contrat->getModel()->getProducteur()->getUser()->getDisplayName() ) . ')';
-				}
 			),
 			'refs'           => array(
 				'name'                 => amapress__( 'Référents' ),
@@ -2177,3 +2176,7 @@ add_action( 'delete_post', function ( $post_id ) {
 		}
 	}
 }, 1000 );
+
+add_filter( 'amapress_row_actions_label_contrat_instance', function ( $abel ) {
+	return '';
+} );
