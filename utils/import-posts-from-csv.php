@@ -180,9 +180,10 @@ class Amapress_Import_Posts_CSV {
 		<?php wp_nonce_field( "amapress-import-posts-$post_type-page_import", "_wpnonce-amapress-import-posts-$post_type-page_import" ); ?>
         <table class="form-table">
             <tr valign="top">
-                <th scope="row"><label for="posts_csv"><?php _e( 'Fichier CSV', 'amapress' ); ?></label></th>
+                <th scope="row"><label for="posts_csv"><?php _e( 'Fichier XLSX/XLS/ODS', 'amapress' ); ?></label></th>
                 <td>
-                    <input type="file" id="posts_csv" name="posts_csv" value="" class="all-options"/><br/>
+                    <input type="file" accept=".xls,.xlsx,.ods" id="posts_csv" name="posts_csv" value=""
+                           class="all-options"/><br/>
                     <span class="description"><?php echo sprintf( __( 'Vous pouvez télécharger un modèle à l\'aide des boutons Télécharger le modèle ci-dessus.', 'amapress' ) ); ?></span>
                 </td>
             </tr>

@@ -140,7 +140,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_avatar-upload">Mettre à jour ma photo : <input class="form-control"
-                                                                                     type="file"
+                                                                                     type="file" accept="image/*"
                                                                                      name="amapress_user_avatar-upload"
                                                                                      id="amapress_user_avatar-upload"/></label>
 
