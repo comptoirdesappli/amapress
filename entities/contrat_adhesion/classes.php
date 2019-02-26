@@ -580,7 +580,7 @@ class AmapressAdhesion extends TitanEntity {
 			$show_toggler );
 	}
 
-	public function generateContratDoc() {
+	public function generateContratDoc( $editable ) {
 		$out_filename   = $this->getContratDocFileName();
 		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
 		if ( empty( $model_filename ) ) {
@@ -663,6 +663,10 @@ class AmapressAdhesion extends TitanEntity {
 		}
 
 		$templateProcessor->saveAs( $out_filename );
+
+		if ( ! $editable ) {
+			$out_filename = Amapress::convertToPDF( $out_filename );
+		}
 
 		return $out_filename;
 	}
@@ -1390,7 +1394,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
 
 		$attachments = [];
-		$doc_file    = $inscription->generateContratDoc();
+		$doc_file    = $inscription->generateContratDoc( false );
 		if ( ! empty( $doc_file ) ) {
 			$attachments[] = $doc_file;
 			$mail_content  = preg_replace( '/\[sans_contrat\].+?\[\/sans_contrat\]/', '', $mail_content );

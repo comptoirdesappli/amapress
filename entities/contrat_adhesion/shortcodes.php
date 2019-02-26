@@ -82,7 +82,7 @@ add_action( 'amapress_init', function () {
 			wp_die( 'Accès interdit' );
 		}
 
-		$full_file_name = $adhesion->generateContratDoc();
+		$full_file_name = $adhesion->generateContratDoc( false );
 		$file_name      = basename( $full_file_name );
 		Amapress::sendDocumentFile( $full_file_name, $file_name );
 	}

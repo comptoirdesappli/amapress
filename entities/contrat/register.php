@@ -235,7 +235,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'confirm' => true,
 			],
 			'generate_contrat'  => [
-				'label'     => 'Générer le contrat papier',
+				'label'     => 'Générer le contrat papier (DOCX)',
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
@@ -2074,7 +2074,7 @@ add_action( 'amapress_row_action_contrat_instance_generate_contrat', 'amapress_r
 function amapress_row_action_contrat_instance_generate_contrat( $post_id ) {
 	$adhesion       = AmapressContrat_instance::getBy( $post_id );
 	$date           = isset( $_GET['start_date'] ) ? intval( $_GET['start_date'] ) : amapress_time();
-	$full_file_name = $adhesion->generateContratDoc( $date );
+	$full_file_name = $adhesion->generateContratDoc( $date, true );
 	$file_name      = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }

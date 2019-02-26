@@ -1800,6 +1800,34 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
+						'Conversion PDF'  => array(
+							'id'      => 'amp_convertws_config',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'         => 'convertws_url',
+									'name'       => 'Url du convertisseur PDF',
+									'type'       => 'text',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'convertws_user',
+									'name'       => 'Compte utilisateur du convertisseur PDF',
+									'type'       => 'text',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'          => 'convertws_pass',
+									'name'        => 'Mot de passe du compte du convertisseur PDF',
+									'type'        => 'text',
+									'capability'  => 'manage_options',
+									'is_password' => true,
+								),
+								array(
+									'type' => 'save',
+								),
+							),
+						),
 						'Tests'           => array(
 							'id'      => 'amp_tests_config',
 							'desc'    => '',

@@ -3219,6 +3219,8 @@ class Amapress {
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document' );
 		} else if ( strpos( $out_file_name, '.odt' ) !== false ) {
 			header( 'Content-Type: application/vnd.oasis.opendocument.text' );
+		} else if ( strpos( $out_file_name, '.pdf' ) !== false ) {
+			header( 'Content-Type: application/pdf' );
 		} else {
 			header( 'Content-Type: application/octet-stream' );
 		}
@@ -3507,6 +3509,54 @@ class Amapress {
 			$amapress_no_filter_referent_nesting += 1;
 		} else {
 			$amapress_no_filter_referent_nesting -= 1;
+		}
+	}
+
+	public static function convertToPDF( $filename ) {
+		$convertws_url  = Amapress::getOption( 'convertws_url' );
+		$convertws_user = Amapress::getOption( 'convertws_user' );
+		$convertws_pass = Amapress::getOption( 'convertws_pass' );
+
+		if ( empty( $convertws_url ) || empty( $convertws_user ) || empty( $convertws_pass ) ) {
+			return $filename;
+		}
+
+		$info         = pathinfo( $filename );
+		$pdf_filename = ( $info['dirname'] ? $info['dirname'] . DIRECTORY_SEPARATOR : '' )
+		                . $info['filename']
+		                . '.pdf';
+		try {
+			$pdf_handle  = fopen( $pdf_filename, 'w+' );
+			$fileContent = file_get_contents( $filename );
+			$client      = new GuzzleHttp\Client();
+			$resp        = $client->post( $convertws_url, [
+				'auth'      => [
+					$convertws_user,
+					$convertws_pass
+				],
+				'save_to'   => $pdf_handle,
+				'multipart' => [
+					[
+						'name'     => 'input',
+						'contents' => $fileContent,
+						'filename' => $info['basename'],
+					],
+				],
+			] );
+
+			if ( 200 == $resp->getStatusCode() ) {
+				fclose( $pdf_handle );
+
+				return $pdf_filename;
+			} else {
+				error_log( $resp->getReasonPhrase() );
+
+				return $filename;
+			}
+		} catch ( Exception $ex ) {
+			error_log( $ex->getMessage() );
+
+			return $filename;
 		}
 	}
 }

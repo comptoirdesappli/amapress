@@ -828,7 +828,7 @@ class AmapressContrat_instance extends TitanEntity {
 			$show_toggler );
 	}
 
-	public function generateContratDoc( $date_first_distrib ) {
+	public function generateContratDoc( $date_first_distrib, $editable ) {
 		$out_filename   = $this->getContratDocFileName( $date_first_distrib );
 		$model_filename = $this->getContratPapierModelDocFileName();
 		if ( empty( $model_filename ) ) {
@@ -886,6 +886,10 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		$templateProcessor->saveAs( $out_filename );
+
+		if ( ! $editable ) {
+			$out_filename = Amapress::convertToPDF( $out_filename );
+		}
 
 		return $out_filename;
 	}
