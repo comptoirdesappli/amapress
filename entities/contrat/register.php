@@ -35,8 +35,8 @@ function amapress_can_renew_same_period_contrat_instance( $post_or_user ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_contrat' );
 function amapress_register_entities_contrat( $entities ) {
 	$entities['contrat']          = array(
-		'singular'                => amapress__( 'Présentation producteur' ),
-		'plural'                  => amapress__( 'Présentations producteur' ),
+		'singular'                => amapress__( 'Production' ),
+		'plural'                  => amapress__( 'Productions' ),
 		'public'                  => true,
 		'thumb'                   => true,
 		'editor'                  => true,
@@ -59,7 +59,7 @@ function amapress_register_entities_contrat( $entities ) {
 			$contrat = AmapressContrat::getBy( $post );
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getProducteur() ) ) {
-					echo '<div class="notice notice-error"><p>Présentation Producteur invalide : pas de producteur associée</p></div>';
+					echo '<div class="notice notice-error"><p>Production invalide : pas de producteur associée</p></div>';
 				}
 			}
 
@@ -156,7 +156,7 @@ function amapress_register_entities_contrat( $entities ) {
 			$contrat = AmapressContrat_instance::getBy( $post );
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getModel() ) ) {
-					echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de présentation Producteur associée</p></div>';
+					echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de production associée</p></div>';
 				}
 			}
 
@@ -382,19 +382,19 @@ function amapress_register_entities_contrat( $entities ) {
 				}
 			),
 			'model'      => array(
-				'name'              => amapress__( 'Présentation producteur' ),
+				'name'              => amapress__( 'Production' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
 				'group'             => '1/6 - Ferme',
 				'required'          => true,
-				'desc'              => 'Sélectionner la présentation producteur.',
+				'desc'              => 'Sélectionner la production.',
 				'import_key'        => true,
 				'autoselect_single' => true,
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_contrat',
-					'placeholder' => 'Toutes les présentations producteur',
+					'placeholder' => 'Toutes les productions',
 				),
 				'readonly'          => function ( $post_id ) {
 					if ( TitanFrameworkOption::isOnNewScreen() ) {

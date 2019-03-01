@@ -119,7 +119,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'order'        => 'ASC',
 			),
 			'presentations'        => array(
-				'name'            => amapress__( 'Présentations producteur' ),
+				'name'            => amapress__( 'Productions' ),
 				'show_column'     => true,
 				'group'           => '3/ Présentations et contrats',
 				'include_columns' => array(

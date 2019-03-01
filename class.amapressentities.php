@@ -913,7 +913,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						array(
 							'title'      => 'Présentations des contrats',
 							'menu_icon'  => 'post_type',
-							'menu_title' => 'Présentations producteur',
+							'menu_title' => 'Productions',
 							'post_type'  => 'amps_contrat',
 							'capability' => 'edit_contrat',
 							'slug'       => 'edit.php?post_type=amps_contrat',
@@ -2750,7 +2750,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
-						'Placeholders - contrat vierge'                => array(
+						'Placeholders - contrat vierge'       => array(
 							'id'      => 'paper_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2764,13 +2764,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								)
 							)
 						),
-						'Placeholders - présentation producteur'       => array(
+						'Placeholders - production'           => array(
 							'id'      => 'pres_prod_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
 								array(
 									'id'     => 'pres_prod_contrat_placeholders_cust',
-									'name'   => 'présentation producteur',
+									'name'   => 'production',
 									'type'   => 'custom',
 									'custom' => function () {
 										return AmapressContrat_instance::getPlaceholdersHelp( [], 'pres', false );
@@ -2778,7 +2778,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								)
 							)
 						),
-						'Placeholders - contrat personnalisé'          => array(
+						'Placeholders - contrat personnalisé' => array(
 							'id'      => 'adhesion_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(

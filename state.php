@@ -124,7 +124,7 @@ function amapress_get_state() {
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'google-sitemap-generator', 'Google Sitemap Generator',
 		'<strong>Recommandé</strong> : Utilisation simple, améliore le référencement du site en générant un plan du site et en notifiant les moteurs de recherche des modifications du site. 
-<br/>Après activation rendez-vous dans sa <a target="_blank" href="' . admin_url( 'options-general.php?page=google-sitemap-generator%2Fsitemap.php#sm_includes' ) . '">configuration</a> (Section Contenu du sitemap/Autres types d\'article) et cocher les cases "Inclure les articles de type Produits/Recettes/Producteurs/Lieux de distribution/Présentations producteur"',
+<br/>Après activation rendez-vous dans sa <a target="_blank" href="' . admin_url( 'options-general.php?page=google-sitemap-generator%2Fsitemap.php#sm_includes' ) . '">configuration</a> (Section Contenu du sitemap/Autres types d\'article) et cocher les cases "Inclure les articles de type Produits/Recettes/Producteurs/Lieux de distribution/Productions"',
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wordpress-seo', 'Yoast SEO',
 		'<strong>Optionnel</strong> : Utilisation avancée, améliore le référencement du site. Ce plugin ajoute de nombreuse options dans le back-office, à installer par un webmaster.',
@@ -590,7 +590,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	//TODO better check prod vs user
 	$state['15_posts'][] = amapress_get_check_state(
 		count( $prod_users ) == 0 ? 'error' : ( count( $all_producteurs ) < count( $prod_users ) ? 'warning' : 'success' ),
-		'Présentation Producteurs',
+		'Producteurs',
 		'Créer les Producteur correspondant à leur compte utilisateur',
 		admin_url( 'post-new.php?post_type=' . AmapressProducteur::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
@@ -661,8 +661,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	);
 	$state['15_posts'][]            = amapress_get_check_state(
 		count( $contrat_types ) == 0 ? 'error' : ( ! empty( $not_subscribable_contrat_types ) ? 'warning' : 'success' ),
-		'Présentation des contrats',
-		'Créer au moins une présentation producteur par producteur pour présenter son/ses offre(s)',
+		'Présentation des productions',
+		'Créer au moins une production par producteur pour présenter son/ses offre(s)',
 		admin_url( 'post-new.php?post_type=' . AmapressContrat::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
 			$dn = AmapressContrat::getBy( $u );
@@ -670,7 +670,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 
 			return "<a href='{$l}' target='_blank'>{$dn->getTitle()}</a>";
 		}, $contrat_types ) ) .
-		( ! empty( $not_subscribable_contrat_types ) ? '<p><strong>Les producteurs suivants n\'ont pas de présentations producteur</strong> : ' .
+		( ! empty( $not_subscribable_contrat_types ) ? '<p><strong>Les producteurs suivants n\'ont pas de production</strong> : ' .
 		                                               implode( ', ', array_map( function ( $dn ) {
 
 			                                               $l = admin_url( 'post.php?post=' . $dn->ID . '&action=edit' );
@@ -777,8 +777,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		if ( empty( $contrat->getProducteur() ) ) {
 			$state['15_posts'][] = amapress_get_check_state(
 				'error',
-				'Présentation Producteur invalide',
-				'La présentation Producteur ' . $contrat->getTitle() . ' n\'est pas associée à un producteur.',
+				'Production invalide',
+				'La production ' . $contrat->getTitle() . ' n\'est pas associée à un producteur.',
 				$contrat->getAdminEditLink()
 			);
 		}
@@ -796,7 +796,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			$state['15_posts'][] = amapress_get_check_state(
 				'error',
 				'Modèle de contrat invalide',
-				'Le modèle de contrat ' . $contrat_instance->getTitle() . ' n\'est pas associé à une présentation producteur.',
+				'Le modèle de contrat ' . $contrat_instance->getTitle() . ' n\'est pas associé à une production.',
 				$contrat_instance->getAdminEditLink()
 			);
 		}
