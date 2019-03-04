@@ -437,10 +437,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}, $users ) )
 	);
 
-	$state['15_posts'] = array();
-
 	$amap_roles          = amapress_get_amap_roles();
-	$state['15_posts'][] = amapress_get_check_state(
+	$state['10_users'][] = amapress_get_check_state(
 		count( $amap_roles ) == 0 ? 'warning' : 'success',
 		'Rôle descriptif des membres du collectif',
 		'Créer et <a href="' . admin_url( 'users.php?amapress_role=collectif' ) . '" target=\'_blank\'>associer des rôles descriptifs aux utilisateurs</a> (par ex "Responsable des distribution", "Boîte contact", "Accueil des nouveaux")',
@@ -465,7 +463,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			$empty_resp_roles = true;
 		}
 	}
-	$state['15_posts'][] = amapress_get_check_state(
+	$state['10_users'][] = amapress_get_check_state(
 		count( $amap_roles ) == 0 ? 'warning' : 'success',
 		'Rôle descriptif spécifiques des membres du collectif',
 		'<a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
@@ -480,7 +478,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'amapress_role' => 'collectif_no_amap_role',
 	] ) );
 	if ( ! empty( $members_no_desc ) ) {
-		$state['15_posts'][] = amapress_get_check_state(
+		$state['10_users'][] = amapress_get_check_state(
 			'error',
 			'Membres du collectif sans rôle descriptif',
 			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice',
@@ -498,7 +496,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'amapress_contrat' => 'no',
 	] ) );
 	if ( ! empty( $members_no_contrats ) ) {
-		$state['15_posts'][] = amapress_get_check_state(
+		$state['10_users'][] = amapress_get_check_state(
 			'info',
 			'Membres du collectif sans contrat',
 			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Vérifier</a> les utilisateurs membres du collectif qui n\'ont pas de contrats',
@@ -506,6 +504,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			implode( ', ', $members_no_contrats )
 		);
 	}
+
+	$state['15_posts'] = array();
 
 	$lieux               = Amapress::get_lieux();
 	$not_localized_lieux = array_filter( $lieux,
