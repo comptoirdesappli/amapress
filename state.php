@@ -106,7 +106,7 @@ function amapress_get_state() {
 //    $state['01_plugins'][] = amapress_check_plugin_install('google-sitemap-generator', 'Google XML Sitemaps',
 //        'Permet un meilleur référencement par les moteurs de recherche pour votre AMAP');
 	$state['01_plugins'][] = amapress_check_plugin_install( 'backupwordpress', 'BackUpWordPress',
-		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'tools.php?page=backupwordpress' ) . '">Configuration de la sauvegarde</a>. Configurer y la Notification par e-mail pour recevoir un backup de la base de donnée du site toutes les semaines par exemple',
+		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'tools.php?page=backupwordpress' ) . '">Configuration de la sauvegarde</a>. Configurer ici la notification par e-mail pour recevoir un backup de la base de donnée du site toutes les semaines par exemple.',
 		'error' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'really-simple-ssl', 'Really Simple SSL',
 		'<strong>Recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
@@ -130,10 +130,10 @@ function amapress_get_state() {
 		'<strong>Optionnel</strong> : Utilisation avancée, améliore le référencement du site. Ce plugin ajoute de nombreuse options dans le back-office, à installer par un webmaster.',
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'count-per-day', 'Count Per Day',
-		'<strong>Optionnel</strong> : Permet d\'obtenir des statistiques de visites journalières simples sans recourir à des moteurs de statistiques comme Xiti ou Google Analytics',
+		'<strong>Optionnel</strong> : Permet d\'obtenir des statistiques de visites journalières simples sans recourir à des moteurs de statistiques externes.',
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'unconfirmed', 'Unconfirmed',
-		'<strong>Recommandé</strong> : Permet de gérer les inscriptions en cours (Renvoyer le mail de bienvenue avec le lien pour activer le compte utilisateur…)',
+		'<strong>Recommandé</strong> : Permet de gérer les inscriptions en cours, renvoyer le mail de bienvenue avec le lien pour activer le compte utilisateur.',
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'user-switching', 'User Switching',
 		'<strong>Recommandé</strong> : Permet aux administrateurs de consulter Amapress avec un autre compte utilisateur. Ce plugin est à installer par un webmaster. ',
@@ -143,7 +143,7 @@ function amapress_get_state() {
 		'warning' );
 
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wp-maintenance', 'WP Maintenance',
-		'<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en train d\'être mis en place et d\'éviter l\'affichage de contenu non terminé',
+		'<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en construction et d\'éviter l\'affichage de contenu non finalisé.',
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'aryo-activity-log', 'Activity Log',
 		'<strong>Optionnel</strong> : Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
@@ -212,14 +212,14 @@ function amapress_get_state() {
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
 		'Cette section permet le référencement dans les moteurs de recherche. 
-<br/>Remplir les champs <strong>Titre</strong> (Typiquement le nom de votre AMAP) et <strong>Slogan</strong> (Un sous titre pour votre AMAP. Vous pouvez également y indiquer l\'utilisation d\'Amapress, en y ajoutant la mention suivante "Construit avec Amapress, l\'outil pour les AMAP")',
+<br/>Remplir les champs <strong>Titre</strong> (Le nom de votre AMAP) et <strong>Slogan</strong> (Un sous titre pour votre AMAP. Vous pouvez ajouter la mention suivante "Construit avec Amapress, l\'outil pour les AMAP")',
 		admin_url( 'customize.php?autofocus[section]=title_tagline' )
 	);
 	$site_icon            = get_option( 'site_icon' );
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $site_icon ) ? 'warning' : 'success',
 		'Icône de l\'AMAP',
-		'Ajouter une icône pour personnaliser l\'entête du navigateur et les signets/favoris',
+		'Ajouter une icône pour personnaliser l\'entête du navigateur et les signets/favoris.',
 		admin_url( 'customize.php?autofocus[section]=title_tagline' )
 	);
 	$state['05_config'][] = amapress_get_check_state(
@@ -240,7 +240,7 @@ function amapress_get_state() {
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $static_front_id ) ? 'error' : 'success',
 		'Page d\'accueil statique',
-		'Vérifier que votre thème est configuré avec l’option « page d\'accueil statique »<br/>Sélectionner votre page d’accueil existante, ou configurer une nouvelle page.',
+		'Vérifier que votre thème est configuré avec l’option « page d\'accueil statique ».<br/>Sélectionner votre page d’accueil existante, ou configurer une nouvelle page.',
 		admin_url( 'customize.php?autofocus[section]=static_front_page' )
 	);
 	$front_page_content   = null;
@@ -1334,13 +1334,13 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['35_import'][] = amapress_get_check_state(
 		'do',
 		'Amapiens',
-		'Importer des amapiens',
+		'Importer des amapiens à partir d\'un fichier Excel.',
 		admin_url( 'admin.php?page=amapress_import_page' )
 	);
 	$state['35_import'][] = amapress_get_check_state(
 		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
-		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des adhésions',
+		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des inscriptions à partir d\'un fichier Excel.',
 		admin_url( 'admin.php?page=amapress_import_page&tab=adhésions' )
 	);
 
@@ -1373,8 +1373,8 @@ function amapress_echo_and_check_amapress_state_page() {
 		'05_config'       => 'Configuration',
 		'10_users'        => 'Comptes utilisateurs',
 		'15_posts'        => 'Votre AMAP',
-		'20_content'      => 'Contenus à compléter',
-		'25_shortcodes'   => 'Shortcodes à configurer',
+		'20_content'      => 'Contenus complémentaires',
+		'25_shortcodes'   => 'Shortcodes',
 		'26_online_inscr' => 'Inscriptions en ligne',
 		'30_recalls'      => 'Rappels',
 		'35_import'       => 'Import CSV',

@@ -749,7 +749,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		array(
 			array(
 				'id'         => 'amapress_quantite_contrats',
-				'title'      => 'Quantités prochaine distrib',
+				'title'      => 'QQuantités livraison',
 				'capability' => 'edit_distribution',
 				'href'       => admin_url( 'admin.php?page=contrats_quantites_next_distrib' ),
 			),
