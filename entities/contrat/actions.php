@@ -117,7 +117,7 @@ function amapress_do_query_action_contrat_pdf() {
 
 add_action( 'admin_post_paiement_table_pdf', function () {
 	$contrat_instance_id = intval( $_GET['contrat'] );
-	$lieu_id             = intval( $_GET['lieu'] );
+	$lieu_id             = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
 	$format              = isset( $_GET['format'] ) ? $_GET['format'] : 'A3';
 	$html                = amapress_get_paiement_table_by_dates(
 		$contrat_instance_id,
@@ -141,7 +141,7 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 
 add_action( 'admin_post_paiement_table_xlsx', function () {
 	$contrat_instance_id = intval( $_GET['contrat'] );
-	$lieu_id             = intval( $_GET['lieu'] );
+	$lieu_id             = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
 	$format              = isset( $_GET['format'] ) ? $_GET['format'] : 'A3';
 	$html                = amapress_get_paiement_table_by_dates(
 		$contrat_instance_id,
