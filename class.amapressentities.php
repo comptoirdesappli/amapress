@@ -805,10 +805,14 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 														$date = DateTime::createFromFormat( 'Y-m-d', $_GET['date'] );
 														if ( $date ) {
 															$date = $date->getTimestamp();
-														} else {
-															$date = null;
 														}
 													}
+													if ( $date ) {
+														$next_distrib = AmapressDistribution::get_next_distributions($date)[0];
+													} else {
+														$next_distrib = AmapressDistribution::getNextDistribution();
+													}
+													$date = get_post_meta( $next_distrib->ID, 'amapress_distribution_date', true );
 
 													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date );
 												},
