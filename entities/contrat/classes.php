@@ -756,19 +756,33 @@ class AmapressContrat_instance extends TitanEntity {
 		$quants = AmapressContrats::get_contrat_quantites( $this->ID );
 		foreach ( $quants as $quant ) {
 			$row                           = [];
-			$remaining_dates               = count( $this->getRemainingDates( $first_date_distrib, $quant->ID ) );
-			$remaining_distrib             = $this->getRemainingDatesWithFactors( $first_date_distrib, $quant->ID );
+			$remaining_dates               = $this->getRemainingDates( $first_date_distrib, $quant->ID );
+			$remaining_dates_count         = count( $remaining_dates );
+			$remaining_distrib             = $this->getRemainingDatesWithFactors( $first_date_distrib, $quant->ID, true );
+			$remaining_distrib_sum         = $this->getRemainingDatesWithFactors( $first_date_distrib, $quant->ID );
 			$row["quantite"]               = $quant->getTitle();
 			$row["quantite_code"]          = $quant->getCode();
-			$row["quantite_nb_dates"]      = $remaining_dates;
-			$row["quantite_nb_distrib"]    = $remaining_distrib;
-			$row["quantite_total"]         = Amapress::formatPrice( $quant->getPrix_unitaire() * $remaining_distrib );
+			$row["quantite_nb_dates"]      = $remaining_dates_count;
+			$row["quantite_nb_distrib"]    = $remaining_distrib_sum;
+			$row["quantite_dates_distrib"] = implode( ', ', array_map( function ( $d, $f ) {
+				if ( abs( $f - 1.0 ) < 0.001 ) {
+					return date_i18n( 'd/m/Y', $d );
+				} else if ( abs( $f - 2.0 ) < 0.001 ) {
+					return date_i18n( 'd/m/Y', $d ) . '(double)';
+				} else {
+					return date_i18n( 'd/m/Y', $d ) . '(' . $f . ')';
+				}
+			}, array_keys( $remaining_distrib ), array_values( $remaining_dates ) ) );
+			$row["quantite_dates"]         = implode( ', ', array_map( function ( $d ) {
+				return date_i18n( 'd/m/Y', $d );
+			}, $remaining_dates ) );
+			$row["quantite_total"]         = Amapress::formatPrice( $quant->getPrix_unitaire() * $remaining_distrib_sum );
 			$row["quantite_prix_unitaire"] = Amapress::formatPrice( $quant->getPrix_unitaire() );
 			$row["quantite_description"]   = $quant->getDescription();
 			$row["quantite_unite"]         = $quant->getPriceUnitDisplay();
 			$paiements                     = [];
 			foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
-				$ch = $this->getChequeOptionsForTotal( $nb_cheque, $quant->getPrix_unitaire() * $remaining_distrib );
+				$ch = $this->getChequeOptionsForTotal( $nb_cheque, $quant->getPrix_unitaire() * $remaining_distrib_sum );
 				if ( ! isset( $ch['desc'] ) ) {
 					continue;
 				}
@@ -815,11 +829,15 @@ class AmapressContrat_instance extends TitanEntity {
 			$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
 			$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
 			$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
+			$ret["quantite_nb_dates"]      = '(Tableau quantité) Nombre de dates de distribution restantes';
+			$ret["quantite_dates_distrib"] = '(Tableau quantité) Distribution restantes avec rattrapages';
+			$ret["quantite_dates"]         = '(Tableau quantité) Dates de distribution restantes';
 			$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
 			$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
 			$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
 			$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
 			$ret["quantite_paiements"]     = '(Tableau quantité) Possibilités de paiements';
+
 		}
 
 		return Amapress::getPlaceholdersHelpTable( 'contrat_inst-placeholders', $ret,
@@ -1045,17 +1063,26 @@ class AmapressContrat_instance extends TitanEntity {
 		} );
 	}
 
-	public function getRemainingDatesWithFactors( $start_date, $quantite_id = null ) {
-		$dates         = $this->getListe_dates();
-		$dates         = array_filter( $dates, function ( $d ) use ( $start_date ) {
+	public function getRemainingDatesWithFactors( $start_date, $quantite_id = null, $return_array = false ) {
+		$dates = $this->getListe_dates();
+		$dates = array_filter( $dates, function ( $d ) use ( $start_date ) {
 			return $d >= $start_date;
 		} );
-		$dates_factors = 0;
-		foreach ( $dates as $d ) {
-			$dates_factors += $this->getDateFactor( $d, $quantite_id );
-		}
+		if ( $return_array ) {
+			$ret = [];
+			foreach ( $dates as $d ) {
+				$ret[ $d ] = $this->getDateFactor( $d, $quantite_id );
+			}
 
-		return $dates_factors;
+			return $ret;
+		} else {
+			$dates_factors = 0;
+			foreach ( $dates as $d ) {
+				$dates_factors += $this->getDateFactor( $d, $quantite_id );
+			}
+
+			return $dates_factors;
+		}
 	}
 
 	public function getInscriptionsStats() {

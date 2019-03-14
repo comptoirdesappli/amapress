@@ -558,16 +558,18 @@ class AmapressAdhesion extends TitanEntity {
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
 			$ret[ $prop_name ] = $prop_desc;
 		}
-		$ret["quantite"]                         = '(Tableau quantité) Libellé quantité avec facteur';
-		$ret["quantite_simple"]                  = '(Tableau quantité) Libellé quantité';
-		$ret["quantite_code"]                    = '(Tableau quantité) Code quantité';
-		$ret["quantite_nb_dates"]                = '(Tableau quantité) Nombre de dates de distribution restantes';
-		$ret["quantite_nb_distrib"]              = '(Tableau quantité) Nombre de distribution restantes (rattrapages inclus)';
-		$ret["quantite_sous_total"]              = '(Tableau quantité) Prix pour la quantité choisie';
-		$ret["quantite_total"]                   = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
-		$ret["quantite_nombre"]                  = '(Tableau quantité) Facteur quantité choisi';
-		$ret["quantite_prix_unitaire"]           = '(Tableau quantité) Prix à l\'unité';
-		$ret["quantite_description"]             = '(Tableau quantité) Description de la quantité ; pour les paniers modulables : quantités livrées à la date donnée';
+		$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
+		$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
+		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
+		$ret["quantite_nb_dates"]      = '(Tableau quantité) Nombre de dates de distribution restantes';
+		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes (rattrapages inclus)';
+		$ret["quantite_dates_distrib"] = '(Tableau quantité) Distribution restantes avec rattrapages';
+		$ret["quantite_dates"]         = '(Tableau quantité) Dates de distribution restantes';
+		$ret["quantite_sous_total"]    = '(Tableau quantité) Prix pour la quantité choisie';
+		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
+		$ret["quantite_nombre"]        = '(Tableau quantité) Facteur quantité choisi';
+		$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
+		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité ; pour les paniers modulables : quantités livrées à la date donnée';
 		$ret["quantite_description_no_price"]    = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée';
 		$ret["quantite_description_br"]          = '(Tableau quantité) pour les paniers modulables : quantités livrées à la date donnée avec retour à la ligne entre chaque';
 		$ret["quantite_description_br_no_price"] = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
@@ -615,15 +617,29 @@ class AmapressAdhesion extends TitanEntity {
 			$quants = $this->getContrat_quantites( null );
 			$i      = 1;
 			foreach ( $quants as $quant ) {
-				$remaining_dates                           = count( $this->getRemainingDates( $quant->getId() ) );
-				$remaining_distrib                         = $this->getRemainingDatesWithFactors( $quant->getId() );
+				$remaining_dates                           = $this->getRemainingDates( $quant->getId() );
+				$remaining_dates_count                     = count( $remaining_dates );
+				$remaining_distrib                         = $this->getRemainingDatesWithFactors( $quant->getId(), true );
+				$remaining_distrib_sum                     = $this->getRemainingDatesWithFactors( $quant->getId() );
 				$placeholders["quantite#$i"]               = $quant->getTitle();
 				$placeholders["quantite_simple#$i"]        = $quant->getContratQuantite()->getTitle();
 				$placeholders["quantite_code#$i"]          = $quant->getCode();
-				$placeholders["quantite_nb_dates#$i"]      = $remaining_dates;
-				$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib;
+				$placeholders["quantite_nb_dates#$i"]      = $remaining_dates_count;
+				$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib_sum;
+				$placeholders["quantite_dates_distrib#$i"] = implode( ', ', array_map( function ( $d, $f ) {
+					if ( abs( $f - 1.0 ) < 0.001 ) {
+						return date_i18n( 'd/m/Y', $d );
+					} else if ( abs( $f - 2.0 ) < 0.001 ) {
+						return date_i18n( 'd/m/Y', $d ) . '(double)';
+					} else {
+						return date_i18n( 'd/m/Y', $d ) . '(' . $f . ')';
+					}
+				}, array_keys( $remaining_distrib ), array_values( $remaining_dates ) ) );
+				$placeholders["quantite_dates#$i"]         = implode( ', ', array_map( function ( $d ) {
+					return date_i18n( 'd/m/Y', $d );
+				}, $remaining_dates ) );
 				$placeholders["quantite_sous_total#$i"]    = Amapress::formatPrice( $quant->getPrice() );
-				$placeholders["quantite_total#$i"]         = Amapress::formatPrice( $quant->getPrice() * $remaining_distrib );
+				$placeholders["quantite_total#$i"]         = Amapress::formatPrice( $quant->getPrice() * $remaining_distrib_sum );
 				$placeholders["quantite_nombre#$i"]        = $quant->getFactor();
 				$placeholders["quantite_prix_unitaire#$i"] = Amapress::formatPrice( $quant->getContratQuantite()->getPrix_unitaire() );
 				$placeholders["quantite_description#$i"]   = $quant->getContratQuantite()->getDescription();
@@ -922,22 +938,42 @@ class AmapressAdhesion extends TitanEntity {
 		return $dates;
 	}
 
-	public function getRemainingDatesWithFactors( $quantite_id = null ) {
+	public function getRemainingDatesWithFactors( $quantite_id = null, $return_array = false ) {
 		$start_date = Amapress::start_of_day( $this->getDate_debut() );
 
 		if ( $quantite_id ) {
-			$val = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
-			if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
-				$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id );
+			if ( $return_array ) {
+				$ret = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id, true );
+				if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
+					foreach (
+						$this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id )
+						as $k => $v
+					) {
+						unset( $ret[ $k ] );
+					}
+				}
+
+				return $ret;
+			} else {
+				$val = $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, $quantite_id );
+				if ( $this->hasDate_fin() && $this->hasPaiementDateFin() ) {
+					$val -= $this->getContrat_instance()->getRemainingDatesWithFactors( Amapress::add_days( $this->getDate_fin(), 1 ), $quantite_id );
+				}
 			}
 		} else if ( $this->getContrat_instance()->isPanierVariable() ) {
-			return $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, null );
+			return $this->getContrat_instance()->getRemainingDatesWithFactors( $start_date, null, $return_array );
 		} else {
-			$val = 0;
-			foreach ( $this->getContrat_quantites_IDs() as $qid ) {
-				$factor = $this->getRemainingDatesWithFactors( $qid );
-				if ( $factor > $val ) {
-					$val = $factor;
+			if ( $return_array ) {
+				foreach ( $this->getContrat_quantites_IDs() as $qid ) {
+					return $this->getRemainingDatesWithFactors( $qid, true );
+				}
+			} else {
+				$val = 0;
+				foreach ( $this->getContrat_quantites_IDs() as $qid ) {
+					$factor = $this->getRemainingDatesWithFactors( $qid );
+					if ( $factor > $val ) {
+						$val = $factor;
+					}
 				}
 			}
 		}
