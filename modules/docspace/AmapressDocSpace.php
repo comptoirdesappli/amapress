@@ -28,7 +28,12 @@ class AmapressDocSpace {
 		add_action( "wp_ajax_nopriv_amp_docspace_list_$name", [ $this, 'echoFileList' ] );
 		add_action( "admin_post_amp_docspace_download_$name", [ $this, 'handleDownload' ] );
 		add_action( "admin_post_nopriv_amp_docspace_download_$name", [ $this, 'handleDownload' ] );
-		amapress_register_shortcode( "docspace-$name", [ $this, 'echoDropZone' ] );
+		amapress_register_shortcode( "docspace-$name", [ $this, 'echoDropZone' ],
+			[
+				'desc' => "Configure et affiche l'espace documents '$name'",
+				'args' => [
+				]
+			] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueueScripts' ] );
 	}
 

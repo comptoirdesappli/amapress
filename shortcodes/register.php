@@ -43,16 +43,66 @@ function amapress_register_shortcodes() {
 		$year = esc_attr( intval( $atts['year'] ) );
 
 		return "<span class='amp-years-since' data-year='$year'></span>";
-	} );
-	amapress_register_shortcode( 'paged_gallery', 'amapress_generic_paged_gallery_shortcode' );
-	amapress_register_shortcode( 'nous-trouver', 'amapress_where_to_find_us_shortcode' );
-	amapress_register_shortcode( 'recettes', 'amapress_recettes_shortcode' );
-	amapress_register_shortcode( 'produits', 'amapress_produits_shortcode' );
-	amapress_register_shortcode( 'lieu-map', 'amapress_lieu_map_shortcode' );
-	amapress_register_shortcode( 'user-map', 'amapress_user_map_shortcode' );
-	amapress_register_shortcode( 'producteur-map', 'amapress_producteur_map_shortcode' );
-	amapress_register_shortcode( 'amapien-avatar', 'amapress_amapien_avatar_shortcode' );
-	amapress_register_shortcode( 'histo-inscription-distrib', 'amapress_histo_inscription_distrib_shortcode' );
+	},
+		[
+			'desc' => 'Affiche le nombre d\'années écoulée depuis une autre année',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'paged_gallery', 'amapress_generic_paged_gallery_shortcode',
+		[
+			'desc' => '',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'nous-trouver', 'amapress_where_to_find_us_shortcode',
+		[
+			'desc' => 'Carte des lieux de distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'recettes', 'amapress_recettes_shortcode',
+		[
+			'desc' => 'Gallerie des recettes',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'produits', 'amapress_produits_shortcode',
+		[
+			'desc' => 'Gallerie de produits',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'lieu-map', 'amapress_lieu_map_shortcode',
+		[
+			'desc' => 'Emplacement d\'un lieu (carte et StreetView)',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'user-map', 'amapress_user_map_shortcode',
+		[
+			'desc' => 'Emplacement d\'un amapien',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'producteur-map', 'amapress_producteur_map_shortcode',
+		[
+			'desc' => 'Emplacement d\'un producteur',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapien-avatar', 'amapress_amapien_avatar_shortcode',
+		[
+			'desc' => '',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'histo-inscription-distrib', 'amapress_histo_inscription_distrib_shortcode',
+		[
+			'desc' => 'Historique d\'inscription des responsables aux distributions',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'liste-inscription-distrib', function ( $args ) {
 		$args         = shortcode_atts(
 			[
@@ -74,28 +124,83 @@ function amapress_register_shortcodes() {
 
 			return $ret;
 		}
-	} );
-	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode' );
-	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode' );
-	amapress_register_shortcode( 'inscription-amap-event', 'amapress_inscription_amap_event_shortcode' );
+	},
+		[
+			'desc' => 'Liste statique des inscrits des responsables aux distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode',
+		[
+			'desc' => 'Inscriptions comme responsable de distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode',
+		[
+			'desc' => 'Inscripions aux visites à la ferme',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'inscription-amap-event', 'amapress_inscription_amap_event_shortcode',
+		[
+			'desc' => 'Inscriptions aux évènements AMAP',
+			'args' => [
+			]
+		] );
 
 //    amapress_register_shortcode('paniers-intermittents-list', 'amapress_intermittents_paniers_list_shortcode');
-	amapress_register_shortcode( 'echanger-paniers-list', 'amapress_echanger_panier_shortcode' );
+	amapress_register_shortcode( 'echanger-paniers-list', 'amapress_echanger_panier_shortcode',
+		[
+			'desc' => 'Liste d\'échange de paniers',
+			'args' => [
+			]
+		] );
 //
-	amapress_register_shortcode( 'intermittents-inscription', 'amapress_intermittence_inscription_shortcode' );
-	amapress_register_shortcode( 'intermittents-desinscription', 'amapress_intermittence_desinscription_shortcode' );
+	amapress_register_shortcode( 'intermittents-inscription', 'amapress_intermittence_inscription_shortcode',
+		[
+			'desc' => 'Inscription d\'un amapien à la liste des intermittents',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'intermittents-desinscription', 'amapress_intermittence_desinscription_shortcode',
+		[
+			'desc' => 'Désinscription d\'un amapien à la liste des intermittents',
+			'args' => [
+			]
+		] );
 
 
-	amapress_register_shortcode( 'adhesion-request-count', 'amapress_adhesion_request_count_shortcode' );
+	amapress_register_shortcode( 'adhesion-request-count', 'amapress_adhesion_request_count_shortcode',
+		[
+			'desc' => '',
+			'args' => [
+			]
+		] );
 
-	amapress_register_shortcode( 'amapress-post-its', 'amapress_postits_shortcode' );
-	amapress_register_shortcode( 'amapress-ics-viewer', 'amapress_fullcalendar' );
+	amapress_register_shortcode( 'amapress-post-its', 'amapress_postits_shortcode',
+		[
+			'desc' => 'Post-its des tâches courantes (listes émargement..)',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapress-ics-viewer', 'amapress_fullcalendar',
+		[
+			'desc' => 'Calendrier de l\'AMAP',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'amapress-amapien-agenda-viewer', function ( $atts ) {
 		$atts        = wp_parse_args( $atts );
 		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( false );
 
 		return amapress_fullcalendar( $atts );
-	} );
+	},
+		[
+			'desc' => 'Calendrier de l\'amapien',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'amapress-public-agenda-viewer', function ( $atts ) {
 		$atts        = wp_parse_args( $atts );
 		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( true );
@@ -104,39 +209,144 @@ function amapress_register_shortcodes() {
 		amapress_consider_logged( true );
 
 		return $ret;
-	} );
+	},
+		[
+			'desc' => 'Calendrier publique de l\'AMAP',
+			'args' => [
+			]
+		] );
 
-	amapress_register_shortcode( 'amapien-adhesions', 'amapress_display_user_adhesions_shortcode' );
-	amapress_register_shortcode( 'amapien-edit-infos', 'amapress_edit_user_info_shortcode' );
+	amapress_register_shortcode( 'amapien-adhesions', 'amapress_display_user_adhesions_shortcode',
+		[
+			'desc' => 'Liste des inscriptions aux contrats pour un amapien',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapien-edit-infos', 'amapress_edit_user_info_shortcode',
+		[
+			'desc' => 'Permet à un amapien de modifier ses coordonnées',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'amapien-messages', 'amapress_user_messages_shortcode' );
 	amapress_register_shortcode( 'amapien-messages-count', 'amapress_user_messages_count_shortcode' );
-	amapress_register_shortcode( 'amapien-paniers-intermittents', 'amapress_user_paniers_intermittents_shortcode' );
-	amapress_register_shortcode( 'amapien-paniers-intermittents-count', 'amapress_user_paniers_intermittents_count_shortcode' );
-	amapress_register_shortcode( 'les-paniers-intermittents', 'amapress_all_paniers_intermittents_shortcode' );
-	amapress_register_shortcode( 'les-paniers-intermittents-count', 'amapress_all_paniers_intermittents_count_shortcode' );
+	amapress_register_shortcode( 'amapien-paniers-intermittents', 'amapress_user_paniers_intermittents_shortcode',
+		[
+			'desc' => 'Paniers proposés/échangés par un amapien',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapien-paniers-intermittents-count', 'amapress_user_paniers_intermittents_count_shortcode',
+		[
+			'desc' => 'Nombre de paniers proposés/échangés par un amapien',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'les-paniers-intermittents', 'amapress_all_paniers_intermittents_shortcode',
+		[
+			'desc' => 'Paniers disponibles sur la liste des intermittents',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'les-paniers-intermittents-count', 'amapress_all_paniers_intermittents_count_shortcode',
+		[
+			'desc' => 'Nombre de paniers disponibles sur la liste des intermittents',
+			'args' => [
+			]
+		] );
 
-	amapress_register_shortcode( 'mes-contrats', 'amapress_mes_contrats' );
-	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription' );
+	amapress_register_shortcode( 'mes-contrats', 'amapress_mes_contrats',
+		[
+			'desc' => 'Permet l\'inscription aux contrats complémentaires en cours d\'année',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription',
+		[
+			'desc' => 'Permet les inscriptions en ligne',
+			'args' => [
+			]
+		] );
 
-	amapress_register_shortcode( 'intermittent-paniers', 'amapress_intermittent_paniers_shortcode' );
+	amapress_register_shortcode( 'intermittent-paniers', 'amapress_intermittent_paniers_shortcode',
+		[
+			'desc' => 'Paniers réservés par un intermittent',
+			'args' => [
+			]
+		] );
 
 
-	amapress_register_shortcode( 'amapiens-map', 'amapress_amapiens_map_shortcode' );
-	amapress_register_shortcode( 'amapiens-role-list', 'amapress_amapiens_role_list_shortcode' );
+	amapress_register_shortcode( 'amapiens-map', 'amapress_amapiens_map_shortcode',
+		[
+			'desc' => 'Carte des amapiens',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapiens-role-list', 'amapress_amapiens_role_list_shortcode',
+		[
+			'desc' => 'Liste des membres du collectif de l\'AMAP',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'user-info', 'amapress_user_info_shortcode' );
-	amapress_register_shortcode( 'next_events', 'amapress_next_events_shortcode' );
+	amapress_register_shortcode( 'next_events', 'amapress_next_events_shortcode',
+		[
+			'desc' => 'Calendrier des prochains évènements (Slider)',
+			'args' => [
+			]
+		] );
 
 	if ( amapress_is_user_logged_in() ) {
-		amapress_register_shortcode( 'intermittent-desinscription-href', 'amapress_intermittence_desinscription_link' );
+		amapress_register_shortcode( 'intermittent-desinscription-href', 'amapress_intermittence_desinscription_link',
+			[
+				'desc' => 'Lien de désinscription des intermittents',
+				'args' => [
+				]
+			] );
 	}
 
-	amapress_register_shortcode( 'next-distrib-href', 'amapress_next_distrib_shortcode' );
-	amapress_register_shortcode( 'next-distrib-link', 'amapress_next_distrib_shortcode' );
-	amapress_register_shortcode( 'next-distrib-date', 'amapress_next_distrib_shortcode' );
-	amapress_register_shortcode( 'next-emargement-href', 'amapress_next_distrib_shortcode' );
-	amapress_register_shortcode( 'next-emargement-link', 'amapress_next_distrib_shortcode' );
-	amapress_register_shortcode( 'amapress-redirect-next-distrib', 'amapress_next_distrib_shortcode' );
-	amapress_register_shortcode( 'amapress-redirect-next-emargement', 'amapress_next_distrib_shortcode' );
+	amapress_register_shortcode( 'next-distrib-href', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Url de la page de la prochaine distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'next-distrib-link', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Lien vers la page de la prochaine distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'next-distrib-date', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Date de la prochaine distribution',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'next-emargement-href', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Url de la page de la liste d\'émargement de la prochaine distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'next-emargement-link', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Lien vers la page de la liste d\'émargement de la prochaine distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapress-redirect-next-distrib', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Redirige vers la page de la prochaine distributions',
+			'args' => [
+			]
+		] );
+	amapress_register_shortcode( 'amapress-redirect-next-emargement', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Redirige vers la page de la liste d\'émargement de la prochaine distributions',
+			'args' => [
+			]
+		] );
 
 	amapress_register_shortcode( 'liste-emargement-button', function ( $atts, $content = null ) {
 		if ( is_singular( AmapressDistribution::INTERNAL_POST_TYPE ) ) {
@@ -192,20 +402,35 @@ function amapress_register_shortcodes() {
 		}
 
 		return $show ? $content : '';
-	} );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution)',
+			'args' => [
+			]
+		] );
 
 	amapress_register_shortcode( 'nous-contacter', function ( $atts ) {
 		amapress_ensure_no_cache();
 
 		return Amapress::getContactInfos();
-	} );
+	},
+		[
+			'desc' => 'Contenu du formulaire de contact',
+			'args' => [
+			]
+		] );
 
 	amapress_register_shortcode( 'agenda-url', function ( $atts ) {
 		$id  = 'agenda-url-' . md5( uniqid() );
 		$url = esc_attr( Amapress_Agenda_ICAL_Export::get_link_href() );
 
 		return "<div class='input-group'><input id='$id' type='text' value='$url' class='form-control' style='max-width: 80%' /><span class='input-group-addon'><button class='btn btn-secondary copy-agenda-url' type='button' data-clipboard-target='#{$id}'><span class='fa fa-copy' /></button></span><script type='text/javascript'>jQuery(function() { new Clipboard('.copy-agenda-url'); });</script></div>";
-	} );
+	},
+		[
+			'desc' => 'Copieur de lien de configuration de la synchronisation d\'un calendrier ICAL dans l\'agenda de l\'amapien',
+			'args' => [
+			]
+		] );
 
 	amapress_register_shortcode( 'front_next_events', function ( $atts ) {
 		amapress_ensure_no_cache();
@@ -229,7 +454,12 @@ function amapress_register_shortcodes() {
 
 //    }
 		return $agenda;
-	} );
+	},
+		[
+			'desc' => 'Affiche le calendrier de la page d\'accueil',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'front_produits', function ( $atts ) {
 		amapress_ensure_no_cache();
 
@@ -257,7 +487,12 @@ function amapress_register_shortcodes() {
 		}
 
 		return $produits;
-	} );
+	},
+		[
+			'desc' => 'Affiche la liste des producteurs/productions pour la page d\'acceuil',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'front_nous_trouver', function ( $atts ) {
 		amapress_ensure_no_cache();
 
@@ -274,7 +509,12 @@ function amapress_register_shortcodes() {
 		$map = '<h3 id="front-map-title">' . Amapress::getOption( 'front_map_title', 'Où nous trouver ?' ) . '</h3>' . $map_content;
 
 		return $map;
-	} );
+	},
+		[
+			'desc' => 'Affiche la carte des lieux de distributions pour la page d\'accueil',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'front_default_grid', function ( $atts ) {
 		amapress_ensure_no_cache();
 
@@ -298,7 +538,12 @@ function amapress_register_shortcodes() {
                         <div class="' . $atts['map-classes'] . '">' . $map . '</div>
                     </div>
                 </div>';
-	} );
+	},
+		[
+			'desc' => 'Affiche les infos de la page d\'accueil (calendrier, productions, carte)',
+			'args' => [
+			]
+		] );
 
 	amapress_register_shortcode( 'listes-diffusions', function ( $atts ) {
 		if ( ! amapress_is_user_logged_in() ) {
@@ -331,6 +576,11 @@ function amapress_register_shortcodes() {
 		echo '</ul>';
 
 		return ob_get_clean();
-	} );
+	},
+		[
+			'desc' => 'Liste des liste de diffusions (SYMPA/SudOuest) configurées sur le site',
+			'args' => [
+			]
+		] );
 }
 

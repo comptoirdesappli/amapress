@@ -398,10 +398,30 @@ class AmapressUsers {
 		add_action( 'admin_head-user-new.php', array( 'AmapressUsers', 'remove_user_unused_fields' ) );
 		add_action( 'admin_head-user-edit.php', array( 'AmapressUsers', 'remove_user_unused_fields' ) );
 		add_action( 'admin_head-profile.php', array( 'AmapressUsers', 'remove_user_unused_fields' ) );
-		amapress_register_shortcode( 'users_near', array( 'AmapressUsers', 'users_near_shortcode' ) );
-		amapress_register_shortcode( 'trombinoscope', array( 'AmapressUsers', 'trombinoscope_shortcode' ) );
-		amapress_register_shortcode( 'trombinoscope_lieu', array( 'AmapressUsers', 'trombinoscope_lieu_shortcode' ) );
-		amapress_register_shortcode( 'trombinoscope_role', array( 'AmapressUsers', 'trombinoscope_role_shortcode' ) );
+		amapress_register_shortcode( 'users_near', array( 'AmapressUsers', 'users_near_shortcode' ),
+			[
+				'desc' => 'Amapiens proche de moi/d\'un autre amapien',
+				'args' => [
+				]
+			] );
+		amapress_register_shortcode( 'trombinoscope', array( 'AmapressUsers', 'trombinoscope_shortcode' ),
+			[
+				'desc' => 'Trombinoscope des membres de l\'AMAP',
+				'args' => [
+				]
+			] );
+		amapress_register_shortcode( 'trombinoscope_lieu', array( 'AmapressUsers', 'trombinoscope_lieu_shortcode' ),
+			[
+				'desc' => 'Trombinoscope des membres d\'un lieu de distribution de l\'AMAP',
+				'args' => [
+				]
+			] );
+		amapress_register_shortcode( 'trombinoscope_role', array( 'AmapressUsers', 'trombinoscope_role_shortcode' ),
+			[
+				'desc' => 'Trombinoscope des membres avec un certain role',
+				'args' => [
+				]
+			] );
 		// enqueue and localise scripts
 //        wp_enqueue_script('userlikes-handle', plugin_dir_url(__FILE__) . 'js/ajax-userlikes.js', array('jquery'));
 //        wp_localize_script('userlikes-handle', 'user_produit_likebox', array('ajax_url' => admin_url('admin-ajax.php')));

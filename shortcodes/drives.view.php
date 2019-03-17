@@ -11,4 +11,9 @@ function amapress_gdrive_shortcode( $atts, $content = null ) {
 	return '<iframe src="https://drive.google.com/embeddedfolderview?id=' . $a['id'] . '#' . $a['style'] . '" frameborder="0" width="' . $a['width'] . '" height="' . $a['height'] . '" scrolling="auto"> </iframe>';
 }
 
-amapress_register_shortcode( 'google-drive', 'amapress_gdrive_shortcode' ); //make your shortcode all official
+amapress_register_shortcode( 'google-drive', 'amapress_gdrive_shortcode',
+	[
+		'desc' => 'Configure et affiche un google drive',
+		'args' => [
+		]
+	] );
