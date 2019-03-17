@@ -21,8 +21,29 @@ require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/ics.fullcalendar.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/next.events.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/drives.view.php' );
 
+add_action( 'wp_ajax_get_years_from', function () {
+	if ( ! isset( $_POST['year'] ) ) {
+		return '';
+	}
+	$diff = intval( date( 'Y' ) ) - intval( $_POST['year'] );
+	if ( $diff <= 0 ) {
+		$diff = 1;
+	}
+	printf( _n( '%s an', '%s ans', $diff, 'amapress' ), number_format_i18n( $diff ) );
+	die();
+} );
+
 add_filter( 'amapress_init', 'amapress_register_shortcodes' );
 function amapress_register_shortcodes() {
+	amapress_register_shortcode( 'years-since', function ( $atts ) {
+		$atts = shortcode_atts(
+			[ 'year' => '' ],
+			$atts
+		);
+		$year = esc_attr( intval( $atts['year'] ) );
+
+		return "<span class='amp-years-since' data-year='$year'></span>";
+	} );
 	amapress_register_shortcode( 'paged_gallery', 'amapress_generic_paged_gallery_shortcode' );
 	amapress_register_shortcode( 'nous-trouver', 'amapress_where_to_find_us_shortcode' );
 	amapress_register_shortcode( 'recettes', 'amapress_recettes_shortcode' );

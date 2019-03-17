@@ -214,4 +214,14 @@ jQuery(function ($) {
             timeout = setTimeout(delayed, threshold);
         };
     }
+
+    $('.amp-years-since').each(function () {
+        var $this = $(this);
+        $.post(amapress.ajax_url, {
+            action: 'get_years_from',
+            year: $this.data('year'),
+        }, function (response) {
+            $this.text(response);
+        });
+    });
 });
