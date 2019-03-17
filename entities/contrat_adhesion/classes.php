@@ -177,56 +177,56 @@ class AmapressAdhesion extends TitanEntity {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                                = [];
-			$ret['contrat_type']                = [
+			$ret                                     = [];
+			$ret['contrat_type']                     = [
 				'desc' => 'Type du contrat (par ex, Légumes)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModelTitle();
 				}
 			];
-			$ret['contrat_titre']               = [
+			$ret['contrat_titre']                    = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
-			$ret['contrat_sous_titre']          = [
+			$ret['contrat_sous_titre']               = [
 				'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getSubName();
 				}
 			];
-			$ret['contrat_lien']                = [
+			$ret['contrat_lien']                     = [
 				'desc' => 'Lien vers la présentation du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
 				}
 			];
-			$ret['date_debut']                  = [
+			$ret['date_debut']                       = [
 				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin']                    = [
+			$ret['date_fin']                         = [
 				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['date_debut_complete']         = [
+			$ret['date_debut_complete']              = [
 				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j M Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin_complete']           = [
+			$ret['date_fin_complete']                = [
 				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j M Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['tous_referents']              = [
+			$ret['tous_referents']                   = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -242,7 +242,7 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['tous_referents_email']        = [
+			$ret['tous_referents_email']             = [
 				'desc' => 'Nom des référents du contrat avec emails',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -258,7 +258,7 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['referents']                   = [
+			$ret['referents']                        = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -274,7 +274,7 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['referents_email']             = [
+			$ret['referents_email']                  = [
 				'desc' => 'Nom des référents du contrat avec emails',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -290,213 +290,191 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['adherent']                    = [
+			$ret['adherent']                         = [
 				'desc' => 'Prénom Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getDisplayName();
 				}
 			];
-			$ret['adherent.nom']                = [
+			$ret['adherent.nom']                     = [
 				'desc' => 'Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			];
-			$ret['adherent.prenom']             = [
+			$ret['adherent.prenom']                  = [
 				'desc' => 'Prénom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->first_name;
 				}
 			];
-			$ret['adherent.adresse']            = [
+			$ret['adherent.adresse']                 = [
 				'desc' => 'Adresse adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
 			];
-			$ret['adherent.tel']                = [
+			$ret['adherent.tel']                     = [
 				'desc' => 'Téléphone adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getTelephone();
 				}
 			];
-			$ret['adherent.email']              = [
+			$ret['adherent.email']                   = [
 				'desc' => 'Email adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getEmail();
 				}
 			];
-			$ret['producteur.nom']              = [
+			$ret['producteur.nom']                   = [
 				'desc' => 'Nom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->last_name;
 				}
 			];
-			$ret['producteur.prenom']           = [
+			$ret['producteur.prenom']                = [
 				'desc' => 'Prénom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->first_name;
 				}
 			];
-			$ret['producteur.ferme']            = [
+			$ret['producteur.ferme']                 = [
 				'desc' => 'Nom de la ferme producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getNomExploitation();
 				}
 			];
-			$ret['producteur.ferme.adresse']    = [
+			$ret['producteur.ferme.adresse']         = [
 				'desc' => 'Adresse de la ferme producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getAdresseExploitation();
 				}
 			];
-			$ret['producteur.adresse']          = [
+			$ret['producteur.adresse']               = [
 				'desc' => 'Adresse producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getFormattedAdresse();
 				}
 			];
-			$ret['producteur.tel']              = [
+			$ret['producteur.tel']                   = [
 				'desc' => 'Téléphone producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getTelephone();
 				}
 			];
-			$ret['producteur.email']            = [
+			$ret['producteur.email']                 = [
 				'desc' => 'Email producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getEmail();
 				}
 			];
-			$ret['lieu']                        = [
+			$ret['lieu']                             = [
 				'desc' => 'Lieu de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getLieuTitle();
 				}
 			];
-			$ret['lieu_court']                  = [
+			$ret['lieu_court']                       = [
 				'desc' => 'Lieu de distribution (nom court)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getLieu()->getShortName();
 				}
 			];
-			$ret['lieu_heure_debut']            = [
+			$ret['lieu_heure_debut']                 = [
 				'desc' => 'Heure de début de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'H:i', $adh->getLieu()->getHeure_debut() );
 				}
 			];
-			$ret['lieu_heure_fin']              = [
+			$ret['lieu_heure_fin']                   = [
 				'desc' => 'Heure de fin de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'H:i', $adh->getLieu()->getHeure_fin() );
 				}
 			];
-			$ret['contrat_debut']               = [
+			$ret['contrat_debut']                    = [
 				'desc' => 'Début du contrat (mois/année)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'm/Y', $adh->getContrat_instance()->getDate_debut() );
 				}
 			];
-			$ret['contrat_fin']                 = [
+			$ret['contrat_fin']                      = [
 				'desc' => 'Fin du contrat (mois/année)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'm/Y', $adh->getContrat_instance()->getDate_fin() );
 				}
 			];
-			$ret['contrat_debut_annee']         = [
+			$ret['contrat_debut_annee']              = [
 				'desc' => 'Année de début du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_debut() );
 				}
 			];
-			$ret['contrat_fin_annee']           = [
+			$ret['contrat_fin_annee']                = [
 				'desc' => 'Année de fin du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'Y', $adh->getContrat_instance()->getDate_fin() );
 				}
 			];
-			$ret['nb_paiements']                = [
+			$ret['nb_paiements']                     = [
 				'desc' => 'Nombre de chèques choisi',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getPaiements();
 				}
 			];
-			$ret['nb_distributions']            = [
+			$ret['nb_distributions']                 = [
 				'desc' => 'Nombre de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getRemainingDatesWithFactors();
 				}
 			];
-			$ret['nb_dates']                    = [
+			$ret['nb_dates']                         = [
 				'desc' => 'Nombre de dates de distributions restantes',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return count( $adh->getRemainingDates() );
 				}
 			];
-			$ret['dates_rattrapages']           = [
+			$ret['dates_rattrapages']                = [
 				'desc' => 'Description des dates de distribution de rattrapage',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$rattrapage        = [];
-					$double_rattrapage = [];
-					$un5_rattrapage    = [];
-					$dates_factors     = 0;
-					$dates             = $adh->getRemainingDates();
-					foreach ( $dates as $d ) {
-						$the_factor = $adh->getContrat_instance()->getDateFactor( $d );
-						if ( abs( $the_factor - 2 ) < 0.001 ) {
-							$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
-						} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
-							$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
-						} else if ( abs( $the_factor - 1 ) > 0.001 ) {
-							$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
-						}
-						$dates_factors += $the_factor;
-					}
-
-					if ( ! empty( $double_rattrapage ) ) {
-						$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
-					}
-					if ( ! empty( $un5_rattrapage ) ) {
-						$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
-					}
-
-					return implode( ', ', $rattrapage );
+					return implode( ', ', $adh->getFormattedRattrapages() );
 				}
 			];
-			$ret['dates_distribution_par_mois'] = [
+			$ret['dates_rattrapages_list']           = [
+				'desc' => 'Listes html des dates de distribution de rattrapage',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return implode( '<br />', array_map( function ( $s ) {
+						return '* ' . $s;
+					}, $adh->getFormattedRattrapages() ) );
+				}
+			];
+			$ret['dates_distribution_par_mois']      = [
 				'desc' => 'Dates de distributions regroupées par mois',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$dates         = $adh->getRemainingDates();
-					$grouped_dates = from( $dates )->groupBy( function ( $d ) {
-						return date_i18n( 'F Y', $d );
-					} );
-
-					$grouped_dates_array = [];
-					foreach ( $grouped_dates as $k => $v ) {
-						$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
-								function ( $d ) {
-									return date_i18n( 'd', $d );
-								}, $v
-							) );
-					}
-
-					return implode( ' ; ', $grouped_dates_array );
+					return implode( ' ; ', $adh->getFormattedDatesDistribMois() );
 				}
 			];
-			$ret['premiere_date']               = [
+			$ret['dates_distribution_par_mois_list'] = [
+				'desc' => 'Liste html des dates de distributions regroupées par mois',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return implode( '<br />', array_map( function ( $s ) {
+						return '* ' . $s;
+					}, $adh->getFormattedDatesDistribMois() ) );
+				}
+			];
+			$ret['premiere_date']                    = [
 				'desc' => 'Première date de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates() )->firstOrDefault() );
 				}
 			];
-			$ret['derniere_date']               = [
+			$ret['derniere_date']                    = [
 				'desc' => 'Dernière date de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', from( $adh->getRemainingDates() )->lastOrDefault() );
 				}
 			];
-			$ret['dates_distribution']          = [
+			$ret['dates_distribution']               = [
 				'desc' => 'Liste des dates de distribution',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_map( function ( $d ) {
@@ -504,7 +482,7 @@ class AmapressAdhesion extends TitanEntity {
 					}, $adh->getRemainingDates() ) );
 				}
 			];
-			$ret['option_paiements']            = [
+			$ret['option_paiements']                 = [
 				'desc' => 'Option de paiement choisie',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
@@ -512,7 +490,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $o['desc'];
 				}
 			];
-			$ret['quantites']                   = [
+			$ret['quantites']                        = [
 				'desc' => 'Quantité(s) choisie(s)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -522,7 +500,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString();
 				}
 			];
-			$ret['quantites_prix']              = [
+			$ret['quantites_prix']                   = [
 				'desc' => 'Quantité(s) choisie(s) avec prix unitaire',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -532,13 +510,13 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString( null, true );
 				}
 			];
-			$ret['total']                       = [
+			$ret['total']                            = [
 				'desc' => 'Total du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return Amapress::formatPrice( $adh->getTotalAmount() );
 				}
 			];
-			self::$properties                   = $ret;
+			self::$properties                        = $ret;
 		}
 
 		return self::$properties;
@@ -558,18 +536,18 @@ class AmapressAdhesion extends TitanEntity {
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
 			$ret[ $prop_name ] = $prop_desc;
 		}
-		$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
-		$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
-		$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
-		$ret["quantite_nb_dates"]      = '(Tableau quantité) Nombre de dates de distribution restantes';
-		$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes (rattrapages inclus)';
-		$ret["quantite_dates_distrib"] = '(Tableau quantité) Distribution restantes avec rattrapages';
-		$ret["quantite_dates"]         = '(Tableau quantité) Dates de distribution restantes';
-		$ret["quantite_sous_total"]    = '(Tableau quantité) Prix pour la quantité choisie';
-		$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
-		$ret["quantite_nombre"]        = '(Tableau quantité) Facteur quantité choisi';
-		$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
-		$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité ; pour les paniers modulables : quantités livrées à la date donnée';
+		$ret["quantite"]                         = '(Tableau quantité) Libellé quantité avec facteur';
+		$ret["quantite_simple"]                  = '(Tableau quantité) Libellé quantité';
+		$ret["quantite_code"]                    = '(Tableau quantité) Code quantité';
+		$ret["quantite_nb_dates"]                = '(Tableau quantité) Nombre de dates de distribution restantes';
+		$ret["quantite_nb_distrib"]              = '(Tableau quantité) Nombre de distribution restantes (rattrapages inclus)';
+		$ret["quantite_dates_distrib"]           = '(Tableau quantité) Distribution restantes avec rattrapages';
+		$ret["quantite_dates"]                   = '(Tableau quantité) Dates de distribution restantes';
+		$ret["quantite_sous_total"]              = '(Tableau quantité) Prix pour la quantité choisie';
+		$ret["quantite_total"]                   = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
+		$ret["quantite_nombre"]                  = '(Tableau quantité) Facteur quantité choisi';
+		$ret["quantite_prix_unitaire"]           = '(Tableau quantité) Prix à l\'unité';
+		$ret["quantite_description"]             = '(Tableau quantité) Description de la quantité ; pour les paniers modulables : quantités livrées à la date donnée';
 		$ret["quantite_description_no_price"]    = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée';
 		$ret["quantite_description_br"]          = '(Tableau quantité) pour les paniers modulables : quantités livrées à la date donnée avec retour à la ligne entre chaque';
 		$ret["quantite_description_br_no_price"] = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
@@ -714,6 +692,51 @@ class AmapressAdhesion extends TitanEntity {
 		}
 	}
 
+	public function getFormattedDatesDistribMois( $quantite_id = null ) {
+		$dates         = $this->getRemainingDates( $quantite_id );
+		$grouped_dates = from( $dates )->groupBy( function ( $d ) {
+			return date_i18n( 'F Y', $d );
+		} );
+
+		$grouped_dates_array = [];
+		foreach ( $grouped_dates as $k => $v ) {
+			$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+					function ( $d ) {
+						return date_i18n( 'd', $d );
+					}, $v
+				) );
+		}
+
+		return $grouped_dates_array;
+	}
+
+	public function getFormattedRattrapages( $quantite_id = null ) {
+		$rattrapage        = [];
+		$double_rattrapage = [];
+		$un5_rattrapage    = [];
+		$dates_factors     = 0;
+		$dates             = $this->getRemainingDates( $quantite_id );
+		foreach ( $dates as $d ) {
+			$the_factor = $this->getContrat_instance()->getDateFactor( $d );
+			if ( abs( $the_factor - 2 ) < 0.001 ) {
+				$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
+			} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
+				$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
+			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
+				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
+			}
+			$dates_factors += $the_factor;
+		}
+
+		if ( ! empty( $double_rattrapage ) ) {
+			$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
+		}
+		if ( ! empty( $un5_rattrapage ) ) {
+			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
+		}
+
+		return $rattrapage;
+	}
 
 	/** @return AmapressContrat_instance */
 	public function getContrat_instance() {
