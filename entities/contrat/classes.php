@@ -747,6 +747,96 @@ class AmapressContrat_instance extends TitanEntity {
 					) );
 			}
 		];
+		$ret['quantites_table_dates'] = [
+			'desc' => 'Table des quantités avec dates spécifiques',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				$columns   = [];
+				$columns[] = array(
+					'title' => 'Quantité',
+					'data'  => 'quantite',
+				);
+				$columns[] = array(
+					'title' => 'Description',
+					'data'  => 'quantite_description',
+				);
+				$columns[] = array(
+					'title' => 'Nombre de distributions',
+					'data'  => 'quantite_nb_distrib',
+				);
+				$columns[] = array(
+					'title' => 'Dates de distributions',
+					'data'  => 'quantite_dates_distrib',
+				);
+				$columns[] = array(
+					'title' => 'Prix unitaire',
+					'data'  => 'quantite_prix_unitaire',
+				);
+				if ( $adh->isPanierVariable() || $adh->isQuantiteVariable() ) {
+					$columns[] = array(
+						'title' => 'Unité',
+						'data'  => 'quantite_unite',
+					);
+				}
+				$lines = $adh->getQuantiteTables( $first_date_distrib );
+				static $id = 1;
+
+				return amapress_get_datatable( 'quant-table' . ( $id ++ ), $columns, $lines,
+					array(
+						'paging'       => false,
+						'searching'    => false,
+						'nowrap'       => false,
+						'responsive'   => false,
+						'init_as_html' => true,
+					) );
+			}
+		];
+		$ret['quantites_table_dates_total'] = [
+			'desc' => 'Table des quantités avec total et dates spécifiques',
+			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
+				$columns   = [];
+				$columns[] = array(
+					'title' => 'Quantité',
+					'data'  => 'quantite',
+				);
+				$columns[] = array(
+					'title' => 'Description',
+					'data'  => 'quantite_description',
+				);
+				$columns[] = array(
+					'title' => 'Nombre de distributions',
+					'data'  => 'quantite_nb_distrib',
+				);
+				$columns[] = array(
+					'title' => 'Dates de distributions',
+					'data'  => 'quantite_dates_distrib',
+				);
+				$columns[] = array(
+					'title' => 'Prix unitaire',
+					'data'  => 'quantite_prix_unitaire',
+				);
+				if ( $adh->isPanierVariable() || $adh->isQuantiteVariable() ) {
+					$columns[] = array(
+						'title' => 'Unité',
+						'data'  => 'quantite_unite',
+					);
+				}
+				$columns[] = array(
+					'title' => 'Total',
+					'data'  => 'quantite_total',
+				);
+				$lines     = $adh->getQuantiteTables( $first_date_distrib );
+				static $id = 1;
+
+				return amapress_get_datatable( 'quant-table' . ( $id ++ ), $columns, $lines,
+					array(
+						'paging'       => false,
+						'searching'    => false,
+						'nowrap'       => false,
+						'responsive'   => false,
+						'init_as_html' => true,
+					) );
+			}
+		];
 
 		return $ret;
 	}
