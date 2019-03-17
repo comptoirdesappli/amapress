@@ -307,4 +307,17 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			return $this->getLieu_externe_nom();
 		}
 	}
+
+	public static function getRespAmapEventsEmails( $lieu_id ) {
+		return AmapressUser::getEmailsForAmapRole( intval( Amapress::getOption( 'resp-amap_event-amap-role' ), $lieu_id ) );
+	}
+
+	public static function getResponsableAmapEventsReplyto() {
+		$emails = self::getRespAmapEventsEmails( null );
+		if ( empty( $emails ) ) {
+			return [];
+		}
+
+		return 'Reply-To: ' . implode( ',', $emails );
+	}
 }

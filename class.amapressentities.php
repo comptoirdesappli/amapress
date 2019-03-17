@@ -247,6 +247,16 @@ class AmapressEntities {
 							'desc'    => '',
 							'options' => amapress_visite_available_recall_options(),
 						),
+						'Mails - Evènement AMAP - Inscription - Rappel'           => array(
+							'id'      => 'amp_tab_recall_amap_event_inscr',
+							'desc'    => '',
+							'options' => amapress_amap_event_inscription_recall_options(),
+						),
+						'Mails - Evènement AMAP - Inscription possible - Rappel'  => array(
+							'id'      => 'amp_tab_recall_amap_event_avail',
+							'desc'    => '',
+							'options' => amapress_amap_event_available_recall_options(),
+						),
 						'Distributions - Définir horaires particuliers'           => array(
 							'id'      => 'amp_tab_distrib_hours_setter',
 							'desc'    => '',
