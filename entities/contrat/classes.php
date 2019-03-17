@@ -445,8 +445,8 @@ class AmapressContrat_instance extends TitanEntity {
 		return $rattrapage;
 	}
 
-	public function getFormattedDatesDistribMois( $first_date_distrib ) {
-		$dates         = $this->getRemainingDates( $first_date_distrib );
+	public function getFormattedDatesDistribMois( $first_date_distrib, $quantite_id = null ) {
+		$dates         = $this->getRemainingDates( $first_date_distrib, $quantite_id );
 		$grouped_dates = from( $dates )->groupBy( function ( $d ) {
 			return date_i18n( 'F Y', $d );
 		} );
