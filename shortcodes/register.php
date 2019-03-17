@@ -97,23 +97,13 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'mes-contrats', 'amapress_mes_contrats' );
 	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription' );
 
-
-//    amapress_register_shortcode('intermittent-adhesions', 'amapress_display_intermittent_adhesions_shortcode');
-//    amapress_register_shortcode('intermittent-inscription', 'amapress_display_intermittent_inscription_shortcode');
 	amapress_register_shortcode( 'intermittent-paniers', 'amapress_intermittent_paniers_shortcode' );
 
 
 	amapress_register_shortcode( 'amapiens-map', 'amapress_amapiens_map_shortcode' );
 	amapress_register_shortcode( 'amapiens-role-list', 'amapress_amapiens_role_list_shortcode' );
-//	amapress_register_shortcode( 'contrat-info', 'amapress_contrat_info_shortcode' );
 	amapress_register_shortcode( 'user-info', 'amapress_user_info_shortcode' );
-	amapress_register_shortcode( 'contrat-title', 'amapress_contrat_title_shortcode' );
-	amapress_register_shortcode( 'contrat-header', 'amapress_contrat_header_shortcode' );
-	amapress_register_shortcode( 'contrat-footer', 'amapress_contrat_footer_shortcode' );
 	amapress_register_shortcode( 'next_events', 'amapress_next_events_shortcode' );
-	amapress_register_shortcode( 'events_calendar', function () {
-		return 'COMING SOON';
-	} );
 
 	if ( amapress_is_user_logged_in() ) {
 		amapress_register_shortcode( 'intermittent-desinscription-href', 'amapress_intermittence_desinscription_link' );
