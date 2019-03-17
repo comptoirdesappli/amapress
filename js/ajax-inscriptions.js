@@ -132,6 +132,30 @@
             $this.parent().html(response);
         });
         return false;
+    }).on('click', '.event-desinscrire-button', function () {
+        var $this = jQuery(this);
+        var data = {
+            'action': 'desinscrire_amap_event_action',
+            'visite': $this.data('event'),
+            'user': $this.data('user')
+        };
+        //var $parentForm = $this.parent('form');
+        //if ($parentForm.length > 0) {
+        //    if (!$parentForm.validate()) return;
+        //    data.user = $('select[name=user]', $parentForm).val();
+        //}
+
+        $this.prop("disabled", true);
+        // We can also pass the url value separately from ajaxurl for front end AJAX implementations
+        jQuery.post(inscriptions.ajax_url, data, function (response) {
+            if (response == 'error') {
+                alert('Erreur');
+                $this.prop("disabled", false);
+                return;
+            }
+            $this.parent().html(response);
+        });
+        return false;
     });
     // jQuery('.echanger-panier-button').click(function () {
     //     var $this=jQuery(this);

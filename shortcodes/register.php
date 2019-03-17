@@ -56,6 +56,7 @@ function amapress_register_shortcodes() {
 	} );
 	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode' );
 	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode' );
+	amapress_register_shortcode( 'inscription-amap-event', 'amapress_inscription_amap_event_shortcode' );
 
 //    amapress_register_shortcode('paniers-intermittents-list', 'amapress_intermittents_paniers_list_shortcode');
 	amapress_register_shortcode( 'echanger-paniers-list', 'amapress_echanger_panier_shortcode' );
