@@ -2760,7 +2760,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
-						'Placeholders - contrat vierge'       => array(
+						'Placeholders - contrat vierge'                 => array(
 							'id'      => 'paper_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2774,7 +2774,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								)
 							)
 						),
-						'Placeholders - production'           => array(
+						'Placeholders - production'                     => array(
 							'id'      => 'pres_prod_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2788,7 +2788,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								)
 							)
 						),
-						'Placeholders - contrat personnalisé' => array(
+						'Placeholders - contrat personnalisé'           => array(
 							'id'      => 'adhesion_contrat_placeholders',
 							'desc'    => '',
 							'options' => array(
@@ -2802,7 +2802,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								)
 							)
 						),
-						'Configuration des paniers (Taille/Quantités)' => array(
+						'Configuration des paniers (Taille/Quantités)'  => array(
 							'id'      => 'conf_paniers',
 							'desc'    => '',
 							'options' => array(
@@ -2825,6 +2825,42 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'type'   => 'custom',
 									'custom' => function () {
 										return AmapressAdhesion_paiement::getPlaceholdersHelp( [], true, false );
+									}
+								)
+							)
+						),
+						'Shortcodes'                                    => array(
+							'id'      => 'shortcodes',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'     => 'shortcodes_cust',
+									'name'   => 'Shortcodes',
+									'type'   => 'custom',
+									'custom' => function () {
+										$ret = '<table class="placeholders-help">';
+										$ret .= '<thead><tr><th>Shortcode</th><th>Description</th></tr></thead>';
+										$ret .= '<tbody>';
+										global $all_amapress_shortcodes_descs;
+										ksort( $all_amapress_shortcodes_descs );
+										foreach ( $all_amapress_shortcodes_descs as $k => $desc ) {
+											if ( empty( $desc['desc'] ) ) {
+												continue;
+											}
+											$args = '';
+											if ( ! empty( $desc['args'] ) ) {
+												$args = '<ul><li>' . implode( '</li><li>',
+														array_map( function ( $kk, $vv ) {
+															return '<strong>' . esc_html( $kk ) . '</strong>: ' . esc_html( $vv );
+														}, array_keys( $desc['args'] ), array_values( $desc['args'] ) ) ) . '</li></ul>';
+											}
+											$ret .= '<tr><td>' . esc_html( $k ) . '</td><td>' . esc_html( $desc['desc'] ) . $args . '</td></tr>';
+										}
+
+										$ret .= '</tbody>';
+										$ret .= '</table>';
+
+										return $ret;
 									}
 								)
 							)
