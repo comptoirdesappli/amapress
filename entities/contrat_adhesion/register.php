@@ -30,15 +30,15 @@ function amapress_register_entities_adhesion( $entities ) {
 		),
 		'row_actions'      => array(
 			//visibilité checkée dans amapress_row_actions_adhesion
-			'renew'             => 'Renouveler',
-			'close'             => [
+			'renew'                => 'Renouveler',
+			'close'                => [
 				'label'     => 'Clôturer à la fin',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion::CONFIRMED == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},
 				'confirm'   => true,
 			],
-			'generate_contrat'  => [
+			'generate_contrat'     => [
 				'label'     => 'Générer le contrat (DOCX)',
 				'condition' => function ( $adh_id ) {
 					if ( TitanFrameworkOption::isOnNewScreen() ) {
@@ -74,14 +74,14 @@ function amapress_register_entities_adhesion( $entities ) {
 					return ! empty( $adh->getContrat_instance()->getContratModelDocFileName() );
 				},
 			],
-			'send_confirmation' => [
+			'send_confirmation'    => [
 				'label'     => 'Envoyer mail confirmation',
 				'confirm'   => true,
 				'condition' => function ( $adh_id ) {
 					return TitanFrameworkOption::isOnEditScreen();
 				},
 			],
-			'accept'            => [
+			'accept'               => [
 				'label'     => 'Confirmer inscription',
 				'confirm'   => true,
 				'condition' => function ( $adh_id ) {
@@ -937,6 +937,12 @@ function amapress_get_contrat_quantite_datatable(
 	$date = null,
 	$options = array()
 ) {
+	if ( ! $date ) {
+		$next_distrib = AmapressDistribution::getNextDistribution( $lieu_id, $contrat_instance_id );
+		if ( $next_distrib ) {
+			$date = $next_distrib->getDate();
+		}
+	}
 
 	$options = wp_parse_args(
 		$options,
