@@ -65,7 +65,7 @@ function amapress_register_entities_contrat( $entities ) {
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
-			echo '<h2>Présentation du producteur et de sa production <em>(par ex, Légumes, Champignons)</em></h2>';
+			echo '<h2>Présentation de la production <em>(Légumes, Champignons, Pains...)</em></h2>';
 		},
 		'fields'                  => array(
 //			'amapress_icon_id' => array(

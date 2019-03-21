@@ -41,7 +41,7 @@ function amapress_register_entities_producteur( $entities ) {
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
-			echo '<h2>Historique de la ferme et du producteur</h2>';
+			echo '<h2>Présentation du producteur <em>(Biographie, historique de la ferme...)</em></h2>';
 		},
 		'fields'                  => array(
 			'nom_exploitation'     => array(

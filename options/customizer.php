@@ -565,13 +565,13 @@ function amapress_customizer_init() {
 		'panel' => 'Amapress Presentation',
 	) );
 	$section->createOption( array(
-		'name'    => __( 'Présentation du producteur', 'amapress' ),
+		'name'    => __( 'Présentation de la production', 'amapress' ),
 		'id'      => 'pres_producteur_title',
 		'type'    => 'text',
-		'default' => 'Présentation du producteur',
+		'default' => 'Présentation de la production',
 	) );
 	$section->createOption( array(
-		'name'    => __( 'Présentation du contrant', 'amapress' ),
+		'name'    => __( 'Présentation du contrat', 'amapress' ),
 		'id'      => 'pres_contrat_title',
 		'type'    => 'text',
 		'default' => 'Présentation du contrat',

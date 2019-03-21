@@ -90,7 +90,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
 	$prod_user    = $prod->getUserId();
 
-	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation du producteur' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id );
+	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation de la production' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id );
 	$content .= '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>';
 	$content .= '<div class="contrat-pres-prod">' . wpautop( get_the_content() ) . '</div>';
 	if ( $edit_contrat_url = get_edit_post_link( get_the_ID() ) ) {
