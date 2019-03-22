@@ -51,7 +51,7 @@ function amapress_handle_and_get_action_messages() {
 			'type'    => 'success',
 		),
 		'fill_fields'                 => array(
-			'content' => 'Merci de remplir tous les champs requis.',
+			'content' => 'Remplir tous les champs requis.',
 			'type'    => 'error',
 		),
 	);

@@ -58,8 +58,8 @@ function amapress_post_validation() {
             };
             jQuery.validator.addMethod("multicheckReq", function (value, element) {
                 return jQuery('input:checkbox:checked,input:radio:checked', jQuery(element).closest('fieldset')).length > 0;
-            }, "Merci de sélectionner au moins un élément");
-            jQuery.validator.addMethod("exclusiveCheckgroup", exclusiveGroupCheckFunction, "Merci de sélectionner des élements dans un seul groupe");
+            }, "Sélectionner au moins un élément");
+            jQuery.validator.addMethod("exclusiveCheckgroup", exclusiveGroupCheckFunction, "Sélectionner des élements dans un seul groupe");
             jQuery.validator.addMethod("exclusiveContrat", exclusiveGroupCheckFunction, "Attention, vous avez sélectionné des produits/quantités concernant des contrats différents !");
             jQuery.validator.addMethod("tinymcerequired", function (value, element) {
                 var content = tinymce.get(element.id).getContent({format: 'text'});

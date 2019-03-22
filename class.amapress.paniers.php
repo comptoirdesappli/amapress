@@ -254,7 +254,7 @@ class AmapressPaniers {
 
 		$contrat = intval( get_post_meta( intval( $panier_id ), 'amapress_panier_contrat_instance', true ) );
 		if ( ! $contrat ) {
-			return 'Merci de sélectionner le contrat associé';
+			return 'Sélectionner le contrat associé';
 		}
 		$c = AmapressContrat_instance::getBy( $contrat );
 		if ( $c->isPanierVariable() ) {
@@ -301,7 +301,7 @@ class AmapressPaniers {
 			$lieu_ids = array_map( 'intval', $lieu_ids );
 		}
 		if ( count( $lieu_ids ) == 0 ) {
-			return 'Merci de sélectionner les lieux associés';
+			return 'Sélectionner les lieux associés';
 		}
 
 		$contrat_modele = get_post_meta( intval( $contrat ), 'amapress_contrat_instance_model', true );
@@ -427,7 +427,7 @@ class AmapressPaniers {
 
 		$contrat = intval( get_post_meta( intval( $panier_id ), 'amapress_panier_contrat_instance', true ) );
 		if ( ! $contrat ) {
-			return 'Merci de sélectionner le contrat associé';
+			return 'Sélectionner le contrat associé';
 		}
 		//$abos = get_posts(array('post_type' => 'amps_contrat','order'=>'ASC','orderby'=>'value','key'=>'amapress_contrat_instance_code', 'include'=>$abo_ids));
 		$abos = get_posts( array(
@@ -966,7 +966,7 @@ class AmapressPaniers {
 
 		$pani = AmapressPanier::getBy( $panier );
 		if ( $pani->getContrat_instance() == null ) {
-			return 'Merci de sélectionner le contrat associé';
+			return 'Sélectionner le contrat associé';
 		}
 		$quantites = AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() );
 
