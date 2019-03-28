@@ -740,7 +740,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								'menu_title' => 'Calendrier',
 								'position'   => '25.2',
 								'capability' => 'edit_contrat_paiement',
-								'icon'       => 'dashicons-none flaticon-pen',
+								'menu_icon'  => 'dashicons-calendar-alt',
 							),
 							'options'  => array(),
 							'tabs'     => function () {
@@ -790,7 +790,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								'menu_title' => 'Quantités',
 								'position'   => '25.2',
 								'capability' => 'edit_distribution',
-								'icon'       => 'dashicons-none flaticon-pen',
+								'menu_icon'  => 'dashicons-chart-pie',
 							),
 							'options'  => array(),
 							'tabs'     => function () {
@@ -838,7 +838,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								'menu_title' => 'Statistiques',
 								'position'   => '25.2',
 								'capability' => 'edit_distribution',
-								'icon'       => 'dashicons-none flaticon-pen',
+								'menu_icon'  => 'dashicons-chart-bar',
 							),
 							'options'  => array(
 								array(
