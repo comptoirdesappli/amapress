@@ -162,13 +162,19 @@ function amapress_register_entities_distribution( $entities ) {
 				'group' => '1/ Partage',
 			),
 			'contrats'          => array(
-				'name'      => amapress__( 'Contrats' ),
-				'type'      => 'multicheck-posts',
-				'post_type' => 'amps_contrat_inst',
-				'group'     => '1/ Partage',
-				'readonly'  => true,
-				'hidden'    => true,
-				'desc'      => 'Contrats',
+				'name'       => amapress__( 'Contrats' ),
+				'type'       => 'multicheck-posts',
+				'post_type'  => 'amps_contrat_inst',
+				'group'      => '1/ Partage',
+				'readonly'   => true,
+				'hidden'     => true,
+				'desc'       => 'Contrats',
+				'orderby'    => 'post_title',
+				'order'      => 'ASC',
+				'top_filter' => array(
+					'name'        => 'amapress_contrat_inst',
+					'placeholder' => 'Tous les contrats'
+				),
 //                'searchable' => true,
 			),
 			'paniers'           => array(
