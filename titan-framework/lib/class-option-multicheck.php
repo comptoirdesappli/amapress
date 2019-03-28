@@ -160,20 +160,31 @@ class TitanFrameworkOptionMulticheck extends TitanFrameworkOption {
 		}
 	}
 
-	public function echoFilter( $args ) {
+	public
+	function echoFilter(
+		$args
+	) {
 		$placeholder = empty( $args['placeholder'] ) ? '— ' . __( 'Tous', TF_I18NDOMAIN ) . ' —' : $args['placeholder'];
 		$name        = $args['name'];
 
 		if ( is_callable( $args['custom_options'], false ) ) {
 			$options = call_user_func( $args['custom_options'], $args );
 		} else {
-//			$old_placeholder = isset($this->settings['placeholder']) ? $this->settings['placeholder'] : '';
-//			$this->settings['placeholder'] = $placeholder;
-			$options = array_merge( array( '' => $placeholder ), $this->fetchOptionsWithCache() );
-//			$this->settings['placeholder'] = $old_placeholder;
+			$old_placeholder               = $this->settings['placeholder'];
+			$this->settings['placeholder'] = $placeholder;
+			$options                       = $this->fetchOptionsWithCache();
+			$this->settings['placeholder'] = $old_placeholder;
 		}
 
-		if ( count( $options ) <= 2 ) {
+		if ( ! isset( $options[''] ) ) {
+			$new_options     = [];
+			$new_options[''] = $placeholder;
+			foreach ( $options as $k => $v ) {
+				$new_options[ $k ] = $v;
+			}
+			$options = $new_options;
+		}
+		if ( count( $options ) <= 1 ) {
 			return;
 		}
 
