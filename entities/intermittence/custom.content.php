@@ -306,12 +306,12 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 						'show_tel'   => 'force',
 						'show_email' => 'force',
 					) );
-					$state .= '<button type="button" class="btn btn-default amapress-ajax-button validate-echange" data-user="' . $user->ID . '" data-confirm="Etes-vous sûr de vouloir valider la reprise de votre panier ?" data-action="validate_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
+					$state .= '<div><button type="button" class="btn btn-default amapress-ajax-button validate-echange" data-user="' . $user->ID . '" data-confirm="Etes-vous sûr de vouloir valider la reprise de votre panier ?" data-action="validate_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
 						}, $adh ) ) . '">Valider échange (' . $user->getDisplayName() . ')</button><br/>';
 					$state .= '<button type="button" class="btn btn-default amapress-ajax-button reject-echange" data-user="' . $user->ID . '" data-confirm="Etes-vous sûr de vouloir valider la propositio, ?" data-action="reject_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">Rejet échange (' . $user->getDisplayName() . ')</button>';
+						}, $adh ) ) . '">Rejet échange (' . $user->getDisplayName() . ')</button></div>';
 					$state .= '</div>';
 				}
 				if ( $ad->getRepreneurId() ) {
