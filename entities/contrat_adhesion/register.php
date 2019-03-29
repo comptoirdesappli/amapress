@@ -267,7 +267,8 @@ function amapress_register_entities_adhesion( $entities ) {
 					}
 				},
 				'required' => true,
-//				'desc'     => 'Statut',
+				'readonly' => 'amapress_is_contrat_adhesion_readonly',
+				//				'desc'     => 'Statut',
 			),
 			'quantites_editor'  => array(
 				'name'        => amapress__( 'Contrat et Quantité(s)' ),
@@ -398,6 +399,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'default'       => function ( $option = null ) {
 					return amapress_time();
 				},
+				'readonly'      => 'amapress_is_contrat_adhesion_readonly',
 				'top_filter'    => array(
 					'name'           => 'amapress_date',
 					'placeholder'    => 'Toutes les dates',
@@ -458,6 +460,7 @@ jQuery(function($) {
 				'searchable'        => true,
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
+				'readonly'          => 'amapress_is_contrat_adhesion_readonly',
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'
@@ -505,6 +508,7 @@ jQuery(function($) {
 				'required'     => false,
 				'desc'         => 'Sélectionner un Co-Adhérent 1. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
 				'group'        => '4/ Coadhérents',
+				'readonly'     => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
@@ -514,6 +518,7 @@ jQuery(function($) {
 				'required'     => false,
 				'desc'         => 'Sélectionner un Co-Adhérent 2. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
 				'group'        => '4/ Coadhérents',
+				'readonly'     => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
@@ -523,6 +528,7 @@ jQuery(function($) {
 				'required'     => false,
 				'desc'         => 'Sélectionner un Co-Adhérent 3. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
 				'group'        => '4/ Coadhérents',
+				'readonly'     => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete' => true,
 				'searchable'   => true,
 			),
@@ -572,33 +578,30 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'csv'         => false,
 			),
-//			'no_renew'       => array(
-//				'name'        => amapress__( 'Pas de renouvellement' ),
-//				'type'        => 'checkbox',
-//				'group'       => '4/ Renouvellement',
-//				'desc'        => 'Cocher cette case si l\'amapien ne souhaite pas renouveller son contrat',
-//				'show_column' => false,
-//			),
-//            'co-adherents' => array(
-//                'name' => amapress__('Binômes'),
-//                'type' => 'multicheck-users',
-//                'desc' => 'Binômes',
-//                'csv' => false,
-//            ),
-//            'pstatus' => array(
-//                'name' => amapress__('Statut'),
-//                'type' => 'custom',
-//                'column' => array('AmapressContrats', "paiementStatus"),
-//                'save' => null,
-//                'desc' => 'Statut',
-//                'csv' => false,
-//            ),
 		),
 	);
 
 	return $entities;
 }
 
+function amapress_is_contrat_adhesion_readonly( $option ) {
+	if ( TitanFrameworkOption::isOnNewScreen() ) {
+		return false;
+	}
+
+	if ( isset( $_REQUEST['adv'] ) || isset( $_REQUEST['full_edit'] ) ) {
+		return false;
+	}
+	$referer = parse_url( wp_get_referer() );
+	if ( isset( $referer['query'] ) ) {
+		parse_str( $referer['query'], $path );
+		if ( ( isset( $path['adv'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
 
 function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$ret                   = '';
@@ -607,7 +610,8 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	$adhesion_quantite_ids = $adh->getContrat_instance() ? $adh->getContrat_quantites_IDs() : array();
 	$adhesion_quantites    = $adh->getContrat_quantites( null );
 	$paniers_variables     = $adh->getPaniersVariables();
-	$ret                   .= '<fieldset style="min-width: inherit">';
+	$disabled              = amapress_is_contrat_adhesion_readonly( null ) ? 'disabled="disabled"' : '';
+	$ret                   .= "<fieldset style='min-width: inherit' $disabled>";
 	$contrats              = AmapressContrats::get_active_contrat_instances(
 		$adh->getContrat_instance() ? $adh->getContrat_instance()->ID : null,
 		$date_debut );
