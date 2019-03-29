@@ -2677,6 +2677,94 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
+						'Producteurs'           => array(
+							'id'         => 'import_producteurs_tab',
+							'desc'       => '',
+							'capability' => 'edit_producteur',
+							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du producteur ou de sa ferme et la colonne "Contenu" à son historique. Les utilisateurs correspondant doivent être créés au préalable'
+								),
+								array(
+									'type'      => 'save',
+									'use_reset' => false,
+									'save'      => 'Télécharger le modèle',
+									'action'    => 'generate_model_' . AmapressProducteur::POST_TYPE,
+								),
+								array(
+									'id'     => 'import_producteurs',
+									'name'   => 'Importer des producteurs',
+									'type'   => 'custom',
+									'custom' => 'amapress_get_producteurs_import_page',
+									'bare'   => true,
+								),
+							)
+						),
+						'Productions'           => array(
+							'id'         => 'import_productions_tab',
+							'desc'       => '',
+							'capability' => 'edit_contrat',
+							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom de la production (par ex, <i>Légumes, Champignons</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable'
+								),
+								array(
+									'type'      => 'save',
+									'use_reset' => false,
+									'save'      => 'Télécharger le modèle',
+									'action'    => 'generate_model_' . AmapressContrat::POST_TYPE,
+								),
+								array(
+									'id'                => 'import_contrat_default_producteur',
+									'name'              => amapress__( 'Producteur par défaut' ),
+									'type'              => 'select-posts',
+									'post_type'         => AmapressProducteur::INTERNAL_POST_TYPE,
+									'autoselect_single' => true,
+									'desc'              => 'Producteur',
+								),
+								array(
+									'id'     => 'import_productions',
+									'name'   => 'Importer des productions',
+									'type'   => 'custom',
+									'custom' => 'amapress_get_productions_import_page',
+									'bare'   => true,
+								),
+							)
+						),
+						'Produits'              => array(
+							'id'         => 'import_produits_tab',
+							'desc'       => '',
+							'capability' => 'edit_produit',
+							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du produit (par ex, <i>Radis ronds, Batavia</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable'
+								),
+								array(
+									'type'      => 'save',
+									'use_reset' => false,
+									'save'      => 'Télécharger le modèle',
+									'action'    => 'generate_model_' . AmapressProduit::POST_TYPE,
+								),
+								array(
+									'id'                => 'import_produit_default_producteur',
+									'name'              => amapress__( 'Producteur par défaut' ),
+									'type'              => 'select-posts',
+									'post_type'         => AmapressProducteur::INTERNAL_POST_TYPE,
+									'autoselect_single' => true,
+									'desc'              => 'Producteur',
+								),
+								array(
+									'id'     => 'import_produits',
+									'name'   => 'Importer des produits',
+									'type'   => 'custom',
+									'custom' => 'amapress_get_produits_import_page',
+									'bare'   => true,
+								),
+							)
+						),
 //                        'Adhésions intermittence' => array(
 //                            'desc' => '',
 //                            'capability' => 'edit_adhesion_intermittence',

@@ -1483,6 +1483,26 @@ function amapress_import_adhesion_apply_default_values_to_posts_meta( $postmeta 
 	return $postmeta;
 }
 
+add_filter( 'amapress_import_contrat_apply_default_values_to_posts_meta', 'amapress_import_contrat_apply_default_values_to_posts_meta' );
+function amapress_import_contrat_apply_default_values_to_posts_meta( $postmeta ) {
+	if ( ! empty( $_REQUEST['amapress_import_contrat_default_producteur'] )
+	     && empty( $postmeta['amapress_contrat_producteur'] ) ) {
+		$postmeta['amapress_contrat_producteur'] = $_REQUEST['amapress_import_contrat_default_producteur'];
+	}
+
+	return $postmeta;
+}
+
+add_filter( 'amapress_import_produit_apply_default_values_to_posts_meta', 'amapress_import_produit_apply_default_values_to_posts_meta' );
+function amapress_import_produit_apply_default_values_to_posts_meta( $postmeta ) {
+	if ( ! empty( $_REQUEST['amapress_import_produit_default_producteur'] )
+	     && empty( $postmeta['amapress_produit_producteur'] ) ) {
+		$postmeta['amapress_produit_producteur'] = $_REQUEST['amapress_import_produit_default_producteur'];
+	}
+
+	return $postmeta;
+}
+
 add_filter( 'amapress_import_contrat_quantite_apply_default_values_to_posts_meta', 'amapress_import_contrat_quantite_apply_default_values_to_posts_meta' );
 function amapress_import_contrat_quantite_apply_default_values_to_posts_meta( $postmeta ) {
 	if ( ! empty( $_REQUEST['amapress_import_contrat_quantite_default_contrat_instance'] ) && empty( $postmeta['amapress_contrat_quantite_contrat_instance'] ) ) {

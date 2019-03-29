@@ -461,6 +461,14 @@ function amapress_get_contrat_quantites_import_page() {
 	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressContrat_quantite::POST_TYPE );
 }
 
+function amapress_get_producteurs_import_page() {
+	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressProducteur::POST_TYPE );
+}
+
+function amapress_get_productions_import_page() {
+	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressContrat::POST_TYPE );
+}
+
 function amapress_get_visites_import_page() {
 	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressVisite::POST_TYPE );
 }
@@ -481,6 +489,9 @@ add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAmapien_paiement::POST_TYPE, 'amapress_process_generate_model');
 add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_quantite::POST_TYPE, 'amapress_process_generate_model' );
 add_action( 'tf_custom_admin_amapress_action_generate_model_user', 'amapress_process_generate_model' );
+add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
+add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat::POST_TYPE, 'amapress_process_generate_model' );
+add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProduit::POST_TYPE, 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'., 'amapress_process_generate_model');
 function amapress_process_generate_model() {
 	switch ( $_POST['action'] ) {
@@ -496,6 +507,24 @@ function amapress_process_generate_model() {
 //            break;
 		case 'generate_model_' . AmapressContrat_quantite::POST_TYPE:
 			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_quantite::POST_TYPE, 'contrats_quantites', [
+				'post_title',
+				'post_content'
+			] );
+			break;
+		case 'generate_model_' . AmapressProducteur::POST_TYPE:
+			Amapress_Import_Posts_CSV::generateModel( AmapressProducteur::POST_TYPE, 'producteurs', [
+				'post_title',
+				'post_content'
+			] );
+			break;
+		case 'generate_model_' . AmapressContrat::POST_TYPE:
+			Amapress_Import_Posts_CSV::generateModel( AmapressContrat::POST_TYPE, 'productions', [
+				'post_title',
+				'post_content'
+			] );
+			break;
+		case 'generate_model_' . AmapressProduit::POST_TYPE:
+			Amapress_Import_Posts_CSV::generateModel( AmapressProduit::POST_TYPE, 'produits', [
 				'post_title',
 				'post_content'
 			] );
@@ -519,6 +548,39 @@ function amapress_process_users_csv_import() {
 	Amapress_Import_Users_CSV::process_users_csv_import();
 }
 
+add_filter( 'amapress_csv_posts_produit_import_required_headers', 'amapress_csv_posts_produit_import_required_headers', 10, 2 );
+function amapress_csv_posts_produit_import_required_headers( $required_headers, $headers ) {
+	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
+
+	if ( ! empty( $_REQUEST['amapress_import_produit_default_producteur'] ) ) {
+		unset( $required_headers['amapress_produit_producteur'] );
+	}
+
+	return array_values( $required_headers );
+}
+
+add_filter( 'amapress_csv_posts_contrat_import_required_headers', 'amapress_csv_posts_contrat_import_required_headers', 10, 2 );
+function amapress_csv_posts_contrat_import_required_headers( $required_headers, $headers ) {
+	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
+
+	if ( ! empty( $_REQUEST['amapress_import_contrat_default_producteur'] ) ) {
+		unset( $required_headers['amapress_contrat_producteur'] );
+	}
+
+	return array_values( $required_headers );
+}
+
+add_filter( 'amapress_csv_posts_contrat_quantite_import_required_headers', 'amapress_csv_posts_contrat_quantite_import_required_headers', 10, 2 );
+function amapress_csv_posts_contrat_quantite_import_required_headers( $required_headers, $headers ) {
+	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
+
+	if ( ! empty( $_REQUEST['amapress_import_contrat_quantite_default_contrat_instance'] ) ) {
+		unset( $required_headers['amapress_contrat_quantite_contrat_instance'] );
+	}
+
+	return array_values( $required_headers );
+}
+
 add_filter( 'amapress_csv_posts_adhesion_import_required_headers', 'amapress_csv_posts_adhesion_import_required_headers', 10, 2 );
 function amapress_csv_posts_adhesion_import_required_headers( $required_headers, $headers ) {
 	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
@@ -539,6 +601,12 @@ function amapress_csv_posts_adhesion_import_required_headers( $required_headers,
 	}
 	if ( ! empty( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) ) {
 		unset( $required_headers['amapress_adhesion_date_debut'] );
+	}
+	if ( ! empty( $_REQUEST['amapress_import_produit_default_producteur'] ) ) {
+		unset( $required_headers['amapress_produit_producteur'] );
+	}
+	if ( ! empty( $_REQUEST['amapress_import_contrat_default_producteur'] ) ) {
+		unset( $required_headers['amapress_contrat_producteur'] );
 	}
 
 	if ( $has_multi_quant_columns ) {
