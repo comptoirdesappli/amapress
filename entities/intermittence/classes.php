@@ -858,7 +858,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 							'priority' => 10,
 							'lieu'     => $this->getRealLieu(),
 							'label'    => 'A échanger ' . $this->getPaniersTitles(),
-							'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+							'icon'     => Amapress::get_icon( 'fa fa-shopping-basket' ),
 							'alt'      => 'Panier ' . $this->getPaniersTitles() . ' à échanger',
 							'href'     => $paniers_url
 						) );

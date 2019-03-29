@@ -219,7 +219,7 @@ GROUP BY wp_posts.ID" );
 					'class'    => "agenda-user-paiement",
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_user_paiement_icon" ) ),
+					'icon'     => Amapress::get_icon( 'flaticon-business' ),
 					'alt'      => 'Vous allez être encaissé du chèque numéro ' . $num . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => '/mes-adhesions'
 				) );

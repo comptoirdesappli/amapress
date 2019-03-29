@@ -589,7 +589,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'type'     => 'resp-distribution',
 					'priority' => 45,
 					'label'    => 'Responsable de distribution',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_resp_distrib_icon" ) ),
+					'icon'     => Amapress::get_icon( 'dashicons dashicons-universal-access-alt' ),
 					'alt'      => 'Vous êtes responsable de distribution à ' . $lieu->getShortName(),
 					'href'     => $this->getPermalink()
 				) );
@@ -720,7 +720,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority' => 10,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span> à échanger',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+					'icon'     => Amapress::get_icon( 'fa fa-shopping-basket' ),
 					'alt'      => $status_count['other_to_exchange'] . ' à échanger',
 					'href'     => $paniers_url
 				) );

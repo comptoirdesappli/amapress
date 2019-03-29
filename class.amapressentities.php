@@ -134,7 +134,7 @@ class AmapressEntities {
 						),
 						array(
 							'title'      => 'Catégories de produit',
-							'menu_icon'  => 'dashicons-none ',
+							'menu_icon'  => 'dashicons-none flaticon-tool',
 							'menu_title' => 'Catégories de produits',
 							'capability' => 'edit_produit',
 							'slug'       => 'edit-tags.php?taxonomy=amps_produit_category',
@@ -168,7 +168,7 @@ class AmapressEntities {
 						),
 						array(
 							'title'      => 'Catégories de recettes',
-							'menu_icon'  => 'dashicons-none ',
+							'menu_icon'  => 'dashicons-none flaticon-tool',
 							'menu_title' => 'Catégories de recettes',
 							'capability' => 'edit_recette',
 							'slug'       => 'edit-tags.php?taxonomy=amps_recette_category',
@@ -328,7 +328,7 @@ class AmapressEntities {
 								'menu_title' => 'Statistiques',
 //								'position'   => '25.2',
 								'capability' => 'edit_distribution',
-								'icon'       => 'dashicons-none flaticon-pen',
+								'menu_icon'  => 'dashicons-chart-bar',
 							),
 							'options'  => array(
 								array(

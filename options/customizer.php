@@ -338,13 +338,13 @@ function amapress_customizer_init() {
 		'name'  => __( 'Responsables distribution', 'amapress' ),
 		'panel' => 'Amapress Agenda',
 	) );
-	//responsables distribution
-	$section->createOption( array(
-		'name'    => __( 'Icône des responsables distribution', 'amapress' ),
-		'id'      => 'agenda_resp_distrib_icon',
-		'type'    => 'text',
-		'default' => '',
-	) );
+//	//responsables distribution
+//	$section->createOption( array(
+//		'name'    => __( 'Icône des responsables distribution', 'amapress' ),
+//		'id'      => 'agenda_resp_distrib_icon',
+//		'type'    => 'text',
+//		'default' => '',
+//	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des responsables distribution', 'amapress' ),
 		'id'      => 'agenda_resp_distrib_col_fg',
@@ -372,12 +372,12 @@ function amapress_customizer_init() {
 		'panel' => 'Amapress Agenda',
 	) );
 	//visites
-	$section->createOption( array(
-		'name'    => __( 'Icône des visites', 'amapress' ),
-		'id'      => 'agenda_visite_icon',
-		'type'    => 'text',
-		'default' => 'dashicons dashicons-admin-post',
-	) );
+//	$section->createOption( array(
+//		'name'    => __( 'Icône des visites', 'amapress' ),
+//		'id'      => 'agenda_visite_icon',
+//		'type'    => 'text',
+//		'default' => '',
+//	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des visites', 'amapress' ),
 		'id'      => 'agenda_visite_col_fg',
@@ -405,12 +405,12 @@ function amapress_customizer_init() {
 		'panel' => 'Amapress Agenda',
 	) );
 	//assemblées
-	$section->createOption( array(
-		'name'    => __( 'Icône des assemblées', 'amapress' ),
-		'id'      => 'agenda_assemblee_icon',
-		'type'    => 'text',
-		'default' => 'dashicons dashicons-admin-post',
-	) );
+//	$section->createOption( array(
+//		'name'    => __( 'Icône des assemblées', 'amapress' ),
+//		'id'      => 'agenda_assemblee_icon',
+//		'type'    => 'text',
+//		'default' => 'dashicons dashicons-admin-post',
+//	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des assemblées', 'amapress' ),
 		'id'      => 'agenda_assemblee_col_fg',
@@ -438,12 +438,12 @@ function amapress_customizer_init() {
 		'panel' => 'Amapress Agenda',
 	) );
 	//paiements
-	$section->createOption( array(
-		'name'    => __( 'Icône des paiements', 'amapress' ),
-		'id'      => 'agenda_contrat_paiement_icon',
-		'type'    => 'text',
-		'default' => 'dashicons dashicons-admin-post',
-	) );
+//	$section->createOption( array(
+//		'name'    => __( 'Icône des paiements', 'amapress' ),
+//		'id'      => 'agenda_contrat_paiement_icon',
+//		'type'    => 'text',
+//		'default' => 'dashicons dashicons-admin-post',
+//	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des paiements', 'amapress' ),
 		'id'      => 'agenda_contrat_paiement_col_fg',
@@ -466,65 +466,65 @@ function amapress_customizer_init() {
 		'css'     => '.agenda-contrat-paiement { border-color: value }',
 	) );
 
-	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Commandes', 'amapress' ),
-		'panel' => 'Amapress Agenda',
-	) );
+//	$section = $titan->createCustomizer( array(
+//		'name'  => __( 'Commandes', 'amapress' ),
+//		'panel' => 'Amapress Agenda',
+//	) );
 	//paiements
-	$section->createOption( array(
-		'name'    => __( 'Icône des commandes', 'amapress' ),
-		'id'      => 'agenda_commande_icon',
-		'type'    => 'text',
-		'default' => 'dashicons dashicons-admin-post',
-	) );
+//	$section->createOption( array(
+//		'name'    => __( 'Icône des commandes', 'amapress' ),
+//		'id'      => 'agenda_commande_icon',
+//		'type'    => 'text',
+//		'default' => 'dashicons dashicons-admin-post',
+//	) );
+//
+//	$section = $titan->createCustomizer( array(
+//		'name'  => __( 'Contrats', 'amapress' ),
+//		'panel' => 'Amapress Agenda',
+//	) );
+//	//paiements
+//	$section->createOption( array(
+//		'name'    => __( 'Icône des contrats', 'amapress' ),
+//		'id'      => 'agenda_contrat_icon',
+//		'type'    => 'text',
+//		'default' => 'dashicons dashicons-admin-post',
+//	) );
 
-	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Contrats', 'amapress' ),
-		'panel' => 'Amapress Agenda',
-	) );
-	//paiements
-	$section->createOption( array(
-		'name'    => __( 'Icône des contrats', 'amapress' ),
-		'id'      => 'agenda_contrat_icon',
-		'type'    => 'text',
-		'default' => 'dashicons dashicons-admin-post',
-	) );
-
-	foreach ( $contrats as $contrat ) {
-		$tit     = $contrat->getTitle();
-		$id      = $contrat->ID; //get_post_meta($contrat->ID, 'amapress_contrat_instance_model', true);
-		$section = $titan->createCustomizer( array(
-			'name'  => __( 'Contrat ' . $tit, 'amapress' ),
-			'panel' => 'Amapress Agenda',
-		) );
-		$section->createOption( array(
-			'name'    => __( "Icône du contrat $tit", 'amapress' ),
-			'id'      => "agenda_contrat_{$id}_icon",
-			'type'    => 'text',
-			'default' => '',
-		) );
-		$section->createOption( array(
-			'name'    => __( "Couleur du texte du contrat $tit", 'amapress' ),
-			'id'      => "agenda_contrat_{$id}_col_fg",
-			'type'    => 'color',
-			'default' => '',
-			'css'     => '.agenda-contrat-' . $id . ',.agenda-contrat-' . $id . ' * { color: value }',
-		) );
-		$section->createOption( array(
-			'name'    => __( "Couleur de fond du contrat $tit", 'amapress' ),
-			'id'      => "agenda_contrat_{$id}_col_bg",
-			'type'    => 'color',
-			'default' => '',
-			'css'     => '.agenda-contrat-' . $id . ' { background-color: value }',
-		) );
-		$section->createOption( array(
-			'name'    => __( "Couleur de bordure du contrat $tit", 'amapress' ),
-			'id'      => "agenda_contrat_{$id}_col_brd",
-			'type'    => 'color',
-			'default' => '',
-			'css'     => '.agenda-contrat-' . $id . ' { border-color: value }',
-		) );
-	}
+//	foreach ( $contrats as $contrat ) {
+//		$tit     = $contrat->getTitle();
+//		$id      = $contrat->ID; //get_post_meta($contrat->ID, 'amapress_contrat_instance_model', true);
+//		$section = $titan->createCustomizer( array(
+//			'name'  => __( 'Contrat ' . $tit, 'amapress' ),
+//			'panel' => 'Amapress Agenda',
+//		) );
+//		$section->createOption( array(
+//			'name'    => __( "Icône du contrat $tit", 'amapress' ),
+//			'id'      => "agenda_contrat_{$id}_icon",
+//			'type'    => 'text',
+//			'default' => '',
+//		) );
+//		$section->createOption( array(
+//			'name'    => __( "Couleur du texte du contrat $tit", 'amapress' ),
+//			'id'      => "agenda_contrat_{$id}_col_fg",
+//			'type'    => 'color',
+//			'default' => '',
+//			'css'     => '.agenda-contrat-' . $id . ',.agenda-contrat-' . $id . ' * { color: value }',
+//		) );
+//		$section->createOption( array(
+//			'name'    => __( "Couleur de fond du contrat $tit", 'amapress' ),
+//			'id'      => "agenda_contrat_{$id}_col_bg",
+//			'type'    => 'color',
+//			'default' => '',
+//			'css'     => '.agenda-contrat-' . $id . ' { background-color: value }',
+//		) );
+//		$section->createOption( array(
+//			'name'    => __( "Couleur de bordure du contrat $tit", 'amapress' ),
+//			'id'      => "agenda_contrat_{$id}_col_brd",
+//			'type'    => 'color',
+//			'default' => '',
+//			'css'     => '.agenda-contrat-' . $id . ' { border-color: value }',
+//		) );
+//	}
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Post-It', 'amapress' ),

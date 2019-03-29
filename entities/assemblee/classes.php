@@ -95,7 +95,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 					'category' => 'Assemblées générales',
 					'priority' => 70,
 					'label'    => 'Assemblée',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_assemblee_icon", 'dashicons dashicons-admin-post' ) ),
+					'icon'     => Amapress::get_icon( 'fa fa-university' ),
 					'alt'      => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
@@ -110,7 +110,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 					'lieu'     => $asm_lieu,
 					'priority' => 70,
 					'label'    => 'Assemblée',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_assemblee_inscription_icon" ) ),
+					'icon'     => Amapress::get_icon( 'fa fa-university' ),
 					'content'  => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
