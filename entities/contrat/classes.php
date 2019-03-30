@@ -1533,7 +1533,7 @@ AND CAST($wpdb->postmeta.meta_value as SIGNED) NOT IN (
 SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_type = '" . AmapressContrat_instance::INTERNAL_POST_TYPE . "'
 ) ) )
 AND $wpdb->posts.post_type = '" . AmapressContrat_quantite::INTERNAL_POST_TYPE . "'
-GROUP BY wp_posts.ID" );
+GROUP BY $wpdb->posts.ID" );
 
 		$wpdb->query( 'START TRANSACTION' );
 		foreach ( $orphans as $post_id ) {
