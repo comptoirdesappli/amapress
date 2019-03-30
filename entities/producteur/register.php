@@ -37,6 +37,9 @@ function amapress_register_entities_producteur( $entities ) {
 				if ( ! $producteur->isAdresseExploitationLocalized() ) {
 					amapress_add_admin_notice( 'Adresse du producteur non localisée', 'warning', false );
 				}
+				if ( empty( $producteur->getAllReferentsIds() ) ) {
+					echo '<div class="notice notice-error"><p>Producteur sans référent</p></div>';
+				}
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
