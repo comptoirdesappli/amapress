@@ -50,7 +50,7 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
 				}
 				$ret .= '<form action="' . $admin_post_url . '?action=inscription_intermittent&return_sender&confirm=yes" method="post">
   <div class="form-group">
-    <label for="email">Email:</label>
+    <label for="email"><strong>*Email:</strong></label>
     <input type="email" class="form-control required" id="email" name="email">
   </div>
   <div class="form-group">
@@ -60,6 +60,14 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
   <div class="form-group">
     <label for="last_name">Nom:</label>
     <input type="text" class="form-control" id="last_name" name="last_name">
+  </div>
+  <div class="form-group">
+    <label for="phone"><em>Téléphone</em>:</label>
+    <input type="text" class="form-control" id="phone" name="phone">
+  </div>
+  <div class="form-group">
+    <label for="address"><em>Adresse</em>:</label>
+    <input type="text" class="form-control" id="address" name="address">
   </div>
   <button type="submit" class="btn btn-default" onclick="return confirm(\'Confirmez-vous votre inscription ?\')">Inscrire</button>
 </form>';

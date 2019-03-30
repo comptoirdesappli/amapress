@@ -95,6 +95,8 @@ function amapress_admin_action_inscription_intermittent() {
 
 	$user_firt_name = isset( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '';
 	$user_last_name = isset( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '';
+	$user_phone     = isset( $_REQUEST['phone'] ) ? $_REQUEST['phone'] : '';
+	$user_address   = isset( $_REQUEST['address'] ) ? $_REQUEST['address'] : '';
 	$user_email     = sanitize_email( $_REQUEST['email'] );
 	$me             = AmapressUser::getBy( amapress_current_user_id() );
 	$is_me          = in_array( $user_email, $me->getAllEmails() );
@@ -105,7 +107,7 @@ function amapress_admin_action_inscription_intermittent() {
 <a href="' . add_query_arg( 'confirm', 'yes' ) . '">Confirmer l\'inscription</a>';
 	} else {
 		$return_to_sender = isset( $_REQUEST['return_sender'] );
-		$user_id          = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name );
+		$user_id          = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 		$user             = AmapressUser::getBy( $user_id );
 		if ( false === $user->inscriptionIntermittence() ) {
 			if ( $return_to_sender ) {
