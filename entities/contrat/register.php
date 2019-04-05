@@ -1879,13 +1879,18 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         <thead>
         <tr>
             <th style="padding-left: 10px">Intitulé*</th>
-            <th style="width: 100px">Code</th>
+            <th style="width: 100px" title="Abbréviation ou code pour affichage sur la liste d'émargement">Code</th>
             <th title="Description">Desc.</th>
             <th style="width: 50px">Prix*</th>
-            <th style="width: 40px" title="Facteur quantité">Fact. quant.</th>
+            <th style="width: 40px"
+                title="Facteur quantité: par ex, 0.5 pour demi panier et 1 pour panier. 0 si non utile pour le contrat">
+                Fact. quant.
+            </th>
 			<?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
                 <th style="width: 60px">Unité*</th>
-                <th style="width: 70px">Quantités config</th>
+                <th style="width: 70px"
+                    title="Options de quantités possibles, par ex : 1-3;5;10 pour autoriser 1,2,3,5,10">Quantités config
+                </th>
 			<?php } ?>
 			<?php if ( $contrat_instance->isPanierVariable() ) { ?>
                 <th style="width: 80px">Dispo de</th>
