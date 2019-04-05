@@ -446,6 +446,50 @@ function amapress_paiements_editor( $post_id ) {
 	echo '<p><strong>Astuces</strong> : Pour supprimer un ou plusieurs chèques, cliquer sur le bouton <span class="dashicons dashicons-dismiss"></span> de la ligne du chèque à supprimer puis cliquer sur Enregistrer.</p>';
 	echo '<p><strong>Astuces</strong> : Faites un clic droit dans le champs <em>Numéro de chèque</em> pour recopier et incrémenter le numéro dans les cases en dessous</p>';
 	echo '<p><strong>Astuces</strong> : Faites un clic droit dans les champs <em>Adhérent</em> ou <em>Banque</em> pour recopier la valeur dans les cases en dessous</p>';
+
+	$all_related_adhesions_ids = AmapressAdhesion::getAllRelatedAdhesions();
+	$related_adhesions_ids     = ! empty( $all_related_adhesions_ids[ $post_id ] ) ? $all_related_adhesions_ids[ $post_id ] : [];
+	if ( ! in_array( $post_id, $related_adhesions_ids ) ) {
+		$related_adhesions_ids[] = $post_id;
+	}
+	sort( $related_adhesions_ids );
+
+	$related_total_amount = 0;
+	foreach ( $related_adhesions_ids as $related_adhesion_id ) {
+		$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
+		if ( $related_adhesion ) {
+			$related_total_amount += $related_adhesion->getTotalAmount();
+		}
+	}
+	if ( count( $related_adhesions_ids ) > 1 ) {
+		$all_paiements_by_id = AmapressAmapien_paiement::getAllActiveByAdhesionId();
+		foreach ( $related_adhesions_ids as $related_adhesion_id ) {
+			if ( $post_id == $related_adhesion_id ) {
+				continue;
+			}
+			$amount = 0;
+			if ( isset( $all_paiements_by_id[ $related_adhesion_id ] ) ) {
+				/** @var AmapressAdhesion_paiement $p */
+				foreach ( $all_paiements_by_id[ $related_adhesion_id ] as $p ) {
+					$status = $p->getStatus();
+					if ( 'received' != $status && 'bank' != $status ) {
+						continue;
+					}
+					$amount += $p->getAmount();
+				}
+			}
+			$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
+			if ( $related_adhesion ) {
+				echo '<p>Report montant des règlements de "' .
+				     Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ) . '" (' .
+				     sprintf( '%.02f €', $related_adhesion->getTotalAmount() ) . ') = ' .
+				     sprintf( '%.02f €', $amount ) .
+				     '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
+			}
+		}
+	}
+//	echo '<input id="paiement-report-val" name="paiement-report-val" type="hidden" value="'..'">';
+
 	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" style="table-layout: auto; width: 100%;">';
 	echo "<tr>
 <th>Numéro de chèque</th>
@@ -531,7 +575,7 @@ $status_options
 <td style='width: 32px'><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_paiement(this)'></span></td>
 </tr>";
 	}
-	echo '<tr><td></td><td></td><td id="paiement-amount-total" data-sum="' . $adhesion->getTotalAmount() . '"></td><td></td><td></td><td></td></tr>';
+	echo '<tr><td></td><td></td><td id="paiement-amount-total" data-sum="' . $related_total_amount . '"></td><td></td><td></td><td></td></tr>';
 	echo '</table>';
 }
 

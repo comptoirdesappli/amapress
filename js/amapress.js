@@ -17,6 +17,9 @@ jQuery(function ($) {
     var $paiement_total = $('#paiement-amount-total');
     var check_sum_fn = function () {
         var sum = 0;
+        $('.paiement-report-val').each(function () {
+            sum += parseFloat($(this).val());
+        });
         $('.paiement-amount-val').each(function () {
             sum += parseFloat($(this).val());
         });
