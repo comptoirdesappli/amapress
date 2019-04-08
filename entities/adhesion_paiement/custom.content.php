@@ -461,6 +461,7 @@ function amapress_paiements_editor( $post_id ) {
 			$related_total_amount += $related_adhesion->getTotalAmount();
 		}
 	}
+	$reports = '';
 	if ( count( $related_adhesions_ids ) > 1 ) {
 		$all_paiements_by_id = AmapressAmapien_paiement::getAllActiveByAdhesionId();
 		foreach ( $related_adhesions_ids as $related_adhesion_id ) {
@@ -480,17 +481,18 @@ function amapress_paiements_editor( $post_id ) {
 			}
 			$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
 			if ( $related_adhesion ) {
-				echo '<p>Report montant des règlements de "' .
-				     Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ) . '" (' .
-				     sprintf( '%.02f €', $related_adhesion->getTotalAmount() ) . ') = ' .
-				     sprintf( '%.02f €', $amount ) .
-				     '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
+				$reports .= '<p>Report montant des règlements de "' .
+				            Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ) . '" (' .
+				            sprintf( '%.02f €', $related_adhesion->getTotalAmount() ) . ') = ' .
+				            sprintf( '%.02f €', $amount ) .
+				            '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
 			}
 		}
 	}
 //	echo '<input id="paiement-report-val" name="paiement-report-val" type="hidden" value="'..'">';
 
 	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" style="table-layout: auto; width: 100%;">';
+	echo '<tr><th colspan="7">' . $reports . '</th></tr>';
 	echo "<tr>
 <th>Numéro de chèque</th>
 <th>Adhérent</th>
