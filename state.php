@@ -160,6 +160,9 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
 		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
 		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'icalendrier', 'iCalendrier',
+		'<strong>Optionnel</strong> : Affiche la date du jour avec la fête du jour et les phases de la lune',
+		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'latest-post-shortcode', 'Latest Post Shortcode',
 		'<strong>Optionnel</strong> : Permet de créér une gallerie des articles récents (par ex, pour donner des nouvelles de l\'AMAP sur la page d\'Acceuil',
 		'info' );

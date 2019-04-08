@@ -665,6 +665,50 @@ class AmapressAdhesion extends TitanEntity {
 		return $out_filename;
 	}
 
+	/** @return int[][] */
+	public static function getAllRelatedAdhesions() {
+		$key = 'amapress_getAllRelatedAdhesions';
+		$ret = wp_cache_get( $key );
+		if ( false === $ret ) {
+			$ret = [];
+			foreach (
+				get_posts(
+					array(
+						'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+						'meta_query'     => array(
+							array(
+								'key'     => 'amapress_adhesion_related',
+								'compare' => 'EXISTS',
+							),
+						),
+					)
+				) as $adh_post
+			) {
+				$adh = AmapressAdhesion::getBy( $adh_post );
+				if ( ! $adh->getRelatedAdhesion() ) {
+					continue;
+				}
+				if ( empty( $ret[ $adh->ID ] ) ) {
+					$ret[ $adh->ID ] = [];
+				}
+				$rel_id = $adh->getRelatedAdhesionId();
+				if ( empty( $ret[ $rel_id ] ) ) {
+					$ret[ $rel_id ] = [];
+				}
+				if ( ! in_array( $rel_id, $ret[ $adh->ID ] ) ) {
+					$ret[ $adh->ID ][] = $rel_id;
+				}
+				if ( ! in_array( $adh->ID, $ret[ $rel_id ] ) ) {
+					$ret[ $rel_id ][] = $adh->ID;
+				}
+			}
+			wp_cache_set( $key, $ret );
+		}
+
+		return $ret;
+	}
+
 	public function getDate_debut() {
 		return $this->getCustomAsDate( 'amapress_adhesion_date_debut' );
 	}
@@ -1002,6 +1046,16 @@ class AmapressAdhesion extends TitanEntity {
 		}
 
 		return $val;
+	}
+
+	/** @return AmapressAdhesion */
+	public function getRelatedAdhesion() {
+		return $this->getCustomAsEntity( 'amapress_adhesion_related', 'AmapressAdhesion' );
+	}
+
+	/** @return int */
+	public function getRelatedAdhesionId() {
+		return $this->getCustomAsInt( 'amapress_adhesion_related' );
 	}
 
 	/** @return int */

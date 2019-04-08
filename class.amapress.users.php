@@ -811,9 +811,17 @@ jQuery(function() {
 			$users = get_users( wp_parse_args(
 				array( 'amapress_contrat' => 'active' ),
 				$base_query ) );
-		} else if ( $role == 'prochaine_distrib' ) {
+		} else if ( $role == 'resp_distrib_cette_semaine' ) {
 			$users = get_users( wp_parse_args(
 				array( 'amapress_role' => 'resp_distrib' ),
+				$base_query ) );
+
+			if ( count( $users ) == 0 ) {
+				return 'Pas de responsable(s) inscrit(s)';
+			}
+		} else if ( $role == 'resp_distrib_semaine_prochaine' ) {
+			$users = get_users( wp_parse_args(
+				array( 'amapress_role' => 'resp_distrib_next' ),
 				$base_query ) );
 
 			if ( count( $users ) == 0 ) {
@@ -908,8 +916,15 @@ jQuery(function() {
 		ob_start();
 
 		//echo '<h2>'.$lieu->post_title.'</h2>';
-		amapress_echo_panel_start( 'Les responsables à la prochaine distribution', null, 'amap-panel-resp-dist' );
-		echo do_shortcode( '[trombinoscope_role role=prochaine_distrib lieu=' . $lieu_id . ']' );
+		amapress_echo_panel_start( 'Les responsables à la distribution de cette semaine (' .
+		                           date_i18n( 'd/m/Y', Amapress::start_of_week( amapress_time() ) ) . ')',
+			null, 'amap-panel-resp-dist' );
+		echo do_shortcode( '[trombinoscope_role role=resp_distrib_cette_semaine lieu=' . $lieu_id . ']' );
+		amapress_echo_panel_end();
+		amapress_echo_panel_start( 'Les responsables à la distribution de la semaine prochaine (' .
+		                           date_i18n( 'd/m/Y', Amapress::start_of_week( Amapress::add_a_week( amapress_time() ) ) ) . ')',
+			null, 'amap-panel-resp-dist' );
+		echo do_shortcode( '[trombinoscope_role role=resp_distrib_semaine_prochaine lieu=' . $lieu_id . ']' );
 		amapress_echo_panel_end();
 		if ( count( Amapress::get_lieux() ) > 1 ) {
 			amapress_echo_panel_start( 'Les responsables de l\'AMAP dans ce lieu' );

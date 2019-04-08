@@ -88,6 +88,40 @@ function amapress_register_entities_adhesion( $entities ) {
 					return AmapressAdhesion::TO_CONFIRM == AmapressAdhesion::getBy( $adh_id )->getStatus();
 				},
 			],
+			'add_compl'            => [
+				'label'     => 'Ajouter inscription complémentaire',
+				'confirm'   => true,
+				'show_on'   => 'editor',
+				'target'    => '_blank',
+				'href'      => function ( $adh_id ) {
+					$adh  = AmapressAdhesion::getBy( $adh_id );
+					$args = [
+						'amapress_adhesion_adherent'         => $adh->getAdherentId(),
+						'amapress_adhesion_adherent2'        => $adh->getAdherent2Id(),
+						'amapress_adhesion_adherent3'        => $adh->getAdherent3Id(),
+						'amapress_adhesion_adherent4'        => $adh->getAdherent4Id(),
+						'amapress_adhesion_contrat_instance' => $adh->getContrat_instanceId(),
+						'amapress_adhesion_lieu'             => $adh->getAdherent4Id(),
+						'amapress_adhesion_related'          => $adh->ID,
+						'amapress_adhesion_date_debut'       => date_i18n( 'd/m/Y', Amapress::add_days( $adh->getDate_fin(), 1 ) ),
+					];
+					foreach ( $args as $k => $v ) {
+						if ( empty( $v ) ) {
+							unset( $args[ $k ] );
+						}
+					}
+
+					return add_query_arg( $args, 'post-new.php?post_type=amps_adhesion' );
+				},
+				'condition' => function ( $adh_id ) {
+					if ( TitanFrameworkOption::isOnNewScreen() ) {
+						return false;
+					}
+					$adh = AmapressAdhesion::getBy( $adh_id );
+
+					return $adh->hasBeforeEndDate_fin();
+				},
+			],
 		),
 		'bulk_actions'     => array(
 			'amp_accept_contrat_adhesion'         => array(
@@ -447,7 +481,7 @@ jQuery(function($) {
 				'csv'         => false,
 				'show_on'     => 'edit-only',
 			),
-			'lieu'              => array(
+			'lieu'            => array(
 				'name'              => amapress__( 'Lieu' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_lieu',
@@ -475,7 +509,61 @@ jQuery(function($) {
 					return 0;
 				}
 			),
-			'message'           => array(
+			'related'         => array(
+				'name'        => amapress__( 'Inscription liée' ),
+				'type'        => 'select',
+				'options'     => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$adhesion_id = $option->getPostID();
+					$adhesion    = AmapressAdhesion::getBy( $adhesion_id );
+					$ret         = [];
+					if ( $adhesion && empty( $_GET['amapress_adhesion_related'] ) ) {
+						foreach (
+							get_posts(
+								array(
+									'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+									'posts_per_page' => - 1,
+									'meta_query'     => array(
+										array(
+											'key'     => 'amapress_adhesion_contrat_instance',
+											'value'   => $adhesion->getContrat_instanceId(),
+											'compare' => '=',
+											'type'    => 'NUMERIC',
+										),
+										array(
+											'key'     => 'amapress_adhesion_adherent',
+											'value'   => $adhesion->getAdherentId(),
+											'compare' => '=',
+											'type'    => 'NUMERIC',
+										),
+									),
+								)
+							) as $prev_adhesion
+						) {
+							$ret[ $prev_adhesion->ID ] = $prev_adhesion->post_title;
+						}
+						if ( $adhesion->getRelatedAdhesion() ) {
+							$prev_adhesion             = $adhesion->getRelatedAdhesion();
+							$ret[ $prev_adhesion->ID ] = $prev_adhesion->getTitle();
+						}
+					}
+					if ( ! empty( $_REQUEST['amapress_adhesion_related'] ) ) {
+						$prev_adhesion             = AmapressAdhesion::getBy( intval( $_REQUEST['amapress_adhesion_related'] ) );
+						$ret[ $prev_adhesion->ID ] = $prev_adhesion->getTitle();
+					}
+
+					return $ret;
+				},
+				'hidden'      => function ( $option ) {
+					return TitanFrameworkOption::isOnNewScreen() && empty( $_REQUEST['amapress_adhesion_related'] );
+				},
+//				'show_on'     => 'edit-only',
+				'desc'        => 'Sélectionner l\'inscription précédente en cas de changement de quantités en cours d\'année',
+				'group'       => '2/ Contrat',
+				'readonly'    => 'amapress_is_contrat_adhesion_readonly',
+				'show_column' => false,
+			),
+			'message'         => array(
 				'name'        => amapress__( 'Message' ),
 				'type'        => 'textarea',
 				'readonly'    => true,
@@ -484,7 +572,7 @@ jQuery(function($) {
 				'desc'        => 'Message',
 				'csv'         => false,
 			),
-			'all-coadherents'   => array(
+			'all-coadherents' => array(
 				'name'            => amapress__( 'Co-adhérents' ),
 				'group'           => '4/ Coadhérents',
 				'show_column'     => false,
@@ -621,6 +709,16 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			$excluded_contrat_ids[] = $user_adh->getContrat_instanceId();
 		}
 	}
+	if ( ! empty( $_GET['amapress_adhesion_contrat_instance'] ) ) {
+		$needed_contrat = AmapressContrat_instance::getBy( intval( $_GET['amapress_adhesion_contrat_instance'] ) );
+		if ( $needed_contrat ) {
+			$excluded_contrat_ids = [];
+			$contrats             = [
+				$needed_contrat
+			];
+		}
+	}
+
 	$had_contrat = false;
 	foreach ( $contrats as $contrat_instance ) {
 		if ( in_array( $contrat_instance->ID, $excluded_contrat_ids ) ) {
@@ -769,7 +867,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				}
 				$ret .= sprintf( '<label for="%s" style="white-space: nowrap;"><input class="%s" id="%s" type="%s" name="%s[]" value="%s" %s data-excl="%s" data-contrat-date-debut="%s" data-contrat-date-fin="%s"/> %s %s </label> <br />',
 					$id,
-					'multicheckReq exclusiveContrat contrat-quantite onlyOneInscription', //multicheckReq
+					'multicheckReq exclusiveContrat contrat-quantite' . ( TitanFrameworkOption::isOnNewScreen() ? ' onlyOneInscription' : '' ), //multicheckReq
 					$id,
 					$type,
 					'amapress_adhesion_contrat_quants',
@@ -803,13 +901,14 @@ add_action( 'wp_ajax_check_inscription_unique', function () {
 	$contrats = $_POST['contrats'];
 	$user     = $_POST['user'];
 	$post_ID  = $_POST['post_ID'];
+	$related  = isset( $_POST['related'] ) ? $_POST['related'] : 0;
 
 	$contrats = array_unique( array_map( 'intval', explode( ',', $contrats ) ) );
 
 	$adhs = array();
 	foreach ( $contrats as $contrat ) {
 		foreach ( AmapressAdhesion::getUserActiveAdhesions( intval( $user ), $contrat ) as $adh ) {
-			if ( $adh->getID() == $post_ID ) {
+			if ( $adh->getID() == $post_ID || $adh->getID() == $related ) {
 				continue;
 			}
 

@@ -112,26 +112,73 @@ function amapress_user_paiments_column_display( $colname, $post_id ) {
 //    }
 
 	$all_paiements = AmapressAmapien_paiement::getAllActiveByAdhesionId();
-//    var_dump(array_keys($all_paiements));
-	$amount = 0;
-	if ( isset( $all_paiements[ $post_id ] ) ) {
-		/** @var AmapressAdhesion_paiement $p */
-		foreach ( $all_paiements[ $post_id ] as $p ) {
-			$status = $p->getStatus();
-			if ( 'received' != $status && 'bank' != $status ) {
+	$amount        = 0;
+//	$total_amount         = $adh->getTotalAmount();
+	$related_amount       = 0;
+	$related_total_amount = 0;
+
+	$all_related_adhesions_ids = AmapressAdhesion::getAllRelatedAdhesions();
+	$related_adhesions_ids     = ! empty( $all_related_adhesions_ids[ $adh->ID ] ) ? $all_related_adhesions_ids[ $adh->ID ] : [];
+	if ( ! in_array( $post_id, $related_adhesions_ids ) ) {
+		$related_adhesions_ids[] = $post_id;
+	}
+	sort( $related_adhesions_ids );
+
+	foreach ( $related_adhesions_ids as $related_adhesion_id ) {
+//			$amount -= $related_adhesion->getTotalAmount();
+		if ( isset( $all_paiements[ $related_adhesion_id ] ) ) {
+			/** @var AmapressAmapien_paiement $p */
+			foreach ( $all_paiements[ $related_adhesion_id ] as $p ) {
+				$status = $p->getStatus();
+				if ( 'received' != $status && 'bank' != $status ) {
+					continue;
+				}
+				$related_amount += $p->getAmount();
+				if ( $related_adhesion_id == $post_id ) {
+					$amount += $p->getAmount();
+				}
+			}
+		}
+		$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
+		if ( $related_adhesion ) {
+			$related_total_amount += $related_adhesion->getTotalAmount();
+		}
+	}
+	if ( count( $related_adhesions_ids ) > 1 ) {
+		$affected_adhesion_ids = [];
+		foreach ( $related_adhesions_ids as $related_adhesion_id ) {
+			$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
+			if ( $related_adhesion && $related_amount >= $related_adhesion->getTotalAmount() ) {
+				$affected_adhesion_ids[] = $related_adhesion_id;
+				$related_amount          -= $related_adhesion->getTotalAmount();
+				$related_total_amount    -= $related_adhesion->getTotalAmount();
+				if ( $related_adhesion_id == $post_id ) {
+					$amount = $related_adhesion->getTotalAmount();
+				}
+			}
+		}
+		foreach ( $related_adhesions_ids as $related_adhesion_id ) {
+			if ( in_array( $related_adhesion_id, $affected_adhesion_ids ) ) {
 				continue;
 			}
-			$amount += $p->getAmount( $colname );
+			$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
+			if ( $related_adhesion && $related_amount > 0 && $related_amount < $related_adhesion->getTotalAmount() ) {
+				if ( $related_adhesion_id == $post_id ) {
+					$amount = $related_total_amount - $related_amount;
+				}
+				break;
+			}
 		}
 	}
 
+
 	$href = admin_url( "post.php?post={$post_id}&action=edit" );
 
-	if ( abs( $amount ) < 0.001 ) {
+	if ( abs( $related_amount ) < 0.001 ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-no-alt', 'status' => 'paiement-not-paid' );
-	} else if ( ( $amount - $adh->getTotalAmount() ) < - 0.001 ) {
+	} else if ( ( $related_amount - $related_total_amount ) < - 0.001 ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-star-half', 'status' => 'paiement-partial-paid' );
-	} else if ( ( $amount - $adh->getTotalAmount() ) > 0.001 ) {
+	} else if ( ( $related_amount - $related_total_amount ) > 0.001 ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-arrow-up-alt', 'status' => 'paiement-too-paid' );
 	} else {
 		$status = array( 'icon' => 'dashicons-before dashicons-yes', 'status' => 'paiement-ok' );
