@@ -107,7 +107,7 @@ AND CAST($wpdb->postmeta.meta_value as SIGNED) NOT IN (
 SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_type = '" . AmapressAdhesion::INTERNAL_POST_TYPE . "'
 ) ) )
 AND $wpdb->posts.post_type = '" . AmapressAmapien_paiement::INTERNAL_POST_TYPE . "'
-GROUP BY wp_posts.ID" );
+GROUP BY $wpdb->posts.ID" );
 
 		$wpdb->query( 'START TRANSACTION' );
 		foreach ( $orphans as $post_id ) {
@@ -156,6 +156,7 @@ GROUP BY wp_posts.ID" );
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
+
 		return self::query_events(
 			array(
 				'relation' => 'AND',
@@ -219,7 +220,7 @@ GROUP BY wp_posts.ID" );
 					'class'    => "agenda-user-paiement",
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
-					'icon'     => Amapress::get_icon( 'flaticon-business' ),
+					'icon'     => 'flaticon-business',
 					'alt'      => 'Vous allez être encaissé du chèque numéro ' . $num . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => '/mes-adhesions'
 				) );
@@ -233,7 +234,34 @@ GROUP BY wp_posts.ID" );
 
 	public static function getAllActiveByAdhesionId() {
 		if ( ! self::$paiement_cache ) {
-			$adhesions_ids        = AmapressContrats::get_active_adhesions_ids();
+			$adhesions     = AmapressContrats::get_active_adhesions();
+			$adhesions_ids = [];
+			foreach ( $adhesions as $adhesion ) {
+				$adhesions_ids[] = $adhesion->ID;
+			}
+			do {
+				$changed = count( $adhesions_ids );
+				foreach (
+					get_posts(
+						array(
+							'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
+							'posts_per_page' => - 1,
+							'meta_query'     => array(
+								array(
+									'key'     => 'amapress_adhesion_related',
+									'value'   => amapress_prepare_in( $adhesions_ids ),
+									'compare' => 'IN',
+									'type'    => 'NUMERIC',
+								),
+							),
+						)
+					) as $adhesion
+				) {
+					if ( ! in_array( $adhesion->ID, $adhesions_ids ) ) {
+						$adhesions_ids[] = $adhesion->ID;
+					}
+				}
+			} while ( $changed != count( $adhesions_ids ) );
 			self::$paiement_cache = array_group_by( array_map(
 				function ( $p ) {
 					return new AmapressAmapien_paiement( $p );

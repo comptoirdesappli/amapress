@@ -589,7 +589,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'type'     => 'resp-distribution',
 					'priority' => 45,
 					'label'    => 'Responsable de distribution',
-					'icon'     => Amapress::get_icon( 'dashicons dashicons-universal-access-alt' ),
+					'icon'     => 'dashicons dashicons-universal-access-alt',
 					'alt'      => 'Vous êtes responsable de distribution à ' . $lieu->getShortName(),
 					'href'     => $this->getPermalink()
 				) );
@@ -668,7 +668,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority' => 10,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['me_to_exchange'] . '</span> à échanger',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+					'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
 					'alt'      => $status_count['me_to_exchange'] . ' à échanger',
 					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
@@ -684,7 +684,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority' => 5,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['me_exchanged'] . '</span> échangé(s)',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+					'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
 					'alt'      => $status_count['me_exchanged'] . ' échangé(s)',
 					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
@@ -701,7 +701,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority' => 15,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['me_recup'] . '</span> à récupérer',
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+					'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
 					'alt'      => $status_count['me_recup'] . ' à récupérer',
 					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
@@ -720,7 +720,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority' => 10,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span> à échanger',
-					'icon'     => Amapress::get_icon( 'fa fa-shopping-basket' ),
+					'icon'     => 'fa fa-shopping-basket',
 					'alt'      => $status_count['other_to_exchange'] . ' à échanger',
 					'href'     => $paniers_url
 				) );

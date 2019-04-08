@@ -74,7 +74,7 @@ class Amapress_EventEntry {
 	}
 
 	public function getIcon() {
-		return $this->args['icon'];
+		return Amapress::get_icon( $this->args['icon'], $this->getAlt() );
 	}
 
 	public function getAlt() {
@@ -105,6 +105,7 @@ class Amapress_Calendar {
 	}
 
 	public static $get_next_events_start_date = null;
+
 	/** @return Amapress_EventEntry[] */
 	public static function get_next_events( $date = null, $user_id = null ) {
 //		return [];
