@@ -111,7 +111,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //					}
 //				),
 			),
-			'lieu'          => array(
+			'lieu'   => array(
 				'name'       => amapress__( 'Lieu' ),
 				'type'       => 'custom',
 				'hidden'     => true,
@@ -141,7 +141,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					}
 				),
 			),
-			'status'        => array(
+			'status' => array(
 				'name'         => amapress__( 'Statut' ),
 				'type'         => 'select',
 				'options'      => array(
@@ -153,7 +153,19 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'desc'         => 'Sélectionner l’option qui convient : Reçu à l’Amap, non reçu à l’Amap, Remis au producteur',
 				'csv_required' => true,
 			),
-			'amount'        => array(
+			'type'   => array(
+				'name'     => amapress__( 'Type' ),
+				'type'     => 'select',
+				'options'  => array(
+					'chq' => 'Chèque',
+					'esp' => 'Espèces',
+				),
+				'default'  => 'chq',
+				'required' => true,
+				'desc'     => 'Sélectionner le type de règlement',
+//				'show_column'  => false,
+			),
+			'amount' => array(
 				'name'         => amapress__( 'Montant' ),
 				'type'         => 'float',
 				'unit'         => '€',
@@ -161,7 +173,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'desc'         => 'Montant du chèque',
 				'csv_required' => true,
 			),
-			'numero'        => array(
+			'numero' => array(
 				'name'         => amapress__( 'Numéro du chèque' ),
 				'type'         => 'text',
 				'required'     => true,

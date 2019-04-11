@@ -392,47 +392,60 @@ function amapress_paiements_editor( $post_id ) {
         //<![CDATA[   
         jQuery(function ($) {
                $.contextMenu({
-	            selector: \'.recopy-context-menu\', 
-	            callback: function(key, options) {
-	                var val = $(this).val();
-	                var is_num = !isNaN(parseInt(val)) && isFinite(val);
-	                var val_num = is_num ? parseInt(val) : 0;
-	                var columnNo = $(this).closest(\'td\').index();
-	                var rowNo = $(this).closest(\'tr\').index();
-	                var $table = $(this).closest("table");
-	                var rowCount = $(\'tr\', $table).length;
-	                for (var i = rowNo + 1; i < rowCount; i++) {
-				        var $input = $table.find("tr:nth-child(" + (i+1) + ") td:nth-child(" + (columnNo+1) + ") input");
-				        if (is_num) {
-					        val_num += 1;
-					        $input.val(val_num);
-				        } else {
-					        $input.val(val);
-				        }
-				    }
-	            },
-	            items: {
-	                "recopy": {name: "Copier vers le bas", icon: "fa-arrow-down"}
-	            }
-	        });
-            var publishBtn = jQuery("form#post #publish");
-            jQuery("#amapress_paiement_reset").click(function () {
-                try {
-                    window.tinyMCE.triggerSave();
-                }
-                catch (ee) {}
-                if (jQuery("form#post").valid()) {
-                    jQuery("#amapress_paiements").attr("value", "reset");
-                    publishBtn.click();
-                } else {
-                    alert("Certains champs ne sont pas valides");
-                }
-            });
-            jQuery("#adhesion_paiement_table").mouseover(function() {
-                if (jQuery("#amapress_paiements").attr("value").length == 0) {
-                    jQuery("#amapress_paiements").attr("value", "in_paiements");
-                }
-            });
+		            selector: \'.recopy-context-menu\', 
+		            callback: function(key, options) {
+		                var val = $(this).val();
+		                var is_num = !isNaN(parseInt(val)) && isFinite(val);
+		                var val_num = is_num ? parseInt(val) : 0;
+		                var columnNo = $(this).closest(\'td\').index();
+		                var rowNo = $(this).closest(\'tr\').index();
+		                var $table = $(this).closest("table");
+		                var rowCount = $(\'tr\', $table).length;
+		                for (var i = rowNo + 1; i < rowCount; i++) {
+					        var $input = $table.find("tr:nth-child(" + (i+1) + ") td:nth-child(" + (columnNo+1) + ") input");
+					        if (is_num) {
+						        val_num += 1;
+						        $input.val(val_num);
+					        } else {
+						        $input.val(val);
+					        }
+					    }
+		            },
+		            items: {
+		                "recopy": {name: "Copier vers le bas", icon: "fa-arrow-down"}
+		            }
+	        	});
+	            var publishBtn = jQuery("form#post #publish");
+	            jQuery("#amapress_paiement_reset").click(function () {
+	                try {
+	                    window.tinyMCE.triggerSave();
+	                }
+	                catch (ee) {}
+	                if (jQuery("form#post").valid()) {
+	                    jQuery("#amapress_paiements").attr("value", "reset");
+	                    publishBtn.click();
+	                } else {
+	                    alert("Certains champs ne sont pas valides");
+	                }
+	            });
+	            jQuery("#adhesion_paiement_table").mouseover(function() {
+	                if (jQuery("#amapress_paiements").attr("value").length == 0) {
+	                    jQuery("#amapress_paiements").attr("value", "in_paiements");
+	                }
+	            });
+	            var change_paiement_fields = function amapress_handle_paiement_type() {
+	                var $this = jQuery(this);
+	            	var parent_tr = $this.closest("tr");
+	            	var type = $this.val();
+	            	var fields = jQuery(".paiement-numero input, .paiement-banque input", parent_tr);
+	            	if ("esp" === type) {
+	            	    fields.prop("disabled", true);
+	            	    fields.val("Esp.");
+	            	} else if ("chq" === type) {
+	            	    fields.prop("disabled", false);
+	            	}
+	            };
+	            jQuery(".paiement-type select").each(change_paiement_fields).change(change_paiement_fields);
         });
         function amapress_del_paiement(e) {
             if (!confirm("Voulez-vous vraiment supprimer cette quantité ?")) return;
@@ -463,7 +476,8 @@ function amapress_paiements_editor( $post_id ) {
 	}
 	$reports = '';
 	if ( count( $related_adhesions_ids ) > 1 ) {
-		$all_paiements_by_id = AmapressAmapien_paiement::getAllActiveByAdhesionId();
+		$all_paiements_by_id  = AmapressAmapien_paiement::getAllActiveByAdhesionId();
+		$total_reports_amount = 0;
 		foreach ( $related_adhesions_ids as $related_adhesion_id ) {
 			if ( $post_id == $related_adhesion_id ) {
 				continue;
@@ -473,19 +487,21 @@ function amapress_paiements_editor( $post_id ) {
 				/** @var AmapressAdhesion_paiement $p */
 				foreach ( $all_paiements_by_id[ $related_adhesion_id ] as $p ) {
 					$status = $p->getStatus();
-					if ( 'received' != $status && 'bank' != $status ) {
-						continue;
-					}
+//					if (  'received' != $status && 'bank' != $status ) {
+//						continue;
+//					}
 					$amount += $p->getAmount();
 				}
 			}
 			$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
 			if ( $related_adhesion ) {
-				$reports .= '<p>Report montant des règlements de "' .
-				            Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ) . '" (' .
-				            sprintf( '%.02f €', $related_adhesion->getTotalAmount() ) . ') = ' .
-				            sprintf( '%.02f €', $amount ) .
-				            '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
+//				$amount -= $related_adhesion->getTotalAmount();
+				$reports              .= '<p>Report montant des règlements de "' .
+				                         Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ) . '" (' .
+				                         sprintf( '%.02f €', $related_adhesion->getTotalAmount() ) . ') = ' .
+				                         sprintf( '%.02f €', $amount ) .
+				                         '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
+				$total_reports_amount += ( $amount - $related_adhesion->getTotalAmount() );
 			}
 		}
 	}
@@ -494,6 +510,7 @@ function amapress_paiements_editor( $post_id ) {
 	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" style="table-layout: auto; width: 100%;">';
 	echo '<tr><th colspan="7">' . $reports . '</th></tr>';
 	echo "<tr>
+<th>Type</th>
 <th>Numéro de chèque</th>
 <th>Adhérent</th>
 <th>Banque</th>
@@ -517,13 +534,16 @@ function amapress_paiements_editor( $post_id ) {
 	$def_id   = - 1;
 	foreach ( $contrat_paiements as $paiement ) {
 		$id       = $paiement ? $paiement->ID : $def_id --;
+		$pmt_type = esc_attr( $paiement ? $paiement->getType() : 'chq' );
 		$numero   = esc_attr( $paiement ? $paiement->getNumero() : '' );
 		$banque   = esc_attr( $paiement ? $paiement->getBanque() : '' );
 		$adherent = esc_attr( $paiement ? $paiement->getEmetteur() : $adhesion->getAdherent()->getDisplayName() );
 		if ( empty( $adherent ) ) {
 			$adherent = $adhesion->getAdherent()->getDisplayName();
 		}
-		$amount = esc_attr( ( $paiement && $paiement->getAmount() > 0 ) ? $paiement->getAmount() : $adhesion->getTotalAmount() / $nb_paiements );
+		$amount = esc_attr( ( $paiement && $paiement->getAmount() > 0 ) ?
+			$paiement->getAmount() :
+			( $adhesion->getTotalAmount() - $total_reports_amount ) / $nb_paiements );
 //        if ($refresh) $amount = $adhesion->getTotalAmount() / $nb_paiements;
 		$status      = esc_attr( $paiement ? $paiement->getStatus() : 'not_received' );
 		$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
@@ -564,6 +584,10 @@ function amapress_paiements_editor( $post_id ) {
 		}
 
 		echo "<tr>
+<td class='paiement-type'><select name='amapress_paiements_details[$id][type]' style='width: 50px'>
+<option value='chq' " . selected( $pmt_type, 'chq', false ) . ">Chèque</option>
+<option value='esp' " . selected( $pmt_type, 'esp', false ) . ">Espèces</option>
+</select></td>
 <td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
 <td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>
 <td class='paiement-banque'><input class='recopy-context-menu' style=\"width: 100%\" name='amapress_paiements_details[$id][banque]' placeholder='' maxlength='1000' type='text' value='$banque' /></td>
@@ -571,7 +595,7 @@ function amapress_paiements_editor( $post_id ) {
 <td><select name='amapress_paiements_details[$id][date]' class='paiements_details' style=\"width: 100%\">
 $date_options
 </select>
-<td><select name='amapress_paiements_details[$id][status]' class='' style='width: 150px'>
+<td><select name='amapress_paiements_details[$id][status]' class='' style='width: 80px'>
 $status_options
 </select></td>
 <td style='width: 32px'><span class='btn del-model-tab dashicons dashicons-dismiss' onclick='amapress_del_paiement(this)'></span></td>
@@ -613,10 +637,11 @@ function amapress_save_paiements_editor( $adhesion_id ) {
 					'amapress_contrat_paiement_contrat_instance' => $first_quant->getContrat_instance()->ID,
 					'amapress_contrat_paiement_date'             => $quant_data['date'],
 					'amapress_contrat_paiement_status'           => $quant_data['status'],
+					'amapress_contrat_paiement_type'             => $quant_data['type'],
 					'amapress_contrat_paiement_amount'           => $refresh ? 0 : $quant_data['amount'],
-					'amapress_contrat_paiement_numero'           => $quant_data['numero'],
+					'amapress_contrat_paiement_numero'           => isset( $quant_data['numero'] ) ? $quant_data['numero'] : '',
 					'amapress_contrat_paiement_emetteur'         => $quant_data['adherent'],
-					'amapress_contrat_paiement_banque'           => $quant_data['banque'],
+					'amapress_contrat_paiement_banque'           => ( 'esp' == $quant_data['type'] ? 'Esp.' : $quant_data['banque'] ),
 				),
 			);
 			if ( $quant_id < 0 ) {

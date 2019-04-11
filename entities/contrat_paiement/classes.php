@@ -86,6 +86,24 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_contrat_paiement_numero', '' );
 	}
 
+	public function getType() {
+		$ret = $this->getCustom( 'amapress_contrat_paiement_type', '' );
+		if ( empty( $ret ) ) {
+			$ret = 'chq';
+		}
+
+		return $ret;
+	}
+
+	public function getTypeFormatted() {
+		switch ( $this->getType() ) {
+			case 'chq':
+				return 'Chèque';
+			case 'esp':
+				return 'Espèces';
+		}
+	}
+
 	public function getBanque() {
 		return $this->getCustom( 'amapress_contrat_paiement_banque', '' );
 	}
