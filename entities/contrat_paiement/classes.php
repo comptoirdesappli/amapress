@@ -135,9 +135,9 @@ GROUP BY $wpdb->posts.ID" );
 
 		$count = count( $orphans );
 		if ( $count ) {
-			return "$count chèques orphelins nettoyés";
+			return "$count règlements orphelins nettoyés";
 		} else {
-			return "Aucun chèque orphelin";
+			return "Aucun règlement orphelin";
 		}
 //		$orphans = get_posts(
 //			[
@@ -239,7 +239,7 @@ GROUP BY $wpdb->posts.ID" );
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
 					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_user_paiement_icon" ) ),
-					'alt'      => 'Vous allez être encaissé du chèque numéro ' . $num . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ' des espèces remises ' ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => '/mes-adhesions'
 				) );
 			}

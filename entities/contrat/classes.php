@@ -115,7 +115,11 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getManage_Cheques() {
-		return $this->getCustom( 'amapress_contrat_manage_paiements', 1 );
+		return $this->getCustom( 'amapress_contrat_instance_manage_paiements', 1 );
+	}
+
+	public function getAllow_Cash() {
+		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}
 
 	public function getModelTitle() {
@@ -578,7 +582,7 @@ class AmapressContrat_instance extends TitanEntity {
 			}
 		];
 		$ret['nb_paiements']                     = [
-			'desc' => 'Nombre de chèques possibles',
+			'desc' => 'Nombre de chèques/règlements possibles',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getPossiblePaiements() );
 			}
@@ -878,6 +882,9 @@ class AmapressContrat_instance extends TitanEntity {
 				}
 				$paiements[] = $ch['desc'];
 			}
+			if ( $this->getAllow_Cash() ) {
+				$paiements[] = 'En espèces';
+			}
 			$row["quantite_paiements"] = '[] ' . implode( "<br />[] ", $paiements );
 			$lines[]                   = $row;
 		}
@@ -969,6 +976,9 @@ class AmapressContrat_instance extends TitanEntity {
 					continue;
 				}
 				$paiements[] = $ch['desc'];
+			}
+			if ( $this->getAllow_Cash() ) {
+				$paiements[] = 'En espèces';
 			}
 			$placeholders["quantite_paiements#$i"] = '[] ' . implode( "\n[] ", $paiements );
 			$i                                     += 1;

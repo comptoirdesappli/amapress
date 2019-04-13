@@ -186,7 +186,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'lieu'     => $adh->getLieu(),
 				'priority' => 0,
 				'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_user_paiement_icon" ) ),
-				'alt'      => 'Vous allez être encaissé du chèque numéro ' . $num . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+				'alt'      => 'Vous allez être encaissé ' . ( 'Esp.' == $num ? ' des espèces remises ' : 'du chèque numéro ' . $num ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 				'href'     => '/mes-adhesions'
 			) );
 		}

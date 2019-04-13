@@ -318,6 +318,9 @@ function amapress_paiements_count_editor( $post_id ) {
 
 				return sprintf( '%d (%s)', $v, $option['desc'] );
 			}, $adhesion->getContrat_instance()->getPossiblePaiements() ) ) . '</div>';
+		if ( $adhesion->getContrat_instance()->getAllow_Cash() ) {
+			$ret .= '<div><strong>Règlement en espèces autorisé</strong></div>';
+		}
 	}
 
 	return $ret;
@@ -326,7 +329,7 @@ function amapress_paiements_count_editor( $post_id ) {
 function amapress_paiements_editor( $post_id ) {
 	$adhesion = AmapressAdhesion::getBy( $post_id );
 	if ( $adhesion->getContrat_instance() == null || 'draft' == $adhesion->getPost()->post_status ) {
-		echo '<p style="color:red">Les chèques ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée</p>';
+		echo '<p style="color:red">Les chèques/règlements ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée</p>';
 
 		return;
 	}

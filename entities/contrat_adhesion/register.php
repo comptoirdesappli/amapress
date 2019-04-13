@@ -423,7 +423,7 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'import_key' => true,
 //                'csv_required' => true,
 			),
-			'date_debut'        => array(
+			'date_debut'       => array(
 				'name'          => amapress__( 'Date de début' ),
 				'type'          => 'date',
 				'required'      => true,
@@ -458,8 +458,22 @@ jQuery(function($) {
 						}
 					},
 			),
-			'paiements'         => array(
-				'name'        => amapress__( 'Nombre de chèque' ),
+			'pmt_type'         => array(
+				'name'        => amapress__( 'Moyen de règlement principal' ),
+				'type'        => 'select',
+				'group'       => '3/ Paiements',
+				'readonly'    => 'amapress_is_contrat_adhesion_readonly',
+				'options'     => array(
+					'chq' => 'Chèque',
+					'esp' => 'Espèces',
+				),
+				'default'     => 'chq',
+				'required'    => true,
+				'desc'        => 'Moyen de règlement principal : chèques ou espèces',
+				'show_column' => false,
+			),
+			'paiements'        => array(
+				'name'        => amapress__( 'Nombre de paiements' ),
 				'type'        => 'custom',
 				'group'       => '3/ Paiements',
 				'required'    => true,
@@ -470,7 +484,7 @@ jQuery(function($) {
 				'csv'         => false,
 //                'csv_required' => true,
 			),
-			'paiements_editor'  => array(
+			'paiements_editor' => array(
 				'name'        => amapress__( 'Details des paiements' ),
 				'type'        => 'custom',
 				'show_column' => false,
