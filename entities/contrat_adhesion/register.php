@@ -1058,6 +1058,8 @@ function amapress_get_contrat_quantite_datatable(
 		$next_distrib = AmapressDistribution::getNextDistribution( $lieu_id, $contrat_instance_id );
 		if ( $next_distrib ) {
 			$date = $next_distrib->getDate();
+		} else {
+			$date = amapress_time();
 		}
 	}
 
@@ -1108,7 +1110,7 @@ function amapress_get_contrat_quantite_datatable(
 	);
 
 	$data      = array();
-	$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true );
+	$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true, false );
 	$quants    = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 	$quants[]  = null;
 	foreach ( $quants as $quant ) {
@@ -1220,7 +1222,7 @@ function amapress_get_contrat_quantite_datatable(
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
 
 	/** @var AmapressDistribution $dist */
-	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
+	$next_distribs = AmapressDistribution::get_next_distributions( $date, 'ASC' );
 	$dist          = null;
 	foreach ( $next_distribs as $distrib ) {
 		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {
