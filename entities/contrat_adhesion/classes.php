@@ -417,7 +417,7 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['nb_paiements']                     = [
-				'desc' => 'Nombre de chèques choisi',
+				'desc' => 'Nombre de règlements/chèques choisi',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getPaiements();
 				}
@@ -485,6 +485,9 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['option_paiements']                 = [
 				'desc' => 'Option de paiement choisie',
 				'func' => function ( AmapressAdhesion $adh ) {
+					if ( 'esp' == $adh->getMainPaiementType() ) {
+						return 'En espèces';
+					}
 					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
 
 					return $o['desc'];
@@ -1063,6 +1066,11 @@ class AmapressAdhesion extends TitanEntity {
 		return $this->getCustom( 'amapress_adhesion_paiements', 0 );
 	}
 
+	/** @return string */
+	public function getMainPaiementType() {
+		return $this->getCustom( 'amapress_adhesion_pmt_type', 'chq' );
+	}
+
 	public function hasPaiementDateFin() {
 		return $this->getCustom( 'amapress_adhesion_pmt_fin', 0 );
 	}
@@ -1604,6 +1612,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$id       = $paiement ? $paiement->ID : $def_id --;
 			$numero   = $paiement ? $paiement->getNumero() : '';
 			$banque   = $paiement ? $paiement->getBanque() : '';
+
 			$adherent = $paiement ? $paiement->getEmetteur() : $this->getAdherent()->getDisplayName();
 			if ( empty( $adherent ) ) {
 				$adherent = $this->getAdherent()->getDisplayName();
@@ -1612,20 +1621,24 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$status      = $paiement ? $paiement->getStatus() : 'not_received';
 			$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
 
+			$meta = array(
+				'amapress_contrat_paiement_adhesion'         => $this->ID,
+				'amapress_contrat_paiement_contrat_instance' => $contrat_instance->ID,
+				'amapress_contrat_paiement_date'             => $paiement_dt,
+				'amapress_contrat_paiement_status'           => $status,
+				'amapress_contrat_paiement_amount'           => $amount,
+				'amapress_contrat_paiement_numero'           => $numero,
+				'amapress_contrat_paiement_emetteur'         => $adherent,
+				'amapress_contrat_paiement_banque'           => $banque,
+			);
+			if ( null == $paiement && 'esp' == $this->getMainPaiementType() ) {
+				$meta['amapress_contrat_paiement_type'] = 'esp';
+			}
 			$my_post = array(
 				'post_type'    => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
 				'post_content' => '',
 				'post_status'  => 'publish',
-				'meta_input'   => array(
-					'amapress_contrat_paiement_adhesion'         => $this->ID,
-					'amapress_contrat_paiement_contrat_instance' => $contrat_instance->ID,
-					'amapress_contrat_paiement_date'             => $paiement_dt,
-					'amapress_contrat_paiement_status'           => $status,
-					'amapress_contrat_paiement_amount'           => $amount,
-					'amapress_contrat_paiement_numero'           => $numero,
-					'amapress_contrat_paiement_emetteur'         => $adherent,
-					'amapress_contrat_paiement_banque'           => $banque,
-				),
+				'meta_input'   => $meta,
 			);
 			if ( $id < 0 ) {
 				wp_insert_post( $my_post );

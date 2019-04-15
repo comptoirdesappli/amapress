@@ -8,8 +8,8 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_contrat_pa
 function amapress_register_entities_contrat_paiement( $entities ) {
 	$entities['contrat_paiement'] = array(
 		'internal_name'    => 'amps_cont_pmt',
-		'singular'         => amapress__( 'Chèque Inscription Contrat' ),
-		'plural'           => amapress__( 'Chèques Inscription Contrat' ),
+		'singular'         => amapress__( 'Chèque/Règlement Inscription Contrat' ),
+		'plural'           => amapress__( 'Chèques/Règlement Inscription Contrat' ),
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
@@ -24,7 +24,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 		'default_order'    => 'ASC',
 		'labels'           => array(
 			'add_new'      => 'Ajouter',
-			'add_new_item' => 'Saisie Chèque Inscription Contrat',
+			'add_new_item' => 'Saisie Chèque/Règlement Inscription Contrat',
 		),
 		'views'            => array(
 			'remove'  => array( 'mine' ),
@@ -44,7 +44,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'name'         => amapress__( 'Date de remise' ),
 				'type'         => 'date',
 				'required'     => true,
-				'desc'         => 'Date de remise du chèque au producteur',
+				'desc'         => 'Date de remise du règlement au producteur',
 //                'import_key' => true,
 				'csv_required' => true,
 				'searchable'   => true,
@@ -111,7 +111,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //					}
 //				),
 			),
-			'lieu'          => array(
+			'lieu'   => array(
 				'name'       => amapress__( 'Lieu' ),
 				'type'       => 'custom',
 				'hidden'     => true,
@@ -141,7 +141,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					}
 				),
 			),
-			'status'        => array(
+			'status' => array(
 				'name'         => amapress__( 'Statut' ),
 				'type'         => 'select',
 				'options'      => array(
@@ -153,19 +153,31 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'desc'         => 'Sélectionner l’option qui convient : Reçu à l’Amap, non reçu à l’Amap, Remis au producteur',
 				'csv_required' => true,
 			),
-			'amount'        => array(
+			'type'   => array(
+				'name'     => amapress__( 'Type' ),
+				'type'     => 'select',
+				'options'  => array(
+					'chq' => 'Chèque',
+					'esp' => 'Espèces',
+				),
+				'default'  => 'chq',
+				'required' => true,
+				'desc'     => 'Sélectionner le type de règlement',
+//				'show_column'  => false,
+			),
+			'amount' => array(
 				'name'         => amapress__( 'Montant' ),
 				'type'         => 'float',
 				'unit'         => '€',
 				'required'     => true,
-				'desc'         => 'Montant du chèque',
+				'desc'         => 'Montant du chèque/espèces',
 				'csv_required' => true,
 			),
-			'numero'        => array(
+			'numero' => array(
 				'name'         => amapress__( 'Numéro du chèque' ),
 				'type'         => 'text',
 				'required'     => true,
-				'desc'         => 'Numéro du chèque',
+				'desc'         => 'Numéro du chèque ou "Esp." pour des règlements en espèces',
 				'import_key'   => true,
 				'csv_required' => true,
 				'searchable'   => true,
@@ -173,14 +185,14 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 			'banque'        => array(
 				'name'       => amapress__( 'Banque' ),
 				'type'       => 'text',
-				'desc'       => 'Banque émettrice',
+				'desc'       => 'Banque émettrice ou "Esp." pour des règlements en espèces',
 				'searchable' => true,
 			),
 			'emetteur'      => array(
-				'name'       => amapress__( 'Emetteur du chèque' ),
+				'name'       => amapress__( 'Emetteur' ),
 				'type'       => 'text',
 				'required'   => true,
-				'desc'       => 'Renseigner obligatoirement le nom de l’émetteur qui figure sur le chèque (peut être différent du nom de l’amapien détenteur du contrat)',
+				'desc'       => 'Emetteur du règlement. Pour les chèques, renseigner obligatoirement le nom de l’émetteur qui figure sur le chèque (peut être différent du nom de l’amapien détenteur du contrat)',
 				'searchable' => true,
 			),
 //            'categ_editor' => array(

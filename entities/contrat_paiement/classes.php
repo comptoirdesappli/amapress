@@ -86,6 +86,24 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_contrat_paiement_numero', '' );
 	}
 
+	public function getType() {
+		$ret = $this->getCustom( 'amapress_contrat_paiement_type', '' );
+		if ( empty( $ret ) ) {
+			$ret = 'chq';
+		}
+
+		return $ret;
+	}
+
+	public function getTypeFormatted() {
+		switch ( $this->getType() ) {
+			case 'chq':
+				return 'Chèque';
+			case 'esp':
+				return 'Espèces';
+		}
+	}
+
 	public function getBanque() {
 		return $this->getCustom( 'amapress_contrat_paiement_banque', '' );
 	}
@@ -117,9 +135,9 @@ GROUP BY $wpdb->posts.ID" );
 
 		$count = count( $orphans );
 		if ( $count ) {
-			return "$count chèques orphelins nettoyés";
+			return "$count règlements orphelins nettoyés";
 		} else {
-			return "Aucun chèque orphelin";
+			return "Aucun règlement orphelin";
 		}
 //		$orphans = get_posts(
 //			[
@@ -221,7 +239,7 @@ GROUP BY $wpdb->posts.ID" );
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
 					'icon'     => 'flaticon-business',
-					'alt'      => 'Vous allez être encaissé du chèque numéro ' . $num . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ' des espèces remises ' ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => '/mes-adhesions'
 				) );
 			}

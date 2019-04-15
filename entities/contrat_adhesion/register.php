@@ -423,7 +423,7 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'import_key' => true,
 //                'csv_required' => true,
 			),
-			'date_debut'        => array(
+			'date_debut'       => array(
 				'name'          => amapress__( 'Date de début' ),
 				'type'          => 'date',
 				'required'      => true,
@@ -458,8 +458,22 @@ jQuery(function($) {
 						}
 					},
 			),
-			'paiements'         => array(
-				'name'        => amapress__( 'Nombre de chèque' ),
+			'pmt_type'         => array(
+				'name'        => amapress__( 'Moyen de règlement principal' ),
+				'type'        => 'select',
+				'group'       => '3/ Paiements',
+				'readonly'    => 'amapress_is_contrat_adhesion_readonly',
+				'options'     => array(
+					'chq' => 'Chèque',
+					'esp' => 'Espèces',
+				),
+				'default'     => 'chq',
+				'required'    => true,
+				'desc'        => 'Moyen de règlement principal : chèques ou espèces',
+				'show_column' => false,
+			),
+			'paiements'        => array(
+				'name'        => amapress__( 'Nombre de paiements' ),
 				'type'        => 'custom',
 				'group'       => '3/ Paiements',
 				'required'    => true,
@@ -470,7 +484,7 @@ jQuery(function($) {
 				'csv'         => false,
 //                'csv_required' => true,
 			),
-			'paiements_editor'  => array(
+			'paiements_editor' => array(
 				'name'        => amapress__( 'Details des paiements' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -1044,6 +1058,8 @@ function amapress_get_contrat_quantite_datatable(
 		$next_distrib = AmapressDistribution::getNextDistribution( $lieu_id, $contrat_instance_id );
 		if ( $next_distrib ) {
 			$date = $next_distrib->getDate();
+		} else {
+			$date = amapress_time();
 		}
 	}
 
@@ -1094,7 +1110,7 @@ function amapress_get_contrat_quantite_datatable(
 	);
 
 	$data      = array();
-	$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true );
+	$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true, false );
 	$quants    = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 	$quants[]  = null;
 	foreach ( $quants as $quant ) {
@@ -1206,7 +1222,7 @@ function amapress_get_contrat_quantite_datatable(
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
 
 	/** @var AmapressDistribution $dist */
-	$next_distribs = AmapressDistribution::get_next_distributions( amapress_time(), 'ASC' );
+	$next_distribs = AmapressDistribution::get_next_distributions( $date, 'ASC' );
 	$dist          = null;
 	foreach ( $next_distribs as $distrib ) {
 		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {

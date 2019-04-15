@@ -702,9 +702,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				] ),
 				'Imprimer', true, true, 'btn btn-default'
 			);
-			echo '<p>Veuillez imprimer le bulletin et le remettre avec votre chèque lors de la première distribution<br/>' . $print_bulletin . '</p>';
+			echo '<p>Veuillez imprimer le bulletin et le remettre avec votre chèque/règlement lors de la première distribution<br/>' . $print_bulletin . '</p>';
 		} else {
-			echo '<p>Veuillez remettre le chèque lors de la première distribution</p>';
+			echo '<p>Veuillez remettre le chèque/règlement lors de la première distribution</p>';
 		}
 
 		echo '<p>Vous pouvez maintenant vous inscrires aux contrats de l\'AMAP :<br/>
@@ -1496,6 +1496,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 //			$last_cheque        = $cheques['remain_amount'];
 			echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' value='$nb_cheque' class='required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
 		}
+		if ( $contrat->getAllow_Cash() ) {
+			echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='required' /><label for='cheques-esp'>En espèces</label><br/>";
+		}
 		echo '<br />';
 		if ( ! $admin_mode ) {
 			echo '<label for="inscr_message">Message pour le référent :</label><textarea id="inscr_message" name="message"></textarea>';
@@ -1577,9 +1580,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			'amapress_adhesion_date_debut'       => $start_date,
 			'amapress_adhesion_contrat_instance' => $contrat_id,
 			'amapress_adhesion_message'          => $message,
-			'amapress_adhesion_paiements'        => $cheques,
+			'amapress_adhesion_paiements'        => ( - 1 == $cheques ? 1 : $cheques ),
 			'amapress_adhesion_lieu'             => $lieu_id,
 		];
+		if ( - 1 == $cheques ) {
+			$meta['amapress_adhesion_pmt_type'] = 'esp';
+		}
 		if ( ! empty( $quantite_ids ) ) {
 			$meta['amapress_adhesion_contrat_quantite'] = $quantite_ids;
 		}
@@ -1651,7 +1657,7 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
 					] ),
 					'Imprimer', true, true, 'btn btn-default'
 				);
-				echo '<p>Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (' . $inscription->getProperty( 'referents' ) . ') avec les chèques correspondants lors de la prochaine distribution<br />
+				echo '<p>Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (' . $inscription->getProperty( 'referents' ) . ') avec les chèques/règlements correspondants lors de la prochaine distribution<br />
 ' . $print_contrat . '</p>';
 			}
 			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
@@ -1693,7 +1699,7 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
 	} else if ( 'the_end' == $step ) {
 		echo '<h4>Félicitations, vous avez terminé vos inscriptions !</h4>';
 		echo '<p>Si vous êtes nouvel adhérent vous allez recevoir un mail vous indiquant comment vous connecter au site et choisir votre mot de passe.</p>';
-		echo '<p>Vous allez recevoir un mail de confirmation pour chacune de vos inscriptions avec le contrat à imprimer et les instructions pour remettre vos chèques aux référents.</p>';
+		echo '<p>Vous allez recevoir un mail de confirmation pour chacune de vos inscriptions avec le contrat à imprimer et les instructions pour remettre vos chèques/règlements aux référents.</p>';
 		echo '<p>(Pensez à regarder vos spams, ces mails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 		echo '<p>Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie</p>';
 	}
