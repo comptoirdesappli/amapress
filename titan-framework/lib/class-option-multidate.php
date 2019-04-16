@@ -189,7 +189,7 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
 	public function display() {
 		$this->echoOptionHeader();
 		printf( '<div class="multidate-calendar" id="%s-cal" />
-                    <input class="input-multidate %s" name="%s" id="%s" type="hidden" value="%s" data-weeks="%s" />',
+                    <input class="input-multidate %s dpDate" name="%s" id="%s" type="hidden" value="%s" data-weeks="%s" />',
 			$this->getID(),
 			$this->settings['required'] ? 'required' : '',
 			$this->getID(),

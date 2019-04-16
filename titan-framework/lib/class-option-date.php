@@ -216,7 +216,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			$placeholder = self::$default_time_placeholder;
 		}
 
-		printf( '<input class="input-date%s%s %s" name="%s" placeholder="%s" id="%s" type="text" value="%s" autocomplete="%s" /> <p class="description">%s</p>',
+		printf( '<input class="input-date%s%s %s dpDate" name="%s" placeholder="%s" id="%s" type="text" value="%s" autocomplete="%s" /> <p class="description">%s</p>',
 			( $this->settings['date'] ? ' date' : '' ),
 			( $this->settings['time'] ? ' time' : '' ),
 			$this->settings['required'] ? 'required' : '',

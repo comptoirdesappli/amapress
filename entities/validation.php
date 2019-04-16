@@ -9,6 +9,10 @@ add_action( 'admin_enqueue_scripts', 'amapress_admin_add_validation_js' );
 function amapress_admin_add_validation_js() {
 	wp_enqueue_script( 'jquery.validate', plugins_url( '/js/jquery-validate/jquery.validate.min.js', AMAPRESS__PLUGIN_FILE ), array( 'jquery' ) );
 	wp_enqueue_script( 'jquery.validate-fr', plugins_url( '/js/jquery-validate/localization/messages_fr.js', AMAPRESS__PLUGIN_FILE ), array( 'jquery.validate' ) );
+	wp_enqueue_script( 'jquery.ui.datepicker.validation', plugins_url( '/js/jquery.ui.datepicker.validation.min.js', AMAPRESS__PLUGIN_FILE ), array(
+		'jquery.validate',
+		'jquery-ui-datepicker'
+	) );
 }
 
 add_action( 'admin_footer', 'amapress_post_validation' );
