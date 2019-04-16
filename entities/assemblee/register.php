@@ -30,6 +30,9 @@ function amapress_register_entities_assemblee( $entities ) {
 			'_dyn_'   => 'amapress_assemblee_views',
 			'exp_csv' => true,
 		),
+		'edit_header'        => function ( $post ) {
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
+		},
 		'fields'             => array(
 			'ordre_du_jour' => array(
 				'name'       => amapress__( 'Ordre du jour' ),
@@ -82,6 +85,7 @@ function amapress_register_entities_assemblee( $entities ) {
 			'participants'  => array(
 				'name'         => amapress__( 'Participants' ),
 				'type'         => 'select-users',
+				'readonly'     => true,
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,

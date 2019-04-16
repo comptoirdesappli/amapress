@@ -44,6 +44,7 @@ function amapress_register_entities_amap_event( $entities ) {
 					}
 				}
 			}
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
 		'fields'             => array(
 			'public'      => array(
@@ -146,6 +147,7 @@ function amapress_register_entities_amap_event( $entities ) {
 			'participants' => array(
 				'name'         => amapress__( 'Participants' ),
 				'type'         => 'select-users',
+				'readonly'     => true,
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,

@@ -27,6 +27,9 @@ function amapress_register_entities_visite( $entities ) {
 			'_dyn_'   => 'amapress_visite_views',
 			'exp_csv' => true,
 		),
+		'edit_header'        => function ( $post ) {
+			TitanFrameworkOption::echoFullEditLinkAndWarning();
+		},
 		'fields'             => array(
 //			'photo'        => array(
 //				'name'  => amapress__( 'Photo' ),
@@ -92,6 +95,7 @@ function amapress_register_entities_visite( $entities ) {
 			'participants' => array(
 				'name'         => amapress__( 'Participants' ),
 				'type'         => 'select-users',
+				'readonly'     => true,
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
