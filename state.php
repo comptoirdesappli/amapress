@@ -154,8 +154,8 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'uk-cookie-consent', 'GDPR Cookie Consent Banner',
 		'<strong>Recommandé</strong> : Affiche un bandeau de consentement à l\'utilisation des cookies sur votre site. Cela est nécessaire pour être en conformité avec la loi RGPD, par exemple, si vous faites des statistiques (ie, Google Analytics) sur les visiteurs.',
 		'warning' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'gprd', 'GPRD',
-		'<strong>Optionnel</strong> : Gestion avancée et suite d\'outils relatifs à la loi d\'accès aux données RGPD.',
+	$state['01_plugins'][] = amapress_check_plugin_install( 'gdpr', 'GDPR Avancé/Professionel',
+		'<strong>Optionnel/Avancé</strong> : Gestion très avancée et suite d\'outils relatifs à la loi d\'accès aux données RGPD.',
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
 		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
