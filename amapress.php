@@ -513,9 +513,9 @@ add_action( 'init', 'amapress_global_init', 15 );
 //});
 
 function amapress_global_init() {
-	$key = Amapress::getOption( 'google_map_key' );
+	TitanFrameworkOptionAddress::$geoprovider = Amapress::getOption( 'geocode_provider' );
+	$key                                      = Amapress::getOption( 'google_map_key' );
 	if ( ! empty( $key ) ) {
-		TitanFrameworkOptionAddress::$geoprovider        = Amapress::getOption( 'geocode_provider' );
 		TitanFrameworkOptionAddress::$google_map_api_key = $key;
 	}
 
