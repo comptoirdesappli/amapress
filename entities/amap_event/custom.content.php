@@ -11,6 +11,33 @@ function amapress_get_custom_content_amap_event( $content ) {
 
 	ob_start();
 
+	$can_unsubscribe = Amapress::start_of_day( $amap_event->getDate() ) > Amapress::start_of_day( amapress_time() ); //TODO
+	$can_subscribe   = Amapress::start_of_day( $amap_event->getDate() ) > Amapress::start_of_day( amapress_time() );
+	$is_resp         = in_array( amapress_current_user_id(), $amap_event->getParticipantsIds() );
+
+	$users = [ '' => '--Sélectionner un amapien--' ];
+	foreach ( get_users() as $user ) {
+		$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+	}
+	$inscr_another = '';
+	if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
+		$inscr_another = '<form class="inscription-distrib-other-user">
+<select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
+<button type="button" class="btn btn-default event-inscrire-button" data-event="' . $amap_event->ID . '">Inscrire</button>
+</form>';
+	}
+	$inscription = '';
+	if ( ! $is_resp ) {
+		if ( $can_subscribe ) {
+			$inscription .= '<button type="button" class="btn btn-default event-inscrire-button" data-event="' . $amap_event->ID . '">M\'inscrire</button>';
+		} else {
+			$inscription .= '<span class="event-inscr-closed">Inscriptions closes</span>';
+		}
+	} else if ( $can_unsubscribe ) {
+		$inscription .= '<button type="button" class="btn btn-default event-desinscrire-button" data-event="' . $amap_event->ID . '">Me désinscrire</button>';
+	}
+	echo $inscription;
+
 	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-event amap-panel-event-hours' );
 	echo '<p>' .
 	     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
@@ -112,7 +139,9 @@ function amapress_get_custom_content_amap_event( $content ) {
             <p>Aucun participants</p>
 		<?php }
 
-		amapress_echo_button( 'Participer', amapress_action_link( $amap_event->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+		echo $inscr_another;
+//		amapress_echo_button( 'Participer', amapress_action_link( $amap_event->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+
 
 		amapress_echo_panel_end();
 	}

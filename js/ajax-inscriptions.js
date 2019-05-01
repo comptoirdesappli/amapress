@@ -146,7 +146,7 @@
         var $this = jQuery(this);
         var data = {
             'action': 'desinscrire_amap_event_action',
-            'visite': $this.data('event'),
+            'event': $this.data('event'),
             'user': $this.data('user')
         };
         //var $parentForm = $this.parent('form');
@@ -163,7 +163,7 @@
                 $this.prop("disabled", false);
                 return;
             }
-            $this.parent().html(response);
+            $this.replaceWith(response);
         });
         return false;
     });
