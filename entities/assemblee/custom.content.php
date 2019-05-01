@@ -12,6 +12,10 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 
 	ob_start();
 
+	if ( in_array( amapress_current_user_id(), $assemblee_generale->getParticipantsIds() ) ) {
+		amapress_echo_button( 'Participer', amapress_action_link( $assemblee_generale->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+	}
+
 	amapress_echo_panel_start( 'Ordre du jour' );
 	echo $assemblee_generale->getOrdre_du_jour();
 	amapress_echo_panel_end();
@@ -61,8 +65,6 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 	} else { ?>
         <p>Aucun participants</p>
 	<?php }
-
-	amapress_echo_button( 'Participer', amapress_action_link( $assemblee_generale->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
 
 	amapress_echo_panel_end();
 
