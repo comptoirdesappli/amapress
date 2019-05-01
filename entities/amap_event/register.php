@@ -55,7 +55,7 @@ function amapress_register_entities_amap_event( $entities ) {
 			'date'        => array(
 				'name'       => amapress__( 'Date de l\'évènement' ),
 				'type'       => 'date',
-				'time'       => true,
+				'time'       => false,
 				'required'   => true,
 				'desc'       => 'Date évènement',
 				'group'      => '1/ Horaires',
