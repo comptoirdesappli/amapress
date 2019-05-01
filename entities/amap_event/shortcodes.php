@@ -87,7 +87,7 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 
 //add_action('init', function () {
 add_action( 'wp_ajax_desinscrire_amap_event_action', function () {
-	$dist_id    = intval( $_POST['event'] );
+	$event_id   = intval( $_POST['event'] );
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = ( amapress_current_user_id() == $user_id );
 	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) ) {
@@ -95,13 +95,13 @@ add_action( 'wp_ajax_desinscrire_amap_event_action', function () {
 		die();
 	}
 
-	$dist = new AmapressDistribution( $dist_id );
-	switch ( $dist->desinscrireResponsable( $user_id ) ) {
+	$event = new AmapressAmap_event( $event_id );
+	switch ( $event->desinscrireParticipant( $user_id ) ) {
 		case 'not_inscr':
-			echo '<p class="error">Vous n\'êtes pas inscrit</p>';
+			echo '<p class="error">Non inscrit</p>';
 			break;
 		case true:
-			echo '<p class="success">Votre désinscription a bien été prise en compte</p>';
+			echo '<p class="success">Désinscription a bien été prise en compte</p>';
 			break;
 	}
 	die();
@@ -117,16 +117,10 @@ add_action( 'wp_ajax_inscrire_amap_event_action', function () {
 	$event = new AmapressAmap_event( $event_id );
 	switch ( $event->inscrireParticipant( $user_id ) ) {
 		case 'already_in_list':
-			echo '<p class="error">Vous êtes déjà inscrit</p>';
-			break;
-		case 'list_full':
-			echo '<p class="error">La distribution est déjà complête</p>';
-			break;
-		case 'already_taken':
-			echo '<p class="error">Rôle déjà pris</p>';
+			echo '<p class="error">Déjà inscrit</p>';
 			break;
 		case 'ok':
-			echo '<p class="success">Votre inscription a bien été prise en compte</p>';
+			echo '<p class="success">L\'inscription a bien été prise en compte</p>';
 			break;
 	}
 	die();
