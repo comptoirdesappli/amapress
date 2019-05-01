@@ -125,15 +125,12 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		$participants = unserialize( get_post_meta( $this->ID, 'amapress_assemblee_generale_participants', true ) );
-		if ( ! $participants ) {
-			$participants = array();
-		}
+		$participants = $this->getParticipantsIds();
 		if ( in_array( $user_id, $participants ) ) {
 			return 'already_in_list';
 		} else {
 			$participants[] = $user_id;
-			update_post_meta( $this->ID, 'amapress_assemblee_generale_participants', $participants );
+			$this->setCustom( 'amapress_assemblee_generale_participants', $participants );
 
 			amapress_mail_current_user_inscr( $this, $user_id, 'assemble' );
 
