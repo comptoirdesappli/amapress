@@ -44,7 +44,7 @@ function amapress_register_entities_assemblee( $entities ) {
 			'date'          => array(
 				'name'       => amapress__( 'Date' ),
 				'type'       => 'date',
-				'time'       => true,
+				'time'       => false,
 				'required'   => true,
 				'desc'       => 'Date ',
 				'group'      => '2/ Horaires',
