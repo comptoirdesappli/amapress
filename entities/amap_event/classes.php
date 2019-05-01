@@ -171,15 +171,12 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		$participants = unserialize( get_post_meta( $this->ID, 'amapress_amap_event_participants', true ) );
-		if ( ! $participants ) {
-			$participants = array();
-		}
+		$participants = $this->getParticipantsIds();
 		if ( in_array( $user_id, $participants ) ) {
 			return 'already_in_list';
 		} else {
 			$participants[] = $user_id;
-			update_post_meta( $this->ID, 'amapress_amap_event_participants', $participants );
+			$this->setCustom( 'amapress_amap_event_participants', $participants );
 
 			amapress_mail_current_user_inscr( $this, $user_id, 'amap_event' );
 
@@ -192,19 +189,14 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		$participants = Amapress::get_post_meta_array( $this->ID, 'amapress_amap_event_participants' );
-		if ( ! $participants ) {
-			$participants = array();
-		}
-
+		$participants = $this->getParticipantsIds();
 		if ( ( $key = array_search( $user_id, $participants ) ) !== false ) {
 			unset( $participants[ $key ] );
-
-			update_post_meta( $this->ID, 'amapress_amap_event_participants', $participants );
+			$this->setCustom( 'amapress_amap_event_participants', $participants );
 
 			amapress_mail_current_user_desinscr( $this, $user_id, 'amap_event' );
 
-			return true;
+			return 'ok';
 		} else {
 			return 'not_inscr';
 		}
