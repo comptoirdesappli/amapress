@@ -38,7 +38,7 @@ function amapress_add_rewrite_rules() {
 //    add_rewrite_rule('^paniers/(a-echanger|intermittents)/?', 'index.php?pagename='.$infos_slug.'&viewmode=paniers_a_echanger', 'top');
 //    add_rewrite_rule('^amapiens/([^/]+)/echanger/?', 'index.php?post_type=amps_panier&name=$matches[1]&amp_action=echanger', 'top');
 //	add_rewrite_rule( '^paniers/([^/]+)/echanger/?', 'index.php?post_type=amps_panier&name=$matches[1]&amp_action=echanger', 'top' );
-	add_rewrite_rule( '^visites/([^/]+)/(inscription|s-inscrire|sinscrire|participer|y-aller)/?', 'index.php?post_type=amps_visite&name=$matches[1]&amp_action=participer', 'top' );
+//	add_rewrite_rule( '^visites/([^/]+)/(inscription|s-inscrire|sinscrire|participer|y-aller)/?', 'index.php?post_type=amps_visite&name=$matches[1]&amp_action=participer', 'top' );
 	add_rewrite_rule( '^assemblees/([^/]+)/(inscription|s-inscrire|sinscrire|participer|y-aller)/?', 'index.php?post_type=amps_assemblee&name=$matches[1]&amp_action=participer', 'top' );
 	add_rewrite_rule( '^evenements/([^/]+)/(inscription|s-inscrire|sinscrire|participer|y-aller)/?', 'index.php?post_type=amps_amap_event&name=$matches[1]&amp_action=participer', 'top' );
 	add_rewrite_rule( '^commandes/([^/]+)/(commander)/?', 'index.php?post_type=amps_commande&name=$matches[1]&amp_action=commander', 'top' );

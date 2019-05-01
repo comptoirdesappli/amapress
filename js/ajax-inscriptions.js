@@ -77,7 +77,12 @@
                 $this.prop("disabled", false);
                 return;
             }
-            $this.replaceWith(response);
+            if (data.user) {
+                $(response).insertAfter($this);
+                $this.prop("disabled", false);
+            } else {
+                $this.replaceWith(response);
+            }
         });
         return false;
     }).on('click', '.visite-inscrire-button', function () {
@@ -105,7 +110,12 @@
                 $this.prop("disabled", false);
                 return;
             }
-            $this.replaceWith(response);
+            if (data.user) {
+                $(response).insertAfter($this);
+                $this.prop("disabled", false);
+            } else {
+                $this.replaceWith(response);
+            }
         });
         return false;
     }).on('click', '.visite-desinscrire-button', function () {
@@ -129,7 +139,7 @@
                 $this.prop("disabled", false);
                 return;
             }
-            $this.parent().html(response);
+            $this.replaceWith(response);
         });
         return false;
     }).on('click', '.event-desinscrire-button', function () {

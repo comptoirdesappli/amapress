@@ -11,7 +11,41 @@ function amapress_get_custom_content_visite( $content ) {
 
 	ob_start();
 
-	amapress_echo_button( 'Participer', amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+//	amapress_echo_button( 'Participer', amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
+
+	$can_subscribe   = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() );
+	$can_unsubscribe = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() ); //TODO
+	$is_resp         = in_array( amapress_current_user_id(), $visite->getParticipantIds() );
+
+	$users = [ '' => '--Sélectionner un amapien--' ];
+	foreach ( get_users() as $user ) {
+		$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+	}
+	$inscr_another = '';
+	if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
+		$inscr_another = '<form class="inscription-distrib-other-user">
+<select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
+<button type="button" class="btn btn-default visite-inscrire-button" data-visite="' . $visite->ID . '">Inscrire</button>
+</form>';
+	}
+	$inscription = '';
+	if ( ! $is_resp ) {
+		if ( $can_subscribe ) {
+			$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-visite="' . $visite->ID . '">M\'inscrire</button>';
+		} else {
+			$inscription .= '<span class="visite-inscr-closed">Inscriptions closes</span>';
+		}
+	} else {
+		if ( $can_unsubscribe ) {
+			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-visite="' . $visite->ID . '">Me désinscrire</button>';
+		}
+	}
+
+	if ( ! empty( $inscription ) ) {
+//		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
+		echo $inscription;
+//		amapress_echo_panel_end();
+	}
 
 	amapress_echo_panel_start( 'Au programme', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-programme' );
 	echo '<p class="visite-au-programme">' .
@@ -59,6 +93,8 @@ function amapress_get_custom_content_visite( $content ) {
 	} else { ?>
         <p>Aucun participants</p>
 	<?php }
+
+	echo $inscr_another;
 
 	amapress_echo_panel_end();
 

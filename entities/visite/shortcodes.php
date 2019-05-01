@@ -99,10 +99,10 @@ add_action( 'wp_ajax_desinscrire_visite_action', function () {
 	$event = new AmapressVisite( $event_id );
 	switch ( $event->desinscrireParticipant( $user_id ) ) {
 		case 'not_inscr':
-			echo '<p class="error">Vous n\'êtes pas inscrit</p>';
+			echo '<p class="error">Non inscrit</p>';
 			break;
 		case true:
-			echo '<p class="success">Votre désinscription a bien été prise en compte</p>';
+			echo '<p class="success">Désinscription a bien été prise en compte</p>';
 			break;
 	}
 	die();
@@ -119,10 +119,10 @@ add_action( 'wp_ajax_inscrire_visite_action', function () {
 	$event = new AmapressVisite( $event_id );
 	switch ( $event->inscrireParticipant( $user_id ) ) {
 		case 'already_in_list':
-			echo '<p class="error">Vous êtes déjà inscrit</p>';
+			echo '<p class="error">Déjà inscrit</p>';
 			break;
 		case 'ok':
-			echo '<p class="success">Votre inscription a bien été prise en compte</p>';
+			echo '<p class="success">Inscription a bien été prise en compte</p>';
 			break;
 	}
 	die();
