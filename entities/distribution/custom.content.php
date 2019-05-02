@@ -60,13 +60,20 @@ function amapress_get_custom_content_distribution( $content ) {
 			$need_responsables = true;
 			if ( $can_subscribe && ! Amapress::hasRespDistribRoles() && ! $is_resp ) {
 				echo '<p>';
-				amapress_echo_button( 'S\'inscrire', amapress_action_link( $dist_id, 'sinscrire' ), 'fa-fa', false, "Confirmez-vous votre inscription ?" );
+				amapress_echo_button( 'M\'inscrire', amapress_action_link( $dist_id, 'sinscrire' ), 'fa-fa', false, "Confirmez-vous votre inscription ?" );
 				echo '</p>';
 //                    } else if ($can_unsubscribe && $is_resp) {
 //                        echo '<p>';
 //                        amapress_echo_button("Se désinscrire", amapress_action_link($dist_id, 'desinscrire'), false, "Confirmez-vous votre désinscription ?");
 //                        echo '</p>';
-			} ?>
+			}
+			if ( $is_resp_amap ) {
+				$href = Amapress::get_inscription_distrib_page_href();
+				if ( ! empty( $href ) ) {
+					echo '<p>Les inscriptions aux distributions des amapiens se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
+				}
+			}
+			?>
 			<?php
 		}
 		amapress_echo_panel_end();

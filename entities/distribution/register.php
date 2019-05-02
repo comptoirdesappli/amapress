@@ -239,21 +239,27 @@ function amapress_register_entities_distribution( $entities ) {
 				'show_column' => false,
 			),
 			'responsables' => array(
-				'name'          => amapress__( 'Responsables' ),
-				'group'         => '2/ Responsables',
-				'type'          => 'select-users',
-				'autocomplete'  => true,
-				'multiple'      => true,
-				'tags'          => true,
-				'desc'          => 'Indiquer tous les responsables de distribution',
-				'before_option' => function ( $o ) {
-					if ( Amapress::hasRespDistribRoles() ) {
-						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
+				'name'         => amapress__( 'Responsables' ),
+				'group'        => '2/ Responsables',
+				'type'         => 'select-users',
+				'autocomplete' => true,
+				'multiple'     => true,
+				'tags'         => true,
+				'desc'         => 'Indiquer tous les responsables de distribution',
+//				'before_option' => function ( $o ) {
+//					if ( Amapress::hasRespDistribRoles() ) {
+//						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
+//					}
+//				},
+				'readonly'     => true,
+				'after_option' => function ( $option ) {
+					$href = Amapress::get_inscription_distrib_page_href();
+					if ( ! empty( $href ) ) {
+						echo '<p>Les inscriptions aux distributions se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
+					} else {
+						echo '<p style="color:red">Aucune page du site ne contient le shortcode [inscription-distrib] (qui permet de gérer l\'inscription aux distributions)</p>';
 					}
 				},
-				'readonly'      => function ( $o ) {
-					return Amapress::hasRespDistribRoles();
-				}
 //                'searchable' => true,
 			),
 
