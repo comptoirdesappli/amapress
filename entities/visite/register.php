@@ -8,19 +8,19 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_visite' );
 function amapress_register_entities_visite( $entities ) {
 	$entities['visite'] = array(
 		'singular'         => amapress__( 'Visite à la ferme' ),
-		'plural'             => amapress__( 'Visites à la ferme' ),
-		'public'             => true,
-		'logged_or_public'   => true,
-		'show_in_menu'       => false,
-		'show_in_nav_menu'   => false,
-		'editor'             => false,
-		'title'              => false,
-		'thumb'              => true,
-		'title_format'       => 'amapress_visite_title_formatter',
-		'slug_format'        => 'from_title',
-		'slug'               => amapress__( 'visites' ),
-		'redirect_archive'   => 'amapress_redirect_agenda',
-		'menu_icon'          => 'flaticon-sprout',
+		'plural'           => amapress__( 'Visites à la ferme' ),
+		'public'           => true,
+		'logged_or_public' => true,
+		'show_in_menu'     => false,
+		'show_in_nav_menu' => false,
+		'editor'           => false,
+		'title'            => false,
+		'thumb'            => true,
+		'title_format'     => 'amapress_visite_title_formatter',
+		'slug_format'      => 'from_title',
+		'slug'             => amapress__( 'visites' ),
+		'redirect_archive' => 'amapress_redirect_agenda',
+		'menu_icon'        => 'flaticon-sprout',
 		'show_admin_bar_new' => true,
 		'views'              => array(
 			'remove'  => array( 'mine' ),
@@ -30,7 +30,7 @@ function amapress_register_entities_visite( $entities ) {
 		'edit_header'        => function ( $post ) {
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
-		'fields'             => array(
+		'fields'           => array(
 //			'photo'        => array(
 //				'name'  => amapress__( 'Photo' ),
 //				'type'  => 'upload',
@@ -101,6 +101,11 @@ function amapress_register_entities_visite( $entities ) {
 				'tags'         => true,
 				'desc'         => 'Participants',
 				'group'        => '4/ Participants',
+				'after_option' => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$visite = new AmapressVisite( $option->getPostID() );
+					echo '<p>Les inscription se gère <a href="' . esc_attr( $visite->getPermalink() ) . '" target="_blank">ici</a> pour cette visite</p>';
+				},
 			),
 		),
 	);

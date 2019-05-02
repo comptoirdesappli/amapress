@@ -153,6 +153,11 @@ function amapress_register_entities_amap_event( $entities ) {
 				'tags'         => true,
 				'desc'         => 'Participants',
 				'group'        => '3/ Participants',
+				'after_option' => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$visite = new AmapressAmap_event( $option->getPostID() );
+					echo '<p>Les inscription se gère <a href="' . esc_attr( $visite->getPermalink() ) . '" target="_blank">ici</a> pour cette évènement</p>';
+				},
 			),
 		),
 	);

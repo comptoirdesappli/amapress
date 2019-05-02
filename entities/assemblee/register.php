@@ -11,18 +11,18 @@ function amapress_register_entities_assemblee( $entities ) {
 		'singular'         => amapress__( 'Assemblée générale' ),
 		'plural'           => amapress__( 'Assemblées générales' ),
 		'public'           => true,
-		'logged_or_public'   => true,
-		'show_in_menu'       => false,
-		'show_in_nav_menu'   => false,
-		'editor'             => false,
-		'title'              => false,
-		'thumb'              => true,
-		'title_format'       => 'amapress_assemblee_title_formatter',
-		'slug_format'        => 'from_title',
-		'slug'               => amapress__( 'assemblees' ),
-		'redirect_archive'   => 'amapress_redirect_agenda',
-		'menu_icon'          => 'fa-menu fa-university',
-		'default_orderby'    => 'amapress_assemblee_generale_date',
+		'logged_or_public' => true,
+		'show_in_menu'     => false,
+		'show_in_nav_menu' => false,
+		'editor'           => false,
+		'title'            => false,
+		'thumb'            => true,
+		'title_format'     => 'amapress_assemblee_title_formatter',
+		'slug_format'      => 'from_title',
+		'slug'             => amapress__( 'assemblees' ),
+		'redirect_archive' => 'amapress_redirect_agenda',
+		'menu_icon'        => 'fa-menu fa-university',
+		'default_orderby'  => 'amapress_assemblee_generale_date',
 		'default_order'      => 'ASC',
 		'show_admin_bar_new' => true,
 		'views'              => array(
@@ -33,7 +33,7 @@ function amapress_register_entities_assemblee( $entities ) {
 		'edit_header'        => function ( $post ) {
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
-		'fields'             => array(
+		'fields'           => array(
 			'ordre_du_jour' => array(
 				'name'       => amapress__( 'Ordre du jour' ),
 				'type'       => 'editor',
@@ -91,6 +91,11 @@ function amapress_register_entities_assemblee( $entities ) {
 				'tags'         => true,
 				'desc'         => 'Participants',
 				'group'        => '4/ Participants',
+				'after_option' => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$visite = new AmapressAssemblee_generale( $option->getPostID() );
+					echo '<p>Les inscription se gère <a href="' . esc_attr( $visite->getPermalink() ) . '" target="_blank">ici</a> pour cette AG</p>';
+				},
 			),
 		),
 	);
