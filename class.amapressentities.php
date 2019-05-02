@@ -1672,6 +1672,12 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //                                    'type' => 'select-pages',
 //                                ),
 								array(
+									'id'   => 'auto-post-thumb',
+									'name' => 'Première image à la Une',
+									'desc' => 'Utiliser la première image de chaque article comme image à la Une',
+									'type' => 'checkbox',
+								),
+								array(
 									'id'   => 'mes-infos-page',
 									'name' => 'Page des informations personnelles',
 									'type' => 'select-pages',

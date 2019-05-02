@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.74.95
+Version: 0.75.0
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -46,7 +46,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.74.95' );
+define( 'AMAPRESS_VERSION', '0.75.0' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1309,6 +1309,21 @@ add_action( 'amapress_init', function () {
 	new AmapressDocSpace( 'responsables', 'edit_posts', 'edit_posts', 'edit_posts' );
 	new AmapressDocSpace( 'amapiens', 'read', 'edit_posts', 'read' );
 	new AmapressDocSpace( 'public', '', 'edit_posts', '' );
+
+	if ( Amapress::getOption( 'auto-post-thumb' ) ) {
+		add_filter( 'get_post_metadata', function ( $value, $object_id, $meta_key, $single ) {
+			if ( $meta_key !== '_thumbnail_id' || $value ) {
+				return $value;
+			}
+
+			preg_match( '~<img[^>]+wp-image-(\\d+)~', get_post_field( 'post_content', $object_id ), $matches );
+			if ( $matches ) {
+				return $matches[1];
+			}
+
+			return $value;
+		}, 10, 4 );
+	}
 } );
 
 if ( defined( 'WP_CORRECT_OB_END_FLUSH_ALL' ) ) {
