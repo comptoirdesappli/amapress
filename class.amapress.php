@@ -2897,9 +2897,7 @@ class Amapress {
 
 	/* render custom post type archives meta box */
 	public static function wp_nav_menu_amapress_meta_box() {
-		global $nav_menu_selected_id;
 		/* get custom post types with archive support */
-		//$post_types = get_post_types( array( 'show_in_nav_menus' => true, 'has_archive' => true ), 'object' );
 
 		$items  = array();
 		$items2 = array();
@@ -2912,15 +2910,15 @@ class Amapress {
 
 			$item = new stdClass();
 
-			$item->object_id = $i ++;
-			//$item->db_id = 0;
-			$item->object = 'archive_' . $post_type;
-			//$item->menu_item_parent = 0;
-			$item->type  = 'amapress-custom';
-			$item->title = $post_conf['plural'];
-			$item->url   = get_post_type_archive_link( $post_type );
-			//$item->target = '';
-			//$item->attr_title = '';
+			$item->object_id        = $i ++;
+			$item->db_id            = 0;
+			$item->object           = 'archive_' . $post_type;
+			$item->menu_item_parent = 0;
+			$item->type             = 'amapress-custom';
+			$item->title            = $post_conf['plural'];
+			$item->url              = get_post_type_archive_link( $post_type );
+			$item->target           = '';
+			$item->attr_title       = '';
 			if ( empty( $item->classes ) ) {
 				$item->classes = array();
 			}
@@ -2932,19 +2930,19 @@ class Amapress {
 		foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
 			$item = new stdClass();
 
-			$item->object_id = $i ++;
-			//$item->db_id = 0;
-			$item->object = 'amapress_link_' . trim( $post_type, '/' );
-			//$item->menu_item_parent = 0;
-			$item->type  = 'amapress-custom-link';
-			$item->title = $post_conf['name'];
-			$item->url   = $post_type;
-			//$item->target = '';
-			//$item->attr_title = '';
+			$item->object_id        = $i ++;
+			$item->db_id            = 0;
+			$item->object           = 'amapress_link_' . trim( $post_type, '/' );
+			$item->menu_item_parent = 0;
+			$item->type             = 'amapress-custom-link';
+			$item->title            = $post_conf['name'];
+			$item->url              = $post_type;
+			$item->target           = '';
+			$item->attr_title       = '';
 			if ( empty( $item->classes ) ) {
 				$item->classes = array();
 			}
-			//$item->xfn = '';
+			$item->xfn = '';
 
 			$items2[] = $item;
 		}
