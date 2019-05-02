@@ -58,7 +58,7 @@ function amapress_get_custom_content_distribution( $content ) {
             </p>
 			<?php
 			$need_responsables = true;
-			if ( $can_subscribe && Amapress::hasRespDistribRoles() && ! $is_resp ) {
+			if ( $can_subscribe && ! Amapress::hasRespDistribRoles() && ! $is_resp ) {
 				echo '<p>';
 				amapress_echo_button( 'S\'inscrire', amapress_action_link( $dist_id, 'sinscrire' ), 'fa-fa', false, "Confirmez-vous votre inscription ?" );
 				echo '</p>';
