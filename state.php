@@ -194,6 +194,9 @@ function amapress_get_state() {
 	}
 
 	$github_updater = get_option( 'github_updater' );
+	if ( is_multisite() ) {
+		$github_updater = get_site_option( 'github_updater' );
+	}
 	if ( empty( $github_updater ) ) {
 		$state['05_config'][] = amapress_get_check_state(
 			'error',
