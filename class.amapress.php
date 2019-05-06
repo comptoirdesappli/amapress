@@ -3134,6 +3134,11 @@ class Amapress {
 	public static function plugin_activation() {
 		//if ( version_compare( $GLOBALS['wp_version'], AKISMET__MINIMUM_WP_VERSION, '<' ) ) {
 		//}
+
+		if ( - 1 === version_compare( phpversion(), AMAPRESS_MINIMUM_PHP_VERSION ) ) {
+			/* translators: 1: Current PHP version 2: Required PHP version. */
+			die( sprintf( esc_html__( 'Votre version de PHP (%1$s) est en dessous de la version requise par Amapress : %2$s.', 'amapress' ), esc_html( phpversion() ), esc_html( AMAPRESS_MINIMUM_PHP_VERSION ) ) );
+		}
 	}
 
 	/**
