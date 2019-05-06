@@ -264,6 +264,15 @@ function amapress_get_state() {
 		'Ajouter le texte de présentation de votre Amap',
 		admin_url( 'post.php?post=' . $static_front_id . '&action=edit' )
 	);
+
+	$static_blog_id       = get_option( 'page_for_posts' );
+	$state['05_config'][] = amapress_get_check_state(
+		empty( $static_blog_id ) ? 'error' : 'success',
+		'Page de blog/articles statique',
+		'Vérifier que votre thème est configuré avec l’option « page d\'accueil statique ».<br/>Sélectionner votre page de blog/articles existante, ou configurer une nouvelle page.',
+		admin_url( 'customize.php?autofocus[section]=static_front_page' )
+	);
+
 	$contact_page         = Amapress::getContactInfos();
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $contact_page ) || strpos( $contact_page, '[[' ) !== false ? 'warning' : 'success',
@@ -307,6 +316,7 @@ function amapress_get_state() {
 //        admin_url('customize.php?autofocus[panel]=nav_menus')
 //    );
 	$info_page_menu_item_found = false;
+	$blog_page_menu_item_found = false;
 	$info_page_id              = Amapress::getOption( 'mes-infos-page' );
 	foreach ( get_nav_menu_locations() as $menu_name => $menu_id ) {
 		$menus = wp_get_nav_menu_items( $menu_id );
@@ -314,10 +324,19 @@ function amapress_get_state() {
 			foreach ( $menus as $menu_item ) {
 				if ( $menu_item->object_id == $info_page_id ) {
 					$info_page_menu_item_found = true;
+				} else if ( $menu_item->object_id == $static_blog_id ) {
+					$blog_page_menu_item_found = true;
 				}
 			}
 		}
 	}
+	$state['05_config'][] = amapress_get_check_state(
+		! $info_page_menu_item_found ? 'warning' : 'success',
+		'Entrée de menu - Page de blog',
+		'Créer une entrée dans le menu principal vers la page « Blog/Articles » (menu permettant l\'accès aux articles publiés sur le site).',
+		admin_url( 'nav-menus.php' )
+	);
+
 	$state['05_config'][] = amapress_get_check_state(
 		! $info_page_menu_item_found ? 'error' : 'success',
 		'Entrée de menu - Mes Infos',
