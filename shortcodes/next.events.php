@@ -295,7 +295,7 @@ function amapress_get_event_html( $ev_date, $arr, $lieu_hour_dic, $first_lieu, $
 				}
 				$icon    = $ev->getIcon();
 				$has_img = false;
-				if ( ! empty( $icon ) && strpos( $icon, '/' ) !== false ) {
+				if ( ! empty( $icon ) && strpos( $icon, '/' ) !== false && strpos( $icon, '<' ) !== 0 ) {
 					$alt     = esc_attr( $ev->getAlt() );
 					$icon    = "<img src='$icon' alt='{$alt}'/>";
 					$has_img = true;

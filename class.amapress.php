@@ -3111,7 +3111,7 @@ class Amapress {
 		return null;
 	}
 
-	public static function get_icon( $name ) {
+	public static function get_icon( $name, $alt = '' ) {
 		if ( empty( $name ) ) {
 			return '';
 		}
@@ -3119,10 +3119,11 @@ class Amapress {
 			return $name;
 		}
 
+		$alt = esc_attr( $alt );
 		if ( preg_match( "/fa-|glyphicon-|ion-|wi-|map-icon-|octicon-|typcn-|el-|md-/", $name ) ) {
-			return "<i class='$name'></i>";
+			return "<i class='$name' title='$alt'></i>";
 		} else {
-			return "<span class='$name'></span>";
+			return "<span class='$name' title='$alt'></span>";
 		}
 	}
 

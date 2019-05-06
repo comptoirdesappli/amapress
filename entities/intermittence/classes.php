@@ -808,7 +808,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'priority' => 10,
 						'lieu'     => $this->getRealLieu(),
 						'label'    => 'A échanger ' . $this->getPaniersTitles(),
-						'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+						'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
 						'alt'      => 'Votre panier ' . $this->getPaniersTitles() . ' reste à échanger',
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
@@ -823,7 +823,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'priority' => 5,
 						'lieu'     => $this->getRealLieu(),
 						'label'    => 'Echange ' . $this->getPaniersTitles(),
-						'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+						'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
 						'alt'      => 'Votre panier ' . $this->getPaniersTitles() . ' a été échanger',
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
@@ -839,7 +839,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					'priority' => 15,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => 'Récupérer panier ' . $this->getPaniersTitles(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+					'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
 					'alt'      => 'Panier ' . $this->getPaniersTitles() . ' de ' . $this->getAdherent()->getDisplayName() . ' à récupérer',
 					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
@@ -858,7 +858,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 							'priority' => 10,
 							'lieu'     => $this->getRealLieu(),
 							'label'    => 'A échanger ' . $this->getPaniersTitles(),
-							'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_intermittence_icon" ) ),
+							'icon'     => 'fa fa-shopping-basket',
 							'alt'      => 'Panier ' . $this->getPaniersTitles() . ' à échanger',
 							'href'     => $paniers_url
 						) );

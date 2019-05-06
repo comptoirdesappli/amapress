@@ -157,7 +157,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'priority' => 90,
 					'lieu'     => $producteur,
 					'label'    => 'Visite ' . $producteur->getTitle(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_visite_icon", 'dashicons dashicons-admin-post' ) ),
+					'icon'     => 'flaticon-sprout',
 					'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
@@ -172,7 +172,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'priority' => 95,
 					'lieu'     => $producteur,
 					'label'    => 'Visite ' . $producteur->getTitle(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_visite_inscription_icon" ) ),
+					'icon'     => 'flaticon-sprout',
 					'alt'      => 'Une vsite est prévue à la ferme le ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );

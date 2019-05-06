@@ -236,7 +236,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 				'lieu'     => $this,
 				'priority' => 60,
 				'label'    => $this->getTitle(),
-				'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_amap_event_inscription_icon" ) ),
+				'icon'     => 'dashicons dashicons-groups',
 				'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
 				'href'     => $this->getPermalink()
 			) );
@@ -255,7 +255,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'lieu'     => $this,
 					'priority' => 60,
 					'label'    => $this->getTitle(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_event_icon" ) ),
+					'icon'     => 'dashicons dashicons-groups',
 					'alt'      => 'Vous êtes inscript pour ' . $this->getTitle() . ' le ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
@@ -270,7 +270,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'lieu'     => $this,
 					'priority' => 60,
 					'label'    => $this->getTitle(),
-					'icon'     => Amapress::get_icon( Amapress::getOption( "agenda_amap_event_inscription_icon" ) ),
+					'icon'     => 'dashicons dashicons-groups',
 					'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
