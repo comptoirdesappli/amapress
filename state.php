@@ -1071,17 +1071,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'                  => [
+		'amapiens-map'          => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'            => [
+		'amapiens-role-list'    => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'                    => [
+		'agenda-url'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
@@ -1407,6 +1407,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 }
 
 function amapress_echo_and_check_amapress_state_page() {
+	if ( isset( $_GET['phpinfo'] ) ) {
+		if ( current_user_can( 'update_core' ) ) {
+			phpinfo();
+
+			return;
+		}
+	}
+
 	$labels = array(
 		'01_plugins'      => 'Plugins',
 		'05_config'       => 'Configuration',
@@ -1430,6 +1438,7 @@ function amapress_echo_and_check_amapress_state_page() {
 
 	if ( current_user_can( 'update_core' ) ) {
 		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">Voir les extensions installées</a></p>';
+		echo '<p><a href="' . esc_attr( add_query_arg( 'phpinfo', 'T' ) ) . '" target="_blank">Afficher PHP Infos</a></p>';
 	}
 
 	foreach ( $state as $categ => $checks ) {
