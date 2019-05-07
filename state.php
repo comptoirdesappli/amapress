@@ -213,6 +213,22 @@ function amapress_get_state() {
 		);
 	}
 
+	$permalink_structure = get_option( 'permalink_structure' );
+	if ( empty( $permalink_structure )
+	     || ! in_array( $permalink_structure,
+			[
+				'/%year%/%monthnum%/%day%/%postname%/',
+				'/%year%/%monthnum%/%postname%/',
+				'/%postname%/'
+			] ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'error',
+			'Réglage des permaliens',
+			'Le réglage des permaliens doit suivre une des valeurs suivants : Date et titre, Mois et titre ou Titre de la publication',
+			admin_url( 'options-permalink.php' )
+		);
+	}
+
 	$blog_desc            = get_bloginfo( 'description' );
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
