@@ -355,7 +355,7 @@ function amapress_get_state() {
 		}
 	}
 	$state['05_config'][] = amapress_get_check_state(
-		! $info_page_menu_item_found ? 'warning' : 'success',
+		! $blog_page_menu_item_found ? 'warning' : 'success',
 		'Entrée de menu - Page de blog',
 		'Créer une entrée dans le menu principal vers la page « Blog/Articles » (menu permettant l\'accès aux articles publiés sur le site).',
 		admin_url( 'nav-menus.php' )
