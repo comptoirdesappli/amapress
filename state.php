@@ -229,6 +229,14 @@ function amapress_get_state() {
 		);
 	}
 
+	$admin_email          = get_bloginfo( 'admin_email' );
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		'Adresse email de l\'administrateur',
+		'L\'adresse email de l\'administrateur du site est actuellement : <strong>' . esc_html( $admin_email ) . '</strong>. L\'administrateur reçoit des mails sur l\'activité sur le site comme le changement de mot de passe)',
+		admin_url( 'options-general.php' )
+	);
+
 	$blog_desc            = get_bloginfo( 'description' );
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
