@@ -235,16 +235,16 @@ function amapress_get_state() {
 		admin_url( 'options-general.php' )
 	);
 
-	$blog_desc             = get_bloginfo( 'description' );
-	$state['05_config'][]  = amapress_get_check_state(
+	$blog_desc                     = get_bloginfo( 'description' );
+	$state['05_config'][]          = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
 		'Cette section permet le référencement dans les moteurs de recherche. 
 <br/>Remplir les champs <strong>Titre</strong> (Le nom de votre AMAP) et <strong>Slogan</strong> (Un sous titre pour votre AMAP. Vous pouvez ajouter la mention suivante "Construit avec Amapress, l\'outil pour les AMAP")',
 		admin_url( 'customize.php?autofocus[section]=title_tagline' )
 	);
-	$site_icon            = get_option( 'site_icon' );
-	$state['05_config'][] = amapress_get_check_state(
+	$site_icon                     = get_option( 'site_icon' );
+	$state['05_config'][]          = amapress_get_check_state(
 		empty( $site_icon ) ? 'warning' : 'success',
 		'Icône de l\'AMAP',
 		'Ajouter une icône pour personnaliser l\'entête du navigateur et les signets/favoris.',
@@ -1027,7 +1027,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$amapien_les_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'paniers-intermittents-page' ) . '&action=edit' );
 	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
 	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
-	$needed_shortcodes     = [
+	$needed_shortcodes             = [
 		'trombinoscope'                 => [
 			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
 			'href'  => $new_private_page_href,
@@ -1083,89 +1083,89 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'les-paniers-intermittents' => [
+		'les-paniers-intermittents'     => [
 			'desc'  => 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers',
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'intermittent-paniers'      => [
+		'intermittent-paniers'          => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"',
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => '5/ Espace intermittents',
 		],
-		'amapiens-map'              => [
+		'amapiens-map'                  => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'amapiens-role-list'        => [
+		'amapiens-role-list'            => [
 			'desc'  => 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif',
 			'href'  => $new_private_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'agenda-url'                => [
+		'agenda-url'                    => [
 			'desc'  => 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda',
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => '4/ Profil amapien',
 		],
-		'nous-contacter'            => [
+		'nous-contacter'                => [
 			'desc'  => 'Ajouter une page Contact avec le shortcode %s',
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'         => [
+		'front_next_events'             => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'            => [
+		'front_produits'                => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'        => [
+		'front_nous_trouver'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'        => [
+		'front_default_grid'            => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne'      => [
+		'inscription-en-ligne'          => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
 		],
-		'listes-diffusions'         => [
+		'listes-diffusions'             => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP',
 			'href'  => $new_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'docspace-responsables'     => [
+		'docspace-responsables'         => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers entre les membres du collectif',
 			'href'  => $new_page_href,
 			'categ' => '7/ Stockage',
 		],
-		'docspace-amapiens'         => [
+		'docspace-amapiens'             => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers avec les amapiens',
 			'href'  => $new_page_href,
 			'categ' => '7/ Stockage',
 		],
-		'docspace-public'           => [
+		'docspace-public'               => [
 			'desc'  => 'Ajouter le shortcode %s sur une page non protégée pour permettre au collectif de partager des fichiers publiquement',
 			'href'  => $new_page_href,
 			'categ' => '7/ Stockage',
 		],
-		'inscription-visite'        => [
+		'inscription-visite'            => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs',
 			'href'  => $new_page_href,
 			'categ' => '7/ Stockage',
 		],
 	];
-	$found_shortcodes      = [];
-	$found_shortcodes_desc = [];
+	$found_shortcodes              = [];
+	$found_shortcodes_desc         = [];
 	uasort( $needed_shortcodes, function ( $a, $b ) {
 		return strcmp( $a['categ'], $b['categ'] );
 	} );
@@ -1462,6 +1462,8 @@ function amapress_echo_and_check_amapress_state_page() {
 		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">Voir les extensions installées</a></p>';
 		echo '<p><a href="' . esc_attr( add_query_arg( 'phpinfo', 'T' ) ) . '" target="_blank">Afficher PHP Infos</a></p>';
 	}
+
+	echo '<p><strong>Version d\'Amapress : ' . AMAPRESS_VERSION . '</strong></p>';
 
 	foreach ( $state as $categ => $checks ) {
 		amapress_echo_panel_start( $labels[ $categ ] );
