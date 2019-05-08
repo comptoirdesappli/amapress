@@ -104,6 +104,10 @@ function amapress_distribution_views() {
 		$ret, 'nextmonth',
 		"post_type=amps_distribution&amapress_date=nextmonth",
 		'Le mois prochain' );
+	amapress_add_view_button(
+		$ret, 'prevmonth',
+		"post_type=amps_distribution&amapress_date=prevmonth",
+		'Le mois précédent' );
 
 	if ( count( Amapress::get_lieu_ids() ) > 1 ) {
 		amapress_add_view_button(
@@ -251,6 +255,10 @@ function amapress_panier_views() {
 		$ret, 'nextmonth',
 		"post_type=amps_panier&amapress_date=nextmonth",
 		'Mois prochain' );
+	amapress_add_view_button(
+		$ret, 'prevmonth',
+		"post_type=amps_panier&amapress_date=prevmonth",
+		'Mois précédent' );
 
 	amapress_add_view_button(
 		$ret, 'delayed',

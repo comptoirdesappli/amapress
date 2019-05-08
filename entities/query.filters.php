@@ -1118,6 +1118,20 @@ function amapress_filter_posts( WP_Query $query ) {
 				) );
 				//echo (date('d m Y', end_of_month(time())));
 			}
+		} else if ( $amapress_date == 'prevmonth' ) {
+			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite' || $pt == 'contrat_paiement' || $pt == 'amap_event' || $pt == 'intermittence_panier' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date",
+						'value'   => array(
+							Amapress::add_a_month( Amapress::start_of_month( amapress_time() ), - 1 ),
+							Amapress::add_a_month( Amapress::end_of_month( amapress_time() ), - 1 ),
+						),
+						'compare' => 'BETWEEN',
+					)
+				) );
+				//echo (date('d m Y', end_of_month(time())));
+			}
 		} else if ( $amapress_date == 'foramonth' ) {
 			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite' || $pt == 'contrat_paiement' || $pt == 'amap_event' || $pt == 'intermittence_panier' ) {
 				amapress_add_meta_query( $query, array(
