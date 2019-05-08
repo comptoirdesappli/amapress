@@ -122,7 +122,7 @@ function amapress_process_user_profile_data() {
 			'email2'                    => sanitize_email( $_POST['email2'] ),
 			'email3'                    => sanitize_email( $_POST['email3'] ),
 			'email4'                    => sanitize_email( $_POST['email4'] ),
-			'display_name'              => sanitize_email( ! empty( $_POST['display_name'] ) ? $_POST['display_name'] : '' ),
+			'display_name'              => sanitize_text_field( ! empty( $_POST['display_name'] ) ? $_POST['display_name'] : '' ),
 			'amapress_user_adresse'     => sanitize_text_field( $_POST['amapress_user_adresse'] ),
 			'amapress_user_code_postal' => sanitize_text_field( $_POST['amapress_user_code_postal'] ),
 			'amapress_user_ville'       => sanitize_text_field( $_POST['amapress_user_ville'] ),
@@ -220,19 +220,14 @@ function amapress_process_user_profile_data() {
 				unset( $user_data['user_pass'] );
 
 				// Save the remaining values
-			} else {
-				$res = wp_update_user( array( 'ID' => $user_id, $key => $value ) );
 			}
 		}
 
 		if ( ! empty( $user_data['first_name'] ) && ! empty( $user_data['last_name'] ) && empty( $user_data['display_name'] ) ) {
-			$res = wp_update_user(
-				array(
-					'ID'           => $user_id,
-					'display_name' => $user_data['first_name'] . ' ' . $user_data['last_name']
-				) );
+			$user_data['display_name'] = $user_data['first_name'] . ' ' . $user_data['last_name'];
 		}
 
+		$res = wp_update_user( array_merge( $user_data, array( 'ID' => $user_id ) ) );
 
 		// Display the messages error/success
 		if ( ! is_wp_error( $res ) ) {
