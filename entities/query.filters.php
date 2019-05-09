@@ -1408,39 +1408,11 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			//
 		} else if ( $amapress_role == 'referent_producteur' ) {
 			$user_ids = array();
-			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-				if ( empty( $contrat->getModel() ) ) {
-					continue;
-				}
-				$prod = $contrat->getModel()->getProducteur();
-				if ( ! $prod ) {
-					continue;
-				}
-				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-					$user_ids = array_merge( $user_ids, $prod->getReferentsIds( $lieu_id ) );
-				}
-				$user_ids = array_merge( $user_ids, $prod->getReferentsIds() );
+			foreach ( Amapress::get_producteurs() as $prod ) {
+				$user_ids = array_merge( $user_ids, $prod->getAllReferentsIds() );
 			}
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
 			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
-		} else if ( $amapress_role == 'referent_producteur' ) {
-			$user_ids = array();
-			foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
-				if ( empty( $contrat->getModel() ) ) {
-					continue;
-				}
-				$prod = $contrat->getModel()->getProducteur();
-				if ( ! $prod ) {
-					continue;
-				}
-				foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-					$user_ids = array_merge( $user_ids, $prod->getReferentsIds( $lieu_id ) );
-				}
-				$user_ids = array_merge( $user_ids, $prod->getReferentsIds() );
-			}
-			$user_id_sql = amapress_prepare_in_sql( $user_ids );
-			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
-
 		} else if ( $amapress_role == 'resp_distrib' ) {
 			$user_ids    = AmapressDistributions::getResponsablesBetween(
 				Amapress::start_of_week( amapress_time() ),
