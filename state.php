@@ -517,18 +517,26 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )
 	);
 
+	/** @var WP_User[] $users_no_desc */
+	$users_no_desc   = get_users( [
+		'amapress_role' => 'collectif_no_amap_role',
+	] );
 	$members_no_desc = array_map( function ( $user ) {
 		$amapien = AmapressUser::getBy( $user );
 
-		return AMapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() . ' (' . $amapien->getEmail() . ')', true, true );
-	}, get_users( [
-		'amapress_role' => 'collectif_no_amap_role',
-	] ) );
+		return AMapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() . ' (' . $amapien->getEmail() . ')[' . $amapien->getAmapRolesString() . ']', true, true );
+	}, $users_no_desc );
 	if ( ! empty( $members_no_desc ) ) {
+		$only_admins = true;
+		foreach ( $users_no_desc as $user ) {
+			if ( ! in_array( 'administrator', $user->roles ) ) {
+				$only_admins = false;
+			}
+		}
 		$state['10_users'][] = amapress_get_check_state(
-			'error',
+			$only_admins ? 'success' : 'warning',
 			'Membres du collectif sans rôle descriptif',
-			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice',
+			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice. (<em>Les administrateurs n\'ont pas forcement besoin de rôle descriptif</em>)',
 			admin_url( 'admin.php?page=amapress_collectif' ),
 			implode( ', ', $members_no_desc )
 		);
