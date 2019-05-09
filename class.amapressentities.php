@@ -2559,6 +2559,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 					),
 					'tabs'     => array(
 						'Utilisateurs'          => array(
+							'id'         => 'import_users_tab',
 							'desc'       => '',
 							'capability' => 'edit_users',
 							'options'    => array(
@@ -2582,6 +2583,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							)
 						),
 						'Inscriptions contrats' => array(
+							'id'         => 'import_adhesions_tab',
 							'desc'       => '',
 							'capability' => 'edit_adhesion',
 							'options'    => array(

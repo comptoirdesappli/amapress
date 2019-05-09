@@ -1419,13 +1419,13 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'do',
 		'Amapiens',
 		'Importer des amapiens à partir d\'un fichier Excel.',
-		admin_url( 'admin.php?page=amapress_import_page' )
+		admin_url( 'admin.php?page=amapress_import_page&tab=import_users_tab' )
 	);
 	$state['35_import'][] = amapress_get_check_state(
 		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
 		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des inscriptions à partir d\'un fichier Excel.',
-		admin_url( 'admin.php?page=amapress_import_page&tab=adhésions' )
+		admin_url( 'admin.php?page=amapress_import_page&tab=import_adhesions_tab' )
 	);
 
 	$clean_messages = '';
