@@ -235,16 +235,16 @@ function amapress_get_state() {
 		admin_url( 'options-general.php' )
 	);
 
-	$blog_desc                     = get_bloginfo( 'description' );
-	$state['05_config'][]          = amapress_get_check_state(
+	$blog_desc            = get_bloginfo( 'description' );
+	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
 		'Cette section permet le référencement dans les moteurs de recherche. 
 <br/>Remplir les champs <strong>Titre</strong> (Le nom de votre AMAP) et <strong>Slogan</strong> (Un sous titre pour votre AMAP. Vous pouvez ajouter la mention suivante "Construit avec Amapress, l\'outil pour les AMAP")',
 		admin_url( 'customize.php?autofocus[section]=title_tagline' )
 	);
-	$site_icon                     = get_option( 'site_icon' );
-	$state['05_config'][]          = amapress_get_check_state(
+	$site_icon            = get_option( 'site_icon' );
+	$state['05_config'][] = amapress_get_check_state(
 		empty( $site_icon ) ? 'warning' : 'success',
 		'Icône de l\'AMAP',
 		'Ajouter une icône pour personnaliser l\'entête du navigateur et les signets/favoris.',
@@ -991,6 +991,10 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	foreach (
 		$all_pages_and_presentations as $page
 	) {
+		//Blog page can be empty
+		if ( $page->ID == $static_blog_id ) {
+			continue;
+		}
 		/** @var WP_Post $page */
 		if ( preg_match( '/\[\[[^\]]+\]\]/', $page->post_content ) ) {
 			$state['20_content'][] = amapress_get_check_state(
