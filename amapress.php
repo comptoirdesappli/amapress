@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.76.25
+Version: 0.77.0
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -47,7 +47,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.76.25' );
+define( 'AMAPRESS_VERSION', '0.77.0' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -698,13 +698,13 @@ function amapress_get_avatar_url( $id, $meta_name, $size, $default_image, $user 
 	return $url;
 }
 
-function amapress_get_font_icon( $icon_name ) {
+function amapress_get_font_icon( $icon_name, $add_class = '' ) {
 	if ( strpos( $icon_name, 'fa-' ) === 0 ) {
-		return '<i class="fa ' . $icon_name . '" aria-hidden="true"></i>';
+		return '<i class="' . $add_class . ' fa ' . $icon_name . '" aria-hidden="true"></i>';
 	} else if ( strpos( $icon_name, 'dashicons-' ) === 0 ) {
-		return '<span class="dashicons-before ' . $icon_name . '" aria-hidden="true"></span>';
+		return '<span class="' . $add_class . ' dashicons-before ' . $icon_name . '" aria-hidden="true"></span>';
 	} else if ( strpos( $icon_name, 'flaticon-' ) === 0 ) {
-		return '<span class="dashicons-before ' . $icon_name . '" aria-hidden="true"></span>';
+		return '<span class="' . $add_class . ' dashicons-before ' . $icon_name . '" aria-hidden="true"></span>';
 	} else {
 		return $icon_name;
 	}

@@ -256,9 +256,9 @@ function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent 
 			}
 
 			$title = $item_with_default['title'];
-//				if ( ! empty( $item_with_default['icon'] ) ) {
-//					$title = amapress_get_font_icon( $item_with_default['icon'] ) . $title;
-//				}
+			if ( ! empty( $item_with_default['icon'] ) ) {
+				$title = amapress_get_font_icon( $item_with_default['icon'], 'ab-icon-submenu' ) . $title;
+			}
 			$meta = [];
 			if ( ! empty( $item_with_default['target'] ) ) {
 				$meta['target'] = $item_with_default['target'];

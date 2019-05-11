@@ -85,7 +85,7 @@ class AmapressEntities {
 					'menu_title' => 'Listes de diffusion',
 					'post_type'  => Amapress_MailingListConfiguration::INTERNAL_POST_TYPE,
 					'position'   => '25.1',
-					'capability' => 'edit_mailinglist',
+					'capability' => 'manage_options',
 					'slug'       => 'edit.php?post_type=' . Amapress_MailingListConfiguration::INTERNAL_POST_TYPE,
 					'function'   => null,
 				),
@@ -508,7 +508,7 @@ class AmapressEntities {
 					'settings' => array(
 						'name'       => 'Gestion Contrats',
 						'position'   => '25.4',
-						'capability' => 'manage_contrats',
+						'capability' => 'edit_contrat_instance',
 						'icon'       => 'dashicons-none flaticon-pen',
 					),
 					'options'  => array(
@@ -528,7 +528,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter une inscription'              => array(
+						'Ajouter Inscription Contrat ' => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -542,7 +542,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'                => array(
+						'Ajouter un coadhérent'        => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -999,24 +999,25 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 					),
 				),
 				array(
-					'id'       => 'amapress_gestion_intermittence_page',
-					'type'     => 'panel',
-					'settings' => array(
+					'id'         => 'amapress_gestion_intermittence_page',
+					'type'       => 'panel',
+					'capability' => 'edit_intermittence_panier',
+					'settings'   => array(
 						'name'       => 'Espace intermittents',
 						'position'   => '60.4',
-						'capability' => 'manage_intermittence',
+						'capability' => 'edit_intermittence_panier',
 						'icon'       => 'dashicons-none flaticon-business-2',
 					),
-					'options'  => array(
+					'options'    => array(
 //						array(
 //							'type' => 'note',
 //							'desc' => 'ici vous pouvez gérer...'
 //						),
 					),
-					'tabs'     => array(
+					'tabs'       => array(
 						'Configuration de l\'espace intermittents' => array(
 							'desc'       => '',
-							'capability' => 'manage_intermittence',
+							'capability' => 'manage_options',
 							'options'    => array(
 								array(
 									'id'      => 'intermittence_enabled',

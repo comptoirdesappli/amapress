@@ -19,10 +19,15 @@
     vertical-align: middle !important;
 }
 
-#wpadminbar #wp-admin-bar-amapress .ab-icon:before {
+#wpadminbar #wp-admin-bar-amapress > .ab-item > .ab-icon:before {
     display: block;
     content: "\f511";
     top: 3px;
+}
+
+.ab-icon-submenu:before {
+    vertical-align: middle;
+    padding-right: 1px;
 }
 
 @media screen and (max-width: 782px) {
@@ -34,11 +39,11 @@
         display: block;
     }
 
-    #wpadminbar #wp-admin-bar-amapress .ab-label {
+    #wpadminbar #wp-admin-bar-amapress > .ab-item > .ab-label {
         display: none;
     }
 
-    #wpadminbar #wp-admin-bar-amapress .ab-icon:before {
+    #wpadminbar #wp-admin-bar-amapress > .ab-item > .ab-icon:before {
         line-height: 46px;
         height: 46px !important;
         text-align: center;
@@ -48,6 +53,10 @@
         top: 0;
         font-size: 28px;
     }
+}
+
+.ab-icon.amps-icon:before {
+    color: #e67e22 !important;
 }
 
 .ab-icon.amps-error:before {
