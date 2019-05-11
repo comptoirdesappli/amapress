@@ -353,7 +353,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 
 			),
-			'contrat_quantite'  => array(
+			'contrat_quantite' => array(
 				'name'              => amapress__( 'Quantité' ),
 				'type'              => 'custom',
 				'readonly'          => true,
@@ -495,7 +495,7 @@ jQuery(function($) {
 				'csv'         => false,
 				'show_on'     => 'edit-only',
 			),
-			'lieu'            => array(
+			'lieu'             => array(
 				'name'              => amapress__( 'Lieu' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_lieu',
@@ -523,7 +523,7 @@ jQuery(function($) {
 					return 0;
 				}
 			),
-			'related'         => array(
+			'related'          => array(
 				'name'        => amapress__( 'Inscription liée' ),
 				'type'        => 'select',
 				'options'     => function ( $option ) {
@@ -577,7 +577,7 @@ jQuery(function($) {
 				'readonly'    => 'amapress_is_contrat_adhesion_readonly',
 				'show_column' => false,
 			),
-			'message'         => array(
+			'message'          => array(
 				'name'        => amapress__( 'Message' ),
 				'type'        => 'textarea',
 				'readonly'    => true,
@@ -586,7 +586,7 @@ jQuery(function($) {
 				'desc'        => 'Message',
 				'csv'         => false,
 			),
-			'all-coadherents' => array(
+			'all-coadherents'  => array(
 				'name'            => amapress__( 'Co-adhérents' ),
 				'group'           => '4/ Coadhérents',
 				'show_column'     => false,
@@ -604,7 +604,7 @@ jQuery(function($) {
 					return 'amapress_coadherents=' . $adh->getAdherent()->ID;
 				},
 			),
-			'adherent2'         => array(
+			'adherent2'        => array(
 				'name'         => amapress__( 'Co-Adhérent 1' ),
 				'type'         => 'select-users',
 				'required'     => false,
@@ -1069,6 +1069,7 @@ function amapress_get_contrat_quantite_datatable(
 			'show_next_distrib'       => true,
 			'show_contact_producteur' => true,
 			'show_adherents'          => true,
+			'show_fact_details'       => false,
 			'show_equiv_quantite'     => true,
 			'no_script'               => false,
 			'mode'                    => 'both',
@@ -1077,6 +1078,7 @@ function amapress_get_contrat_quantite_datatable(
 
 	$show_adherents      = $options['show_adherents'];
 	$show_equiv_quantite = $options['show_equiv_quantite'];
+	$show_fact_details   = $options['show_fact_details'];
 
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
 
@@ -1121,9 +1123,11 @@ function amapress_get_contrat_quantite_datatable(
 		$quand_id     = $quant ? $quant->getID() : 0;
 		if ( count( $lieux ) > 1 ) {
 			foreach ( $lieux as $lieu ) {
-				$lieu_quant_adh_count = 0;
-				$lieu_quant_count     = 0;
-				$lieu_quant_sum       = 0;
+				$lieu_quant_adh_count      = 0;
+				$lieu_quant_count          = 0;
+				$lieu_quant_sum            = 0;
+				$lieu_quant_fact_adh_count = [];
+//				$lieu_quant_fact_count     = [];
 				foreach ( $adhesions as $adh ) {
 					if ( $adh->getLieuId() != $lieu->ID ) {
 						continue;
@@ -1142,6 +1146,19 @@ function amapress_get_contrat_quantite_datatable(
 							}
 							$lieu_quant_count += 1;
 							$lieu_quant_sum   += $adh_quant['quantite'];
+
+							if ( ! empty( $quand_id ) ) {
+								$quant_key = trim( $quant->formatValue( $adh_quant['quantite'], '' ) . ' "' . $quant->getCode() ) . '"';
+								if ( empty( $lieu_quant_fact_adh_count[ $quant_key ] ) ) {
+									$lieu_quant_fact_adh_count[ $quant_key ] = 0;
+								}
+//							if ( empty( $lieu_quant_fact_count[ $quant_key ] ) ) {
+//								$lieu_quant_fact_count[ $quant_key ] = 0;
+//							}
+
+								$lieu_quant_fact_adh_count[ $quant_key ] += 1;
+							}
+//							$lieu_quant_fact_count[ $quant_key ] += 1;
 						}
 					} else {
 						foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
@@ -1154,26 +1171,52 @@ function amapress_get_contrat_quantite_datatable(
 							}
 							$lieu_quant_count += $adh_quant->getFactor();
 							$lieu_quant_sum   += $adh_quant->getQuantite();
+
+							if ( ! empty( $quand_id ) ) {
+								$quant_key = trim( $quant->formatValue( $adh_quant->getFactor(), '' ) . ' "' . $quant->getCode() ) . '"';
+								if ( empty( $lieu_quant_fact_adh_count[ $quant_key ] ) ) {
+									$lieu_quant_fact_adh_count[ $quant_key ] = 0;
+								}
+//							if ( empty( $lieu_quant_fact_count[ $quant_key ] ) ) {
+//								$lieu_quant_fact_count[ $quant_key ] = 0;
+//							}
+
+								$lieu_quant_fact_adh_count[ $quant_key ] += 1;
+							}
+//							$lieu_quant_fact_count[ $quant_key ] += 1;
 						}
 					}
 				}
+				ksort( $lieu_quant_fact_adh_count );
+				$fact_details = implode( "<br/>", array_map(
+					function ( $k, $v ) {
+						return "$v x $k";
+					},
+					array_keys( $lieu_quant_fact_adh_count ),
+					array_values( $lieu_quant_fact_adh_count )
+				) );
+
 				if ( empty( $lieu_quant_adh_count ) ) {
 					$row["lieu_{$lieu->ID}"]     = '';
 					$row["lieu_{$lieu->ID}_txt"] = '';
 				} else if ( abs( $lieu_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
 					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ?
-							"$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count x $quant_title";
-					$row["lieu_{$lieu->ID}_txt"] = "$lieu_quant_count x $quant_title";
+							"$lieu_quant_adh_count adhérents ; " : '' ) .
+					                               ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" );
+					$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" );
 				} else {
 					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ?
-							"$lieu_quant_adh_count adhérents ; " : '' ) . "$lieu_quant_count x $quant_title <i>équivalent quantité : $lieu_quant_sum</i>";
-					$row["lieu_{$lieu->ID}_txt"] = "$lieu_quant_count x $quant_title";
+							"$lieu_quant_adh_count adhérents ; " : '' ) .
+					                               ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" ) .
+					                               "<br/><em>équivalent quantité : $lieu_quant_sum</em>";
+					$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" );
 				}
 			}
 		}
-		$all_quant_adh_count = 0;
-		$all_quant_count     = 0;
-		$all_quant_sum       = 0;
+		$all_quant_adh_count      = 0;
+		$all_quant_count          = 0;
+		$all_quant_sum            = 0;
+		$all_quant_fact_adh_count = [];
 		foreach ( $adhesions as $adh ) {
 			if ( empty( $quand_id ) ) {
 				$all_quant_adh_count += 1;
@@ -1189,6 +1232,19 @@ function amapress_get_contrat_quantite_datatable(
 					}
 					$all_quant_count += 1;
 					$all_quant_sum   += $adh_quant['quantite'];
+
+					if ( ! empty( $quand_id ) ) {
+						$quant_key = trim( $quant->formatValue( $adh_quant['quantite'], '' ) ) . ' "' . $quant->getCode() . '"';
+						if ( empty( $all_quant_fact_adh_count[ $quant_key ] ) ) {
+							$all_quant_fact_adh_count[ $quant_key ] = 0;
+						}
+//					if ( empty( $all_quant_fact_count[ $quant_key ] ) ) {
+//						$all_quant_fact_count[ $quant_key ] = 0;
+//					}
+
+						$all_quant_fact_adh_count[ $quant_key ] += 1;
+					}
+//					$all_quant_fact_count[ $quant_key ] += 1;
 				}
 			} else {
 				foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
@@ -1201,20 +1257,41 @@ function amapress_get_contrat_quantite_datatable(
 					}
 					$all_quant_count += $adh_quant->getFactor();
 					$all_quant_sum   += $adh_quant->getQuantite();
+
+					if ( ! empty( $quand_id ) ) {
+						$quant_key = trim( $quant->formatValue( $adh_quant->getFactor(), '' ) ) . ' "' . $quant->getCode() . '"';
+						if ( empty( $all_quant_fact_adh_count[ $quant_key ] ) ) {
+							$all_quant_fact_adh_count[ $quant_key ] = 0;
+						}
+//					if ( empty( $all_quant_fact_count[ $quant_key ] ) ) {
+//						$all_quant_fact_count[ $quant_key ] = 0;
+//					}
+
+						$all_quant_fact_adh_count[ $quant_key ] += 1;
+					}
+//					$all_quant_fact_count[ $quant_key ] += 1;
 				}
 			}
 		}
+		ksort( $all_quant_fact_adh_count );
+		$fact_details = implode( "<br/>", array_map(
+			function ( $k, $v ) {
+				return "$v x $k";
+			},
+			array_keys( $all_quant_fact_adh_count ),
+			array_values( $all_quant_fact_adh_count )
+		) );
 		if ( empty( $all_quant_adh_count ) ) {
 			$row['all']     = '';
 			$row['all_txt'] = '';
 		} else if ( abs( $all_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
 			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) .
-			                  "$all_quant_count x $quant_title";
-			$row['all_txt'] = "$all_quant_count x $quant_title";
+			                  ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" );
+			$row['all_txt'] = ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" );
 		} else {
 			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) .
-			                  "$all_quant_count x $quant_title <em>équivalent quantité : $all_quant_sum</em>";
-			$row['all_txt'] = "$all_quant_count x $quant_title";
+			                  ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" ) . "<br/><em>équivalent quantité : $all_quant_sum</em>";
+			$row['all_txt'] = ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" );
 		}
 		$data[] = $row;
 	}
