@@ -1445,7 +1445,7 @@ class AmapressContrat_quantite extends TitanEntity {
 
 	public
 	function formatValue(
-		$value
+		$value, $one_unit_display = '1', $no_unit_suffix = '', $no_unit_fraction_suffix = ''
 	) {
 		if ( $this->getPriceUnit() == 'kg' ) {
 			if ( $value < 1 ) {
@@ -1461,17 +1461,19 @@ class AmapressContrat_quantite extends TitanEntity {
 			}
 		} else {
 			if ( abs( $value - 0.25 ) < 0.001 ) {
-				return '1/4';
+				return '1/4' . $no_unit_fraction_suffix;
 			} else if ( abs( $value - 0.333 ) < 0.001 ) {
-				return '2/3';
+				return '2/3' . $no_unit_fraction_suffix;
 			} else if ( abs( $value - 0.5 ) < 0.001 ) {
-				return '1/2';
+				return '1/2' . $no_unit_fraction_suffix;
 			} else if ( abs( $value - 0.666 ) < 0.001 ) {
-				return '2/3';
+				return '2/3' . $no_unit_fraction_suffix;
 			} else if ( abs( $value - 0.75 ) < 0.001 ) {
-				return '3/4';
+				return '3/4' . $no_unit_fraction_suffix;
+			} else if ( abs( $value - 1 ) < 0.001 ) {
+				return $one_unit_display;
 			} else {
-				return round( $value, 2 );
+				return round( $value, 2 ) . $no_unit_suffix;
 			}
 		}
 	}
