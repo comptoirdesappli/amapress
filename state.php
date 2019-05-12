@@ -256,7 +256,7 @@ function amapress_get_state() {
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
 		'Description de l\'AMAP',
-		'Cette section permet le référencement dans les moteurs de recherche. 
+		'Cette section permet le référencement dans les moteurs de recherche.
 <br/>Remplir les champs <strong>Titre</strong> (Le nom de votre AMAP) et <strong>Slogan</strong> (Un sous titre pour votre AMAP. Vous pouvez ajouter la mention suivante "Construit avec Amapress, l\'outil pour les AMAP")',
 		admin_url( 'customize.php?autofocus[section]=title_tagline' )
 	);
@@ -412,7 +412,7 @@ function amapress_get_state() {
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Adresse mail du site',
-		'Configurer l\'adresse email du site (par défaut, "wordpress") et son nom d\'affichage (par défaut, le nom du site). Pensez à configurer une redirection pour cette adresse dans la configuration de votre hébergement.',
+		'Configurer l\'adresse email du site (par défaut, "wordpress", actuellement "<strong>' . esc_html( Amapress::getOption( 'email_from_mail' ) ) . '</strong>") et son nom d\'affichage (par défaut, le nom du site). Pensez à configurer une redirection pour cette adresse dans la configuration de votre hébergement.',
 		admin_url( 'admin.php?page=amapress_options_page&tab=amp_general_config' )
 	);
 
@@ -1505,6 +1505,7 @@ function amapress_echo_and_check_amapress_state_page() {
 	if ( isset( $_GET['phpinfo'] ) ) {
 		if ( current_user_can( 'update_core' ) ) {
 			embedded_phpinfo();
+
 			return;
 		}
 	}
