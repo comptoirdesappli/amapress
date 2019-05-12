@@ -1909,7 +1909,9 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
                 <th style="width: 80px">Dispo de</th>
                 <th style="width: 80px"> - à</th>
 			<?php } else { ?>
-                <th>Dates</th>
+                <th title="Dates spécifiques de distribution du type de panier"
+                >Dates spec.
+                </th>
 			<?php } ?>
             <th>Produits</th>
             <!--            <th style="width: 30px">Photo</th>-->
