@@ -51,7 +51,6 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 			'contact_externe'     => array(
 				'name'       => amapress__( 'Contact externe' ),
 				'type'       => 'editor',
-				'required'   => true,
 				'desc'       => 'Contact externe',
 				'group'      => 'Gestion',
 				'searchable' => true,
@@ -92,6 +91,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
+				'required'   => true,
 //                'save' => array('AmapressUsers', 'resolveLieuAddress'),
 				'group'      => 'Adresse',
 				'searchable' => true,
