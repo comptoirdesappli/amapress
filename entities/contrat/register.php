@@ -2007,7 +2007,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 				'post_title'   => $quant_data['title'],
 				'post_type'    => AmapressContrat_quantite::INTERNAL_POST_TYPE,
 				'post_content' => '',
-				'post_status'  => get_post_status( $contrat_instance_id ),
+				'post_status'  => 'publish',
 				'meta_input'   => array(
 					'amapress_contrat_quantite_contrat_instance' => $contrat_instance_id,
 					'amapress_contrat_quantite_prix_unitaire'    => $quant_data['price'],
