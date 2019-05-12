@@ -766,11 +766,25 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		)
 	) );
 	$subscribable_contrat_instances     = AmapressContrats::get_subscribable_contrat_instances();
+	$active_contrat_instances           = AmapressContrats::get_active_contrat_instances();
 	$not_subscribable_contrat_instances = array_filter(
 		$contrat_types,
 		function ( $c ) use ( $subscribable_contrat_instances ) {
 			/** @var AmapressContrat $c */
 			foreach ( $subscribable_contrat_instances as $contrat_instance ) {
+				if ( $contrat_instance->getModelId() == $c->ID ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+	);
+	$not_active_contrat_instances       = array_filter(
+		$contrat_types,
+		function ( $c ) use ( $active_contrat_instances ) {
+			/** @var AmapressContrat $c */
+			foreach ( $active_contrat_instances as $contrat_instance ) {
 				if ( $contrat_instance->getModelId() == $c->ID ) {
 					return false;
 				}
@@ -792,14 +806,22 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 
 			return "<a href='{$l}' target='_blank'>{$tit}</a> {$status}";
 		}, $subscribable_contrat_instances ) ) .
-		( ! empty( $not_subscribable_contrat_instances ) ? '<p><strong>Les contrats suivants n\'ont pas de modèles actifs</strong> : ' .
+		( ! empty( $not_subscribable_contrat_instances ) ? '<p><strong>Les contrats suivants n\'ont pas de modèles actifs (selon date ouverture/bloture)</strong> : ' .
 		                                                   implode( ', ', array_map( function ( $dn ) {
 
 			                                                   $l = admin_url( 'post.php?post=' . $dn->ID . '&action=edit' );
 			                                                   $t = esc_html( $dn->post_title );
 
 			                                                   return "<a href='{$l}' target='_blank'>{$t}</a>";
-		                                                   }, $not_subscribable_contrat_instances ) ) . '</p>' : '' )
+		                                                   }, $not_subscribable_contrat_instances ) ) . '</p>' : '' ) .
+		( ! empty( $not_active_contrat_instances ) ? '<p><strong>Les contrats suivants n\'ont pas de modèles en cours (selon les dates début/fin)</strong> : ' .
+		                                             implode( ', ', array_map( function ( $dn ) {
+
+			                                             $l = admin_url( 'post.php?post=' . $dn->ID . '&action=edit' );
+			                                             $t = esc_html( $dn->post_title );
+
+			                                             return "<a href='{$l}' target='_blank'>{$t}</a>";
+		                                             }, $not_active_contrat_instances ) ) . '</p>' : '' )
 	);
 
 	$contrat_to_renew = get_posts( 'post_type=amps_contrat_inst&amapress_date=renew' );
