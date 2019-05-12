@@ -213,6 +213,23 @@ function amapress_get_state() {
 		);
 	}
 
+	if ( ! extension_loaded( 'zip' ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'error',
+			'Extension PHP ZIP',
+			'L\'extension ZIP de PHP doit être activée pour le bon fonctionnement d\'Amapress',
+			admin_url( 'https://www.php.net/manual/fr/zip.setup.php' )
+		);
+	}
+	if ( ! extension_loaded( 'curl' ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'error',
+			'Extension PHP cURL',
+			'L\'extension cURL de PHP doit être activée pour le bon fonctionnement d\'Amapress',
+			admin_url( 'https://www.php.net/manual/fr/curl.setup.php' )
+		);
+	}
+
 	$permalink_structure  = get_option( 'permalink_structure' );
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $permalink_structure )
