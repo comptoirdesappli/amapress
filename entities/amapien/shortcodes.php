@@ -270,6 +270,51 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 			'sort' => 'user',
 		)
 	);
+	$columns[] = array(
+		'name'    => 'user_name',
+		'title'   => 'Membre collectif',
+		'visible' => false,
+		'data'    => array(
+			'_'    => 'user_name',
+			'sort' => 'user_name',
+		)
+	);
+	$columns[] = array(
+		'name'    => 'user_address',
+		'title'   => 'Adresse',
+		'visible' => false,
+		'data'    => array(
+			'_'    => 'user_address',
+			'sort' => 'user_address',
+		)
+	);
+	$columns[] = array(
+		'name'    => 'user_phone_fix',
+		'title'   => 'Tel Fixe',
+		'visible' => false,
+		'data'    => array(
+			'_'    => 'user_phone_fix',
+			'sort' => 'user_phone_fix',
+		)
+	);
+	$columns[] = array(
+		'name'    => 'user_phone_mob',
+		'title'   => 'Tel Mobile',
+		'visible' => false,
+		'data'    => array(
+			'_'    => 'user_phone_mob',
+			'sort' => 'user_phone_mob',
+		)
+	);
+	$columns[] = array(
+		'name'    => 'user_email',
+		'title'   => 'Email',
+		'visible' => false,
+		'data'    => array(
+			'_'    => 'user_email',
+			'sort' => 'user_email',
+		)
+	);
 
 	$data = array();
 
@@ -340,9 +385,14 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 
 			if ( $lieu_id ) {
 				$data[] = array(
-					'user' => $amapien->getDisplay( $atts ),
-					'lieu' => $lieux_by_ids[ $lieu_id ]->getShortName(),
-					'role' => $role['title'],
+					'user'           => $amapien->getDisplay( $atts ),
+					'user_name'      => $amapien->getDisplayName(),
+					'user_address'   => $amapien->getFormattedAdresse(),
+					'user_phone_fix' => $amapien->getTelTo( false, false, false, ', ' ),
+					'user_phone_mob' => $amapien->getTelTo( true, false, false, ', ' ),
+					'user_email'     => $amapien->getEmail(),
+					'lieu'           => $lieux_by_ids[ $lieu_id ]->getShortName(),
+					'role'           => $role['title'],
 				);
 			} else {
 				$user_lieu_ids = AmapressUsers::get_user_lieu_ids( $user->ID );
@@ -351,9 +401,14 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 				}
 				foreach ( $user_lieu_ids as $lieu_id ) {
 					$data[] = array(
-						'user' => $amapien->getDisplay( $atts ),
-						'lieu' => $lieux_by_ids[ $lieu_id ]->getShortName(),
-						'role' => $role['title'],
+						'user'           => $amapien->getDisplay( $atts ),
+						'user_name'      => $amapien->getDisplayName(),
+						'user_address'   => $amapien->getFormattedAdresse(),
+						'user_phone_fix' => $amapien->getTelTo( false, false, false, ', ' ),
+						'user_phone_mob' => $amapien->getTelTo( true, false, false, ', ' ),
+						'user_email'     => $amapien->getEmail(),
+						'lieu'           => $lieux_by_ids[ $lieu_id ]->getShortName(),
+						'role'           => $role['title'],
 					);
 				}
 			}
@@ -487,5 +542,20 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 			'responsive' => false,
 //			'init_as_html' => true,
 		],
-		array( Amapress::DATATABLES_EXPORT_EXCEL ) );
+		array(
+			[
+				'extend'        => Amapress::DATATABLES_EXPORT_EXCEL,
+				'exportOptions' => [
+					'columns' => [
+						'user_name:name',
+						'user_email:name',
+						'user_address:name',
+						'user_phone_fix:name',
+						'user_phone_mob:name',
+						'lieu:name',
+						'role:name',
+					],
+				],
+			]
+		) );
 }
