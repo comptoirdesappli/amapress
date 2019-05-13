@@ -316,7 +316,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv'         => false,
 //                'show_on' => 'edit',
 			),
-			'contrat_instance'  => array(
+			'contrat_instance' => array(
 				'name'              => amapress__( 'Contrat' ),
 				'type'              => 'select-posts',
 //                'readonly' => 'edit',
@@ -1063,24 +1063,31 @@ function amapress_get_contrat_quantite_datatable(
 		}
 	}
 
+	$contrat_instance           = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$contrat_instance_quantites = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
+
+
 	$options = wp_parse_args(
 		$options,
 		array(
 			'show_next_distrib'       => true,
 			'show_contact_producteur' => true,
 			'show_adherents'          => true,
-			'show_fact_details'       => false,
-			'show_equiv_quantite'     => true,
+			'show_sum_fact_details'   => true,
+			'show_fact_details'       => $contrat_instance->isQuantiteVariable(),
+			'show_equiv_quantite'     => from( $contrat_instance_quantites )->distinct( function ( $c ) {
+					/** @var AmapressContrat_quantite $c */
+					return $c->getQuantite();
+				} )->count() > 1,
 			'no_script'               => false,
 			'mode'                    => 'both',
 		)
 	);
 
-	$show_adherents      = $options['show_adherents'];
-	$show_equiv_quantite = $options['show_equiv_quantite'];
-	$show_fact_details   = $options['show_fact_details'];
-
-	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$show_adherents        = $options['show_adherents'];
+	$show_equiv_quantite   = $options['show_equiv_quantite'];
+	$show_fact_details     = $options['show_fact_details'];
+	$show_sum_fact_details = $options['show_sum_fact_details'];
 
 	$columns = array(
 		array(
@@ -1111,11 +1118,10 @@ function amapress_get_contrat_quantite_datatable(
 		)
 	);
 
-	$data      = array();
-	$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true, false );
-	$quants    = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
-	$quants[]  = null;
-	foreach ( $quants as $quant ) {
+	$data                         = array();
+	$adhesions                    = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true, false );
+	$contrat_instance_quantites[] = null;
+	foreach ( $contrat_instance_quantites as $quant ) {
 		/** @var AmapressContrat_quantite $quant */
 		$row          = array();
 		$quant_title  = $quant ? $quant->getTitle() : '-toutes-';
@@ -1202,14 +1208,22 @@ function amapress_get_contrat_quantite_datatable(
 				} else if ( abs( $lieu_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
 					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ?
 							"$lieu_quant_adh_count adhérents ; " : '' ) .
-					                               ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" );
-					$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" );
+					                               ( $show_fact_details ?
+						                               "<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+						                               : "$lieu_quant_count x $quant_title" );
+					$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ?
+						"<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+						: "$lieu_quant_count x $quant_title" );
 				} else {
 					$row["lieu_{$lieu->ID}"]     = ( $show_adherents ?
 							"$lieu_quant_adh_count adhérents ; " : '' ) .
-					                               ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" ) .
+					                               ( $show_fact_details ?
+						                               "<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+						                               : "$lieu_quant_count x $quant_title" ) .
 					                               "<br/><em>équivalent quantité : $lieu_quant_sum</em>";
-					$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ? "<br/>$fact_details" : "$lieu_quant_count x $quant_title" );
+					$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ?
+						"<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+						: "$lieu_quant_count x $quant_title" );
 				}
 			}
 		}
@@ -1286,12 +1300,20 @@ function amapress_get_contrat_quantite_datatable(
 			$row['all_txt'] = '';
 		} else if ( abs( $all_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
 			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) .
-			                  ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" );
-			$row['all_txt'] = ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" );
+			                  ( $show_fact_details ?
+				                  "<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= $all_quant_count x $quant_title" : '' )
+				                  : "$all_quant_count x $quant_title" );
+			$row['all_txt'] = ( $show_fact_details ?
+				"<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= $all_quant_count x $quant_title" : '' )
+				: "$all_quant_count x $quant_title" );
 		} else {
 			$row['all']     = ( $show_adherents ? "$all_quant_adh_count adhérents ; " : '' ) .
-			                  ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" ) . "<br/><em>équivalent quantité : $all_quant_sum</em>";
-			$row['all_txt'] = ( $show_fact_details ? "<br/>$fact_details" : "$all_quant_count x $quant_title" );
+			                  ( $show_fact_details ?
+				                  "<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= $all_quant_count x $quant_title" : '' )
+				                  : "$all_quant_count x $quant_title" ) . "<br/><em>équivalent quantité : $all_quant_sum</em>";
+			$row['all_txt'] = ( $show_fact_details ?
+				"<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= $all_quant_count x $quant_title" : '' )
+				: "$all_quant_count x $quant_title" );
 		}
 		$data[] = $row;
 	}
@@ -1363,7 +1385,7 @@ function amapress_get_contrat_quantite_datatable(
 		$output_quants = [];
 		foreach ( $data as $row ) {
 			if ( ! empty( $row["all_txt"] ) ) {
-				$output_quants[] = esc_html( $row["all_txt"] );
+				$output_quants[] = $row["all_txt"];
 			}
 		}
 		$output .= implode( ', ', $output_quants );
