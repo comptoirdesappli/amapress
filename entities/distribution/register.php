@@ -21,14 +21,23 @@ function amapress_register_entities_distribution( $entities ) {
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-store',
 		'row_actions'      => array(
-			'emargement'             => [
+			'emargement'  => [
 				'label'  => 'Liste émargement',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
 				},
 			],
-			'mailto_resp'            => [
+			'quant_prod'  => [
+				'label'  => 'Quantités producteurs',
+				'target' => '_blank',
+				'href'   => function ( $dist_id ) {
+					return add_query_arg( 'date',
+						date_i18n( 'Y-m-d', AmapressDistribution::getBy( $dist_id )->getDate() ),
+						admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
+				},
+			],
+			'mailto_resp' => [
 				'label'     => 'Mail aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -44,7 +53,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'smsto_resp'             => [
+			'smsto_resp'  => [
 				'label'     => 'SMS aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,

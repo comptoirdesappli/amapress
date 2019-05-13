@@ -1330,14 +1330,20 @@ function amapress_get_contrat_quantite_datatable(
 		}
 	}
 
+	//
 	$next_distrib_text = '';
 	if ( $options['show_next_distrib'] ) {
-		$next_distrib_text = '<p>Prochaine distribution: ' .
+		$next_distrib_text = '<p>' . ( $dist && Amapress::end_of_day( $dist->getDate() ) > amapress_time() ? 'Prochaine distribution: ' : 'Distribution du ' ) .
 		                     ( $dist ? Amapress::makeLink( $dist->getPermalink(),
 			                     (
-			                     Amapress::end_of_week( amapress_time() ) > $dist->getDate() ?
+			                     Amapress::start_of_week( amapress_time() ) < $dist->getDate() && $dist->getDate() < Amapress::end_of_week( amapress_time() ) ?
 				                     '<strong>Cette semaine</strong> - ' :
-				                     '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false ) : 'non planifiée' ) . '</p>';
+				                     (
+				                     Amapress::start_of_week( Amapress::add_a_week( amapress_time() ) ) < $dist->getDate() && $dist->getDate() < Amapress::end_of_week( Amapress::add_a_week( amapress_time() ) ) ?
+					                     '<strong>Semaine prochaine</strong> - ' :
+					                     ''
+				                     ) ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false ) : 'non planifiée' ) . '</p>';
+		$next_distrib_text .= '<p>' . Amapress::makeLink( admin_url( "edit.php?post_type=amps_distribution&amapress_date=thismonth" ), 'Autres dates de distribution' ) . '</p>';
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
