@@ -304,7 +304,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'readonly' => 'amapress_is_contrat_adhesion_readonly',
 				//				'desc'     => 'Statut',
 			),
-			'quantites_editor'  => array(
+			'quantites_editor' => array(
 				'name'        => amapress__( 'Contrat et Quantité(s)' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -565,6 +565,7 @@ jQuery(function($) {
 						$prev_adhesion             = AmapressAdhesion::getBy( intval( $_REQUEST['amapress_adhesion_related'] ) );
 						$ret[ $prev_adhesion->ID ] = $prev_adhesion->getTitle();
 					}
+					unset( $ret[ $adhesion_id ] );
 
 					return $ret;
 				},
