@@ -744,6 +744,9 @@ class AmapressContrats {
 		$key     = "amapress_get_active_adhesions_{$filter}_{$key_ids}_{$contrat_quantite_id}_{$lieu_id}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
+			if ( null == $date ) {
+				$date = amapress_time();
+			}
 			if ( is_array( $contrat_id ) ) {
 				$abo_ids = $contrat_id;
 			} else {
@@ -801,7 +804,7 @@ class AmapressContrats {
 					),
 					array(
 						'key'     => 'amapress_adhesion_date_fin',
-						'value'   => Amapress::end_of_day( amapress_time() ),
+						'value'   => Amapress::start_of_day( $date ),
 						'compare' => '>=',
 						'type'    => 'NUMERIC',
 					),
