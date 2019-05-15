@@ -1392,7 +1392,7 @@ function amapress_get_contrat_quantite_datatable(
 		$output_quants = [];
 		foreach ( $data as $row ) {
 			if ( ! empty( $row["all_txt"] ) ) {
-				$output_quants[] = $row["all_txt"];
+				$output_quants[] = strpos( $row["all_txt"], '=' ) !== false ? '[' . $row["all_txt"] . ']' : $row["all_txt"];
 			}
 		}
 		$output .= implode( ', ', $output_quants );
