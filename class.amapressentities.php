@@ -1770,7 +1770,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'         => 'geocode_provider',
 									'name'       => 'Fournisseur de géocodage',
 									'type'       => 'select',
-									'default'    => 'google',
+									'default'    => 'nominatim',
 									'desc'       => 'Choisissez le fournisseur utilisé pour résoudre les adresses',
 									'options'    => [
 										'google'    => 'Google Maps',
@@ -1782,7 +1782,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'         => 'map_provider',
 									'name'       => 'Fournisseur de cartes',
 									'type'       => 'select',
-									'default'    => 'google',
+									'default'    => 'openstreetmap',
 									'desc'       => 'Choisissez le fournisseur utilisé pour afficher les cartes',
 									'options'    => [
 										'google'        => 'Google Maps',
