@@ -373,6 +373,7 @@ class AmapressUsers {
 		}
 
 		$username = self::unaccent( $username );
+		$username = sanitize_user( $username );
 
 		if ( ! username_exists( $username ) ) {
 			return $username;
