@@ -120,12 +120,12 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column' => false,
 			),
 
-			'head_amapress0'    => array(
+			'head_amapress0'     => array(
 				'id'   => 'amapress_sect',
 				'name' => amapress__( 'Amapress' ),
 				'type' => 'heading',
 			),
-			'avatar'            => array(
+			'avatar'             => array(
 				'name'            => amapress__( 'Avatar' ),
 				'selector-title'  => 'Sélectionnez/téléversez votre photo',
 				'selector-button' => 'Utiliser cette photo',
@@ -134,33 +134,33 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'            => 'Avatar',
 				'show_column'     => false,
 			),
-			'head_amapress'     => array(
+			'head_amapress'      => array(
 				'id'   => 'address_sect',
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
 			),
-			'adresse'           => array(
+			'adresse'            => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'code_postal'       => array(
+			'code_postal'        => array(
 				'name'       => amapress__( 'Code postal' ),
 				'type'       => 'text',
 				'desc'       => 'Code postal',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'ville'             => array(
+			'ville'              => array(
 				'name'       => amapress__( 'Ville' ),
 				'type'       => 'text',
 				'desc'       => 'Ville',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'adresse_localized' => array(
+			'adresse_localized'  => array(
 				'name'                   => amapress__( 'Localisé' ),
 				'type'                   => 'address',
 				'use_as_field'           => false,
@@ -172,24 +172,24 @@ function amapress_register_entities_amapien( $entities ) {
 				'town_field_name'        => 'amapress_user_ville',
 				'show_on'                => 'edit-only',
 			),
-			'head_amapress2'    => array(
+			'head_amapress2'     => array(
 				'id'   => 'phones_sect',
 				'name' => amapress__( 'Téléphones' ),
 				'type' => 'heading',
 			),
-			'telephone'         => array(
+			'telephone'          => array(
 				'name'       => amapress__( 'Téléphone' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'telephone2'        => array(
+			'telephone2'         => array(
 				'name'       => amapress__( 'Téléphone 2' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 2',
 				'searchable' => true,
 			),
-			'telephone3'        => array(
+			'telephone3'         => array(
 				'name'        => amapress__( 'Téléphone 3' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 3',
@@ -197,7 +197,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'telephone4'        => array(
+			'telephone4'         => array(
 				'name'        => amapress__( 'Téléphone 4' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 4',
@@ -205,7 +205,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'moyen'             => array(
+			'moyen'              => array(
 				'name'        => amapress__( 'Moyen préféré' ),
 				'type'        => 'select',
 				'show_column' => false,
@@ -313,7 +313,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'       => 'Co-adhérent(s) - sans mail - autres infos',
 				'searchable' => true,
 			),
-			'all-coadherents'   => array(
+			'all-coadherents'    => array(
 				'name'            => amapress__( 'Co-adhérents' ),
 				'show_column'     => false,
 				'include_columns' => array(
@@ -416,6 +416,16 @@ function amapress_register_entities_amapien( $entities ) {
 				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
 				'target' => '_blank',
 			],
+			'relocate'        => array(
+				'label'     => 'Géolocaliser',
+				'condition' => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+
+					return $user && ! empty( $user->getFormattedAdresse() ) && ! $user->isAdresse_localized();
+				},
+//				'show_on'   => 'editor',
+				'confirm'   => true,
+			),
 		),
 	);
 
@@ -973,4 +983,13 @@ function amapress_lastname_sort_pre_user_query( WP_User_Query $query ) {
 		$query->query_from    .= " LEFT OUTER JOIN $wpdb->usermeta amps_last_name ON $wpdb->users.ID = amps_last_name.user_id AND amps_last_name.meta_key='last_name'";
 		$query->query_orderby = "ORDER BY amps_last_name.meta_value " . ( strpos( $query->query_orderby, ' DESC' ) === false ? 'ASC' : 'DESC' );
 	}
+}
+
+add_action( 'amapress_row_action_user_relocate', 'amapress_row_action_user_relocate' );
+function amapress_row_action_user_relocate( $user_id ) {
+	$user = AmapressUser::getBy( $user_id );
+	if ( $user ) {
+		AmapressUsers::resolveUserAddress( $user_id, $user->getFormattedAdresse() );
+	}
+	wp_redirect_and_exit( wp_get_referer() );
 }

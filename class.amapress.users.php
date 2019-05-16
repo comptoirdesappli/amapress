@@ -1188,7 +1188,7 @@ jQuery(function() {
 			$address_text = $_REQUEST['amapress_user_adresse'] . ', ' . $_REQUEST['amapress_user_code_postal'] . ' ' . $_REQUEST['amapress_user_ville'];
 		}
 
-		self::resolveUserFullAdress( $user_id, $address_text );
+		return self::resolveUserFullAdress( $user_id, $address_text );
 	}
 
 	public static function resolveUserFullAdress( $user_id, $address_text ) {
