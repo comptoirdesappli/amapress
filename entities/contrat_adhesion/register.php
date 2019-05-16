@@ -566,6 +566,7 @@ jQuery(function($) {
 						$ret[ $prev_adhesion->ID ] = $prev_adhesion->getTitle();
 					}
 					unset( $ret[ $adhesion_id ] );
+					$ret[0] = 'Aucune';
 
 					return $ret;
 				},
