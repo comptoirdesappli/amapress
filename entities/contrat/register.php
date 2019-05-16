@@ -943,6 +943,12 @@ jQuery(function($) {
 				'show_column' => false,
 				'bare'        => true,
 				'show_on'     => 'edit-only',
+				'hidden'      => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$contrat = AmapressContrat_instance::getBy( $option->getPostID() );
+
+					return $contrat->isPanierVariable();
+				},
 				'column'      => function ( $post_id ) {
 					$contrat    = AmapressContrat_instance::getBy( $post_id, true );
 					$rattrapage = [];
