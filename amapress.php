@@ -1330,3 +1330,15 @@ add_action( 'amapress_init', function () {
 if ( defined( 'WP_CORRECT_OB_END_FLUSH_ALL' ) ) {
 	remove_action( 'shutdown', 'wp_ob_end_flush_all', 1 );
 }
+
+if ( ! defined( 'AMAPRESS_ALLOW_XMLRPC' ) ) {
+	add_action( "init", function () {
+		global $pagenow; // get current page
+		if ( ! empty( $pagenow ) && "xmlrpc.php" === $pagenow ) {
+			header( "HTTP/1.1 403 Forbidden" ); // Produit une erreur 403
+			exit; // exit request
+		}
+
+		return;
+	} );
+}
