@@ -30,9 +30,19 @@
     padding-right: 1px;
 }
 
+.row-actions {
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+
 @media screen and (max-width: 782px) {
     #wp-admin-bar-amapress_search_user_admin_bar #amapress_search_user_text {
         width: 55px;
+    }
+
+    .row-actions {
+        overflow: auto !important;
+        white-space: normal !important;
     }
 
     #wpadminbar #wp-admin-bar-amapress {
