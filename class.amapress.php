@@ -2397,6 +2397,9 @@ class Amapress {
 		wp_enqueue_script( 'paiement-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-paiements.js', array( 'jquery' ) );
 		wp_localize_script( 'paiement-status-handle', 'update_paiement_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 
+		wp_enqueue_script( 'inscriptions-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-inscriptions.js', array( 'jquery' ) );
+		wp_localize_script( 'inscriptions-handle', 'inscriptions', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+
 		wp_enqueue_script( 'jquery.contextMenu', plugin_dir_url( __FILE__ ) . 'js/jquery.contextMenu.min.js', array( 'jquery' ) );
 		wp_enqueue_style( 'jquery.contextMenu', plugin_dir_url( __FILE__ ) . 'css/contextMenu/jquery.contextMenu.min.css' );
 

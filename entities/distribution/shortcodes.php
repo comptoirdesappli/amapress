@@ -61,26 +61,27 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 
 function amapress_inscription_distrib_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
-		'show_past'         => 'false',
-		'show_next'         => 'true',
-		'show_email'        => 'default',
-		'show_tel'          => 'default',
-		'show_tel_fixe'     => 'default',
-		'show_tel_mobile'   => 'default',
-		'show_adresse'      => 'default',
-		'show_avatar'       => 'default',
-		'show_roles'        => 'default',
-		'show_for_resp'     => 'true',
-		'show_title'        => 'true',
-		'for_emargement'    => 'false',
-		'for_pdf'           => 'false',
-		'past_weeks'        => 5,
-		'max_dates'         => - 1,
-		'responsive'        => 'false',
-		'user'              => null,
-		'lieu'              => null,
-		'date'              => null,
-		'inscr_all_distrib' => 'false'
+		'show_past'                => 'false',
+		'show_next'                => 'true',
+		'show_email'               => 'default',
+		'show_tel'                 => 'default',
+		'show_tel_fixe'            => 'default',
+		'show_tel_mobile'          => 'default',
+		'show_adresse'             => 'default',
+		'show_avatar'              => 'default',
+		'show_roles'               => 'default',
+		'show_for_resp'            => 'true',
+		'show_title'               => 'true',
+		'for_emargement'           => 'false',
+		'for_pdf'                  => 'false',
+		'past_weeks'               => 5,
+		'max_dates'                => - 1,
+		'responsive'               => 'false',
+		'user'                     => null,
+		'lieu'                     => null,
+		'date'                     => null,
+		'inscr_all_distrib'        => 'false',
+		'manage_all_subscriptions' => 'false',
 	), $atts );
 
 
@@ -93,7 +94,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$user_id = Amapress::resolve_user_id( $atts['user'] );
 	}
 
-	$inscr_all_distrib = Amapress::toBool( $atts['inscr_all_distrib'] );
+	$inscr_all_distrib        = Amapress::toBool( $atts['inscr_all_distrib'] );
+	$manage_all_subscriptions = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
 
 	$required_lieu_id = null;
 	if ( ! empty( $atts['lieu'] ) ) {
@@ -169,6 +171,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		} )->toArray();
 	}
 
+	$btn_class = ( is_admin() ? 'button button-secondary' : 'btn btn-default' );
+
 	$dists = array();
 	if ( $is_current_user_resp_amap || $required_lieu_id ) {
 		foreach ( $all_dists as $dist ) {
@@ -224,16 +228,16 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		if ( Amapress::toBool( $atts['show_title'] ) ) {
 			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
 		}
-		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) ) {
-			$ret .= '<p style="text-align: center"><a class="btn btn-default" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
+		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) && ! is_admin() ) {
+			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
 		}
 		$ret .= '<table id="inscr-distrib-table-' . $lieu_id . '" class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
 		$ret .= '<thead>';
 		$ret .= '<tr>';
 		if ( $for_pdf ) {
-			$ret .= '<th>Date</th>';
+			$ret .= '<th class="dist-col-date">Date</th>';
 		} else {
-			$ret .= '<th style="width: 5em">Date</th>';
+			$ret .= '<th class="dist-col-date" style="width: 5em">Date</th>';
 		}
 		if ( $for_emargement ) {
 			if ( $for_pdf ) {
@@ -325,7 +329,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			$contrat_names    = implode( ', ', $contrat_names );
 			$contrats_content = '<p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
 			$date_content     = '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . $hours . '</p>';
-			$ret              .= '<th scope="row" class="inscr-list-info">';
+			$ret              .= '<th scope="row" class="inscr-list-info dist-col-date">';
 			$ret              .= $date_content;
 			if ( ! $for_emargement ) {
 				$ret .= $contrats_content;
@@ -354,8 +358,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				for ( $i = 0; $i < $needed; $i ++ ) {
 					$row_resps[ $i ] = null;
 				}
-				$can_unsubscribe = ! $for_pdf && Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() );
-				$can_subscribe   = ! $for_pdf && Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() );
+				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
+				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
 				$colspan_cls     = 'resp-col resp-col-' . ( $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {
@@ -460,14 +464,21 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 					if ( null == $resp ) {
 						$inscr_another = '';
 						if ( ( $is_resp_distrib || $is_current_user_resp_amap ) && $can_subscribe ) {
-							$inscr_another = '<form class="inscription-distrib-other-user" action="#">
-<select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
-</form>';
+							$inscr_another = '';
+							if ( ! is_admin() ) {
+								$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
+							}
+							$inscr_another .= '<div class="inscription-other-user">
+<select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
+</div>';
+							if ( ! is_admin() ) {
+								$inscr_another .= '</form>';
+							}
 							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou mail et/ou téléphone">Ajouter une personne</a></a></p>';
 						}
 
-						$inscr_self = '<button type="button" class="btn btn-default dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
+						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
 							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
@@ -490,9 +501,9 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 								$is_resp = $is_resp || $r->ID == amapress_current_user_id();
 								if ( $can_unsubscribe ) {
 									if ( $r->ID == amapress_current_user_id() ) {
-										$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
 									} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
-										$ret .= '<button type="button" class="btn btn-default dist-desinscrire-button" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
 									}
 								}
 							}
@@ -527,6 +538,29 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$ret .= '</table>';
 
 		//$ret .= '<script type="text/javascript">jQuery(function($) {$("#inscr-distrib-table").DataTable().fixedHeader.enable(true);});</script>';
+	}
+
+	if ( is_admin() ) {
+		$ret .= '<style type="text/css">.dist-col-date {display: none}</style>';
+		$ret .= '<script type="text/javascript">
+//<![CDATA[
+jQuery(function($) {
+    jQuery(".autocomplete").each(function() { $(this).select2({
+        allowClear: true,
+		  escapeMarkup: function(markup) {
+			return markup;
+		  },
+		  templateResult: function(data) {
+			return jQuery("<span>"+data.text+"</span>");
+		  },
+		  templateSelection: function(data) {
+			return jQuery("<span>"+data.text+"</span>");
+		  },
+		  width: \'auto\'
+    }) });
+});
+//]]>
+</script>';
 	}
 
 //    $ret .= '</div>';

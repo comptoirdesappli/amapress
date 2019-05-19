@@ -7,6 +7,7 @@
             'role': $this.data('role'),
         };
         var $parentForm = $this.parent('form');
+        var $parentDiv = $this.parent('.inscription-other-user');
         if ($parentForm.length > 0) {
             $parentForm.validate({
                 errorPlacement: function (error, element) {
@@ -14,8 +15,8 @@
                 }
             });
             if (!$parentForm.valid()) return;
-            data.user = $('select[name=user]', $parentForm).val();
         }
+        data.user = $('select[name=user]', $parentDiv).val();
 
         $this.prop("disabled", true);
         // We can also pass the url value separately from ajaxurl for front end AJAX implementations

@@ -262,12 +262,25 @@ function amapress_register_entities_distribution( $entities ) {
 //				},
 				'readonly'     => true,
 				'after_option' => function ( $option ) {
-					$href = Amapress::get_inscription_distrib_page_href();
-					if ( ! empty( $href ) ) {
-						echo '<p>Les inscriptions aux distributions se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
-					} else {
-						echo '<p style="color:red">Aucune page du site ne contient le shortcode [inscription-distrib] (qui permet de gérer l\'inscription aux distributions)</p>';
-					}
+					/** @var TitanFrameworkOption $option */
+
+//					$href = Amapress::get_inscription_distrib_page_href();
+//					if ( ! empty( $href ) ) {
+//						echo '<p>Les inscriptions aux distributions se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
+//					} else {
+//						echo '<p style="color:red">Aucune page du site ne contient le shortcode [inscription-distrib] (qui permet de gérer l\'inscription aux distributions)</p>';
+//					}
+					$dist = AmapressDistribution::getBy( $option->getPostID() );
+					echo amapress_inscription_distrib_shortcode(
+						[
+							'date'                     => $dist->getDate(),
+							'show_for_resp'            => 'true',
+							'show_title'               => 'false',
+							'max_dates'                => 1,
+							'lieu'                     => $dist->getLieuId(),
+							'manage_all_subscriptions' => 'true',
+						]
+					);
 				},
 //                'searchable' => true,
 			),
