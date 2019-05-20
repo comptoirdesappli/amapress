@@ -372,6 +372,8 @@ class AmapressUsers {
 			$i ++;
 		}
 
+		$username = str_replace( ' ', '', $username );
+		$username = strtolower( $username );
 		$username = self::unaccent( $username );
 		$username = sanitize_user( $username );
 
