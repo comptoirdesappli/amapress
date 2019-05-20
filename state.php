@@ -1524,6 +1524,11 @@ function embedded_phpinfo() {
 }
 
 function amapress_echo_and_check_amapress_state_page() {
+	if ( isset( $_GET['generate_full_amap'] ) ) {
+		echo Amapress::generate_full_amap();
+
+		return;
+	}
 	if ( isset( $_GET['phpinfo'] ) ) {
 		if ( current_user_can( 'update_core' ) ) {
 			embedded_phpinfo();

@@ -114,9 +114,61 @@
         ]
     },
     {
-      "name": "guzzlehttp/guzzle",
-      "version": "6.3.0",
-      "version_normalized": "6.3.0.0",
+      "name": "fzaninotto/faker",
+      "version": "v1.8.0",
+      "version_normalized": "1.8.0.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/fzaninotto/Faker.git",
+        "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f72816b43e74063c8b10357394b6bba8cb1c10de",
+        "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de",
+        "shasum": ""
+      },
+      "require": {
+        "php": "^5.3.3 || ^7.0"
+      },
+      "require-dev": {
+        "ext-intl": "*",
+        "phpunit/phpunit": "^4.8.35 || ^5.7",
+        "squizlabs/php_codesniffer": "^1.5"
+      },
+      "time": "2018-07-12T10:23:15+00:00",
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "1.8-dev"
+        }
+      },
+      "installation-source": "dist",
+      "autoload": {
+        "psr-4": {
+          "Faker\\": "src/Faker/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "François Zaninotto"
+        }
+      ],
+      "description": "Faker is a PHP library that generates fake data for you.",
+      "keywords": [
+        "data",
+        "faker",
+        "fixtures"
+      ]
+    },
+  {
+    "name": "guzzlehttp/guzzle",
+    "version": "6.3.0",
+    "version_normalized": "6.3.0.0",
         "source": {
             "type": "git",
           "url": "https://github.com/guzzle/guzzle.git",
@@ -138,10 +190,10 @@
           "phpunit/phpunit": "^4.0 || ^5.0",
           "psr/log": "^1.0"
         },
-      "suggest": {
-        "psr/log": "Required for using the Log middleware"
-      },
-      "time": "2017-06-22T18:50:49+00:00",
+    "suggest": {
+      "psr/log": "Required for using the Log middleware"
+    },
+    "time": "2017-06-22T18:50:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -168,8 +220,8 @@
                 "homepage": "https://github.com/mtdowling"
             }
         ],
-      "description": "Guzzle is a PHP HTTP client library",
-      "homepage": "http://guzzlephp.org/",
+    "description": "Guzzle is a PHP HTTP client library",
+    "homepage": "http://guzzlephp.org/",
         "keywords": [
           "client",
           "curl",
@@ -1172,7 +1224,8 @@
         "keywords": [
             "mock",
             "xunit"
-        ]
+        ],
+      "abandoned": true
     },
     {
       "name": "psr/http-message",
