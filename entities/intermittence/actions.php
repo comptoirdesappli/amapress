@@ -18,6 +18,8 @@ function amapress_create_user_if_not_exists(
 		$username = sanitize_user( $email_address );
 		if ( ! empty( $last_name ) && ! empty( $first_name ) ) {
 			$username = "$first_name.$last_name";
+		} else {
+			$username = preg_replace( '/@.+$/', '', $username );
 		}
 
 		$username = AmapressUsers::generate_unique_username( $username );
