@@ -1,4 +1,4 @@
-﻿function amapress_paiement_status() {
+function amapress_paiement_status() {
     jQuery('.paiement-status-button').click(function () {
         var data = {
             'action': 'update_paiement_status_action',

@@ -1,4 +1,4 @@
-﻿jQuery(document).ready(function ($) {
+jQuery(document).ready(function ($) {
     jQuery('body').on('click', '.dist-inscrire-button', function () {
         var $this = jQuery(this);
         var data = {

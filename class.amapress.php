@@ -3402,6 +3402,7 @@ class Amapress {
 	}
 
 	public static function sendXLSXFromPHPExcelObject( $objPHPExcel, $excel_file_name ) {
+		@ob_clean();
 		// Redirect output to a client’s web browser (Excel2007)
 		header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
 		header( 'Content-Disposition: attachment;filename="' . $excel_file_name . '"' );

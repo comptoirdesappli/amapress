@@ -51,6 +51,7 @@ class AmapressExport_Posts {
 			$filename = $sitename . $amapress_export_name . '.' . date( 'Y-m-d-H-i-s' );
 
 
+			@ob_clean();
 			// Redirect output to a client’s web browser (Excel2007)
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
 			header( 'Content-Disposition: attachment;filename="' . $filename . '.xlsx"' );
