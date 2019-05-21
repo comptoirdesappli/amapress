@@ -131,8 +131,9 @@ function amapress_admin_action_inscription_intermittent() {
 add_action( 'admin_post_nopriv_desinscription_intermittent', 'amapress_admin_action_nopriv_desinscription_intermittent' );
 function amapress_admin_action_nopriv_desinscription_intermittent() {
 	if ( ! empty( $_GET['desinter_nonce'] ) ) {
+		$nonce = $_GET['desinter_nonce'];
 		header( 'Content-Type: text/html; charset=UTF-8' );
-		if ( ! wp_verify_nonce( $_GET['desinter_nonce'], 'desinscription_intermittent' ) ) {
+		if ( get_transient( 'amps_desinscr_inter_' . $nonce ) != $nonce ) {
 			wp_die( 'Ce lien de désinscription de la liste des intermittents est périmé.' );
 		}
 		if ( ! empty( $_REQUEST['email'] ) ) {
