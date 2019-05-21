@@ -2057,9 +2057,13 @@ class Amapress {
 		return $ret;
 	}
 
-	private static function generate_test( $id, $name, &$generated_ids = array(), $unset_post_title = false ) {
+	private static function generate_test( $id, $name, &$generated_ids = array(), $unset_post_title = false, $relative_time = 0 ) {
 		if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
 			return '';
+		}
+
+		if ( ! $relative_time ) {
+			$relative_time = amapress_time();
 		}
 //	    global $menu, $submenu;
 //	    $the_menu = [];
@@ -2195,12 +2199,12 @@ class Amapress {
 					}
 				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) {
-							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( amapress_time() ) ) . ')';
+							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';
 						}, array_map(
 							'TitanEntity::to_date',
 							TitanEntity::get_array( $v ) ) ) ) . '])¤';
 				} else if ( 'date' == $fields[ $k ]['type'] ) {
-					$v = 'now+' . ( intval( $v ) - Amapress::start_of_day( amapress_time() ) );
+					$v = 'now+' . ( intval( $v ) - Amapress::start_of_day( $relative_time ) );
 				}
 				$filtered_post_meta[ $k ] = $v;
 			}
