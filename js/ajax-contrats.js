@@ -1,4 +1,4 @@
-﻿function amapress_contrat_status() {
+function amapress_contrat_status() {
     jQuery('body').on('click', '.contrat-status-button', function () {
         var $this = jQuery(this);
         var data = {
