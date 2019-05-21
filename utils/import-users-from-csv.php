@@ -159,6 +159,7 @@ class Amapress_Import_Users_CSV {
 		$sheet->setTitle( $name );
 
 		// Redirect output to a client’s web browser (Excel2007)
+		@ob_clean();
 		header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
 		header( 'Content-Disposition: attachment;filename="' . $filename . '.xlsx"' );
 		header( 'Cache-Control: max-age=0' );
