@@ -52,7 +52,7 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 		if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
 			$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default event-inscrire-button" data-event="' . $event->ID . '">Inscrire</button>
+<button type="button" class="btn btn-default event-inscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-event="' . $event->ID . '">Inscrire</button>
 </form>';
 		}
 
@@ -63,13 +63,13 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 			$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
 			$ret     .= $resp->getDisplay( $atts );
 			if ( $resp->ID == amapress_current_user_id() && $can_unsubscribe ) {
-				$ret .= '<button type="button" class="btn btn-default event-desinscrire-button" data-event="' . $event->ID . '">Me désinscrire</button>';
+				$ret .= '<button type="button" class="btn btn-default event-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-event="' . $event->ID . '">Me désinscrire</button>';
 			}
 			$ret .= '</div>';
 		}
 		if ( ! $is_resp ) {
 			if ( $can_subscribe ) {
-				$ret .= '<button type="button" class="btn btn-default event-inscrire-button" data-event="' . $event->ID . '">M\'inscrire</button>';
+				$ret .= '<button type="button" class="btn btn-default event-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-event="' . $event->ID . '">M\'inscrire</button>';
 			} else {
 				$ret .= '<span class="event-inscr-closed">Inscriptions closes</span>';
 			}

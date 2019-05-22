@@ -25,19 +25,19 @@ function amapress_get_custom_content_visite( $content ) {
 	if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
 		$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default visite-inscrire-button" data-visite="' . $visite->ID . '">Inscrire</button>
+<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-visite="' . $visite->ID . '">Inscrire</button>
 </form>';
 	}
 	$inscription = '';
 	if ( ! $is_resp ) {
 		if ( $can_subscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-visite="' . $visite->ID . '">M\'inscrire</button>';
+			$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-visite="' . $visite->ID . '">M\'inscrire</button>';
 		} else {
 			$inscription .= '<span class="visite-inscr-closed">Inscriptions closes</span>';
 		}
 	} else {
 		if ( $can_unsubscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-visite="' . $visite->ID . '">Me désinscrire</button>';
+			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-visite="' . $visite->ID . '">Me désinscrire</button>';
 		}
 	}
 

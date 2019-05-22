@@ -1,6 +1,10 @@
-jQuery(document).ready(function ($) {
+﻿jQuery(document).ready(function ($) {
     jQuery('body').on('click', '.dist-inscrire-button', function () {
         var $this = jQuery(this);
+        if ($this.data('confirm') && !confirm($this.data('confirm'))) {
+            return;
+        }
+
         var data = {
             'action': 'inscrire_distrib_action',
             'dist': $this.data('dist'),
@@ -31,6 +35,9 @@ jQuery(document).ready(function ($) {
         return false;
     }).on('click', '.dist-desinscrire-button', function () {
         var $this = jQuery(this);
+        if ($this.data('confirm') && !confirm($this.data('confirm'))) {
+            return;
+        }
         var data = {
             'action': 'desinscrire_distrib_action',
             'dist': $this.data('dist'),
@@ -55,6 +62,9 @@ jQuery(document).ready(function ($) {
         return false;
     }).on('click', '.event-inscrire-button', function () {
         var $this = jQuery(this);
+        if ($this.data('confirm') && !confirm($this.data('confirm'))) {
+            return;
+        }
         var data = {
             'action': 'inscrire_amap_event_action',
             'event': $this.data('event')
@@ -88,6 +98,9 @@ jQuery(document).ready(function ($) {
         return false;
     }).on('click', '.visite-inscrire-button', function () {
         var $this = jQuery(this);
+        if ($this.data('confirm') && !confirm($this.data('confirm'))) {
+            return;
+        }
         var data = {
             'action': 'inscrire_visite_action',
             'visite': $this.data('visite')
@@ -121,6 +134,9 @@ jQuery(document).ready(function ($) {
         return false;
     }).on('click', '.visite-desinscrire-button', function () {
         var $this = jQuery(this);
+        if ($this.data('confirm') && !confirm($this.data('confirm'))) {
+            return;
+        }
         var data = {
             'action': 'desinscrire_visite_action',
             'visite': $this.data('visite'),
@@ -145,6 +161,9 @@ jQuery(document).ready(function ($) {
         return false;
     }).on('click', '.event-desinscrire-button', function () {
         var $this = jQuery(this);
+        if ($this.data('confirm') && !confirm($this.data('confirm'))) {
+            return;
+        }
         var data = {
             'action': 'desinscrire_amap_event_action',
             'event': $this.data('event'),
