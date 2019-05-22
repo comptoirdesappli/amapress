@@ -528,7 +528,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter Inscription Contrat ' => array(
+						'Ajouter Inscription Contrat '   => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -542,7 +542,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'        => array(
+						'Ajouter un coadhérent'          => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -556,7 +556,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'       => array(
+						'Ajouter une personne hors AMAP' => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -1014,7 +1014,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //							'desc' => 'ici vous pouvez gérer...'
 //						),
 					),
-					'tabs'       => array(
+					'tabs'     => array(
 						'Configuration de l\'espace intermittents' => array(
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1103,7 +1103,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-dispo-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : [[à remplir]].\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à [[à remplir]].\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : %%admin_email_link%%.\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à %%admin_email_link%%.\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
