@@ -108,9 +108,6 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'backupwordpress', 'BackUpWordPress',
 		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'tools.php?page=backupwordpress' ) . '">Configuration de la sauvegarde</a>. Configurer ici la notification par e-mail pour recevoir un backup de la base de donnée du site toutes les semaines par exemple.',
 		'error' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'really-simple-ssl', 'Really Simple SSL',
-		'<strong>Recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
-		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
 		'warning' );
@@ -229,6 +226,16 @@ function amapress_get_state() {
 			admin_url( 'https://www.php.net/manual/fr/curl.setup.php' )
 		);
 	}
+
+	$state['05_config'][] = amapress_get_check_state(
+		is_ssl() ? 'success' : 'warning',
+		is_ssl() ? 'HTTPS Activé' : 'HTTPS Désactivé',
+		'Passer votre site en HTTPS améliore sa sécurité et son référencement. Voir plugin Really Simple SSL ci-dessous.',
+		''
+	);
+	$state['05_config'][] = amapress_check_plugin_install( 'really-simple-ssl', 'Really Simple SSL',
+		'<strong>Plugin recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
+		'warning' );
 
 	$permalink_structure  = get_option( 'permalink_structure' );
 	$state['05_config'][] = amapress_get_check_state(

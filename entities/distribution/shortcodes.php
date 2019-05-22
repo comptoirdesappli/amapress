@@ -470,7 +470,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 							}
 							$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
 </div>';
 							if ( ! is_admin() ) {
 								$inscr_another .= '</form>';
@@ -478,7 +478,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou mail et/ou téléphone">Ajouter une personne</a></a></p>';
 						}
 
-						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
+						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
 							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
@@ -501,9 +501,9 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 								$is_resp = $is_resp || $r->ID == amapress_current_user_id();
 								if ( $can_unsubscribe ) {
 									if ( $r->ID == amapress_current_user_id() ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-dist="' . $dist->ID . '">Me désinscrire</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '">Me désinscrire</button>';
 									} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
 									}
 								}
 							}

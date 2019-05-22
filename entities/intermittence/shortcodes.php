@@ -304,6 +304,13 @@ function amapress_echanger_panier_shortcode( $atts ) {
 			$date_dists = [ array_shift( $date_dists ) ];
 		}
 
+		$manage_my_exchanges_link = '';
+		$manage_my_exchanges_href = Amapress::get_page_with_shortcode_href( 'amapien-paniers-intermittents', 'amps_manage_paniers_inter' );
+		if ( ! empty( $manage_my_exchanges_href ) ) {
+			$manage_my_exchanges_link = '<p><a href="' . esc_attr( $manage_my_exchanges_href ) . '">Gérer l\'échange</a></p>';
+		}
+
+
 		foreach ( $date_dists as $dist ) {
 			if ( ! in_array( $dist->getLieuId(), $lieu_ids ) ) {
 				continue;
@@ -336,15 +343,19 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					break;
 				case AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT:
 					$ret .= '<span class="repreneurè-waiting">Repreneur(s) en attente de validation</span>';
+					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'to_exchange':
 					$ret .= '<span class="panier-to-exchange">Panier(s) en attente de repreneur</span>';
+					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'exchanged':
 					$ret .= '<span class="panier-exchanged">Panier(s) cédé(s)</span>';
+					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'closed':
 					$ret .= '<span class="echange-done">Cession effectuée</span>';
+					$ret .= $manage_my_exchanges_link;
 					break;
 			}
 			$ret .= '</td>';
