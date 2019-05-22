@@ -437,17 +437,17 @@ class Amapress_Import_Posts_CSV {
 
 		include( plugin_dir_path( __FILE__ ) . 'class-readcsv.php' );
 
-		$has_multi = false;
+		$has_multi      = false;
+		$imported_posts = 0;
+		$total_posts    = 0;
 		// Loop through the file lines
 //		$file_handle = @fopen( $filename, 'r' );
 //		if($file_handle) {
 		try {
 			$csv_reader = new ReadCSV( $filename ); // Skip any UTF-8 byte order mark.
 
-			$first          = true;
-			$rkey           = 0;
-			$imported_posts = 0;
-			$total_posts    = 0;
+			$first = true;
+			$rkey  = 0;
 			while ( ( $line = $csv_reader->get_row() ) !== null ) {
 				$rkey ++;
 
@@ -795,7 +795,7 @@ class Amapress_Import_Posts_CSV {
 		do_action( "amapress_{$post_type}_posts_import", $post_ids, $errors );
 
 		foreach ( $errors as $k => $v ) {
-			if ( count( $v ) == 0 ) {
+			if ( is_array( $v ) && count( $v ) == 0 ) {
 				unset( $errors[ $k ] );
 			}
 		}
