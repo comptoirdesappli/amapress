@@ -157,6 +157,10 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 				case "url":
 				case "site_url":
 					return get_bloginfo( 'url' );
+				case 'admin_email_link':
+					return Amapress::makeLink( 'mailto:' . get_option( 'admin_email' ) );
+				case 'admin_email':
+					return get_option( 'admin_email' );
 				case "description":
 				case "site_description":
 					return get_bloginfo( 'description' );
