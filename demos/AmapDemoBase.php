@@ -78,6 +78,70 @@ class AmapDemoBase {
 		self::commitTransaction();
 	}
 
+	public static function resolvePostalCodeCityName( $postal_code, $country = 'fr' ) {
+		//
+		$key       = "amps_cp_$postal_code-$country";
+		$city_name = wp_cache_get( $key );
+		if ( false === $city_name ) {
+			$url     = "https://nominatim.openstreetmap.org/search?postalcode=$postal_code&country=$country&format=json&addressdetails=1";
+			$request = wp_remote_get( $url );
+			if ( ! is_wp_error( $request ) ) {
+				$body = wp_remote_retrieve_body( $request );
+				$json = json_decode( $body, true );
+				foreach ( $json as $item ) {
+					if ( isset( $item['address']['city'] ) ) {
+						$city_name = $item['address']['city'];
+						break;
+					}
+				}
+				wp_cache_set( $key, $city_name );
+			}
+		}
+
+		return $city_name;
+	}
+
+	public static function generateRandomAddress( $lat, $lng, $radius_meter ) {
+		$key       = "amps_addr_gen_$lat-$lng-$radius_meter";
+		$addresses = wp_cache_get( $key );
+		if ( false === $addresses ) {
+			$addresses = [];
+			$url       = "http://overpass-api.de/api/interpreter?data=[out:json];(node[%22addr:housenumber%22][%22name%22](around:$radius_meter,$lat,$lng););out;%3E;out%20skel%20qt;";
+			$request   = wp_remote_get( $url );
+			if ( ! is_wp_error( $request ) ) {
+				$body = wp_remote_retrieve_body( $request );
+				$json = json_decode( $body, true );
+				foreach ( $json['elements'] as $item ) {
+					//addr:housenumber	"8"
+					//addr:postcode	"75014"
+					//addr:street	"Rue des Plantes"
+					if ( isset( $item['tags']['addr:housenumber'] ) && isset( $item['tags']['addr:postcode'] ) && isset( $item['tags']['addr:street'] ) ) {
+						$housenumber = $item['tags']['addr:housenumber'];
+						$street      = $item['tags']['addr:street'];
+						$postcode    = $item['tags']['addr:postcode'];
+						$city        = self::resolvePostalCodeCityName( $postcode );
+						$addresses[] = [
+							'full'        => "$housenumber $street, $postcode $city",
+							'address'     => "$housenumber $street",
+							'housenumber' => $housenumber,
+							'street'      => $street,
+							'postcode'    => $postcode,
+							'city'        => $city,
+							'lat'         => $item['lat'],
+							'lon'         => $item['lon'],
+						];
+					}
+				}
+				wp_cache_set( $key, $addresses );
+			}
+		}
+		if ( empty( $addresses ) ) {
+			return [];
+		}
+
+		return $addresses[ rand( 0, count( $addresses ) - 1 ) ];
+	}
+
 	protected function onCreateAmap( $now ) {
 
 	}
