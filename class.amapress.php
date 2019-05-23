@@ -2057,7 +2057,14 @@ class Amapress {
 		return $ret;
 	}
 
-	private static function generate_test( $id, $name, &$generated_ids = array(), $unset_post_title = false, $relative_time = 0 ) {
+	private static function generate_test(
+		$id, $name,
+		&$generated_ids = array(),
+		$unset_post_title = false,
+		$relative_time = 0,
+		$update_callback = null
+	) {
+
 		if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
 			return '';
 		}
@@ -2110,10 +2117,14 @@ class Amapress {
 			$user_data['display_name'] = $user_data['first_name'] . ' ' . $user_data['last_name'];
 			$user_data['user_login']   = AmapressUsers::generate_unique_username( $user_data['first_name'] . '.' . $user_data['last_name'] );
 			$user_data['user_email']   = $user_data['user_login'] . '@' . $faker->safeEmailDomain;
-			$ret                       .= '<pre>';
-			$ret                       .= "\$this->users['$id'] = \$this->createUser(";
-			$ret                       .= var_export( $user_data, true );
-			$ret                       .= ");\n";
+			if ( null != $update_callback && is_callable( $update_callback, false ) ) {
+				call_user_func_array( $update_callback, [ $user, &$user_data, &$user_meta ] );
+			}
+
+			$ret .= '<pre>';
+			$ret .= "\$this->users['$id'] = \$this->createUser(";
+			$ret .= var_export( $user_data, true );
+			$ret .= ");\n";
 
 			$user_meta['amapress_user_telephone']  = $faker->phoneNumber;
 			$user_meta['amapress_user_telephone2'] = $faker->mobileNumber;
@@ -2123,7 +2134,7 @@ class Amapress {
 			unset( $user_meta['amapress_user_messages'] );
 			$user_meta['amapress_user_autogen'] = 'true';
 			foreach ( $user_meta as $k => $v ) {
-				if ( ( ! in_array( $k, $field_names ) && strpos( $k, 'amapress_' ) !== 0 ) || empty( $v ) ) {
+				if ( ( ! in_array( $k, $field_names ) && ( strpos( $k, 'amapress_' ) !== 0 ) ) || empty( $v ) ) {
 					continue;
 				}
 				$v_export = esc_html( var_export( $v, true ) );
@@ -2157,6 +2168,12 @@ class Amapress {
 			if ( in_array( "p$id", $generated_ids ) ) {
 				return '';
 			}
+
+			$fields['_thumbnail_id'] = [
+				'type' => 'upload',
+			];
+			$field_names[]           = '_thumbnail_id';
+
 			$generated_ids[] = "p$id";
 			$post            = get_post( $id, ARRAY_A );
 			$post_meta       = get_post_custom( $id );
@@ -2173,6 +2190,9 @@ class Amapress {
 			$post_meta          = array_map( function ( $v ) {
 				return TitanEntity::prepare_custom_field_value( $v );
 			}, $post_meta );
+			if ( null != $update_callback && is_callable( $update_callback, false ) ) {
+				call_user_func_array( $update_callback, [ $post, &$post, &$post_meta ] );
+			}
 			$filtered_post_meta = [];
 			foreach ( $post_meta as $k => $v ) {
 				if ( ( ! in_array( $k, $field_names ) && strpos( $k, 'amapress_' ) !== 0 ) || empty( $v ) ) {
@@ -2197,6 +2217,10 @@ class Amapress {
 					} else {
 						$v = $vs;
 					}
+				} else if ( '_thumbnail_id' == $k || 'upload' == $fields[ $k ]['type'] ) {
+					$file        = get_attached_file( intval( $v ) );
+					$bits_base64 = base64_encode( @file_get_contents( $file ) );
+					$v           = 'attachm("amp_attach' . $v . '", "' . $bits_base64 . '")¤';
 				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) {
 							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';
@@ -2235,6 +2259,7 @@ class Amapress {
 		$ret = preg_replace( '/&#039;(posts|users)\[(\d+)\]&#039;/', '\$this->$1[\'$2\']', $ret );
 		$ret = preg_replace( '/&#039;(now\s*\+\s*-?\d+)&#039;/', '\$$1', $ret );
 		$ret = preg_replace( '/&#039;(implode\([^¤]+)¤&#039;/', '$1', $ret );
+		$ret = preg_replace( '/&#039;attachm(\([^¤]+)¤&#039;/', '\$this->insertPostFromBitsBase64$1', $ret );
 
 		return $ret;
 	}
