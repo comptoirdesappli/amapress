@@ -784,7 +784,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				'lien_desinscription_intermittent' => [
 					'desc' => 'Lien de désinscription de la liste des intermittents',
 					'func' => function ( AmapressUser $amapien ) {
-						return amapress_intermittence_desinscription_link();//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
+						return Amapress::makeLink( amapress_intermittence_desinscription_link() );//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
 					}
 				],
 			];
