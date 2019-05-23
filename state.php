@@ -1533,7 +1533,9 @@ function embedded_phpinfo() {
 function amapress_echo_and_check_amapress_state_page() {
 	if ( current_user_can( 'update_core' ) ) {
 		if ( isset( $_GET['generate_full_amap'] ) ) {
-			echo Amapress::generate_full_amap();
+			echo '<textarea cols="80" rows="100" style="width: 100%; font-family: monospace">';
+			echo esc_textarea( wp_kses_decode_entities( wp_specialchars_decode( preg_replace( '/\<\/?pre\>/', '', Amapress::generate_full_amap() ), ENT_QUOTES ) ) );
+			echo '</textarea>';
 
 			return;
 		}
