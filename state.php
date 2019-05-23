@@ -1531,6 +1531,8 @@ function embedded_phpinfo() {
 }
 
 function amapress_echo_and_check_amapress_state_page() {
+//	if (!defined( 'AMAPRESS_DEMO_MODE' ))
+//		define('AMAPRESS_DEMO_MODE', 1);
 	if ( current_user_can( 'update_core' ) ) {
 		if ( isset( $_GET['generate_full_amap'] ) ) {
 			echo '<textarea cols="80" rows="100" style="width: 100%; font-family: monospace">';
@@ -1546,6 +1548,21 @@ function amapress_echo_and_check_amapress_state_page() {
 
 			return;
 		}
+		if ( isset( $_REQUEST['rand_addr'] ) ) {
+			$address = $_REQUEST['address'];
+			$around  = $_REQUEST['around'];
+
+			$resolved = TitanFrameworkOptionAddress::lookup_address( $address );
+			if ( ! empty( $resolved ) ) {
+				require_once 'demos/AmapDemoBase.php';
+
+				amapress_dump( AmapDemoBase::generateRandomAddress( $resolved['latitude'], $resolved['longitude'], intval( $around ) ) );
+			} else {
+				echo '<p style="color:red">' . esc_html( $address ) . '</p>';
+				echo '<p style="color:red">Addresse non localisée</p>';
+			}
+		}
+
 		if ( isset( $_GET['phpinfo'] ) ) {
 			embedded_phpinfo();
 
@@ -1579,6 +1596,13 @@ function amapress_echo_and_check_amapress_state_page() {
 			echo '<h2>DEMO MODE Administrative section</h2>';
 			echo '<p><a href="' . esc_attr( add_query_arg( 'clean_amap', 'T', admin_url( 'admin.php?page=amapress_state' ) ) ) . '" target="_blank">Nettoyer les custom posts</a></p>';
 			echo '<p><a href="' . esc_attr( add_query_arg( 'generate_full_amap', 'T', admin_url( 'admin.php?page=amapress_state' ) ) ) . '" target="_blank">Générer le code de démo</a></p>';
+			echo '<form method="post">
+<input type="hidden" name="rand_addr" />
+<label>Adresse à anonymiser: <input type="text" name="address"/></label>
+<br/>
+<label>Dans un rayon de: <input type="number" step="100" name="around" value="2000"/></label>
+<input type="submit" value="Générer" />
+</form>';
 			echo '<hr/>';
 		}
 
