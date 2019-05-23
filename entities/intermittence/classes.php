@@ -717,7 +717,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				'lien_desinscription_intermittent' => [
 					'desc' => 'Lien vers la page de désinscription de la liste des intermittents',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
-						return amapress_intermittence_desinscription_link();
+						return Amapress::makeLink( amapress_intermittence_desinscription_link() );
 					}
 				],
 			] );
