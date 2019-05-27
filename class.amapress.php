@@ -2036,6 +2036,9 @@ class Amapress {
 				$ret .= self::generate_test( $post->ID, AmapressDistribution::POST_TYPE, $generated_ids, true );
 			}
 		}
+		foreach ( get_posts( 'post_type=amps_inter_panier' ) as $post ) {
+			$ret .= self::generate_test( $post->ID, AmapressIntermittence_panier::POST_TYPE, $generated_ids, true );
+		}
 		//post_type=amps_visite
 		//post_type=amps_amap_event
 		//post_type=amps_produit

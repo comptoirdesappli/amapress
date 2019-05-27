@@ -69,6 +69,7 @@ class AmapDemoBase {
 			AmapressDistribution::INTERNAL_POST_TYPE,
 			AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
 			AmapressAdhesion::INTERNAL_POST_TYPE,
+			AmapressIntermittence_panier::INTERNAL_POST_TYPE,
 			AmapressAmapien_paiement::INTERNAL_POST_TYPE,
 			AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
 			AmapressLieu_distribution::INTERNAL_POST_TYPE,
@@ -89,6 +90,7 @@ class AmapDemoBase {
 			AmapressAmapien_paiement::INTERNAL_POST_TYPE,
 			AmapressLieu_distribution::INTERNAL_POST_TYPE,
 			AmapressContrat_quantite::INTERNAL_POST_TYPE,
+			AmapressIntermittence_panier::INTERNAL_POST_TYPE,
 			AmapressContrat::INTERNAL_POST_TYPE,
 			AmapressContrat_instance::INTERNAL_POST_TYPE
 		] );
