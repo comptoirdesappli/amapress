@@ -87,7 +87,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	if ( null == $attachments ) {
 		$attachments = [];
 	}
-	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) ) {
+	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 		$h       = esc_html( var_export( $headers, true ) );
 		$message = "Original To : $to\nOriginal Headers: $h\n\n" . $message;
 		$to      = Amapress::getOption( 'test_mail_target' );
