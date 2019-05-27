@@ -2013,47 +2013,66 @@ class Amapress {
 	}
 
 	public static function generate_full_amap() {
-		$ret           = '';
-		$generated_ids = [];
+		require_once 'demos/AmapDemoBase.php';
+
+		$ret                = '';
+		$generated_ids      = [];
+		$around_address_lat = Amapress::get_lieux()[0]->getAdresseLatitude();
+		$around_address_lng = Amapress::get_lieux()[0]->getAdresseLongitude();
+
+		$update_user_callback = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng ) {
+			$rnd                                     = AmapDemoBase::generateRandomAddress( $around_address_lat, $around_address_lng, 2000 );
+			$usermeta['amapress_user_long']          = ! empty( $rnd ) ? $rnd['lon'] : '';
+			$usermeta['amapress_user_lat']           = ! empty( $rnd ) ? $rnd['lat'] : '';
+			$usermeta['amapress_user_location_type'] = 'ROOFTOP';
+			$usermeta['amapress_user_adresse']       = ! empty( $rnd ) ? $rnd['address'] : '';
+			$usermeta['amapress_user_code_postal']   = ! empty( $rnd ) ? $rnd['postcode'] : '';
+			$usermeta['amapress_user_ville']         = ! empty( $rnd ) ? $rnd['city'] : '';
+			unset( $usermeta['amapress_user_co-adherents'] );
+		};
+		$update_post_callback = function ( $post, &$postdata, &$postmeta ) {
+
+		};
+		$relative_time        = 0;
 
 		//TODO paniers intermittents
-		$ret .= self::generate_test( AmapressAdhesionPeriod::getCurrent()->ID, AmapressAdhesionPeriod::POST_TYPE, $generated_ids, true );
+		$ret .= self::generate_test( AmapressAdhesionPeriod::getCurrent()->ID, AmapressAdhesionPeriod::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 		foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
-			$ret .= self::generate_test( $contrat_instances_id, AmapressContrat_instance::POST_TYPE, $generated_ids );
+			$ret .= self::generate_test( $contrat_instances_id, AmapressContrat_instance::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback );
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat_instances_id ) as $q ) {
-				$ret .= self::generate_test( $q->ID, AmapressContrat_quantite::POST_TYPE, $generated_ids, true );
+				$ret .= self::generate_test( $q->ID, AmapressContrat_quantite::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 			}
 			foreach ( AmapressContrats::get_active_adhesions_ids( $contrat_instances_id ) as $adhesion_id ) {
-				$ret .= self::generate_test( $adhesion_id, AmapressAdhesion::POST_TYPE, $generated_ids, true );
+				$ret .= self::generate_test( $adhesion_id, AmapressAdhesion::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 			}
 //		    foreach (AmapressContrats::get_all_paiements($contrat_instances_id) as $amapien_paiement) {
 //			    $ret .= self::generate_test($amapien_paiement->ID, AmapressAmapien_paiement::POST_TYPE, $generated_ids, true);
 //		    }
 			foreach ( get_posts( 'post_type=amps_panier&amapress_contrat_inst=' . $contrat_instances_id ) as $post ) {
-				$ret .= self::generate_test( $post->ID, AmapressPanier::POST_TYPE, $generated_ids, true );
+				$ret .= self::generate_test( $post->ID, AmapressPanier::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 			}
 			foreach ( get_posts( 'post_type=amps_distribution&amapress_contrat_inst=' . $contrat_instances_id ) as $post ) {
-				$ret .= self::generate_test( $post->ID, AmapressDistribution::POST_TYPE, $generated_ids, true );
+				$ret .= self::generate_test( $post->ID, AmapressDistribution::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 			}
 		}
 		foreach ( get_posts( 'post_type=amps_inter_panier' ) as $post ) {
-			$ret .= self::generate_test( $post->ID, AmapressIntermittence_panier::POST_TYPE, $generated_ids, true );
+			$ret .= self::generate_test( $post->ID, AmapressIntermittence_panier::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 		}
 		//post_type=amps_visite
 		//post_type=amps_amap_event
 		//post_type=amps_produit
 		//post_type=amps_recette
 		foreach ( get_posts( 'post_type=amps_visite' ) as $post ) {
-			$ret .= self::generate_test( $post->ID, AmapressVisite::POST_TYPE, $generated_ids, true );
+			$ret .= self::generate_test( $post->ID, AmapressVisite::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 		}
 		foreach ( get_posts( 'post_type=amps_amap_event' ) as $post ) {
-			$ret .= self::generate_test( $post->ID, AmapressAmap_event::POST_TYPE, $generated_ids );
+			$ret .= self::generate_test( $post->ID, AmapressAmap_event::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback );
 		}
 		foreach ( get_posts( 'post_type=amps_produit' ) as $post ) {
-			$ret .= self::generate_test( $post->ID, AmapressProduit::POST_TYPE, $generated_ids );
+			$ret .= self::generate_test( $post->ID, AmapressProduit::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback );
 		}
 		foreach ( get_posts( 'post_type=amps_recette' ) as $post ) {
-			$ret .= self::generate_test( $post->ID, AmapressRecette::POST_TYPE, $generated_ids );
+			$ret .= self::generate_test( $post->ID, AmapressRecette::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback );
 		}
 
 
@@ -2065,7 +2084,8 @@ class Amapress {
 		&$generated_ids = array(),
 		$unset_post_title = false,
 		$relative_time = 0,
-		$update_callback = null
+		$update_user_callback = null,
+		$update_post_callback = null
 	) {
 
 		if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
@@ -2120,8 +2140,8 @@ class Amapress {
 			$user_data['display_name'] = $user_data['first_name'] . ' ' . $user_data['last_name'];
 			$user_data['user_login']   = AmapressUsers::generate_unique_username( $user_data['first_name'] . '.' . $user_data['last_name'] );
 			$user_data['user_email']   = $user_data['user_login'] . '@' . $faker->safeEmailDomain;
-			if ( null != $update_callback && is_callable( $update_callback, false ) ) {
-				call_user_func_array( $update_callback, [ $user, &$user_data, &$user_meta ] );
+			if ( null != $update_user_callback && is_callable( $update_user_callback, false ) ) {
+				call_user_func_array( $update_user_callback, [ $user, &$user_data, &$user_meta ] );
 			}
 
 			$ret .= '<pre>';
@@ -2148,7 +2168,7 @@ class Amapress {
 						foreach ( Amapress::get_array( $v ) as $sub_id ) {
 							$ret = self::generate_test( intval( $sub_id ),
 									amapress_simplify_post_type( isset( $fields[ $k ]['post_type'] ) ? $fields[ $k ]['post_type'] : 'user' ),
-									$generated_ids ) . $ret;
+									$generated_ids, $unset_post_title, $relative_time, $update_user_callback, $update_post_callback ) . $ret;
 
 							if ( 'select-users' == $fields[ $k ]['type'] || 'multicheck-users' == $fields[ $k ]['type'] ) {
 								$v_exports[] = "users[$sub_id]";
@@ -2190,11 +2210,11 @@ class Amapress {
 			//	amapress_dump( $k );
 			//	amapress_dump( $v );
 			//}
-			$post_meta          = array_map( function ( $v ) {
+			$post_meta = array_map( function ( $v ) {
 				return TitanEntity::prepare_custom_field_value( $v );
 			}, $post_meta );
-			if ( null != $update_callback && is_callable( $update_callback, false ) ) {
-				call_user_func_array( $update_callback, [ $post, &$post, &$post_meta ] );
+			if ( null != $update_post_callback && is_callable( $update_post_callback, false ) ) {
+				call_user_func_array( $update_post_callback, [ $post, &$post, &$post_meta ] );
 			}
 			$filtered_post_meta = [];
 			foreach ( $post_meta as $k => $v ) {
@@ -2207,7 +2227,7 @@ class Amapress {
 					foreach ( Amapress::get_array( $v ) as $sub_id ) {
 						$ret = self::generate_test( intval( $sub_id ),
 								amapress_simplify_post_type( isset( $fields[ $k ]['post_type'] ) ? $fields[ $k ]['post_type'] : 'user' ),
-								$generated_ids ) . $ret;
+								$generated_ids, $unset_post_title, $relative_time, $update_user_callback, $update_post_callback ) . $ret;
 
 						if ( 'select-users' == $fields[ $k ]['type'] || 'multicheck-users' == $fields[ $k ]['type'] ) {
 							$vs[] = "users[$sub_id]";
@@ -2227,7 +2247,7 @@ class Amapress {
 						$bits_base64 = base64_encode( @file_get_contents( $file ) );
 						$bits_base64 = chunk_split( $bits_base64, 76, "\r\n" );
 					}
-					$v           = 'attachm("amp_attach' . $v . '", "' . $bits_base64 . '")¤';
+					$v = 'attachm("amp_attach' . $v . '", "' . $bits_base64 . '")¤';
 				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) {
 							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';
