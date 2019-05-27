@@ -2221,9 +2221,12 @@ class Amapress {
 						$v = $vs;
 					}
 				} else if ( '_thumbnail_id' == $k || 'upload' == $fields[ $k ]['type'] ) {
-					$file        = get_attached_file( intval( $v ) );
-					$bits_base64 = base64_encode( @file_get_contents( $file ) );
-					$bits_base64 = chunk_split( $bits_base64, 76, "\r\n" );
+					$bits_base64 = '';
+					if ( ! isset( $_GET['no_attach'] ) ) {
+						$file        = get_attached_file( intval( $v ) );
+						$bits_base64 = base64_encode( @file_get_contents( $file ) );
+						$bits_base64 = chunk_split( $bits_base64, 76, "\r\n" );
+					}
 					$v           = 'attachm("amp_attach' . $v . '", "' . $bits_base64 . '")¤';
 				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) {
