@@ -2334,6 +2334,12 @@ class Amapress {
 			}
 		}
 
+//		$amapress = [];
+//		foreach (wp_load_alloptions() as $k => $v) {
+//			if (strpos($k, 'amapress_') === 0)
+//				$amapress[$k] = $v;
+//		}
+
 		return $ret;
 	}
 
