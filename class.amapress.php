@@ -2024,9 +2024,9 @@ class Amapress {
 		$produits_terms   = AmapDemoBase::dumpTerms( AmapressProduit::CATEGORY );
 		$recettes_terms   = AmapDemoBase::dumpTerms( AmapressRecette::CATEGORY );
 
-		$ret .= '$this->createTerms(' . var_export( $user_roles_terms, true ) . ');';
-		$ret .= '$this->createTerms(' . var_export( $produits_terms, true ) . ');';
-		$ret .= '$this->createTerms(' . var_export( $recettes_terms, true ) . ');';
+		$ret .= '$this->createTerms(' . var_export( $user_roles_terms, true ) . ', \'' . AmapressUser::AMAP_ROLE . '\');';
+		$ret .= '$this->createTerms(' . var_export( $produits_terms, true ) . ', \'' . AmapressProduit::CATEGORY . '\');';
+		$ret .= '$this->createTerms(' . var_export( $recettes_terms, true ) . ', \'' . AmapressRecette::CATEGORY . '\');';
 
 		$update_user_callback = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng ) {
 			$rnd                                     = AmapDemoBase::generateRandomAddress( $around_address_lat, $around_address_lng, 2000 );
