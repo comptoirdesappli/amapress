@@ -2031,7 +2031,23 @@ class Amapress {
 			unset( $usermeta['amapress_user_co-adherents'] );
 		};
 		$update_post_callback = function ( $post, &$postdata, &$postmeta ) {
-
+			/** @var WP_Post $post */
+			if ( AmapressLieu_distribution::INTERNAL_POST_TYPE == $post->post_type ) {
+//'amapress_lieu_distribution_adresse
+//'amapress_lieu_distribution_code_postal
+//'amapress_lieu_distribution_ville
+//'amapress_lieu_distribution_long
+//'amapress_lieu_distribution_lat
+//'amapress_lieu_distribution_location_type
+			} else if ( AmapressProducteur::INTERNAL_POST_TYPE == $post->post_type ) {
+				unset( $postmeta['amapress_producteur_resume'] );
+				unset( $postmeta['amapress_producteur_presentation'] );
+				unset( $postmeta['amapress_producteur_historique'] );
+				//amapress_producteur_adresse_exploitation
+				//amapress_producteur_adresse_exploitation_lat
+				//amapress_producteur_adresse_exploitation_long
+				//amapress_producteur_adresse_exploitation_location_type
+			}
 		};
 		$relative_time        = 0;
 
