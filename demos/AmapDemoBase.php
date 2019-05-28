@@ -9,6 +9,7 @@
 class AmapDemoBase {
 	protected $users = [ '0' => 0 ];
 	protected $posts = [ '0' => 0 ];
+	protected $taxonomies = [];
 
 	protected function createPost( $postarr ) {
 		return wp_insert_post( $postarr );
@@ -16,6 +17,34 @@ class AmapDemoBase {
 
 	protected function createUser( $userdata ) {
 		return wp_insert_user( $userdata );
+	}
+
+	public static function dumpTerms( $taxonomy ) {
+		$terms = get_terms( $taxonomy,
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+			) );
+		$ret   = [];
+		/** @var WP_Term $term */
+		foreach ( $terms as $term ) {
+			$ret[] = [
+				'id'         => $term->term_id,
+				'name'       => $term->name,
+				'slug'       => $term->slug,
+				'decription' => $term->description,
+				'parent'     => $term->parent,
+			];
+		}
+
+		return $ret;
+	}
+
+	protected function createTerms( $taxonomy, $terms ) {
+		$this->taxonomies[ $taxonomy ] = [];
+		foreach ( $terms as $term ) {
+			$this->taxonomies[ $taxonomy ][ strval( $term['id'] ) ] = wp_insert_term( $term['name'], $taxonomy, $term );
+		}
 	}
 
 	public static function startTransaction() {

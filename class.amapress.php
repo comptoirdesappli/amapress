@@ -2020,6 +2020,14 @@ class Amapress {
 		$around_address_lat = Amapress::get_lieux()[0]->getAdresseLatitude();
 		$around_address_lng = Amapress::get_lieux()[0]->getAdresseLongitude();
 
+		$user_roles_terms = AmapDemoBase::dumpTerms( AmapressUser::AMAP_ROLE );
+		$produits_terms   = AmapDemoBase::dumpTerms( AmapressProduit::CATEGORY );
+		$recettes_terms   = AmapDemoBase::dumpTerms( AmapressRecette::CATEGORY );
+
+		$ret .= '$this->createTerms(' . var_export( $user_roles_terms, true ) . ');';
+		$ret .= '$this->createTerms(' . var_export( $produits_terms, true ) . ');';
+		$ret .= '$this->createTerms(' . var_export( $recettes_terms, true ) . ');';
+
 		$update_user_callback = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng ) {
 			$rnd                                     = AmapDemoBase::generateRandomAddress( $around_address_lat, $around_address_lng, 2000 );
 			$usermeta['amapress_user_long']          = ! empty( $rnd ) ? $rnd['lon'] : '';
@@ -2050,6 +2058,7 @@ class Amapress {
 			}
 		};
 		$relative_time        = 0;
+
 
 		//TODO paniers intermittents
 		$ret .= self::generate_test( AmapressAdhesionPeriod::getCurrent()->ID, AmapressAdhesionPeriod::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
@@ -2130,7 +2139,8 @@ class Amapress {
 		$fields      = AmapressEntities::getPostTypeFields( $name );
 		$field_names = array_keys( $fields );
 
-		$ret = '';
+		$id_affect = '';
+		$ret       = '';
 		if ( 'user' == $name ) {
 			if ( in_array( "u$id", $generated_ids ) ) {
 				return '';
@@ -2202,7 +2212,8 @@ class Amapress {
 
 				$ret .= "update_user_meta(\$this->users['$id'], '$k', $v_export);\n";
 			}
-			$ret .= '</pre>';
+			$ret       .= '</pre>';
+			$id_affect = "\$this->users['$id']";
 		} else {
 			if ( in_array( "p$id", $generated_ids ) ) {
 				return '';
@@ -2292,17 +2303,36 @@ class Amapress {
 			}
 			$post['meta_input'] = $filtered_post_meta;
 
-			$ret .= '<pre>';
-			$ret .= "\$this->posts['$id'] = \$this->createPost(\n";
-			$ret .= esc_html( var_export( $post, true ) );
-			$ret .= ");\n";
-			$ret .= '</pre>';
+			$ret       .= '<pre>';
+			$ret       .= "\$this->posts['$id'] = \$this->createPost(\n";
+			$ret       .= esc_html( var_export( $post, true ) );
+			$ret       .= ");\n";
+			$ret       .= '</pre>';
+			$id_affect = "\$this->posts['$id']";
 		}
 
 		$ret = preg_replace( '/&#039;(posts|users)\[(\d+)\]&#039;/', '\$this->$1[\'$2\']', $ret );
 		$ret = preg_replace( '/&#039;(now\s*\+\s*-?\d+)&#039;/', '\$$1', $ret );
 		$ret = preg_replace( '/&#039;(implode\([^¤]+)¤&#039;/', '$1', $ret );
 		$ret = preg_replace( '/&#039;attachm(\([^¤]+)¤&#039;/', '\$this->insertPostFromBitsBase64$1', $ret );
+
+		foreach (
+			[
+				AmapressUser::AMAP_ROLE,
+				AmapressRecette::CATEGORY,
+				AmapressProduit::CATEGORY
+			] as $taxonomy
+		) {
+			/** @var WP_Term[] $terms */
+			$terms     = wp_get_object_terms( $id, $taxonomy, array( 'fields' => 'all', 'orderby' => 'term_id' ) );
+			$new_terms = [];
+			foreach ( $terms as $term ) {
+				$new_terms[] = '$this->taxonomies[\'' . $taxonomy . '\'][\'' . $term->term_id . '\']';
+			}
+			if ( ! empty( $new_terms ) ) {
+				$ret .= 'wp_set_object_terms(' . $id_affect . ', [' . implode( ',', $new_terms ) . '], \'' . $taxonomy . '\');' . "\n";
+			}
+		}
 
 		return $ret;
 	}
