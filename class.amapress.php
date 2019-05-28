@@ -2268,13 +2268,18 @@ class Amapress {
 						$v = $vs;
 					}
 				} else if ( '_thumbnail_id' == $k || 'upload' == $fields[ $k ]['type'] ) {
+					if ( is_array( $v ) ) {
+						$v = array_shift( $v );
+					}
 					$bits_base64 = '';
+					$ext         = '';
 					if ( ! isset( $_GET['no_attach'] ) ) {
 						$file        = get_attached_file( intval( $v ) );
+						$ext         = '.' . pathinfo( $file, PATHINFO_EXTENSION );
 						$bits_base64 = base64_encode( @file_get_contents( $file ) );
 						$bits_base64 = chunk_split( $bits_base64, 76, "\r\n" );
 					}
-					$v = 'attachm("amp_attach' . $v . '", "' . $bits_base64 . '")¤';
+					$v = 'attachm("amp_attach' . $v . $ext . '", "' . $bits_base64 . '")¤';
 				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) {
 							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';

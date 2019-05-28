@@ -233,11 +233,15 @@ class AmapDemoBase {
 		}
 	}
 
-	function insertPostFromBitsBase64( $bits_base64, $bits_name, $parent_post_id = null ) {
-		return $this->insertPostFromBits( base64_decode( $bits_base64 ), $bits_name, $parent_post_id );
+	function insertPostFromBitsBase64( $bits_name, $bits_base64, $parent_post_id = null ) {
+		return $this->insertPostFromBits( $bits_name, base64_decode( $bits_base64 ), $parent_post_id );
 	}
 
-	function insertPostFromBits( $bits, $bits_name, $parent_post_id = null ) {
+	function insertPostFromBits( $bits_name, $bits, $parent_post_id = null ) {
+		if ( empty( $bits ) ) {
+			return false;
+		}
+
 		$upload = wp_upload_bits( $bits_name, null, $bits );
 		if ( ! empty( $upload['error'] ) ) {
 			return false;
