@@ -2037,24 +2037,45 @@ class Amapress {
 			$usermeta['amapress_user_code_postal']   = ! empty( $rnd ) ? $rnd['postcode'] : '';
 			$usermeta['amapress_user_ville']         = ! empty( $rnd ) ? $rnd['city'] : '';
 			unset( $usermeta['amapress_user_co-adherents'] );
+			unset( $usermeta['amapress_user_allow_show_email'] );
+			unset( $usermeta['amapress_user_allow_show_adresse'] );
+			unset( $usermeta['amapress_user_allow_show_tel_fixe'] );
+			unset( $usermeta['amapress_user_allow_show_tel_mobile'] );
+			unset( $usermeta['amapress_user_allow_show_avatar'] );
 		};
 		$update_post_callback = function ( $post, &$postdata, &$postmeta ) {
-			/** @var WP_Post $post */
-			if ( AmapressLieu_distribution::INTERNAL_POST_TYPE == $post->post_type ) {
+			if ( AmapressLieu_distribution::INTERNAL_POST_TYPE == $post['post_type'] ) {
 //'amapress_lieu_distribution_adresse
 //'amapress_lieu_distribution_code_postal
 //'amapress_lieu_distribution_ville
 //'amapress_lieu_distribution_long
 //'amapress_lieu_distribution_lat
 //'amapress_lieu_distribution_location_type
-			} else if ( AmapressProducteur::INTERNAL_POST_TYPE == $post->post_type ) {
-				unset( $postmeta['amapress_producteur_resume'] );
-				unset( $postmeta['amapress_producteur_presentation'] );
-				unset( $postmeta['amapress_producteur_historique'] );
+			} else if ( AmapressProducteur::INTERNAL_POST_TYPE == $post['post_type'] ) {
 				//amapress_producteur_adresse_exploitation
 				//amapress_producteur_adresse_exploitation_lat
 				//amapress_producteur_adresse_exploitation_long
 				//amapress_producteur_adresse_exploitation_location_type
+				unset( $postmeta['amapress_producteur_resume'] );
+				unset( $postmeta['amapress_producteur_presentation'] );
+				unset( $postmeta['amapress_producteur_historique'] );
+			} else if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post['post_type'] ) {
+				if ( isset( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
+					$arr  = $postmeta['amapress_adhesion_contrat_quantite'];
+					$arr2 = [];
+					foreach ( $arr as $k => $v ) {
+						$arr2[ $k ] = "posts[$v]";
+					}
+					$postmeta['amapress_adhesion_contrat_quantite'] = $arr2;
+				}
+				if ( isset( $postmeta['amapress_adhesion_contrat_quantite_factors'] ) ) {
+					$arr  = $postmeta['amapress_adhesion_contrat_quantite_factors'];
+					$arr2 = [];
+					foreach ( $arr as $k => $v ) {
+						$arr2["posts[$k]"] = $v;
+					}
+					$postmeta['amapress_adhesion_contrat_quantite_factors'] = $arr2;
+				}
 			}
 		};
 		$relative_time        = 0;
@@ -2065,8 +2086,10 @@ class Amapress {
 		foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
 			$ret .= self::generate_test( $contrat_instances_id, AmapressContrat_instance::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback );
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat_instances_id ) as $q ) {
-				$ret .= self::generate_test( $q->ID, AmapressContrat_quantite::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
+				$ret .= self::generate_test( $q->ID, AmapressContrat_quantite::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback );
 			}
+		}
+		foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
 			foreach ( AmapressContrats::get_active_adhesions_ids( $contrat_instances_id ) as $adhesion_id ) {
 				$ret .= self::generate_test( $adhesion_id, AmapressAdhesion::POST_TYPE, $generated_ids, true, $relative_time, $update_user_callback, $update_post_callback );
 			}
@@ -2281,7 +2304,7 @@ class Amapress {
 					}
 					$v = 'attachm("amp_attach' . $v . $ext . '", "' . $bits_base64 . '")¤';
 				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
-					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) {
+					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) use ( $relative_time ) {
 							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';
 						}, array_map(
 							'TitanEntity::to_date',

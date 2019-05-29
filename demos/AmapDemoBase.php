@@ -244,6 +244,7 @@ class AmapDemoBase {
 
 		$upload = wp_upload_bits( $bits_name, null, $bits );
 		if ( ! empty( $upload['error'] ) ) {
+			amapress_dump( $upload );
 			return false;
 		}
 		$file_path        = $upload['file'];
