@@ -1792,6 +1792,11 @@ class Amapress {
 			if ( array_key_exists( 'menu_position', $conf ) ) {
 				$create_options['menu_position'] = $conf['menu_position'];
 			}
+			if ( array_key_exists( 'can_export', $conf ) ) {
+				$create_options['can_export'] = $conf['can_export'];
+			} else {
+				$create_options['can_export'] = false;
+			}
 			$internal_post_type = isset( $conf['internal_name'] ) ? $conf['internal_name'] : 'amps_' . $name;
 			register_post_type( $internal_post_type, $create_options );
 
