@@ -3533,6 +3533,8 @@ class Amapress {
 			return $filename;
 		}
 
+		$convertws_url = trailingslashit( $convertws_url ) . 'convert2pdf.php';
+
 		$info         = pathinfo( $filename );
 		$pdf_filename = ( $info['dirname'] ? $info['dirname'] . DIRECTORY_SEPARATOR : '' )
 		                . $info['filename']

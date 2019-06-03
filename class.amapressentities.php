@@ -1762,7 +1762,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Géolocalisation' => array(
+						'Géolocalisation'          => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
@@ -1817,25 +1817,25 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Conversion PDF'  => array(
+						'Conversion PDF et autres' => array(
 							'id'      => 'amp_convertws_config',
 							'desc'    => '',
 							'options' => array(
 								array(
 									'id'         => 'convertws_url',
-									'name'       => 'Url du convertisseur PDF',
+									'name'       => 'Url du WebService de conversion',
 									'type'       => 'text',
 									'capability' => 'manage_options',
 								),
 								array(
 									'id'         => 'convertws_user',
-									'name'       => 'Compte utilisateur du convertisseur PDF',
+									'name'       => 'Compte utilisateur du  WebService de conversion',
 									'type'       => 'text',
 									'capability' => 'manage_options',
 								),
 								array(
 									'id'          => 'convertws_pass',
-									'name'        => 'Mot de passe du compte du convertisseur PDF',
+									'name'        => 'Mot de passe du compte du  WebService de conversion',
 									'type'        => 'text',
 									'capability'  => 'manage_options',
 									'is_password' => true,
