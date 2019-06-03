@@ -319,10 +319,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 	}
 
-	$start_step_url         = esc_attr( add_query_arg( 'step', 'email', remove_query_arg( [
-		'contrat_id',
-		'message'
-	] ) ) );
+	if ( is_admin() ) {
+		$start_step_url = esc_attr(
+			admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ) );
+	} else {
+		$start_step_url = esc_attr( add_query_arg( 'step', 'email',
+			remove_query_arg( [
+				'contrat_id',
+				'message'
+			] ) ) );
+	}
+
 	$invalid_access_message = '<p>Accès invalide : veuillez repartir de la <a href="' . $start_step_url . '">première étape</a></p>';
 
 	if ( ! empty( $_REQUEST['message'] ) ) {
@@ -1318,8 +1325,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$data = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
 				$row     = array(
-					'produit' => esc_html( $quant->getTitle() ),
-					'prix_unitaire' => esc_html( sprintf( '%.2f€', $quant->getPrix_unitaire()) ),
+					'produit'       => esc_html( $quant->getTitle() ),
+					'prix_unitaire' => esc_html( sprintf( '%.2f€', $quant->getPrix_unitaire() ) ),
 				);
 				$options = $quant->getQuantiteOptions();
 				if ( ! isset( $options['0'] ) ) {
