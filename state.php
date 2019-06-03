@@ -1536,7 +1536,8 @@ function amapress_echo_and_check_amapress_state_page() {
 	if ( current_user_can( 'update_core' ) ) {
 		if ( isset( $_GET['generate_full_amap'] ) ) {
 			echo '<textarea cols="80" rows="100" style="width: 100%; font-family: monospace">';
-			echo esc_textarea( wp_kses_decode_entities( wp_specialchars_decode( preg_replace( '/\<\/?pre\>/', '', Amapress::generate_full_amap() ), ENT_QUOTES ) ) );
+			echo esc_textarea( wp_kses_decode_entities( wp_specialchars_decode( preg_replace( '/\<\/?pre\>/', '',
+				Amapress::generate_full_amap( isset( $_REQUEST['no_anonymize'] ) ) ), ENT_QUOTES ) ) );
 			echo '</textarea>';
 
 			return;
@@ -1623,6 +1624,10 @@ function amapress_echo_and_check_amapress_state_page() {
 			echo '<p><a href="' . esc_attr( add_query_arg( 'clean_amap', 'T', admin_url( 'admin.php?page=amapress_state' ) ) ) . '" target="_blank">Nettoyer les custom posts</a></p>';
 			echo '<p><a href="' . esc_attr( add_query_arg( 'clean_partial_amap', 'T', admin_url( 'admin.php?page=amapress_state' ) ) ) . '" target="_blank">Nettoyer les générables</a></p>';
 			echo '<p><a href="' . esc_attr( add_query_arg( 'generate_full_amap', 'T', admin_url( 'admin.php?page=amapress_state' ) ) ) . '" target="_blank">Générer le code de démo</a></p>';
+			echo '<p><a href="' . esc_attr( add_query_arg( [
+					'generate_full_amap' => 'T',
+					'no_anonymize'       => 'T'
+				], admin_url( 'admin.php?page=amapress_state' ) ) ) . '" target="_blank">Générer le code de démo (sans anonymisation)</a></p>';
 			echo '<form method="post">
 <input type="hidden" name="rand_addr" />
 <label>Adresse à anonymiser: <input type="text" name="address"/></label>
