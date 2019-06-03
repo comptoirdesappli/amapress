@@ -46,6 +46,18 @@ add_action( 'amapress_init', function () {
 			}
 		}
 
+		if ( ! empty( $_REQUEST['coadh3_email'] ) ) {
+			$coadh3_email          = sanitize_email( $_REQUEST['coadh3_email'] );
+			$coadh3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_first_name'] ) ? $_REQUEST['coadh3_first_name'] : '' );
+			$coadh3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_last_name'] ) ? $_REQUEST['coadh3_last_name'] : '' );
+
+			$coadh3_user_id = amapress_create_user_if_not_exists( $coadh3_email, $coadh3_user_firt_name, $coadh3_user_last_name, null, null );
+			if ( $coadh3_user_id ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->addCoadherent( $coadh3_user_id );
+			}
+		}
+
 		wp_redirect_and_exit(
 			add_query_arg( [
 				'step'    => ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats',
@@ -365,6 +377,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$coadh2_user_last_name = '';
 		$coadh2_email          = '';
 
+		$coadh3_user_firt_name = '';
+		$coadh3_user_last_name = '';
+		$coadh3_email          = '';
+
 		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
 		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
@@ -395,6 +411,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$coadh2_user_firt_name = $amapien->getCoAdherent2()->getUser()->first_name;
 				$coadh2_user_last_name = $amapien->getCoAdherent2()->getUser()->last_name;
 				$coadh2_email          = $amapien->getCoAdherent2()->getUser()->user_email;
+			}
+
+			if ( $amapien->getCoAdherent3() ) {
+				$coadh3_user_firt_name = $amapien->getCoAdherent3()->getUser()->first_name;
+				$coadh3_user_last_name = $amapien->getCoAdherent3()->getUser()->last_name;
+				$coadh3_email          = $amapien->getCoAdherent3()->getUser()->user_email;
 			}
 		}
 
@@ -518,6 +540,41 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                               class="required_if_not_empty single_name"
                                                                               data-if-id="coadh2_email"
                                                                               value="<?php echo esc_attr( $coadh2_user_firt_name ) ?>"/>
+                    </td>
+                </tr>
+            </table>
+            <table style="min-width: 50%">
+                <tr>
+                    <th colspan="2">Co adhérent 3 <em>(si vous payez les contrats à plusieurs)</em></th>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh3_email">Son email
+                            : </label>
+                    </th>
+                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh3_email" name="coadh3_email"
+                                                                              class="email"
+                                                                              value="<?php echo esc_attr( $coadh3_email ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh3_last_name">Son nom : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh3_last_name"
+                                                                              name="coadh3_last_name"
+                                                                              class="required_if_not_empty single_name"
+                                                                              data-if-id="coadh3_email"
+                                                                              value="<?php echo esc_attr( $coadh3_user_last_name ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh3_first_name">Son prénom : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh3_first_name"
+                                                                              name="coadh3_first_name"
+                                                                              class="required_if_not_empty single_name"
+                                                                              data-if-id="coadh3_email"
+                                                                              value="<?php echo esc_attr( $coadh3_user_firt_name ) ?>"/>
                     </td>
                 </tr>
             </table>
