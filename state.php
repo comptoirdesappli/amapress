@@ -1345,8 +1345,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$convertws_pass             = Amapress::getOption( 'convertws_pass' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		( empty( $convertws_url ) || empty( $convertws_user ) || empty( $convertws_pass ) ) ? 'warning' : 'success',
-		'Configuration du webservice de conversion DOCX vers PDF',
-		'Un webservice de conversion DOCX vers PDF est nécessaire afin que les amapiens recoivent leur contrat en PDF et non en DOCX.<br/>Vous pouvez faire une <a href="mailto:contact.amapress@gmail.com">demande de code d\'accès</a> au webservice mis en place par l\'équipe Amapress',
+		'Configuration du webservice de conversion DOCX vers PDF (et autres services)',
+		'Un webservice de conversion DOCX vers PDF est nécessaire afin que les amapiens recoivent leur contrat en PDF et non en DOCX.<br/>Vous pouvez faire une <a href="mailto:contact.amapress@gmail.com">demande de code d\'accès</a> au webservice mis en place par l\'équipe Amapress. Ce WebService pourra également fournir d\'autres services, tels que la réduction de poids de PDF.',
 		admin_url( 'admin.php?page=amapress_options_page&tab=amp_convertws_config' )
 	);
 
