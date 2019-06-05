@@ -2320,6 +2320,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'default'     => '',
 										),
 										array(
+											'id'      => 'ouvaton_manage_waiting',
+											'name'    => 'Gérer la modération des mails dans Amapress',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
 											'type' => 'save',
 										),
 									)
@@ -2352,6 +2358,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'name'    => 'Secret pour la mise à jour des membres',
 											'type'    => 'text',
 											'default' => uniqid(),
+										),
+										array(
+											'id'      => 'sud-ouest_manage_waiting',
+											'name'    => 'Gérer la modération des mails dans Amapress',
+											'type'    => 'checkbox',
+											'default' => false,
 										),
 										array(
 											'type' => 'save',
