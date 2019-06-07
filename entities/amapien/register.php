@@ -45,12 +45,22 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column' => false,
 				'type'        => 'custom',
 				'csv_import'  => false,
+				'csv_export'  => true,
 				'custom'      => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
 					if ( ! $amapien ) {
 						return '';
 					}
 					$roles = esc_html( $amapien->getAmapRolesString() );
+
+					return $roles;
+				},
+				'export'      => function ( $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+					if ( ! $amapien ) {
+						return '';
+					}
+					$roles = $amapien->getAmapRolesString();
 
 					return $roles;
 				}

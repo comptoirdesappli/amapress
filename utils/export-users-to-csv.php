@@ -100,10 +100,15 @@ class AmapressExport_Users {
 //            var_dump($csv_data);
 //            die();
 
+			/** @var WP_User $user */
 			foreach ( $users as $user ) {
 				$data = array();
 				foreach ( $fields as $field ) {
 					$value  = isset( $user->{$field} ) ? $user->{$field} : '';
+					if ( 'role' == $field || 'roles' == $field ) {
+						$amapien = AmapressUser::getBy( $user );
+						$value   = $amapien->getAmapRolesString();
+					}
 					$value  = apply_filters( 'amapress_users_export_prepare_value', $value, $field, $user );
 					$data[] = is_array( $value ) ? serialize( $value ) : $value;
 				}

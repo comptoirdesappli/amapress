@@ -151,7 +151,7 @@ function amapress_users_export_fields( $fields, $name ) {
 		'email2'     => __( 'Email 2' ),
 		'email3'     => __( 'Email 3' ),
 		'email4'     => __( 'Email 4' ),
-		'role'       => __( 'Role' ),
+		'role'       => __( 'Rôle sur le site' ),
 	) );
 
 	return array_keys( $cols );
