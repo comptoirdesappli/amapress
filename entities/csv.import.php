@@ -24,7 +24,7 @@ function amapress_get_wp_users_labels() {
 //        'use_ssl' => 'SSL?',
 //        'show_admin_bar_front' => '',
 //        'show_admin_bar_admin' => 'Bar admin?',
-		'roles'           => 'Rôle',
+		'roles'           => 'Rôle sur le site',
 		'email2'          => 'Email 2',
 		'email3'          => 'Email 3',
 		'email4'          => 'Email 4',
@@ -101,6 +101,24 @@ function amapress_import_user_data( $userdata, $usermeta ) {
 			$res = call_user_func( $validators[ $k ], $v );
 //            if (is_wp_error($res)) return $res;
 			$userdata[ $k ] = $res;
+		} else if ( 'role' == $k || 'roles' == $k ) {
+			global $wp_roles;
+			$found  = false;
+			$v_norm = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $v ) ) );
+			foreach ( $wp_roles->roles as $name => $role ) {
+				if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $name ) ) ), $v_norm ) === 0 ) {
+					$v     = $name;
+					$found = true;
+				} else if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $role['name'] ) ) ), $v_norm ) === 0 ) {
+					$v     = $name;
+					$found = true;
+				}
+			}
+			if ( $found ) {
+				$userdata[ $k ] = $v;
+			} else {
+				$userdata[ $k ] = new WP_Error( 'unknown_user_role', "Le rôle utilisateur '{$v}' n'existe pas" );
+			}
 		}
 	}
 
@@ -536,7 +554,8 @@ function amapress_process_generate_model() {
 				'last_name',
 				'email2',
 				'email3',
-				'email4'
+				'email4',
+				'roles'
 			) );
 			break;
 	}
