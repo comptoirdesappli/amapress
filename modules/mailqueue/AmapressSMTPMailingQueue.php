@@ -154,7 +154,7 @@ class AmapressSMTPMailingQueue {
 
 		$validEmails   = [];
 		$invalidEmails = [];
-		foreach ( explode( ',', $to ) as $recipient ) {
+		foreach ( ( is_array( $to ) ? $to : explode( ',', $to ) ) as $recipient ) {
 			if ( PHPMailer::validateAddress( $recipient ) ) {
 				$validEmails[] = $recipient;
 			} else {
