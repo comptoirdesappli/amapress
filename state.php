@@ -612,6 +612,25 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			) : '' )
 	);
 
+	$online_contrats     = array_filter( $subscribable_contrat_instances, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->canSelfSubscribe();
+	} );
+	$not_online_contrats = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return ! $c->canSelfSubscribe();
+	} );
+	$first_online_date   = 0;
+	foreach ( $online_contrats as $online_contrat ) {
+		if ( $online_contrat->getDate_debut() > $first_online_date ) {
+			$first_online_date = $online_contrat->getDate_debut();
+			break;
+		}
+	}
+	if ( empty( $first_online_date ) ) {
+		$first_online_date = amapress_time();
+	}
+
 	$adh_period          = AmapressAdhesionPeriod::getCurrent();
 	$state['15_posts'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : 'success',
@@ -620,6 +639,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
+
+	$adh_period2 = AmapressAdhesionPeriod::getCurrent( $first_online_date );
+	if ( ! $adh_period || ! $adh_period2 || $adh_period2->ID != $adh_period->ID ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			empty( $adh_period2 ) ? 'error' : 'success',
+			'Période d\'adhésion',
+			'Créer une période d\'adhésion pour les cotisations du début des contrats en ligne',
+			admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
+			( ! empty( $adh_period2 ) ? '<a href="' . esc_attr( $adh_period2->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period2->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
+		);
+	}
 
 	$adhesion_categs     = get_categories( array(
 		'orderby'    => 'name',
@@ -1271,26 +1301,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		);
 	}
 
-	$state['26_online_inscr'] = array();
-	$online_contrats          = array_filter( $subscribable_contrat_instances, function ( $c ) {
-		/** @var AmapressContrat_instance $c */
-		return $c->canSelfSubscribe();
-	} );
-	$not_online_contrats      = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
-		/** @var AmapressContrat_instance $c */
-		return ! $c->canSelfSubscribe();
-	} );
-	$first_online_date        = 0;
-	foreach ( $online_contrats as $online_contrat ) {
-		if ( $online_contrat->getDate_debut() > $first_online_date ) {
-			$first_online_date = $online_contrat->getDate_debut();
-			break;
-		}
-	}
-	if ( empty( $first_online_date ) ) {
-		$first_online_date = amapress_time();
-	}
-
+	$state['26_online_inscr']   = array();
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		count( $online_contrats ) == 0 ? 'warning' : 'success',
 		'Modèles de contrats accessibles en ligne',
@@ -1354,7 +1365,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : ( ! $adh_period->getWordModelId() ? 'warning' : 'success' ),
 		'Période d\'adhésion',
-		'Créer une période d\'adhésion pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word',
+		'Créer une période d\'adhésion au ' . date_i18n( 'd/m/Y', $first_online_date ) . ' pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word',
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
