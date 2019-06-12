@@ -612,15 +612,16 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			) : '' )
 	);
 
-	$online_contrats     = array_filter( $subscribable_contrat_instances, function ( $c ) {
+	$subscribable_contrat_instances = AmapressContrats::get_subscribable_contrat_instances();
+	$online_contrats                = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe();
 	} );
-	$not_online_contrats = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
+	$not_online_contrats            = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return ! $c->canSelfSubscribe();
 	} );
-	$first_online_date   = 0;
+	$first_online_date              = 0;
 	foreach ( $online_contrats as $online_contrat ) {
 		if ( $online_contrat->getDate_debut() > $first_online_date ) {
 			$first_online_date = $online_contrat->getDate_debut();
@@ -802,7 +803,6 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			)
 		)
 	) );
-	$subscribable_contrat_instances     = AmapressContrats::get_subscribable_contrat_instances();
 	$active_contrat_instances           = AmapressContrats::get_active_contrat_instances();
 	$not_subscribable_contrat_instances = array_filter(
 		$contrat_types,
