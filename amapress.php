@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.80.5
+Version: 0.80.10
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -47,7 +47,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.80.5' );
+define( 'AMAPRESS_VERSION', '0.80.10' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -114,6 +114,16 @@ function amapress_add_admin_notice( $message, $type, $is_dismissible ) {
 
 	$amapress_notices[] = sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 }
+
+add_action( 'init', function () {
+	if ( current_user_can( 'manage_options' ) ) {
+		$dir_name = basename( dirname( __FILE__ ) );
+		if ( 'amapress' != $dir_name ) {
+			amapress_add_admin_notice( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, ' . $dir_name . '. Merci de renommer "' . dirname( __FILE__ ) . '" et de réactiver Amapress',
+				'error', false );
+		}
+	}
+} );
 
 add_action( 'admin_notices', 'amapress_output_admin_notices' );
 function amapress_output_admin_notices() {
