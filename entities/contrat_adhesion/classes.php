@@ -1088,6 +1088,7 @@ class AmapressAdhesion extends TitanEntity {
 		$this->setCustom( 'amapress_adhesion_adherent', $value );
 	}
 
+	/** @return AmapressUser */
 	public function getAdherent2() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_adherent2', 'AmapressUser' );
 	}
@@ -1100,6 +1101,7 @@ class AmapressAdhesion extends TitanEntity {
 		update_post_meta( $this->post->ID, 'amapress_adhesion_adherent2', $value );
 	}
 
+	/** @return AmapressUser */
 	public function getAdherent3() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_adherent3', 'AmapressUser' );
 	}
@@ -1108,6 +1110,7 @@ class AmapressAdhesion extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_adhesion_adherent3' );
 	}
 
+	/** @return AmapressUser */
 	public function getAdherent4() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_adherent4', 'AmapressUser' );
 	}

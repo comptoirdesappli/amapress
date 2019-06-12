@@ -307,7 +307,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'         => amapress__( 'Co-adhérent 2' ),
 				'type'         => 'select-users',
 				'desc'         => 'Co-adhérent 2',
-				'show_column'  => false,
+				'show_column'  => true,
 				'searchable'   => true,
 				'autocomplete' => true,
 				'show_on'      => 'edit-only',

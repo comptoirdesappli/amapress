@@ -428,6 +428,11 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	}
 
 	public
+	function getDisplayNameWithAdminEditLink() {
+		return Amapress::makeLink( $this->getEditLink(), $this->getDisplayName(), true, true );
+	}
+
+	public
 	function getDisplayName() {
 		$this->ensure_init();
 		$dn = $this->getUser()->display_name;
