@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.80.15
+Version: 0.80.45
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -47,7 +47,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.80.15' );
+define( 'AMAPRESS_VERSION', '0.80.45' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1334,6 +1334,24 @@ add_action( 'amapress_init', function () {
 
 			return $value;
 		}, 10, 4 );
+	}
+} );
+
+add_action( 'admin_init', function () {
+	$contrat_to_generate = AmapressContrats::get_contrat_to_generate();
+	if ( ! empty( $contrat_to_generate ) ) {
+		amapress_add_admin_notice(
+			'Les contrats suivants nécessitent une mise à jour : ' .
+			implode( ', ', array_map( function ( $dn ) {
+				/** @var AmapressContrat_instance $dn */
+				$l      = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+				$tit    = esc_html( $dn->getTitle() );
+				$status = '(' . AmapressContrats::contratStatus( $dn->getID(), 'span' ) . ')';
+
+				return "<a href='{$l}' target='_blank'>{$tit}</a> {$status}";
+			}, $contrat_to_generate ) ),
+			'warning', false
+		);
 	}
 } );
 
