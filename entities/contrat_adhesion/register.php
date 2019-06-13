@@ -310,7 +310,8 @@ function amapress_register_entities_adhesion( $entities ) {
 				'show_column' => false,
 				'custom'      => 'amapress_adhesion_contrat_quantite_editor',
 				'save'        => 'amapress_save_adhesion_contrat_quantite_editor',
-				'desc'        => 'Sélectionner le contrat et les quantités/produits associé(s) :<br/></br/>',
+				'desc'        => 'Sélectionner <strong>le contrat*</strong> et les quantités/produits associé(s) de cette inscription :
+<br/><strong>* Vous ne pouvez créer une inscription qu\'à un seul contrat à la fois</strong></br/></br/>',
 				'show_desc'   => 'before',
 				'group'       => '2/ Contrat',
 				'csv'         => false,
@@ -968,7 +969,8 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	if ( ! $had_contrat ) {
 		$ret .= '<p class="adhesion-date-error">La date de début (' . esc_html( date_i18n( 'd/m/Y', $date_debut ) ) . ') est en dehors des dates du contrat associé</p>';
 	}
-	$ret .= '</fieldset>';
+
+//	$ret .= '</fieldset>';
 
 	return $ret;
 }
