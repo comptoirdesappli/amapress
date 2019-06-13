@@ -1645,5 +1645,4 @@ add_action( 'pre_current_active_plugins', function ( $plugins ) {
 
 add_action( 'activate_plugin', 'amapress_clean_state_transient' );
 add_action( 'save_post', 'amapress_clean_state_transient' );
-add_action( 'update_option', 'amapress_clean_state_transient' );
-
+add_action( 'tf_save_options_amapress', 'amapress_clean_state_transient' );
