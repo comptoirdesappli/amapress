@@ -755,7 +755,7 @@ jQuery(function($) {
 
 
 			// 4/6 Paniers
-			'quant_type'            => array(
+			'quant_type'   => array(
 				'name'     => amapress__( 'Choix du contenu des paniers' ),
 				'type'     => 'custom',
 				'group'    => '4/6 - Paniers',
@@ -922,7 +922,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor'          => array(
+			'quant_editor' => array(
 				'name'        => amapress__( 'Configuration des paniers (Taille/Quantités)' ),
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
@@ -934,7 +934,14 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => 'Quantités',
 			),
-			'rattrapage'            => array(
+			'has_pancust'  => array(
+				'name'        => amapress__( 'Contenu de panier à renseigner' ),
+				'type'        => 'checkbox',
+				'show_column' => false,
+				'group'       => '4/6 - Paniers',
+				'desc'        => 'Ce contrat a un contenu de panier à décrire chaque semaine',
+			),
+			'rattrapage'   => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
