@@ -501,18 +501,26 @@ function amapress_process_csv_import() {
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressContrat_quantite::POST_TYPE );
 }
 
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_multi', 'amapress_process_generate_model' );
+add_action( 'admin_init', function () {
+	foreach ( AmapressContrats::get_active_contrat_instances_ids() as $id ) {
+		add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' . $id, 'amapress_process_generate_model' );
+
+	}
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_multi', 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAdhesion_intermittence::POST_TYPE, 'amapress_process_generate_model');
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAmapien_paiement::POST_TYPE, 'amapress_process_generate_model');
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_quantite::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_user', 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProduit::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_quantite::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_user', 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProduit::POST_TYPE, 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'., 'amapress_process_generate_model');
+} );
+
 function amapress_process_generate_model() {
-	switch ( $_POST['action'] ) {
+	$action = isset( $_POST['action'] ) ? $_POST['action'] : '';
+	switch ( $action ) {
 		case 'generate_model_' . AmapressAdhesion::POST_TYPE:
 			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats', array() );
 			break;
@@ -557,6 +565,18 @@ function amapress_process_generate_model() {
 				'email4',
 				'roles'
 			) );
+			break;
+		default:
+			if ( 0 === strpos( $action, 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' ) ) {
+				$contrat_instance_id = intval( substr( $action, strlen( 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' ) ) );
+				Amapress_Import_Posts_CSV::generateModel(
+					AmapressAdhesion::POST_TYPE, 'inscriptions_contrat', array(),
+					array( 'amapress_adhesion_contrat_quantite' => 'amapress_adhesion_contrat_quantite' ),
+					$contrat_instance_id,
+					[
+						'amapress_adhesion_contrat_instance'
+					] );
+			}
 			break;
 	}
 }

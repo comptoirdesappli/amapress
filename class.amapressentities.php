@@ -67,6 +67,21 @@ class AmapressEntities {
 
 	static function getMenu() {
 		if ( empty( AmapressEntities::$menu ) ) {
+			$contrats_model_buttons = [];
+			$contrat_instances      = AmapressContrats::get_active_contrat_instances();
+			usort( $contrat_instances, function ( $a, $b ) {
+				/** @var AmapressContrat_instance $a */
+				/** @var AmapressContrat_instance $b */
+				return strcmp( $a->getTitle(), $b->getTitle() );
+			} );
+			foreach ( $contrat_instances as $contrat_instance ) {
+				$contrats_model_buttons[] = array(
+					'type'   => 'action',
+					'class'  => 'button button-primary button-import-model',
+					'text'   => 'Télécharger le modèle "' . $contrat_instance->getTitle() . '"',
+					'action' => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' . $contrat_instance->ID,
+				);
+			}
 			AmapressEntities::$menu = array(
 				array(
 					'type'       => 'page',
@@ -570,7 +585,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                        => array(
+						'Renouvèlement'                  => array(
 							'id'      => 'renew_config',
 							'desc'    => '',
 							'options' => array(
@@ -1014,7 +1029,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //							'desc' => 'ici vous pouvez gérer...'
 //						),
 					),
-					'tabs'     => array(
+					'tabs'       => array(
 						'Configuration de l\'espace intermittents' => array(
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1351,7 +1366,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							)
 						),
 					),
-					'subpages' => array(
+					'subpages'   => array(
 						array(
 							'subpage'  => true,
 							'id'       => 'intermittent_page_stats',
@@ -1652,7 +1667,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //								),
 //							)
 //						),
-						'Pages'           => array(
+						'Pages'                    => array(
 							'id'         => 'amp_pages_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1703,7 +1718,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Général'         => array(
+						'Général'                  => array(
 							'id'      => 'amp_general_config',
 							'desc'    => '',
 							'options' => array(
@@ -1845,7 +1860,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Tests'           => array(
+						'Tests'                    => array(
 							'id'      => 'amp_tests_config',
 							'desc'    => '',
 							'options' => array(
@@ -1887,7 +1902,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							),
 						),
 						//
-						'Paiements'       => array(
+						'Paiements'                => array(
 							'id'      => 'amp_paiements_config',
 							'desc'    => '',
 							'options' => array(
@@ -2601,17 +2616,27 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'capability' => 'edit_adhesion',
 							'options'    => array(
 								array(
-									'type'      => 'save',
-									'use_reset' => false,
-									'save'      => 'Télécharger le modèle - mono contrat',
-									'action'    => 'generate_model_' . AmapressAdhesion::POST_TYPE,
+									'name'    => 'Modèle multi contrat',
+									'type'    => 'action-buttons',
+									'buttons' => [
+										[
+											'class'  => 'button button-primary  button-import-model',
+											'text'   => 'Télécharger le modèle',
+											'action' => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_multi',
+										]
+									]
 								),
 								array(
-									'type'      => 'save',
-									'use_reset' => false,
-									'save'      => 'Télécharger le modèle - multi contrats',
-									'action'    => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_multi',
+									'name'    => 'Modèles mono contrat',
+									'type'    => 'action-buttons',
+									'buttons' => $contrats_model_buttons,
 								),
+//								array(
+//									'type'      => 'save',
+//									'use_reset' => false,
+//									'save'      => 'Télécharger le modèle - mono contrat',
+//									'action'    => 'generate_model_' . AmapressAdhesion::POST_TYPE,
+//								),
 								array(
 									'id'   => 'import_adhesion_default_date_debut',
 									'name' => amapress__( 'Date de début par défaut' ),

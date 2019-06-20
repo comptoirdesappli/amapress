@@ -284,7 +284,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
 			),
-			'status'            => array(
+			'status'           => array(
 				'name'     => amapress__( 'Statut' ),
 				'type'     => 'select',
 				'group'    => 'Infos',
@@ -336,7 +336,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				),
 				'csv_required'      => true,
 				'searchable'        => true,
-				'custom_multi'      => function ( $option ) {
+				'custom_multi'      => function ( $option, $post_id ) {
 					$ret = [];
 					foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
 						$ret[ $c->ID ] = $c->getTitle();
@@ -371,36 +371,49 @@ function amapress_register_entities_adhesion( $entities ) {
 
 					return esc_html( $adh->getContrat_quantites_AsString() );
 				},
+				'custom_multi'      => function ( $option, $post_id ) {
+					$ret = [];
+					foreach ( AmapressContrats::get_contrat_quantites( $post_id ) as $c ) {
+						$ret[ $c->ID ] = $c->getTitle();
+					}
+
+					return $ret;
+				},
 				'custom_csv_sample' => function ( $option, $arg ) {
 					if ( $arg['multi'] != - 1 ) {
-						$ret = [];
-						foreach ( AmapressContrats::get_contrat_quantites( $arg['multi'] ) as $q ) {
-							$ret[] = $q->getTitle();
-							$ret[] = $q->getCode();
-							if ( $q->getQuantite() ) {
-								$ret[] = $q->getQuantite();
+						if ( isset( $arg['post_id'] ) && $arg['post_id'] ) {
+							$ret = [
+								''
+							];
+							$q   = AmapressContrat_quantite::getBy( $arg['multi'] );
+							if ( $q->getContrat_instance()->isQuantiteVariable() ) {
+								foreach ( $q->getQuantiteOptions() as $v ) {
+									$ret[] = $v;
+								}
+							} else {
+								$ret[] = '1';
+								$ret[] = 'X';
 							}
-						}
-						$filtered_ret = [];
-						foreach ( $ret as $r ) {
-							if ( ! in_array( $r, $filtered_ret ) ) {
-								$filtered_ret[] = $r;
-							}
-						}
 
-						return $filtered_ret;
+
+							return $ret;
+						} else {
+							$c            = AmapressContrat_instance::getBy( $arg['multi'] );
+							$ret          = $c->getSampleQuantiteCSV();
+							$filtered_ret = [];
+							foreach ( $ret as $r ) {
+								if ( ! in_array( $r, $filtered_ret ) ) {
+									$filtered_ret[] = $r;
+								}
+							}
+
+							return $filtered_ret;
+						}
 					} else {
 						$ret = [];
 						foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
-							$ret[]       = '**Pour le contrat <' . $c->getTitle() . '>**';
-							$contrat_ret = [];
-							foreach ( AmapressContrats::get_contrat_quantites( $c->ID ) as $q ) {
-								$contrat_ret[] = $q->getTitle();
-								$contrat_ret[] = $q->getCode();
-								if ( $q->getQuantite() ) {
-									$contrat_ret[] = $q->getQuantite();
-								}
-							}
+							$ret[]        = '**Pour le contrat <' . $c->getTitle() . '>**';
+							$contrat_ret  = $c->getSampleQuantiteCSV();
 							$filtered_ret = [];
 							foreach ( $contrat_ret as $r ) {
 								if ( ! in_array( $r, $filtered_ret ) ) {
@@ -579,6 +592,7 @@ jQuery(function($) {
 				'group'       => '2/ Contrat',
 				'readonly'    => 'amapress_is_contrat_adhesion_readonly',
 				'show_column' => false,
+				'csv_import'  => false,
 			),
 			'message'          => array(
 				'name'        => amapress__( 'Message' ),

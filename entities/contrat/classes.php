@@ -209,6 +209,43 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_fin' );
 	}
 
+	public function getSampleQuantiteCSV() {
+		$quants             = AmapressContrats::get_contrat_quantites( $this->ID );
+		$has_distinct_value = ( count( $quants ) == count( array_unique( array_map( function ( $q ) {
+				/** @var AmapressContrat_quantite $q */
+				return $q->getQuantite();
+			}, $quants ) ) ) );
+		$contrat_ret        = [
+			''
+		];
+		if ( ! $this->isQuantiteVariable() && 1 == count( $quants ) ) {
+			$contrat_ret[] = 'X';
+		}
+
+		foreach ( $quants as $q ) {
+			$contrat_ret[] = $q->getTitle();
+			$contrat_ret[] = $q->getCode();
+			if ( $has_distinct_value ) {
+				$contrat_ret[] = strval( $q->getQuantite() );
+				if ( $this->isQuantiteVariable() ) {
+					$contrat_ret[] = 'Multiple de ' . $q->getQuantite();
+				}
+			}
+			if ( $this->isQuantiteVariable() ) {
+				foreach ( $q->getQuantiteOptions() as $v ) {
+					$contrat_ret[] = $v . ' ' . $q->getCode();
+					$contrat_ret[] = $v . ' x ' . $q->getCode();
+				}
+			}
+		}
+		if ( $this->isQuantiteMultiple() && count( $quants ) > 1 ) {
+			$contrat_ret[] = 'Par ex: X ' . $quants[0]->getCode() . ', Y ' . $quants[1]->getCode();
+			$contrat_ret[] = 'Par ex: X x ' . $quants[0]->getCode() . ', Y x ' . $quants[1]->getCode();
+		}
+
+		return $contrat_ret;
+	}
+
 	/** @return AmapressLieu_distribution[] */
 	public function getLieux() {
 		return $this->getCustomAsEntityArray( 'amapress_contrat_instance_lieux', 'AmapressLieu_distribution' );

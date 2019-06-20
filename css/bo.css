@@ -253,3 +253,7 @@ span.description {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
 }
+
+.button-import-model {
+    margin: 0.5em !important;
+}
