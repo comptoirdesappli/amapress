@@ -320,17 +320,24 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 	}
 
 	if ( is_admin() ) {
-		$start_step_url = esc_attr(
-			admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ) );
+		$start_step_url = admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' );
+		if ( isset( $_REQUEST['user_id'] ) ) {
+			$start_step_url = add_query_arg(
+				[
+					'user_id'   => $_REQUEST['user_id'],
+					'assistant' => 1,
+				], $start_step_url
+			);
+		}
 	} else {
-		$start_step_url = esc_attr( add_query_arg( 'step', 'email',
+		$start_step_url = add_query_arg( 'step', 'email',
 			remove_query_arg( [
 				'contrat_id',
 				'message'
-			] ) ) );
+			] ) );
 	}
 
-	$invalid_access_message = '<p>Accès invalide : veuillez repartir de la <a href="' . $start_step_url . '">première étape</a></p>';
+	$invalid_access_message = '<p>Accès invalide : veuillez repartir de la <a href="' . esc_attr( $start_step_url ) . '">première étape</a></p>';
 
 	if ( ! empty( $_REQUEST['message'] ) ) {
 		$message = '';
