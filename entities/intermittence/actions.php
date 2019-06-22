@@ -165,8 +165,12 @@ function amapress_admin_action_desinscription_intermittent() {
 	}
 
 	$user_email = sanitize_email( $_REQUEST['email'] );
-	$me         = AmapressUser::getBy( amapress_current_user_id() );
-	$is_me      = in_array( $user_email, $me->getAllEmails() );
+	if ( amapress_is_user_logged_in() ) {
+		$me    = AmapressUser::getBy( amapress_current_user_id() );
+		$is_me = in_array( $user_email, $me->getAllEmails() );
+	} else {
+		$is_me = true;
+	}
 
 	$user = get_user_by( 'email', $user_email );
 	if ( ! $user ) {
@@ -181,7 +185,11 @@ function amapress_admin_action_desinscription_intermittent() {
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
 		echo 'Etes-vous sûr de vouloir ' . ( $is_me ? 'vous désinscrire' : "désinscrire {$user_email}" ) . ' en tant qu\'intermittent ? 
 <br/>
-<a href="' . add_query_arg( 'confirm', 'yes' ) . '">Confirmer la désinscription</a>';
+<a href="' . add_query_arg(
+				[
+					'confirm' => 'yes',
+					'email'   => $user_email,
+				] ) . '">Confirmer la désinscription</a>';
 	} else {
 		$amapien->desinscriptionIntermittence();
 
