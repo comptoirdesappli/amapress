@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.81.15
+Version: 0.81.20
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -47,7 +47,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.81.15' );
+define( 'AMAPRESS_VERSION', '0.81.20' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1353,6 +1353,11 @@ add_action( 'admin_init', function () {
 			'warning', false
 		);
 	}
+
+	add_action( 'tf_custom_admin_amapress_action_test_convert_ws', function () {
+		require_once 'utils/sample_pdf_convert.php';
+		amapress_test_convertpdf_ws();
+	} );
 } );
 
 if ( defined( 'WP_CORRECT_OB_END_FLUSH_ALL' ) ) {

@@ -543,7 +543,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter Inscription Contrat '   => array(
+						'Ajouter Inscription Contrat '    => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -557,7 +557,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'          => array(
+						'Ajouter un coadhérent'           => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -571,7 +571,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP' => array(
+						'Ajouter une personne hors AMAP'  => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -585,7 +585,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                  => array(
+						'Renouvèlement'                   => array(
 							'id'      => 'renew_config',
 							'desc'    => '',
 							'options' => array(
@@ -601,7 +601,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques'      => array(
+						'Mails - Envoi liste des chèques' => array(
 							'id'      => 'amp_tab_recall_liste_cheques',
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
@@ -1857,6 +1857,21 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 								array(
 									'type' => 'save',
+								),
+								array(
+									'type' => 'note',
+									'desc' => 'Après avoir enregistré les paramètres ci-dessous, cliquez sur le bouton Tester. Les paramètres sont correctes si un PDF se télécharge et s\'ouvre. Dans le cas contraire, vous obtiendrez un message décrivant le problème.'
+								),
+								array(
+									'name'    => 'Tester',
+									'type'    => 'action-buttons',
+									'buttons' => [
+										[
+											'class'  => 'button button-primary',
+											'text'   => 'Tester la connexion',
+											'action' => 'test_convert_ws',
+										]
+									]
 								),
 							),
 						),

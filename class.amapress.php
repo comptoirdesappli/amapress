@@ -3524,7 +3524,7 @@ class Amapress {
 		}
 	}
 
-	public static function convertToPDF( $filename ) {
+	public static function convertToPDF( $filename, $throw_if_fail = false ) {
 		$convertws_url  = Amapress::getOption( 'convertws_url' );
 		$convertws_user = Amapress::getOption( 'convertws_user' );
 		$convertws_pass = Amapress::getOption( 'convertws_pass' );
@@ -3563,12 +3563,20 @@ class Amapress {
 
 				return $pdf_filename;
 			} else {
-				error_log( $resp->getReasonPhrase() );
+				if ( $throw_if_fail ) {
+					throw new Exception( $resp->getReasonPhrase() );
+				} else {
+					error_log( $resp->getReasonPhrase() );
+				}
 
 				return $filename;
 			}
 		} catch ( Exception $ex ) {
-			error_log( $ex->getMessage() );
+			if ( $throw_if_fail ) {
+				wp_die( $ex->getMessage() );
+			} else {
+				error_log( $ex->getMessage() );
+			}
 
 			return $filename;
 		}
