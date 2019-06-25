@@ -723,6 +723,10 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function hasBeforeEndDate_fin() {
+		if ( ! $this->getContrat_instance() ) {
+			return false;
+		}
+
 		return Amapress::start_of_week( $this->getDate_fin() ) < Amapress::start_of_week( $this->getContrat_instance()->getDate_fin() );
 	}
 
@@ -1612,9 +1616,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$def_date = 0;
 		$def_id   = - 1;
 		foreach ( $contrat_paiements as $paiement ) {
-			$id       = $paiement ? $paiement->ID : $def_id --;
-			$numero   = $paiement ? $paiement->getNumero() : '';
-			$banque   = $paiement ? $paiement->getBanque() : '';
+			$id     = $paiement ? $paiement->ID : $def_id --;
+			$numero = $paiement ? $paiement->getNumero() : '';
+			$banque = $paiement ? $paiement->getBanque() : '';
 
 			$adherent = $paiement ? $paiement->getEmetteur() : $this->getAdherent()->getDisplayName();
 			if ( empty( $adherent ) ) {

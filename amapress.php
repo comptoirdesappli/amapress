@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.81.20
+Version: 0.81.35
 Requires PHP: 5.6
 Author: ShareVB
 Author URI: http://amapress.fr/
@@ -47,7 +47,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.81.20' );
+define( 'AMAPRESS_VERSION', '0.81.35' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -107,12 +107,12 @@ function amapress_dump( $v ) {
 
 global $amapress_notices;
 $amapress_notices = array();
-function amapress_add_admin_notice( $message, $type, $is_dismissible ) {
+function amapress_add_admin_notice( $message, $type, $is_dismissible, $escape = true ) {
 	global $amapress_notices;
 
 	$class = $is_dismissible ? "notice-$type is-dismissible" : "notice-$type";
 
-	$amapress_notices[] = sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+	$amapress_notices[] = sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
 }
 
 add_action( 'init', function () {
@@ -1350,7 +1350,7 @@ add_action( 'admin_init', function () {
 
 				return "<a href='{$l}' target='_blank'>{$tit}</a> {$status}";
 			}, $contrat_to_generate ) ),
-			'warning', false
+			'warning', false, false
 		);
 	}
 

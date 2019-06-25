@@ -342,7 +342,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 	} else if ( $type == 'select' ) {
 		return function ( $value ) use ( $label, $settings ) {
 			$v = strtolower( trim( $value ) );
-			if ( ! array_key_exists( $v, $settings['options'] ) ) {
+			if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
 				$labels = array_combine(
 					array_map( function ( $a ) {
 						return strtolower( $a );
@@ -353,6 +353,8 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				} else {
 					return $labels[ $v ];
 				}
+			} else if ( ! is_array( $settings['options'] ) ) {
+				return new WP_Error( 'cannot_parse', "Valeur '$value' non trouvée pour '$label'" );
 			}
 
 			return $v;
@@ -747,6 +749,9 @@ function amapress_csv_posts_import_required_headers( $required_headers, $post_ty
 	$ents = AmapressEntities::getPostTypes();
 
 	if ( isset( $ents[ $post_type ]['csv_required_fields'] ) ) {
+		if ( ! is_array( $ents[ $post_type ]['csv_required_fields'] ) ) {
+			$ents[ $post_type ]['csv_required_fields'] = [ $ents[ $post_type ]['csv_required_fields'] ];
+		}
 		$required_headers = array_merge( $required_headers, $ents[ $post_type ]['csv_required_fields'] );
 	}
 

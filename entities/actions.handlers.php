@@ -76,7 +76,11 @@ function amapress_handle_templates( $template ) {
 //        return locate_template(array('page.php'));
 //    }
 
-	$pt  = amapress_simplify_post_type( get_query_var( 'post_type' ) );
+	$pt = amapress_simplify_post_type( get_query_var( 'post_type' ) );
+	if ( is_array( $pt ) ) {
+		return $template;
+	}
+
 	$pts = AmapressEntities::getPostTypes();
 	if ( is_main_query() && ! empty( $pt ) && array_key_exists( $pt, $pts ) ) {
 		if ( isset( $pts[ $pt ]['custom_archive_template'] ) ) {
@@ -199,6 +203,10 @@ function amapress_handle_actions() {
 		}
 	}
 	$pt = get_query_var( 'post_type' );
+	if ( is_array( $pt ) ) {
+		return;
+	}
+
 	if ( is_main_query() && ! empty( $pt ) ) {
 		$pt  = amapress_simplify_post_type( $pt );
 		$pts = AmapressEntities::getPostTypes();
