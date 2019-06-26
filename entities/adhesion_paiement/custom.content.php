@@ -286,8 +286,8 @@ add_action( 'admin_footer', function () {
 //}
 function amapress_paiements_count_editor( $post_id ) {
 	$adhesion    = AmapressAdhesion::getBy( $post_id );
-	$min_cheques = count( $adhesion->getAllPaiements() );
-	$ret         = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" min="' . $min_cheques . '" max="12" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
+	//$min_cheques = count( $adhesion->getAllPaiements() );
+	$ret         = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
 	$ret         .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">Préparer la saisie des chèques</button></div>';
 	$ret         .= '<script type="text/javascript">
         //<![CDATA[        
