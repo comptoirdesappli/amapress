@@ -358,8 +358,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				for ( $i = 0; $i < $needed; $i ++ ) {
 					$row_resps[ $i ] = null;
 				}
-				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
-				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
+				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
+				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
 				$colspan_cls     = 'resp-col resp-col-' . ( $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {
