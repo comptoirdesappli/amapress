@@ -339,8 +339,8 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		if ( empty( $tel ) ) {
 			return [];
 		}
-		$tel     = preg_replace( '/\s+/', '', $tel );
 		$tel     = preg_replace( '/\+33/', '0', $tel );
+		$tel     = preg_replace( '/\D+/', '', $tel );
 		$matches = array();
 		$ret     = array();
 		preg_match_all( '/\d{10}/', $tel, $matches, PREG_SET_ORDER );
