@@ -286,7 +286,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		}, $users ) );
 
 		if ( $for_pdf ) {
-			$line['last_name'] = '<span>[]</span>&nbsp;' . $line['last_name'];
+			$line['last_name'] = '<span style="font-family: zapfdingbats">q</span>&nbsp;' . $line['last_name'];
 		}
 
 		if ( $show_phone ) {
