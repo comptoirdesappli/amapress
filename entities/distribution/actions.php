@@ -295,7 +295,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 
 				return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
 			}, $users ) );
-			if ( $for_pdf ) {
+			$phones = array_filter( $phones, function ( $s ) {
+				return ! empty( trim( $s ) );
+			} );
+			if ( $for_pdf && ! empty( $phones ) ) {
 				$phones = [ array_shift( $phones ) ];
 			}
 			$line['tel'] = implode( ' / ', $phones );

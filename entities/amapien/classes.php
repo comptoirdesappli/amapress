@@ -402,7 +402,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	function getCoAdherentsInfos() {
 		$this->ensure_init();
 
-		return isset( $this->custom['amapress_user_co-adherents-infos'] ) ? $this->custom['amapress_user_co-adherents-infos'] : '';
+		return isset( $this->custom['amapress_user_co-adherents-infos'] ) ? trim( $this->custom['amapress_user_co-adherents-infos'] ) : '';
 	}
 
 	public
