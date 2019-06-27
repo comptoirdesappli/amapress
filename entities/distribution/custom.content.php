@@ -44,7 +44,14 @@ function amapress_get_custom_content_distribution( $content ) {
 		$can_subscribe = Amapress::end_of_day( $dist_date ) > amapress_time();
 		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
 		if ( count( $responsables ) > 0 ) {
-			echo '<div>' . amapress_generic_gallery( $responsables, 'user_cell_contact', [
+			$render_func = 'user_cell';
+			if ( amapress_can_access_admin() ||
+			     ( Amapress::start_of_week( Amapress::add_a_week( amapress_time(), - 1 ) ) <= $dist_date
+			       && $dist_date <= Amapress::end_of_week( amapress_time() ) ) ) {
+				$render_func = 'user_cell_contact';
+
+			}
+			echo '<div>' . amapress_generic_gallery( $responsables, $render_func, [
 					'if_empty' => 'Pas de responsables'
 				] ) . '</div><br style="clear:both" />';
 		} else { ?>

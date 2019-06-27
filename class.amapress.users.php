@@ -434,15 +434,18 @@ class AmapressUsers {
 
 		add_filter( 'amapress_gallery_render_user_cell', 'AmapressUsers::amapress_gallery_render_user_cell' );
 		add_filter( 'amapress_gallery_render_user_cell_contact', 'AmapressUsers::amapress_gallery_render_user_cell_contact' );
+		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_render_user_cell_contact_phone_only' );
 		add_filter( 'amapress_gallery_render_user_cell_with_role', 'AmapressUsers::amapress_gallery_render_user_cell_with_role' );
 
 
 		add_filter( 'amapress_gallery_sort_user_cell', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_sort_user_cell_contact', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_sort_user_cell_with_role', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
 
 		add_filter( 'amapress_gallery_category_user_cell', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_category_user_cell_contact', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_category_user_cell_with_role', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
 
 //        if (!self::$vp) self::$vp = new Virtual_Themed_Pages_BC();
@@ -489,6 +492,25 @@ class AmapressUsers {
 	}
 
 	public static function amapress_gallery_render_user_cell_contact( $user ) {
+		$usr = $user;
+		if ( is_int( $usr ) ) {
+			$usr = amapress_get_user_by_id_or_archived( $usr );
+		}
+
+		if ( ! $usr ) {
+			return '';
+		}
+
+		ob_start();
+
+		self::echoUser( $usr, array( 'telephone', 'mail' ) );
+
+		$content = ob_get_clean();
+
+		return $content;
+	}
+
+	public static function amapress_gallery_render_user_cell_contact_phone_only( $user ) {
 		$usr = $user;
 		if ( is_int( $usr ) ) {
 			$usr = amapress_get_user_by_id_or_archived( $usr );
