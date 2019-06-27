@@ -23,7 +23,7 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 	$arg_next_distribs = ! empty( $args['distrib'] ) ? $args['distrib'] : 2;
 	$weeks             = $arg_next_distribs;
 	do {
-		$next_distribs = AmapressDistribution::getNextDistribs( null, $weeks, null );
+		$next_distribs = AmapressDistribution::getNextDistribsUserResponsable( null, $weeks, null );
 		$dates         = array_unique( array_map( function ( $d ) {
 			/** @var AmapressDistribution $d */
 			return Amapress::start_of_day( $d->getDate() );

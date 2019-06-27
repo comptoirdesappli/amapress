@@ -1024,7 +1024,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressDistribution[] */
 	public
-	static function getNextDistribs(
+	static function getNextDistribsUserResponsable(
 		$date = null, $weeks = 1, $user_id = null
 	) {
 		$is_resp_amap = amapress_can_access_admin();
