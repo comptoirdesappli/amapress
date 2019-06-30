@@ -124,9 +124,10 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 				}
 				$had_local_referents = false;
 				foreach ( $lieu_ids as $lieu_id ) {
-					if ( ! in_array( $this->ID, $prod->getReferentsIds( $lieu_id ) ) ) {
+					if ( ! in_array( $this->ID, $contrat->getReferentsIds( $lieu_id ) ) ) {
 						continue;
 					}
+					$owner_id                                      = in_array( $this->ID, $prod->getReferentsIds( $lieu_id ) ) ? $prod->ID : $contrat->ID;
 					$had_local_referents                           = true;
 					$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
 						array(
@@ -134,21 +135,22 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 							'type'       => 'referent_producteur',
 							'lieu'       => $lieu_id,
 							'object_id'  => $contrat->ID,
-							'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
+							'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
 							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
 						);
 				}
 				if ( ! $had_local_referents ) {
-					if ( ! in_array( $this->ID, $prod->getReferentsIds() ) ) {
+					if ( ! in_array( $this->ID, $contrat->getReferentsIds() ) ) {
 						continue;
 					}
+					$owner_id                                      = in_array( $this->ID, $prod->getReferentsIds() ) ? $prod->ID : $contrat->ID;
 					$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
 						array(
 							'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
 							'type'       => 'referent_producteur',
 							'lieu'       => null,
 							'object_id'  => $contrat->ID,
-							'edit_link'  => admin_url( "post.php?post={$prod->ID}&action=edit" ),
+							'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
 							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
 						);
 				}

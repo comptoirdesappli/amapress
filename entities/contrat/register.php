@@ -439,13 +439,12 @@ function amapress_register_entities_contrat( $entities ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( empty( $contrat )
 					     || empty( $contrat->getModel() )
-					     || empty( $contrat->getModel()->getProducteur() )
-					     || empty( $contrat->getModel()->getProducteur()->getAllReferentsIds() ) ) {
+					     || empty( $contrat->getModel()->getAllReferentsIds() ) ) {
 						return '';
 					}
 
 					$refs = [];
-					foreach ( $contrat->getModel()->getProducteur()->getAllReferentsIds() as $user_id ) {
+					foreach ( $contrat->getModel()->getAllReferentsIds() as $user_id ) {
 						$ref    = AmapressUser::getBy( $user_id );
 						$refs[] = Amapress::makeLink(
 							$ref->getEditLink(),

@@ -67,15 +67,9 @@ function amapress_get_custom_content_producteur( $content ) {
 
 	amapress_echo_panel_start( 'Référent', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-referent' );
 	$used_ids = array();
-	foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-		foreach (
-			[
-				$producteur->getReferent( $lieu_id ),
-				$producteur->getReferent2( $lieu_id ),
-				$producteur->getReferent3( $lieu_id )
-			] as $ref
-		)
-		if ( $ref && ! in_array( $ref->ID, $used_ids ) ) {
+	foreach ( $producteur->getAllReferentsIds() as $ref_id ) {
+		$ref = AmapressUser::getBy( $ref_id );
+		if ( $ref_id && $ref && ! in_array( $ref->ID, $used_ids ) ) {
 			echo $ref->getDisplay( array(
 				'show_roles' => 'true',
 			) );

@@ -255,7 +255,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 
 	$referent_ids = [];
 	foreach ( $renewable_contrats as $c ) {
-		$referent_ids = array_merge( $referent_ids, $c->getModel()->getProducteur()->getAllReferentsIds() );
+		$referent_ids = array_merge( $referent_ids, $c->getAllReferentsIds() );
 	}
 	$referent_ids = array_unique( $referent_ids );
 

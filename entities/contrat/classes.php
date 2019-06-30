@@ -73,6 +73,26 @@ class AmapressContrat extends TitanEntity {
 	public function getProducteurId() {
 		return $this->getCustomAsInt( 'amapress_contrat_producteur' );
 	}
+
+	/** @return int[] */
+	public function getAllReferentsIds() {
+		$ret = [];
+		foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+			$ret = array_merge( $ret, $this->getReferentsIds( $lieu_id ) );
+		}
+		$ret = array_merge( $ret, $this->getReferentsIds() );
+
+		return array_unique( $ret );
+	}
+
+	/** @return int[] */
+	public function getReferentsIds( $lieu_id = null ) {
+		if ( empty( $this->getProducteur() ) ) {
+			return [];
+		}
+
+		return $this->getProducteur()->getReferentsIds( $lieu_id );
+	}
 }
 
 class AmapressContrat_instance extends TitanEntity {
@@ -254,6 +274,26 @@ class AmapressContrat_instance extends TitanEntity {
 	/** @return int[] */
 	public function getLieuxIds() {
 		return $this->getCustomAsIntArray( 'amapress_contrat_instance_lieux' );
+	}
+
+	/** @return int[] */
+	public function getAllReferentsIds() {
+		$ret = [];
+		foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+			$ret = array_merge( $ret, $this->getReferentsIds( $lieu_id ) );
+		}
+		$ret = array_merge( $ret, $this->getReferentsIds() );
+
+		return array_unique( $ret );
+	}
+
+	/** @return int[] */
+	public function getReferentsIds( $lieu_id = null ) {
+		if ( empty( $this->getModel() ) ) {
+			return [];
+		}
+
+		return $this->getModel()->getReferentsIds( $lieu_id );
 	}
 
 	/** @return string[] */
