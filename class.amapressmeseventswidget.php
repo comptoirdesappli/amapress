@@ -29,6 +29,10 @@ class Amapress_Next_Events_Widget extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
+		if ( isset( $instance['logged_only'] ) && $instance['logged_only'] && ! amapress_is_user_logged_in() ) {
+			return;
+		}
+
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
@@ -55,6 +59,12 @@ class Amapress_Next_Events_Widget extends WP_Widget {
                    name="<?php echo $this->get_field_name( 'title' ); ?>" type="text"
                    value="<?php echo esc_attr( $title ); ?>">
         </p>
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( $instance['logged_only'], true ); ?>
+                   id="<?php echo $this->get_field_id( 'logged_only' ); ?>"
+                   name="<?php echo $this->get_field_name( 'logged_only' ); ?>"/>
+            <label for="<?php echo $this->get_field_id( 'logged_only' ); ?>">Utilisateurs connectés seulement ?</label>
+        </p>
 		<?php
 	}
 
@@ -69,8 +79,9 @@ class Amapress_Next_Events_Widget extends WP_Widget {
 	 * @return array Updated safe values to be saved.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance          = array();
-		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		$instance                = array();
+		$instance['title']       = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		$instance['logged_only'] = ! empty( $new_instance['logged_only'] );
 
 		return $instance;
 	}
