@@ -2131,6 +2131,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'default' => false,
 										),
 										array(
+											'id'      => 'liste-emargement-show-comment',
+											'name'    => 'Afficher la colonne Commentaire',
+											'type'    => 'checkbox',
+											'default' => true,
+										),
+										array(
 											'id'      => 'liste-emargement-print-font-size',
 											'name'    => 'Taille d\'impression',
 											'desc'    => 'Taille (en pt) d\'impression de la liste d\'émargement',
