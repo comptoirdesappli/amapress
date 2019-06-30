@@ -2925,7 +2925,7 @@ class Amapress {
 			if ( empty( $item->classes ) ) {
 				$item->classes = array();
 			}
-			//$item->xfn = '';
+			$item->xfn = '';
 
 			$items[] = $item;
 		}
