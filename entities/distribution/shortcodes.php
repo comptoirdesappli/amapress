@@ -191,7 +191,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			}
 			$dist_contrat_ids = $dist->getContratIds();
 			if ( count( array_intersect( $adhesions_contrat_ids, $dist_contrat_ids ) ) > 0 ) {
-				if ( $max_dates -- <= 0 ) {
+				$max_dates --;
+				if ( $max_dates < 0 ) {
 					continue;
 				}
 				$dists[] = $dist;
