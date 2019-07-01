@@ -42,6 +42,7 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
 	        'Psr\\Http\\Message\\' => 17,
 	        'PhpOffice\\PhpWord\\' => 18,
 	        'PhpOffice\\Common\\'  => 17,
+	        'PhpImap\\'            => 8,
         ),
 	    'G' =>
         array (
@@ -97,6 +98,10 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
 	    'PhpOffice\\Common\\'         =>
 		    array(
 			    0 => __DIR__ . '/..' . '/phpoffice/common/src/Common',
+		    ),
+	    'PhpImap\\'                   =>
+		    array(
+			    0 => __DIR__ . '/..' . '/php-imap/php-imap/src/PhpImap',
 		    ),
 	    'GuzzleHttp\\Psr7\\'          =>
         array (
