@@ -62,6 +62,9 @@ function amapress_register_entities_contrat( $entities ) {
 					echo '<div class="notice notice-error"><p>Production invalide : pas de producteur associée</p></div>';
 				}
 			}
+			if ( empty( $contrat->getAllReferentsIds() ) ) {
+				echo '<div class="notice notice-error"><p>Production sans référent</p></div>';
+			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 

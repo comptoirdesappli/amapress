@@ -37,7 +37,10 @@ function amapress_register_entities_producteur( $entities ) {
 				if ( ! $producteur->isAdresseExploitationLocalized() ) {
 					amapress_add_admin_notice( 'Adresse du producteur non localisée', 'warning', false );
 				}
-				if ( empty( $producteur->getAllReferentsIds() ) ) {
+				if ( from( $producteur->getContrats() )->any( function ( $contrat ) {
+					/** @var AmapressContrat $contrat */
+					return empty( $contrat->getAllReferentsIds() );
+				} ) ) {
 					echo '<div class="notice notice-error"><p>Producteur sans référent</p></div>';
 				}
 			}
