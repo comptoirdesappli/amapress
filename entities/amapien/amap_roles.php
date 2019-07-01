@@ -412,6 +412,30 @@ add_action( 'delete_post_meta', function ( $deleted_meta_ids, $post_id, $meta_ke
 			amapress_get_user_edit_link( $current_user ),
 			Amapress::makeLink( $producteur->getAdminEditLink(), $producteur->getTitle() ),
 			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) . ',' . $lieu->getShortName() );
+	} else if ( 'amapress_contrat_referent' == $meta_key || 'amapress_contrat_referent2' == $meta_key || 'amapress_contrat_referent3' == $meta_key ) {
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$contrat      = AmapressContrat::getBy( $post_id );
+
+		$number = 1;
+		if ( 'amapress_contrat_referent2' == $meta_key ) {
+			$number = 2;
+		} else if ( 'amapress_contrat_referent3' == $meta_key ) {
+			$number = 3;
+		}
+		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur spécifique %d de "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			$number,
+			Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) ), 'Référent producteur', ( $contrat->getProducteur()->getUser() ? $contrat->getProducteur()->getUser()->getDisplayName() : $contrat->getProducteur()->getTitle() ) );
+	} else if ( strpos( $meta_key, 'amapress_contrat_referent_' ) === 0 ) {
+		$lieu_id      = intval( substr( $meta_key, strlen( 'amapress_contrat_referent_' ) ) );
+		$lieu         = AmapressLieu_distribution::getBy( $lieu_id );
+		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$contrat      = AmapressContrat::getBy( $post_id );
+
+		amapress_log_to_role_log( sprintf( '%s a supprimé le référent producteur spécifique de "%s" de "%s"',
+			amapress_get_user_edit_link( $current_user ),
+			Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ),
+			Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName() ) ), 'Référent producteur', ( $contrat->getProducteur()->getUser() ? $contrat->getProducteur()->getUser()->getDisplayName() : $contrat->getProducteur()->getTitle() ) . ',' . $lieu->getShortName() );
 	}
 }, 10, 4 );
 
