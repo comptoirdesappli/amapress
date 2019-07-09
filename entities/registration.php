@@ -223,6 +223,10 @@ add_filter( 'retrieve_password_message', function ( $message, $key ) {
 	$user = AmapressUser::getBy( $user_data->ID );
 
 	add_filter( 'wp_mail_content_type', function ( $t ) {
+		if ( false !== stripos( $t, 'multipart' ) ) {
+			return $t;
+		}
+
 		return 'text/html';
 	} );
 	add_filter( 'amapress_mail_queue_bypass', function ( $t ) {

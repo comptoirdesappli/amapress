@@ -96,7 +96,11 @@ class AmapressSMTPMailingQueue {
 			function ( $h ) {
 				return ! empty( $h ) && ! empty( trim( $h ) );
 			} );
-		if ( 'text/html' == apply_filters( 'wp_mail_content_type', 'text/plain' ) ) {
+		$ct      = array_filter( $headers,
+			function ( $h ) {
+				return false !== stripos( $h, 'Content-Type' );
+			} );
+		if ( empty( $ct ) && 'text/html' == apply_filters( 'wp_mail_content_type', 'text/plain' ) ) {
 			$headers[] = 'Content-Type: text/html; charset=UTF-8';
 		}
 
@@ -300,7 +304,11 @@ class AmapressSMTPMailingQueue {
 		if ( ! empty( $data['attachments'] ) ) {
 			$data['attachments'] = array_filter( $data['attachments'],
 				function ( $v ) {
-					return ! empty( $v ) && file_exists( $v );
+					if ( is_array( $v ) ) {
+						return isset( $v['file'] ) && file_exists( $v['file'] );
+					} else {
+						return ! empty( $v ) && file_exists( $v );
+					}
 				}
 			);
 		}
