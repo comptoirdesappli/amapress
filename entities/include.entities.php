@@ -45,6 +45,10 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/classes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/register.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/shortcodes.php' );
 
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailing_group/classes.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailing_group/register.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailing_group/shortcodes.php' );
+
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/ouvaton.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/sudouest.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/google.groups.php' );
