@@ -57,6 +57,8 @@ class TitanFrameworkOptionText extends TitanFrameworkOption {
 		 * @var boolean
 		 */
 		'is_password'        => false,
+		'is_email'           => false,
+		'classes'            => '',
 		'sanitize'           => true,
 		/**
 		 * (Optional) Callback function to call for additional input sanitization, this function will be called right before the option is saved.
@@ -95,7 +97,11 @@ class TitanFrameworkOptionText extends TitanFrameworkOption {
 		$this->echoOptionHeader();
 		printf( '<input class="%s-text %s" name="%s" placeholder="%s" maxlength="%s" id="%s" type="%s" value="%s"\> %s',
 			empty( $this->settings['size'] ) ? 'regular' : $this->settings['size'],
-			$this->settings['required'] ? 'required' : '',
+			implode( ' ', [
+				$this->settings['required'] ? 'required' : '',
+				$this->settings['is_email'] ? 'email' : '',
+				$this->settings['classes'],
+			] ),
 			$this->getID(),
 			$this->settings['placeholder'],
 			empty( $this->settings['maxlength'] ) ? 1000 : $this->settings['maxlength'],
