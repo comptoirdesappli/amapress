@@ -46,6 +46,10 @@ class AmapressMailingGroup extends TitanEntity {
 		return preg_replace( '/@.+/', '', $this->getName() );
 	}
 
+	public function getListId() {
+		return str_replace( '@', '.', $this->getName() );
+	}
+
 	public function getDescription() {
 		return $this->getCustom( 'amapress_mailing_group_desc' );
 	}
@@ -288,7 +292,7 @@ class AmapressMailingGroup extends TitanEntity {
 					} );
 					$is_from_list = ! empty(
 					array_filter( $raw_headers, function ( $header ) {
-						return preg_match( '/^(?:List-Id):/', $header ) && false !== strpos( $header, $this->getName() );
+						return preg_match( '/^(?:List-Id):/', $header ) && false !== strpos( $header, $this->getListId() );
 					} )
 					);
 				} else {
@@ -485,7 +489,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$site_url  = get_bloginfo( 'url' );
 		$headers[] = 'Return-Path: ' . $admin_email;
 		$headers[] = 'Errors-To: ' . $admin_email;
-		$headers[] = 'List-Id: <' . str_replace( '@', '.', $this->getName() ) . '>';
+		$headers[] = 'List-Id: <' . $this->getListId() . '>';
 		$headers[] = 'List-Post: <mailto:' . $this->getName() . '>';
 		$headers[] = 'List-Owner: <mailto:' . $admin_email . '>';
 		$headers[] = 'List-Help: <' . $site_url . '>';
