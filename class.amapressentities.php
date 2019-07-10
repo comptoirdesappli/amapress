@@ -151,7 +151,7 @@ class AmapressEntities {
 						array(
 							'type'       => 'page',
 							'title'      => 'Configuration',
-							'menu_icon'  => 'dashicons-admin-plugins',
+							'menu_icon'  => 'dashicons-admin-generic',
 							'menu_title' => 'Configuration',
 							'post_type'  => AmapressMailingGroup::INTERNAL_POST_TYPE,
 							'capability' => 'manage_options',
