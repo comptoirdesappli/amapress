@@ -468,7 +468,7 @@ class AmapressMailingGroup extends TitanEntity {
 			return false === strpos( $h, 'From' );
 		} );
 		$headers[] = 'From: ' . $from;
-//		$headers[] = "Sender: {$this->getSimpleName()}<{$this->getName()}>";
+		$headers[] = "Sender: {$this->getName()}";
 
 		$admin_email = get_option( 'admin_email' );
 		$desc        = $this->getDescription();
@@ -477,11 +477,21 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 		$to = "{$desc} <{$this->getName()}>";
 
+		$site_url  = get_bloginfo( 'url' );
 		$headers[] = 'Return-Path: ' . $admin_email;
 		$headers[] = 'Errors-To: ' . $admin_email;
-		$headers[] = 'List-Id: <' . $this->getName() . '>';
+		$headers[] = 'List-Id: <' . str_replace( '@', '.', $this->getName() ) . '>';
 		$headers[] = 'List-Post: <mailto:' . $this->getName() . '>';
 		$headers[] = 'List-Owner: <mailto:' . $admin_email . '>';
+		$headers[] = 'List-Help: <' . $site_url . '>';
+		$headers[] = 'List-Subscribe: <mailto:' . $admin_email . '>';
+		$headers[] = 'List-Unsubscribe: <mailto:' . $admin_email . '>';
+		$headers[] = 'List-Archive: <' . $site_url . '>';
+		$headers[] = 'Archive-At: <' . $site_url . '>';
+		$headers[] = 'Precedence: list';
+		$headers[] = 'Precedence: bulk';
+		$headers[] = 'X-No-Archive: yes';
+		$headers[] = 'X-Loop: ' . $this->getName();
 		switch ( $this->getReplyTo() ) {
 			case 'sender':
 				$headers[] = 'Reply-To: ' . $from;
@@ -491,13 +501,7 @@ class AmapressMailingGroup extends TitanEntity {
 				break;
 		}
 //		$headers = array_filter( $headers, function ( $h ) {
-//			return false === strpos( $h, 'Date' );
-//		} );
-//		$headers = array_filter($headers, function($h) {
-//			return false === strpos($h, 'From');
-//		});
-//		$headers = array_filter( $headers, function ( $h ) {
-//			return false === strpos( $h, 'Content-Type' );
+//			return !preg_match('/^\s*(?:Date|Content-Type|Message-ID):/i', $h);
 //		} );
 
 		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
