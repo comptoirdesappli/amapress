@@ -627,4 +627,19 @@ class AmapressMailingGroup extends TitanEntity {
 		return $mailbox;
 	}
 
+
+	/** @return AmapressMailingGroup[] */
+	public static function getAll() {
+		return array_map(
+			function ( $p ) {
+				return new AmapressMailingGroup( $p );
+			},
+			get_posts(
+				array(
+					'post_type'      => AmapressMailingGroup::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+				)
+			)
+		);
+	}
 }

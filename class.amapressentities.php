@@ -111,9 +111,47 @@ class AmapressEntities {
 					'tabs'     => array(),
 					'subpages' => array(
 						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_moderation',
+							'settings' => array(
+								'name'       => 'Messages en attente',
+								'menu_title' => 'Messages en attente',
+								'capability' => 'read',
+								'menu_icon'  => 'dashicons-shield',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                                        = $ml->ID;
+									$tabs[ $ml->getName() . amapress__( ' - Mails en attente' ) ] = array(
+										'id'      => 'mailgrp-moderate-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-moderate-' . $ml_id,
+												'name'   => 'Mails en attente',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_get_mailing_group_waiting_list( $ml_id );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
 							'type'       => 'page',
 							'title'      => 'Configuration',
-							'menu_icon'  => 'post_type',
+							'menu_icon'  => 'dashicons-admin-plugins',
 							'menu_title' => 'Configuration',
 							'post_type'  => AmapressMailingGroup::INTERNAL_POST_TYPE,
 							'capability' => 'manage_options',
