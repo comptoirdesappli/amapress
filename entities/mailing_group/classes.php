@@ -105,7 +105,12 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getSubjectPrefix() {
-		return $this->getCustom( 'amapress_mailing_group_subject_pref', '[' . $this->getSimpleName() . ']' );
+		$subject_prefix = $this->getCustom( 'amapress_mailing_group_subject_pref' );
+		if ( ! empty( $subject_prefix ) ) {
+			return $subject_prefix;
+		}
+
+		return '[' . $this->getSimpleName() . ']';
 	}
 
 	public function getModeration() {
