@@ -279,7 +279,7 @@ class AmapressMailingGroup extends TitanEntity {
 						$raw_headers = explode( "\n", str_replace( "\r\n", "\n", $raw_headers ) );
 					}
 					$headers      = array_filter( $raw_headers, function ( $header ) {
-						return preg_match( '/^(?:Message-ID|Importance|Priority):/', $header );
+						return preg_match( '/^(?:Importance|Priority):/', $header );
 					} );
 					$is_from_list = ! empty(
 					array_filter( $raw_headers, function ( $header ) {
