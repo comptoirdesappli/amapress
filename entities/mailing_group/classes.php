@@ -276,14 +276,14 @@ class AmapressMailingGroup extends TitanEntity {
 	 *
 	 * @return mixed
 	 */
-	public function getRawMailBody( $mailbox, $msgId, $markAsSeen = true ) {
+	public function getRawMail( $mailbox, $msgId, $markAsSeen = true ) {
 		$options = ( SE_UID == $mailbox->getImapSearchOption() ) ? FT_UID : 0;
 		if ( ! $markAsSeen ) {
 			$options |= FT_PEEK;
 		}
 		$options |= FT_INTERNAL;
 
-		return str_replace( "\r", '', $mailbox->imap( 'body', [ $msgId, $options ] ) );
+		return str_replace( "\r", '', $mailbox->imap( 'fetchbody', [ $msgId, '', $options ] ) );
 	}
 
 	public function fetchMails() {
@@ -299,9 +299,13 @@ class AmapressMailingGroup extends TitanEntity {
 			// Get all emails (messages)
 			// PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
 			foreach ( $mailbox->searchMailbox( 'ALL' ) as $mail_id ) {
-				$msg_id = uniqid( 'amps' );
-				$mailbox->setAttachmentsDir( $this->getUploadDir( "waiting/$msg_id" ) );
-				$mail         = $mailbox->getMail( $mail_id );
+				$msg_id         = uniqid( 'amps' );
+				$attachment_dir = $this->getUploadDir( "waiting/$msg_id" );
+				$mailbox->setAttachmentsDir( $attachment_dir );
+				$mail     = $mailbox->getMail( $mail_id );
+				$eml_file = $attachment_dir . "/$msg_id.eml";
+//				file_put_contents($eml_file, $this->getRawMail( $mailbox, $mail_id ) );
+				$mailbox->saveMail( $mail_id, $eml_file );
 				$to           = array_filter( $mail->to, function ( $addr ) {
 					return false === strpos( $addr, $this->getName() );
 				} );
@@ -355,7 +359,7 @@ class AmapressMailingGroup extends TitanEntity {
 							error_log( 'Cannot send mail to members' );
 						}
 					} else {
-						$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers );
+						$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
 						if ( ! $res ) {
 							error_log( 'Cannot save mail for moderation' );
 						}
@@ -543,9 +547,9 @@ class AmapressMailingGroup extends TitanEntity {
 		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
 	}
 
-	private function saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers ) {
+	private function saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file ) {
 		if ( ! $this->storeMail( 'waiting', $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers,
-			[ 'date' => amapress_time() ] ) ) {
+			[ 'date' => amapress_time(), 'eml_file' => $eml_file ] ) ) {
 			error_log( 'saveMailForModeration - storeMail failed' );
 
 			return false;
@@ -563,7 +567,15 @@ class AmapressMailingGroup extends TitanEntity {
 
 			return false;
 		}
-		if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-mods', $msg, $this->getEmailsFromQueries( $this->getModeratorsQueries() ) ) ) {
+		if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-mods',
+			$msg, $this->getEmailsFromQueries( $this->getModeratorsQueries() ),
+			[
+				[
+					'name'   => 'email.eml',
+					'inline' => false,
+					'file'   => $msg['eml_file']
+				]
+			] ) ) {
 			error_log( 'saveMailForModeration - sendMailByParamName - waiting-mods failed' );
 
 			return false;
@@ -572,7 +584,7 @@ class AmapressMailingGroup extends TitanEntity {
 		return true;
 	}
 
-	private function sendMailByParamName( $param, $msg, $to ) {
+	private function sendMailByParamName( $param, $msg, $to, $attachments = [] ) {
 		$subject = Amapress::getOption( "{$param}-mail-subject" );
 		$content = Amapress::getOption( "{$param}-mail-content" );
 
@@ -583,7 +595,7 @@ class AmapressMailingGroup extends TitanEntity {
 			$to = implode( ',', $to );
 		}
 
-		return amapress_wp_mail( $to, $subject, $content );
+		return amapress_wp_mail( $to, $subject, $content, '', $attachments );
 	}
 
 	private function replaceMailPlaceholders( $content, $msg ) {
