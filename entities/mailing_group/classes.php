@@ -472,9 +472,15 @@ class AmapressMailingGroup extends TitanEntity {
 	private function getEmailsFromQueries( $queries ) {
 		global $wpdb;
 
-		return array_map( function ( $email ) {
-			return strtolower( $email );
-		}, $wpdb->get_col( Amapress_MailingList::getSqlQuery( $queries ) ) );
+		$key = 'amps_mlg_q' . str_replace( ' ', '', var_export( $queries, true ) );
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = array_map( function ( $email ) {
+				return strtolower( $email );
+			}, $wpdb->get_col( Amapress_MailingList::getSqlQuery( $queries ) ) );
+		}
+
+		return $res;
 	}
 
 	public function isAllowedSender( $senderAddress ) {

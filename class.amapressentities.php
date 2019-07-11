@@ -2523,95 +2523,110 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								'capability' => 'manage_amapress',
 								'icon'       => 'dashicons-admin-tools',
 							),
-							'options'  => array(
-								array(
-									'name' => 'Mail de notification à l\'émetteur d\'envoi pour modération',
-									'type' => 'heading',
+							'options'  => array(),
+							'tabs'     => array(
+								'Mails'         => array(
+									'id'      => 'amapress_mailinggroup_mails_opt_page',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail de notification à l\'émetteur d\'envoi pour modération',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-waiting-sender-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Message pour la liste %%liste_nom%% transmis au(x) modérateur(s)',
+										),
+										array(
+											'id'      => 'mailinggroup-waiting-sender-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été transmis au(x) modérateur(s)\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail de notification d\'un message à modérer aux modérateurs',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-waiting-mods-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Message à modérer de %%sender%% pour la liste %%liste_nom%%',
+										),
+										array(
+											'id'      => 'mailinggroup-waiting-mods-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nUn nouveau message pour la liste %%liste_nom%% est arrivé de %%sender%%.\n\nPour accepter sa diffusion (il sera distribué), cliquez ici : %%msg_distrib_link%%\n\nPour refuser sa diffusion avec notification (il sera effacé avec notification à l'émetteur), cliquez ici : %%msg_reject_notif_link%%\n\nPour refuser sa diffusion sans notification (il sera effacé sans notification), cliquez ici : %%msg_reject_silent_link%%\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail de notification du rejet d\'un message à l\'émetteur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-reject-sender-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Rejet de votre message à %%liste_nom%% - %%msg_subject%%',
+										),
+										array(
+											'id'      => 'mailinggroup-reject-sender-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été rejeté par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre message : %%msg_subject%%)\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail de notification de distribution d\'un message à l\'émetteur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-distrib-sender-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Diffusion de votre message à %%liste_nom%%',
+										),
+										array(
+											'id'      => 'mailinggroup-distrib-sender-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été accepté et distribué par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre message : %%msg_subject%%)\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Paramètres',
+											'type' => 'heading',
+										),
+										array(
+											'id'      => 'mailgroup_interval',
+											'name'    => 'Interval',
+											'type'    => 'number',
+											'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
+											'default' => '30',
+										),
+										array(
+											'type' => 'save',
+										),
+									),
 								),
-								array(
-									'id'       => 'mailinggroup-waiting-sender-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Message pour la liste %%liste_nom%% transmis au(x) modérateur(s)',
-								),
-								array(
-									'id'      => 'mailinggroup-waiting-sender-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été transmis au(x) modérateur(s)\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail de notification d\'un message à modérer aux modérateurs',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'mailinggroup-waiting-mods-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Message à modérer de %%sender%% pour la liste %%liste_nom%%',
-								),
-								array(
-									'id'      => 'mailinggroup-waiting-mods-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nUn nouveau message pour la liste %%liste_nom%% est arrivé de %%sender%%.\n\nPour accepter sa diffusion (il sera distribué), cliquez ici : %%msg_distrib_link%%\n\nPour refuser sa diffusion avec notification (il sera effacé avec notification à l'émetteur), cliquez ici : %%msg_reject_notif_link%%\n\nPour refuser sa diffusion sans notification (il sera effacé sans notification), cliquez ici : %%msg_reject_silent_link%%\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail de notification du rejet d\'un message à l\'émetteur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'mailinggroup-reject-sender-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Rejet de votre message à %%liste_nom%% - %%msg_subject%%',
-								),
-								array(
-									'id'      => 'mailinggroup-reject-sender-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été rejeté par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre message : %%msg_subject%%)\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail de notification de distribution d\'un message à l\'émetteur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'mailinggroup-distrib-sender-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Diffusion de votre message à %%liste_nom%%',
-								),
-								array(
-									'id'      => 'mailinggroup-distrib-sender-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été accepté et distribué par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre message : %%msg_subject%%)\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Paramètres',
-									'type' => 'heading',
-								),
-								array(
-									'id'      => 'mailgroup_interval',
-									'name'    => 'Interval',
-									'type'    => 'number',
-									'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
-									'default' => '30',
-								),
-								array(
-									'type' => 'save',
+								'Configuration' => array(
+									'id'      => 'amapress_mailinggroup_conf_opt_page',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'type' => 'save',
+										),
+									),
 								),
 							),
-							'tabs'     => array(),
 						),
 						array(
 							'subpage'  => true,
