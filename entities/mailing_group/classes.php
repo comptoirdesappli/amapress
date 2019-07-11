@@ -160,6 +160,7 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 
 		$msg['moderator'] = amapress_current_user_id();
+		$msg['mod_date']  = amapress_time();
 		if ( ! $this->sendMailFromMsgId( 'waiting', $msg_id ) ) {
 			wp_die( "Le message $msg_id n'a pas pu être envoyé." );
 		}
@@ -180,6 +181,7 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 
 		$msg['moderator'] = amapress_current_user_id();
+		$msg['mod_date']  = amapress_time();
 		$this->storeMailData( 'rejected', $msg );
 
 		$this->deleteMessage( 'waiting', $msg_id );
@@ -196,6 +198,7 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 
 		$msg['moderator'] = amapress_current_user_id();
+		$msg['mod_date']  = amapress_time();
 		$this->storeMailData( 'rejected', $msg );
 		$this->sendMailByParamName( 'mailinggroup-reject-sender', $msg, $msg['from'] );
 		$this->deleteMessage( 'waiting', $msg_id );
@@ -214,6 +217,30 @@ class AmapressMailingGroup extends TitanEntity {
 	/** @return array */
 	public function getMailWaitingModeration() {
 		return $this->loadDataFromFiles( 'waiting' );
+	}
+
+	/** @return array */
+	public function getMailArchives() {
+		$accepted = $this->loadDataFromFiles( 'accepted' );
+		$rejected = $this->loadDataFromFiles( 'rejected' );
+		foreach ( $accepted as $a ) {
+			$a['type'] = 'accepted';
+		}
+		foreach ( $rejected as $a ) {
+			$a['type'] = 'rejected';
+		}
+		$res = array_merge( $accepted, $rejected );
+		usort( $res, function ( $a, $b ) {
+			$date_a = isset( $a['date'] ) ? $a['date'] : 0;
+			$date_b = isset( $b['date'] ) ? $b['date'] : 0;
+			if ( $date_a == $date_b ) {
+				return 0;
+			}
+
+			return $date_a < $date_b ? - 1 : 1;
+		} );
+
+		return $res;
 	}
 
 	public function getMailWaitingModerationCount() {

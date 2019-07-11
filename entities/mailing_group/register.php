@@ -243,6 +243,79 @@ function amapress_get_mailing_group_waiting( $mailing_group_id ) {
 	return $ml->getMailWaitingModerationCount();
 }
 
+function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
+	$ml = AmapressMailingGroup::getBy( $mailing_group_id );
+	if ( ! $ml ) {
+		return '';
+	}
+	$columns = array(
+		array(
+			'title' => 'Date',
+			'data'  => array(
+				'_'    => 'date',
+				'sort' => 'date',
+			)
+		),
+		array(
+			'title' => 'De',
+			'data'  => array(
+				'_'    => 'from',
+				'sort' => 'from',
+			)
+		),
+		array(
+			'title' => 'Subject',
+			'data'  => array(
+				'_'    => 'subject',
+				'sort' => 'subject',
+			)
+		),
+		array(
+			'title' => 'Type',
+			'data'  => array(
+				'_'    => 'type',
+				'sort' => 'type',
+			)
+		),
+		array(
+			'title' => 'Modérateur',
+			'data'  => array(
+				'_'    => 'moderator',
+				'sort' => 'moderator',
+			)
+		),
+		array(
+			'title' => 'Contenu',
+			'data'  => array(
+				'_'    => 'content',
+				'sort' => 'content',
+			)
+		),
+	);
+	$data    = array();
+	foreach ( $ml->getMailArchives() as $m ) {
+		$moderator      = isset( $m['moderator'] ) ? $m['moderator'] : 0;
+		$moderator_user = null;
+		if ( $moderator ) {
+			$moderator_user = AmapressUser::getBy( $moderator );
+		}
+		$data[] = array(
+			'from'      => $m['from'],
+			'date'      => ! empty( $m['date'] ) ? date_i18n( 'd/m/Y H:i:s', $m['date'] ) : '',
+			'subject'   => $m['subject'],
+			'content'   => $m['content'],
+			'type'      => $m['type'] == 'accepted' ? 'Distribué' : 'Rejetté',
+			'moderator' => ( $moderator_user ? $moderator_user->getDisplayName() : '' ) .
+			               isset( $m['mod_date'] ) ? ' le ' . date_i18n( 'd/m/Y H:i:s', $m['mod_date'] ) : '',
+		);
+	}
+
+	return amapress_get_datatable( $type . '-mails', $columns, $data,
+		array(
+			'aaSorting' => [ [ 0, 'desc' ] ]
+		) );
+}
+
 function amapress_get_mailing_group_waiting_list( $mailing_group_id ) {
 	$ml = AmapressMailingGroup::getBy( $mailing_group_id );
 	if ( ! $ml ) {

@@ -149,6 +149,44 @@ class AmapressEntities {
 							},
 						),
 						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_archives',
+							'settings' => array(
+								'name'       => 'Archives',
+								'menu_title' => 'Archives',
+								'capability' => 'read',
+								'menu_icon'  => 'dashicons-book',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                                = $ml->ID;
+									$tabs[ $ml->getName() . amapress__( ' - Archives' ) ] = array(
+										'id'      => 'mailgrp-archives-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-archives-' . $ml_id,
+												'name'   => 'Archives',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_get_mailing_group_archive_list( $ml_id, 'accepted' );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
 							'type'       => 'page',
 							'title'      => 'Configuration',
 							'menu_icon'  => 'dashicons-admin-generic',
