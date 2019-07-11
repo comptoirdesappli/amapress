@@ -2633,6 +2633,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'default' => 'moderate',
 										),
 										array(
+											'id'   => 'mailinggroup-bl-regex',
+											'name' => 'Blacklist',
+											'type' => 'text',
+											'desc' => 'Regex de blacklist',
+										),
+										array(
 											'type' => 'save',
 										),
 									),

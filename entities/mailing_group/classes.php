@@ -312,6 +312,7 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 
 		$unk_action = Amapress::getOption( 'mailinggroup-unk-action', 'moderate' );
+		$bl_regex   = Amapress::getOption( 'mailinggroup-bl-regex', '' );
 
 		try {
 			// Get all emails (messages)
@@ -373,7 +374,7 @@ class AmapressMailingGroup extends TitanEntity {
 
 					$is_site_member = false !== get_user_by( 'email', $mail->fromAddress );
 					if ( ! $is_site_member ) {
-						if ( 'moderate' == $unk_action ) {
+						if ( 'moderate' == $unk_action && ( empty( $bl_regex ) || ! preg_match( "/$bl_regex/", $mail->fromAddress ) ) ) {
 							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
 							if ( ! $res ) {
 								error_log( 'Cannot save mail for moderation' );
