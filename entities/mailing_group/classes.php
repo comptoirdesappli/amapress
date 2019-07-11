@@ -311,6 +311,8 @@ class AmapressMailingGroup extends TitanEntity {
 			return false;
 		}
 
+		$unk_action = Amapress::getOption( 'mailinggroup-unk-action', 'moderate' );
+
 		try {
 			// Get all emails (messages)
 			// PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
@@ -369,15 +371,28 @@ class AmapressMailingGroup extends TitanEntity {
 						];
 					}
 
-					if ( $this->isAllowedSender( $mail->fromAddress ) || $this->isAllowedSender( $mail->senderAddress ) ) {
-						$res = $this->sendMail( $from, $to, $cc, $subject, $body, $headers );
-						if ( ! $res ) {
-							error_log( 'Cannot send mail to members' );
+					$is_site_member = false !== get_user_by( 'email', $mail->fromAddress );
+					if ( ! $is_site_member ) {
+						if ( 'moderate' == $unk_action ) {
+							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
+							if ( ! $res ) {
+								error_log( 'Cannot save mail for moderation' );
+							}
+						} else {
+							error_log( 'Rejected mail from' . $from );
 						}
 					} else {
-						$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
-						if ( ! $res ) {
-							error_log( 'Cannot save mail for moderation' );
+
+						if ( $this->isAllowedSender( $mail->fromAddress ) || $this->isAllowedSender( $mail->senderAddress ) ) {
+							$res = $this->sendMail( $from, $to, $cc, $subject, $body, $headers );
+							if ( ! $res ) {
+								error_log( 'Cannot send mail to members' );
+							}
+						} else {
+							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
+							if ( ! $res ) {
+								error_log( 'Cannot save mail for moderation' );
+							}
 						}
 					}
 					if ( $res ) {

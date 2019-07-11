@@ -648,7 +648,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter Inscription Contrat '    => array(
+						'Ajouter Inscription Contrat '         => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -662,7 +662,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'           => array(
+						'Ajouter un coadhérent'                => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -676,7 +676,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'  => array(
+						'Ajouter une personne hors AMAP'       => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -690,7 +690,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                   => array(
+						'Renouvèlement'                        => array(
 							'id'      => 'renew_config',
 							'desc'    => '',
 							'options' => array(
@@ -706,7 +706,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques' => array(
+						'Mails - Envoi liste des chèques'      => array(
 							'id'      => 'amp_tab_recall_liste_cheques',
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
@@ -2621,6 +2621,17 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'      => 'amapress_mailinggroup_conf_opt_page',
 									'desc'    => '',
 									'options' => array(
+										array(
+											'id'      => 'mailinggroup-unk-action',
+											'name'    => 'Action pour expéditeur inconnu',
+											'type'    => 'select',
+											'options' => [
+												'moderate' => 'Modérer',
+												'reject'   => 'Rejeté',
+											],
+											'desc'    => 'Action à appliquer aux expéditeurs inconnus du site',
+											'default' => 'moderate',
+										),
 										array(
 											'type' => 'save',
 										),
