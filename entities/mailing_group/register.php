@@ -358,11 +358,11 @@ function amapress_get_mailing_group_waiting_list( $mailing_group_id ) {
 		),
 		array(
 			'title' => '',
-			'data'  => 'reject'
+			'data'  => 'reject_quiet'
 		),
 		array(
 			'title' => '',
-			'data'  => 'reject_quiet'
+			'data'  => 'reject'
 		),
 	);
 	$data    = array();
