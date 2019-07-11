@@ -2639,6 +2639,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'desc' => 'Regex de blacklist',
 										),
 										array(
+											'id'      => 'mailinggroup-send-confirm-unk',
+											'name'    => 'Envoyer confirmation aux expéditeurs inconnus',
+											'type'    => 'text',
+											'desc'    => 'Envoyer les confirmations aux expéditeurs inconnus',
+											'default' => false,
+										),
+										array(
 											'type' => 'save',
 										),
 									),

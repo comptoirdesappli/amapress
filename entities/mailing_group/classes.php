@@ -203,6 +203,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$this->deleteMessage( 'waiting', $msg_id );
 	}
 
+
 	public function rejectMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
@@ -375,7 +376,7 @@ class AmapressMailingGroup extends TitanEntity {
 					$is_site_member = false !== get_user_by( 'email', $mail->fromAddress );
 					if ( ! $is_site_member ) {
 						if ( 'moderate' == $unk_action && ( empty( $bl_regex ) || ! preg_match( "/$bl_regex/", $mail->fromAddress ) ) ) {
-							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
+							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, true );
 							if ( ! $res ) {
 								error_log( 'Cannot save mail for moderation' );
 							}
@@ -390,7 +391,7 @@ class AmapressMailingGroup extends TitanEntity {
 								error_log( 'Cannot send mail to members' );
 							}
 						} else {
-							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file );
+							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, false );
 							if ( ! $res ) {
 								error_log( 'Cannot save mail for moderation' );
 							}
@@ -436,10 +437,10 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->storeMailData( $type, $data );
 	}
 
-	private function getUploadDir( $type = 'waiting' ) {
+	private function getUploadDir( $type = 'waiting', $prepare = true ) {
 		$dir     = wp_upload_dir()['basedir'] . "/amapress-mailingroups-{$this->getID()}/$type/";
 		$created = wp_mkdir_p( $dir );
-		if ( $created ) {
+		if ( $created && $prepare ) {
 			$handle = @fopen( $dir . '.htaccess', "w" );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
@@ -460,12 +461,31 @@ class AmapressMailingGroup extends TitanEntity {
 		return $data;
 	}
 
+	private static function delTree( $dir ) {
+		$files = array_diff( scandir( $dir ), array( '.', '..' ) );
+		foreach ( $files as $file ) {
+			( is_dir( "$dir/$file" ) ) ? delTree( "$dir/$file" ) : unlink( "$dir/$file" );
+		}
+
+		return rmdir( $dir );
+	}
+
 	public function loadMessage( $type, $msg_id ) {
 		return $this->loadMessageFile( $this->getUploadDir( $type ) . $msg_id . '.json' );
 	}
 
-	public function deleteMessage( $type, $msg_id ) {
-		@unlink( $this->getUploadDir( $type ) . $msg_id . '.json' );
+	public function deleteMessage( $msg_id ) {
+		foreach ( [ 'waiting', 'accepted', 'rejected' ] as $type ) {
+			$dir       = $this->getUploadDir( $type, false );
+			$attch_dir = $dir . "/$msg_id";
+			if ( file_exists( $attch_dir ) ) {
+				self::delTree( $attch_dir );
+			}
+			$msg_json = $dir . "/$msg_id.json";
+			if ( file_exists( $msg_json ) ) {
+				@unlink( $msg_json );
+			}
+		}
 	}
 
 	public function loadDataFromFiles( $types = [ 'waiting' ] ) {
@@ -585,7 +605,7 @@ class AmapressMailingGroup extends TitanEntity {
 		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
 	}
 
-	private function saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file ) {
+	private function saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, $is_unknown ) {
 		if ( ! $this->storeMail( 'waiting', $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers,
 			[ 'date' => amapress_time(), 'eml_file' => $eml_file ] ) ) {
 			error_log( 'saveMailForModeration - storeMail failed' );
@@ -600,10 +620,12 @@ class AmapressMailingGroup extends TitanEntity {
 			return false;
 		}
 
-		if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-sender', $msg, $msg['from'] ) ) {
-			error_log( 'saveMailForModeration - sendMailByParamName - waiting-sender failed' );
+		if ( Amapress::getOption( 'mailinggroup-send-confirm-unk', false ) || ! $is_unknown ) {
+			if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-sender', $msg, $msg['from'] ) ) {
+				error_log( 'saveMailForModeration - sendMailByParamName - waiting-sender failed' );
 
-			return false;
+				return false;
+			}
 		}
 		if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-mods',
 			$msg, $this->getEmailsFromQueries( $this->getModeratorsQueries() ),
