@@ -84,6 +84,22 @@ class AmapressMailingGroup extends TitanEntity {
 		return 'sms:' . implode( ',', $phones );
 	}
 
+	public function getMembersIds() {
+		$ids = [];
+		foreach ( $this->getMembersQueries() as $user_query ) {
+			if ( is_array( $user_query ) ) {
+				$user_query['fields'] = 'id';
+			} else {
+				$user_query .= '&fields=id';
+			}
+			foreach ( get_users( $user_query ) as $user_id ) {
+				$ids[] = intval( $user_id );
+			}
+		}
+
+		return array_unique( $ids );
+	}
+
 	public function getModeratorsQueries() {
 		$ret   = $this->getCustomAsArray( 'amapress_mailing_group_moderators_queries' );
 		$users = $this->getCustomAsIntArray( 'amapress_mailing_group_moderators_other_users' );

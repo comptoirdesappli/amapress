@@ -231,7 +231,9 @@ function amapress_get_mailing_group_members_count( $mailing_group_id ) {
 		return '';
 	}
 
-	return "<a target='_blank' href='{$ml->getAdminEditLink()}'>{$ml->getMembersCount()}</a>";
+	$members_url = admin_url( 'users.php?amapress_mlgrp_id=' . $mailing_group_id );
+
+	return "<a target='_blank' href='$members_url'>{$ml->getMembersCount()}</a>";
 }
 
 function amapress_get_mailing_group_waiting( $mailing_group_id ) {
