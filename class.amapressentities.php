@@ -543,7 +543,7 @@ class AmapressEntities {
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter Inscription Contrat '    => array(
+						'Ajouter Inscription Contrat '         => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -557,7 +557,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter un coadhérent'           => array(
+						'Ajouter un coadhérent'                => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -571,7 +571,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'  => array(
+						'Ajouter une personne hors AMAP'       => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -585,7 +585,7 @@ class AmapressEntities {
 								)
 							),
 						),
-						'Renouvèlement'                   => array(
+						'Renouvèlement'                        => array(
 							'id'      => 'renew_config',
 							'desc'    => '',
 							'options' => array(
@@ -601,7 +601,7 @@ class AmapressEntities {
 								),
 							)
 						),
-						'Mails - Envoi liste des chèques' => array(
+						'Mails - Envoi liste des chèques'      => array(
 							'id'      => 'amp_tab_recall_liste_cheques',
 							'desc'    => '',
 							'options' => amapress_contrat_paiements_recall_options(),
@@ -729,6 +729,53 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'type'    => 'editor',
 									'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
 									'desc'    => 'Message au sujet des adhésions des co-adhérents',
+								),
+								array(
+									'type' => 'save',
+								),
+							]
+						),
+						'Contrat Word (DOCX) général'          => array(
+							'id'      => 'config_default_contrat_docx',
+							'desc'    => '',
+							'options' => [
+								array(
+									'type' => 'note',
+									'desc' => '
+									<p>Vous pouvez configurer les modèles DOCX par défaut pour tous les contrats sans modèle spécifique.</p>
+									<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat personnalisé et vierge.</p>
+									<p>La procédure est la suivante: <ul>
+									<li>Téléchargez le <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">modèle générique</a></li>
+									<li>changez le logo d\'entête</li>
+									<li>personnalisez les engagements</li>
+									<li>uploadez votre fichier DOCX modifié dans les deux champs ci-dessous</li>
+									<li>enregistrez</li>
+									</ul></p>
+									<p>Votre AMAP est prête pour la génération/remplissage automatique des contrats</p>',
+								),
+								array(
+									'id'              => 'default_word_model',
+									'name'            => amapress__( 'Contrat personnalisé par défaut' ),
+									'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+									'type'            => 'upload',
+									'show_column'     => false,
+									'show_download'   => true,
+									'show_title'      => true,
+									'selector-button' => 'Utiliser ce modèle',
+									'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
+									'desc'            => 'Configurer un modèle de contrat (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+								),
+								array(
+									'id'              => 'default_word_paper_model',
+									'name'            => amapress__( 'Contrat vierge par défaut' ),
+									'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+									'type'            => 'upload',
+									'show_column'     => false,
+									'show_download'   => true,
+									'show_title'      => true,
+									'selector-button' => 'Utiliser ce modèle',
+									'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
+									'desc'            => 'Générer un contrat vierge (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
 								),
 								array(
 									'type' => 'save',

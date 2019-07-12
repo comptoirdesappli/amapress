@@ -3342,6 +3342,10 @@ class Amapress {
 		return $filename;
 	}
 
+	public static function getContratGenericUrl() {
+		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
+	}
+
 	/**
 	 * Create direcgtory for attachments
 	 *
