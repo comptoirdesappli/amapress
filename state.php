@@ -1634,6 +1634,7 @@ function amapress_echo_and_check_amapress_state_page() {
 	echo '<script type="text/javascript">
 	jQuery(document).ready(function($) {
 		$( "#amps-state-accordion" ).accordion({
+			heightStyle: "content",
 			collapsible: true,
 			active : "none"
 		});
