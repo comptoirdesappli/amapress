@@ -1581,8 +1581,21 @@ function amapress_echo_and_check_amapress_state_page() {
 	echo '<p><strong>Version Wordpress : ' . $wp_version . '</strong></p>';
 	echo '<p><strong>Version d\'Amapress : ' . AMAPRESS_VERSION . '</strong></p>';
 
+	echo '<div id="amps-state-accordion">';
 	foreach ( $state as $categ => $checks ) {
-		amapress_echo_panel_start( $labels[ $categ ] );
+		$global_state = 'success';
+		foreach ( $checks as $check ) {
+			if ( 'error' == $check['state'] ) {
+				$global_state = 'error';
+				break;
+			}
+			if ( 'warning' == $check['state'] ) {
+				$global_state = 'warning';
+			}
+		}
+		echo '<h3><span class="check-item state  ' . $global_state . '">' . esc_html( $labels[ $categ ] ) . '</span></h3>';
+
+		echo '<div>';
 
 		foreach ( $checks as $check ) {
 			$title  = $check['name'];
@@ -1612,8 +1625,16 @@ function amapress_echo_and_check_amapress_state_page() {
 			echo "</div>";
 		}
 
-		amapress_echo_panel_end();
+		echo '</div>';
 	}
+	echo '</div>';
+	echo '<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$( "#amps-state-accordion" ).accordion({
+			collapsible: true
+		});
+	});
+</script>';
 }
 
 function amapress_get_state_summary() {

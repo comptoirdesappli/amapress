@@ -42,7 +42,7 @@
     color: #000033 !important;
 }
 
-.amapress-check .state::before {
+#amps-state-accordion .state::before, .amapress-check .state::before {
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -60,27 +60,27 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.amapress-check .success::before {
+#amps-state-accordion .success::before, .amapress-check .success::before {
     color: green;
     content: '\f147';
 }
 
-.amapress-check .error::before {
+#amps-state-accordion .error::before, .amapress-check .error::before {
     color: red;
     content: '\f158';
 }
 
-.amapress-check .warning::before {
+#amps-state-accordion .warning::before, .amapress-check .warning::before {
     color: orange;
     content: '\f227';
 }
 
-.amapress-check .do::before {
+#amps-state-accordion .do::before, .amapress-check .do::before {
     color: gray;
     content: '\f107';
 }
 
-.amapress-check .info::before {
+.amapress-check .info::before, .amapress-check .info::before {
     color: gray;
     content: '\f107';
 }

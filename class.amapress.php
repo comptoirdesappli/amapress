@@ -2392,6 +2392,7 @@ class Amapress {
 		wp_enqueue_style( 'amapress-adminbar', plugins_url( '/css/adminbar.css?v=' . $plugin_version, __FILE__ ) );
 		wp_enqueue_script( 'amapress-script', plugins_url( '/js/amapress.js?v=' . $plugin_version, __FILE__ ), array( 'jquery' ) );
 		wp_enqueue_script( 'jquery-ui-selectmenu' );
+		wp_enqueue_script( 'jquery-ui-accordion' );
 		wp_enqueue_script( 'contrat-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-contrats.js', array( 'jquery' ) );
 		wp_localize_script( 'contrat-status-handle', 'update_contrat_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 		wp_enqueue_script( 'paiement-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-paiements.js', array( 'jquery' ) );
