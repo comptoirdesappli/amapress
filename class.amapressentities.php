@@ -1746,16 +1746,16 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'         => 'below_login_message',
 									'name'       => 'Message à afficher en dessous du formulaire de connexion',
 									'type'       => 'editor',
-									'default'    => wpautop( 'Bienvenue sur le site de %%site_name%%.\n\n
+									'default'    => wpautop( "Bienvenue sur le site de %%site_name%%.\n\n
 Le lien de connexion pour modifier votre mot de passe a une durée de %%expiration_reset_pass%% jours.\n
 Si ce délai est passé, merci de suivre la procédure suivante :\n
 =================================================\n
-Cliquez sur "Mot de passe oublié ?" en bas de cette page\n
+Cliquez sur \"Mot de passe oublié ?\" en bas de cette page\n
 Vous serez redirigé vers une nouvelle page. Indiquez votre nom d\'utilisateur et l\'adresse e-mail associée à ce compte.\n
 Attendez tranquillement votre nouveau mot de passe par courriel.\n
 Vérifiez que le message ne s\'est pas glissé dans vos spams\n
 Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le personnaliser sur votre page de profil.\n
-=================================================\n' ),
+=================================================\n" ),
 									'capability' => 'manage_options',
 								),
 //                                array(
