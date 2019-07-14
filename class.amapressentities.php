@@ -97,7 +97,7 @@ class AmapressEntities {
 					'id'       => 'amapress_gestion_mailinggroup_page',
 					'type'     => 'panel',
 					'settings' => array(
-						'name'       => 'Emails groupés',
+						'name'       => 'Emails groupés [waiting-mlgrp-count]',
 						'position'   => '24',
 						'capability' => 'read_mailing_group',
 						'icon'       => 'dashicons-email-alt',
@@ -127,8 +127,8 @@ class AmapressEntities {
 									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
 								} );
 								foreach ( $mls as $ml ) {
-									$ml_id                                                        = $ml->ID;
-									$tabs[ $ml->getName() . amapress__( ' - Mails en attente' ) ] = array(
+									$ml_id                                                                                                                          = $ml->ID;
+									$tabs[ sprintf( '%s - <span class="badge">%d</span> Mails en attente', $ml->getName(), $ml->getMailWaitingModerationCount() ) ] = array(
 										'id'      => 'mailgrp-moderate-tab-' . $ml_id,
 										'desc'    => '',
 										'options' => array(

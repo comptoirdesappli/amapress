@@ -473,4 +473,13 @@ add_action( 'init', function () {
 		}
 		wp_schedule_event( time(), 'amps_mlgf', 'amps_mlgf_fetch' );
 	}
+
+	amapress_register_shortcode( 'waiting-mlgrp-count', function () {
+		$cnt = 0;
+		foreach ( AmapressMailingGroup::getAll() as $ml ) {
+			$cnt += $ml->getMailWaitingModerationCount();
+		}
+
+		return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
+	} );
 } );

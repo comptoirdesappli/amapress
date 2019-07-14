@@ -261,7 +261,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getMailWaitingModerationCount() {
-		return count( $this->getMailWaitingModeration() );
+		return count( glob( $this->getUploadDir( 'waiting' ) . '*.json' ) );
 	}
 
 	public function getMembersCount() {
