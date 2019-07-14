@@ -103,10 +103,19 @@ class AmapressEntities {
 						'icon'       => 'dashicons-email-alt',
 					),
 					'options'  => array(
-//						array(
-//							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
+						array(
+							'type' => 'note',
+							'bare' => true,
+							'desc' => '<p>Dans cette section, vous pouvez configurer et administrer les <strong>Emails groupés</strong>.</p>
+<p>Un <strong>Email groupé</strong> est une <em>liste de diffusion simplifiée</em> à partir d’un compte mail classique (accessible en IMAP ou POP3) et gérée depuis le site de votre AMAP (par Amapress).
+Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou non), envoyés à tous les membres de l’email groupé configuré sur le site.</p>
+<h4>Dans cette section, vous pouvez :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>Modérer les messages en attente : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_moderation' ) . '">Messages en attente</a></li>
+<li>Consulter les archives des mails envoyés : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_archives' ) . '">Archives</a></li>
+' . ( current_user_can( 'manage_options' ) ? '<li>Configurer un nouvel Email groupé : sous-section <a href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Configuration</a></li>' : '' ) . '
+</ul>'
+						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
