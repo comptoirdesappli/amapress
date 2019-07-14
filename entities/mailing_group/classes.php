@@ -381,6 +381,7 @@ class AmapressMailingGroup extends TitanEntity {
 								error_log( 'Cannot save mail for moderation' );
 							}
 						} else {
+							$res = true;
 							error_log( 'Rejected mail from' . $from );
 						}
 					} else {
