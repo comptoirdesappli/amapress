@@ -2219,6 +2219,8 @@ function amapress_can_delete_attachment( $can, $post_id ) {
 	$attachments = wp_cache_get( $key );
 	if ( false === $attachments ) {
 		$attachments            = [];
+		$attachments[]          = Amapress::getOption( 'default_word_model' );
+		$attachments[]          = Amapress::getOption( 'default_word_paper_model' );
 		$single_attachment_keys = array(
 			'amapress_contrat_instance_word_model',
 			'amapress_contrat_instance_word_paper_model',

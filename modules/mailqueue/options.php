@@ -242,6 +242,11 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 			return esc_html( $h );
 		}, is_array( $email['headers'] ) ? $email['headers'] : [] ) );
 		$msg     = $email['message'];
+		if ( is_array( $msg ) ) {
+			if ( isset( $msg['text'] ) ) {
+				$msg = $msg['text'];
+			}
+		}
 		if ( false === strpos( $headers, 'text/html' )
 		     && false === strpos( $msg, '<p>' )
 		     && false === strpos( $msg, '<br />' ) ) {
