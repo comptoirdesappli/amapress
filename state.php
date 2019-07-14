@@ -111,6 +111,9 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
 		'warning' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'block-bad-queries', 'Block Bad Queries',
+		'<strong>Recommandé</strong> : Protège votre site contre les attaques par requêtes malveillantes',
+		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'new-user-approve', 'New User Approve',
 		'<strong>Optionnel</strong> : Installer ce plugin si le paramètre « Création de compte sur le site » (Section 2 – configuration) est activé. Une inscription en ligne nécessitera une validation de l’utilisateur par un administrateur.',
 		Amapress::userCanRegister() ? 'error' : 'warning' );
@@ -1333,7 +1336,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		count( $without_word_contrats ) > 0 ? 'warning' : 'success',
 		'Modèles de contrats avec contrat DOCX (Word) associé',
-		'Préparer un contrat papier (DOCX) par modèle de contrat pour permettre aux amapiens d\'imprimer et signer directement leur contrat lors de leur inscription en ligne',
+		'Préparer un contrat papier (DOCX) <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ) . '">générique pour tous les contrats</a> ou par modèle de contrat pour permettre aux amapiens d\'imprimer et signer directement leur contrat lors de leur inscription en ligne. Un modèle générique est télchargeable <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a>.',
 		admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
 		'<strong>Contrats avec Word attaché :</strong> ' . ( count( $online_contrats ) == 0 ? 'aucun' : implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
@@ -1581,8 +1584,21 @@ function amapress_echo_and_check_amapress_state_page() {
 	echo '<p><strong>Version Wordpress : ' . $wp_version . '</strong></p>';
 	echo '<p><strong>Version d\'Amapress : ' . AMAPRESS_VERSION . '</strong></p>';
 
+	echo '<div id="amps-state-accordion">';
 	foreach ( $state as $categ => $checks ) {
-		amapress_echo_panel_start( $labels[ $categ ] );
+		$global_state = 'success';
+		foreach ( $checks as $check ) {
+			if ( 'error' == $check['state'] ) {
+				$global_state = 'error';
+				break;
+			}
+			if ( 'warning' == $check['state'] ) {
+				$global_state = 'warning';
+			}
+		}
+		echo '<h3><span class="check-item state  ' . $global_state . '">' . esc_html( $labels[ $categ ] ) . '</span></h3>';
+
+		echo '<div>';
 
 		foreach ( $checks as $check ) {
 			$title  = $check['name'];
@@ -1612,8 +1628,18 @@ function amapress_echo_and_check_amapress_state_page() {
 			echo "</div>";
 		}
 
-		amapress_echo_panel_end();
+		echo '</div>';
 	}
+	echo '</div>';
+	echo '<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$( "#amps-state-accordion" ).accordion({
+			heightStyle: "content",
+			collapsible: true,
+			active : "none"
+		});
+	});
+</script>';
 }
 
 function amapress_get_state_summary() {
