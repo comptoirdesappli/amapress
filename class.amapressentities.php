@@ -98,7 +98,7 @@ class AmapressEntities {
 					'type'     => 'panel',
 					'settings' => array(
 						'name'       => 'Emails groupés',
-						'position'   => '25.1',
+						'position'   => '24',
 						'capability' => 'read_mailing_group',
 						'icon'       => 'dashicons-email-alt',
 					),
@@ -204,7 +204,7 @@ class AmapressEntities {
 					'icon'       => 'dashicons-email-alt',
 					'menu_title' => 'Listes de diffusion',
 					'post_type'  => Amapress_MailingListConfiguration::INTERNAL_POST_TYPE,
-					'position'   => '25.17',
+					'position'   => '24',
 					'capability' => 'manage_options',
 					'slug'       => 'edit.php?post_type=' . Amapress_MailingListConfiguration::INTERNAL_POST_TYPE,
 					'function'   => null,
