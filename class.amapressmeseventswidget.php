@@ -51,7 +51,8 @@ class Amapress_Next_Events_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Titre', 'amapress' );
+		$title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Titre', 'amapress' );
+		$logged_only = isset( $instance['logged_only'] ) ? $instance['logged_only'] : false;
 		?>
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Titre :' ); ?></label>
@@ -60,7 +61,7 @@ class Amapress_Next_Events_Widget extends WP_Widget {
                    value="<?php echo esc_attr( $title ); ?>">
         </p>
         <p>
-            <input class="checkbox" type="checkbox" <?php checked( $instance['logged_only'], true ); ?>
+            <input class="checkbox" type="checkbox" <?php checked( $logged_only, true ); ?>
                    id="<?php echo $this->get_field_id( 'logged_only' ); ?>"
                    name="<?php echo $this->get_field_name( 'logged_only' ); ?>"/>
             <label for="<?php echo $this->get_field_id( 'logged_only' ); ?>">Utilisateurs connectés seulement ?</label>
