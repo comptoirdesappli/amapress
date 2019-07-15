@@ -656,13 +656,13 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['contrat_fin_annee']                = [
+		$ret['contrat_fin_annee']           = [
 			'desc' => 'Année de fin du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['nb_paiements']                     = [
+		$ret['nb_paiements']                = [
 			'desc' => 'Nombre de chèques/règlements possibles',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getPossiblePaiements() );
@@ -750,7 +750,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getRemainingDates( $first_date_distrib ) ) );
 			}
 		];
-		$ret['quantites_table']                  = [
+		$ret['quantites_table']             = [
 			'desc' => 'Table des quantités',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				$columns   = [];
@@ -1382,6 +1382,75 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		return $ret;
+	}
+
+	public function canBeArchived() {
+		return amapress_time() > Amapress::end_of_day( $this->getDate_fin() );
+	}
+
+	public function isArchived() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_archived', 0 );
+	}
+
+	public function archive() {
+		if ( ! $this->canBeArchived() ) {
+			return false;
+		}
+
+		//compute inscriptions stats
+		$this->getInscriptionsStats();
+
+		$archives_infos = [];
+		//extract inscriptions xlsx
+		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( 'post_type=amps_adhesion&amapress_contrat_inst=' . $this->ID,
+			null, 'Contrat ' . $this->getTitle() . ' - Inscriptions' );
+		$filename    = 'contrat-' . $this->ID . '-inscriptions.xlsx';
+		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
+		$archives_infos['file_inscriptions'] = $filename;
+		//extract paiements xlsx
+		foreach ( ( count( $this->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $this->getLieuxIds() ) : $this->getLieuxIds() ) as $lieu_id ) {
+			$lieu        = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
+			$html        = amapress_get_paiement_table_by_dates(
+				$this->ID,
+				$lieu_id,
+				array(
+					'show_next_distrib'       => false,
+					'show_contact_producteur' => false,
+					'for_pdf'                 => true,
+				) );
+			$objPHPExcel = AMapress::createXLSXFromHtml( $html,
+				'Contrat ' . $this->getTitle() . ' - Chèques - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) );
+			$filename    = 'contrat-' . $this->ID . '-cheques-' . ( 0 == $lieu_id ? 'tous' : strtolower( sanitize_file_name( $lieu->getLieuTitle() ) ) ) . '.xlsx';
+			$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+			$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
+			$archives_infos["file_cheques_$lieu_id"] = $filename;
+		}
+
+		$inscriptions                         = AmapressContrats::get_all_adhesions( $this->getID() );
+		$archives_infos['count_inscriptions'] = count( $inscriptions );
+		$this->setCustom( 'amapress_contrat_instance_archives_infos', $archives_infos );
+
+		global $wpdb;
+		//start transaction
+		$wpdb->query( 'START TRANSACTION' );
+		//delete related inscription and paiements
+		foreach ( $inscriptions as $inscription ) {
+			wp_delete_post( $inscription->ID, true );
+		}
+		//mark archived
+		$this->setCustom( 'amapress_contrat_instance_archived', 1 );
+		//end transaction
+		$wpdb->query( 'COMMIT' );
+	}
+
+	public function getArchiveInfo() {
+		$res = $this->getCustomAsArray( 'amapress_contrat_instance_archives_infos' );
+		if ( empty( $res ) ) {
+			$res = [ 'count_inscriptions' => 0 ];
+		}
+
+		return $res;
 	}
 }
 

@@ -179,17 +179,25 @@ function amapress_register_entities_contrat( $entities ) {
 
 				echo '<h4>EDITER</h4>';
 
+				if ( $contrat->isArchived() ) {
+					echo '<p style="color: red">Contrat archivé. Pas de modification possible.</p>';
+				}
+
 				$adhs = AmapressContrats::get_active_adhesions( $post->ID );
 				if ( ! empty( $adhs ) ) {
 					if ( isset( $_REQUEST['adv'] ) || isset( $_REQUEST['full_edit'] ) ) {
 						echo '<p style="color: red"><span class="dashicons dashicons-warning"></span> Édition d’un contrat actif</p>';
+						if ( $contrat->isArchived() ) {
+							wp_die( 'Edition d\'un contrat archivée impossible' );
+						}
 					}
 
-					TitanFrameworkOption::echoFullEditLinkAndWarning(
-						'Edition avancée', ''
-					);
+					if ( ! $contrat->isArchived() ) {
+						TitanFrameworkOption::echoFullEditLinkAndWarning(
+							'Edition avancée', ''
+						);
 
-					echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
+						echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
 <span class="description">(Par ex : si vous changez le nombre de dates de distribution, le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat modulable seront perdues.)</span></p>';
 //				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
 //				if ( ! isset( $_REQUEST['adv'] ) ) {
@@ -197,7 +205,8 @@ function amapress_register_entities_contrat( $entities ) {
 //					echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition</a></p>';
 //				}
 
-					echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
+						echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
+					}
 				}
 
 				echo '<h4>CONSULTER</h4>';
@@ -206,15 +215,34 @@ function amapress_register_entities_contrat( $entities ) {
 				}
 				echo '<p><a target="_blank" href="' . admin_url( 'admin.php?amp_stats_contrat=' . $post->ID . '&page=contrats_quantites_stats' ) . '">Les statistiques annuelles</a></p>';
 
-				echo '<h4>EXPORTER FICHIERS</h4>';
-				echo '<p>';
-				echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">Adhérents (XLSX)</a>,';
-				echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">Chèques/règlements (XLSX)</a>,';
-				echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques/règlements (PDF)</a>';
-				echo '</p>';
+				if ( ! $contrat->isArchived() ) {
+					echo '<h4>EXPORTER FICHIERS</h4>';
+					echo '<p>';
+					echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">Adhérents (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">Chèques/règlements (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques/règlements (PDF)</a>';
+					echo '</p>';
+				} else {
+					echo '<h4>TELECHARGER ARCHIVES</h4>';
+					echo '<p>';
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&contrat=' . $post->ID ) . '">Adhérents (XLSX)</a>,';
+					foreach ( ( count( $contrat->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $contrat->getLieuxIds() ) : $contrat->getLieuxIds() ) as $lieu_id ) {
+						$lieu = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
+						echo '<a href="' . admin_url( 'admin-post.php?action=archives_cheques&lieu=' . $lieu_id . '&contrat=' . $post->ID ) . '">Chèques/règlements - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) . ' (XLSX)</a>,';
+					}
+					echo '</p>';
+				}
 			}
 
 			echo '<h4>AUTRES ACTIONS</h4>';
+
+			if ( $contrat->isArchived() ) {
+				echo '<style type="text/css">
+.amapress_publish.button.button-primary, #amapress_publish, .amapress_publish.button-primary {
+    display: none !important;
+}
+</style>';
+			}
 		},
 		'row_actions'      => array(
 			'renew'              => array(
@@ -428,7 +456,7 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'searchable'        => true,
 			),
-			'refs'                  => array(
+			'refs'             => array(
 				'name'                 => amapress__( 'Référents' ),
 				'type'                 => 'custom',
 				'group'                => '1/6 - Ferme',
@@ -455,18 +483,19 @@ function amapress_register_entities_contrat( $entities ) {
 					return implode( ', ', $refs );
 				},
 			),
-			'nb_visites'            => array(
+			'nb_visites'       => array(
 				'name'        => amapress__( 'Visite' ),
 				'group'       => '1/6 - Ferme',
 				'type'        => 'number',
 				'required'    => true,
 				'show_column' => false,
 				'desc'        => 'Nombre de visite(s) obligatoire(s) chez le producteur',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'max'         => 12,
 			),
 
 			// 2/6 - Paramètres généraux
-			'date_debut'            => array(
+			'date_debut'       => array(
 				'name'          => amapress__( 'Début' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -550,29 +579,31 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'                  => array(
+			'name'             => array(
 				'name'     => amapress__( 'Nom complémentaire' ),
 				'group'    => '2/6 - Paramètres généraux',
 				'type'     => 'text',
 				'desc'     => 'Lorsque 2 contrats de même type coexistent (Par ex : ”Semaine A”, “Semaine B”)',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
-			'max_adherents'         => array(
+			'max_adherents'    => array(
 				'name'     => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'     => 'number',
 				'group'    => '2/6 - Paramètres généraux',
 				'required' => true,
+				'readonly' => 'amapress_is_contrat_instance_readonly',
 				'desc'     => 'Nombre maximum d’inscriptions autorisées par le producteur',
 			),
-			'min_engagement'        => array(
+			'min_engagement'   => array(
 				'name'        => amapress__( 'Engagement minimum' ),
 				'type'        => 'number',
 				'group'       => '2/6 - Paramètres généraux',
 				'required'    => true,
 				'show_column' => false,
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
 			),
-			'word_paper_model'      => array(
+			'word_paper_model' => array(
 				'name'            => amapress__( 'Contrat vierge' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -730,7 +761,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'les-paniers'           => array(
+			'les-paniers'      => array(
 				'name'              => amapress__( 'Report livraison' ),
 				'group'             => '3/6 - Distributions',
 				'table_header_text' => '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</p>',
@@ -755,7 +786,7 @@ jQuery(function($) {
 
 
 			// 4/6 Paniers
-			'quant_type'   => array(
+			'quant_type'       => array(
 				'name'     => amapress__( 'Choix du contenu des paniers' ),
 				'type'     => 'custom',
 				'group'    => '4/6 - Paniers',
@@ -922,7 +953,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor' => array(
+			'quant_editor'     => array(
 				'name'        => amapress__( 'Configuration des paniers (Taille/Quantités)' ),
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
@@ -934,14 +965,15 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => 'Quantités',
 			),
-			'has_pancust'  => array(
+			'has_pancust'      => array(
 				'name'        => amapress__( 'Contenu de panier à renseigner' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'group'       => '4/6 - Paniers',
 				'desc'        => 'Ce contrat a un contenu de panier à décrire chaque semaine',
 			),
-			'rattrapage'   => array(
+			'rattrapage'       => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1331,13 +1363,25 @@ jQuery(function($) {
 //                            'post_type' => 'amps_contrat_quant',
 //                            'parent' => 'amapress_contrat_quantite_contrat_instance',
 //                        ),
-			'inscriptions'          => array(
-				'name'        => amapress__( 'Inscriptions' ),
-				'show_column' => true,
-				'show_table'  => false,
-				'hidden'      => true,
-				'group'       => 'Inscriptions',
-				'empty_text'  => 'Pas encore d\'inscriptions',
+			'inscriptions'     => array(
+				'name'                     => amapress__( 'Inscriptions' ),
+				'show_column'              => true,
+				'show_table'               => false,
+				'hidden'                   => true,
+				'group'                    => 'Inscriptions',
+				'empty_text'               => 'Pas encore d\'inscriptions',
+				'related_posts_count_func' => function ( $post_id ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+					if ( ! $contrat_instance ) {
+						return false;
+					}
+
+					if ( $contrat_instance->isArchived() ) {
+						return $contrat_instance->getArchiveInfo()['count_inscriptions'];
+					} else {
+						return get_posts_count( "post_type=amps_adhesion&amapress_contrat_inst=$post_id" );
+					}
+				},
 //				'include_columns' => array(
 //					'title',
 //					'amapress_adhesion_quantite',
@@ -1345,8 +1389,8 @@ jQuery(function($) {
 //					'amapress_adhesion_date_debut',
 //					'amapress_total_amount',
 //				),
-				'type'        => 'related-posts',
-				'query'       => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
+				'type'                     => 'related-posts',
+				'query'                    => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
 			),
 //			'contrat'           => array(
 //				'name'       => amapress__( 'Info contrat en ligne' ),
@@ -2008,6 +2052,12 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 	if ( isset( $_POST['amapress_quant_data'] ) && isset( $_POST['amapress_quant_data_contrat_instance_id'] ) ) {
+		$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
+		if ( $contrat_instance && $contrat_instance->isArchived() ) {
+			unset( $_POST['amapress_quant_data'] );
+
+			return;
+		}
 
 		$quants     = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 		$quants_ids = array_map( function ( $q ) {
@@ -2089,7 +2139,11 @@ function amapress_row_action_contrat_instance_renew_same_period( $post_id ) {
 
 add_action( 'amapress_row_action_contrat_instance_clone', 'amapress_row_action_contrat_instance_clone' );
 function amapress_row_action_contrat_instance_clone( $post_id ) {
-	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
+	$contrat_inst = AmapressContrat_instance::getBy( $post_id );
+	if ( $contrat_inst->isArchived() ) {
+		wp_die( 'Impossible de dupliquer un contrat archivé' );
+	}
+
 	$new_contrat_instance = $contrat_inst->cloneContrat( true, false );
 	if ( ! $new_contrat_instance ) {
 		wp_die( 'Une erreur s\'est produit lors de la duplication du contrat. Veuillez réessayer' );
@@ -2104,6 +2158,19 @@ function amapress_is_contrat_instance_readonly( $option ) {
 		return false;
 	}
 
+	$contrat_instance_id = $option->getPostID();
+	if ( ! $contrat_instance_id ) {
+		return false;
+	}
+	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
+	if ( ! $contrat_instance ) {
+		return false;
+	}
+	if ( $contrat_instance->isArchived() ) {
+		return true;
+	}
+
+
 	if ( isset( $_REQUEST['adv'] ) || isset( $_REQUEST['full_edit'] ) ) {
 		return false;
 	}
@@ -2115,10 +2182,6 @@ function amapress_is_contrat_instance_readonly( $option ) {
 		}
 	}
 
-	$contrat_instance_id = $option->getPostID();
-	if ( ! $contrat_instance_id ) {
-		return false;
-	}
 	$adhs = AmapressContrats::get_active_adhesions( $contrat_instance_id );
 
 	return ! empty( $adhs );

@@ -3229,6 +3229,8 @@ class Amapress {
 	public static function sendDocumentFile( $full_file_name, $out_file_name ) {
 		if ( strpos( $out_file_name, '.docx' ) !== false ) {
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document' );
+		} else if ( strpos( $out_file_name, '.xlsx' ) !== false ) {
+			header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
 		} else if ( strpos( $out_file_name, '.odt' ) !== false ) {
 			header( 'Content-Type: application/vnd.oasis.opendocument.text' );
 		} else if ( strpos( $out_file_name, '.pdf' ) !== false ) {
@@ -3344,6 +3346,20 @@ class Amapress {
 
 	public static function getContratGenericUrl() {
 		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
+	}
+
+	public static function getArchivesDir() {
+		$dir     = wp_upload_dir()['basedir'] . '/amapress-archives/';
+		$created = wp_mkdir_p( $dir );
+		if ( $created ) {
+			$handle = @fopen( $dir . '.htaccess', "w" );
+			fwrite( $handle, 'DENY FROM ALL' );
+			fclose( $handle );
+			$handle = @fopen( $dir . 'index.php', "w" );
+			fclose( $handle );
+		}
+
+		return $dir;
 	}
 
 	/**
