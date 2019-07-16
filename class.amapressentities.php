@@ -964,6 +964,32 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							),
 							'tabs'     => array(),
 						),
+						array(
+							'subpage'  => true,
+							'id'       => 'contrats_archives',
+							'settings' => array(
+								'name'       => 'Archivage des contrats et inscriptions',
+								'menu_title' => 'Archivage',
+								'position'   => '25.2',
+								'capability' => 'edit_contrat_instance',
+								'menu_icon'  => 'dashicons-book',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Archivables' => array(
+									'id'      => 'contrats_archivables_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'contrats_archivables',
+											'name'   => 'Contrats archivables',
+											'type'   => 'custom',
+											'custom' => 'amapress_contrat_instance_archivables_view',
+										),
+									)
+								),
+							),
+						),
 						//Calendrier
 						array(
 							'title'      => 'Inscriptions aux contrats',

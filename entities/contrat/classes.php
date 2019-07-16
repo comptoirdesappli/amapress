@@ -80,6 +80,21 @@ class AmapressContrat_instance extends TitanEntity {
 	const POST_TYPE = 'contrat_instance';
 
 
+	/** @return AmapressContrat_instance[] */
+	public static function getAll() {
+		return array_map(
+			function ( $p ) {
+				return AmapressContrat_instance::getBy( $p );
+			},
+			get_posts(
+				array(
+					'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+				)
+			)
+		);
+	}
+
 	private static $entities_cache = array();
 
 	/**
@@ -1398,10 +1413,12 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		//compute inscriptions stats
+		echo '<p>Stockage des statistiques</p>';
 		$this->getInscriptionsStats();
 
 		$archives_infos = [];
 		//extract inscriptions xlsx
+		echo '<p>Stockage de l\'excel des inscriptions</p>';
 		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( 'post_type=amps_adhesion&amapress_contrat_inst=' . $this->ID,
 			null, 'Contrat ' . $this->getTitle() . ' - Inscriptions' );
 		$filename    = 'contrat-' . $this->ID . '-inscriptions.xlsx';
@@ -1409,6 +1426,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 		$archives_infos['file_inscriptions'] = $filename;
 		//extract paiements xlsx
+		echo '<p>Stockage des excel des chèques</p>';
 		foreach ( ( count( $this->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $this->getLieuxIds() ) : $this->getLieuxIds() ) as $lieu_id ) {
 			$lieu        = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
 			$html        = amapress_get_paiement_table_by_dates(
@@ -1429,8 +1447,11 @@ class AmapressContrat_instance extends TitanEntity {
 
 		$inscriptions                         = AmapressContrats::get_all_adhesions( $this->getID() );
 		$archives_infos['count_inscriptions'] = count( $inscriptions );
+
+		echo '<p>Stockage des infos du contrat pour archive</p>';
 		$this->setCustom( 'amapress_contrat_instance_archives_infos', $archives_infos );
 
+		echo '<p>Archivage des inscriptions et chèques</p>';
 		global $wpdb;
 		//start transaction
 		$wpdb->query( 'START TRANSACTION' );
