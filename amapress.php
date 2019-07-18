@@ -8,6 +8,7 @@ Plugin URI: http://amapress.fr/
 Description: 
 Version: 0.84.0-arc
 Requires PHP: 5.6
+Requires WP: 4.4
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
@@ -1176,6 +1177,10 @@ if ( ! function_exists( 'wp_mail' ) ) {
 			die( "Uh, no wp_mail ???" );
 		}
 	}
+} else {
+	amapress_add_admin_notice(
+		'Un autre plugin a déjà remplacé la fonction de gestion des mails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
+		'warning', true );
 }
 
 add_filter( 'is_protected_meta', function ( $protected, $meta_key = null ) {

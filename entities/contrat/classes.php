@@ -548,8 +548,8 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['contrat_titre_complet']       = [
 			'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019 - Semaine A)',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				if ( ! empty( $adh->getContrat_instance()->getSubName() ) ) {
-					return $adh->getTitle() . ' - ' . $adh->getContrat_instance()->getSubName();
+				if ( ! empty( $adh->getSubName() ) ) {
+					return $adh->getTitle() . ' - ' . $adh->getSubName();
 				} else {
 					return $adh->getTitle();
 				}
