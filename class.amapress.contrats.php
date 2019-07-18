@@ -103,8 +103,16 @@ class AmapressContrats {
 	}
 
 	public static function contratStatus( $contrat_id, $tag = 'div' ) {
-		$res = false;
-		$tt  = self::get_contrat_status( $contrat_id, $res );
+		$res     = false;
+		$contrat = AmapressContrat_instance::getBy( $contrat_id );
+		if ( ! $contrat ) {
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Supprimé</span></' . $tag . '></' . $tag . '>';
+		}
+		if ( $contrat->isArchived() ) {
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>Archivé</span></' . $tag . '></' . $tag . '>';
+		}
+
+		$tt = self::get_contrat_status( $contrat_id, $res );
 		if ( $res === true ) {
 			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">Mettre à jour distributions et paniers</button></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'no' ) {
