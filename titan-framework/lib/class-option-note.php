@@ -9,14 +9,20 @@ class TitanFrameworkOptionNote extends TitanFrameworkOption {
 	public $defaultSecondarySettings = array(
 		'color'        => 'green', // The color of the note's border
 		'notification' => false,
+		'bare'         => false,
 		'paragraph'    => true,
 		'show_column'  => false,
 	);
+
 	/*
 	 * Display for options and meta
 	 */
 	public function display() {
-		$this->echoOptionHeader();
+		if ( $this->settings['bare'] ) {
+			$this->echoOptionHeaderBare();
+		} else {
+			$this->echoOptionHeader();
+		}
 
 		$color = $this->settings['color'] == 'green' ? '' : 'error';
 
@@ -38,7 +44,11 @@ class TitanFrameworkOptionNote extends TitanFrameworkOption {
 			?></div><?php
 		}
 
-		$this->echoOptionFooter( false );
+		if ( $this->settings['bare'] ) {
+			$this->echoOptionFooterBare( false );
+		} else {
+			$this->echoOptionFooter( false );
+		}
 	}
 
 	/*

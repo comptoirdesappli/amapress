@@ -470,6 +470,10 @@ class Amapress_SudOuest_MailSystem extends Amapress_MailingSystem {
 
 	/** @return Amapress_MailingList_Mail[] */
 	public function getMailWaitingModeration( $name ) {
+		if ( Amapress::getOption( 'sud-ouest_manage_waiting' ) != true ) {
+			return [];
+		}
+
 		$resp = self::$client->get( "/wws/modindex/$name" );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();

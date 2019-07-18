@@ -52,6 +52,7 @@ class TitanFrameworkOptionActionButtons extends TitanFrameworkOption {
 					'type'         => 'button',
 					'capability'   => '',
 					'target'       => '',
+					'action'       => '',
 				) );
 			if ( ! empty( $button['capability'] ) && ! current_user_can( $button['capability'] ) ) {
 				continue;
@@ -79,6 +80,11 @@ class TitanFrameworkOptionActionButtons extends TitanFrameworkOption {
 					esc_attr( $button['class'] ),
 					esc_attr( $href ),
 					! empty( $button['target'] ) ? 'target="' . esc_attr( $button['target'] ) . '"' : '',
+					$button['text_is_html'] ? $text : esc_html( $text ) );
+			} else if ( 'action' == $button['type'] || ! empty( $button['action'] ) ) {
+				printf( '<button name="action" value="%s" class="%s">%s</button>',
+					esc_attr( $button['action'] ),
+					esc_attr( $button['class'] ),
 					$button['text_is_html'] ? $text : esc_html( $text ) );
 			} else {
 				printf( '<button type="button" class="%s" onclick="location.href=\'%s\'">%s</button>',

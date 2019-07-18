@@ -231,20 +231,28 @@ class Amapress_Import_Posts_CSV {
 		return $ret;
 	}
 
-	public static function generateModel( $post_type, $name, $data_keys = array( 'post_title' ), $multi_fields = array() ) {
+	public static function generateModel(
+		$post_type, $name,
+		$data_keys = array( 'post_title' ),
+		$multi_fields = array(),
+		$post_id = 0,
+		$exclude_meta_keys = []
+	) {
 		$pt          = amapress_simplify_post_type( $post_type );
 		$post_fields = AmapressEntities::getPostTypeFields( $post_type );
 		$sitename    = sanitize_key( get_bloginfo( 'name' ) );
 		if ( ! empty( $sitename ) ) {
 			$sitename .= '.';
 		}
-		$filename = $sitename . $name . '.import_model';
+		$post_name = '';
+		if ( $post_id ) {
+			$post = get_post( $post_id );
+			if ( $post ) {
+				$post_name = sanitize_key( AmapressUsers::unaccent( $post->post_title ) ) . '.';
+			}
+		}
+		$filename = $post_name . $sitename . $name . '.import_model';
 
-//		$data_keys = array(
-//			'ID', 'post_author', 'post_name', 'post_type', 'post_title', 'post_date', 'post_date_gmt', 'post_content',
-//			'post_excerpt', 'post_status', 'comment_status', 'ping_status', 'post_password', 'post_parent', 'post_modified',
-//			'post_modified_gmt', 'comment_count', 'menu_order'
-//		);
 		$multi     = array();
 		$meta_keys = array();
 		foreach ( $post_fields as $k => $v ) {
@@ -255,6 +263,9 @@ class Amapress_Import_Posts_CSV {
 				$meta_keys[ $k ] = $k;
 			}
 		}
+		foreach ( $exclude_meta_keys as $k ) {
+			unset( $meta_keys[ $k ] );
+		}
 		foreach ( $multi_fields as $multi_key => $multi_value ) {
 			$f = is_int( $multi_key ) ? $multi_value : $multi_key;
 			unset( $meta_keys[ $f ] );
@@ -263,22 +274,22 @@ class Amapress_Import_Posts_CSV {
 			if ( ! $option ) {
 				continue;
 			}
-			if ( is_a( $option, 'TitanFrameworkOptionSelect' ) ) {
+			if ( isset( $option->settings['custom_multi'] ) && is_callable( $option->settings['custom_multi'], false ) ) {
+				$multi_options = call_user_func( $option->settings['custom_multi'], $option, $post_id );
+			} else if ( is_a( $option, 'TitanFrameworkOptionSelect' ) ) {
 				/**
 				 * @var TitanFrameworkOptionSelect $option
 				 */
-				if ( isset( $option->settings['custom_multi'] ) && is_callable( $option->settings['custom_multi'], false ) ) {
-					$multi_options = call_user_func( $option->settings['custom_multi'], $option );
-				} else {
-					$multi_options = $option->fetchOptionsWithCache();
+				$multi_options = $option->fetchOptionsWithCache();
+			} else {
+				$multi_options = [];
+			}
+			foreach ( $multi_options as $k => $value ) {
+				if ( empty( $k ) ) {
+					continue;
 				}
-				foreach ( $multi_options as $k => $value ) {
-					if ( empty( $k ) ) {
-						continue;
-					}
-					$meta_keys[ '_' . $k ] = $value;
-					$multi[ '_' . $k ]     = $multi_value;
-				}
+				$meta_keys[ '_' . $k ] = $value;
+				$multi[ '_' . $k ]     = $multi_value;
 			}
 		}
 		$taxonomies_keys   = array();
@@ -307,6 +318,7 @@ class Amapress_Import_Posts_CSV {
 					'key'       => $key,
 					'field'     => $field,
 					'multi'     => - 1,
+					'post_id'   => $post_id,
 					'post_type' => $pt,
 				];
 				if ( strpos( $key, '_' ) === 0 && isset( $multi[ $key ] ) ) {

@@ -434,15 +434,18 @@ class AmapressUsers {
 
 		add_filter( 'amapress_gallery_render_user_cell', 'AmapressUsers::amapress_gallery_render_user_cell' );
 		add_filter( 'amapress_gallery_render_user_cell_contact', 'AmapressUsers::amapress_gallery_render_user_cell_contact' );
+		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_render_user_cell_contact_phone_only' );
 		add_filter( 'amapress_gallery_render_user_cell_with_role', 'AmapressUsers::amapress_gallery_render_user_cell_with_role' );
 
 
 		add_filter( 'amapress_gallery_sort_user_cell', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_sort_user_cell_contact', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_sort_user_cell_with_role', 'AmapressUsers::amapress_gallery_sort_user_cell', 10, 2 );
 
 		add_filter( 'amapress_gallery_category_user_cell', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_category_user_cell_contact', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
+		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
 		add_filter( 'amapress_gallery_category_user_cell_with_role', 'AmapressUsers::amapress_gallery_category_user_cell', 10, 2 );
 
 //        if (!self::$vp) self::$vp = new Virtual_Themed_Pages_BC();
@@ -489,6 +492,25 @@ class AmapressUsers {
 	}
 
 	public static function amapress_gallery_render_user_cell_contact( $user ) {
+		$usr = $user;
+		if ( is_int( $usr ) ) {
+			$usr = amapress_get_user_by_id_or_archived( $usr );
+		}
+
+		if ( ! $usr ) {
+			return '';
+		}
+
+		ob_start();
+
+		self::echoUser( $usr, array( 'telephone', 'mail' ) );
+
+		$content = ob_get_clean();
+
+		return $content;
+	}
+
+	public static function amapress_gallery_render_user_cell_contact_phone_only( $user ) {
 		$usr = $user;
 		if ( is_int( $usr ) ) {
 			$usr = amapress_get_user_by_id_or_archived( $usr );
@@ -563,6 +585,8 @@ jQuery(function() {
 		$types = array();
 		if ( is_string( $type ) ) {
 			$types[] = $type;
+		} else if ( is_array( $type ) ) {
+			$types = $type;
 		}
 
 		if ( empty( $custom_link ) && amapress_can_access_admin() ) {
@@ -597,37 +621,38 @@ jQuery(function() {
 				}
 			}
 		}
-		if ( $type == 'thumb' ) {
+		if ( in_array( 'thumb', $types ) ) {
 			echo '</div>';
 
 			return;
 		}
 
-		if ( in_array( 'telephone', $types ) || $type == 'full' ) {
-			if ( get_post_meta( $user->ID, 'amapress_user_telephone', true ) ) {
-				echo '<p class="user-phone">Téléphone : ' . get_user_meta( $user->ID, 'amapress_user_telephone', true ) . '</p>';
+		$is_full = in_array( 'full', $types );
+		if ( in_array( 'telephone', $types ) || $is_full ) {
+			if ( ! empty( $amapien->getTelTo( true ) ) ) {
+				echo '<p class="user-phone">Mob. : ' . $amapien->getTelTo( true ) . '</p>';
 			}
-			if ( get_post_meta( $user->ID, 'amapress_user_telephone2', true ) ) {
-				echo '<p class="user-phone2">Téléphone 2 : ' . get_user_meta( $user->ID, 'amapress_user_telephone2', true ) . '</p>';
+			if ( ! empty( $amapien->getTelTo( false ) ) ) {
+				echo '<p class="user-phone2">Fix. : ' . $amapien->getTelTo( false ) . '</p>';
 			}
 		}
-		if ( in_array( 'mail', $types ) || $type == 'full' ) {
+		if ( in_array( 'mail', $types ) || $is_full ) {
 			if ( $user->user_email ) {
 				echo '<p class="user-mail">Mail : <a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
 			}
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_adresse', true ) &&
-		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse', $types ) || $type == 'full' )
+		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse', $types ) || $is_full )
 		) {
 			echo '<p>Adresse : <pre>' . get_user_meta( $user->ID, 'amapress_user_adresse', true ) . '\n' . get_user_meta( $user->ID, 'amapress_user_code_postal', true ) . ' ' . get_user_meta( $user->ID, 'amapress_user_ville', true ) . '</pre></p>';
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_location_type', true ) &&
-		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-link', $types ) || $type == 'full' )
+		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-link', $types ) || $is_full )
 		) {
 			echo '<a href="https://maps.google.com/maps?q=' . get_post_meta( $user->ID, 'amapress_user_lat', true ) . ',' . get_post_meta( $user->ID, 'amapress_user_long', true ) . '">Voir sur Google Maps</a>';
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_location_type', true ) &&
-		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-map', $types ) || $type == 'full' )
+		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-map', $types ) || $is_full )
 		) {
 			echo do_shortcode( "[user-map user={$user->ID} mode=map" );
 		}

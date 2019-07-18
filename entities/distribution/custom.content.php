@@ -44,7 +44,14 @@ function amapress_get_custom_content_distribution( $content ) {
 		$can_subscribe = Amapress::end_of_day( $dist_date ) > amapress_time();
 		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
 		if ( count( $responsables ) > 0 ) {
-			echo '<div>' . amapress_generic_gallery( $responsables, 'user_cell_contact', [
+			$render_func = 'user_cell';
+			if ( amapress_can_access_admin() ||
+			     ( Amapress::start_of_week( Amapress::add_a_week( amapress_time(), - 1 ) ) <= $dist_date
+			       && $dist_date <= Amapress::end_of_week( amapress_time() ) ) ) {
+				$render_func = 'user_cell_contact';
+
+			}
+			echo '<div>' . amapress_generic_gallery( $responsables, $render_func, [
 					'if_empty' => 'Pas de responsables'
 				] ) . '</div><br style="clear:both" />';
 		} else { ?>
@@ -89,9 +96,11 @@ function amapress_get_custom_content_distribution( $content ) {
 
 	$btns = [];
 	if ( amapress_is_user_logged_in() ) {
-		$btns[] = amapress_get_button( 'Liste d\'émargement',
-			amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
-			true, null, 'btn-print-liste' );
+		if ( amapress_can_access_admin() || AmapressDistributions::isCurrentUserResponsableThisWeek() ) {
+			$btns[] = amapress_get_button( 'Liste d\'émargement',
+				amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
+				true, null, 'btn-print-liste' );
+		}
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
 		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';

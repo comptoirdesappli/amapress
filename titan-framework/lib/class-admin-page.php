@@ -315,7 +315,7 @@ class TitanFrameworkAdminPage {
 
 		?>
         <div class="wrap">
-            <h2><?php echo $this->settings['title'] ?></h2>
+            <h2><?php echo do_shortcode( $this->settings['title'] ) ?></h2>
 			<?php
 			if ( ! empty( $this->settings['desc'] ) ) {
 				?><p class='description'><?php echo $this->settings['desc'] ?></p><?php

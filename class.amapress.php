@@ -2655,6 +2655,7 @@ class Amapress {
 		wp_enqueue_style( 'amapress-adminbar', plugins_url( '/css/adminbar.css?v=' . $plugin_version, __FILE__ ) );
 		wp_enqueue_script( 'amapress-script', plugins_url( '/js/amapress.js?v=' . $plugin_version, __FILE__ ), array( 'jquery' ) );
 		wp_enqueue_script( 'jquery-ui-selectmenu' );
+		wp_enqueue_script( 'jquery-ui-accordion' );
 		wp_enqueue_script( 'contrat-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-contrats.js', array( 'jquery' ) );
 		wp_localize_script( 'contrat-status-handle', 'update_contrat_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 		wp_enqueue_script( 'paiement-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-paiements.js', array( 'jquery' ) );
@@ -3188,7 +3189,7 @@ class Amapress {
 			if ( empty( $item->classes ) ) {
 				$item->classes = array();
 			}
-			//$item->xfn = '';
+			$item->xfn = '';
 
 			$items[] = $item;
 		}
@@ -3604,6 +3605,10 @@ class Amapress {
 		return $filename;
 	}
 
+	public static function getContratGenericUrl() {
+		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
+	}
+
 	/**
 	 * Create direcgtory for attachments
 	 *
@@ -3787,7 +3792,7 @@ class Amapress {
 		}
 	}
 
-	public static function convertToPDF( $filename ) {
+	public static function convertToPDF( $filename, $throw_if_fail = false ) {
 		$convertws_url  = Amapress::getOption( 'convertws_url' );
 		$convertws_user = Amapress::getOption( 'convertws_user' );
 		$convertws_pass = Amapress::getOption( 'convertws_pass' );
@@ -3795,6 +3800,8 @@ class Amapress {
 		if ( empty( $convertws_url ) || empty( $convertws_user ) || empty( $convertws_pass ) ) {
 			return $filename;
 		}
+
+		$convertws_url = trailingslashit( $convertws_url ) . 'convert2pdf.php';
 
 		$info         = pathinfo( $filename );
 		$pdf_filename = ( $info['dirname'] ? $info['dirname'] . DIRECTORY_SEPARATOR : '' )
@@ -3824,12 +3831,20 @@ class Amapress {
 
 				return $pdf_filename;
 			} else {
-				error_log( $resp->getReasonPhrase() );
+				if ( $throw_if_fail ) {
+					throw new Exception( $resp->getReasonPhrase() );
+				} else {
+					error_log( $resp->getReasonPhrase() );
+				}
 
 				return $filename;
 			}
 		} catch ( Exception $ex ) {
-			error_log( $ex->getMessage() );
+			if ( $throw_if_fail ) {
+				wp_die( $ex->getMessage() );
+			} else {
+				error_log( $ex->getMessage() );
+			}
 
 			return $filename;
 		}

@@ -112,7 +112,8 @@ function amapress_user_paiments_column_display( $colname, $post_id ) {
 //    }
 
 	$all_paiements = AmapressAmapien_paiement::getAllActiveByAdhesionId();
-	$amount        = 0;
+
+	$amount = 0;
 //	$total_amount         = $adh->getTotalAmount();
 	$related_amount       = 0;
 	$related_total_amount = 0;

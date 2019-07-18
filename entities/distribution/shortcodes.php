@@ -23,7 +23,7 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 	$arg_next_distribs = ! empty( $args['distrib'] ) ? $args['distrib'] : 2;
 	$weeks             = $arg_next_distribs;
 	do {
-		$next_distribs = AmapressDistribution::getNextDistribs( null, $weeks, null );
+		$next_distribs = AmapressDistribution::getNextDistribsUserResponsable( null, $weeks, null );
 		$dates         = array_unique( array_map( function ( $d ) {
 			/** @var AmapressDistribution $d */
 			return Amapress::start_of_day( $d->getDate() );
@@ -191,7 +191,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			}
 			$dist_contrat_ids = $dist->getContratIds();
 			if ( count( array_intersect( $adhesions_contrat_ids, $dist_contrat_ids ) ) > 0 ) {
-				if ( $max_dates -- <= 0 ) {
+				$max_dates --;
+				if ( $max_dates < 0 ) {
 					continue;
 				}
 				$dists[] = $dist;
@@ -358,8 +359,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				for ( $i = 0; $i < $needed; $i ++ ) {
 					$row_resps[ $i ] = null;
 				}
-				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
-				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
+				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
+				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
 				$colspan_cls     = 'resp-col resp-col-' . ( $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {

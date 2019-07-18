@@ -24,7 +24,7 @@ function amapress_get_wp_users_labels() {
 //        'use_ssl' => 'SSL?',
 //        'show_admin_bar_front' => '',
 //        'show_admin_bar_admin' => 'Bar admin?',
-		'roles'           => 'Rôle',
+		'roles'           => 'Rôle sur le site',
 		'email2'          => 'Email 2',
 		'email3'          => 'Email 3',
 		'email4'          => 'Email 4',
@@ -101,6 +101,24 @@ function amapress_import_user_data( $userdata, $usermeta ) {
 			$res = call_user_func( $validators[ $k ], $v );
 //            if (is_wp_error($res)) return $res;
 			$userdata[ $k ] = $res;
+		} else if ( 'role' == $k || 'roles' == $k ) {
+			global $wp_roles;
+			$found  = false;
+			$v_norm = wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $v ) ) );
+			foreach ( $wp_roles->roles as $name => $role ) {
+				if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $name ) ) ), $v_norm ) === 0 ) {
+					$v     = $name;
+					$found = true;
+				} else if ( strcasecmp( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $role['name'] ) ) ), $v_norm ) === 0 ) {
+					$v     = $name;
+					$found = true;
+				}
+			}
+			if ( $found ) {
+				$userdata[ $k ] = $v;
+			} else {
+				$userdata[ $k ] = new WP_Error( 'unknown_user_role', "Le rôle utilisateur '{$v}' n'existe pas" );
+			}
 		}
 	}
 
@@ -324,7 +342,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 	} else if ( $type == 'select' ) {
 		return function ( $value ) use ( $label, $settings ) {
 			$v = strtolower( trim( $value ) );
-			if ( ! array_key_exists( $v, $settings['options'] ) ) {
+			if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
 				$labels = array_combine(
 					array_map( function ( $a ) {
 						return strtolower( $a );
@@ -335,6 +353,8 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				} else {
 					return $labels[ $v ];
 				}
+			} else if ( ! is_array( $settings['options'] ) ) {
+				return new WP_Error( 'cannot_parse', "Valeur '$value' non trouvée pour '$label'" );
 			}
 
 			return $v;
@@ -483,18 +503,26 @@ function amapress_process_csv_import() {
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressContrat_quantite::POST_TYPE );
 }
 
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_multi', 'amapress_process_generate_model' );
+add_action( 'admin_init', function () {
+	foreach ( AmapressContrats::get_active_contrat_instances_ids() as $id ) {
+		add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' . $id, 'amapress_process_generate_model' );
+
+	}
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_multi', 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAdhesion_intermittence::POST_TYPE, 'amapress_process_generate_model');
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAmapien_paiement::POST_TYPE, 'amapress_process_generate_model');
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_quantite::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_user', 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat::POST_TYPE, 'amapress_process_generate_model' );
-add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProduit::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_quantite::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_user', 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProduit::POST_TYPE, 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'., 'amapress_process_generate_model');
+} );
+
 function amapress_process_generate_model() {
-	switch ( $_POST['action'] ) {
+	$action = isset( $_POST['action'] ) ? $_POST['action'] : '';
+	switch ( $action ) {
 		case 'generate_model_' . AmapressAdhesion::POST_TYPE:
 			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats', array() );
 			break;
@@ -536,8 +564,21 @@ function amapress_process_generate_model() {
 				'last_name',
 				'email2',
 				'email3',
-				'email4'
+				'email4',
+				'roles'
 			) );
+			break;
+		default:
+			if ( 0 === strpos( $action, 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' ) ) {
+				$contrat_instance_id = intval( substr( $action, strlen( 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' ) ) );
+				Amapress_Import_Posts_CSV::generateModel(
+					AmapressAdhesion::POST_TYPE, 'inscriptions_contrat', array(),
+					array( 'amapress_adhesion_contrat_quantite' => 'amapress_adhesion_contrat_quantite' ),
+					$contrat_instance_id,
+					[
+						'amapress_adhesion_contrat_instance'
+					] );
+			}
 			break;
 	}
 }
@@ -708,6 +749,9 @@ function amapress_csv_posts_import_required_headers( $required_headers, $post_ty
 	$ents = AmapressEntities::getPostTypes();
 
 	if ( isset( $ents[ $post_type ]['csv_required_fields'] ) ) {
+		if ( ! is_array( $ents[ $post_type ]['csv_required_fields'] ) ) {
+			$ents[ $post_type ]['csv_required_fields'] = [ $ents[ $post_type ]['csv_required_fields'] ];
+		}
 		$required_headers = array_merge( $required_headers, $ents[ $post_type ]['csv_required_fields'] );
 	}
 

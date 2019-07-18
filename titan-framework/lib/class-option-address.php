@@ -39,7 +39,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 
 			if ( $response['status'] != 'OK' ) {
 				$res = $response['status'];
-				error_log( "Google Maps resolution failed: $res" );
+				error_log( "Google Maps resolution failed: $string" );
 
 				return null;
 			}
@@ -64,7 +64,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$response = json_decode( $res, true );
 
 			if ( ! is_array( $response ) || empty( $response ) ) {
-				error_log( "Nominatim resolution failed: $res" );
+				error_log( "Nominatim resolution failed: $details_url" );
 
 				return null;
 			}

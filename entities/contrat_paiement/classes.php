@@ -252,11 +252,12 @@ GROUP BY $wpdb->posts.ID" );
 
 	public static function getAllActiveByAdhesionId() {
 		if ( ! self::$paiement_cache ) {
-			$adhesions     = AmapressContrats::get_active_adhesions();
+			$adhesions     = AmapressContrats::get_all_adhesions( AmapressContrats::get_active_contrat_instances_ids() );
 			$adhesions_ids = [];
 			foreach ( $adhesions as $adhesion ) {
 				$adhesions_ids[] = $adhesion->ID;
 			}
+
 			do {
 				$changed = count( $adhesions_ids );
 				foreach (

@@ -49,6 +49,21 @@ class AmapressContrats {
 		return Amapress::add_days( $date, - $renouv_days );
 	}
 
+	/** @return AmapressContrat_instance[] */
+	public static function get_contrat_to_generate() {
+		$contrats         = AmapressContrats::get_active_contrat_instances();
+		$contrats_tocheck = array();
+		foreach ( $contrats as $contrat ) {
+			$res = false;
+			AmapressContrats::get_contrat_status( $contrat->ID, $res );
+			if ( $res ) {
+				$contrats_tocheck[] = $contrat;
+			}
+		}
+
+		return $contrats_tocheck;
+	}
+
 	public static function get_contrat_status( $contrat_id, &$need_generate ) {
 		$post_status = get_post_status( $contrat_id );
 		if ( 'draft' == $post_status || 'auto-draft' == $post_status ) {

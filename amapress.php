@@ -6,8 +6,9 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.79.90
+Version: 0.82.65
 Requires PHP: 5.6
+Requires WP: 4.4
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
@@ -47,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.79.90' );
+define( 'AMAPRESS_VERSION', '0.82.65' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -107,13 +108,23 @@ function amapress_dump( $v ) {
 
 global $amapress_notices;
 $amapress_notices = array();
-function amapress_add_admin_notice( $message, $type, $is_dismissible ) {
+function amapress_add_admin_notice( $message, $type, $is_dismissible, $escape = true ) {
 	global $amapress_notices;
 
 	$class = $is_dismissible ? "notice-$type is-dismissible" : "notice-$type";
 
-	$amapress_notices[] = sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+	$amapress_notices[] = sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
 }
+
+add_action( 'init', function () {
+	if ( current_user_can( 'manage_options' ) ) {
+		$dir_name = basename( dirname( __FILE__ ) );
+		if ( 'amapress' != $dir_name ) {
+			amapress_add_admin_notice( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, ' . $dir_name . '. Merci de renommer "' . dirname( __FILE__ ) . '" et de réactiver Amapress',
+				'error', false );
+		}
+	}
+} );
 
 add_action( 'admin_notices', 'amapress_output_admin_notices' );
 function amapress_output_admin_notices() {
@@ -1166,6 +1177,10 @@ if ( ! function_exists( 'wp_mail' ) ) {
 			die( "Uh, no wp_mail ???" );
 		}
 	}
+} else {
+	amapress_add_admin_notice(
+		'Un autre plugin a déjà remplacé la fonction de gestion des mails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
+		'warning', true );
 }
 
 add_filter( 'is_protected_meta', function ( $protected, $meta_key = null ) {
@@ -1325,6 +1340,29 @@ add_action( 'amapress_init', function () {
 			return $value;
 		}, 10, 4 );
 	}
+} );
+
+add_action( 'admin_init', function () {
+	$contrat_to_generate = AmapressContrats::get_contrat_to_generate();
+	if ( ! empty( $contrat_to_generate ) ) {
+		amapress_add_admin_notice(
+			'Les contrats suivants nécessitent une mise à jour : ' .
+			implode( ', ', array_map( function ( $dn ) {
+				/** @var AmapressContrat_instance $dn */
+				$l      = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+				$tit    = esc_html( $dn->getTitle() );
+				$status = '(' . AmapressContrats::contratStatus( $dn->getID(), 'span' ) . ')';
+
+				return "<a href='{$l}' target='_blank'>{$tit}</a> {$status}";
+			}, $contrat_to_generate ) ),
+			'warning', false, false
+		);
+	}
+
+	add_action( 'tf_custom_admin_amapress_action_test_convert_ws', function () {
+		require_once 'utils/sample_pdf_convert.php';
+		amapress_test_convertpdf_ws();
+	} );
 } );
 
 if ( defined( 'WP_CORRECT_OB_END_FLUSH_ALL' ) ) {

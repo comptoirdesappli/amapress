@@ -170,7 +170,7 @@ class TitanFrameworkOptionMulticheck extends TitanFrameworkOption {
 		if ( is_callable( $args['custom_options'], false ) ) {
 			$options = call_user_func( $args['custom_options'], $args );
 		} else {
-			$old_placeholder               = $this->settings['placeholder'];
+			$old_placeholder               = ! empty( $this->settings['placeholder'] ) ? $this->settings['placeholder'] : '';
 			$this->settings['placeholder'] = $placeholder;
 			$options                       = $this->fetchOptionsWithCache();
 			$this->settings['placeholder'] = $old_placeholder;

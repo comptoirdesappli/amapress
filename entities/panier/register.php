@@ -166,9 +166,7 @@ function amapress_panier_fields( $fields ) {
 		if ( get_post_type( $post_id ) == AmapressPanier::INTERNAL_POST_TYPE ) {
 			$panier = AmapressPanier::getBy( $post_id );
 			if ( $panier->getContrat_instanceId()
-			     && ( ( ! $panier->getContrat_instance()->isPanierVariable()
-			            && ! $panier->getContrat_instance()->isQuantiteVariable() )
-			          || $panier->getContrat_instance()->isPrincipal() ) ) {
+			     && ( $panier->getContrat_instance()->hasPanier_CustomContent() ) ) {
 				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
 					$fields[ 'contenu_' . $quantite->ID ] = array(
 						'name'  => amapress__( 'Contenu pour ' . $quantite->getTitle() ),

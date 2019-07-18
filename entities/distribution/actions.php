@@ -112,9 +112,9 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$dist = AmapressDistribution::getBy( $dist_id );
 
-	$date                     = $dist->getDate();
-	$dist_contrat_ids         = $dist->getContratIds();
-	$active_contrats          = AmapressContrats::get_active_contrat_instances( null, $date, false, false );
+	$date             = $dist->getDate();
+	$dist_contrat_ids = $dist->getContratIds();
+	$active_contrats  = AmapressContrats::get_active_contrat_instances( null, $date, false, false );
 	foreach ( $dist->getDelayedToThisContrats() as $c ) {
 		$found = false;
 		foreach ( $active_contrats as $cc ) {
@@ -157,6 +157,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$show_phone = Amapress::getOption( 'liste-emargement-show-phone' );
 	if ( isset( $_GET['show_phone'] ) ) {
 		$show_phone = Amapress::toBool( $_GET['show_phone'] );
+	}
+	$show_comment = Amapress::getOption( 'liste-emargement-show-comment', true );
+	if ( isset( $_GET['show_comment'] ) ) {
+		$show_comment = Amapress::toBool( $_GET['show_comment'] );
 	}
 
 	$columns = array(
@@ -222,10 +226,12 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		);
 	}
 
-	$columns[] = array(
-		'title' => 'Commentaire',
-		'data'  => 'comment',
-	);
+	if ( $show_comment ) {
+		$columns[] = array(
+			'title' => 'Commentaire',
+			'data'  => 'comment',
+		);
+	}
 
 	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids,
 		null, $dist_lieu_id, $date, true, false );
@@ -286,7 +292,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		}, $users ) );
 
 		if ( $for_pdf ) {
-			$line['last_name'] = '<span>[]</span>&nbsp;' . $line['last_name'];
+			$line['last_name'] = '<span style="font-family: zapfdingbats">q</span>&nbsp;' . $line['last_name'];
 		}
 
 		if ( $show_phone ) {
@@ -295,7 +301,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 
 				return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
 			}, $users ) );
-			if ( $for_pdf ) {
+			$phones = array_filter( $phones, function ( $s ) {
+				return ! empty( trim( $s ) );
+			} );
+			if ( $for_pdf && ! empty( $phones ) ) {
 				$phones = [ array_shift( $phones ) ];
 			}
 			$line['tel'] = implode( ' / ', $phones );
@@ -350,14 +359,17 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$principal_user = AmapressUser::getBy( $users[0] );
 		$line['check']  = '<span style="display: inline-block; width: 32px">&#xA0;</span>';
 
-		if ( $for_pdf ) {
-			$line['comment'] = '';
-		} else {
-			$comment = esc_html( $principal_user->getCommentEmargement() );
-			if ( empty( $comment ) ) {
-				$comment = '<span class="edit-user-comment">Editer</span>';
+
+		if ( $show_comment ) {
+			if ( $for_pdf ) {
+				$line['comment'] = '';
+			} else {
+				$comment = esc_html( $principal_user->getCommentEmargement() );
+				if ( empty( $comment ) ) {
+					$comment = '<span class="edit-user-comment">Editer</span>';
+				}
+				$line['comment'] = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $principal_user->ID . '#amapress_user_comment_emargement' ), $comment, false );//;
 			}
-			$line['comment'] = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $principal_user->ID . '#amapress_user_comment_emargement' ), $comment, false );//;
 		}
 
 		$liste[] = $line;
@@ -548,7 +560,7 @@ line-height: 1.1;
 	}
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions - ' . $dist->getLieu()->getTitle() ) . '</h3>';
 //	echo '<br/>';
-	echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( ! $for_pdf ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
+	echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( $for_pdf ? 0 : 1 ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
 
 	$lieux_ids = Amapress::get_lieu_ids();
 	if ( count( $lieux_ids ) > 1 ) {
@@ -562,7 +574,7 @@ line-height: 1.1;
 			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
 			echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables du jour - ' . $lieu->getTitle() ) . '</h3>';
 //			echo '<br/>';
-			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( ! $for_pdf ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( $for_pdf ? 0 : 1 ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
 		}
 	}
 

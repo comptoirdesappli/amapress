@@ -111,6 +111,9 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
 		'warning' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'block-bad-queries', 'Block Bad Queries',
+		'<strong>Recommandé</strong> : Protège votre site contre les attaques par requêtes malveillantes',
+		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'new-user-approve', 'New User Approve',
 		'<strong>Optionnel</strong> : Installer ce plugin si le paramètre « Création de compte sur le site » (Section 2 – configuration) est activé. Une inscription en ligne nécessitera une validation de l’utilisateur par un administrateur.',
 		Amapress::userCanRegister() ? 'error' : 'warning' );
@@ -612,6 +615,26 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			) : '' )
 	);
 
+	$subscribable_contrat_instances = AmapressContrats::get_subscribable_contrat_instances();
+	$online_contrats                = array_filter( $subscribable_contrat_instances, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->canSelfSubscribe();
+	} );
+	$not_online_contrats            = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return ! $c->canSelfSubscribe();
+	} );
+	$first_online_date              = 0;
+	foreach ( $online_contrats as $online_contrat ) {
+		if ( $online_contrat->getDate_debut() > $first_online_date ) {
+			$first_online_date = $online_contrat->getDate_debut();
+			break;
+		}
+	}
+	if ( empty( $first_online_date ) ) {
+		$first_online_date = amapress_time();
+	}
+
 	$adh_period          = AmapressAdhesionPeriod::getCurrent();
 	$state['15_posts'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : 'success',
@@ -620,6 +643,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
+
+	$adh_period2 = AmapressAdhesionPeriod::getCurrent( $first_online_date );
+	if ( ! $adh_period || ! $adh_period2 || $adh_period2->ID != $adh_period->ID ) {
+		$state['15_posts'][] = amapress_get_check_state(
+			empty( $adh_period2 ) ? 'error' : 'success',
+			'Période d\'adhésion',
+			'Créer une période d\'adhésion pour les cotisations du début des contrats en ligne',
+			admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
+			( ! empty( $adh_period2 ) ? '<a href="' . esc_attr( $adh_period2->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period2->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
+		);
+	}
 
 	$adhesion_categs     = get_categories( array(
 		'orderby'    => 'name',
@@ -772,7 +806,6 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			)
 		)
 	) );
-	$subscribable_contrat_instances     = AmapressContrats::get_subscribable_contrat_instances();
 	$active_contrat_instances           = AmapressContrats::get_active_contrat_instances();
 	$not_subscribable_contrat_instances = array_filter(
 		$contrat_types,
@@ -1271,26 +1304,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		);
 	}
 
-	$state['26_online_inscr'] = array();
-	$online_contrats          = array_filter( $subscribable_contrat_instances, function ( $c ) {
-		/** @var AmapressContrat_instance $c */
-		return $c->canSelfSubscribe();
-	} );
-	$not_online_contrats      = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
-		/** @var AmapressContrat_instance $c */
-		return ! $c->canSelfSubscribe();
-	} );
-	$first_online_date        = 0;
-	foreach ( $online_contrats as $online_contrat ) {
-		if ( $online_contrat->getDate_debut() > $first_online_date ) {
-			$first_online_date = $online_contrat->getDate_debut();
-			break;
-		}
-	}
-	if ( empty( $first_online_date ) ) {
-		$first_online_date = amapress_time();
-	}
-
+	$state['26_online_inscr']   = array();
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		count( $online_contrats ) == 0 ? 'warning' : 'success',
 		'Modèles de contrats accessibles en ligne',
@@ -1322,7 +1336,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		count( $without_word_contrats ) > 0 ? 'warning' : 'success',
 		'Modèles de contrats avec contrat DOCX (Word) associé',
-		'Préparer un contrat papier (DOCX) par modèle de contrat pour permettre aux amapiens d\'imprimer et signer directement leur contrat lors de leur inscription en ligne',
+		'Préparer un contrat papier (DOCX) <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ) . '">générique pour tous les contrats</a> ou par modèle de contrat pour permettre aux amapiens d\'imprimer et signer directement leur contrat lors de leur inscription en ligne. Un modèle générique est télchargeable <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a>.',
 		admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
 		'<strong>Contrats avec Word attaché :</strong> ' . ( count( $online_contrats ) == 0 ? 'aucun' : implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
@@ -1345,8 +1359,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$convertws_pass             = Amapress::getOption( 'convertws_pass' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		( empty( $convertws_url ) || empty( $convertws_user ) || empty( $convertws_pass ) ) ? 'warning' : 'success',
-		'Configuration du webservice de conversion DOCX vers PDF',
-		'Un webservice de conversion DOCX vers PDF est nécessaire afin que les amapiens recoivent leur contrat en PDF et non en DOCX.<br/>Vous pouvez faire une <a href="mailto:contact.amapress@gmail.com">demande de code d\'accès</a> au webservice mis en place par l\'équipe Amapress',
+		'Configuration du webservice de conversion DOCX vers PDF (et autres services)',
+		'Un webservice de conversion DOCX vers PDF est nécessaire afin que les amapiens recoivent leur contrat en PDF et non en DOCX.<br/>Vous pouvez faire une <a href="mailto:contact.amapress@gmail.com">demande de code d\'accès</a> au webservice mis en place par l\'équipe Amapress. Ce WebService pourra également fournir d\'autres services, tels que la réduction de poids de PDF.',
 		admin_url( 'admin.php?page=amapress_options_page&tab=amp_convertws_config' )
 	);
 
@@ -1354,7 +1368,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : ( ! $adh_period->getWordModelId() ? 'warning' : 'success' ),
 		'Période d\'adhésion',
-		'Créer une période d\'adhésion pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word',
+		'Créer une période d\'adhésion au ' . date_i18n( 'd/m/Y', $first_online_date ) . ' pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word',
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
@@ -1421,12 +1435,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 									'tab'  => $tab_id,
 								], admin_url( 'admin.php' ) ) . '#' . $option['id'];
 
-							$state['30_recalls'][] = amapress_get_check_state(
-								'info',
-								$page_name . $tab_name . ( isset( $option['desc'] ) ? ' - ' . $option['desc'] . ' - ' : '' ) . $option['name'],
-								TitanFrameworkOptionEventScheduler::getFormattedEventDate( $val, isset( $option['scheduler_type'] ) ? $option['scheduler_type'] : 'days' ),
-								$tab_href
-							);
+							if ( ! empty( $val['enabled'] ) || false !== strpos( $option['id'], '-1' ) ) {
+								$state['30_recalls'][] = amapress_get_check_state(
+									'info',
+									$page_name . $tab_name . ( isset( $option['desc'] ) ? ' - ' . $option['desc'] . ' - ' : '' ) . $option['name'],
+									TitanFrameworkOptionEventScheduler::getFormattedEventDate( $val, isset( $option['scheduler_type'] ) ? $option['scheduler_type'] : 'days' ),
+									$tab_href
+								);
+							}
 						}
 					}
 				}
@@ -1660,8 +1676,21 @@ function amapress_echo_and_check_amapress_state_page() {
 	echo '<p><strong>Version Wordpress : ' . $wp_version . '</strong></p>';
 	echo '<p><strong>Version d\'Amapress : ' . AMAPRESS_VERSION . '</strong></p>';
 
+	echo '<div id="amps-state-accordion">';
 	foreach ( $state as $categ => $checks ) {
-		amapress_echo_panel_start( $labels[ $categ ] );
+		$global_state = 'success';
+		foreach ( $checks as $check ) {
+			if ( 'error' == $check['state'] ) {
+				$global_state = 'error';
+				break;
+			}
+			if ( 'warning' == $check['state'] ) {
+				$global_state = 'warning';
+			}
+		}
+		echo '<h3><span class="check-item state  ' . $global_state . '">' . esc_html( $labels[ $categ ] ) . '</span></h3>';
+
+		echo '<div>';
 
 		foreach ( $checks as $check ) {
 			$title  = $check['name'];
@@ -1691,8 +1720,18 @@ function amapress_echo_and_check_amapress_state_page() {
 			echo "</div>";
 		}
 
-		amapress_echo_panel_end();
+		echo '</div>';
 	}
+	echo '</div>';
+	echo '<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$( "#amps-state-accordion" ).accordion({
+			heightStyle: "content",
+			collapsible: true,
+			active : "none"
+		});
+	});
+</script>';
 }
 
 function amapress_get_state_summary() {
@@ -1724,5 +1763,4 @@ add_action( 'pre_current_active_plugins', function ( $plugins ) {
 
 add_action( 'activate_plugin', 'amapress_clean_state_transient' );
 add_action( 'save_post', 'amapress_clean_state_transient' );
-add_action( 'update_option', 'amapress_clean_state_transient' );
-
+add_action( 'tf_save_options_amapress', 'amapress_clean_state_transient' );

@@ -339,8 +339,8 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		if ( empty( $tel ) ) {
 			return [];
 		}
-		$tel     = preg_replace( '/\s+/', '', $tel );
 		$tel     = preg_replace( '/\+33/', '0', $tel );
+		$tel     = preg_replace( '/\D+/', '', $tel );
 		$matches = array();
 		$ret     = array();
 		preg_match_all( '/\d{10}/', $tel, $matches, PREG_SET_ORDER );
@@ -402,7 +402,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	function getCoAdherentsInfos() {
 		$this->ensure_init();
 
-		return isset( $this->custom['amapress_user_co-adherents-infos'] ) ? $this->custom['amapress_user_co-adherents-infos'] : '';
+		return isset( $this->custom['amapress_user_co-adherents-infos'] ) ? trim( $this->custom['amapress_user_co-adherents-infos'] ) : '';
 	}
 
 	public
@@ -425,6 +425,11 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_moyen'] ) ? $this->custom['amapress_user_moyen'] : 'mail';
+	}
+
+	public
+	function getDisplayNameWithAdminEditLink() {
+		return Amapress::makeLink( $this->getEditLink(), $this->getDisplayName(), true, true );
 	}
 
 	public

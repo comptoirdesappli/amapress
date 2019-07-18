@@ -284,7 +284,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
 			),
-			'status'            => array(
+			'status'           => array(
 				'name'     => amapress__( 'Statut' ),
 				'type'     => 'select',
 				'group'    => 'Infos',
@@ -310,7 +310,8 @@ function amapress_register_entities_adhesion( $entities ) {
 				'show_column' => false,
 				'custom'      => 'amapress_adhesion_contrat_quantite_editor',
 				'save'        => 'amapress_save_adhesion_contrat_quantite_editor',
-				'desc'        => 'Sélectionner le contrat et les quantités/produits associé(s) :<br/></br/>',
+				'desc'        => 'Sélectionner <strong>le contrat*</strong> et les quantités/produits associé(s) de cette inscription :
+<br/><strong>* Vous ne pouvez créer une inscription qu\'à un seul contrat à la fois</strong></br/></br/>',
 				'show_desc'   => 'before',
 				'group'       => '2/ Contrat',
 				'csv'         => false,
@@ -335,7 +336,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				),
 				'csv_required'      => true,
 				'searchable'        => true,
-				'custom_multi'      => function ( $option ) {
+				'custom_multi'      => function ( $option, $post_id ) {
 					$ret = [];
 					foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
 						$ret[ $c->ID ] = $c->getTitle();
@@ -370,36 +371,49 @@ function amapress_register_entities_adhesion( $entities ) {
 
 					return esc_html( $adh->getContrat_quantites_AsString() );
 				},
+				'custom_multi'      => function ( $option, $post_id ) {
+					$ret = [];
+					foreach ( AmapressContrats::get_contrat_quantites( $post_id ) as $c ) {
+						$ret[ $c->ID ] = $c->getTitle();
+					}
+
+					return $ret;
+				},
 				'custom_csv_sample' => function ( $option, $arg ) {
 					if ( $arg['multi'] != - 1 ) {
-						$ret = [];
-						foreach ( AmapressContrats::get_contrat_quantites( $arg['multi'] ) as $q ) {
-							$ret[] = $q->getTitle();
-							$ret[] = $q->getCode();
-							if ( $q->getQuantite() ) {
-								$ret[] = $q->getQuantite();
+						if ( isset( $arg['post_id'] ) && $arg['post_id'] ) {
+							$ret = [
+								''
+							];
+							$q   = AmapressContrat_quantite::getBy( $arg['multi'] );
+							if ( $q->getContrat_instance()->isQuantiteVariable() ) {
+								foreach ( $q->getQuantiteOptions() as $v ) {
+									$ret[] = $v;
+								}
+							} else {
+								$ret[] = '1';
+								$ret[] = 'X';
 							}
-						}
-						$filtered_ret = [];
-						foreach ( $ret as $r ) {
-							if ( ! in_array( $r, $filtered_ret ) ) {
-								$filtered_ret[] = $r;
-							}
-						}
 
-						return $filtered_ret;
+
+							return $ret;
+						} else {
+							$c            = AmapressContrat_instance::getBy( $arg['multi'] );
+							$ret          = $c->getSampleQuantiteCSV();
+							$filtered_ret = [];
+							foreach ( $ret as $r ) {
+								if ( ! in_array( $r, $filtered_ret ) ) {
+									$filtered_ret[] = $r;
+								}
+							}
+
+							return $filtered_ret;
+						}
 					} else {
 						$ret = [];
 						foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
-							$ret[]       = '**Pour le contrat <' . $c->getTitle() . '>**';
-							$contrat_ret = [];
-							foreach ( AmapressContrats::get_contrat_quantites( $c->ID ) as $q ) {
-								$contrat_ret[] = $q->getTitle();
-								$contrat_ret[] = $q->getCode();
-								if ( $q->getQuantite() ) {
-									$contrat_ret[] = $q->getQuantite();
-								}
-							}
+							$ret[]        = '**Pour le contrat <' . $c->getTitle() . '>**';
+							$contrat_ret  = $c->getSampleQuantiteCSV();
 							$filtered_ret = [];
 							foreach ( $contrat_ret as $r ) {
 								if ( ! in_array( $r, $filtered_ret ) ) {
@@ -578,6 +592,7 @@ jQuery(function($) {
 				'group'       => '2/ Contrat',
 				'readonly'    => 'amapress_is_contrat_adhesion_readonly',
 				'show_column' => false,
+				'csv_import'  => false,
 			),
 			'message'          => array(
 				'name'        => amapress__( 'Message' ),
@@ -607,34 +622,94 @@ jQuery(function($) {
 				},
 			),
 			'adherent2'        => array(
-				'name'         => amapress__( 'Co-Adhérent 1' ),
-				'type'         => 'select-users',
-				'required'     => false,
-				'desc'         => 'Sélectionner un Co-Adhérent 1. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-				'group'        => '4/ Coadhérents',
-				'readonly'     => 'amapress_is_contrat_adhesion_readonly',
-				'autocomplete' => true,
-				'searchable'   => true,
+				'name'          => amapress__( 'Co-Adhérent 1' ),
+				'type'          => 'select-users',
+				'required'      => false,
+				'desc'          => 'Sélectionner un Co-Adhérent 1 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'group'         => '4/ Coadhérents',
+				'readonly'      => 'amapress_is_contrat_adhesion_readonly',
+				'autocomplete'  => true,
+				'searchable'    => true,
+				'custom_column' => function ( $option, $post_id ) {
+					$user = AmapressAdhesion::getBy( $post_id );
+					if ( $user->getAdherent() ) {
+						if ( $user->getAdherent2() ) {
+							echo $user->getAdherent2()->getDisplayNameWithAdminEditLink();
+						} else if ( $user->getAdherent()->getCoAdherent1() ) {
+							echo $user->getAdherent()->getCoAdherent1()->getDisplayNameWithAdminEditLink();
+						}
+					}
+				},
+				'custom_export' => function ( $option, $post_id ) {
+					$user = AmapressAdhesion::getBy( $post_id );
+					if ( $user->getAdherent() ) {
+						if ( $user->getAdherent2() ) {
+							echo $user->getAdherent2()->getDisplayNameWithAdminEditLink();
+						} else if ( $user->getAdherent()->getCoAdherent1() ) {
+							echo $user->getAdherent()->getCoAdherent1()->getDisplayNameWithAdminEditLink();
+						}
+					}
+				},
 			),
 			'adherent3'         => array(
-				'name'         => amapress__( 'Co-Adhérent 2' ),
-				'type'         => 'select-users',
-				'required'     => false,
-				'desc'         => 'Sélectionner un Co-Adhérent 2. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-				'group'        => '4/ Coadhérents',
-				'readonly'     => 'amapress_is_contrat_adhesion_readonly',
-				'autocomplete' => true,
-				'searchable'   => true,
+				'name'          => amapress__( 'Co-Adhérent 2' ),
+				'type'          => 'select-users',
+				'required'      => false,
+				'desc'          => 'Sélectionner un Co-Adhérent 2 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'group'         => '4/ Coadhérents',
+				'readonly'      => 'amapress_is_contrat_adhesion_readonly',
+				'autocomplete'  => true,
+				'searchable'    => true,
+				'custom_column' => function ( $option, $post_id ) {
+					$user = AmapressAdhesion::getBy( $post_id );
+					if ( $user->getAdherent() ) {
+						if ( $user->getAdherent3() ) {
+							echo $user->getAdherent3()->getDisplayNameWithAdminEditLink();
+						} else if ( $user->getAdherent()->getCoAdherent2() ) {
+							echo $user->getAdherent()->getCoAdherent2()->getDisplayNameWithAdminEditLink();
+						}
+					}
+				},
+				'custom_export' => function ( $option, $post_id ) {
+					$user = AmapressAdhesion::getBy( $post_id );
+					if ( $user->getAdherent() ) {
+						if ( $user->getAdherent3() ) {
+							echo $user->getAdherent3()->getDisplayName();
+						} else if ( $user->getAdherent()->getCoAdherent2() ) {
+							echo $user->getAdherent()->getCoAdherent2()->getDisplayName();
+						}
+					}
+				},
 			),
 			'adherent4'         => array(
-				'name'         => amapress__( 'Co-Adhérent 3' ),
-				'type'         => 'select-users',
-				'required'     => false,
-				'desc'         => 'Sélectionner un Co-Adhérent 3. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
-				'group'        => '4/ Coadhérents',
-				'readonly'     => 'amapress_is_contrat_adhesion_readonly',
-				'autocomplete' => true,
-				'searchable'   => true,
+				'name'          => amapress__( 'Co-Adhérent 3' ),
+				'type'          => 'select-users',
+				'required'      => false,
+				'desc'          => 'Sélectionner un Co-Adhérent 3 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'group'         => '4/ Coadhérents',
+				'readonly'      => 'amapress_is_contrat_adhesion_readonly',
+				'autocomplete'  => true,
+				'searchable'    => true,
+				'custom_column' => function ( $option, $post_id ) {
+					$user = AmapressAdhesion::getBy( $post_id );
+					if ( $user->getAdherent() ) {
+						if ( $user->getAdherent4() ) {
+							echo $user->getAdherent4()->getDisplayNameWithAdminEditLink();
+						} else if ( $user->getAdherent()->getCoAdherent3() ) {
+							echo $user->getAdherent()->getCoAdherent3()->getDisplayNameWithAdminEditLink();
+						}
+					}
+				},
+				'custom_export' => function ( $option, $post_id ) {
+					$user = AmapressAdhesion::getBy( $post_id );
+					if ( $user->getAdherent() ) {
+						if ( $user->getAdherent4() ) {
+							echo $user->getAdherent4()->getDisplayName();
+						} else if ( $user->getAdherent()->getCoAdherent3() ) {
+							echo $user->getAdherent()->getCoAdherent3()->getDisplayName();
+						}
+					}
+				},
 			),
 			'date_fin'          => array(
 				'name'          => amapress__( 'Date de fin' ),
@@ -908,7 +983,8 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 	if ( ! $had_contrat ) {
 		$ret .= '<p class="adhesion-date-error">La date de début (' . esc_html( date_i18n( 'd/m/Y', $date_debut ) ) . ') est en dehors des dates du contrat associé</p>';
 	}
-	$ret .= '</fieldset>';
+
+//	$ret .= '</fieldset>';
 
 	return $ret;
 }

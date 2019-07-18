@@ -115,6 +115,16 @@ class Amapress_Import_Users_CSV {
 				$option          = AmapressEntities::getTfOption( 'user', $field );
 				if ( $option ) {
 					$options[ $key ] = $option->getSamplesForCSV( $arg );
+				} else if ( 'role' == $key || 'roles' == $key ) {
+					global $wp_roles;
+					$roles = [];
+					foreach ( $wp_roles->roles as $name => $role ) {
+						if ( strpos( strtolower( $role['name'] ), 'amap' ) === false ) {
+							continue;
+						}
+						$roles[] = $role['name'];
+					}
+					$options[ $key ] = $roles;
 				} else {
 					$options[ $key ] = array();
 				}

@@ -582,7 +582,10 @@ jQuery(function($) {
 				'selector-button' => 'Utiliser ce modèle',
 				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
 				'group'           => '2/6 - Paramètres généraux',
-				'desc'            => 'Générer un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
+				'desc'            => '
+				<p>Générer un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)</p>
+				<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>
+				<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
 			),
 			'contrat_info'          => array(
 				'name'        => amapress__( 'Termes du contrat' ),
@@ -755,7 +758,7 @@ jQuery(function($) {
 
 
 			// 4/6 Paniers
-			'quant_type'            => array(
+			'quant_type'   => array(
 				'name'     => amapress__( 'Choix du contenu des paniers' ),
 				'type'     => 'custom',
 				'group'    => '4/6 - Paniers',
@@ -922,7 +925,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor'          => array(
+			'quant_editor' => array(
 				'name'        => amapress__( 'Configuration des paniers (Taille/Quantités)' ),
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
@@ -934,7 +937,14 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => 'Quantités',
 			),
-			'rattrapage'            => array(
+			'has_pancust'  => array(
+				'name'        => amapress__( 'Contenu de panier à renseigner' ),
+				'type'        => 'checkbox',
+				'show_column' => false,
+				'group'       => '4/6 - Paniers',
+				'desc'        => 'Ce contrat a un contenu de panier à décrire chaque semaine',
+			),
+			'rattrapage'   => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1101,7 +1111,10 @@ jQuery(function($) {
 				'selector-button' => 'Utiliser ce modèle',
 				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
 				'group'           => '5/6 - Pré-inscription en ligne',
-				'desc'            => 'Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+				'desc'            => '
+<p>Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)</p>
+<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>
+<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
 			),
 
 
@@ -2151,6 +2164,8 @@ function amapress_can_delete_attachment( $can, $post_id ) {
 	$attachments = wp_cache_get( $key );
 	if ( false === $attachments ) {
 		$attachments            = [];
+		$attachments[]          = Amapress::getOption( 'default_word_model' );
+		$attachments[]          = Amapress::getOption( 'default_word_paper_model' );
 		$single_attachment_keys = array(
 			'amapress_contrat_instance_word_model',
 			'amapress_contrat_instance_word_paper_model',

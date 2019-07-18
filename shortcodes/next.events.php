@@ -111,10 +111,11 @@ function amapress_next_events_shortcode( $atts ) {
 	}
 
 
-	$ret = '';
+	$next_events_id = uniqid( 'ampsnevts_' );
+	$ret            = '';
 //    $ret = $is_public ? '<h4>Exemple</h4>' : '';
 	$ret .= '<div class="next-events">';
-	$ret .= '<div class="next-events-slick">';
+	$ret .= '<div id="' . $next_events_id . '" class="next-events-slick">';
 
 	$last_date   = null;
 	$first_lieu  = null;
@@ -223,7 +224,7 @@ function amapress_next_events_shortcode( $atts ) {
 
 	if ( $navigable ) {
 		$ret .= '<script type="text/javascript">jQuery(function($) {
-$(".next-events-slick").slick({
+$("#' . $next_events_id . '").slick({
   adaptiveHeight: true,
   infinite: false,
 //  variableWidth: true,

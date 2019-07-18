@@ -44,6 +44,8 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'        => amapress__( 'Fonctions actuelles' ),
 				'show_column' => false,
 				'type'        => 'custom',
+				'csv_import'  => false,
+				'csv_export'  => true,
 				'custom'      => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
 					if ( ! $amapien ) {
@@ -52,12 +54,22 @@ function amapress_register_entities_amapien( $entities ) {
 					$roles = esc_html( $amapien->getAmapRolesString() );
 
 					return $roles;
+				},
+				'export'      => function ( $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+					if ( ! $amapien ) {
+						return '';
+					}
+					$roles = $amapien->getAmapRolesString();
+
+					return $roles;
 				}
 			),
 			'role_desc'      => array(
 				'type'        => 'custom',
 				'name'        => amapress__( 'Rôle sur le site' ),
 				'show_column' => false,
+				'csv_import'  => false,
 				'custom'      => function ( $user_id ) {
 					return '
 <p id="fonctions_role_desc">Les rôles suivants donnent des accès spécifiques selon l’intitulé sélectionné</p>
@@ -88,9 +100,21 @@ function amapress_register_entities_amapien( $entities ) {
 //                'searchable' => true,
 			),
 			'intermittent'   => array(
-				'name'        => amapress__( 'Intermittent' ),
-				'type'        => 'custom',
-				'custom'      => function ( $user_id ) {
+				'name'              => amapress__( 'Intermittent' ),
+				'type'              => 'custom',
+				'custom_csv_sample' => function ( $option, $arg ) {
+					return array(
+						'true',
+						'vrai',
+						'oui',
+						'1',
+						'false',
+						'faux',
+						'non',
+						'0',
+					);
+				},
+				'custom'            => function ( $user_id ) {
 					$ret     = '';
 					$amapien = AmapressUser::getBy( $user_id, true );
 					if ( $amapien ) {
@@ -283,7 +307,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'         => amapress__( 'Co-adhérent 2' ),
 				'type'         => 'select-users',
 				'desc'         => 'Co-adhérent 2',
-				'show_column'  => false,
+				'show_column'  => true,
 				'searchable'   => true,
 				'autocomplete' => true,
 				'show_on'      => 'edit-only',
@@ -596,7 +620,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 	$contrat_to_renew = get_posts_count( 'post_type=amps_contrat_inst&amapress_date=renew' );
 	$this_week_start  = Amapress::start_of_week( amapress_time() );
 	$this_week_end    = Amapress::end_of_week( amapress_time() );
-	$next_distribs    = AmapressDistribution::getNextDistribs( Amapress::add_a_week( amapress_time(), - 1 ), 3, null );
+	$next_distribs    = AmapressDistribution::getNextDistribsUserResponsable( Amapress::add_a_week( amapress_time(), - 1 ), 3, null );
 	usort( $next_distribs, function ( $a, $b ) {
 		/** @var AmapressDistribution $a */
 		/** @var AmapressDistribution $b */

@@ -154,7 +154,7 @@ class AmapressSMTPMailingQueue {
 
 		$validEmails   = [];
 		$invalidEmails = [];
-		foreach ( explode( ',', $to ) as $recipient ) {
+		foreach ( ( is_array( $to ) ? $to : explode( ',', $to ) ) as $recipient ) {
 			if ( PHPMailer::validateAddress( $recipient ) ) {
 				$validEmails[] = $recipient;
 			} else {
@@ -173,15 +173,15 @@ class AmapressSMTPMailingQueue {
 			fwrite( $handle, json_encode( $data ) );
 			fclose( $handle );
 		}
-		if ( count( $invalidEmails ) ) {
-			$data['to'] = implode( ',', $invalidEmails );
-			$handle     = @fopen( $fileName, "w" );
-			if ( ! $handle ) {
-				return false;
-			}
-			fwrite( $handle, json_encode( $data ) );
-			fclose( $handle );
-		}
+//		if ( count( $invalidEmails ) ) {
+//			$data['to'] = implode( ',', $invalidEmails );
+//			$handle     = @fopen( $fileName, "w" );
+//			if ( ! $handle ) {
+//				return false;
+//			}
+//			fwrite( $handle, json_encode( $data ) );
+//			fclose( $handle );
+//		}
 
 		return true;
 	}
