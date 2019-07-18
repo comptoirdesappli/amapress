@@ -8,6 +8,7 @@ Plugin URI: http://amapress.fr/
 Description: 
 Version: 0.82.45
 Requires PHP: 5.6
+Requires WP: 4.4
 Author: ShareVB
 Author URI: http://amapress.fr/
 License: GPLv2 or later
