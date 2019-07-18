@@ -20,6 +20,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		'empty_text'               => '',
 		'show_on'                  => 'edit-only',
 		'show_table'               => true,
+		'show_column_values'       => false,
 		'include_columns'          => array(),
 		'exclude_columns'          => array(),
 		'datatable_options'        => array(),
@@ -68,9 +69,19 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 
 	public function columnDisplayValue( $post_id ) {
 		$query = $this->evalQuery( $post_id );
-		$count = $this->getRelatedPostsCount( $post_id );
-		$edit  = admin_url( 'edit.php' );
-		echo "<a href='$edit?{$query}'>{$count}</a>";
+		if ( $this->settings['show_column_values'] ) {
+			$txt = implode( ', ', array_map(
+				function ( $p ) {
+					/** @var WP_Post $p */
+					return Amapress::makeLink( admin_url( 'post.php?post=' . $p->ID . '&action=edit' ), $p->post_title );
+				}, get_posts( $query )
+			) );
+			echo $txt;
+		} else {
+			$count = $this->getRelatedPostsCount( $post_id );
+			$edit  = admin_url( 'edit.php' );
+			echo "<a href='$edit?{$query}'>{$count}</a>";
+		}
 	}
 
 	public function columnExportValue( $post_id ) {

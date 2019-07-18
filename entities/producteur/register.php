@@ -135,16 +135,17 @@ function amapress_register_entities_producteur( $entities ) {
 				'query'           => 'post_type=amps_contrat&amapress_producteur=%%id%%',
 			),
 			'contrats'             => array(
-				'name'            => amapress__( 'Contrats' ),
-				'show_column'     => true,
-				'group'           => '3/ Présentations et contrats',
-				'include_columns' => array(
+				'name'               => amapress__( 'Contrats' ),
+				'show_column'        => true,
+				'show_column_values' => true,
+				'group'              => '3/ Présentations et contrats',
+				'include_columns'    => array(
 					'title',
 					'amapress_contrat_instance_name',
 					'amapress_contrat_instance_type',
 				),
-				'type'            => 'related-posts',
-				'query'           => 'post_type=amps_contrat_inst&amapress_date=active&amapress_producteur=%%id%%',
+				'type'               => 'related-posts',
+				'query'              => 'post_type=amps_contrat_inst&amapress_date=active&amapress_producteur=%%id%%',
 			),
 		),
 		'help_edit'               => array(),

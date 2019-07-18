@@ -1442,12 +1442,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 									'tab'  => $tab_id,
 								], admin_url( 'admin.php' ) ) . '#' . $option['id'];
 
-							$state['30_recalls'][] = amapress_get_check_state(
-								'info',
-								$page_name . $tab_name . ( isset( $option['desc'] ) ? ' - ' . $option['desc'] . ' - ' : '' ) . $option['name'],
-								TitanFrameworkOptionEventScheduler::getFormattedEventDate( $val, isset( $option['scheduler_type'] ) ? $option['scheduler_type'] : 'days' ),
-								$tab_href
-							);
+							if ( ! empty( $val['enabled'] ) || false !== strpos( $option['id'], '-1' ) ) {
+								$state['30_recalls'][] = amapress_get_check_state(
+									'info',
+									$page_name . $tab_name . ( isset( $option['desc'] ) ? ' - ' . $option['desc'] . ' - ' : '' ) . $option['name'],
+									TitanFrameworkOptionEventScheduler::getFormattedEventDate( $val, isset( $option['scheduler_type'] ) ? $option['scheduler_type'] : 'days' ),
+									$tab_href
+								);
+							}
 						}
 					}
 				}
