@@ -171,6 +171,7 @@ function amapress_send_message(
 		$from_email = amapress_mail_from( null );
 		$from_dn    = amapress_mail_from_name( null );
 
+
 		if ( ! empty( $opt['send_from_me'] ) && $current_user ) {
 			$from_dn    = $current_user->getDisplayName();
 			$from_email = $current_user->getUser()->user_email;
@@ -184,7 +185,6 @@ function amapress_send_message(
 			add_filter( 'wp_mail_from', $set_from );
 			add_filter( 'wp_mail_from_name', $set_from_name );
 		}
-
 
 //        add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type' );
 		$headers[] = 'Content-Type: text/html; charset=UTF-8';
