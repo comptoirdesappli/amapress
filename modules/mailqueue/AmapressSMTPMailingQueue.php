@@ -152,38 +152,38 @@ class AmapressSMTPMailingQueue {
 		$time = $time ?: amapress_time();
 		$data = compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors', 'retries_count' );
 
+		if ( ! is_array( $to ) ) {
+			$to = explode( ',', $to );
+		}
+
 		$validEmails   = [];
 		$invalidEmails = [];
-		$emails        = [];
-		foreach ( ( is_array( $to ) ? $to : explode( ',', $to ) ) as $recipient ) {
-			if ( PHPMailer::validateAddress( $recipient ) ) {
+		foreach ( (array) $to as $recipient ) {
+			// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
+			$email = $recipient;
+			if ( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
+				if ( count( $matches ) == 3 ) {
+					$email = $matches[2];
+				}
+			}
+			if ( PHPMailer::validateAddress( $email ) ) {
 				$validEmails[] = $recipient;
 			} else {
 				$invalidEmails[] = $recipient;
 			}
-			$emails[] = $recipient;
 		}
 
-		$fileName = self::getUploadDir( $type ) . microtime( true ) . '.json';
-		// @todo: not happy with doing the same thing 2x. Should write that to a separate method
-		if ( count( $emails ) ) {
-			$data['to'] = implode( ',', $emails );
-			$handle     = @fopen( $fileName, "w" );
-			if ( ! $handle ) {
-				return false;
-			}
-			fwrite( $handle, json_encode( $data ) );
-			fclose( $handle );
+		$fileName   = self::getUploadDir( $type ) . microtime( true ) . '.json';
+		$data['to'] = implode( ',', $validEmails );
+		if ( ! empty( $invalidEmails ) ) {
+			$data['invalid_to'] = implode( ',', $invalidEmails );
 		}
-//		if ( count( $invalidEmails ) ) {
-//			$data['to'] = implode( ',', $invalidEmails );
-//			$handle     = @fopen( $fileName, "w" );
-//			if ( ! $handle ) {
-//				return false;
-//			}
-//			fwrite( $handle, json_encode( $data ) );
-//			fclose( $handle );
-//		}
+		$handle = @fopen( $fileName, "w" );
+		if ( ! $handle ) {
+			return false;
+		}
+		fwrite( $handle, json_encode( $data ) );
+		fclose( $handle );
 
 		return true;
 	}
