@@ -84,7 +84,6 @@ class AmapressSMTPMailingQueueOriginal {
 
 		$reply_to      = '';
 		$reply_to_name = '';
-		$return_path   = '';
 		// Headers
 		if ( empty( $headers ) ) {
 			$headers = array();
@@ -157,9 +156,6 @@ class AmapressSMTPMailingQueueOriginal {
 							} elseif ( '' !== trim( $content ) ) {
 								$reply_to = trim( $content );
 							}
-							break;
-						case 'return-path':
-							$return_path = $content;
 							break;
 						case 'content-type':
 							if ( strpos( $content, ';' ) !== false ) {
@@ -387,8 +383,20 @@ class AmapressSMTPMailingQueueOriginal {
 
 		// Send!
 		try {
-			if ( ! $phpmailer->Send() ) {
-				$errors[] = $phpmailer->ErrorInfo;
+			if ( defined( 'FREE_PAGES_PERSO' ) ) {
+				$start_time = time();
+				if ( ! $phpmailer->Send() ) {
+					$errors[] = $phpmailer->ErrorInfo;
+				} else {
+					$time = time() - $start_time;
+					if ( $time < 1.5 ) {
+						$errors[] = 'Free Page Perso mail send failed';
+					}
+				}
+			} else {
+				if ( ! $phpmailer->Send() ) {
+					$errors[] = $phpmailer->ErrorInfo;
+				}
 			}
 		} catch ( phpmailerException $e ) {
 			$errors[] = $e->errorMessage();
