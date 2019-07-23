@@ -326,8 +326,15 @@ class AmapressSMTPMailingQueueOriginal {
 
 		// Set whether it's plaintext, depending on $content_type
 		if ( 'text/html' == $content_type ) {
-			$phpmailer->IsHTML( true );
-			$phpmailer->AltBody = $phpmailer->html2text( $phpmailer->Body );
+			if ( defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) ) {
+				$phpmailer->IsHTML( false );
+				$phpmailer->Body    = $phpmailer->html2text( $phpmailer->Body );
+				$phpmailer->AltBody = null;
+				$content_type       = 'text/plain';
+			} else {
+				$phpmailer->IsHTML( true );
+				$phpmailer->AltBody = $phpmailer->html2text( $phpmailer->Body );
+			}
 		}
 
 		// If we don't have a charset from the input headers
