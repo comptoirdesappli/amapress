@@ -29,7 +29,7 @@ function amapress_can_renew_same_period_contrat_instance( $post_or_user ) {
 		Amapress::end_of_week( $contrat_instance->getDate_fin() )
 	);
 
-	return $diff < 52;
+	return $diff <= 53;
 }
 
 add_filter( 'amapress_register_entities', 'amapress_register_entities_contrat' );
