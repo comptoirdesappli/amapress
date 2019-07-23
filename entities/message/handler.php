@@ -171,7 +171,6 @@ function amapress_send_message(
 		$from_email = amapress_mail_from( null );
 		$from_dn    = amapress_mail_from_name( null );
 
-
 		if ( ! empty( $opt['send_from_me'] ) && $current_user ) {
 			$from_dn    = $current_user->getDisplayName();
 			$from_email = $current_user->getUser()->user_email;
@@ -186,6 +185,9 @@ function amapress_send_message(
 			add_filter( 'wp_mail_from_name', $set_from_name );
 		}
 
+		$from_dn = trim( str_replace( array( '"', "'", "\r", "\n" ), '', $from_dn ) );
+		$from_dn = '"' . $from_dn . '"';
+
 //        add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type' );
 		$headers[] = 'Content-Type: text/html; charset=UTF-8';
 		switch ( isset( $opt['send_mode'] ) ? $opt['send_mode'] : '' ) {
@@ -194,7 +196,10 @@ function amapress_send_message(
 				//$headers[] = "Reply-to: $from_dn <$from_email>";
 				/** @var AmapressUser $name */
 				foreach ( $emails_indiv as $email => $name ) {
-					$to          = "{$name->getDisplayName()} <$email>";
+					$name_string = $name->getDisplayName();
+					$name_string = trim( str_replace( array( '"', "'", "\r", "\n" ), '', $name_string ) );
+					$name_string = '"' . $name_string . '"';
+					$to          = "$name_string <$email>";
 					$new_subject = amapress_replace_mail_placeholders( $subject, $name, $entity );
 					$new_content = amapress_replace_mail_placeholders( $content, $name, $entity );
 					amapress_wp_mail( $to, $new_subject, $new_content, $headers, $attachments, $cc, $bcc );
