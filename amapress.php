@@ -139,6 +139,14 @@ add_action( 'init', function () {
 			amapress_add_admin_notice( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, ' . $dir_name . '. Merci de renommer "' . dirname( __FILE__ ) . '" et de réactiver Amapress',
 				'error', false );
 		}
+
+		require_once ABSPATH . '/wp-admin/includes/update.php';
+		foreach ( get_plugin_updates() as $plugin_file => $plugin_data ) {
+			if ( false != strpos( $plugin_file, 'amapress' ) ) {
+				amapress_add_admin_notice( 'Une nouvelle version d\'Amapress est disponible : ' . $plugin_data['Version'],
+					'warning', false );
+			}
+		}
 	}
 } );
 
