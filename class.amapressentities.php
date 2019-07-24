@@ -117,6 +117,16 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 </ul>
 ' . ( current_user_can( 'manage_options' ) ? '<p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 5 à 10 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> </p>' : '' )
 						),
+						array(
+							'id'      => 'mail_group_log_clean_days',
+							'type'    => 'number',
+							'step'    => 1,
+							'default' => 90,
+							'name'    => 'Nettoyer les archives (jours)',
+						),
+						array(
+							'type' => 'save',
+						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(

@@ -453,6 +453,12 @@ function amapress_fetch_mailinggroups() {
 	}
 }
 
+function amapress_clean_mailinggroups_archives() {
+	foreach ( AmapressMailingGroup::getAll() as $ml ) {
+		$ml->cleanLogs();
+	}
+}
+
 add_action( 'init', function () {
 	add_filter( 'cron_schedules', function ( $schedules ) {
 		$mail_queue_interval    = Amapress::getOption( 'mailgroup_interval' );
@@ -473,6 +479,11 @@ add_action( 'init', function () {
 		}
 		wp_schedule_event( time(), 'amps_mlgf', 'amps_mlgf_fetch' );
 	}
+
+	if ( ! wp_next_scheduled( 'amps_mlgf_clean_arc' ) ) {
+		wp_schedule_event( time(), 'daily', 'amps_mlgf_clean_arc' );
+	}
+	add_action( 'amps_mlgf_clean_arc', 'amapress_clean_mailinggroups_archives' );
 
 	amapress_register_shortcode( 'waiting-mlgrp-count', function () {
 		$cnt = 0;

@@ -748,4 +748,22 @@ class AmapressMailingGroup extends TitanEntity {
 			)
 		);
 	}
+
+	public function cleanLogs() {
+		$mail_group_log_clean_days = Amapress::getOption( 'mail_group_log_clean_days' );
+		if ( $mail_group_log_clean_days < 0 ) {
+			return;
+		}
+		$clean_date = Amapress::add_days( Amapress::start_of_day( time() ), - $mail_group_log_clean_days );
+		$accepted   = $this->loadDataFromFiles( 'accepted' );
+		$rejected   = $this->loadDataFromFiles( 'rejected' );
+		foreach (
+			array_merge( $accepted, $rejected )
+			as $filename => $email
+		) {
+			if ( ! isset( $email['date'] ) || $email['date'] < $clean_date ) {
+				$this->deleteMessage( $email['id'] );
+			}
+		}
+	}
 }
