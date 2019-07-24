@@ -1595,16 +1595,19 @@ function amapress_echo_and_check_amapress_state_page() {
 
 	echo '<div id="amps-state-accordion">';
 	foreach ( $state as $categ => $checks ) {
-		$global_state = 'success';
+		$global_states = [];
 		foreach ( $checks as $check ) {
-			if ( 'error' == $check['state'] ) {
-				$global_state = 'error';
-				break;
-			}
-			if ( 'warning' == $check['state'] ) {
-				$global_state = 'warning';
-			}
+			$global_states[] = $check['state'];
 		}
+		$global_state = 'info';
+		if ( in_array( 'error', $global_states ) ) {
+			$global_state = 'error';
+		} else if ( in_array( 'warning', $global_states ) ) {
+			$global_state = 'warning';
+		} else if ( in_array( 'success', $global_states ) ) {
+			$global_state = 'success';
+		}
+
 		echo '<h3><span class="check-item state  ' . $global_state . '">' . esc_html( $labels[ $categ ] ) . '</span></h3>';
 
 		echo '<div>';

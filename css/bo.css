@@ -80,7 +80,7 @@
     content: '\f107';
 }
 
-.amapress-check .info::before, .amapress-check .info::before {
+#amps-state-accordion .info::before, .amapress-check .info::before {
     color: gray;
     content: '\f107';
 }

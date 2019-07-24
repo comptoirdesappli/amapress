@@ -52,7 +52,16 @@ function amapress_create_user_if_not_exists(
 			AmapressUsers::resolveUserFullAdress( $user->ID, $address );
 		}
 		if ( ! empty( $tel ) ) {
-			update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
+			if ( is_array( $tel ) ) {
+				if ( 2 == count( $tel ) ) {
+					update_user_meta( $user->ID, 'amapress_user_telephone', $tel[0] );
+					update_user_meta( $user->ID, 'amapress_user_telephone2', $tel[1] );
+				} else {
+					update_user_meta( $user->ID, 'amapress_user_telephone', implode( ' / ', $tel ) );
+				}
+			} else {
+				update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
+			}
 		}
 	} else if ( $update_existing ) {
 		if ( ! empty( $first_name ) && ! empty( $last_name ) ) {
@@ -69,7 +78,16 @@ function amapress_create_user_if_not_exists(
 			AmapressUsers::resolveUserFullAdress( $user->ID, $address );
 		}
 		if ( ! empty( $tel ) ) {
-			update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
+			if ( is_array( $tel ) ) {
+				if ( 2 == count( $tel ) ) {
+					update_user_meta( $user->ID, 'amapress_user_telephone', $tel[0] );
+					update_user_meta( $user->ID, 'amapress_user_telephone2', $tel[1] );
+				} else {
+					update_user_meta( $user->ID, 'amapress_user_telephone', implode( ' / ', $tel ) );
+				}
+			} else {
+				update_user_meta( $user->ID, 'amapress_user_telephone', $tel );
+			}
 		}
 	}
 

@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.82.65
+Version: 0.82.95
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.82.65' );
+define( 'AMAPRESS_VERSION', '0.82.95' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -72,17 +72,33 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		$headers = array();
 	}
 	if ( is_string( $headers ) ) {
+		$headers = str_replace( "\r", '', $headers );
 		$headers = explode( "\n", $headers );
 	}
+	$headers   = array_map( function ( $h ) {
+		return trim( $h );
+	}, $headers );
 	$headers   = array_filter( $headers,
 		function ( $h ) {
 			return ! empty( $h ) && ! empty( trim( $h ) );
 		} );
-	$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	$headers   = array_filter( $headers,
+		function ( $h ) {
+			return 0 !== stripos( $h, 'Content-Type' );
+		} );
+	$headers[] = 'Content-Type: text/html; charset=utf-8';
 	if ( ! empty( $cc ) ) {
+		$headers   = array_filter( $headers,
+			function ( $h ) {
+				return 0 !== stripos( $h, 'Cc' );
+			} );
 		$headers[] = 'Cc:' . implode( ', ', $cc );
 	}
 	if ( ! empty( $bcc ) ) {
+		$headers   = array_filter( $headers,
+			function ( $h ) {
+				return 0 !== stripos( $h, 'Bcc' );
+			} );
 		$headers[] = 'Bcc:' . implode( ', ', $bcc );
 	}
 	if ( null == $attachments ) {
