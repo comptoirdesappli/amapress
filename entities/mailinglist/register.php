@@ -296,13 +296,14 @@ function amapress_get_mailinglists( TitanFrameworkOption $option ) {
 }
 
 function amapress_get_mailinglist_members_count( $mailing_list_id ) {
-	$ml     = new Amapress_MailingListConfiguration( $mailing_list_id );
-	$ml_obj = $ml->getMailingList();
-	if ( ! $ml_obj ) {
-		return '';
-	}
-
-	return "<a target='_blank' href='{$ml_obj->getMembersLink()}'>{$ml_obj->getMembersCount()}</a>";
+	$ml = Amapress_MailingListConfiguration::getBy( $mailing_list_id );
+//	$ml_obj = $ml->getMailingList();
+//	if ( ! $ml_obj ) {
+//		return '';
+//	}
+//
+//	return "<a target='_blank' href='{$ml_obj->getMembersLink()}'>{$ml_obj->getMembersCount()}</a>";
+	return Amapress::makeLink( admin_url( 'users.php?amapress_mllst_id=' . $mailing_list_id ), count( $ml->getMembersIds() ), true, true );
 }
 
 function amapress_get_mailinglist_moderation_column( $mailing_list_id ) {

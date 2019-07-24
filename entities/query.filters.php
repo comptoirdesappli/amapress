@@ -1514,6 +1514,20 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 //            }
 		}
 	}
+
+	if ( isset( $uqi->query_vars['amapress_mllst_id'] ) ) {
+		$ml = Amapress_MailingListConfiguration::getBy( intval( $uqi->query_vars['amapress_mllst_id'] ) );
+		if ( $ml ) {
+			$user_ids = $ml->getMembersIds();
+			if ( count( $user_ids ) > 0 ) {
+				$user_id_sql = amapress_prepare_in_sql( $user_ids );
+				$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
+			} else {
+				$where .= " AND 0 = 1";
+			}
+		}
+	}
+
 	//amapress_mlgrp_id
 	if ( isset( $uqi->query_vars['amapress_mlgrp_id'] ) ) {
 		$ml = AmapressMailingGroup::getBy( intval( $uqi->query_vars['amapress_mlgrp_id'] ) );
@@ -1765,6 +1779,9 @@ add_filter( 'users_list_table_query_args', function ( $args ) {
 	}
 	if ( isset( $_GET['amapress_adhesion'] ) ) {
 		$args['amapress_adhesion'] = $_GET['amapress_adhesion'];
+	}
+	if ( isset( $_GET['amapress_mllst_id'] ) ) {
+		$args['amapress_mllst_id'] = $_GET['amapress_mllst_id'];
 	}
 	if ( isset( $_GET['amapress_info'] ) ) {
 		$args['amapress_info'] = $_GET['amapress_info'];

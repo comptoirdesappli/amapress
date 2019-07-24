@@ -213,8 +213,14 @@ function amapress_get_paniers_intermittents_table(
 		foreach ( $adh as $a ) {
 			foreach ( $a->getContrat_instances() as $contrat_instance ) {
 				$adhesions = AmapressAdhesion::getUserActiveAdhesions( $a->getAdherent()->ID, $contrat_instance->ID );
+				if ( empty( $adhesions ) ) {
+					continue;
+				}
 				/** @var AmapressAdhesion $adhesion */
 				$adhesion = array_shift( $adhesions );
+				if ( empty( $adhesion ) ) {
+					continue;
+				}
 
 				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModelTitle()}</a>";
 				$quantites[] = $adhesion->getContrat_quantites_AsString( $date );

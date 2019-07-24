@@ -72,17 +72,33 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		$headers = array();
 	}
 	if ( is_string( $headers ) ) {
+		$headers = str_replace( "\r", '', $headers );
 		$headers = explode( "\n", $headers );
 	}
+	$headers   = array_map( function ( $h ) {
+		return trim( $h );
+	}, $headers );
 	$headers   = array_filter( $headers,
 		function ( $h ) {
 			return ! empty( $h ) && ! empty( trim( $h ) );
 		} );
-	$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	$headers   = array_filter( $headers,
+		function ( $h ) {
+			return 0 !== stripos( $h, 'Content-Type' );
+		} );
+	$headers[] = 'Content-Type: text/html; charset=utf-8';
 	if ( ! empty( $cc ) ) {
+		$headers   = array_filter( $headers,
+			function ( $h ) {
+				return 0 !== stripos( $h, 'Cc' );
+			} );
 		$headers[] = 'Cc:' . implode( ', ', $cc );
 	}
 	if ( ! empty( $bcc ) ) {
+		$headers   = array_filter( $headers,
+			function ( $h ) {
+				return 0 !== stripos( $h, 'Bcc' );
+			} );
 		$headers[] = 'Bcc:' . implode( ', ', $bcc );
 	}
 	if ( null == $attachments ) {

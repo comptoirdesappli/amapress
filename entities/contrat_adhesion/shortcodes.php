@@ -11,11 +11,15 @@ add_action( 'amapress_init', function () {
 				wp_die( 'Accès interdit' );
 			}
 		}
-		$email          = sanitize_email( $_REQUEST['email'] );
-		$user_firt_name = sanitize_text_field( ! empty( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '' );
-		$user_last_name = sanitize_text_field( ! empty( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '' );
-		$user_address   = sanitize_textarea_field( $_REQUEST['address'] );
-		$user_phones    = sanitize_text_field( $_REQUEST['tel'] );
+		$email              = sanitize_email( $_REQUEST['email'] );
+		$user_firt_name     = sanitize_text_field( ! empty( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '' );
+		$user_last_name     = sanitize_text_field( ! empty( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '' );
+		$user_address       = sanitize_textarea_field( $_REQUEST['address'] );
+		$user_mobile_phones = sanitize_text_field( $_REQUEST['telm'] );
+		$user_fix_phones    = sanitize_text_field( $_REQUEST['telf'] );
+		$user_phones        = array_filter( [ $user_mobile_phones, $user_fix_phones ], function ( $s ) {
+			return ! empty( $s );
+		} );
 
 		$user_id = amapress_create_user_if_not_exists( $email, $user_firt_name, $user_last_name, $user_address, $user_phones );
 		if ( ! $user_id ) {
@@ -377,11 +381,12 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$email = sanitize_email( $_REQUEST['email'] );
 		}
 
-		$user           = get_user_by( 'email', $email );
-		$user_firt_name = '';
-		$user_last_name = '';
-		$user_address   = '';
-		$user_phones    = '';
+		$user               = get_user_by( 'email', $email );
+		$user_firt_name     = '';
+		$user_last_name     = '';
+		$user_address       = '';
+		$user_mobile_phones = '';
+		$user_fix_phones    = '';
 
 		$coadh1_user_firt_name = '';
 		$coadh1_user_last_name = '';
@@ -407,13 +412,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 //					add_user_to_blog( get_current_blog_id(), $user->ID, 'amapien' );
 //				}
 //			}
-			$amapien        = AmapressUser::getBy( $user );
-			$user_message   = 'Vous êtes déjà membre de l’AMAP, vérifiez vos coordonnées :';
-			$user_firt_name = $user->first_name;
-			$user_last_name = $user->last_name;
-			$user_address   = $amapien->getFormattedAdresse();
-			$user_phones    = implode( '/', $amapien->getPhoneNumbers() );
-			$member_message = '';
+			$amapien            = AmapressUser::getBy( $user );
+			$user_message       = 'Vous êtes déjà membre de l’AMAP, vérifiez vos coordonnées :';
+			$user_firt_name     = $user->first_name;
+			$user_last_name     = $user->last_name;
+			$user_address       = $amapien->getFormattedAdresse();
+			$user_mobile_phones = implode( '/', $amapien->getPhoneNumbers( true ) );
+			$user_fix_phones    = implode( '/', $amapien->getPhoneNumbers( false ) );
+			$member_message     = '';
 
 			if ( $amapien->getCoAdherent1() ) {
 				$coadh1_user_firt_name = $amapien->getCoAdherent1()->getUser()->first_name;
@@ -469,9 +475,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="tel">Téléphone : </label></th>
-                    <td><input style="width: 100%" type="text" id="tel" name="tel" class=""
-                               value="<?php echo esc_attr( $user_phones ) ?>"/></td>
+                    <th style="text-align: left; width: auto"><label for="telm">Téléphone mobile : </label></th>
+                    <td><input style="width: 100%" type="text" id="telm" name="telm" class=""
+                               value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="telf">Téléphone fixe : </label></th>
+                    <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
+                               value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="address">Adresse : </label></th>
