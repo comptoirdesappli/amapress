@@ -3053,7 +3053,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											if ( ! empty( $desc['args'] ) ) {
 												$args = '<ul><li>' . implode( '</li><li>',
 														array_map( function ( $kk, $vv ) {
-															return '<strong>' . esc_html( $kk ) . '</strong>: ' . esc_html( $vv );
+															return '<strong>' . esc_html( $kk ) . '</strong>: ' . ( strip_tags( $vv ) != $vv ? $vv : esc_html( $vv ) );
 														}, array_keys( $desc['args'] ), array_values( $desc['args'] ) ) ) . '</li></ul>';
 											}
 											$ret .= '<tr><td>' . esc_html( $k ) . '</td><td>' . esc_html( $desc['desc'] ) . $args . '</td></tr>';

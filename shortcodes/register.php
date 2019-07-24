@@ -265,6 +265,19 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les inscriptions en ligne',
 			'args' => [
+				'key'                  => 'Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne',
+				'filter_multi_contrat' => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
+				'agreement'            => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'check_principal'      => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif',
+				'adhesion'             => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
+				'send_referents'       => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
+				'send_tresoriers'      => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux trésoriers',
+				'edit_names'           => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'only_contrats'        => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un contrat donné avec une autre clé',
+				'shorturl'             => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+				'adhesion_shift_weeks' => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
+				'before_close_hours'   => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
+				'email'                => '(mail de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
 			]
 		] );
 
