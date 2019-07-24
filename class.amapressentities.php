@@ -114,7 +114,8 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 <li>Modérer les messages en attente : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_moderation' ) . '">Messages en attente</a></li>
 <li>Consulter les archives des mails envoyés : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_archives' ) . '">Archives</a></li>
 ' . ( current_user_can( 'manage_options' ) ? '<li>Configurer un nouvel Email groupé : sous-section <a href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Configuration</a></li>' : '' ) . '
-</ul>'
+</ul>
+' . ( current_user_can( 'manage_options' ) ? '<p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 5 à 10 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> </p>' : '' )
 						),
 					),
 					'tabs'     => array(),
