@@ -2654,19 +2654,20 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 //						),
 					),
 					'tabs'     => array(
-						'Utilisateurs'          => array(
+						'Utilisateurs'              => array(
 							'id'         => 'import_users_tab',
 							'desc'       => '',
 							'capability' => 'edit_users',
 							'options'    => array(
 								array(
+									'type' => 'note',
+									'desc' => 'Cette page permet la création des comptes utilisateur et de leurs coordonnées : amapien, co-adhérents. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_utilisateurs', 'Aide', true, true ),
+								),
+								array(
 									'type'      => 'save',
 									'use_reset' => false,
 									'save'      => 'Télécharger le modèle',
 									'action'    => 'generate_model_user'
-								),
-								array(
-									'type' => 'separator',
 								),
 								array(
 									'id'     => 'import_users',
@@ -2678,11 +2679,15 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Inscriptions contrats' => array(
+						'Inscriptions contrats'     => array(
 							'id'         => 'import_adhesions_tab',
 							'desc'       => '',
 							'capability' => 'edit_adhesion',
 							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonction du choix de leurs paniers. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_inscriptions', 'Aide', true, true ),
+								),
 								array(
 									'name'    => 'Modèle multi contrat',
 									'type'    => 'action-buttons',
@@ -2755,14 +2760,16 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Quantités des paniers' => array(
+						'Configuration des paniers' => array(
 							'id'         => 'import_quant_paniers',
 							'desc'       => '',
 							'capability' => 'edit_contrat_instance',
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du produit et la colonne "Contenu" à sa description.'
+									'desc' => '
+Cette page permet d\'importer les configurations de paniers pour vos contrats<br/>
+Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du produit et la colonne "Contenu" à sa description.'
 								),
 								array(
 									'type'      => 'save',
@@ -2791,14 +2798,15 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Producteurs'           => array(
+						'Producteurs'               => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
 							'capability' => 'edit_producteur',
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du producteur ou de sa ferme et la colonne "Contenu" à son historique. Les utilisateurs correspondant doivent être créés au préalable'
+									'desc' => 'Cette page permet d\'importer les producteurs<br/>
+Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du producteur ou de sa ferme et la colonne "Contenu" à son historique. Les utilisateurs correspondant doivent être créés au préalable'
 								),
 								array(
 									'type'      => 'save',
@@ -2815,14 +2823,15 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Productions'           => array(
+						'Productions'               => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
 							'capability' => 'edit_contrat',
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom de la production (par ex, <i>Légumes, Champignons</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable'
+									'desc' => 'Cette page permet d\'importer les productions des producteurs<br/>
+Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom de la production (par ex, <i>Légumes, Champignons</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable'
 								),
 								array(
 									'type'      => 'save',
