@@ -260,7 +260,7 @@ class AmapressAdhesion extends TitanEntity {
 
 							return $ref->getDisplayName();
 						},
-						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds()
+						$adh->getContrat_instance()->getModel()->getReferentsIds()
 					) ) );
 				}
 			];
@@ -276,7 +276,7 @@ class AmapressAdhesion extends TitanEntity {
 
 							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
 						},
-						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds()
+						$adh->getContrat_instance()->getModel()->getReferentsIds()
 					) ) );
 				}
 			];
@@ -292,7 +292,7 @@ class AmapressAdhesion extends TitanEntity {
 
 							return $ref->getDisplayName();
 						},
-						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds( $adh->getLieuId() )
+						$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
 					) ) );
 				}
 			];
@@ -308,7 +308,7 @@ class AmapressAdhesion extends TitanEntity {
 
 							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
 						},
-						$adh->getContrat_instance()->getModel()->getProducteur()->getReferentsIds( $adh->getLieuId() )
+						$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
 					) ) );
 				}
 			];

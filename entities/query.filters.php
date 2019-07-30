@@ -1408,8 +1408,8 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			//
 		} else if ( $amapress_role == 'referent_producteur' ) {
 			$user_ids = array();
-			foreach ( Amapress::get_producteurs() as $prod ) {
-				$user_ids = array_merge( $user_ids, $prod->getAllReferentsIds() );
+			foreach ( AmapressContrats::get_contrats() as $contrat ) {
+				$user_ids = array_merge( $user_ids, $contrat->getAllReferentsIds() );
 			}
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
 			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";

@@ -114,7 +114,7 @@ function amapress_register_entities_amapien( $entities ) {
 						'0',
 					);
 				},
-				'custom'            => function ( $user_id ) {
+				'custom'      => function ( $user_id ) {
 					$ret     = '';
 					$amapien = AmapressUser::getBy( $user_id, true );
 					if ( $amapien ) {
@@ -533,6 +533,9 @@ function amapress_can_delete_user( $can, $user_id ) {
 			'amapress_producteur_referent',
 			'amapress_producteur_referent2',
 			'amapress_producteur_referent3',
+//			'amapress_contrat_referent',
+//			'amapress_contrat_referent2',
+//			'amapress_contrat_referent3',
 		);
 		$lieux_ids        = Amapress::get_lieu_ids();
 		if ( count( $lieux_ids ) > 1 ) {
@@ -540,6 +543,9 @@ function amapress_can_delete_user( $can, $user_id ) {
 				$single_user_keys[] = "amapress_producteur_referent_{$lieu_id}";
 				$single_user_keys[] = "amapress_producteur_referent2_{$lieu_id}";
 				$single_user_keys[] = "amapress_producteur_referent3_{$lieu_id}";
+//				$single_user_keys[] = "amapress_contrat_referent_{$lieu_id}";
+//				$single_user_keys[] = "amapress_contrat_referent2_{$lieu_id}";
+//				$single_user_keys[] = "amapress_contrat_referent3_{$lieu_id}";
 			}
 		}
 		global $wpdb;
@@ -957,8 +963,18 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 			if ( empty( $prod ) ) {
 				return '';
 			}
+			$res = [];
+			foreach ( $r['contrat_ids'] as $contrat_id ) {
+				$contrat = AmapressContrat::getBy( $contrat_id );
+				if ( empty( $prod ) ) {
+					continue;
+				}
+				$res[] = sprintf( 'référent de %1$s / %2$s',
+					Amapress::makeLink( $prod->getAdminEditLink(), $prod->getTitle() ),
+					Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) );
+			}
 
-			return 'référent de <a href=\'' . $prod->getAdminEditLink() . '\'>' . esc_html( $prod->getTitle() ) . '</a>';
+			return implode( ', ', $res );
 		}, $is_ref_prod_list
 	) ) );
 	$check_role_js_code = 'return true;';
@@ -971,7 +987,7 @@ jQuery(function() {
   jQuery("#role").addClass("check_amap_role");
   jQuery.validator.addMethod("check_amap_role", function (value, element) {
 	' . $check_role_js_code . '
-  }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement ' . $ref_prod_message . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");
+  }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement : ' . $ref_prod_message . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");
 });
 </script>';
 }

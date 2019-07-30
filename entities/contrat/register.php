@@ -62,6 +62,9 @@ function amapress_register_entities_contrat( $entities ) {
 					echo '<div class="notice notice-error"><p>Production invalide : pas de producteur associée</p></div>';
 				}
 			}
+			if ( empty( $contrat->getAllReferentsIds() ) ) {
+				echo '<div class="notice notice-error"><p>Production sans référent</p></div>';
+			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
@@ -115,6 +118,42 @@ function amapress_register_entities_contrat( $entities ) {
 
 					return false;
 				},
+			),
+			'referent'   => array(
+				'name'         => amapress__( 'Référent' ),
+				'type'         => 'select-users',
+				'role'         => amapress_can_be_referent_roles(),
+				'group'        => '2/ Référents spécifiques',
+//                'required' => true,
+				'desc'         => 'Référent',
+				'searchable'   => true,
+				'autocomplete' => true,
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
+			),
+			'referent2'  => array(
+				'name'         => amapress__( 'Référent 2' ),
+				'type'         => 'select-users',
+				'role'         => amapress_can_be_referent_roles(),
+				'group'        => '2/ Référents spécifiques',
+//                'required' => true,
+				'desc'         => 'Référent 2',
+				'searchable'   => true,
+				'autocomplete' => true,
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
+			),
+			'referent3'  => array(
+				'name'         => amapress__( 'Référent 3' ),
+				'type'         => 'select-users',
+				'role'         => amapress_can_be_referent_roles(),
+				'group'        => '2/ Référents spécifiques',
+//                'required' => true,
+				'desc'         => 'Référent 3',
+				'searchable'   => true,
+				'autocomplete' => true,
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
 			),
 			'contrats'   => array(
 				'name'            => amapress__( 'Contrats' ),
@@ -439,13 +478,12 @@ function amapress_register_entities_contrat( $entities ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( empty( $contrat )
 					     || empty( $contrat->getModel() )
-					     || empty( $contrat->getModel()->getProducteur() )
-					     || empty( $contrat->getModel()->getProducteur()->getAllReferentsIds() ) ) {
+					     || empty( $contrat->getModel()->getAllReferentsIds() ) ) {
 						return '';
 					}
 
 					$refs = [];
-					foreach ( $contrat->getModel()->getProducteur()->getAllReferentsIds() as $user_id ) {
+					foreach ( $contrat->getModel()->getAllReferentsIds() as $user_id ) {
 						$ref    = AmapressUser::getBy( $user_id );
 						$refs[] = Amapress::makeLink(
 							$ref->getEditLink(),
@@ -1494,6 +1532,29 @@ jQuery(function($) {
 //        ),
 //    );
 	return $entities;
+}
+
+add_filter( 'amapress_contrat_fields', 'amapress_contrat_fields' );
+function amapress_contrat_fields( $fields ) {
+	$lieux = Amapress::get_lieux();
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+			$fields[ 'referent_' . $lieu->ID ] = array(
+				'name'         => amapress__( 'Référent ' . $lieu->getShortName() ),
+				'type'         => 'select-users',
+				'role'         => amapress_can_be_referent_roles(),
+				'group'        => '2/ Référents spécifiques',
+				'searchable'   => true,
+				'autocomplete' => true,
+//                'required' => true,
+				'desc'         => 'Référent',
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
+			);
+		}
+	}
+
+	return $fields;
 }
 
 add_filter( 'amapress_import_adhesion_multi', 'amapress_import_adhesion_multi', 5, 4 );

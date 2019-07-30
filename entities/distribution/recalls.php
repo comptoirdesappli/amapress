@@ -224,7 +224,7 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 				continue;
 			}
 
-			$responsable_ids = array_merge( $responsable_ids, $c->getModel()->getProducteur()->getAllReferentsIds() );
+			$responsable_ids = array_merge( $responsable_ids, $c->getAllReferentsIds() );
 		}
 	}
 

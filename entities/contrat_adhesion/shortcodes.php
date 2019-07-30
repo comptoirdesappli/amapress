@@ -1630,7 +1630,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			wp_die( $invalid_access_message );
 		}
 
-		$referents_ids = $contrat->getModel()->getProducteur()->getReferentsIds( $lieu_id );
+		$referents_ids = $contrat->getReferentsIds( $lieu_id );
 		/** @var AmapressUser[] $referents */
 		$referents       = array_map( function ( $rid ) {
 			return AmapressUser::getBy( $rid );
@@ -1640,7 +1640,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			if ( ! $r ) {
 				continue;
 			}
-			$referents_mails += $r->getAllEmails();
+			$referents_mails = array_merge( $referents_mails, $r->getAllEmails() );
 		}
 
 		$quantite_ids     = [];
@@ -1704,7 +1704,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( ! $admin_mode ) {
 			if ( Amapress::toBool( $atts['send_referents'] ) ) {
 				$referents = [];
-				foreach ( $inscription->getContrat_instance()->getModel()->getProducteur()->getReferentsIds() as $ref_id ) {
+				foreach ( $inscription->getContrat_instance()->getReferentsIds() as $ref_id ) {
 					$user_obj  = AmapressUser::getBy( $ref_id );
 					$referents = array_merge( $referents, $user_obj->getAllEmails() );
 				}

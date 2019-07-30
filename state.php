@@ -718,21 +718,28 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		function ( $u ) {
 			$dn = AmapressProducteur::getBy( $u );
 
-			return empty( $dn->getAllReferentsIds() );
+			return from( $dn->getContrats() )->any( function ( $contrat ) {
+				/** @var AmapressContrat $contrat */
+				return empty( $contrat->getAllReferentsIds() );
+			} );
 		} );
 	$state['15_posts'][] = amapress_get_check_state(
 		! empty( $prod_no_referent ) ? 'error' : 'success',
 		'Référents Producteurs',
-		'Associer le(s) référent(s) producteur pour chacun des producteurs',
+		'Associer le(s) référent(s) producteur pour chacun des producteurs ou productions',
 		admin_url( 'edit.php?post_type=amps_producteur' ),
 		implode( ', ', array_map( function ( $u ) {
 			$dn = AmapressProducteur::getBy( $u );
 			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 
 			$refs = [];
-			foreach ( $dn->getAllReferentsIds() as $referents_id ) {
-				$user   = AmapressUser::getBy( $referents_id );
-				$refs[] = esc_html( $user->getDisplayName() );
+			foreach ( $dn->getContrats() as $contrat ) {
+				foreach ( Amapress::get_lieux() as $lieu ) {
+					foreach ( $contrat->getReferentsIds( $lieu->ID ) as $referents_id ) {
+						$user   = AmapressUser::getBy( $referents_id );
+						$refs[] = esc_html( sprintf( count( $dn->getContrats() ) == 1 ? '%1$s (%3$s)' : '%1$s (%2$s/%3$s)', $user->getDisplayName(), $contrat->getTitle(), $lieu->getShortName() ) );
+					}
+				}
 			}
 			$refs = array_unique( $refs );
 			if ( empty( $refs ) ) {
