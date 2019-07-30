@@ -94,12 +94,137 @@ class AmapressEntities {
 					'function'   => null,
 				),
 				array(
+					'id'       => 'amapress_gestion_mailinggroup_page',
+					'type'     => 'panel',
+					'settings' => array(
+						'name'       => 'Emails groupés [waiting-mlgrp-count]',
+						'position'   => '24',
+						'capability' => 'read_mailing_group',
+						'icon'       => 'dashicons-email-alt',
+					),
+					'options'  => array(
+						array(
+							'type' => 'note',
+							'bare' => true,
+							'desc' => '<p>Dans cette section, vous pouvez configurer et administrer les <strong>Emails groupés</strong>.</p>
+<p>Un <strong>Email groupé</strong> est une <em>liste de diffusion simplifiée</em> à partir d’un compte mail classique (accessible en IMAP ou POP3) et gérée depuis le site de votre AMAP (par Amapress).
+Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou non), envoyés à tous les membres de l’email groupé configuré sur le site.</p>
+<h4>Dans cette section, vous pouvez :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>Modérer les messages en attente : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_moderation' ) . '">Messages en attente</a></li>
+<li>Consulter les archives des mails envoyés : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_archives' ) . '">Archives</a></li>
+' . ( current_user_can( 'manage_options' ) ? '<li>Configurer un nouvel Email groupé : sous-section <a href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Configuration</a></li>' : '' ) . '
+</ul>
+' . ( current_user_can( 'manage_options' ) ? '<p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 5 à 10 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> </p>' : '' )
+						),
+						array(
+							'id'      => 'mail_group_log_clean_days',
+							'type'    => 'number',
+							'step'    => 1,
+							'default' => 90,
+							'name'    => 'Nettoyer les archives (jours)',
+						),
+						array(
+							'type' => 'save',
+						),
+					),
+					'tabs'     => array(),
+					'subpages' => array(
+						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_moderation',
+							'settings' => array(
+								'name'       => 'Messages en attente',
+								'menu_title' => 'Messages en attente',
+								'capability' => 'read',
+								'menu_icon'  => 'dashicons-shield',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                                                                                                          = $ml->ID;
+									$tabs[ sprintf( '%s - <span class="badge">%d</span> Mails en attente', $ml->getName(), $ml->getMailWaitingModerationCount() ) ] = array(
+										'id'      => 'mailgrp-moderate-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-moderate-' . $ml_id,
+												'name'   => 'Mails en attente',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_get_mailing_group_waiting_list( $ml_id );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_archives',
+							'settings' => array(
+								'name'       => 'Archives',
+								'menu_title' => 'Archives',
+								'capability' => 'read',
+								'menu_icon'  => 'dashicons-book',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                                = $ml->ID;
+									$tabs[ $ml->getName() . amapress__( ' - Archives' ) ] = array(
+										'id'      => 'mailgrp-archives-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-archives-' . $ml_id,
+												'name'   => 'Archives',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_get_mailing_group_archive_list( $ml_id, 'accepted' );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
+							'type'       => 'page',
+							'title'      => 'Configuration',
+							'menu_icon'  => 'dashicons-admin-generic',
+							'menu_title' => 'Configuration',
+							'post_type'  => AmapressMailingGroup::INTERNAL_POST_TYPE,
+							'capability' => 'manage_options',
+							'slug'       => 'edit.php?post_type=' . AmapressMailingGroup::INTERNAL_POST_TYPE,
+							'function'   => null,
+						),
+					),
+				),
+				array(
 					'type'       => 'page',
 					'title'      => 'Listes de diffusion',
 					'icon'       => 'dashicons-email-alt',
 					'menu_title' => 'Listes de diffusion',
 					'post_type'  => Amapress_MailingListConfiguration::INTERNAL_POST_TYPE,
-					'position'   => '25.1',
+					'position'   => '24',
 					'capability' => 'manage_options',
 					'slug'       => 'edit.php?post_type=' . Amapress_MailingListConfiguration::INTERNAL_POST_TYPE,
 					'function'   => null,
@@ -2452,6 +2577,145 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type' => 'save',
 										),
 									)
+								),
+							),
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'amapress_mailinggroup_options_page',
+							'type'     => 'panel',
+							'settings' => array(
+								'name'       => 'Emails groupés',
+								'position'   => '25.17',
+								'capability' => 'manage_amapress',
+								'icon'       => 'dashicons-admin-tools',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Mails'         => array(
+									'id'      => 'amapress_mailinggroup_mails_opt_page',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail de notification à l\'émetteur d\'envoi pour modération',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-waiting-sender-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Message pour la liste %%liste_nom%% transmis au(x) modérateur(s)',
+										),
+										array(
+											'id'      => 'mailinggroup-waiting-sender-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été transmis au(x) modérateur(s)\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail de notification d\'un message à modérer aux modérateurs',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-waiting-mods-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Message à modérer de %%sender%% pour la liste %%liste_nom%%',
+										),
+										array(
+											'id'      => 'mailinggroup-waiting-mods-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nUn nouveau message pour la liste %%liste_nom%% est arrivé de %%sender%%.\n\nPour accepter sa diffusion (il sera distribué), cliquez ici : %%msg_distrib_link%%\n\nPour refuser sa diffusion avec notification (il sera effacé avec notification à l'émetteur), cliquez ici : %%msg_reject_notif_link%%\n\nPour refuser sa diffusion sans notification (il sera effacé sans notification), cliquez ici : %%msg_reject_silent_link%%\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail de notification du rejet d\'un message à l\'émetteur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-reject-sender-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Rejet de votre message à %%liste_nom%% - %%msg_subject%%',
+										),
+										array(
+											'id'      => 'mailinggroup-reject-sender-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été rejeté par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre message : %%msg_subject%%)\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail de notification de distribution d\'un message à l\'émetteur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'mailinggroup-distrib-sender-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Diffusion de votre message à %%liste_nom%%',
+										),
+										array(
+											'id'      => 'mailinggroup-distrib-sender-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre message pour la liste %%liste_nom%% a été accepté et distribué par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre message : %%msg_subject%%)\n\n%%nom_site%%" ),
+											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Paramètres',
+											'type' => 'heading',
+										),
+										array(
+											'id'      => 'mailgroup_interval',
+											'name'    => 'Interval',
+											'type'    => 'number',
+											'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
+											'default' => '30',
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
+								'Configuration' => array(
+									'id'      => 'amapress_mailinggroup_conf_opt_page',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'mailinggroup-unk-action',
+											'name'    => 'Action pour expéditeur inconnu',
+											'type'    => 'select',
+											'options' => [
+												'moderate' => 'Modérer',
+												'reject'   => 'Rejeté',
+											],
+											'desc'    => 'Action à appliquer aux expéditeurs inconnus du site',
+											'default' => 'moderate',
+										),
+										array(
+											'id'   => 'mailinggroup-bl-regex',
+											'name' => 'Blacklist',
+											'type' => 'text',
+											'desc' => 'Regex de blacklist',
+										),
+										array(
+											'id'      => 'mailinggroup-send-confirm-unk',
+											'name'    => 'Envoyer confirmation aux expéditeurs inconnus',
+											'type'    => 'text',
+											'desc'    => 'Envoyer les confirmations aux expéditeurs inconnus',
+											'default' => false,
+										),
+										array(
+											'type' => 'save',
+										),
+									),
 								),
 							),
 						),

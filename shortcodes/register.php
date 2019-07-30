@@ -572,26 +572,44 @@ function amapress_register_shortcodes() {
 		ob_start();
 
 		$do_sms_link = Amapress::toBool( $atts['sms'] ) && amapress_can_access_admin();
-		echo '<ul>';
+		$entries     = [];
 		foreach ( Amapress_MailingListConfiguration::getAll() as $mailing_list_configuration ) {
-			echo '<li>';
+			$li   = '<li>';
 			$name = $mailing_list_configuration->getAddress();
 			$desc = $mailing_list_configuration->getDescription();
-			echo Amapress::makeLink( "mailto:$name", $name );
+			$li   .= Amapress::makeLink( "mailto:$name", $name );
 			if ( $do_sms_link ) {
-				echo ' ; ' . Amapress::makeLink( $mailing_list_configuration->getMembersSMSTo(), 'Envoyer un SMS aux membres' );
+				$li .= ' ; ' . Amapress::makeLink( $mailing_list_configuration->getMembersSMSTo(), 'Envoyer un SMS aux membres' );
 			}
 			if ( ! empty( $desc ) ) {
-				echo "<br/><em>$desc</em>";
+				$li .= "<br/><em>$desc</em>";
 			}
-			echo '</li>';
+			$li        .= '</li>';
+			$entries[] = $li;
 		}
+		foreach ( AmapressMailingGroup::getAll() as $ml ) {
+			$li   = '<li>';
+			$name = $ml->getName();
+			$desc = $ml->getDescription();
+			$li   .= Amapress::makeLink( "mailto:$name", $name );
+			if ( $do_sms_link ) {
+				$li .= ' ; ' . Amapress::makeLink( $ml->getMembersSMSTo(), 'Envoyer un SMS aux membres' );
+			}
+			if ( ! empty( $desc ) ) {
+				$li .= "<br/><em>$desc</em>";
+			}
+			$li        .= '</li>';
+			$entries[] = $li;
+		}
+		sort( $entries );
+		echo '<ul>';
+		echo implode( '', $entries );
 		echo '</ul>';
 
 		return ob_get_clean();
 	},
 		[
-			'desc' => 'Liste des liste de diffusions (SYMPA/SudOuest) configurées sur le site',
+			'desc' => 'Liste des liste de diffusions (SYMPA/SudOuest/Emails groupés) configurées sur le site',
 			'args' => [
 			]
 		] );

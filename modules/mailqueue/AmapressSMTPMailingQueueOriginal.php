@@ -84,6 +84,7 @@ class AmapressSMTPMailingQueueOriginal {
 
 		$reply_to      = '';
 		$reply_to_name = '';
+		$had_from = false;
 		// Headers
 		if ( empty( $headers ) ) {
 			$headers = array();
@@ -137,6 +138,7 @@ class AmapressSMTPMailingQueueOriginal {
 							} elseif ( '' !== trim( $content ) ) {
 								$from_email = trim( $content );
 							}
+							$had_from = true;
 							break;
 						case 'reply-to':
 							$bracket_pos = strpos( $content, '<' );
@@ -221,24 +223,29 @@ class AmapressSMTPMailingQueueOriginal {
 			$from_email = 'wordpress@' . $sitename;
 		}
 
-		/**
-		 * Filter the email address to send from.
-		 *
-		 * @since 2.2.0
-		 *
-		 * @param string $from_email Email address to send from.
-		 */
-		$phpmailer->From = apply_filters( 'wp_mail_from', $from_email );
+		if ( ! $had_from ) {
+			/**
+			 * Filter the email address to send from.
+			 *
+			 * @since 2.2.0
+			 *
+			 * @param string $from_email Email address to send from.
+			 */
+			$phpmailer->From = apply_filters( 'wp_mail_from', $from_email );
 
-		/**
-		 * Filter the name to associate with the "from" email address.
-		 *
-		 * @since 2.3.0
-		 *
-		 * @param string $from_name Name associated with the "from" email address.
-		 */
-		$phpmailer->FromName = apply_filters( 'wp_mail_from_name', $from_name );
-
+			/**
+			 * Filter the name to associate with the "from" email address.
+			 *
+			 * @since 2.3.0
+			 *
+			 * @param string $from_name Name associated with the "from" email address.
+			 */
+			$phpmailer->FromName = apply_filters( 'wp_mail_from_name', $from_name );
+		} else {
+			$phpmailer->From     = $from_email;
+			$phpmailer->FromName = $from_name;
+//			$phpmailer->AddCustomHeader( sprintf( 'Sender: %s <%s>', apply_filters( 'wp_mail_from_name', $from_name ), apply_filters( 'wp_mail_from', $from_email ) ) );
+		}
 		// Set destination addresses
 		if ( ! is_array( $to ) ) {
 			$to = explode( ',', $to );
@@ -263,7 +270,18 @@ class AmapressSMTPMailingQueueOriginal {
 
 		// Set mail's subject and body
 		$phpmailer->Subject = $subject;
-		$phpmailer->Body    = $message;
+		if ( is_array( $message ) ) {
+			if ( empty( $message['html'] ) ) {
+				$phpmailer->Body    = $message['text'];
+				$phpmailer->AltBody = $message['text'];
+			} else {
+				$phpmailer->Body    = $message['html'];
+				$phpmailer->AltBody = empty( $message['text'] ) ? $phpmailer->html2text( $message['html'] ) : $message['text'];
+				$phpmailer->isHTML( true );
+			}
+		} else {
+			$phpmailer->Body = $message;
+		}
 
 		// Add any CC and BCC recipients
 		if ( ! empty( $cc ) ) {
@@ -371,7 +389,21 @@ class AmapressSMTPMailingQueueOriginal {
 		if ( ! empty( $attachments ) ) {
 			foreach ( $attachments as $attachment ) {
 				try {
-					$phpmailer->AddAttachment( $attachment );
+					if ( is_array( $attachment ) ) {
+//						$body['attachments'][] = [
+//							'id'     => $attachment->contentId,
+//							'name'   => $attachment->name,
+//							'inline' => ( 0 == strcasecmp( $attachment->disposition, 'inline' ) ),
+//							'file'   => $attachment->filePath
+//						];
+						if ( ! empty( $attachment['inline'] ) ) {
+							$phpmailer->addEmbeddedImage( $attachment['file'], $attachment['id'], $attachment['name'] );
+						} else {
+							$phpmailer->AddAttachment( $attachment['file'], $attachment['name'] );
+						}
+					} else {
+						$phpmailer->AddAttachment( $attachment );
+					}
 				} catch ( phpmailerException $e ) {
 					$errors[] = $e->errorMessage();
 					continue;

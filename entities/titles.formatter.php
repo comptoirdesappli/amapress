@@ -27,6 +27,11 @@ function amapress_mailinglist_title_formatter( $post_title, WP_Post $post ) {
 	return get_post_meta( $post_id, 'amapress_mailinglist_name', true );
 }
 
+add_filter( 'amapress_mailing_group_title_formatter', 'amapress_mailing_group_title_formatter', 10, 2 );
+function amapress_mailing_group_title_formatter( $post_title, WP_Post $post ) {
+	return get_post_meta( $post->ID, 'amapress_mailing_group_name', true );
+}
+
 
 add_filter( 'amapress_distribution_title_formatter', 'amapress_distribution_title_formatter', 10, 2 );
 function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {

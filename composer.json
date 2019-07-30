@@ -21,6 +21,7 @@
     "athari/yalinqo": "~2.0",
     "phpunit/phpunit": "4.8.36",
     "squizlabs/php_codesniffer": "*",
-    "wp-coding-standards/wpcs": "*"
+    "wp-coding-standards/wpcs": "*",
+    "php-imap/php-imap": "3.0.26"
   }
 }

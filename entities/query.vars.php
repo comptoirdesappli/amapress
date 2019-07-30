@@ -34,6 +34,7 @@ function amapress_add_query_vars( $query_vars ) {
 	$query_vars[] = 'amapress_produit_tag_not_in';
 	$query_vars[] = 'amapress_with_coadherents';
 	$query_vars[] = 'amapress_no_filter_referent';
+	$query_vars[] = 'amapress_mlgrp_id';
 
 	return $query_vars;
 }

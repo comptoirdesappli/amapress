@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.82.95
+Version: 0.83.40-ml
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -47,8 +47,8 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 82 );
-define( 'AMAPRESS_VERSION', '0.82.95' );
+define( 'AMAPRESS_DB_VERSION', 83 );
+define( 'AMAPRESS_VERSION', '0.83.40-ml' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -112,7 +112,8 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
 		} );
 	}
-	wp_mail( $to, wp_unslash( $subject ), wptexturize( wpautop( wp_unslash( $message ) ) ), $headers, $attachments );
+
+	return wp_mail( $to, wp_unslash( $subject ), wptexturize( wpautop( wp_unslash( $message ) ) ), $headers, $attachments );
 //    remove_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
 }
 
@@ -126,10 +127,13 @@ global $amapress_notices;
 $amapress_notices = array();
 function amapress_add_admin_notice( $message, $type, $is_dismissible, $escape = true ) {
 	global $amapress_notices;
+	$amapress_notices[] = amapress_get_admin_notice( $message, $type, $is_dismissible, $escape );
+}
 
+function amapress_get_admin_notice( $message, $type, $is_dismissible, $escape = true ) {
 	$class = $is_dismissible ? "notice-$type is-dismissible" : "notice-$type";
 
-	$amapress_notices[] = sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
+	return sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
 }
 
 add_action( 'init', function () {
@@ -392,6 +396,8 @@ function amapress_simplify_post_type( $post_type ) {
 			return 'adhesion_period';
 		case 'amps_mailing':
 			return 'mailinglist';
+		case AmapressMailingGroup::INTERNAL_POST_TYPE:
+			return AmapressMailingGroup::POST_TYPE;
 	}
 	if ( strpos( $post_type, 'amps_' ) === 0 ) {
 		return substr( $post_type, 5 );

@@ -726,6 +726,12 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
+		self::add_post_role( 'administrator', 'mailing_group', 'mailing_groups', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => true,
+			'publish' => true,
+		) );
 
 		$r = get_role( 'administrator' );
 		$r->add_cap( 'manage_fournisseurs' );
@@ -765,6 +771,12 @@ class Amapress {
 			'edit'    => true,
 			'delete'  => false,
 			'publish' => true,
+		) );
+		self::add_post_role( 'producteur', 'mailing_group', 'mailing_groups', array(
+			'read'    => true,
+			'edit'    => false,
+			'delete'  => false,
+			'publish' => false,
 		) );
 
 		$r = get_role( 'producteur' );
@@ -877,6 +889,12 @@ class Amapress {
 			'edit'    => true,
 			'delete'  => true,
 			'publish' => true,
+		) );
+		self::add_post_role( 'tresorier', 'mailing_group', 'mailing_groups', array(
+			'read'    => true,
+			'edit'    => false,
+			'delete'  => false,
+			'publish' => false,
 		) );
 
 		$r = get_role( 'tresorier' );
@@ -1033,6 +1051,12 @@ class Amapress {
 		self::add_post_role( 'coordinateur_amap', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
 			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'coordinateur_amap', 'mailing_group', 'mailing_groups', array(
+			'read'    => true,
+			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
 		) );
@@ -1251,6 +1275,12 @@ class Amapress {
 			'delete'  => false,
 			'publish' => false,
 		) );
+		self::add_post_role( 'responsable_amap', 'mailing_group', 'mailing_groups', array(
+			'read'    => true,
+			'edit'    => false,
+			'delete'  => false,
+			'publish' => false,
+		) );
 
 		$r = get_role( 'responsable_amap' );
 		$r->add_cap( 'manage_fournisseurs' );
@@ -1433,6 +1463,12 @@ class Amapress {
 		self::add_post_role( 'referent', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
 			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'referent', 'mailing_group', 'mailing_groups', array(
+			'read'    => true,
+			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
 		) );
