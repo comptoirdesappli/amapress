@@ -22,6 +22,7 @@
     "phpunit/phpunit": "4.8.36",
     "squizlabs/php_codesniffer": "*",
     "wp-coding-standards/wpcs": "*",
-    "php-imap/php-imap": "3.0.26"
+    "php-imap/php-imap": "3.0.26",
+    "fzaninotto/faker": "v1.8.0"
   }
 }

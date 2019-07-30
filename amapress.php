@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.83.40-ml
+Version: 0.84.0
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 83 );
-define( 'AMAPRESS_VERSION', '0.83.40-ml' );
+define( 'AMAPRESS_VERSION', '0.84.0' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -104,7 +104,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	if ( null == $attachments ) {
 		$attachments = [];
 	}
-	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) ) {
+	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 		$h       = esc_html( var_export( $headers, true ) );
 		$message = "Original To : $to\nOriginal Headers: $h\n\n" . $message;
 		$to      = Amapress::getOption( 'test_mail_target' );
