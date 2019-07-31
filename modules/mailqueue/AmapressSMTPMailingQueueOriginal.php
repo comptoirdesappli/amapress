@@ -82,8 +82,6 @@ class AmapressSMTPMailingQueueOriginal {
 			$phpmailer = new PHPMailer( true );
 		}
 
-//		$reply_to      = '';
-//		$reply_to_name = '';
 		$had_from = false;
 		// Headers
 		if ( empty( $headers ) ) {
@@ -140,25 +138,6 @@ class AmapressSMTPMailingQueueOriginal {
 							}
 							$had_from = true;
 							break;
-//						case 'reply-to':
-//							$bracket_pos = strpos( $content, '<' );
-//							if ( $bracket_pos !== false ) {
-//								// Text before the bracketed email is the "From" name.
-//								if ( $bracket_pos > 0 ) {
-//									$reply_to_name = substr( $content, 0, $bracket_pos - 1 );
-//									$reply_to_name = str_replace( '"', '', $reply_to_name );
-//									$reply_to_name = trim( $reply_to_name );
-//								}
-//
-//								$reply_to = substr( $content, $bracket_pos + 1 );
-//								$reply_to = str_replace( '>', '', $reply_to );
-//								$reply_to = trim( $reply_to );
-//
-//								// Avoid setting an empty $from_email.
-//							} elseif ( '' !== trim( $content ) ) {
-//								$reply_to = trim( $content );
-//							}
-//							break;
 						case 'content-type':
 							if ( strpos( $content, ';' ) !== false ) {
 								list( $type, $charset_content ) = explode( ';', $content );
@@ -370,10 +349,6 @@ class AmapressSMTPMailingQueueOriginal {
 		 * @param string $charset Default email charset.
 		 */
 		$phpmailer->CharSet = apply_filters( 'wp_mail_charset', $charset );
-
-//		if ( ! empty( $reply_to ) ) {
-//			$phpmailer->addReplyTo( $reply_to, $reply_to_name );
-//		}
 
 		// Set custom headers
 		if ( ! empty( $headers ) ) {
