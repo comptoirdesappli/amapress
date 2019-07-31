@@ -105,6 +105,9 @@ class AmapressSMTPMailingQueue {
 		}
 
 		$use = Amapress::getOption( 'mail_queue_use_queue' );
+		if ( defined( 'FREE_PAGES_PERSO' ) ) {
+			$use = false;
+		}
 		if ( empty( $use ) || ! $use || apply_filters( 'amapress_mail_queue_bypass', false ) ) {
 			$retries = apply_filters( 'amapress_mail_queue_retries', 1 );
 			do {
