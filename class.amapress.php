@@ -3781,6 +3781,10 @@ class Amapress {
 		return $href;
 	}
 
+	public static function get_collectif_page_href() {
+		return self::get_page_with_shortcode_href( 'amapiens-role-list', 'amp_collectif_href' );
+	}
+
 	public static function get_inscription_distrib_page_href() {
 		return self::get_page_with_shortcode_href( 'inscription-distrib', 'amp_inscr_distrib_href' );
 	}

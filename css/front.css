@@ -348,6 +348,7 @@ a.btn {
 .amap-panel-title {
     padding: 15px;
     font-size: 1.5em;
+    margin: 0 !important;
 }
 
 h3.amap-panel-title {
@@ -986,4 +987,12 @@ table.docspace_list tr td:first-of-type a[href$=".js"] {
 /* directories */
 table.docspace_list tr.dir td:first-of-type a {
     background-image: url(../images/folder.png);
+}
+
+.resp-distribution-contacts > .amap-panel {
+    display: inline-block;
+}
+
+.resp-distribution-contacts, .resp-distribution-contacts .amap-panel-title {
+    font-size: 0.8em;
 }

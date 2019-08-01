@@ -59,6 +59,53 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 	return $post_its;
 }
 
+function amapress_responsables_distrib_shortcode( $atts ) {
+	if ( ! amapress_is_user_logged_in() ) {
+		return '';
+	}
+
+	$atts = shortcode_atts( array(
+		'distrib' => 2,
+	), $atts );
+
+	$arg_next_distribs = intval( $atts['distrib'] );
+	$weeks             = $arg_next_distribs;
+	do {
+		$next_distribs = AmapressDistribution::getNextDistribsUserResponsable( null, $weeks, null );
+		$dates         = array_unique( array_map( function ( $d ) {
+			/** @var AmapressDistribution $d */
+			return Amapress::start_of_day( $d->getDate() );
+		}, $next_distribs ) );
+		$weeks         += 1;
+	} while ( $weeks < 15 && count( $dates ) < $arg_next_distribs );
+
+	$ret = '';
+	foreach ( $next_distribs as $dist ) {
+		if ( empty( $dist->getContratIds() ) ) {
+			continue;
+		}
+
+		$content = '';
+		$lieu    = $dist->getLieu();
+		$content .= '<p>' . esc_html( $lieu->getShortName() ) . '</p>';
+		if ( empty( $dist->getResponsables() ) ) {
+			$content .= '<p><strong>Aucun responsable inscrit</strong></p>';
+		} else {
+			foreach ( $dist->getResponsables() as $responsable ) {
+				$content .= '<p>' . esc_html( $responsable->getDisplayName() ) . ' : ' . $responsable->getTelTo() . '</p>';
+			}
+		}
+
+		$content .= '<p>' . Amapress::makeLink( Amapress::get_collectif_page_href(), 'Contacts collectif' ) . '</p>';
+
+		$ret .= amapress_get_panel_start_no_esc( Amapress::makeLink( $dist->getPermalink(), date_i18n( 'd/m/Y', $dist->getDate() ) . ' - Responsables' ) );
+		$ret .= $content;
+		$ret .= amapress_get_panel_end();
+	}
+
+	return '<div class="resp-distribution-contacts">' . $ret . '</div>';
+}
+
 function amapress_inscription_distrib_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'show_past'                => 'false',

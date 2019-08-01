@@ -136,6 +136,12 @@ function amapress_register_shortcodes() {
 			'args' => [
 			]
 		] );
+	amapress_register_shortcode( 'resp-distrib-contacts', 'amapress_responsables_distrib_shortcode',
+		[
+			'desc' => 'Contacts des responsables de distribution',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode',
 		[
 			'desc' => 'Inscripions aux visites à la ferme',
