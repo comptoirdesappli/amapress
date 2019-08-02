@@ -1340,6 +1340,8 @@ class AmapressContrat_instance extends TitanEntity {
 		$meta['amapress_contrat_instance_date_debut'] = $date_debut;
 		$meta['amapress_contrat_instance_date_fin']   = $date_fin;
 		unset( $meta['amapress_contrat_instance_ended'] );
+		unset( $meta['amapress_contrat_instance_archives_infos'] );
+		unset( $meta['amapress_contrat_instance_archived'] );
 		$meta['amapress_contrat_instance_date_ouverture'] = Amapress::add_a_week( $this->getDate_ouverture(), $add_weeks );
 		$meta['amapress_contrat_instance_date_cloture']   = Amapress::add_a_week( $this->getDate_cloture(), $add_weeks );
 
