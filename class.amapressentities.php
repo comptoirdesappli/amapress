@@ -347,57 +347,12 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 //						),
 					),
 					'tabs'     => array(
-						'Roles des Responsables de distribution'                  => array(
+						'Roles des Responsables de distribution'        => array(
 							'id'      => 'amp_tab_role_resp_distrib',
 							'desc'    => '',
 							'options' => amapress_distribution_responsable_roles_options(),
 						),
-						'Mails - Responsables de distribution - Rappel'           => array(
-							'id'      => 'amp_tab_recall_resp_distrib',
-							'desc'    => '',
-							'options' => amapress_distribution_responsable_recall_options(),
-						),
-						'Mails - Vérification de distribution - Rappel'           => array(
-							'id'      => 'amp_tab_recall_verif_distrib',
-							'desc'    => '',
-							'options' => amapress_distribution_verify_recall_options(),
-						),
-						'Mails - A tous les amapiens à la distribution - Rappel'  => array(
-							'id'      => 'amp_tab_recall_all_amapiens',
-							'desc'    => '',
-							'options' => amapress_distribution_all_amapiens_recall_options(),
-						),
-						'Mails - Envoi liste émargement Excel/PDF'                => array(
-							'id'      => 'amp_tab_recall_emarg',
-							'desc'    => '',
-							'options' => amapress_distribution_emargement_recall_options(),
-						),
-						'Mails - Distribution - Modification livraisons - Rappel' => array(
-							'id'      => 'amp_tab_recall_modif_distrib',
-							'desc'    => '',
-							'options' => amapress_distribution_changes_recall_options(),
-						),
-						'Mails - Visite - Inscription - Rappel'                   => array(
-							'id'      => 'amp_tab_recall_visite_inscr',
-							'desc'    => '',
-							'options' => amapress_visite_inscription_recall_options(),
-						),
-						'Mails - Visite - Inscription possible - Rappel'          => array(
-							'id'      => 'amp_tab_recall_visite_avail',
-							'desc'    => '',
-							'options' => amapress_visite_available_recall_options(),
-						),
-						'Mails - Evènement AMAP - Inscription - Rappel'           => array(
-							'id'      => 'amp_tab_recall_amap_event_inscr',
-							'desc'    => '',
-							'options' => amapress_amap_event_inscription_recall_options(),
-						),
-						'Mails - Evènement AMAP - Inscription possible - Rappel'  => array(
-							'id'      => 'amp_tab_recall_amap_event_avail',
-							'desc'    => '',
-							'options' => amapress_amap_event_available_recall_options(),
-						),
-						'Distributions - Définir horaires particuliers'           => array(
+						'Distributions - Définir horaires particuliers' => array(
 							'id'      => 'amp_tab_distrib_hours_setter',
 							'desc'    => '',
 							'options' => [
@@ -608,6 +563,65 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 							),
 							'tabs'     => array(),
 						),
+						array(
+							'subpage'  => true,
+							'id'       => 'event_mails_page',
+							'settings' => array(
+								'name'       => 'Mails et rappels',
+								'menu_title' => 'Mails/Rappels',
+//								'position'   => '25.2',
+								'capability' => 'manage_events',
+								'menu_icon'  => 'dashicons-email',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Mails - Responsables de distribution - Rappel'           => array(
+									'id'      => 'amp_tab_recall_resp_distrib',
+									'desc'    => '',
+									'options' => amapress_distribution_responsable_recall_options(),
+								),
+								'Mails - Vérification de distribution - Rappel'           => array(
+									'id'      => 'amp_tab_recall_verif_distrib',
+									'desc'    => '',
+									'options' => amapress_distribution_verify_recall_options(),
+								),
+								'Mails - A tous les amapiens à la distribution - Rappel'  => array(
+									'id'      => 'amp_tab_recall_all_amapiens',
+									'desc'    => '',
+									'options' => amapress_distribution_all_amapiens_recall_options(),
+								),
+								'Mails - Envoi liste émargement Excel/PDF'                => array(
+									'id'      => 'amp_tab_recall_emarg',
+									'desc'    => '',
+									'options' => amapress_distribution_emargement_recall_options(),
+								),
+								'Mails - Distribution - Modification livraisons - Rappel' => array(
+									'id'      => 'amp_tab_recall_modif_distrib',
+									'desc'    => '',
+									'options' => amapress_distribution_changes_recall_options(),
+								),
+								'Mails - Visite - Inscription - Rappel'                   => array(
+									'id'      => 'amp_tab_recall_visite_inscr',
+									'desc'    => '',
+									'options' => amapress_visite_inscription_recall_options(),
+								),
+								'Mails - Visite - Inscription possible - Rappel'          => array(
+									'id'      => 'amp_tab_recall_visite_avail',
+									'desc'    => '',
+									'options' => amapress_visite_available_recall_options(),
+								),
+								'Mails - Evènement AMAP - Inscription - Rappel'           => array(
+									'id'      => 'amp_tab_recall_amap_event_inscr',
+									'desc'    => '',
+									'options' => amapress_amap_event_inscription_recall_options(),
+								),
+								'Mails - Evènement AMAP - Inscription possible - Rappel'  => array(
+									'id'      => 'amp_tab_recall_amap_event_avail',
+									'desc'    => '',
+									'options' => amapress_amap_event_available_recall_options(),
+								),
+							),
+						),
 					),
 				),
 //                array(
@@ -725,26 +739,6 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 									'type' => 'save',
 								),
 							)
-						),
-						'Mails - Envoi liste des chèques'      => array(
-							'id'      => 'amp_tab_recall_liste_cheques',
-							'desc'    => '',
-							'options' => amapress_contrat_paiements_recall_options(),
-						),
-						'Mails - Envoi des quantités à livrer' => array(
-							'id'      => 'amp_tab_recall_quantites_distrib',
-							'desc'    => '',
-							'options' => amapress_contrat_quantites_recall_options(),
-						),
-						'Mails - Contrats à renouvèler'        => array(
-							'id'      => 'amp_tab_recall_contrat_renew',
-							'desc'    => '',
-							'options' => amapress_contrat_renew_recall_options(),
-						),
-						'Mails - Inscriptions à valider'       => array(
-							'id'      => 'amp_tab_inscr_validate_distrib',
-							'desc'    => '',
-							'options' => amapress_inscriptions_to_validate_recall_options(),
 						),
 						'Assistant - Pré-inscription en ligne' => array(
 							'id'      => 'config_online_inscriptions',
@@ -1149,6 +1143,41 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'capability' => 'edit_contrat_instance',
 							'slug'       => 'edit.php?post_type=amps_contrat_inst&amapress_date=active',
 						),
+						array(
+							'subpage'  => true,
+							'id'       => 'contrats_mails_page',
+							'settings' => array(
+								'name'       => 'Mails et rappels',
+								'menu_title' => 'Mails/Rappels',
+								'position'   => '25.1',
+								'capability' => 'edit_contrat_instance',
+								'menu_icon'  => 'dashicons-email',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Mails - Envoi liste des chèques'      => array(
+									'id'      => 'amp_tab_recall_liste_cheques',
+									'desc'    => '',
+									'options' => amapress_contrat_paiements_recall_options(),
+								),
+								'Mails - Envoi des quantités à livrer' => array(
+									'id'      => 'amp_tab_recall_quantites_distrib',
+									'desc'    => '',
+									'options' => amapress_contrat_quantites_recall_options(),
+								),
+								'Mails - Contrats à renouvèler'        => array(
+									'id'      => 'amp_tab_recall_contrat_renew',
+									'desc'    => '',
+									'options' => amapress_contrat_renew_recall_options(),
+								),
+								'Mails - Inscriptions à valider'       => array(
+									'id'      => 'amp_tab_inscr_validate_distrib',
+									'desc'    => '',
+									'options' => amapress_inscriptions_to_validate_recall_options(),
+								),
+							),
+						),
+
 //                        array(
 //                            'title' => 'Commandes',
 //                            'menu_icon' => 'post_type',
@@ -3113,7 +3142,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Productions'               => array(
+						'Productions' => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
 							'capability' => 'edit_contrat',
@@ -3146,7 +3175,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Produits'              => array(
+						'Produits'    => array(
 							'id'         => 'import_produits_tab',
 							'desc'       => '',
 							'capability' => 'edit_produit',
