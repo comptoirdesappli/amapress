@@ -2420,10 +2420,10 @@ function amapress_contrat_instance_archivables_view() {
 				'action'     => 'archive_contrat',
 				'contrat_id' => $contrat_instance->ID,
 			),
-			admin_url( 'admin.php' )
+			admin_url( 'admin-post.php' )
 		);
 		$data[]       = array(
-			'contrat' => $contrat_instance->getTitle(),
+			'contrat' => Amapress::makeLink( $contrat_instance->getAdminEditLink(), $contrat_instance->getTitle(), true, true ),
 			'archive' => Amapress::makeLink( $archive_link, 'Archiver' ),
 		);
 	}
