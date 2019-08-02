@@ -869,7 +869,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'desc' => '
 									<p>Vous pouvez configurer les modèles DOCX par défaut pour tous les contrats sans modèle spécifique.</p>
 									<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat personnalisé et vierge.</p>
-									<p>La procédure est la suivante: <ul>
+									<p>La procédure est la suivante: <ul style="list-style-type: decimal; padding-left: 1em">
 									<li>Téléchargez le <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">modèle générique</a></li>
 									<li>changez le logo d\'entête</li>
 									<li>personnalisez les engagements</li>
