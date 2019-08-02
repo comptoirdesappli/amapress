@@ -26,6 +26,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		'datatable_options'        => array(),
 		'column_options'           => array(),
 		'related_posts_count_func' => null,
+		'related_posts_count_link' => true,
 	);
 
 	private function evalQuery( $postID = null ) {
@@ -78,9 +79,17 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 			) );
 			echo $txt;
 		} else {
-			$count = $this->getRelatedPostsCount( $post_id );
-			$edit  = admin_url( 'edit.php' );
-			echo "<a href='$edit?{$query}'>{$count}</a>";
+			$count                    = $this->getRelatedPostsCount( $post_id );
+			$related_posts_count_link = $this->settings['related_posts_count_link'];
+			if ( is_callable( $related_posts_count_link, false ) ) {
+				$related_posts_count_link = call_user_func( $related_posts_count_link, $post_id );
+			}
+			if ( ! $related_posts_count_link ) {
+				echo $count;
+			} else {
+				$edit = admin_url( 'edit.php' );
+				echo "<a href='$edit?{$query}'>{$count}</a>";
+			}
 		}
 	}
 
