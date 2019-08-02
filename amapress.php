@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.84.25
+Version: 0.84.30
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 83 );
-define( 'AMAPRESS_VERSION', '0.84.25' );
+define( 'AMAPRESS_VERSION', '0.84.30' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -144,7 +144,12 @@ add_action( 'init', function () {
 				'error', false );
 		}
 
-		require_once ABSPATH . '/wp-admin/includes/update.php';
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		if ( ! function_exists( 'get_plugin_updates' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/update.php';
+		}
 		foreach ( get_plugin_updates() as $plugin_file => $plugin_data ) {
 			if ( false != strpos( $plugin_file, 'amapress' ) ) {
 				amapress_add_admin_notice( 'Une nouvelle version d\'Amapress est disponible : ' . $plugin_data['Version'],
