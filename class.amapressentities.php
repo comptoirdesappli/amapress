@@ -1414,7 +1414,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'intermittence-panier-repris-ask-repreneur-mail-content',
 									'name'    => 'Contenu du mail',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier%%) à la distribution %%post:distribution%% a été envoyée.\n\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier%%) à la distribution %%post:distribution%% a été envoyée à %%adherent-coords%%.\n\n%%nom_site%%" ),
 									'desc'    =>
 										AmapressIntermittence_panier::getPlaceholdersHelp(),
 								),
