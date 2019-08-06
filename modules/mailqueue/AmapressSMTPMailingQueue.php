@@ -252,8 +252,9 @@ class AmapressSMTPMailingQueue {
 		foreach ( $types as $type ) {
 			if ( 'waiting' == $type || 'errored' == $type || 'logged' == $type ) {
 				foreach ( glob( self::getUploadDir( $type ) . '*.json' ) as $filename ) {
-					$emails[ $filename ]         = json_decode( file_get_contents( $filename ), true );
-					$emails[ $filename ]['type'] = $type;
+					$emails[ $filename ]             = json_decode( file_get_contents( $filename ), true );
+					$emails[ $filename ]['type']     = $type;
+					$emails[ $filename ]['basename'] = basename( $filename );
 					$i ++;
 					if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
 						break;
@@ -292,7 +293,7 @@ class AmapressSMTPMailingQueue {
 				}
 			}
 			$this->sendMail( $data );
-			$this->deleteFile( $file );
+			@unlink( $file );
 		}
 
 		exit;
@@ -329,12 +330,8 @@ class AmapressSMTPMailingQueue {
 		return $errors;
 	}
 
-	/**
-	 * Deletes file from uploads folder
-	 *
-	 * @param string $file Absolute path to file
-	 */
-	public function deleteFile( $file ) {
+	public static function deleteFile( $type, $msg_file ) {
+		$file = self::getUploadDir( $type ) . $msg_file;
 		@unlink( $file );
 	}
 

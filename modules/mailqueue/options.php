@@ -252,11 +252,22 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 		     && false === strpos( $msg, '<br />' ) ) {
 			$msg = esc_html( $msg );
 		}
+
+		$href            = add_query_arg(
+			array(
+				'action'   => 'amapress_delete_queue_msg',
+				'type'     => $type,
+				'msg_file' => $email['basename'],
+			),
+			admin_url( 'admin.php' )
+		);
+		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '">Supprimer</a>';
+
 		$msg    = wpautop( $msg );
 		$data[] = array(
 			'time'          => array(
 				'val'     => $email['time'],
-				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) ),
+				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) ) . $link_delete_msg,
 			),
 			'to'            => esc_html( str_replace( ',', ', ', $email['to'] ) ),
 			'subject'       => esc_html( $email['subject'] ),
@@ -277,6 +288,24 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 			)
 		)
 	);
+}
+
+
+add_action( 'admin_action_amapress_delete_queue_msg', 'admin_action_amapress_delete_queue_msg' );
+function admin_action_amapress_delete_queue_msg() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( 'Accès non autorisé' );
+	}
+
+	$type     = $_REQUEST['type'];
+	$msg_file = $_REQUEST['msg_file'];
+	AmapressSMTPMailingQueue::deleteFile( $type, $msg_file );
+	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
+		echo "Message $msg_file supprimé avec succès";
+	} else {
+		wp_redirect( $_SERVER['HTTP_REFERER'] );
+	}
+	exit();
 }
 
 add_action( 'admin_action_amapress_test_mail_config', 'amapress_test_mail_config' );
