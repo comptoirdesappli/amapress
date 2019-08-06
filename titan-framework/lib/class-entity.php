@@ -50,6 +50,7 @@ class TitanEntity {
 		return $this->post->post_name;
 	}
 
+	/** @return WP_Post */
 	public function getPost() {
 		if ( ! $this->post ) {
 			$this->ensure_init();

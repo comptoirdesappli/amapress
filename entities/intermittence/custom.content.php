@@ -244,7 +244,7 @@ function amapress_get_paniers_intermittents_table(
 			//"<a href='mailto:{$ad->getAdherent()->getUser()->user_email}'>" . $ad->getAdherent()->getDisplayName() . '</a> (' . $ad->getAdherent()->getTelephone() . ')',
 			'repreneur'    => $repreneur,
 			'message'      => $ad->getMessage(),
-			'date_display' => date_i18n( 'd/m/Y', $date ),
+			'date_display' => date_i18n( 'd/m/Y', $date ) . '<br/><span style="font-size: 0.7em; color: #2b2b2b">depuis ' . date_i18n( 'd/m/Y', get_post_time( 'U', false, $ad->getPost() ) ) . '</span>',
 			'date_value'   => $date,
 			'state'        => $state,
 		);
