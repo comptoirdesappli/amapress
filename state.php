@@ -423,24 +423,24 @@ function amapress_get_state() {
 		'info',
 		'Adresse mail du site',
 		'Configurer l\'adresse email du site (par défaut, "wordpress", actuellement "<strong>' . esc_html( Amapress::getOption( 'email_from_mail' ) ) . '</strong>") et son nom d\'affichage (par défaut, le nom du site). Pensez à configurer une redirection pour cette adresse dans la configuration de votre hébergement.',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_general_config' )
+		admin_url( 'admin.php?page=amapress_options_page&tab=amp_site_mail_config' )
 	);
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Message sur la page de connexion',
 		'Personnaliser le message qui s\'affiche sur la page de connexion, par exemple, pour rappeler la procédure de récupération de son mot de passe.',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_general_config#amapress_below_login_message' )
+		admin_url( 'admin.php?page=amapress_options_page&tab=amp_connection_config#amapress_below_login_message' )
 	);
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Mail de bienvenue/demande de récupération mot de passe',
 		'Ajoutez et personnalisez le mail de bienvenue que chaque amapien reçoit à la création de son compte ou lorsqu\'il demande à récupérer son mot de passe',
-		admin_url( 'admin.php?page=amapress_mail_options_page' )
+		admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' )
 	);
 
-	$state['05_config'][] = amapress_get_check_state(
+	$state['05_config'][]       = amapress_get_check_state(
 		'info',
 		'Configuration des mailing lists',
 		'<p>Si vous avez un accès au système de mailing list (Sympa), par ex Ouvaton, Sud Ouest ou autre fournisseur, 
@@ -1343,7 +1343,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		count( $without_word_contrats ) > 0 ? 'warning' : 'success',
 		'Modèles de contrats avec contrat DOCX (Word) associé',
-		'Préparer un contrat papier (DOCX) <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ) . '">générique pour tous les contrats</a> ou par modèle de contrat pour permettre aux amapiens d\'imprimer et signer directement leur contrat lors de leur inscription en ligne. Un modèle générique est télchargeable <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a>.',
+		'Préparer un contrat papier (DOCX) <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) . '">générique pour tous les contrats</a> ou par modèle de contrat pour permettre aux amapiens d\'imprimer et signer directement leur contrat lors de leur inscription en ligne. Un modèle générique est télchargeable <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a>.',
 		admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
 		'<strong>Contrats avec Word attaché :</strong> ' . ( count( $online_contrats ) == 0 ? 'aucun' : implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
@@ -1386,7 +1386,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
 	);
-	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' );
+	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',

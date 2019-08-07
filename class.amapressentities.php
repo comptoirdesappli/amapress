@@ -347,11 +347,6 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 //						),
 					),
 					'tabs'     => array(
-						'Roles des Responsables de distribution'        => array(
-							'id'      => 'amp_tab_role_resp_distrib',
-							'desc'    => '',
-							'options' => amapress_distribution_responsable_roles_options(),
-						),
 						'Distributions - Définir horaires particuliers' => array(
 							'id'      => 'amp_tab_distrib_hours_setter',
 							'desc'    => '',
@@ -575,17 +570,63 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Mails - Responsables de distribution - Rappel'           => array(
+								'Mails - Inscriptions - Evènements (distribution, visite...)'    => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'inscr-event-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre inscription à %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-event-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'textarea',
+											'default' => "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mails - Désinscriptions - Evènements (distribution, visite...)' => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'desinscr-event-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Désinscription de %%post:title%%',
+										),
+										array(
+											'id'      => 'desinscr-event-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'textarea',
+											'default' => "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mails - Responsables de distribution - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Mails - Vérification de distribution - Rappel'           => array(
+								'Mails - Vérification de distribution - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Mails - A tous les amapiens à la distribution - Rappel'  => array(
+								'Mails - A tous les amapiens à la distribution - Rappel'         => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
@@ -610,15 +651,34 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 									'desc'    => '',
 									'options' => amapress_visite_available_recall_options(),
 								),
-								'Mails - Evènement AMAP - Inscription - Rappel'           => array(
+								'Mails - Evènement AMAP - Inscription - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_amap_event_inscr',
 									'desc'    => '',
 									'options' => amapress_amap_event_inscription_recall_options(),
 								),
-								'Mails - Evènement AMAP - Inscription possible - Rappel'  => array(
+								'Mails - Evènement AMAP - Inscription possible - Rappel'         => array(
 									'id'      => 'amp_tab_recall_amap_event_avail',
 									'desc'    => '',
 									'options' => amapress_amap_event_available_recall_options(),
+								),
+							),
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'amapress_events_conf_opt_page',
+							'settings' => array(
+								'name'       => 'Configuration',
+								'menu_title' => 'Configuration',
+								'position'   => '25.1',
+								'capability' => 'manage_events',
+								'menu_icon'  => 'dashicons-admin-generic',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Roles des Responsables de distribution' => array(
+									'id'      => 'amp_tab_role_resp_distrib',
+									'desc'    => '',
+									'options' => amapress_distribution_responsable_roles_options(),
 								),
 							),
 						),
@@ -723,183 +783,6 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 									'custom' => 'amapress_create_user_for_distribution',
 								)
 							),
-						),
-						'Renouvèlement'                        => array(
-							'id'      => 'renew_config',
-							'desc'    => '',
-							'options' => array(
-								array(
-									'id'      => 'renouv_days',
-									'name'    => 'Durée en jour de la période de renouvellement',
-									'type'    => 'number',
-									'default' => 30,
-//                                            'capability' => 'manage_amapress',
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Assistant - Pré-inscription en ligne' => array(
-							'id'      => 'config_online_inscriptions',
-							'desc'    => '',
-							'options' => [
-								array(
-									'type' => 'heading',
-									'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
-								),
-								array(
-									'id'      => 'online_subscription_agreement_step_name',
-									'name'    => 'Nom de l\'étape',
-									'type'    => 'text',
-									'default' => 'Charte et règlement intérieur de l\'AMAP',
-								),
-								array(
-									'id'      => 'online_subscription_agreement_step_checkbox',
-									'name'    => 'Texte de la case à cocher',
-									'type'    => 'text',
-									'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
-								),
-								array(
-									'id'   => 'online_subscription_agreement',
-									'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
-									'type' => 'editor',
-									'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-								),
-								array(
-									'type' => 'save',
-								),
-								array(
-									'type' => 'heading',
-									'name' => 'Mails - Confirmation Inscription Contrat',
-								),
-								array(
-									'id'       => 'online_subscription_confirm-mail-subject',
-									'name'     => 'Objet',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
-								),
-								array(
-									'id'      => 'online_subscription_confirm-mail-content',
-									'name'    => 'Contenu',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
-									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
-									\n-> pour %%nb_distributions%% distributions
-									\n-> quantités : %%quantites%%
-									\n-> pour un montant de %%total%%€
-									\n[avec_contrat]Merci d'imprimer le contrat joint à ce mail et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
-									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
-									\n\n%%nom_site%%" ),
-									'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-									             AmapressAdhesion::getPlaceholdersHelp( [], false ),
-								),
-								array(
-									'type' => 'save',
-								),
-								array(
-									'type' => 'heading',
-									'name' => 'Assistant - Étape Adhésion AMAP',
-								),
-								array(
-									'id'      => 'online_subscription_greating_adhesion',
-									'name'    => 'Contenu du message de validation',
-									'type'    => 'editor',
-									'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-									'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
-								),
-								array(
-									'type' => 'save',
-								),
-								array(
-									'type' => 'heading',
-									'name' => 'Confirmation - Pré-inscription en ligne',
-								),
-								array(
-									'id'       => 'online_adhesion_confirm-mail-subject',
-									'name'     => 'Objet',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
-								),
-								array(
-									'id'      => 'online_adhesion_confirm-mail-content',
-									'name'    => 'Contenu',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
-Nous vous confirmons votre adhésion à %%nom_site%%\n
-[avec_bulletin]Merci d'imprimer le bulletin joint à ce mail et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
-[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
-\n\n%%nom_site%%" ),
-									'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-									             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
-								),
-								array(
-									'type' => 'save',
-								),
-								array(
-									'type' => 'heading',
-									'name' => 'Message - Cotisation des co-adhérents',
-								),
-								array(
-									'id'      => 'online_adhesion_coadh_message',
-									'name'    => 'Message',
-									'type'    => 'editor',
-									'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
-									'desc'    => 'Message au sujet des adhésions des co-adhérents',
-								),
-								array(
-									'type' => 'save',
-								),
-							]
-						),
-						'Contrat Word (DOCX) général'          => array(
-							'id'      => 'config_default_contrat_docx',
-							'desc'    => '',
-							'options' => [
-								array(
-									'type' => 'note',
-									'desc' => '
-									<p>Vous pouvez configurer les modèles DOCX par défaut pour tous les contrats sans modèle spécifique.</p>
-									<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat personnalisé et vierge.</p>
-									<p>La procédure est la suivante: <ul style="list-style-type: decimal; padding-left: 1em">
-									<li>Téléchargez le <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">modèle générique</a></li>
-									<li>changez le logo d\'entête</li>
-									<li>personnalisez les engagements</li>
-									<li>uploadez votre fichier DOCX modifié dans les deux champs ci-dessous</li>
-									<li>enregistrez</li>
-									</ul></p>
-									<p>Votre AMAP est prête pour la génération/remplissage automatique des contrats</p>',
-								),
-								array(
-									'id'              => 'default_word_model',
-									'name'            => amapress__( 'Contrat personnalisé par défaut' ),
-									'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-									'type'            => 'upload',
-									'show_column'     => false,
-									'show_download'   => true,
-									'show_title'      => true,
-									'selector-button' => 'Utiliser ce modèle',
-									'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
-									'desc'            => 'Configurer un modèle de contrat (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
-								),
-								array(
-									'id'              => 'default_word_paper_model',
-									'name'            => amapress__( 'Contrat vierge par défaut' ),
-									'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-									'type'            => 'upload',
-									'show_column'     => false,
-									'show_download'   => true,
-									'show_title'      => true,
-									'selector-button' => 'Utiliser ce modèle',
-									'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
-									'desc'            => 'Générer un contrat vierge (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
-								),
-								array(
-									'type' => 'save',
-								),
-							]
 						),
 					),
 					'subpages' => array(
@@ -1177,7 +1060,197 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							),
 						),
-
+						array(
+							'subpage'  => true,
+							'id'       => 'amapress_gest_contrat_conf_opt_page',
+							'settings' => array(
+								'name'       => 'Configuration',
+								'menu_title' => 'Configuration',
+								'position'   => '25.1',
+								'capability' => 'edit_contrat_instance',
+								'menu_icon'  => 'dashicons-admin-generic',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Renouvèlement'                        => array(
+									'id'      => 'renew_config',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'renouv_days',
+											'name'    => 'Durée en jour de la période de renouvellement',
+											'type'    => 'number',
+											'default' => 30,
+//                                            'capability' => 'manage_amapress',
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Assistant - Pré-inscription en ligne' => array(
+									'id'      => 'config_online_inscriptions',
+									'desc'    => '',
+									'options' => [
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
+										),
+										array(
+											'id'      => 'online_subscription_agreement_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Charte et règlement intérieur de l\'AMAP',
+										),
+										array(
+											'id'      => 'online_subscription_agreement_step_checkbox',
+											'name'    => 'Texte de la case à cocher',
+											'type'    => 'text',
+											'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
+										),
+										array(
+											'id'   => 'online_subscription_agreement',
+											'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Mails - Confirmation Inscription Contrat',
+										),
+										array(
+											'id'       => 'online_subscription_confirm-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
+										),
+										array(
+											'id'      => 'online_subscription_confirm-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
+									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
+									\n-> pour %%nb_distributions%% distributions
+									\n-> quantités : %%quantites%%
+									\n-> pour un montant de %%total%%€
+									\n[avec_contrat]Merci d'imprimer le contrat joint à ce mail et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
+									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
+									\n\n%%nom_site%%" ),
+											'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape Adhésion AMAP',
+										),
+										array(
+											'id'      => 'online_subscription_greating_adhesion',
+											'name'    => 'Contenu du message de validation',
+											'type'    => 'editor',
+											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Confirmation - Pré-inscription en ligne',
+										),
+										array(
+											'id'       => 'online_adhesion_confirm-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
+										),
+										array(
+											'id'      => 'online_adhesion_confirm-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
+Nous vous confirmons votre adhésion à %%nom_site%%\n
+[avec_bulletin]Merci d'imprimer le bulletin joint à ce mail et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
+[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
+\n\n%%nom_site%%" ),
+											'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Message - Cotisation des co-adhérents',
+										),
+										array(
+											'id'      => 'online_adhesion_coadh_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
+											'desc'    => 'Message au sujet des adhésions des co-adhérents',
+										),
+										array(
+											'type' => 'save',
+										),
+									]
+								),
+								'Contrat Word (DOCX) général'          => array(
+									'id'      => 'config_default_contrat_docx',
+									'desc'    => '',
+									'options' => [
+										array(
+											'type' => 'note',
+											'desc' => '
+									<p>Vous pouvez configurer les modèles DOCX par défaut pour tous les contrats sans modèle spécifique.</p>
+									<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat personnalisé et vierge.</p>
+									<p>La procédure est la suivante: <ul style="list-style-type: decimal; padding-left: 1em">
+									<li>Téléchargez le <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">modèle générique</a></li>
+									<li>changez le logo d\'entête</li>
+									<li>personnalisez les engagements</li>
+									<li>uploadez votre fichier DOCX modifié dans les deux champs ci-dessous</li>
+									<li>enregistrez</li>
+									</ul></p>
+									<p>Votre AMAP est prête pour la génération/remplissage automatique des contrats</p>',
+										),
+										array(
+											'id'              => 'default_word_model',
+											'name'            => amapress__( 'Contrat personnalisé par défaut' ),
+											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+											'type'            => 'upload',
+											'show_column'     => false,
+											'show_download'   => true,
+											'show_title'      => true,
+											'selector-button' => 'Utiliser ce modèle',
+											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
+											'desc'            => 'Configurer un modèle de contrat (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+										),
+										array(
+											'id'              => 'default_word_paper_model',
+											'name'            => amapress__( 'Contrat vierge par défaut' ),
+											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+											'type'            => 'upload',
+											'show_column'     => false,
+											'show_download'   => true,
+											'show_title'      => true,
+											'selector-button' => 'Utiliser ce modèle',
+											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
+											'desc'            => 'Générer un contrat vierge (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
+										),
+										array(
+											'type' => 'save',
+										),
+									]
+								),
+							),
+						),
 //                        array(
 //                            'title' => 'Commandes',
 //                            'menu_icon' => 'post_type',
@@ -1256,343 +1329,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //							'desc' => 'ici vous pouvez gérer...'
 //						),
 					),
-					'tabs'       => array(
-						'Configuration de l\'espace intermittents' => array(
-							'desc'       => '',
-							'capability' => 'manage_options',
-							'options'    => array(
-								array(
-									'id'      => 'intermittence_enabled',
-									'name'    => 'Activer le système des intermittents',
-									'type'    => 'checkbox',
-									'default' => false,
-								),
-								array(
-									'id'      => 'intermit_self_inscr',
-									'name'    => 'Autoriser les amapiens à inscrire des intermittents',
-									'type'    => 'checkbox',
-									'default' => true,
-								),
-//								array(
-//									'id'   => 'intermittence_contrat_model',
-//									'name' => 'Modèle de contrat des intermittents',
-//									'type' => 'editor',
-//								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Inscriptions'                      => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'id'       => 'intermittence-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Votre demande d\'adhésion à l\'espace intermittents',
-								),
-								array(
-									'id'      => 'intermittence-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVotre demande d'adhésion à l'espace intermittents (%%post:lien_intermittence%%) a bien été enregistrée\n\n%%nom_site%%" ),
-									'desc'    => Amapress::getPlaceholdersHelpTable( 'intermit-inscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Désinscriptions'                   => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'id'       => 'intermittence-desincr-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Votre demande de désinscription de l\'espace intermittents',
-								),
-								array(
-									'id'      => 'intermittence-desincr-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVotre demande de désincription de l'espace intermittents a bien été enregistrée\n\n%%nom_site%%" ),
-									'desc'    => Amapress::getPlaceholdersHelpTable( 'intermit-desinscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Panier disponible'                 => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'name' => 'Mail aux intermittents',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-dispo-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => '%%post:panier%% à réserver',
-								),
-								array(
-									'id'      => 'intermittence-panier-dispo-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : %%admin_email_link%%.\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à %%admin_email_link%%.\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail à l\'amapien proposant son panier',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-on-list-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Votre %%post:panier%% a été mis sur la liste des paniers à échanger',
-								),
-								array(
-									'id'      => 'intermittence-panier-on-list-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVotre %%post:panier%% a été mis sur la liste des paniers à échanger\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Paniers disponibles - Rappels'     => array(
-							'desc'    => '',
-							'options' => amapress_intermittence_dispo_recall_options(),
-						),
-						'Mail - Panier reprise - demande'          => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'name' => 'Mail à l\'amapien proposant son panier',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-repris-ask-adherent-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Demande de reprise %%post:panier%% par %%post:repreneur-nom%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-repris-ask-adherent-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% (%%post:repreneur-coords%%) pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail à l\'amapien repreneur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-repris-ask-repreneur-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'La demande de reprise %%post:panier%% a été envoyée',
-								),
-								array(
-									'id'      => 'intermittence-panier-repris-ask-repreneur-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier%%) à la distribution %%post:distribution%% a été envoyée à %%adherent-coords%%.\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Panier reprise - demande - Rappel' => array(
-							'desc'    => '',
-							'options' => amapress_intermittence_validation_recall_options(),
-						),
-						'Mail - Panier reprise - validation'       => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'name' => 'Mail à l\'amapien proposant son panier',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-repris-validation-adherent-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => '%%post:panier%% repris par %%post:repreneur-nom%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-repris-validation-adherent-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) sera repris par %%post:repreneur%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail à l\'amapien repreneur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-repris-validation-repreneur-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => '%%post:adherent-nom%% a accepté la reprise de %%post:panier%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-repris-validation-repreneur-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a accepté la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Panier reprise - rejet'            => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'name' => 'Mail à l\'amapien repreneur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-repris-rejet-repreneur-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => '%%post:adherent-nom%% a refusé la reprise de %%post:panier%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Panier annulation - adherent'      => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'name' => 'Mail à l\'amapien proposant son panier',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-cancel-from-adherent-adherent-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Annulation de votre proposition de reprise %%post:panier%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-cancel-from-adherent-adherent-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) a été retiré de l'espace intermittents\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail à l\'amapien repreneur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Annulation de repise %%post:panier%% de %%post:adherent-nom%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-cancel-from-adherent-repreneur-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:adherent%% (%%post:adherent-coords%%) a annulé la reprise de son panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-						'Mail - Panier annulation - repreneur'     => array(
-							'desc'    => '',
-							'options' => array(
-								array(
-									'name' => 'Mail à l\'amapien proposant son panier',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Annulation de repise %%post:panier%% par %%post:repreneur-nom%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-cancel-from-repreneur-adherent-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\n%%post:repreneur%% (%%post:repreneur-coords%%) a annulé la reprise de votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'name' => 'Mail à l\'amapien repreneur',
-									'type' => 'heading',
-								),
-								array(
-									'id'       => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject',
-									'name'     => 'Sujet du mail',
-									'sanitize' => false,
-									'type'     => 'text',
-									'default'  => 'Confirmation d\'annulation de repise de %%post:panier%% de %%post:adherent-nom%%',
-								),
-								array(
-									'id'      => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content',
-									'name'    => 'Contenu du mail',
-									'type'    => 'editor',
-									'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
-									'desc'    =>
-										AmapressIntermittence_panier::getPlaceholdersHelp(),
-								),
-								array(
-									'type' => 'save',
-								),
-							)
-						),
-					),
+					'tabs'       => array(),
 					'subpages'   => array(
 						array(
 							'subpage'  => true,
@@ -1800,6 +1537,369 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'capability' => 'edit_intermittence_panier',
 							'slug'       => 'edit.php?post_type=amps_inter_panier&amapress_date=active',
 						),
+						array(
+							'subpage'  => true,
+							'id'       => 'intermit_mails_page',
+							'settings' => array(
+								'name'       => 'Mails et rappels',
+								'menu_title' => 'Mails/Rappels',
+//								'position'   => '25.2',
+								'capability' => 'edit_intermittence_panier',
+								'menu_icon'  => 'dashicons-email',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Mail - Inscriptions'                      => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'intermittence-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre demande d\'adhésion à l\'espace intermittents',
+										),
+										array(
+											'id'      => 'intermittence-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre demande d'adhésion à l'espace intermittents (%%post:lien_intermittence%%) a bien été enregistrée\n\n%%nom_site%%" ),
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'intermit-inscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Désinscriptions'                   => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'intermittence-desincr-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre demande de désinscription de l\'espace intermittents',
+										),
+										array(
+											'id'      => 'intermittence-desincr-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre demande de désincription de l'espace intermittents a bien été enregistrée\n\n%%nom_site%%" ),
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'intermit-desinscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Panier disponible'                 => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail aux intermittents',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-dispo-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => '%%post:panier%% à réserver',
+										),
+										array(
+											'id'      => 'intermittence-panier-dispo-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : %%admin_email_link%%.\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à %%admin_email_link%%.\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail à l\'amapien proposant son panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-on-list-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre %%post:panier%% a été mis sur la liste des paniers à échanger',
+										),
+										array(
+											'id'      => 'intermittence-panier-on-list-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nVotre %%post:panier%% a été mis sur la liste des paniers à échanger\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Paniers disponibles - Rappels'     => array(
+									'desc'    => '',
+									'options' => amapress_intermittence_dispo_recall_options(),
+								),
+								'Mail - Panier reprise - demande'          => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail à l\'amapien proposant son panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-repris-ask-adherent-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Demande de reprise %%post:panier%% par %%post:repreneur-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-repris-ask-adherent-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% (%%post:repreneur-coords%%) pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail à l\'amapien repreneur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-repris-ask-repreneur-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'La demande de reprise %%post:panier%% a été envoyée',
+										),
+										array(
+											'id'      => 'intermittence-panier-repris-ask-repreneur-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier%%) à la distribution %%post:distribution%% a été envoyée à %%adherent-coords%%.\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Panier reprise - demande - Rappel' => array(
+									'desc'    => '',
+									'options' => amapress_intermittence_validation_recall_options(),
+								),
+								'Mail - Panier reprise - validation'       => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail à l\'amapien proposant son panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-repris-validation-adherent-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => '%%post:panier%% repris par %%post:repreneur-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-repris-validation-adherent-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) sera repris par %%post:repreneur%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail à l\'amapien repreneur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-repris-validation-repreneur-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => '%%post:adherent-nom%% a accepté la reprise de %%post:panier%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-repris-validation-repreneur-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a accepté la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Panier reprise - rejet'            => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail à l\'amapien repreneur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-repris-rejet-repreneur-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => '%%post:adherent-nom%% a refusé la reprise de %%post:panier%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Panier annulation - adherent'      => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail à l\'amapien proposant son panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-cancel-from-adherent-adherent-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Annulation de votre proposition de reprise %%post:panier%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-cancel-from-adherent-adherent-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) a été retiré de l'espace intermittents\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail à l\'amapien repreneur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Annulation de repise %%post:panier%% de %%post:adherent-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-cancel-from-adherent-repreneur-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n%%post:adherent%% (%%post:adherent-coords%%) a annulé la reprise de son panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Mail - Panier annulation - repreneur'     => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Mail à l\'amapien proposant son panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Annulation de repise %%post:panier%% par %%post:repreneur-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-cancel-from-repreneur-adherent-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n%%post:repreneur%% (%%post:repreneur-coords%%) a annulé la reprise de votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'name' => 'Mail à l\'amapien repreneur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject',
+											'name'     => 'Sujet du mail',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation d\'annulation de repise de %%post:panier%% de %%post:adherent-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content',
+											'name'    => 'Contenu du mail',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+							),
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'amapress_intermit_conf_opt_page',
+							'settings' => array(
+								'name'       => 'Configuration',
+								'menu_title' => 'Configuration',
+								'position'   => '25.1',
+								'capability' => 'manage_events',
+								'menu_icon'  => 'dashicons-admin-generic',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Configuration de l\'espace intermittents' => array(
+									'desc'       => '',
+									'capability' => 'manage_options',
+									'options'    => array(
+										array(
+											'id'      => 'intermittence_enabled',
+											'name'    => 'Activer le système des intermittents',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'id'      => 'intermit_self_inscr',
+											'name'    => 'Autoriser les amapiens à inscrire des intermittents',
+											'type'    => 'checkbox',
+											'default' => true,
+										),
+//								array(
+//									'id'   => 'intermittence_contrat_model',
+//									'name' => 'Modèle de contrat des intermittents',
+//									'type' => 'editor',
+//								),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+							),
+						),
 					),
 				),
 				array(
@@ -1894,7 +1994,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //								),
 //							)
 //						),
-						'Pages'                    => array(
+						'Pages'             => array(
 							'id'         => 'amp_pages_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -1945,30 +2045,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Général'                  => array(
-							'id'      => 'amp_general_config',
+						'Connexion'         => array(
+							'id'      => 'amp_connection_config',
 							'desc'    => '',
 							'options' => array(
-//                                array(
-//                                    'id' => 'enable_timesetter',
-//                                    'name' => 'Activer le Time Setter',
-//                                    'type' => 'checkbox',
-//                                    'capability' => 'manage_options',
-//                                ),
-								array(
-									'id'         => 'email_from_name',
-									'name'       => 'Nom de l\'expéditeur des mails du site',
-									'type'       => 'text',
-									'default'    => get_bloginfo( 'blogname' ),
-									'capability' => 'manage_options',
-								),
-								array(
-									'id'         => 'email_from_mail',
-									'name'       => 'Adresse mail de l\'expéditeur des mails du site',
-									'type'       => 'text',
-									'default'    => amapress_get_default_wordpress_from_email(),
-									'capability' => 'manage_options',
-								),
 								array(
 									'id'         => 'below_login_message',
 									'name'       => 'Message à afficher en dessous du formulaire de connexion',
@@ -1985,26 +2065,81 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 =================================================\n" ),
 									'capability' => 'manage_options',
 								),
-//                                array(
-//                                    'id' => 'email_replyto_name',
-//                                    'name' => 'Nom de réponse aux mails du site',
-//                                    'type' => 'text',
-//                                    'default' => '',
-//                                    'capability' => 'manage_options',
-//                                ),
-//                                array(
-//                                    'id' => 'email_replyto_mail',
-//                                    'name' => 'Adresse mail de réponse aux mails du site',
-//                                    'type' => 'text',
-//                                    'default' => '',
-//                                    'capability' => 'manage_options',
-//                                ),
 								array(
 									'type' => 'save',
 								),
 							)
 						),
-						'Géolocalisation'          => array(
+						'Email du site'     => array(
+							'id'      => 'amp_site_mail_config',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'         => 'email_from_name',
+									'name'       => 'Nom de l\'expéditeur des mails du site',
+									'type'       => 'text',
+									'default'    => get_bloginfo( 'blogname' ),
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'email_from_mail',
+									'name'       => 'Adresse mail de l\'expéditeur des mails du site',
+									'type'       => 'text',
+									'default'    => amapress_get_default_wordpress_from_email(),
+									'capability' => 'manage_options',
+								),
+								array(
+									'type' => 'save',
+								),
+							)
+						),
+						'Mail de bienvenue' => array(
+							'id'      => 'welcome_mail',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'      => 'welcome_mail_subject',
+									'name'    => 'Sujet du mail d\'enregistrement',
+									'type'    => 'text',
+									'default' => '[%%nom_site%%] Votre compte utilisateur',
+//                                            'capability' => 'manage_amapress',
+								),
+								array(
+									'id'      => 'welcome_mail',
+									'name'    => 'Contenu du mail d\'enregistrement',
+									'type'    => 'editor',
+									'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
+									'desc'    => Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+//                                            'capability' => 'manage_amapress',
+								),
+								array(
+									'id'      => 'password_lost_mail_subject',
+									'name'    => 'Sujet du mail de récupération de mot de passe',
+									'type'    => 'text',
+									'default' => '[%%nom_site%%] Récupération de votre mot de passe',
+//                                            'capability' => 'manage_amapress',
+								),
+								array(
+									'id'      => 'password_lost_mail',
+									'name'    => 'Contenu du mail de récupération de mot de passe',
+									'type'    => 'editor',
+									'default' => wpautop( "Bonjour %%dest%%\n\nQuelqu'un a demandé la récupération de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message et votre mot de passe restera inchangé.\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour changer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
+									'desc'    => Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+								),
+								array(
+									'id'      => 'welcome-mail-expiration',
+									'name'    => 'Durée d\'expiration',
+									'desc'    => 'Expiration du mail de bienvenue/mot de passe perdu en jours',
+									'type'    => 'number',
+									'step'    => 0.5,
+									'default' => '180',
+								),
+								array(
+									'type' => 'save',
+								),
+							)
+						),
+						'Géolocalisation'   => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
@@ -2176,137 +2311,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 						),
 					),
 					'subpages' => array(
-						array(
-							'subpage'  => true,
-							'id'       => 'amapress_mail_options_page',
-							'type'     => 'panel',
-							'settings' => array(
-								'name'       => 'Mails',
-								'position'   => '25.16',
-								'capability' => 'manage_amapress',
-								'icon'       => 'dashicons-admin-tools',
-							),
-							'options'  => array(
-//								array(
-//									'type' => 'note',
-//									'desc' => 'ici vous pouvez gérer...'
-//								),
-							),
-							'tabs'     => array(
-								'Mail de bienvenue'                                      => array(
-									'id'      => 'welcome_mail',
-									'desc'    => '',
-									'options' => array(
-										array(
-											'id'      => 'welcome_mail_subject',
-											'name'    => 'Sujet du mail d\'enregistrement',
-											'type'    => 'text',
-											'default' => '[%%nom_site%%] Votre compte utilisateur',
-//                                            'capability' => 'manage_amapress',
-										),
-										array(
-											'id'      => 'welcome_mail',
-											'name'    => 'Contenu du mail d\'enregistrement',
-											'type'    => 'editor',
-											'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
-//                                            'capability' => 'manage_amapress',
-										),
-										array(
-											'id'      => 'password_lost_mail_subject',
-											'name'    => 'Sujet du mail de récupération de mot de passe',
-											'type'    => 'text',
-											'default' => '[%%nom_site%%] Récupération de votre mot de passe',
-//                                            'capability' => 'manage_amapress',
-										),
-										array(
-											'id'      => 'password_lost_mail',
-											'name'    => 'Contenu du mail de récupération de mot de passe',
-											'type'    => 'editor',
-											'default' => wpautop( "Bonjour %%dest%%\n\nQuelqu'un a demandé la récupération de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message et votre mot de passe restera inchangé.\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour changer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
-										),
-										array(
-											'id'      => 'welcome-mail-expiration',
-											'name'    => 'Durée d\'expiration',
-											'desc'    => 'Expiration du mail de bienvenue/mot de passe perdu en jours',
-											'type'    => 'number',
-											'step'    => 0.5,
-											'default' => '180',
-										),
-										array(
-											'type' => 'save',
-										),
-									)
-								),
-								'Inscriptions - Evènements (distribution, visite...)'    => array(
-									'desc'    => '',
-									'options' => array(
-										array(
-											'id'       => 'inscr-event-mail-subject',
-											'name'     => 'Sujet du mail',
-											'sanitize' => false,
-											'type'     => 'text',
-											'default'  => 'Votre inscription à %%post:title%%',
-										),
-										array(
-											'id'      => 'inscr-event-mail-content',
-											'name'    => 'Contenu du mail',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
-											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp(),
-										),
-										array(
-											'type' => 'save',
-										),
-									)
-								),
-								'Désinscriptions - Evènements (distribution, visite...)' => array(
-									'desc'    => '',
-									'options' => array(
-										array(
-											'id'       => 'desinscr-event-mail-subject',
-											'name'     => 'Sujet du mail',
-											'sanitize' => false,
-											'type'     => 'text',
-											'default'  => 'Désinscription de %%post:title%%',
-										),
-										array(
-											'id'      => 'desinscr-event-mail-content',
-											'name'    => 'Contenu du mail',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
-											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp(),
-										),
-										array(
-											'type' => 'save',
-										),
-									)
-								),
-//								'Adhésions - Contrat'                                    => array(
-//									'desc'    => '',
-//									'options' => array(
-//										array(
-//											'id'      => 'adhesion-contrat-mail-subject',
-//											'name'    => 'Sujet du mail',
-//											'type'    => 'text',
-//											'default' => 'Votre demande d\'adhésion à %%post:title%%',
-//										),
-//										array(
-//											'id'      => 'adhesion-contrat-mail-content',
-//											'name'    => 'Contenu du mail',
-//											'type'    => 'textarea',
-//											'default' => "Bonjour,\n\nVotre demande d'adhésion à %%post:contrat_titre%% (%%post:contrat_lien%%) a bien été enregistrée\n\n%%nom_site%%",
-//										),
-//										array(
-//											'type' => 'save',
-//										),
-//									)
-//								),
-							),
-						),
 						amapress_mailing_queue_menu_options(),
 						array(
 							'subpage'  => true,
@@ -3117,7 +3121,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Producteurs'               => array(
+						'Producteurs' => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
 							'capability' => 'edit_producteur',

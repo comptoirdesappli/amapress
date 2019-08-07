@@ -273,7 +273,7 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'key'                  => 'Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne',
 				'filter_multi_contrat' => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'            => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_online_inscriptions' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'agreement'            => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
 				'check_principal'      => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif',
 				'adhesion'             => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
 				'send_referents'       => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',

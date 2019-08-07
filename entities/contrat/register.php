@@ -654,7 +654,7 @@ jQuery(function($) {
 				'desc'            => '
 				<p>Générer un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)</p>
 				<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>
-				<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
+				<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
 			),
 			'contrat_info'          => array(
 				'name'        => amapress__( 'Termes du contrat' ),
@@ -1184,7 +1184,7 @@ jQuery(function($) {
 				'desc'            => '
 <p>Configurer un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)</p>
 <p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>
-<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
+<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
 			),
 
 

@@ -900,7 +900,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'id'         => 'amapress_welcome_mail',
 						'title'      => 'Mail de bienvenue',
 						'capability' => 'manage_amapress',
-						'href'       => admin_url( 'admin.php?page=amapress_mail_options_page&tab=welcome_mail' ),
+						'href'       => admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' ),
 					),
 					array(
 						'id'         => 'amapress_public_contacts',
