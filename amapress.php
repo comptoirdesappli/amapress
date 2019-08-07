@@ -105,10 +105,11 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		$attachments = [];
 	}
 	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
-		$h       = esc_html( var_export( $headers, true ) );
-		$message = "Original To : $to\nOriginal Headers: $h\n\n" . $message;
-		$to      = Amapress::getOption( 'test_mail_target' );
-		$headers = array_filter( $headers, function ( $h ) {
+		$h            = esc_html( var_export( $headers, true ) );
+		$test_mode_to = Amapress::getOption( 'test_mail_target' );
+		$message      = "Site en mode de test mail : tous les mails sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
+		$to           = $test_mode_to;
+		$headers      = array_filter( $headers, function ( $h ) {
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
 		} );
 	}
@@ -1400,6 +1401,12 @@ add_action( 'admin_init', function () {
 			amapress_add_admin_notice( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, ' . $dir_name . '. Merci de renommer "' . dirname( __FILE__ ) . '" et de réactiver Amapress',
 				'error', false );
 		}
+
+		if ( Amapress::getOption( 'test_mail_mode' ) ) {
+			amapress_add_admin_notice( 'Le site est en mode de test mail. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
+				'info', false );
+		}
+
 
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
