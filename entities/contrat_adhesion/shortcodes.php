@@ -152,6 +152,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
 			'send_tresoriers'      => 'true',
+			'allow_new_mail'       => 'true',
 			'edit_names'           => 'true',
 			'only_contrats'        => '',
 			'shorturl'             => '',
@@ -381,7 +382,16 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$email = sanitize_email( $_REQUEST['email'] );
 		}
 
-		$user               = get_user_by( 'email', $email );
+		$user = get_user_by( 'email', $email );
+
+		if ( ! Amapress::toBool( $atts['allow_new_mail'] ) && ! $user ) {
+			ob_clean();
+
+			return '<p style="font-weight: bold">Les inscriptions avec une nouvelle adresse email ne sont pas autorisées.</p>
+<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
+<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+		}
+
 		$user_firt_name     = '';
 		$user_last_name     = '';
 		$user_address       = '';
