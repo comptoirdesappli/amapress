@@ -424,6 +424,72 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getEmail();
 				}
 			];
+			$ret['coadherent'] = [
+				'desc' => 'Prénom Nom co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getDisplayName();
+				}
+			];
+			$ret['coadherent.nom'] = [
+				'desc' => 'Nom co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getUser()->last_name;
+				}
+			];
+			$ret['coadherent.prenom'] = [
+				'desc' => 'Prénom co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getUser()->first_name;
+				}
+			];
+			$ret['coadherent.adresse'] = [
+				'desc' => 'Adresse co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getFormattedAdresse();
+				}
+			];
+			$ret['coadherent.tel'] = [
+				'desc' => 'Téléphone co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getTelephone();
+				}
+			];
+			$ret['coadherent.email'] = [
+				'desc' => 'Email co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getEmail();
+				}
+			];
 			$taxes                    = get_categories( array(
 				'orderby'    => 'name',
 				'order'      => 'ASC',

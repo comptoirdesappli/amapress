@@ -503,6 +503,20 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		return $v;
 	}
 
+	public
+	function getFirstCoAdherent() {
+		$co_adh = $this->getCoAdherent1();
+		if ( ! $co_adh ) {
+			$co_adh = $this->getCoAdherent2();
+		}
+		if ( ! $co_adh ) {
+			$co_adh = $this->getCoAdherent3();
+		}
+
+		return $co_adh;
+	}
+
+
 	private
 		$adherent1 = null;
 

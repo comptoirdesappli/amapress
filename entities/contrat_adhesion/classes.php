@@ -348,6 +348,72 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getEmail();
 				}
 			];
+			$ret['coadherent'] = [
+				'desc' => 'Prénom Nom co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getDisplayName();
+				}
+			];
+			$ret['coadherent.nom'] = [
+				'desc' => 'Nom co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getUser()->last_name;
+				}
+			];
+			$ret['coadherent.prenom'] = [
+				'desc' => 'Prénom co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getUser()->first_name;
+				}
+			];
+			$ret['coadherent.adresse'] = [
+				'desc' => 'Adresse co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getFormattedAdresse();
+				}
+			];
+			$ret['coadherent.tel'] = [
+				'desc' => 'Téléphone co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getTelephone();
+				}
+			];
+			$ret['coadherent.email'] = [
+				'desc' => 'Email co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getEmail();
+				}
+			];
 			$ret['producteur.nom']                   = [
 				'desc' => 'Nom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
