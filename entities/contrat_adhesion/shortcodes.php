@@ -148,6 +148,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'filter_multi_contrat' => 'false',
 			'admin_mode'           => 'false',
 			'agreement'            => 'false',
+			'mob_phone_required'   => 'false',
 			'check_principal'      => 'true',
 			'adhesion'             => 'true',
 			'send_referents'       => 'true',
@@ -488,7 +489,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label for="telm">Téléphone mobile : </label></th>
-                    <td><input style="width: 100%" type="text" id="telm" name="telm" class=""
+                    <td><input style="width: 100%" type="text" id="telm" name="telm"
+                               class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
                                value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
                 </tr>
                 <tr>
