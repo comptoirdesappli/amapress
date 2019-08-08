@@ -1109,7 +1109,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			return ( '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
 		}
 		?>
-        <h4>Étape 5/8 : Date et lieu</h4>
+        <h4>Étape 5/8 : Date et lieu - <?php echo esc_html( $contrat->getTitle() ) ?></h4>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
 			<?php
 			$before_close_hours = 0;
@@ -1266,15 +1266,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
 		}
 
-		if ( ! $admin_mode ) {
-			?>
-            <h4>Étape 6/8 : Panier</h4>
-			<?php
-		} else {
-			?>
-            <h4>Étape 6/8 : Panier - <?php echo esc_html( $contrat->getTitle() ); ?></h4>
-			<?php
-		}
+		?>
+        <h4>Étape 6/8 : Panier - <?php echo esc_html( $contrat->getTitle() ); ?></h4>
+		<?php
 		$min_total = $contrat->getMinEngagement();
 
 		$grouped_dates = from( $dates )->groupBy( function ( $d ) {
