@@ -882,6 +882,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
 			}
+
+			echo Amapress::getOption( 'online_contrats_step_message' );
 		}
 
 		$display_remaining_contrats = true;

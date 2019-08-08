@@ -1202,6 +1202,20 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Message - Etape 4/8 - Les contrats',
+										),
+										array(
+											'id'      => 'online_contrats_step_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'CSS Personnalisé',
 										),
 										array(
