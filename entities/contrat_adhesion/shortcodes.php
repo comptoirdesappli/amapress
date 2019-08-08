@@ -213,6 +213,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 	ob_start();
 
+	echo '<style type="text/css">' . esc_html( wp_unslash( Amapress::getOption( 'online_inscr_css' ) ) ) . '</style>';
+
 	echo $ret;
 
 	$min_total = 0;

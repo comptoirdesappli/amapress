@@ -1200,6 +1200,20 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										array(
 											'type' => 'save',
 										),
+										array(
+											'type' => 'heading',
+											'name' => 'CSS Personnalisé',
+										),
+										array(
+											'id'      => 'online_inscr_css',
+											'name'    => 'CSS',
+											'type'    => 'textarea',
+											'default' => '',
+											'desc'    => 'CSS additionnel, par exemple, pour masquer les entêtes et menu',
+										),
+										array(
+											'type' => 'save',
+										),
 									]
 								),
 								'Contrat Word (DOCX) général'          => array(
