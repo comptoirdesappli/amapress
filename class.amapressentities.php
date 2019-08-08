@@ -3336,19 +3336,6 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								)
 							)
 						),
-						'Configuration des paniers (Taille/Quantités)'  => array(
-							'id'      => 'conf_paniers',
-							'desc'    => '',
-							'options' => array(
-								array(
-									'id'     => 'conf_paniers_cust',
-									'name'   => 'Configuration des paniers (Taille/Quantités)',
-									'type'   => 'custom',
-									'custom' => function () {
-									}
-								)
-							)
-						),
 						'Placeholders - bulletin adhésion personnalisé' => array(
 							'id'      => 'adhesion_placeholders',
 							'desc'    => '',

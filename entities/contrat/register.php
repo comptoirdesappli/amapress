@@ -2071,8 +2071,8 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         </tbody>
     </table>
     <p class="description"><a
-                href="<?php echo admin_url( 'admin.php?page=amapress_help_page&tab=conf_paniers' ); ?>">*</a>
-        Consulter les instructions spécifiques</p>
+                href="https://wiki.amapress.fr/contrats/exemple_paniers">*</a>
+        Consulter les instructions spécifiques et exemples</p>
 	<?php
 	$contents = ob_get_clean();
 
