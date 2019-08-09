@@ -616,17 +616,17 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 										),
 									)
 								),
-								'Mails - Responsables de distribution - Rappel'                  => array(
+								'Mails - Responsables de distribution - Rappel'           => array(
 									'id'      => 'amp_tab_recall_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Mails - Vérification de distribution - Rappel'                  => array(
+								'Mails - Vérification de distribution - Rappel'           => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Mails - A tous les amapiens à la distribution - Rappel'         => array(
+								'Mails - A tous les amapiens à la distribution - Rappel'  => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
@@ -651,12 +651,12 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 									'desc'    => '',
 									'options' => amapress_visite_available_recall_options(),
 								),
-								'Mails - Evènement AMAP - Inscription - Rappel'                  => array(
+								'Mails - Evènement AMAP - Inscription - Rappel'           => array(
 									'id'      => 'amp_tab_recall_amap_event_inscr',
 									'desc'    => '',
 									'options' => amapress_amap_event_inscription_recall_options(),
 								),
-								'Mails - Evènement AMAP - Inscription possible - Rappel'         => array(
+								'Mails - Evènement AMAP - Inscription possible - Rappel'  => array(
 									'id'      => 'amp_tab_recall_amap_event_avail',
 									'desc'    => '',
 									'options' => amapress_amap_event_available_recall_options(),
@@ -742,7 +742,7 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 //						),
 					),
 					'tabs'     => array(
-						'Ajouter Inscription Contrat '         => array(
+						'Ajouter Inscription Contrat '   => array(
 							'id'        => 'add_inscription',
 							'desc'      => '',
 							'use_form'  => false,
@@ -756,7 +756,7 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 								)
 							),
 						),
-						'Ajouter un coadhérent'                => array(
+						'Ajouter un coadhérent'          => array(
 							'id'        => 'add_coadherent',
 							'desc'      => '',
 							'use_form'  => false,
@@ -770,7 +770,7 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 								)
 							),
 						),
-						'Ajouter une personne hors AMAP'       => array(
+						'Ajouter une personne hors AMAP' => array(
 							'id'        => 'add_other_user',
 							'desc'      => '',
 							'use_form'  => false,
@@ -1195,7 +1195,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
-											'desc'    => 'Message au sujet des adhésions des co-adhérents',
+											'desc'    => 'Message au sujet des adhésions des co-adhérents<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -1209,7 +1209,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => '',
-											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats',
+											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -3149,7 +3149,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Producteurs' => array(
+						'Producteurs'               => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
 							'capability' => 'edit_producteur',
@@ -3174,7 +3174,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Productions' => array(
+						'Productions'               => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
 							'capability' => 'edit_contrat',
@@ -3207,7 +3207,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Produits'    => array(
+						'Produits'                  => array(
 							'id'         => 'import_produits_tab',
 							'desc'       => '',
 							'capability' => 'edit_produit',

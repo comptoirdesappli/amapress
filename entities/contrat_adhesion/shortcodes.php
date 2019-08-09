@@ -505,7 +505,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 </tr>
             </table>
             <div>
-	            <?php echo Amapress::getOption( 'online_adhesion_coadh_message' ); ?>
+	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
             <table style="min-width: 50%">
                 <tr>
@@ -639,7 +639,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
             <div class="amap-agreement">
-				<?php echo Amapress::getOption( 'online_subscription_agreement' ); ?>
+	            <?php echo amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ), null ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
@@ -789,7 +789,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
 
-		echo Amapress::getOption( 'online_subscription_greating_adhesion' );
+		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_greating_adhesion' ), null ) );
 
 		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
 			$print_bulletin = Amapress::makeButtonLink(
@@ -885,7 +885,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 ' . $print_bulletin . '</p>';
 			}
 
-			echo amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_step_message' ), null );
+			echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_step_message' ), null ) );
 		}
 
 		$display_remaining_contrats = true;
