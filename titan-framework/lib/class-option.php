@@ -604,7 +604,7 @@ jQuery('#$id').change(function(){
 		$style   = $this->isHidden() ? 'style="display: none"' : '';
 		?>
         <tr valign="top" class="row-<?php echo self::$rowIndex ?> <?php echo $evenOdd ?>" <?php echo $style ?>>
-        <td class="second tf-<?php echo $this->settings['type'] ?>">
+        <td colspan="2" class="second tf-<?php echo $this->settings['type'] ?>">
 		<?php
 		$desc = $this->getDesc();
 		if ( ! empty( $desc ) && $showDesc ) :
