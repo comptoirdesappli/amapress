@@ -885,7 +885,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 ' . $print_bulletin . '</p>';
 			}
 
-			echo Amapress::getOption( 'online_contrats_step_message' );
+			echo amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_step_message' ), null );
 		}
 
 		$display_remaining_contrats = true;
