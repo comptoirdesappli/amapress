@@ -2071,8 +2071,8 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         </tbody>
     </table>
     <p class="description"><a
-                href="https://wiki.amapress.fr/contrats/exemple_paniers">*</a>
-        Consulter les instructions spécifiques et exemples</p>
+                href="https://wiki.amapress.fr/contrats/exemple_paniers" target="_blank">* Consulter les instructions
+            spécifiques et exemples</a></p>
 	<?php
 	$contents = ob_get_clean();
 
