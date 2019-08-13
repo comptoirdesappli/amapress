@@ -227,6 +227,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			/** @var AmapressContrat_instance $c */
 			return $c->canSelfSubscribe();
 		} );
+		$subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) {
+			/** @var AmapressContrat_instance $c */
+			return ! $c->isFull();
+		} );
 		if ( ! empty( $atts['only_contrats'] ) ) {
 			$only_contrats         = array_map( function ( $c ) {
 				return Amapress::resolve_post_id( $c, AmapressContrat::INTERNAL_POST_TYPE );
@@ -1390,6 +1394,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		} else {
 			$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );
 			foreach ( $contrat_quants as $quantite ) {
+				if ( $contrat->isFull( $quantite->ID ) ) {
+					continue;
+				}
+
 				$dates_factors = 0;
 				foreach ( $dates as $d ) {
 					$dates_factors += $contrat->getDateFactor( $d, $quantite->ID );
@@ -1653,6 +1661,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$referents_mails = array_merge( $referents_mails, $r->getAllEmails() );
 		}
 
+		$any_full = $contrat->isFull();
+
 		$quantite_ids     = [];
 		$quantite_factors = [];
 		if ( $contrat->isPanierVariable() ) {
@@ -1660,12 +1670,23 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		} else {
 			foreach ( $quants as $q ) {
 				$q_id           = intval( $q['q'] );
+				$any_full       = $any_full || $contrat->isFull( $q_id );
 				$quantite_ids[] = $q_id;
 				$f              = floatval( $q['f'] );
 				if ( abs( $f - 1.0 ) > 0.001 ) {
 					$quantite_factors[ strval( $q_id ) ] = $f;
 				}
 			}
+		}
+
+
+		if ( $any_full ) {
+			$contrats_step_url_attr = esc_attr( $contrats_step_url );
+			$mailto_refs            = esc_attr( "mailto:$referents_mails" );
+			wp_die( "<p>Désolé, ce contrat ou l'un des paniers que vous avez choisi est complet<br/>
+<a href='{$contrats_step_url_attr}'>Retour aux contrats</a><br/>
+<a href='$mailto_refs'>Contacter les référents</a>
+</p>" );
 		}
 
 		$meta = [
