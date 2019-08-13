@@ -439,6 +439,30 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_self_subscribe', 0 );
 	}
 
+	public function isFull( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
+		$max_adhs       = $this->getMax_adherents();
+		$max_quant_adhs = 0;
+		if ( $contrat_quantite_id ) {
+			$contrat_quantite = AmapressContrat_quantite::getBy( $contrat_quantite_id );
+			$max_quant_adhs   = $contrat_quantite->getMaxAdherents();
+		}
+		if ( $max_adhs > 0 || $max_quant_adhs > 0 ) {
+			Amapress::setFilterForReferent( false );
+			$adhs = AmapressContrats::get_active_adhesions( $this->ID, $contrat_quantite_id, $lieu_id, $date );
+			Amapress::setFilterForReferent( true );
+
+			if ( $max_adhs > 0 && count( $adhs ) >= $max_adhs ) {
+				return true;
+			}
+
+			if ( $max_quant_adhs > 0 && count( $adhs ) >= $max_quant_adhs ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function isEnded() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_ended', 0 );
 	}
@@ -797,13 +821,13 @@ class AmapressContrat_instance extends TitanEntity {
 				return implode( ', ', $adh->getPossiblePaiements() );
 			}
 		];
-		$ret['dates_rattrapages']                = [
+		$ret['dates_rattrapages']           = [
 			'desc' => 'Description des dates de distribution de rattrapage',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getFormattedRattrapages() );
 			}
 		];
-		$ret['dates_rattrapages_list']           = [
+		$ret['dates_rattrapages_list']      = [
 			'desc' => 'Listes html des dates de distribution de rattrapage',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( '<br />', array_map( function ( $s ) {
@@ -865,13 +889,13 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'd/m/Y', from( $adh->getRemainingDates( $first_date_distrib ) )->firstOrDefault() );
 			}
 		];
-		$ret['derniere_date']                    = [
+		$ret['derniere_date']               = [
 			'desc' => 'Dernière date de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return date_i18n( 'd/m/Y', from( $adh->getRemainingDates( $first_date_distrib ) )->lastOrDefault() );
 			}
 		];
-		$ret['dates_distribution']               = [
+		$ret['dates_distribution']          = [
 			'desc' => 'Liste des dates de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return implode( ', ', array_map( function ( $d ) {
@@ -1655,6 +1679,10 @@ class AmapressContrat_quantite extends TitanEntity {
 
 	public function getDescription() {
 		return $this->getCustom( 'amapress_contrat_quantite_description' );
+	}
+
+	public function getMaxAdherents() {
+		return $this->getCustomAsInt( 'amapress_contrat_quantite_max_adhs' );
 	}
 
 	/** @return AmapressProduit[] */

@@ -1924,7 +1924,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 	return null;
 }
 
-function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo, $liste_dates ) {
+function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo, $liste_dates, $max_adhs ) {
 	if ( $contrat_instance->getModel() == null ) {
 		return '';
 	}
@@ -1976,6 +1976,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
         </td>
 		<?php
 	}
+	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][max_adhs]' min='0' step='1' placeholder='Adhérents' value='$max_adhs' /></td>";
 	?>
     <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][produits]" ?>"
                 name="<?php echo "amapress_quant_data[$id][produits][]"; ?>"
@@ -2045,6 +2046,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
                 >Dates spec.
                 </th>
 			<?php } ?>
+            <th style="width: 50px">Max Adhs.</th>
             <th>Produits</th>
             <!--            <th style="width: 30px">Photo</th>-->
             <th style="width: 30px"></th>
@@ -2065,7 +2067,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 			amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
 				$qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
-				$quant->getSpecificDistributionDates() );
+				$quant->getSpecificDistributionDates(), $quant->getMaxAdherents() );
 		}
 		?>
         </tbody>
@@ -2078,7 +2080,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	amapress_quantite_editor_line( $contrat_instance, '%%id%%', '', '', '', 0, 0,
-		'', null, null, 0, '', '', [] );
+		'', null, null, 0, '', '', [], 0 );
 
 	$new_row = ob_get_clean();
 
@@ -2156,11 +2158,12 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 					'amapress_contrat_quantite_quantite_config'  => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
 					'amapress_contrat_quantite_unit'             => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
 					'amapress_contrat_quantite_produits'         => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
-					'amapress_contrat_quantite_avail_from'       => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
-					'amapress_contrat_quantite_avail_to'         => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
-					'amapress_contrat_quantite_liste_dates'      => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
-					'amapress_contrat_quantite_quantite'         => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
-					'_thumbnail_id'                              => isset( $quant_data['photo'] ) ? $quant_data['photo'] : null,
+					'amapress_contrat_quantite_avail_from'  => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
+					'amapress_contrat_quantite_avail_to'    => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
+					'amapress_contrat_quantite_liste_dates' => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
+					'amapress_contrat_quantite_quantite'    => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
+					'amapress_contrat_quantite_max_adhs'    => $quant_data['max_adhs'],
+					'_thumbnail_id'                         => isset( $quant_data['photo'] ) ? $quant_data['photo'] : null,
 				),
 			);
 			if ( $quant_id < 0 ) {
