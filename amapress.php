@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.84.85
+Version: 0.84.90
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 83 );
-define( 'AMAPRESS_VERSION', '0.84.85' );
+define( 'AMAPRESS_VERSION', '0.84.90' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1419,13 +1419,6 @@ add_action( 'admin_init', function () {
 				amapress_add_admin_notice( 'Une nouvelle version d\'Amapress est disponible : ' . $plugin_data['Version'],
 					'warning', false );
 			}
-		}
-	}
-	if ( defined( 'FREE_PAGES_PERSO' ) ) {
-		if ( ! wp_doing_ajax() ) {
-			require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );
-			$amapress_smtpMailingQueue = new AmapressSMTPMailingQueue();
-			$amapress_smtpMailingQueue->processQueue();
 		}
 	}
 } );
