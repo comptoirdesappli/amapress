@@ -1292,6 +1292,14 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Gérer la répartition des chèques/règlement dans Amapress',
 			),
+			'paiements_mention'     => array(
+				'name'        => amapress__( 'Message au sujet des chèques/règlement' ),
+				'type'        => 'editor',
+				'group'       => '6/6 - Règlement en plusieurs fois',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'show_column' => false,
+				'desc'        => 'Message au sujet des chèques/règlement par exemple pour indiquer les particuliers si la gestion est externe à Amapress',
+			),
 			'liste_dates_paiements' => array(
 				'name'             => amapress__( 'Calendrier des remises de chèques' ),
 				'type'             => 'multidate',

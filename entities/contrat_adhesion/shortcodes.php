@@ -1240,16 +1240,16 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
 
+		$contrat = AmapressContrat_instance::getBy( $contrat_id );
+		if ( empty( $contrat ) ) {
+			wp_die( $invalid_access_message );
+		}
+
 		$next_step_url = add_query_arg( [
 			'step'       => 'inscr_contrat_paiements',
 			'start_date' => $start_date,
 			'lieu_id'    => $lieu_id
 		] );
-
-		$contrat = AmapressContrat_instance::getBy( $contrat_id );
-		if ( empty( $contrat ) ) {
-			wp_die( $invalid_access_message );
-		}
 
 		$dates             = $contrat->getListe_dates();
 		$dates             = array_filter( $dates, function ( $d ) use ( $start_date ) {
@@ -1577,29 +1577,36 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			}
 		}
 
+		echo wp_unslash( $contrat->getPaiementsMention() );
 
-		if ( ! $admin_mode ) {
-			echo '<p style="margin-bottom: 0">Vous pouvez régler cette somme en :</p>';
-		} else {
-			echo '<p style="margin-bottom: 0">Règlement :</p>';
+		if ( $contrat->getManage_Cheques() ) {
+			if ( ! $admin_mode ) {
+				echo '<p style="margin-bottom: 0">Vous pouvez régler cette somme en :</p>';
+			} else {
+				echo '<p style="margin-bottom: 0">Règlement :</p>';
+			}
 		}
 		$serial_quants = esc_attr( serialize( $serial_quants ) );
 		echo '<form method="post" action="' . $next_step_url . '" class="amapress_validate">';
 		echo "<input type='hidden' name='quants' value='$serial_quants'/>";
-		$min_cheque_amount = $contrat->getMinChequeAmount();
-		foreach ( $contrat->getPossiblePaiements() as $nb_cheque ) {
-			if ( $total / $nb_cheque < $min_cheque_amount ) {
-				continue;
-			}
+		if ( $contrat->getManage_Cheques() ) {
+			$min_cheque_amount = $contrat->getMinChequeAmount();
+			foreach ( $contrat->getPossiblePaiements() as $nb_cheque ) {
+				if ( $total / $nb_cheque < $min_cheque_amount ) {
+					continue;
+				}
 
-			$cheques = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
-			$option  = esc_html( $cheques['desc'] );
+				$cheques = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
+				$option  = esc_html( $cheques['desc'] );
 //			$cheque_main_amount = $cheques['main_amount'];
 //			$last_cheque        = $cheques['remain_amount'];
-			echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' value='$nb_cheque' class='required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
-		}
-		if ( $contrat->getAllow_Cash() ) {
-			echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='required' /><label for='cheques-esp'>En espèces</label><br/>";
+				echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' value='$nb_cheque' class='required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
+			}
+			if ( $contrat->getAllow_Cash() ) {
+				echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='required' /><label for='cheques-esp'>En espèces</label><br/>";
+			}
+		} else {
+			echo "<input type='hidden' name='cheques' value='0'/>";
 		}
 		echo '<br />';
 		if ( ! $admin_mode ) {
@@ -1636,10 +1643,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			wp_die( $invalid_access_message );
 		}
 
-		if ( empty( $_REQUEST['cheques'] ) ) {
+		if ( $contrat->getManage_Cheques() && empty( $_REQUEST['cheques'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$cheques = intval( $_REQUEST['cheques'] );
+		$cheques = ! isset( $_REQUEST['cheques'] ) ? 0 : intval( $_REQUEST['cheques'] );
 		if ( empty( $_REQUEST['quants'] ) ) {
 			wp_die( $invalid_access_message );
 		}

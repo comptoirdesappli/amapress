@@ -227,6 +227,9 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_has_pancust', 0 );
 	}
 
+	public function getPaiementsMention() {
+		return $this->getCustom( 'amapress_contrat_instance_paiements_mention', '' );
+	}
 	public function getManage_Cheques() {
 		return $this->getCustom( 'amapress_contrat_instance_manage_paiements', 1 );
 	}
