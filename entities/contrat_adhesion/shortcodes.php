@@ -118,7 +118,7 @@ add_action( 'amapress_init', function () {
 			wp_die( 'Accès interdit' );
 		}
 
-		$full_file_name = $adhesion_paiement->generateBulletinDoc();
+		$full_file_name = $adhesion_paiement->generateBulletinDoc( false );
 		$file_name      = basename( $full_file_name );
 		Amapress::sendDocumentFile( $full_file_name, $file_name );
 	}
@@ -769,7 +769,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 
 		$attachments = [];
-		$doc_file    = $adh_paiement->generateBulletinDoc();
+		$doc_file    = $adh_paiement->generateBulletinDoc( false );
 		if ( ! empty( $doc_file ) ) {
 			$attachments[] = $doc_file;
 			$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );

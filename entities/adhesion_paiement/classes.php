@@ -279,7 +279,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'bulletin-adhesion-' . $this->ID . '-' . $this->getUser()->getSortableDisplayName() . '-' . date_i18n( 'Y-m-d', $this->getPeriod()->getDate_debut() ) . $ext );
 	}
 
-	public function generateBulletinDoc() {
+	public function generateBulletinDoc( $editable ) {
 		$out_filename   = $this->getBulletinDocFileName();
 		$model_filename = $this->getPeriod()->getModelDocFileName();
 		if ( empty( $model_filename ) ) {
@@ -298,6 +298,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		}
 
 		$templateProcessor->saveAs( $out_filename );
+
+		if ( ! $editable ) {
+			$out_filename = Amapress::convertToPDF( $out_filename );
+		}
 
 		return $out_filename;
 	}
