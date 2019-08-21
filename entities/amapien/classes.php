@@ -599,6 +599,28 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return false;
 	}
 
+	public function removeCoadherent( $coadhrent_id ) {
+		$this->ensure_init();
+
+		if ( empty( $coadhrent_id ) ) {
+			return false;
+		}
+
+		foreach ( [ '1', '2', '3' ] as $id ) {
+			if ( ! empty( $this->custom[ 'amapress_user_co-adherent-' . $id ] ) ) {
+				if ( $this->custom[ 'amapress_user_co-adherent-' . $id ] == $coadhrent_id ) {
+					$this->custom[ 'amapress_user_co-adherent-' . $id ] = $coadhrent_id;
+					delete_user_meta( $this->ID, 'amapress_user_co-adherent-' . $id );
+					self::$coadherents = null;
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public function getPrincipalUserIds() {
 		$this->ensureInitCoadherents();
 		if ( null === $this->principal_user_ids ) {

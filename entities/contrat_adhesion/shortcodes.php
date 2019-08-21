@@ -37,6 +37,9 @@ add_action( 'amapress_init', function () {
 				$amapien = AmapressUser::getBy( $user_id, true );
 				$amapien->addCoadherent( $coadh1_user_id );
 			}
+		} else if ( isset( $_REQUEST['coadh1_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoAdherent1Id() );
 		}
 
 		if ( ! empty( $_REQUEST['coadh2_email'] ) ) {
@@ -50,6 +53,9 @@ add_action( 'amapress_init', function () {
 				$amapien = AmapressUser::getBy( $user_id, true );
 				$amapien->addCoadherent( $coadh2_user_id );
 			}
+		} else if ( isset( $_REQUEST['coadh2_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoAdherent2Id() );
 		}
 
 		if ( ! empty( $_REQUEST['coadh3_email'] ) ) {
@@ -63,6 +69,9 @@ add_action( 'amapress_init', function () {
 				$amapien = AmapressUser::getBy( $user_id, true );
 				$amapien->addCoadherent( $coadh3_user_id );
 			}
+		} else if ( isset( $_REQUEST['coadh3_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoAdherent3Id() );
 		}
 
 		wp_redirect_and_exit(
@@ -158,6 +167,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'send_tresoriers'      => 'true',
 			'allow_new_mail'       => 'true',
 			'edit_names'           => 'true',
+			'allow_remove_coadhs'  => 'false',
 			'only_contrats'        => '',
 			'shorturl'             => '',
 			'adhesion_shift_weeks' => 0,
@@ -167,13 +177,14 @@ function amapress_self_inscription( $atts, $content = null ) {
 		]
 		, $atts );
 
-	$for_logged         = Amapress::toBool( $atts['for_logged'] );
-	$ret                = '';
-	$admin_mode         = Amapress::toBool( $atts['admin_mode'] );
-	$activate_adhesion  = Amapress::toBool( $atts['adhesion'] );
-	$activate_agreement = Amapress::toBool( $atts['agreement'] );
-	$key                = $atts['key'];
-	$max_coadhs         = intval( $atts['max_coadherents'] );
+	$for_logged          = Amapress::toBool( $atts['for_logged'] );
+	$ret                 = '';
+	$admin_mode          = Amapress::toBool( $atts['admin_mode'] );
+	$activate_adhesion   = Amapress::toBool( $atts['adhesion'] );
+	$activate_agreement  = Amapress::toBool( $atts['agreement'] );
+	$allow_remove_coadhs = Amapress::toBool( $atts['allow_remove_coadhs'] );
+	$key                 = $atts['key'];
+	$max_coadhs          = intval( $atts['max_coadherents'] );
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -520,7 +531,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 </tr>
             </table>
             <div>
-		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
 	        <?php if ( $max_coadhs >= 1 ) { ?>
                 <table style="min-width: 50%">
@@ -566,6 +577,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                                   value="<?php echo esc_attr( $coadh1_mobile_phones ) ?>"/>
                         </td>
                     </tr>
+	                <?php if ( $allow_remove_coadhs && ! empty( $coadh1_email ) ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"></th>
+                            <td>
+                                <label for="coadh1_remove"><input type="checkbox" name="coadh1_remove"
+                                                                  id="coadh1_remove"/> Je ne suis plus coadhérent
+                                    avec <?php echo esc_html( "$coadh1_user_firt_name $coadh1_user_last_name" ) ?>
+                                </label>
+                            </td>
+                        </tr>
+	                <?php } ?>
                 </table>
 	        <?php } ?>
 	        <?php if ( $max_coadhs >= 2 ) { ?>
@@ -612,6 +634,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                                   value="<?php echo esc_attr( $coadh2_mobile_phones ) ?>"/>
                         </td>
                     </tr>
+	                <?php if ( $allow_remove_coadhs && ! empty( $coadh2_email ) ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"></th>
+                            <td>
+                                <label for="coadh2_remove"><input type="checkbox" name="coadh2_remove"
+                                                                  id="coadh2_remove"/> Je ne suis plus coadhérent
+                                    avec <?php echo esc_html( "$coadh2_user_firt_name $coadh2_user_last_name" ) ?>
+                                </label>
+                            </td>
+                        </tr>
+	                <?php } ?>
                 </table>
 	        <?php } ?>
 	        <?php if ( $max_coadhs >= 3 ) { ?>
@@ -658,6 +691,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                                   value="<?php echo esc_attr( $coadh3_mobile_phones ) ?>"/>
                         </td>
                     </tr>
+	                <?php if ( $allow_remove_coadhs && ! empty( $coadh3_email ) ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"></th>
+                            <td>
+                                <label for="coadh3_remove"><input type="checkbox" name="coadh3_remove"
+                                                                  id="coadh3_remove"/> Je ne suis plus coadhérent
+                                    avec <?php echo esc_html( "$coadh3_user_firt_name $coadh3_user_last_name" ) ?>
+                                </label>
+                            </td>
+                        </tr>
+	                <?php } ?>
                 </table>
 	        <?php } ?>
             <p style="color:red">* Champ obligatoire</p>
