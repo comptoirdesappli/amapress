@@ -30,8 +30,9 @@ add_action( 'amapress_init', function () {
 			$coadh1_email          = sanitize_email( $_REQUEST['coadh1_email'] );
 			$coadh1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_first_name'] ) ? $_REQUEST['coadh1_first_name'] : '' );
 			$coadh1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_last_name'] ) ? $_REQUEST['coadh1_last_name'] : '' );
+			$coadh1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh1_tels'] ) ? $_REQUEST['coadh1_tels'] : '' );
 
-			$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, null, null );
+			$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, null, $coadh1_user_phones );
 			if ( $coadh1_user_id ) {
 				$amapien = AmapressUser::getBy( $user_id, true );
 				$amapien->addCoadherent( $coadh1_user_id );
@@ -42,8 +43,9 @@ add_action( 'amapress_init', function () {
 			$coadh2_email          = sanitize_email( $_REQUEST['coadh2_email'] );
 			$coadh2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_first_name'] ) ? $_REQUEST['coadh2_first_name'] : '' );
 			$coadh2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_last_name'] ) ? $_REQUEST['coadh2_last_name'] : '' );
+			$coadh2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh2_tels'] ) ? $_REQUEST['coadh2_tels'] : '' );
 
-			$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, null, null );
+			$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, null, $coadh2_user_phones );
 			if ( $coadh2_user_id ) {
 				$amapien = AmapressUser::getBy( $user_id, true );
 				$amapien->addCoadherent( $coadh2_user_id );
@@ -54,8 +56,9 @@ add_action( 'amapress_init', function () {
 			$coadh3_email          = sanitize_email( $_REQUEST['coadh3_email'] );
 			$coadh3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_first_name'] ) ? $_REQUEST['coadh3_first_name'] : '' );
 			$coadh3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_last_name'] ) ? $_REQUEST['coadh3_last_name'] : '' );
+			$coadh3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh3_tels'] ) ? $_REQUEST['coadh3_tels'] : '' );
 
-			$coadh3_user_id = amapress_create_user_if_not_exists( $coadh3_email, $coadh3_user_firt_name, $coadh3_user_last_name, null, null );
+			$coadh3_user_id = amapress_create_user_if_not_exists( $coadh3_email, $coadh3_user_firt_name, $coadh3_user_last_name, null, $coadh3_user_phones );
 			if ( $coadh3_user_id ) {
 				$amapien = AmapressUser::getBy( $user_id, true );
 				$amapien->addCoadherent( $coadh3_user_id );
@@ -408,14 +411,17 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$coadh1_user_firt_name = '';
 		$coadh1_user_last_name = '';
 		$coadh1_email          = '';
+		$coadh1_mobile_phones  = '';
 
 		$coadh2_user_firt_name = '';
 		$coadh2_user_last_name = '';
 		$coadh2_email          = '';
+		$coadh2_mobile_phones  = '';
 
 		$coadh3_user_firt_name = '';
 		$coadh3_user_last_name = '';
 		$coadh3_email          = '';
+		$coadh3_mobile_phones  = '';
 
 		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
 		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
@@ -442,18 +448,21 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				$coadh1_user_firt_name = $amapien->getCoAdherent1()->getUser()->first_name;
 				$coadh1_user_last_name = $amapien->getCoAdherent1()->getUser()->last_name;
 				$coadh1_email          = $amapien->getCoAdherent1()->getUser()->user_email;
+				$coadh1_mobile_phones  = implode( '/', $amapien->getCoAdherent1()->getPhoneNumbers() );
 			}
 
 			if ( $amapien->getCoAdherent2() ) {
 				$coadh2_user_firt_name = $amapien->getCoAdherent2()->getUser()->first_name;
 				$coadh2_user_last_name = $amapien->getCoAdherent2()->getUser()->last_name;
 				$coadh2_email          = $amapien->getCoAdherent2()->getUser()->user_email;
+				$coadh2_mobile_phones  = implode( '/', $amapien->getCoAdherent2()->getPhoneNumbers() );
 			}
 
 			if ( $amapien->getCoAdherent3() ) {
 				$coadh3_user_firt_name = $amapien->getCoAdherent3()->getUser()->first_name;
 				$coadh3_user_last_name = $amapien->getCoAdherent3()->getUser()->last_name;
 				$coadh3_email          = $amapien->getCoAdherent3()->getUser()->user_email;
+				$coadh3_mobile_phones  = implode( '/', $amapien->getCoAdherent3()->getPhoneNumbers() );
 			}
 		}
 
@@ -545,6 +554,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                               value="<?php echo esc_attr( $coadh1_user_firt_name ) ?>"/>
                     </td>
                 </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh1_tels">Téléphone(s) : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh1_tels" name="coadh1_tels"
+                                                                              class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                              value="<?php echo esc_attr( $coadh1_mobile_phones ) ?>"/>
+                    </td>
+                </tr>
             </table>
 	        <?php
 	        //            if (!empty($coadh1_email)) {
@@ -585,6 +602,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                               value="<?php echo esc_attr( $coadh2_user_firt_name ) ?>"/>
                     </td>
                 </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh2_tels">Téléphone(s) : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh2_tels" name="coadh2_tels"
+                                                                              class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                              value="<?php echo esc_attr( $coadh2_mobile_phones ) ?>"/>
+                    </td>
+                </tr>
             </table>
             <table style="min-width: 50%">
                 <tr>
@@ -618,6 +643,14 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                                                                               class="required_if_not_empty single_name"
                                                                               data-if-id="coadh3_email"
                                                                               value="<?php echo esc_attr( $coadh3_user_firt_name ) ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="coadh3_tels">Téléphone(s) : </label></th>
+                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                              id="coadh3_tels" name="coadh3_tels"
+                                                                              class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                              value="<?php echo esc_attr( $coadh3_mobile_phones ) ?>"/>
                     </td>
                 </tr>
             </table>
