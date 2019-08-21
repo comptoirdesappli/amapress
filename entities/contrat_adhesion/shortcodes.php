@@ -162,6 +162,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'shorturl'             => '',
 			'adhesion_shift_weeks' => 0,
 			'before_close_hours'   => 24,
+			'max_coadherents'      => 3,
 			'email'                => get_option( 'admin_email' ),
 		]
 		, $atts );
@@ -172,6 +173,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 	$activate_adhesion  = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement = Amapress::toBool( $atts['agreement'] );
 	$key                = $atts['key'];
+	$max_coadhs         = intval( $atts['max_coadherents'] );
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -518,142 +520,146 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 </tr>
             </table>
             <div>
-	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-            <table style="min-width: 50%">
-                <tr>
-                    <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
-                            : </label>
-                    </th>
-                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh1_email" name="coadh1_email"
-                                                                              class="email"
-                                                                              value="<?php echo esc_attr( $coadh1_email ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh1_last_name">Son nom : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh1_last_name"
-                                                                              name="coadh1_last_name"
-                                                                              class="required_if_not_empty single_name"
-                                                                              data-if-id="coadh1_email"
-                                                                              value="<?php echo esc_attr( $coadh1_user_last_name ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh1_first_name">Son prénom : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh1_first_name"
-                                                                              name="coadh1_first_name"
-                                                                              class="required_if_not_empty single_name"
-                                                                              data-if-id="coadh1_email"
-                                                                              value="<?php echo esc_attr( $coadh1_user_firt_name ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh1_tels">Téléphone(s) : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh1_tels" name="coadh1_tels"
-                                                                              class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
-                                                                              value="<?php echo esc_attr( $coadh1_mobile_phones ) ?>"/>
-                    </td>
-                </tr>
-            </table>
-	        <?php
-	        //            if (!empty($coadh1_email)) {
-	        //                echo '<p></p>';
-	        //            }
-	        ?>
-            <table style="min-width: 50%">
-                <tr>
-                    <th colspan="2">Co adhérent 2 <em>(si vous payez les contrats à plusieurs)</em></th>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh2_email">Son email
-                            : </label>
-                    </th>
-                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh2_email" name="coadh2_email"
-                                                                              class="email"
-                                                                              value="<?php echo esc_attr( $coadh2_email ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh2_last_name">Son nom : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh2_last_name"
-                                                                              name="coadh2_last_name"
-                                                                              class="required_if_not_empty single_name"
-                                                                              data-if-id="coadh2_email"
-                                                                              value="<?php echo esc_attr( $coadh2_user_last_name ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh2_first_name">Son prénom : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh2_first_name"
-                                                                              name="coadh2_first_name"
-                                                                              class="required_if_not_empty single_name"
-                                                                              data-if-id="coadh2_email"
-                                                                              value="<?php echo esc_attr( $coadh2_user_firt_name ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh2_tels">Téléphone(s) : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh2_tels" name="coadh2_tels"
-                                                                              class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
-                                                                              value="<?php echo esc_attr( $coadh2_mobile_phones ) ?>"/>
-                    </td>
-                </tr>
-            </table>
-            <table style="min-width: 50%">
-                <tr>
-                    <th colspan="2">Co adhérent 3 <em>(si vous payez les contrats à plusieurs)</em></th>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh3_email">Son email
-                            : </label>
-                    </th>
-                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh3_email" name="coadh3_email"
-                                                                              class="email"
-                                                                              value="<?php echo esc_attr( $coadh3_email ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh3_last_name">Son nom : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh3_last_name"
-                                                                              name="coadh3_last_name"
-                                                                              class="required_if_not_empty single_name"
-                                                                              data-if-id="coadh3_email"
-                                                                              value="<?php echo esc_attr( $coadh3_user_last_name ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh3_first_name">Son prénom : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh3_first_name"
-                                                                              name="coadh3_first_name"
-                                                                              class="required_if_not_empty single_name"
-                                                                              data-if-id="coadh3_email"
-                                                                              value="<?php echo esc_attr( $coadh3_user_firt_name ) ?>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="coadh3_tels">Téléphone(s) : </label></th>
-                    <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
-                                                                              id="coadh3_tels" name="coadh3_tels"
-                                                                              class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
-                                                                              value="<?php echo esc_attr( $coadh3_mobile_phones ) ?>"/>
-                    </td>
-                </tr>
-            </table>
+	        <?php if ( $max_coadhs >= 1 ) { ?>
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh1_email" name="coadh1_email"
+                                                                                  class="email"
+                                                                                  value="<?php echo esc_attr( $coadh1_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh1_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh1_last_name"
+                                                                                  name="coadh1_last_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="coadh1_email"
+                                                                                  value="<?php echo esc_attr( $coadh1_user_last_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh1_first_name">Son prénom : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh1_first_name"
+                                                                                  name="coadh1_first_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="coadh1_email"
+                                                                                  value="<?php echo esc_attr( $coadh1_user_firt_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh1_tels">Téléphone(s) : </label></th>
+                        <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh1_tels" name="coadh1_tels"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                                  value="<?php echo esc_attr( $coadh1_mobile_phones ) ?>"/>
+                        </td>
+                    </tr>
+                </table>
+	        <?php } ?>
+	        <?php if ( $max_coadhs >= 2 ) { ?>
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Co adhérent 2 <em>(si vous payez les contrats à plusieurs)</em></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh2_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh2_email" name="coadh2_email"
+                                                                                  class="email"
+                                                                                  value="<?php echo esc_attr( $coadh2_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh2_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh2_last_name"
+                                                                                  name="coadh2_last_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="coadh2_email"
+                                                                                  value="<?php echo esc_attr( $coadh2_user_last_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh2_first_name">Son prénom : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh2_first_name"
+                                                                                  name="coadh2_first_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="coadh2_email"
+                                                                                  value="<?php echo esc_attr( $coadh2_user_firt_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh2_tels">Téléphone(s) : </label></th>
+                        <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh2_tels" name="coadh2_tels"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                                  value="<?php echo esc_attr( $coadh2_mobile_phones ) ?>"/>
+                        </td>
+                    </tr>
+                </table>
+	        <?php } ?>
+	        <?php if ( $max_coadhs >= 3 ) { ?>
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Co adhérent 3 <em>(si vous payez les contrats à plusieurs)</em></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh3_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh3_email" name="coadh3_email"
+                                                                                  class="email"
+                                                                                  value="<?php echo esc_attr( $coadh3_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh3_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh3_last_name"
+                                                                                  name="coadh3_last_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="coadh3_email"
+                                                                                  value="<?php echo esc_attr( $coadh3_user_last_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh3_first_name">Son prénom : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh3_first_name"
+                                                                                  name="coadh3_first_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="coadh3_email"
+                                                                                  value="<?php echo esc_attr( $coadh3_user_firt_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="coadh3_tels">Téléphone(s) : </label></th>
+                        <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="coadh3_tels" name="coadh3_tels"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                                  value="<?php echo esc_attr( $coadh3_mobile_phones ) ?>"/>
+                        </td>
+                    </tr>
+                </table>
+	        <?php } ?>
             <p style="color:red">* Champ obligatoire</p>
 	        <?php echo $member_message; ?>
             <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
@@ -672,11 +678,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_agreement' ) ) ?>">
             <input type="hidden" name="inscr_assistant" value="validate_agreement"/>
             <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
-	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
             <div class="amap-agreement">
-	            <?php echo amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ), null ); ?>
+				<?php echo amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ), null ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"

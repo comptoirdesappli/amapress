@@ -282,6 +282,8 @@ function amapress_register_shortcodes() {
 				'only_contrats'        => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un contrat donné avec une autre clé',
 				'shorturl'             => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
 				'adhesion_shift_weeks' => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
+				'max_coadherents'      => '(3 par défaut) Nombre maximum de co-adhérents',
+				'mob_phone_required'   => '(false par défaut) Téléphones (mobiles) requis',
 				'before_close_hours'   => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'email'                => '(mail de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
 			]
