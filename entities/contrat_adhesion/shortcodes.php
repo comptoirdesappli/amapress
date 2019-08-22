@@ -2014,12 +2014,12 @@ Vous allez recevoir un mail de confirmation avec votre contrat dans quelques min
             jQuery('.amapress_validate .quant').change(function () {
                 var $this = jQuery(this);
                 var factorElt = jQuery('#' + $this.data('factor-id'));
-                factorElt.prop('disabled', !$this.is(':checked'));
+                factorElt.toggle($this.is(':checked'));
                 computeTotal();
             }).each(function () {
                 var $this = jQuery(this);
                 var factorElt = jQuery('#' + $this.data('factor-id'));
-                factorElt.prop('disabled', !$this.is(':checked'));
+                factorElt.toggle($this.is(':checked'));
             });
             computeTotal();
 
