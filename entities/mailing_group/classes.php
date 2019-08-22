@@ -326,10 +326,10 @@ class AmapressMailingGroup extends TitanEntity {
 				$eml_file = $attachment_dir . "/$msg_id.eml";
 //				file_put_contents($eml_file, $this->getRawMail( $mailbox, $mail_id ) );
 				$mailbox->saveMail( $mail_id, $eml_file );
-				$to           = array_filter( $mail->to, function ( $addr ) {
-					return false === strpos( $addr, $this->getName() );
-				} );
-				$to           = implode( ', ', $to );
+//				$to           = array_filter( $mail->to, function ( $addr ) {
+//					return false === strpos( $addr, $this->getName() );
+//				} );
+				$to           = $this->getName(); //implode( ', ', $to );
 				$content      = ! empty( $mail->textHtml ) ? $mail->textHtml : $mail->textPlain;
 				$raw_headers  = $mailbox->getMailHeader( $mail_id );
 				$is_from_list = false;
@@ -351,7 +351,7 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 
 				if ( ! $is_from_list ) {
-					$cc   = implode( ', ', $mail->cc );
+					$cc   = ''; //implode( ', ', $mail->cc );
 					$from = ! empty( $mail->fromName ) ? "{$mail->fromName} <{$mail->fromAddress}>" : $mail->fromAddress;
 					$date = $mail->date;
 //				$mail->importance;
