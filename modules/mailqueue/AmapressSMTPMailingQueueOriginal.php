@@ -230,6 +230,11 @@ class AmapressSMTPMailingQueueOriginal {
 			$to = explode( ',', $to );
 		}
 
+		if ( empty( $to ) ) {
+			$to      = [ get_option( 'admin_email' ) ];
+			$subject = '[Mail sans destinataire]' . $subject;
+		}
+
 		foreach ( (array) $to as $recipient ) {
 			try {
 				// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
