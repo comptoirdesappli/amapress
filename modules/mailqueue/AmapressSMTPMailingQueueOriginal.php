@@ -265,6 +265,10 @@ class AmapressSMTPMailingQueueOriginal {
 		// Add any CC and BCC recipients
 		if ( ! empty( $cc ) ) {
 			foreach ( (array) $cc as $recipient ) {
+				if ( false === strpos( $recipient, '@' ) ) {
+					continue;
+				}
+
 				try {
 					// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
 					$recipient_name = '';
