@@ -280,7 +280,13 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['referents']                        = [
+			$ret['message'] = [
+				'desc' => 'Mssage aux référents lors de l\'inscription',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getMessage();
+				}
+			];
+			$ret['referents'] = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
