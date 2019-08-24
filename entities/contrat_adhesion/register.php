@@ -598,9 +598,9 @@ jQuery(function($) {
 				'name'        => amapress__( 'Message' ),
 				'type'        => 'textarea',
 				'readonly'    => true,
+				'group'       => '2/ Contrat',
 				'show_column' => false,
-				'hidden'      => true,
-				'desc'        => 'Message',
+				'desc'        => 'Message aux référents lors de l\'inscription en ligne',
 				'csv'         => false,
 			),
 			'all-coadherents'  => array(
