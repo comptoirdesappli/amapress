@@ -941,8 +941,9 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 
 				$quant_var_editor = '';
 				if ( $contrat_instance->isQuantiteVariable() ) {
-					$disabled         = disabled( in_array( $quantite->ID, $adhesion_quantite_ids ), false, false );
-					$quant_var_editor .= "<select id='$id_factor' name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block;min-width: auto' $disabled>";
+//					$disabled         = disabled( in_array( $quantite->ID, $adhesion_quantite_ids ), false, false );
+					$hidden           = ! in_array( $quantite->ID, $adhesion_quantite_ids ) ? ';display:none' : '';
+					$quant_var_editor .= "<select id='$id_factor' name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block;min-width: auto$hidden'>";
 
 					$quant_var_editor .= tf_parse_select_options(
 						$quantite->getQuantiteOptions(),
@@ -974,7 +975,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 				$ret .= "<script type='text/javascript'>jQuery('#$id').change(function() {
     var this_option = jQuery(this);
   jQuery('#amapress_adhesion_date_debut').datepicker('option', {minDate:this_option.data('contrat-date-debut'), maxDate: this_option.data('contrat-date-fin')});
-  jQuery('#$id_factor').prop('disabled', !this_option.is(':checked'));
+  jQuery('#$id_factor').toggle(this_option.is(':checked'));
 })</script>";
 			}
 			$ret .= '</div>';
