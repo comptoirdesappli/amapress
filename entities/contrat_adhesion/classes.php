@@ -363,9 +363,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['coadherent']                       = [
 				'desc' => 'Prénom Nom co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					$coadh = $adh->getAdherent2();
 					if ( ! $coadh ) {
-						return '';
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
 					}
 
 					return $coadh->getDisplayName();
@@ -374,9 +377,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['coadherent.nom']                   = [
 				'desc' => 'Nom co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					$coadh = $adh->getAdherent2();
 					if ( ! $coadh ) {
-						return '';
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
 					}
 
 					return $coadh->getUser()->last_name;
@@ -385,9 +391,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['coadherent.prenom']                = [
 				'desc' => 'Prénom co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					$coadh = $adh->getAdherent2();
 					if ( ! $coadh ) {
-						return '';
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
 					}
 
 					return $coadh->getUser()->first_name;
@@ -396,9 +405,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['coadherent.adresse']               = [
 				'desc' => 'Adresse co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					$coadh = $adh->getAdherent2();
 					if ( ! $coadh ) {
-						return '';
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
 					}
 
 					return $coadh->getFormattedAdresse();
@@ -407,9 +419,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['coadherent.tel']                   = [
 				'desc' => 'Téléphone co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					$coadh = $adh->getAdherent2();
 					if ( ! $coadh ) {
-						return '';
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
 					}
 
 					return $coadh->getTelephone();
@@ -418,9 +433,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['coadherent.email']                 = [
 				'desc' => 'Email co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					$coadh = $adh->getAdherent()->getFirstCoAdherent();
+					$coadh = $adh->getAdherent2();
 					if ( ! $coadh ) {
-						return '';
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
 					}
 
 					return $coadh->getEmail();
