@@ -1824,27 +1824,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		if ( ! $admin_mode ) {
 			if ( Amapress::toBool( $atts['send_referents'] ) ) {
-				$referents = [];
-				foreach ( $inscription->getContrat_instance()->getReferentsIds() as $ref_id ) {
-					$user_obj  = AmapressUser::getBy( $ref_id );
-					$referents = array_merge( $referents, $user_obj->getAllEmails() );
-				}
-
-				$send_referents_subject = 'Nouvelle inscription - ' . $inscription->getContrat_instance()->getTitle() . ' - ' . $inscription->getAdherent()->getDisplayName();
-				$send_referents_content = wpautop(
-					"Bonjour,\n\nUne nouvelle inscription est en attente de validation : " . Amapress::makeLink( $inscription->getAdminEditLink(), $inscription->getTitle() ) .
-					"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
-					"\nMessage de l'amapien: %%message%%" .
-					"\n%%nom_site%%" );
-
-				$send_referents_subject = amapress_replace_mail_placeholders( $send_referents_subject, $amapien, $inscription );
-				$send_referents_content = amapress_replace_mail_placeholders( $send_referents_content, $amapien, $inscription );
-
-				amapress_wp_mail(
-					$referents,
-					$send_referents_subject,
-					$send_referents_content
-				);
+				$inscription->sendReferentsNotificationMail();
 			}
 
 			$adhs                               = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
