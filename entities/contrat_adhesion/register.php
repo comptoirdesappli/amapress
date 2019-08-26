@@ -599,9 +599,9 @@ jQuery(function($) {
 				'type'        => 'textarea',
 				'readonly'    => true,
 				'group'       => '2/ Contrat',
-				'show_column' => false,
+//				'show_column' => false,
 				'desc'        => 'Message aux référents lors de l\'inscription en ligne',
-				'csv'         => false,
+//				'csv'         => false,
 			),
 			'all-coadherents'  => array(
 				'name'            => amapress__( 'Co-adhérents' ),
