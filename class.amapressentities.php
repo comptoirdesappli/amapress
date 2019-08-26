@@ -1126,7 +1126,7 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 											'name'     => 'Objet',
 											'sanitize' => false,
 											'type'     => 'text',
-											'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre%% à partir du %%date_debut_complete%%',
+											'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre_complet%% à partir du %%date_debut_complete%%',
 										),
 										array(
 											'id'      => 'online_subscription_confirm-mail-content',
@@ -1141,6 +1141,32 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
 									\n\n%%nom_site%%" ),
 											'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Mails - Notification Référents Inscription Contrat',
+										),
+										array(
+											'id'       => 'online_subscription_referents-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Nouvelle inscription - %%contrat_titre_complet%% - %%adherent%%',
+										),
+										array(
+											'id'      => 'online_subscription_referents-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop(
+												"Bonjour,\n\nUne nouvelle inscription est en attente de validation : %%inscription_admin_link%%" .
+												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
+												"\nMessage de l'amapien: %%message%%" .
+												"\n%%nom_site%%" ),
+											'desc'    => 'Les placeholders suivants sont disponibles:' .
 											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(
