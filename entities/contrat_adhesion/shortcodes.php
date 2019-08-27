@@ -573,7 +573,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                         <th style="text-align: left; width: auto"><label for="coadh1_tels">Téléphone(s) : </label></th>
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh1_tels" name="coadh1_tels"
-                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                  data-if-id="coadh1_email"
                                                                                   value="<?php echo esc_attr( $coadh1_mobile_phones ) ?>"/>
                         </td>
                     </tr>
@@ -630,7 +631,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                         <th style="text-align: left; width: auto"><label for="coadh2_tels">Téléphone(s) : </label></th>
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh2_tels" name="coadh2_tels"
-                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                  data-if-id="coadh2_email"
                                                                                   value="<?php echo esc_attr( $coadh2_mobile_phones ) ?>"/>
                         </td>
                     </tr>
@@ -687,7 +689,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                         <th style="text-align: left; width: auto"><label for="coadh3_tels">Téléphone(s) : </label></th>
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh3_tels" name="coadh3_tels"
-                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                  data-if-id="coadh3_email"
                                                                                   value="<?php echo esc_attr( $coadh3_mobile_phones ) ?>"/>
                         </td>
                     </tr>
