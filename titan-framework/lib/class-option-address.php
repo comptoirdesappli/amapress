@@ -24,9 +24,9 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			return null;
 		}
 
-		$string = preg_replace( '/(?:\s+-\s+)(\d{5})\s+([^,]+),\s*\1\s+\2/', ', $1 $2', $string );
-
 		$string = preg_replace( '/\s+/', " ", trim( $string ) );
+		$string = preg_replace( '/(?:\s+-\s+)?(\d{5})\s+([^,]+),\s*\1\s+\2/', ', $1 $2', $string );
+
 		if ( 'google' == self::$geoprovider ) {
 			$string      = urlencode( $string );
 			$key         = self::$google_map_api_key;
