@@ -228,9 +228,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 	}
 
+	$additional_css = '<style type="text/css">' . esc_html( wp_unslash( Amapress::getOption( 'online_inscr_css' ) ) ) . '</style>';
+
 	ob_start();
 
-	echo '<style type="text/css">' . esc_html( wp_unslash( Amapress::getOption( 'online_inscr_css' ) ) ) . '</style>';
+	echo $additional_css;
 
 	echo $ret;
 
@@ -338,11 +340,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			if ( $admin_mode ) {
 				ob_clean();
 
-				return '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
+				return $additional_css . '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
 			} else {
 				ob_clean();
 
-				return ( '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>' );
+				return $additional_css . '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
 			}
 		}
 	}
@@ -410,7 +412,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( ! Amapress::toBool( $atts['allow_new_mail'] ) && ! $user ) {
 			ob_clean();
 
-			return '<p style="font-weight: bold">Les inscriptions avec une nouvelle adresse email ne sont pas autorisées.</p>
+			return $additional_css . '<p style="font-weight: bold">Les inscriptions avec une nouvelle adresse email ne sont pas autorisées.</p>
 <p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 		}
@@ -752,7 +754,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( $adh_paiement ) {
 			ob_clean();
 
-			return ( 'Vous avez déjà une adhésion' );
+			return ( $additional_css . '<p>Vous avez déjà une adhésion</p>' );
 		}
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
@@ -1202,7 +1204,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		if ( empty( $lieux ) ) {
 			ob_clean();
 
-			return ( '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
+			return ( $additional_css . '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
 		}
 		?>
         <h4>Étape 5/8 : Date et lieu - <?php echo esc_html( $contrat->getTitle() ) ?></h4>
