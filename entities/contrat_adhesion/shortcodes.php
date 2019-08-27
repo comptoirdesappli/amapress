@@ -168,6 +168,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'allow_new_mail'       => 'true',
 			'edit_names'           => 'true',
 			'allow_remove_coadhs'  => 'false',
+			'contact_referents'    => 'true',
 			'only_contrats'        => '',
 			'shorturl'             => '',
 			'adhesion_shift_weeks' => 0,
@@ -1062,6 +1063,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 					                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' € (' . $adh->getProperty( 'option_paiements' ) . ')'
 					                . '<br/>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
 					                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+					if ( Amapress::toBool( $atts['contact_referents'] ) ) {
+						$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
+						$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' );
+					}
 					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em><br/>' . $print_contrat . '</li>';
 				}
 			}
@@ -1152,6 +1157,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				echo '<p>Contrats disponibles :</p>';
 				echo '<ul style="list-style-type: disc">';
 				foreach ( $user_subscribable_contrats as $contrat ) {
+					/** @var AmapressContrat_instance $contrat */
 					$inscription_url = add_query_arg( [
 						'step'       => 'inscr_contrat_date_lieu',
 						'contrat_id' => $contrat->ID

@@ -285,6 +285,7 @@ function amapress_register_shortcodes() {
 				'max_coadherents'      => '(3 par défaut) Nombre maximum de co-adhérents',
 				'mob_phone_required'   => '(false par défaut) Téléphones (mobiles) requis',
 				'allow_remove_coadhs'  => '(false par défaut) Autoriser la suppression des co-adhérents',
+				'contact_referents'    => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'   => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'email'                => '(mail de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
 			]
