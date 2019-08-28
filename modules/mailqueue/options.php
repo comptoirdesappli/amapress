@@ -263,11 +263,22 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 		);
 		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression de ce message ?\')">Supprimer</a>';
 
+		$href           = add_query_arg(
+			array(
+				'action'   => 'amapress_retry_queue_send_msg',
+				'msg_file' => $email['basename'],
+			),
+			admin_url( 'admin.php' )
+		);
+		$link_retry_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la nouvelle tentative d\\\'envoi de ce message ?\')">Renvoyer</a>';
+
 		$msg    = wpautop( $msg );
 		$data[] = array(
 			'time'          => array(
 				'val'     => $email['time'],
-				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) ) . $link_delete_msg,
+				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) )
+				             . $link_delete_msg
+				             . ( 'errored' == $email['type'] ? $link_retry_msg : '' ),
 			),
 			'to'            => esc_html( str_replace( ',', ', ', $email['to'] ) ),
 			'subject'       => esc_html( $email['subject'] ),
@@ -302,6 +313,26 @@ function admin_action_amapress_delete_queue_msg() {
 	AmapressSMTPMailingQueue::deleteFile( $type, $msg_file );
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 		echo "Message $msg_file supprimé avec succès";
+	} else {
+		wp_redirect( $_SERVER['HTTP_REFERER'] );
+	}
+	exit();
+}
+
+add_action( 'admin_action_amapress_retry_queue_send_msg', 'admin_action_amapress_retry_queue_send_msg' );
+function admin_action_amapress_retry_queue_send_msg() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( 'Accès non autorisé' );
+	}
+
+	$msg_file = $_REQUEST['msg_file'];
+	$res      = AmapressSMTPMailingQueue::retrySendMessage( $msg_file );
+	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
+		if ( $res ) {
+			echo "Message $msg_file renvoyé avec succès";
+		} else {
+			echo "Message $msg_file non renvoyé";
+		}
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 	}

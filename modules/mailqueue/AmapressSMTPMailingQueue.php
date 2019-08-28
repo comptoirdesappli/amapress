@@ -292,7 +292,7 @@ class AmapressSMTPMailingQueue {
 					continue;
 				}
 			}
-			$this->sendMail( $data );
+			self::sendMail( $data );
 			@unlink( $file );
 		}
 
@@ -306,7 +306,7 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return array Success
 	 */
-	public function sendMail( $data ) {
+	public static function sendMail( $data ) {
 		if ( ! empty( $data['attachments'] ) ) {
 			$data['attachments'] = array_filter( $data['attachments'],
 				function ( $v ) {
@@ -333,6 +333,17 @@ class AmapressSMTPMailingQueue {
 	public static function deleteFile( $type, $msg_file ) {
 		$file = self::getUploadDir( $type ) . $msg_file;
 		@unlink( $file );
+	}
+
+	public static function retrySendMessage( $msg_file ) {
+		$file            = self::getUploadDir( 'errored' ) . $msg_file;
+		$msg             = json_decode( file_get_contents( $file ), true );
+		$msg['type']     = 'errored';
+		$msg['basename'] = basename( $file );
+		$errors          = self::sendMail( $msg );
+		@unlink( $file );
+
+		return empty( $errors );
 	}
 
 	/**
