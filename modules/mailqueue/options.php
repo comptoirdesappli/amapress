@@ -261,7 +261,7 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 			),
 			admin_url( 'admin.php' )
 		);
-		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '">Supprimer</a>';
+		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression de ce message ?\')">Supprimer</a>';
 
 		$msg    = wpautop( $msg );
 		$data[] = array(
