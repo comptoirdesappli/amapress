@@ -2105,7 +2105,7 @@ class Amapress {
 			} else if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post['post_type'] ) {
 				if ( isset( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
 					$arr  = $postmeta['amapress_adhesion_contrat_quantite'];
-					$arr2     = [];
+					$arr2 = [];
 					foreach ( $arr as $k => $v ) {
 						$arr2[ $k ] = "posts[$v]";
 					}
@@ -2119,7 +2119,10 @@ class Amapress {
 					}
 					$postmeta['amapress_adhesion_contrat_quantite_factors'] = $arr2;
 				}
+				unset( $postmeta['amapress_adhesion_message'] );
 			}
+			unset( $postmeta['amapress_intermittence_panier_adh_cancel_message'] );
+			unset( $postmeta['amapress_intermittence_panier_adh_message'] );
 		};
 		$relative_time        = 0;
 		$media                = [];
