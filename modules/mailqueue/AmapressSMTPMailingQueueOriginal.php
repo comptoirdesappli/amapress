@@ -332,7 +332,9 @@ class AmapressSMTPMailingQueueOriginal {
 
 		// Set whether it's plaintext, depending on $content_type
 		if ( 'text/html' == $content_type ) {
-			if ( defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) ) {
+			if ( ( defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) && SEND_EMAILS_AS_PLAIN_TEXT )
+			     || ( defined( 'FREE_PAGES_PERSO' )
+			          && ( ! defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) || SEND_EMAILS_AS_PLAIN_TEXT ) ) ) {
 				$phpmailer->IsHTML( false );
 				$phpmailer->Body    = $phpmailer->html2text( $phpmailer->Body );
 				$phpmailer->AltBody = null;
