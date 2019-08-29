@@ -56,7 +56,11 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'column_link'  => function ( $option, $post_id ) {
 					$value = $option->getValue( $post_id );
 
-					return add_query_arg( 'amapress_date', date( 'Y-m-d', $value ) );
+					if ( empty( $value ) ) {
+						return '';
+					}
+
+					return add_query_arg( 'amapress_date', date( 'Y-m-d', @intval( $value ) ) );
 				}
 			),
 			'date_emission' => array(
