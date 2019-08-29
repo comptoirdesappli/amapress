@@ -458,6 +458,9 @@ function amapress_register_entities_adhesion( $entities ) {
 						/** @var TitanFrameworkOption $option */
 						if ( TitanFrameworkOption::isOnEditScreen() ) {
 							$adh = AmapressAdhesion::getBy( $option->getPostID() );
+							if ( null == $adh || null == $adh->getContrat_instance() ) {
+								return;
+							}
 							echo '<script type="text/javascript">
 jQuery(function($) {
     var $date_debut = $("#amapress_adhesion_date_debut");
