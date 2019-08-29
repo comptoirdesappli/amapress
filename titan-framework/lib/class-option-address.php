@@ -20,7 +20,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 	);
 
 	public static function lookup_address( $string ) {
-		if ( empty( $string ) ) {
+		if ( empty( $string ) || ',' == trim( $string ) ) {
 			return null;
 		}
 
@@ -33,6 +33,11 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$details_url = "https://maps.googleapis.com/maps/api/geocode/json?address={$string}&sensor=false&key={$key}";
 
 			$ch = curl_init();
+			if ( false === $ch ) {
+				error_log( 'Curl failed to init' );
+
+				return null;
+			}
 			curl_setopt( $ch, CURLOPT_URL, $details_url );
 			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 			$response = json_decode( curl_exec( $ch ), true );
@@ -56,6 +61,11 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$details_url = "https://nominatim.openstreetmap.org/search?q={$string}&format=json";
 
 			$ch = curl_init();
+			if ( false === $ch ) {
+				error_log( 'Curl failed to init' );
+
+				return null;
+			}
 			curl_setopt( $ch, CURLOPT_URL, $details_url );
 			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 			curl_setopt( $ch, CURLOPT_REFERER, wp_get_referer() );
