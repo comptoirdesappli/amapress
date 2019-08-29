@@ -26,21 +26,23 @@ class AmapressSMTPMailingQueue {
 			load_plugin_textdomain( 'smtp-mailing-queue', false, 'smtp-mailing-queue/languages/' );
 		} );
 
-		add_action( 'amps_smq_start_queue', [ $this, 'processQueue' ] );
+		if ( ! defined( 'FREE_PAGES_PERSO' ) ) {
+			add_action( 'amps_smq_start_queue', [ $this, 'processQueue' ] );
 
-		// Filter
-		add_filter( 'cron_schedules', [ $this, 'addWpCronInterval' ] );
+			// Filter
+			add_filter( 'cron_schedules', [ $this, 'addWpCronInterval' ] );
 
-		if ( ! wp_next_scheduled( 'amps_smq_start_queue' ) ) {
-			$this->refreshWpCron();
+			if ( ! wp_next_scheduled( 'amps_smq_start_queue' ) ) {
+				$this->refreshWpCron();
+			}
+
+			if ( ! wp_next_scheduled( 'amps_smq_clean_log' ) ) {
+				wp_schedule_event( time(), 'daily', 'amps_smq_clean_log' );
+			}
+			add_action( 'amps_smq_clean_log', [ $this, 'cleanLogs' ] );
+
+			add_action( 'tf_set_value_amapress_mail_queue_interval', [ $this, 'refreshWpCron' ] );
 		}
-
-		if ( ! wp_next_scheduled( 'amps_smq_clean_log' ) ) {
-			wp_schedule_event( time(), 'daily', 'amps_smq_clean_log' );
-		}
-		add_action( 'amps_smq_clean_log', [ $this, 'cleanLogs' ] );
-
-		add_action( 'tf_set_value_amapress_mail_queue_interval', [ $this, 'refreshWpCron' ] );
 //		add_action('tf_set_value_amapress_mail_queue_limit', [$this, 'refreshWpCron']);
 //        $this->refreshWpCron();
 	}
