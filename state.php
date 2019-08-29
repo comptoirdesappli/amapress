@@ -230,6 +230,15 @@ function amapress_get_state() {
 		);
 	}
 
+	if ( ! extension_loaded( 'imap' ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			'warning',
+			'Extension PHP IMAP',
+			'L\'extension IMAP de PHP doit être activée pour que les Emails groupés soient actifs',
+			admin_url( 'https://www.php.net/manual/fr/imap.setup.php' )
+		);
+	}
+
 	$state['05_config'][] = amapress_get_check_state(
 		is_ssl() ? 'success' : 'warning',
 		is_ssl() ? 'HTTPS Activé' : 'HTTPS Désactivé',

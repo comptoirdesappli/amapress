@@ -18,11 +18,15 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				$ml = AmapressMailingGroup::getBy( $post, true );
 				if ( $ml ) {
-					$res = $ml->testParams();
-					if ( true !== $res ) {
-						echo amapress_get_admin_notice( 'Erreur de configuration : ' . $res, 'error', false );
+					if ( extension_loaded( 'imap' ) ) {
+						$res = $ml->testParams();
+						if ( true !== $res ) {
+							echo amapress_get_admin_notice( 'Erreur de configuration : ' . $res, 'error', false );
+						} else {
+							echo amapress_get_admin_notice( 'Configuration OK', 'success', false );
+						}
 					} else {
-						echo amapress_get_admin_notice( 'Configuration OK', 'success', false );
+						echo amapress_get_admin_notice( 'Erreur de configuration : l\'extension IMAP n\'est pas installée, les emails groupés sont désactivés.', 'error', false );
 					}
 				}
 			}
@@ -460,37 +464,43 @@ function amapress_clean_mailinggroups_archives() {
 }
 
 add_action( 'init', function () {
-	add_filter( 'cron_schedules', function ( $schedules ) {
-		$mail_queue_interval    = Amapress::getOption( 'mailgroup_interval' );
-		$interval               = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 30;
-		$schedules['amps_mlgf'] = [
-			'interval' => $interval,
-			'display'  => __( 'Interval for fetching mailing groups', 'amapress' )
-		];
+	if ( extension_loaded( 'imap' ) ) {
+		add_filter( 'cron_schedules', function ( $schedules ) {
+			$mail_queue_interval    = Amapress::getOption( 'mailgroup_interval' );
+			$interval               = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 30;
+			$schedules['amps_mlgf'] = [
+				'interval' => $interval,
+				'display'  => __( 'Interval for fetching mailing groups', 'amapress' )
+			];
 
-		return $schedules;
-	} );
+			return $schedules;
+		} );
 
-	add_action( 'amps_mlgf_fetch', 'amapress_fetch_mailinggroups' );
+		add_action( 'amps_mlgf_fetch', 'amapress_fetch_mailinggroups' );
 
-	if ( ! wp_next_scheduled( 'amps_mlgf_fetch' ) ) {
-		if ( wp_next_scheduled( 'amps_mlgf_fetch' ) ) {
-			wp_clear_scheduled_hook( 'amps_mlgf_fetch' );
-		}
-		wp_schedule_event( time(), 'amps_mlgf', 'amps_mlgf_fetch' );
-	}
-
-	if ( ! wp_next_scheduled( 'amps_mlgf_clean_arc' ) ) {
-		wp_schedule_event( time(), 'daily', 'amps_mlgf_clean_arc' );
-	}
-	add_action( 'amps_mlgf_clean_arc', 'amapress_clean_mailinggroups_archives' );
-
-	amapress_register_shortcode( 'waiting-mlgrp-count', function () {
-		$cnt = 0;
-		foreach ( AmapressMailingGroup::getAll() as $ml ) {
-			$cnt += $ml->getMailWaitingModerationCount();
+		if ( ! wp_next_scheduled( 'amps_mlgf_fetch' ) ) {
+			if ( wp_next_scheduled( 'amps_mlgf_fetch' ) ) {
+				wp_clear_scheduled_hook( 'amps_mlgf_fetch' );
+			}
+			wp_schedule_event( time(), 'amps_mlgf', 'amps_mlgf_fetch' );
 		}
 
-		return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
-	} );
+		if ( ! wp_next_scheduled( 'amps_mlgf_clean_arc' ) ) {
+			wp_schedule_event( time(), 'daily', 'amps_mlgf_clean_arc' );
+		}
+		add_action( 'amps_mlgf_clean_arc', 'amapress_clean_mailinggroups_archives' );
+
+		amapress_register_shortcode( 'waiting-mlgrp-count', function () {
+			$cnt = 0;
+			foreach ( AmapressMailingGroup::getAll() as $ml ) {
+				$cnt += $ml->getMailWaitingModerationCount();
+			}
+
+			return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
+		} );
+	} else {
+		amapress_register_shortcode( 'waiting-mlgrp-count', function () {
+			return '';
+		} );
+	}
 } );

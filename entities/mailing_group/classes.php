@@ -304,6 +304,10 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function fetchMails() {
+		if ( ! extension_loaded( 'imap' ) ) {
+			return false;
+		}
+
 		try {
 			$mailbox = $this->getMailbox();
 		} catch ( Exception $ex ) {
