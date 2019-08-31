@@ -48,7 +48,17 @@ function amapress_create_user_if_not_exists(
 		wp_new_user_notification( $user_id, null, $notify );
 
 		if ( ! empty( $address ) ) {
-			update_user_meta( $user->ID, 'amapress_user_adresse', $address );
+			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
+			preg_match( '/^(.+?),\s*(\d{5}|2[AB]\d{3})\s+([^,]+)$/', $address, $matches );
+			if ( $matches ) {
+				update_user_meta( $user->ID, 'amapress_user_adresse', $matches[1] );
+				update_user_meta( $user->ID, 'amapress_user_code_postal', $matches[2] );
+				update_user_meta( $user->ID, 'amapress_user_ville', $matches[3] );
+			} else {
+				update_user_meta( $user->ID, 'amapress_user_adresse', $address );
+				delete_user_meta( $user->ID, 'amapress_user_code_postal' );
+				delete_user_meta( $user->ID, 'amapress_user_ville' );
+			}
 			AmapressUsers::resolveUserFullAdress( $user->ID, $address );
 		}
 		if ( ! empty( $tel ) ) {
@@ -74,7 +84,17 @@ function amapress_create_user_if_not_exists(
 			);
 		}
 		if ( ! empty( $address ) ) {
-			update_user_meta( $user->ID, 'amapress_user_adresse', $address );
+			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
+			preg_match( '/^(.+?),\s*(\d{5}|2[AB]\d{3})\s+([^,]+)$/', $address, $matches );
+			if ( $matches ) {
+				update_user_meta( $user->ID, 'amapress_user_adresse', $matches[1] );
+				update_user_meta( $user->ID, 'amapress_user_code_postal', $matches[2] );
+				update_user_meta( $user->ID, 'amapress_user_ville', $matches[3] );
+			} else {
+				update_user_meta( $user->ID, 'amapress_user_adresse', $address );
+				delete_user_meta( $user->ID, 'amapress_user_code_postal' );
+				delete_user_meta( $user->ID, 'amapress_user_ville' );
+			}
 			AmapressUsers::resolveUserFullAdress( $user->ID, $address );
 		}
 		if ( ! empty( $tel ) ) {

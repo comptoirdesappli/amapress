@@ -251,7 +251,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
-			return preg_replace( '/(?:\s+-\s+)(\d{5})\s+([^,]+),\s*\1\s+\2/', ', $1 $2',
+			return preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2',
 				sprintf( '%s, %s %s', $this->getAdresse(), $cp, $v ) );
 		} else {
 			return $this->getAdresse();
@@ -263,7 +263,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
-			return preg_replace( '/(?:\s+-\s+)(\d{5})\s+([^,]+)\<br\/\>\s*\1\s+\2/', ', $1 $2',
+			return preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:\<br\/\>\s*\1\s+\2)+/i', ', $1 $2',
 				sprintf( '%s<br/>%s %s', $this->getAdresse(), $cp, $v ) );
 		} else {
 			return $this->getAdresse();
