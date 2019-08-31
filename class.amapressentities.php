@@ -1228,6 +1228,34 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Message aux adhérents principaux',
+										),
+										array(
+											'id'      => 'online_principal_user_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Message aux adhérents principaux sur les Etapes 2/Coordonnées et 4/Contrats',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Message aux co-adhérents',
+										),
+										array(
+											'id'      => 'online_coadh_user_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Message aux co-adhérents sur les Etapes 2/Coordonnées et 4/Contrats',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'Message - Etape 4/8 - Les contrats',
 										),
 										array(

@@ -154,38 +154,45 @@ function amapress_self_inscription( $atts, $content = null ) {
 
 	$atts = shortcode_atts(
 		[
-			'key'                  => '',
-			'for_logged'           => 'false',
-			'show_contrats'        => 'false',
-			'filter_multi_contrat' => 'false',
-			'admin_mode'           => 'false',
-			'agreement'            => 'false',
-			'mob_phone_required'   => 'false',
-			'check_principal'      => 'true',
-			'adhesion'             => 'true',
-			'send_referents'       => 'true',
-			'send_tresoriers'      => 'true',
-			'allow_new_mail'       => 'true',
-			'edit_names'           => 'true',
-			'allow_remove_coadhs'  => 'false',
-			'contact_referents'    => 'true',
-			'only_contrats'        => '',
-			'shorturl'             => '',
-			'adhesion_shift_weeks' => 0,
-			'before_close_hours'   => 24,
-			'max_coadherents'      => 3,
-			'email'                => get_option( 'admin_email' ),
+			'key'                           => '',
+			'for_logged'                    => 'false',
+			'show_contrats'                 => 'false',
+			'filter_multi_contrat'          => 'false',
+			'admin_mode'                    => 'false',
+			'agreement'                     => 'false',
+			'mob_phone_required'            => 'false',
+			'check_principal'               => 'true',
+			'adhesion'                      => 'true',
+			'send_referents'                => 'true',
+			'send_tresoriers'               => 'true',
+			'allow_new_mail'                => 'true',
+			'edit_names'                    => 'true',
+			'allow_remove_coadhs'           => 'false',
+			'contact_referents'             => 'true',
+			'show_adherents_infos'          => 'true',
+			'allow_coadherents_inscription' => 'true',
+			'only_contrats'                 => '',
+			'shorturl'                      => '',
+			'adhesion_shift_weeks'          => 0,
+			'before_close_hours'            => 24,
+			'max_coadherents'               => 3,
+			'email'                         => get_option( 'admin_email' ),
 		]
 		, $atts );
 
-	$for_logged          = Amapress::toBool( $atts['for_logged'] );
-	$ret                 = '';
-	$admin_mode          = Amapress::toBool( $atts['admin_mode'] );
-	$activate_adhesion   = Amapress::toBool( $atts['adhesion'] );
-	$activate_agreement  = Amapress::toBool( $atts['agreement'] );
-	$allow_remove_coadhs = Amapress::toBool( $atts['allow_remove_coadhs'] );
-	$key                 = $atts['key'];
-	$max_coadhs          = intval( $atts['max_coadherents'] );
+	$for_logged                    = Amapress::toBool( $atts['for_logged'] );
+	$ret                           = '';
+	$admin_mode                    = Amapress::toBool( $atts['admin_mode'] );
+	$activate_adhesion             = Amapress::toBool( $atts['adhesion'] );
+	$activate_agreement            = Amapress::toBool( $atts['agreement'] );
+	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
+	$allow_coadherents_inscription = Amapress::toBool( $atts['allow_coadherents_inscription'] );
+	$show_adherents_infos          = Amapress::toBool( $atts['show_adherents_infos'] );
+	if ( ! $allow_coadherents_inscription ) {
+		$show_adherents_infos = true;
+	}
+	$key        = $atts['key'];
+	$max_coadhs = intval( $atts['max_coadherents'] );
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -443,7 +450,9 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 
-		$edit_names = Amapress::toBool( $atts['edit_names'] ) || empty( $user );
+		$edit_names               = Amapress::toBool( $atts['edit_names'] ) || empty( $user );
+		$adherents_infos          = '';
+		$adherents_custom_message = '';
 
 		if ( $user ) {
 //			if ( is_multisite() ) {
@@ -451,7 +460,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 //					add_user_to_blog( get_current_blog_id(), $user->ID, 'amapien' );
 //				}
 //			}
-			$amapien            = AmapressUser::getBy( $user );
+			$amapien = AmapressUser::getBy( $user );
+
 			$user_message       = 'Vous êtes déjà membre de l’AMAP, vérifiez vos coordonnées :';
 			$user_firt_name     = $user->first_name;
 			$user_last_name     = $user->last_name;
@@ -459,6 +469,36 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			$user_mobile_phones = implode( '/', $amapien->getPhoneNumbers( true ) );
 			$user_fix_phones    = implode( '/', $amapien->getPhoneNumbers( false ) );
 			$member_message     = '';
+
+			if ( $show_adherents_infos ) {
+				if ( $amapien->isPrincipalAdherent() ) {
+					$adherents_infos          = sprintf(
+						$admin_mode ? 'Il est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
+						$amapien->getAdherentTypeDisplay(),
+						$amapien->getCoAdherentsList( true )
+					);
+					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
+				} else if ( $amapien->isCoAdherent() ) {
+					$adherents_infos          = sprintf(
+						$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+						$amapien->getAdherentTypeDisplay(),
+						$amapien->getPrincipalAdherentList( true ),
+						$amapien->getCoAdherentsList( true )
+					);
+					$max_coadhs               = 0;
+					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
+				} else {
+					$adherents_infos          = sprintf(
+						$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+						$amapien->getAdherentTypeDisplay(),
+						$amapien->getPrincipalAdherentList( true ),
+						$amapien->getCoAdherentsList( true )
+					);
+					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
+					$adherents_custom_message .= wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
+				}
+			}
+//		if ( ! Amapress::toBool( $atts[''] ) ) {
 
 			if ( $amapien->getCoAdherent1() ) {
 				$coadh1_user_firt_name = $amapien->getCoAdherent1()->getUser()->first_name;
@@ -485,6 +525,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		$adh_pmt = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false ) : null;
 		?>
         <h4>Étape 2/8 : Coordonnées</h4>
+        <p><?php echo $adherents_infos; ?></p>
+		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
         <form method="post" id="inscr_coords" class="amapress_validate"
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
@@ -981,57 +1023,95 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_step_message' ), null ) );
 		}
 
+		if ( $show_adherents_infos ) {
+			if ( $amapien->isPrincipalAdherent() ) {
+				$adherents_infos          = sprintf(
+					$admin_mode ? 'Il est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
+					$amapien->getAdherentTypeDisplay(),
+					$amapien->getCoAdherentsList( true )
+				);
+				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
+			} else if ( $amapien->isCoAdherent() ) {
+				$adherents_infos          = sprintf(
+					$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+					$amapien->getAdherentTypeDisplay(),
+					$amapien->getPrincipalAdherentList( true ),
+					$amapien->getCoAdherentsList( true )
+				);
+				$max_coadhs               = 0;
+				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
+			} else {
+				$adherents_infos          = sprintf(
+					$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+					$amapien->getAdherentTypeDisplay(),
+					$amapien->getPrincipalAdherentList( true ),
+					$amapien->getCoAdherentsList( true )
+				);
+				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
+				$adherents_custom_message .= wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
+			}
+			?>
+            <p><?php echo $adherents_infos; ?></p>
+			<?php echo $adherents_custom_message; ?>
+			<?php
+		}
+
 		$display_remaining_contrats = true;
 		if ( ! $admin_mode && ! $has_principal_contrat ) {
 			$display_remaining_contrats = false;
-			if ( count( $principal_contrats ) == 1 ) {
-				?>
-                <p>Pour accéder à tous nos contrats en ligne,
-                    vous devez d’abord vous inscrire au contrat
-                    “<strong><?php echo esc_html( $principal_contrats[0]->getTitle() ); ?></strong>”
-                    (<?php echo $principal_contrats[0]->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
-                </p>
-                <p><?php
-					$inscription_url = add_query_arg( [
-						'step'       => 'inscr_contrat_date_lieu',
-						'contrat_id' => $principal_contrats[0]->ID
-					] );
-					echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
+			if ( ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
+				echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+				$display_remaining_contrats = false;
+			} else {
+				if ( count( $principal_contrats ) == 1 ) {
+					?>
+                    <p>Pour accéder à tous nos contrats en ligne,
+                        vous devez d’abord vous inscrire au contrat
+                        “<strong><?php echo esc_html( $principal_contrats[0]->getTitle() ); ?></strong>”
+                        (<?php echo $principal_contrats[0]->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
+                    </p>
+                    <p><?php
+						$inscription_url = add_query_arg( [
+							'step'       => 'inscr_contrat_date_lieu',
+							'contrat_id' => $principal_contrats[0]->ID
+						] );
+						echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrats[0]->ID . '"/>
 <input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
 </form>';
-					?>
-                </p>
-				<?php
-			} else {
-				?>
-                <p>Pour accéder à tous nos contrats en ligne, vous devez d’abord vous
-                    inscrire à l’un des contrats suivants :</p>
-				<?php
-				foreach ( $principal_contrats as $principal_contrat ) {
-					?>
-                    <p>
-                        “<strong><?php echo esc_html( $principal_contrat->getTitle() ); ?></strong>”
-                        (<?php echo $principal_contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
+						?>
                     </p>
-                    <p><?php
-						$inscription_url = add_query_arg( [
-							'step'       => 'inscr_contrat_date_lieu',
-							'contrat_id' => $principal_contrat->ID
-						] );
-						echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
+					<?php
+				} else {
+					?>
+                    <p>Pour accéder à tous nos contrats en ligne, vous devez d’abord vous
+                        inscrire à l’un des contrats suivants :</p>
+					<?php
+					foreach ( $principal_contrats as $principal_contrat ) {
+						?>
+                        <p>
+                            “<strong><?php echo esc_html( $principal_contrat->getTitle() ); ?></strong>”
+                            (<?php echo $principal_contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
+                        </p>
+                        <p><?php
+							$inscription_url = add_query_arg( [
+								'step'       => 'inscr_contrat_date_lieu',
+								'contrat_id' => $principal_contrat->ID
+							] );
+							echo '<form action="' . esc_attr( $inscription_url ) . '" method="get">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrat->ID . '"/>
 <input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
 </form>';
-						?>
-                    </p>
-					<?php
+							?>
+                        </p>
+						<?php
+					}
 				}
 			}
 		} else if ( ! empty( $adhs ) ) {
@@ -1071,20 +1151,30 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 				}
 			}
 			echo '</ul>';
-			if ( ! empty( $user_subscribable_contrats ) ) {
-				if ( ! $admin_mode ) {
-					echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
-				} else {
-					echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+			if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
+				echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+				$display_remaining_contrats = false;
+			} else {
+				if ( ! empty( $user_subscribable_contrats ) ) {
+					if ( ! $admin_mode ) {
+						echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
+					} else {
+						echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+					}
 				}
 			}
 		} else {
-			if ( ! $admin_mode ) {
-				echo '<p>Vous n\'avez pas encore de contrats</p>';
-				echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+			if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
+				echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+				$display_remaining_contrats = false;
 			} else {
-				echo '<p>Il n\'a pas encore de contrats</p>';
-				echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
+				if ( ! $admin_mode ) {
+					echo '<p>Vous n\'avez pas encore de contrats</p>';
+					echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+				} else {
+					echo '<p>Il n\'a pas encore de contrats</p>';
+					echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
+				}
 			}
 		}
 

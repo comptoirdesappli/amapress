@@ -330,6 +330,12 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getDisplayName();
 				}
 			];
+			$ret['adherent.type'] = [
+				'desc' => 'Type d\'adhérent (Principal, Co-adhérent...)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getAdherentTypeDisplay();
+				}
+			];
 			$ret['adherent.nom']                     = [
 				'desc' => 'Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -358,6 +364,19 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => 'Email adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getEmail();
+				}
+			];
+			$ret['coadherents.noms'] = [
+				'desc' => 'Liste des co-adhérents (Prénom, Nom)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList();
+
+				}
+			];
+			$ret['coadherents.contacts'] = [
+				'desc' => 'Liste des co-adhérents (Prénom, Nom, Emails, Tel)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList( true );
 				}
 			];
 			$ret['coadherent']                       = [
