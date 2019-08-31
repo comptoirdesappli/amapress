@@ -566,7 +566,7 @@ class AmapressContrats {
 					'relation' => 'OR',
 					array(
 						'key'     => 'amapress_contrat_instance_date_cloture',
-						'value'   => Amapress::end_of_day( $date ),
+						'value'   => Amapress::start_of_day( $date ),
 						'compare' => '>=',
 						'type'    => 'NUMERIC'
 					),
