@@ -32,10 +32,11 @@ function amapress_create_user_if_not_exists(
 		// Set the nickname
 		wp_update_user(
 			array(
-				'ID'         => $user_id,
-				'nickname'   => $email_address,
-				'first_name' => $first_name,
-				'last_name'  => $last_name,
+				'ID'           => $user_id,
+				'nickname'     => $email_address,
+				'first_name'   => $first_name,
+				'last_name'    => $last_name,
+				'display_name' => $first_name . ' ' . $last_name,
 			)
 		);
 
@@ -77,9 +78,10 @@ function amapress_create_user_if_not_exists(
 		if ( ! empty( $first_name ) && ! empty( $last_name ) ) {
 			wp_update_user(
 				array(
-					'ID'         => $user->ID,
-					'first_name' => $first_name,
-					'last_name'  => $last_name,
+					'ID'           => $user->ID,
+					'first_name'   => $first_name,
+					'last_name'    => $last_name,
+					'display_name' => $first_name . ' ' . $last_name,
 				)
 			);
 		}

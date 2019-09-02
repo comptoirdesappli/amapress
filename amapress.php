@@ -883,16 +883,20 @@ add_filter( 'bbp_after_get_the_content_parse_args', 'amapress_bbp_enable_visual_
 // Sets the display name to first name and last name
 add_filter( 'pre_user_display_name', 'amapress_default_display_name' );
 function amapress_default_display_name( $name ) {
-	$firstname = null;
-	if ( isset( $_POST['first_name'] ) ) {
-		$firstname = sanitize_text_field( $_POST['first_name'] );
-	}
-	$lastname = null;
-	if ( isset( $_POST['last_name'] ) ) {
-		$lastname = sanitize_text_field( $_POST['last_name'] );
-	}
-	if ( ! empty( $firstname ) && ! empty( $lastname ) ) {
-		$name = $firstname . ' ' . $lastname;
+	global $pagenow;
+
+	if ( 'user-edit.php' == $pagenow || 'user-new.php' == $pagenow || 'profile.php' == $pagenow ) {
+		$firstname = null;
+		if ( isset( $_POST['first_name'] ) ) {
+			$firstname = sanitize_text_field( $_POST['first_name'] );
+		}
+		$lastname = null;
+		if ( isset( $_POST['last_name'] ) ) {
+			$lastname = sanitize_text_field( $_POST['last_name'] );
+		}
+		if ( ! empty( $firstname ) && ! empty( $lastname ) ) {
+			$name = $firstname . ' ' . $lastname;
+		}
 	}
 
 	return $name;
