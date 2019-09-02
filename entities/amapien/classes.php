@@ -571,7 +571,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 	}
 
-	public function addCoadherent( $coadhrent_id ) {
+	public function addCoadherent( $coadhrent_id, $notify_email = null ) {
 		$this->ensure_init();
 
 		if ( empty( $coadhrent_id ) ) {
@@ -593,6 +593,18 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				self::$coadherents = null;
 				$this->adh_type    = null;
 
+				if ( ! empty( $notify_email ) ) {
+					$coadh           = AmapressUser::getBy( $coadhrent_id );
+					$this_edit_link  = Amapress::makeLink( $this->getEditLink(), $this->getDisplayName() );
+					$coadh_edit_link = $coadh ? Amapress::makeLink( $coadh->getEditLink(), $coadh->getDisplayName() ) : '';
+					amapress_wp_mail(
+						$notify_email,
+						'Préinscription - Association co-adhérent - ' . $this->getDisplayName(),
+						amapress_replace_mail_placeholders(
+							wpautop( "Bonjour,\n\nL\'amapien $this_edit_link s\'est associé à un co-adhérent $coadh_edit_link\n\n%%site_name%%" ), $this )
+					);
+				}
+
 				return true;
 			}
 		}
@@ -600,7 +612,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return false;
 	}
 
-	public function removeCoadherent( $coadhrent_id ) {
+	public function removeCoadherent( $coadhrent_id, $notify_email = null ) {
 		$this->ensure_init();
 
 		if ( empty( $coadhrent_id ) ) {
@@ -614,6 +626,18 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 					delete_user_meta( $this->ID, 'amapress_user_co-adherent-' . $id );
 					self::$coadherents = null;
 					$this->adh_type    = null;
+
+					if ( ! empty( $notify_email ) ) {
+						$coadh           = AmapressUser::getBy( $coadhrent_id );
+						$this_edit_link  = Amapress::makeLink( $this->getEditLink(), $this->getDisplayName() );
+						$coadh_edit_link = $coadh ? Amapress::makeLink( $coadh->getEditLink(), $coadh->getDisplayName() ) : '';
+						amapress_wp_mail(
+							$notify_email,
+							'Préinscription - Déassociation co-adhérent - ' . $this->getDisplayName(),
+							amapress_replace_mail_placeholders(
+								wpautop( "Bonjour,\n\nL\'amapien $this_edit_link s\'est déassocié de son co-adhérent $coadh_edit_link\n\n%%site_name%%" ), $this )
+						);
+					}
 
 					return true;
 				}
