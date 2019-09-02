@@ -285,6 +285,8 @@ function amapress_register_shortcodes() {
 				'max_coadherents'               => '(3 par défaut) Nombre maximum de co-adhérents',
 				'mob_phone_required'            => '(false par défaut) Téléphones (mobiles) requis',
 				'allow_remove_coadhs'           => '(false par défaut) Autoriser la suppression des co-adhérents',
+				'track_no_renews'               => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email'         => '(email administrateir par défaut) Envoyer le mail de notification de non renouvellement à cette adresse',
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
 				'contact_referents'             => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',

@@ -1174,6 +1174,20 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Message - Message aux amapiens qui ne renouvelent pas',
+										),
+										array(
+											'id'      => 'online_norenew_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => '<p>Merci pour votre participation à %%site_name%% et bonne continuation.</p>',
+											'desc'    => 'Message aux amapiens qui ne renouvelent pas',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'Assistant - Étape Adhésion AMAP',
 										),
 										array(

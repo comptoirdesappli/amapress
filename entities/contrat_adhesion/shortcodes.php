@@ -152,7 +152,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 
 	$step = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 
-	$atts = shortcode_atts(
+	$atts                          = shortcode_atts(
 		[
 			'key'                           => '',
 			'for_logged'                    => 'false',
@@ -166,6 +166,8 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'send_referents'                => 'true',
 			'send_tresoriers'               => 'true',
 			'allow_new_mail'                => 'true',
+			'track_no_renews'               => 'false',
+			'track_no_renews_email'         => get_option( 'admin_email' ),
 			'edit_names'                    => 'true',
 			'allow_remove_coadhs'           => 'false',
 			'contact_referents'             => 'true',
@@ -188,6 +190,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
 	$allow_coadherents_inscription = Amapress::toBool( $atts['allow_coadherents_inscription'] );
 	$show_adherents_infos          = Amapress::toBool( $atts['show_adherents_infos'] );
+	$track_no_renews               = Amapress::toBool( $atts['track_no_renews'] );
 	if ( ! $allow_coadherents_inscription ) {
 		$show_adherents_infos = true;
 	}
@@ -402,6 +405,29 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
                 , renseignez votre
                 adresse mail :</label>
             <input id="email" name="email" type="text" class="email required" placeholder="email"/>
+	        <?php
+	        if ( $track_no_renews ) {
+		        ?>
+                <div class="amap-preinscr-norenew">
+                    <label for="no_renew"><input type="checkbox" id="no_renew" name="no_renew"/> Je ne souhaite pas
+                        renouveler.</label>
+                    <label for="no_renew_reason">Motif (facultatif):</label>
+                    <textarea id="no_renew_reason" name="no_renew_reason"
+                              disabled="disabled" placeholder="Motif (facultatif)"></textarea>
+                    <script type="text/javascript">
+                        jQuery(function ($) {
+                            var $no_renew = $('#no_renew');
+                            var $no_renew_reason = $('#no_renew_reason');
+                            $no_renew.change(function () {
+                                $no_renew_reason.prop('disabled', !$no_renew.is(':checked'));
+                            });
+                            $no_renew_reason.prop('disabled', !$no_renew.is(':checked'));
+                        });
+                    </script>
+                </div>
+		        <?php
+	        }
+	        ?>
             <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
@@ -423,6 +449,35 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			return $additional_css . '<p style="font-weight: bold">Les inscriptions avec une nouvelle adresse email ne sont pas autorisées.</p>
 <p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse mail différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+		}
+
+		if ( $user ) {
+			if ( isset( $_REQUEST['no_renew'] ) ) {
+				$reason = sanitize_textarea_field( isset( $_REQUEST['no_renew_reason'] ) ? $_REQUEST['no_renew_reason'] : '' );
+				update_user_meta( $user->ID, 'amapress_user_no_renew', 1 );
+				update_user_meta( $user->ID, 'amapress_user_no_renew_reason', $reason );
+				ob_clean();
+
+				$track_no_renews_email = $atts['track_no_renews_email'];
+				if ( empty( $track_no_renews_email ) ) {
+					$track_no_renews_email = get_option( 'admin_email' );
+				}
+				if ( ! empty( $track_no_renews_email ) ) {
+					$amapien   = AmapressUser::getBy( $user );
+					$edit_link = Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() );
+					amapress_wp_mail(
+						$track_no_renews_email,
+						'Préinscription - Non renouvellement - ' . $amapien->getDisplayName(),
+						amapress_replace_mail_placeholders(
+							wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien )
+					);
+				}
+
+				return $additional_css . wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_norenew_message' ), null ) );
+			} else {
+				delete_user_meta( $user->ID, 'amapress_user_no_renew' );
+				delete_user_meta( $user->ID, 'amapress_user_no_renew_reason' );
+			}
 		}
 
 		$user_firt_name     = '';

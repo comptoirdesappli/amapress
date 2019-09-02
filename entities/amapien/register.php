@@ -35,12 +35,12 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Rôle dans l\'AMAP',
 //            ),
-			'head_amapress4' => array(
+			'head_amapress4'  => array(
 				'id'   => 'fonctions_sect',
 				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
 			),
-			'all_roles'      => array(
+			'all_roles'       => array(
 				'name'        => amapress__( 'Fonctions actuelles' ),
 				'show_column' => false,
 				'type'        => 'custom',
@@ -65,7 +65,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return $roles;
 				}
 			),
-			'role_desc'      => array(
+			'role_desc'       => array(
 				'type'        => 'custom',
 				'name'        => amapress__( 'Rôle sur le site' ),
 				'show_column' => false,
@@ -87,7 +87,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br />Ouvre tous les droits sur le site</p>';
 				}
 			),
-			'amap_roles'     => array(
+			'amap_roles'      => array(
 				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -99,7 +99,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'intermittent'   => array(
+			'intermittent'    => array(
 				'name'              => amapress__( 'Intermittent' ),
 				'type'              => 'custom',
 				'custom_csv_sample' => function ( $option, $arg ) {
@@ -114,7 +114,7 @@ function amapress_register_entities_amapien( $entities ) {
 						'0',
 					);
 				},
-				'custom'      => function ( $user_id ) {
+				'custom'            => function ( $user_id ) {
 					$ret     = '';
 					$amapien = AmapressUser::getBy( $user_id, true );
 					if ( $amapien ) {
@@ -129,7 +129,7 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return $ret;
 				},
-				'save'        => function ( $user_id ) {
+				'save'              => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
 					if ( $amapien ) {
 						if ( ! $amapien->isIntermittent() && isset( $_REQUEST['inscr_intermittent'] ) ) {
@@ -141,7 +141,19 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return true;
 				},
-				'show_column' => false,
+				'show_column'       => false,
+			),
+			'no_renew'        => array(
+				'name'    => amapress__( 'Non renouvellement' ),
+				'type'    => 'checkbox',
+				'desc'    => 'L\'amapien n\'a pas renouvelé',
+				'default' => 0,
+			),
+			'no_renew_reason' => array(
+				'name'    => amapress__( 'Motif' ),
+				'type'    => 'text',
+				'default' => '',
+				'desc'    => 'Motif de non renouvellement',
 			),
 
 			'head_amapress0'     => array(
