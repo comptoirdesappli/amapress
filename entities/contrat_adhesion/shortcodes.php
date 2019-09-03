@@ -154,7 +154,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 
 	$step = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 
-	$atts                          = shortcode_atts(
+	$atts = shortcode_atts(
 		[
 			'key'                           => '',
 			'for_logged'                    => 'false',
@@ -175,6 +175,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'contact_referents'             => 'true',
 			'show_adherents_infos'          => 'true',
 			'allow_coadherents_inscription' => 'true',
+			'allow_coadherents_adhesion'    => 'true',
 			'only_contrats'                 => '',
 			'shorturl'                      => '',
 			'adhesion_shift_weeks'          => 0,
@@ -191,6 +192,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 	$activate_agreement            = Amapress::toBool( $atts['agreement'] );
 	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
 	$allow_coadherents_inscription = Amapress::toBool( $atts['allow_coadherents_inscription'] );
+	$allow_coadherents_adhesion    = Amapress::toBool( $atts['allow_coadherents_adhesion'] );
 	$show_adherents_infos          = Amapress::toBool( $atts['show_adherents_infos'] );
 	$track_no_renews               = Amapress::toBool( $atts['track_no_renews'] );
 	if ( ! $allow_coadherents_inscription ) {
@@ -519,6 +521,10 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 //			}
 			$amapien = AmapressUser::getBy( $user );
 
+			if ( ! $allow_coadherents_adhesion && $amapien->isCoAdherent() ) {
+				$activate_adhesion = false;
+			}
+
 			$user_message       = 'Vous êtes déjà membre de l’AMAP, vérifiez vos coordonnées :';
 			$user_firt_name     = $user->first_name;
 			$user_last_name     = $user->last_name;
@@ -820,6 +826,11 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 
+		$amapien = AmapressUser::getBy( $user_id );
+		if ( ! $allow_coadherents_adhesion && $amapien->isCoAdherent() ) {
+			$activate_adhesion = false;
+		}
+
 		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false ) : null;
 		?>
         <h4><?php echo wp_unslash( esc_html( Amapress::getOption( 'online_subscription_agreement_step_name' ) ) ) ?></h4>
@@ -1044,37 +1055,39 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
 		}
 		if ( ! $admin_mode ) {
-			$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
-			if ( empty( $adh_period ) ) {
-				ob_clean();
+			if ( $allow_coadherents_adhesion || ! $amapien->isCoAdherent() ) {
+				$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+				if ( empty( $adh_period ) ) {
+					ob_clean();
 
-				return ( 'Aucune période d\'adhésion n\'est configurée.' );
-			}
+					return ( 'Aucune période d\'adhésion n\'est configurée.' );
+				}
 
-			$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
+				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
 
-			if ( empty( $adh_paiement ) ) {
-				echo '<p><strong>Pour vous engager dans l’AMAP, vous devez adhérer à notre Association.</strong><br/>
+				if ( empty( $adh_paiement ) ) {
+					echo '<p><strong>Pour vous engager dans l’AMAP, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="adhesion" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
-			} else {
-				$print_bulletin = '';
-				if ( $adh_paiement->getPeriod()->getWordModelId() ) {
-					$print_bulletin = Amapress::makeButtonLink(
-						add_query_arg( [
-							'inscr_assistant' => 'generate_bulletin',
-							'adh_id'          => $adh_paiement->ID,
-							'inscr_key'       => $key
-						] ),
-						'Imprimer', true, true, 'btn btn-default'
-					);
-				}
-				echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
+				} else {
+					$print_bulletin = '';
+					if ( $adh_paiement->getPeriod()->getWordModelId() ) {
+						$print_bulletin = Amapress::makeButtonLink(
+							add_query_arg( [
+								'inscr_assistant' => 'generate_bulletin',
+								'adh_id'          => $adh_paiement->ID,
+								'inscr_key'       => $key
+							] ),
+							'Imprimer', true, true, 'btn btn-default'
+						);
+					}
+					echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
+				}
 			}
 
 			echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_step_message' ), null ) );

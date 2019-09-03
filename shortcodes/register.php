@@ -289,6 +289,7 @@ function amapress_register_shortcodes() {
 				'track_no_renews_email'         => '(email administrateir par défaut) Envoyer le mail de notification de non renouvellement à cette adresse',
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
+				'allow_coadherents_adhesion'    => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
 				'contact_referents'             => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'            => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'email'                         => '(mail de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
