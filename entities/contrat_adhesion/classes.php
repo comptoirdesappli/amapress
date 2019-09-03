@@ -1688,7 +1688,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		], $attachments );
 	}
 
-	public function sendReferentsNotificationMail( $send_contrat = false ) {
+	public function sendReferentsNotificationMail( $send_contrat = false, $notify_email = null ) {
 		$inscription = $this;
 		$amapien     = $inscription->getAdherent();
 
@@ -1716,7 +1716,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$referents,
 			$mail_subject,
 			$mail_content,
-			'', $attachments
+			'', $attachments,
+			$notify_email
 		);
 	}
 

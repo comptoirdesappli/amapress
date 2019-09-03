@@ -287,6 +287,7 @@ function amapress_register_shortcodes() {
 				'allow_remove_coadhs'           => '(false par défaut) Autoriser la suppression des co-adhérents',
 				'track_no_renews'               => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
 				'track_no_renews_email'         => '(email administrateir par défaut) Envoyer le mail de notification de non renouvellement à cette adresse',
+				'notify_email'                  => '(vide par défaut) Envoyer les mails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
 				'allow_coadherents_adhesion'    => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',

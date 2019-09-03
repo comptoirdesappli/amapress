@@ -27,6 +27,13 @@ add_action( 'amapress_init', function () {
 		}
 
 		$notify_email = get_option( 'admin_email' );
+		if ( ! empty( $_REQUEST['notify_email'] ) ) {
+			if ( empty( $notify_email ) ) {
+				$notify_email = $_REQUEST['notify_email'];
+			} else {
+				$notify_email .= ',' . $_REQUEST['notify_email'];
+			}
+		}
 
 		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
 			$coadh1_email          = sanitize_email( $_REQUEST['coadh1_email'] );
@@ -154,7 +161,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 
 	$step = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 
-	$atts = shortcode_atts(
+	$atts                          = shortcode_atts(
 		[
 			'key'                           => '',
 			'for_logged'                    => 'false',
@@ -170,6 +177,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'allow_new_mail'                => 'true',
 			'track_no_renews'               => 'false',
 			'track_no_renews_email'         => get_option( 'admin_email' ),
+			'notify_email'                  => '',
 			'edit_names'                    => 'true',
 			'allow_remove_coadhs'           => 'false',
 			'contact_referents'             => 'true',
@@ -195,6 +203,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 	$allow_coadherents_adhesion    = Amapress::toBool( $atts['allow_coadherents_adhesion'] );
 	$show_adherents_infos          = Amapress::toBool( $atts['show_adherents_infos'] );
 	$track_no_renews               = Amapress::toBool( $atts['track_no_renews'] );
+	$notify_email                  = $atts['notify_email'];
 	if ( ! $allow_coadherents_inscription ) {
 		$show_adherents_infos = true;
 	}
@@ -473,7 +482,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 						$track_no_renews_email,
 						'Préinscription - Non renouvellement - ' . $amapien->getDisplayName(),
 						amapress_replace_mail_placeholders(
-							wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien )
+							wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien ),
+						'', [], $notify_email
 					);
 				}
 
@@ -594,6 +604,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
         <form method="post" id="inscr_coords" class="amapress_validate"
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
             <input type="hidden" name="email" value="<?php echo esc_attr( $email ); ?>"/>
+            <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
 	        <?php if ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
@@ -986,7 +997,8 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 			amapress_wp_mail(
 				$tresoriers,
 				'Nouvelle adhésion ' . $amapien->getDisplayName(),
-				wpautop( "Bonjour,\nUne nouvelle adhésion est en attente : " . Amapress::makeLink( $adh_paiement->getAdminEditLink(), $amapien->getDisplayName() ) . "\n\n" . get_bloginfo( 'name' ) )
+				wpautop( "Bonjour,\nUne nouvelle adhésion est en attente : " . Amapress::makeLink( $adh_paiement->getAdminEditLink(), $amapien->getDisplayName() ) . "\n\n" . get_bloginfo( 'name' ) ),
+				'', [], $notify_email
 			);
 		}
 
@@ -1995,7 +2007,7 @@ Vous pouvez configurer le mail envoyé en fin de chaque inscription <a href="' .
 
 		if ( ! $admin_mode ) {
 			if ( Amapress::toBool( $atts['send_referents'] ) ) {
-				$inscription->sendReferentsNotificationMail();
+				$inscription->sendReferentsNotificationMail( false, $notify_email );
 			}
 
 			$adhs                               = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
