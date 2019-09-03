@@ -474,10 +474,10 @@ function amapress_contrat_renew_recall_options() {
 			'id'      => 'contrat-renew-recall-mail-content',
 			'name'    => 'Contenu du mail',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nLes contrats suivants sont à renouvèler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouvèler:\n%%contrats_near_end%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nLes contrats suivants sont à renouveler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouveler:\n%%contrats_near_end%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
 			             Amapress::getPlaceholdersHelpTable( 'liste-renew-placeholders', [
-				             'contrats_to_renew'      => 'Contrats à renouvèler',
+				             'contrats_to_renew'      => 'Contrats à renouveler',
 				             'contrats_near_end'      => 'Contrats proches de la fin',
 				             'nb_contrats'            => 'Nombre de contrats à renouveler ou proches de la fin',
 				             'nb_renew_contrats'      => 'Nombre de contrats à renouveler',

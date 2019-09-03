@@ -297,7 +297,7 @@ function amapress_contrat_instance_views() {
 	amapress_add_view_button(
 		$ret, 'to_renew',
 		"post_type=amps_contrat_inst&amapress_date=renew",
-		'A renouveller' );
+		'A renouveler' );
 
 	return $ret;
 }
@@ -350,7 +350,7 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'to_renew',
 		"post_type=amps_adhesion&amapress_date=active&amapress_date=renew",
-		'A renouveller' );
+		'A renouveler' );
 
 	amapress_add_view_button(
 		$ret, 'ended',

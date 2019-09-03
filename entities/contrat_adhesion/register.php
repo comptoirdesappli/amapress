@@ -1902,7 +1902,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 					'<a target="_blank" href="' . esc_attr( $adh->getAdminEditLink() ) . '" >Voir</a>&nbsp;:&nbsp;' : '';
 				echo $lnk . esc_html( $adh->getTitle() );
 				if ( ! empty( $renew_url ) ) {
-					echo '<br/><a target="_blank" href="' . $renew_url . '" class="button button-secondary">Renouveller</a>';
+					echo '<br/><a target="_blank" href="' . $renew_url . '" class="button button-secondary">renouveler</a>';
 				}
 				echo '</li>';
 			}

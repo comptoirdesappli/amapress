@@ -1048,7 +1048,7 @@ Tout mail envoyé à ces comptes mail spécifiques seront (après modération ou
 									'desc'    => '',
 									'options' => amapress_contrat_quantites_recall_options(),
 								),
-								'Mails - Contrats à renouvèler'        => array(
+								'Mails - Contrats à renouveler'        => array(
 									'id'      => 'amp_tab_recall_contrat_renew',
 									'desc'    => '',
 									'options' => amapress_contrat_renew_recall_options(),

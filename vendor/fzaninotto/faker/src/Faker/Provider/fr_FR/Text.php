@@ -8883,7 +8883,7 @@ cinquante. Ainsi, prêtant à six pour cent, augmenté d'un quart de
 commission, et les fournitures lui rapportant un bon tiers pour le
 moins, cela devait, en douze mois, donner cent trente francs de
 bénéfice; et il espérait que l'affaire ne s'arrêterait pas là,
-qu'on ne pourrait payer les billets, qu'on les renouvellerait, et
+qu'on ne pourrait payer les billets, qu'on les renouvelerait, et
 que son pauvre argent, s'étant nourri chez le médecin comme dans
 une maison de santé, lui reviendrait, un jour, considérablement
 plus dodu, et gros à faire craquer le sac.
