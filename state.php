@@ -105,8 +105,8 @@ function amapress_get_state() {
 	$state['01_plugins'] = array();
 //    $state['01_plugins'][] = amapress_check_plugin_install('google-sitemap-generator', 'Google XML Sitemaps',
 //        'Permet un meilleur référencement par les moteurs de recherche pour votre AMAP');
-	$state['01_plugins'][] = amapress_check_plugin_install( 'backupwordpress', 'BackUpWordPress',
-		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'tools.php?page=backupwordpress' ) . '">Configuration de la sauvegarde</a>. Configurer ici la notification par e-mail pour recevoir un backup de la base de donnée du site toutes les semaines par exemple.',
+	$state['01_plugins'][] = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
+		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.',
 		'error' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',

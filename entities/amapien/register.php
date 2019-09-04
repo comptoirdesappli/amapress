@@ -928,9 +928,9 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 					array(
 						'id'         => 'amapress_backup',
-						'title'      => ( 'active' == amapress_is_plugin_active( 'backupwordpress' ) ? '<span class="dashicons dashicons-yes" style="color: green"></span>' : '<span class="dashicons dashicons-warning" style="color:red"></span>' ) . 'Sauvegardes',
+						'title'      => ( 'active' == amapress_is_plugin_active( 'updraftplus' ) ? '<span class="dashicons dashicons-yes" style="color: green"></span>' : '<span class="dashicons dashicons-warning" style="color:red"></span>' ) . 'Sauvegardes',
 						'capability' => 'manage_options',
-						'href'       => 'active' == amapress_is_plugin_active( 'backupwordpress' ) ? admin_url( 'tools.php?page=backupwordpress' ) : admin_url( 'admin.php?page=amapress_state' ),
+						'href'       => 'active' == amapress_is_plugin_active( 'updraftplus' ) ? admin_url( 'options-general.php?page=updraftplus' ) : admin_url( 'admin.php?page=amapress_state' ),
 					),
 				]
 			),
