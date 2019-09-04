@@ -1614,7 +1614,7 @@ function amapress_echo_and_check_amapress_state_page() {
 			$around  = $_REQUEST['around'];
 
 			$resolved = TitanFrameworkOptionAddress::lookup_address( $address );
-			if ( ! empty( $resolved ) ) {
+			if ( ! empty( $resolved ) && ! is_wp_error( $resolved ) ) {
 				require_once 'demos/AmapDemoBase.php';
 
 				amapress_dump( AmapDemoBase::generateRandomAddress( $resolved['latitude'], $resolved['longitude'], intval( $around ) ) );
