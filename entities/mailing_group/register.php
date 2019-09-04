@@ -124,7 +124,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'name'        => amapress__( 'Préfixe Sujet' ),
 				'type'        => 'text',
 				'show_column' => false,
-				'desc'        => 'Préfixe à ajouter au sujet des mails relayés'
+				'desc'        => 'Préfixe à ajouter au sujet des emails relayés'
 			),
 			'moderation'             => array(
 				'group'    => 'Modération',
@@ -176,9 +176,9 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			),
 			'waiting'                => array(
 				'group'   => 'Modération',
-				'name'    => amapress__( 'Mails en attente modération' ),
+				'name'    => amapress__( 'Emails en attente modération' ),
 				'type'    => 'custom',
-				'desc'    => 'Liste du ou des mails à valider.',
+				'desc'    => 'Liste du ou des emails à valider.',
 				'column'  => 'amapress_get_mailing_group_waiting',
 				'custom'  => 'amapress_get_mailing_group_waiting_list',
 				'show_on' => 'edit-only',
@@ -407,7 +407,7 @@ function admin_action_amapress_mailgroup_reject() {
 		$ml->rejectMail( $msg_id );
 	}
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
-		echo "Message $msg_id rejetté avec succès";
+		echo "Email $msg_id rejetté avec succès";
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 	}
@@ -423,7 +423,7 @@ function admin_action_amapress_mailgroup_reject_quiet() {
 		$ml->rejectMailQuiet( $msg_id );
 	}
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
-		echo "Message $msg_id rejetté avec succès";
+		echo "Email $msg_id rejetté avec succès";
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 	}
@@ -439,7 +439,7 @@ function admin_action_amapress_mailgroup_distribute() {
 		$ml->distributeMail( $msg_id );
 	}
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
-		echo "Message $msg_id distribué avec succès";
+		echo "Email $msg_id distribué avec succès";
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 	}

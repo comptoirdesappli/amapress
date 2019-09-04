@@ -88,14 +88,14 @@ function amapress_inscriptions_to_validate_recall_options() {
 		),
 		array(
 			'id'       => 'inscriptions-validate-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => '%%nb_inscriptions%% inscriptions restent à valider',
 		),
 		array(
 			'id'      => 'inscriptions-validate-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nLes %%nb_inscriptions%% inscriptions suivantes restent à valider (%%lien_inscriptions%%):\n%%inscriptions%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
@@ -112,7 +112,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'id'           => 'inscriptions-validate-recall-cc-groups',

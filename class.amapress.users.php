@@ -638,7 +638,7 @@ jQuery(function() {
 		}
 		if ( in_array( 'mail', $types ) || $is_full ) {
 			if ( $user->user_email ) {
-				echo '<p class="user-mail">Mail : <a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
+				echo '<p class="user-mail">Email : <a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
 			}
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_adresse', true ) &&

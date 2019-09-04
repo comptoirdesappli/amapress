@@ -912,7 +912,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function getContacts() {
-		$mailto = Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par mail' );
+		$mailto = Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par email' );
 		$telto  = $this->getTelTo( 'both', false, false, ', ' );
 		$smsto  = $this->getTelTo( true, true, false, ', ' );
 

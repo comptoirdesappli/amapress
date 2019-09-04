@@ -302,14 +302,14 @@ function amapress_contrat_quantites_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-quantites-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-quantites-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
@@ -329,7 +329,7 @@ function amapress_contrat_quantites_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc-groups',
@@ -390,14 +390,14 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'       => 'contrats-liste-paiements-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Chèques au producteur] Liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%',
 		),
 		array(
 			'id'      => 'contrats-liste-paiements-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
@@ -417,7 +417,7 @@ function amapress_contrat_paiements_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'id'           => 'contrats-liste-paiements-recall-cc-groups',
@@ -465,14 +465,14 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'       => 'contrat-renew-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => '%%nb_contrats%% contrats à renouveler',
 		),
 		array(
 			'id'      => 'contrat-renew-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nLes contrats suivants sont à renouveler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouveler:\n%%contrats_near_end%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
@@ -491,7 +491,7 @@ function amapress_contrat_renew_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'id'           => 'contrat-renew-recall-cc-groups',

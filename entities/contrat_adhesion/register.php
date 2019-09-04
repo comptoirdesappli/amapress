@@ -75,7 +75,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				},
 			],
 			'send_confirmation'    => [
-				'label'     => 'Envoyer mail confirmation',
+				'label'     => 'Envoyer email confirmation',
 				'confirm'   => true,
 				'condition' => function ( $adh_id ) {
 					return TitanFrameworkOption::isOnEditScreen();
@@ -134,7 +134,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				),
 			),
 			'amp_resend_confirm_contrat_adhesion' => array(
-				'label'    => 'Envoyer le mail de confirmation inscription',
+				'label'    => 'Envoyer l\'email de confirmation inscription',
 				'messages' => array(
 					'<0' => 'Une erreur s\'est produit pendant l\'opération',
 					'0'  => 'Une erreur s\'est produit pendant l\'opération',
@@ -255,7 +255,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv_export'    => true,
 				'hidden'        => true,
 				'group'         => '1/ Informations',
-				'name'          => amapress__( 'Mail' ),
+				'name'          => amapress__( 'Email' ),
 				'type'          => 'custom',
 				'join_meta_key' => 'amapress_adhesion_adherent',
 				'sort_column'   => 'user_email',

@@ -107,7 +107,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 		$h            = esc_html( var_export( $headers, true ) );
 		$test_mode_to = Amapress::getOption( 'test_mail_target' );
-		$message      = "Site en mode de test mail : tous les mails sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
+		$message      = "Site en mode de test mail : tous les emails sortants sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
 		$to           = $test_mode_to;
 		$headers      = array_filter( $headers, function ( $h ) {
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
@@ -1196,7 +1196,7 @@ if ( ! function_exists( 'wp_mail' ) ) {
 	}
 } else {
 	amapress_add_admin_notice(
-		'Un autre plugin a déjà remplacé la fonction de gestion des mails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
+		'Un autre plugin a déjà remplacé la fonction de gestion des emails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
 		'warning', true );
 }
 

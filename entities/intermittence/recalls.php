@@ -148,14 +148,14 @@ function amapress_intermittence_dispo_recall_options() {
 		),
 		array(
 			'id'       => 'intermittence-recall-dispo-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => 'Il reste encore %%nb-paniers-intermittents%% panier(s) à échanger à %%post:title%%',
 		),
 		array(
 			'id'      => 'intermittence-recall-dispo-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% panier(s) proposés à la distribution de %%post:title-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : [[à remplir]].\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à [[à remplir]].\n\n%%nom_site%%" ),
 			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
@@ -169,7 +169,7 @@ function amapress_intermittence_dispo_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -201,14 +201,14 @@ function amapress_intermittence_validation_recall_options() {
 		),
 		array(
 			'id'       => 'intermittence-panier-repris-recall-adherent-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Demande de reprise %%post:panier%% par %%post:repreneur-nom%% à valider depuis le %%attente_depuis%%',
 		),
 		array(
 			'id'      => 'intermittence-panier-repris-recall-adherent-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% le %%attente_depuis%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
@@ -222,7 +222,7 @@ function amapress_intermittence_validation_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',

@@ -232,7 +232,7 @@ class AmapressSMTPMailingQueueOriginal {
 
 		if ( empty( $to ) ) {
 			$to      = [ get_option( 'admin_email' ) ];
-			$subject = '[Mail sans destinataire]' . $subject;
+			$subject = '[Email sans destinataire]' . $subject;
 		}
 
 		foreach ( (array) $to as $recipient ) {

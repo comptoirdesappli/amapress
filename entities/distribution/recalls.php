@@ -309,14 +309,14 @@ function amapress_distribution_all_amapiens_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-amapiens-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Infos sur %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-amapiens-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
 			'desc'    =>
@@ -329,7 +329,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc-groups',
@@ -381,14 +381,14 @@ function amapress_distribution_verify_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-verify-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vérifier les infos de la %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-verify-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour le collectif,\nPouvez-vous vérifier les infos suivantes de %%lien_distrib_titre_admin%% (vous pouvez modifier les infos depuis le lien précédent):\n-> que cette distribution est bien à %%post:lieu%%\n-> que les contrats suivants seront distribués : %%post:liste-paniers-lien%%\n-> que les responsables %%post:resp-inscrits%%/%%post:resp-requis%% sont : %%post:liste-resp-email-phone%%\n-> que la liste d'émargement ci-jointe est correcte\n\nMerci\n\n%%nom_site%%" ),
 			'desc'    =>
@@ -459,14 +459,14 @@ function amapress_distribution_responsable_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-resp-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit responsable à %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-resp-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
 			'desc'    =>
@@ -479,7 +479,7 @@ function amapress_distribution_responsable_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'id'           => 'distribution-resp-recall-cc-groups',
@@ -531,14 +531,14 @@ function amapress_distribution_emargement_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-emargement-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Emargement] Liste d\'émargement de %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-emargement-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
 			'desc'    =>
@@ -561,7 +561,7 @@ function amapress_distribution_emargement_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -659,14 +659,14 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-lieu-change-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Changement de lieu pour %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-lieu-change-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement de lieu pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
@@ -678,14 +678,14 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-hours-change-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Changement d\'horaire pour %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-hours-change-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement d'horaire pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
@@ -697,14 +697,14 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-paniers-change-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Modification de livraison à %%post:title%%',
 		),
 		array(
 			'id'      => 'distribution-paniers-change-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nLa %%lien_distrib_titre%% comprendra les modifications suivantes :\n%%paniers_modifies%%\n%%nom_site%%" ),
 			'desc'    =>
@@ -716,14 +716,14 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-none-this-day-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Pas de distribution le %%date%%',
 		),
 		array(
 			'id'      => 'distribution-none-this-day-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : Pas de distribution le %%date%%\n%%nom_site%%" ),
 			'desc'    => AmapressDistribution::getPlaceholdersHelp( [
@@ -736,14 +736,14 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-moved-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] La distribution cette semaine aura lieu le %%jour_date_dist%%',
 		),
 		array(
 			'id'      => 'distribution-moved-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : LLa distribution cette semaine aura lieu le %%jour_date_dist%%\n%%nom_site%%" ),
 			'desc'    => AmapressDistribution::getPlaceholdersHelp( [
@@ -761,7 +761,7 @@ function amapress_distribution_changes_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',

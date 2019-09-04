@@ -168,7 +168,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function distributeMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			wp_die( "Le message $msg_id n'existe pas/plus." );
+			wp_die( "L\'email $msg_id n'existe pas/plus." );
 		}
 
 		if ( ! $this->isCurrentUserModerator() ) {
@@ -178,7 +178,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$msg['moderator'] = amapress_current_user_id();
 		$msg['mod_date']  = amapress_time();
 		if ( ! $this->sendMailFromMsgId( 'waiting', $msg_id ) ) {
-			wp_die( "Le message $msg_id n'a pas pu être envoyé." );
+			wp_die( "L\'email $msg_id n'a pas pu être envoyé." );
 		}
 		$this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] );
 		$this->storeMailData( 'accepted', $msg );
@@ -189,7 +189,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function rejectMailQuiet( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			wp_die( "Le message $msg_id n'existe pas/plus." );
+			wp_die( "L\'email $msg_id n'existe pas/plus." );
 		}
 
 		if ( ! $this->isCurrentUserModerator() ) {
@@ -207,7 +207,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function rejectMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			wp_die( "Le message $msg_id n'existe pas/plus." );
+			wp_die( "L\'email $msg_id n'existe pas/plus." );
 		}
 
 		if ( ! $this->isCurrentUserModerator() ) {
@@ -698,14 +698,14 @@ class AmapressMailingGroup extends TitanEntity {
 			[
 				'liste_nom'              => 'Nom de la liste',
 				'nom_liste'              => 'Nom de la liste',
-				'moderated_by'           => 'Mailto du modérateur du message',
-				'moderated_by_email'     => 'Email du modérateur du message',
-				'moderated_by_name'      => 'Nom du modérateur du message',
-				'msg_subject'            => 'Sujet du mail modéré',
-				'sender'                 => 'Emetteur du mail',
-				'msg_reject_silent_link' => 'Lien de rejet sans notification du message',
-				'msg_reject_notif_link'  => 'Lien de rejet avec notification du message',
-				'msg_distrib_link'       => 'Lien de distribution du message',
+				'moderated_by'           => 'Mailto du modérateur de l\'email',
+				'moderated_by_email'     => 'Email du modérateur de l\'email',
+				'moderated_by_name'      => 'Nom du modérateur de l\'email',
+				'msg_subject'            => 'Sujet de l\'email modéré',
+				'sender'                 => 'Emetteur de l\'email',
+				'msg_reject_silent_link' => 'Lien de rejet sans notification de l\'email',
+				'msg_reject_notif_link'  => 'Lien de rejet avec notification de l\'email',
+				'msg_distrib_link'       => 'Lien de distribution de l\'email',
 			]
 		);
 

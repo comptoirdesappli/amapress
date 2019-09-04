@@ -38,7 +38,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 			],
 			'mailto_resp' => [
-				'label'     => 'Mail aux responsables',
+				'label'     => 'Email aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,
 				'href'      => function ( $dist_id ) {
@@ -70,7 +70,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'show_on'   => 'editor',
 			],
 			'mailto_amapiens'        => [
-				'label'   => 'Mail aux amapiens',
+				'label'   => 'Email aux amapiens',
 				'target'  => '_blank',
 				'confirm' => true,
 				'href'    => function ( $dist_id ) {

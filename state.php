@@ -267,7 +267,7 @@ function amapress_get_state() {
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Adresse email de l\'administrateur',
-		'L\'adresse email de l\'administrateur du site est actuellement : <strong>' . esc_html( $admin_email ) . '</strong>. L\'administrateur reçoit des mails sur l\'activité sur le site comme le changement de mot de passe)',
+		'L\'adresse email de l\'administrateur du site est actuellement : <strong>' . esc_html( $admin_email ) . '</strong>. L\'administrateur reçoit des emails sur l\'activité sur le site comme le changement de mot de passe)',
 		admin_url( 'options-general.php' )
 	);
 
@@ -444,7 +444,7 @@ function amapress_get_state() {
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
-		'Mail de bienvenue/demande de récupération mot de passe',
+		'Email de bienvenue/demande de récupération mot de passe',
 		'Ajoutez et personnalisez le mail de bienvenue que chaque amapien reçoit à la création de son compte ou lorsqu\'il demande à récupérer son mot de passe',
 		admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' )
 	);
@@ -474,7 +474,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'Configuration de la file d\'envoi de mails',
 		'<p>La plupart des hébergeurs ont une limite d\'envoi de mails par heure. Actuellement le site est configuré pour envoyer au maximum ' . $nb_mails . ' emails par heure.
 <br/>Par défaut, Amapress met les mails dans une file d\'attente avant de les envoyer pour éviter les blocages et rejets de l\'hébergeur. 
-<br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des mails envoyés par le site pour traçage des activités (pour une durée configurable).</p>',
+<br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des emails envoyés par le site pour traçage des activités (pour une durée configurable).</p>',
 		admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' )
 	);
 

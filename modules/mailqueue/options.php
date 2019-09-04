@@ -22,19 +22,19 @@ function amapress_mailing_queue_menu_options() {
 //			),
 		),
 		'tabs'     => array(
-			'Options de la file de messages' => array(
+			'Options de la file des emails sortants' => array(
 				'id'      => 'amapress_mailqueue_options',
 				'desc'    => '',
 				'options' => array(
 					array(
 						'id'      => 'mail_queue_use_queue',
-						'name'    => 'Utiliser la file d\'envoi de mails',
+						'name'    => 'Utiliser la file d\'envoi des emails sortants',
 						'type'    => 'checkbox',
 						'default' => '1',
 					),
 					array(
 						'id'      => 'mail_queue_limit',
-						'name'    => 'Mails par interval',
+						'name'    => 'Emails par interval',
 						'type'    => 'number',
 						'desc'    => 'Nombre de mails envoyés à chaque interval d\'exécution de la file d\'envoi de mails',
 						'default' => '2',
@@ -67,7 +67,7 @@ function amapress_mailing_queue_menu_options() {
 								admin_url( 'admin.php' )
 							);
 
-							return '<p>Cliquez <a href="' . $url . '" target="_blank">ici</a> pour tester la configuraiton mail actuelle</p>';
+							return '<p>Cliquez <a href="' . $url . '" target="_blank">ici</a> pour tester la configuration emails sortants actuelle</p>';
 						}
 					),
 					array(
@@ -130,7 +130,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'Mails en attente'               => array(
+			'Emails en attente'               => array(
 				'id'      => 'amapress_mailqueue_waiting_mails',
 				'desc'    => '',
 				'options' => array(
@@ -142,7 +142,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Mails en erreur'                => array(
+			'Emails en erreur'                => array(
 				'id'      => 'amapress_mailqueue_errored_mails',
 				'desc'    => '',
 				'options' => array(
@@ -154,7 +154,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Log des mails'                  => array(
+			'Log des emails'                  => array(
 				'id'      => 'amapress_mailqueue_mail_logs',
 				'desc'    => '',
 				'options' => array(
@@ -261,7 +261,7 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 			),
 			admin_url( 'admin.php' )
 		);
-		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression de ce message ?\')">Supprimer</a>';
+		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression de cet email ?\')">Supprimer</a>';
 
 		$href           = add_query_arg(
 			array(
@@ -270,7 +270,7 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 			),
 			admin_url( 'admin.php' )
 		);
-		$link_retry_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la nouvelle tentative d\\\'envoi de ce message ?\')">Renvoyer</a>';
+		$link_retry_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la nouvelle tentative d\\\'envoi de cet email ?\')">Renvoyer</a>';
 
 		$msg    = wpautop( $msg );
 		$data[] = array(
@@ -312,7 +312,7 @@ function admin_action_amapress_delete_queue_msg() {
 	$msg_file = $_REQUEST['msg_file'];
 	AmapressSMTPMailingQueue::deleteFile( $type, $msg_file );
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
-		echo "Message $msg_file supprimé avec succès";
+		echo "Email $msg_file supprimé avec succès";
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 	}
@@ -329,9 +329,9 @@ function admin_action_amapress_retry_queue_send_msg() {
 	$res      = AmapressSMTPMailingQueue::retrySendMessage( $msg_file );
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 		if ( $res ) {
-			echo "Message $msg_file renvoyé avec succès";
+			echo "Email $msg_file renvoyé avec succès";
 		} else {
-			echo "Message $msg_file non renvoyé";
+			echo "Email $msg_file non renvoyé";
 		}
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
@@ -366,14 +366,14 @@ function amapress_test_mail_config() {
 	} );
 	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php' );
 	$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $email,
-		'Test configuration mail',
-		'<p>Ceci est un test de la configuration mail</p>',
+		'Test configuration email',
+		'<p>Ceci est un test de la configuration email</p>',
 		'Content-Type: text/html; charset=UTF-8' );
 
 	if ( empty( $errors ) ) {
-		echo '<p>Le mail de test vous a été envoyé avec succès</p>';
+		echo '<p>L\'email de test vous a été envoyé avec succès</p>';
 	} else {
-		echo '<p>Des erreurs se sont produites pendant l\'envoi du mail de test (Le transcript SMTP se trouve au dessus) :</p>';
+		echo '<p>Des erreurs se sont produites pendant l\'envoi de l\'email de test (Le transcript SMTP se trouve au dessus) :</p>';
 		echo implode( '<br/>', $errors );
 	}
 }

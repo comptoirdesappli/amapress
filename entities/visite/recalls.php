@@ -68,14 +68,14 @@ function amapress_visite_inscription_recall_options() {
 		),
 		array(
 			'id'       => 'visite-inscription-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit à %%post:title%%',
 		),
 		array(
 			'id'      => 'visite-inscription-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp(),
@@ -87,7 +87,7 @@ function amapress_visite_inscription_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -141,14 +141,14 @@ function amapress_visite_available_recall_options() {
 		),
 		array(
 			'id'       => 'visite-available-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Une viste a lieu bientôt : %%post:title%%',
 		),
 		array(
 			'id'      => 'visite-available-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nUne visite a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp(),
@@ -160,7 +160,7 @@ function amapress_visite_available_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',

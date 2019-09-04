@@ -286,15 +286,15 @@ function amapress_register_shortcodes() {
 				'mob_phone_required'            => '(false par défaut) Téléphones (mobiles) requis',
 				'allow_remove_coadhs'           => '(false par défaut) Autoriser la suppression des co-adhérents',
 				'track_no_renews'               => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
-				'track_no_renews_email'         => '(email administrateir par défaut) Envoyer le mail de notification de non renouvellement à cette adresse',
-				'notify_email'                  => '(vide par défaut) Envoyer les mails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
+				'track_no_renews_email'         => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'notify_email'                  => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
 				'allow_coadherents_adhesion'    => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
 				'show_coadherents_address'      => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
 				'contact_referents'             => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'            => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
-				'email'                         => '(mail de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
+				'email'                         => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
 			]
 		] );
 

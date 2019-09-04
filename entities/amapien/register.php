@@ -11,12 +11,12 @@ function amapress_register_entities_amapien( $entities ) {
 		'csv_required_fields' => array( 'user_email', 'first_name', 'last_name' ),
 		'bulk_actions'        => array(
 			'amp_resend_welcome' => array(
-				'label'    => 'Réenvoyer le mail de bienvenue',
+				'label'    => 'Réenvoyer l\'email de bienvenue',
 				'messages' => array(
-					'<0' => 'Une erreur s\'est produit pendant l\'envoie des mails de bienvenue',
-					'0'  => 'Une erreur s\'est produit pendant l\'envoie des mails de bienvenue',
-					'1'  => 'Un mail de bienvenue a été envoyé avec succès',
-					'>1' => '%s mails de bienvenue ont été envoyés avec succès',
+					'<0' => 'Une erreur s\'est produit pendant l\'envoie des emails de bienvenue',
+					'0'  => 'Une erreur s\'est produit pendant l\'envoie des emails de bienvenue',
+					'1'  => 'Un email de bienvenue a été envoyé avec succès',
+					'>1' => '%s emails de bienvenue ont été envoyés avec succès',
 				),
 			),
 			'amp_relocate'       => array(
@@ -338,15 +338,15 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'        => 'ASC',
 			),
 			'co-adherents'       => array(
-				'name'       => amapress__( 'Co-adhérent(s) - sans mail' ),
+				'name'       => amapress__( 'Co-adhérent(s) - sans email' ),
 				'type'       => 'text',
-				'desc'       => 'Co-adhérent(s) - sans mail',
+				'desc'       => 'Co-adhérent(s) - sans email',
 				'searchable' => true,
 			),
 			'co-adherents-infos' => array(
-				'name'       => amapress__( 'Co-adhérent(s) - sans mail - infos' ),
+				'name'       => amapress__( 'Co-adhérent(s) - sans email - infos' ),
 				'type'       => 'text',
-				'desc'       => 'Co-adhérent(s) - sans mail - autres infos',
+				'desc'       => 'Co-adhérent(s) - sans email - autres infos',
 				'searchable' => true,
 			),
 			'all-coadherents'    => array(
@@ -910,7 +910,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 					array(
 						'id'         => 'amapress_welcome_mail',
-						'title'      => 'Mail de bienvenue',
+						'title'      => 'Email de bienvenue',
 						'capability' => 'manage_amapress',
 						'href'       => admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' ),
 					),
@@ -922,7 +922,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 					array(
 						'id'         => 'amapress_log_mails',
-						'title'      => 'Logs des mails envoyés',
+						'title'      => 'Logs des emails envoyés',
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_mail_logs' ),
 					),

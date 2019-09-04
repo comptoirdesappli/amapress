@@ -477,7 +477,7 @@ line-height: 1.1;
 		}
 		$mailto = $dist->getMailtoResponsables();
 		if ( ! empty( $mailto ) ) {
-			echo '<a href="' . $mailto . '" class="btn btn-default">Mail aux responsables</a>';
+			echo '<a href="' . $mailto . '" class="btn btn-default">Email aux responsables</a>';
 		}
 		$smsto = $dist->getSMStoResponsables();
 		if ( ! empty( $smsto ) ) {
@@ -485,7 +485,7 @@ line-height: 1.1;
 		}
 		$mailto = $dist->getMailtoAmapiens();
 		if ( ! empty( $mailto ) ) {
-			echo '<a href="' . $mailto . '" class="btn btn-default">Mail aux amapiens</a>';
+			echo '<a href="' . $mailto . '" class="btn btn-default">Email aux amapiens</a>';
 		}
 		$smsto = $dist->getSMStoAmapiens();
 		if ( ! empty( $smsto ) ) {
