@@ -36,14 +36,14 @@ function amapress_mailing_queue_menu_options() {
 						'id'      => 'mail_queue_limit',
 						'name'    => 'Emails par interval',
 						'type'    => 'number',
-						'desc'    => 'Nombre de mails envoyés à chaque interval d\'exécution de la file d\'envoi de mails',
+						'desc'    => 'Nombre d\'emails envoyés à chaque interval d\'exécution de la file d\'envoi des emails sortants',
 						'default' => '2',
 					),
 					array(
 						'id'      => 'mail_queue_interval',
 						'name'    => 'Interval',
 						'type'    => 'number',
-						'desc'    => 'Interval d\'exécution de la file d\'envoi de mails',
+						'desc'    => 'Interval d\'exécution de la file d\'envoi des emails sortants',
 						'default' => '30',
 					),
 					array(
@@ -51,7 +51,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'SMTP externe'                   => array(
+			'SMTP externe'                           => array(
 				'id'      => 'amapress_mailqueue_stmp',
 				'desc'    => '',
 				'options' => array(
@@ -130,7 +130,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'Emails en attente'               => array(
+			'Emails sortants en attente'             => array(
 				'id'      => 'amapress_mailqueue_waiting_mails',
 				'desc'    => '',
 				'options' => array(
@@ -142,7 +142,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Emails en erreur'                => array(
+			'Emails sortants en erreur'              => array(
 				'id'      => 'amapress_mailqueue_errored_mails',
 				'desc'    => '',
 				'options' => array(
@@ -154,7 +154,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Log des emails'                  => array(
+			'Log des emails sortants'                => array(
 				'id'      => 'amapress_mailqueue_mail_logs',
 				'desc'    => '',
 				'options' => array(
