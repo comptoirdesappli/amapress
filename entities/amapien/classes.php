@@ -958,7 +958,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 	public function getAdherentType() {
 		if ( empty( $this->adh_type ) ) {
-			$users_ids                 = AmapressContrats::get_related_users( $this->ID );
+			$users_ids                 = AmapressContrats::get_related_users( $this->ID, true );
 			$others_linked_users_count = 0;
 			$this_linked_users_count   = 0;
 			foreach ( $users_ids as $user_id ) {
@@ -979,7 +979,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$this->adh_type = 'co';
 			} else {
 				Amapress::setFilterForReferent( false );
-				$adhs = AmapressAdhesion::getUserActiveAdhesions( $this->ID, null, null, false, false );
+				$adhs = AmapressAdhesion::getUserActiveAdhesions( $this->ID, null, null, false, true );
 				Amapress::setFilterForReferent( true );
 				$adh_user_ids = [];
 				foreach ( $adhs as $adh ) {
@@ -1025,7 +1025,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function getCoAdherentsList( $with_contacts = false, $include_me = false ) {
-		$users = AmapressContrats::get_related_users( $this->ID );
+		$users = AmapressContrats::get_related_users( $this->ID, true );
 		$res   = [];
 		foreach ( $users as $user_id ) {
 			if ( ! $include_me && $user_id == $this->ID ) {
