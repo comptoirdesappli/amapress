@@ -185,6 +185,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'allow_remove_coadhs'           => 'false',
 			'contact_referents'             => 'true',
 			'show_adherents_infos'          => 'true',
+			'allow_coadherents_access'      => 'true',
 			'allow_coadherents_inscription' => 'true',
 			'allow_coadherents_adhesion'    => 'true',
 			'show_coadherents_address'      => 'false',
@@ -467,6 +468,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 			return $additional_css . '<p style="font-weight: bold">Les inscriptions avec une nouvelle adresse email ne sont pas autorisées.</p>
 <p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+		}
+
+		if ( $user && ! Amapress::toBool( $atts['allow_coadherents_access'] ) ) {
+			$amapien = AmapressUser::getBy( $user );
+			if ( $amapien->isCoAdherent() ) {
+				return $additional_css . '<p style="font-weight: bold">Les inscriptions ne sont pas autorisées pour les co-adhérents.</p>
+<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+			}
 		}
 
 		if ( $user ) {

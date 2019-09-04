@@ -290,6 +290,7 @@ function amapress_register_shortcodes() {
 				'notify_email'                  => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
+				'allow_coadherents_access'      => '(true par défaut) Autoriser l\accès aux co-adhérents',
 				'allow_coadherents_adhesion'    => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
 				'show_coadherents_address'      => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
 				'contact_referents'             => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
