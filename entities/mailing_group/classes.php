@@ -740,17 +740,24 @@ class AmapressMailingGroup extends TitanEntity {
 
 	/** @return AmapressMailingGroup[] */
 	public static function getAll() {
-		return array_map(
-			function ( $p ) {
-				return new AmapressMailingGroup( $p );
-			},
-			get_posts(
-				array(
-					'post_type'      => AmapressMailingGroup::INTERNAL_POST_TYPE,
-					'posts_per_page' => - 1,
+		$key = 'amapress_mlgrp_all_list';
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = array_map(
+				function ( $p ) {
+					return new AmapressMailingGroup( $p );
+				},
+				get_posts(
+					array(
+						'post_type'      => AmapressMailingGroup::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+					)
 				)
-			)
-		);
+			);
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
 	}
 
 	public function cleanLogs() {
