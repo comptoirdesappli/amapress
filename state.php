@@ -1395,7 +1395,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
 	);
-	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions' );
+	$assistant_conf_url = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',
@@ -1405,8 +1405,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Autres réglages de l\'assistant inscription en ligne',
-		'Vous pouvez y configurer les mails de confirmation ainsi que les messages de certaines étapes.',
+		'Vous pouvez y configurer les messages de certaines étapes.',
 		$assistant_conf_url
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Emails envoyés par l\'assistant inscription en ligne',
+		'Vous pouvez y configurer les mails de confirmation.',
+		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' )
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		isset( $needed_shortcodes['amapien-edit-infos'] ) ? 'warning' : 'success',

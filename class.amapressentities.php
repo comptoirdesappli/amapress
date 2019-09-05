@@ -1072,7 +1072,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Renouvèlement'                        => array(
+								'Renouvèlement'                                 => array(
 									'id'      => 'renew_config',
 									'desc'    => '',
 									'options' => array(
@@ -1088,8 +1088,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Assistant - Pré-inscription en ligne' => array(
-									'id'      => 'config_online_inscriptions',
+								'Assistant - Pré-inscription en ligne - Etapes' => array(
+									'id'      => 'config_online_inscriptions_messages',
 									'desc'    => '',
 									'options' => [
 										array(
@@ -1119,61 +1119,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'type' => 'heading',
-											'name' => 'Emails - Confirmation Inscription Contrat',
-										),
-										array(
-											'id'       => 'online_subscription_confirm-mail-subject',
-											'name'     => 'Objet',
-											'sanitize' => false,
-											'type'     => 'text',
-											'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre_complet%% à partir du %%date_debut_complete%%',
-										),
-										array(
-											'id'      => 'online_subscription_confirm-mail-content',
-											'name'    => 'Contenu',
-											'type'    => 'editor',
-											'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
-									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
-									\n-> pour %%nb_distributions%% distributions
-									\n-> quantités : %%quantites%%
-									\n-> pour un montant de %%total%%€
-									\n[avec_contrat]Merci d'imprimer le contrat joint à cet email et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
-									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
-									\n\n%%nom_site%%" ),
-											'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Emails - Notification Référents Inscription Contrat',
-										),
-										array(
-											'id'       => 'online_subscription_referents-mail-subject',
-											'name'     => 'Objet',
-											'sanitize' => false,
-											'type'     => 'text',
-											'default'  => 'Nouvelle inscription - %%contrat_titre_complet%% - %%adherent%%',
-										),
-										array(
-											'id'      => 'online_subscription_referents-mail-content',
-											'name'    => 'Contenu',
-											'type'    => 'editor',
-											'default' => wpautop(
-												"Bonjour,\n\nUne nouvelle inscription est en attente de validation : %%inscription_admin_link%%" .
-												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
-												"\nMessage de l'amapien: %%message%%" .
-												"\n%%nom_site%%" ),
-											'desc'    => 'Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
 											'name' => 'Message - Message aux amapiens qui ne renouvelent pas',
 										),
 										array(
@@ -1196,32 +1141,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
 											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Confirmation - Pré-inscription en ligne',
-										),
-										array(
-											'id'       => 'online_adhesion_confirm-mail-subject',
-											'name'     => 'Objet',
-											'sanitize' => false,
-											'type'     => 'text',
-											'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
-										),
-										array(
-											'id'      => 'online_adhesion_confirm-mail-content',
-											'name'    => 'Contenu',
-											'type'    => 'editor',
-											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
-Nous vous confirmons votre adhésion à %%nom_site%%\n
-[avec_bulletin]Merci d'imprimer le bulletin joint à cet email et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
-[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
-\n\n%%nom_site%%" ),
-											'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -1298,7 +1217,94 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 									]
 								),
-								'Contrat Word (DOCX) général'          => array(
+								'Assistant - Pré-inscription en ligne - Emails' => array(
+									'id'      => 'config_online_inscriptions_mails',
+									'desc'    => '',
+									'options' => [
+										array(
+											'type' => 'heading',
+											'name' => 'Emails - Confirmation Inscription Contrat',
+										),
+										array(
+											'id'       => 'online_subscription_confirm-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation de votre inscription au contrat %%contrat_titre_complet%% à partir du %%date_debut_complete%%',
+										),
+										array(
+											'id'      => 'online_subscription_confirm-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\nNous vous confirmons votre inscription au contrat %%contrat_titre%% 
+									\n-> du %%date_debut_complete%% au %%date_fin_complete%% 
+									\n-> pour %%nb_distributions%% distributions
+									\n-> quantités : %%quantites%%
+									\n-> pour un montant de %%total%%€
+									\n[avec_contrat]Merci d'imprimer le contrat joint à cet email et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
+									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
+									\n\n%%nom_site%%" ),
+											'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Emails - Notification Référents Inscription Contrat',
+										),
+										array(
+											'id'       => 'online_subscription_referents-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Nouvelle inscription - %%contrat_titre_complet%% - %%adherent%%',
+										),
+										array(
+											'id'      => 'online_subscription_referents-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop(
+												"Bonjour,\n\nUne nouvelle inscription est en attente de validation : %%inscription_admin_link%%" .
+												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
+												"\nMessage de l'amapien: %%message%%" .
+												"\n%%nom_site%%" ),
+											'desc'    => 'Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Confirmation - Pré-inscription en ligne',
+										),
+										array(
+											'id'       => 'online_adhesion_confirm-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
+										),
+										array(
+											'id'      => 'online_adhesion_confirm-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
+Nous vous confirmons votre adhésion à %%nom_site%%\n
+[avec_bulletin]Merci d'imprimer le bulletin joint à cet email et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
+[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
+\n\n%%nom_site%%" ),
+											'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									]
+								),
+								'Contrat Word (DOCX) général'                   => array(
 									'id'      => 'config_default_contrat_docx',
 									'desc'    => '',
 									'options' => [
