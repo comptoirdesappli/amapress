@@ -653,7 +653,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="telm">Téléphone mobile : </label></th>
+                    <th style="text-align: left; width: auto"><label for="telm">Téléphone
+                            mobile<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? '*' : '' ) ?> : </label>
+                    </th>
                     <td><input style="width: 100%" type="text" id="telm" name="telm"
                                class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
                                value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
