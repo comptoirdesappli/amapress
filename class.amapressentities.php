@@ -1707,7 +1707,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-dispo-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n\nVous recevez cet email en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : %%admin_email_link%%.\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à %%admin_email_link%%.\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n\nVous recevez cet email en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier-desc%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : %%admin_email_link%%.\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à %%admin_email_link%%.\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1726,7 +1726,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-on-list-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nVotre %%post:panier%% a été mis sur la liste des paniers à échanger\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nVotre %%post:panier-desc-date%% a été mis sur la liste des paniers à échanger\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1757,7 +1757,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-repris-ask-adherent-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% (%%post:repreneur-coords%%) pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% (%%post:repreneur-coords%%) pour votre panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1776,7 +1776,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-repris-ask-repreneur-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier%%) à la distribution %%post:distribution%% a été envoyée à %%adherent-coords%%.\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier-desc%%) à la distribution %%post:distribution%% a été envoyée à %%adherent-coords%%.\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1807,7 +1807,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-repris-validation-adherent-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) sera repris par %%post:repreneur%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc%%) sera repris par %%post:repreneur%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1826,7 +1826,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-repris-validation-repreneur-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a accepté la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a accepté la reprise de (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1853,7 +1853,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-repris-rejet-repreneur-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a refusé la reprise de (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a refusé la reprise de (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1880,7 +1880,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-cancel-from-adherent-adherent-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier%%) a été retiré de l'espace intermittents\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc-date%%) a été retiré de l'espace intermittents\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1899,7 +1899,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-cancel-from-adherent-repreneur-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n%%post:adherent%% (%%post:adherent-coords%%) a annulé la reprise de son panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n%%post:adherent%% (%%post:adherent-coords%%) a annulé la reprise de son panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1926,7 +1926,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-cancel-from-repreneur-adherent-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n%%post:repreneur%% (%%post:repreneur-coords%%) a annulé la reprise de votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n%%post:repreneur%% (%%post:repreneur-coords%%) a annulé la reprise de votre panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),
@@ -1945,7 +1945,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier-desc%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp(),
 										),

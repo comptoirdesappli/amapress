@@ -210,7 +210,7 @@ function amapress_intermittence_validation_recall_options() {
 			'id'      => 'intermittence-panier-repris-recall-adherent-mail-content',
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% le %%attente_depuis%% pour votre panier (%%post:panier%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% le %%attente_depuis%% pour votre panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
 				'attente_depuis' => 'Date de demande de reprise du panier (par ex, 22/09/2018)'
 			] ),
