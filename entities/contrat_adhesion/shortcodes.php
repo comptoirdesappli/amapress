@@ -567,14 +567,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 			if ( $show_adherents_infos ) {
 				if ( $amapien->isPrincipalAdherent() ) {
 					$adherents_infos          = sprintf(
-						$admin_mode ? 'Il est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
+						$admin_mode ? 'Il/Elle est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
 						$amapien->getAdherentTypeDisplay(),
 						$amapien->getCoAdherentsList( true )
 					);
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 				} else if ( $amapien->isCoAdherent() ) {
 					$adherents_infos          = sprintf(
-						$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+						$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
 						$amapien->getAdherentTypeDisplay(),
 						$amapien->getPrincipalAdherentList( true ),
 						$amapien->getCoAdherentsList( true )
@@ -583,7 +583,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 				} else {
 					$adherents_infos          = sprintf(
-						$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+						$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
 						$amapien->getAdherentTypeDisplay(),
 						$amapien->getPrincipalAdherentList( true ),
 						$amapien->getCoAdherentsList( true )
@@ -1158,14 +1158,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 		if ( $show_adherents_infos ) {
 			if ( $amapien->isPrincipalAdherent() ) {
 				$adherents_infos          = sprintf(
-					$admin_mode ? 'Il est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
+					$admin_mode ? 'Il/Elle est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
 					$amapien->getAdherentTypeDisplay(),
 					$amapien->getCoAdherentsList( true )
 				);
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 			} else if ( $amapien->isCoAdherent() ) {
 				$adherents_infos          = sprintf(
-					$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+					$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
 					$amapien->getAdherentTypeDisplay(),
 					$amapien->getPrincipalAdherentList( true ),
 					$amapien->getCoAdherentsList( true )
@@ -1174,7 +1174,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 			} else {
 				$adherents_infos          = sprintf(
-					$admin_mode ? 'Il est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
+					$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
 					$amapien->getAdherentTypeDisplay(),
 					$amapien->getPrincipalAdherentList( true ),
 					$amapien->getCoAdherentsList( true )
@@ -1304,7 +1304,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 					echo '<p>Vous n\'avez pas encore de contrats</p>';
 					echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
 				} else {
-					echo '<p>Il n\'a pas encore de contrats</p>';
+					echo '<p>Il/Elle n\'a pas encore de contrats</p>';
 					echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
 				}
 			}
@@ -1403,7 +1403,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 				if ( ! $admin_mode ) {
 					echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
 				} else {
-					echo '<p>Il est inscrit à tous les contrats que vous gérez.</p>';
+					echo '<p>Il/Elle est inscrit à tous les contrats que vous gérez.</p>';
 				}
 			}
 		}
