@@ -641,7 +641,7 @@ jQuery(function($) {
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
 			),
-			'word_paper_model'      => array(
+			'word_paper_model' => array(
 				'name'            => amapress__( 'Contrat vierge' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -656,12 +656,20 @@ jQuery(function($) {
 				<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>
 				<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
 			),
-			'contrat_info'          => array(
+			'contrat_info'     => array(
 				'name'        => amapress__( 'Termes du contrat' ),
 				'type'        => 'editor',
 				'show_column' => false,
 				'group'       => '2/6 - Paramètres généraux',
 				'desc'        => 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%xxx%%" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) . '">Plus d\'info</a>)',
+			),
+			'special_mention'  => array(
+				'name'        => amapress__( 'Mention spéciale' ),
+				'type'        => 'textarea',
+				'group'       => '2/6 - Paramètres généraux',
+				'show_column' => false,
+				'default'     => '',
+				'desc'        => 'Mention spécial ou partie variable pour le contrat (remplit le placeholder %%mention_speciale%%)',
 			),
 
 
@@ -2161,17 +2169,17 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 				'meta_input'   => array(
 					'amapress_contrat_quantite_contrat_instance' => $contrat_instance_id,
 					'amapress_contrat_quantite_prix_unitaire'    => $quant_data['price'],
-					'amapress_contrat_quantite_code'             => ! empty( $quant_data['code'] ) ? $quant_data['code'] : $quant_data['title'],
-					'amapress_contrat_quantite_description'      => $quant_data['desc'],
-					'amapress_contrat_quantite_quantite_config'  => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
-					'amapress_contrat_quantite_unit'             => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
-					'amapress_contrat_quantite_produits'         => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
-					'amapress_contrat_quantite_avail_from'  => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
-					'amapress_contrat_quantite_avail_to'    => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
-					'amapress_contrat_quantite_liste_dates' => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
-					'amapress_contrat_quantite_quantite'    => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
-					'amapress_contrat_quantite_max_adhs'    => $quant_data['max_adhs'],
-					'_thumbnail_id'                         => isset( $quant_data['photo'] ) ? $quant_data['photo'] : null,
+					'amapress_contrat_quantite_code'            => ! empty( $quant_data['code'] ) ? $quant_data['code'] : $quant_data['title'],
+					'amapress_contrat_quantite_description'     => $quant_data['desc'],
+					'amapress_contrat_quantite_quantite_config' => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
+					'amapress_contrat_quantite_unit'            => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
+					'amapress_contrat_quantite_produits'        => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
+					'amapress_contrat_quantite_avail_from'      => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
+					'amapress_contrat_quantite_avail_to'        => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
+					'amapress_contrat_quantite_liste_dates'     => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
+					'amapress_contrat_quantite_quantite'        => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
+					'amapress_contrat_quantite_max_adhs'        => $quant_data['max_adhs'],
+					'_thumbnail_id'                             => isset( $quant_data['photo'] ) ? $quant_data['photo'] : null,
 				),
 			);
 			if ( $quant_id < 0 ) {

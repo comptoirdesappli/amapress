@@ -254,6 +254,12 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'l j M Y', $adh->getDate_fin() );
 				}
 			];
+			$ret['mention_speciale'] = [
+				'desc' => 'Champ Mention spéciale du contrat',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getSpecialMention();
+				}
+			];
 			$ret['tous_referents']                   = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
