@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.85.85
+Version: 0.85.86
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.85.85' );
+define( 'AMAPRESS_VERSION', '0.85.86' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -525,7 +525,7 @@ function amapress_register_widgets() {
 }
 
 add_action( 'widgets_init', 'amapress_register_widgets' );
-add_action( 'init', array( 'Amapress', 'init' ) );
+add_action( 'init', array( 'Amapress', 'init' ), 0 );
 add_action( 'init', array( 'Amapress_Calendar', 'init' ) );
 add_action( 'init', array( 'AmapressUsers', 'init' ) );
 add_action( 'init', array( 'AmapressContrats', 'init' ) );
