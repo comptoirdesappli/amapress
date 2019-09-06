@@ -198,9 +198,13 @@ function amapress_self_inscription( $atts, $content = null ) {
 		]
 		, $atts );
 
-	$for_logged                    = Amapress::toBool( $atts['for_logged'] );
-	$ret                           = '';
-	$admin_mode                    = Amapress::toBool( $atts['admin_mode'] );
+	$for_logged = Amapress::toBool( $atts['for_logged'] );
+	$ret        = '';
+	$admin_mode = Amapress::toBool( $atts['admin_mode'] );
+	if ( $admin_mode && ! is_admin() ) {
+		wp_die( 'admin_mode ne peut pas être utilisé directement' );
+	}
+
 	$activate_adhesion             = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement            = Amapress::toBool( $atts['agreement'] );
 	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
