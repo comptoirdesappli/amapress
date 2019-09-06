@@ -2123,6 +2123,8 @@ class Amapress {
 			}
 			unset( $postmeta['amapress_intermittence_panier_adh_cancel_message'] );
 			unset( $postmeta['amapress_intermittence_panier_adh_message'] );
+			unset( $postmeta['amapress_lieu_distribution_instructions_privee'] );
+			unset( $postmeta['amapress_lieu_distribution_contact_externe'] );
 		};
 		$relative_time        = 0;
 		$media                = [];
@@ -2170,9 +2172,12 @@ class Amapress {
 			$ret .= self::generate_test( $post->ID, AmapressRecette::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback, $media, $anonymize );
 		}
 
-		foreach ( $media as $k => $v ) {
-			$ret = "\$this->medias['$k'] = '$v';\n" . $ret;
-		}
+		$ret = preg_replace( '/amapress_producteur_referent_(\d+)&#039;/', 'amapress_producteur_referent_\'. $this->posts[\'$1\']', $ret );
+		$ret = preg_replace( '/amapress_contrat_referent_(\d+)&#039;/', 'amapress_contrat_referent_\'. $this->posts[\'$1\']', $ret );
+
+//		foreach ( $media as $k => $v ) {
+//			$ret = "\$this->medias['$k'] = '$v';\n" . $ret;
+//		}
 
 		return $ret;
 	}
