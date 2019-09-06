@@ -4,6 +4,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+add_action( 'template_redirect', function () {
+	if ( 'shouldredirect' == get_query_var( 'amp_action' ) ) {
+		wp_die( '<strong style="color: #2b542c">Redirection réussie</strong>' );
+	}
+} );
+
 function amapress_get_plugin_install_link( $plugin_slug ) {
 	$action = 'install-plugin';
 
@@ -261,6 +267,22 @@ function amapress_get_state() {
 		'Réglage des permaliens',
 		'Le réglage des permaliens doit suivre une des valeurs suivants : Date et titre, Mois et titre ou Titre de la publication',
 		admin_url( 'options-permalink.php' )
+	);
+
+	$redir_test_url       = site_url( 'shouldredirect' );
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		'Test de fonctionnement des redirections WordPress',
+		'Cliquez sur le lien suivant : <a target="_blank" href="' . $redir_test_url . '">' . $redir_test_url . '</a>.<br/>Si vous voyez un message indiquant "Redirection réussie", tout va bien. Sinon vérifiez que le mod_rewrite est actif et que les htaccess ne sont désactivés.',
+		''
+	);
+
+	$htaccess_test_url    = wp_upload_dir()['baseurl'] . '/amapress-contrats/';
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		'Test de fonctionnement de protection de dossier',
+		'Cliquez sur le lien suivant : <a target="_blank" href="' . $htaccess_test_url . '">' . $htaccess_test_url . '</a>.<br/>Si vous voyez un message indiquant "Accès interdit", tout va bien. Sinon vérifiez que les htaccess ne sont désactivés.',
+		''
 	);
 
 	$admin_email          = get_bloginfo( 'admin_email' );
@@ -1395,7 +1417,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
 	);
-	$assistant_conf_url = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
+	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',
