@@ -1717,12 +1717,13 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$attachments[] = $doc_file;
 			}
 		}
+		$headers = [ 'Reply-To: ' . implode( ',', $inscription->getAdherent()->getAllEmails() ) ];
 
 		amapress_wp_mail(
 			$referents,
 			$mail_subject,
 			$mail_content,
-			'', $attachments,
+			$headers, $attachments,
 			$notify_email
 		);
 	}
