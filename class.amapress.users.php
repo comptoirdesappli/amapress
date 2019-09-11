@@ -1016,7 +1016,7 @@ jQuery(function() {
 
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$user_ids = AmapressContrats::get_related_users( $user_id );
+			$user_ids = AmapressContrats::get_related_users( $user_id, false, $date );
 			$lieu_ids = array_map( array( 'Amapress', 'to_adhesion_lieu' ), get_posts( array(
 				'post_type'      => 'amps_adhesion',
 				'posts_per_page' => - 1,

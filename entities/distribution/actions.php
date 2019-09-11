@@ -238,13 +238,13 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$liste     = array();
 	$adhesions = array_group_by(
 		$all_adhs,
-		function ( $adh ) {
+		function ( $adh ) use ( $date ) {
 			/** @var AmapressAdhesion $adh */
 			if ( ! $adh->getAdherentId() ) {
 				return '';
 			}
 			$user     = $adh->getAdherent()->getUser();
-			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID ) );
+			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date ) );
 
 			return implode( '_', $user_ids );
 		} );
