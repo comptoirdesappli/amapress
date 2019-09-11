@@ -417,9 +417,10 @@ function amapress_register_entities_contrat( $entities ) {
 		),
 		'fields'           => array(
 			//renouvellement
-			'renouv'                => array(
+			'renouv'            => array(
 				'name'        => amapress__( 'Options' ),
 				'show_column' => false,
+				'csv'         => false,
 				'show_on'     => 'edit-only',
 				'group'       => '> Renouvellement',
 //				'bare'        => true,
@@ -445,9 +446,10 @@ function amapress_register_entities_contrat( $entities ) {
 			),
 
 			// 1/6 - Ferme
-			'producteur'            => array(
+			'producteur'        => array(
 				'name'        => amapress__( 'Producteur' ),
 				'type'        => 'custom',
+				'csv_import'  => false,
 				'group'       => '1/6 - Ferme',
 				'show_on'     => 'edit-only',
 				'show_column' => false,
@@ -468,7 +470,7 @@ function amapress_register_entities_contrat( $entities ) {
 							$contrat->getModel()->getProducteur()->getUser()->getDisplayName() ) . ')';
 				}
 			),
-			'model'                 => array(
+			'model'             => array(
 				'name'              => amapress__( 'Production' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressContrat::INTERNAL_POST_TYPE,
@@ -495,11 +497,12 @@ function amapress_register_entities_contrat( $entities ) {
 				},
 				'searchable'        => true,
 			),
-			'refs'                  => array(
+			'refs'              => array(
 				'name'                 => amapress__( 'Référents' ),
 				'type'                 => 'custom',
 				'group'                => '1/6 - Ferme',
 				'show_on'              => 'edit-only',
+				'csv_import'           => false,
 				'desc'                 => 'Pour modifier les référents, cliquez sur le lien Producteur ci-dessus',
 				'use_custom_as_column' => true,
 				'custom'               => function ( $post_id ) {
@@ -570,7 +573,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_fin'              => array(
+			'date_fin'          => array(
 				'name'          => amapress__( 'Fin' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -602,12 +605,13 @@ jQuery(function($) {
 						}
 					},
 			),
-			'model_name'            => array(
+			'model_name'        => array(
 				'name'        => amapress__( 'Nom générique' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
 				'group'       => '2/6 - Paramètres généraux',
 				'type'        => 'custom',
+				'csv_import'  => false,
 				'custom'      => function ( $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( ! $contrat ) {
@@ -617,14 +621,14 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'                  => array(
+			'name'              => array(
 				'name'     => amapress__( 'Nom complémentaire' ),
 				'group'    => '2/6 - Paramètres généraux',
 				'type'     => 'text',
 				'desc'     => 'Lorsque 2 contrats de même type coexistent (Par ex : ”Semaine A”, “Semaine B”)',
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 			),
-			'max_adherents'         => array(
+			'max_adherents'     => array(
 				'name'     => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'     => 'number',
 				'group'    => '2/6 - Paramètres généraux',
@@ -632,7 +636,7 @@ jQuery(function($) {
 				'readonly' => 'amapress_is_contrat_instance_readonly',
 				'desc'     => 'Nombre maximum d’inscriptions autorisées par le producteur',
 			),
-			'min_engagement'        => array(
+			'min_engagement'    => array(
 				'name'        => amapress__( 'Engagement minimum' ),
 				'type'        => 'number',
 				'group'       => '2/6 - Paramètres généraux',
@@ -641,7 +645,7 @@ jQuery(function($) {
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'desc'        => 'Montant minimum demandé par le producteur pour un contrat',
 			),
-			'word_paper_model' => array(
+			'word_paper_model'  => array(
 				'name'            => amapress__( 'Contrat vierge' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -656,14 +660,14 @@ jQuery(function($) {
 				<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>
 				<p>Vous pouvez également configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . '</p>',
 			),
-			'contrat_info'     => array(
+			'contrat_info'      => array(
 				'name'        => amapress__( 'Termes du contrat' ),
 				'type'        => 'editor',
 				'show_column' => false,
 				'group'       => '2/6 - Paramètres généraux',
 				'desc'        => 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%xxx%%" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) . '">Plus d\'info</a>)',
 			),
-			'special_mention'  => array(
+			'special_mention'   => array(
 				'name'        => amapress__( 'Mention spéciale' ),
 				'type'        => 'textarea',
 				'group'       => '2/6 - Paramètres généraux',
@@ -776,7 +780,7 @@ jQuery(function($) {
 					'placeholder' => 'Tous les lieux'
 				),
 			),
-			'liste_dates'           => array(
+			'liste_dates'       => array(
 				'name'             => amapress__( 'Calendrier initial' ),
 				'type'             => 'multidate',
 				'required'         => true,
@@ -810,11 +814,12 @@ jQuery(function($) {
 						}
 					},
 			),
-			'les-paniers'           => array(
+			'les-paniers'       => array(
 				'name'              => amapress__( 'Report livraison' ),
 				'group'             => '3/6 - Distributions',
 				'table_header_text' => '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</p>',
 				'desc'              => 'Dates de livraison des paniers de ce contrat',
+				'csv_import'        => false,
 				'show_column'       => false,
 				'show_link'         => false,
 				'show_on'           => 'edit-only',
@@ -835,12 +840,13 @@ jQuery(function($) {
 
 
 			// 4/6 Paniers
-			'quant_type'            => array(
-				'name'     => amapress__( 'Choix du contenu des paniers' ),
-				'type'     => 'custom',
-				'group'    => '4/6 - Paniers',
-				'readonly' => 'amapress_is_contrat_instance_readonly',
-				'column'   => function ( $post_id ) {
+			'quant_type'        => array(
+				'name'       => amapress__( 'Choix du contenu des paniers' ),
+				'type'       => 'custom',
+				'group'      => '4/6 - Paniers',
+				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'csv_import' => false,
+				'column'     => function ( $post_id ) {
 					$status           = [];
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat_instance->isPanierVariable() ) {
@@ -867,7 +873,7 @@ jQuery(function($) {
 
 					echo implode( ', ', $status );
 				},
-				'custom'   => function ( $post_id ) {
+				'custom'     => function ( $post_id ) {
 					$type             = 'quant_fix';
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id, true );
 					if ( $contrat_instance ) {
@@ -935,7 +941,7 @@ jQuery(function($) {
 					<?php
 					return ob_get_clean();
 				},
-				'save'     => function ( $post_id ) {
+				'save'       => function ( $post_id ) {
 					if ( isset( $_POST['amapress_quantite_type'] ) ) {
 						$amapress_quantite_type = $_POST['amapress_quantite_type'];
 						delete_post_meta(
@@ -1002,7 +1008,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor'          => array(
+			'quant_editor'      => array(
 				'name'        => amapress__( 'Configuration des paniers (Taille/Quantités)' ),
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
@@ -1011,10 +1017,11 @@ jQuery(function($) {
 				'save'        => 'amapress_save_contrat_quantite_editor',
 				'show_on'     => 'edit-only',
 				'show_column' => false,
+				'csv'         => false,
 				'bare'        => true,
 //                'desc' => 'Quantités',
 			),
-			'has_pancust'           => array(
+			'has_pancust'       => array(
 				'name'        => amapress__( 'Contenu de panier à renseigner' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
@@ -1022,13 +1029,14 @@ jQuery(function($) {
 				'group'       => '4/6 - Paniers',
 				'desc'        => 'Ce contrat a un contenu de panier à décrire chaque semaine',
 			),
-			'rattrapage'            => array(
+			'rattrapage'        => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
 				'group'       => '4/6 - Paniers',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'show_column' => false,
+				'csv_import'  => false,
 				'bare'        => true,
 				'show_on'     => 'edit-only',
 				'hidden'      => function ( $option ) {
@@ -1120,14 +1128,15 @@ jQuery(function($) {
 			),
 
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe'        => array(
+			'self_subscribe'    => array(
 				'name'        => amapress__( 'Activer' ),
 				'type'        => 'checkbox',
+				'csv_import'  => false,
 				'group'       => '5/6 - Pré-inscription en ligne',
 				'desc'        => 'Rendre accessible les pré-inscriptions en ligne pour ce contrat',
 				'show_column' => false,
 			),
-			'date_ouverture'        => array(
+			'date_ouverture'    => array(
 				'name'          => amapress__( 'Ouverture' ),
 				'type'          => 'date',
 				'group'         => '5/6 - Pré-inscription en ligne',
@@ -1179,7 +1188,7 @@ jQuery(function($) {
 //						}
 //					},
 			),
-			'word_model'            => array(
+			'word_model'        => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -1197,15 +1206,16 @@ jQuery(function($) {
 
 
 			//Statut
-			'is_principal'          => array(
+			'is_principal'      => array(
 				'name'        => amapress__( 'Contrat principal' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
 				'required'    => true,
+				'csv_import'  => false,
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'                => array(
+			'status'            => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1216,12 +1226,14 @@ jQuery(function($) {
 				},
 				'group'   => 'Statut',
 				'save'    => null,
+				'csv'     => false,
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'                 => array(
+			'ended'             => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
+				'csv_import'  => false,
 				'group'       => 'Statut',
 				'desc'        => 'Ferme le contrat (<strong>Renouveler le contrat avant de cocher cette case</strong>)',
 				'show_on'     => 'edit-only',
@@ -1319,7 +1331,7 @@ jQuery(function($) {
 				'show_dates_list'  => true,
 				'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
 			),
-			'min_cheque_amount'     => array(
+			'min_cheque_amount' => array(
 				'name'        => amapress__( 'Montant minimum' ),
 				'type'        => 'number',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1327,10 +1339,11 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit chèque/règlement pour les paiements en plusieurs fois',
 			),
-			'options_paiements'     => array(
+			'options_paiements' => array(
 				'name'        => amapress__( 'Répartition' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlement en plusieurs fois',
+				'csv'         => false,
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 				'custom'      => function ( $post_id ) {
@@ -2169,17 +2182,17 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 				'meta_input'   => array(
 					'amapress_contrat_quantite_contrat_instance' => $contrat_instance_id,
 					'amapress_contrat_quantite_prix_unitaire'    => $quant_data['price'],
-					'amapress_contrat_quantite_code'            => ! empty( $quant_data['code'] ) ? $quant_data['code'] : $quant_data['title'],
-					'amapress_contrat_quantite_description'     => $quant_data['desc'],
-					'amapress_contrat_quantite_quantite_config' => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
-					'amapress_contrat_quantite_unit'            => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
-					'amapress_contrat_quantite_produits'        => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
-					'amapress_contrat_quantite_avail_from'      => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
-					'amapress_contrat_quantite_avail_to'        => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
-					'amapress_contrat_quantite_liste_dates'     => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
-					'amapress_contrat_quantite_quantite'        => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
-					'amapress_contrat_quantite_max_adhs'        => $quant_data['max_adhs'],
-					'_thumbnail_id'                             => isset( $quant_data['photo'] ) ? $quant_data['photo'] : null,
+					'amapress_contrat_quantite_code'             => ! empty( $quant_data['code'] ) ? $quant_data['code'] : $quant_data['title'],
+					'amapress_contrat_quantite_description'      => $quant_data['desc'],
+					'amapress_contrat_quantite_quantite_config'  => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
+					'amapress_contrat_quantite_unit'             => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
+					'amapress_contrat_quantite_produits'         => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
+					'amapress_contrat_quantite_avail_from'       => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
+					'amapress_contrat_quantite_avail_to'         => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
+					'amapress_contrat_quantite_liste_dates'      => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
+					'amapress_contrat_quantite_quantite'         => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
+					'amapress_contrat_quantite_max_adhs'         => $quant_data['max_adhs'],
+					'_thumbnail_id'                              => isset( $quant_data['photo'] ) ? $quant_data['photo'] : null,
 				),
 			);
 			if ( $quant_id < 0 ) {

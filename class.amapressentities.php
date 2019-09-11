@@ -3248,7 +3248,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Productions'               => array(
+						'Productions' => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
 							'capability' => 'edit_contrat',
@@ -3281,7 +3281,31 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Produits'                  => array(
+						'Contrats'    => array(
+							'id'         => 'import_contrats_tab',
+							'desc'       => '',
+							'capability' => 'edit_contrat_instance',
+							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => 'Cette page permet d\'importer les contrats'
+								),
+								array(
+									'type'      => 'save',
+									'use_reset' => false,
+									'save'      => 'Télécharger le modèle',
+									'action'    => 'generate_model_' . AmapressContrat_instance::POST_TYPE,
+								),
+								array(
+									'id'     => 'import_contrats',
+									'name'   => 'Importer des contrats',
+									'type'   => 'custom',
+									'custom' => 'amapress_get_contrats_import_page',
+									'bare'   => true,
+								),
+							)
+						),
+						'Produits'    => array(
 							'id'         => 'import_produits_tab',
 							'desc'       => '',
 							'capability' => 'edit_produit',

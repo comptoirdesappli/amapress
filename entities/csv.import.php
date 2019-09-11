@@ -489,6 +489,10 @@ function amapress_get_productions_import_page() {
 	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressContrat::POST_TYPE );
 }
 
+function amapress_get_contrats_import_page() {
+	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressContrat_instance::POST_TYPE );
+}
+
 function amapress_get_visites_import_page() {
 	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressVisite::POST_TYPE );
 }
@@ -517,6 +521,7 @@ add_action( 'admin_init', function () {
 	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
 	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat::POST_TYPE, 'amapress_process_generate_model' );
 	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProduit::POST_TYPE, 'amapress_process_generate_model' );
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_instance::POST_TYPE, 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'., 'amapress_process_generate_model');
 } );
 
@@ -525,6 +530,9 @@ function amapress_process_generate_model() {
 	switch ( $action ) {
 		case 'generate_model_' . AmapressAdhesion::POST_TYPE:
 			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats', array() );
+			break;
+		case 'generate_model_' . AmapressContrat_instance::POST_TYPE:
+			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_instance::POST_TYPE, 'contrats', array() );
 			break;
 		case 'generate_model_' . AmapressAdhesion::POST_TYPE . '_multi':
 			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion::POST_TYPE, 'inscriptions_contrats_multi', array(),
