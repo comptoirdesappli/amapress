@@ -250,7 +250,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			),
-			'adherent_email'    => array(
+			'adherent_email'   => array(
 				'csv_import'    => false,
 				'csv_export'    => true,
 				'hidden'        => true,
@@ -268,7 +268,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getUser()->user_email;
 				}
 			),
-			'adherent_address'  => array(
+			'adherent_address' => array(
 				'csv_import' => false,
 				'csv_export' => true,
 				'hidden'     => true,
@@ -598,12 +598,12 @@ jQuery(function($) {
 				'csv_import'  => false,
 			),
 			'message'          => array(
-				'name'        => amapress__( 'Message' ),
-				'type'        => 'textarea',
-				'readonly'    => true,
-				'group'       => '2/ Contrat',
+				'name'     => amapress__( 'Message' ),
+				'type'     => 'textarea',
+				'readonly' => true,
+				'group'    => '2/ Contrat',
 //				'show_column' => false,
-				'desc'        => 'Message aux référents lors de l\'inscription en ligne',
+				'desc'     => 'Message aux référents lors de l\'inscription en ligne',
 //				'csv'         => false,
 			),
 			'all-coadherents'  => array(
@@ -1145,6 +1145,19 @@ function amapress_get_contrat_quantite_datatable(
 		}
 	}
 
+	/** @var AmapressDistribution $dist */
+	$next_distribs = AmapressDistribution::get_next_distributions( $date, 'ASC' );
+	$dist          = null;
+	foreach ( $next_distribs as $distrib ) {
+		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {
+			$dist = $distrib;
+			break;
+		}
+	}
+	if ( $dist ) {
+		$date = $dist->getDate();
+	}
+
 	$contrat_instance           = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$contrat_instance_quantites = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 
@@ -1401,16 +1414,6 @@ function amapress_get_contrat_quantite_datatable(
 	}
 
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
-
-	/** @var AmapressDistribution $dist */
-	$next_distribs = AmapressDistribution::get_next_distributions( $date, 'ASC' );
-	$dist          = null;
-	foreach ( $next_distribs as $distrib ) {
-		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {
-			$dist = $distrib;
-			break;
-		}
-	}
 
 	//
 	$next_distrib_text = '';
