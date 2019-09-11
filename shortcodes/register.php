@@ -136,6 +136,12 @@ function amapress_register_shortcodes() {
 			'args' => [
 			]
 		] );
+	amapress_register_shortcode( 'anon-inscription-distrib', 'amapress_inscription_distrib_shortcode',
+		[
+			'desc' => 'Inscriptions comme responsable de distributions',
+			'args' => [
+			]
+		] );
 	amapress_register_shortcode( 'resp-distrib-contacts', 'amapress_responsables_distrib_shortcode',
 		[
 			'desc' => 'Contacts des responsables de distribution',

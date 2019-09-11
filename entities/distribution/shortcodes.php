@@ -106,7 +106,7 @@ function amapress_responsables_distrib_shortcode( $atts ) {
 	return '<div class="resp-distribution-contacts">' . $ret . '</div>';
 }
 
-function amapress_inscription_distrib_shortcode( $atts ) {
+function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = '' ) {
 	$atts = shortcode_atts( array(
 		'show_past'                => 'false',
 		'show_next'                => 'true',
@@ -129,17 +129,84 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		'date'                     => null,
 		'inscr_all_distrib'        => 'false',
 		'manage_all_subscriptions' => 'false',
+		'key'                      => '',
 	), $atts );
 
+	$allow_anonymous_access = false;
+	$ret                    = '';
+	$key                    = $atts['key'];
+	if ( 'anon-inscription-distrib' == $tag ) {
+		if ( amapress_can_access_admin() ) {
+			$url = add_query_arg( 'key', $key, get_permalink() );
+			if ( empty( $_REQUEST['key'] ) ) {
+				$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
+				if ( empty( $key ) ) {
+					$ret .= 'Ajoutez un paramètre key au shortcode, par exemple : [' . $tag . ' key=' . uniqid() . uniqid() . ']';
+				} else {
+					$ret .= '<div class="alert alert-info">Pour donner accès à cette page d\'inscription aux distributions, veuillez leur envoyer le lien suivant : 
+<pre>' . $url . '</pre>
+Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
+' . ( ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '' ) . '
+Vous pouvez également utiliser l\'un des QRCode suivants : 
+<div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
+<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription aux distributions (mais uniquement) sans être connecté sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong></div>';
+					$ret .= amapress_get_panel_end();
+				}
+			} else {
+				$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">Afficher les instructions d\'accès à cette page.</a></div>';
+			}
+		}
+		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
+			$ret .= '<div class="alert alert-danger">Vous êtes dans un espace sécurisé. Accès interdit</div>';
+			$ret .= $content;
 
-	if ( ! amapress_is_user_logged_in() ) {
-		return '';
+			return $ret;
+		}
+
+		if ( amapress_is_user_logged_in() ) {
+			$user_id = amapress_current_user_id();
+			if ( ! empty( $atts['user'] ) ) {
+				$user_id = Amapress::resolve_user_id( $atts['user'] );
+			}
+		} else {
+			if ( empty( $_REQUEST['email'] ) ) {
+				ob_start();
+				?>
+                <form method="post" action="<?php echo add_query_arg( 'key', $key, get_permalink() ); ?>"
+                      id="inscr_email"
+                      class="amapress_validate">
+                    <label for="email">Pour pouvoir vous inscrire en tant que responsable de distribution, renseignez
+                        votre
+                        adresse mail :</label>
+                    <input id="email" name="email" type="text" class="email required" placeholder="email"/>
+                    <input type="submit" value="Valider" class="btn btn-default"/>
+                </form>
+				<?php
+				return ob_get_clean();
+			} else {
+				$email = sanitize_email( $_REQUEST['email'] );
+				$user  = get_user_by( 'email', $email );
+				if ( ! $user ) {
+					return '<p style="font-weight: bold">Adresse email inconnue, accès interdit.</p>
+<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.</p>
+<p><a href="' . get_permalink() . '">Changer d’email</a></p>';
+				}
+
+				$allow_anonymous_access = true;
+				$user_id                = $user->ID;
+			}
+		}
+	} else {
+		if ( ! amapress_is_user_logged_in() ) {
+			return '';
+		}
+
+		$user_id = amapress_current_user_id();
+		if ( ! empty( $atts['user'] ) ) {
+			$user_id = Amapress::resolve_user_id( $atts['user'] );
+		}
 	}
 
-	$user_id = amapress_current_user_id();
-	if ( ! empty( $atts['user'] ) ) {
-		$user_id = Amapress::resolve_user_id( $atts['user'] );
-	}
 
 	$inscr_all_distrib        = Amapress::toBool( $atts['inscr_all_distrib'] );
 	$manage_all_subscriptions = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
@@ -159,7 +226,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$max_dates = 1000;
 	}
 
-	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $from_date );
+	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $from_date, false, $allow_anonymous_access );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
 		return $a->getContrat_instanceId();
@@ -178,7 +245,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		$to_date = null;
 	}
 	$is_current_user_resp_amap = amapress_can_access_admin() || user_can( $user_id, 'manage_distributions' );
-	$is_resp_distrib           = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsableThisWeek( null, $from_date ) || AmapressDistributions::isCurrentUserResponsableNextWeek( null, $from_date );
+	$is_resp_distrib           = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsableThisWeek( $user_id, $from_date ) || AmapressDistributions::isCurrentUserResponsableNextWeek( $user_id, $from_date );
 	$current_post              = get_post();
 	if ( $current_post && $current_post->post_type == AmapressDistribution::INTERNAL_POST_TYPE ) {
 		$is_resp_distrib = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsable( $current_post->ID, $user_id );
@@ -230,7 +297,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 			$dists[] = $dist;
 		}
 	} else {
-		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id(), $from_date );
+		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( $user_id, $from_date );
 		/** @var AmapressDistribution $dist */
 		foreach ( $all_dists as $dist ) {
 			if ( ! in_array( $dist->getLieuId(), $user_lieux_ids ) ) {
@@ -270,7 +337,6 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 		}
 	}
 
-	$ret = '';
 	foreach ( $all_user_lieux as $lieu_id ) {
 		$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 		if ( Amapress::toBool( $atts['show_title'] ) ) {
@@ -399,7 +465,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 				}
 
 //                $ret .= '<td>';
-				$is_user_part_of = $inscr_all_distrib || $dist->isUserMemberOf( amapress_current_user_id(), true );
+				$is_user_part_of = $inscr_all_distrib || $dist->isUserMemberOf( $user_id, true );
 				$resps           = $dist->getResponsables();
 				$needed          = AmapressDistributions::get_required_responsables( $dist->ID );
 				$row_resps       = [];
@@ -436,7 +502,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 //                }
 				$is_resp = false;
 				foreach ( $resps as $resp ) {
-					$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
+					$is_resp = $is_resp || $resp->ID == $user_id;
 					if ( $is_resp ) {
 						break;
 					}
@@ -487,8 +553,8 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 						}
 					}
 				} else {
-					usort( $resps, function ( $resp, $b ) {
-						if ( $resp->ID == amapress_current_user_id() ) {
+					usort( $resps, function ( $resp, $b ) use ( $user_id ) {
+						if ( $resp->ID == $user_id ) {
 							return - 1;
 						} else {
 							return 0;
@@ -526,7 +592,7 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter une personne</a></a></p>';
 						}
 
-						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">M\'inscrire</button>';
+						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
 							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
@@ -546,10 +612,10 @@ function amapress_inscription_distrib_shortcode( $atts ) {
 						foreach ( $td_resps as $r ) {
 							$ret .= $r->getDisplay( $atts );
 							if ( $is_user_part_of || $is_current_user_resp_amap ) {
-								$is_resp = $is_resp || $r->ID == amapress_current_user_id();
+								$is_resp = $is_resp || $r->ID == $user_id;
 								if ( $can_unsubscribe ) {
-									if ( $r->ID == amapress_current_user_id() ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '">Me désinscrire</button>';
+									if ( $r->ID == $user_id ) {
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">Me désinscrire</button>';
 									} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
 									}
@@ -624,7 +690,6 @@ function amapress_histo_inscription_distrib_shortcode( $atts ) {
 	return amapress_inscription_distrib_shortcode( $atts );
 }
 
-//add_action('init', function () {
 add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 	$dist_id    = intval( $_POST['dist'] );
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
@@ -692,6 +757,76 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	}
 	die();
 } );
+
+add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
+	$dist_id = intval( $_POST['dist'] );
+	$user_id = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : 0;
+	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$is_ok   = false;
+	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $post_id ) ) {
+		$post = get_post( $post_id );
+		if ( $post ) {
+			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
+				$is_ok = true;
+			}
+		}
+	}
+
+	if ( ! $is_ok ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+	switch ( $dist->desinscrireResponsable( $user_id, true ) ) {
+		case 'not_inscr':
+			echo '<p class="error">Vous n\'êtes pas inscrit</p>';
+			break;
+		case 'ok':
+			echo '<p class="success">Votre désinscription a bien été prise en compte</p>';
+			break;
+	}
+	die();
+} );
+add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
+	$dist_id = intval( $_POST['dist'] );
+	$user_id = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$is_ok   = false;
+	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $post_id ) ) {
+		$post = get_post( $post_id );
+		if ( $post ) {
+			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
+				$is_ok = true;
+			}
+		}
+	}
+
+	if ( ! $is_ok ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+	switch ( $dist->inscrireResponsable( $user_id, isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0, true ) ) {
+		case 'already_in_list':
+			echo '<p class="error">Vous êtes déjà inscrit</p>';
+			break;
+		case 'already_taken':
+			echo '<p class="error">Rôle déjà pris</p>';
+			break;
+		case 'list_full':
+			echo '<p class="error">La distribution est déjà complète</p>';
+			break;
+		case 'ok':
+			echo '<p class="success">Votre inscription a bien été prise en compte</p>';
+			break;
+	}
+	die();
+} );
+
 
 function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) {
 	amapress_ensure_no_cache();
