@@ -147,7 +147,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
 								} );
 								foreach ( $mls as $ml ) {
-									$ml_id                                                                                                                          = $ml->ID;
+									$ml_id                                                                                                                           = $ml->ID;
 									$tabs[ sprintf( '%s - <span class="badge">%d</span> Emails en attente', $ml->getName(), $ml->getMailWaitingModerationCount() ) ] = array(
 										'id'      => 'mailgrp-moderate-tab-' . $ml_id,
 										'desc'    => '',
@@ -616,47 +616,47 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Responsables de distribution - Rappel'           => array(
+								'Emails - Responsables de distribution - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Emails - Vérification de distribution - Rappel'           => array(
+								'Emails - Vérification de distribution - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Emails - A tous les amapiens à la distribution - Rappel'  => array(
+								'Emails - A tous les amapiens à la distribution - Rappel'         => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
-								'Emails - Envoi liste émargement Excel/PDF'                => array(
+								'Emails - Envoi liste émargement Excel/PDF'                       => array(
 									'id'      => 'amp_tab_recall_emarg',
 									'desc'    => '',
 									'options' => amapress_distribution_emargement_recall_options(),
 								),
-								'Emails - Distribution - Modification livraisons - Rappel' => array(
+								'Emails - Distribution - Modification livraisons - Rappel'        => array(
 									'id'      => 'amp_tab_recall_modif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_changes_recall_options(),
 								),
-								'Emails - Visite - Inscription - Rappel'                   => array(
+								'Emails - Visite - Inscription - Rappel'                          => array(
 									'id'      => 'amp_tab_recall_visite_inscr',
 									'desc'    => '',
 									'options' => amapress_visite_inscription_recall_options(),
 								),
-								'Emails - Visite - Inscription possible - Rappel'          => array(
+								'Emails - Visite - Inscription possible - Rappel'                 => array(
 									'id'      => 'amp_tab_recall_visite_avail',
 									'desc'    => '',
 									'options' => amapress_visite_available_recall_options(),
 								),
-								'Emails - Evènement AMAP - Inscription - Rappel'           => array(
+								'Emails - Evènement AMAP - Inscription - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_amap_event_inscr',
 									'desc'    => '',
 									'options' => amapress_amap_event_inscription_recall_options(),
 								),
-								'Emails - Evènement AMAP - Inscription possible - Rappel'  => array(
+								'Emails - Evènement AMAP - Inscription possible - Rappel'         => array(
 									'id'      => 'amp_tab_recall_amap_event_avail',
 									'desc'    => '',
 									'options' => amapress_amap_event_available_recall_options(),
@@ -2096,7 +2096,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 //								),
 //							)
 //						),
-						'Pages'             => array(
+						'Pages'                    => array(
 							'id'         => 'amp_pages_config',
 							'desc'       => '',
 							'capability' => 'manage_options',
@@ -2147,7 +2147,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							)
 						),
-						'Connexion'         => array(
+						'Connexion'                => array(
 							'id'      => 'amp_connection_config',
 							'desc'    => '',
 							'options' => array(
@@ -2172,7 +2172,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Email du site'     => array(
+						'Email du site'            => array(
 							'id'      => 'amp_site_mail_config',
 							'desc'    => '',
 							'options' => array(
@@ -2195,7 +2195,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Email de bienvenue' => array(
+						'Email de bienvenue'       => array(
 							'id'      => 'welcome_mail',
 							'desc'    => '',
 							'options' => array(
@@ -2241,7 +2241,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Géolocalisation'   => array(
+						'Géolocalisation'          => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
@@ -2336,6 +2336,36 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'action' => 'test_convert_ws',
 										]
 									]
+								),
+							),
+						),
+						'Espaces documents'        => array(
+							'id'      => 'amp_docspaces_config',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'         => 'docspace_resps_folders',
+									'name'       => 'Sous dossiers - Responsables',
+									'type'       => 'text',
+									'desc'       => 'Sous dossiers (en minuscule et sans espaces) de l\'espace documents "Responsables". Vous retrouverez la liste des shortcodes associés <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">ici</a>.',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'docspace_amapiens_folders',
+									'name'       => 'Sous dossiers - Amapiens',
+									'type'       => 'text',
+									'desc'       => 'Sous dossiers (en minuscule et sans espaces) de l\'espace documents "Amapiens". Vous retrouverez la liste des shortcodes associés <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">ici</a>.',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'docspace_public_folders',
+									'name'       => 'Sous dossiers - Public',
+									'type'       => 'text',
+									'desc'       => 'Sous dossiers (en minuscule et sans espaces) de l\'espace documents "Public". Vous retrouverez la liste des shortcodes associés <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">ici</a>.',
+									'capability' => 'manage_options',
+								),
+								array(
+									'type' => 'save',
 								),
 							),
 						),
@@ -2753,7 +2783,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Emails'         => array(
+								'Emails' => array(
 									'id'      => 'amapress_mailinggroup_mails_opt_page',
 									'desc'    => '',
 									'options' => array(
@@ -3223,7 +3253,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Producteurs'               => array(
+						'Producteurs' => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
 							'capability' => 'edit_producteur',

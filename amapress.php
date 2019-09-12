@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.85.95
+Version: 0.85.110
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.85.95' );
+define( 'AMAPRESS_VERSION', '0.85.110' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1340,8 +1340,29 @@ CustomPostStatus::register( 'archived', [
 add_action( 'amapress_init', function () {
 	require_once AMAPRESS__PLUGIN_DIR . 'modules/docspace/AmapressDocSpace.php';
 	new AmapressDocSpace( 'responsables', 'edit_posts', 'edit_posts', 'edit_posts' );
+	$subfolders = Amapress::getOption( 'docspace_resps_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			new AmapressDocSpace( 'responsables-' . $subfolder, 'edit_posts', 'edit_posts', 'edit_posts' );
+		}
+	}
 	new AmapressDocSpace( 'amapiens', 'read', 'edit_posts', 'read' );
+	$subfolders = Amapress::getOption( 'docspace_amapiens_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			new AmapressDocSpace( 'amapiens-' . $subfolder, 'read', 'edit_posts', 'read' );
+		}
+	}
 	new AmapressDocSpace( 'public', '', 'edit_posts', '' );
+	$subfolders = Amapress::getOption( 'docspace_public_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			new AmapressDocSpace( 'public-' . $subfolder, '', 'edit_posts', '' );
+		}
+	}
 
 	if ( Amapress::getOption( 'auto-post-thumb' ) ) {
 		add_filter( 'get_post_metadata', function ( $value, $object_id, $meta_key, $single ) {
