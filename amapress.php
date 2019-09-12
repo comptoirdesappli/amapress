@@ -568,9 +568,9 @@ function amapress_get_avatar_meta_name() {
 /**
  * Get size information for all currently-registered image sizes.
  *
- * @global $_wp_additional_image_sizes
- * @uses   get_intermediate_image_sizes()
  * @return array $sizes Data for all currently-registered image sizes.
+ * @uses   get_intermediate_image_sizes()
+ * @global $_wp_additional_image_sizes
  */
 function get_image_sizes() {
 	global $_wp_additional_image_sizes;
@@ -597,11 +597,11 @@ function get_image_sizes() {
 /**
  * Get size information for a specific image size.
  *
- * @uses   get_image_sizes()
- *
- * @param  string $size The image size for which to retrieve data.
+ * @param string $size The image size for which to retrieve data.
  *
  * @return bool|array $size Size data about an image size or false if the size doesn't exist.
+ * @uses   get_image_sizes()
+ *
  */
 function get_image_size( $size ) {
 	$sizes = get_image_sizes();
@@ -616,11 +616,11 @@ function get_image_size( $size ) {
 /**
  * Get the width of a specific image size.
  *
- * @uses   get_image_size()
- *
- * @param  string $size The image size for which to retrieve data.
+ * @param string $size The image size for which to retrieve data.
  *
  * @return bool|string $size Width of an image size or false if the size doesn't exist.
+ * @uses   get_image_size()
+ *
  */
 function get_image_width( $size ) {
 	if ( ! $size = get_image_size( $size ) ) {
@@ -637,11 +637,11 @@ function get_image_width( $size ) {
 /**
  * Get the height of a specific image size.
  *
- * @uses   get_image_size()
- *
- * @param  string $size The image size for which to retrieve data.
+ * @param string $size The image size for which to retrieve data.
  *
  * @return bool|string $size Height of an image size or false if the size doesn't exist.
+ * @uses   get_image_size()
+ *
  */
 function get_image_height( $size ) {
 	if ( ! $size = get_image_size( $size ) ) {
@@ -1407,8 +1407,8 @@ add_action( 'admin_init', function () {
 		}
 
 		if ( Amapress::getOption( 'test_mail_mode' ) ) {
-			amapress_add_admin_notice( 'Le site est en mode de test mail. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
-				'info', false );
+			amapress_add_admin_notice( 'Le site est en <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_tests_config' ) . '">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
+				'info', false, false );
 		}
 
 
