@@ -147,12 +147,14 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'    => amapress__( 'Non renouvellement' ),
 				'type'    => 'checkbox',
 				'desc'    => 'L\'amapien n\'a pas renouvelé',
+				'show_on' => 'edit-only',
 				'default' => 0,
 			),
 			'no_renew_reason' => array(
 				'name'    => amapress__( 'Motif' ),
 				'type'    => 'text',
 				'default' => '',
+				'show_on' => 'edit-only',
 				'desc'    => 'Motif de non renouvellement',
 			),
 
