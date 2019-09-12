@@ -502,8 +502,11 @@ function amapress_process_csv_import() {
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressAdhesion::POST_TYPE );
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressAdhesion_intermittence::POST_TYPE);
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressAmapien_paiement::POST_TYPE);
-//    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressProduit::POST_TYPE);
+	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressProduit::POST_TYPE );
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressVisite::POST_TYPE);
+	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressProducteur::POST_TYPE );
+	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressContrat::POST_TYPE );
+	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressContrat_instance::POST_TYPE );
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressContrat_quantite::POST_TYPE );
 }
 
