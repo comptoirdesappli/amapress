@@ -278,7 +278,7 @@ class AmapressContrats {
 				'relation' => 'AND',
 				array(
 					'key'     => 'amapress_contrat_instance_date_fin',
-					'value'   => Amapress::end_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),
+					'value'   => Amapress::start_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),
 					'compare' => '>=',
 					'type'    => 'NUMERIC'
 				),
@@ -1119,7 +1119,8 @@ class AmapressContrats {
 				$res = array_merge( $res, $user->getPrincipalUserIds() );
 			}
 
-			$active_contrat_instances_ids = amapress_prepare_in_sql( AmapressContrats::get_active_contrat_instances_ids( null, $date ) );
+			$active_contrat_instances_ids = amapress_prepare_in_sql(
+				AmapressContrats::get_active_contrat_instances_ids( null, $date, true ) );
 			if ( amapress_current_user_id() == $user_id ) {
 				$in = amapress_prepare_in_sql( $res );
 
