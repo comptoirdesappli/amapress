@@ -274,12 +274,18 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 	Amapress::setFilterForReferent( false );
 	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
 	Amapress::setFilterForReferent( true );
+	$all_subscribable_contrats_ids = array_map( function ( $c ) {
+		return $c->ID;
+	}, $subscribable_contrats );
 	if ( ! $admin_mode ) {
-		$subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) {
+		$subscribable_contrats         = array_filter( $subscribable_contrats, function ( $c ) {
 			/** @var AmapressContrat_instance $c */
 			return $c->canSelfSubscribe();
 		} );
-		$subscribable_contrats = array_filter( $subscribable_contrats, function ( $c ) {
+		$all_subscribable_contrats_ids = array_map( function ( $c ) {
+			return $c->ID;
+		}, $subscribable_contrats );
+		$subscribable_contrats         = array_filter( $subscribable_contrats, function ( $c ) {
 			/** @var AmapressContrat_instance $c */
 			return ! $c->isFull();
 		} );
@@ -298,10 +304,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 		/** @var AmapressContrat_instance $b */
 		return strcmp( $a->getTitle(), $b->getTitle() );
 	} );
-//	$subscribable_contrats     = array_filter( $subscribable_contrats, function ( $c ) {
-//		/** @var AmapressContrat_instance $c */
-//		return ! $c->isPanierVariable();
-//	} );
 	$subscribable_contrats_ids = array_map( function ( $c ) {
 		return $c->ID;
 	}, $subscribable_contrats );
@@ -330,28 +332,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 	if ( empty( $subscribable_contrats ) ) {
 		ob_clean();
 
-		return ( 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' ) );
+		if ( amapress_can_access_admin() ) {
+			return 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
+		} else {
+			return 'Les inscriptions en ligne sont closes.';
+		}
 	}
-	if ( Amapress::toBool( $atts['check_principal'] ) && ! $admin_mode && empty( $principal_contrats ) ) {
-		ob_clean();
 
-		return ( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . admin_url( 'edit.php?post_type=amps_contrat_inst' ) );
-	}
 	//TODO better ???
 	$adh_period_date = Amapress::add_a_week( $min_contrat_date, $atts['adhesion_shift_weeks'] );
-
-//	if ( ! $admin_mode && count( $principal_contrats ) > 1 ) {
-//		wp_die( 'Il y a plusieurs contrat principaux. Veuillez vérifier la configuration (erreur de dates d\'ouverture/clôture) : <br/>' .
-//		        implode( '<br/>', array_map( function ( $c ) {
-//			        /** @var AmapressContrat_instance $c */
-//			        return Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle(), true, true );
-//		        }, $principal_contrats ) ) );
-//	}
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 	$adhesion_step_url = add_query_arg( 'step', 'adhesion', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 	$the_end_url       = add_query_arg( 'step', 'the_end', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 
+	$user_has_contrat = false;
 	if ( isset( $_REQUEST['contrat_id'] ) && isset( $_REQUEST['user_id'] ) ) {
 		$user_id    = intval( $_REQUEST['user_id'] );
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
@@ -360,9 +355,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		Amapress::setFilterForReferent( true );
 		$adhs             = array_filter( $adhs,
-			function ( $adh ) use ( $subscribable_contrats_ids ) {
+			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
 				/** @var AmapressAdhesion $adh */
-				return in_array( $adh->getContrat_instanceId(), $subscribable_contrats_ids );
+				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
 			} );
 		$adhs_contrat_ids = array_map( function ( $a ) {
 			/** @var AmapressAdhesion $a */
@@ -380,6 +375,33 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 
 				return $additional_css . '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
 			}
+		}
+
+		$user_has_contrat = ! empty( $adhs );
+	} else if ( isset( $_REQUEST['user_id'] ) ) {
+		$user_id = intval( $_REQUEST['user_id'] );
+
+		Amapress::setFilterForReferent( false );
+		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+		Amapress::setFilterForReferent( true );
+		$adhs = array_filter( $adhs,
+			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
+				/** @var AmapressAdhesion $adh */
+				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
+			} );
+
+		$user_has_contrat = ! empty( $adhs );
+	}
+
+	if ( Amapress::toBool( $atts['check_principal'] ) && ! $admin_mode && empty( $principal_contrats ) ) {
+		if ( amapress_can_access_admin() ) {
+			ob_clean();
+
+			return 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
+		} else if ( ! $user_has_contrat ) {
+			ob_clean();
+
+			return 'Les inscriptions en ligne sont closes.';
 		}
 	}
 
@@ -1086,15 +1108,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
-		$has_principal_contrat = false;
+		$has_principal_contrat = $user_has_contrat;
 
 		Amapress::setFilterForReferent( false );
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		Amapress::setFilterForReferent( true );
 		$adhs = array_filter( $adhs,
-			function ( $adh ) use ( $subscribable_contrats_ids ) {
+			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
 				/** @var AmapressAdhesion $adh */
-				return in_array( $adh->getContrat_instanceId(), $subscribable_contrats_ids );
+				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
 			} );
 		if ( Amapress::toBool( $atts['check_principal'] ) ) {
 			foreach ( $adhs as $adh ) {
