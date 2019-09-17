@@ -11,7 +11,7 @@ function amapress_register_entities_amapien( $entities ) {
 		'csv_required_fields' => array( 'user_email', 'first_name', 'last_name' ),
 		'bulk_actions'        => array(
 			'amp_resend_welcome' => array(
-				'label'    => 'Réenvoyer l\'email de bienvenue',
+				'label'    => 'Renvoyer l\'email de bienvenue',
 				'messages' => array(
 					'<0' => 'Une erreur s\'est produit pendant l\'envoie des emails de bienvenue',
 					'0'  => 'Une erreur s\'est produit pendant l\'envoie des emails de bienvenue',
@@ -461,9 +461,12 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return $user && ! empty( $user->getFormattedAdresse() ) && ! $user->isAdresse_localized();
 				},
-//				'show_on'   => 'editor',
 				'confirm'   => true,
 			),
+			'resend_welcome'  => array(
+				'label'   => 'Renvoyer l\'email de bienvenue',
+				'confirm' => true,
+			)
 		),
 	);
 
@@ -1045,5 +1048,12 @@ function amapress_row_action_user_relocate( $user_id ) {
 	if ( $user ) {
 		AmapressUsers::resolveUserAddress( $user_id, $user->getFormattedAdresse() );
 	}
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_user_resend_welcome', 'amapress_row_action_user_resend_welcome' );
+function amapress_row_action_user_resend_welcome( $user_id ) {
+	wp_send_new_user_notifications( $user_id, 'user' );
+
 	wp_redirect_and_exit( wp_get_referer() );
 }
