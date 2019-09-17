@@ -31,7 +31,7 @@ function amapress_get_row_action_html( $action, $id, $row_action_config ) {
 		esc_attr( $action ),
 		esc_attr( $label ),
 		( ! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' ) .
-		( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( 'Êtes-vous sur de vouloir : ' . $label . ' ?' ) . '\');"' : '' ) );
+		( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( esc_js( 'Êtes-vous sur de vouloir : ' . $label . ' ?' ) ) . '\');"' : '' ) );
 }
 
 add_filter( 'user_row_actions', 'amapress_row_actions_registration', 10, 2 );
@@ -90,7 +90,7 @@ function amapress_row_actions_registration( $actions, $post_or_user, $type = 'li
 						esc_attr( $row_action ),
 						esc_attr( $label ),
 						( ! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' ) .
-						( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( 'Êtes-vous sur de vouloir : ' . $label . ' ?' ) . '\');"' : '' ) );
+						( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( esc_js( 'Êtes-vous sur de vouloir : ' . $label . ' ?' ) ) . '\');"' : '' ) );
 				} else {
 					$actions[ $row_action ] = amapress_get_row_action_html( $row_action, $post_or_user->ID, $row_action_config );
 				}
