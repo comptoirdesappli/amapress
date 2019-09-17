@@ -1445,5 +1445,12 @@ add_action( 'admin_init', function () {
 					'warning', false );
 			}
 		}
+
+		$errored_mails_count = AmapressSMTPMailingQueue::getErroredMailsCount();
+		if ( $errored_mails_count > 0 ) {
+			$errored_mails_url = admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_errored_mails' );
+			amapress_add_admin_notice( "$errored_mails_count email(s) sortant(s) sont en <a href='$errored_mails_url' target='_blank'>erreur d'envoi</a>",
+				'error', false );
+		}
 	}
 } );

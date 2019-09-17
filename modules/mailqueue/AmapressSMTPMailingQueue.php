@@ -195,6 +195,10 @@ class AmapressSMTPMailingQueue {
 		return true;
 	}
 
+	public static function getErroredMailsCount() {
+		return count( glob( self::getUploadDir( 'errored' ) . '*.json' ) );
+	}
+
 	/**
 	 * Creates upload dir if it not existing.
 	 * Adds htaccess protection to upload dir.
