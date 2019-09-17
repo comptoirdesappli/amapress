@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.85.45free
+Version: 0.85.65free
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -47,8 +47,8 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 83 );
-define( 'AMAPRESS_VERSION', '0.85.45free' );
+define( 'AMAPRESS_DB_VERSION', 84 );
+define( 'AMAPRESS_VERSION', '0.85.65free' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -107,7 +107,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 		$h            = esc_html( var_export( $headers, true ) );
 		$test_mode_to = Amapress::getOption( 'test_mail_target' );
-		$message      = "Site en mode de test mail : tous les mails sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
+		$message      = "Site en mode de test mail : tous les emails sortants sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
 		$to           = $test_mode_to;
 		$headers      = array_filter( $headers, function ( $h ) {
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
@@ -525,7 +525,7 @@ function amapress_register_widgets() {
 }
 
 add_action( 'widgets_init', 'amapress_register_widgets' );
-add_action( 'init', array( 'Amapress', 'init' ) );
+add_action( 'init', array( 'Amapress', 'init' ), 0 );
 add_action( 'init', array( 'Amapress_Calendar', 'init' ) );
 add_action( 'init', array( 'AmapressUsers', 'init' ) );
 add_action( 'init', array( 'AmapressContrats', 'init' ) );
@@ -568,9 +568,9 @@ function amapress_get_avatar_meta_name() {
 /**
  * Get size information for all currently-registered image sizes.
  *
- * @global $_wp_additional_image_sizes
- * @uses   get_intermediate_image_sizes()
  * @return array $sizes Data for all currently-registered image sizes.
+ * @uses   get_intermediate_image_sizes()
+ * @global $_wp_additional_image_sizes
  */
 function get_image_sizes() {
 	global $_wp_additional_image_sizes;
@@ -597,11 +597,11 @@ function get_image_sizes() {
 /**
  * Get size information for a specific image size.
  *
- * @uses   get_image_sizes()
- *
- * @param  string $size The image size for which to retrieve data.
+ * @param string $size The image size for which to retrieve data.
  *
  * @return bool|array $size Size data about an image size or false if the size doesn't exist.
+ * @uses   get_image_sizes()
+ *
  */
 function get_image_size( $size ) {
 	$sizes = get_image_sizes();
@@ -616,11 +616,11 @@ function get_image_size( $size ) {
 /**
  * Get the width of a specific image size.
  *
- * @uses   get_image_size()
- *
- * @param  string $size The image size for which to retrieve data.
+ * @param string $size The image size for which to retrieve data.
  *
  * @return bool|string $size Width of an image size or false if the size doesn't exist.
+ * @uses   get_image_size()
+ *
  */
 function get_image_width( $size ) {
 	if ( ! $size = get_image_size( $size ) ) {
@@ -637,11 +637,11 @@ function get_image_width( $size ) {
 /**
  * Get the height of a specific image size.
  *
- * @uses   get_image_size()
- *
- * @param  string $size The image size for which to retrieve data.
+ * @param string $size The image size for which to retrieve data.
  *
  * @return bool|string $size Height of an image size or false if the size doesn't exist.
+ * @uses   get_image_size()
+ *
  */
 function get_image_height( $size ) {
 	if ( ! $size = get_image_size( $size ) ) {
@@ -883,16 +883,20 @@ add_filter( 'bbp_after_get_the_content_parse_args', 'amapress_bbp_enable_visual_
 // Sets the display name to first name and last name
 add_filter( 'pre_user_display_name', 'amapress_default_display_name' );
 function amapress_default_display_name( $name ) {
-	$firstname = null;
-	if ( isset( $_POST['first_name'] ) ) {
-		$firstname = sanitize_text_field( $_POST['first_name'] );
-	}
-	$lastname = null;
-	if ( isset( $_POST['last_name'] ) ) {
-		$lastname = sanitize_text_field( $_POST['last_name'] );
-	}
-	if ( ! empty( $firstname ) && ! empty( $lastname ) ) {
-		$name = $firstname . ' ' . $lastname;
+	global $pagenow;
+
+	if ( 'user-edit.php' == $pagenow || 'user-new.php' == $pagenow || 'profile.php' == $pagenow ) {
+		$firstname = null;
+		if ( isset( $_POST['first_name'] ) ) {
+			$firstname = sanitize_text_field( $_POST['first_name'] );
+		}
+		$lastname = null;
+		if ( isset( $_POST['last_name'] ) ) {
+			$lastname = sanitize_text_field( $_POST['last_name'] );
+		}
+		if ( ! empty( $firstname ) && ! empty( $lastname ) ) {
+			$name = $firstname . ' ' . $lastname;
+		}
 	}
 
 	return $name;
@@ -1192,7 +1196,7 @@ if ( ! function_exists( 'wp_mail' ) ) {
 	}
 } else {
 	amapress_add_admin_notice(
-		'Un autre plugin a déjà remplacé la fonction de gestion des mails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
+		'Un autre plugin a déjà remplacé la fonction de gestion des emails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
 		'warning', true );
 }
 
@@ -1336,8 +1340,29 @@ CustomPostStatus::register( 'archived', [
 add_action( 'amapress_init', function () {
 	require_once AMAPRESS__PLUGIN_DIR . 'modules/docspace/AmapressDocSpace.php';
 	new AmapressDocSpace( 'responsables', 'edit_posts', 'edit_posts', 'edit_posts' );
+	$subfolders = Amapress::getOption( 'docspace_resps_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			new AmapressDocSpace( 'responsables-' . $subfolder, 'edit_posts', 'edit_posts', 'edit_posts' );
+		}
+	}
 	new AmapressDocSpace( 'amapiens', 'read', 'edit_posts', 'read' );
+	$subfolders = Amapress::getOption( 'docspace_amapiens_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			new AmapressDocSpace( 'amapiens-' . $subfolder, 'read', 'edit_posts', 'read' );
+		}
+	}
 	new AmapressDocSpace( 'public', '', 'edit_posts', '' );
+	$subfolders = Amapress::getOption( 'docspace_public_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			new AmapressDocSpace( 'public-' . $subfolder, '', 'edit_posts', '' );
+		}
+	}
 
 	if ( Amapress::getOption( 'auto-post-thumb' ) ) {
 		add_filter( 'get_post_metadata', function ( $value, $object_id, $meta_key, $single ) {
@@ -1403,8 +1428,8 @@ add_action( 'admin_init', function () {
 		}
 
 		if ( Amapress::getOption( 'test_mail_mode' ) ) {
-			amapress_add_admin_notice( 'Le site est en mode de test mail. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
-				'info', false );
+			amapress_add_admin_notice( 'Le site est en <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_tests_config' ) . '">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
+				'info', false, false );
 		}
 
 

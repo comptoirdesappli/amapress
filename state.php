@@ -138,9 +138,6 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'user-switching', 'User Switching',
 		'<strong>Recommandé</strong> : Permet aux administrateurs de consulter Amapress avec un autre compte utilisateur. Ce plugin est à installer par un webmaster. ',
 		'warning' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 're-welcome', 'Re Welcome',
-		'<strong>Recommandé</strong> : Permet de renvoyer à un ou plusieurs amapiens le mail de bienvenue. Utile après import CSV des amapiens sans leur envoyer de notifications immédiates de création de leur compte.',
-		'warning' );
 
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wp-maintenance', 'WP Maintenance',
 		'<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en construction et d\'éviter l\'affichage de contenu non finalisé.',
