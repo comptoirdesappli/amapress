@@ -11,12 +11,12 @@ function amapress_register_entities_amapien( $entities ) {
 		'csv_required_fields' => array( 'user_email', 'first_name', 'last_name' ),
 		'bulk_actions'        => array(
 			'amp_resend_welcome' => array(
-				'label'    => 'Réenvoyer le mail de bienvenue',
+				'label'    => 'Renvoyer l\'email de bienvenue',
 				'messages' => array(
-					'<0' => 'Une erreur s\'est produit pendant l\'envoie des mails de bienvenue',
-					'0'  => 'Une erreur s\'est produit pendant l\'envoie des mails de bienvenue',
-					'1'  => 'Un mail de bienvenue a été envoyé avec succès',
-					'>1' => '%s mails de bienvenue ont été envoyés avec succès',
+					'<0' => 'Une erreur s\'est produit pendant l\'envoie des emails de bienvenue',
+					'0'  => 'Une erreur s\'est produit pendant l\'envoie des emails de bienvenue',
+					'1'  => 'Un email de bienvenue a été envoyé avec succès',
+					'>1' => '%s emails de bienvenue ont été envoyés avec succès',
 				),
 			),
 			'amp_relocate'       => array(
@@ -35,12 +35,12 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Rôle dans l\'AMAP',
 //            ),
-			'head_amapress4' => array(
+			'head_amapress4'  => array(
 				'id'   => 'fonctions_sect',
 				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
 			),
-			'all_roles'      => array(
+			'all_roles'       => array(
 				'name'        => amapress__( 'Fonctions actuelles' ),
 				'show_column' => false,
 				'type'        => 'custom',
@@ -65,7 +65,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return $roles;
 				}
 			),
-			'role_desc'      => array(
+			'role_desc'       => array(
 				'type'        => 'custom',
 				'name'        => amapress__( 'Rôle sur le site' ),
 				'show_column' => false,
@@ -87,7 +87,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br />Ouvre tous les droits sur le site</p>';
 				}
 			),
-			'amap_roles'     => array(
+			'amap_roles'      => array(
 				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -99,7 +99,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'intermittent'   => array(
+			'intermittent'    => array(
 				'name'              => amapress__( 'Intermittent' ),
 				'type'              => 'custom',
 				'custom_csv_sample' => function ( $option, $arg ) {
@@ -114,7 +114,7 @@ function amapress_register_entities_amapien( $entities ) {
 						'0',
 					);
 				},
-				'custom'      => function ( $user_id ) {
+				'custom'            => function ( $user_id ) {
 					$ret     = '';
 					$amapien = AmapressUser::getBy( $user_id, true );
 					if ( $amapien ) {
@@ -129,7 +129,7 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return $ret;
 				},
-				'save'        => function ( $user_id ) {
+				'save'              => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
 					if ( $amapien ) {
 						if ( ! $amapien->isIntermittent() && isset( $_REQUEST['inscr_intermittent'] ) ) {
@@ -141,7 +141,21 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return true;
 				},
-				'show_column' => false,
+				'show_column'       => false,
+			),
+			'no_renew'        => array(
+				'name'    => amapress__( 'Non renouvellement' ),
+				'type'    => 'checkbox',
+				'desc'    => 'L\'amapien n\'a pas renouvelé',
+				'show_on' => 'edit-only',
+				'default' => 0,
+			),
+			'no_renew_reason' => array(
+				'name'    => amapress__( 'Motif' ),
+				'type'    => 'text',
+				'default' => '',
+				'show_on' => 'edit-only',
+				'desc'    => 'Motif de non renouvellement',
 			),
 
 			'head_amapress0'     => array(
@@ -326,15 +340,15 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'        => 'ASC',
 			),
 			'co-adherents'       => array(
-				'name'       => amapress__( 'Co-adhérent(s) - sans mail' ),
+				'name'       => amapress__( 'Co-adhérent(s) - sans email' ),
 				'type'       => 'text',
-				'desc'       => 'Co-adhérent(s) - sans mail',
+				'desc'       => 'Co-adhérent(s) - sans email',
 				'searchable' => true,
 			),
 			'co-adherents-infos' => array(
-				'name'       => amapress__( 'Co-adhérent(s) - sans mail - infos' ),
+				'name'       => amapress__( 'Co-adhérent(s) - sans email - infos' ),
 				'type'       => 'text',
-				'desc'       => 'Co-adhérent(s) - sans mail - autres infos',
+				'desc'       => 'Co-adhérent(s) - sans email - autres infos',
 				'searchable' => true,
 			),
 			'all-coadherents'    => array(
@@ -447,9 +461,12 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return $user && ! empty( $user->getFormattedAdresse() ) && ! $user->isAdresse_localized();
 				},
-//				'show_on'   => 'editor',
 				'confirm'   => true,
 			),
+			'resend_welcome'  => array(
+				'label'   => 'Renvoyer l\'email de bienvenue',
+				'confirm' => true,
+			)
 		),
 	);
 
@@ -898,7 +915,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 					array(
 						'id'         => 'amapress_welcome_mail',
-						'title'      => 'Mail de bienvenue',
+						'title'      => 'Email de bienvenue',
 						'capability' => 'manage_amapress',
 						'href'       => admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' ),
 					),
@@ -910,15 +927,15 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 					array(
 						'id'         => 'amapress_log_mails',
-						'title'      => 'Logs des mails envoyés',
+						'title'      => 'Logs des emails envoyés',
 						'capability' => 'manage_options',
 						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_mail_logs' ),
 					),
 					array(
 						'id'         => 'amapress_backup',
-						'title'      => ( 'active' == amapress_is_plugin_active( 'backupwordpress' ) ? '<span class="dashicons dashicons-yes" style="color: green"></span>' : '<span class="dashicons dashicons-warning" style="color:red"></span>' ) . 'Sauvegardes',
+						'title'      => ( 'active' == amapress_is_plugin_active( 'updraftplus' ) ? '<span class="dashicons dashicons-yes" style="color: green"></span>' : '<span class="dashicons dashicons-warning" style="color:red"></span>' ) . 'Sauvegardes',
 						'capability' => 'manage_options',
-						'href'       => 'active' == amapress_is_plugin_active( 'backupwordpress' ) ? admin_url( 'tools.php?page=backupwordpress' ) : admin_url( 'admin.php?page=amapress_state' ),
+						'href'       => 'active' == amapress_is_plugin_active( 'updraftplus' ) ? admin_url( 'options-general.php?page=updraftplus' ) : admin_url( 'admin.php?page=amapress_state' ),
 					),
 				]
 			),
@@ -1031,5 +1048,12 @@ function amapress_row_action_user_relocate( $user_id ) {
 	if ( $user ) {
 		AmapressUsers::resolveUserAddress( $user_id, $user->getFormattedAdresse() );
 	}
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_user_resend_welcome', 'amapress_row_action_user_resend_welcome' );
+function amapress_row_action_user_resend_welcome( $user_id ) {
+	wp_send_new_user_notifications( $user_id, 'user' );
+
 	wp_redirect_and_exit( wp_get_referer() );
 }
