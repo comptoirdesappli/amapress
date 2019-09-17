@@ -249,19 +249,34 @@ function amapress_get_state() {
 		'<strong>Plugin recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
 		'warning' );
 
-	$permalink_structure  = get_option( 'permalink_structure' );
-	$state['05_config'][] = amapress_get_check_state(
-		empty( $permalink_structure )
-		|| ! in_array( $permalink_structure,
-			[
-				'/%year%/%monthnum%/%day%/%postname%/',
-				'/%year%/%monthnum%/%postname%/',
-				'/%postname%/'
-			] ) ? 'error' : 'success',
-		'Réglage des permaliens',
-		'Le réglage des permaliens doit suivre une des valeurs suivants : Date et titre, Mois et titre ou Titre de la publication',
-		admin_url( 'options-permalink.php' )
-	);
+	$permalink_structure = get_option( 'permalink_structure' );
+	if ( defined( 'FREE_PAGES_PERSO' ) ) {
+		$state['05_config'][] = amapress_get_check_state(
+			empty( $permalink_structure )
+			|| ! in_array( $permalink_structure,
+				[
+					'/index.php/%year%/%monthnum%/%day%/%postname%/',
+					'/index.php/%year%/%monthnum%/%postname%/',
+					'/index.php/%postname%/'
+				] ) ? 'error' : 'success',
+			'Réglage des permaliens',
+			'Le réglage des permaliens pour Free Pages Perso doit être "Structure personnalisée", commencer par /index.php/ suivi de "%postname%/" ou "%year%/%monthnum%/%postname%/" ou "%year%/%monthnum%/%day%/%postname%/"',
+			admin_url( 'options-permalink.php' )
+		);
+	} else {
+		$state['05_config'][] = amapress_get_check_state(
+			empty( $permalink_structure )
+			|| ! in_array( $permalink_structure,
+				[
+					'/%year%/%monthnum%/%day%/%postname%/',
+					'/%year%/%monthnum%/%postname%/',
+					'/%postname%/'
+				] ) ? 'error' : 'success',
+			'Réglage des permaliens',
+			'Le réglage des permaliens doit suivre une des valeurs suivantes : Date et titre, Mois et titre ou Titre de la publication',
+			admin_url( 'options-permalink.php' )
+		);
+	}
 
 	$admin_email          = get_bloginfo( 'admin_email' );
 	$state['05_config'][] = amapress_get_check_state(
@@ -449,7 +464,7 @@ function amapress_get_state() {
 		admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' )
 	);
 
-	$state['05_config'][]       = amapress_get_check_state(
+	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Configuration des mailing lists',
 		'<p>Si vous avez un accès au système de mailing list (Sympa), par ex Ouvaton, Sud Ouest ou autre fournisseur, 

@@ -19,8 +19,8 @@ function amapress_add_rewrite_rules() {
 	amapress_add_page_if_not_exists( 'mes-infos-page', 'Mes infos', 'mes-infos', false, '[amapien-edit-infos]' );
 
 	$rewrite_root = '^';
-	if ( defined( 'AMAPRESS_LIMITED_HTACCESS' ) ) {
-		$rewrite_root = '';
+	if ( defined( 'AMAPRESS_LIMITED_HTACCESS' ) || defined( 'FREE_PAGES_PERSO' ) ) {
+		$rewrite_root = '^index.php/';
 	}
 
 	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/([^/]+)/sample/pdf/?', 'index.php?post_type=amps_contrat&name=$matches[1]&amp_action=sample_pdf&subview=$matches[2]', 'top' );
