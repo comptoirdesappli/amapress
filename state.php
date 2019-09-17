@@ -1702,6 +1702,13 @@ function amapress_echo_and_check_amapress_state_page() {
 		echo '<p><a href="' . esc_attr( add_query_arg( 'phpinfo', 'T' ) ) . '" target="_blank">Afficher PHP Infos</a></p>';
 	}
 
+	if ( defined( 'FREE_PAGES_PERSO' ) ) {
+		echo '<p><strong>Fonctionnement Free Pages Perso: actif</strong></p>';
+	}
+	if ( defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) ) {
+		echo '<p><strong>Envoi des mails en texte brut: actif</strong></p>';
+	}
+
 	global $wp_version;
 	echo '<p><strong>Version PHP : ' . PHP_VERSION . '</strong></p>';
 	echo '<p><strong>Version Wordpress : ' . $wp_version . '</strong></p>';
