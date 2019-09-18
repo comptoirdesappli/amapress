@@ -347,7 +347,7 @@ class Amapress_Import_Users_CSV {
                             <span><?php _e( 'Mise à jour des utilisateurs', 'amapress' ); ?></span></legend>
                         <label for="users_update">
                             <input id="users_update" name="users_update" type="checkbox" value="1" checked="checked"/>
-							<?php _e( 'Mettre à jour l\'utilisateur quand son nom ou son mail existent', 'amapress' ); ?>
+							<?php _e( 'Mettre à jour l\'utilisateur quand son nom ou son email existent', 'amapress' ); ?>
                         </label>
                     </fieldset>
                 </td>

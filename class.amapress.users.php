@@ -638,7 +638,7 @@ jQuery(function() {
 		}
 		if ( in_array( 'mail', $types ) || $is_full ) {
 			if ( $user->user_email ) {
-				echo '<p class="user-mail">Mail : <a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
+				echo '<p class="user-mail">Email : <a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
 			}
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_adresse', true ) &&
@@ -1016,7 +1016,7 @@ jQuery(function() {
 
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$user_ids = AmapressContrats::get_related_users( $user_id );
+			$user_ids = AmapressContrats::get_related_users( $user_id, false, $date );
 			$lieu_ids = array_map( array( 'Amapress', 'to_adhesion_lieu' ), get_posts( array(
 				'post_type'      => 'amps_adhesion',
 				'posts_per_page' => - 1,

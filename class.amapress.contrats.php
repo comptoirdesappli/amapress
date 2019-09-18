@@ -278,7 +278,7 @@ class AmapressContrats {
 				'relation' => 'AND',
 				array(
 					'key'     => 'amapress_contrat_instance_date_fin',
-					'value'   => Amapress::end_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),
+					'value'   => Amapress::start_of_day( $ignore_renouv_delta ? $date : AmapressContrats::renouvellementDelta( $date ) ),
 					'compare' => '>=',
 					'type'    => 'NUMERIC'
 				),
@@ -566,7 +566,7 @@ class AmapressContrats {
 					'relation' => 'OR',
 					array(
 						'key'     => 'amapress_contrat_instance_date_cloture',
-						'value'   => Amapress::end_of_day( $date ),
+						'value'   => Amapress::start_of_day( $date ),
 						'compare' => '>=',
 						'type'    => 'NUMERIC'
 					),
@@ -1087,15 +1087,21 @@ class AmapressContrats {
 		return $res;
 	}
 
-	private static $related_user_cache = null;
+	private static $related_user_cache = [];
 
 	/* @return int[] */
-	public static function get_related_users( $user_id, $allow_not_logged = false ) {
+	public static function get_related_users( $user_id, $allow_not_logged = false, $date = null ) {
 		if ( ! $allow_not_logged && ! amapress_is_user_logged_in() ) {
 			return [];
 		}
 
-		$key = "amapress_get_related_users_{$user_id}";
+		if ( null == $date ) {
+			$date = amapress_time();
+		}
+
+		$date = Amapress::end_of_day( $date );
+
+		$key = "amapress_get_related_users_{$user_id}_{$date}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res  = array( $user_id );
@@ -1113,7 +1119,8 @@ class AmapressContrats {
 				$res = array_merge( $res, $user->getPrincipalUserIds() );
 			}
 
-			$end_time = Amapress::end_of_day( amapress_time() );
+			$active_contrat_instances_ids = amapress_prepare_in_sql(
+				AmapressContrats::get_active_contrat_instances_ids( null, $date, true ) );
 			if ( amapress_current_user_id() == $user_id ) {
 				$in = amapress_prepare_in_sql( $res );
 
@@ -1127,22 +1134,25 @@ ON ($wpdb->postmeta.post_id = mt1.post_id
 AND mt1.meta_key = 'amapress_adhesion_date_fin' ) 
 LEFT JOIN $wpdb->postmeta AS mt2
 ON ( $wpdb->postmeta.post_id = mt2.post_id )
+LEFT JOIN $wpdb->postmeta AS mt4
+ON ( $wpdb->postmeta.post_id = mt4.post_id AND mt4.meta_key = 'amapress_adhesion_contrat_instance')
 LEFT JOIN $wpdb->postmeta AS mt3
 ON ( $wpdb->postmeta.post_id = mt3.post_id 
-AND mt3.meta_key = 'amapress_adhesion_adherent' ) 
+AND mt3.meta_key IN ('amapress_adhesion_adherent','amapress_adhesion_adherent2','amapress_adhesion_adherent3','amapress_adhesion_adherent4') ) 
 WHERE 1=1 
+AND mt4.meta_value IN ($active_contrat_instances_ids)
 AND $wpdb->postmeta.meta_key IN ('amapress_adhesion_adherent','amapress_adhesion_adherent2','amapress_adhesion_adherent3','amapress_adhesion_adherent4')
 AND CAST($wpdb->postmeta.meta_value AS SIGNED) IN ($in)  
 AND ( mt1.post_id IS NULL 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) = 0 ) 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
-AND CAST(mt2.meta_value AS UNSIGNED) >= $end_time ) )"
+AND CAST(mt2.meta_value AS UNSIGNED) >= $date ) )"
 					) );
 			} else {
-				if ( null === self::$related_user_cache ) {
+				if ( empty( self::$related_user_cache[ $date ] ) ) {
 					global $wpdb;
-					self::$related_user_cache = array_group_by(
+					self::$related_user_cache[ $date ] = array_group_by(
 						$wpdb->get_results(
 							"SELECT DISTINCT mt3.meta_value as user_id, $wpdb->postmeta.meta_value
 FROM $wpdb->postmeta
@@ -1151,25 +1161,27 @@ ON ($wpdb->postmeta.post_id = mt1.post_id
 AND mt1.meta_key = 'amapress_adhesion_date_fin' ) 
 LEFT JOIN $wpdb->postmeta AS mt2
 ON ( $wpdb->postmeta.post_id = mt2.post_id )
+LEFT JOIN $wpdb->postmeta AS mt4
+ON ( $wpdb->postmeta.post_id = mt4.post_id AND mt4.meta_key = 'amapress_adhesion_contrat_instance')
 LEFT JOIN $wpdb->postmeta AS mt3
 ON ( $wpdb->postmeta.post_id = mt3.post_id 
-AND mt3.meta_key = 'amapress_adhesion_adherent' ) 
+AND mt3.meta_key IN ('amapress_adhesion_adherent','amapress_adhesion_adherent2','amapress_adhesion_adherent3','amapress_adhesion_adherent4') ) 
 WHERE 1=1 
-AND mt3.meta_value <> $wpdb->postmeta.meta_value
+AND mt4.meta_value IN ($active_contrat_instances_ids)
 AND $wpdb->postmeta.meta_key IN ('amapress_adhesion_adherent', 'amapress_adhesion_adherent2', 'amapress_adhesion_adherent3','amapress_adhesion_adherent4') 
 AND ( mt1.post_id IS NULL 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) = 0 ) 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
-AND CAST(mt2.meta_value AS UNSIGNED) >= $end_time ) )"
+AND CAST(mt2.meta_value AS UNSIGNED) >= $date ) )"
 						),
 						function ( $o ) {
 							return intval( $o->meta_value );
-						} );;
+						} );
 				}
 
-				if ( isset( self::$related_user_cache[ $user_id ] ) ) {
-					foreach ( self::$related_user_cache[ $user_id ] as $o ) {
+				if ( isset( self::$related_user_cache[ $date ][ $user_id ] ) ) {
+					foreach ( self::$related_user_cache[ $date ][ $user_id ] as $o ) {
 						if ( ! $o->user_id || in_array( $o->user_id, $res ) ) {
 							continue;
 						}

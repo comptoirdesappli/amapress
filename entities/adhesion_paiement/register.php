@@ -28,16 +28,8 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 //            'items_list' => 'xxx',
 		),
 		'row_actions'     => array(
-			'generate_bulletin'     => [
-				'label'     => 'Générer le bulletin (DOCX)',
-				'condition' => function ( $adh_id ) {
-					$adh = AmapressAdhesion_paiement::getBy( $adh_id );
-
-					return ! empty( $adh ) && ! empty( $adh->getPeriod() ) && ! empty( $adh->getPeriod()->getWordModelId() );
-				},
-			],
-			'generate_bulletin_pdf' => [
-				'label'     => 'Générer le bulletin (PDF)',
+			'generate_bulletin' => [
+				'label'     => 'Générer le bulletin',
 				'condition' => function ( $adh_id ) {
 					$adh = AmapressAdhesion_paiement::getBy( $adh_id );
 
@@ -274,15 +266,7 @@ function amapress_adhesion_paiement_select_user_title( $title, $user, $option ) 
 add_action( 'amapress_row_action_adhesion_paiement_generate_bulletin', 'amapress_row_action_adhesion_paiement_generate_bulletin' );
 function amapress_row_action_adhesion_paiement_generate_bulletin( $post_id ) {
 	$adhesion       = AmapressAdhesion_paiement::getBy( $post_id );
-	$full_file_name = $adhesion->generateBulletinDoc( true );
-	$file_name      = basename( $full_file_name );
-	Amapress::sendDocumentFile( $full_file_name, $file_name );
-}
-
-add_action( 'amapress_row_action_adhesion_paiement_generate_bulletin_pdf', 'amapress_row_action_adhesion_paiement_generate_bulletin_pdf' );
-function amapress_row_action_adhesion_paiement_generate_bulletin_pdf( $post_id ) {
-	$adhesion       = AmapressAdhesion_paiement::getBy( $post_id );
-	$full_file_name = $adhesion->generateBulletinDoc( false );
+	$full_file_name = $adhesion->generateBulletinDoc();
 	$file_name      = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }

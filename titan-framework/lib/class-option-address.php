@@ -25,7 +25,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 		}
 
 		$string = preg_replace( '/\s+/', " ", trim( $string ) );
-		$string = preg_replace( '/(?:\s+-\s+)?(\d{5})\s+([^,]+),\s*\1\s+\2/', ', $1 $2', $string );
+		$string = preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $string );
 
 		if ( 'google' == self::$geoprovider ) {
 			$string      = urlencode( $string );

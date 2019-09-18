@@ -17,8 +17,9 @@ function amapress_bulk_actions_admin_footer() {
             jQuery(document).ready(function () {
 				<?php
 				foreach ( $type['bulk_actions'] as $bulk_name => $bulk_desc ) {
-					echo "jQuery('<option>').val('{$bulk_name}').text('{$bulk_desc['label']}').appendTo(\"select[name='action']\");";
-					echo "jQuery('<option>').val('{$bulk_name}').text('{$bulk_desc['label']}').appendTo(\"select[name='action2']\");";
+					$label = esc_js( $bulk_desc['label'] );
+					echo "jQuery('<option>').val('{$bulk_name}').text('{$label}').appendTo(\"select[name='action']\");";
+					echo "jQuery('<option>').val('{$bulk_name}').text('{$label}').appendTo(\"select[name='action2']\");";
 				}
 				?>
             });

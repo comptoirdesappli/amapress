@@ -116,7 +116,7 @@ function amapress_replace_mail_user_placeholders_help() {
 	$ret["nom"]          = 'Nom de l\'amapien';
 	$ret["last_name"]    = 'Nom de l\'amapien';
 	$ret["mail"]         = 'Email de l\'amapien';
-	$ret["mailto"]       = 'Lien mail de l\'amapien';
+	$ret["mailto"]       = 'Lien email de l\'amapien';
 	$ret["sms"]          = 'Téléphone de l\'amapien';
 	$ret["tel"]          = 'Téléphone de l\'amapien';
 	$ret["smsto"]        = 'Lien sms de l\'amapien';
@@ -365,7 +365,7 @@ function amapress_replace_mail_placeholders_help(
 	if ( $include_sender ) {
 		$ret["password_url"]      = 'Lien de la page de Récupération de mot de passe';
 		$ret["password_url_raw"]  = 'Url de la page de Récupération de mot de passe';
-		$ret["registration_text"] = 'Texte du mail de récupération de mot de passe';
+		$ret["registration_text"] = 'Texte de l\'email de récupération de mot de passe';
 	}
 	$ret["now"] = 'Date courante';
 	if ( ! empty( $post_type_desc ) ) {

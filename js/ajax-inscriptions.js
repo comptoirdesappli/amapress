@@ -9,6 +9,9 @@
             'action': 'inscrire_distrib_action',
             'dist': $this.data('dist'),
             'role': $this.data('role'),
+            'user': $this.data('user'),
+            'key': $this.data('key'),
+            'post-id': $this.data('post-id'),
         };
         var $parentForm = $this.parent('form');
         var $parentDiv = $this.parent('.inscription-other-user');
@@ -20,7 +23,8 @@
             });
             if (!$parentForm.valid()) return;
         }
-        data.user = $('select[name=user]', $parentDiv).val();
+        if ($parentDiv.length > 0)
+            data.user = $('select[name=user]', $parentDiv).val();
 
         $this.prop("disabled", true);
         // We can also pass the url value separately from ajaxurl for front end AJAX implementations
@@ -41,7 +45,9 @@
         var data = {
             'action': 'desinscrire_distrib_action',
             'dist': $this.data('dist'),
-            'user': $this.data('user')
+            'user': $this.data('user'),
+            'key': $this.data('key'),
+            'post-id': $this.data('post-id'),
         };
         //var $parentForm = $this.parent('form');
         //if ($parentForm.length > 0) {
@@ -140,7 +146,7 @@
         var data = {
             'action': 'desinscrire_visite_action',
             'visite': $this.data('visite'),
-            'user': $this.data('user')
+            'user': $this.data('user'),
         };
         //var $parentForm = $this.parent('form');
         //if ($parentForm.length > 0) {

@@ -227,6 +227,9 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_has_pancust', 0 );
 	}
 
+	public function getSpecialMention() {
+		return $this->getCustom( 'amapress_contrat_instance_special_mention', '' );
+	}
 	public function getPaiementsMention() {
 		return $this->getCustom( 'amapress_contrat_instance_paiements_mention', '' );
 	}
@@ -860,7 +863,13 @@ class AmapressContrat_instance extends TitanEntity {
 				}
 			}
 		];
-		$ret['nb_dates']                         = [
+		$ret['mention_speciale'] = [
+			'desc' => 'Champ Mention spéciale du contrat',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getSpecialMention();
+			}
+		];
+		$ret['nb_dates'] = [
 			'desc' => 'Nombre de dates de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return count( $adh->getRemainingDates( $first_date_distrib ) );

@@ -123,13 +123,14 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 //            var_dump($args['post_type']);
 //            var_dump($post_columns);
 
-			$posts = get_users( $args );
+			$users = get_users( $args );
 			$data  = array();
-			foreach ( $posts as $post ) {
+			foreach ( $users as $user ) {
+				/** @var WP_User $user */
 				$entry = array();
 				foreach ( $post_columns as $col_name => $col_title ) {
 					ob_start();
-					$content = $this->column_default( $post, $col_name );
+					$content = $this->column_default( $user, $col_name );
 					echo $content;
 					$entry[ $col_name ] = ob_get_clean();
 				}
@@ -206,7 +207,8 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 				$edit            = "<strong><a href=\"{$edit_link}\">{$user_object->user_login}</a>{$super_admin}</strong><br />";
 				$actions['edit'] = '<a href="' . $edit_link . '">' . __( 'Edit' ) . '</a>';
 			} else {
-				$edit = "<strong>{$user_object->user_login}{$super_admin}</strong><br />";
+				$edit      = "<strong>{$user_object->user_login}{$super_admin}</strong><br />";
+				$edit_link = '';
 			}
 			if ( ! is_multisite() && get_current_user_id() != $user_object->ID && current_user_can( 'delete_user', $user_object->ID ) ) {
 				$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url( "users.php?action=delete&amp;user=$user_object->ID", 'bulk-users' ) . "'>" . __( 'Delete' ) . "</a>";
@@ -238,7 +240,11 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 				echo "$avatar $edit";
 				break;
 			case 'name':
-				echo "$user_object->first_name $user_object->last_name";
+				if ( ! empty( $edit_link ) ) {
+					echo "$avatar <a href='$edit_link'>$user_object->first_name $user_object->last_name</a>";
+				} else {
+					echo "$avatar $user_object->first_name $user_object->last_name";
+				}
 				break;
 			case 'email':
 				echo "<a href='" . esc_url( "mailto:$email" ) . "'>$email</a>";

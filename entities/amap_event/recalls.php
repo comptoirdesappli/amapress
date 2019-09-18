@@ -69,14 +69,14 @@ function amapress_amap_event_inscription_recall_options() {
 		),
 		array(
 			'id'       => 'amap-event-inscription-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit à %%post:title%%',
 		),
 		array(
 			'id'      => 'amap-event-inscription-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressAmap_event::getPlaceholdersHelp(),
@@ -88,7 +88,7 @@ function amapress_amap_event_inscription_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',
@@ -133,14 +133,14 @@ function amapress_amap_event_available_recall_options() {
 		),
 		array(
 			'id'       => 'amap-event-available-recall-mail-subject',
-			'name'     => 'Sujet du mail',
+			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Une viste a lieu bientôt : %%post:title%%',
 		),
 		array(
 			'id'      => 'amap-event-available-recall-mail-content',
-			'name'    => 'Contenu du mail',
+			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nUn évènement AMAP a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressAmap_event::getPlaceholdersHelp(),
@@ -152,7 +152,7 @@ function amapress_amap_event_available_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Mails en copie',
+			'desc'         => 'Emails en copie',
 		),
 		array(
 			'type' => 'save',

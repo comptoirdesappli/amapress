@@ -2123,6 +2123,8 @@ class Amapress {
 			}
 			unset( $postmeta['amapress_intermittence_panier_adh_cancel_message'] );
 			unset( $postmeta['amapress_intermittence_panier_adh_message'] );
+			unset( $postmeta['amapress_lieu_distribution_instructions_privee'] );
+			unset( $postmeta['amapress_lieu_distribution_contact_externe'] );
 		};
 		$relative_time        = 0;
 		$media                = [];
@@ -2170,9 +2172,12 @@ class Amapress {
 			$ret .= self::generate_test( $post->ID, AmapressRecette::POST_TYPE, $generated_ids, false, $relative_time, $update_user_callback, $update_post_callback, $media, $anonymize );
 		}
 
-		foreach ( $media as $k => $v ) {
-			$ret = "\$this->medias['$k'] = '$v';\n" . $ret;
-		}
+		$ret = preg_replace( '/amapress_producteur_referent_(\d+)&#039;/', 'amapress_producteur_referent_\'. $this->posts[\'$1\']', $ret );
+		$ret = preg_replace( '/amapress_contrat_referent_(\d+)&#039;/', 'amapress_contrat_referent_\'. $this->posts[\'$1\']', $ret );
+
+//		foreach ( $media as $k => $v ) {
+//			$ret = "\$this->medias['$k'] = '$v';\n" . $ret;
+//		}
 
 		return $ret;
 	}
@@ -2824,10 +2829,12 @@ class Amapress {
 	}
 
 	static function amapress_this_month_dashboard_widget_function() {
-		$week_paniers   = AmapressPanier::get_paniers( null, Amapress::add_a_month( amapress_time() ) );
-		$week_dists     = AmapressDistribution::get_distributions( null, Amapress::add_a_month( amapress_time() ) );
-		$week_visites   = AmapressVisite::get_visites( null, Amapress::add_a_month( amapress_time() ) );
-		$week_paiements = AmapressAmapien_paiement::get_paiements( null, Amapress::add_a_month( amapress_time() ) );
+		$start_date     = Amapress::start_of_week( amapress_time() );
+		$end_date       = Amapress::add_a_month( amapress_time() );
+		$week_paniers   = AmapressPanier::get_paniers( $start_date, $end_date );
+		$week_dists     = AmapressDistribution::get_distributions( $start_date, $end_date );
+		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
+		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
 
 		echo '<p>Paniers :</p>';
 		if ( count( $week_paniers ) == 0 ) {
@@ -2900,10 +2907,12 @@ class Amapress {
 	}
 
 	static function amapress_this_week_dashboard_widget_function() {
-		$week_paniers   = AmapressPanier::get_paniers( null, Amapress::add_a_week( amapress_time() ) );
-		$week_dists     = AmapressDistribution::get_distributions( null, Amapress::add_a_week( amapress_time() ) );
-		$week_visites   = AmapressVisite::get_visites( null, Amapress::add_a_week( amapress_time() ) );
-		$week_paiements = AmapressAmapien_paiement::get_paiements( null, Amapress::add_a_week( amapress_time() ) );
+		$start_date     = Amapress::start_of_week( amapress_time() );
+		$end_date       = Amapress::add_a_week( amapress_time() );
+		$week_paniers   = AmapressPanier::get_paniers( $start_date, $end_date );
+		$week_dists     = AmapressDistribution::get_distributions( $start_date, $end_date );
+		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
+		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
 
 		echo '<p>Paniers :</p>';
 		if ( count( $week_paniers ) == 0 ) {

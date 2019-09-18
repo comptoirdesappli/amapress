@@ -111,7 +111,7 @@ function amapress_get_custom_content_distribution( $content ) {
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
 		$mailto = $dist->getMailtoResponsables();
 		if ( ! empty( $mailto ) ) {
-			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Mail aux responsables</a>';
+			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Email aux responsables</a>';
 		}
 		$smsto = $dist->getSMStoResponsables();
 		if ( ! empty( $smsto ) ) {
@@ -120,7 +120,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 		$mailto = $dist->getMailtoAmapiens();
 		if ( ! empty( $mailto ) ) {
-			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Mail aux amapiens</a>';
+			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Email aux amapiens</a>';
 		}
 		$smsto = $dist->getSMStoAmapiens();
 		if ( ! empty( $smsto ) ) {

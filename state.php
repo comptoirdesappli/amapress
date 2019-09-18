@@ -4,6 +4,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+add_action( 'template_redirect', function () {
+	if ( 'shouldredirect' == get_query_var( 'amp_action' ) ) {
+		wp_die( '<strong style="color: #2b542c">Redirection réussie</strong>' );
+	}
+} );
+
 function amapress_get_plugin_install_link( $plugin_slug ) {
 	$action = 'install-plugin';
 
@@ -105,8 +111,8 @@ function amapress_get_state() {
 	$state['01_plugins'] = array();
 //    $state['01_plugins'][] = amapress_check_plugin_install('google-sitemap-generator', 'Google XML Sitemaps',
 //        'Permet un meilleur référencement par les moteurs de recherche pour votre AMAP');
-	$state['01_plugins'][] = amapress_check_plugin_install( 'backupwordpress', 'BackUpWordPress',
-		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'tools.php?page=backupwordpress' ) . '">Configuration de la sauvegarde</a>. Configurer ici la notification par e-mail pour recevoir un backup de la base de donnée du site toutes les semaines par exemple.',
+	$state['01_plugins'][] = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
+		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.',
 		'error' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
@@ -275,11 +281,27 @@ function amapress_get_state() {
 		);
 	}
 
+	$redir_test_url       = site_url( 'shouldredirect' );
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		'Test de fonctionnement des redirections WordPress',
+		'Cliquez sur le lien suivant : <a target="_blank" href="' . $redir_test_url . '">' . $redir_test_url . '</a>.<br/>Si vous voyez un message indiquant "Redirection réussie", tout va bien. Sinon vérifiez que le mod_rewrite est actif et que les htaccess ne sont désactivés.',
+		''
+	);
+
+	$htaccess_test_url    = wp_upload_dir()['baseurl'] . '/amapress-contrats/';
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		'Test de fonctionnement de protection de dossier',
+		'Cliquez sur le lien suivant : <a target="_blank" href="' . $htaccess_test_url . '">' . $htaccess_test_url . '</a>.<br/>Si vous voyez un message indiquant "Accès interdit", tout va bien. Sinon vérifiez que les htaccess ne sont désactivés.',
+		''
+	);
+
 	$admin_email          = get_bloginfo( 'admin_email' );
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Adresse email de l\'administrateur',
-		'L\'adresse email de l\'administrateur du site est actuellement : <strong>' . esc_html( $admin_email ) . '</strong>. L\'administrateur reçoit des mails sur l\'activité sur le site comme le changement de mot de passe)',
+		'L\'adresse email de l\'administrateur du site est actuellement : <strong>' . esc_html( $admin_email ) . '</strong>. L\'administrateur reçoit des emails sur l\'activité sur le site comme le changement de mot de passe)',
 		admin_url( 'options-general.php' )
 	);
 
@@ -456,7 +478,7 @@ function amapress_get_state() {
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
-		'Mail de bienvenue/demande de récupération mot de passe',
+		'Email de bienvenue/demande de récupération mot de passe',
 		'Ajoutez et personnalisez le mail de bienvenue que chaque amapien reçoit à la création de son compte ou lorsqu\'il demande à récupérer son mot de passe',
 		admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' )
 	);
@@ -483,10 +505,10 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	}
 	$state['05_config'][] = amapress_get_check_state(
 		$use_mail_queue ? 'success' : 'warning',
-		'Configuration de la file d\'envoi de mails',
-		'<p>La plupart des hébergeurs ont une limite d\'envoi de mails par heure. Actuellement le site est configuré pour envoyer au maximum ' . $nb_mails . ' emails par heure.
+		'Configuration de la file d\'envoi des emails sortants',
+		'<p>La plupart des hébergeurs ont une limite d\'envoi des emails sortants par heure. Actuellement le site est configuré pour envoyer au maximum ' . $nb_mails . ' emails par heure.
 <br/>Par défaut, Amapress met les mails dans une file d\'attente avant de les envoyer pour éviter les blocages et rejets de l\'hébergeur. 
-<br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des mails envoyés par le site pour traçage des activités (pour une durée configurable).</p>',
+<br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des emails envoyés par le site pour traçage des activités (pour une durée configurable).</p>',
 		admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' )
 	);
 
@@ -896,8 +918,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	if ( ! empty( $contrat_to_renew ) ) {
 		$state['15_posts'][] = amapress_get_check_state(
 			'error',
-			'Contrats à renouveller/clôturer',
-			'Les contrats suivants sont à renouveller/clôturer pour la saison suivante',
+			'Contrats à renouveler/clôturer',
+			'Les contrats suivants sont à renouveler/clôturer pour la saison suivante',
 			admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=renew' ),
 			implode( ', ', array_map( function ( $dn ) {
 				/** @var WP_Post $dn */
@@ -1407,7 +1429,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
 	);
-	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions' );
+	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',
@@ -1417,8 +1439,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Autres réglages de l\'assistant inscription en ligne',
-		'Vous pouvez y configurer les mails de confirmation ainsi que les messages de certaines étapes.',
+		'Vous pouvez y configurer les messages de certaines étapes.',
 		$assistant_conf_url
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Emails envoyés par l\'assistant inscription en ligne',
+		'Vous pouvez y configurer les mails de confirmation.',
+		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' )
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		isset( $needed_shortcodes['amapien-edit-infos'] ) ? 'warning' : 'success',

@@ -218,7 +218,7 @@ class Amapress_SudOuest_MailSystem extends Amapress_MailingSystem {
 			$body = $resp->getBody();
 			preg_match( '/id\="single_param.subject.name"\s+value="(?<desc>[^"]+)"/', $body, $m );
 			$list_info['desc'] = ( $m['desc'] );
-			preg_match( '/Messages?\s*\((?<waiting>\d+)\)/', $body, $m );
+			preg_match( '/Emails?\s*\((?<waiting>\d+)\)/', $body, $m );
 			$list_info['waiting'] = isset( $m['waiting'] ) ? intval( $m['waiting'] ) : 0;
 			preg_match( '/Abonnés\s*:\s*(?:\<span\>)?(?<members_count>\d+)/', $body, $m );
 			$list_info['members_count'] = isset( $m['members_count'] ) ? intval( $m['members_count'] ) : 0;

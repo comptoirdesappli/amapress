@@ -254,6 +254,12 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'l j M Y', $adh->getDate_fin() );
 				}
 			];
+			$ret['mention_speciale'] = [
+				'desc' => 'Champ Mention spéciale du contrat',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getContrat_instance()->getSpecialMention();
+				}
+			];
 			$ret['tous_referents']                   = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -330,6 +336,12 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getDisplayName();
 				}
 			];
+			$ret['adherent.type'] = [
+				'desc' => 'Type d\'adhérent (Principal, Co-adhérent...)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getAdherentTypeDisplay();
+				}
+			];
 			$ret['adherent.nom']                     = [
 				'desc' => 'Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -358,6 +370,19 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => 'Email adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getEmail();
+				}
+			];
+			$ret['coadherents.noms'] = [
+				'desc' => 'Liste des co-adhérents (Prénom, Nom)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList();
+
+				}
+			];
+			$ret['coadherents.contacts'] = [
+				'desc' => 'Liste des co-adhérents (Prénom, Nom, Emails, Tel)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList( true );
 				}
 			];
 			$ret['coadherent']                       = [
@@ -1428,7 +1453,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$key = "AmapressAdhesion::getUserActiveAdhesions_{$date}_{$user_id}_{$abo_key}_{$include_futur}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$user_ids = AmapressContrats::get_related_users( $user_id, $allow_not_logged );
+			$user_ids = AmapressContrats::get_related_users( $user_id, $allow_not_logged, $date );
 			if ( empty( $user_ids ) ) {
 				return [];
 			}
@@ -1669,7 +1694,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		], $attachments );
 	}
 
-	public function sendReferentsNotificationMail( $send_contrat = false ) {
+	public function sendReferentsNotificationMail( $send_contrat = false, $notify_email = null ) {
 		$inscription = $this;
 		$amapien     = $inscription->getAdherent();
 
@@ -1692,12 +1717,14 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$attachments[] = $doc_file;
 			}
 		}
+		$headers = [ 'Reply-To: ' . implode( ',', $inscription->getAdherent()->getAllEmails() ) ];
 
 		amapress_wp_mail(
 			$referents,
 			$mail_subject,
 			$mail_content,
-			'', $attachments
+			$headers, $attachments,
+			$notify_email
 		);
 	}
 

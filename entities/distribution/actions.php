@@ -238,13 +238,13 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$liste     = array();
 	$adhesions = array_group_by(
 		$all_adhs,
-		function ( $adh ) {
+		function ( $adh ) use ( $date ) {
 			/** @var AmapressAdhesion $adh */
 			if ( ! $adh->getAdherentId() ) {
 				return '';
 			}
 			$user     = $adh->getAdherent()->getUser();
-			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID ) );
+			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date ) );
 
 			return implode( '_', $user_ids );
 		} );
@@ -477,7 +477,7 @@ line-height: 1.1;
 		}
 		$mailto = $dist->getMailtoResponsables();
 		if ( ! empty( $mailto ) ) {
-			echo '<a href="' . $mailto . '" class="btn btn-default">Mail aux responsables</a>';
+			echo '<a href="' . $mailto . '" class="btn btn-default">Email aux responsables</a>';
 		}
 		$smsto = $dist->getSMStoResponsables();
 		if ( ! empty( $smsto ) ) {
@@ -485,7 +485,7 @@ line-height: 1.1;
 		}
 		$mailto = $dist->getMailtoAmapiens();
 		if ( ! empty( $mailto ) ) {
-			echo '<a href="' . $mailto . '" class="btn btn-default">Mail aux amapiens</a>';
+			echo '<a href="' . $mailto . '" class="btn btn-default">Email aux amapiens</a>';
 		}
 		$smsto = $dist->getSMStoAmapiens();
 		if ( ! empty( $smsto ) ) {

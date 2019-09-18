@@ -251,7 +251,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
-			return preg_replace( '/(?:\s+-\s+)(\d{5})\s+([^,]+),\s*\1\s+\2/', ', $1 $2',
+			return preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2',
 				sprintf( '%s, %s %s', $this->getAdresse(), $cp, $v ) );
 		} else {
 			return $this->getAdresse();
@@ -263,7 +263,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
-			return preg_replace( '/(?:\s+-\s+)(\d{5})\s+([^,]+)\<br\/\>\s*\1\s+\2/', ', $1 $2',
+			return preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:\<br\/\>\s*\1\s+\2)+/i', ', $1 $2',
 				sprintf( '%s<br/>%s %s', $this->getAdresse(), $cp, $v ) );
 		} else {
 			return $this->getAdresse();
@@ -571,7 +571,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 	}
 
-	public function addCoadherent( $coadhrent_id ) {
+	public function addCoadherent( $coadhrent_id, $notify_email = null ) {
 		$this->ensure_init();
 
 		if ( empty( $coadhrent_id ) ) {
@@ -591,6 +591,19 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$this->custom[ 'amapress_user_co-adherent-' . $id ] = $coadhrent_id;
 				update_user_meta( $this->ID, 'amapress_user_co-adherent-' . $id, $coadhrent_id );
 				self::$coadherents = null;
+				$this->adh_type    = null;
+
+				if ( ! empty( $notify_email ) ) {
+					$coadh           = AmapressUser::getBy( $coadhrent_id );
+					$this_edit_link  = Amapress::makeLink( $this->getEditLink(), $this->getDisplayName() );
+					$coadh_edit_link = $coadh ? Amapress::makeLink( $coadh->getEditLink(), $coadh->getDisplayName() ) : '';
+					amapress_wp_mail(
+						$notify_email,
+						'Préinscription - Association co-adhérent - ' . $this->getDisplayName(),
+						amapress_replace_mail_placeholders(
+							wpautop( "Bonjour,\n\nL\'amapien $this_edit_link s\'est associé à un co-adhérent $coadh_edit_link\n\n%%site_name%%" ), $this )
+					);
+				}
 
 				return true;
 			}
@@ -599,7 +612,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return false;
 	}
 
-	public function removeCoadherent( $coadhrent_id ) {
+	public function removeCoadherent( $coadhrent_id, $notify_email = null ) {
 		$this->ensure_init();
 
 		if ( empty( $coadhrent_id ) ) {
@@ -612,6 +625,19 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 					$this->custom[ 'amapress_user_co-adherent-' . $id ] = $coadhrent_id;
 					delete_user_meta( $this->ID, 'amapress_user_co-adherent-' . $id );
 					self::$coadherents = null;
+					$this->adh_type    = null;
+
+					if ( ! empty( $notify_email ) ) {
+						$coadh           = AmapressUser::getBy( $coadhrent_id );
+						$this_edit_link  = Amapress::makeLink( $this->getEditLink(), $this->getDisplayName() );
+						$coadh_edit_link = $coadh ? Amapress::makeLink( $coadh->getEditLink(), $coadh->getDisplayName() ) : '';
+						amapress_wp_mail(
+							$notify_email,
+							'Préinscription - Déassociation co-adhérent - ' . $this->getDisplayName(),
+							amapress_replace_mail_placeholders(
+								wpautop( "Bonjour,\n\nL\'amapien $this_edit_link s\'est déassocié de son co-adhérent $coadh_edit_link\n\n%%site_name%%" ), $this )
+						);
+					}
 
 					return true;
 				}
@@ -886,7 +912,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function getContacts() {
-		$mailto = Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par mail' );
+		$mailto = Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par email' );
 		$telto  = $this->getTelTo( 'both', false, false, ', ' );
 		$smsto  = $this->getTelTo( true, true, false, ', ' );
 
@@ -907,5 +933,140 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 
 		return $emails;
+	}
+
+	public
+	function getAllDirectlyLinkedCoAdherents() {
+		$ret    = [];
+		$co_adh = $this->getCoAdherent1();
+		if ( $co_adh ) {
+			$ret[] = $co_adh;
+		}
+		$co_adh = $this->getCoAdherent2();
+		if ( $co_adh ) {
+			$ret[] = $co_adh;
+		}
+		$co_adh = $this->getCoAdherent3();
+		if ( $co_adh ) {
+			$ret[] = $co_adh;
+		}
+
+		return $ret;
+	}
+
+	private $adh_type = null;
+
+	public function getAdherentType() {
+		if ( empty( $this->adh_type ) ) {
+			$users_ids                 = AmapressContrats::get_related_users( $this->ID, true );
+			$others_linked_users_count = 0;
+			$this_linked_users_count   = 0;
+			foreach ( $users_ids as $user_id ) {
+				$user         = AmapressUser::getBy( $user_id );
+				$linked_users = $user->getAllDirectlyLinkedCoAdherents();
+				if ( $user->ID == $this->ID ) {
+					$this_linked_users_count += ( ! empty( $linked_users ) ? 1 : 0 );
+				} else {
+					$others_linked_users_count += ( ! empty( $linked_users ) ? 1 : 0 );
+				}
+			}
+
+			if ( 0 == $this_linked_users_count && 0 == $others_linked_users_count ) {
+				$this->adh_type = 'alone';
+			} else if ( 0 <= $this_linked_users_count && 0 == $others_linked_users_count ) {
+				$this->adh_type = 'main';
+			} else if ( 0 == $this_linked_users_count && 0 <= $others_linked_users_count ) {
+				$this->adh_type = 'co';
+			} else {
+				Amapress::setFilterForReferent( false );
+				$adhs = AmapressAdhesion::getUserActiveAdhesions( $this->ID, null, null, false, true );
+				Amapress::setFilterForReferent( true );
+				$adh_user_ids = [];
+				foreach ( $adhs as $adh ) {
+					$adh_user_ids[] = $adh->getAdherentId();
+				}
+				$adh_user_ids = array_unique( $adh_user_ids );
+				if ( 1 == count( $adh_user_ids ) && in_array( $this->ID, $adh_user_ids ) ) {
+					$this->adh_type = 'main';
+				} else {
+					$this->adh_type = 'mix';
+				}
+			}
+		}
+
+		return $this->adh_type;
+	}
+
+	public function getAdherentTypeDisplay() {
+		switch ( $this->getAdherentType() ) {
+			case 'alone':
+				return 'Adhérent principal (sans co-adhérent)';
+			case 'main':
+				return 'Adhérent principal (avec co-adhérent)';
+			case 'co':
+				return 'Co-adhérent';
+			case 'mix':
+				return 'Principal et co-adhérent';
+			default:
+				return 'Inconnu';
+		}
+	}
+
+	public function isPrincipalAdherent() {
+		$adh_type = $this->getAdherentType();
+
+		return 'alone' == $adh_type || 'main' == $adh_type;
+	}
+
+	public function isCoAdherent() {
+		$adh_type = $this->getAdherentType();
+
+		return 'co' == $adh_type;
+	}
+
+	public function getCoAdherentsList( $with_contacts = false, $include_me = false ) {
+		$users = AmapressContrats::get_related_users( $this->ID, true );
+		$res   = [];
+		foreach ( $users as $user_id ) {
+			if ( ! $include_me && $user_id == $this->ID ) {
+				continue;
+			}
+
+			$amapien = AmapressUser::getBy( $user_id );
+			if ( $with_contacts ) {
+				$res[] = $amapien->getDisplayName() . ' (' . $amapien->getContacts() . ')';
+			} else {
+				$res[] = $amapien->getDisplayName();
+			}
+		}
+
+		if ( empty( $res ) ) {
+			return 'Aucun';
+		} else {
+			return implode( ', ', $res );
+		}
+	}
+
+	public function getPrincipalAdherentList( $with_contacts = false, $include_me = false ) {
+		$users = $this->getPrincipalUserIds();
+		$res   = [];
+		foreach ( $users as $user_id ) {
+			if ( ! $include_me && $user_id == $this->ID ) {
+				continue;
+			}
+
+			$amapien = AmapressUser::getBy( $user_id );
+			if ( $with_contacts ) {
+				$res[] = $amapien->getDisplayName() . ' (' . $amapien->getContacts() . ')';
+			} else {
+				$res[] = $amapien->getDisplayName();
+			}
+		}
+
+		if ( empty( $res ) ) {
+			return 'Aucun';
+		} else {
+			return implode( ', ', $res );
+		}
 	}
 }

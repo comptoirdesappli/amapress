@@ -117,7 +117,10 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 		return array_filter( [
 			$this->getReferentId( $lieu_id ),
 			$this->getReferent2Id( $lieu_id ),
-			$this->getReferent3Id( $lieu_id )
+			$this->getReferent3Id( $lieu_id ),
+			$this->getReferentId( null ),
+			$this->getReferent2Id( null ),
+			$this->getReferent3Id( null )
 		], function ( $i ) {
 			return ! empty( $i );
 		} );

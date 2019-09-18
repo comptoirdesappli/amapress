@@ -97,9 +97,9 @@ function amapress_register_entities_mailinglist( $entities ) {
 			),
 			'waiting'                => array(
 				'group'   => 'Modération',
-				'name'    => amapress__( 'Mails en attente modération' ),
+				'name'    => amapress__( 'Emails en attente modération' ),
 				'type'    => 'custom',
-				'desc'    => 'Liste du ou des mails à valider.',
+				'desc'    => 'Liste du ou des emails à valider.',
 				'column'  => 'amapress_get_mailinglist_waiting',
 				'custom'  => 'amapress_get_mailinglist_waiting_list',
 				'show_on' => 'edit-only',
@@ -134,7 +134,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'group'   => 'Membres',
 				'name'    => amapress__( 'Taux d\'erreur' ),
 				'type'    => 'custom',
-				'desc'    => 'Taux d\erreur lors de l\'envoi de mails par la liste',
+				'desc'    => 'Taux d\erreur lors de l\'envoi d\{emails par la liste',
 				'custom'  => 'amapress_get_mailinglist_bounce_rate',
 				'column'  => 'amapress_get_mailinglist_bounce_rate',
 				'show_on' => 'edit-only',
@@ -432,9 +432,9 @@ function amapress_get_mailinglist_waiting_list( $mailing_list_id ) {
 	if ( ! $ml_obj->getSystem()->handleMessagesModeration() ) {
 		$link = $ml_obj->getModerationLink();
 		if ( ! empty( $link ) ) {
-			return "<a href='$link' target='_blank'>Modérer les messages en attente</a>";
+			return "<a href='$link' target='_blank'>Modérer les emails en attente</a>";
 		} else {
-			return '<p>La modération des messages n\'est pas gérée pour ce système de listes de diffusion</p>';
+			return '<p>La modération des emails n\'est pas gérée pour ce système de listes de diffusion</p>';
 		}
 	} else {
 		$columns = array(
