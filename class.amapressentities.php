@@ -3450,6 +3450,53 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
+						'Wiki'                                          => array(
+							'id'      => 'wiki',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'type' => 'note',
+									'bare' => true,
+									'desc' => '<p>Retrouvez l\'aide d\'Amapress sur notre <a href="https://wiki.amapress.fr/accueil" target="_blank">wiki</a></p>',
+								),
+							)
+						),
+						'Shortcodes'                                    => array(
+							'id'      => 'shortcodes',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'     => 'shortcodes_cust',
+									'name'   => 'Shortcodes',
+									'type'   => 'custom',
+									'custom' => function () {
+										$ret = '<table class="placeholders-help">';
+										$ret .= '<thead><tr><th>Shortcode</th><th>Description</th></tr></thead>';
+										$ret .= '<tbody>';
+										global $all_amapress_shortcodes_descs;
+										ksort( $all_amapress_shortcodes_descs );
+										foreach ( $all_amapress_shortcodes_descs as $k => $desc ) {
+											if ( empty( $desc['desc'] ) ) {
+												continue;
+											}
+											$args = '';
+											if ( ! empty( $desc['args'] ) ) {
+												$args = '<ul><li>' . implode( '</li><li>',
+														array_map( function ( $kk, $vv ) {
+															return '<strong>' . esc_html( $kk ) . '</strong>: ' . ( strip_tags( $vv ) != $vv ? $vv : esc_html( $vv ) );
+														}, array_keys( $desc['args'] ), array_values( $desc['args'] ) ) ) . '</li></ul>';
+											}
+											$ret .= '<tr><td>' . esc_html( $k ) . '</td><td>' . esc_html( $desc['desc'] ) . $args . '</td></tr>';
+										}
+
+										$ret .= '</tbody>';
+										$ret .= '</table>';
+
+										return $ret;
+									}
+								)
+							)
+						),
 						'Placeholders - contrat vierge'                 => array(
 							'id'      => 'paper_contrat_placeholders',
 							'desc'    => '',
@@ -3506,44 +3553,9 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								)
 							)
 						),
-						'Shortcodes'                                    => array(
-							'id'      => 'shortcodes',
-							'desc'    => '',
-							'options' => array(
-								array(
-									'id'     => 'shortcodes_cust',
-									'name'   => 'Shortcodes',
-									'type'   => 'custom',
-									'custom' => function () {
-										$ret = '<table class="placeholders-help">';
-										$ret .= '<thead><tr><th>Shortcode</th><th>Description</th></tr></thead>';
-										$ret .= '<tbody>';
-										global $all_amapress_shortcodes_descs;
-										ksort( $all_amapress_shortcodes_descs );
-										foreach ( $all_amapress_shortcodes_descs as $k => $desc ) {
-											if ( empty( $desc['desc'] ) ) {
-												continue;
-											}
-											$args = '';
-											if ( ! empty( $desc['args'] ) ) {
-												$args = '<ul><li>' . implode( '</li><li>',
-														array_map( function ( $kk, $vv ) {
-															return '<strong>' . esc_html( $kk ) . '</strong>: ' . ( strip_tags( $vv ) != $vv ? $vv : esc_html( $vv ) );
-														}, array_keys( $desc['args'] ), array_values( $desc['args'] ) ) ) . '</li></ul>';
-											}
-											$ret .= '<tr><td>' . esc_html( $k ) . '</td><td>' . esc_html( $desc['desc'] ) . $args . '</td></tr>';
-										}
-
-										$ret .= '</tbody>';
-										$ret .= '</table>';
-
-										return $ret;
-									}
-								)
-							)
-						),
 					),
-					'options'  => [],
+					'options'  => [
+					],
 					'subpages' => array(),
 				),
 				array(

@@ -941,6 +941,13 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 				]
 			),
+			array(
+				'id'         => 'amapress_help',
+				'title'      => 'Aide',
+				'capability' => 'read',
+				'icon'       => 'dashicons-sos',
+				'href'       => admin_url( 'admin.php?page=amapress_help_page&tab=wiki' ),
+			),
 		)
 	);
 
