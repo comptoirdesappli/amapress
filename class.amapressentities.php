@@ -2162,7 +2162,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'      => 'welcome_mail',
 									'name'    => 'Contenu du mail d\'enregistrement',
 									'type'    => 'editor',
-									'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
+									'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. (Vous pouvez également utiliser votre email : %%dest:mail%%)\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
 									'desc'    => Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
 //                                            'capability' => 'manage_amapress',
 								),
