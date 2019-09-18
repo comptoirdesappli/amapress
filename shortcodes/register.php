@@ -35,6 +35,30 @@ add_action( 'wp_ajax_get_years_from', function () {
 
 add_filter( 'amapress_init', 'amapress_register_shortcodes' );
 function amapress_register_shortcodes() {
+	if ( 'active' == amapress_is_plugin_active( 'latest-post-shortcode' ) ) {
+		amapress_register_shortcode( 'amapress-latest-posts', function ( $atts ) {
+			$atts = shortcode_atts(
+				[
+					'limit'    => '5',
+					'chrlimit' => '120',
+				],
+				$atts
+			);
+
+			return do_shortcode( '[latest-selected-content 
+		limit=' . $atts['limit'] . ' display="title,date,excerpt-small" 
+		chrlimit=' . $atts['chrlimit'] . ' url="yes_blank" image="thumbnail" 
+		elements="3" type="post" status="publish" 
+		orderby="dateD" show_extra="date_diff"]' );
+		},
+			[
+				'desc' => 'Affiche une grille des articles récents',
+				'args' => [
+					'limit'    => '(5 par défaut) Nombre maximum d\'articles à afficher',
+					'chrlimit' => '(120 par défaut) Nombre maximum de caractères du résumé de chaque article à afficher',
+				]
+			] );
+	}
 	amapress_register_shortcode( 'years-since', function ( $atts ) {
 		$atts = shortcode_atts(
 			[ 'year' => '' ],
@@ -277,22 +301,22 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les inscriptions en ligne',
 			'args' => [
-				'key'                  => 'Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne',
-				'filter_multi_contrat' => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'            => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
-				'check_principal'      => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif',
-				'adhesion'             => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
-				'send_referents'       => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
-				'send_tresoriers'      => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux trésoriers',
-				'edit_names'                    => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
-				'only_contrats'                 => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un contrat donné avec une autre clé',
-				'shorturl'                      => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
-				'adhesion_shift_weeks'          => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
-				'max_coadherents'               => '(3 par défaut) Nombre maximum de co-adhérents',
-				'mob_phone_required'            => '(false par défaut) Téléphones (mobiles) requis',
-				'allow_remove_coadhs'           => '(false par défaut) Autoriser la suppression des co-adhérents',
-				'track_no_renews'               => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
-				'track_no_renews_email'         => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'key'                   => 'Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne',
+				'filter_multi_contrat'  => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
+				'agreement'             => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'check_principal'       => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif',
+				'adhesion'              => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
+				'send_referents'        => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
+				'send_tresoriers'       => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux trésoriers',
+				'edit_names'            => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'only_contrats'         => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un contrat donné avec une autre clé',
+				'shorturl'              => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+				'adhesion_shift_weeks'  => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
+				'max_coadherents'       => '(3 par défaut) Nombre maximum de co-adhérents',
+				'mob_phone_required'    => '(false par défaut) Téléphones (mobiles) requis',
+				'allow_remove_coadhs'   => '(false par défaut) Autoriser la suppression des co-adhérents',
+				'track_no_renews'       => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email' => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
 				'notify_email'                  => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
