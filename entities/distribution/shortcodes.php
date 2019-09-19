@@ -592,7 +592,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter une personne</a></a></p>';
 						}
 
-						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">M\'inscrire</button>';
+						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
 							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {

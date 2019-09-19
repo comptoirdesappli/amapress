@@ -2225,14 +2225,19 @@ class Amapress {
 			if ( in_array( "u$id", $generated_ids ) ) {
 				return '';
 			}
-			$generated_ids[]           = "u$id";
-			$user                      = get_user_by( 'ID', $id );
+			$generated_ids[] = "u$id";
+			$user            = get_user_by( 'ID', $id );
+			if ( ! $user ) {
+				return '';
+			}
 			$user_meta                 = array_map( function ( $v ) {
 				if ( is_array( $v ) ) {
 					if ( count( $v ) > 1 ) {
 						return $v;
-					} else {
+					} else if ( isset( $v[0] ) ) {
 						return $v[0];
+					} else {
+						return array_shift( $v );
 					}
 				} else {
 					return $v;
@@ -2313,7 +2318,9 @@ class Amapress {
 
 			$generated_ids[] = "p$id";
 			$post            = get_post( $id, ARRAY_A );
-			$post_meta       = get_post_custom( $id );
+			if ( ! is_array( $post ) )
+				return '';
+			$post_meta = get_post_custom( $id );
 			if ( empty( $post_meta ) ) {
 				$post_meta = array();
 			}
@@ -2335,8 +2342,8 @@ class Amapress {
 				if ( ( ! in_array( $k, $field_names ) && strpos( $k, 'amapress_' ) !== 0 ) || empty( $v ) ) {
 					continue;
 				}
-				if ( 'select-users' == $fields[ $k ]['type'] || 'select-posts' == $fields[ $k ]['type']
-				     || 'multicheck-users' == $fields[ $k ]['type'] || 'multicheck-posts' == $fields[ $k ]['type'] ) {
+				if ( isset( $fields[ $k ] ) && ( 'select-users' == $fields[ $k ]['type'] || 'select-posts' == $fields[ $k ]['type']
+				                                 || 'multicheck-users' == $fields[ $k ]['type'] || 'multicheck-posts' == $fields[ $k ]['type'] ) ) {
 					$vs = [];
 					foreach ( Amapress::get_array( $v ) as $sub_id ) {
 						$ret = self::generate_test( intval( $sub_id ),
@@ -2354,7 +2361,7 @@ class Amapress {
 					} else {
 						$v = $vs;
 					}
-				} else if ( '_thumbnail_id' == $k || 'upload' == $fields[ $k ]['type'] ) {
+				} else if ( '_thumbnail_id' == $k || isset( $fields[ $k ] ) && ( 'upload' == $fields[ $k ]['type'] ) ) {
 					if ( is_array( $v ) ) {
 						$v = array_shift( $v );
 					}
@@ -2378,13 +2385,13 @@ class Amapress {
 					} else {
 						$v = 0;
 					}
-				} else if ( 'multidate' == $fields[ $k ]['type'] ) {
+				} else if ( isset( $fields[ $k ] ) && 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) use ( $relative_time ) {
 							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';
 						}, array_map(
 							'TitanEntity::to_date',
 							TitanEntity::get_array( $v ) ) ) ) . '])¤';
-				} else if ( 'date' == $fields[ $k ]['type'] ) {
+				} else if ( isset( $fields[ $k ] ) && 'date' == $fields[ $k ]['type'] ) {
 					$v = 'now+' . ( intval( $v ) - Amapress::start_of_day( $relative_time ) );
 				}
 				$filtered_post_meta[ $k ] = $v;
@@ -2636,14 +2643,14 @@ class Amapress {
 	/**
 	 * Disable the quick edit row action
 	 *
+	 * @param array $actions list of available row actions
+	 *
+	 * @return array           the new list
+	 * @since 2.0.0
+	 *
 	 * @package WP Idea Stream
 	 * @subpackage admin/admin
 	 *
-	 * @since 2.0.0
-	 *
-	 * @param  array $actions list of available row actions
-	 *
-	 * @return array           the new list
 	 */
 	public static function amapress_row_actions( $actions = array(), $post = null ) {
 		$types = AmapressEntities::getPostTypes();
@@ -2667,7 +2674,7 @@ class Amapress {
 		 * want to test, just return true to this filter
 		 * eg: add_filter( 'wp_idea_stream_admin_ideas_inline_edit', '__return_true' );
 		 *
-		 * @param  bool true to allow inline edit, false otherwise (default is false)
+		 * @param bool true to allow inline edit, false otherwise (default is false)
 		 */
 		$keep_inline_edit = apply_filters( "amapress_admin_{$pt}_inline_edit",
 			isset( $type['quick_edit'] ) && $type['quick_edit'] === true );
