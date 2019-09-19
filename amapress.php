@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.86.30
+Version: 0.86.40
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.86.30' );
+define( 'AMAPRESS_VERSION', '0.86.40' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1453,4 +1453,118 @@ add_action( 'admin_init', function () {
 				'error', false, false );
 		}
 	}
+} );
+
+/**
+ * Get the URL of an admin menu item
+ *
+ * @param string $menu_item_file admin menu item file
+ *          - can be obtained via array key #2 for any item in the global $menu or $submenu array
+ * @param boolean $submenu_as_parent
+ *
+ * @return  string URL of admin menu item, NULL if the menu item file can't be found in $menu or $submenu
+ */
+function get_admin_menu_item_title( $menu_item_file, $submenu_as_parent = true ) {
+	global $menu, $submenu, $self, $parent_file, $submenu_file, $plugin_page, $typenow;
+
+	$admin_is_parent = false;
+	$item            = '';
+	$submenu_item    = '';
+	$title           = '';
+
+	// 1. Check if top-level menu item
+	foreach ( $menu as $key => $menu_item ) {
+		if ( array_keys( $menu_item, $menu_item_file, true ) ) {
+			$item = $menu[ $key ];
+		}
+
+		if ( $submenu_as_parent && ! empty( $submenu_item ) ) {
+			$menu_hook = get_plugin_page_hook( $submenu_item[2], $item[2] );
+			$menu_file = $submenu_item[2];
+
+			if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
+				$menu_file = substr( $menu_file, 0, $pos );
+			}
+			if ( ! empty( $menu_hook ) || ( ( 'index.php' != $submenu_item[2] ) && file_exists( WP_PLUGIN_DIR . "/$menu_file" ) && ! file_exists( ABSPATH . "/wp-admin/$menu_file" ) ) ) {
+				$admin_is_parent = true;
+				$title           = $submenu_item[0];
+			} else {
+				$title = $submenu_item[0];
+			}
+		} elseif ( ! empty( $item[2] ) && current_user_can( $item[1] ) ) {
+			$menu_hook = get_plugin_page_hook( $item[2], 'admin.php' );
+			$menu_file = $item[2];
+
+			if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
+				$menu_file = substr( $menu_file, 0, $pos );
+			}
+			if ( ! empty( $menu_hook ) || ( ( 'index.php' != $item[2] ) && file_exists( WP_PLUGIN_DIR . "/$menu_file" ) && ! file_exists( ABSPATH . "/wp-admin/$menu_file" ) ) ) {
+				$admin_is_parent = true;
+				$title           = $item[0];
+			} else {
+				$title = $item[0];
+			}
+		}
+	}
+
+	// 2. Check if sub-level menu item
+	if ( ! $item ) {
+		$sub_item = '';
+		foreach ( $submenu as $top_file => $submenu_items ) {
+
+			// Reindex $submenu_items
+			$submenu_items = array_values( $submenu_items );
+
+			foreach ( $submenu_items as $key => $submenu_item ) {
+				if ( array_keys( $submenu_item, $menu_item_file ) ) {
+					$sub_item = $submenu_items[ $key ];
+					break;
+				}
+			}
+
+			if ( ! empty( $sub_item ) ) {
+				break;
+			}
+		}
+
+		// Get top-level parent item
+		foreach ( $menu as $key => $menu_item ) {
+			if ( array_keys( $menu_item, $top_file, true ) ) {
+				$item = $menu[ $key ];
+				break;
+			}
+		}
+
+		// If the $menu_item_file parameter doesn't match any menu item, return false
+		if ( ! $sub_item ) {
+			return false;
+		}
+
+		// Get URL
+		$menu_file = $item[2];
+
+		if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
+			$menu_file = substr( $menu_file, 0, $pos );
+		}
+
+		// Handle current for post_type=post|page|foo pages, which won't match $self.
+		$self_type = ! empty( $typenow ) ? $self . '?post_type=' . $typenow : 'nothing';
+		$menu_hook = get_plugin_page_hook( $sub_item[2], $item[2] );
+
+		$sub_file = $sub_item[2];
+		if ( false !== ( $pos = strpos( $sub_file, '?' ) ) ) {
+			$sub_file = substr( $sub_file, 0, $pos );
+		}
+
+		$title = $sub_item[0];
+	}
+
+	return strip_tags( $title );
+}
+
+add_action( 'admin_footer', function () {
+	global $parent_file, $submenu_file;
+	$title    = get_admin_menu_item_title( $parent_file );
+	$subtitle = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
+	echo '<p style="position: absolute; left: 40%; bottom: 0"><strong>' . Amapress::makeLink( '#', 'Tableau de bord>' . $title . ( ! empty( $subtitle ) ? '>' . $subtitle : '' ) ) . '</strong></p>';
 } );
