@@ -253,7 +253,7 @@ function amapress_get_state() {
 		'warning' );
 
 	$permalink_structure = get_option( 'permalink_structure' );
-	if ( defined( 'FREE_PAGES_PERSO' ) ) {
+	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		$state['05_config'][] = amapress_get_check_state(
 			empty( $permalink_structure )
 			|| ! in_array( $permalink_structure,
@@ -1727,7 +1727,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		echo '<p><a href="' . esc_attr( add_query_arg( 'phpinfo', 'T' ) ) . '" target="_blank">Afficher PHP Infos</a></p>';
 	}
 
-	if ( defined( 'FREE_PAGES_PERSO' ) ) {
+	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		echo '<p><strong>Fonctionnement Free Pages Perso: actif</strong></p>';
 	}
 	if ( defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) ) {

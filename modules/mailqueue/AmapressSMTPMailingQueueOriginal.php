@@ -24,10 +24,6 @@ class AmapressSMTPMailingQueueOriginal {
 	 * The default charset is based on the charset used on the blog. The charset can
 	 * be set using the 'wp_mail_charset' filter.
 	 *
-	 * @since 1.2.1
-	 *
-	 * @global PHPMailer $phpmailer
-	 *
 	 * @param string|array $to Array or comma-separated list of email addresses to send message.
 	 * @param string $subject Email subject
 	 * @param string $message Message contents
@@ -35,6 +31,10 @@ class AmapressSMTPMailingQueueOriginal {
 	 * @param string|array $attachments Optional. Files to attach.
 	 *
 	 * @return array if empty, no error
+	 * @since 1.2.1
+	 *
+	 * @global PHPMailer $phpmailer
+	 *
 	 */
 	public static function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
 		$errors = array();
@@ -43,10 +43,11 @@ class AmapressSMTPMailingQueueOriginal {
 		/**
 		 * Filter the wp_mail() arguments.
 		 *
-		 * @since 2.2.0
-		 *
 		 * @param array $args A compacted array of wp_mail() arguments, including the "to" email,
 		 *                    subject, message, headers, and attachments values.
+		 *
+		 * @since 2.2.0
+		 *
 		 */
 		$atts = apply_filters( 'wp_mail', compact( 'to', 'subject', 'message', 'headers', 'attachments' ) );
 
@@ -206,18 +207,20 @@ class AmapressSMTPMailingQueueOriginal {
 			/**
 			 * Filter the email address to send from.
 			 *
+			 * @param string $from_email Email address to send from.
+			 *
 			 * @since 2.2.0
 			 *
-			 * @param string $from_email Email address to send from.
 			 */
 			$phpmailer->From = apply_filters( 'wp_mail_from', $from_email );
 
 			/**
 			 * Filter the name to associate with the "from" email address.
 			 *
+			 * @param string $from_name Name associated with the "from" email address.
+			 *
 			 * @since 2.3.0
 			 *
-			 * @param string $from_name Name associated with the "from" email address.
 			 */
 			$phpmailer->FromName = apply_filters( 'wp_mail_from_name', $from_name );
 		} else {
@@ -322,9 +325,10 @@ class AmapressSMTPMailingQueueOriginal {
 		/**
 		 * Filter the wp_mail() content type.
 		 *
+		 * @param string $content_type Default wp_mail() content type.
+		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $content_type Default wp_mail() content type.
 		 */
 		$content_type = apply_filters( 'wp_mail_content_type', $content_type );
 
@@ -333,7 +337,7 @@ class AmapressSMTPMailingQueueOriginal {
 		// Set whether it's plaintext, depending on $content_type
 		if ( 'text/html' == $content_type ) {
 			if ( ( defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) && SEND_EMAILS_AS_PLAIN_TEXT )
-			     || ( defined( 'FREE_PAGES_PERSO' )
+			     || ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO
 			          && ( ! defined( 'SEND_EMAILS_AS_PLAIN_TEXT' ) || SEND_EMAILS_AS_PLAIN_TEXT ) ) ) {
 				$phpmailer->IsHTML( false );
 				$phpmailer->Body    = $phpmailer->html2text( $phpmailer->Body );
@@ -355,9 +359,10 @@ class AmapressSMTPMailingQueueOriginal {
 		/**
 		 * Filter the default wp_mail() charset.
 		 *
+		 * @param string $charset Default email charset.
+		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $charset Default email charset.
 		 */
 		$phpmailer->CharSet = apply_filters( 'wp_mail_charset', $charset );
 
@@ -400,15 +405,16 @@ class AmapressSMTPMailingQueueOriginal {
 		/**
 		 * Fires after PHPMailer is initialized.
 		 *
+		 * @param PHPMailer &$phpmailer The PHPMailer instance, passed by reference.
+		 *
 		 * @since 2.2.0
 		 *
-		 * @param PHPMailer &$phpmailer The PHPMailer instance, passed by reference.
 		 */
 		do_action_ref_array( 'phpmailer_init', array( &$phpmailer ) );
 
 		// Send!
 		try {
-			if ( defined( 'FREE_PAGES_PERSO' ) ) {
+			if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 				$start_time = time();
 				if ( ! $phpmailer->Send() ) {
 					$errors[] = $phpmailer->ErrorInfo;

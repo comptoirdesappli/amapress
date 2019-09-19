@@ -26,7 +26,7 @@ class AmapressSMTPMailingQueue {
 			load_plugin_textdomain( 'smtp-mailing-queue', false, 'smtp-mailing-queue/languages/' );
 		} );
 
-		if ( ! defined( 'FREE_PAGES_PERSO' ) ) {
+		if ( ! defined( 'FREE_PAGES_PERSO' ) || ! FREE_PAGES_PERSO ) {
 			add_action( 'amps_smq_start_queue', [ $this, 'processQueue' ] );
 
 			// Filter
@@ -107,7 +107,7 @@ class AmapressSMTPMailingQueue {
 		}
 
 		$use = Amapress::getOption( 'mail_queue_use_queue' );
-		if ( defined( 'FREE_PAGES_PERSO' ) ) {
+		if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 			$use = false;
 		}
 		if ( empty( $use ) || ! $use || apply_filters( 'amapress_mail_queue_bypass', false ) ) {

@@ -19,7 +19,7 @@ function amapress_add_rewrite_rules() {
 	amapress_add_page_if_not_exists( 'mes-infos-page', 'Mes infos', 'mes-infos', false, '[amapien-edit-infos]' );
 
 	$rewrite_root = '^';
-	if ( defined( 'AMAPRESS_LIMITED_HTACCESS' ) || defined( 'FREE_PAGES_PERSO' ) ) {
+	if ( ( defined( 'AMAPRESS_LIMITED_HTACCESS' ) && AMAPRESS_LIMITED_HTACCESS ) || ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) ) {
 		$rewrite_root = '^index.php/';
 	}
 
