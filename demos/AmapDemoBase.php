@@ -247,7 +247,7 @@ class AmapDemoBase {
 
 	}
 
-	public function createAMAP() {
+	public function createAMAP( $shift_weeks = 0 ) {
 		echo "<p>Starting import</p>";
 		self::startTransaction();
 
@@ -258,7 +258,7 @@ class AmapDemoBase {
 
 			self::cleanAttachments();
 
-			$this->onCreateAmap( amapress_time() );
+			$this->onCreateAmap( Amapress::add_a_week( amapress_time(), $shift_weeks ) );
 
 			echo "<p>Updating all post titles and slug</p>";
 			amapress_update_all_posts();
@@ -283,6 +283,7 @@ class AmapDemoBase {
 		$upload = wp_upload_bits( $bits_name, null, $bits );
 		if ( ! empty( $upload['error'] ) ) {
 			amapress_dump( $upload );
+
 			return false;
 		}
 		$file_path        = $upload['file'];
