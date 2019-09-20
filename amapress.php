@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.86.40
+Version: 0.86.45
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.86.40' );
+define( 'AMAPRESS_VERSION', '0.86.45' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1568,3 +1568,17 @@ add_action( 'admin_footer', function () {
 	$subtitle = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
 	echo '<p style="position: absolute; left: 40%; bottom: 0"><strong>' . Amapress::makeLink( '#', 'Tableau de bord>' . $title . ( ! empty( $subtitle ) ? '>' . $subtitle : '' ) ) . '</strong></p>';
 } );
+
+function amapress_force_no_private( $post ) {
+	if ( 'private' == $post['post_status']
+	     && ( AmapressAdhesion::INTERNAL_POST_TYPE == $post['post_type']
+	          || AmapressContrat_instance::INTERNAL_POST_TYPE == $post['post_type']
+	          || AmapressContrat::INTERNAL_POST_TYPE == $post['post_type']
+	          || AmapressProducteur::INTERNAL_POST_TYPE == $post['post_type'] ) ) {
+		$post['post_status'] = 'publish';
+	}
+
+	return $post;
+}
+
+add_filter( 'wp_insert_post_data', 'amapress_force_no_private' );
