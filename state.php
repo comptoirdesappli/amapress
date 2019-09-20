@@ -148,9 +148,9 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wp-maintenance', 'WP Maintenance',
 		'<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en construction et d\'éviter l\'affichage de contenu non finalisé.',
 		'info' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'aryo-activity-log', 'Activity Log',
-		'<strong>Optionnel</strong> : Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
-		'info' );
+//	$state['01_plugins'][] = amapress_check_plugin_install( 'aryo-activity-log', 'Activity Log',
+//		'<strong>Optionnel</strong> : Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
+//		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'error-log-monitor', 'Error Log Monitor',
 		'<strong>Optionnel</strong> : Permet de logger les erreurs PHP/Wordpress et de les envoyer automatiquement au support Amapress pour aider à son développement',
 		'info' );
