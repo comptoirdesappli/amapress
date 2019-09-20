@@ -108,6 +108,10 @@ function amapress_distribution_views() {
 		$ret, 'prevmonth',
 		"post_type=amps_distribution&amapress_date=prevmonth",
 		'Le mois précédent' );
+	amapress_add_view_button(
+		$ret, 'lastyear',
+		"post_type=amps_distribution&amapress_date=lastyear",
+		'L\'année précédente' );
 
 	if ( count( Amapress::get_lieu_ids() ) > 1 ) {
 		amapress_add_view_button(
