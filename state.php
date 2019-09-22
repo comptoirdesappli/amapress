@@ -47,6 +47,28 @@ function amapress_get_plugin_activate_link( $plugin_slug ) {
 	);
 }
 
+function amapress_get_plugin_desactivate_link( $plugin_slug ) {
+	$installed_plugins = array_keys( get_plugins() );
+	$installed_plugins = array_combine( array_map( function ( $v ) {
+		$vv = explode( '/', $v );
+
+		return $vv[0];
+	}, $installed_plugins ), array_values( $installed_plugins ) );
+	$plugin_slug       = isset( $installed_plugins[ $plugin_slug ] ) ? $installed_plugins[ $plugin_slug ] : $plugin_slug;
+	$action            = 'deactivate';
+
+	return wp_nonce_url(
+		add_query_arg(
+			array(
+				'action' => $action,
+				'plugin' => $plugin_slug
+			),
+			admin_url( 'plugins.php' )
+		),
+		'deactivate-plugin_' . $plugin_slug
+	);
+}
+
 function amapress_get_check_state( $state, $name, $message, $link, $values = null, $target_blank = true ) {
 	return array(
 		'state'        => $state,
@@ -95,6 +117,17 @@ function amapress_check_plugin_install( $plugin_slug, $plugin_name, $message_if_
 	);
 }
 
+function amapress_check_plugin_not_active( $plugin_slug, $plugin_name, $message_if_active, $active_level = 'warning' ) {
+	$is_active = amapress_is_plugin_active( $plugin_slug );
+
+	return amapress_get_check_state(
+		$is_active == 'active' ? $active_level : 'success',
+		$plugin_name . ( $is_active == 'active' ? ' (désactiver)' : '' ),
+		$message_if_active,
+		$is_active == 'active' ? amapress_get_plugin_desactivate_link( $plugin_slug ) : ''
+	);
+}
+
 function amapress_clean_state_transient() {
 	static $amapress_clean_state_transient = false;
 
@@ -122,7 +155,7 @@ function amapress_get_state() {
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'new-user-approve', 'New User Approve',
 		'<strong>Optionnel</strong> : Installer ce plugin si le paramètre « Création de compte sur le site » (Section 2 – configuration) est activé. Une inscription en ligne nécessitera une validation de l’utilisateur par un administrateur.',
-		Amapress::userCanRegister() ? 'error' : 'warning' );
+		Amapress::userCanRegister() ? 'error' : 'info' );
 //    $state['01_plugins'][] = amapress_check_plugin_install('smtp-mailing-queue', 'SMTP Mailing Queue',
 //        'Installer ce plugin permet d\'envoyer les mails aux adhérents au fur et à mesure pour éviter une blocage SMTP (par ex, lors des imports CSV)');
 	$state['01_plugins'][] = amapress_check_plugin_install( 'tinymce-advanced', 'TinyMCE Advanced',
@@ -148,9 +181,6 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wp-maintenance', 'WP Maintenance',
 		'<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en construction et d\'éviter l\'affichage de contenu non finalisé.',
 		'info' );
-//	$state['01_plugins'][] = amapress_check_plugin_install( 'aryo-activity-log', 'Activity Log',
-//		'<strong>Optionnel</strong> : Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
-//		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'error-log-monitor', 'Error Log Monitor',
 		'<strong>Optionnel</strong> : Permet de logger les erreurs PHP/Wordpress et de les envoyer automatiquement au support Amapress pour aider à son développement',
 		'info' );
@@ -184,6 +214,9 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'bbpress', 'bbPress',
 		'<strong>Optionnel</strong> : Permet de gérer un forum (avec toutes ses fonctionnalités) sur le site.',
 		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_not_active( 'aryo-activity-log', 'Activity Log',
+		'<strong>Non recommandé</strong> : ce plugin peut entrainer des lenteurs du Tableau de Bord et du site en général; Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
+		'warning' );
 
 	$state['05_config'] = array();
 
