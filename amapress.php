@@ -1563,10 +1563,60 @@ function get_admin_menu_item_title( $menu_item_file, $submenu_as_parent = true )
 }
 
 add_action( 'admin_footer', function () {
-	global $parent_file, $submenu_file;
-	$title    = get_admin_menu_item_title( $parent_file );
-	$subtitle = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
-	echo '<p style="position: absolute; left: 40%; bottom: 0"><strong>' . Amapress::makeLink( '#', 'Tableau de bord>' . $title . ( ! empty( $subtitle ) ? '>' . $subtitle : '' ) ) . '</strong></p>';
+	global $parent_file, $submenu_file, $pagenow;
+	$title     = get_admin_menu_item_title( $parent_file );
+	$subtitle  = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
+	$tab_title = '';
+	if ( 'admin.php' == $pagenow && ! empty( $_GET['page'] ) && ! empty( $_GET['tab'] ) ) {
+		$current_page_id = $_GET['page'];
+		$current_tab_id  = stripslashes( $_GET['tab'] );
+		foreach ( AmapressEntities::getMenu() as $item ) {
+			if ( isset( $item['id'] ) && $current_page_id == $item['id'] ) {
+				if ( ! empty( $item['tabs'] ) && is_array( $item['tabs'] ) ) {
+					foreach ( $item['tabs'] as $tab_name => $tab ) {
+						if ( isset( $tab['id'] ) ) {
+							$tab_id = $tab['id'];
+						} else {
+							$tab_id = $tab_name;
+						}
+
+						if ( $current_tab_id == $tab_id ) {
+							$tab_title = $tab_name;
+							break;
+						}
+					}
+				}
+			}
+			if ( ! empty( $item['subpages'] ) ) {
+				foreach ( $item['subpages'] as $subitem ) {
+					if ( ! is_array( $subitem ) ) {
+						continue;
+					}
+					if ( isset( $subitem['id'] ) && $current_page_id == $subitem['id'] ) {
+						if ( ! empty( $subitem['tabs'] ) ) {
+							foreach ( $subitem['tabs'] as $tab_name => $tab ) {
+								if ( isset( $tab['id'] ) ) {
+									$tab_id = $tab['id'];
+								} else {
+									$tab_id = $tab_name;
+								}
+
+								if ( $current_tab_id == $tab_id ) {
+									$tab_title = $tab_name;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	echo '<p style="position: absolute; left: 30%;right: 30%;text-align: center; bottom: 0; font-size: 75%"><strong>' .
+	     Amapress::makeLink( '#', 'Tableau de bord>' . $title
+	                              . ( ! empty( $subtitle ) ? '>' . $subtitle : '' )
+	                              . ( ! empty( $tab_title ) ? ', onglet ' . $tab_title : '' ) )
+	     . '</strong></p>';
 } );
 
 function amapress_force_no_private( $post ) {
