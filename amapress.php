@@ -1445,9 +1445,9 @@ add_action( 'admin_init', function () {
 			require_once ABSPATH . '/wp-admin/includes/update.php';
 		}
 		foreach ( get_plugin_updates() as $plugin_file => $plugin_data ) {
-			if ( false != strpos( $plugin_file, 'amapress' ) ) {
-				amapress_add_admin_notice( 'Une nouvelle version d\'Amapress est disponible : ' . $plugin_data['Version'],
-					'warning', false );
+			if ( false !== strpos( $plugin_file, 'amapress' ) ) {
+				amapress_add_admin_notice( 'Une nouvelle version d\'Amapress est disponible : ' . Amapress::makeLink( admin_url( 'update-core.php' ), $plugin_data->update->new_version ),
+					'warning', false, false );
 			}
 		}
 
