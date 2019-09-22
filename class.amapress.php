@@ -3667,6 +3667,10 @@ class Amapress {
 		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
 	}
 
+	public static function getBulletinGenericUrl() {
+		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/bulletin_adhesion_generique.docx';
+	}
+
 	public static function cleanFilesOlderThanDays( $dir, $days ) {
 		$files = glob( trailingslashit( $dir ) . "*" );
 		$now   = time();
