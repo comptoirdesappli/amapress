@@ -2318,8 +2318,9 @@ class Amapress {
 
 			$generated_ids[] = "p$id";
 			$post            = get_post( $id, ARRAY_A );
-			if ( ! is_array( $post ) )
+			if ( ! is_array( $post ) ) {
 				return '';
+			}
 			$post_meta = get_post_custom( $id );
 			if ( empty( $post_meta ) ) {
 				$post_meta = array();
@@ -3664,6 +3665,22 @@ class Amapress {
 
 	public static function getContratGenericUrl() {
 		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
+	}
+
+	public static function cleanFilesOlderThanDays( $dir, $days ) {
+		$files = glob( trailingslashit( $dir ) . "*" );
+		$now   = time();
+
+		foreach ( $files as $file ) {
+			if ( is_file( $file ) ) {
+				$filename = basename( $file );
+				if ( 'index.php' != $filename && '.htaccess' != $filename ) {
+					if ( $now - filemtime( $file ) >= 60 * 60 * 24 * $days ) { // 2 days
+						@unlink( $file );
+					}
+				}
+			}
+		}
 	}
 
 	public static function getArchivesDir() {
