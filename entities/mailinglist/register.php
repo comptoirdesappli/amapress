@@ -236,7 +236,17 @@ function amapress_get_mailinglist_queries() {
 	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
 	$ret["amapress_role=resp_distrib"]      = 'Prochains responsables de distributions';
 
-//    $ret["role=administrator"] = "Prochains responsables de distributions";
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAP_ROLE,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Membres du collectif avec rôle "' . $role->name . '"';
+	}
 
 	return $ret;
 }
