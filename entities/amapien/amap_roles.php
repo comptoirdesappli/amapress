@@ -164,7 +164,7 @@ function amapress_get_referent_prods_grid() {
 			foreach ( $contrat_instances as $contrat_instance ) {
 				$ret .= '<tr>';
 				$ret .= '<td>' . esc_html( $prod->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $prod->getAdminEditLink(), 'Modifier ses référents', true, true ) . '</td>';
-				$ret .= '<td>' . esc_html( $contrat->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat->getAdminEditLink(), 'Editer sa présentation', true, true ) . '</td>';
+				$ret .= '<td>' . esc_html( $contrat->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat->getAdminEditLink(), 'Modifier ses référents spécifiques', true, true ) . '</td>';
 				$ret .= '<td>' . esc_html( $contrat_instance->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat_instance->getAdminEditLink(), 'Editer le modèle de contrat', true, true ) . '</td>';
 
 				foreach ( $lieux as $lieu ) {

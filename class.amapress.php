@@ -2175,9 +2175,9 @@ class Amapress {
 		$ret = preg_replace( '/amapress_producteur_referent_(\d+)&#039;/', 'amapress_producteur_referent_\'. $this->posts[\'$1\']', $ret );
 		$ret = preg_replace( '/amapress_contrat_referent_(\d+)&#039;/', 'amapress_contrat_referent_\'. $this->posts[\'$1\']', $ret );
 
-//		foreach ( $media as $k => $v ) {
-//			$ret = "\$this->medias['$k'] = '$v';\n" . $ret;
-//		}
+		foreach ( $media as $k => $v ) {
+			$ret = "\$this->medias['$k'] = '$v';\n" . $ret;
+		}
 
 		return $ret;
 	}
