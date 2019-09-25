@@ -621,32 +621,37 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Emails - Vérification de distribution - Rappel'                  => array(
+								'Emails - Vérification de distribution - Rappel'           => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Emails - A tous les amapiens à la distribution - Rappel'         => array(
+								'Emails - A tous les amapiens à la distribution - Rappel'  => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
-								'Emails - Envoi liste émargement Excel/PDF'                       => array(
+								'Emails - Envoi liste émargement Excel/PDF'                => array(
 									'id'      => 'amp_tab_recall_emarg',
 									'desc'    => '',
 									'options' => amapress_distribution_emargement_recall_options(),
 								),
-								'Emails - Distribution - Modification livraisons - Rappel'        => array(
+								'Emails - Responsable(s) manquant(s) - Rappel'             => array(
+									'id'      => 'amp_tab_recall_miss_resps',
+									'desc'    => '',
+									'options' => amapress_distribution_missing_responsables_recall_options(),
+								),
+								'Emails - Distribution - Modification livraisons - Rappel' => array(
 									'id'      => 'amp_tab_recall_modif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_changes_recall_options(),
 								),
-								'Emails - Visite - Inscription - Rappel'                          => array(
+								'Emails - Visite - Inscription - Rappel'                   => array(
 									'id'      => 'amp_tab_recall_visite_inscr',
 									'desc'    => '',
 									'options' => amapress_visite_inscription_recall_options(),
 								),
-								'Emails - Visite - Inscription possible - Rappel'                 => array(
+								'Emails - Visite - Inscription possible - Rappel'          => array(
 									'id'      => 'amp_tab_recall_visite_avail',
 									'desc'    => '',
 									'options' => amapress_visite_available_recall_options(),

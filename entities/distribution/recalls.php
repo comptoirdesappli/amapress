@@ -255,6 +255,45 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 		null, $dist->getResponsablesResponsablesDistributionsReplyto() );
 } );
 
+add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		return;
+	}
+
+
+	$dist_id     = $dist->ID;
+	$contrat_ids = implode( ',', $dist->getContratIds() );
+	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+
+	$required_resps_count = AmapressDistributions::get_required_responsables( $dist_id );
+	$resps_count          = count( $dist->getResponsablesIds() );
+	$missing_resps_count  = $required_resps_count - $resps_count;
+
+	if ( $missing_resps_count <= 0 ) {
+		return;
+	}
+
+	$subject = Amapress::getOption( 'distribution-miss-resps-recall-mail-subject' );
+	$content = Amapress::getOption( 'distribution-miss-resps-recall-mail-content' );
+
+	$subject = str_replace( '%%nb_resp_manquants%%', $missing_resps_count, $subject );
+	$subject = str_replace( '%%nb_resp_requis%%', $required_resps_count, $subject );
+	$subject = str_replace( '%%nb_resp_inscrits%%', $resps_count, $subject );
+	$content = str_replace( '%%nb_resp_manquants%%', $missing_resps_count, $content );
+	$content = str_replace( '%%nb_resp_requis%%', $required_resps_count, $content );
+	$content = str_replace( '%%nb_resp_inscrits%%', $resps_count, $content );
+
+	$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
+	amapress_send_message(
+		$subject,
+		$content,
+		'', $amapien_users, $dist, array(),
+		amapress_get_recall_cc_from_option( 'distribution-miss-resps-recall-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto()
+	);
+} );
+
 add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
@@ -346,6 +385,85 @@ function amapress_distribution_all_amapiens_recall_options() {
 		),
 	);
 }
+
+function amapress_distribution_missing_responsables_recall_options() {
+	return array(
+		array(
+			'id'                  => 'distribution-miss-resps-recall-1',
+			'name'                => 'Rappel 1',
+			'desc'                => 'Responsable(s) de distribution manquant(s) à tous les amapiens',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_missing_resp_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-miss-resps-recall-2',
+			'name'                => 'Rappel 2',
+			'desc'                => 'Responsable(s) de distribution manquant(s) à tous les amapiens',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_missing_resp_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-miss-resps-recall-3',
+			'name'                => 'Rappel 3',
+			'desc'                => 'Responsable(s) de distribution manquant(s) à tous les amapiens',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_missing_resp_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'       => 'distribution-miss-resps-recall-mail-subject',
+			'name'     => 'Sujet de l\'email',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Responsable(s) manquant(s) à %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-miss-resps-recall-mail-content',
+			'name'    => 'Contenu de l\'email',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, il manque %%nb_resp_manquants%% responsable(s) de distribution sur les %%nb_resp_requis%% requis.\nPensez à vous inscrire ! Merci\n\n%%nom_site%%" ),
+			'desc'    =>
+				AmapressDistribution::getPlaceholdersHelp(
+					[
+						'nb_resp_manquants' => 'Nombre de responsables de distribution manquants à la distribution',
+						'nb_resp_inscrits'  => 'Nombre de responsables inscrits à la distribution',
+						'nb_resp_requis'    => 'Nombre de responsables requis à la distribution',
+					]
+				),
+		),
+		array(
+			'id'           => 'distribution-miss-resps-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Emails en copie',
+		),
+		array(
+			'id'           => 'distribution-miss-resps-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
 
 function amapress_distribution_verify_recall_options() {
 	return array(
