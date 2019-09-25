@@ -653,16 +653,31 @@ class AmapressContrats {
 						$contrat_instance_ids = array( 0 );
 					}
 					foreach ( $lieu_ids as $lieu_id ) {
-						foreach ( $prod->getReferentsIds( $lieu_id ) as $ref_id ) {
-							if ( $ref_id ) {
+						$contrat = AmapressContrat::getBy( $contrat_id );
+						if ( $contrat ) {
+							foreach ( $contrat->getReferentsIds( $lieu_id ) as $ref_id ) {
+								if ( $ref_id ) {
+									$res[] = array(
+										'ref_id'               => $ref_id,
+										'lieu'                 => $lieu_id,
+										'producteur'           => $prod->ID,
+										'contrat_ids'          => [ $contrat_id ],
+										'contrat_instance_ids' => $contrat_instance_ids,
+									);
+								}
+							}
+						} else {
+							foreach ( $prod->getReferentsIds( $lieu_id ) as $ref_id ) {
+								if ( $ref_id ) {
 //                    if (!$ignore_lieu)
-								$res[] = array(
-									'ref_id'               => $ref_id,
-									'lieu'                 => $lieu_id,
-									'producteur'           => $prod->ID,
-									'contrat_ids'          => [ $contrat_id ],
-									'contrat_instance_ids' => $contrat_instance_ids,
-								);
+									$res[] = array(
+										'ref_id'               => $ref_id,
+										'lieu'                 => $lieu_id,
+										'producteur'           => $prod->ID,
+										'contrat_ids'          => [ $contrat_id ],
+										'contrat_instance_ids' => $contrat_instance_ids,
+									);
+								}
 							}
 						}
 					}
