@@ -122,16 +122,17 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 				if ( ! $prod ) {
 					continue;
 				}
-				$had_local_referents = false;
+				//$had_local_referents = false;
 				foreach ( $lieu_ids as $lieu_id ) {
-					if ( ! in_array( $this->ID, $contrat->getReferentsIds( $lieu_id ) ) ) {
+					if ( ! in_array( $this->ID, $contrat->getReferentsIds( $lieu_id, true ) ) ) {
 						continue;
 					}
-					$owner_id                                      = in_array( $this->ID, $prod->getReferentsIds( $lieu_id ) ) ? $prod->ID : $contrat->ID;
-					$had_local_referents                           = true;
-					$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
+					$owner_id = in_array( $this->ID, $prod->getReferentsIds( $lieu_id, true ) ) ? $prod->ID : $contrat->ID;
+					//$had_local_referents                                            = true;
+					$lieu                                                           = AmapressLieu_distribution::getBy( $lieu_id );
+					$this_user_roles[ 'ref_prod_' . $contrat->ID . '_' . $lieu_id ] =
 						array(
-							'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
+							'title'      => sprintf( 'Référent %s à %s', $contrat->getTitle(), $lieu->getLieuTitle() ),
 							'type'       => 'referent_producteur',
 							'lieu'       => $lieu_id,
 							'object_id'  => $contrat->ID,
@@ -139,7 +140,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
 						);
 				}
-				if ( ! $had_local_referents ) {
+				//if ( ! $had_local_referents ) {
 					if ( ! in_array( $this->ID, $contrat->getReferentsIds() ) ) {
 						continue;
 					}
@@ -153,7 +154,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 							'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
 							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
 						);
-				}
+				//}
 			}
 
 			//référent lieu

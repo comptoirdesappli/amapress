@@ -1717,8 +1717,17 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		if ( false === $all_user_ids ) {
 			$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 			$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
-			$lieu_ids    = amapress_prepare_in_sql( $lieu_ids );
 			$user_ids    = array();
+			foreach ( $lieu_ids as $lieu_id ) {
+				$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+				if ( $lieu && $lieu->getReferentId() ) {
+					$user_ids[] = $lieu->getReferentId();
+				}
+				foreach ( AmapressContrats::getReferentsForLieu( $lieu_id ) as $ref ) {
+					$user_ids[] = $ref['ref_id'];
+				}
+			}
+			$lieu_ids = amapress_prepare_in_sql( $lieu_ids );
 			foreach (
 				$wpdb->get_col( "SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta amps_pmach
