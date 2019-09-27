@@ -1883,7 +1883,7 @@ function amapress_echo_and_check_amapress_state_page() {
 			if ( $handle = opendir( AMAPRESS__PLUGIN_DIR . '/demos' ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( $entry != '.' && $entry != '..' && $entry != 'AmapDemoBase.php' ) {
-						echo '<a target="_blank" href="' . esc_attr( add_query_arg( 'import_amap', $entry, admin_url( 'admin.php?page=amapress_state' ) ) ) . '">' . esc_html( $entry ) . '</a>';
+						echo '<a target="_blank" href="' . esc_attr( add_query_arg( 'import_amap', $entry, admin_url( 'admin.php?page=amapress_state' ) ) ) . '">' . esc_html( $entry ) . '</a><br/>';
 					}
 				}
 				closedir( $handle );
