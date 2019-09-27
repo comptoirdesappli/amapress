@@ -86,30 +86,36 @@ class AmapressContrat extends TitanEntity {
 	}
 
 	/** @return int[] */
-	public function getReferentsIds( $lieu_id = null, $for_lieu_only = false ) {
+	public function getReferentsIds( $lieu_id = null, $for_lieu_only = false, $for_contrat_only = false ) {
 		if ( empty( $this->getProducteur() ) ) {
 			return [];
 		}
 
-		$prod_refs = $this->getProducteur()->getReferentsIds( $lieu_id, $for_lieu_only );
-		if ( ! $for_lieu_only ) {
-			$prod_refs = array_merge( $prod_refs, $this->getProducteur()->getReferentsIds( null, $for_lieu_only ) );
+		if ( ! $for_contrat_only ) {
+			$prod_refs = $this->getProducteur()->getReferentsIds( $lieu_id, $for_lieu_only );
+			if ( ! $for_lieu_only ) {
+				$prod_refs = array_merge( $prod_refs, $this->getProducteur()->getReferentsIds( null, $for_lieu_only ) );
+			}
+		} else {
+			$prod_refs = [];
 		}
+
+		$contrat_refs = $for_lieu_only ? [
+			$this->getReferentId( $lieu_id, $for_lieu_only ),
+			$this->getReferent2Id( $lieu_id, $for_lieu_only ),
+			$this->getReferent3Id( $lieu_id, $for_lieu_only )
+		] : [
+			$this->getReferentId( $lieu_id ),
+			$this->getReferent2Id( $lieu_id ),
+			$this->getReferent3Id( $lieu_id ),
+			$this->getReferentId( null ),
+			$this->getReferent2Id( null ),
+			$this->getReferent3Id( null ),
+		];
 
 		return array_unique(
 			array_merge( $prod_refs,
-				array_filter( $for_lieu_only ? [
-					$this->getReferentId( $lieu_id, $for_lieu_only ),
-					$this->getReferent2Id( $lieu_id, $for_lieu_only ),
-					$this->getReferent3Id( $lieu_id, $for_lieu_only )
-				] : [
-					$this->getReferentId( $lieu_id ),
-					$this->getReferent2Id( $lieu_id ),
-					$this->getReferent3Id( $lieu_id ),
-					$this->getReferentId( null ),
-					$this->getReferent2Id( null ),
-					$this->getReferent3Id( null ),
-				], function ( $i ) {
+				array_filter( $contrat_refs, function ( $i ) {
 					return ! empty( $i );
 				} )
 			) );
@@ -160,7 +166,7 @@ class AmapressContrat extends TitanEntity {
 	/** @return int */
 	private function getReferentNumId( $lieu_id = null, $num = 1, $for_lieu_only = false ) {
 		$lieu_name = ( $lieu_id ? $lieu_id : 'defaut' );
-		if ( ! empty( $this->referent_ids[ $num ][ $lieu_name ] ) ) {
+		if ( ! $for_lieu_only && ! empty( $this->referent_ids[ $num ][ $lieu_name ] ) ) {
 			return $this->referent_ids[ $num ][ $lieu_name ];
 		}
 		$this->ensure_init();

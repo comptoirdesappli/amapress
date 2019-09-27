@@ -141,19 +141,19 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 						);
 				}
 				//if ( ! $had_local_referents ) {
-					if ( ! in_array( $this->ID, $contrat->getReferentsIds() ) ) {
-						continue;
-					}
-					$owner_id                                      = in_array( $this->ID, $prod->getReferentsIds() ) ? $prod->ID : $contrat->ID;
-					$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
-						array(
-							'title'      => sprintf( 'Référent %s', $contrat->getTitle() ),
-							'type'       => 'referent_producteur',
-							'lieu'       => null,
-							'object_id'  => $contrat->ID,
-							'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
-							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
-						);
+				if ( ! in_array( $this->ID, $contrat->getReferentsIds() ) ) {
+					continue;
+				}
+				$owner_id                                      = in_array( $this->ID, $prod->getReferentsIds() ) ? $prod->ID : $contrat->ID;
+				$this_user_roles[ 'ref_prod_' . $contrat->ID ] =
+					array(
+						'title'      => sprintf( 'Référent %s', empty( $contrat->getTitle() ) ? $prod->getTitle() : $contrat->getTitle() ),
+						'type'       => 'referent_producteur',
+						'lieu'       => null,
+						'object_id'  => $contrat->ID,
+						'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
+						'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
+					);
 				//}
 			}
 
@@ -168,7 +168,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 				}
 				$this_user_roles[ 'ref_lieu_' . $lieu->ID ] =
 					array(
-						'title'      => sprintf( 'Référent %s', $lieu->getShortName() ),
+						'title'      => sprintf( 'Référent Lieu %s', $lieu->getShortName() ),
 						'type'       => 'referent_lieu',
 						'lieu'       => $lieu_id,
 						'object_id'  => $lieu->ID,
@@ -233,7 +233,6 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 			}
 			$this->user_roles = $this_user_roles;
 		}
-
 
 		return $this->user_roles;
 	}
