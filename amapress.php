@@ -1567,7 +1567,7 @@ function get_admin_menu_item_title( $menu_item_file, $submenu_as_parent = true )
 	return strip_tags( $title );
 }
 
-add_action( 'admin_footer', function () {
+add_filter( 'admin_footer_text', function ( $content ) {
 	global $parent_file, $submenu_file, $pagenow;
 	$title     = get_admin_menu_item_title( $parent_file );
 	$subtitle  = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
@@ -1617,11 +1617,13 @@ add_action( 'admin_footer', function () {
 			}
 		}
 	}
-	echo '<p style="position: absolute; left: 30%;right: 30%;text-align: center; bottom: 0; font-size: 75%"><strong>' .
-	     Amapress::makeLink( '#', 'Tableau de bord>' . $title
+	$content .= ' | <strong>' .
+	            Amapress::makeLink( '#', 'Tableau de bord>' . $title
 	                              . ( ! empty( $subtitle ) ? '>' . $subtitle : '' )
 	                              . ( ! empty( $tab_title ) ? ', onglet ' . $tab_title : '' ) )
-	     . '</strong></p>';
+	            . '</strong>';
+
+	return $content;
 } );
 
 function amapress_force_no_private( $post ) {
