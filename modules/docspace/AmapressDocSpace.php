@@ -65,6 +65,20 @@ class AmapressDocSpace {
 	public function echoDropZone( $atts ) {
 		amapress_ensure_no_cache();
 
+		if ( ! $this->hasCurrentUserDownloadRight()
+		     && ! $this->hasCurrentUserListRight()
+		     && ! $this->hasCurrentUserUploadRight() ) {
+			return '';
+		}
+
+		$atts = shortcode_atts(
+			[
+				'title'     => '',
+				'title_tag' => 'h4',
+			],
+			$atts
+		);
+
 		$url             = admin_url( 'admin-ajax.php' );
 		$nonce_files     = wp_nonce_field( 'amp_upload_file', 'amp_upload_file_nonce', true, false );
 		$sanitized_name  = sanitize_html_class( $this->name );
@@ -72,7 +86,16 @@ class AmapressDocSpace {
 		$get_list_url    = add_query_arg( 'action', 'amp_docspace_list_' . $this->name, $url );
 		$remove_file_url = add_query_arg( 'action', 'amp_docspace_remove_' . $this->name, $url );
 
-		$ret = "<div id='amps-file-list-$sanitized_name''></div>";
+		$ret = '';
+		if ( ! empty( $atts['title'] ) ) {
+			$tag = $atts['title_tag'];
+			if ( empty( $tag ) ) {
+				$tag = 'h4';
+			}
+			$title = esc_html( $atts['title'] );
+			$ret   .= "<$tag class='amps-doc-space-title $sanitized_name'>$title</$tag>";
+		}
+		$ret .= "<div id='amps-file-list-$sanitized_name''></div>";
 		if ( $this->hasCurrentUserUploadRight() ) {
 			$ret .= <<<ENDFORM
 <div id="amps-dz-$sanitized_name"><form action="$url" class="dropzone needsclick dz-clickable" id="amps-dz-form-$sanitized_name">
@@ -182,7 +205,7 @@ ENDFORM;
 
 	public function echoFileList() {
 		if ( ! $this->hasCurrentUserDownloadRight() ) {
-			echo '<p>Vous n\'avez pas les droits pour accéder à cet Espace documents</p>';
+			//echo '<p>Vous n\'avez pas les droits pour accéder à cet Espace documents</p>';
 			die();
 		}
 		?>
