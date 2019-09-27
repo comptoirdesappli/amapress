@@ -813,7 +813,10 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 				foreach ( Amapress::get_lieux() as $lieu ) {
 					foreach ( $contrat->getReferentsIds( $lieu->ID ) as $referents_id ) {
 						$user   = AmapressUser::getBy( $referents_id );
-						$refs[] = esc_html( sprintf( count( $dn->getContrats() ) == 1 ? '%1$s (%3$s)' : '%1$s (%2$s/%3$s)', $user->getDisplayName(), $contrat->getTitle(), $lieu->getShortName() ) );
+						$refs[] = sprintf( count( $dn->getContrats() ) == 1 ? '%1$s (%3$s)' : '%1$s (%2$s/%3$s)',
+							Amapress::makeLink( $user->getEditLink(), $user->getDisplayName(), true, true ),
+							Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle(), true, true ),
+							Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName(), true, true ) );
 					}
 				}
 			}
