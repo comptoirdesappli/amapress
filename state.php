@@ -229,24 +229,26 @@ function amapress_get_state() {
 		);
 	}
 
-	$github_updater = get_option( 'github_updater' );
-	if ( is_multisite() ) {
-		$github_updater = get_site_option( 'github_updater' );
-	}
-	if ( empty( $github_updater ) ) {
-		$state['05_config'][] = amapress_get_check_state(
-			'error',
-			'Le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
-			'Veuillez utiliser l\'installateur automatique qui est affiché en haut du <a target="_blank" href="' . admin_url( 'index.php' ) . '">tableau de bord</a> ou suivre la <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Installation">procédure d\'installation manuelle</a>',
-			''
-		);
-	} else if ( empty( $github_updater['github_access_token'] ) ) {
-		$state['05_config'][] = amapress_get_check_state(
-			'error',
-			'Un jeton d\'accès GitHub (Personal Access Token) pour le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
-			'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Messages#personal-github-access-token">lien</a>',
-			admin_url( 'options-general.php?page=github-updater&tab=github_updater_settings&subtab=github' )
-		);
+	if ( ! defined( 'FREE_PAGES_PERSO' ) ) {
+		$github_updater = get_option( 'github_updater' );
+		if ( is_multisite() ) {
+			$github_updater = get_site_option( 'github_updater' );
+		}
+		if ( empty( $github_updater ) ) {
+			$state['05_config'][] = amapress_get_check_state(
+				'error',
+				'Le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
+				'Veuillez utiliser l\'installateur automatique qui est affiché en haut du <a target="_blank" href="' . admin_url( 'index.php' ) . '">tableau de bord</a> ou suivre la <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Installation">procédure d\'installation manuelle</a>',
+				''
+			);
+		} elseif ( empty( $github_updater['github_access_token'] ) ) {
+			$state['05_config'][] = amapress_get_check_state(
+				'error',
+				'Un jeton d\'accès GitHub (Personal Access Token) pour le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
+				'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Messages#personal-github-access-token">lien</a>',
+				admin_url( 'options-general.php?page=github-updater&tab=github_updater_settings&subtab=github' )
+			);
+		}
 	}
 
 	if ( ! extension_loaded( 'zip' ) ) {
@@ -1640,113 +1642,115 @@ function amapress_embedded_phpinfo() {
 
 ### Function:Get MYSQL Query Cache Size
 function amapress_get_mysql_query_cache_size() {
-		global $wpdb;
-		$query_cache_size_query = $wpdb->get_row( "SHOW VARIABLES LIKE 'query_cache_size'" );
+	global $wpdb;
+	$query_cache_size_query = $wpdb->get_row( "SHOW VARIABLES LIKE 'query_cache_size'" );
 
-		return $query_cache_size_query->Value;
-	}
+	return $query_cache_size_query->Value;
+}
 
 ### Function: Get MYSQL Version
 function amapress_get_mysql_version() {
-		global $wpdb;
+	global $wpdb;
 
-		return $wpdb->get_var( "SELECT VERSION() AS version" );
-	}
+	return $wpdb->get_var( "SELECT VERSION() AS version" );
+}
+
 ### Function: Get MYSQL Data Usage
 function amapress_get_mysql_data_usage() {
-		global $wpdb;
-		$data_usage   = 0;
-		$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
-		foreach ( $tablesstatus as $tablestatus ) {
-			$data_usage += $tablestatus->Data_length;
-		}
-
-		return $data_usage;
+	global $wpdb;
+	$data_usage   = 0;
+	$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
+	foreach ( $tablesstatus as $tablestatus ) {
+		$data_usage += $tablestatus->Data_length;
 	}
+
+	return $data_usage;
+}
+
 ### Function: Get MYSQL Index Usage
 function amapress_get_mysql_index_usage() {
-		global $wpdb;
-		$index_usage  = 0;
-		$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
-		foreach ( $tablesstatus as $tablestatus ) {
-			$index_usage += $tablestatus->Index_length;
-		}
-
-		return $index_usage;
+	global $wpdb;
+	$index_usage  = 0;
+	$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
+	foreach ( $tablesstatus as $tablestatus ) {
+		$index_usage += $tablestatus->Index_length;
 	}
+
+	return $index_usage;
+}
 
 ### Function: PHP Memory Limit
 function amapress_get_php_memory_limit() {
-		if ( ini_get( 'memory_limit' ) ) {
-			$memory_limit = ini_get( 'memory_limit' );
-		} else {
-			$memory_limit = __( 'N/A', 'amapress' );
-		}
-
-		return $memory_limit;
+	if ( ini_get( 'memory_limit' ) ) {
+		$memory_limit = ini_get( 'memory_limit' );
+	} else {
+		$memory_limit = __( 'N/A', 'amapress' );
 	}
+
+	return $memory_limit;
+}
 
 ### Function: PHP Maximum Execution Time
 function amapress_get_php_max_execution() {
-		if ( ini_get( 'max_execution_time' ) ) {
-			$max_execute = ini_get( 'max_execution_time' );
-		} else {
-			$max_execute = __( 'N/A', 'amapress' );
-		}
-
-		return $max_execute;
+	if ( ini_get( 'max_execution_time' ) ) {
+		$max_execute = ini_get( 'max_execution_time' );
+	} else {
+		$max_execute = __( 'N/A', 'amapress' );
 	}
+
+	return $max_execute;
+}
 
 ### Function: Get PHP Max Post Size
 function amapress_get_php_post_max() {
-		if ( ini_get( 'post_max_size' ) ) {
-			$post_max = ini_get( 'post_max_size' );
-		} else {
-			$post_max = __( 'N/A', 'amapress' );
-		}
-
-		return $post_max;
+	if ( ini_get( 'post_max_size' ) ) {
+		$post_max = ini_get( 'post_max_size' );
+	} else {
+		$post_max = __( 'N/A', 'amapress' );
 	}
+
+	return $post_max;
+}
 
 ### Function: Get PHP Max Upload Size
 function amapress_get_php_upload_max() {
-		if ( ini_get( 'upload_max_filesize' ) ) {
-			$upload_max = ini_get( 'upload_max_filesize' );
-		} else {
-			$upload_max = __( 'N/A', 'amapress' );
-		}
-
-		return $upload_max;
+	if ( ini_get( 'upload_max_filesize' ) ) {
+		$upload_max = ini_get( 'upload_max_filesize' );
+	} else {
+		$upload_max = __( 'N/A', 'amapress' );
 	}
+
+	return $upload_max;
+}
 
 ### Function: Format Bytes Into TiB/GiB/MiB/KiB/Bytes
 function amapress_format_filesize( $rawSize ) {
-		if ( $rawSize / 1099511627776 > 1 ) {
-			return number_format_i18n( $rawSize / 1099511627776, 1 ) . ' ' . __( 'TB', 'amapress' );
-		} elseif ( $rawSize / 1073741824 > 1 ) {
-			return number_format_i18n( $rawSize / 1073741824, 1 ) . ' ' . __( 'GB', 'amapress' );
-		} elseif ( $rawSize / 1048576 > 1 ) {
-			return number_format_i18n( $rawSize / 1048576, 1 ) . ' ' . __( 'MB', 'amapress' );
-		} elseif ( $rawSize / 1024 > 1 ) {
-			return number_format_i18n( $rawSize / 1024, 1 ) . ' ' . __( 'KB', 'amapress' );
-		} elseif ( $rawSize > 1 ) {
-			return number_format_i18n( $rawSize, 0 ) . ' ' . __( 'B', 'amapress' );
-		} else {
-			return __( 'unknown', 'amapress' );
-		}
+	if ( $rawSize / 1099511627776 > 1 ) {
+		return number_format_i18n( $rawSize / 1099511627776, 1 ) . ' ' . __( 'TB', 'amapress' );
+	} elseif ( $rawSize / 1073741824 > 1 ) {
+		return number_format_i18n( $rawSize / 1073741824, 1 ) . ' ' . __( 'GB', 'amapress' );
+	} elseif ( $rawSize / 1048576 > 1 ) {
+		return number_format_i18n( $rawSize / 1048576, 1 ) . ' ' . __( 'MB', 'amapress' );
+	} elseif ( $rawSize / 1024 > 1 ) {
+		return number_format_i18n( $rawSize / 1024, 1 ) . ' ' . __( 'KB', 'amapress' );
+	} elseif ( $rawSize > 1 ) {
+		return number_format_i18n( $rawSize, 0 ) . ' ' . __( 'B', 'amapress' );
+	} else {
+		return __( 'unknown', 'amapress' );
 	}
+}
 
 ### Function: Convert PHP Size Format to Localized
 function amapress_format_php_size( $size ) {
-		if ( ! is_numeric( $size ) ) {
-			if ( strpos( $size, 'M' ) !== false ) {
-				$size = intval( $size ) * 1024 * 1024;
-			} elseif ( strpos( $size, 'K' ) !== false ) {
-				$size = intval( $size ) * 1024;
-			} elseif ( strpos( $size, 'G' ) !== false ) {
-				$size = intval( $size ) * 1024 * 1024 * 1024;
-			}
+	if ( ! is_numeric( $size ) ) {
+		if ( strpos( $size, 'M' ) !== false ) {
+			$size = intval( $size ) * 1024 * 1024;
+		} elseif ( strpos( $size, 'K' ) !== false ) {
+			$size = intval( $size ) * 1024;
+		} elseif ( strpos( $size, 'G' ) !== false ) {
+			$size = intval( $size ) * 1024 * 1024 * 1024;
 		}
+	}
 
 	return is_numeric( $size ) ? amapress_format_filesize( $size ) : $size;
 }
