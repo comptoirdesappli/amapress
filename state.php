@@ -932,7 +932,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 
 			return "<a href='{$l}' target='_blank'>{$tit}</a> {$status}";
 		}, $subscribable_contrat_instances ) ) .
-		( ! empty( $not_subscribable_contrat_instances ) ? '<p><strong>Les contrats suivants n\'ont pas de modèles actifs (selon date ouverture/bloture)</strong> : ' .
+		( ! empty( $not_subscribable_contrat_instances ) ? '<p><strong>Les contrats suivants n\'ont pas de modèles actifs (selon date ouverture/clôture)</strong> : ' .
 		                                                   implode( ', ', array_map( function ( $dn ) {
 
 			                                                   $l = admin_url( 'post.php?post=' . $dn->ID . '&action=edit' );
