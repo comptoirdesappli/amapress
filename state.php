@@ -1605,7 +1605,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	return $state;
 }
 
-function embedded_phpinfo() {
+function amapress_embedded_phpinfo() {
 	ob_start();
 	phpinfo();
 	$phpinfo = ob_get_contents();
@@ -1639,26 +1639,21 @@ function embedded_phpinfo() {
 }
 
 ### Function:Get MYSQL Query Cache Size
-if ( ! function_exists( 'get_mysql_query_cache_size' ) ) {
-	function get_mysql_query_cache_size() {
+function amapress_get_mysql_query_cache_size() {
 		global $wpdb;
 		$query_cache_size_query = $wpdb->get_row( "SHOW VARIABLES LIKE 'query_cache_size'" );
 
 		return $query_cache_size_query->Value;
 	}
-}
 
 ### Function: Get MYSQL Version
-if ( ! function_exists( 'get_mysql_version' ) ) {
-	function get_mysql_version() {
+function amapress_get_mysql_version() {
 		global $wpdb;
 
 		return $wpdb->get_var( "SELECT VERSION() AS version" );
 	}
-}
 ### Function: Get MYSQL Data Usage
-if ( ! function_exists( 'get_mysql_data_usage' ) ) {
-	function get_mysql_data_usage() {
+function amapress_get_mysql_data_usage() {
 		global $wpdb;
 		$data_usage   = 0;
 		$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
@@ -1668,10 +1663,8 @@ if ( ! function_exists( 'get_mysql_data_usage' ) ) {
 
 		return $data_usage;
 	}
-}
 ### Function: Get MYSQL Index Usage
-if ( ! function_exists( 'get_mysql_index_usage' ) ) {
-	function get_mysql_index_usage() {
+function amapress_get_mysql_index_usage() {
 		global $wpdb;
 		$index_usage  = 0;
 		$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
@@ -1681,82 +1674,70 @@ if ( ! function_exists( 'get_mysql_index_usage' ) ) {
 
 		return $index_usage;
 	}
-}
 
 ### Function: PHP Memory Limit
-if ( ! function_exists( 'get_php_memory_limit' ) ) {
-	function get_php_memory_limit() {
+function amapress_get_php_memory_limit() {
 		if ( ini_get( 'memory_limit' ) ) {
 			$memory_limit = ini_get( 'memory_limit' );
 		} else {
-			$memory_limit = __( 'N/A', 'wp-serverinfo' );
+			$memory_limit = __( 'N/A', 'amapress' );
 		}
 
 		return $memory_limit;
 	}
-}
 
 ### Function: PHP Maximum Execution Time
-if ( ! function_exists( 'get_php_max_execution' ) ) {
-	function get_php_max_execution() {
+function amapress_get_php_max_execution() {
 		if ( ini_get( 'max_execution_time' ) ) {
 			$max_execute = ini_get( 'max_execution_time' );
 		} else {
-			$max_execute = __( 'N/A', 'wp-serverinfo' );
+			$max_execute = __( 'N/A', 'amapress' );
 		}
 
 		return $max_execute;
 	}
-}
 
 ### Function: Get PHP Max Post Size
-if ( ! function_exists( 'get_php_post_max' ) ) {
-	function get_php_post_max() {
+function amapress_get_php_post_max() {
 		if ( ini_get( 'post_max_size' ) ) {
 			$post_max = ini_get( 'post_max_size' );
 		} else {
-			$post_max = __( 'N/A', 'wp-serverinfo' );
+			$post_max = __( 'N/A', 'amapress' );
 		}
 
 		return $post_max;
 	}
-}
 
 ### Function: Get PHP Max Upload Size
-if ( ! function_exists( 'get_php_upload_max' ) ) {
-	function get_php_upload_max() {
+function amapress_get_php_upload_max() {
 		if ( ini_get( 'upload_max_filesize' ) ) {
 			$upload_max = ini_get( 'upload_max_filesize' );
 		} else {
-			$upload_max = __( 'N/A', 'wp-serverinfo' );
+			$upload_max = __( 'N/A', 'amapress' );
 		}
 
 		return $upload_max;
 	}
-}
 
 ### Function: Format Bytes Into TiB/GiB/MiB/KiB/Bytes
-if ( ! function_exists( 'format_filesize' ) ) {
-	function format_filesize( $rawSize ) {
+function amapress_format_filesize( $rawSize ) {
 		if ( $rawSize / 1099511627776 > 1 ) {
-			return number_format_i18n( $rawSize / 1099511627776, 1 ) . ' ' . __( 'TB', 'wp-serverinfo' );
+			return number_format_i18n( $rawSize / 1099511627776, 1 ) . ' ' . __( 'TB', 'amapress' );
 		} elseif ( $rawSize / 1073741824 > 1 ) {
-			return number_format_i18n( $rawSize / 1073741824, 1 ) . ' ' . __( 'GB', 'wp-serverinfo' );
+			return number_format_i18n( $rawSize / 1073741824, 1 ) . ' ' . __( 'GB', 'amapress' );
 		} elseif ( $rawSize / 1048576 > 1 ) {
-			return number_format_i18n( $rawSize / 1048576, 1 ) . ' ' . __( 'MB', 'wp-serverinfo' );
+			return number_format_i18n( $rawSize / 1048576, 1 ) . ' ' . __( 'MB', 'amapress' );
 		} elseif ( $rawSize / 1024 > 1 ) {
-			return number_format_i18n( $rawSize / 1024, 1 ) . ' ' . __( 'KB', 'wp-serverinfo' );
+			return number_format_i18n( $rawSize / 1024, 1 ) . ' ' . __( 'KB', 'amapress' );
 		} elseif ( $rawSize > 1 ) {
-			return number_format_i18n( $rawSize, 0 ) . ' ' . __( 'B', 'wp-serverinfo' );
+			return number_format_i18n( $rawSize, 0 ) . ' ' . __( 'B', 'amapress' );
 		} else {
-			return __( 'unknown', 'wp-serverinfo' );
+			return __( 'unknown', 'amapress' );
 		}
 	}
-}
 
 ### Function: Convert PHP Size Format to Localized
-if ( ! function_exists( 'format_php_size' ) ) {
-	function format_php_size( $size ) {
+function amapress_format_php_size( $size ) {
 		if ( ! is_numeric( $size ) ) {
 			if ( strpos( $size, 'M' ) !== false ) {
 				$size = intval( $size ) * 1024 * 1024;
@@ -1767,13 +1748,10 @@ if ( ! function_exists( 'format_php_size' ) ) {
 			}
 		}
 
-		return is_numeric( $size ) ? format_filesize( $size ) : $size;
-	}
+	return is_numeric( $size ) ? amapress_format_filesize( $size ) : $size;
 }
 
 function amapress_echo_and_check_amapress_state_page() {
-//	if (!defined( 'AMAPRESS_DEMO_MODE' ))
-//		define('AMAPRESS_DEMO_MODE', 1);
 	if ( current_user_can( 'update_core' ) ) {
 		if ( isset( $_GET['generate_full_amap'] ) ) {
 			echo '<textarea cols="80" rows="100" style="width: 100%; font-family: monospace">';
@@ -1834,7 +1812,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		}
 
 		if ( isset( $_GET['phpinfo'] ) ) {
-			embedded_phpinfo();
+			amapress_embedded_phpinfo();
 
 			return;
 		}
@@ -1907,18 +1885,18 @@ function amapress_echo_and_check_amapress_state_page() {
 	echo '<p><strong>Version PHP : ' . PHP_VERSION . ' (' . PHP_OS . ' / ' . $_SERVER["SERVER_SOFTWARE"] . ')' . '</strong></p>';
 	echo '<p><strong>Version Wordpress : ' . $wp_version . '</strong></p>';
 	echo '<p><strong>Version d\'Amapress : ' . AMAPRESS_VERSION . '</strong></p>';
-	echo '<p><strong>Version MySQL : ' . get_mysql_version() .
-	     ' (Data ' . format_filesize( get_mysql_data_usage() ) .
-	     ' ; Index ' . format_filesize( get_mysql_index_usage() ) .
-	     ' ; Cache ' . format_filesize( get_mysql_query_cache_size() ) . ')</strong></p>';
+	echo '<p><strong>Version MySQL : ' . amapress_get_mysql_version() .
+	     ' (Data ' . amapress_format_filesize( amapress_get_mysql_data_usage() ) .
+	     ' ; Index ' . amapress_format_filesize( amapress_get_mysql_index_usage() ) .
+	     ' ; Cache ' . amapress_format_filesize( amapress_get_mysql_query_cache_size() ) . ')</strong></p>';
 	echo '<p>Hébergement : ' . implode( ' / ', [
 			$_SERVER['SERVER_NAME'],
 			$_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'],
 			'Root: ' . $_SERVER['DOCUMENT_ROOT']
 		] ) . '</p>';
-	echo '<p>Limite mémoire/durée exécution : ' . format_php_size( get_php_memory_limit() ) . '</p>';
-	echo '<p>Limite durée d\'exécution : ' . get_php_max_execution() . 's</p>';
-	echo '<p>Limite upload/post : ' . format_php_size( get_php_upload_max() ) . '/' . format_php_size( get_php_post_max() ) . '</p>';
+	echo '<p>Limite mémoire/durée exécution : ' . amapress_format_php_size( amapress_get_php_memory_limit() ) . '</p>';
+	echo '<p>Limite durée d\'exécution : ' . amapress_get_php_max_execution() . 's</p>';
+	echo '<p>Limite upload/post : ' . amapress_format_php_size( amapress_get_php_upload_max() ) . '/' . amapress_format_php_size( amapress_get_php_post_max() ) . '</p>';
 
 	echo '<div id="amps-state-accordion">';
 	foreach ( $state as $categ => $checks ) {
