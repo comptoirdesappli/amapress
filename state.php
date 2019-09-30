@@ -1576,9 +1576,9 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'admin.php?page=amapress_import_page&tab=import_users_tab' )
 	);
 	$state['35_import'][] = amapress_get_check_state(
-		count( $subscribable_contrat_instances ) == 0 ? 'error' : 'do',
+		count( $active_contrat_instances ) == 0 ? 'error' : 'do',
 		'Adhésions',
-		count( $subscribable_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les adhésions' : 'Importer des inscriptions à partir d\'un fichier Excel.',
+		count( $active_contrat_instances ) == 0 ? 'Vous devez créer au moins un modèle de contrat pour importer les inscriptions' : 'Importer des inscriptions à partir d\'un fichier Excel.',
 		admin_url( 'admin.php?page=amapress_import_page&tab=import_adhesions_tab' )
 	);
 
