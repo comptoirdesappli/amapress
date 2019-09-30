@@ -2125,9 +2125,6 @@ class Amapress {
 			unset( $postmeta['amapress_intermittence_panier_adh_message'] );
 			unset( $postmeta['amapress_lieu_distribution_instructions_privee'] );
 			unset( $postmeta['amapress_lieu_distribution_contact_externe'] );
-			if ( ! empty( $postmeta['amapress_panier_date_subst'] ) ) {
-				$postmeta['amapress_panier_date_subst'] = intval( $postmeta['amapress_panier_date_subst'] );
-			}
 		};
 		$relative_time        = 0;
 		$media                = [];
@@ -2395,7 +2392,9 @@ class Amapress {
 						}, array_map(
 							'TitanEntity::to_date',
 							TitanEntity::get_array( $v ) ) ) ) . '])¤';
-				} else if ( isset( $fields[ $k ] ) && 'date' == $fields[ $k ]['type'] ) {
+				} else if ( isset( $fields[ $k ] )
+				            && ( 'date' == $fields[ $k ]['type']
+				                 || 'amapress_panier_date_subst' == $k ) ) {
 					$v = 'now+' . ( intval( $v ) - Amapress::start_of_day( $relative_time ) );
 				}
 				$filtered_post_meta[ $k ] = $v;
