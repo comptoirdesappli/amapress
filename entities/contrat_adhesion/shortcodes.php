@@ -1407,7 +1407,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 						'contrat_id' => $contrat->ID
 					] );
 					if ( $admin_mode ) {
-						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
+						if ( $contrat->isFull() ) {
+							echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ', contrat <strong>COMPLET</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum d\'amapiens et/ou nb maximum d\'amapiens par panier)</li>';
+						} else {
+							echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
+						}
 					} else {
 						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
 <br/>
@@ -1673,6 +1677,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 		} else {
 			echo '<p>Choisissez la quantité ou la taille de votre panier :</p>';
 		}
+		$quants_full = [];
 		echo '<form method="post" action="' . $next_step_url . '" class="amapress_validate">';
 		if ( $contrat->isPanierVariable() ) {
 			$columns = array(
@@ -1733,6 +1738,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 			$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );
 			foreach ( $contrat_quants as $quantite ) {
 				if ( $contrat->isFull( $quantite->ID ) ) {
+					$quants_full[] = $quantite->getTitle();
 					continue;
 				}
 
@@ -1792,6 +1798,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 		echo '<p style="margin-top: 1em;">Total: <span id="total">0</span>€</p>';
 		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="Valider" /></p>';
 		echo '</form>';
+
+		if ( $admin_mode && ! empty( $quants_full ) ) {
+			echo '<p>Les paniers "' . implode( ',', $quants_full ) . '" sont <strong>COMPLETS</strong> et n\'apparaissent donc pas ci-dessus. Pour augmenter les quotas, ' .
+			     Amapress::makeLink( $contrat->getAdminEditLink(), 'éditez le contrat ' . $contrat->getTitle(), true, true ) . '</p>';
+		}
 
 	} else if ( 'inscr_contrat_paiements' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
@@ -2026,12 +2037,23 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 
 
 		if ( $any_full ) {
-			$contrats_step_url_attr = esc_attr( $contrats_step_url );
-			$mailto_refs            = esc_attr( "mailto:$referents_mails" );
-			wp_die( "<p>Désolé, ce contrat ou l'un des paniers que vous avez choisi est complet<br/>
+			if ( $admin_mode ) {
+				$contrat_edit_link      = Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle(), true, true );
+				$contrats_step_url_attr = esc_attr( $contrats_step_url );
+				$mailto_refs            = esc_attr( "mailto:$referents_mails" );
+				wp_die( "<p>Désolé, ce contrat ou l'un des paniers que vous avez choisi est complet<br/>
+<a href='{$contrats_step_url_attr}'>Retour aux contrats</a><br/>
+Pour augmenter les quota du contrat ou de ses paniers, cliquez sur le lien suivant : $contrat_edit_link<br/>
+LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'inscription en cours.
+</p>" );
+			} else {
+				$contrats_step_url_attr = esc_attr( $contrats_step_url );
+				$mailto_refs            = esc_attr( "mailto:$referents_mails" );
+				wp_die( "<p>Désolé, ce contrat ou l'un des paniers que vous avez choisi est complet<br/>
 <a href='{$contrats_step_url_attr}'>Retour aux contrats</a><br/>
 <a href='$mailto_refs'>Contacter les référents</a>
 </p>" );
+			}
 		}
 
 		$meta = [
