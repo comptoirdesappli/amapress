@@ -692,7 +692,7 @@ class AmapressMailingGroup extends TitanEntity {
 		return amapress_replace_mail_placeholders( $content, null, null );
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [] ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_recall = true ) {
 		$additional_helps = array_merge(
 			$additional_helps,
 			[
@@ -710,7 +710,8 @@ class AmapressMailingGroup extends TitanEntity {
 		);
 
 		return Amapress::getPlaceholdersHelpTable( 'mailinggroup-placeholders',
-			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de l\'Email groupé', $additional_helps );
+			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de l\'Email groupé',
+			$additional_helps, $for_recall ? 'recall' : true );
 	}
 
 	public function getMailbox() {

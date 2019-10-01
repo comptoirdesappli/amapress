@@ -320,7 +320,7 @@ function amapress_contrat_quantites_recall_options() {
 				             'producteur_paniers_quantites_text' => 'Quantités à la prochaine distribution (en texte)',
 				             'producteur_paniers_quantites'      => 'Quantités à la prochaine distribution (en tableau)',
 				             'producteur_contact'                => 'Coordonnées du producteur',
-			             ], null ),
+			             ], null, [], 'recall' ),
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc',
@@ -407,7 +407,7 @@ function amapress_contrat_paiements_recall_options() {
 				             'producteur_nom'                => 'Nom du producteur',
 				             'contrat_nom'                   => 'Nom du contrat',
 				             'lien_contrats_paiements'       => 'Lien vers la liste des chèques à remettre au producteur',
-			             ], null ),
+			             ], null, [], 'recall' ),
 
 		),
 		array(
@@ -482,7 +482,7 @@ function amapress_contrat_renew_recall_options() {
 				             'nb_contrats'            => 'Nombre de contrats à renouveler ou proches de la fin',
 				             'nb_renew_contrats'      => 'Nombre de contrats à renouveler',
 				             'nb_near_renew_contrats' => 'Nombre de contrats proches de la fin',
-			             ], null ),
+			             ], null, [], 'recall' ),
 		),
 		array(
 			'id'           => 'contrat-renew-recall-cc',

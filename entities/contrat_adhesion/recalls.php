@@ -103,7 +103,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 				             'nb_inscriptions'   => 'Nombre d\'inscriptions à valider',
 				             'inscriptions'      => 'Liste des inscriptions à valider',
 				             'lien_inscriptions' => 'Lien vers la liste des inscriptions à valider'
-			             ], null ),
+			             ], null, [], 'recall' ),
 		),
 		array(
 			'id'           => 'inscriptions-validate-recall-cc',

@@ -66,9 +66,10 @@ class Amapress_EventBase extends TitanEntity {
 		return '';
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [] ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_recall = true ) {
 		return Amapress::getPlaceholdersHelpTable( 'event-placeholders',
-			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de l\'évènement', $additional_helps );
+			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de l\'évènement',
+			$additional_helps, $for_recall ? 'recall' : true );
 	}
 
 	public static function getProperties() {

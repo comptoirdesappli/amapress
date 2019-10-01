@@ -731,9 +731,10 @@ class AmapressDistribution extends Amapress_EventBase {
 		return $ret;
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [] ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_recall = true ) {
 		return Amapress::getPlaceholdersHelpTable( 'distrib-placeholders',
-			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de la distribution', $additional_helps );
+			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de la distribution',
+			$additional_helps, $for_recall ? 'recall' : true );
 	}
 
 	private static $properties = null;

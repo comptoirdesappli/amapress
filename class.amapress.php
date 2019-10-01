@@ -3596,7 +3596,7 @@ class Amapress {
 		$id_counter ++;
 
 		$final = [];
-		foreach ( amapress_replace_mail_placeholders_help( $prop_type_desc, $for_mail, $for_mail ) as $prop_name => $prop_desc ) {
+		foreach ( amapress_replace_mail_placeholders_help( $prop_type_desc, true === $for_mail, true === $for_mail ) as $prop_name => $prop_desc ) {
 			$final[ $prop_name ] = $prop_desc;
 		}
 		foreach ( $helps as $prop_name => $prop_desc ) {

@@ -498,9 +498,10 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		return 'ok';
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [] ) {
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_recall = true ) {
 		return Amapress::getPlaceholdersHelpTable( 'intermit-placeholders',
-			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'du panier intermittent', $additional_helps );
+			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'du panier intermittent',
+			$additional_helps, $for_recall ? 'recall' : true );
 	}
 
 	private static $properties = null;
