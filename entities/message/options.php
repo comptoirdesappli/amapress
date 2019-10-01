@@ -352,12 +352,12 @@ function amapress_replace_mail_placeholders_help(
 	$ret['site_icon_url_link'] = 'Lien du logo du site de l\'AMAP';
 	if ( $include_sender ) {
 		foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
-			$ret["moi/me:$k"] = 'Expéditeur: ' . $v; //subopt
+			$ret["me:$k"] = 'Expéditeur: ' . $v; //subopt
 		}
 	}
 	if ( $include_target ) {
 		foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
-			$ret["dest/user:$k"] = 'Destinataire: ' . $v; //subopt
+			$ret["dest:$k"] = 'Destinataire: ' . $v; //subopt
 		}
 	}
 	$ret["login_url"]      = 'Url de login du site de l\'AMAP';
