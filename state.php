@@ -1500,8 +1500,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	);
 
 	$state['30_recalls'] = array();
+	$adm_menu            = AmapressEntities::getMenu();
 	foreach ( AmapressEntities::getMenu() as $item ) {
-		if ( isset( $item['type'] ) && $item['type'] == 'panel' && isset( $item['id'] ) ) {
+		if ( ! empty( $item['subpages'] ) ) {
+			$adm_menu = array_merge( $adm_menu, $item['subpages'] );
+		}
+	}
+	foreach ( $adm_menu as $item ) {
+		if ( ! empty( $item['settings']['name'] ) && isset( $item['id'] ) ) {
 			$page_name = isset( $item['settings']['name'] ) ? $item['settings']['name'] . ' - ' : '';
 			$page_id   = $item['id'];
 			if ( ! empty( $item['tabs'] ) ) {
