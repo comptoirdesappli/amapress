@@ -1531,7 +1531,7 @@ class AmapressContrat_instance extends TitanEntity {
 						$quantite_sum                                           = from( $lieu_inscriptions )->sum(
 							function ( $inscription ) use ( $quantite, $date ) {
 								/** @var AmapressAdhesion $inscription */
-								foreach ( $inscription->getContrat_quantites( null ) as $q ) {
+								foreach ( $inscription->getContrat_quantites( $date ) as $q ) {
 									if ( $q->getId() == $quantite->ID ) {
 										return $q->getFactor();
 									}
@@ -1548,7 +1548,7 @@ class AmapressContrat_instance extends TitanEntity {
 				$quantite_sum                              = from( $date_inscriptions )->sum(
 					function ( $inscription ) use ( $quantite, $date ) {
 						/** @var AmapressAdhesion $inscription */
-						foreach ( $inscription->getContrat_quantites( null ) as $q ) {
+						foreach ( $inscription->getContrat_quantites( $date ) as $q ) {
 							if ( $q->getId() == $quantite->ID ) {
 								return $q->getFactor();
 							}
