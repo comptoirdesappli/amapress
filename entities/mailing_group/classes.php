@@ -272,7 +272,7 @@ class AmapressMailingGroup extends TitanEntity {
 			}
 		}
 
-		return count( array_unique( $user_ids ) );
+		return count( array_unique( $user_ids ) ) + count( $this->getRawEmails() );
 	}
 
 	public function testParams() {
@@ -564,11 +564,28 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->sendMail( $msg['from'], $msg['to'], $msg['cc'], $msg['subject'], $msg['raw_message'], $msg['headers'] );
 	}
 
+	private function getRawEmails() {
+		$raw_emails = $this->getCustom( 'amapress_mailing_group_raw_users' );
+		if ( ! empty( $raw_emails ) ) {
+			$raw_emails = preg_replace( '/\s+/', ',', $raw_emails );
+			$raw_emails = explode( ',', $raw_emails );
+
+			return array_filter( $raw_emails, function ( $e ) {
+				return ! empty( $e );
+			} );
+		}
+
+		return [];
+	}
+
 	private function sendMail( $from, $to, $cc, $subject, $body, $headers ) {
 		if ( ! empty( $cc ) ) {
 			$headers[] = 'Cc: ' . $cc;
 		}
-		$headers[] = 'Bcc: ' . implode( ',', $this->getEmailsFromQueries( $this->getMembersQueries() ) );
+		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
+		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
+
+		$headers[] = 'Bcc: ' . implode( ',', array_unique( $members_emails ) );
 		$headers   = array_filter( $headers, function ( $h ) {
 			return false === strpos( $h, 'From' );
 		} );
