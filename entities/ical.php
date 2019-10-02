@@ -85,6 +85,29 @@ class Amapress_Agenda_ICAL_Export {
 		}
 	}
 
+	private static function timezone_offset_seconds( $timestamp = 0 ) {
+		if ( ! $timezone_string = get_option( 'timezone_string' ) ) {
+			return get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+		}
+
+		$timezone_object = timezone_open( $timezone_string );
+		if ( ! $timezone_object ) {
+			return get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+		}
+
+		$datetime_object = new DateTime();
+		if ( $timestamp ) {
+			$datetime_object->setTimestamp( $timestamp );
+		}
+
+		return round( timezone_offset_get( $timezone_object, $datetime_object ), 2 );
+	}
+
+	private static function toUTCString( $timestamp ) {
+		return gmdate( 'Ymd\THis\Z', $timestamp - self::timezone_offset_seconds( $timestamp ) );
+	}
+
+
 	/**
 	 * Creates an ICAL file of events in the database
 	 */
@@ -135,17 +158,17 @@ class Amapress_Agenda_ICAL_Export {
 		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', get_bloginfo( 'name' ) ) . " - Agenda\n";
 		echo "X-WR-TIMEZONE:" . self::ical_split( 'X-WR-TIMEZONE:', self::getTimezoneString() ) . "\n";
 
-		$offset = get_option( 'gmt_offset' ) * 3600;
+		date_default_timezone_set( "UTC" );
 		foreach ( $events as $event ) {
 			$uid               = md5( $event->getEventId() );                                           //Universal unique ID
 			$title             = $event->getLabel();
 			$url               = $event->getLink();
 			$desc              = $event->getAlt();
 			$categories        = $event->getCategory();
-			$dtstamp           = gmdate( 'Ymd\THis\Z', current_time( 'timestamp' ) - $offset );                  //date stamp for now.
-			$created_date      = gmdate( 'Ymd\THis\Z', $event->getStartDate() - $offset );    //time event created
-			$start_date        = gmdate( 'Ymd\THis\Z', $event->getStartDate() - $offset );      //event start date
-			$end_date          = gmdate( 'Ymd\THis\Z', $event->getEndDate() - $offset );    //event end date
+			$dtstamp           = self::toUTCString( current_time( 'timestamp' ) );                  //date stamp for now.
+			$created_date      = self::toUTCString( $event->getStartDate() );    //time event created
+			$start_date        = self::toUTCString( $event->getStartDate() );      //event start date
+			$end_date          = self::toUTCString( $event->getEndDate() );    //event end date
 			$reoccurrence_rule = false;                                       //event reoccurrence rule.
 			$location          = $event->getLieu()->getLieuTitle();                          //event location
 			$organiser         = get_bloginfo( 'name' );                                //event organiser
