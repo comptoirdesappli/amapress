@@ -316,6 +316,14 @@ function amapress_get_state() {
 		);
 	}
 
+	$has_site_verif_codes = ! empty( Amapress::getOption( '' ) ) && ! empty( Amapress::getOption( '' ) );
+	$state['05_config'][] = amapress_get_check_state(
+		$has_site_verif_codes ? 'success' : 'warning',
+		$has_site_verif_codes ? 'Code de vérification du site (Google/Bing) : OK' : 'Codes de vérification du site (Google/Bing) : non renseignés',
+		'Créer des codes de vérification du site depuis les Webmaster Tools pour <a href="https://www.google.com/webmasters/tools/dashboard?hl=fr" target="_blank">Google</a> et <a href="https://www.bing.com/toolbox/webmaster" target="_blank">Bing</a> permet d\'obtenir un meilleur référencement',
+		admin_url( 'admin.php?page=amapress_options_page&tab=site_reference' )
+	);
+
 	$redir_test_url       = site_url( 'shouldredirect' );
 	$state['05_config'][] = amapress_get_check_state(
 		'info',

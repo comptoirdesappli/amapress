@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.86.110
+Version: 0.87.0
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.86.110' );
+define( 'AMAPRESS_VERSION', '0.87.0' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1646,3 +1646,28 @@ function amapress_force_no_private( $post ) {
 }
 
 add_filter( 'wp_insert_post_data', 'amapress_force_no_private' );
+
+add_action( 'wp_head', function () {
+	$site_verification_google_id = Amapress::getOption( 'site_verif_google_id' );
+	$site_verification_yahoo_id  = Amapress::getOption( 'site_verif_yahoo_id' );
+	$site_verification_bing_id   = Amapress::getOption( 'site_verif_bing_id' );
+	$other_header_html           = Amapress::getOption( 'other_site_html_header' );
+
+	if ( ! empty( $site_verification_google_id ) ) {
+		echo "
+    <meta name='google-site-verification' content='$site_verification_google_id' />
+    ";
+	}
+	if ( ! empty( $site_verification_yahoo_id ) ) {
+		echo "<meta name='y_key' content='$site_verification_yahoo_id'>
+    ";
+	}
+	if ( ! empty( $site_verification_bing_id ) ) {
+		echo "<meta name='msvalidate.01' content='$site_verification_bing_id'>
+    ";
+	}
+
+	if ( ! empty( $other_header_html ) ) {
+		echo $other_header_html;
+	}
+} );

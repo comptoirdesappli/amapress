@@ -621,37 +621,37 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Emails - Vérification de distribution - Rappel'           => array(
+								'Emails - Vérification de distribution - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Emails - A tous les amapiens à la distribution - Rappel'  => array(
+								'Emails - A tous les amapiens à la distribution - Rappel'         => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
-								'Emails - Envoi liste émargement Excel/PDF'                => array(
+								'Emails - Envoi liste émargement Excel/PDF'                       => array(
 									'id'      => 'amp_tab_recall_emarg',
 									'desc'    => '',
 									'options' => amapress_distribution_emargement_recall_options(),
 								),
-								'Emails - Responsable(s) manquant(s) - Rappel'             => array(
+								'Emails - Responsable(s) manquant(s) - Rappel'                    => array(
 									'id'      => 'amp_tab_recall_miss_resps',
 									'desc'    => '',
 									'options' => amapress_distribution_missing_responsables_recall_options(),
 								),
-								'Emails - Distribution - Modification livraisons - Rappel' => array(
+								'Emails - Distribution - Modification livraisons - Rappel'        => array(
 									'id'      => 'amp_tab_recall_modif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_changes_recall_options(),
 								),
-								'Emails - Visite - Inscription - Rappel'                   => array(
+								'Emails - Visite - Inscription - Rappel'                          => array(
 									'id'      => 'amp_tab_recall_visite_inscr',
 									'desc'    => '',
 									'options' => amapress_visite_inscription_recall_options(),
 								),
-								'Emails - Visite - Inscription possible - Rappel'          => array(
+								'Emails - Visite - Inscription possible - Rappel'                 => array(
 									'id'      => 'amp_tab_recall_visite_avail',
 									'desc'    => '',
 									'options' => amapress_visite_available_recall_options(),
@@ -2374,7 +2374,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Tests'                    => array(
+						'Tests'         => array(
 							'id'      => 'amp_tests_config',
 							'desc'    => '',
 							'options' => array(
@@ -2415,8 +2415,37 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
+						'Référencement' => array(
+							'id'      => 'site_reference',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'   => 'site_verif_google_id',
+									'name' => 'Google - Code de vérification du site',
+									'type' => 'text',
+								),
+								array(
+									'id'   => 'site_verif_bing_id',
+									'name' => 'Bing - Code de vérification du site',
+									'type' => 'text',
+								),
+								array(
+									'id'   => 'site_verif_yahoo_id',
+									'name' => 'Yahoo - Code de vérification du site',
+									'type' => 'text',
+								),
+								array(
+									'id'   => 'other_site_html_header',
+									'name' => 'Autres entêtes html pour le site',
+									'type' => 'textarea',
+								),
+								array(
+									'type' => 'save',
+								),
+							)
+						),
 						//
-						'Paiements'                => array(
+						'Paiements'     => array(
 							'id'      => 'amp_paiements_config',
 							'desc'    => '',
 							'options' => array(
@@ -3258,7 +3287,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Producteurs' => array(
+						'Producteurs'               => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
 							'capability' => 'edit_producteur',
@@ -3283,7 +3312,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Productions' => array(
+						'Productions'               => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
 							'capability' => 'edit_contrat',
@@ -3316,7 +3345,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Contrats'    => array(
+						'Contrats'                  => array(
 							'id'         => 'import_contrats_tab',
 							'desc'       => '',
 							'capability' => 'edit_contrat_instance',
@@ -3340,7 +3369,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 								),
 							)
 						),
-						'Produits'    => array(
+						'Produits'                  => array(
 							'id'         => 'import_produits_tab',
 							'desc'       => '',
 							'capability' => 'edit_produit',
