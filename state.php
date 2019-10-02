@@ -922,7 +922,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}
 	);
 	$state['15_posts'][]                = amapress_get_check_state(
-		count( $subscribable_contrat_instances ) == 0 ? 'error' : ( count( $subscribable_contrat_instances ) < count( $contrat_types ) ? 'warning' : 'success' ),
+		count( $subscribable_contrat_instances ) == 0 ? 'warning' : ( count( $subscribable_contrat_instances ) < count( $contrat_types ) ? 'warning' : 'success' ),
 		'Modèles de contrats',
 		'Créer au moins un modèle de contrat par contrat pour permettre aux amapiens d\'adhérer',
 		admin_url( 'post-new.php?post_type=' . AmapressContrat_instance::INTERNAL_POST_TYPE ),
