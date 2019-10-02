@@ -729,8 +729,8 @@ class AmapressContrat_instance extends TitanEntity {
 		];
 		$ret['contrat_sous_titre']               = [
 			'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
-			'func' => function ( AmapressAdhesion $adh ) {
-				return $adh->getContrat_instance()->getSubName();
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getSubName();
 			}
 		];
 		$ret['contrat_lien']                     = [
