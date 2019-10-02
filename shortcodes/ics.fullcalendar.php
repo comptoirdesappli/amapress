@@ -41,6 +41,7 @@ function amapress_fullcalendar( $atts ) {
             $('#<?php echo $id; ?>').fullCalendar({
                 defaultView: '<?php echo $atts['default_view']; ?>',
                 locale: 'fr',
+                timezone: 'local',
                 header: {
                     left: '<?php echo $atts['header_left']; ?>',
                     center: '<?php echo $atts['header_center']; ?>',
