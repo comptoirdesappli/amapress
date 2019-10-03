@@ -2259,6 +2259,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'options'    => [
 										'google'    => 'Google Maps',
 										'nominatim' => 'Nominatim (Open Street Map)',
+										'here'      => 'Here Maps',
 									],
 									'capability' => 'manage_options',
 								),
@@ -2294,6 +2295,22 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										<?php
 										return ob_get_clean();
 									},
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'here_map_app_id',
+									'name'       => 'Here Maps - APP ID',
+									'type'       => 'text',
+									'default'    => '',
+									'desc'       => 'APP ID pour la géolocalisation par Here Maps. Vous pouvez créer un compte <a target="_blank" href="https://developer.here.com/sign-up?create=Freemium-Basic">ici</a> et récupérer vos codes APP ID et APP CODE dans la section "REST & XYZ HUB API/CLI"',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'here_map_app_code',
+									'name'       => 'Here Maps - APP CODE',
+									'type'       => 'text',
+									'default'    => '',
+									'desc'       => 'APP CODE pour la géolocalisation par Here Maps.',
 									'capability' => 'manage_options',
 								),
 								array(

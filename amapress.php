@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.87.0
+Version: 0.87.10
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.87.0' );
+define( 'AMAPRESS_VERSION', '0.87.10' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -545,6 +545,8 @@ function amapress_global_init() {
 	if ( ! empty( $key ) ) {
 		TitanFrameworkOptionAddress::$google_map_api_key = $key;
 	}
+	TitanFrameworkOptionAddress::$here_map_app_id   = Amapress::getOption( 'here_map_app_id' );
+	TitanFrameworkOptionAddress::$here_map_app_code = Amapress::getOption( 'here_map_app_code' );
 
 	global $amapress_smtpMailingQueue;
 	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );

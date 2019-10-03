@@ -505,6 +505,18 @@ function amapress_get_state() {
 		);
 	}
 
+	if ( 'here' == Amapress::getOption( 'geocode_provider' ) ) {
+		$here_map_app_id      = Amapress::getOption( 'here_map_app_id' );
+		$google_key           = Amapress::getOption( 'here_map_app_code' );
+		$state['05_config'][] = amapress_get_check_state(
+			! empty( Amapress::getOption( 'here_map_app_id' ) )
+			&& ! empty( Amapress::getOption( 'here_map_app_code' ) ) ? 'success' : 'error',
+			'APP ID/APP CODE Here Maps',
+			'<strong>Requis</strong> : des identifiants APP ID/APP CODE sont nécessaires pour le bon fonctionnement de la géolocalisation ',
+			admin_url( 'admin.php?page=amapress_options_page&tab=amp_google_api_config' )
+		);
+	}
+
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Adresse mail du site',

@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 	public static $google_map_api_key = '';
+	public static $here_map_app_id = '';
+	public static $here_map_app_code = '';
 	public static $geoprovider = 'google';
 
 	public $defaultSecondarySettings = array(
@@ -77,6 +79,34 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 				'latitude'      => $response[0]['lat'],
 				'longitude'     => $response[0]['lon'],
 				'location_type' => $response[0]['type'],
+			);
+		} else if ( 'here' == self::$geoprovider ) {
+			if ( empty( self::$here_map_app_code ) || empty( self::$here_map_app_id ) ) {
+				return new WP_Error( 'App Id et App Code Here Maps non renseignés' );
+			}
+			$string      = urlencode( $string );
+			$app_id      = urlencode( self::$here_map_app_id );
+			$app_code    = urlencode( self::$here_map_app_code );
+			$details_url = "https://geocoder.api.here.com/6.2/geocode.json?app_id={$app_id}&app_code={$app_code}&searchtext={$string}";
+
+
+			$request = wp_remote_get( $details_url );
+			if ( is_wp_error( $request ) ) {
+				return $request;
+			}
+
+			$response = json_decode( wp_remote_retrieve_body( $request ), true );
+
+			if ( ! is_array( $response ) || empty( $response['Response']['View'][0]['Result'] ) ) {
+				error_log( "Nominatim resolution failed: $details_url" );
+
+				return null;
+			}
+
+			return array(
+				'latitude'      => $response['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Latitude'],
+				'longitude'     => $response['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Longitude'],
+				'location_type' => $response['Response']['View'][0]['Result'][0]['MatchLevel'],
 			);
 		} else {
 			return null;
@@ -162,7 +192,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 		if ( ! empty( $loc ) ) {
 			$lat = call_user_func( $get_fn, $postID, "{$id}_lat", true );
 			$lng = call_user_func( $get_fn, $postID, "{$id}_long", true );
-			if ( 'nominatim' == self::$geoprovider ) {
+			if ( 'google' != self::$geoprovider ) {
 				echo '<p class="' . $id . ' localized-address">Localisé <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng . '">Voir sur Open Street Map</a></p>';
 			} else {
 				echo '<p class="' . $id . ' localized-address">Localisé <a target="_blank" href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">Voir sur Google Maps</a></p>';
