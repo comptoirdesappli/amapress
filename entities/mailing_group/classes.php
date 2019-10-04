@@ -278,6 +278,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function testParams() {
 		try {
 			$mailbox = $this->getMailbox();
+                        $mailbox->imap('check');
 			$mailbox->disconnect();
 
 			return true;
