@@ -183,7 +183,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] );
 		$this->storeMailData( 'accepted', $msg );
 
-		$this->deleteMessage( 'waiting', $msg_id );
+		$this->deleteMessage( $msg_id, 'waiting' );
 	}
 
 	public function rejectMailQuiet( $msg_id ) {
@@ -200,7 +200,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$msg['mod_date']  = amapress_time();
 		$this->storeMailData( 'rejected', $msg );
 
-		$this->deleteMessage( 'waiting', $msg_id );
+		$this->deleteMessage( $msg_id, 'waiting' );
 	}
 
 
@@ -218,7 +218,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$msg['mod_date']  = amapress_time();
 		$this->storeMailData( 'rejected', $msg );
 		$this->sendMailByParamName( 'mailinggroup-reject-sender', $msg, $msg['from'] );
-		$this->deleteMessage( 'waiting', $msg_id );
+		$this->deleteMessage( $msg_id, 'waiting' );
 	}
 
 	private function isCurrentUserModerator() {
@@ -474,7 +474,11 @@ class AmapressMailingGroup extends TitanEntity {
 	private static function delTree( $dir ) {
 		$files = array_diff( scandir( $dir ), array( '.', '..' ) );
 		foreach ( $files as $file ) {
-			( is_dir( "$dir/$file" ) ) ? delTree( "$dir/$file" ) : unlink( "$dir/$file" );
+			if ( is_dir( "$dir/$file" ) ) {
+				self::delTree( "$dir/$file" );
+			} else {
+				unlink( "$dir/$file" );
+			}
 		}
 
 		return rmdir( $dir );
@@ -484,8 +488,8 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->loadMessageFile( $this->getUploadDir( $type ) . $msg_id . '.json' );
 	}
 
-	public function deleteMessage( $msg_id ) {
-		foreach ( [ 'waiting', 'accepted', 'rejected' ] as $type ) {
+	public function deleteMessage( $msg_id, $type = null ) {
+		foreach ( ! empty( $type ) ? [ $type ] : [ 'waiting', 'accepted', 'rejected' ] as $type ) {
 			$dir       = $this->getUploadDir( $type, false );
 			$attch_dir = $dir . "/$msg_id";
 			if ( file_exists( $attch_dir ) ) {
