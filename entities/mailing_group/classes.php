@@ -142,7 +142,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getPort() {
-		return $this->getCustom( 'amapress_mailing_group_port' );
+		return $this->getCustomAsInt( 'amapress_mailing_group_port', 993 );
 	}
 
 	public function getUsername() {
@@ -154,11 +154,11 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getProtocol() {
-		return $this->getCustom( 'amapress_mailing_group_protocol' );
+		return $this->getCustom( 'amapress_mailing_group_protocol', 'imap' );
 	}
 
 	public function getEncryption() {
-		return $this->getCustom( 'amapress_mailing_group_encryption' );
+		return $this->getCustom( 'amapress_mailing_group_encryption', 'ssl' );
 	}
 
 	public function isSelfSignedSSL() {
@@ -278,12 +278,14 @@ class AmapressMailingGroup extends TitanEntity {
 	public function testParams() {
 		try {
 			$mailbox = $this->getMailbox();
-                        $mailbox->imap('check');
+			$mailbox->imap( 'check' );
 			$mailbox->disconnect();
 
 			return true;
 		} catch ( Exception $ex ) {
-			return "IMAP connection failed: " . $ex;
+			$proto = strtoupper( $this->getProtocol() );
+
+			return "Erreur de connexion {$proto}: {$ex->getMessage()}";
 		}
 	}
 
@@ -312,7 +314,7 @@ class AmapressMailingGroup extends TitanEntity {
 		try {
 			$mailbox = $this->getMailbox();
 		} catch ( Exception $ex ) {
-			error_log( "IMAP connection failed: " . $ex );
+			error_log( "Erreur IMAP/POP3: " . $ex->getMessage() );
 
 			return false;
 		}
@@ -413,7 +415,7 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 			}
 		} catch ( Exception $ex ) {
-			error_log( "IMAP connection failed: " . $ex );
+			error_log( "Erreur IMAP/POP3 : " . $ex->getMessage() );
 
 			return false;
 		} finally {
