@@ -66,6 +66,9 @@ class AmapressMailingGroup extends TitanEntity {
 			$ret[] = array( 'include' => $users );
 		}
 
+		$ret = array_merge( $ret, $this->getFreeMembersQueries() );
+		$ret = array_merge( $ret, $this->getModeratorsQueries() );
+
 		return $ret;
 	}
 
