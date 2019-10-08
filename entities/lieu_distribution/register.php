@@ -34,7 +34,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 			}
 		},
 		'fields'                  => array(
-			'shortname'           => array(
+			'shortname'       => array(
 				'name'       => amapress__( 'Nom court' ),
 				'type'       => 'text',
 				'required'   => true,
@@ -42,20 +42,26 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'group'      => 'Information',
 				'searchable' => true,
 			),
+			'principal'       => array(
+				'name'    => amapress__( 'Lieu principal' ),
+				'group'   => 'Information',
+				'type'    => 'checkbox',
+				'default' => true,
+			),
 //            'photo' => array(
 //                'name' => amapress__('Photo'),
 //                'type' => 'upload',
 //                'group' => 'Information',
 //                'desc' => 'Photo',
 //            ),
-			'contact_externe'     => array(
+			'contact_externe' => array(
 				'name'       => amapress__( 'Contact externe' ),
 				'type'       => 'editor',
 				'desc'       => 'Contact externe',
 				'group'      => 'Gestion',
 				'searchable' => true,
 			),
-			'referent'            => array(
+			'referent'        => array(
 				'name'       => amapress__( 'Référent' ),
 				'type'       => 'select-users',
 				'desc'       => 'Référent',

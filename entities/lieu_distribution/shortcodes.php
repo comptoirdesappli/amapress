@@ -56,7 +56,7 @@ function amapress_where_to_find_us_shortcode( $attr ) {
 	}
 	$markers = array();
 	foreach ( $lieux as $lieu ) {
-		if ( ! $lieu->isAdresseLocalized() ) {
+		if ( ! $lieu->isAdresseLocalized() || ! $lieu->isPrincipal() ) {
 			continue;
 		}
 		$m = array(

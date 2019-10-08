@@ -47,6 +47,10 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 //        return $this->getCustom('amapress_lieu_distribution_photo');
 //    }
 
+	public function isPrincipal() {
+		return $this->getCustomAsInt( 'amapress_lieu_distribution_principal', 1 );
+	}
+
 	public function getContact_externe() {
 		$this->ensure_init();
 
