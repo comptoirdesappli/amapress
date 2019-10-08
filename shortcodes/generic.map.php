@@ -36,6 +36,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 	$icons['man']       = 'https://maps.google.com/mapfiles/ms/micons/man.png';
 	$icons['tree']      = 'https://maps.google.com/mapfiles/ms/micons/tree.png';
 
+	$coords     = [];
 	$js_markers = '';
 	foreach ( $markers as $marker ) {
 		if ( empty( $marker['latitude'] ) || empty( $marker['longitude'] ) ) {
@@ -52,6 +53,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 		}
 		$js_markers .= json_encode( $marker );
 		$js_markers .= ',';
+		$coords[]   = [ floatval( $marker['latitude'] ), floatval( $marker['longitude'] ) ];
 	}
 	$js_markers = trim( $js_markers, ',' );
 
@@ -179,7 +181,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 
 		return $htm . '<script type="text/javascript">
                 //<![CDATA[
-var map = L.map(\'map' . $amapress_map_instance . '\').setView([' . $latitude . ',' . $longitude . '], 17);
+var map = L.map(\'map' . $amapress_map_instance . '\').fitBounds(' . json_encode( $coords ) . ');
 // add an OpenStreetMap tile layer
 L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
     attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
