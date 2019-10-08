@@ -891,17 +891,16 @@ jQuery(function() {
 		return $user_id;
 	}
 
-	public static function trombinoscope_shortcode() {
+	public static function trombinoscope_shortcode( $atts ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return '';
 		}
 
+		$atts = shortcode_atts( array(
+			'show_principal_only' => true,
+		), $atts );
+
 		$lieu_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id() );
-		$lieux    = get_posts( array(
-			'post_type'      => 'amps_lieu',
-			'posts_per_page' => - 1,
-			'include'        => $lieu_ids
-		) );
 
 		ob_start();
 
@@ -918,9 +917,16 @@ jQuery(function() {
 		echo do_shortcode( '[trombinoscope_role role=referents_lieux]' );
 		amapress_echo_panel_end();
 
+		$lieux = Amapress::get_lieux();
 		foreach ( $lieux as $lieu ) {
+			if ( ! empty( $lieu_ids ) && ! in_array( $lieu->ID, $lieu_ids ) ) {
+				continue;
+			}
+			if ( $atts['show_principal_only'] && ! $lieu->isPrincipal() ) {
+				continue;
+			}
 			if ( count( $lieux ) > 1 ) {
-				echo '<h2>' . $lieu->post_title . '</h2>';
+				echo '<h2>' . esc_html( $lieu->getTitle() ) . '</h2>';
 			}
 			echo do_shortcode( '[trombinoscope_lieu lieu=' . $lieu->ID . ']' );
 		}
