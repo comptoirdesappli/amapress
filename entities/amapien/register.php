@@ -992,7 +992,7 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 			$res = [];
 			foreach ( $r['contrat_ids'] as $contrat_id ) {
 				$contrat = AmapressContrat::getBy( $contrat_id );
-				if ( empty( $prod ) ) {
+				if ( empty( $prod ) || empty( $contrat ) ) {
 					continue;
 				}
 				$res[] = sprintf( 'référent de %1$s / %2$s',
