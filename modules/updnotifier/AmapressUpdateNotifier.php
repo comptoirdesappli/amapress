@@ -117,11 +117,11 @@ class AmapressUpdateNotifier {
 		return false; // No theme updates so return false
 	}
 
-	public static function getUpdateMessage() {
+	public static function getUpdateMessage( $allOrActive = 2 ) {
 		$message     = '';
 		$res_core    = self::core_update_check( $message );
-		$res_plugins = self::plugins_update_check( $message, 2 );
-		$res_themes  = self::themes_update_check( $message, 2 );
+		$res_plugins = self::plugins_update_check( $message, $allOrActive );
+		$res_themes  = self::themes_update_check( $message, $allOrActive );
 		if ( $res_core || $res_plugins || $res_themes ) {
 			return $message;
 		}

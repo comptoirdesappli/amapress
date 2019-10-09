@@ -566,9 +566,11 @@ function amapress_global_init() {
 
 	add_action( 'amps_updnotif', function () {
 		require_once AMAPRESS__PLUGIN_DIR . 'modules/updnotifier/AmapressUpdateNotifier.php';
-		$message = AmapressUpdateNotifier::getUpdateMessage();
+		$message = AmapressUpdateNotifier::getUpdateMessage( 2 );
 		if ( ! empty( $message ) ) {
-			amapress_wp_mail( get_option( 'admin_email' ), 'Mises à jour requises', $message );
+			amapress_wp_mail( get_option( 'admin_email' ),
+				'Mises à jour requises',
+				wpautop( $message ) );
 		}
 	} );
 
