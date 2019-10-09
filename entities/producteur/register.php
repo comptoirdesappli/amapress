@@ -19,6 +19,17 @@ function amapress_register_entities_producteur( $entities ) {
 		'custom_archive_template' => true,
 		'default_orderby'         => 'post_title',
 		'default_order'           => 'ASC',
+		'row_actions'             => array(
+			'relocate' => array(
+				'label'     => 'Géolocaliser',
+				'condition' => function ( $user_id ) {
+					$prod = AmapressProducteur::getBy( $user_id );
+
+					return $prod && ! $prod->isAdresseExploitationLocalized();
+				},
+				'confirm'   => true,
+			),
+		),
 		'views'                   => array(
 			'remove'  => array( 'mine' ),
 			'exp_csv' => true,
@@ -268,3 +279,12 @@ add_filter( 'amapress_can_edit_producteur', function ( $can, $post_id ) {
 
 	return $can;
 }, 10, 2 );
+
+add_action( 'amapress_row_action_producteur_relocate', 'amapress_row_action_producteur_relocate' );
+function amapress_row_action_producteur_relocate( $post_id ) {
+	$prod = AmapressProducteur::getBy( $post_id );
+	if ( $prod ) {
+		$prod->resolveAddress();
+	}
+	wp_redirect_and_exit( wp_get_referer() );
+}

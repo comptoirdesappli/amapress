@@ -282,5 +282,14 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 		return $this->getUser()->getFormattedAdresseHtml();
 	}
+
+	public function resolveAddress() {
+		if ( $this->hasAdresseExploitation() ) {
+			return Amapress::updateLocalisation( $this->ID, false,
+				'amapress_producteur_adresse_exploitation', $this->getAdresseExploitation() );
+		}
+
+		return true;
+	}
 }
 

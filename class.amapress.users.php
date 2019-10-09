@@ -1226,26 +1226,6 @@ jQuery(function() {
 	}
 
 	public static function resolveUserFullAdress( $user_id, $address_text ) {
-		$address = TitanFrameworkOptionAddress::lookup_address( $address_text );
-		if ( $address && ! is_wp_error( $address ) ) {
-			update_user_meta( $user_id, 'amapress_user_long', $address['longitude'] );
-			update_user_meta( $user_id, 'amapress_user_lat', $address['latitude'] );
-			update_user_meta( $user_id, 'amapress_user_location_type', $address['location_type'] );
-			delete_user_meta( $user_id, 'amapress_user_loc_err' );
-
-			return true;
-		} else {
-			delete_user_meta( $user_id, 'amapress_user_long' );
-			delete_user_meta( $user_id, 'amapress_user_lat' );
-			delete_user_meta( $user_id, 'amapress_user_location_type' );
-			if ( is_wp_error( $address ) ) {
-				/** @var WP_Error $address */
-				update_user_meta( $user_id, "amapress_user_loc_err", $address->get_error_message() );
-			} else {
-				delete_user_meta( $user_id, "amapress_user_loc_err" );
-			}
-
-			return false;
-		}
+		return Amapress::updateLocalisation( $user_id, true, '', $address_text );
 	}
 }

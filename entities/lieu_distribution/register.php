@@ -19,6 +19,17 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 		'menu_icon'               => 'fa-menu fa-map-signs',
 		'default_orderby'         => 'post_title',
 		'default_order'           => 'ASC',
+		'row_actions'             => array(
+			'relocate' => array(
+				'label'     => 'Géolocaliser',
+				'condition' => function ( $user_id ) {
+					$lieu = AmapressLieu_distribution::getBy( $user_id );
+
+					return $lieu && ( ! $lieu->isAdresseAccesLocalized() || ! $lieu->isAdresseLocalized() );
+				},
+				'confirm'   => true,
+			),
+		),
 		'views'                   => array(
 			'remove' => array( 'mine' ),
 		),
@@ -34,7 +45,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 			}
 		},
 		'fields'                  => array(
-			'shortname'       => array(
+			'shortname'           => array(
 				'name'       => amapress__( 'Nom court' ),
 				'type'       => 'text',
 				'required'   => true,
@@ -42,7 +53,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'group'      => 'Information',
 				'searchable' => true,
 			),
-			'principal'       => array(
+			'principal'           => array(
 				'name'    => amapress__( 'Lieu principal' ),
 				'group'   => 'Information',
 				'type'    => 'checkbox',
@@ -54,14 +65,14 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 //                'group' => 'Information',
 //                'desc' => 'Photo',
 //            ),
-			'contact_externe' => array(
+			'contact_externe'     => array(
 				'name'       => amapress__( 'Contact externe' ),
 				'type'       => 'editor',
 				'desc'       => 'Contact externe',
 				'group'      => 'Gestion',
 				'searchable' => true,
 			),
-			'referent'        => array(
+			'referent'            => array(
 				'name'       => amapress__( 'Référent' ),
 				'type'       => 'select-users',
 				'desc'       => 'Référent',
@@ -163,4 +174,13 @@ function amapress_can_delete_lieu_distribution( $can, $post_id ) {
 	);
 
 	return empty( $lieux );
+}
+
+add_action( 'amapress_row_action_lieu_distribution_relocate', 'amapress_row_action_lieu_distribution_relocate' );
+function amapress_row_action_lieu_distribution_relocate( $post_id ) {
+	$lieu = AmapressLieu_distribution::getBy( $post_id );
+	if ( $lieu ) {
+		$lieu->resolveAddress();
+	}
+	wp_redirect_and_exit( wp_get_referer() );
 }
