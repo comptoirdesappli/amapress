@@ -1610,6 +1610,29 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'admin.php?page=amapress_import_page&tab=import_adhesions_tab' )
 	);
 
+	$state['36_mailing']   = array();
+	$state['36_mailing'][] = amapress_get_check_state(
+		'do',
+		'Emails groupés - Gestion interne de listes de diffusions basées sur des comptes emails de l\'hébergement',
+		'Créez des comptes emails sur votre hébergement et configurez les en tant que <a target="_blank" href="https://wiki.amapress.fr/admin/email_groupe">listes de diffusions gérées par le site</a>. Configurez et gérez leurs modérations, leurs membres directement depuis le Tableau de bord.<br/> 
+NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système de gestion ne les verrait pas.',
+		admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page' ),
+		implode( ', ', array_map( function ( $ml ) {
+			/** @var AmapressMailingGroup $ml */
+			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName() );
+		}, AmapressMailingGroup::getAll() ) )
+	);
+	$state['36_mailing'][] = amapress_get_check_state(
+		'do',
+		'Liste de diffusions - Gestion externe sur un service Sympa (Sud-Ouest2.org, Ouvaton...) ',
+		'Configurez vos différentes listes Sympa, leurs modérations et leurs membres depuis le Tableau de bord',
+		admin_url( 'edit.php?post_type=amps_mailing' ),
+		implode( ', ', array_map( function ( $ml ) {
+			/** @var Amapress_MailingListConfiguration $ml */
+			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName() );
+		}, Amapress_MailingListConfiguration::getAll() ) )
+	);
+
 	$clean_messages = '';
 	if ( isset( $_REQUEST['clean'] ) ) {
 		if ( 'orphans' == $_REQUEST['clean'] ) {
@@ -1859,6 +1882,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		'26_online_inscr' => 'Inscriptions en ligne',
 		'30_recalls'      => 'Rappels',
 		'35_import'       => 'Import CSV',
+		'36_mailing'      => 'Listes de diffusions',
 		'40_clean'        => 'Nettoyage',
 	);
 	$i      = 1;
