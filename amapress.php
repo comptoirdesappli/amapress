@@ -104,7 +104,15 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	if ( null == $attachments ) {
 		$attachments = [];
 	}
-	if ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
+	global $amapress_send_mail_to;
+	if ( ! empty( $amapress_send_mail_to ) ) {
+		$h       = esc_html( var_export( $headers, true ) );
+		$message = "Mail redirigé vers $amapress_send_mail_to pour test\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
+		$to      = $amapress_send_mail_to;
+		$headers = array_filter( $headers, function ( $h ) {
+			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
+		} );
+	} elseif ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 		$h            = esc_html( var_export( $headers, true ) );
 		$test_mode_to = Amapress::getOption( 'test_mail_target' );
 		$message      = "Site en mode de test mail : tous les emails sortants sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
