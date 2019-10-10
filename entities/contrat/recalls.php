@@ -15,6 +15,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 
 	if ( null == $dist ) {
+		echo '<p>Distribution introuvable</p>';
 		return;
 	}
 
@@ -29,6 +30,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-excl-producteurs' ) );
 
+	$sent_mails = false;
 	foreach ( $contrats_by_producteurs as $producteur_id => $contrats ) {
 		if ( in_array( $producteur_id, $disabled_for_producteurs ) ) {
 			continue;
@@ -86,18 +88,28 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$content,
 				'', $target_users, $dist, array(),
 				amapress_get_recall_cc_from_option( 'distribution-quantites-recall-cc' ) );
+			echo '<p>Email de rappel des quantités aux producteurs envoyé</p>';
+			$sent_mails = true;
 		}
 	}
+
+	if ( ! $sent_mails ) {
+		echo '<p>Pas de quantités à rappeler à cette distribution</p>';
+	}
+
 } );
 
 add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
+		echo '<p>Distribution introuvable</p>';
+
 		return;
 	}
 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrats-liste-paiements-recall-excl-producteurs' ) );
 
+	$sent_mails = false;
 	foreach ( $dist->getContrats() as $contrat ) {
 		if ( empty( $contrat->getModel() ) ) {
 			continue;
@@ -188,7 +200,12 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 			$content,
 			'', $target_users, $dist, $attachments,
 			amapress_get_recall_cc_from_option( 'contrats-liste-paiements-recall-cc' ) );
+		echo '<p>Email de rappel de la liste des chèques envoyé</p>';
+		$sent_mails = true;
 	}
+
+	if ( ! $sent_mails )
+		echo '<p>Pas de liste de chèque à rappeler à cette distribution</p>';
 
 	//%%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%
 	//contrats-liste-paiements-recall-mail-
@@ -197,6 +214,8 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
+		echo '<p>Distribution intouvable</p>';
+
 		return;
 	}
 
@@ -217,6 +236,8 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	} );
 
 	if ( empty( $near_renew ) && empty( $to_renew ) ) {
+		echo '<p>Pas de contrat à renouveler</p>';
+
 		return;
 	}
 
@@ -266,6 +287,8 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 		$content,
 		'', $target_users, $dist, array(),
 		amapress_get_recall_cc_from_option( 'contrat-renew-recall-cc' ) );
+	echo '<p>Email de rappel de contrat à renouveler envoyé</p>';
+
 } );
 
 function amapress_contrat_quantites_recall_options() {

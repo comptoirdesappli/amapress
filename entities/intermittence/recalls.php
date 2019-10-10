@@ -51,10 +51,12 @@ function amapress_get_recall_cc_from_option( $option_name ) {
 add_action( 'amapress_recall_dispo_panier_intermittent', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
+		echo '<p>Distribution introuvable</p>';
 		return;
 	}
 	$paniers = $dist->getPaniersIntermittentsDispo();
 	if ( empty( $paniers ) ) {
+		echo '<p>Pas de paniers intermittents disponible</p>';
 		return;
 	}
 
@@ -66,18 +68,23 @@ add_action( 'amapress_recall_dispo_panier_intermittent', function ( $args ) {
 		amapress_get_recall_cc_from_option( 'intermittence-recall-dispo-cc' ),
 		null,
 		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $dist->getLieuId() ) );
+	echo '<p>Email de paniers intermittents disponibles envoyé</p>';
+
 } );
 
 add_action( 'amapress_recall_validation_panier_intermittent', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
+		echo '<p>Distribution introuvable</p>';
 		return;
 	}
 	$paniers = $dist->getPaniersIntermittents();
 	if ( empty( $paniers ) ) {
+		echo '<p>Pas de paniers intermittents en attente de validation</p>';
 		return;
 	}
 
+	$sent_emails = false;
 	foreach ( $paniers as $panier ) {
 		if ( 'exch_valid_wait' != $panier->getStatus() ) {
 			continue;
@@ -99,7 +106,11 @@ add_action( 'amapress_recall_validation_panier_intermittent', function ( $args )
 				$panier, null, null,
 				amapress_get_recall_cc_from_option( 'intermittence-recall-validation-bcc' ),
 				AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $panier->getLieuId() ) );
+			echo '<p>Email de paniers intermittents en attente à valider envoyé</p>';
 		}
+	}
+	if ( ! $sent_emails ) {
+		echo '<p>Pas de paniers intermittents en attente de validation</p>';
 	}
 
 } );

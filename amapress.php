@@ -6,7 +6,7 @@
 Plugin Name: Amapress
 Plugin URI: http://amapress.fr/
 Description: 
-Version: 0.87.55
+Version: 0.87.60
 Requires PHP: 5.6
 Requires WP: 4.4
 Author: ShareVB
@@ -48,7 +48,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 84 );
-define( 'AMAPRESS_VERSION', '0.87.55' );
+define( 'AMAPRESS_VERSION', '0.87.60' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1694,4 +1694,28 @@ add_action( 'wp_head', function () {
 	if ( ! empty( $other_header_html ) ) {
 		echo $other_header_html;
 	}
+} );
+
+add_action( 'admin_post_tf_event_scheduler_resend', function () {
+	$hook_name = $_REQUEST['hook_name'];
+	$args      = json_decode( wp_unslash( $_REQUEST['args'] ), true );
+	$args      = $args[0];
+	echo '<p>Rappel lancé pour ' . $args['title'] . '</p>';
+	do_action( $hook_name, $args );
+	echo '<p>Rappel terminé</p>';
+	//echo '<p>Mail de rappel renvoyé avec succès !</p>';
+	die();
+} );
+
+add_action( 'admin_post_tf_event_scheduler_test', function () {
+	global $amapress_send_mail_to;
+	$user                  = AmapressUser::getBy( amapress_current_user_id() );
+	$amapress_send_mail_to = $user->getEmail();
+	$hook_name             = $_REQUEST['hook_name'];
+	$args                  = json_decode( wp_unslash( $_REQUEST['args'] ), true );
+	$args                  = $args[0];
+	echo '<p>Rappel lancé pour ' . $args['title'] . '</p>';
+	do_action( $hook_name, $args );
+	echo '<p>Rappel terminé</p>';
+	die();
 } );

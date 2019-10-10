@@ -14,6 +14,7 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 	$visite       = new AmapressVisite( $args['id'] );
 	$participants = $visite->getParticipantIds();
 	if ( empty( $participants ) ) {
+		echo '<p>Aucun participants</p>';
 		return;
 	}
 
@@ -24,6 +25,7 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 		'', $participants_users, $visite, array(),
 		amapress_get_recall_cc_from_option( 'visite-inscription-recall-cc' ),
 		null, AmapressVisite::getResponsableVisitesReplyto() );
+	echo '<p>Email de rappel d\'inscription à une visite envoyé</p>';
 } );
 
 /** @return array */
@@ -38,7 +40,7 @@ function amapress_get_next_visites_cron() {
 
 	$ret = [];
 	foreach ( $next_visites as $visite ) {
-		$ret[] = [ 'id' => $visite->getID(), 'time' => $visite->getStartDateAndHour() ];
+		$ret[] = [ 'id' => $visite->getID(), 'time' => $visite->getStartDateAndHour(), 'title' => $visite->getTitle() ];
 	}
 
 	return $ret;
@@ -100,11 +102,13 @@ add_action( 'amapress_recall_visite_available', function ( $args ) {
 	$participants = $visite->getParticipantIds();
 	$producteur   = $visite->getProducteur();
 	if ( empty( $producteur ) ) {
+		echo '<p>Producteur introuvable</p>';
 		return;
 	}
 	$contrats = $producteur->getContrats();
 	$contrat  = array_shift( $contrats );
 	if ( empty( $contrat ) ) {
+		echo '<p>Producteur sans contrat</p>';
 		return;
 	}
 	$contrat_id = $contrat->ID;
@@ -116,6 +120,7 @@ add_action( 'amapress_recall_visite_available', function ( $args ) {
 		'', $non_participants_users, $visite, array(),
 		amapress_get_recall_cc_from_option( 'visite-available-recall-cc' ),
 		null, AmapressVisite::getResponsableVisitesReplyto() );
+	echo '<p>Email de rappel qu\'une visite a lieu envoyé</p>';
 } );
 function amapress_visite_available_recall_options() {
 	return array(

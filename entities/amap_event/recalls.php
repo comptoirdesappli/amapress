@@ -25,6 +25,7 @@ add_action( 'amapress_recall_amap_event_inscription', function ( $args ) {
 		'', $participants_users, $amap_event, array(),
 		amapress_get_recall_cc_from_option( 'amap-event-inscription-recall-cc' ),
 		null, AmapressAmap_event::getResponsableAmapEventsReplyto() );
+	echo '<p>Email de rappel d\'inscription à un évenement envoyé</p>';
 } );
 
 /** @return array */
@@ -39,7 +40,10 @@ function amapress_get_next_amap_events_cron() {
 
 	$ret = [];
 	foreach ( $next_events as $amap_event ) {
-		$ret[] = [ 'id' => $amap_event->getID(), 'time' => $amap_event->getStartDateAndHour() ];
+		$ret[] = [ 'id'    => $amap_event->getID(),
+		           'time'  => $amap_event->getStartDateAndHour(),
+		           'title' => $amap_event->getTitle()
+		];
 	}
 
 	return $ret;
@@ -107,6 +111,8 @@ add_action( 'amapress_recall_amap_event_available', function ( $args ) {
 		'', $non_participants_users, $amap_event, array(),
 		amapress_get_recall_cc_from_option( 'amap-event-available-recall-cc' ),
 		null, AmapressAmap_event::getResponsableAmapEventsReplyto() );
+	echo '<p>Email de rappel de tenue d\'un évenement envoyé</p>';
+
 } );
 
 function amapress_amap_event_available_recall_options() {
