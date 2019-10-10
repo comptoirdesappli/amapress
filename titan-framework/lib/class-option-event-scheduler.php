@@ -18,6 +18,8 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 		'hook_args_generator' => null,
 		'show_desc'           => true,
 		'bare'                => false,
+		'show_resend_links'   => true,
+		'show_test_links'     => true,
 	);
 	private static $default_config = array(
 		'days'    => 0,
@@ -248,18 +250,67 @@ jQuery(function() {
 			return;
 		}
 
+		$hooks               = [];
+		$hook_name           = $this->settings['hook_name'];
+		$hook_args_generator = $this->settings['hook_args_generator'];
+		if ( ! empty( $hook_name ) && ! empty( $hook_args_generator ) ) {
+			$all_args = is_callable( $hook_args_generator, false ) ?
+				call_user_func( $hook_args_generator, $this ) :
+				[];
+			if ( ! empty( $all_args ) ) {
+				foreach ( $all_args as $args ) {
+					if ( ! isset( $args['time'] ) ) {
+						continue;
+					}
+					unset( $args['time'] );
+					if ( ! empty( $args['title'] ) ) {
+						$hooks[] = [
+							'hook_name' => $hook_name,
+							'title'     => $args['title'],
+							'args'      => json_encode( [ $args ] )
+						];
+					}
+				}
+			}
+		}
+		$links = '';
+		if ( $this->settings['show_resend_links'] && ! empty( $hooks ) ) {
+			$links .= '<p>Liens de renvoi: ' . implode( ', ', array_map(
+					function ( $hook ) {
+						$hook['action'] = 'tf_event_scheduler_resend';
+						$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
+						$title          = esc_html( $hook['title'] );
+
+						return "<a href='$href' target='_blank'>$title</a>";
+					}, $hooks ) ) . '</p>';
+		}
+
+		if ( $this->settings['show_test_links'] && ! empty( $hooks ) ) {
+			$links .= '<p>Liens de test: ' . implode( ', ', array_map(
+					function ( $hook ) {
+						$hook['action'] = 'tf_event_scheduler_test';
+						$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
+						$title          = esc_html( $hook['title'] );
+
+						return "<a href='$href' target='_blank'>$title</a>";
+					}, $hooks ) ) . '</p>';
+		}
+
 		if ( ! empty( $this->settings['name'] ) ) {
 			$this->echoOptionHeader( 'before' === $this->settings['show_desc'] );
 			echo $cnt;
+			echo $links;
 			$this->echoOptionFooter( 'before' !== $this->settings['show_desc'] );
 		} else {
 			$this->echoOptionHeaderBare( 'before' === $this->settings['show_desc'] );
 			echo $cnt;
+			echo $links;
 			$this->echoOptionFooterBare( 'before' !== $this->settings['show_desc'] );
 		}
 	}
 
-	public function generateMember() {
+	public
+	function generateMember() {
 		return '';
 	}
 }
