@@ -2329,17 +2329,19 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'capability' => 'manage_options',
 								),
 								array(
-									'id'         => 'convertws_user',
-									'name'       => 'Compte utilisateur du  WebService de conversion',
-									'type'       => 'text',
-									'capability' => 'manage_options',
+									'id'           => 'convertws_user',
+									'name'         => 'Compte utilisateur du  WebService de conversion',
+									'type'         => 'text',
+									'autocomplete' => false,
+									'capability'   => 'manage_options',
 								),
 								array(
-									'id'          => 'convertws_pass',
-									'name'        => 'Mot de passe du compte du  WebService de conversion',
-									'type'        => 'text',
-									'capability'  => 'manage_options',
-									'is_password' => true,
+									'id'           => 'convertws_pass',
+									'name'         => 'Mot de passe du compte du  WebService de conversion',
+									'type'         => 'text',
+									'autocomplete' => false,
+									'capability'   => 'manage_options',
+									'is_password'  => true,
 								),
 								array(
 									'type' => 'save',
@@ -2391,7 +2393,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Tests'         => array(
+						'Tests'                    => array(
 							'id'      => 'amp_tests_config',
 							'desc'    => '',
 							'options' => array(
@@ -2432,7 +2434,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
-						'Référencement' => array(
+						'Référencement'            => array(
 							'id'      => 'site_reference',
 							'desc'    => '',
 							'options' => array(
@@ -2462,7 +2464,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							)
 						),
 						//
-						'Paiements'     => array(
+						'Paiements'                => array(
 							'id'      => 'amp_paiements_config',
 							'desc'    => '',
 							'options' => array(
@@ -2757,17 +2759,19 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'default' => '',
 										),
 										array(
-											'id'      => 'ouvaton_admin_user',
-											'name'    => 'Email de l\'admin',
-											'type'    => 'text',
-											'default' => '',
+											'id'           => 'ouvaton_admin_user',
+											'name'         => 'Email de l\'admin',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => '',
 										),
 										array(
-											'id'          => 'ouvaton_admin_pass',
-											'name'        => 'Mot de passe',
-											'type'        => 'text',
-											'is_password' => true,
-											'default'     => '',
+											'id'           => 'ouvaton_admin_pass',
+											'name'         => 'Mot de passe',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'is_password'  => true,
+											'default'      => '',
 										),
 										array(
 											'id'      => 'ouvaton_manage_waiting',
@@ -2791,17 +2795,19 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'default' => '',
 										),
 										array(
-											'id'      => 'sud-ouest_admin_user',
-											'name'    => 'Email de l\'admin',
-											'type'    => 'text',
-											'default' => '',
+											'id'           => 'sud-ouest_admin_user',
+											'name'         => 'Email de l\'admin',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => '',
 										),
 										array(
-											'id'          => 'sud-ouest_admin_pass',
-											'name'        => 'Mot de passe',
-											'type'        => 'text',
-											'is_password' => true,
-											'default'     => '',
+											'id'           => 'sud-ouest_admin_pass',
+											'name'         => 'Mot de passe',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'is_password'  => true,
+											'default'      => '',
 										),
 										array(
 											'id'      => 'sud-ouest_secret',

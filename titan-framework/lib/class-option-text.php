@@ -57,6 +57,7 @@ class TitanFrameworkOptionText extends TitanFrameworkOption {
 		 * @var boolean
 		 */
 		'is_password'        => false,
+		'autocomplete'       => true,
 		'is_email'           => false,
 		'classes'            => '',
 		'sanitize'           => true,
@@ -95,7 +96,7 @@ class TitanFrameworkOptionText extends TitanFrameworkOption {
 	 */
 	public function display() {
 		$this->echoOptionHeader();
-		printf( '<input class="%s-text %s" name="%s" placeholder="%s" maxlength="%s" id="%s" type="%s" value="%s"\> %s',
+		printf( '<input class="%s-text %s" name="%s" placeholder="%s" maxlength="%s" id="%s" type="%s" value="%s" %s /> %s',
 			empty( $this->settings['size'] ) ? 'regular' : $this->settings['size'],
 			implode( ' ', [
 				$this->settings['required'] ? 'required' : '',
@@ -108,6 +109,7 @@ class TitanFrameworkOptionText extends TitanFrameworkOption {
 			$this->getID(),
 			$this->settings['is_password'] ? 'password' : 'text',
 			esc_attr( $this->getValue() ),
+			$this->settings['autocomplete'] ? '' : 'autocomplete="off"',
 			$this->settings['unit']
 		);
 		$this->echoOptionFooter();
