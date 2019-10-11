@@ -1619,7 +1619,7 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 		admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page' ),
 		implode( ', ', array_map( function ( $ml ) {
 			/** @var AmapressMailingGroup $ml */
-			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName() );
+			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName(), true, true );
 		}, AmapressMailingGroup::getAll() ) )
 	);
 	$state['36_mailing'][] = amapress_get_check_state(
@@ -1629,7 +1629,7 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 		admin_url( 'edit.php?post_type=amps_mailing' ),
 		implode( ', ', array_map( function ( $ml ) {
 			/** @var Amapress_MailingListConfiguration $ml */
-			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName() );
+			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName(), true, true );
 		}, Amapress_MailingListConfiguration::getAll() ) )
 	);
 
