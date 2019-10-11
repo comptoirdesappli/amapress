@@ -309,6 +309,30 @@ class AmapressMailingGroup extends TitanEntity {
 		return str_replace( "\r", '', $mailbox->imap( 'fetchbody', [ $msgId, '', $options ] ) );
 	}
 
+	private static $dmarc_cache = [];
+
+	public static function hasRestrictiveDMARC( $email ) {
+		preg_match( '/@(.+)$/', trim( $email ), $matches );
+		if ( $matches ) {
+			$domain = $matches[1];
+			if ( isset( self::$dmarc_cache[ $domain ] ) ) {
+				return self::$dmarc_cache[ $domain ];
+			}
+			$txts = dns_get_record( "_dmarc.$domain", DNS_TXT );
+			foreach ( $txts as $txt ) {
+				if ( preg_match( "/^\s*v\s*=\s*DMARC1\s*;/i", $txt['txt'] ) ) {
+					$res                          = preg_match( "/;\s*p\s*=\s*quarantine\s*;/i", $txt['txt'] )
+					                                || preg_match( "/;\s*p\s*=\s*reject\s*;/i", $txt['txt'] );
+					self::$dmarc_cache[ $domain ] = $res;
+
+					return self::$dmarc_cache[ $domain ];
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public function fetchMails() {
 		if ( ! extension_loaded( 'imap' ) ) {
 			return false;
@@ -363,6 +387,12 @@ class AmapressMailingGroup extends TitanEntity {
 				if ( ! $is_from_list ) {
 					$cc   = ''; //implode( ', ', $mail->cc );
 					$from = ! empty( $mail->fromName ) ? "{$mail->fromName} <{$mail->fromAddress}>" : $mail->fromAddress;
+					if ( self::hasRestrictiveDMARC( $mail->fromAddress ) ) {
+						$headers[] = "X-Original-From: $from";
+						$from      = ! empty( $mail->fromName )
+							? "{$mail->fromName} <{$this->getName()}>"
+							: "{$this->getName()} <{$this->getName()}>";
+					}
 					$date = $mail->date;
 //				$mail->importance;
 //				$mail->priority;
@@ -626,7 +656,17 @@ class AmapressMailingGroup extends TitanEntity {
 		$headers[] = 'X-Loop: ' . $this->getName();
 		switch ( $this->getReplyTo() ) {
 			case 'sender':
-				$headers[] = 'Reply-To: ' . $from;
+				$original_from = array_filter( $headers, function ( $header ) {
+					return preg_match( '/^X-Original-From:/', $header );
+				} );
+				$reply_to      = $from;
+				if ( ! empty( $original_from ) ) {
+					preg_match( '/^X-Original-From:\s*(.+)/', $original_from[0], $matches );
+					if ( $matches ) {
+						$reply_to = $matches[1];
+					}
+				}
+				$headers[] = 'Reply-To: ' . $reply_to;
 				break;
 			case 'list':
 				$headers[] = 'Reply-To: ' . $this->getName();
