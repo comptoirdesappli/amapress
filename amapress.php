@@ -234,22 +234,6 @@ function amapress_wpmail_content_type() {
 
 //add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type' );
 
-function amapress_mail_from( $old ) {
-	$new = Amapress::getOption( 'email_from_mail' );
-
-	return empty( $new ) ? $old : $new;
-}
-
-function amapress_mail_from_name( $old ) {
-	$new = Amapress::getOption( 'email_from_name' );
-
-	return empty( $new ) ? $old : $new;
-}
-
-add_filter( 'wp_mail_from', 'amapress_mail_from' );
-add_filter( 'wp_mail_from_name', 'amapress_mail_from_name' );
-
-
 function amapress_get_default_wordpress_from_email() {
 	$sitename = strtolower( $_SERVER['SERVER_NAME'] );
 	if ( substr( $sitename, 0, 4 ) == 'www.' ) {
@@ -343,6 +327,20 @@ require_once( AMAPRESS__PLUGIN_DIR . 'utils/class.amapress-taxonomy.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/row.actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/bulk.actions.php' );
 
+function amapress_mail_from( $old ) {
+	$new = Amapress::getOption( 'email_from_mail' );
+
+	return empty( $new ) ? $old : $new;
+}
+
+function amapress_mail_from_name( $old ) {
+	$new = Amapress::getOption( 'email_from_name' );
+
+	return empty( $new ) ? $old : $new;
+}
+
+add_filter( 'wp_mail_from', 'amapress_mail_from' );
+add_filter( 'wp_mail_from_name', 'amapress_mail_from_name' );
 
 new AmapressUserTaxonomy();
 
