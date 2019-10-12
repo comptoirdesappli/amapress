@@ -1432,15 +1432,17 @@ function amapress_get_contrat_quantite_datatable(
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
-		$contact_producteur = '<div><h5>Contact producteur:</h5>' .
-		                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
-			                      array(
-				                      'show_avatar' => 'false',
-				                      'show_tel'    => 'force',
-				                      'show_sms'    => 'force',
-				                      'show_email'  => 'force',
-				                      'show_roles'  => 'false',
-			                      ) ) . '</div>';
+		if ( ! empty( $contrat_instance->getModel() ) && ! empty( $contrat_instance->getModel()->getProducteur() ) && ! empty( $contrat_instance->getModel()->getProducteur()->getUser() ) ) {
+			$contact_producteur = '<div><h5>Contact producteur:</h5>' .
+			                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
+				                      array(
+					                      'show_avatar' => 'false',
+					                      'show_tel'    => 'force',
+					                      'show_sms'    => 'force',
+					                      'show_email'  => 'force',
+					                      'show_roles'  => 'false',
+				                      ) ) . '</div>';
+		}
 	}
 
 	$output = '';
@@ -1755,15 +1757,17 @@ function amapress_get_paiement_table_by_dates(
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
-		$contact_producteur = '<div><h5>Contact producteur:</h5>' .
-		                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
-			                      array(
-				                      'show_avatar' => 'false',
-				                      'show_tel'    => 'force',
-				                      'show_sms'    => 'force',
-				                      'show_email'  => 'force',
-				                      'show_roles'  => 'false',
-			                      ) ) . '</div>';
+		if ( ! empty( $contrat_instance->getModel() ) && ! empty( $contrat_instance->getModel()->getProducteur() ) && ! empty( $contrat_instance->getModel()->getProducteur()->getUser() ) ) {
+			$contact_producteur = '<div><h5>Contact producteur:</h5>' .
+			                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
+				                      array(
+					                      'show_avatar' => 'false',
+					                      'show_tel'    => 'force',
+					                      'show_sms'    => 'force',
+					                      'show_email'  => 'force',
+					                      'show_roles'  => 'false',
+				                      ) ) . '</div>';
+		}
 	}
 
 	$ret = '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">

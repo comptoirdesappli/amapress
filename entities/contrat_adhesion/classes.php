@@ -472,12 +472,26 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['producteur.nom']                   = [
 				'desc' => 'Nom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->last_name;
 				}
 			];
 			$ret['producteur.prenom']                = [
 				'desc' => 'Prénom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->first_name;
 				}
 			];
@@ -496,18 +510,39 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['producteur.adresse']               = [
 				'desc' => 'Adresse producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getFormattedAdresse();
 				}
 			];
 			$ret['producteur.tel']                   = [
 				'desc' => 'Téléphone producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getTelephone();
 				}
 			];
 			$ret['producteur.email']                 = [
 				'desc' => 'Email producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getEmail();
 				}
 			];

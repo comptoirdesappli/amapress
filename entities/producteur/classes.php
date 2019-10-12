@@ -229,7 +229,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	public function getNomExploitation() {
 		$v = $this->getCustom( 'amapress_producteur_nom_exploitation' );
 		if ( empty( $v ) ) {
-			$v = $this->getUser()->getDisplayName();
+			$v = $this->getUser() ? $this->getUser()->getDisplayName() : '';
 		}
 
 		return $v;
@@ -238,7 +238,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	public function getAdresseExploitation() {
 		$v = $this->getCustom( 'amapress_producteur_adresse_exploitation' );
 		if ( empty( $v ) ) {
-			$v = $this->getUser()->getFormattedAdresse();
+			$v = $this->getUser() ? $this->getUser()->getFormattedAdresse() : '';
 		}
 
 		return $v;
@@ -255,14 +255,14 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 			return true;
 		}
 
-		return $this->getUser()->isAdresse_localized();
+		return $this->getUser() ? $this->getUser()->isAdresse_localized() : false;
 	}
 
 	public function getAdresseExploitationLongitude() {
 		if ( $this->hasAdresseExploitation() && $this->isAdresseExploitationLocalized() ) {
 			return $this->getCustom( 'amapress_producteur_adresse_exploitation_long' );
 		} else {
-			return $this->getUser()->getUserLongitude();
+			return $this->getUser() ? $this->getUser()->getUserLongitude() : 0;
 		}
 	}
 
@@ -270,7 +270,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 		if ( $this->hasAdresseExploitation() && $this->isAdresseExploitationLocalized() ) {
 			return $this->getCustom( 'amapress_producteur_adresse_exploitation_lat' );
 		} else {
-			return $this->getUser()->getUserLatitude();
+			return $this->getUser() ? $this->getUser()->getUserLatitude() : 0;
 		}
 	}
 
@@ -280,7 +280,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 			return wpautop( $v );
 		}
 
-		return $this->getUser()->getFormattedAdresseHtml();
+		return $this->getUser() ? $this->getUser()->getFormattedAdresseHtml() : '';
 	}
 
 	public function resolveAddress() {

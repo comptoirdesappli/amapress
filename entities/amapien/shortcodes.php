@@ -41,9 +41,9 @@ function amapress_producteur_map_shortcode( $atts ) {
 	$markers[] = array(
 		'longitude' => $producteur->getAdresseExploitationLongitude(),
 		'latitude'  => $producteur->getAdresseExploitationLatitude(),
-		'url'       => ( $atts['show_email'] == true ? 'mailto:' . $producteur->getUser()->getEmail() : null ),
+		'url'       => ( $atts['show_email'] == true && $producteur->getUser() ? 'mailto:' . $producteur->getUser()->getEmail() : null ),
 		'title'     => $producteur->getNomExploitation(),
-		'content'   => $producteur->getUser()->getDisplay( $atts ),
+		'content'   => $producteur->getUser() ? $producteur->getUser()->getDisplay( $atts ) : '',
 	);
 
 	return amapress_generate_map( $markers, $atts['mode'] );

@@ -45,14 +45,14 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 		foreach ( $contrats as $contrat ) {
 			$replacements                                      = [];
 			$replacements['producteur_contact']                = '<div><h5>Contact producteur:</h5>' .
-			                                                     $producteur->getUser()->getDisplay(
+			                                                     ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
 				                                                     array(
 					                                                     'show_avatar' => 'false',
 					                                                     'show_tel'    => 'force',
 					                                                     'show_sms'    => 'force',
 					                                                     'show_email'  => 'force',
 					                                                     'show_roles'  => 'false',
-				                                                     ) ) . '</div>';
+				                                                     ) ) : '' ) . '</div>';
 			$replacements['producteur_paniers_quantites']      = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
 			$replacements['producteur_paniers_quantites']      = amapress_get_contrat_quantite_datatable(
 				$contrat->ID, null,
@@ -71,7 +71,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 			$replacements['lien_contrats_quantites'] = Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
 
-			$replacements['producteur_nom']      = $producteur->getUser()->getDisplayName() . ' (' . $producteur->getTitle() . ')';
+			$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
 			$replacements['producteur_contrats'] = $producteur->getContratsNames();
 
 			$referent_ids = $contrat->getAllReferentsIds();
@@ -125,7 +125,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 
 		$replacements['contrat_nom'] = $contrat->getTitle();
 
-		$replacements['producteur_nom']      = $producteur->getUser()->getDisplayName() . ' (' . $producteur->getTitle() . ')';
+		$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
 		$replacements['producteur_contrats'] = $producteur->getContratsNames();
 		$date_remise                         = from( $contrat->getPaiements_Liste_dates() )
 			->orderBy( function ( $d ) {
