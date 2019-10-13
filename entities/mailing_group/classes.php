@@ -739,14 +739,30 @@ class AmapressMailingGroup extends TitanEntity {
 			$moderator = AmapressUser::getBy( amapress_current_user_id() );
 		}
 
+		$subject = $msg['subject'];
+		global $phpmailer;
+
+		// (Re)create it, if it's gone missing
+		if ( ! ( $phpmailer instanceof PHPMailer ) ) {
+			require_once ABSPATH . WPINC . '/class-phpmailer.php';
+			require_once ABSPATH . WPINC . '/class-smtp.php';
+			$phpmailer = new PHPMailer( true );
+		}
+
+		$body    = $phpmailer->html2text( $msg['content'] );
+		$summary = wpautop( "\n------\nSujet: $subject\n$body\n------\n" );
+
+
 		$placeholders = [
 			'liste_nom'              => $this->getName(),
 			'nom_liste'              => $this->getName(),
 			'moderated_by'           => $moderator ? Amapress::makeLink( 'mailto:' . $moderator->getEmail(), $moderator->getDisplayName() ) : '',
 			'moderated_by_email'     => $moderator ? $moderator->getEmail() : '',
 			'moderated_by_name'      => $moderator ? $moderator->getDisplayName() : '',
-			'msg_subject'            => $msg['subject'],
-			'sender'                 => $msg['from'],
+			'msg_subject'            => $subject,
+			'msg_summary'            => $summary,
+			'sender'                 => esc_html( $msg['from'] ),
+			'msg_waiting_link'       => Amapress::makeLink( admin_url( 'admin.php?page=mailinggroup_moderation&tab=mailgrp-moderate-tab-' . $this->ID ), 'Voir' ),
 			'msg_reject_silent_link' => amapress_get_mailgroup_action_form( 'Rejetter sans prévenir', 'amapress_mailgroup_reject_quiet', $this->ID, $msg['id'] ),
 			'msg_reject_notif_link'  => amapress_get_mailgroup_action_form( 'Rejetter', 'amapress_mailgroup_reject', $this->ID, $msg['id'] ),
 			'msg_distrib_link'       => amapress_get_mailgroup_action_form( 'Distribuer', 'amapress_mailgroup_distribute', $this->ID, $msg['id'] ),
@@ -769,10 +785,12 @@ class AmapressMailingGroup extends TitanEntity {
 				'moderated_by_email'     => 'Email du modérateur de l\'email',
 				'moderated_by_name'      => 'Nom du modérateur de l\'email',
 				'msg_subject'            => 'Sujet de l\'email modéré',
+				'msg_summary'            => 'Sujet et contenu de l\'email à modérer',
 				'sender'                 => 'Emetteur de l\'email',
 				'msg_reject_silent_link' => 'Lien de rejet sans notification de l\'email',
 				'msg_reject_notif_link'  => 'Lien de rejet avec notification de l\'email',
 				'msg_distrib_link'       => 'Lien de distribution de l\'email',
+				'msg_waiting_link'       => 'Lien vers les emails en attente de modération',
 			]
 		);
 
