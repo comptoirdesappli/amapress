@@ -3240,6 +3240,7 @@ class Amapress {
 			$item->object           = 'archive_' . $post_type;
 			$item->menu_item_parent = 0;
 			$item->type             = 'amapress-custom';
+			$item->type_label       = __( 'Archives', 'amapress' );
 			$item->title            = $post_conf['plural'];
 			$item->url              = get_post_type_archive_link( $post_type );
 			$item->target           = '';
@@ -3250,7 +3251,45 @@ class Amapress {
 			$item->xfn = '';
 
 			$items[] = $item;
+
+			$item = new stdClass();
+
+			$item->object_id        = $i ++;
+			$item->db_id            = 0;
+			$item->object           = 'latest_' . $post_type;
+			$item->menu_item_parent = 0;
+			$item->type             = 'amapress-custom-latest';
+			$item->title            = 'Derniers ' . $post_conf['plural'];
+			$item->type_label       = __( 'Récents', 'amapress' );
+			$item->url              = get_post_type_archive_link( $post_type );
+			$item->target           = '';
+			$item->attr_title       = '';
+			if ( empty( $item->classes ) ) {
+				$item->classes = array();
+			}
+			$item->xfn = '';
+
+			$items[] = $item;
 		}
+
+		$item = new stdClass();
+
+		$item->object_id        = $i ++;
+		$item->db_id            = 0;
+		$item->object           = 'latest_post';
+		$item->menu_item_parent = 0;
+		$item->type             = 'amapress-custom-latest';
+		$item->title            = __( 'Derniers articles', 'amapress' );
+		$item->type_label       = __( 'Derniers articles', 'amapress' );
+		$item->url              = get_post_type_archive_link( 'post' );
+		$item->target           = '';
+		$item->attr_title       = '';
+		if ( empty( $item->classes ) ) {
+			$item->classes = array();
+		}
+		$item->xfn = '';
+
+		$items[] = $item;
 
 		foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
 			$item = new stdClass();
@@ -3311,6 +3350,9 @@ class Amapress {
 
 	/* take care of the urls */
 	public static function amapress_menu_filter( $items, $menu, $args ) {
+		$menu_order = count( $items ); /* Offset menu order */
+		$i          = 20000;
+
 		/* alter the URL for cpt-archive objects */
 		foreach ( $items as &$item ) {
 			//var_dump($item->type);
@@ -3319,6 +3361,44 @@ class Amapress {
 				foreach ( AmapressEntities::getPostTypes() as $post_type => $post_conf ) {
 					if ( $item->object == 'archive_' . $post_type ) {
 						$item->url = get_post_type_archive_link( $post_type );
+						break;
+					}
+				}
+			} else if ( $item->type == 'amapress-custom-latest' && ! is_admin() ) {
+				$types = array_merge( [ 'post' ], array_keys( AmapressEntities::getPostTypes() ) );
+				foreach ( $types as $post_type ) {
+					if ( $item->object == 'latest_' . $post_type ) {
+						$child_items = array();
+						$item->url   = '#';
+
+						if ( ! is_customize_preview() ) {
+							foreach (
+								get_posts( [
+									'post_type'     => amapress_unsimplify_post_type( $post_type ),
+									'amapress_date' => 'active'
+								] ) as $post
+							) {
+								$subitem                   = new stdClass();
+								$subitem->object_id        = $i ++;
+								$subitem->db_id            = 0;
+								$subitem->menu_item_parent = $item->ID;
+								$subitem->post_type        = 'nav_menu_item';
+								$subitem->object           = 'custom';
+								$subitem->type             = 'custom';
+								$subitem->menu_order       = ++ $menu_order;
+								$subitem->title            = $post->post_title;
+								$subitem->url              = get_permalink( $post->ID );
+								$subitem->target           = '';
+								$subitem->attr_title       = '';
+								if ( empty( $post->classes ) ) {
+									$subitem->classes = array();
+								}
+								$subitem->xfn = '';
+								/* add children */
+								$child_items [] = $subitem;
+							}
+							$items = array_merge( $items, $child_items );
+						}
 						break;
 					}
 				}
