@@ -311,12 +311,14 @@ class AmapressPaniers {
 			'post_type'      => 'amps_produit',
 			'posts_per_page' => - 1,
 			'meta_query'     => array(
+				'relation' => 'OR',
 				array(
 					'key'     => 'amapress_produit_producteur',
 					'value'   => $producteur,
 					'compare' => '=',
 					'type'    => 'NUMERIC',
 				),
+				amapress_prepare_like_in_array( 'amapress_produit_producteur', $producteur )
 			),
 			'order'          => 'ASC',
 			'orderby'        => 'title'
@@ -456,12 +458,14 @@ class AmapressPaniers {
 			'post_type'      => 'amps_produit',
 			'posts_per_page' => - 1,
 			'meta_query'     => array(
+				'relation' => 'OR',
 				array(
 					'key'     => 'amapress_produit_producteur',
 					'value'   => $producteur,
 					'compare' => '=',
 					'type'    => 'NUMERIC',
 				),
+				amapress_prepare_like_in_array( 'amapress_produit_producteur', $producteur )
 			),
 			'order'          => 'ASC',
 			'orderby'        => 'title'

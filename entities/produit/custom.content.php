@@ -12,16 +12,17 @@ function amapress_get_custom_content_produit( $content ) {
 	}
 //
 	$prod = new AmapressProduit( get_the_ID() );
-	if ( $prod->getProducteur() ) {
-		ob_start();
-		echo '<h3>' . Amapress::getOption( 'producteur_title', 'Producteur' ) . '</h3>';
-		echo '<p><a href="' . $prod->getProducteur()->getPermalink() . '">' . $prod->getProducteur()->getTitle() . '</a></p>';
-
-		echo '<h3>Recettes</h3>';
-		echo do_shortcode( "[recettes produits={$prod->ID}]" );
-
-		$content .= ob_get_clean();
+	ob_start();
+	$producteurs = $prod->getProducteurs();
+	echo '<h3>' . _n( 'Producteur', 'Producteurs', count( $producteurs ), 'amapress' ) . '</h3>';
+	foreach ( $producteurs as $producteur ) {
+		echo '<p><a href="' . $producteur->getPermalink() . '">' . $producteur->getTitle() . '</a></p>';
 	}
+
+	echo '<h3>Recettes</h3>';
+	echo do_shortcode( "[recettes produits={$prod->ID}]" );
+
+	$content .= ob_get_clean();
 
 	return $content;
 }

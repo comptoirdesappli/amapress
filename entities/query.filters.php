@@ -135,11 +135,14 @@ function amapress_filter_posts( WP_Query $query ) {
 			} else if ( $pt == 'produit' ) {
 				foreach ( $refs as $r ) {
 					$meta[] = array(
-						'key'     => "amapress_{$pt}_producteur",
+						'key'     => "amapress_produit_producteur",
 						'value'   => amapress_prepare_in( $r['producteur'] ),
 						'compare' => 'IN',
 						'type'    => 'NUMERIC'
 					);
+					foreach ( $r['producteur'] as $prod_id ) {
+						$meta[] = amapress_prepare_like_in_array( 'amapress_produit_producteur', $prod_id );
+					}
 				}
 
 			} else if ( $pt == 'panier' ) {
@@ -215,13 +218,23 @@ function amapress_filter_posts( WP_Query $query ) {
 
 	if ( ! empty( $query->query_vars['amapress_producteur'] ) ) {
 		$amapress_producteur = Amapress::resolve_post_id( $query->query_vars['amapress_producteur'], AmapressProducteur::INTERNAL_POST_TYPE );
-		if ( $pt == 'produit' || $pt == 'contrat' || $pt == 'visite' ) {
+		if ( $pt == 'contrat' || $pt == 'visite' ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_producteur",
 					'value'   => $amapress_producteur,
 					'compare' => '=',
 				)
+			) );
+		} else if ( $pt == 'produit' ) {
+			amapress_add_meta_query( $query, array(
+				'relation' => 'OR',
+				array(
+					'key'     => "amapress_produit_producteur",
+					'value'   => $amapress_producteur,
+					'compare' => '=',
+				),
+				amapress_prepare_like_in_array( 'amapress_produit_producteur', $amapress_producteur )
 			) );
 		} else if ( 'contrat_instance' == $pt ) {
 			amapress_add_meta_query( $query, array(

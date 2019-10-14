@@ -18,9 +18,9 @@ class AmapressProduit extends TitanEntity {
 //        return $this->getCustom('amapress_produit_photo');
 //    }
 
-	/** @return AmapressProducteur */
-	public function getProducteur() {
-		return $this->getCustomAsEntity( 'amapress_produit_producteur', 'AmapressProducteur' );
+	/** @return AmapressProducteur[] */
+	public function getProducteurs() {
+		return $this->getCustomAsEntityArray( 'amapress_produit_producteur', 'AmapressProducteur' );
 	}
 
 	public function getContent_model() {
