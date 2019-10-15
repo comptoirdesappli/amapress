@@ -1433,7 +1433,8 @@ add_action( 'pre_get_users', function ( WP_User_Query $uqi ) {
 
 add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 	global $wpdb;
-	$where = '';
+	$where                 = '';
+	$lieu_already_filtered = false;
 	if ( isset( $uqi->query_vars['amapress_role'] ) ) {
 		$amapress_role = $uqi->query_vars['amapress_role'];
 		if ( $amapress_role == 'referent_lieu' ) {
@@ -1454,26 +1455,45 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			}
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
 			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
-		} else if ( $amapress_role == 'resp_distrib' ) {
-			$user_ids    = AmapressDistributions::getResponsablesBetween(
-				Amapress::start_of_week( amapress_time() ),
-				Amapress::end_of_week( amapress_time() ) );
-			$user_id_sql = amapress_prepare_in_sql( $user_ids );
-			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
-		} else if ( $amapress_role == 'resp_distrib_next' ) {
-			$time        = Amapress::add_a_week( amapress_time() );
-			$user_ids    = AmapressDistributions::getResponsablesBetween(
-				Amapress::start_of_week( $time ),
-				Amapress::end_of_week( $time ) );
-			$user_id_sql = amapress_prepare_in_sql( $user_ids );
-			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
-		} else if ( $amapress_role == 'resp_distrib_month' ) {
-			$user_ids    = AmapressDistributions::getResponsablesBetween(
-				Amapress::start_of_week( amapress_time() ),
-				Amapress::end_of_month( amapress_time() )
-			);
-			$user_id_sql = amapress_prepare_in_sql( $user_ids );
-			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
+		} else if ( $amapress_role == 'resp_distrib'
+		            || $amapress_role == 'resp_distrib_next'
+		            || $amapress_role == 'resp_distrib_month' ) {
+			if ( isset( $uqi->query_vars['amapress_lieu'] ) ) {
+				$amapress_lieu = $uqi->query_vars['amapress_lieu'];
+				if ( ! is_array( $amapress_lieu ) ) {
+					$amapress_lieu = array( $amapress_lieu );
+				}
+				$lieu_ids = array_map( function ( $l ) {
+					return Amapress::resolve_post_id( $l, AmapressLieu_distribution::INTERNAL_POST_TYPE );
+				}, $amapress_lieu );
+			} else {
+				$lieu_ids = [];
+			}
+
+			//resp_distrib
+			$time       = amapress_time();
+			$start_date = Amapress::start_of_week( $time );
+			$end_date   = Amapress::end_of_week( $time );
+			if ( $amapress_role == 'resp_distrib_next' ) {
+				$time       = Amapress::add_a_week( $time );
+				$start_date = Amapress::start_of_week( $time );
+				$end_date   = Amapress::end_of_week( $time );
+			} elseif ( $amapress_role == 'resp_distrib_month' ) {
+				$start_date = Amapress::start_of_week( $time );
+				$end_date   = Amapress::end_of_month( $time );
+			}
+
+			if ( empty( $lieu_ids ) ) {
+				$user_ids = AmapressDistributions::getResponsablesBetween(
+					$start_date, $end_date );
+			} else {
+				$user_ids = AmapressDistributions::getResponsablesLieuBetween(
+					$start_date, $end_date, $lieu_ids );
+			}
+
+			$lieu_already_filtered = true;
+			$user_id_sql           = amapress_prepare_in_sql( $user_ids );
+			$where                 .= " AND $wpdb->users.ID IN ($user_id_sql)";
 		} else if ( 'collectif' == $amapress_role ) {
 			$user_ids    = array_merge(
 				get_users( wp_parse_args( 'amapress_role=access_admin&fields=id' ) ),
@@ -1511,48 +1531,6 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			} else {
 				$uqi->query_vars[ AmapressUser::AMAP_ROLE ] = $amap_role;
 			}
-//            if ($amap_role == 'any') {
-//                $user_ids = get_users(array(
-//                    'fields' => 'ID',
-//                    'meta_query' => array(
-//                        array(
-//                            'relation' => 'AND',
-//                            array(
-//                                'key' => "amapress_user_amap_roles",
-//                                'value' => '"\d+"',
-//                                'compare' => 'REGEXP',
-//                            ),
-//                            array(
-//                                'key' => "amapress_user_amap_roles",
-//                                'compare' => 'EXISTS',
-//                            ),
-//                        )
-//                    )));
-//                $user_ids = array_merge($user_ids, get_users(array(
-//                    'fields' => 'ID',
-//                    'role__in' => amapress_can_access_admin_roles(),
-//                )));
-//            } else {
-//                $amap_role = Amapress::resolve_tax_id($amap_role, AmapressUser::AMAP_ROLE);
-//                $user_ids = get_users(array(
-//                    'fields' => 'ID',
-//                    'meta_query' => array(
-//                        array(
-//                            'key' => "amapress_user_amap_roles",
-//                            'value' => '"' . $amap_role . '"',
-//                            'compare' => 'LIKE',
-//                        )
-//                    )));
-//                $user_ids = array_merge($user_ids, get_users(array(
-//                    'fields' => 'ID',
-//                    'role__in' => array($amap_role),
-//                )));
-//            }
-//            if (!empty($user_ids)) {
-//                $user_ids = implode(',', array_unique($user_ids));
-//                if (empty($user_ids)) $user_ids = '0';
-//                $where .= " AND $wpdb->users.ID IN ($user_ids)";
-//            }
 		}
 	}
 
@@ -1716,7 +1694,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			$where        .= " AND $wpdb->users.ID $op ($all_user_ids)";
 		}
 	}
-	if ( isset( $uqi->query_vars['amapress_lieu'] ) ) {
+	if ( ! $lieu_already_filtered && isset( $uqi->query_vars['amapress_lieu'] ) ) {
 		$date          = Amapress::end_of_day( amapress_time() );
 		$amapress_lieu = $uqi->query_vars['amapress_lieu'];
 		if ( ! is_array( $amapress_lieu ) ) {

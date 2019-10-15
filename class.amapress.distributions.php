@@ -76,6 +76,48 @@ class AmapressDistributions {
 		return $res;
 	}
 
+	/** @return int[] */
+	public static function getResponsablesLieuBetween( $start_date, $end_date, $lieu_ids ) {
+		if ( empty( $lieu_ids ) ) {
+			return self::getResponsablesBetween( $start_date, $end_date );
+		}
+
+		$start_date = Amapress::start_of_day( $start_date );
+		$end_date   = Amapress::end_of_day( $end_date );
+		$key        = "getResponsablesBetween-$start_date-$end_date-" . implode( '-', $lieu_ids );
+		$res        = wp_cache_get( $key );
+		if ( false === $res ) {
+			global $wpdb;
+			$query    = $wpdb->prepare(
+				"SELECT mt2.meta_value FROM $wpdb->postmeta mt1 
+					INNER JOIN $wpdb->postmeta mt2 ON mt1.post_id = mt2.post_id 
+					INNER JOIN $wpdb->postmeta mt3 ON mt1.post_id = mt3.post_id 
+					WHERE mt1.meta_key = %s AND mt2.meta_key = %s AND mt3.meta_key = %s
+					AND CAST(mt1.meta_value as SIGNED) BETWEEN %d AND %d
+					AND CAST(mt3.meta_value as SIGNED) IN (" . amapress_prepare_in_sql( $lieu_ids ) . ")",
+				'amapress_distribution_date',
+				'amapress_distribution_responsables',
+				'amapress_distribution_lieu',
+				Amapress::start_of_day( $start_date ),
+				Amapress::end_of_day( $end_date )
+			);
+			$resp_ids = [];
+			foreach ( $wpdb->get_col( $query ) as $responsables ) {
+				$v = maybe_unserialize( $responsables );
+				if ( is_array( $v ) ) {
+					$resp_ids += $v;
+				} else {
+					$resp_ids[] = $v;
+				}
+			}
+			$resp_ids = array_unique( array_map( 'intval', $resp_ids ) );
+			$res      = $resp_ids;
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
 	public static function isCurrentUserResponsableBetween( $start_date, $end_date, $user_id = null ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return false;
@@ -161,9 +203,9 @@ class AmapressDistributions {
 				continue;
 			}
 
-			$now             = Amapress::start_of_day( $contrat->getDate_debut() );
+			$now = Amapress::start_of_day( $contrat->getDate_debut() );
 			Amapress::setFilterForReferent( false );
-			$all_contrat_ids                 = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
 			Amapress::setFilterForReferent( true );
 
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
@@ -242,7 +284,7 @@ class AmapressDistributions {
 				}
 			}
 
-			$start     = Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() );
+			$start = Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() );
 			//$stop      = Amapress::end_of_day( $contrat->getDate_fin() );
 			$cache_key = "amapress_generate_distribs2_$start";
 			$distribs  = wp_cache_get( $cache_key );
@@ -276,11 +318,11 @@ class AmapressDistributions {
 
 				$dist_contrats = array_map( 'intval', Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' ) );
 //				if ( ! $is_ref ) {
-					$diff_contrats = array_diff( $dist_contrats, $all_contrat_ids );
-					if ( ! empty( $diff_contrats ) ) {
-						$clean         = true;
-						$dist_contrats = array_diff( $dist_contrats, $diff_contrats );
-					}
+				$diff_contrats = array_diff( $dist_contrats, $all_contrat_ids );
+				if ( ! empty( $diff_contrats ) ) {
+					$clean         = true;
+					$dist_contrats = array_diff( $dist_contrats, $diff_contrats );
+				}
 //				}
 				$rem = false;
 				$add = false;
