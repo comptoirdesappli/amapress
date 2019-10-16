@@ -811,7 +811,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'les-paniers'       => array(
+			'les-paniers'  => array(
 				'name'              => amapress__( 'Report livraison' ),
 				'group'             => '3/6 - Distributions',
 				'table_header_text' => '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionnez le panier correspondant dans la liste ci-dessous</p>',
@@ -834,10 +834,18 @@ jQuery(function($) {
 				'type'              => 'related-posts',
 				'query'             => 'post_type=amps_panier&amapress_contrat_inst=%%id%%',
 			),
-
+			'nb_resp_supp' => array(
+				'name'        => amapress__( 'Responsables' ),
+				'type'        => 'number',
+				'required'    => true,
+				'desc'        => 'Indiquer le nombre de responsables de distributions supplémentaires pour ce contrat',
+				'group'       => '3/6 - Distributions',
+				'default'     => 0,
+				'show_column' => false,
+			),
 
 			// 4/6 Paniers
-			'quant_type'        => array(
+			'quant_type'   => array(
 				'name'       => amapress__( 'Choix du contenu des paniers' ),
 				'type'       => 'custom',
 				'group'      => '4/6 - Paniers',

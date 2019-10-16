@@ -24,14 +24,18 @@ class AmapressDistributions {
 	}
 
 	public static function get_required_responsables( $dist_id ) {
-		$default              = get_option( 'amapress_nb_responsables' );
-		$dist                 = AmapressDistribution::getBy( $dist_id );
-		$dist_nb_responsables = $dist->getNb_responsables_Supplementaires();
-		$lieu_nb_responsables = $dist->getLieu()->getNb_responsables();
+		$default                 = get_option( 'amapress_nb_responsables' );
+		$dist                    = AmapressDistribution::getBy( $dist_id );
+		$dist_nb_responsables    = $dist->getNb_responsables_Supplementaires();
+		$lieu_nb_responsables    = $dist->getLieu()->getNb_responsables();
+		$contrat_nb_responsables = 0;
+		foreach ( $dist->getContrats() as $contrat ) {
+			$contrat_nb_responsables += $contrat->getNb_responsables_Supplementaires();
+		}
 		if ( $lieu_nb_responsables > 0 ) {
-			return $lieu_nb_responsables + $dist_nb_responsables;
+			return $lieu_nb_responsables + $dist_nb_responsables + $contrat_nb_responsables;
 		} else {
-			return $default;
+			return $default + $contrat_nb_responsables;
 		}
 	}
 
