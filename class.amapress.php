@@ -2538,7 +2538,7 @@ class Amapress {
 				'bare_id'     => true,
 				'name'        => amapress__( 'Rediriger non connectés vers' ),
 				'type'        => 'select-pages',
-				'desc'        => 'Rediriger les amapiens non connectés vers',
+				'desc'        => 'Laisser vide pour rediriger vers la page de connexion ou rediriger vers une page spécifique',
 				'show_column' => false,
 			)
 		);
