@@ -335,34 +335,7 @@ class Amapress {
 	}
 
 	public static function get_lieu_id( $lieu ) {
-		if ( is_numeric( $lieu ) ) {
-			return intval( $lieu );
-		}
-		$lieu_id = - 1;
-		if ( is_string( $lieu ) ) {
-			$lieu_object = get_page_by_path( $lieu, 'OBJECT', 'amps_lieu' );
-			if ( $lieu_object ) {
-				$lieu_id = $lieu_object->ID;
-			}
-		}
-
-		return $lieu_id;
-	}
-
-	public static function get_lieu_display( $lieu ) {
-		if ( is_string( $lieu ) ) {
-			$lieu_object = get_page_by_path( $lieu, 'OBJECT', 'amps_lieu' );
-			if ( $lieu_object ) {
-				return $lieu_object->post_title;
-			}
-		} else if ( is_numeric( $lieu ) ) {
-			$lieu_object = get_post( intval( $lieu ), 'amps_lieu' );
-			if ( $lieu_object ) {
-				return $lieu_object->post_title;
-			}
-		}
-
-		return $lieu;
+		return Amapress::resolve_post_id( $lieu, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 	}
 
 //	public static function init_post_capabilities( $singular, $plural ) {
