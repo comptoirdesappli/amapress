@@ -1912,10 +1912,17 @@ function amapress_echo_and_check_amapress_state_page() {
 </form>';
 			echo '<hr/>';
 			echo '<h3>Modèles d\'AMAP</h3>';
-			if ( $handle = opendir( AMAPRESS__PLUGIN_DIR . '/demos' ) ) {
+			$demo_dir = $_SERVER['DOCUMENT_ROOT'] . '/../demos';
+			if ( ! file_exists( $demo_dir ) ) {
+				$demo_dir = AMAPRESS__PLUGIN_DIR . '/demos';
+			}
+			if ( $handle = opendir( $demo_dir ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( $entry != '.' && $entry != '..' && $entry != 'AmapDemoBase.php' ) {
-						echo '<a target="_blank" href="' . esc_attr( add_query_arg( 'import_amap', $entry, admin_url( 'admin.php?page=amapress_state' ) ) ) . '">' . esc_html( $entry ) . '</a><br/>';
+						echo '<a target="_blank" href="' . esc_attr( add_query_arg(
+								[ 'import_amap' => $entry, 'shift_weeks' => 0 ],
+								admin_url( 'admin.php?page=amapress_state' )
+							) ) . '">' . esc_html( $entry ) . '</a><br/>';
 					}
 				}
 				closedir( $handle );
