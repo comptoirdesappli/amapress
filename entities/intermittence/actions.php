@@ -49,8 +49,8 @@ function amapress_create_user_if_not_exists(
 		wp_new_user_notification( $user_id, null, $notify );
 
 		if ( ! empty( $address ) ) {
-			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
-			preg_match( '/^(.+?),\s*(\d{5}|2[AB]\d{3})\s+([^,]+)$/', $address, $matches );
+			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d\s*\d\s*\d\s*\d\s*\d|2\s*[AB]\s*\d\s*\d\s*\d)\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
+			preg_match( '/^(.+?),\s*(\d\s*\d\s*\d\s*\d\s*\d|2\s*[AB]\s*\d\s*\d\s*\d)\s+([^,]+)$/', $address, $matches );
 			if ( $matches ) {
 				update_user_meta( $user->ID, 'amapress_user_adresse', $matches[1] );
 				update_user_meta( $user->ID, 'amapress_user_code_postal', $matches[2] );
@@ -86,8 +86,8 @@ function amapress_create_user_if_not_exists(
 			);
 		}
 		if ( ! empty( $address ) ) {
-			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d{5}|2[AB]\d{3})\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
-			preg_match( '/^(.+?),\s*(\d{5}|2[AB]\d{3})\s+([^,]+)$/', $address, $matches );
+			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d\s*\d\s*\d\s*\d\s*\d|2\s*[AB]\s*\d\s*\d\s*\d)\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
+			preg_match( '/^(.+?),\s*(\d\s*\d\s*\d\s*\d\s*\d|2\s*[AB]\s*\d\s*\d\s*\d)\s+([^,]+)$/', $address, $matches );
 			if ( $matches ) {
 				update_user_meta( $user->ID, 'amapress_user_adresse', $matches[1] );
 				update_user_meta( $user->ID, 'amapress_user_code_postal', $matches[2] );
