@@ -324,6 +324,17 @@ function amapress_get_state() {
 		admin_url( 'admin.php?page=amapress_options_page&tab=site_reference' )
 	);
 
+	if ( ! function_exists( 'get_filesystem_method' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+	}
+	$transport            = get_filesystem_method();
+	$state['05_config'][] = amapress_get_check_state(
+		'direct' == $transport ? 'success' : 'warning',
+		"Méthode de mise à jour WordPress: $transport",
+		'direct' == $transport ? 'Le mode de mise à jour actuel est direct. Vous pourrez effectuer les mises à jours sans problème.' : 'Le mode de mise à jour actuel n\'est pas direct. Vous pourrez rencontrer des difficultés à effectuer les mises à jours (<a href="https://codex.wordpress.org/fr:Modifier_wp-config.php#Les_Constantes_des_Mises_.C3.80_Jour_WordPress" target="_blank">voir les options de configuration de WordPress</a>).',
+		''
+	);
+
 	$redir_test_url       = site_url( 'shouldredirect' );
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
