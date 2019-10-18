@@ -362,7 +362,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 
 		if ( $show_comment ) {
 			if ( $for_pdf ) {
-				$line['comment'] = '';
+				$line['comment'] = esc_html( $principal_user->getCommentEmargement() );
 			} else {
 				$comment = esc_html( $principal_user->getCommentEmargement() );
 				if ( empty( $comment ) ) {
