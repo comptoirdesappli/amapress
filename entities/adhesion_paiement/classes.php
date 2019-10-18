@@ -287,6 +287,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		}
 
 		$placeholders = [];
+		foreach ( amapress_replace_mail_placeholders_help( '', false, false ) as $k => $v ) {
+			$prop_name                  = $k;
+			$placeholders[ $prop_name ] = amapress_replace_mail_placeholders( "%%$prop_name%%", null );
+		}
 		foreach ( self::getProperties() as $prop_name => $prop_config ) {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
