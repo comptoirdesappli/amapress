@@ -268,14 +268,16 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getMembersCount() {
-		$user_ids = [];
+		$user_emails = [];
 		foreach ( $this->getMembersQueries() as $query ) {
 			foreach ( get_users( $query ) as $user ) {
-				$user_ids[] = $user->ID;
+				/* @var WP_User $user */
+				$user_emails[] = $user->user_email;
 			}
 		}
+		$user_emails = array_merge( $this->getRawEmails() );
 
-		return count( array_unique( $user_ids ) ) + count( $this->getRawEmails() );
+		return count( array_unique( $user_emails ) );
 	}
 
 	public function testParams() {

@@ -222,6 +222,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'type'        => 'textarea',
 				'desc'        => 'Liste d\'adresses emails à ajouter à cet Email groupé',
 				'show_column' => false,
+				'searchable'  => true,
 			),
 			'reply_to'         => array(
 				'group'       => 'Membres',
