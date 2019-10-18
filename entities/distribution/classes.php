@@ -401,7 +401,12 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		return stripslashes( Amapress::getOption( "resp_role_$role-name" ) );
+		$name = Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-name" );
+		if ( empty( $name ) ) {
+			$name = Amapress::getOption( "resp_role_$role-name" );
+		}
+
+		return stripslashes( $name );
 	}
 
 	public function getResponsableRoleDesc( $user_id ) {
@@ -410,7 +415,12 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		return stripslashes( Amapress::getOption( "resp_role_$role-desc" ) );
+		$desc = Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-desc" );
+		if ( empty( $desc ) ) {
+			$desc = Amapress::getOption( "resp_role_$role-desc" );
+		}
+
+		return stripslashes( $desc );
 	}
 //
 
@@ -772,13 +782,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						return Amapress::makeLink( $distrib->getListeEmargementHref() );
 					}
 				],
-				'lieu'                             => [
+				'lieu'                          => [
 					'desc' => 'Nom du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return $distrib->getRealLieu()->getTitle();
 					}
 				],
-				'lieu_instruction'                 => [
+				'lieu_instruction'              => [
 					'desc' => 'Instructions du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();

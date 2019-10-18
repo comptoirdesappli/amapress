@@ -21,14 +21,14 @@ function amapress_register_entities_distribution( $entities ) {
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-store',
 		'row_actions'      => array(
-			'emargement'  => [
+			'emargement'      => [
 				'label'  => 'Liste émargement',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
 				},
 			],
-			'quant_prod'  => [
+			'quant_prod'      => [
 				'label'  => 'Quantités producteurs',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
@@ -37,7 +37,7 @@ function amapress_register_entities_distribution( $entities ) {
 						admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
 				},
 			],
-			'mailto_resp' => [
+			'mailto_resp'     => [
 				'label'     => 'Email aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -53,7 +53,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'smsto_resp'  => [
+			'smsto_resp'      => [
 				'label'     => 'SMS aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -69,7 +69,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'mailto_amapiens'        => [
+			'mailto_amapiens' => [
 				'label'   => 'Email aux amapiens',
 				'target'  => '_blank',
 				'confirm' => true,
@@ -322,7 +322,14 @@ function amapress_get_active_contrat_month_options( $args ) {
 }
 
 function amapress_distribution_responsable_roles_options() {
-	$ret = [];
+	$ret   = [];
+	$lieux = Amapress::get_lieux();
+	if ( count( $lieux ) > 1 ) {
+		$ret[] = array(
+			'type' => 'heading',
+			'name' => 'Rôles des responsables de distribution - pour tous les lieux',
+		);
+	}
 	for ( $i = 1; $i < 6; $i ++ ) {
 		$ret[] = array(
 			'id'   => "resp_role_$i-name",
@@ -340,6 +347,33 @@ function amapress_distribution_responsable_roles_options() {
 	$ret[] = array(
 		'type' => 'save',
 	);
+
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+			$ret[]   = array(
+				'type' => 'heading',
+				'name' => 'Rôles des responsables de distribution - pour ' . $lieu->getTitle(),
+			);
+			$lieu_id = $lieu->ID;
+			for ( $i = 1; $i < 6; $i ++ ) {
+				$ret[] = array(
+					'id'   => "resp_role_{$lieu_id}_$i-name",
+					'name' => amapress__( "Nom du rôle $i" ),
+					'type' => 'text',
+					'desc' => 'Nom du rôle de responsable de distribution',
+				);
+				$ret[] = array(
+					'id'   => "resp_role_{$lieu_id}_$i-desc",
+					'name' => amapress__( "Description du rôle $i" ),
+					'type' => 'editor',
+					'desc' => 'Description du rôle de responsable de distribution',
+				);
+			}
+			$ret[] = array(
+				'type' => 'save',
+			);
+		}
+	}
 
 	return $ret;
 }

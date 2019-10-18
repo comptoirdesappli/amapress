@@ -23,7 +23,19 @@ class Amapress {
 	}
 
 	public static function hasRespDistribRoles() {
-		return ! empty( Amapress::getOption( 'resp_role_1-name' ) );
+		for ( $i = 1; $i < 6; $i ++ ) {
+			if ( ! empty( Amapress::getOption( "resp_role_$i-name" ) ) ) {
+				return true;
+			}
+
+			foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+				if ( ! empty( Amapress::getOption( "resp_role_{$lieu_id}_$i-name" ) ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public static function getOption( $name, $default = null ) {
