@@ -275,7 +275,7 @@ class AmapressMailingGroup extends TitanEntity {
 				$user_emails[] = $user->user_email;
 			}
 		}
-		$user_emails = array_merge( $this->getRawEmails() );
+		$user_emails = array_merge( $user_emails, $this->getRawEmails() );
 
 		return count( array_unique( $user_emails ) );
 	}
