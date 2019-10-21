@@ -1146,12 +1146,16 @@ function amapress_get_contrat_quantite_datatable(
 	}
 
 	/** @var AmapressDistribution $dist */
-	$next_distribs = AmapressDistribution::get_next_distributions( $date, 'ASC' );
-	$dist          = null;
+	$next_distribs  = AmapressDistribution::get_next_distributions( $date, 'ASC' );
+	$dist           = null;
+	$next_next_dist = null;
 	foreach ( $next_distribs as $distrib ) {
 		if ( in_array( $contrat_instance_id, $distrib->getContratIds() ) && ( empty( $lieu_id ) || $distrib->getLieuId() == $lieu_id ) ) {
+			if ( $dist ) {
+				$next_next_dist = $distrib;
+				break;
+			}
 			$dist = $distrib;
-			break;
 		}
 	}
 	if ( $dist ) {
@@ -1428,7 +1432,12 @@ function amapress_get_contrat_quantite_datatable(
 					                     '<strong>Semaine prochaine</strong> - ' :
 					                     ''
 				                     ) ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false ) : 'non planifiée' ) . '</p>';
-		$next_distrib_text .= '<p>' . Amapress::makeLink( admin_url( "edit.php?post_type=amps_distribution&amapress_date=thismonth" ), 'Autres dates de distribution' ) . '</p>';
+		if ( $next_next_dist ) {
+			$next_distrib_text .= '<p>Distribution suivante : ' .
+			                      Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib&date=' . date( 'Y-m-d', $next_next_dist->getDate() ) . '&tab=contrat-quant-tab-' . $contrat_instance_id ),
+				                      $next_next_dist->getTitle() ) . '</p>';
+		}
+		$next_distrib_text .= '<p>' . Amapress::makeLink( admin_url( "edit.php?post_type=amps_distribution&amapress_date=active&amapress_contrat_inst=$contrat_instance_id" ), 'Autres dates de distribution' ) . '</p>';
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
