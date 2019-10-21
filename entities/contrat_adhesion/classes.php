@@ -748,6 +748,23 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["quantite_unite"]                   = '(Tableau quantité) Unité de la quantité';
 		$ret["quantite_date"]                    = '(Tableau quantité) pour les paniers modulables : date de livraison';
 
+		$ret['paiement_type']     = '(Tableau paiement) Type de paiement (Chèque, espèces...)';
+		$ret['paiement_numero']   = '(Tableau paiement) Numéro du chèque';
+		$ret['paiement_emetteur'] = '(Tableau paiement) Nom de l\'adhérent émetteur';
+		$ret['paiement_banque']   = '(Tableau paiement) Banque du chèque';
+		$ret['paiement_montant']  = '(Tableau paiement) Montant du paiement';
+		$ret['paiement_date']     = '(Tableau paiement) Date d\'encaissement du paiement';
+		$ret['paiement_status']   = '(Tableau paiement) Etat du paiement';
+
+		$ret['paiement_x_type']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Type de paiement (Chèque, espèces...)';
+		$ret['paiement_x_numero']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Numéro du chèque';
+		$ret['paiement_x_emetteur'] = '(où x varie de 1 à 12 suivant le nombre de paiements) Nom de l\'adhérent émetteur';
+		$ret['paiement_x_banque']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Banque du chèque';
+		$ret['paiement_x_montant']  = '(où x varie de 1 à 12 suivant le nombre de paiements) Montant du paiement';
+		$ret['paiement_x_date']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Date d\'encaissement du paiement';
+		$ret['paiement_x_status']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Etat du paiement';
+
+
 		return Amapress::getPlaceholdersHelpTable( 'contrat-placeholders', $ret,
 			'de l\'inscription', $additional_helps, ! $for_contrat,
 			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%',
@@ -825,9 +842,27 @@ class AmapressAdhesion extends TitanEntity {
 			}
 		}
 
-//		amapress_dump($placeholders);
-//		die();
-//		amapress_dump($model_filename);
+		$paiements = $this->getAllPaiements();
+		$i         = 1;
+		foreach ( $paiements as $paiement ) {
+			$placeholders["paiement_type#$i"]     = $paiement->getTypeFormatted();
+			$placeholders["paiement_numero#$i"]   = $paiement->getNumero();
+			$placeholders["paiement_emetteur#$i"] = $paiement->getEmetteur();
+			$placeholders["paiement_banque#$i"]   = $paiement->getBanque();
+			$placeholders["paiement_montant#$i"]  = Amapress::formatPrice( $paiement->getAmount() );
+			$placeholders["paiement_date#$i"]     = date_i18n( 'd/m/Y', $paiement->getDate() );
+			$placeholders["paiement_status#$i"]   = $paiement->getStatusDisplay();
+			$i                                    += 1;
+
+			$placeholders["paiement_{$i}_type"]     = $placeholders["paiement_type#$i"];
+			$placeholders["paiement_{$i}_numero"]   = $placeholders["paiement_numero#$i"];
+			$placeholders["paiement_{$i}_emetteur"] = $placeholders["paiement_emetteur#$i"];
+			$placeholders["paiement_{$i}_banque"]   = $placeholders["paiement_banque#$i"];
+			$placeholders["paiement_{$i}_montant"]  = $placeholders["paiement_montant#$i"];
+			$placeholders["paiement_{$i}_date"]     = $placeholders["paiement_date#$i"];
+			$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
+		}
+
 		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
 
 //		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
@@ -843,6 +878,24 @@ class AmapressAdhesion extends TitanEntity {
 				} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
 					try {
 						$templateProcessor->cloneRow( 'quantite_description', $lines_count );
+					} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+					}
+				}
+			}
+		}
+
+		$lines_count = count( $paiements );
+		try {
+			$templateProcessor->cloneRow( 'paiement_montant', $lines_count );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'paiement_numero', $lines_count );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				try {
+					$templateProcessor->cloneRow( 'paiement_emetteur', $lines_count );
+				} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+					try {
+						$templateProcessor->cloneRow( 'paiement_banque', $lines_count );
 					} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
 					}
 				}

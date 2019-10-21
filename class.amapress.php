@@ -3736,8 +3736,13 @@ class Amapress {
 		return $filename;
 	}
 
-	public static function getContratGenericUrl() {
-		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
+	public static function getContratGenericUrl( $type = 'default' ) {
+		switch ( $type ) {
+			case 'simple':
+				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique_simple.docx';
+			default:
+				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique.docx';
+		}
 	}
 
 	public static function getBulletinGenericUrl() {
