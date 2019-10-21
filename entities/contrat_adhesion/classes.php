@@ -1820,7 +1820,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		);
 	}
 
-	public function preparePaiements() {
+	public function preparePaiements( $pre_filled_paiements = [] ) {
 		$contrat_instance        = $this->getContrat_instance();
 		$contrat_paiements_dates = $contrat_instance->getPaiements_Liste_dates();
 		$nb_paiements            = $this->getPaiements();
@@ -1895,8 +1895,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$amounts[] = $paiements_options['main_amount'];
 			}
 		}
-		$def_date = 0;
-		$def_id   = - 1;
+		$pre_filled_paiement_index = 1;
+		$def_date                  = 0;
+		$def_id                    = - 1;
 		foreach ( $contrat_paiements as $paiement ) {
 			$id     = $paiement ? $paiement->ID : $def_id --;
 			$numero = $paiement ? $paiement->getNumero() : '';
@@ -1909,6 +1910,13 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$amount      = array_shift( $amounts );
 			$status      = $paiement ? $paiement->getStatus() : 'not_received';
 			$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
+
+			if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ] ) ) {
+				$numero      = $pre_filled_paiements[ $pre_filled_paiement_index ]['num'];
+				$banque      = $pre_filled_paiements[ $pre_filled_paiement_index ]['banque'];
+				$adherent    = $pre_filled_paiements[ $pre_filled_paiement_index ]['emetteur'];
+				$paiement_dt = Amapress::start_of_day( intval( $pre_filled_paiements[ $pre_filled_paiement_index ]['date'] ) );
+			}
 
 			$meta = array(
 				'amapress_contrat_paiement_adhesion'         => $this->ID,
@@ -1935,6 +1943,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$my_post['ID'] = $id;
 				wp_update_post( $my_post, true );
 			}
+			$pre_filled_paiement_index += 1;
 		}
 	}
 

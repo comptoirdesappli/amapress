@@ -1167,7 +1167,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'          => array(
+			'date_cloture'   => array(
 				'name'       => amapress__( 'Clôture' ),
 				'type'       => 'date',
 				'group'      => '5/6 - Pré-inscription en ligne',
@@ -1193,7 +1193,17 @@ jQuery(function($) {
 //						}
 //					},
 			),
-			'word_model'        => array(
+			'pmt_user_input' => array(
+				'name'        => amapress__( 'Saisie règlements' ),
+				'type'        => 'checkbox',
+				'group'       => '5/6 - Pré-inscription en ligne',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Autoriser les amapiens à saisir leus règlements lors de la pré-inscription en ligne',
+			),
+			'word_model'     => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',

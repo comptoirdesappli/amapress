@@ -259,6 +259,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_manage_paiements', 1 );
 	}
 
+	public function getAllowAmapienInputPaiementsDetails() {
+		return $this->getCustom( 'amapress_contrat_instance_pmt_user_input', 1 );
+	}
+
 	public function getAllow_Cash() {
 		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}

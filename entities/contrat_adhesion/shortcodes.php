@@ -1945,14 +1945,63 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 					continue;
 				}
 
-				$cheques = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
-				$option  = esc_html( $cheques['desc'] );
-//			$cheque_main_amount = $cheques['main_amount'];
-//			$last_cheque        = $cheques['remain_amount'];
-				echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' value='$nb_cheque' class='required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
+				$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
+				$option             = esc_html( $cheques['desc'] );
+				$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
+				$last_cheque        = esc_attr( Amapress::formatPrice( $cheques['remain_amount'] ) );
+				echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
 			}
 			if ( $contrat->getAllow_Cash() ) {
-				echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='required' /><label for='cheques-esp'>En espèces</label><br/>";
+				echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='input-nb-cheques required' /><label for='cheques-esp'>En espèces</label><br/>";
+			}
+			if ( $contrat->getAllowAmapienInputPaiementsDetails() ) {
+				$amapien         = AmapressUser::getBy( $user_id );
+				$emetteur        = esc_attr( $amapien->getDisplayName() );
+				$paiements_dates = implode( '', array_map(
+					function ( $d ) {
+						return '<option value="' . esc_attr( $d ) . '">' . esc_html( date_i18n( 'd/m/Y', $d ) ) . '</option>';
+					}, $contrat->getPaiements_Liste_dates()
+				) );
+				echo '<script type="application/javascript">
+jQuery(function($) {
+    $(\'.input-nb-cheques\').change(function() {
+        var nb_cheques = parseInt($(this).val());
+        var main_amount = $(this).data("main-amount");
+        var last_amount = $(this).data("last-amount");
+        var i = 0;
+        $("#cheques-details tr").each(function() {
+           if (i<=nb_cheques) {
+                $(this).show();
+           } else {
+                $(this).hide();
+           }
+           $(".amps-pmt-amount", this).text(main_amount);
+           if (i == nb_cheques)
+               $(".amps-pmt-amount", this).text(last_amount);
+           i++;
+        });
+    });
+});
+</script>';
+				echo '<table id="cheques-details"><thead>
+<th>Date encaissement</th>
+<th>Numéro chèque</th>
+<th>Banque</th>
+<th>Emetteur</th>
+<th>Montant</th>
+</thead><tbody>';
+				for ( $i = 1; $i <= 12; $i ++ ) {
+					echo "<tr style='display: none'>
+<td><select id='pmt-$i-date' name='pmt[$i][date]' class='required'>
+$paiements_dates
+</select></td>
+<td><input type='text' id='pmt-$i-num' name='pmt[$i][num]' class='required' /></td>
+<td><input type='text' id='pmt-$i-banque' name='pmt[$i][banque]' class='required' /></td>
+<td><input type='text' id='pmt-$i-emetteur' name='pmt[$i][emetteur]' class='required' value='$emetteur' /></td>
+<td class='amps-pmt-amount'></td>
+</tr>";
+				}
+				echo '</tbody></table>';
 			}
 		} else {
 			echo "<input type='hidden' name='cheques' value='0'/>";
@@ -2092,7 +2141,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 
 		$inscription = AmapressAdhesion::getBy( $new_id );
 		if ( $inscription->getContrat_instance()->getManage_Cheques() ) {
-			$inscription->preparePaiements();
+			$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? $_REQUEST['pmt'] : [] );
 		}
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
