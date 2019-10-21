@@ -1220,6 +1220,7 @@ function amapress_get_contrat_quantite_datatable(
 	$data                         = array();
 	$adhesions                    = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $date, true, false );
 	$contrat_instance_quantites[] = null;
+	$real_date                    = $dist ? $dist->getRealDateForContrat( $contrat_instance_id ) : $date;
 	foreach ( $contrat_instance_quantites as $quant ) {
 		/** @var AmapressContrat_quantite $quant */
 		$row          = array();
@@ -1241,7 +1242,7 @@ function amapress_get_contrat_quantite_datatable(
 						$lieu_quant_adh_count += 1;
 					}
 					if ( $contrat_instance->isPanierVariable() ) {
-						foreach ( $adh->getVariables_Contrat_quantites( $date ) as $adh_quant ) {
+						foreach ( $adh->getVariables_Contrat_quantites( $real_date ) as $adh_quant ) {
 							if ( ! empty( $quand_id ) && $adh_quant['contrat_quantite']->ID != $quand_id ) {
 								continue;
 							}
@@ -1266,7 +1267,7 @@ function amapress_get_contrat_quantite_datatable(
 //							$lieu_quant_fact_count[ $quant_key ] += 1;
 						}
 					} else {
-						foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
+						foreach ( $adh->getContrat_quantites( $real_date ) as $adh_quant ) {
 							if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
 								continue;
 							}
@@ -1335,7 +1336,7 @@ function amapress_get_contrat_quantite_datatable(
 				$all_quant_adh_count += 1;
 			}
 			if ( $contrat_instance->isPanierVariable() ) {
-				foreach ( $adh->getVariables_Contrat_quantites( $date ) as $adh_quant ) {
+				foreach ( $adh->getVariables_Contrat_quantites( $real_date ) as $adh_quant ) {
 					if ( ! empty( $quand_id ) && $adh_quant['contrat_quantite']->ID != $quand_id ) {
 						continue;
 					}
@@ -1360,7 +1361,7 @@ function amapress_get_contrat_quantite_datatable(
 //					$all_quant_fact_count[ $quant_key ] += 1;
 				}
 			} else {
-				foreach ( $adh->getContrat_quantites( $date ) as $adh_quant ) {
+				foreach ( $adh->getContrat_quantites( $real_date ) as $adh_quant ) {
 					if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
 						continue;
 					}
@@ -1480,7 +1481,7 @@ function amapress_get_contrat_quantite_datatable(
 					}
 				}
 				$output .= implode( ', ', $output_quants );
-				$output .= '</p>';
+				$output           .= '</p>';
 			}
 		}
 		$output        .= '<p>En tout : ';
@@ -1497,7 +1498,7 @@ function amapress_get_contrat_quantite_datatable(
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">' .
 	       $next_distrib_text .
 	       $contact_producteur .
-	       '<p><em>Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . '</em></p>' .
+	       '<p><em>Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . ( $date != $real_date ? ' (panier déplacé du ' . date_i18n( 'd/m/Y', $real_date ) . ')' : '' ) . '</em></p>' .
 	       $output . '</div>';
 }
 
