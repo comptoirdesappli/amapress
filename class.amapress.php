@@ -1026,6 +1026,12 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
+		self::add_post_role( 'coordinateur_amap', 'page', 'pages', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => true,
+		) );
 
 		self::add_post_role( 'coordinateur_amap', 'adhesion_request', 'adhesion_requests', array(
 			'read'    => true,
@@ -1100,7 +1106,7 @@ class Amapress {
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => false,
-			'publish' => false,
+			'publish' => true,
 		) );
 		self::add_post_role( 'responsable_amap', 'contrat', 'contrats', array(
 			'read'    => true,
@@ -1436,7 +1442,7 @@ class Amapress {
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => false,
-			'publish' => false,
+			'publish' => true,
 		) );
 
 		self::add_post_role( 'referent', 'adhesion_request', 'adhesion_requests', array(
