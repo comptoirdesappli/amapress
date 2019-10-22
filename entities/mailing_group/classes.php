@@ -387,18 +387,16 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 
 				if ( ! $is_from_list ) {
-					$cc   = ''; //implode( ', ', $mail->cc );
-					$from = ! empty( $mail->fromName ) ? "{$mail->fromName} <{$mail->fromAddress}>" : $mail->fromAddress;
+					$cc           = ''; //implode( ', ', $mail->cc );
+					$from         = ! empty( $mail->fromName ) ? "{$mail->fromName} <{$mail->fromAddress}>" : $mail->fromAddress;
+					$cleaned_from = '';
 					if ( self::hasRestrictiveDMARC( $mail->fromAddress ) ) {
-						$headers[] = "X-Original-From: $from";
-						$from      = ! empty( $mail->fromName )
+						$headers[]    = "X-Original-From: $from";
+						$cleaned_from = ! empty( $mail->fromName )
 							? "{$mail->fromName} <{$this->getName()}>"
 							: "{$this->getName()} <{$this->getName()}>";
 					}
-					$date = $mail->date;
-//				$mail->importance;
-//				$mail->priority;
-//				$mail->replyTo;
+					$date    = $mail->date;
 					$subject = $mail->subject;
 					$body    = [
 						'text'        => $mail->textPlain,
@@ -429,14 +427,20 @@ class AmapressMailingGroup extends TitanEntity {
 							error_log( 'Rejected mail from' . $from );
 						}
 					} else {
-
 						if ( $this->isAllowedSender( $mail->fromAddress ) || $this->isAllowedSender( $mail->senderAddress ) ) {
-							$res = $this->sendMail( $from, $to, $cc, $subject, $body, $headers );
+							$this->storeMail( 'accepted', $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers,
+								[ 'date' => amapress_time(), 'eml_file' => $eml_file, 'clean_from' => $cleaned_from ] );
+
+							$msg = $this->loadMessage( 'accepted', $msg_id );
+							if ( ! $this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] ) ) {
+								error_log( 'fetchMails - sendMailByParamName - waiting-sender failed' );
+							}
+							$res = $this->sendMailFromMsgId( 'accepted', $msg_id );
 							if ( ! $res ) {
 								error_log( 'Cannot send mail to members' );
 							}
 						} else {
-							$res = $this->saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, false );
+							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, false );
 							if ( ! $res ) {
 								error_log( 'Cannot save mail for moderation' );
 							}
@@ -603,7 +607,7 @@ class AmapressMailingGroup extends TitanEntity {
 			return false;
 		}
 
-		return $this->sendMail( $msg['from'], $msg['to'], $msg['cc'], $msg['subject'], $msg['raw_message'], $msg['headers'] );
+		return $this->sendMail( $msg['clean_from'], $msg['from'], $msg['to'], $msg['cc'], $msg['subject'], $msg['raw_message'], $msg['headers'] );
 	}
 
 	private function getRawEmails() {
@@ -620,18 +624,21 @@ class AmapressMailingGroup extends TitanEntity {
 		return [];
 	}
 
-	private function sendMail( $from, $to, $cc, $subject, $body, $headers ) {
+	private function sendMail( $clean_from, $from, $to, $cc, $subject, $body, $headers ) {
 		if ( ! empty( $cc ) ) {
 			$headers[] = 'Cc: ' . $cc;
+		}
+		if ( empty( $clean_from ) ) {
+			$clean_from = $from;
 		}
 		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
 		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
 
 		$headers[] = 'Bcc: ' . implode( ',', array_unique( $members_emails ) );
 		$headers   = array_filter( $headers, function ( $h ) {
-			return false === strpos( $h, 'From' );
+			return 0 !== strpos( $h, 'From' );
 		} );
-		$headers[] = 'From: ' . $from;
+		$headers[] = 'From: ' . $clean_from;
 		$headers[] = "Sender: {$this->getName()}";
 
 		$admin_email = get_option( 'admin_email' );
@@ -658,16 +665,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$headers[] = 'X-Loop: ' . $this->getName();
 		switch ( $this->getReplyTo() ) {
 			case 'sender':
-				$original_from = array_filter( $headers, function ( $header ) {
-					return preg_match( '/^X-Original-From:/', $header );
-				} );
-				$reply_to      = $from;
-				if ( ! empty( $original_from ) ) {
-					preg_match( '/^X-Original-From:\s*(.+)/', $original_from[0], $matches );
-					if ( $matches ) {
-						$reply_to = $matches[1];
-					}
-				}
+				$reply_to  = $from;
 				$headers[] = 'Reply-To: ' . $reply_to;
 				break;
 			case 'list':
@@ -681,9 +679,9 @@ class AmapressMailingGroup extends TitanEntity {
 		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
 	}
 
-	private function saveMailForModeration( $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, $is_unknown ) {
+	private function saveMailForModeration( $msg_id, $date, $clean_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, $is_unknown ) {
 		if ( ! $this->storeMail( 'waiting', $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers,
-			[ 'date' => amapress_time(), 'eml_file' => $eml_file ] ) ) {
+			[ 'date' => amapress_time(), 'eml_file' => $eml_file, 'clean_from' => $clean_from ] ) ) {
 			error_log( 'saveMailForModeration - storeMail failed' );
 
 			return false;
