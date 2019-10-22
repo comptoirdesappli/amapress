@@ -28,6 +28,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$user_id = isset( $_POST['user'] ) ? intval( $_POST['user'] ) : null;
 	$dist    = AmapressDistribution::getBy( $dist_id );
 
+	Amapress::setFilterForReferent( false );
 	$contrat_ids = array_map( function ( $c ) {
 		/** @var AmapressAdhesion $c */
 		return $c->getContrat_instanceId();
