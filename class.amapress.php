@@ -3227,6 +3227,7 @@ class Amapress {
 			$item = new stdClass();
 
 			$item->object_id        = $i ++;
+			$item->ID               = 0;
 			$item->db_id            = 0;
 			$item->object           = 'archive_' . $post_type;
 			$item->menu_item_parent = 0;
@@ -3246,6 +3247,7 @@ class Amapress {
 			$item = new stdClass();
 
 			$item->object_id        = $i ++;
+			$item->ID               = 0;
 			$item->db_id            = 0;
 			$item->object           = 'latest_' . $post_type;
 			$item->menu_item_parent = 0;
@@ -3266,6 +3268,7 @@ class Amapress {
 		$item = new stdClass();
 
 		$item->object_id        = $i ++;
+		$item->ID               = 0;
 		$item->db_id            = 0;
 		$item->object           = 'latest_post';
 		$item->menu_item_parent = 0;
@@ -3286,6 +3289,7 @@ class Amapress {
 			$item = new stdClass();
 
 			$item->object_id        = $i ++;
+			$item->ID               = 0;
 			$item->db_id            = 0;
 			$item->object           = 'amapress_link_' . trim( $post_type, '/' );
 			$item->menu_item_parent = 0;
