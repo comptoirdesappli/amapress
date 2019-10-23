@@ -43,9 +43,16 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 		return '';
 	}
 
-	$atts  = shortcode_atts( array(
-		'contrat' => null,
+	$atts = shortcode_atts( array(
+		'contrat'        => null,
+		'allow_amapiens' => true,
 	), $atts );
+	if ( ! Amapress::toBool( $atts['allow_amapiens'] ) ) {
+		$amapien = AmapressUser::getBy( amapress_current_user_id() );
+		if ( $amapien && ! $amapien->isIntermittent() ) {
+			return '<p><strong>La réservation de paniers n\'est pas ouverte aux amapiens non intermittents.</strong></p>';
+		}
+	}
 	$query = array(
 		'status' => 'to_exchange',
 	);
