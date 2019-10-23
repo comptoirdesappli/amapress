@@ -3375,6 +3375,7 @@ class Amapress {
 							) {
 								$subitem                   = new stdClass();
 								$subitem->object_id        = $i ++;
+								$subitem->ID               = 0;
 								$subitem->db_id            = 0;
 								$subitem->menu_item_parent = $item->ID;
 								$subitem->post_type        = 'nav_menu_item';
