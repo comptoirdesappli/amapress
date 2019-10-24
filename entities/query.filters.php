@@ -140,8 +140,10 @@ function amapress_filter_posts( WP_Query $query ) {
 						'compare' => 'IN',
 						'type'    => 'NUMERIC'
 					);
-					foreach ( $r['producteur'] as $prod_id ) {
-						$meta[] = amapress_prepare_like_in_array( 'amapress_produit_producteur', $prod_id );
+					if ( ! empty( $r['producteur'] ) ) {
+						foreach ( $r['producteur'] as $prod_id ) {
+							$meta[] = amapress_prepare_like_in_array( 'amapress_produit_producteur', $prod_id );
+						}
 					}
 				}
 
