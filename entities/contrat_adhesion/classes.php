@@ -852,7 +852,6 @@ class AmapressAdhesion extends TitanEntity {
 			$placeholders["paiement_montant#$i"]  = Amapress::formatPrice( $paiement->getAmount() );
 			$placeholders["paiement_date#$i"]     = date_i18n( 'd/m/Y', $paiement->getDate() );
 			$placeholders["paiement_status#$i"]   = $paiement->getStatusDisplay();
-			$i                                    += 1;
 
 			$placeholders["paiement_{$i}_type"]     = $placeholders["paiement_type#$i"];
 			$placeholders["paiement_{$i}_numero"]   = $placeholders["paiement_numero#$i"];
@@ -861,6 +860,8 @@ class AmapressAdhesion extends TitanEntity {
 			$placeholders["paiement_{$i}_montant"]  = $placeholders["paiement_montant#$i"];
 			$placeholders["paiement_{$i}_date"]     = $placeholders["paiement_date#$i"];
 			$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
+
+			$i += 1;
 		}
 
 		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
