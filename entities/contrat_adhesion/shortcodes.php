@@ -86,6 +86,41 @@ add_action( 'amapress_init', function () {
 			$amapien->removeCoadherent( $amapien->getCoAdherent3Id(), $notify_email );
 		}
 
+
+		$quest1         = wp_unslash( Amapress::getOption( 'online_new_user_quest1' ) );
+		$quest1_answser = '';
+		if ( isset( $_REQUEST['online_new_user_quest1'] ) ) {
+			$quest1_answser = sanitize_textarea_field( $_REQUEST['online_new_user_quest1'] );
+		}
+		$quest2         = wp_unslash( Amapress::getOption( 'online_new_user_quest2' ) );
+		$quest2_answser = '';
+		if ( isset( $_REQUEST['online_new_user_quest2'] ) ) {
+			$quest2_answser = sanitize_textarea_field( $_REQUEST['online_new_user_quest2'] );
+		}
+		$quest_email = Amapress::getOption( 'online_new_user_quest_email' );
+		if ( empty( $quest_email ) ) {
+			$quest_email = get_option( 'admin_email' );
+		}
+
+		if ( ! Amapress::isHtmlEmpty( $quest1 ) || ! Amapress::isHtmlEmpty( $quest2 ) ) {
+			$amapien           = AmapressUser::getBy( $user_id );
+			$user_display_name = $amapien->getDisplayName();
+			$user_email        = $amapien->getEmail();
+			$user_link         = Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() );
+			$quest1            = wp_strip_all_tags( $quest1, true );
+			$quest2            = wp_strip_all_tags( $quest2, true );
+			amapress_wp_mail(
+				$quest_email,
+				"Réponses nouvel adhérent - $user_display_name ($user_email)",
+				wpautop(
+					"Bonjour,\n\nLe nouvel ahdérent $user_link a répondu aux questions:\n" .
+					( ! Amapress::isHtmlEmpty( $quest1 ) ? "- $quest1:\n$quest1_answser\n" : '' ) .
+					( ! Amapress::isHtmlEmpty( $quest2 ) ? "- $quest2:\n$quest2_answser\n" : '' ) .
+					"\n\n" . get_bloginfo( 'name' )
+				)
+			);
+		}
+
 		wp_redirect_and_exit(
 			add_query_arg( [
 				'step'    => ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats',
@@ -900,6 +935,25 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 	        <?php } ?>
             <p style="color:red">* Champ obligatoire</p>
 	        <?php echo $member_message; ?>
+	        <?php if ( ! $user ) {
+		        $quest1 = wp_unslash( Amapress::getOption( 'online_new_user_quest1' ) );
+		        if ( ! Amapress::isHtmlEmpty( $quest1 ) ) {
+			        ?>
+                    <label for="online_new_user_quest1"><?php echo $quest1 ?></label>
+                    <textarea style="width: 100%" rows="4" id="online_new_user_quest1"
+                              name="online_new_user_quest1"></textarea>
+			        <?php
+		        }
+		        $quest2 = wp_unslash( Amapress::getOption( 'online_new_user_quest2' ) );
+		        if ( ! Amapress::isHtmlEmpty( $quest2 ) ) {
+			        ?>
+                    <label for="online_new_user_quest2"><?php echo $quest2 ?></label>
+                    <textarea style="width: 100%" rows="4" id="online_new_user_quest2"
+                              name="online_new_user_quest2"></textarea>
+			        <?php
+		        }
+	        }
+	        ?>
             <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
         </form>
 		<?php

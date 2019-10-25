@@ -1124,6 +1124,34 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Message - Questions aux nouveaux amapiens (Etapes 2 - Coordonnées)',
+										),
+										array(
+											'id'      => 'online_new_user_quest1',
+											'name'    => 'Question 1',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Question au nouvel amapien (par ex, comment avez-vous connu l\'AMAP)',
+										),
+										array(
+											'id'      => 'online_new_user_quest2',
+											'name'    => 'Question 2',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Question au nouvel amapien',
+										),
+										array(
+											'id'       => 'online_new_user_quest_email',
+											'name'     => 'Réponses à',
+											'type'     => 'text',
+											'is_email' => true,
+											'desc'     => 'Envoyer les réponses à l\'email renseigné',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'Message - Message aux amapiens qui ne renouvelent pas',
 										),
 										array(

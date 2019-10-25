@@ -4058,4 +4058,8 @@ class Amapress {
 			return false;
 		}
 	}
+
+	public static function isHtmlEmpty( $html ) {
+		return empty( trim( wp_strip_all_tags( $html, true ) ) );
+	}
 }
