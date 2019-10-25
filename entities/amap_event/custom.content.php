@@ -53,27 +53,33 @@ function amapress_get_custom_content_amap_event( $content ) {
 //    amapress_handle_action_messages();
 
 	if ( $amap_event->getType() == 'lieu' ) {
-		$addr_entry    = '';
-		$address_acces = $amap_event->getLieu()->getAdresseAcces();
-		if ( ! empty( $address_acces ) ) {
-			$addr_entry = '<h3>Adresse d\'accès</h3><p>' .
-			              $address_acces .
-			              '</p>';
+		if ( $amap_event->getLieu() ) {
+			$addr_entry    = '';
+			$address_acces = $amap_event->getLieu()->getAdresseAcces();
+			if ( ! empty( $address_acces ) ) {
+				$addr_entry = '<h3>Adresse d\'accès</h3><p>' .
+				              $address_acces .
+				              '</p>';
+			}
+
+			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-event amap-panel-event-address' );
+			echo '<p>' .
+			     $amap_event->getLieu()->getFormattedAdresseHtml() .
+			     '</p>';
+			amapress_echo_panel_end();
+
+			amapress_echo_panel_start( 'Accès', null, 'amap-panel-event amap-panel-event-access' );
+			echo $addr_entry .
+			     '<p>' .
+			     $amap_event->getLieu()->getAcces() .
+			     '</p>' .
+			     do_shortcode( "[lieu-map lieu={$amap_event->getLieuId()} mode=map+streeview]" );
+			amapress_echo_panel_end();
+		} else {
+			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-event amap-panel-event-address' );
+			echo '<p>Lieu non défini</p>';
+			amapress_echo_panel_end();
 		}
-
-		amapress_echo_panel_start( 'Adresse', null, 'amap-panel-event amap-panel-event-address' );
-		echo '<p>' .
-		     $amap_event->getLieu()->getFormattedAdresseHtml() .
-		     '</p>';
-		amapress_echo_panel_end();
-
-		amapress_echo_panel_start( 'Accès', null, 'amap-panel-event amap-panel-event-access' );
-		echo $addr_entry .
-		     '<p>' .
-		     $amap_event->getLieu()->getAcces() .
-		     '</p>' .
-		     do_shortcode( "[lieu-map lieu={$amap_event->getLieuId()} mode=map+streeview]" );
-		amapress_echo_panel_end();
 	} else {
 		$addr_entry    = '';
 		$address_acces = $amap_event->getLieu_externe_adresse();
