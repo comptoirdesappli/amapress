@@ -4062,4 +4062,8 @@ class Amapress {
 	public static function isHtmlEmpty( $html ) {
 		return empty( trim( wp_strip_all_tags( $html, true ) ) );
 	}
+
+	public static function getSiteDomainName() {
+		return parse_url( home_url() )['host'];
+	}
 }

@@ -1496,7 +1496,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'Ajouter le shortcode [inscription-en-ligne] pour permettre aux amapiens de s\'inscrire en ligne.',
 		'Ce shortcode nécessite une clé de sécurité afin que seule les personnes à qui vous avez transmis le lien puissent s\'inscrire',
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
-		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@votre-amap.xxx]'
+		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@' . Amapress::getSiteDomainName() . ']'
 	);
 	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
