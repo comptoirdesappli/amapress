@@ -751,6 +751,70 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getModel()->getPermalink();
 			}
 		];
+		$ret['tous_referents'] = [
+			'desc' => 'Nom des référents du contrat',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return implode( ', ', array_unique( array_map(
+					function ( $ref_id ) {
+						$ref = AmapressUser::getBy( $ref_id );
+						if ( empty( $ref ) ) {
+							return '';
+						}
+
+						return $ref->getDisplayName();
+					},
+					$adh->getModel()->getReferentsIds()
+				) ) );
+			}
+		];
+		$ret['tous_referents_email'] = [
+			'desc' => 'Nom des référents du contrat avec emails',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return implode( ', ', array_unique( array_map(
+					function ( $ref_id ) {
+						$ref = AmapressUser::getBy( $ref_id );
+						if ( empty( $ref ) ) {
+							return '';
+						}
+
+						return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
+					},
+					$adh->getModel()->getReferentsIds()
+				) ) );
+			}
+		];
+		$ret['referents'] = [
+			'desc' => 'Nom des référents du contrat',
+			'func' => function ( AmapressAdhesion $adh ) {
+				return implode( ', ', array_unique( array_map(
+					function ( $ref_id ) {
+						$ref = AmapressUser::getBy( $ref_id );
+						if ( empty( $ref ) ) {
+							return '';
+						}
+
+						return $ref->getDisplayName();
+					},
+					$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
+				) ) );
+			}
+		];
+		$ret['referents_email'] = [
+			'desc' => 'Nom des référents du contrat avec emails',
+			'func' => function ( AmapressAdhesion $adh ) {
+				return implode( ', ', array_unique( array_map(
+					function ( $ref_id ) {
+						$ref = AmapressUser::getBy( $ref_id );
+						if ( empty( $ref ) ) {
+							return '';
+						}
+
+						return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
+					},
+					$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
+				) ) );
+			}
+		];
 		$ret['date_debut']                       = [
 			'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
