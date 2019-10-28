@@ -255,6 +255,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_paiements_mention', '' );
 	}
 
+	public function getPaiementsOrdre() {
+		return $this->getCustom( 'amapress_contrat_instance_paiements_ordre', '' );
+	}
+
 	public function getManage_Cheques() {
 		return $this->getCustom( 'amapress_contrat_instance_manage_paiements', 1 );
 	}
@@ -961,6 +965,18 @@ class AmapressContrat_instance extends TitanEntity {
 			'desc' => 'Champ Mention spéciale du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getSpecialMention();
+			}
+		];
+		$ret['paiements_ordre'] = [
+			'desc' => 'Ordre à indiquer sur les chèques',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return wp_unslash( $adh->getPaiementsOrdre() );
+			}
+		];
+		$ret['paiements_mention'] = [
+			'desc' => 'Mention pour les paiements',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return wp_strip_all_tags( wp_unslash( $adh->getPaiementsMention() ) );
 			}
 		];
 		$ret['nb_dates']                         = [

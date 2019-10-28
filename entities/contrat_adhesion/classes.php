@@ -684,6 +684,18 @@ class AmapressAdhesion extends TitanEntity {
 					return $o['desc'];
 				}
 			];
+			$ret['paiements_ordre'] = [
+				'desc' => 'Ordre à indiquer sur les chèques',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return wp_unslash( $adh->getContrat_instance()->getPaiementsOrdre() );
+				}
+			];
+			$ret['paiements_mention'] = [
+				'desc' => 'Mention pour les paiements',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return wp_strip_all_tags( wp_unslash( $adh->getContrat_instance()->getPaiementsMention() ) );
+				}
+			];
 			$ret['quantites']                        = [
 				'desc' => 'Quantité(s) choisie(s)',
 				'func' => function ( AmapressAdhesion $adh ) {

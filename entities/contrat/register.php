@@ -1334,6 +1334,13 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Message au sujet des chèques/règlement par exemple pour indiquer les particuliers si la gestion est externe à Amapress',
 			),
+			'paiements_ordre'       => array(
+				'name'        => amapress__( 'Ordre des chèques' ),
+				'type'        => 'text',
+				'group'       => '6/6 - Règlement en plusieurs fois',
+				'show_column' => false,
+				'desc'        => 'Ordre des chèques, si différent du nom du producteur',
+			),
 			'liste_dates_paiements' => array(
 				'name'             => amapress__( 'Calendrier des remises de chèques' ),
 				'type'             => 'multidate',
