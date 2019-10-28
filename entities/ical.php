@@ -74,14 +74,14 @@ class Amapress_Agenda_ICAL_Export {
 		add_feed( 'agenda-ical', array( __CLASS__, 'export_events' ) );
 	}
 
-	public static function get_link_href( $public_ics = false ) {
+	public static function get_link_href( $public_ics = false, $since_days = 30 ) {
 		$lnk = get_feed_link( 'agenda-ical' );
 		if ( ! $public_ics && amapress_is_user_logged_in() ) {
 			$user = AmapressUser::getBy( amapress_current_user_id() );
 
-			return $user->addUserLoginKey( $lnk );
+			return add_query_arg( 'since_days', $since_days, $user->addUserLoginKey( $lnk ) );
 		} else {
-			return add_query_arg( 'public', '', $lnk );
+			return add_query_arg( [ 'public' => '', 'since_days' => $since_days ], $lnk );
 		}
 	}
 
@@ -131,7 +131,13 @@ class Amapress_Agenda_ICAL_Export {
 			$all_events = Amapress_Calendar::get_events( $events_id );
 		} else {
 			$filename   = urlencode( 'agenda-ical-' . date( 'Y-m-d-H-i' ) . '.ics' );
-			$all_events = Amapress_Calendar::get_next_events();
+			$date       = amapress_time();
+			$since_days = 30;
+			if ( ! empty( $_GET['since_days'] ) ) {
+				$since_days = intval( $_GET['since_days'] );
+			}
+			$date       = Amapress::add_days( $date, - $since_days );
+			$all_events = Amapress_Calendar::get_next_events( $date );
 		}
 
 		foreach ( $all_events as $ev ) {

@@ -248,8 +248,10 @@ function amapress_register_shortcodes() {
 			]
 		] );
 	amapress_register_shortcode( 'amapress-amapien-agenda-viewer', function ( $atts ) {
-		$atts        = wp_parse_args( $atts );
-		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( false );
+		$atts        = shortcode_atts(
+			[ 'since_days' => 30 ],
+			$atts );
+		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( false, intval( $atts['since_days'] ) );
 
 		return amapress_fullcalendar( $atts );
 	},
@@ -259,8 +261,10 @@ function amapress_register_shortcodes() {
 			]
 		] );
 	amapress_register_shortcode( 'amapress-public-agenda-viewer', function ( $atts ) {
-		$atts        = wp_parse_args( $atts );
-		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( true );
+		$atts        = shortcode_atts(
+			[ 'since_days' => 30, 'url' => '' ],
+			$atts );
+		$atts['url'] = Amapress_Agenda_ICAL_Export::get_link_href( true, intval( $atts['since_days'] ) );
 		amapress_consider_logged( false );
 		$ret = amapress_fullcalendar( $atts );
 		amapress_consider_logged( true );
@@ -503,8 +507,11 @@ function amapress_register_shortcodes() {
 		] );
 
 	amapress_register_shortcode( 'agenda-url', function ( $atts ) {
-		$id  = 'agenda-url-' . md5( uniqid() );
-		$url = esc_attr( Amapress_Agenda_ICAL_Export::get_link_href() );
+		$atts = shortcode_atts(
+			[ 'since_days' => 30 ],
+			$atts );
+		$id   = 'agenda-url-' . md5( uniqid() );
+		$url  = esc_attr( Amapress_Agenda_ICAL_Export::get_link_href(), intval( $atts['since_days'] ) );
 
 		return "<div class='input-group'><input id='$id' type='text' value='$url' class='form-control' style='max-width: 80%' /><span class='input-group-addon'><button class='btn btn-secondary copy-agenda-url' type='button' data-clipboard-target='#{$id}'><span class='fa fa-copy' /></button></span><script type='text/javascript'>jQuery(function() { new Clipboard('.copy-agenda-url'); });</script></div>";
 	},
