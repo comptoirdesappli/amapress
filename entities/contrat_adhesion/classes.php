@@ -292,6 +292,22 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
+			$ret['tous_referents_contacts'] = [
+				'desc' => 'Nom des référents du contrat avec contacts',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return implode( ', ', array_unique( array_map(
+						function ( $ref_id ) {
+							$ref = AmapressUser::getBy( $ref_id );
+							if ( empty( $ref ) ) {
+								return '';
+							}
+
+							return $ref->getDisplayName() . '(' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
+						},
+						$adh->getContrat_instance()->getModel()->getReferentsIds()
+					) ) );
+				}
+			];
 			$ret['message']                          = [
 				'desc' => 'Mssage aux référents lors de l\'inscription',
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -325,6 +341,22 @@ class AmapressAdhesion extends TitanEntity {
 							}
 
 							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
+						},
+						$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
+					) ) );
+				}
+			];
+			$ret['referents_contacts'] = [
+				'desc' => 'Nom des référents du contrat avec contacts',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return implode( ', ', array_unique( array_map(
+						function ( $ref_id ) {
+							$ref = AmapressUser::getBy( $ref_id );
+							if ( empty( $ref ) ) {
+								return '';
+							}
+
+							return $ref->getDisplayName() . '(' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
 						},
 						$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
 					) ) );
