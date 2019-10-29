@@ -256,7 +256,12 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getPaiementsOrdre() {
-		return $this->getCustom( 'amapress_contrat_instance_paiements_ordre', '' );
+		$ret = $this->getCustom( 'amapress_contrat_instance_paiements_ordre', '' );
+		if ( empty( $ret ) && $this->getModel() && $this->getModel()->getProducteur() && $this->getModel()->getProducteur()->getUser() ) {
+			$ret = $this->getModel()->getProducteur()->getUser()->getDisplayName();
+		}
+
+		return $ret;
 	}
 
 	public function getManage_Cheques() {
