@@ -1605,6 +1605,9 @@ add_filter( 'admin_footer_text', function ( $content ) {
 		foreach ( AmapressEntities::getMenu() as $item ) {
 			if ( isset( $item['id'] ) && $current_page_id == $item['id'] ) {
 				if ( ! empty( $item['tabs'] ) && is_array( $item['tabs'] ) ) {
+					if ( ! empty( $item['settings']['name'] ) ) {
+						$subtitle = $item['settings']['name'];
+					}
 					foreach ( $item['tabs'] as $tab_name => $tab ) {
 						if ( isset( $tab['id'] ) ) {
 							$tab_id = $tab['id'];
@@ -1625,6 +1628,9 @@ add_filter( 'admin_footer_text', function ( $content ) {
 						continue;
 					}
 					if ( isset( $subitem['id'] ) && $current_page_id == $subitem['id'] ) {
+						if ( ! empty( $subitem['settings']['name'] ) ) {
+							$subtitle = $subitem['settings']['name'];
+						}
 						if ( ! empty( $subitem['tabs'] ) ) {
 							foreach ( $subitem['tabs'] as $tab_name => $tab ) {
 								if ( isset( $tab['id'] ) ) {
