@@ -2002,7 +2002,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a href="' 
 				$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
 				$option             = esc_html( $cheques['desc'] );
 				$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
-				$last_cheque        = esc_attr( Amapress::formatPrice( $cheques['remain_amount'] ) );
+				$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
 				echo "<input type='radio' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' /><label for='cheques-$nb_cheque'>$option</label><br/>";
 			}
 			if ( $contrat->getAllow_Cash() ) {
