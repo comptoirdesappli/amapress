@@ -64,7 +64,10 @@ function amapress_get_github_updater_url() {
 }
 
 function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array(), $cc = null, $bcc = null ) {
-//    add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type', 50);
+	$subject = wp_specialchars_decode( $subject );
+	if ( empty( $to ) ) {
+		$to = get_option( 'admin_email' );
+	}
 	if ( is_array( $to ) ) {
 		$to = implode( ', ', $to );
 	}
