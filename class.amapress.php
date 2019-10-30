@@ -3229,6 +3229,7 @@ class Amapress {
 			$item->object_id        = $i ++;
 			$item->ID               = 0;
 			$item->db_id            = 0;
+			$item->post_parent      = 0;
 			$item->object           = 'archive_' . $post_type;
 			$item->menu_item_parent = 0;
 			$item->type             = 'amapress-custom';
@@ -3250,6 +3251,7 @@ class Amapress {
 			$item->ID               = 0;
 			$item->db_id            = 0;
 			$item->object           = 'latest_' . $post_type;
+			$item->post_parent      = 0;
 			$item->menu_item_parent = 0;
 			$item->type             = 'amapress-custom-latest';
 			$item->title            = 'Derniers ' . $post_conf['plural'];
@@ -3272,6 +3274,7 @@ class Amapress {
 		$item->db_id            = 0;
 		$item->object           = 'latest_post';
 		$item->menu_item_parent = 0;
+		$item->post_parent      = 0;
 		$item->type             = 'amapress-custom-latest';
 		$item->title            = __( 'Derniers articles', 'amapress' );
 		$item->type_label       = __( 'Derniers articles', 'amapress' );
@@ -3293,6 +3296,7 @@ class Amapress {
 			$item->db_id            = 0;
 			$item->object           = 'amapress_link_' . trim( $post_type, '/' );
 			$item->menu_item_parent = 0;
+			$item->post_parent      = 0;
 			$item->type             = 'amapress-custom-link';
 			$item->title            = $post_conf['name'];
 			$item->url              = $post_type;
@@ -3377,6 +3381,7 @@ class Amapress {
 								$subitem->object_id        = $i ++;
 								$subitem->ID               = 0;
 								$subitem->db_id            = 0;
+								$subitem->post_parent      = 0;
 								$subitem->menu_item_parent = $item->ID;
 								$subitem->post_type        = 'nav_menu_item';
 								$subitem->object           = 'custom';

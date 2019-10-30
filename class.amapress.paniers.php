@@ -1158,8 +1158,7 @@ class AmapressPaniers {
 			echo do_shortcode( "[recettes produits=$produits_in_panier if_empty=$no_recettes]" );
 		}
 
-		$ret = ob_get_contents();
-		ob_end_clean();
+		$ret = ob_get_clean();
 
 		return $ret;
 	}

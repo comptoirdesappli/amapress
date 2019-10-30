@@ -1499,6 +1499,10 @@ add_action( 'admin_init', function () {
 function get_admin_menu_item_title( $menu_item_file, $submenu_as_parent = true ) {
 	global $menu, $submenu, $self, $parent_file, $submenu_file, $plugin_page, $typenow;
 
+	if ( ! is_array( $menu ) ) {
+		return '';
+	}
+
 	$admin_is_parent = false;
 	$item            = '';
 	$submenu_item    = '';

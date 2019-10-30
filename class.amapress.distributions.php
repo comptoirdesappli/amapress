@@ -27,7 +27,7 @@ class AmapressDistributions {
 		$default                 = get_option( 'amapress_nb_responsables' );
 		$dist                    = AmapressDistribution::getBy( $dist_id );
 		$dist_nb_responsables    = $dist->getNb_responsables_Supplementaires();
-		$lieu_nb_responsables    = $dist->getLieu()->getNb_responsables();
+		$lieu_nb_responsables    = $dist->getLieu() ? $dist->getLieu()->getNb_responsables() : 0;
 		$contrat_nb_responsables = 0;
 		foreach ( $dist->getContrats() as $contrat ) {
 			$contrat_nb_responsables += $contrat->getNb_responsables_Supplementaires();

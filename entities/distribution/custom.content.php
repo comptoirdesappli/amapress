@@ -297,8 +297,7 @@ function amapress_get_custom_content_distribution( $content ) {
 		?>
     </div>
 	<?php
-	$content = ob_get_contents();
-	ob_clean();
+	$content = ob_get_clean();
 
 	return $content;
 }
