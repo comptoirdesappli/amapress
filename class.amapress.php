@@ -3359,7 +3359,7 @@ class Amapress {
 
 				foreach ( AmapressEntities::getPostTypes() as $post_type => $post_conf ) {
 					if ( $item->object == 'archive_' . $post_type ) {
-						$item->url = get_post_type_archive_link( $post_type );
+						$item->url = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
 						break;
 					}
 				}
@@ -3367,9 +3367,32 @@ class Amapress {
 				$types = array_merge( [ 'post' ], array_keys( AmapressEntities::getPostTypes() ) );
 				foreach ( $types as $post_type ) {
 					if ( $item->object == 'latest_' . $post_type ) {
-						$child_items = array();
-						$item->url   = '#';
+						$item->url = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
+						break;
+					}
+				}
+			} else if ( $item->type == 'amapress-custom-link' ) {
+				foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
+					if ( $item->object == 'amapress_link_' . trim( $post_type, '/' ) ) {
+						$item->url = $post_type;
+						break;
+					}
+				}
+			}
 
+			/* set current */
+			if ( get_query_var( 'post_type' ) == $item->type ) {
+				$item->classes [] = 'current-menu-item';
+				$item->current    = true;
+			}
+		}
+
+		$child_items = array();
+		foreach ( $items as &$item ) {
+			if ( $item->type == 'amapress-custom-latest' && ! is_admin() ) {
+				$types = array_merge( [ 'post' ], array_keys( AmapressEntities::getPostTypes() ) );
+				foreach ( $types as $post_type ) {
+					if ( $item->object == 'latest_' . $post_type ) {
 						if ( ! is_customize_preview() ) {
 							foreach (
 								get_posts( [
@@ -3398,26 +3421,17 @@ class Amapress {
 								/* add children */
 								$child_items [] = $subitem;
 							}
-							$items = array_merge( $items, $child_items );
 						}
-						break;
-					}
-				}
-			} else if ( $item->type == 'amapress-custom-link' ) {
-				foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
-					if ( $item->object == 'amapress_link_' . trim( $post_type, '/' ) ) {
-						$item->url = $post_type;
 						break;
 					}
 				}
 			}
 
-			/* set current */
-			if ( get_query_var( 'post_type' ) == $item->type ) {
-				$item->classes [] = 'current-menu-item';
-				$item->current    = true;
+			if ( empty( $item->url ) ) {
+				$item->url = '#';
 			}
 		}
+		$items = array_merge( $items, $child_items );
 
 		return $items;
 	}
