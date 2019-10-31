@@ -708,7 +708,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		count( $lieux ) == 0 ? 'error' : ( ! empty( $not_localized_lieux ) ? 'warning' : 'success' ),
 		'Lieu de distribution',
 		'Créer au moins un lieu de distribution',
-		admin_url( 'post-new.php?post_type=' . AmapressLieu_distribution::INTERNAL_POST_TYPE ),
+		admin_url( 'edit.php?post_type=' . AmapressLieu_distribution::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressLieu_distribution $dn */
 			$l = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
@@ -749,7 +749,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		empty( $adh_period ) ? 'error' : 'success',
 		'Période d\'adhésion',
 		'Créer une période d\'adhésion pour les cotisations de l\'année en cours',
-		admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
+		admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
 
@@ -759,7 +759,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			empty( $adh_period2 ) ? 'error' : 'success',
 			'Période d\'adhésion',
 			'Créer une période d\'adhésion pour les cotisations du début des contrats en ligne',
-			admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
+			admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 			( ! empty( $adh_period2 ) ? '<a href="' . esc_attr( $adh_period2->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period2->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 		);
 	}
@@ -814,7 +814,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		count( $prod_users ) == 0 ? 'error' : ( count( $all_producteurs ) < count( $prod_users ) ? 'warning' : 'success' ),
 		'Producteurs',
 		'Créer les Producteur correspondant à leur compte utilisateur',
-		admin_url( 'post-new.php?post_type=' . AmapressProducteur::INTERNAL_POST_TYPE ),
+		admin_url( 'edit.php?post_type=' . AmapressProducteur::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
 			$dn = AmapressProducteur::getBy( $u );
 			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
@@ -895,7 +895,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		count( $contrat_types ) == 0 ? 'error' : ( ! empty( $not_subscribable_contrat_types ) ? 'warning' : 'success' ),
 		'Présentation des productions',
 		'Créer au moins une production par producteur pour présenter son/ses offre(s)',
-		admin_url( 'post-new.php?post_type=' . AmapressContrat::INTERNAL_POST_TYPE ),
+		admin_url( 'edit.php?post_type=' . AmapressContrat::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $u ) {
 			$dn = AmapressContrat::getBy( $u );
 			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
@@ -956,7 +956,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		count( $subscribable_contrat_instances ) == 0 ? 'warning' : ( count( $subscribable_contrat_instances ) < count( $contrat_types ) ? 'warning' : 'success' ),
 		'Modèles de contrats',
 		'Créer au moins un modèle de contrat par contrat pour permettre aux amapiens d\'adhérer',
-		admin_url( 'post-new.php?post_type=' . AmapressContrat_instance::INTERNAL_POST_TYPE ),
+		admin_url( 'edit.php?post_type=' . AmapressContrat_instance::INTERNAL_POST_TYPE ),
 		implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
 			$l      = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
@@ -1488,7 +1488,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		empty( $adh_period ) ? 'error' : ( ! $adh_period->getWordModelId() ? 'warning' : 'success' ),
 		'Période d\'adhésion',
 		'Créer une période d\'adhésion au ' . date_i18n( 'd/m/Y', $first_online_date ) . ' pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word',
-		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'post-new.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
+		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
