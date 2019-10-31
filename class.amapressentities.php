@@ -2470,16 +2470,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'   => 'site_verif_google_id',
 									'name' => 'Google - Code de vérification du site',
 									'type' => 'text',
+									'desc' => 'Entrer le code de vérification (contenu <em>xxx</em> de l\'attribut <code>content</code> de la balise <code>&lt;meta name=\'google-site-verification\' content=\'<em>xxx</em>\' /&gt;</code>) récupéré de la <a target="_blank" href="https://search.google.com/search-console/about">Google Search Console</a>'
 								),
 								array(
 									'id'   => 'site_verif_bing_id',
 									'name' => 'Bing - Code de vérification du site',
 									'type' => 'text',
-								),
-								array(
-									'id'   => 'site_verif_yahoo_id',
-									'name' => 'Yahoo - Code de vérification du site',
-									'type' => 'text',
+									'desc' => 'Entrer le code de vérification (contenu <em>xxx</em> de l\'attribut <code>content</code> de la balise <code>&lt;meta name=\'msvalidate.01\' content=\'<em>xxx</em>\' /&gt;</code>) récupéré des <a target="_blank" href="https://www.bing.com/toolbox/webmaster">outils pour webmaster Bing</a>'
 								),
 								array(
 									'id'   => 'other_site_html_header',

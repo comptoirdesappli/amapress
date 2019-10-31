@@ -1684,17 +1684,12 @@ add_filter( 'wp_insert_post_data', 'amapress_force_no_private' );
 
 add_action( 'wp_head', function () {
 	$site_verification_google_id = Amapress::getOption( 'site_verif_google_id' );
-	$site_verification_yahoo_id  = Amapress::getOption( 'site_verif_yahoo_id' );
 	$site_verification_bing_id   = Amapress::getOption( 'site_verif_bing_id' );
 	$other_header_html           = Amapress::getOption( 'other_site_html_header' );
 
 	if ( ! empty( $site_verification_google_id ) ) {
 		echo "
     <meta name='google-site-verification' content='$site_verification_google_id' />
-    ";
-	}
-	if ( ! empty( $site_verification_yahoo_id ) ) {
-		echo "<meta name='y_key' content='$site_verification_yahoo_id'>
     ";
 	}
 	if ( ! empty( $site_verification_bing_id ) ) {
