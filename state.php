@@ -1491,6 +1491,53 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
+	$type_paiements = get_categories( array(
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+		'taxonomy'   => 'amps_paiement_category',
+		'hide_empty' => false,
+	) );
+	$amap_term = Amapress::getOption( 'adhesion_amap_term' );
+	$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+	foreach ( $type_paiements as $term ) {
+		if ( $term->term_id == $amap_term ) {
+			$amap_term = $term;
+		}
+		if ( $term->term_id == $reseau_amap_term ) {
+			$reseau_amap_term = $term;
+		}
+	}
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Types de cotisation/paiement',
+		'Créer des types de cotisations : adhésion à l\'AMAP, adhésion au réseau des AMAP, panier solidaire, don...',
+		admin_url( 'edit-tags.php?taxonomy=amps_paiement_category' ),
+		implode( ', ', array_map( function ( $t ) {
+			/** @var WP_Term $t */
+			$ret = '';
+			if ( ! empty( $t->description ) ) {
+				$ret = "{$t->name} ({$t->description})";
+			} else {
+				$ret = $t->name;
+			}
+
+			return Amapress::makeLink( admin_url( 'edit-tags.php?taxonomy=amps_paiement_category' ), $ret );
+		}, $type_paiements ) )
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		$amap_term ? 'success' : 'warning',
+		'Types de cotisation : adhésion à l\'AMAP',
+		'Associer un type de cotisation pour l\'adhésion à l\'AMAP',
+		admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ),
+		$adh_period ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantAmap() ) . '€' : 'Pas de période d\'adhésion en cours'
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		$reseau_amap_term ? 'success' : 'warning',
+		'Types de cotisation : adhésion au réseau AMAP',
+		'Associer un type de cotisation pour l\'adhésion au réseau AMAP',
+		admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ),
+		$adh_period ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $reseau_amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantReseau() ) . '€' : 'Pas de période d\'adhésion en cours'
+	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? 'warning' : 'success',
 		'Ajouter le shortcode [inscription-en-ligne] pour permettre aux amapiens de s\'inscrire en ligne.',
