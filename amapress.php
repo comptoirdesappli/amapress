@@ -194,7 +194,7 @@ function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 
 				$caller[] = $call['function'] . "('" . str_replace( array(
 						WP_CONTENT_DIR,
 						ABSPATH
-					), '', $call['args'][0] ) . "')";
+					), '', ! empty( $call['args'][0] ) ? $call['args'][0] : '#unk#' ) . "')";
 			} else {
 				$file     = str_replace( array( WP_CONTENT_DIR, ABSPATH ), '', $call['file'] );
 				$caller[] = "{$call['function']}[{$file}:{$call['line']}]";
