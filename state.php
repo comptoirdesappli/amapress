@@ -1892,7 +1892,11 @@ function amapress_echo_and_check_amapress_state_page() {
 		}
 		if ( defined( 'AMAPRESS_DEMO_MODE' ) && isset( $_GET['import_amap'] ) ) {
 			require_once 'demos/AmapDemoBase.php';
-			require_once 'demos/' . $_GET['import_amap'];
+			$demo_file = $_SERVER['DOCUMENT_ROOT'] . '/../demos/' . $_GET['import_amap'];
+			if ( ! file_exists( $demo_file ) ) {
+				$demo_file = AMAPRESS__PLUGIN_DIR . '/demos/' . $_GET['import_amap'];
+			}
+			require_once $demo_file;
 
 			if ( ! defined( 'ALLOW_UNFILTERED_UPLOADS' ) ) {
 				define( 'ALLOW_UNFILTERED_UPLOADS', true );
