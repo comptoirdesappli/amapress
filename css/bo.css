@@ -272,3 +272,10 @@ span.description {
 .button-import-model {
     margin: 0.5em !important;
 }
+
+.amapress-section-note {
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF;
+    background-color: #fff;
+    padding: 5px 20px;
+}

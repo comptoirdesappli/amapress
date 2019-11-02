@@ -101,12 +101,7 @@ class AmapressEntities {
 						'position'   => '24',
 						'capability' => 'read_mailing_group',
 						'icon'       => 'dashicons-email-alt',
-					),
-					'options'  => array(
-						array(
-							'type' => 'note',
-							'bare' => true,
-							'desc' => '<p>Dans cette section, vous pouvez configurer et administrer les <strong>Emails groupés</strong>.</p>
+						'long_desc'  => '<div class="amapress-section-note"><p>Dans cette section, vous pouvez configurer et administrer les <strong>Emails groupés</strong>.</p>
 <p>Un <strong>Email groupé</strong> est une <em>liste de diffusion simplifiée</em> à partir d’un compte email classique (accessible en IMAP ou POP3) et gérée depuis le site de votre AMAP (par Amapress).
 Tout email envoyé à ces comptes email spécifiques seront (après modération ou non), envoyés à tous les membres de l’email groupé configuré sur le site.</p>
 <h4>Dans cette section, vous pouvez :</h4>
@@ -115,8 +110,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 <li>Consulter les archives des emails envoyés : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_archives' ) . '">Archives</a></li>
 ' . ( current_user_can( 'manage_options' ) ? '<li>Configurer un nouvel Email groupé : sous-section <a href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Configuration</a></li>' : '' ) . '
 </ul>
-' . ( current_user_can( 'manage_options' ) ? '<p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 5 à 10 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> </p>' : '' )
-						),
+' . ( current_user_can( 'manage_options' ) ? '<p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 5 à 10 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> </p>' : '' ) . '</div>'
+					),
+					'options'  => array(
 						array(
 							'id'      => 'mail_group_log_clean_days',
 							'type'    => 'number',
@@ -247,12 +243,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 						'position'   => '25.2',
 						'capability' => 'edit_producteur',
 						'icon'       => 'dashicons-none flaticon-tractor',
+						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez configurer :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_producteur' ) . '">producteurs</a> : la présentation des exploitations de vos différents producteurs ainsi que <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" target="_blank">l\'affectation de leurs référents</a>. Vous pouvez également affecter des référents sur les contrats de vos producteurs (<a target="_blank" href="https://wiki.amapress.fr/referent_producteur/fiche_producteur">Voir l\'aide</a>)</li>
+<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_produit' ) . '">produits de vos différents producteurs</a>, par exemples les espèces de légumes cultivés, les races de poules, les types de produits ainsi que leur associer des <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_produit_category' ) . '">étiquettes</a>. (Le <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">renseignement des types et tailles de paniers</a> de fait au sein des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a>)</li>
+</ul></div>'
 					),
 					'options'  => array(
-//						array(
-//							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -289,12 +286,14 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 						'position'   => '25.8',
 						'capability' => 'manage_contenu',
 						'icon'       => 'dashicons-none flaticon-water',
+						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>publier des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_recette' ) . '">recettes</a> (<a target="_blank" href="https://wiki.amapress.fr/collectif/recette_publier">Aide</a>) et définir leurs <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_recette_category' ) . '">étiquettes</a></li>
+<li>publier le <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">contenu des paniers</a> (par exemple, pour un contrat <em>légumes hebdomadaire</em>)</li>
+<li>déplacer/annuler les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">livraisons de paniers</a></li>
+</ul></div>'
 					),
 					'options'  => array(
-//						array(
-//							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -339,12 +338,18 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 						'position'   => '25.12',
 						'capability' => 'manage_events',
 						'icon'       => 'dashicons-none flaticon-interface-2',
+						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>gérer les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_distribution&amapress_date=thismonth' ) . '">distributions</a> (modification de lieu et d\'heure), le déplacement de livraison de panier, se fait dans <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">Tableau de bord&gt;Contenus&gt;Paniers</a></li>
+<li>configurer les <a target="_blank" href="' . admin_url( 'admin.php?page=event_mails_page' ) . '">emails de rappels</a> (pour les événements, les responsables de distribution...)</li>
+<li>obtenir des <a target="_blank" href="' . admin_url( 'admin.php?page=distrib_page_stats' ) . '">statistiques</a> d\'inscriptions aux distributions</li>
+<li>planifier et publier des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_visite&amapress_date=next' ) . '">Visites à la Ferme</a></li>
+<li>planifier et publier des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_assemblee&amapress_date=next' ) . '">Assemblées Générales</a></li>
+<li>planifier et publier des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_amap_event&amapress_date=next' ) . '">événements</a> de tous <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_amap_event_category' ) . '">types</a></li>
+<li>attribuer des <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_events_conf_opt_page&tab=amp_tab_role_resp_distrib' ) . '">rôles aux différents responsables de distributions</a> requis</li>
+</ul></div>'
 					),
 					'options'  => array(
-//						array(
-//							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
 					),
 					'tabs'     => array(
 						'Distributions - Définir horaires particuliers' => array(
@@ -729,22 +734,22 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 						'position'   => '25.4',
 						'capability' => 'edit_contrat_instance',
 						'icon'       => 'dashicons-none flaticon-pen',
+						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>gérer tous vos <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a> (Aide <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">Création</a> et <a target="_blank" href="https://wiki.amapress.fr/contrats/gestion">Gestion</a>), leurs <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active' ) . '">inscriptions</a>, les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat' ) . '">présentations des productions</a> (présentation des contrats), les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_cont_pmt&amapress_date=active' ) . '">règlements</a></li>
+<li>obtenir des <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_quantites_stats' ) . '">statistiques</a> sur les inscriptions, la <a target="_blank" href="' . admin_url( 'admin.php?page=calendar_contrat_paiements' ) . '">répartition des chèques</a>, la <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) . '">répartition des paniers</a> et des <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) . '">quantités à livrer</a> par les prodcuteurs</li> 
+<li>gérer <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_archives' ) . '">l\'archivage des saisons précédentes</a></li>
+<li>configurer les <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_mails_page' ) . '">emails de rappels</a></li>
+<li>configurer <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ) . '">l\'assistant de préinscription en ligne</a> et obtenir un <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) . '">modèle de contrat Word/DOCX générique</a> pour le préremplissage automatique des contrats lors des inscriptions.</li>
+</ul>
+<p>Consultez l\'aide <a target="_blank" href="https://wiki.amapress.fr/referent_producteur/accueil">Référent Producteur</a></p></div>'
 					),
 					'options'  => array(
 //						array(
-//							'name'   => 'Contrat quantités',
-//							'type'   => 'custom',
-//							'custom' => 'amapress_echo_all_contrat_quantite',
-//						),
-//						array(
-//							'name'   => 'Contrat paiements',
-//							'type'   => 'custom',
-//							'custom' => 'amapress_echo_all_contrat_paiements_by_date',
-//						),
-//						array(
 //							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
+//							'bare' => true,
+//							'desc' => ''
+//						)
 					),
 					'tabs'     => array(
 						'Ajouter Inscription Contrat '   => array(
@@ -1404,12 +1409,15 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'position'   => '25.3',
 						'capability' => 'edit_adhesion_paiement',
 						'icon'       => 'dashicons-none flaticon-pen',
+						'long_desc'  => '<div class="amapress-section-note">' . '<h4>Dans cette section vous pouvez gérer les adhésions/cotisation à votre AMAP :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>les <a target="_blank" href="' . admin_url( 'admin.php?page=adhesion_paiements&amapress_contrat=active' ) . '">adhésions</a>, leurs <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_adh_pmt&amapress_date=active' ) . '">règlements</a> et la répartition des types de cotisations
+<li>la <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_adh_per&amapress_date=active' ) . '">période d\'adhésion</a> et le bulletin sous format Word/DOCX
+<li>les <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_paiement_category' ) . '">types de cotisations</a>
+</ul>
+<p>L\'association des deux <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_paiement_category' ) . '">types de cotisation</a> par défaut (AMAP et Réseau AMAP) se fait dans <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ) . '">Tableau de bord&gt;Paramétrage, onglet Paiements</a></p>' . '</div>'
 					),
 					'options'  => array(
-//						array(
-//							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -1457,12 +1465,17 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 						'position'   => '60.4',
 						'capability' => 'edit_intermittence_panier',
 						'icon'       => 'dashicons-none flaticon-business-2',
+						'long_desc'  => '<div class="amapress-section-note">' . '<h4>Dans cette section vous pouvez :</h4>
+<ul style="margin-left: 1em; list-style-type: disc">
+<li>configurer les <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_intermit_conf_opt_page' ) . '">options</a> de l\'espace intermittents</li>
+<li>voir les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_inter_panier&amapress_date=active' ) . '">paniers échangés</a></li>
+<li>configurer les <a target="_blank" href="' . admin_url( 'admin.php?page=intermit_mails_page' ) . '">emails de rappels</a> relatifs à l\'espace intermittents</li>
+<li>gérer les <a target="_blank" href="' . admin_url( 'users.php?amapress_contrat=intermittent' ) . '">amapiens membres</a> de la liste des intermittents</li>
+<li>consulter les <a target="_blank" href="' . admin_url( 'admin.php?page=intermittent_page_stats' ) . '">statistiques d\'échanges de paniers</a></li>
+</ul>
+<p><a target="_blank" href="https://wiki.amapress.fr/admin/espace_intermittents">Consulter l\'aide</a></p>' . '</div>'
 					),
 					'options'    => array(
-//						array(
-//							'type' => 'note',
-//							'desc' => 'ici vous pouvez gérer...'
-//						),
 					),
 					'tabs'       => array(),
 					'subpages'   => array(

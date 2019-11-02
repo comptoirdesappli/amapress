@@ -320,6 +320,9 @@ class TitanFrameworkAdminPage {
 			if ( ! empty( $this->settings['desc'] ) ) {
 				?><p class='description'><?php echo $this->settings['desc'] ?></p><?php
 			}
+			if ( ! empty( $this->settings['long_desc'] ) ) {
+				?><?php echo $this->settings['long_desc'] ?><?php
+			}
 			?>
 
             <div class='titan-framework-panel-wrap'>
