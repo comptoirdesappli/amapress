@@ -1157,6 +1157,9 @@ class AmapressAdhesion extends TitanEntity {
 		$paniers     = $this->getPaniersVariables();
 		if ( isset( $paniers[ $date ] ) ) {
 			$panier = $paniers[ $date ];
+			if ( empty( $panier ) ) {
+				$panier = [];
+			}
 			foreach ( $panier as $quant_id => $quant ) {
 				if ( $quant > 0 ) {
 					/** @var AmapressContrat_quantite $contrat_quant */
