@@ -1529,14 +1529,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'Types de cotisation : adhésion à l\'AMAP',
 		'Associer un type de cotisation pour l\'adhésion à l\'AMAP',
 		admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ),
-		$adh_period ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantAmap() ) . '€' : 'Pas de période d\'adhésion en cours'
+		$adh_period && $amap_term ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantAmap() ) . '€' : 'Pas de période d\'adhésion en cours'
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		$reseau_amap_term ? 'success' : 'warning',
 		'Types de cotisation : adhésion au réseau AMAP',
 		'Associer un type de cotisation pour l\'adhésion au réseau AMAP',
 		admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ),
-		$adh_period ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $reseau_amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantReseau() ) . '€' : 'Pas de période d\'adhésion en cours'
+		$adh_period && $reseau_amap_term ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $reseau_amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantReseau() ) . '€' : 'Pas de période d\'adhésion en cours'
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? 'warning' : 'success',
