@@ -180,6 +180,7 @@ function amapress_register_shortcodes() {
 		$args         = shortcode_atts(
 			[
 				'lieu'       => 0,
+				'max_dates'  => 52,
 				'show_title' => 'false',
 			],
 			$args
@@ -188,11 +189,11 @@ function amapress_register_shortcodes() {
 		if ( ! empty( $args['lieu'] ) ) {
 			$dist_lieu_id = Amapress::resolve_post_id( $dist_lieu_id, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 
-			return do_shortcode( '[inscription-distrib for_pdf=true show_title=' . $args['show_title'] . ' for_emargement=true show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=true max_dates=52 lieu=' . $dist_lieu_id . ']' );
+			return do_shortcode( '[inscription-distrib for_pdf=true show_title=' . $args['show_title'] . ' for_emargement=true show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=true max_dates=' . $args['max_dates'] . ' lieu=' . $dist_lieu_id . ']' );
 		} else {
 			$ret = '';
 			foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-				$ret .= do_shortcode( '[inscription-distrib for_pdf=true show_title=' . $args['show_title'] . ' for_emargement=true show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=true max_dates=52 lieu=' . $lieu_id . ']' );
+				$ret .= do_shortcode( '[inscription-distrib for_pdf=true show_title=' . $args['show_title'] . ' for_emargement=true show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=true max_dates=' . $args['max_dates'] . ' lieu=' . $lieu_id . ']' );
 			}
 
 			return $ret;
@@ -201,6 +202,9 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Liste statique des inscrits des responsables aux distributions',
 			'args' => [
+				'show_title' => '(Par défaut “true”) Afficher les noms des lieux',
+				'max_dates'  => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
+				'lieu'       => 'Filtre de lieu',
 			]
 		] );
 	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode',
