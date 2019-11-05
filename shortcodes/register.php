@@ -71,6 +71,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Affiche le nombre d\'années écoulée depuis une autre année',
 			'args' => [
+				'year' => 'Année de départ du décompte d\'années'
 			]
 		] );
 	amapress_register_shortcode( 'amapress-panel', function ( $atts, $content ) {
@@ -110,18 +111,33 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Gallerie des recettes',
 			'args' => [
+				'produits'    => 'Filtre de produits',
+				'cat'         => 'Filtre de catégories',
+				'cat__not_in' => 'Inverse filtre de catégories',
+				'if_empty'    => '(Par défaut “Pas encore de recette”) Texte à afficher quand il n\’y a pas de recettes à afficher',
+				'size'        => '(Par défaut “thumbnail”) Taille de l\’aperçu',
+				'searchbox'   => '(Par défaut “true”) Afficher une barre de recherche',
 			]
 		] );
 	amapress_register_shortcode( 'produits', 'amapress_produits_shortcode',
 		[
 			'desc' => 'Gallerie de produits',
 			'args' => [
+				'producteur'  => 'Filtre producteurs',
+				'recette'     => 'Filtre recettes',
+				'cat'         => 'Filtre catégories',
+				'cat__not_in' => 'Inverse filtre catégories',
+				'if_empty'    => '(Par défaut “Pas encore de produits”) Texte à afficher quand il n\’y a pas de recettes à afficher',
+				'size'        => '(Par défaut “thumbnail”) Taille de l\’aperçu',
+				'searchbox'   => '(Par défaut “true”) Afficher une barre de recherche',
 			]
 		] );
 	amapress_register_shortcode( 'lieu-map', 'amapress_lieu_map_shortcode',
 		[
 			'desc' => 'Emplacement d\'un lieu (carte et StreetView)',
 			'args' => [
+				'lieu' => 'Afficher la carte du lieu indiqué',
+				'mode' => '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview',
 			]
 		] );
 	amapress_register_shortcode( 'user-map', 'amapress_user_map_shortcode',
@@ -134,6 +150,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Emplacement d\'un producteur',
 			'args' => [
+				'lieu' => 'Afficher la carte du lieu indiqué',
+				'mode' => '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview',
 			]
 		] );
 	amapress_register_shortcode( 'amapien-avatar', 'amapress_amapien_avatar_shortcode',
@@ -146,6 +164,16 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Historique d\'inscription des responsables aux distributions',
 			'args' => [
+				'show_email'      => '(Par défaut “default”) Afficher les emails',
+				'show_tel'        => '(Par défaut “default”) Afficher les numéros de téléphones',
+				'show_tel_fixe'   => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
+				'show_tel_mobile' => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
+				'show_adresse'    => '(Par défaut “default”) Afficher les adresses',
+				'show_avatar'     => '(Par défaut “default”) Afficher les avatars des amapiens',
+				'show_roles'      => '(Par défaut “default”) Afficher les rôles des membres du collectif',
+				'show_title'      => '(Par défaut “true”) Afficher les noms des lieux',
+				'past_weeks'      => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
+				'lieu'            => 'Filtre de lieu',
 			]
 		] );
 	amapress_register_shortcode( 'liste-inscription-distrib', function ( $args ) {
@@ -179,30 +207,72 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Inscriptions comme responsable de distributions',
 			'args' => [
+				'show_past'         => '(Par défaut “false”) Afficher les distributions passées',
+				'show_next'         => '(Par défaut “true”) Afficher les distributions à venir',
+				'show_email'        => '(Par défaut “default”) Afficher les emails',
+				'show_tel'          => '(Par défaut “default”) Afficher les numéros de téléphones',
+				'show_tel_fixe'     => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
+				'show_tel_mobile'   => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
+				'show_adresse'      => '(Par défaut “default”) Afficher les adresses',
+				'show_avatar'       => '(Par défaut “default”) Afficher les avatars des amapiens',
+				'show_roles'        => '(Par défaut “default”) Afficher les rôles des membres du collectif',
+				'show_title'        => '(Par défaut “true”) Afficher les noms des lieux',
+				'past_weeks'        => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
+				'max_dates'         => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
+				'lieu'              => 'Filtre de lieu',
+				'inscr_all_distrib' => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 			]
 		] );
 	amapress_register_shortcode( 'anon-inscription-distrib', 'amapress_inscription_distrib_shortcode',
 		[
 			'desc' => 'Inscriptions comme responsable de distributions',
 			'args' => [
+				'key'               => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à cet assistant d\'inscription aux distributions sans connexion',
+				'show_past'         => '(Par défaut “false”) Afficher les distributions passées',
+				'show_next'         => '(Par défaut “true”) Afficher les distributions à venir',
+				'show_email'        => '(Par défaut “default”) Afficher les emails',
+				'show_tel'          => '(Par défaut “default”) Afficher les numéros de téléphones',
+				'show_tel_fixe'     => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
+				'show_tel_mobile'   => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
+				'show_adresse'      => '(Par défaut “default”) Afficher les adresses',
+				'show_avatar'       => '(Par défaut “default”) Afficher les avatars des amapiens',
+				'show_roles'        => '(Par défaut “default”) Afficher les rôles des membres du collectif',
+				'show_title'        => '(Par défaut “true”) Afficher les noms des lieux',
+				'past_weeks'        => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
+				'max_dates'         => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
+				'lieu'              => 'Filtre de lieu',
+				'inscr_all_distrib' => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 			]
 		] );
 	amapress_register_shortcode( 'resp-distrib-contacts', 'amapress_responsables_distrib_shortcode',
 		[
 			'desc' => 'Contacts des responsables de distribution',
 			'args' => [
+				'distrib' => '(Par défaut "2") Afficher les responsables pour ce nombre de distributions à venir'
 			]
 		] );
 	amapress_register_shortcode( 'inscription-visite', 'amapress_inscription_visite_shortcode',
 		[
 			'desc' => 'Inscripions aux visites à la ferme',
 			'args' => [
+				'show_email'      => '(Par défaut “default”) Afficher les emails',
+				'show_tel'        => '(Par défaut “default”) Afficher les numéros de téléphones',
+				'show_tel_fixe'   => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
+				'show_tel_mobile' => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
+				'show_adresse'    => '(Par défaut “default”) Afficher les adresses',
+				'show_avatar'     => '(Par défaut “default”) Afficher les avatars des amapiens',
 			]
 		] );
 	amapress_register_shortcode( 'inscription-amap-event', 'amapress_inscription_amap_event_shortcode',
 		[
 			'desc' => 'Inscriptions aux évènements AMAP',
 			'args' => [
+				'show_email'      => '(Par défaut “default”) Afficher les emails',
+				'show_tel'        => '(Par défaut “default”) Afficher les numéros de téléphones',
+				'show_tel_fixe'   => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
+				'show_tel_mobile' => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
+				'show_adresse'    => '(Par défaut “default”) Afficher les adresses',
+				'show_avatar'     => '(Par défaut “default”) Afficher les avatars des amapiens',
 			]
 		] );
 
@@ -218,6 +288,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Inscription d\'un amapien à la liste des intermittents',
 			'args' => [
+				'show_info' => '(Par défaut “yes”) Afficher les informations d\’inscription à la liste des intermittents',
 			]
 		] );
 	amapress_register_shortcode( 'intermittents-desinscription', 'amapress_intermittence_desinscription_shortcode',
@@ -243,8 +314,15 @@ function amapress_register_shortcodes() {
 		] );
 	amapress_register_shortcode( 'amapress-ics-viewer', 'amapress_fullcalendar',
 		[
-			'desc' => 'Calendrier de l\'AMAP',
+			'desc' => 'Afficheur de calendrier ICAL/ICS',
 			'args' => [
+				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'min_time'      => '(Par défaut “08:00:00”) Heure minimale affichée',
+				'max_time'      => '(Par défaut “22:00:00”) Heure maximale affichée',
+				'default_view'  => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
+				'url'           => 'Url du calendrier à afficher (ICS)',
 			]
 		] );
 	amapress_register_shortcode( 'amapress-amapien-agenda-viewer', function ( $atts ) {
@@ -258,6 +336,13 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Calendrier de l\'amapien',
 			'args' => [
+				'since_days'    => '(Par défaut 30) Nombre de jours d\'historique de l\'agenda',
+				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'min_time'      => '(Par défaut “08:00:00”) Heure minimale affichée',
+				'max_time'      => '(Par défaut “22:00:00”) Heure maximale affichée',
+				'default_view'  => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
 			]
 		] );
 	amapress_register_shortcode( 'amapress-public-agenda-viewer', function ( $atts ) {
@@ -274,6 +359,13 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Calendrier publique de l\'AMAP',
 			'args' => [
+				'since_days'    => '(Par défaut 30) Nombre de jours d\'historique de l\'agenda',
+				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'min_time'      => '(Par défaut “08:00:00”) Heure minimale affichée',
+				'max_time'      => '(Par défaut “22:00:00”) Heure maximale affichée',
+				'default_view'  => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
 			]
 		] );
 
@@ -295,6 +387,9 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Paniers proposés/échangés par un amapien',
 			'args' => [
+				'show_history' => '(Par défaut “false”) Afficher l\’historique des échanges de paniers de l\’amapien/intermittent',
+				'history_days' => '(Par défaut “180”) Nombre de jour de l\’historique',
+				'show_futur'   => '(Par défaut “true”) Afficher les échanges à venir',
 			]
 		] );
 	amapress_register_shortcode( 'amapien-paniers-intermittents-count', 'amapress_user_paniers_intermittents_count_shortcode',
@@ -307,6 +402,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Paniers disponibles sur la liste des intermittents',
 			'args' => [
+				'contrat'        => 'Permet de filtrer les contrats pour lesquels les paneirs à échanger sont affichés',
+				'allow_amapiens' => '(Par défaut “true”) Autoriser les amapiens à réserver des paniers',
 			]
 		] );
 	amapress_register_shortcode( 'les-paniers-intermittents-count', 'amapress_all_paniers_intermittents_count_shortcode',
@@ -358,6 +455,9 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Paniers réservés par un intermittent',
 			'args' => [
+				'show_history' => '(Par défaut “false”)  Afficher l\’historique des échanges de paniers de l\’amapien/intermittent',
+				'history_days' => '(Par défaut “30”) Nombre de jour de l\’historique',
+				'show_futur'   => '(Par défaut “true”) Afficher les échanges à venir',
 			]
 		] );
 
@@ -366,12 +466,28 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Carte des amapiens',
 			'args' => [
+				'lieu'            => 'Afficher les amapiens ayant un contrat dans le lieu de distribution indiqué',
+				'show_email'      => '(Par défaut “default”) Afficher les emails des amapiens',
+				'show_tel'        => '(Par défaut “default”) Afficher les numéros de téléphones des amapiens',
+				'show_tel_fixe'   => '(Par défaut “default”) Afficher les numéros de fixes des amapiens',
+				'show_tel_mobile' => '(Par défaut “default”) Afficher les numéros de portables des amapiens',
+				'show_adresse'    => '(Par défaut “default”) Afficher les adresses des amapiens',
+				'show_avatar'     => '(Par défaut “default”) Afficher les photos des amapiens',
+				'show_lieu'       => '(Par défaut “default”) Afficher le nom du lieu de distribution',
 			]
 		] );
 	amapress_register_shortcode( 'amapiens-role-list', 'amapress_amapiens_role_list_shortcode',
 		[
 			'desc' => 'Liste des membres du collectif de l\'AMAP',
 			'args' => [
+				'lieu'            => 'Afficher les membres du collectif du lieu de distribution indiqué',
+				'show_prod'       => '(Par défaut “false”) Afficher les producteurs',
+				'show_email'      => '(Par défaut “force”) Afficher les emails des membres du collectif',
+				'show_tel'        => '(Par défaut “default”) Afficher les numéros de téléphones des membres du collectif',
+				'show_tel_fixe'   => '(Par défaut “default”) Afficher les numéros de fixes des membres du collectif',
+				'show_tel_mobile' => '(Par défaut “force”) Afficher les numéros de portables des membres du collectif',
+				'show_adresse'    => '(Par défaut “default”) Afficher les adresses des membres du collectif',
+				'show_avatar'     => '(Par défaut “default”) Afficher les photos des membres du collectif',
 			]
 		] );
 	amapress_register_shortcode( 'user-info', 'amapress_user_info_shortcode' );
@@ -492,6 +608,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution)',
 			'args' => [
+				'role' => '(Par défaut "logged") Afficher le contenu de ce shortcode uniquement si l\'amapien est dans un des rôles suivants : logged, not_logged, intermittent, no_contrat, responsable_distrib (est responsable de distribution cette semaine), responsable_amap (peut accéder au Tableau de Bord), contrat_xxx (a un contrat xxx)'
 			]
 		] );
 
@@ -518,6 +635,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Copieur de lien de configuration de la synchronisation d\'un calendrier ICAL dans l\'agenda de l\'amapien',
 			'args' => [
+				'since_days' => '(Par défaut 30) Nombre de jours d\'historique de l\'agenda',
 			]
 		] );
 
@@ -547,6 +665,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Affiche le calendrier de la page d\'accueil',
 			'args' => [
+				'title' => '(Par défaut “yes”) Afficher le titre de la section',
 			]
 		] );
 	amapress_register_shortcode( 'front_produits', function ( $atts ) {
@@ -580,6 +699,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Affiche la liste des producteurs/productions pour la page d\'acceuil',
 			'args' => [
+				'title' => '(Par défaut “yes”) Afficher le titre de la section',
 			]
 		] );
 	amapress_register_shortcode( 'front_nous_trouver', function ( $atts ) {
@@ -602,6 +722,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Affiche la carte des lieux de distributions pour la page d\'accueil',
 			'args' => [
+				'title' => '(Par défaut “yes”) Afficher le titre de la section',
 			]
 		] );
 	amapress_register_shortcode( 'front_default_grid', function ( $atts ) {
@@ -631,6 +752,10 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Affiche les infos de la page d\'accueil (calendrier, productions, carte)',
 			'args' => [
+				'title'            => '(Par défaut “yes”) Afficher le titre des trois sections (Agenda/Produits/Carte) de la grille par défaut',
+				'agenda-classes'   => '(Par défaut “col-lg-4 col-md-6 col-sm-6 col-xs-12”) Nom des classes CSS appliquées pour le formatage de la grille',
+				'produits-classes' => '(Par défaut “col-lg-4 col-md-6 col-sm-6 col-xs-12”) Nom des classes CSS appliquées pour le formatage de la grille',
+				'map-classes'      => '(Par défaut “col-lg-4 col-md-12 col-sm-12 col-xs-12”) Nom des classes CSS appliquées pour le formatage de la grille',
 			]
 		] );
 
@@ -687,6 +812,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Liste des liste de diffusions (SYMPA/SudOuest/Emails groupés) configurées sur le site',
 			'args' => [
+				'sms' => '(Par défaut “yes”) Afficher un lien SMS-To contenant tous les membres de chaque liste de diffusion',
 			]
 		] );
 }

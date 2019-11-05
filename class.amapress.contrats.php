@@ -18,14 +18,6 @@ class AmapressContrats {
 	public static $initiated = false;
 
 	public static function init() {
-		amapress_register_shortcode( 'adhesions',
-			array( 'AmapressContrats', 'adhesions_shortcode' ),
-			[
-				'desc' => 'Liste des contrats de l\'amapien',
-				'args' => [
-				]
-			] );
-
 		// THE AJAX ADD ACTIONS
 		add_action( 'wp_ajax_update_contrat_status_action', array(
 			'AmapressContrats',

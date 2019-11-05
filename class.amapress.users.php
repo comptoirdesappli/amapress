@@ -411,18 +411,23 @@ class AmapressUsers {
 			[
 				'desc' => 'Trombinoscope des membres de l\'AMAP',
 				'args' => [
+					'show_principal_only' => '(Par défaut "true") N\'afficher que les lieux principaux',
 				]
 			] );
 		amapress_register_shortcode( 'trombinoscope_lieu', array( 'AmapressUsers', 'trombinoscope_lieu_shortcode' ),
 			[
 				'desc' => 'Trombinoscope des membres d\'un lieu de distribution de l\'AMAP',
 				'args' => [
+					'lieu' => 'Filtre de lieux de distributions',
 				]
 			] );
 		amapress_register_shortcode( 'trombinoscope_role', array( 'AmapressUsers', 'trombinoscope_role_shortcode' ),
 			[
 				'desc' => 'Trombinoscope des membres avec un certain role',
 				'args' => [
+					'role'      => '(Par défaut "all") Affiche les amapiens d\'un rôle particulier : all, producteurs, responsables (membres du collectif), referents_lieux, referents_producteurs, amapiens, resp_distrib_cette_semaine, resp_distrib_semaine_prochaine',
+					'lieu'      => 'Filtre de lieux de distributions',
+					'searchbox' => '(Par défaut “true”) Afficher une barre de recherche',
 				]
 			] );
 		// enqueue and localise scripts
