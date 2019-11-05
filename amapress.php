@@ -1219,6 +1219,13 @@ if ( ! function_exists( 'wp_mail' ) ) {
 		/** @var AmapressSMTPMailingQueue $amapress_smtpMailingQueue */
 		global $amapress_smtpMailingQueue;
 
+		if ( empty( $to ) ) {
+			throw new Exception( "Trying send email with empty To" );
+		}
+		if ( empty( $message ) ) {
+			throw new Exception( "Trying send email with empty Content" );
+		}
+
 		if ( $amapress_smtpMailingQueue ) {
 			return $amapress_smtpMailingQueue->wp_mail( $to, $subject, $message, $headers, $attachments );
 		} else {
