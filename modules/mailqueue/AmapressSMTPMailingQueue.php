@@ -325,6 +325,21 @@ class AmapressSMTPMailingQueue {
 			);
 		}
 		require_once( 'AmapressSMTPMailingQueueOriginal.php' );
+		if ( ! isset( $data['to'] ) ) {
+			$data['to'] = '';
+		}
+		if ( ! isset( $data['subject'] ) ) {
+			$data['subject'] = '';
+		}
+		if ( ! isset( $data['message'] ) ) {
+			$data['message'] = '';
+		}
+		if ( ! isset( $data['headers'] ) ) {
+			$data['headers'] = [];
+		}
+		if ( ! isset( $data['attachments'] ) ) {
+			$data['attachments'] = [];
+		}
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
 			@error_log( 'Email send Error : ' . implode( ' ; ', $errors ) );
