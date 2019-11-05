@@ -291,7 +291,7 @@ function amapress_amap_role_admin_menu() {
 	);
 }
 
-function amapress_get_user_edit_link( AmapressUser $user ) {
+function amapress_get_user_edit_link( AmapressUser $user = null ) {
 	if ( empty( $user ) ) {
 		return '';
 	}
