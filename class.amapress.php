@@ -3235,7 +3235,7 @@ class Amapress {
 			$item->type             = 'amapress-custom';
 			$item->type_label       = __( 'Archives', 'amapress' );
 			$item->title            = $post_conf['plural'];
-			$item->url              = get_post_type_archive_link( $post_type );
+			$item->url              = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
 			$item->target           = '';
 			$item->attr_title       = '';
 			if ( empty( $item->classes ) ) {
@@ -3256,7 +3256,7 @@ class Amapress {
 			$item->type             = 'amapress-custom-latest';
 			$item->title            = 'Derniers ' . $post_conf['plural'];
 			$item->type_label       = __( 'Récents', 'amapress' );
-			$item->url              = get_post_type_archive_link( $post_type );
+			$item->url              = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
 			$item->target           = '';
 			$item->attr_title       = '';
 			if ( empty( $item->classes ) ) {
