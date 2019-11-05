@@ -3394,11 +3394,22 @@ class Amapress {
 				foreach ( $types as $post_type ) {
 					if ( $item->object == 'latest_' . $post_type ) {
 						if ( ! is_customize_preview() ) {
+							$pt    = AmapressEntities::getPostType( $post_type );
+							$query = [
+								'post_type'      => amapress_unsimplify_post_type( $post_type ),
+								'posts_per_page' => 10,
+								'amapress_date'  => 'active'
+							];
+							if ( isset( $pt ) ) {
+								if ( isset( $pt['default_orderby'] ) ) {
+									$query['orderby'] = $pt['default_orderby'];
+								}
+								if ( isset( $pt['default_order'] ) ) {
+									$query['order'] = $pt['default_order'];
+								}
+							}
 							foreach (
-								get_posts( [
-									'post_type'     => amapress_unsimplify_post_type( $post_type ),
-									'amapress_date' => 'active'
-								] ) as $post
+								get_posts( $query ) as $post
 							) {
 								$subitem                   = new stdClass();
 								$subitem->object_id        = $i ++;
