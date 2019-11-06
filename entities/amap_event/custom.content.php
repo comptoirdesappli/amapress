@@ -7,6 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_filter( 'amapress_get_custom_content_amap_event', 'amapress_get_custom_content_amap_event' );
 function amapress_get_custom_content_amap_event( $content ) {
+	if ( is_search() ) {
+		return amapress_get_custom_archive_content_amap_event( $content );
+	}
+
 	$amap_event = new AmapressAmap_event( get_the_ID() );
 
 	ob_start();
@@ -151,6 +155,38 @@ function amapress_get_custom_content_amap_event( $content ) {
 
 		amapress_echo_panel_end();
 	}
+
+	$content = ob_get_contents();
+
+	ob_clean();
+
+	return $content;
+}
+
+add_filter( 'amapress_get_custom_archive_excerpt_amap_event', 'amapress_get_custom_archive_content_amap_event' );
+add_filter( 'amapress_get_custom_archive_content_amap_event', 'amapress_get_custom_archive_content_amap_event' );
+function amapress_get_custom_archive_content_amap_event( $content ) {
+	$amap_event = new AmapressAmap_event( get_the_ID() );
+
+	ob_start();
+
+	$addr = 'Lieu non défini';
+	if ( $amap_event->getType() == 'lieu' ) {
+		if ( $amap_event->getLieu() ) {
+			$addr = $amap_event->getLieu()->getFormattedAdresseHtml();
+		}
+	} else {
+		$addr = $amap_event->getLieu_externe_nom() . ', ' . $amap_event->getLieu_externe_adresse();
+	}
+
+	echo '<p>' .
+	     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
+	     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
+	     ' à ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
+	     ' ; Adresse : ' . $addr .
+	     '</p>';
+
+	echo $content;
 
 	$content = ob_get_contents();
 
