@@ -152,6 +152,7 @@ class AmapDemoBase {
 			AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
 			AmapressLieu_distribution::INTERNAL_POST_TYPE,
 			AmapressContrat_quantite::INTERNAL_POST_TYPE,
+			AmapressProducteur::INTERNAL_POST_TYPE,
 			AmapressContrat::INTERNAL_POST_TYPE,
 			AmapressContrat_instance::INTERNAL_POST_TYPE
 		] );
