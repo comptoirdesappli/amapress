@@ -1593,14 +1593,6 @@ jQuery(function($) {
 					return $ret;
 				}
 			),
-			'avail_from'       => array(
-				'name' => amapress__( 'Dispo de' ),
-				'type' => 'date',
-			),
-			'avail_to'         => array(
-				'name' => amapress__( 'Dispo jusqu\'à' ),
-				'type' => 'date',
-			),
 			'liste_dates'      => array(
 				'name' => amapress__( 'Calendrier spécifique' ),
 				'type' => 'multidate',
@@ -1973,7 +1965,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 	return null;
 }
 
-function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $from, $to, $quantite, $produits, $photo, $liste_dates, $max_adhs ) {
+function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $quantite, $produits, $photo, $liste_dates, $max_adhs ) {
 	if ( $contrat_instance->getModel() == null ) {
 		return '';
 	}
@@ -2009,10 +2001,6 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		$v                         = date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $d ) );
 		$liste_dates_options[ $v ] = $v;
 	}
-	if ( $contrat_instance->isPanierVariable() ) {
-		echo "<td><input style='width: 100%' type='text' class='input-date date' name='amapress_quant_data[$id][avail_from]' placeholder='Date début' value='$from' /></td>";
-		echo "<td><input style='width: 100%' type='text' class='input-date date' name='amapress_quant_data[$id][avail_to]' placeholder='Date fin' value='$to' /></td>";
-	} else {
 		?>
         <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][liste_dates]" ?>"
                     name="<?php echo "amapress_quant_data[$id][liste_dates][]"; ?>"
@@ -2024,7 +2012,6 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
             </select>
         </td>
 		<?php
-	}
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][max_adhs]' min='0' step='1' placeholder='Adhérents' value='$max_adhs' /></td>";
 	?>
     <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][produits]" ?>"
@@ -2111,11 +2098,9 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 			$pr   = esc_attr( $quant->getPrix_unitaire() );
 			$qc   = esc_attr( $quant->getQuantiteConfig() );
 			$desc = esc_textarea( stripslashes( $quant->getDescription() ) );
-			$af   = esc_attr( $quant->getAvailFrom() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailFrom() ) ) : null );
-			$at   = esc_attr( $quant->getAvailTo() ? date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $quant->getAvailTo() ) ) : null );
 
 			amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
-				$qc, $af, $at, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
+				$qc, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
 				$quant->getSpecificDistributionDates(), $quant->getMaxAdherents() );
 		}
 		?>
@@ -2129,7 +2114,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	amapress_quantite_editor_line( $contrat_instance, '%%id%%', '', '', '', 0, 0,
-		'', null, null, 0, '', '', [], 0 );
+		'', 0, '', '', [], 0 );
 
 	$new_row = ob_get_clean();
 
@@ -2207,8 +2192,6 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 					'amapress_contrat_quantite_quantite_config'  => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
 					'amapress_contrat_quantite_unit'             => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
 					'amapress_contrat_quantite_produits'         => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
-					'amapress_contrat_quantite_avail_from'       => ! empty( $quant_data['avail_from'] ) ? TitanEntity::to_date( $quant_data['avail_from'] ) : null,
-					'amapress_contrat_quantite_avail_to'         => ! empty( $quant_data['avail_to'] ) ? TitanEntity::to_date( $quant_data['avail_to'] ) : null,
 					'amapress_contrat_quantite_liste_dates'      => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
 					'amapress_contrat_quantite_quantite'         => isset( $quant_data['quant'] ) ? $quant_data['quant'] : null,
 					'amapress_contrat_quantite_max_adhs'         => $quant_data['max_adhs'],

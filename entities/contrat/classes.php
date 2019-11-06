@@ -1879,14 +1879,6 @@ class AmapressContrat_quantite extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_quantite_quantite_config' );
 	}
 
-	public function getAvailFrom() {
-		return $this->getCustom( 'amapress_contrat_quantite_avail_from' );
-	}
-
-	public function getAvailTo() {
-		return $this->getCustom( 'amapress_contrat_quantite_avail_to' );
-	}
-
 	public function getQuantiteOptions() {
 		$confs = $this->getQuantiteConfig();
 		if ( empty( $confs ) ) {

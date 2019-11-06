@@ -870,21 +870,12 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 						$val         = isset( $paniers_variables[ $date ][ $quant->ID ] ) ? $paniers_variables[ $date ][ $quant->ID ] : '';
 						$is_empty    = empty( $val );
 						$empty_class = $is_empty ? 'contrat_panier_vars-empty' : 'contrat_panier_vars-with-value';
-//                        $display_val = $is_empty ? '' : esc_html($val);
-						$ed = '';
-//                        $ed .= '<div class="contrat_panier_vars-wrapper">';
-//                        $ed .= "<span class='contrat_panier_vars-value $empty_class' id='panier_vars_{$date}_{$quant->ID}-value'>{$display_val}</span>";
-//                        $ed .= "<select id='panier_vars_{$date}_{$quant->ID}-select'
-//data-value-id='panier_vars_{$date}_{$quant->ID}-value'
-//name='amapress_adhesion_contrat_panier_vars[$date][{$quant->ID}]' class='contrat_panier_vars-select $empty_class'>";
-						$ed .= "<select name='amapress_adhesion_contrat_panier_vars[$date][{$quant->ID}]' class='contrat_panier_vars-select $empty_class'>";
-						$ed .= tf_parse_select_options( $options, $val, false );
-						$ed .= '</select>';
-//                        $ed .= '</div>';
-						if ( $quant->getAvailFrom() && $quant->getAvailTo() ) {
-							if ( $date < Amapress::start_of_day( $quant->getAvailFrom() ) || $date > Amapress::end_of_day( $quant->getAvailTo() ) ) {
-								$ed = '<span class="contrat_panier_vars-na">NA</span>';
-							}
+						$ed          = '';
+						$ed          .= "<select name='amapress_adhesion_contrat_panier_vars[$date][{$quant->ID}]' class='contrat_panier_vars-select $empty_class'>";
+						$ed          .= tf_parse_select_options( $options, $val, false );
+						$ed          .= '</select>';
+						if ( ! $quant->isInDistributionDates( $date ) ) {
+							$ed = '<span class="contrat_panier_vars-na">NA</span>';
 						}
 						$row[ 'd-' . $date ] = $ed;
 					}
@@ -1481,7 +1472,7 @@ function amapress_get_contrat_quantite_datatable(
 					}
 				}
 				$output .= implode( ', ', $output_quants );
-				$output           .= '</p>';
+				$output .= '</p>';
 			}
 		}
 		$output        .= '<p>En tout : ';

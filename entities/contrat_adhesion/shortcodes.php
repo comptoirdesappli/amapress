@@ -1767,10 +1767,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$ed         .= "<select style='max-width: none;min-width: 0' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var'>";
 					$ed         .= tf_parse_select_options( $options, null, false );
 					$ed         .= '</select>';
-					if ( $quant->getAvailFrom() && $quant->getAvailTo() ) {
-						if ( $date < Amapress::start_of_day( $quant->getAvailFrom() ) || $date > Amapress::end_of_day( $quant->getAvailTo() ) ) {
-							$ed = '<span class="contrat_panier_vars-na">NA</span>';
-						}
+					if ( ! $quant->isInDistributionDates( $date ) ) {
+						$ed = '<span class="contrat_panier_vars-na">NA</span>';
 					}
 					$row[ 'd-' . $date ] = $ed;
 				}
