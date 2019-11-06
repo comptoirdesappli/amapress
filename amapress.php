@@ -1732,3 +1732,28 @@ add_action( 'admin_post_tf_event_scheduler_test', function () {
 	echo '<p>Rappel terminé</p>';
 	die();
 } );
+
+add_action( 'pre_get_posts', function ( $query ) {
+	/* @var WP_Query $query */
+	if ( ( is_category() || is_archive() ) && $query->is_main_query() ) {
+		$post_type = $query->get( 'post_type' );
+		if ( ! is_array( $post_type ) ) {
+			$pt = AmapressEntities::getPostType( amapress_unsimplify_post_type( $post_type ) );
+			if ( $pt ) {
+				if ( isset( $pt['default_orderby'] ) ) {
+					$default_orderby = $pt['default_orderby'];
+					if ( false !== strpos( $default_orderby, 'amapress_' ) ) {
+						$query->query_vars['orderby']  = 'meta_value_num';
+						$query->query_vars['meta_key'] = $default_orderby;
+					} else {
+						$query->query_vars['orderby'] = 'meta_value_num';
+					}
+				}
+				if ( isset( $pt['default_order'] ) ) {
+					$query->query_vars['order'] = $pt['default_order'];
+				}
+			}
+		}
+	}
+
+} );

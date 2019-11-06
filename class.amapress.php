@@ -3402,7 +3402,13 @@ class Amapress {
 							];
 							if ( isset( $pt ) ) {
 								if ( isset( $pt['default_orderby'] ) ) {
-									$query['orderby'] = $pt['default_orderby'];
+									$default_orderby = $pt['default_orderby'];
+									if ( false !== strpos( $default_orderby, 'amapress_' ) ) {
+										$query['orderby']  = 'meta_value_num';
+										$query['meta_key'] = $default_orderby;
+									} else {
+										$query['orderby'] = 'meta_value_num';
+									}
 								}
 								if ( isset( $pt['default_order'] ) ) {
 									$query['order'] = $pt['default_order'];
