@@ -2001,17 +2001,17 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		$v                         = date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $d ) );
 		$liste_dates_options[ $v ] = $v;
 	}
-		?>
-        <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][liste_dates]" ?>"
-                    name="<?php echo "amapress_quant_data[$id][liste_dates][]"; ?>"
-                    class="quant-dates" multiple="multiple"
-                    data-placeholder="Dates spé.">
-				<?php
-				tf_parse_select_options( $all_liste_dates_options, $liste_dates_options );
-				?>
-            </select>
-        </td>
-		<?php
+	?>
+    <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][liste_dates]" ?>"
+                name="<?php echo "amapress_quant_data[$id][liste_dates][]"; ?>"
+                class="quant-dates" multiple="multiple"
+                data-placeholder="Dates spé.">
+			<?php
+			tf_parse_select_options( $all_liste_dates_options, $liste_dates_options );
+			?>
+        </select>
+    </td>
+	<?php
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][max_adhs]' min='0' step='1' placeholder='Adhérents' value='$max_adhs' /></td>";
 	?>
     <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][produits]" ?>"
@@ -2074,14 +2074,9 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
                     title="Options de quantités possibles, par ex : 1-3;5;10 pour autoriser 1,2,3,5,10">Quantités config
                 </th>
 			<?php } ?>
-			<?php if ( $contrat_instance->isPanierVariable() ) { ?>
-                <th style="width: 80px">Dispo de</th>
-                <th style="width: 80px"> - à</th>
-			<?php } else { ?>
-                <th title="Dates spécifiques de distribution du type de panier"
-                >Dates spec.
-                </th>
-			<?php } ?>
+            <th title="Dates spécifiques de distribution du type de panier"
+            >Dates spec.
+            </th>
             <th style="width: 50px">Max Adhs.</th>
             <th>Produits</th>
             <!--            <th style="width: 30px">Photo</th>-->
