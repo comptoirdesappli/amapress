@@ -1058,6 +1058,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$ret .= '</table>';
 		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
+		$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque :</label><input type="text" id="amapress_adhesion_paiement_numero" name="amapress_adhesion_paiement_numero"/></p>';
+		$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" name="amapress_adhesion_paiement_banque"/></p>';
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
 		$ret .= '</form>';
 
@@ -1096,6 +1098,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_repartition', $amounts );
 		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_amount', $total_amount );
+		if ( isset( $_REQUEST['amapress_adhesion_paiement_banque'] ) ) {
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_banque', $_REQUEST['amapress_adhesion_paiement_banque'] );
+		}
+		if ( isset( $_REQUEST['amapress_adhesion_paiement_numero'] ) ) {
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_numero', $_REQUEST['amapress_adhesion_paiement_numero'] );
+		}
 		wp_set_post_terms( $adh_paiement->ID, $terms, 'amps_paiement_category' );
 
 		amapress_compute_post_slug_and_title( $adh_paiement->getPost() );
