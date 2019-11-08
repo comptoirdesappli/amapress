@@ -88,6 +88,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_adhesion_paiement_numero' );
 	}
 
+	public function getBanque() {
+		return $this->getCustom( 'amapress_adhesion_paiement_banque' );
+	}
+
 	public function getAmount( $type = null ) {
 		$this->ensure_init();
 
@@ -532,19 +536,31 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					}
 				];
 			}
-			$ret['total']     = [
+			$ret['total']           = [
 				'desc' => 'Total de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
-			$ret['montant']   = [
+			$ret['montant']         = [
 				'desc' => 'Total de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
-			self::$properties = $ret;
+			$ret['paiement_numero'] = [
+				'desc' => 'Numéro du chèque',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getNumero();
+				}
+			];
+			$ret['paiement_banque'] = [
+				'desc' => 'Banque du chèque',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getBanque();
+				}
+			];
+			self::$properties       = $ret;
 		}
 
 		return self::$properties;

@@ -1349,14 +1349,22 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										array(
 											'type' => 'note',
 											'desc' => '
+                                    <h4>Modèles génériques de contrats</h4>
+									<p>Vous pouvez télécharger ci-dessous l\'un des modèles DOCX génériques utilisables comme contrat personnalisé et vierge :</p>
+                                    <ul style="list-style-type: disc; padding-left: 1em">
+                                    <li><a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">modèle générique (paniers en tableau)</a></li>
+                                    <li><a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl( 'simple' ) ) . '">modèle générique simple (paniers en texte)</a></li>
+                                    <li><a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl( 'modulables' ) ) . '">modèle générique pour les paniers modulables</a></li>
+                                    </ul>
+                                    <h4>Configuration des modèles par défaut</h4>
 									<p>Vous pouvez configurer les modèles DOCX par défaut pour tous les contrats sans modèle spécifique.</p>
-									<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme contrat personnalisé et vierge.</p>
 									<p>La procédure est la suivante: <ul style="list-style-type: decimal; padding-left: 1em">
 									<li>Téléchargez le <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl() ) . '">modèle générique</a></li>
 									<li>changez le logo d\'entête</li>
 									<li>personnalisez les engagements</li>
 									<li>uploadez votre fichier DOCX modifié dans les deux champs ci-dessous</li>
 									<li>enregistrez</li>
+									<li>Si vous avez des contrats avec paniers modulables, recommencez cette procédure avec le <a target="_blank" href="' . esc_attr( Amapress::getContratGenericUrl( 'modulables' ) ) . '">modèle générique paniers modulables</a></li>
 									</ul></p>
 									<p>Votre AMAP est prête pour la génération/remplissage automatique des contrats</p>',
 										),
@@ -1383,6 +1391,34 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'selector-button' => 'Utiliser ce modèle',
 											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
 											'desc'            => 'Générer un contrat vierge (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Pour les contrats avec paniers modulables',
+										),
+										array(
+											'id'              => 'default_word_modulable_model',
+											'name'            => amapress__( 'Contrat personnalisé "paniers modulables" par défaut' ),
+											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+											'type'            => 'upload',
+											'show_column'     => false,
+											'show_download'   => true,
+											'show_title'      => true,
+											'selector-button' => 'Utiliser ce modèle',
+											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
+											'desc'            => 'Configurer un modèle de contrat "paniers modulables" (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+										),
+										array(
+											'id'              => 'default_word_modulable_paper_model',
+											'name'            => amapress__( 'Contrat vierge "paniers modulables" par défaut' ),
+											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+											'type'            => 'upload',
+											'show_column'     => false,
+											'show_download'   => true,
+											'show_title'      => true,
+											'selector-button' => 'Utiliser ce modèle',
+											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX',
+											'desc'            => 'Générer un contrat vierge "paniers modulables" (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
 										),
 										array(
 											'type' => 'save',

@@ -576,7 +576,11 @@ class AmapressContrat_instance extends TitanEntity {
 	public function getContratWordModelId() {
 		$contrat_attachment_id = $this->getCustomAsInt( 'amapress_contrat_instance_word_model' );
 		if ( empty( $contrat_attachment_id ) ) {
-			$contrat_attachment_id = Amapress::getOption( 'default_word_model' );
+			if ( $this->isPanierVariable() ) {
+				$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_model' );
+			} else {
+				$contrat_attachment_id = Amapress::getOption( 'default_word_model' );
+			}
 		}
 
 		return $contrat_attachment_id;
@@ -589,7 +593,11 @@ class AmapressContrat_instance extends TitanEntity {
 	public function getContratPapierWordModelId() {
 		$contrat_attachment_id = $this->getCustomAsInt( 'amapress_contrat_instance_word_paper_model' );
 		if ( empty( $contrat_attachment_id ) ) {
-			$contrat_attachment_id = Amapress::getOption( 'default_word_model' );
+			if ( $this->isPanierVariable() ) {
+				$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_paper_model' );
+			} else {
+				$contrat_attachment_id = Amapress::getOption( 'default_word_paper_model' );
+			}
 		}
 
 		return $contrat_attachment_id;

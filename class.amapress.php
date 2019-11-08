@@ -3779,6 +3779,8 @@ class Amapress {
 
 	public static function getContratGenericUrl( $type = 'default' ) {
 		switch ( $type ) {
+			case 'modulables':
+				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique_modulables.docx';
 			case 'simple':
 				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique_simple.docx';
 			default:
