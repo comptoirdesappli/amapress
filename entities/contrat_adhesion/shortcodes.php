@@ -428,6 +428,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$user_has_contrat = ! empty( $adhs );
 	}
 
+	if ( defined( 'AMAPRESS_DEMO_MODE' ) && isset( $_REQUEST['user_id'] ) ) {
+		$user_id = intval( $_REQUEST['user_id'] );
+		$amapien = AmapressUser::getBy( $user_id );
+		if ( $amapien ) {
+			global $amapress_send_mail_to;
+			$amapress_send_mail_to = $amapien->getEmail();
+		}
+	}
+
 	if ( Amapress::toBool( $atts['check_principal'] ) && ! $admin_mode && empty( $principal_contrats ) ) {
 		if ( amapress_can_access_admin() ) {
 			ob_clean();
