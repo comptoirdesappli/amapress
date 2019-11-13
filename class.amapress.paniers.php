@@ -233,6 +233,10 @@ class AmapressPaniers {
 			}
 		}
 
+		usort( $liste, function ( $a, $b ) {
+			return strcasecmp( wp_strip_all_tags( $a['last_name'] ), wp_strip_all_tags( $b['last_name'] ) );
+		} );
+
 		return array(
 			'columns' => $columns,
 			'data'    => $liste

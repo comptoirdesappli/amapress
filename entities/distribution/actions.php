@@ -375,9 +375,9 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$liste[] = $line;
 	}
 
-	$liste = from( $liste )->orderBy( function ( $l ) {
-		return strip_tags( $l['last_name'] );
-	} )->toArray();
+	usort( $liste, function ( $a, $b ) {
+		return strcasecmp( wp_strip_all_tags( $a['last_name'] ), wp_strip_all_tags( $b['last_name'] ) );
+	} );
 
 	ob_start();
 	if ( $for_pdf ) {
