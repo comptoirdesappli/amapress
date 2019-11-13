@@ -989,7 +989,7 @@ class AmapressPaniers {
 						$produits_in_panier = array_merge( $produits_in_panier, $contrat_quantite->getProduitsIds() );
 
 						$produits_objects[] = array(
-							'produit'  => '<img class="panier-produit-photo" alt="' . esc_attr( $contrat_quantite->getTitle() ) . '" src="' . amapress_get_avatar_url( $contrat_quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' ) . '" />' . esc_html( $contrat_quantite->getTitle() ),
+							'produit'  => esc_html( $contrat_quantite->getTitle() ),
 							'price'    => $contrat_quantite->getPrix_unitaire(),
 							'quantite' => $contrat_quantite->formatValue( $quantite ),
 						);
@@ -1001,7 +1001,7 @@ class AmapressPaniers {
 				$produits_objects = array();
 				foreach ( AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() ) as $contrat_quantite ) {
 					$produits_objects[] = array(
-						'produit'  => '<img class="panier-produit-photo" alt="' . esc_attr( $contrat_quantite->getTitle() ) . '" src="' . amapress_get_avatar_url( $contrat_quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' ) . '" />' . esc_html( $contrat_quantite->getTitle() ),
+						'produit'  => esc_html( $contrat_quantite->getTitle() ),
 						'price'    => $contrat_quantite->getPrix_unitaire(),
 						'quantite' => $contrat_quantite->getPriceUnitDisplay(),
 					);
