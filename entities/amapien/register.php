@@ -159,13 +159,28 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv_import' => false,
 				'desc'       => 'Motif de non renouvellement',
 			),
+			'last_login'      => array(
+				'name'        => amapress__( 'Dernière connexion' ),
+				'type'        => 'custom',
+				'show_on'     => 'none',
+				'show_column' => true,
+				'csv'         => false,
+				'sort_column' => 'last_login',
+				'column'      => function ( $user_id ) {
+					$last_login = get_user_meta( $user_id, 'last_login', true );
+					if ( empty( $last_login ) ) {
+						return '';
+					}
 
-			'head_amapress0'     => array(
+					return date_i18n( 'd/m/Y H:i:s', intval( $last_login ) );
+				}
+			),
+			'head_amapress0'  => array(
 				'id'   => 'amapress_sect',
 				'name' => amapress__( 'Amapress' ),
 				'type' => 'heading',
 			),
-			'avatar'             => array(
+			'avatar'          => array(
 				'name'            => amapress__( 'Avatar' ),
 				'selector-title'  => 'Sélectionnez/téléversez votre photo',
 				'selector-button' => 'Utiliser cette photo',
@@ -174,7 +189,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'            => 'Avatar',
 				'show_column'     => false,
 			),
-			'head_amapress'      => array(
+			'head_amapress'   => array(
 				'id'   => 'address_sect',
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
