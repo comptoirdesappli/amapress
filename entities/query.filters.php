@@ -1296,6 +1296,15 @@ function amapress_filter_posts( WP_Query $query ) {
 }
 
 add_action( 'pre_get_users', function ( WP_User_Query $uqi ) {
+	global $pagenow;
+	if ( is_admin() && 'users.php' == $pagenow ) {
+		if ( empty( $_REQUEST['orderby'] ) ) {
+			$uqi->query_vars['orderby'] = 'last_name';
+		}
+		if ( empty( $_REQUEST['order'] ) ) {
+			$uqi->query_vars['order'] = 'ASC';
+		}
+	}
 	if ( ! empty( $uqi->query_vars['amapress_info'] ) ) {
 		$amapress_info = $uqi->query_vars['amapress_info'];
 		if ( 'address_unk' == $amapress_info ) {

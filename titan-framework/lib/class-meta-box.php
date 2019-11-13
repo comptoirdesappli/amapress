@@ -374,24 +374,14 @@ class TitanFrameworkMetaBox {
 			}
 		}
 
-//        var_dump($vars);
 		if ( array_key_exists( 'orderby', $vars ) ) {
-//			$exists = false;
-//			$is_num = false;
-//			$is_custom = false;
 			/** @var TitanFrameworkOption $option */
 			foreach ( $this->options as $option ) {
 				if ( $option->getID() == $vars['orderby'] ) {
-//					$exists                       = true;
-//					$is_num                       = $option->isNumericForSort();
 					self::$custom_orderby_options = $option;
 					break;
 				}
 			}
-//			if ( $exists ) {
-//				$vars['meta_key'] = $vars['orderby'];
-//				$vars['orderby']  = $is_num ? 'meta_value_num' : 'meta_value';
-//			}
 		}
 
 		return $vars;
