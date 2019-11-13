@@ -132,7 +132,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Emails en attente',
 								'menu_title' => 'Emails en attente',
-								'capability' => 'read',
+								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-shield',
 							),
 							'options'  => array(),
@@ -170,7 +170,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Archives',
 								'menu_title' => 'Archives',
-								'capability' => 'read',
+								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-book',
 							),
 							'options'  => array(),
@@ -249,8 +249,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 <li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_produit' ) . '">produits de vos différents producteurs</a>, par exemples les espèces de légumes cultivés, les races de poules, les types de produits ainsi que leur associer des <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_produit_category' ) . '">étiquettes</a>. (Le <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">renseignement des types et tailles de paniers</a> de fait au sein des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a>)</li>
 </ul></div>'
 					),
-					'options'  => array(
-					),
+					'options'  => array(),
 					'tabs'     => array(),
 					'subpages' => array(
 						array(
@@ -287,14 +286,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 						'capability' => 'manage_contenu',
 						'icon'       => 'dashicons-none flaticon-water',
 						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
-<ul style="margin-left: 1em; list-style-type: disc">
-<li>publier des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_recette' ) . '">recettes</a> (<a target="_blank" href="https://wiki.amapress.fr/collectif/recette_publier">Aide</a>) et définir leurs <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_recette_category' ) . '">étiquettes</a></li>
-<li>publier le <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">contenu des paniers</a> (par exemple, pour un contrat <em>légumes hebdomadaire</em>)</li>
-<li>déplacer/annuler les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">livraisons de paniers</a></li>
-</ul></div>'
+<ul style="margin-left: 1em; list-style-type: disc">' .
+						                ( amapress_current_user_can( 'edit_recette' ) ? '<li>publier des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_recette' ) . '">recettes</a> (<a target="_blank" href="https://wiki.amapress.fr/collectif/recette_publier">Aide</a>) et définir leurs <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_recette_category' ) . '">étiquettes</a></li>' : '' ) .
+						                ( amapress_current_user_can( 'edit_panier' ) ? '<li>publier le <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">contenu des paniers</a> (par exemple, pour un contrat <em>légumes hebdomadaire</em>)</li>' : '' ) .
+						                ( amapress_current_user_can( 'edit_panier' ) ? '<li>déplacer/annuler les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_panier&amapress_date=thismonth' ) . '">livraisons de paniers</a></li>' : '' ) .
+						                '</ul></div>'
 					),
-					'options'  => array(
-					),
+					'options'  => array(),
 					'tabs'     => array(),
 					'subpages' => array(
 						array(
@@ -309,7 +307,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'title'      => 'Catégories de recettes',
 							'menu_icon'  => 'dashicons-tag',
 							'menu_title' => 'Catégories de recettes',
-							'capability' => 'edit_recette',
+							'capability' => 'manage_categories',
 							'slug'       => 'edit-tags.php?taxonomy=amps_recette_category',
 						),
 //						array(
@@ -349,8 +347,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 <li>attribuer des <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_events_conf_opt_page&tab=amp_tab_role_resp_distrib' ) . '">rôles aux différents responsables de distributions</a> requis</li>
 </ul></div>'
 					),
-					'options'  => array(
-					),
+					'options'  => array(),
 					'tabs'     => array(
 						'Distributions - Définir horaires particuliers' => array(
 							'id'      => 'amp_tab_distrib_hours_setter',
@@ -1453,8 +1450,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 </ul>
 <p>L\'association des deux <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_paiement_category' ) . '">types de cotisation</a> par défaut (AMAP et Réseau AMAP) se fait dans <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ) . '">Tableau de bord&gt;Paramétrage, onglet Paiements</a></p>' . '</div>'
 					),
-					'options'  => array(
-					),
+					'options'  => array(),
 					'tabs'     => array(),
 					'subpages' => array(
 						array(
@@ -1496,7 +1492,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 					'id'         => 'amapress_gestion_intermittence_page',
 					'type'       => 'panel',
 					'capability' => 'edit_intermittence_panier',
-					'settings'   => array(
+					'settings' => array(
 						'name'       => 'Espace intermittents',
 						'position'   => '60.4',
 						'capability' => 'edit_intermittence_panier',
@@ -1511,10 +1507,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 </ul>
 <p><a target="_blank" href="https://wiki.amapress.fr/admin/espace_intermittents">Consulter l\'aide</a></p>' . '</div>'
 					),
-					'options'    => array(
-					),
-					'tabs'       => array(),
-					'subpages'   => array(
+					'options'  => array(),
+					'tabs'     => array(),
+					'subpages' => array(
 						array(
 							'subpage'  => true,
 							'id'       => 'intermittent_page_stats',
@@ -3133,6 +3128,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 										array(
 											'type'            => 'related-users',
+											'name'            => 'Rédacteurs Amap',
+											'query'           => 'role=redacteur_amap',
+											'show_header'     => true,
+											'include_columns' => array( 'username', 'name', 'email', 'role' ),
+										),
+										array(
+											'type'            => 'related-users',
 											'name'            => 'Référents Producteurs',
 											'query'           => 'role=referent',
 											'show_header'     => true,
@@ -3593,9 +3595,10 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							)
 						),
 						'Shortcodes'                                    => array(
-							'id'      => 'shortcodes',
-							'desc'    => '',
-							'options' => array(
+							'id'         => 'shortcodes',
+							'desc'       => '',
+							'capability' => 'edit_pages',
+							'options'    => array(
 								array(
 									'id'     => 'shortcodes_cust',
 									'name'   => 'Shortcodes',
@@ -3629,9 +3632,10 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							)
 						),
 						'Placeholders - contrat vierge'                 => array(
-							'id'      => 'paper_contrat_placeholders',
-							'desc'    => '',
-							'options' => array(
+							'id'         => 'paper_contrat_placeholders',
+							'desc'       => '',
+							'capability' => 'manage_contrats',
+							'options'    => array(
 								array(
 									'id'     => 'paper_contrat_placeholders_cust',
 									'name'   => 'Placeholders - contrat vierge',
@@ -3643,9 +3647,10 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							)
 						),
 						'Placeholders - production'                     => array(
-							'id'      => 'pres_prod_contrat_placeholders',
-							'desc'    => '',
-							'options' => array(
+							'id'         => 'pres_prod_contrat_placeholders',
+							'desc'       => '',
+							'capability' => 'manage_contrats',
+							'options'    => array(
 								array(
 									'id'     => 'pres_prod_contrat_placeholders_cust',
 									'name'   => 'production',
@@ -3657,9 +3662,10 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							)
 						),
 						'Placeholders - contrat personnalisé'           => array(
-							'id'      => 'adhesion_contrat_placeholders',
-							'desc'    => '',
-							'options' => array(
+							'id'         => 'adhesion_contrat_placeholders',
+							'desc'       => '',
+							'capability' => 'manage_contrats',
+							'options'    => array(
 								array(
 									'id'     => 'adhesion_contrat_placeholders_cust',
 									'name'   => 'Placeholders - contrat personnalisé',
@@ -3671,9 +3677,10 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							)
 						),
 						'Placeholders - bulletin adhésion personnalisé' => array(
-							'id'      => 'adhesion_placeholders',
-							'desc'    => '',
-							'options' => array(
+							'id'         => 'adhesion_placeholders',
+							'desc'       => '',
+							'capability' => 'edit_adhesion_paiement',
+							'options'    => array(
 								array(
 									'id'     => 'adhesion_placeholders_cust',
 									'name'   => 'Placeholders - bulletin adhésion personnalisé',

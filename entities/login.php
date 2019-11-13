@@ -24,6 +24,7 @@ function amapress_can_access_admin_roles() {
 		'responsable_amap',
 		'referent',
 		'tresorier',
+		'redacteur_amap',
 		'coordinateur_amap',
 		'producteur',
 	);
@@ -97,11 +98,15 @@ function amapress_check_access() {
 		return;
 	}
 
-	if ( is_user_logged_in() && is_admin() && ! amapress_can_access_admin() ) {
-		if ( 'profile.php' == $pagenow ) {
+	if ( is_user_logged_in() && is_admin() ) {
+		if ( ! amapress_can_access_admin() ) {
+			if ( 'profile.php' == $pagenow ) {
+				amapress_redirect_info();
+			} else {
+				amapress_redirect_home();
+			}
+		} else if ( 'profile.php' == $pagenow && amapress_current_user_can( 'redacteur_amap' ) ) {
 			amapress_redirect_info();
-		} else {
-			amapress_redirect_home();
 		}
 	}
 }

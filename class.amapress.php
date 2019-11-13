@@ -1088,6 +1088,35 @@ class Amapress {
 		}
 	}
 
+	public static function init_redacteur_role() {
+		add_role( 'redacteur_amap', 'Amap Rédacteur',
+			array(
+				'read'         => true,
+				'list_users'   => false,
+				'edit_users'   => false,
+				'add_users'    => false,
+				'create_users' => false,
+				'delete_users' => false
+			) );
+
+		self::add_post_role( 'redacteur_amap', 'recette', 'recettes', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => true,
+		) );
+		self::add_post_role( 'redacteur_amap', 'post', 'posts', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => true,
+			'publish' => true,
+		) );
+
+		$r = get_role( 'redacteur_amap' );
+		$r->add_cap( 'manage_contenu' );
+		$r->add_cap( 'upload_files' );
+	}
+
 	public static function init_responsable_role() {
 		add_role( 'responsable_amap', 'Amap Responsable',
 			array(
@@ -1646,6 +1675,7 @@ class Amapress {
 		self::init_producteur_role();
 		self::init_responsable_role();
 		self::init_coordinateur_role();
+		self::init_redacteur_role();
 		self::init_tresorier_role();
 		self::init_referent_role();
 		self::init_amapien_role();
@@ -3970,6 +4000,7 @@ class Amapress {
 			'producteur'        => 'Amap Producteur',
 			'tresorier'         => 'Amap Trésorier',
 			'coordinateur_amap' => 'Amap Coordinateur',
+			'redacteur_amap'    => 'Amap Rédacteur',
 			'responsable_amap'  => 'Amap Responsable',
 			'referent'          => 'Amap Référent producteur',
 		];
