@@ -1153,7 +1153,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
 
-		$online_subscription_greating_adhesion = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_greating_adhesion' ), null ) );
+		$online_subscription_greating_adhesion = wp_unslash( Amapress::getOption( 'online_subscription_greating_adhesion' ) );
 
 		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
 			$print_bulletin                        = Amapress::makeButtonLink(
@@ -1168,7 +1168,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			$online_subscription_greating_adhesion = str_replace( '%%print_button%%', '', $online_subscription_greating_adhesion );
 		}
-		echo $online_subscription_greating_adhesion;
+		echo amapress_replace_mail_placeholders( $online_subscription_greating_adhesion, null );
 
 		echo '<p>Vous pouvez maintenant vous inscrires aux contrats de l\'AMAP :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
@@ -2250,7 +2250,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				return $c->getModelTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
 			}, $user_subscribable_contrats ) ) );
 			echo '<h4>étape 8/8 : Félicitations !</h4>';
-			$online_contrats_end_step_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_end_step_message' ), $amapien, $inscription ) );
+			$online_contrats_end_step_message = wp_unslash( Amapress::getOption( 'online_contrats_end_step_message' ) );
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte.</div>';
 			if ( Amapress::toBool( 'send_contrat_confirm' ) ) {
 				echo '<p>Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
@@ -2268,7 +2268,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			} else {
 				$online_contrats_end_step_message = str_replace( '%%print_button%%', '', $online_contrats_end_step_message );
 			}
-			echo $online_contrats_end_step_message;
+			echo amapress_replace_mail_placeholders( $online_contrats_end_step_message, $amapien, $inscription );
 
 			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
 				echo '<p>Retourner à la liste de mes contrats :<br/>
