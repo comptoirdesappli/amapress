@@ -2026,13 +2026,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='input-nb-cheques required' /><label for='cheques-esp'>En espèces</label><br/>";
 			}
 			if ( $contrat->getAllowAmapienInputPaiementsDetails() ) {
-				$amapien         = AmapressUser::getBy( $user_id );
-				$emetteur        = esc_attr( $amapien->getDisplayName() );
-				$paiements_dates = implode( '', array_map(
-					function ( $d ) {
-						return '<option value="' . esc_attr( $d ) . '">' . esc_html( date_i18n( 'd/m/Y', $d ) ) . '</option>';
-					}, $contrat->getPaiements_Liste_dates()
-				) );
+				$amapien  = AmapressUser::getBy( $user_id );
+				$emetteur = esc_attr( $amapien->getDisplayName() );
 				echo '<script type="application/javascript">
 jQuery(function($) {
     $(\'.input-nb-cheques\').change(function() {
@@ -2063,6 +2058,15 @@ jQuery(function($) {
 </thead><tbody>';
 				$req = ( $paiements_info_required ? 'required' : '' );
 				for ( $i = 1; $i <= 12; $i ++ ) {
+					$paiements_dates = array_map(
+						function ( $d ) {
+							return '<option value="' . esc_attr( $d ) . '">' . esc_html( date_i18n( 'd/m/Y', $d ) ) . '</option>';
+						}, $contrat->getPaiements_Liste_dates()
+					);
+					if ( isset( $paiements_dates[ $i - 1 ] ) ) {
+						$paiements_dates[ $i - 1 ] = str_replace( '<option ', '<option selected="selected" ', $paiements_dates[ $i - 1 ] );
+					}
+					$paiements_dates = implode( '', $paiements_dates );
 					echo "<tr style='display: none'>
 <td><select id='pmt-$i-date' name='pmt[$i][date]' class='$req'>
 $paiements_dates
