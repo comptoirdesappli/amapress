@@ -200,7 +200,9 @@ if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
         public function header() {}
         public function footer() {}
         public function error( $errors ) {}
-        public function feedback( $string ) {}
+
+	    public function feedback( $string, ...$args ) {
+	    }
     }
 
 
