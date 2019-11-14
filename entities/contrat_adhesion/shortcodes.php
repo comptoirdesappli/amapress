@@ -216,6 +216,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'track_no_renews'               => 'false',
 			'track_no_renews_email'         => get_option( 'admin_email' ),
 			'notify_email'                  => '',
+			'paiements_info_required'       => 'false',
 			'edit_names'                    => 'true',
 			'allow_remove_coadhs'           => 'false',
 			'contact_referents'             => 'true',
@@ -240,6 +241,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
 	}
 
+	$paiements_info_required       = Amapress::toBool( $atts['paiements_info_required'] );
 	$activate_adhesion             = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement            = Amapress::toBool( $atts['agreement'] );
 	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
@@ -1058,8 +1060,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$ret .= '</table>';
 		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
-		$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque :</label><input type="text" id="amapress_adhesion_paiement_numero" name="amapress_adhesion_paiement_numero"/></p>';
-		$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" name="amapress_adhesion_paiement_banque"/></p>';
+		$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque :</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
+		$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
 		$ret .= '</form>';
 
@@ -2059,14 +2061,15 @@ jQuery(function($) {
 <th>Emetteur</th>
 <th>Montant</th>
 </thead><tbody>';
+				$req = ( $paiements_info_required ? 'required' : '' );
 				for ( $i = 1; $i <= 12; $i ++ ) {
 					echo "<tr style='display: none'>
-<td><select id='pmt-$i-date' name='pmt[$i][date]' class='required'>
+<td><select id='pmt-$i-date' name='pmt[$i][date]' class='$req'>
 $paiements_dates
 </select></td>
-<td><input type='text' id='pmt-$i-num' name='pmt[$i][num]' class='required' /></td>
-<td><input type='text' id='pmt-$i-banque' name='pmt[$i][banque]' class='required' /></td>
-<td><input type='text' id='pmt-$i-emetteur' name='pmt[$i][emetteur]' class='required' value='$emetteur' /></td>
+<td><input type='text' id='pmt-$i-num' name='pmt[$i][num]' class='$req' /></td>
+<td><input type='text' id='pmt-$i-banque' name='pmt[$i][banque]' class='$req' /></td>
+<td><input type='text' id='pmt-$i-emetteur' name='pmt[$i][emetteur]' class='$req' value='$emetteur' /></td>
 <td class='amps-pmt-amount'></td>
 </tr>";
 				}

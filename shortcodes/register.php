@@ -447,11 +447,12 @@ function amapress_register_shortcodes() {
 				'show_adherents_infos'          => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_coadherents_inscription' => '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents',
 				'allow_coadherents_access'      => '(true par défaut) Autoriser l\accès aux co-adhérents',
-				'allow_coadherents_adhesion'    => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
-				'show_coadherents_address'      => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
-				'contact_referents'             => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
-				'before_close_hours'            => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
-				'email'                         => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
+				'allow_coadherents_adhesion' => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
+				'show_coadherents_address'   => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
+				'contact_referents'          => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
+				'before_close_hours'         => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
+				'paiement_info_required'     => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
+				'email'                      => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
 			]
 		] );
 
