@@ -1149,10 +1149,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		echo '<h4>Validation du Bulletin d\'adhésion</h4>';
 
-		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_greating_adhesion' ), null ) );
+		$online_subscription_greating_adhesion = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_greating_adhesion' ), null ) );
 
 		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
-			$print_bulletin = Amapress::makeButtonLink(
+			$print_bulletin                        = Amapress::makeButtonLink(
 				add_query_arg( [
 					'inscr_assistant' => 'generate_bulletin',
 					'adh_id'          => $adh_paiement->ID,
@@ -1160,10 +1160,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				] ),
 				'Imprimer', true, true, 'btn btn-default'
 			);
-			echo '<p>Veuillez imprimer le bulletin et le remettre avec votre chèque/règlement lors de la première distribution<br/>' . $print_bulletin . '</p>';
+			$online_subscription_greating_adhesion = str_replace( '%%print_button%%', $print_bulletin, $online_subscription_greating_adhesion );
 		} else {
-			echo '<p>Veuillez remettre le chèque/règlement lors de la première distribution</p>';
+			$online_subscription_greating_adhesion = str_replace( '%%print_button%%', '', $online_subscription_greating_adhesion );
 		}
+		echo $online_subscription_greating_adhesion;
 
 		echo '<p>Vous pouvez maintenant vous inscrires aux contrats de l\'AMAP :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">

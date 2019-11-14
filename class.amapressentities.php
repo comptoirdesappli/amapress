@@ -1174,8 +1174,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'      => 'online_subscription_greating_adhesion',
 											'name'    => 'Contenu du message de validation',
 											'type'    => 'editor',
-											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez remettre le chèque à l'ordre de l'AMAP à la prochaine distribution." ),
+											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . AmapressAdhesion::getPlaceholdersHelp( [
+													'print_button' => 'Bouton Imprimer le bulletin'
+												], false ),
+											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%" ),
 										),
 										array(
 											'type' => 'save',
