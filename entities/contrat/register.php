@@ -1284,7 +1284,7 @@ jQuery(function($) {
 //						),
 
 			// 6/6 - reglements
-			'paiements'             => array(
+			'paiements'         => array(
 				'name'     => amapress__( 'Nombre de chèques' ),
 				'type'     => 'multicheck',
 				'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
@@ -1306,7 +1306,7 @@ jQuery(function($) {
 					'12' => '12 chèques',
 				)
 			),
-			'allow_cash'            => array(
+			'allow_cash'        => array(
 				'name'        => amapress__( 'Règlement en espèces' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1316,7 +1316,17 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement en espèces pour ce contrat',
 			),
-			'manage_paiements'      => array(
+			'allow_bktrfr'      => array(
+				'name'        => amapress__( 'Règlement par virement' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlement en plusieurs fois',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Autoriser le règlement par virement pour ce contrat',
+			),
+			'manage_paiements'  => array(
 				'name'        => amapress__( 'Répartition des chèques/règlement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1326,7 +1336,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Gérer la répartition des chèques/règlement dans Amapress',
 			),
-			'paiements_mention'     => array(
+			'paiements_mention' => array(
 				'name'        => amapress__( 'Message au sujet des chèques/règlement' ),
 				'type'        => 'editor',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1360,7 +1370,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit chèque/règlement pour les paiements en plusieurs fois',
 			),
-			'options_paiements'     => array(
+			'options_paiements' => array(
 				'name'        => amapress__( 'Répartition' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1425,6 +1435,9 @@ jQuery(function($) {
 							}
 							if ( $contrat_instance->getAllow_Cash() ) {
 								$options .= '<li>En espèces</li>';
+							}
+							if ( $contrat_instance->getAllow_Transfer() ) {
+								$options .= '<li>Par virement</li>';
 							}
 
 							$row[ 'quant_' . $quant->ID ] = "<p>{$remaining_dates_factors} x {$price}€ = {$total}€</p><ul>{$options}</ul>";

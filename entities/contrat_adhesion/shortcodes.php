@@ -2030,6 +2030,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( $contrat->getAllow_Cash() ) {
 				echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='input-nb-cheques required' /><label for='cheques-esp'>En espèces</label><br/>";
 			}
+			if ( $contrat->getAllow_Transfer() ) {
+				echo "<input type='radio' name='cheques' id='cheques-vir' value='-2' class='input-nb-cheques required' /><label for='cheques-vir'>Par virement</label><br/>";
+			}
 			if ( $contrat->getAllowAmapienInputPaiementsDetails() ) {
 				$amapien  = AmapressUser::getBy( $user_id );
 				$emetteur = esc_attr( $amapien->getDisplayName() );
@@ -2197,6 +2200,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		];
 		if ( - 1 == $cheques ) {
 			$meta['amapress_adhesion_pmt_type'] = 'esp';
+		}
+		if ( - 2 == $cheques ) {
+			$meta['amapress_adhesion_pmt_type'] = 'vir';
 		}
 		if ( ! empty( $quantite_ids ) ) {
 			$meta['amapress_adhesion_contrat_quantite'] = $quantite_ids;

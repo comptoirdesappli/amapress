@@ -711,6 +711,9 @@ class AmapressAdhesion extends TitanEntity {
 					if ( 'esp' == $adh->getMainPaiementType() ) {
 						return 'En espèces';
 					}
+					if ( 'vir' == $adh->getMainPaiementType() ) {
+						return 'Par virement';
+					}
 					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
 
 					return $o['desc'];
@@ -792,7 +795,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["quantite_unite"]                   = '(Tableau quantité) Unité de la quantité';
 		$ret["quantite_date"]                    = '(Tableau quantité) pour les paniers modulables : date de livraison';
 
-		$ret['paiement_type']     = '(Tableau paiement) Type de paiement (Chèque, espèces...)';
+		$ret['paiement_type']     = '(Tableau paiement) Type de paiement (Chèque, espèces, virement...)';
 		$ret['paiement_numero']   = '(Tableau paiement) Numéro du chèque';
 		$ret['paiement_emetteur'] = '(Tableau paiement) Nom de l\'adhérent émetteur';
 		$ret['paiement_banque']   = '(Tableau paiement) Banque du chèque';
@@ -800,7 +803,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret['paiement_date']     = '(Tableau paiement) Date d\'encaissement du paiement';
 		$ret['paiement_status']   = '(Tableau paiement) Etat du paiement';
 
-		$ret['paiement_x_type']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Type de paiement (Chèque, espèces...)';
+		$ret['paiement_x_type']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Type de paiement (Chèque, espèces, virement...)';
 		$ret['paiement_x_numero']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Numéro du chèque';
 		$ret['paiement_x_emetteur'] = '(où x varie de 1 à 12 suivant le nombre de paiements) Nom de l\'adhérent émetteur';
 		$ret['paiement_x_banque']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Banque du chèque';
@@ -1978,6 +1981,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			);
 			if ( null == $paiement && 'esp' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'esp';
+			}
+			if ( null == $paiement && 'vir' == $this->getMainPaiementType() ) {
+				$meta['amapress_contrat_paiement_type'] = 'vir';
 			}
 			$my_post = array(
 				'post_type'    => AmapressAmapien_paiement::INTERNAL_POST_TYPE,

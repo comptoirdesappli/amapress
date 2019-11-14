@@ -483,10 +483,11 @@ jQuery(function($) {
 				'options'     => array(
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
+					'vir' => 'Virement',
 				),
 				'default'     => 'chq',
 				'required'    => true,
-				'desc'        => 'Moyen de règlement principal : chèques ou espèces',
+				'desc'        => 'Moyen de règlement principal : chèques ou espèces ou virement',
 				'show_column' => false,
 			),
 			'paiements'         => array(

@@ -163,6 +163,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'options'  => array(
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
+					'vir' => 'Virement',
 				),
 				'default'  => 'chq',
 				'required' => true,
@@ -174,14 +175,14 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'type'         => 'float',
 				'unit'         => '€',
 				'required'     => true,
-				'desc'         => 'Montant du chèque/espèces',
+				'desc'         => 'Montant du chèque/espèces/virement',
 				'csv_required' => true,
 			),
 			'numero' => array(
 				'name'         => amapress__( 'Numéro du chèque' ),
 				'type'         => 'text',
 				'required'     => true,
-				'desc'         => 'Numéro du chèque ou "Esp." pour des règlements en espèces',
+				'desc'         => 'Numéro du chèque ou "Esp." pour des règlements en espèces ou "Vir." pour virement',
 				'import_key'   => true,
 				'csv_required' => true,
 				'searchable'   => true,
@@ -189,7 +190,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 			'banque'        => array(
 				'name'       => amapress__( 'Banque' ),
 				'type'       => 'text',
-				'desc'       => 'Banque émettrice ou "Esp." pour des règlements en espèces',
+				'desc'       => 'Banque émettrice ou "Esp." pour des règlements en espèces ou "Vir." pour virement',
 				'searchable' => true,
 			),
 			'emetteur'      => array(

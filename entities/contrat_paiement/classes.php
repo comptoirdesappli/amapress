@@ -101,6 +101,8 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 				return 'Chèque';
 			case 'esp':
 				return 'Espèces';
+			case 'vir':
+				return 'Virement';
 		}
 	}
 
@@ -239,7 +241,7 @@ GROUP BY $wpdb->posts.ID" );
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
 					'icon'     => 'flaticon-business',
-					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ' des espèces remises ' ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ' du virement ' ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => '/mes-adhesions'
 				) );
 			}

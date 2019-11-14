@@ -276,6 +276,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}
 
+	public function getAllow_Transfer() {
+		return $this->getCustom( 'amapress_contrat_instance_allow_bktrfr', 0 );
+	}
+
 	public function getNb_responsables_Supplementaires() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_nb_resp_supp', 0 );
 	}
@@ -1286,6 +1290,9 @@ class AmapressContrat_instance extends TitanEntity {
 			if ( $this->getAllow_Cash() ) {
 				$paiements[] = 'En espèces';
 			}
+			if ( $this->getAllow_Transfer() ) {
+				$paiements[] = 'Par virement';
+			}
 			$row["quantite_paiements"] = '[] ' . implode( "<br />[] ", $paiements );
 			$lines[]                   = $row;
 		}
@@ -1384,6 +1391,9 @@ class AmapressContrat_instance extends TitanEntity {
 			}
 			if ( $this->getAllow_Cash() ) {
 				$paiements[] = 'En espèces';
+			}
+			if ( $this->getAllow_Transfer() ) {
+				$paiements[] = 'Par virement';
 			}
 			$placeholders["quantite_paiements#$i"] = '[] ' . implode( "\n[] ", $paiements );
 			$i                                     += 1;

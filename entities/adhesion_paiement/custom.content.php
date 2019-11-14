@@ -321,6 +321,9 @@ function amapress_paiements_count_editor( $post_id ) {
 		if ( $adhesion->getContrat_instance()->getAllow_Cash() ) {
 			$ret .= '<div><strong>Règlement en espèces autorisé</strong></div>';
 		}
+		if ( $adhesion->getContrat_instance()->getAllow_Transfer() ) {
+			$ret .= '<div><strong>Règlement par virement autorisé</strong></div>';
+		}
 	}
 
 	return $ret;
@@ -444,6 +447,9 @@ function amapress_paiements_editor( $post_id ) {
 	            	if ("esp" === type) {
 	            	    fields.prop("disabled", true);
 	            	    fields.val("Esp.");
+	            	} else if ("vir" === type) {
+	            		fields.prop("disabled", true);
+	            	    fields.val("Vir.");
 	            	} else if ("chq" === type) {
 	            	    fields.prop("disabled", false);
 	            	}
@@ -590,6 +596,7 @@ function amapress_paiements_editor( $post_id ) {
 <td class='paiement-type'><select name='amapress_paiements_details[$id][type]' style='width: 50px'>
 <option value='chq' " . selected( $pmt_type, 'chq', false ) . ">Chèque</option>
 <option value='esp' " . selected( $pmt_type, 'esp', false ) . ">Espèces</option>
+<option value='vir' " . selected( $pmt_type, 'vir', false ) . ">Virement</option>
 </select></td>
 <td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
 <td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>
