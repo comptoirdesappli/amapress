@@ -201,26 +201,28 @@ function amapress_self_inscription( $atts, $content = null ) {
 
 	$atts = shortcode_atts(
 		[
-			'key'                           => '',
-			'for_logged'                    => 'false',
-			'show_contrats'                 => 'false',
-			'filter_multi_contrat'          => 'false',
-			'admin_mode'                    => 'false',
-			'agreement'                     => 'false',
-			'mob_phone_required'            => 'false',
-			'check_principal'               => 'true',
-			'adhesion'                      => 'true',
-			'send_referents'                => 'true',
-			'send_tresoriers'               => 'true',
-			'allow_new_mail'                => 'true',
-			'track_no_renews'               => 'false',
-			'track_no_renews_email'         => get_option( 'admin_email' ),
-			'notify_email'                  => '',
-			'paiements_info_required'       => 'false',
-			'edit_names'                    => 'true',
-			'allow_remove_coadhs'           => 'false',
-			'contact_referents'             => 'true',
-			'show_adherents_infos'          => 'true',
+			'key'                     => '',
+			'for_logged'              => 'false',
+			'show_contrats'           => 'false',
+			'filter_multi_contrat'    => 'false',
+			'admin_mode'              => 'false',
+			'agreement'               => 'false',
+			'mob_phone_required'      => 'false',
+			'check_principal'         => 'true',
+			'adhesion'                => 'true',
+			'send_adhesion_confirm'   => 'true',
+			'send_contrat_confirm'    => 'true',
+			'send_referents'          => 'true',
+			'send_tresoriers'         => 'true',
+			'allow_new_mail'          => 'true',
+			'track_no_renews'         => 'false',
+			'track_no_renews_email'   => get_option( 'admin_email' ),
+			'notify_email'            => '',
+			'paiements_info_required' => 'false',
+			'edit_names'              => 'true',
+			'allow_remove_coadhs'     => 'false',
+			'contact_referents'       => 'true',
+			'show_adherents_infos'    => 'true',
 			'allow_coadherents_access'      => 'true',
 			'allow_coadherents_inscription' => 'true',
 			'allow_coadherents_adhesion'    => 'true',
@@ -1134,9 +1136,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
 		}
 
-		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
-			'Reply-To: ' . implode( ',', $tresoriers )
-		], $attachments );
+		if ( Amapress::toBool( $atts['send_adhesion_confirm'] ) ) {
+			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
+				'Reply-To: ' . implode( ',', $tresoriers )
+			], $attachments );
+		}
 
 		if ( Amapress::toBool( $atts['send_tresoriers'] ) ) {
 			amapress_wp_mail(
@@ -2222,7 +2226,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		}
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
-			$inscription->sendConfirmationMail();
+			if ( Amapress::toBool( 'send_contrat_confirm' ) ) {
+				$inscription->sendConfirmationMail();
+			}
 		}
 
 		if ( ! $admin_mode ) {
@@ -2244,10 +2250,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				return $c->getModelTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
 			}, $user_subscribable_contrats ) ) );
 			echo '<h4>étape 8/8 : Félicitations !</h4>';
-			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte. 
-Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</div>';
+			$online_contrats_end_step_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_end_step_message' ), $amapien, $inscription ) );
+			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte.</div>';
+			if ( Amapress::toBool( 'send_contrat_confirm' ) ) {
+				echo '<p>Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
+			}
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
-				$print_contrat = Amapress::makeButtonLink(
+				$print_contrat                    = Amapress::makeButtonLink(
 					add_query_arg( [
 						'inscr_assistant' => 'generate_contrat',
 						'inscr_id'        => $inscription->ID,
@@ -2255,9 +2264,12 @@ Vous allez recevoir un email de confirmation avec votre contrat dans quelques mi
 					] ),
 					'Imprimer', true, true, 'btn btn-default'
 				);
-				echo '<p>Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (' . $inscription->getProperty( 'referents' ) . ') avec les chèques/règlements correspondants lors de la prochaine distribution<br />
-' . $print_contrat . '</p>';
+				$online_contrats_end_step_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
+			} else {
+				$online_contrats_end_step_message = str_replace( '%%print_button%%', '', $online_contrats_end_step_message );
 			}
+			echo $online_contrats_end_step_message;
+
 			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
 				echo '<p>Retourner à la liste de mes contrats :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
@@ -2296,10 +2308,8 @@ Vous allez recevoir un email de confirmation avec votre contrat dans quelques mi
 
 	} else if ( 'the_end' == $step ) {
 		echo '<h4>Félicitations, vous avez terminé vos inscriptions !</h4>';
-		echo '<p>Si vous êtes nouvel adhérent vous allez recevoir un email vous indiquant comment vous connecter au site et choisir votre mot de passe.</p>';
-		echo '<p>Vous allez recevoir un email de confirmation pour chacune de vos inscriptions avec le contrat à imprimer et les instructions pour remettre vos chèques/règlements aux référents.</p>';
-		echo '<p>(Pensez à regarder vos spams, ces emails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
-		echo '<p>Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie</p>';
+		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_final_step_message' ), null ) );
+
 	}
 	?>
     <style type="text/css">

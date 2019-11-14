@@ -1240,6 +1240,33 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Message - Etape 8/8',
+										),
+										array(
+											'id'      => 'online_contrats_end_step_message',
+											'name'    => 'Inscription terminée',
+											'type'    => 'editor',
+											'default' => wpautop( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les chèques/règlements correspondants lors de la prochaine distribution\n%%print_button%%" ),
+											'desc'    => 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>' .
+											             AmapressAdhesion::getPlaceholdersHelp( [
+												             'print_button' => 'Bouton Imprimer le contrat'
+											             ], false ),
+										),
+										array(
+											'id'      => 'online_final_step_message',
+											'name'    => 'Message final',
+											'type'    => 'editor',
+											'default' => wpautop( "Si vous êtes nouvel adhérent vous allez recevoir un email vous indiquant comment vous connecter au site et choisir votre mot de passe.\n
+Vous allez recevoir un email de confirmation pour chacune de vos inscriptions avec le contrat à imprimer et les instructions pour remettre vos chèques/règlements aux référents.\n
+(Pensez à regarder vos spams, ces emails peuvent s\'y trouver à cause des contrats joints ou pour expéditeur inconnu de votre carnet d\'adresses)\n
+Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie" ),
+											'desc'    => 'Message à l\'amapien à la fin de toutes ses inscriptions',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'CSS Personnalisé',
 										),
 										array(
