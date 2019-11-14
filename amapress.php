@@ -1202,6 +1202,11 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 		}
 	}
 
+	if ( 'wpcf7_read_contact_forms' == $cap && ! amapress_current_user_can( 'manage_options' ) ) {
+		$allcaps[ $caps[0] ] = false;
+	}
+
+
 //	if ('delete_post' == $cap)
 //	    die('aa');
 //	$allcaps[$cap] = false;
