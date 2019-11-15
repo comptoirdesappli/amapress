@@ -928,7 +928,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'id'         => 'amapress_renew_config',
 						'title'      => 'Renouvellement',
 						'capability' => 'manage_options',
-						'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=renew_config' ),
+						'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=contrat_config' ),
 					),
 					array(
 						'id'         => 'amapress_welcome_mail',

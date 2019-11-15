@@ -95,7 +95,7 @@ function amapress_row_action_adhesion_period_renew( $post_id ) {
 	$period     = new AmapressAdhesionPeriod( $post_id );
 	$new_period = $period->clonePeriod();
 	if ( ! $new_period ) {
-		wp_die( 'Une erreur s\'est produit lors du renouvèlement de la période d\'adhésion. Veuillez réessayer' );
+		wp_die( 'Une erreur s\'est produit lors du renouvellement de la période d\'adhésion. Veuillez réessayer' );
 	}
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_period->ID}&action=edit" ) );

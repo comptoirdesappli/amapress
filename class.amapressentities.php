@@ -1079,16 +1079,26 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Renouvèlement'                                 => array(
-									'id'      => 'renew_config',
+								'Contrats'                                      => array(
+									'id'      => 'contrat_config',
 									'desc'    => '',
 									'options' => array(
+										array(
+											'id'      => 'disable_principal',
+											'name'    => 'AMAP sans contrat obligatoire/principal',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
 										array(
 											'id'      => 'renouv_days',
 											'name'    => 'Durée en jour de la période de renouvellement',
 											'type'    => 'number',
 											'default' => 30,
 //                                            'capability' => 'manage_amapress',
+										),
+										array(
+											'type' => 'note',
+											'desc' => 'Le renouvellement des contrats se fait dans ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ), 'Tableau de bord>Gestion Contrats> Edition' )
 										),
 										array(
 											'type' => 'save',
@@ -1521,7 +1531,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 					'id'         => 'amapress_gestion_intermittence_page',
 					'type'       => 'panel',
 					'capability' => 'edit_intermittence_panier',
-					'settings' => array(
+					'settings'   => array(
 						'name'       => 'Espace intermittents',
 						'position'   => '60.4',
 						'capability' => 'edit_intermittence_panier',
@@ -1536,9 +1546,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 </ul>
 <p><a target="_blank" href="https://wiki.amapress.fr/admin/espace_intermittents">Consulter l\'aide</a></p>' . '</div>'
 					),
-					'options'  => array(),
-					'tabs'     => array(),
-					'subpages' => array(
+					'options'    => array(),
+					'tabs'       => array(),
+					'subpages'   => array(
 						array(
 							'subpage'  => true,
 							'id'       => 'intermittent_page_stats',

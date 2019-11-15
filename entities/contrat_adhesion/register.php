@@ -1042,7 +1042,7 @@ function amapress_row_action_adhesion_renew( $post_id ) {
 	$adhesion     = AmapressAdhesion::getBy( $post_id );
 	$new_adhesion = $adhesion->cloneAdhesion();
 	if ( ! $new_adhesion ) {
-		wp_die( 'Une erreur s\'est produit lors du renouvèlement de l\'adhésion. Veuillez réessayer' );
+		wp_die( 'Une erreur s\'est produit lors du renouvellement de l\'adhésion. Veuillez réessayer' );
 	}
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_adhesion->ID}&action=edit" ) );

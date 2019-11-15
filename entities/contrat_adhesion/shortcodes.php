@@ -197,7 +197,8 @@ function amapress_mes_contrats( $atts, $content = null ) {
 function amapress_self_inscription( $atts, $content = null ) {
 	amapress_ensure_no_cache();
 
-	$step = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
+	$step              = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
+	$disable_principal = Amapress::getOption( 'disable_principal', false );
 
 	$atts = shortcode_atts(
 		[
@@ -441,7 +442,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 	}
 
-	if ( Amapress::toBool( $atts['check_principal'] ) && ! $admin_mode && empty( $principal_contrats ) ) {
+	if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal && ! $admin_mode && empty( $principal_contrats ) ) {
 		if ( amapress_can_access_admin() ) {
 			ob_clean();
 
@@ -1196,7 +1197,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				/** @var AmapressAdhesion $adh */
 				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
 			} );
-		if ( Amapress::toBool( $atts['check_principal'] ) ) {
+		if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal ) {
 			foreach ( $adhs as $adh ) {
 				if ( $adh->getContrat_instance()->isPrincipal() ) {
 					$has_principal_contrat = true;

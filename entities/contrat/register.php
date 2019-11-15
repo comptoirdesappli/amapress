@@ -2238,7 +2238,7 @@ function amapress_row_action_contrat_instance_renew( $post_id ) {
 	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
 	$new_contrat_instance = $contrat_inst->cloneContrat();
 	if ( ! $new_contrat_instance ) {
-		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
+		wp_die( 'Une erreur s\'est produit lors du renouvellement du contrat. Veuillez réessayer' );
 	}
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
@@ -2249,7 +2249,7 @@ function amapress_row_action_contrat_instance_renew_same_period( $post_id ) {
 	$contrat_inst         = AmapressContrat_instance::getBy( $post_id );
 	$new_contrat_instance = $contrat_inst->cloneContrat( true, true, true );
 	if ( ! $new_contrat_instance ) {
-		wp_die( 'Une erreur s\'est produit lors du renouvèlement du contrat. Veuillez réessayer' );
+		wp_die( 'Une erreur s\'est produit lors du renouvellement du contrat. Veuillez réessayer' );
 	}
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
