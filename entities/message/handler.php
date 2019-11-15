@@ -171,9 +171,23 @@ function amapress_send_message(
 		$from_email = amapress_mail_from( null );
 		$from_dn    = amapress_mail_from_name( null );
 
+		if ( empty( $from_email ) ) {
+			// Get the site domain and get rid of www.
+			$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+			if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+				$sitename = substr( $sitename, 4 );
+			}
+			$from_email = 'wordpress@' . $sitename;
+		}
+
 		if ( ! empty( $opt['send_from_me'] ) && $current_user ) {
 			$from_dn    = $current_user->getDisplayName();
-			$from_email = $current_user->getUser()->user_email;
+			$user_email = $current_user->getUser()->user_email;
+			if ( AmapressMailingGroup::hasRestrictiveDMARC( $user_email ) ) {
+				$headers[] = 'X-Original-From: ' . $user_email;
+			} else {
+				$from_email = $user_email;
+			}
 
 			$set_from      = function ( $old ) use ( $from_email ) {
 				return $from_email;
