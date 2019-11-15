@@ -10,6 +10,62 @@ add_action( 'template_redirect', function () {
 	}
 } );
 
+function amapress_check_spf() {
+	/* Taken from stop-wp-emails-going-to-spam plugin */
+	$ip = $_SERVER['SERVER_ADDR'];
+	if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+		$ip4 = true;
+	} else {
+		$ip4 = false;
+	}
+	if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+		$ip6 = true;
+	} else {
+		$ip6 = false;
+	}
+	$domain = Amapress::getSiteDomainName( true );
+
+	$dns = @dns_get_record( $domain, DNS_ALL );
+	$spf = false;
+	if ( $dns ) {
+		foreach ( $dns as $dnstxt ) {
+			if ( 'TXT' == $dnstxt['type'] ) {
+				if ( isset( $dnstxt['txt'] ) ) {
+					if ( 'v=spf' == substr( $dnstxt['txt'], 0, 5 ) ) {
+						$spf = $dnstxt['txt'];
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	ob_start();
+	if ( ! $dns ) {
+		_e( '<p class="notice notice-error">Cannot get DNS records - refresh this page - if you still get this message after a few refreshes you may want to check your domain DNS control panel</p>', 'stop-wp-emails-going-to-spam' );
+	} else {
+		if ( false == $spf ) {
+			printf( __( '<p class="notice notice-error">No SPF record found for %s, the following SPF record is recommended', 'stop-wp-emails-going-to-spam' ), $domain );
+			if ( $ip4 || $ip6 ) {
+				printf( ' v=spf1 +a +mx %s:%s ~all', ( $ip4 ) ? 'ip4' : 'ip6', esc_html( $ip ) );
+			} else {
+				echo 'v=spf1 +a +mx ~all';
+			}
+			echo '</p>';
+		} else {
+			printf( __( 'Current record SPF record for %s: <br><strong>%s</strong><br><br>', 'stop-wp-emails-going-to-spam' ), $domain, $spf );
+//			if ( strpos( $spf, $ip ) ) {
+//				_e( '<p class="notice notice-success">Good!, this contains your server IP address</p>', 'stop-wp-emails-going-to-spam' );
+//			} else {
+//				printf( __( '<p class="notice notice-warning">Recommend you add +%s:%s to your SPF record</p>', 'stop-wp-emails-going-to-spam' ), ( $ip4 ) ? 'ip4' : 'ip6', esc_html( $ip ) );
+//			}
+
+		}
+	}
+
+	return ob_get_clean();
+}
+
 function amapress_get_plugin_install_link( $plugin_slug ) {
 	$action = 'install-plugin';
 
@@ -303,6 +359,12 @@ function amapress_get_state() {
 		);
 	} else {
 		$state['05_config'][] = amapress_get_check_state(
+			'info',
+			'DNS SPF record',
+			amapress_check_spf(),
+			''
+		);
+		$state['05_config'][] = amapress_get_check_state(
 			empty( $permalink_structure )
 			|| ! in_array( $permalink_structure,
 				[
@@ -316,7 +378,7 @@ function amapress_get_state() {
 		);
 	}
 
-	$has_site_verif_codes = ! empty( Amapress::getOption( '' ) ) && ! empty( Amapress::getOption( '' ) );
+	$has_site_verif_codes       = ! empty( Amapress::getOption( '' ) ) && ! empty( Amapress::getOption( '' ) );
 	$state['05_config'][] = amapress_get_check_state(
 		$has_site_verif_codes ? 'success' : 'warning',
 		$has_site_verif_codes ? 'Code de vérification du site (Google/Bing) : OK' : 'Codes de vérification du site (Google/Bing) : non renseignés',
@@ -1491,16 +1553,16 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
 	);
-	$type_paiements = get_categories( array(
+	$type_paiements             = get_categories( array(
 		'orderby'    => 'name',
 		'order'      => 'ASC',
 		'taxonomy'   => 'amps_paiement_category',
 		'hide_empty' => false,
 	) );
-	$amap_term_id = Amapress::getOption( 'adhesion_amap_term' );
-	$amap_term = null;
-	$reseau_amap_term_id = Amapress::getOption( 'adhesion_reseau_amap_term' );
-	$reseau_amap_term = null;
+	$amap_term_id               = Amapress::getOption( 'adhesion_amap_term' );
+	$amap_term                  = null;
+	$reseau_amap_term_id        = Amapress::getOption( 'adhesion_reseau_amap_term' );
+	$reseau_amap_term           = null;
 	foreach ( $type_paiements as $term ) {
 		if ( $term->term_id == $amap_term_id ) {
 			$amap_term = $term;
@@ -1545,7 +1607,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'Ajouter le shortcode [inscription-en-ligne] pour permettre aux amapiens de s\'inscrire en ligne.',
 		'Ce shortcode nécessite une clé de sécurité afin que seule les personnes à qui vous avez transmis le lien puissent s\'inscrire',
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
-		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@' . Amapress::getSiteDomainName() . ']'
+		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@' . Amapress::getSiteDomainName( true ) . ']'
 	);
 	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(

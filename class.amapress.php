@@ -4132,7 +4132,15 @@ class Amapress {
 		return empty( trim( wp_strip_all_tags( $html, true ) ) );
 	}
 
-	public static function getSiteDomainName() {
-		return parse_url( home_url() )['host'];
+	public static function getSiteDomainName( $tld = false ) {
+		$domain = parse_url( home_url() )['host'];
+
+		if ( $tld ) {
+			//get the TLD and domain
+			$domainparts = explode( ".", $domain );
+			$domain      = $domainparts[ count( $domainparts ) - 2 ] . "." . $domainparts[ count( $domainparts ) - 1 ];
+		}
+
+		return $domain;
 	}
 }
