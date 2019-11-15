@@ -569,19 +569,21 @@ function amapress_global_init() {
 		Amapress::cleanFilesOlderThanDays( Amapress::getContratDir(), 6 * 30 );
 	} );
 
-	if ( ! wp_next_scheduled( 'amps_updnotif' ) ) {
-		wp_schedule_event( time(), 'weekly', 'amps_updnotif' );
-	}
-
-	add_action( 'amps_updnotif', function () {
-		require_once AMAPRESS__PLUGIN_DIR . 'modules/updnotifier/AmapressUpdateNotifier.php';
-		$message = AmapressUpdateNotifier::getUpdateMessage( 2 );
-		if ( ! empty( $message ) ) {
-			amapress_wp_mail( get_option( 'admin_email' ),
-				'Mises à jour requises',
-				wpautop( $message ) );
+	if ( ! defined( 'AMAPRESS_NOTIFY_UPDATES' ) || AMAPRESS_NOTIFY_UPDATES ) {
+		if ( ! wp_next_scheduled( 'amps_updnotif' ) ) {
+			wp_schedule_event( time(), 'weekly', 'amps_updnotif' );
 		}
-	} );
+
+		add_action( 'amps_updnotif', function () {
+			require_once AMAPRESS__PLUGIN_DIR . 'modules/updnotifier/AmapressUpdateNotifier.php';
+			$message = AmapressUpdateNotifier::getUpdateMessage( 2 );
+			if ( ! empty( $message ) ) {
+				amapress_wp_mail( get_option( 'admin_email' ),
+					'Mises à jour requises',
+					wpautop( $message ) );
+			}
+		} );
+	}
 
 	do_action( 'amapress_init' );
 
