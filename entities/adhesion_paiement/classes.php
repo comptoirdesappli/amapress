@@ -430,6 +430,24 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getFormattedAdresse();
 				}
 			];
+			$ret['adherent.code_postal'] = [
+				'desc' => 'Code postal adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getCode_postal();
+				}
+			];
+			$ret['adherent.ville'] = [
+				'desc' => 'Ville adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getVille();
+				}
+			];
+			$ret['adherent.rue'] = [
+				'desc' => 'Rue (adresse) adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getAdresse();
+				}
+			];
 			$ret['adherent.tel']         = [
 				'desc' => 'Téléphone adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
