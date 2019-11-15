@@ -80,6 +80,7 @@ function amapress_send_message_and_record(
 	$opt['record'] = true;
 	amapress_send_message( $subject, $content, $content_sms, $opt, $entity, $attachments, $cc, $bcc, $headers );
 }
+
 function amapress_send_message(
 	$subject, $content, $content_sms, $opt, TitanEntity $entity = null,
 	$attachments = array(), $cc = null, $bcc = null, $headers = array()
@@ -87,9 +88,9 @@ function amapress_send_message(
 	$subject     = wp_unslash( $subject );
 	$content     = wp_unslash( $content );
 	$content_sms = wp_unslash( $content_sms );
-	
-	if (is_string($headers)) {
-		$headers = [$headers];
+
+	if ( is_string( $headers ) ) {
+		$headers = [ $headers ];
 	}
 
 	$new_id = null;
@@ -180,11 +181,13 @@ function amapress_send_message(
 			$from_email = 'wordpress@' . $sitename;
 		}
 
+		$reply_to_mail = '';
 		if ( ! empty( $opt['send_from_me'] ) && $current_user ) {
 			$from_dn    = $current_user->getDisplayName();
 			$user_email = $current_user->getUser()->user_email;
 			if ( AmapressMailingGroup::hasRestrictiveDMARC( $user_email ) ) {
-				$headers[] = 'X-Original-From: ' . $user_email;
+				$headers[]     = 'X-Original-From: ' . $user_email;
+				$reply_to_mail = $user_email;
 			} else {
 				$from_email = $user_email;
 			}
@@ -199,6 +202,10 @@ function amapress_send_message(
 			add_filter( 'wp_mail_from_name', $set_from_name );
 		}
 
+		if ( empty( $reply_to_mail ) ) {
+			$reply_to_mail = $from_email;
+		}
+
 		$from_dn = trim( str_replace( array( '"', "'", "\r", "\n" ), '', $from_dn ) );
 		$from_dn = '"' . $from_dn . '"';
 
@@ -207,7 +214,7 @@ function amapress_send_message(
 		switch ( isset( $opt['send_mode'] ) ? $opt['send_mode'] : '' ) {
 			case "indiv":
 				$headers[] = "From: $from_dn <$from_email>";
-				//$headers[] = "Reply-to: $from_dn <$from_email>";
+				$headers[] = "Reply-to: $from_dn <$reply_to_mail>";
 				/** @var AmapressUser $name */
 				foreach ( $emails_indiv as $email => $name ) {
 					$name_string = $name->getDisplayName();
@@ -223,7 +230,7 @@ function amapress_send_message(
 			case "to":
 				$to        = implode( ',', $emails );
 				$headers[] = "From: $from_dn <$from_email>";
-				$headers[] = "Reply-to: $from_dn <$from_email>";
+				$headers[] = "Reply-to: $from_dn <$reply_to_mail>";
 				if ( $current_user ) {
 					$headers[] = 'Cc: ' . $current_user->getUser()->user_email;
 				}
@@ -250,7 +257,7 @@ function amapress_send_message(
 					$emails[] = $current_user->getEmail();
 				}
 				$headers[] = "From: $from_dn <$from_email>";
-				$headers[] = "Reply-to: $from_dn <$from_email>";
+				$headers[] = "Reply-to: $from_dn <$reply_to_mail>";
 				$headers[] = 'Bcc: ' . implode( ',', $emails );
 				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
 				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
