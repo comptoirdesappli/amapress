@@ -257,6 +257,7 @@ span.description {
     display: inline-block !important;
     width: 20px !important;
     height: 20px !important;
+    line-height: 20px !important;
     font-size: 20px !important;
     font-family: dashicons !important;
     text-decoration: inherit !important;
