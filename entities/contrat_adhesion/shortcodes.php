@@ -202,28 +202,28 @@ function amapress_self_inscription( $atts, $content = null ) {
 
 	$atts = shortcode_atts(
 		[
-			'key'                     => '',
-			'for_logged'              => 'false',
-			'show_contrats'           => 'false',
-			'filter_multi_contrat'    => 'false',
-			'admin_mode'              => 'false',
-			'agreement'               => 'false',
-			'mob_phone_required'      => 'false',
-			'check_principal'         => 'true',
-			'adhesion'                => 'true',
-			'send_adhesion_confirm'   => 'true',
-			'send_contrat_confirm'    => 'true',
-			'send_referents'          => 'true',
-			'send_tresoriers'         => 'true',
-			'allow_new_mail'          => 'true',
-			'track_no_renews'         => 'false',
-			'track_no_renews_email'   => get_option( 'admin_email' ),
-			'notify_email'            => '',
-			'paiements_info_required' => 'false',
-			'edit_names'              => 'true',
-			'allow_remove_coadhs'     => 'false',
-			'contact_referents'       => 'true',
-			'show_adherents_infos'    => 'true',
+			'key'                           => '',
+			'for_logged'                    => 'false',
+			'show_contrats'                 => 'false',
+			'filter_multi_contrat'          => 'false',
+			'admin_mode'                    => 'false',
+			'agreement'                     => 'false',
+			'mob_phone_required'            => 'false',
+			'check_principal'               => 'true',
+			'adhesion'                      => 'true',
+			'send_adhesion_confirm'         => 'true',
+			'send_contrat_confirm'          => 'true',
+			'send_referents'                => 'true',
+			'send_tresoriers'               => 'true',
+			'allow_new_mail'                => 'true',
+			'track_no_renews'               => 'false',
+			'track_no_renews_email'         => get_option( 'admin_email' ),
+			'notify_email'                  => '',
+			'paiements_info_required'       => 'false',
+			'edit_names'                    => 'true',
+			'allow_remove_coadhs'           => 'false',
+			'contact_referents'             => 'true',
+			'show_adherents_infos'          => 'true',
 			'allow_coadherents_access'      => 'true',
 			'allow_coadherents_inscription' => 'true',
 			'allow_coadherents_adhesion'    => 'true',
@@ -1779,7 +1779,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$data = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
 				$row     = array(
-					'produit'       => esc_html( $quant->getTitle() ),
+					'produit'       => esc_html( $quant->getTitle() ) . ( ! empty( $quant->getDescription() ) ? '<br/><em>' . esc_html( $quant->getDescription() ) . '</em>' : '' ),
 					'prix_unitaire' => esc_html( sprintf( '%.2f€', $quant->getPrix_unitaire() ) ),
 				);
 				$options = $quant->getQuantiteOptions();
@@ -1801,13 +1801,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 
 			echo amapress_get_datatable( 'quant-commandes', $columns, $data, array(
-				'bSort'        => true,
+				'bSort'        => false,
 				'paging'       => false,
 				'searching'    => true,
 				'bAutoWidth'   => true,
 				'responsive'   => false,
 				'init_as_html' => true,
 				'scrollX'      => true,
+				'fixedHeader'  => true,
 				'fixedColumns' => array( 'leftColumns' => 2 ),
 			) );
 			echo '<p>* Cliquez sur la case pour faire apparaître le choix de quantités</p>';
