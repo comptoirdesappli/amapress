@@ -395,19 +395,19 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['adherent.code_postal'] = [
 				'desc' => 'Code postal adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getUser()->getCode_postal();
+					return $adh->getAdherent()->getCode_postal();
 				}
 			];
 			$ret['adherent.ville'] = [
 				'desc' => 'Ville adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getUser()->getVille();
+					return $adh->getAdherent()->getVille();
 				}
 			];
 			$ret['adherent.rue'] = [
 				'desc' => 'Rue (adresse) adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getUser()->getAdresse();
+					return $adh->getAdherent()->getAdresse();
 				}
 			];
 			$ret['adherent.tel']                     = [
