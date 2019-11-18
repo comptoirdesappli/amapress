@@ -101,7 +101,7 @@ class Amapress_EventBase extends TitanEntity {
 			'horaires-evenement'  => [
 				'desc' => 'Date et horaires évènement',
 				'func' => function ( Amapress_EventBase $ev ) {
-					return date_i18n( 'D j M Y', $ev->getStartDateAndHour() ) .
+					return date_i18n( 'D j F Y', $ev->getStartDateAndHour() ) .
 					       ' de ' . date_i18n( 'H:i', $ev->getStartDateAndHour() ) .
 					       ' à ' . date_i18n( 'H:i', $ev->getEndDateAndHour() );
 				}

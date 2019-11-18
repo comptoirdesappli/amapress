@@ -128,7 +128,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		return 'mailto:' . urlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
-		       date_i18n( 'D j M Y' );
+		       date_i18n( 'D j F Y' );
 	}
 
 	public function getSMStoResponsables() {
@@ -141,7 +141,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		return 'sms:' . urlencode( implode( ',', $resp_phones ) ) . '?body=Distribution du ' .
-		       date_i18n( 'D j M Y' );
+		       date_i18n( 'D j F Y' );
 	}
 
 	public function getMailtoAmapiens() {
@@ -169,7 +169,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		return 'mailto:' . urlencode( implode( ',', $mails ) ) . '&subject=Distribution du ' .
-		       date_i18n( 'D j M Y' );
+		       date_i18n( 'D j F Y' );
 	}
 
 	public function getSMStoAmapiens() {
@@ -197,7 +197,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		return 'sms:' . urlencode( implode( ',', $phones ) ) . '?body=Distribution du ' .
-		       date_i18n( 'D j M Y' );
+		       date_i18n( 'D j F Y' );
 	}
 
 	/** @return int[] */

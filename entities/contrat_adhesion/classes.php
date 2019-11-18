@@ -233,25 +233,25 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['date_debut_lettre']                = [
 				'desc' => 'Date début du contrat (par ex, 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return date_i18n( 'j M Y', $adh->getDate_debut() );
+					return date_i18n( 'j F Y', $adh->getDate_debut() );
 				}
 			];
 			$ret['date_fin_lettre']                  = [
 				'desc' => 'Date fin du contrat (par ex, 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return date_i18n( 'j M Y', $adh->getDate_fin() );
+					return date_i18n( 'j F Y', $adh->getDate_fin() );
 				}
 			];
 			$ret['date_debut_complete']              = [
 				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return date_i18n( 'l j M Y', $adh->getDate_debut() );
+					return date_i18n( 'l j F Y', $adh->getDate_debut() );
 				}
 			];
 			$ret['date_fin_complete']                = [
 				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return date_i18n( 'l j M Y', $adh->getDate_fin() );
+					return date_i18n( 'l j F Y', $adh->getDate_fin() );
 				}
 			];
 			$ret['mention_speciale'] = [
