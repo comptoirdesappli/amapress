@@ -1990,10 +1990,10 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		}
 	}
 	echo '<tr style="vertical-align: top">';
-	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' /></td>";
-	echo "<td><input style='width: 100%' type='text' class='' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></td>";
-	echo "<td><textarea style='width: 100%' class='' name='amapress_quant_data[$id][desc]' placeholder='Description'>{$description}</textarea></td>";
-	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></td>";
+	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' />";
+	echo "<br/><em title='Abbréviation ou code pour affichage sur la liste d&apos;émargement'>Code liste émargement</em>:<input style='width: 100%' type='text' class='' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></td>";
+	echo "<td><textarea style='width: 100%; height: 100%' rows='3' class='' name='amapress_quant_data[$id][desc]' placeholder='Description'>{$description}</textarea></td>";
+	echo "<td><input style='width: 5em' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></td>";
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Facteur quantité' value='$quantite' /></td>";
 	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
 		echo "<td><select style='width: 100%' class='required' name='amapress_quant_data[$id][unit]'>";
@@ -2015,7 +2015,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		$liste_dates_options[ $v ] = $v;
 	}
 	?>
-    <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][liste_dates]" ?>"
+    <td><select style='width: 5em' id="<?php echo "amapress_quant_data[$id][liste_dates]" ?>"
                 name="<?php echo "amapress_quant_data[$id][liste_dates][]"; ?>"
                 class="quant-dates" multiple="multiple"
                 data-placeholder="Dates spé.">
@@ -2027,7 +2027,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	<?php
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][max_adhs]' min='0' step='1' placeholder='Adhérents' value='$max_adhs' /></td>";
 	?>
-    <td><select style='width: 100%' id="<?php echo "amapress_quant_data[$id][produits]" ?>"
+    <td><select style='width: 5em' id="<?php echo "amapress_quant_data[$id][produits]" ?>"
                 name="<?php echo "amapress_quant_data[$id][produits][]"; ?>"
                 class="quant-produit" multiple="multiple"
                 data-placeholder="Produits associés">
@@ -2074,7 +2074,6 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         <thead>
         <tr>
             <th style="padding-left: 10px">Intitulé*</th>
-            <th style="width: 100px" title="Abbréviation ou code pour affichage sur la liste d'émargement">Code</th>
             <th title="Description">Desc.</th>
             <th style="width: 50px">Prix*</th>
             <th style="width: 40px"
