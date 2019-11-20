@@ -1230,7 +1230,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
 
 				if ( empty( $adh_paiement ) ) {
-					echo '<p><strong>Pour vous engager dans l’AMAP, vous devez adhérer à notre Association.</strong><br/>
+					echo '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="adhesion" />

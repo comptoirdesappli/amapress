@@ -98,15 +98,17 @@ function amapress_filter_posts( WP_Query $query ) {
 				     && ! amapress_is_user_logged_in()
 				) {
 					amapress_add_meta_query( $query, array(
-						'relation' => 'AND',
 						array(
-							'key'     => "amapress_{$pt}_public",
-							'compare' => 'EXISTS',
-						),
-						array(
-							'key'     => "amapress_{$pt}_public",
-							'value'   => 1,
-							'compare' => '=',
+							'relation' => 'AND',
+							array(
+								'key'     => "amapress_{$pt}_public",
+								'compare' => 'EXISTS',
+							),
+							array(
+								'key'     => "amapress_{$pt}_public",
+								'value'   => 1,
+								'compare' => '=',
+							),
 						),
 					) );
 				}
@@ -226,13 +228,15 @@ function amapress_filter_posts( WP_Query $query ) {
 			) );
 		} else if ( $pt == 'produit' ) {
 			amapress_add_meta_query( $query, array(
-				'relation' => 'OR',
 				array(
-					'key'     => "amapress_produit_producteur",
-					'value'   => $amapress_producteur,
-					'compare' => '=',
-				),
-				amapress_prepare_like_in_array( 'amapress_produit_producteur', $amapress_producteur )
+					'relation' => 'OR',
+					array(
+						'key'     => "amapress_produit_producteur",
+						'value'   => $amapress_producteur,
+						'compare' => '=',
+					),
+					amapress_prepare_like_in_array( 'amapress_produit_producteur', $amapress_producteur )
+				)
 			) );
 		} else if ( 'contrat_instance' == $pt ) {
 			amapress_add_meta_query( $query, array(
