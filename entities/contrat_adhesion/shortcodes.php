@@ -1237,6 +1237,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
+					if ( $activate_adhesion ) {
+						return ob_get_clean();
+					}
 				} else {
 					$print_bulletin = '';
 					if ( $adh_paiement->getPeriod()->getWordModelId() ) {
