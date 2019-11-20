@@ -128,6 +128,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'lieu'                     => null,
 		'date'                     => null,
 		'inscr_all_distrib'        => 'false',
+		'allow_resp_dist_manage'   => 'false',
 		'manage_all_subscriptions' => 'false',
 		'key'                      => '',
 	), $atts );
@@ -207,7 +208,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
-
+	$allow_resp_dist_manage   = Amapress::toBool( $atts['allow_resp_dist_manage'] );
 	$inscr_all_distrib        = Amapress::toBool( $atts['inscr_all_distrib'] );
 	$manage_all_subscriptions = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
 
@@ -583,7 +584,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$resp_idx = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
 						$inscr_another = '';
-						if ( ( $is_resp_distrib || $is_current_user_resp_amap ) && $can_subscribe ) {
+						if ( ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap ) && $can_subscribe ) {
 							$inscr_another = '';
 							if ( ! is_admin() ) {
 								$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
@@ -622,7 +623,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								if ( $can_unsubscribe ) {
 									if ( $r->ID == $user_id ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">Me désinscrire</button>';
-									} else if ( $is_resp_distrib || $is_current_user_resp_amap ) {
+									} else if ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
 									}
 								}
