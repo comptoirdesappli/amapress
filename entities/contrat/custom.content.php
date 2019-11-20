@@ -87,7 +87,9 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$contrat      = AmapressContrat::getBy( $contrat_id );
 	$prod         = $contrat->getProducteur();
 	$prod_id      = $prod->ID;
-	$prouits_html = do_shortcode( '[produits columns=4 producteur=' . $prod_id . ']' );
+	$prouits_html = amapress_produits_shortcode(
+		[ 'producteur' => $prod_id, 'columns' => 4 ]
+	);
 	$prod_user    = $prod->getUserId();
 
 	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation de la production' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id );

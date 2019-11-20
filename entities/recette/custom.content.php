@@ -35,7 +35,9 @@ function amapress_get_custom_content_recette( $content ) {
 
 
 	echo '<h3>Produits</h3>';
-	echo do_shortcode( "[produits recette=$recette_id]" );
+	echo amapress_produits_shortcode(
+		[ 'recette' => $recette_id ]
+	);
 
 	$content .= ob_get_clean();
 

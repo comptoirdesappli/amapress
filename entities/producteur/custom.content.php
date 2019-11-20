@@ -86,7 +86,9 @@ function amapress_get_custom_content_producteur( $content ) {
 	amapress_echo_panel_end();
 
 	echo '<h3>Produits</h3>';
-	echo do_shortcode( "[produits producteur={$producteur->ID}]" );
+	echo amapress_produits_shortcode(
+		[ 'producteur' => $producteur->ID ]
+	);
 
 	$content = ob_get_contents();
 	ob_end_clean();
