@@ -81,19 +81,19 @@ function amapress_handle_templates( $template ) {
 		return $template;
 	}
 
-	$pts = AmapressEntities::getPostTypes();
-	if ( is_main_query() && ! empty( $pt ) && array_key_exists( $pt, $pts ) ) {
-		if ( isset( $pts[ $pt ]['custom_archive_template'] ) ) {
-			$t = Amapress::getOption( 'archive-page-template' );
-			if ( empty( $t ) ) {
-				$t = 'page.php';
-			}
-			$tmpl = locate_template( $t );
-			if ( ! empty( $tmpl ) ) {
-				return $tmpl;
-			}
-		}
-	}
+//	$pts = AmapressEntities::getPostTypes();
+//	if ( is_main_query() && ! empty( $pt ) && array_key_exists( $pt, $pts ) ) {
+//		if ( isset( $pts[ $pt ]['custom_archive_template'] ) ) {
+//			$t = Amapress::getOption( 'archive-page-template' );
+//			if ( empty( $t ) ) {
+//				$t = 'page.php';
+//			}
+//			$tmpl = locate_template( $t );
+//			if ( ! empty( $tmpl ) ) {
+//				return $tmpl;
+//			}
+//		}
+//	}
 
 	$action = get_query_var( 'amp_action' );
 	if ( amapress_is_user_logged_in() ) {
@@ -106,6 +106,14 @@ function amapress_handle_templates( $template ) {
 
 	return $template;
 }
+
+add_filter( 'get_the_archive_title', function ( $title ) {
+	if ( is_post_type_archive() ) {
+		$title = post_type_archive_title( 'Nos ', false );
+	}
+
+	return $title;
+} );
 
 /*
  * Returns the bbPress Forum ID from given Post ID and Post Type

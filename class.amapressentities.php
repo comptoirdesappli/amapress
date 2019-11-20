@@ -2253,11 +2253,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'name' => 'Page des paniers intermittents de l\'amapien',
 									'type' => 'select-pages',
 								),
-								array(
-									'id'   => 'archive-page-template',
-									'name' => 'Modèle pour les pages d\'archive',
-									'type' => 'select-page-templates',
-								),
+//								array(
+//									'id'   => 'archive-page-template',
+//									'name' => 'Modèle pour les pages d\'archive',
+//									'type' => 'select-page-templates',
+//								),
 								array(
 									'type' => 'save',
 								),
