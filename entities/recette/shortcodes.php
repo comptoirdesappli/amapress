@@ -4,13 +4,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function get_amapress_recettes_gallery( $atts ) {
+	$atts['query_var'] = 0;
+
+	return amapress_recettes_shortcode( $atts );
+}
 function amapress_recettes_shortcode( $atts ) {
 	amapress_ensure_no_cache();
 
 	$atts = shortcode_atts( array(
 //		'columns'        => 4,
 		'produits'    => '',
-		'query_var'   => 0,
+		'query_var'   => 1,
 		'cat'         => '',
 		'cat__not_in' => '',
 		'render_func' => 'simple_recette_cell',
@@ -31,7 +36,7 @@ function amapress_recettes_shortcode( $atts ) {
 		'post_type=amps_recette',
 		'posts_per_page=-1',
 	);
-	if ( $atts['query_var'] == 1 ) {
+	if ( intval( $atts['query_var'] ) ) {
 		$v = get_query_var( 'amapress_recette_produits' );
 		if ( ! empty( $v ) ) {
 			$produits = $v;

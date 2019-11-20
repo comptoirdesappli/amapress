@@ -1159,7 +1159,12 @@ class AmapressPaniers {
 				amapress_is_user_logged_in() && ! empty( Amapress::getOption( 'publier-recette-page' ) ) ? amapress_get_button( 'Proposer une nouvelle recette', get_post_permalink( Amapress::getOption( 'publier-recette-page' ) ), 'fa-fa' ) : '' );
 			$recette_empty     = '<span class="recette-empty">Pas de recettes pour les produits présents dans le panier</span> ' . $recette_edit_link;
 			$no_recettes       = urlencode( $recette_empty );
-			echo do_shortcode( "[recettes produits=$produits_in_panier if_empty=$no_recettes]" );
+			echo get_amapress_recettes_gallery(
+				[
+					'produits' => $produits_in_panier,
+					'if_empty' => $no_recettes
+				]
+			);
 		}
 
 		$ret = ob_get_clean();

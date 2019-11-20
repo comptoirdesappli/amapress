@@ -22,7 +22,11 @@ function amapress_get_custom_content_produit( $content ) {
 	}
 
 	echo '<h3>Recettes</h3>';
-	echo do_shortcode( "[recettes produits={$prod->ID}]" );
+	echo get_amapress_recettes_gallery(
+		[
+			'produits' => $prod->ID,
+		]
+	);
 
 	$content .= ob_get_clean();
 
