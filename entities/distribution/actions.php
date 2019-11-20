@@ -413,6 +413,7 @@ padding: 0;
 margin: 0;
 line-height: 1.1;
 }
+.liste-emargement-contrat-variable, .liste-emargement-instructions { page-break-before: always; }
 </style>';
 	} else {
 		echo '<style type="text/css">
@@ -528,13 +529,15 @@ line-height: 1.1;
 			Amapress::DATATABLES_EXPORT_EXCEL
 		) );
 
+	$had_paniers_variables = false;
 	foreach ( $dist->getContrats() as $contrat ) {
 		if ( $contrat->isPanierVariable() ) {
 			$panier_date      = ! $show_all_contrats ? $dist->getRealDateForContrat( $contrat->ID ) : null;
 			$panier_commandes = AmapressPaniers::getPanierVariableCommandes( $contrat->ID, $panier_date );
 
 			if ( ! empty( $panier_commandes['data'] ) ) {
-				echo '<br/>';
+				$had_paniers_variables = true;
+				echo '<br pagebreak="true"/>';
 				echo '<h3 class="liste-emargement-contrat-variable">Détails des paniers - ' . esc_html( $contrat->getTitle() ) . '</h3>';
 				amapress_echo_datatable( 'liste-emargement-contrat-variable-' . $contrat->ID,
 					$panier_commandes['columns'], $panier_commandes['data'],
@@ -557,6 +560,8 @@ line-height: 1.1;
 	$from_date = Amapress::start_of_day( $date );
 	if ( ! $for_pdf ) {
 		echo '<br/>';
+	} elseif ( $had_paniers_variables ) {
+		echo '<br pagebreak="true"/>';
 	}
 	echo '<h3 class="liste-emargement-next-resps">' . esc_html( 'Responsables aux prochaines distributions - ' . $dist->getLieu()->getTitle() ) . '</h3>';
 //	echo '<br/>';
