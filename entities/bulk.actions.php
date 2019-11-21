@@ -14,7 +14,7 @@ function amapress_bulk_actions_admin_footer() {
 	if ( ! empty( $type['bulk_actions'] ) ) {
 		?>
         <script type="text/javascript">
-            jQuery(document).ready(function () {
+            jQuery(document).ready(function ($) {
 				<?php
 				foreach ( $type['bulk_actions'] as $bulk_name => $bulk_desc ) {
 					$label = esc_js( $bulk_desc['label'] );

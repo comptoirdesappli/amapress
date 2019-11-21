@@ -550,12 +550,12 @@ class TitanFrameworkOption {
 			if ( ! empty( $val ) ) {
 				$defVal = $val;
 			}
-			echo "<script type='text/javascript'>jQuery(function() {
-	jQuery('.tf_conditional').hide();
-	jQuery('.tf_conditional.tf_{$defVal}').show();
-jQuery('#$id').change(function(){
-	jQuery('.tf_conditional').hide();
-	jQuery('.tf_conditional.tf_'+jQuery(this).val()).show();
+			echo "<script type='text/javascript'>jQuery(function($) {
+	$('.tf_conditional').hide();
+	$('.tf_conditional.tf_{$defVal}').show();
+$('#$id').change(function(){
+	$('.tf_conditional').hide();
+	$('.tf_conditional.tf_'+$(this).val()).show();
 });
 });</script>";
 		}

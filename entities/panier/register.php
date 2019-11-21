@@ -108,9 +108,9 @@ function amapress_register_entities_panier( $entities ) {
 				),
 				'group'         => 'Modification',
 				'before_option' => '<script type="text/javascript">
-jQuery(function() {
-    var $status_field = jQuery("#amapress_panier_status");
-    var $date_subst_field = jQuery("#amapress_panier_date_subst");
+jQuery(function($) {
+    var $status_field = $("#amapress_panier_status");
+    var $date_subst_field = $("#amapress_panier_date_subst");
     function activate_date_subst() {
         if ("delayed" === $status_field.val()) {
 	        $date_subst_field.show();

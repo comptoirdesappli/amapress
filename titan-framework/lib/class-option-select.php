@@ -348,7 +348,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
     });';
 				echo '<script type="text/javascript">
 //<![CDATA[
-jQuery(function() {
+jQuery(function($) {
     ' . $init_select . '
 });
 //]]>
@@ -357,15 +357,15 @@ jQuery(function() {
 
 			echo '<script type="text/javascript">
 //<![CDATA[
-jQuery(function() {
-    jQuery("#' . $this->getID() . '-refresh").click(
+jQuery(function($) {
+    $("#' . $this->getID() . '-refresh").click(
         function() {
         	var data = {
 		    	\'action\': \'tf_select_refresh_' . $this->getID() . '\',
 		    	\'post_id\': \'' . $this->getPostID() . '\'
 	    	};
-        	jQuery.post(ajaxurl, data, function(response) {
-                jQuery("#' . $this->getID() . '-wrapper").html(response);
+        	$.post(ajaxurl, data, function(response) {
+                $("#' . $this->getID() . '-wrapper").html(response);
             	' . $init_select . '
         	});
         	return false;

@@ -1023,9 +1023,9 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 		$check_role_js_code = 'return ("referent" === value) || ("responsable_amap" === value) || ("producteur" === value);';
 	}
 	echo '<script type="text/javascript">
-jQuery(function() {
-  jQuery(".user-role-wrap").insertAfter(jQuery("#fonctions_role_desc").closest("tr"));
-  jQuery("#role").addClass("check_amap_role");
+jQuery(function($) {
+  $(".user-role-wrap").insertAfter($("#fonctions_role_desc").closest("tr"));
+  $("#role").addClass("check_amap_role");
   jQuery.validator.addMethod("check_amap_role", function (value, element) {
 	' . $check_role_js_code . '
   }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement : ' . $ref_prod_message . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");

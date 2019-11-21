@@ -134,10 +134,10 @@ ENDFORM;
 	
 	Dropzone.autoDiscover = false;
 
-	jQuery(function() {
+	jQuery(function($) {
 	    updateList$sanitized_name();
 
-	    if (jQuery('#amps-dz-form-$sanitized_name').length == 1) {
+	    if ($('#amps-dz-form-$sanitized_name').length == 1) {
             var dz = new Dropzone('#amps-dz-form-$sanitized_name');
             dz.on('success', function(file) {
                 this.removeFile(file);            

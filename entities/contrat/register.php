@@ -1456,7 +1456,7 @@ jQuery(function($) {
 						)
 					);
 					$ret .= '<style>#options_cheques { display: none; }#options_cheques.opened { display: block; }</style>';
-					$ret .= '<script type="text/javascript">jQuery(function() {jQuery("#options_cheques").addClass("closed");jQuery("#show_options_cheques").click(function() { jQuery("#options_cheques").toggleClass("opened"); return false; }); });</script>';
+					$ret .= '<script type="text/javascript">jQuery(function($) {$("#options_cheques").addClass("closed");$("#show_options_cheques").click(function() { $("#options_cheques").toggleClass("opened"); return false; }); });</script>';
 
 					return $ret;
 				}
@@ -2127,7 +2127,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	$new_row  = json_encode( array( 'html' => $new_row ) );
 	$contents .= "<script type='text/javascript'>//<![CDATA[
-    jQuery(function() {
+    jQuery(function($) {
         amapress_quant_load_tags();
     });
     function amapress_quant_load_tags() {

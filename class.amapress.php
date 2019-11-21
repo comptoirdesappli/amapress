@@ -3761,7 +3761,7 @@ class Amapress {
 
 		if ( $show_toggler ) {
 			$ret .= '<style>#' . $id . ' { display: none; }#' . $id . '.opened { display: block; }</style>';
-			$ret .= '<script type="text/javascript">jQuery(function() {jQuery("#' . $id . '").addClass("closed");jQuery("#show_' . $id . '").click(function() { jQuery("#' . $id . '").toggleClass("opened"); return false; }); });</script>';
+			$ret .= '<script type="text/javascript">jQuery(function($) {$("#' . $id . '").addClass("closed");$("#show_' . $id . '").click(function() { $("#' . $id . '").toggleClass("opened"); return false; }); });</script>';
 		}
 
 		return $ret;

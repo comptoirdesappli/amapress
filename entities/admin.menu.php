@@ -138,9 +138,9 @@ function amapress_admin_bar_menu( WP_Admin_Bar $admin_bar ) {
 
 	if ( current_user_can( 'list_users' ) ) {
 		$script = '<script type="text/javascript">
-jQuery(function() {
+jQuery(function($) {
               function search_user() {
-                var val = jQuery(\'#amapress_search_user_text\').val();
+                var val = $(\'#amapress_search_user_text\').val();
                 if (val == null || val == \'\') {
                     alert("Champs de recherche vide");
                     return;
@@ -148,10 +148,10 @@ jQuery(function() {
                 window.location.href = \'' . admin_url( '/users.php' ) . '?s=\' + encodeURIComponent(val);
             }
 
-            jQuery(\'#amapress_search_user_btn\').click(function () {
+            $(\'#amapress_search_user_btn\').click(function () {
                 search_user();
             });
-            jQuery(\'#amapress_search_user_text\').keypress(function (e) {
+            $(\'#amapress_search_user_text\').keypress(function (e) {
                 if (e.which === 13) {
                     search_user();
                 }

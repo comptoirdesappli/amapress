@@ -566,9 +566,9 @@ class AmapressUsers {
 		global $pagenow;
 		if ( 'user-new.php' == $pagenow && ! is_multisite() ) {
 			echo '<script type="text/javascript">
-jQuery(function() {
-              jQuery(".form-field").has("#url").hide();
-              jQuery(".form-field").has("#user_login").hide();
+jQuery(function($) {
+              $(".form-field").has("#url").hide();
+              $(".form-field").has("#user_login").hide();
 });
 </script>';
 

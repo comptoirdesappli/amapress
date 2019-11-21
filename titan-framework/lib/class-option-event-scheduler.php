@@ -235,9 +235,9 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 		}
 
 		$cnt .= '<script type="text/javascript">
-jQuery(function() {
-  jQuery("#' . $this->getID() . '-enabled").on("change", function() {
-    jQuery("*", jQuery("#' . $this->getID() . '-enabler")).prop("disabled", !$(this).is(":checked"));
+jQuery(function($) {
+  $("#' . $this->getID() . '-enabled").on("change", function() {
+    $("*", $("#' . $this->getID() . '-enabler")).prop("disabled", !$(this).is(":checked"));
 });  
 });
 </script>';

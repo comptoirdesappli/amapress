@@ -50,7 +50,7 @@ function amapress_post_validation() {
     </style>
     <script type="text/javascript">
         //<![CDATA[
-        jQuery(function () {
+        jQuery(function ($) {
             jQuery('.postbox:has(.form-table):not(:has(tr))').css('display', 'none');
             var exclusiveGroupCheckFunction = function (value, element) {
                 var $checked = jQuery('input:checkbox:checked', jQuery(element).closest('fieldset'));

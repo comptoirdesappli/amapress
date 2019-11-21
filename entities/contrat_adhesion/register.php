@@ -1985,20 +1985,20 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			'step',
 			'assistant'
 		] ) . '" class="button button-primary">Choisir un autre amapien</a></p>';
-	echo '<script type="text/javascript">jQuery(function() {
-    jQuery("#user_id").select2({
+	echo '<script type="text/javascript">jQuery(function($) {
+    $("#user_id").select2({
         allowClear: true,
 		  escapeMarkup: function(markup) {
 		return markup;
 	},
 		  templateResult: function(data) {
-		return jQuery("<span>"+data.text+"</span>");
+		return $("<span>"+data.text+"</span>");
 	},
 		  templateSelection: function(data) {
-		return jQuery("<span>"+data.text+"</span>");
+		return $("<span>"+data.text+"</span>");
 	},
     });
-    jQuery("form#new_user").validate({
+    $("form#new_user").validate({
                 onkeyup: false,
         }
     );
@@ -2060,8 +2060,8 @@ function amapress_create_user_for_distribution( $post_id, TitanFrameworkOption $
 		echo '</table>';
 		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Créer la personne" />';
 		echo '</form>';
-		echo '<script type="text/javascript">jQuery(function() {
-    jQuery("form#new_user_distrib").validate({
+		echo '<script type="text/javascript">jQuery(function($) {
+    $("form#new_user_distrib").validate({
                 onkeyup: false,
         }
     );
@@ -2158,20 +2158,20 @@ function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $o
 	}
 	echo '<hr />';
 	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Associer un autre amapien</a></p>';
-	echo '<script type="text/javascript">jQuery(function() {
-    jQuery("#user_id").select2({
+	echo '<script type="text/javascript">jQuery(function($) {
+    $("#user_id").select2({
         allowClear: true,
 		  escapeMarkup: function(markup) {
 		return markup;
 	},
 		  templateResult: function(data) {
-		return jQuery("<span>"+data.text+"</span>");
+		return $("<span>"+data.text+"</span>");
 	},
 		  templateSelection: function(data) {
-		return jQuery("<span>"+data.text+"</span>");
+		return $("<span>"+data.text+"</span>");
 	},
     });
-    jQuery("form#new_coadherent").validate({
+    $("form#new_coadherent").validate({
                 onkeyup: false,
         }
     );

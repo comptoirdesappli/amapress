@@ -205,15 +205,15 @@ function amapress_get_adhesion_paiements_categories( $paiement_id ) {
 	}
 	$ret .= '</table>';
 	$ret .= '<script type="text/javascript">
-jQuery(function() {
+jQuery(function($) {
     var updateAmount = function() {
         var sum = 0;
-        jQuery(".amapress_pmt_cat_amount").each(function() {
-            sum += parseFloat(jQuery(this).val());
+        $(".amapress_pmt_cat_amount").each(function() {
+            sum += parseFloat($(this).val());
         });
-        jQuery("#amapress_adhesion_paiement_amount").text(sum.toFixed(2));
+        $("#amapress_adhesion_paiement_amount").text(sum.toFixed(2));
      };
-    jQuery(".amapress_pmt_cat_amount").on("change paste keyup", updateAmount);
+    $(".amapress_pmt_cat_amount").on("change paste keyup", updateAmount);
     updateAmount();
 });
  </script>';

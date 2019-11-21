@@ -1347,7 +1347,7 @@ function amapress_feedback_footer() {
 		'messageError'   => "Une erreur s'est produite pendant l'envoi",
 	];
 	echo '<script type="text/javascript">
-            jQuery(document).ready(function() {
+            jQuery(document).ready(function($) {
                 Feedback(' . wp_json_encode( $options ) . ');
             });      
     </script>';

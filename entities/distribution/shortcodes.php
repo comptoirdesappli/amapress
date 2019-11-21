@@ -672,10 +672,10 @@ jQuery(function($) {
 			return markup;
 		  },
 		  templateResult: function(data) {
-			return jQuery("<span>"+data.text+"</span>");
+			return $("<span>"+data.text+"</span>");
 		  },
 		  templateSelection: function(data) {
-			return jQuery("<span>"+data.text+"</span>");
+			return $("<span>"+data.text+"</span>");
 		  },
 		  width: \'auto\'
     }) });
