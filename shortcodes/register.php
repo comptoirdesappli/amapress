@@ -219,12 +219,12 @@ function amapress_register_shortcodes() {
 				'show_tel_mobile'   => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
 				'show_adresse'      => '(Par défaut “default”) Afficher les adresses',
 				'show_avatar'       => '(Par défaut “default”) Afficher les avatars des amapiens',
-				'show_roles'             => '(Par défaut “default”) Afficher les rôles des membres du collectif',
-				'show_title'             => '(Par défaut “true”) Afficher les noms des lieux',
-				'past_weeks'             => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
-				'max_dates'              => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
-				'lieu'                   => 'Filtre de lieu',
-				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
+				'show_roles'        => '(Par défaut “default”) Afficher les rôles des membres du collectif',
+				'show_title'        => '(Par défaut “true”) Afficher les noms des lieux',
+				'past_weeks'        => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
+				'max_dates'         => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
+				'lieu'              => 'Filtre de lieu',
+				'inscr_all_distrib' => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 			]
 		] );
@@ -232,21 +232,21 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Inscriptions comme responsable de distributions',
 			'args' => [
-				'key'                    => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à cet assistant d\'inscription aux distributions sans connexion',
-				'show_past'              => '(Par défaut “false”) Afficher les distributions passées',
-				'show_next'              => '(Par défaut “true”) Afficher les distributions à venir',
+				'key'               => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à cet assistant d\'inscription aux distributions sans connexion',
+				'show_past'         => '(Par défaut “false”) Afficher les distributions passées',
+				'show_next'         => '(Par défaut “true”) Afficher les distributions à venir',
 				'show_email'        => '(Par défaut “default”) Afficher les emails',
 				'show_tel'          => '(Par défaut “default”) Afficher les numéros de téléphones',
 				'show_tel_fixe'     => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
 				'show_tel_mobile'   => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
 				'show_adresse'      => '(Par défaut “default”) Afficher les adresses',
 				'show_avatar'       => '(Par défaut “default”) Afficher les avatars des amapiens',
-				'show_roles'             => '(Par défaut “default”) Afficher les rôles des membres du collectif',
-				'show_title'             => '(Par défaut “true”) Afficher les noms des lieux',
-				'past_weeks'             => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
-				'max_dates'              => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
-				'lieu'                   => 'Filtre de lieu',
-				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
+				'show_roles'        => '(Par défaut “default”) Afficher les rôles des membres du collectif',
+				'show_title'        => '(Par défaut “true”) Afficher les noms des lieux',
+				'past_weeks'        => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
+				'max_dates'         => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
+				'lieu'              => 'Filtre de lieu',
+				'inscr_all_distrib' => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 			]
 		] );
@@ -619,6 +619,56 @@ function amapress_register_shortcodes() {
 			'desc' => 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution)',
 			'args' => [
 				'role' => '(Par défaut "logged") Afficher le contenu de ce shortcode uniquement si l\'amapien est dans un des rôles suivants : logged, not_logged, intermittent, no_contrat, responsable_distrib (est responsable de distribution cette semaine), responsable_amap (peut accéder au Tableau de Bord), contrat_xxx (a un contrat xxx)'
+			]
+		] );
+
+	amapress_register_shortcode( 'responsable-distrib-info', function ( $atts ) {
+		amapress_ensure_no_cache();
+
+		$atts = shortcode_atts(
+			[
+				'distribution_link' => 'true',
+				'emargement_link'   => 'true'
+			], $atts
+		);
+
+		$ret = '';
+		if ( AmapressDistributions::isCurrentUserResponsableThisWeek() ) {
+			$next_distrib = AmapressDistribution::getNextDistribution( null, null, Amapress::start_of_week( amapress_time() ) );
+			if ( ! $next_distrib ) {
+				return '';
+			}
+			$ret = '<div class="resp-distrib-this-week"><p>Vous êtes responsable de distribution '
+			       . ( Amapress::toBool( $atts['distribution_link'] ) ?
+					Amapress::makeLink( $next_distrib->getPermalink(), 'cette semaine' ) :
+					'cette semaine' ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
+			if ( Amapress::toBool( $atts['emargement_link'] ) ) {
+				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), 'Liste d\'émargement' );
+			}
+			$ret .= '</p></div>';
+		} elseif ( AmapressDistributions::isCurrentUserResponsableNextWeek() ) {
+			$next_distrib = AmapressDistribution::getNextDistribution( null, null, Amapress::add_a_week( Amapress::start_of_week( amapress_time() ) ) );
+			if ( ! $next_distrib ) {
+				return '';
+			}
+
+			$ret = '<div class="resp-distrib-this-week"><p>Vous êtes responsable de distribution '
+			       . ( Amapress::toBool( $atts['distribution_link'] ) ?
+					Amapress::makeLink( $next_distrib->getPermalink(), 'la semaine prochaine' ) :
+					'la semaine prochaine' ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
+			if ( Amapress::toBool( $atts['emargement_link'] ) ) {
+				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), 'Liste d\'émargement' );
+			}
+			$ret .= '</p></div>';
+		}
+
+		return $ret;
+	},
+		[
+			'desc' => 'Afficher un message "Vous êtes responsable de distribution cette semaine/la semaine prochaine"',
+			'args' => [
+				'distribution_link' => '(Par défaut true) affiche un lien vers la distribution.',
+				'emargement_link'   => '(Par défaut true) affiche un lien vers la liste d\'émargement.',
 			]
 		] );
 
