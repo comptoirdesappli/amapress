@@ -413,7 +413,6 @@ padding: 0;
 margin: 0;
 line-height: 1.1;
 }
-.liste-emargement-contrat-variable, .liste-emargement-instructions { page-break-before: always; }
 </style>';
 	} else {
 		echo '<style type="text/css">
