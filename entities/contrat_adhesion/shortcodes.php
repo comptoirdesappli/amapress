@@ -1172,7 +1172,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		echo amapress_replace_mail_placeholders( $online_subscription_greating_adhesion, null );
 
-		echo '<p>Vous pouvez maintenant vous inscrires aux contrats de l\'AMAP :<br/>
+		echo '<p>Vous pouvez maintenant vous inscrire aux contrats de l\'AMAP :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
