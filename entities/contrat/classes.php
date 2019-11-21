@@ -653,7 +653,9 @@ class AmapressContrat_instance extends TitanEntity {
 			return '';
 		}
 
-		return 'mailto:' . urlencode( implode( ',', $mails ) ) . '&subject=Contrat ' . $this->getTitle();
+		$site_email = Amapress::getOption( 'email_from_mail' );
+
+		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $mails ) ) . '&subject=Contrat ' . $this->getTitle();
 	}
 
 	public function getSMStoAmapiens() {
