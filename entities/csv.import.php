@@ -711,7 +711,10 @@ function amapress_import_resolve_post( $post, $post_type, $postdata, $postmeta )
 
 		return false;
 	}, ARRAY_FILTER_USE_BOTH );
-	$args     = array(
+	if ( empty( $tmp_meta ) ) {
+		return null;
+	}
+	$args  = array(
 		'post_type'      => amapress_unsimplify_post_type( $post_type ),
 		'posts_per_page' => - 1,
 		'meta_query'     => array(
@@ -734,7 +737,7 @@ function amapress_import_resolve_post( $post, $post_type, $postdata, $postmeta )
 			}, array_keys( $tmp_meta ), array_values( $tmp_meta ) )
 		),
 	);
-	$posts    = get_posts( $args );
+	$posts = get_posts( $args );
 
 //    var_dump($posts);
 
