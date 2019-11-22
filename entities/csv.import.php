@@ -76,6 +76,10 @@ function amapress_import_users_get_field_name( $field_name, $colname ) {
 		return $labels[ $field_name ];
 	}
 
+	if ( ! empty( $_REQUEST['amapress_ignore_unknown_columns'] ) ) {
+		return null;
+	}
+
 	return new WP_Error( 'unknown_header', "Colonne $colname : un utilisateur ne contient pas de champs $field_name" );
 }
 
@@ -239,6 +243,10 @@ function amapress_import_posts_get_field_name( $field_name, $post_type, $colname
 				return 'contrat_quant_' . $quant['id'];
 			}
 		}
+	}
+
+	if ( ! empty( $_REQUEST['amapress_ignore_unknown_columns'] ) ) {
+		return null;
 	}
 
 	return new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );

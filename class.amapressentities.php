@@ -3416,6 +3416,12 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 									'desc'              => 'Contrat',
 								),
 								array(
+									'id'   => 'amapress_ignore_unknown_columns',
+									'name' => amapress__( 'Ignorer les colonnes inconnues' ),
+									'type' => 'checkbox',
+									'desc' => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
+								),
+								array(
 									'id'     => 'import_contrat_quantites',
 									'name'   => 'Importer des quantités pour les contrats',
 									'type'   => 'custom',
@@ -3497,6 +3503,12 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 									'use_reset' => false,
 									'save'      => 'Télécharger le modèle',
 									'action'    => 'generate_model_' . AmapressContrat_instance::POST_TYPE,
+								),
+								array(
+									'id'   => 'amapress_ignore_unknown_columns',
+									'name' => amapress__( 'Ignorer les colonnes inconnues' ),
+									'type' => 'checkbox',
+									'desc' => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
 								),
 								array(
 									'id'     => 'import_contrats',

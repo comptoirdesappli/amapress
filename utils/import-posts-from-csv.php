@@ -65,6 +65,10 @@ class Amapress_Import_Posts_CSV {
 							'import'                                            => 'fail',
 							'imported'                                          => $results['imported'],
 							'total'                                             => $results['total'],
+							'amapress_ignore_unknown_columns'                   =>
+								isset( $_REQUEST['amapress_ignore_unknown_columns'] ) ?
+									$_REQUEST['amapress_ignore_unknown_columns'] :
+									0,
 							'amapress_import_adhesion_default_date_debut'       =>
 								isset( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) ?
 									$_REQUEST['amapress_import_adhesion_default_date_debut'] :
@@ -94,6 +98,10 @@ class Amapress_Import_Posts_CSV {
 			                'import'                                            => 'errors',
 			                'imported'                                          => $results['imported'],
 			                'total'                                             => $results['total'],
+			                'amapress_ignore_unknown_columns'                   =>
+				                isset( $_REQUEST['amapress_ignore_unknown_columns'] ) ?
+					                $_REQUEST['amapress_ignore_unknown_columns'] :
+					                0,
 			                'amapress_import_adhesion_default_date_debut'       =>
 				                isset( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) ?
 					                $_REQUEST['amapress_import_adhesion_default_date_debut'] :
