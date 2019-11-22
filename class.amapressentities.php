@@ -3416,10 +3416,11 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 									'desc'              => 'Contrat',
 								),
 								array(
-									'id'   => 'amapress_ignore_unknown_columns',
-									'name' => amapress__( 'Ignorer les colonnes inconnues' ),
-									'type' => 'checkbox',
-									'desc' => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
+									'id'         => 'ignore_contrat_quantites_unknown_columns',
+									'input_name' => 'amapress_ignore_unknown_columns',
+									'name'       => amapress__( 'Ignorer les colonnes inconnues' ),
+									'type'       => 'checkbox',
+									'desc'       => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
 								),
 								array(
 									'id'     => 'import_contrat_quantites',
@@ -3497,10 +3498,11 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 									'action'    => 'generate_model_' . AmapressContrat_instance::POST_TYPE,
 								),
 								array(
-									'id'   => 'amapress_ignore_unknown_columns',
-									'name' => amapress__( 'Ignorer les colonnes inconnues' ),
-									'type' => 'checkbox',
-									'desc' => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
+									'id'         => 'ignore_contrats_unknown_columns',
+									'input_name' => 'amapress_ignore_unknown_columns',
+									'name'       => amapress__( 'Ignorer les colonnes inconnues' ),
+									'type'       => 'checkbox',
+									'desc'       => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
 								),
 								array(
 									'id'     => 'import_contrats',
