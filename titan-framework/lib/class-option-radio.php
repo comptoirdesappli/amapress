@@ -22,7 +22,7 @@ class TitanFrameworkOptionRadio extends TitanFrameworkOption {
 			printf( '<label for="%s"><input id="%s" type="radio" name="%s" value="%s" %s/> %s</label><br>',
 				$this->getID() . $value,
 				$this->getID() . $value,
-				$this->getID(),
+				$this->getInputName(),
 				esc_attr( $value ),
 				checked( $this->getValue(), $value, false ),
 				$label

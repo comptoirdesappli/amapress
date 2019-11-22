@@ -29,7 +29,7 @@ class TitanFrameworkOptionTextarea extends TitanFrameworkOption {
 		printf( "<textarea class='large-text %s %s' name=\"%s\" placeholder=\"%s\" id=\"%s\" rows='10' cols='50'>%s</textarea>",
 			$this->settings['is_code'] ? 'code' : '',
 			$this->settings['required'] ? 'required' : '',
-			$this->getID(),
+			$this->getInputName(),
 			$this->settings['placeholder'],
 			$this->getID(),
 			esc_textarea( stripslashes( $this->getValue() ) )

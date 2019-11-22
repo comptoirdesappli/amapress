@@ -83,7 +83,7 @@ class TitanFrameworkOptionMulticheck extends TitanFrameworkOption {
 					$this->getID() . $value,
 					( $this->settings['required'] ? 'multicheckReq' : '' ),
 					$this->getID() . $value,
-					$this->getID(),
+					$this->getInputName(),
 					esc_attr( $value ),
 					checked( $default_checked || in_array( $value, $savedValue ), true, false ),
 					$this->wrapEditLink( $value, $label )

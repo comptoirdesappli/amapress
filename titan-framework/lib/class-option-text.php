@@ -103,7 +103,7 @@ class TitanFrameworkOptionText extends TitanFrameworkOption {
 				$this->settings['is_email'] ? 'email' : '',
 				$this->settings['classes'],
 			] ),
-			$this->getID(),
+			$this->getInputName(),
 			$this->settings['placeholder'],
 			empty( $this->settings['maxlength'] ) ? 1000 : $this->settings['maxlength'],
 			$this->getID(),

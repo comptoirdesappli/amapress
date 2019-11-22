@@ -61,6 +61,7 @@ class TitanFrameworkOption {
 		 * @var string
 		 */
 		'id'          => '',
+		'input_name'  => '',
 		/**
 		 * (Optional) The default value for this option.
 		 *
@@ -481,6 +482,14 @@ class TitanFrameworkOption {
 			return $this->settings['id'];
 		} else {
 			return $this->getOptionNamespace() . '_' . $this->settings['id'];
+		}
+	}
+
+	public function getInputName() {
+		if ( ! empty( $this->settings['input_name'] ) ) {
+			return $this->settings['input_name'];
+		} else {
+			return $this->getID();
 		}
 	}
 

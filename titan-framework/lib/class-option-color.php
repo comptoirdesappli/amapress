@@ -40,7 +40,7 @@ class TitanFrameworkOptionColor extends TitanFrameworkOption {
 		$this->echoOptionHeader();
 
 		printf( '<input class="tf-colorpicker" type="text" name="%s" id="%s" value="%s" data-default-color="%s" data-custom-width="0" %s/>',
-			esc_attr( $this->getID() ),
+			esc_attr( $this->getInputName() ),
 			esc_attr( $this->getID() ),
 			esc_attr( $this->getValue() ),
 			esc_attr( $this->getValue() ),

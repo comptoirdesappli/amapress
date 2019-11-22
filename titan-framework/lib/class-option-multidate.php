@@ -192,7 +192,7 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
                     <input class="input-multidate %s" name="%s" id="%s" type="hidden" value="%s" data-weeks="%s" />',
 			$this->getID(),
 			$this->settings['required'] ? 'required' : '',
-			$this->getID(),
+			$this->getInputName(),
 			$this->getID(),
 			esc_attr( $this->getValue() ),
 			$this->settings['show_weeks']

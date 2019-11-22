@@ -208,7 +208,7 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 		$options = null, $post_id = null
 	) {
 		$multiple = isset( $this->settings['multiple'] ) && true == $this->settings['multiple'] ? 'multiple' : '';
-		$name     = $this->getID();
+		$name     = $this->getInputName();
 		$val      = $this->getValue( $post_id );
 		if ( ! is_array( $val ) ) {
 			$val = array( $val );

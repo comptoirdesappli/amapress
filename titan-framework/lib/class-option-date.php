@@ -220,7 +220,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			( $this->settings['date'] ? ' date dpDate' : '' ),
 			( $this->settings['time'] ? ' time' : '' ),
 			$this->settings['required'] ? 'required' : '',
-			$this->getID(),
+			$this->getInputName(),
 			$placeholder,
 			$this->getID(),
 			esc_attr( ( $this->getValue() > 0 ) ? date( $dateFormat, $this->getValue() ) : '' ),

@@ -148,7 +148,7 @@ class TitanFrameworkOptionNumber extends TitanFrameworkOption {
 		printf( '<input class="%s-text %s" name="%s" placeholder="%s" id="%s" type="number" value="%s" min="%s" max="%s" step="%s" /> %s <p class="description">%s</p>',
 			$this->settings['size'],
 			$this->settings['required'] ? 'required' : '',
-			$this->getID(),
+			$this->getInputName(),
 			$this->settings['placeholder'],
 			$this->getID(),
 			esc_attr( $this->getValue() ),
