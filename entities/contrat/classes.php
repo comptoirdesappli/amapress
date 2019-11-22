@@ -1562,7 +1562,8 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
-		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+//		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+		$templateProcessor = new Phptemplate_withnewline( $model_filename );
 		try {
 			$templateProcessor->cloneRow( 'quantite_date', $lines_count );
 		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
