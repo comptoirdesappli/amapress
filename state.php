@@ -168,7 +168,7 @@ function amapress_check_plugin_install( $plugin_slug, $plugin_name, $message_if_
 	return amapress_get_check_state(
 		$is_active == 'active' ? 'success' : $not_installed_level,
 		$plugin_name . ( $is_active != 'active' ? ' (' . ( $is_active == 'not-installed' ? 'installer' : 'activer' ) . ')' : '' ),
-		$message_if_install_needed,
+		$message_if_install_needed . ' ' . Amapress::makeLink( 'https://fr.wordpress.org/plugins/' . $plugin_slug, 'En savoir plus', true, true ),
 		$is_active == 'not-installed' ? amapress_get_plugin_install_link( $plugin_slug ) : ( $is_active == 'installed' ? amapress_get_plugin_activate_link( $plugin_slug ) : '' )
 	);
 }
