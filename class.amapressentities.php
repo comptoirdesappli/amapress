@@ -3473,14 +3473,6 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 									'action'    => 'generate_model_' . AmapressContrat::POST_TYPE,
 								),
 								array(
-									'id'                => 'import_contrat_default_producteur',
-									'name'              => amapress__( 'Producteur par défaut' ),
-									'type'              => 'select-posts',
-									'post_type'         => AmapressProducteur::INTERNAL_POST_TYPE,
-									'autoselect_single' => true,
-									'desc'              => 'Producteur',
-								),
-								array(
 									'id'     => 'import_productions',
 									'name'   => 'Importer des productions',
 									'type'   => 'custom',

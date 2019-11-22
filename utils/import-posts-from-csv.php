@@ -85,10 +85,6 @@ class Amapress_Import_Posts_CSV {
 								isset( $_REQUEST['amapress_import_produit_default_producteur'] ) ?
 									$_REQUEST['amapress_import_produit_default_producteur'] :
 									'',
-							'amapress_import_contrat_default_producteur'        =>
-								isset( $_REQUEST['amapress_import_contrat_default_producteur'] ) ?
-									$_REQUEST['amapress_import_contrat_default_producteur'] :
-									'',
 						],
 						wp_get_referer() ) );
 				} // Some posts imported?
@@ -117,10 +113,6 @@ class Amapress_Import_Posts_CSV {
 			                'amapress_import_produit_default_producteur'        =>
 				                isset( $_REQUEST['amapress_import_produit_default_producteur'] ) ?
 					                $_REQUEST['amapress_import_produit_default_producteur'] :
-					                '',
-			                'amapress_import_contrat_default_producteur'        =>
-				                isset( $_REQUEST['amapress_import_contrat_default_producteur'] ) ?
-					                $_REQUEST['amapress_import_contrat_default_producteur'] :
 					                '',
 		                ],
 		                wp_get_referer() ) );

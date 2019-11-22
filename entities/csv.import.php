@@ -619,17 +619,6 @@ function amapress_csv_posts_produit_import_required_headers( $required_headers, 
 	return array_values( $required_headers );
 }
 
-add_filter( 'amapress_csv_posts_contrat_import_required_headers', 'amapress_csv_posts_contrat_import_required_headers', 10, 2 );
-function amapress_csv_posts_contrat_import_required_headers( $required_headers, $headers ) {
-	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
-
-	if ( ! empty( $_REQUEST['amapress_import_contrat_default_producteur'] ) ) {
-		unset( $required_headers['amapress_contrat_producteur'] );
-	}
-
-	return array_values( $required_headers );
-}
-
 add_filter( 'amapress_csv_posts_contrat_quantite_import_required_headers', 'amapress_csv_posts_contrat_quantite_import_required_headers', 10, 2 );
 function amapress_csv_posts_contrat_quantite_import_required_headers( $required_headers, $headers ) {
 	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
@@ -664,9 +653,6 @@ function amapress_csv_posts_adhesion_import_required_headers( $required_headers,
 	}
 	if ( ! empty( $_REQUEST['amapress_import_produit_default_producteur'] ) ) {
 		unset( $required_headers['amapress_produit_producteur'] );
-	}
-	if ( ! empty( $_REQUEST['amapress_import_contrat_default_producteur'] ) ) {
-		unset( $required_headers['amapress_contrat_producteur'] );
 	}
 
 	if ( $has_multi_quant_columns ) {
