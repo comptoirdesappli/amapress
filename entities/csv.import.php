@@ -553,7 +553,7 @@ function amapress_process_generate_model() {
 //            Amapress_Import_Posts_CSV::generateModel(AmapressAdhesion_intermittence::POST_TYPE, 'inscriptions_intermittents', array());
 //            break;
 		case 'generate_model_' . AmapressContrat_quantite::POST_TYPE:
-			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_quantite::POST_TYPE, 'contrats_quantites', [
+			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_quantite::POST_TYPE, 'contrats_config_paniers', [
 				'post_title',
 				'post_content'
 			] );
