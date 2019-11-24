@@ -367,7 +367,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 
 			return $v;
 		};
-	} else if ( $type == 'select-posts' ) {
+	} else if ( 'select-posts' == $type || 'multicheck-posts' == $type ) {
 		return function ( $value ) use ( $label, $settings ) {
 			if ( is_string( $value ) ) {
 				$value = trim( $value );
@@ -411,7 +411,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				return $res;
 			}
 		};
-	} else if ( $type == 'select-users' ) {
+	} else if ( 'select-users' == $type || 'multicheck-users' == $type ) {
 		return function ( $value ) use ( $label ) {
 			if ( is_string( $value ) ) {
 				$value = trim( $value );
@@ -459,9 +459,76 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				return $res;
 			}
 		};
-	} else if ( strpos( $type, 'multicheck' ) || strpos( $type, 'multidate' ) ) {
-		return function ( $value ) use ( $label, $type ) {
-			return new WP_Error( 'unsupported', "Type $type is not supported ($label)" );
+	} else if ( 'multicheck' == $type ) {
+		return function ( $value ) use ( $label, $settings ) {
+			$vs   = trim( strtolower( trim( $value ) ), ',' );
+			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
+				if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
+					$labels = array_combine(
+						array_map( function ( $a ) {
+							return strtolower( $a );
+						}, array_values( $settings['options'] ) ),
+						array_keys( $settings['options'] ) );
+					if ( ! array_key_exists( $v, $labels ) ) {
+						return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non trouvée pour '$label'" );
+					} else {
+						return $labels[ $v ];
+					}
+				} else if ( ! is_array( $settings['options'] ) ) {
+					return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non trouvée pour '$label'" );
+				}
+
+				return $v;
+			}, explode( ',', $vs ) );
+			$errs = array_map( function ( WP_Error $err ) {
+				return $err->get_error_message();
+			},
+				array_filter( $vs, 'is_wp_error' )
+			);
+			if ( ! empty( $errs ) ) {
+				return new WP_Error( 'cannot_parse', implode( ' ; ', $errs ) );
+			}
+
+			return implode( ',', $vs );
+		};
+	} else if ( 'multidate' == $type ) {
+		return function ( $value ) use ( $label, $settings ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
+			$vs   = trim( strtolower( trim( $value ) ), ',' );
+			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
+				try {
+					$dt = 0;
+					if ( is_float( $v ) || is_int( $v ) || preg_match( '/^\d+$/', strval( $v ) ) ) {
+						$dt = PHPExcel_Shared_Date::ExcelToPHP( intval( $v ) );
+					} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4}$/', $v ) ) {
+						$dt = DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format, $v )->getTimestamp();
+					} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4} \d{2}:\d{2}$/', $v ) ) {
+						$dt = DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format . ' ' . TitanFrameworkOptionDate::$default_time_format, $v )->getTimestamp();
+					} else if ( preg_match( '/^\d{2}:\d{2}$/', $v ) ) {
+						$dt = DateTime::createFromFormat( date( TitanFrameworkOptionDate::$default_date_format, 0 ) . ' ' . TitanFrameworkOptionDate::$default_time_format, $v )->getTimestamp();
+					} else if ( preg_match( '/^\d{1,2}-\d{1,2}-\d{2}$/', $v ) ) {
+						$dt = DateTime::createFromFormat( 'm-d-y', $v )->getTimestamp();
+					} else {
+						return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non valide pour '$label'" );
+					}
+
+					return date_i18n( 'd/m/Y', $dt );
+				} catch ( Exception $e ) {
+					return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non valide pour '$label': {$e->getMessage()}" );
+				}
+			}, explode( ',', $vs ) );
+			$errs = array_map( function ( WP_Error $err ) {
+				return $err->get_error_message();
+			},
+				array_filter( $vs, 'is_wp_error' )
+			);
+			if ( ! empty( $errs ) ) {
+				return new WP_Error( 'cannot_parse', implode( ' ; ', $errs ) );
+			}
+
+			return implode( ',', $vs );
 		};
 	}
 
