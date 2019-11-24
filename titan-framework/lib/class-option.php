@@ -353,8 +353,8 @@ class TitanFrameworkOption {
 		}
 		if ( $this->type == self::TYPE_ADMIN ) {
 			$value = $this->getFramework()->getInternalAdminPageOption( $this->settings['id'], $default_value );
-			if ( ! empty( $_GET[ $this->getID() ] ) ) {
-				return $this->cleanValueForSaving( $_GET[ $this->getID() ] );
+			if ( ! empty( $_GET[ $this->getInputName() ] ) ) {
+				return $this->cleanValueForSaving( $_GET[ $this->getInputName() ] );
 			}
 		} else if ( $this->type == self::TYPE_META ) {
 			if ( empty( $postID ) ) {
@@ -365,8 +365,8 @@ class TitanFrameworkOption {
 				$postID = get_the_ID();
 			}
 
-			if ( self::isOnNewScreen() && ! empty( $_GET[ $this->getID() ] ) ) {
-				return $this->cleanValueForSaving( $_GET[ $this->getID() ] );
+			if ( self::isOnNewScreen() && ! empty( $_GET[ $this->getInputName() ] ) ) {
+				return $this->cleanValueForSaving( $_GET[ $this->getInputName() ] );
 			}
 
 			// for meta options, use the default value for new posts/pages
@@ -374,8 +374,8 @@ class TitanFrameworkOption {
 				$value = get_user_meta( $postID, $this->getID(), true );
 			} else if ( metadata_exists( 'post', $postID, $this->getID() ) ) {
 				$value = get_post_meta( $postID, $this->getID(), true );
-			} else if ( self::isOnNewScreen() && ! empty( $_GET[ $this->getID() ] ) ) {
-				$value = $_GET[ $this->getID() ];
+			} else if ( self::isOnNewScreen() && ! empty( $_GET[ $this->getInputName() ] ) ) {
+				$value = $_GET[ $this->getInputName() ];
 			} else {
 				$value = $default_value;
 			}
