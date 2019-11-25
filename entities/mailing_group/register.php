@@ -21,12 +21,19 @@ function amapress_register_entities_mailing_groups( $entities ) {
 					if ( extension_loaded( 'imap' ) ) {
 						$res = $ml->testParams();
 						if ( true !== $res ) {
-							echo amapress_get_admin_notice( 'Erreur de configuration : ' . $res, 'error', false );
+							echo amapress_get_admin_notice( 'Erreur de configuration IMAP/POP : ' . $res, 'error', false );
 						} else {
-							echo amapress_get_admin_notice( 'Configuration OK', 'success', false );
+							echo amapress_get_admin_notice( 'Configuration IMAP/POP OK', 'success', false );
 						}
 					} else {
 						echo amapress_get_admin_notice( 'Erreur de configuration : l\'extension IMAP n\'est pas installée, les emails groupés sont désactivés.', 'error', false );
+					}
+					if ( ! empty( $ml->getSmtpHost() ) ) {
+						if ( $ml->testSMTP() ) {
+							echo amapress_get_admin_notice( 'Configuration SMTP OK', 'success', false );
+						} else {
+							echo amapress_get_admin_notice( 'Erreur de configuration : connexion au SMTP ' . $ml->getSmtpHost() . ' impossible', 'error', false );
+						}
 					}
 				}
 			}

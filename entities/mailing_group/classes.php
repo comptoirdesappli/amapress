@@ -897,4 +897,48 @@ class AmapressMailingGroup extends TitanEntity {
 			}
 		}
 	}
+
+	public function testSMTP() {
+		$ml_grp = $this;
+		if ( ! empty( $ml_grp->getSmtpHost() ) ) {
+			require_once ABSPATH . WPINC . '/class-phpmailer.php';
+			require_once ABSPATH . WPINC . '/class-smtp.php';
+			$phpmailer = new PHPMailer( true );
+
+			// Set mailer to SMTP
+			$phpmailer->isSMTP();
+
+			// Set encryption type
+			$phpmailer->SMTPSecure = $ml_grp->getSmtpEncryption();
+
+			// Set host
+			$phpmailer->Host = $ml_grp->getSmtpHost();
+			$phpmailer->Port = $ml_grp->getSmtpPort();
+
+			// Timeout
+			$phpmailer->Timeout = $ml_grp->getSmtpTimeout();
+
+			// Set authentication data
+			if ( $ml_grp->UseSmtpAuth() ) {
+				$phpmailer->SMTPAuth = true;
+				if ( ! empty( $ml_grp->getSmtpUserName() ) ) {
+					$phpmailer->Username = $ml_grp->getSmtpUserName();
+					$phpmailer->Password = $ml_grp->getSmtpPassword();
+				} else {
+					$phpmailer->Username = $ml_grp->getUsername();
+					$phpmailer->Password = $ml_grp->getPassword();
+				}
+			}
+
+			if ( $phpmailer->smtpConnect() ) {
+				$phpmailer->smtpClose();
+
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
