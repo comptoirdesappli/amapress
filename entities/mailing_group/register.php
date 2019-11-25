@@ -40,7 +40,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 		'slug'             => amapress__( 'mailinggroups' ),
 		'menu_icon'        => 'dashicons-email-alt',
 		'fields'           => array(
-			'name'             => array(
+			'name'                   => array(
 				'group'    => 'Description',
 				'name'     => amapress__( 'Email' ),
 				'type'     => 'text',
@@ -48,12 +48,12 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required' => true,
 				'is_email' => true,
 			),
-			'desc'             => array(
+			'desc'                   => array(
 				'group' => 'Description',
 				'name'  => amapress__( 'Description' ),
 				'type'  => 'text',
 			),
-			'host'             => array(
+			'host'                   => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Serveur' ),
 				'desc'        => 'Adresse du serveur IMAP/POP3',
@@ -61,7 +61,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'port'             => array(
+			'port'                   => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Port' ),
 				'desc'        => 'Port d\'accès au serveur IMAP/POP3',
@@ -70,7 +70,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'username'         => array(
+			'username'               => array(
 				'group'        => 'Serveur',
 				'name'         => amapress__( 'Utilisateur' ),
 				'desc'         => 'Nom d\'utilisateur',
@@ -79,7 +79,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'     => true,
 				'show_column'  => false,
 			),
-			'password'         => array(
+			'password'               => array(
 				'group'        => 'Serveur',
 				'name'         => amapress__( 'Mot de passe' ),
 				'desc'         => 'Mod de passe',
@@ -89,7 +89,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'     => true,
 				'show_column'  => false,
 			),
-			'protocol'         => array(
+			'protocol'               => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Protocole' ),
 				'type'        => 'select',
@@ -103,7 +103,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 					'imap' => 'IMAP',
 				],
 			),
-			'encryption'       => array(
+			'encryption'             => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Sécurité' ),
 				'type'        => 'select',
@@ -118,20 +118,74 @@ function amapress_register_entities_mailing_groups( $entities ) {
 					'tls'  => 'TLS',
 				],
 			),
-			'self_signed'      => array(
+			'self_signed'            => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Certificat autosigné' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
 			),
-			'subject_pref'     => array(
+			'smtp_out_note'          => array(
+				'group' => 'Serveur sortant',
+				'type'  => 'note',
+				'desc'  => 'Saisir la configuration SMTP pour l\'envoi des mails par cet boîte mail ou laisser vide pour utiliser la configuration mail de l\'hébergement',
+			),
+			'smtp_host'              => array(
+				'name'  => 'Host',
+				'group' => 'Serveur sortant',
+				'type'  => 'text',
+			),
+			'smtp_port'              => array(
+				'name'  => 'Port',
+				'group' => 'Serveur sortant',
+				'type'  => 'number',
+			),
+			'smtp_encryption'        => array(
+				'name'    => 'Encryption',
+				'group'   => 'Serveur sortant',
+				'type'    => 'select',
+				'options' => array(
+					''    => 'None',
+					'tls' => 'TLS',
+					'ssl' => 'SSL',
+				)
+			),
+			'smtp_timeout'           => array(
+				'name'    => 'Timeout',
+				'group'   => 'Serveur sortant',
+				'type'    => 'number',
+				'default' => 30,
+			),
+			'smtp_use_auth'          => array(
+				'name'  => 'Avec authentication ?',
+				'group' => 'Serveur sortant',
+				'type'  => 'checkbox',
+			),
+			'smtp_out_note2'         => array(
+				'group' => 'Serveur sortant',
+				'type'  => 'note',
+				'desc'  => 'Si les identifiants sont les mêmes que l\'accès IMAP/POP, laissez les champs vides (et cocher la case "Avec authentication ?")',
+			),
+			'smtp_auth_username'     => array(
+				'name'         => 'Username',
+				'group'        => 'Serveur sortant',
+				'autocomplete' => false,
+				'type'         => 'text',
+			),
+			'smtp_auth_password'     => array(
+				'name'         => 'Password',
+				'group'        => 'Serveur sortant',
+				'type'         => 'text',
+				'autocomplete' => false,
+				'is_password'  => true,
+			),
+			'subject_pref'           => array(
 				'group'       => 'Description',
 				'name'        => amapress__( 'Préfixe Sujet' ),
 				'type'        => 'text',
 				'show_column' => false,
 				'desc'        => 'Préfixe à ajouter au sujet des emails relayés'
 			),
-			'moderation'       => array(
+			'moderation'             => array(
 				'group'    => 'Modération',
 				'name'     => amapress__( 'Modération' ),
 				'type'     => 'select',
@@ -162,7 +216,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'tags'         => true,
 				'show_column'  => false,
 			),
-			'free_queries'     => array(
+			'free_queries'           => array(
 				'group'       => 'Non modérés',
 				'name'        => amapress__( 'Groupes sans modération' ),
 				'type'        => 'multicheck',
@@ -170,7 +224,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'options'     => 'amapress_get_mailinglist_queries',
 				'show_column' => false,
 			),
-			'free_other_users' => array(
+			'free_other_users'       => array(
 				'group'        => 'Non modérés',
 				'name'         => amapress__( 'Sans modération hors groupe' ),
 				'type'         => 'select-users',
@@ -179,7 +233,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'tags'         => true,
 				'show_column'  => false,
 			),
-			'waiting'          => array(
+			'waiting'                => array(
 				'group'   => 'Modération',
 				'name'    => amapress__( 'Emails en attente modération' ),
 				'type'    => 'custom',
@@ -188,7 +242,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'custom'  => 'amapress_get_mailing_group_waiting_list',
 				'show_on' => 'edit-only',
 			),
-			'members_count'    => array(
+			'members_count'          => array(
 				'group'   => 'Membres',
 				'name'    => amapress__( 'Membres' ),
 				'type'    => 'custom',
@@ -197,7 +251,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'custom'  => 'amapress_get_mailing_group_members_count',
 				'show_on' => 'edit-only',
 			),
-			'queries'          => array(
+			'queries'                => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Groupes inclus' ),
 				'type'        => 'multicheck',
@@ -206,7 +260,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 //				'required'    => true,
 				'show_column' => false,
 			),
-			'other_users'      => array(
+			'other_users'            => array(
 				'group'        => 'Membres',
 				'name'         => amapress__( 'Amapiens hors groupe' ),
 				'type'         => 'select-users',
@@ -216,7 +270,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'         => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
 				'show_column'  => false,
 			),
-			'raw_users'        => array(
+			'raw_users'              => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Membres supplémentaires (emails)' ),
 				'type'        => 'textarea',
@@ -224,7 +278,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'show_column' => false,
 				'searchable'  => true,
 			),
-			'reply_to'         => array(
+			'reply_to'               => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Reply to' ),
 				'type'        => 'select',

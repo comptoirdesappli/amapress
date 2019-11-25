@@ -425,6 +425,37 @@ class AmapressSMTPMailingQueueOriginal {
 					}
 				}
 			} else {
+				if ( is_array( $message ) && isset( $message['ml_grp_id'] ) ) {
+					$ml_grp = AmapressMailingGroup::getBy( $message['ml_grp_id'] );
+					if ( $ml_grp && ! empty( $ml_grp->getSmtpHost() ) ) {
+						$phpmailer->addCustomHeader( 'X-List-From-Smtp', $ml_grp->getName() );
+						// Set mailer to SMTP
+						$phpmailer->isSMTP();
+
+						// Set encryption type
+						$phpmailer->SMTPSecure = $ml_grp->getSmtpEncryption();
+
+						// Set host
+						$phpmailer->Host = $ml_grp->getSmtpHost();
+						$phpmailer->Port = $ml_grp->getSmtpPort();
+
+						// Timeout
+						$phpmailer->Timeout = $ml_grp->getSmtpTimeout();
+
+						// Set authentication data
+						if ( $ml_grp->UseSmtpAuth() ) {
+							$phpmailer->SMTPAuth = true;
+							if ( ! empty( $ml_grp->getSmtpUserName() ) ) {
+								$phpmailer->Username = $ml_grp->getSmtpUserName();
+								$phpmailer->Password = $ml_grp->getSmtpPassword();
+							} else {
+								$phpmailer->Username = $ml_grp->getUsername();
+								$phpmailer->Password = $ml_grp->getPassword();
+							}
+						}
+					}
+				}
+
 				if ( ! $phpmailer->Send() ) {
 					$errors[] = $phpmailer->ErrorInfo;
 				}

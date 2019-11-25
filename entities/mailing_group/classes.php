@@ -168,6 +168,34 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_mailing_group_self_signed' );
 	}
 
+	public function getSmtpHost() {
+		return $this->getCustom( 'amapress_mailing_group_smtp_host' );
+	}
+
+	public function getSmtpPort() {
+		return $this->getCustomAsInt( 'amapress_mailing_group_smtp_port', 25 );
+	}
+
+	public function getSmtpEncryption() {
+		return $this->getCustom( 'amapress_mailing_group_smtp_encryption', '' );
+	}
+
+	public function UseSmtpAuth() {
+		return $this->getCustomAsInt( 'amapress_mailing_group_smtp_use_auth', 0 );
+	}
+
+	public function getSmtpTimeout() {
+		return $this->getCustomAsInt( 'amapress_mailing_group_smtp_timeout', 30 );
+	}
+
+	public function getSmtpUserName() {
+		return $this->getCustom( 'amapress_mailing_group_smtp_auth_username' );
+	}
+
+	public function getSmtpPassword() {
+		return $this->getCustom( 'amapress_mailing_group_smtp_auth_password' );
+	}
+
 	public function distributeMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
@@ -675,6 +703,12 @@ class AmapressMailingGroup extends TitanEntity {
 //		$headers = array_filter( $headers, function ( $h ) {
 //			return !preg_match('/^\s*(?:Date|Content-Type|Message-ID):/i', $h);
 //		} );
+
+		if ( ! is_array( $body ) ) {
+			$body['html'] = $body;
+			$body['text'] = '';
+		}
+		$body['ml_grp_id'] = $this->ID;
 
 		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
 	}
