@@ -762,17 +762,18 @@ jQuery(function($) {
 
 			// 3/6 Distributions
 			'lieux'                 => array(
-				'name'       => amapress__( 'Lieu(x)' ),
-				'type'       => 'multicheck-posts',
-				'post_type'  => 'amps_lieu',
-				'group'      => '3/6 - Distributions',
-				'required'   => true,
-				'desc'       => 'Lieu(x) de distribution',
-				'select_all' => true,
-				'readonly'   => 'amapress_is_contrat_instance_readonly',
-				'orderby'    => 'post_title',
-				'order'      => 'ASC',
-				'top_filter' => array(
+				'name'         => amapress__( 'Lieu(x)' ),
+				'type'         => 'multicheck-posts',
+				'post_type'    => 'amps_lieu',
+				'group'        => '3/6 - Distributions',
+				'required'     => true,
+				'csv_required' => true,
+				'desc'         => 'Lieu(x) de distribution',
+				'select_all'   => true,
+				'readonly'     => 'amapress_is_contrat_instance_readonly',
+				'orderby'      => 'post_title',
+				'order'        => 'ASC',
+				'top_filter'   => array(
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Tous les lieux'
 				),
@@ -781,6 +782,7 @@ jQuery(function($) {
 				'name'             => amapress__( 'Calendrier initial' ),
 				'type'             => 'multidate',
 				'required'         => true,
+				'csv_required'     => true,
 				'group'            => '3/6 - Distributions',
 				'readonly'         => 'amapress_is_contrat_instance_readonly',
 				'show_column'      => true,
@@ -846,12 +848,57 @@ jQuery(function($) {
 
 			// 4/6 Paniers
 			'quant_type'            => array(
-				'name'       => amapress__( 'Choix du contenu des paniers' ),
-				'type'       => 'custom',
-				'group'      => '4/6 - Paniers',
-				'readonly'   => 'amapress_is_contrat_instance_readonly',
-				'csv_import' => false,
-				'column'     => function ( $post_id ) {
+				'name'              => amapress__( 'Choix du contenu des paniers' ),
+				'type'              => 'custom',
+				'group'             => '4/6 - Paniers',
+				'readonly'          => 'amapress_is_contrat_instance_readonly',
+				'csv'               => true,
+				'custom_csv_sample' => function ( $option, $arg ) {
+					return [
+						'Choix unique - quantité déterminée',
+						'Choix multiple - quantités déterminées',
+						'Choix unique - quantité libre',
+						'Choix multiple - quantités libres',
+						'Paniers modulables'
+					];
+				},
+				'csv_validator'     => function ( $value ) {
+					switch ( $value ) {
+						case 'Choix unique - quantité déterminée':
+							return [
+								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_quantite_multi'    => 0,
+								'amapress_contrat_instance_quantite_variable' => 0,
+							];
+						case 'Choix multiple - quantités déterminées':
+							return [
+								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_quantite_multi'    => 1,
+								'amapress_contrat_instance_quantite_variable' => 0,
+							];
+						case 'Choix unique - quantité libre':
+							return [
+								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_quantite_multi'    => 0,
+								'amapress_contrat_instance_quantite_variable' => 1,
+							];
+						case 'Choix multiple - quantités libres':
+							return [
+								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_quantite_multi'    => 1,
+								'amapress_contrat_instance_quantite_variable' => 1,
+							];
+						case 'Paniers modulables':
+							return [
+								'amapress_contrat_instance_panier_variable'   => 1,
+								'amapress_contrat_instance_quantite_multi'    => 0,
+								'amapress_contrat_instance_quantite_variable' => 0,
+							];
+						default:
+							return new WP_Error( 'cannot_parse', "Valeur '$value' non trouvée pour 'Choix du contenu des paniers'" );
+					}
+				},
+				'column'            => function ( $post_id ) {
 					$status           = [];
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat_instance->isPanierVariable() ) {
@@ -878,7 +925,7 @@ jQuery(function($) {
 
 					echo implode( ', ', $status );
 				},
-				'custom'     => function ( $post_id ) {
+				'custom'            => function ( $post_id ) {
 					$type             = 'quant_fix';
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id, true );
 					if ( $contrat_instance ) {
@@ -946,7 +993,7 @@ jQuery(function($) {
 					<?php
 					return ob_get_clean();
 				},
-				'save'       => function ( $post_id ) {
+				'save'              => function ( $post_id ) {
 					if ( isset( $_POST['amapress_quantite_type'] ) ) {
 						$amapress_quantite_type = $_POST['amapress_quantite_type'];
 						delete_post_meta(
@@ -1136,7 +1183,6 @@ jQuery(function($) {
 			'self_subscribe'        => array(
 				'name'        => amapress__( 'Activer' ),
 				'type'        => 'checkbox',
-				'csv_import'  => false,
 				'group'       => '5/6 - Pré-inscription en ligne',
 				'desc'        => 'Rendre accessible les pré-inscriptions en ligne pour ce contrat',
 				'show_column' => false,
@@ -1147,7 +1193,6 @@ jQuery(function($) {
 				'group'         => '5/6 - Pré-inscription en ligne',
 				'required'      => true,
 				'desc'          => 'Date d\'ouverture des inscriptions en ligne',
-				'import_key'    => true,
 				'readonly'      => 'amapress_is_contrat_instance_readonly',
 				'before_option' =>
 					function ( $option ) {
@@ -1173,7 +1218,6 @@ jQuery(function($) {
 				'group'      => '5/6 - Pré-inscription en ligne',
 				'required'   => true,
 				'desc'       => 'Date de clôture des inscriptions en ligne',
-				'import_key' => true,
 				'readonly'   => 'amapress_is_contrat_instance_readonly',
 //				'before_option' =>
 //					function ( $option ) {
@@ -1225,7 +1269,6 @@ jQuery(function($) {
 				'type'        => 'checkbox',
 				'show_column' => false,
 				'required'    => true,
-				'csv_import'  => false,
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
@@ -1284,14 +1327,15 @@ jQuery(function($) {
 //						),
 
 			// 6/6 - reglements
-			'paiements'         => array(
-				'name'     => amapress__( 'Nombre de chèques' ),
-				'type'     => 'multicheck',
-				'desc'     => 'Sélectionner le nombre de règlements autorisés par le producteur',
-				'group'    => '6/6 - Règlement en plusieurs fois',
-				'readonly' => 'amapress_is_contrat_instance_readonly',
-				'required' => true,
-				'options'  => array(
+			'paiements'             => array(
+				'name'         => amapress__( 'Nombre de chèques' ),
+				'type'         => 'multicheck',
+				'desc'         => 'Sélectionner le nombre de règlements autorisés par le producteur',
+				'group'        => '6/6 - Règlement en plusieurs fois',
+				'readonly'     => 'amapress_is_contrat_instance_readonly',
+				'required'     => true,
+				'csv_required' => true,
+				'options'      => array(
 					'1'  => '1 chèque',
 					'2'  => '2 chèques',
 					'3'  => '3 chèques',
@@ -1306,7 +1350,7 @@ jQuery(function($) {
 					'12' => '12 chèques',
 				)
 			),
-			'allow_cash'        => array(
+			'allow_cash'            => array(
 				'name'        => amapress__( 'Règlement en espèces' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1316,7 +1360,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement en espèces pour ce contrat',
 			),
-			'allow_bktrfr'      => array(
+			'allow_bktrfr'          => array(
 				'name'        => amapress__( 'Règlement par virement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1326,7 +1370,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement par virement pour ce contrat',
 			),
-			'manage_paiements'  => array(
+			'manage_paiements'      => array(
 				'name'        => amapress__( 'Répartition des chèques/règlement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1336,7 +1380,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Gérer la répartition des chèques/règlement dans Amapress',
 			),
-			'paiements_mention' => array(
+			'paiements_mention'     => array(
 				'name'        => amapress__( 'Message au sujet des chèques/règlement' ),
 				'type'        => 'editor',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1370,7 +1414,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit chèque/règlement pour les paiements en plusieurs fois',
 			),
-			'options_paiements' => array(
+			'options_paiements'     => array(
 				'name'        => amapress__( 'Répartition' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1701,6 +1745,19 @@ function amapress_import_adhesion_apply_default_values_to_posts_meta( $postmeta 
 
 	return $postmeta;
 }
+
+add_filter( 'amapress_import_posts_meta', 'amapress_import_contrat_instance_meta', 50, 1 );
+function amapress_import_contrat_instance_meta( $postmeta ) {
+	if ( ! empty( $postmeta['amapress_contrat_instance_quant_type'] ) ) {
+		foreach ( $postmeta['amapress_contrat_instance_quant_type'] as $k => $v ) {
+			$postmeta[ $k ] = $v;
+		}
+		unset( $postmeta['amapress_contrat_instance_quant_type'] );
+	}
+
+	return $postmeta;
+}
+
 
 add_filter( 'amapress_import_produit_apply_default_values_to_posts_meta', 'amapress_import_produit_apply_default_values_to_posts_meta' );
 function amapress_import_produit_apply_default_values_to_posts_meta( $postmeta ) {

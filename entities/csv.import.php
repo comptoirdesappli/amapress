@@ -305,8 +305,11 @@ function amapress_import_posts_meta( $postmeta, $postdata, $posttaxo, $post_type
 }
 
 function amapress_get_validator( $post_type, $field_name, $settings ) {
-	$type  = $settings['type'];
+	if ( isset( $settings['csv_validator'] ) && is_callable( $settings['csv_validator'], false ) ) {
+		return $settings['csv_validator'];
+	}
 	$label = ! empty( $settings['name'] ) ? $settings['name'] : $field_name;
+	$type  = $settings['type'];
 	if ( $type == 'date' ) {
 		return function ( $value ) use ( $label ) {
 			try {
