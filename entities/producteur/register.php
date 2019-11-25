@@ -4,6 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function amapress_is_current_user_producteur( $post_id = null ) {
+	return amapress_current_user_can( 'producteur' );
+}
+
 add_filter( 'amapress_register_entities', 'amapress_register_entities_producteur' );
 function amapress_register_entities_producteur( $entities ) {
 	$entities['producteur'] = array(
@@ -93,6 +97,10 @@ function amapress_register_entities_producteur( $entities ) {
 						return true;
 					}
 
+					if ( amapress_is_current_user_producteur() ) {
+						return true;
+					}
+
 					return false;
 				},
 				'required'   => true,
@@ -108,6 +116,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'searchable'   => true,
 				'autocomplete' => true,
 				'orderby'      => 'display_name',
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'order'        => 'ASC',
 			),
 			'referent2'            => array(
@@ -118,6 +127,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'desc'         => 'Deuxième référent producteur pour tous les lieux',
 				'searchable'   => true,
 				'autocomplete' => true,
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
@@ -129,6 +139,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'desc'         => 'Troisième référent producteur pour tous les lieux',
 				'searchable'   => true,
 				'autocomplete' => true,
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
@@ -175,7 +186,7 @@ function amapress_producteur_fields( $fields ) {
 				'group'        => '2/ Référents',
 				'searchable'   => true,
 				'autocomplete' => true,
-//                'required' => true,
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'desc'         => 'Référent producteur spécifique à ' . $lieu->getTitle(),
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',

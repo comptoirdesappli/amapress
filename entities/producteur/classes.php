@@ -55,6 +55,31 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 //		return wpautop( $this->getCustom( 'amapress_producteur_historique' ) );
 //	}
 
+	/** @return int[] */
+	public static function getAllIdsByUser( $user_id ) {
+		$cache_key = "amapress_prod_getAllIdsByUser_$user_id";
+		$res       = wp_cache_get( $cache_key );
+		if ( false == $res ) {
+			$res = get_posts( array(
+				'fields'         => 'ids',
+				'post_type'      => AmapressProducteur::INTERNAL_POST_TYPE,
+				'post_status'    => 'publish',
+				'posts_per_page' => - 1,
+				'meta_query'     => array(
+					array(
+						'key'     => 'amapress_producteur_user',
+						'value'   => $user_id,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					)
+				)
+			) );
+			wp_cache_set( $cache_key, $res );
+		}
+
+		return $res;
+	}
+
 	public function getAcces() {
 		$this->ensure_init();
 

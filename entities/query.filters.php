@@ -207,6 +207,50 @@ function amapress_filter_posts( WP_Query $query ) {
 			}
 		}
 	}
+	if ( is_admin() && amapress_current_user_can( 'producteur' ) ) {
+		$meta = [];
+		if ( $pt == 'producteur' ) {
+			$meta[] = array(
+				'key'     => "amapress_producteur_user",
+				'value'   => amapress_current_user_id(),
+				'compare' => '=',
+				'type'    => 'NUMERIC'
+			);
+		} else if ( $pt == 'produit' ) {
+			$prod_ids = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+			foreach ( $prod_ids as $id ) {
+				$meta[] = array(
+					'key'     => "amapress_produit_producteur",
+					'value'   => amapress_prepare_in( $id ),
+					'compare' => 'IN',
+					'type'    => 'NUMERIC'
+				);
+				$meta[] = amapress_prepare_like_in_array( 'amapress_produit_producteur', $id );
+			}
+		} else if ( $pt == 'contrat' ) {
+			$prod_ids = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+			$meta[]   = array(
+				'key'     => "amapress_contrat_producteur",
+				'value'   => amapress_prepare_in( $prod_ids ),
+				'compare' => 'IN',
+				'type'    => 'NUMERIC'
+			);
+		}
+		if ( count( $meta ) > 0 ) {
+			if ( count( $meta ) > 1 ) {
+				amapress_add_meta_query( $query, array(
+					array_merge(
+						array( 'relation' => 'OR' ),
+						$meta
+					)
+				) );
+			} else {
+				amapress_add_meta_query( $query, array(
+					$meta
+				) );
+			}
+		}
+	}
 
 //    if (!empty($_GET['orderby']) && !empty($_GET['orderby'])) {
 //

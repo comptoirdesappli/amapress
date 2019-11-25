@@ -116,6 +116,10 @@ function amapress_register_entities_contrat( $entities ) {
 						return true;
 					}
 
+					if ( amapress_is_current_user_producteur() ) {
+						return true;
+					}
+
 					return false;
 				},
 			),
@@ -125,6 +129,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents spécifiques',
 				'desc'         => 'Référent producteur pour tous les lieux et spécifique pour cette production et son/ses contrat(s)',
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'searchable'   => true,
 				'autocomplete' => true,
 				'orderby'      => 'display_name',
@@ -136,6 +141,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents spécifiques',
 				'desc'         => 'Deuxième référent producteur pour tous les lieux et spécifique pour cette production et son/ses contrat(s)',
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'searchable'   => true,
 				'autocomplete' => true,
 				'orderby'      => 'display_name',
@@ -147,6 +153,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents spécifiques',
 				'desc'         => 'Troisième référent producteur pour tous les lieux et spécifique pour cette production et son/ses contrat(s)',
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'searchable'   => true,
 				'autocomplete' => true,
 				'orderby'      => 'display_name',
@@ -1695,6 +1702,7 @@ function amapress_contrat_fields( $fields ) {
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents spécifiques',
+				'readonly'     => 'amapress_is_current_user_producteur',
 				'searchable'   => true,
 				'autocomplete' => true,
 				'desc'         => 'Référent producteur pour ' . $lieu->getTitle() . ' et spécifique pour cette production et son/ses contrat(s)',

@@ -893,15 +893,17 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		)
 	);
 
-	$pre_inscr_href = Amapress::get_pre_inscription_page_href();
-	if ( ! empty( $pre_inscr_href ) ) {
-		$main_items[] = array(
-			'id'         => 'amapress_goto_preinscr_page',
-			'title'      => 'Pré-inscription en ligne',
-			'icon'       => 'dashicons-pressthis',
-			'capability' => 'read',
-			'href'       => $pre_inscr_href,
-		);
+	if ( amapress_current_user_can( 'manage_contrats' ) ) {
+		$pre_inscr_href = Amapress::get_pre_inscription_page_href();
+		if ( ! empty( $pre_inscr_href ) ) {
+			$main_items[] = array(
+				'id'         => 'amapress_goto_preinscr_page',
+				'title'      => 'Pré-inscription en ligne',
+				'icon'       => 'dashicons-pressthis',
+				'capability' => 'read',
+				'href'       => $pre_inscr_href,
+			);
+		}
 	}
 
 	$main_items = array_merge(

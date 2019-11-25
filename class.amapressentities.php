@@ -241,13 +241,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 					'settings' => array(
 						'name'       => 'Producteurs',
 						'position'   => '25.2',
-						'capability' => 'edit_producteur',
+						'capability' => 'edit_produit',
 						'icon'       => 'dashicons-none flaticon-tractor',
-						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez configurer :</h4>
-<ul style="margin-left: 1em; list-style-type: disc">
-<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_producteur' ) . '">producteurs</a> : la présentation des exploitations de vos différents producteurs ainsi que <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" target="_blank">l\'affectation de leurs référents</a>. Vous pouvez également affecter des référents sur les contrats de vos producteurs (<a target="_blank" href="https://wiki.amapress.fr/referent_producteur/fiche_producteur">Voir l\'aide</a>)</li>
-<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_produit' ) . '">produits de vos différents producteurs</a>, par exemples les espèces de légumes cultivés, les races de poules, les types de produits ainsi que leur associer des <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_produit_category' ) . '">étiquettes</a>. (Le <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">renseignement des types et tailles de paniers</a> de fait au sein des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a>)</li>
-</ul></div>'
+						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez configurer :</h4><ul style="margin-left: 1em; list-style-type: disc">' .
+						                ( amapress_current_user_can( 'edit_producteur' ) ? ( '<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_producteur' ) . '">producteurs</a> : la présentation des exploitations de vos différents producteurs ainsi que <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" target="_blank">l\'affectation de leurs référents</a>. Vous pouvez également affecter des référents sur les contrats de vos producteurs (<a target="_blank" href="https://wiki.amapress.fr/referent_producteur/fiche_producteur">Voir l\'aide</a>)</li>' ) : '' ) .
+						                ( amapress_current_user_can( 'edit_produit' ) ? ( '<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_produit' ) . '">produits de vos différents producteurs</a>, par exemples les espèces de légumes cultivés, les races de poules, les types de produits ainsi que leur associer des <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_produit_category' ) . '">étiquettes</a>. (Le <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">renseignement des types et tailles de paniers</a> de fait au sein des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a>)</li>' ) : '' ) .
+						                '</ul></div>'
 					),
 					'options'  => array(),
 					'tabs'     => array(),
@@ -307,7 +306,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'title'      => 'Catégories de recettes',
 							'menu_icon'  => 'dashicons-tag',
 							'menu_title' => 'Catégories de recettes',
-							'capability' => 'manage_categories',
+							'capability' => 'edit_recette',
 							'slug'       => 'edit-tags.php?taxonomy=amps_recette_category',
 						),
 //						array(
@@ -729,7 +728,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 					'settings' => array(
 						'name'       => 'Gestion Contrats',
 						'position'   => '25.4',
-						'capability' => 'edit_contrat_instance',
+						'capability' => 'edit_contrat',
 						'icon'       => 'dashicons-none flaticon-pen',
 						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
 <ul style="margin-left: 1em; list-style-type: disc">

@@ -757,15 +757,40 @@ class Amapress {
 			'delete'  => false,
 			'publish' => true,
 		) );
-		self::add_post_role( 'producteur', 'mailing_group', 'mailing_groups', array(
+		self::add_post_role( 'producteur', 'producteur', 'producteurs', array(
 			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'producteur', 'contrat', 'contrats', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'producteur', 'mailing_group', 'mailing_groups', array(
+			'read'    => false,
 			'edit'    => false,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'producteur', 'recette', 'recettes', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => true,
+		) );
+		self::add_post_role( 'producteur', 'post', 'posts', array(
+			'read'    => true,
+			'edit'    => true,
 			'delete'  => false,
 			'publish' => false,
 		) );
 
 		$r = get_role( 'producteur' );
 		$r->add_cap( 'upload_files' );
+		$r->add_cap( 'manage_contenu' );
 		if ( class_exists( 'bbPress' ) ) {
 //            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
 //            $caps = bbp_get_caps_for_role(bbp_get_moderator_role());
@@ -1636,10 +1661,10 @@ class Amapress {
 				'slug' => 'categorie-produits',
 			),
 			'capabilities'      => array(
-				'manage_terms' => 'manage_categories',
-				'edit_terms'   => 'manage_categories',
-				'delete_terms' => 'manage_categories',
-				'assign_terms' => 'edit_posts',
+				'manage_terms' => 'publish_produit',
+				'edit_terms'   => 'publish_produit',
+				'delete_terms' => 'publish_produit',
+				'assign_terms' => 'edit_produits',
 			),
 		) );
 	}
@@ -1653,10 +1678,10 @@ class Amapress {
 				'slug' => 'categorie-recettes',
 			),
 			'capabilities'      => array(
-				'manage_terms' => 'manage_categories',
-				'edit_terms'   => 'manage_categories',
-				'delete_terms' => 'manage_categories',
-				'assign_terms' => 'edit_posts',
+				'manage_terms' => 'publish_recette',
+				'edit_terms'   => 'publish_recette',
+				'delete_terms' => 'publish_recette',
+				'assign_terms' => 'edit_recettes',
 			),
 		) );
 	}
