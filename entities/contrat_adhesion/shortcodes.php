@@ -200,7 +200,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 	$step              = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 	$disable_principal = Amapress::getOption( 'disable_principal', false );
 
-	$atts             = shortcode_atts(
+	$atts = shortcode_atts(
 		[
 			'key'                              => '',
 			'for_logged'                       => 'false',
@@ -1836,6 +1836,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$ed         .= "<select style='max-width: none;min-width: 0' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var'>";
 					$ed         .= tf_parse_select_options( $options, null, false );
 					$ed         .= '</select>';
+					$ed         .= '<a title="Recopier la même quantité sur les dates suivantes" href="#" class="quant-var-recopier">&gt;</a>';
 					if ( ! $quant->isInDistributionDates( $date ) ) {
 						$ed = '<span class="contrat_panier_vars-na">NA</span>';
 					}
@@ -1844,7 +1845,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$data[] = $row;
 			}
 
-			echo '<style type="text/css">.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
+			echo '<style type="text/css">.quant-var-recopier{text-shadow: none !important; text-decoration: none !important;}.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
 
 			echo amapress_get_datatable( 'quant-commandes', $columns, $data, array(
 				'bSort'        => false,
@@ -2382,10 +2383,10 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
     <script type="text/javascript">
         //<![CDATA[
         jQuery(function ($) {
-            jQuery('#quant-commandes').on('click', 'td', function () {
-                jQuery(this).find(".quant-var").css('visibility', 'visible');
+            $('#quant-commandes').on('click', 'td', function () {
+                jQuery(this).find(".quant-var, .quant-var-recopier").css('visibility', 'visible');
             });
-            jQuery(".amapress_validate").validate({
+            $(".amapress_validate").validate({
                     onkeyup: false,
                     errorPlacement: function (error, element) {
                         var $commandes = element.closest('.dataTables_wrapper');
@@ -2447,11 +2448,27 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
             }
 
             jQuery('.quant-factor').change(computePrices).each(computePrices);
+            $(".quant-var-recopier").click(function () {
+                var $td = $(this).closest("td");
+                var val = parseFloat($td.find("select").val());
+                $td.nextAll().find("select, a").each(function () {
+                    if (val <= 0) {
+                        $(this).css('visibility', 'hidden');
+                    } else {
+                        $(this).css('visibility', 'visible');
+                    }
+                });
+                $td.nextAll().find("select").each(function () {
+                    $(this).val(val);
+                });
+                return false;
+            });
             jQuery('.quant-var').each(function () {
                 var $this = jQuery(this);
                 var val = parseFloat($this.val());
                 if (val <= 0) {
                     $this.css('visibility', 'hidden');
+                    $this.parent().find('a').css('visibility', 'hidden');
                 }
             }).change(function () {
                 var $this = jQuery(this);
