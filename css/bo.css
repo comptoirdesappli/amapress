@@ -213,12 +213,6 @@
     border-top: 1pt solid #000;
 }
 
-.placeholders-help, .placeholders-help th, .placeholders-help td {
-    border-collapse: collapse;
-    border: 1pt solid black;
-    padding: 2pt !important;
-}
-
 span.description {
     color: #aaa;
 }

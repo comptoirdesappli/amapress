@@ -90,4 +90,11 @@ jQuery(function ($) {
         });
         updateSum();
     });
+    $(".placeholders-help").DataTable({
+        "paging": false,
+        "info": false,
+        "ordering": false,
+        //'responsive': true,
+        "searching": true,
+    });
 });

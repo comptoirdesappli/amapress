@@ -3778,15 +3778,15 @@ class Amapress {
 		if ( $show_toggler ) {
 			$ret .= '<p>Consulter les <a href="#" id="show_' . $id . '">marqueurs de substitution</a> disponibles (%%xxx%%)</p>';
 		}
-		$ret .= '<table id="' . $id . '" class="placeholders-help"><thead><tr><th>Placeholder</th><th>Description</th></tr></thead><tbody>' .
+		$ret .= '<div id="' . $id . '-container"><table id="' . $id . '" class="placeholders-help display"><thead><tr><th>Placeholder</th><th>Description</th></tr></thead><tbody>' .
 		        implode( '', array_map( function ( $pn, $p ) use ( $marker_start, $marker_end ) {
 			        return '<tr><td>' . $marker_start . esc_html( $pn ) . $marker_end . '</td><td>' . esc_html( $p ) . '</td></tr>';
 		        }, array_keys( $final ), array_values( $final ) ) )
-		        . '</tbody></table>';
+		        . '</tbody></table></div>';
 
 		if ( $show_toggler ) {
-			$ret .= '<style>#' . $id . ' { display: none; }#' . $id . '.opened { display: block; }</style>';
-			$ret .= '<script type="text/javascript">jQuery(function($) {$("#' . $id . '").addClass("closed");$("#show_' . $id . '").click(function() { $("#' . $id . '").toggleClass("opened"); return false; }); });</script>';
+			$ret .= '<style>#' . $id . '-container { display: none; }#' . $id . '-container.opened { display: block; }</style>';
+			$ret .= '<script type="text/javascript">jQuery(function($) {$("#' . $id . '-container").addClass("closed");$("#show_' . $id . '").click(function() { $("#' . $id . '-container").toggleClass("opened"); return false; }); });</script>';
 		}
 
 		return $ret;

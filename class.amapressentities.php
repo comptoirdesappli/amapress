@@ -3648,7 +3648,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 									'name'   => 'Shortcodes',
 									'type'   => 'custom',
 									'custom' => function () {
-										$ret = '<table class="placeholders-help">';
+										$ret = '<table class="placeholders-help display">';
 										$ret .= '<thead><tr><th>Shortcode</th><th>Description</th></tr></thead>';
 										$ret .= '<tbody>';
 										global $all_amapress_shortcodes_descs;
@@ -3669,7 +3669,6 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 
 										$ret .= '</tbody>';
 										$ret .= '</table>';
-
 										return $ret;
 									}
 								)
