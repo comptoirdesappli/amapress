@@ -496,13 +496,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
             <label for="email">Pour démarrer votre inscription à l’AMAP pour la saison
-	            <?php echo date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) ?>
+				<?php echo date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) ?>
                 , renseignez votre
                 adresse mail :</label>
             <input id="email" name="email" type="text" class="email required" placeholder="email"/>
-	        <?php
-	        if ( $track_no_renews ) {
-		        ?>
+			<?php
+			if ( $track_no_renews ) {
+				?>
                 <div class="amap-preinscr-norenew">
                     <label for="no_renew"><input type="checkbox" id="no_renew" name="no_renew"/> Je ne souhaite pas
                         renouveler.</label>
@@ -520,9 +520,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         });
                     </script>
                 </div>
-		        <?php
-	        }
-	        ?>
+				<?php
+			}
+			?>
             <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
@@ -702,11 +702,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="email" value="<?php echo esc_attr( $email ); ?>"/>
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-	        <?php if ( $activate_agreement ) { ?>
+			<?php if ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-	        <?php } else if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php } else if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-	        <?php } ?>
+			<?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
@@ -748,9 +748,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 </tr>
             </table>
             <div>
-	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-	        <?php if ( $max_coadhs >= 1 ) { ?>
+			<?php if ( $max_coadhs >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
@@ -795,15 +795,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                   value="<?php echo esc_attr( $coadh1_mobile_phones ) ?>"/>
                         </td>
                     </tr>
-	                <?php if ( $show_coadherents_address ) { ?>
+					<?php if ( $show_coadherents_address ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"><label for="coadh1_address">Adresse : </label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh1_address" name="coadh1_address"
                                           class=""><?php echo esc_textarea( $coadh1_address ); ?></textarea></td>
                         </tr>
-	                <?php } ?>
-	                <?php if ( $allow_remove_coadhs && ! empty( $coadh1_email ) ) { ?>
+					<?php } ?>
+					<?php if ( $allow_remove_coadhs && ! empty( $coadh1_email ) ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"></th>
                             <td>
@@ -813,10 +813,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                 </label>
                             </td>
                         </tr>
-	                <?php } ?>
+					<?php } ?>
                 </table>
-	        <?php } ?>
-	        <?php if ( $max_coadhs >= 2 ) { ?>
+			<?php } ?>
+			<?php if ( $max_coadhs >= 2 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2">Co adhérent 2 <em>(si vous payez les contrats à plusieurs)</em></th>
@@ -861,15 +861,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                   value="<?php echo esc_attr( $coadh2_mobile_phones ) ?>"/>
                         </td>
                     </tr>
-	                <?php if ( $show_coadherents_address ) { ?>
+					<?php if ( $show_coadherents_address ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"><label for="coadh2_address">Adresse : </label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh2_address" name="coadh2_address"
                                           class=""><?php echo esc_textarea( $coadh2_address ); ?></textarea></td>
                         </tr>
-	                <?php } ?>
-	                <?php if ( $allow_remove_coadhs && ! empty( $coadh2_email ) ) { ?>
+					<?php } ?>
+					<?php if ( $allow_remove_coadhs && ! empty( $coadh2_email ) ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"></th>
                             <td>
@@ -879,10 +879,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                 </label>
                             </td>
                         </tr>
-	                <?php } ?>
+					<?php } ?>
                 </table>
-	        <?php } ?>
-	        <?php if ( $max_coadhs >= 3 ) { ?>
+			<?php } ?>
+			<?php if ( $max_coadhs >= 3 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2">Co adhérent 3 <em>(si vous payez les contrats à plusieurs)</em></th>
@@ -927,15 +927,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                   value="<?php echo esc_attr( $coadh3_mobile_phones ) ?>"/>
                         </td>
                     </tr>
-	                <?php if ( $show_coadherents_address ) { ?>
+					<?php if ( $show_coadherents_address ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"><label for="coadh3_address">Adresse : </label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh3_address" name="coadh3_address"
                                           class=""><?php echo esc_textarea( $coadh3_address ); ?></textarea></td>
                         </tr>
-	                <?php } ?>
-	                <?php if ( $allow_remove_coadhs && ! empty( $coadh3_email ) ) { ?>
+					<?php } ?>
+					<?php if ( $allow_remove_coadhs && ! empty( $coadh3_email ) ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"></th>
                             <td>
@@ -945,30 +945,30 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                 </label>
                             </td>
                         </tr>
-	                <?php } ?>
+					<?php } ?>
                 </table>
-	        <?php } ?>
+			<?php } ?>
             <p style="color:red">* Champ obligatoire</p>
-	        <?php echo $member_message; ?>
-	        <?php if ( ! $user ) {
-		        $quest1 = wp_unslash( Amapress::getOption( 'online_new_user_quest1' ) );
-		        if ( ! Amapress::isHtmlEmpty( $quest1 ) ) {
-			        ?>
+			<?php echo $member_message; ?>
+			<?php if ( ! $user ) {
+				$quest1 = wp_unslash( Amapress::getOption( 'online_new_user_quest1' ) );
+				if ( ! Amapress::isHtmlEmpty( $quest1 ) ) {
+					?>
                     <label for="online_new_user_quest1"><?php echo $quest1 ?></label>
                     <textarea style="width: 100%" rows="4" id="online_new_user_quest1"
                               name="online_new_user_quest1"></textarea>
-			        <?php
-		        }
-		        $quest2 = wp_unslash( Amapress::getOption( 'online_new_user_quest2' ) );
-		        if ( ! Amapress::isHtmlEmpty( $quest2 ) ) {
-			        ?>
+					<?php
+				}
+				$quest2 = wp_unslash( Amapress::getOption( 'online_new_user_quest2' ) );
+				if ( ! Amapress::isHtmlEmpty( $quest2 ) ) {
+					?>
                     <label for="online_new_user_quest2"><?php echo $quest2 ?></label>
                     <textarea style="width: 100%" rows="4" id="online_new_user_quest2"
                               name="online_new_user_quest2"></textarea>
-			        <?php
-		        }
-	        }
-	        ?>
+					<?php
+				}
+			}
+			?>
             <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
         </form>
 		<?php
@@ -1376,7 +1376,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						     ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>' : '' );
 				} else {
 					$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
-					$contrat_info = 'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour '
+					$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
+							'Vous avez composé votre panier "' . $adh->getContrat_instance()->getModelTitle() . '" (' . Amapress::makeLink( add_query_arg( [
+								'step'       => 'details',
+								'contrat_id' => $adh->ID
+							] ), 'Détails', true, true ) . ') pour ' :
+							'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour ' )
 					                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' € (' . $adh->getProperty( 'option_paiements' ) . ')'
 					                . '<br/>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
 					                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
@@ -1651,6 +1656,40 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
+	} else if ( 'details' == $step ) {
+		if ( empty( $_GET['contrat_id'] ) || empty( $_GET['user_id'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+		$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
+		if ( $adh->getAdherentId() != intval( $_GET['user_id'] ) ) {
+			wp_die( $invalid_access_message );
+		}
+		$print_contrat = '';
+		if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
+			$print_contrat = Amapress::makeButtonLink(
+				add_query_arg( [
+					'inscr_assistant' => 'generate_contrat',
+					'inscr_id'        => $adh->ID,
+					'inscr_key'       => $key
+				] ),
+				'Imprimer', true, true, 'btn btn-default'
+			);
+		}
+		$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
+		$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
+				'Vous avez composé votre panier "' . $adh->getContrat_instance()->getModelTitle() . '" pour ' :
+				'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour ' )
+		                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' €'
+		                . '<h3>Distributions</h3><p>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
+		                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' ) . '</p>';
+		$contrat_info .= '<h3>Lieu</h3><p>' . Amapress::makeLink($adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true) . '</p>';
+		$contrat_info .= '<h3>Détails</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
+		$contrat_info .= '<h3>Options de paiements</h3><p>' . $adh->getProperty( 'option_paiements' ). '</p><p>'.$adh->getProperty( 'paiements_mention' ).'</p>';
+		$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
+		$contrat_info .= '<h3>Référents</h3>';
+		$contrat_info .= '<p>'.$adh->getProperty('referents').'</p>';
+		$contrat_info .= '<p>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' ) . '</p>';
+		echo '<h4>' . esc_html( $adh->getTitle() ) . '</h4><p>' . $contrat_info . '</p>';
 	} else if ( 'inscr_contrat_engage' == $step ) {
 		if ( empty( $_REQUEST['contrat_id'] ) ) {
 			wp_die( $invalid_access_message );
@@ -2345,18 +2384,18 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
             });
             jQuery(".amapress_validate").validate({
                     onkeyup: false,
-                errorPlacement: function (error, element) {
-                    var $commandes = element.closest('.dataTables_wrapper');
-                    if ($commandes.length) {
-                        error.insertAfter($commandes);
-                    } else {
-                        if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
-                            error.insertBefore(element);
+                    errorPlacement: function (error, element) {
+                        var $commandes = element.closest('.dataTables_wrapper');
+                        if ($commandes.length) {
+                            error.insertAfter($commandes);
                         } else {
-                            error.insertAfter(element);
+                            if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
+                                error.insertBefore(element);
+                            } else {
+                                error.insertAfter(element);
+                            }
                         }
                     }
-                }
                 }
             );
 
