@@ -2814,7 +2814,7 @@ class Amapress {
 
 		wp_enqueue_script( 'clipboard', plugin_dir_url( __FILE__ ) . 'js/clipboard.min.js', array( 'jquery' ) );
 		//
-		wp_enqueue_script( 'isotope', 'https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js', array( 'jquery' ) );
+		wp_enqueue_script( 'isotope', plugin_dir_url( __FILE__ ) . 'js/isotope.pkgd.min.js', array( 'jquery' ) );
 		wp_enqueue_script( 'slick', plugin_dir_url( __FILE__ ) . 'js/slick/slick.min.js', array( 'jquery' ) );
 		wp_enqueue_style( 'slick', plugin_dir_url( __FILE__ ) . 'css/slick/slick.css' );
 		wp_enqueue_style( 'slick-theme', plugin_dir_url( __FILE__ ) . 'css/slick/slick-theme.css', array( 'slick' ) );
@@ -2833,8 +2833,8 @@ class Amapress {
 			'fullcalendar'
 		) );
 
-		wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js' );
-		wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.css' );
+		wp_enqueue_script( 'leaflet', plugin_dir_url( __FILE__ ) . 'js/leaflet.js' );
+		wp_enqueue_style( 'leaflet', plugin_dir_url( __FILE__ ) . 'css/leaflet.css' );
 
 		wp_enqueue_script( 'datatable', plugin_dir_url( __FILE__ ) . 'js/datatables.min.js', array( 'jquery' ), true );
 		wp_enqueue_style( 'datatable', plugin_dir_url( __FILE__ ) . 'css/datatables.min.css' );
