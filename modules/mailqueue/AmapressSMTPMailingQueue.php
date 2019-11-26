@@ -298,8 +298,13 @@ class AmapressSMTPMailingQueue {
 					continue;
 				}
 			}
-			self::sendMail( $data );
-			@unlink( $file );
+			try {
+				self::sendMail( $data );
+			} catch ( Exception $ex ) {
+
+			} finally {
+				@unlink( $file );
+			}
 		}
 
 		exit;
