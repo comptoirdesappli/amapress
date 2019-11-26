@@ -359,7 +359,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$ret['paiement_date']    = [
 				'desc' => 'Date du paiement/adhésion à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return $adh->getDate();
+					return date_i18n( 'd/m/Y', $adh->getDate() );
 				}
 			];
 			$ret['montant_amap']     = [
