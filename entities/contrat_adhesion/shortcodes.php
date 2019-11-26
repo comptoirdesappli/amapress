@@ -200,7 +200,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 	$step              = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
 	$disable_principal = Amapress::getOption( 'disable_principal', false );
 
-	$atts = shortcode_atts(
+	$atts             = shortcode_atts(
 		[
 			'key'                              => '',
 			'for_logged'                       => 'false',
@@ -219,6 +219,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'track_no_renews'                  => 'false',
 			'track_no_renews_email'            => get_option( 'admin_email' ),
 			'notify_email'                     => '',
+			'max_produit_label_width'          => '10em',
 			'paiements_info_required'          => 'false',
 			'paniers_modulables_editor_height' => 350,
 			'edit_names'                       => 'true',
@@ -1682,12 +1683,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' €'
 		                . '<h3>Distributions</h3><p>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
 		                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' ) . '</p>';
-		$contrat_info .= '<h3>Lieu</h3><p>' . Amapress::makeLink($adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true) . '</p>';
+		$contrat_info .= '<h3>Lieu</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
 		$contrat_info .= '<h3>Détails</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
-		$contrat_info .= '<h3>Options de paiements</h3><p>' . $adh->getProperty( 'option_paiements' ). '</p><p>'.$adh->getProperty( 'paiements_mention' ).'</p>';
+		$contrat_info .= '<h3>Options de paiements</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p>';
 		$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
 		$contrat_info .= '<h3>Référents</h3>';
-		$contrat_info .= '<p>'.$adh->getProperty('referents').'</p>';
+		$contrat_info .= '<p>' . $adh->getProperty( 'referents' ) . '</p>';
 		$contrat_info .= '<p>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' ) . '</p>';
 		echo '<h4>' . esc_html( $adh->getTitle() ) . '</h4><p>' . $contrat_info . '</p>';
 	} else if ( 'inscr_contrat_engage' == $step ) {
@@ -1822,7 +1823,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$data = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
 				$row     = array(
-					'produit'       => esc_html( $quant->getTitle() ) . ( ! empty( $quant->getDescription() ) ? '<br/><em>' . esc_html( $quant->getDescription() ) . '</em>' : '' ),
+					'produit'       => '<span class="panier-mod-produit-label">' . esc_html( $quant->getTitle() ) . ( ! empty( $quant->getDescription() ) ? '<br/><em>' . esc_html( $quant->getDescription() ) . '</em>' : '' ) . '</span>',
 					'prix_unitaire' => esc_html( sprintf( '%.2f€', $quant->getPrix_unitaire() ) ),
 				);
 				$options = $quant->getQuantiteOptions();
@@ -1842,6 +1843,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				$data[] = $row;
 			}
+
+			echo '<style type="text/css">.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
 
 			echo amapress_get_datatable( 'quant-commandes', $columns, $data, array(
 				'bSort'        => false,
