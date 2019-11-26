@@ -331,44 +331,50 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                         = [];
-			$ret['date_debut']           = [
-				'desc' => 'Date début de l\'adhésion (par ex, 01/09/2018)',
+			$ret                     = [];
+			$ret['date_debut']       = [
+				'desc' => 'Date début de la période d\'adhésion (par ex, 01/09/2018)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin']             = [
-				'desc' => 'Date fin de l\'adhésion (par ex, 31/08/2019)',
+			$ret['date_fin']         = [
+				'desc' => 'Date fin de période d\'adhésion (par ex, 31/08/2019)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['date_debut_annee']     = [
-				'desc' => 'Année de début de l\'adhésion',
+			$ret['date_debut_annee'] = [
+				'desc' => 'Année de début de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin_annee']       = [
-				'desc' => 'Année de fin de l\'adhésion',
+			$ret['date_fin_annee']   = [
+				'desc' => 'Année de fin de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['montant_amap']         = [
+			$ret['paiement_date']    = [
+				'desc' => 'Date du paiement/adhésion à l\'AMAP',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getDate();
+				}
+			];
+			$ret['montant_amap']     = [
 				'desc' => 'Montant versé à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantAmap() );
 				}
 			];
-			$ret['montant_reseau']       = [
+			$ret['montant_reseau']   = [
 				'desc' => 'Montant versé au réseau de l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau() );
 				}
 			];
-			$ret['tresoriers']           = [
+			$ret['tresoriers']       = [
 				'desc' => 'Nom des référents de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return implode( ', ', array_unique( array_map(
