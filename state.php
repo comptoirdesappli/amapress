@@ -378,7 +378,7 @@ function amapress_get_state() {
 		);
 	}
 
-	$has_site_verif_codes       = ! empty( Amapress::getOption( '' ) ) && ! empty( Amapress::getOption( '' ) );
+	$has_site_verif_codes = ! empty( Amapress::getOption( '' ) ) && ! empty( Amapress::getOption( '' ) );
 	$state['05_config'][] = amapress_get_check_state(
 		$has_site_verif_codes ? 'success' : 'warning',
 		$has_site_verif_codes ? 'Code de vérification du site (Google/Bing) : OK' : 'Codes de vérification du site (Google/Bing) : non renseignés',
@@ -1293,13 +1293,13 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}
 	}
 
-	$front_page_edit_href          = $static_front_id ? admin_url( 'post.php?post=' . $static_front_id . '&action=edit' ) : '';
-	$amapien_mes_infos_edit_href   = admin_url( 'post.php?post=' . Amapress::getOption( 'mes-infos-page' ) . '&action=edit' );
-	$amapien_mes_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'mes-paniers-intermittents-page' ) . '&action=edit' );
-	$amapien_les_paniers_edit_href = admin_url( 'post.php?post=' . Amapress::getOption( 'paniers-intermittents-page' ) . '&action=edit' );
-	$new_page_href                 = admin_url( 'post-new.php?post_type=page' );
-	$new_private_page_href         = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
-	$needed_shortcodes             = [
+	$front_page_edit_href                       = $static_front_id ? admin_url( 'post.php?post=' . $static_front_id . '&action=edit' ) : '';
+	$amapien_mes_infos_edit_href                = admin_url( 'post.php?post=' . Amapress::getOption( 'mes-infos-page' ) . '&action=edit' );
+	$amapien_mes_paniers_edit_href              = admin_url( 'post.php?post=' . Amapress::getOption( 'mes-paniers-intermittents-page' ) . '&action=edit' );
+	$amapien_les_paniers_edit_href              = admin_url( 'post.php?post=' . Amapress::getOption( 'paniers-intermittents-page' ) . '&action=edit' );
+	$new_page_href                              = admin_url( 'post-new.php?post_type=page' );
+	$new_private_page_href                      = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
+	$needed_shortcodes                          = [
 		'trombinoscope'                 => [
 			'desc'  => 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens',
 			'href'  => $new_private_page_href,
@@ -1415,29 +1415,62 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $new_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'docspace-responsables'         => [
-			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers entre les membres du collectif',
-			'href'  => $new_page_href,
-			'categ' => '7/ Stockage',
-		],
-		'docspace-amapiens'             => [
-			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers avec les amapiens',
-			'href'  => $new_page_href,
-			'categ' => '7/ Stockage',
-		],
-		'docspace-public'               => [
-			'desc'  => 'Ajouter le shortcode %s sur une page non protégée pour permettre au collectif de partager des fichiers publiquement',
-			'href'  => $new_page_href,
-			'categ' => '7/ Stockage',
-		],
 		'inscription-visite'            => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs',
 			'href'  => $new_page_href,
 			'categ' => '7/ Stockage',
 		],
 	];
-	$found_shortcodes              = [];
-	$found_shortcodes_desc         = [];
+	$needed_shortcodes['docspace-responsables'] = [
+		'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers entre les membres du collectif',
+		'href'  => $new_page_href,
+		'categ' => '7/ Stockage',
+	];
+	$subfolders                                 = Amapress::getOption( 'docspace_resps_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			$needed_shortcodes[ 'docspace-responsables-' . $subfolder ] = [
+				'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager un sous-dossier "' . $subfolder . '" de fichiers entre les membres du collectif',
+				'href'  => $new_page_href,
+				'categ' => '7/ Stockage',
+			];
+		}
+	}
+	$needed_shortcodes['docspace-amapiens'] = [
+		'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager des fichiers entre les membres du collectif',
+		'href'  => $new_page_href,
+		'categ' => '7/ Stockage',
+	];
+	$subfolders                             = Amapress::getOption( 'docspace_amapiens_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			$needed_shortcodes[ 'docspace-amapiens-' . $subfolder ] = [
+				'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre au collectif de partager un sous-dossier "' . $subfolder . '" de  fichiers entre les membres du collectif',
+				'href'  => $new_page_href,
+				'categ' => '7/ Stockage',
+			];
+		}
+	}
+	$needed_shortcodes['docspace-public'] = [
+		'desc'  => 'Ajouter le shortcode %s sur une page non protégée pour permettre au collectif de partager des fichiers publiquement',
+		'href'  => $new_page_href,
+		'categ' => '7/ Stockage',
+	];
+	$subfolders                           = Amapress::getOption( 'docspace_public_folders' );
+	if ( ! empty( $subfolders ) ) {
+		$subfolders = trim( str_replace( ' ', '', $subfolders ) );
+		foreach ( explode( ',', $subfolders ) as $subfolder ) {
+			$needed_shortcodes[ 'docspace-public-' . $subfolder ] = [
+				'desc'  => 'Ajouter le shortcode %s sur une page non protégée pour permettre au collectif de partager un sous-dossier "' . $subfolder . '" de fichiers publiquement',
+				'href'  => $new_page_href,
+				'categ' => '7/ Stockage',
+			];
+		}
+	}
+	$found_shortcodes      = [];
+	$found_shortcodes_desc = [];
 	uasort( $needed_shortcodes, function ( $a, $b ) {
 		return strcmp( $a['categ'], $b['categ'] );
 	} );
