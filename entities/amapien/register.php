@@ -99,6 +99,22 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
+			'adh_type'        => array(
+				'name'          => amapress__( 'Type' ),
+				'type'          => 'custom',
+				'show_column'   => true,
+				'csv_import'    => false,
+				'desc'          => 'Type d\'adhérent (Principal, Co-adhérent...)',
+				'custom'        => function ( $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+
+					return $amapien ? $amapien->getAdherentTypeDisplay() : '';
+				},
+				'custom_column' => function ( $option, $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+					echo $amapien ? $amapien->getAdherentTypeDisplay() : '';
+				}
+			),
 			'intermittent'    => array(
 				'name'              => amapress__( 'Intermittent' ),
 				'type'              => 'custom',
@@ -194,14 +210,14 @@ function amapress_register_entities_amapien( $entities ) {
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
 			),
-			'adresse'            => array(
+			'adresse'         => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'code_postal'        => array(
+			'code_postal'     => array(
 				'name'       => amapress__( 'Code postal' ),
 				'type'       => 'text',
 				'desc'       => 'Code postal',
