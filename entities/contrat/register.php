@@ -2171,6 +2171,13 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
     <p class="description"><a
                 href="https://wiki.amapress.fr/contrats/exemple_paniers" target="_blank">* Consulter les instructions
             spécifiques et exemples</a></p>
+    <p class="description">La colonne <strong>Fact. quant.</strong> permet d'indiquer la quantité totale à fournir au
+        producteur :
+        <br/>- par exemple, pour un contrat légumes, 0.5 pour un demi panier, 1 pour un panier, 2 pour un double ; 3
+        demi paniers + 2 paniers = 3.5 équivalent panier (3 * 0.5 + 2 * 1)
+        <br/>- par exemple pour un contrat oeufs, 6 pour une boîte de 6, etc..
+        <br/><strong>Pour tous les autres producteurs, vous pouvez laisser cette colonne à 0</strong>
+    </p>
 	<?php
 	$contents = ob_get_clean();
 
