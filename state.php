@@ -1400,25 +1400,50 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_default_grid'            => [
+		'front_default_grid'       => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'inscription-en-ligne'          => [
+		'inscription-en-ligne'     => [
 			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats',
 			'href'  => $new_page_href,
 			'categ' => '6/ Inscriptions en ligne',
 		],
-		'listes-diffusions'             => [
+		'listes-diffusions'        => [
 			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP',
+			'href'  => $new_private_page_href,
+			'categ' => '3/ Info utiles',
+		],
+		'inscription-visite'       => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs',
+			'href'  => $new_private_page_href,
+			'categ' => '8/ Inscriptions',
+		],
+		'amapress-latest-posts'    => [
+			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre d\'afficher une liste des derniers articles publiés sur le site',
 			'href'  => $new_page_href,
 			'categ' => '3/ Info utiles',
 		],
-		'inscription-visite'            => [
-			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs',
+		'producteur-map'           => [
+			'desc'  => 'Ajouter le shortcode %s sur une page pour permettre d\'afficher la carte des producteurs',
 			'href'  => $new_page_href,
-			'categ' => '7/ Stockage',
+			'categ' => '3/ Info utiles',
+		],
+		'resp-distrib-contacts'    => [
+			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour permettre d\'afficher les contacts des responsables de distribution de la semaine',
+			'href'  => $front_page_edit_href,
+			'categ' => '2/ Page Accueil - Infos utiles',
+		],
+		'anon-inscription-distrib' => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre d\'afficher une liste des derniers articles publiés sur le site',
+			'href'  => $new_private_page_href,
+			'categ' => '8/ Inscriptions',
+		],
+		'inscription-amap-event'   => [
+			'desc'  => 'Ajouter le shortcode %s sur une page protégée pour permettre d\'afficher la page d\'inscription aux évènements',
+			'href'  => $new_private_page_href,
+			'categ' => '8/ Inscriptions',
 		],
 	];
 	$needed_shortcodes['docspace-responsables'] = [
