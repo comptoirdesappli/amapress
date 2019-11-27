@@ -234,6 +234,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->getDate_fin() < Amapress::end_of_day( $dist->getDate() );
 	} );
+	$renewable_contrats = array_merge( $near_renew, $to_renew );
 
 	if ( empty( $near_renew ) && empty( $to_renew ) ) {
 		echo '<p>Pas de contrat à renouveler</p>';
