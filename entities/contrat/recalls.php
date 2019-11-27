@@ -16,6 +16,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 	if ( null == $dist ) {
 		echo '<p>Distribution introuvable</p>';
+
 		return;
 	}
 
@@ -204,8 +205,9 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 		$sent_mails = true;
 	}
 
-	if ( ! $sent_mails )
+	if ( ! $sent_mails ) {
 		echo '<p>Pas de liste de chèque à rappeler à cette distribution</p>';
+	}
 
 	//%%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%
 	//contrats-liste-paiements-recall-mail-
@@ -219,9 +221,15 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 		return;
 	}
 
+	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrat-renew-recall-excl-producteurs' ) );
+
 	$contrats           = AmapressContrats::get_active_contrat_instances( null, $dist->getDate() );
-	$renewable_contrats = array_filter( $contrats, function ( $c ) {
+	$renewable_contrats = array_filter( $contrats, function ( $c ) use ( $disabled_for_producteurs ) {
 		/** @var AmapressContrat_instance $c */
+		if ( in_array( $c->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
+			return false;
+		}
+
 		return $c->canRenew();
 	} );
 	$expire_delay       = Amapress::getOption( 'contrat-renew-recall-expire-days' );
@@ -526,6 +534,15 @@ function amapress_contrat_renew_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'id'        => 'contrat-renew-recall-excl-producteurs',
+			'type'      => 'multicheck-posts',
+			'name'      => 'Producteurs',
+			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
+			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'orderby'   => 'post_title',
+			'order'     => 'ASC',
 		),
 		array(
 			'type' => 'save',
