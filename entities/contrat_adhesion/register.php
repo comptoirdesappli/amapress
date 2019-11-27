@@ -1430,7 +1430,9 @@ function amapress_get_contrat_quantite_datatable(
 			                      Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib&date=' . date( 'Y-m-d', $next_next_dist->getDate() ) . '&tab=contrat-quant-tab-' . $contrat_instance_id ),
 				                      $next_next_dist->getTitle() ) . '</p>';
 		}
-		$next_distrib_text .= '<p>' . Amapress::makeLink( admin_url( "edit.php?post_type=amps_distribution&amapress_date=active&amapress_contrat_inst=$contrat_instance_id" ), 'Autres dates de distribution' ) . '</p>';
+		$next_distrib_text .= '<p>' . Amapress::makeLink(
+				admin_url( "edit.php?post_type=amps_distribution&amapress_date=active&amapress_contrat_inst=$contrat_instance_id" ),
+				'Autres dates de distribution' ) . '</p>';
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
