@@ -1128,6 +1128,7 @@ function amapress_get_contrat_quantite_datatable(
 	$date = null,
 	$options = array()
 ) {
+	$date_is_current = false;
 	if ( ! $date ) {
 		$next_distrib = AmapressDistribution::getNextDistribution( $lieu_id, $contrat_instance_id );
 		if ( $next_distrib ) {
@@ -1135,6 +1136,7 @@ function amapress_get_contrat_quantite_datatable(
 		} else {
 			$date = amapress_time();
 		}
+		$date_is_current = true;
 	}
 
 	/** @var AmapressDistribution $dist */
@@ -1418,7 +1420,12 @@ function amapress_get_contrat_quantite_datatable(
 	//
 	$next_distrib_text = '';
 	if ( $options['show_next_distrib'] ) {
-		$next_distrib_text = '<p>' . ( $dist && Amapress::end_of_day( $dist->getDate() ) > amapress_time() ? 'Prochaine distribution: ' : 'Distribution du ' ) .
+		$next_distrib_text .= '<h4>Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+		if ( ! $date_is_current ) {
+			$next_distrib_text .= '<p>' . Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib&tab=contrat-quant-tab-' . $contrat_instance_id ),
+					'Revenir à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
+		}
+		$next_distrib_text .= '<p>' . ( $dist && Amapress::end_of_day( $dist->getDate() ) > amapress_time() ? 'Prochaine distribution: ' : 'Distribution du ' ) .
 		                     ( $dist ? Amapress::makeLink( $dist->getPermalink(),
 			                     (
 			                     Amapress::start_of_week( amapress_time() ) < $dist->getDate() && $dist->getDate() < Amapress::end_of_week( amapress_time() ) ?
