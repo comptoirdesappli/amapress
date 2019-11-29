@@ -1131,8 +1131,12 @@ function amapress_get_contrat_quantite_datatable(
 	$contrat_instance           = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$contrat_instance_quantites = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
 
+	$root_url = admin_url( 'admin.php?page=contrats_quantites_next_distrib&tab=contrat-quant-tab-' . $contrat_instance_id );
+
+	$date_is_first = false;
 	if ( 'first' == $date ) {
-		$date = Amapress::start_of_week( $contrat_instance->getDate_debut() );
+		$date          = Amapress::start_of_week( $contrat_instance->getDate_debut() );
+		$date_is_first = true;
 	}
 	$date_is_current = false;
 	if ( ! $date ) {
@@ -1445,12 +1449,40 @@ function amapress_get_contrat_quantite_datatable(
 
 	//
 	$next_distrib_text = '';
-	if ( $options['show_next_distrib'] ) {
+	$next_distrib_text .= '<p>' . Amapress::makeLink(
+			$root_url . '&all&date=first',
+			'Récapitulatif contrat ' . $contrat_instance->getTitle() ) . ' | ' .
+	                      Amapress::makeLink(
+		                      $root_url . '&all',
+		                      'Quantités par date à partir du ' . date_i18n( 'd/m/Y' ) ) . ' | ' .
+	                      Amapress::makeLink(
+		                      $root_url,
+		                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) .
+	                      '</p><hr/>';
+
+	if ( $show_all_dates ) {
+		if ( $date_is_first ) {
+			$next_distrib_text .= '<h4>Informations pour le contrat ' . $contrat_instance->getTitle() . '</h4>';
+		} else {
+			$next_distrib_text .= '<h4>Informations pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+		}
+		if ( ! $date_is_current ) {
+			$next_distrib_text .= '<p>' . Amapress::makeLink(
+					$root_url . '&all',
+					'Afficher les quantités à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
+		}
+	} else {
 		$next_distrib_text .= '<h4>Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
 		if ( ! $date_is_current ) {
-			$next_distrib_text .= '<p>' . Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib&tab=contrat-quant-tab-' . $contrat_instance_id ),
+			$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url,
 					'Revenir à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
 		}
+		if ( ! $date_is_first ) {
+			$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url . '&date=first',
+					'Revenir à la première distribution à partir du ' . date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() ) ) . '</p><hr/>';
+		}
+	}
+	if ( $options['show_next_distrib'] && ! $show_all_dates ) {
 		$next_distrib_text .= '<p>' . ( $dist && Amapress::end_of_day( $dist->getDate() ) > amapress_time() ? 'Prochaine distribution: ' : 'Distribution du ' ) .
 		                      ( $dist ? Amapress::makeLink( $dist->getPermalink(),
 			                      (
@@ -1463,7 +1495,7 @@ function amapress_get_contrat_quantite_datatable(
 				                      ) ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false ) : 'non planifiée' ) . '</p>';
 		if ( $next_next_dist ) {
 			$next_distrib_text .= '<p>Distribution suivante : ' .
-			                      Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib&date=' . date( 'Y-m-d', $next_next_dist->getDate() ) . '&tab=contrat-quant-tab-' . $contrat_instance_id ),
+			                      Amapress::makeLink( $root_url . '&all&date=' . date( 'Y-m-d', $next_next_dist->getDate() ),
 				                      $next_next_dist->getTitle() ) . '</p>';
 		}
 
@@ -1473,9 +1505,9 @@ function amapress_get_contrat_quantite_datatable(
 
 		if ( ! empty( $next_next_distribs ) ) {
 			$next_distrib_text .= '<p>Distributions suivantes : ' . implode( ', ', array_map(
-					function ( $d ) use ( $contrat_instance_id ) {
+					function ( $d ) use ( $contrat_instance_id, $root_url ) {
 						/** @var AmapressDistribution $d */
-						return Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib&date=' . date( 'Y-m-d', $d->getDate() ) . '&tab=contrat-quant-tab-' . $contrat_instance_id ),
+						return Amapress::makeLink( $root_url . '&all&date=' . date( 'Y-m-d', $d->getDate() ),
 							date_i18n( 'd/m/Y', $d->getDate() ) );
 					}, $next_next_distribs
 				) ) . '</p>';
