@@ -882,15 +882,21 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												'custom' => function () use ( $contrat_id ) {
 													$date = null;
 													if ( isset( $_GET['date'] ) ) {
-														$date = DateTime::createFromFormat( 'Y-m-d', $_GET['date'] );
-														if ( $date ) {
-															$date = $date->getTimestamp();
+														if ( 'first' != $_GET['date'] ) {
+															$date = DateTime::createFromFormat( 'Y-m-d', $_GET['date'] );
+															if ( $date ) {
+																$date = $date->getTimestamp();
+															} else {
+																$date = null;
+															}
 														} else {
-															$date = null;
+															$date = 'first';
 														}
 													}
 
-													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date );
+													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date, [
+														'show_all_dates' => isset( $_GET['all'] )
+													] );
 												},
 											),
 										)
@@ -3669,6 +3675,7 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 
 										$ret .= '</tbody>';
 										$ret .= '</table>';
+
 										return $ret;
 									}
 								)
