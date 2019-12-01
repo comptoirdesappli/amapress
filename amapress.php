@@ -1219,6 +1219,13 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 	return $allcaps;
 }
 
+add_filter( 'pre_trash_post', function ( $trash, $post ) {
+	/** @var WP_Post $post */
+	$post_type = amapress_simplify_post_type( $post->post_type );
+
+	return apply_filters( "amapress_can_delete_$post_type", true, $post->ID ) ? $trash : false;
+}, 10, 2 );
+
 add_filter( 'user_has_cap', 'amapress_user_has_cap', 10, 3 );
 
 if ( ! function_exists( 'wp_mail' ) ) {
