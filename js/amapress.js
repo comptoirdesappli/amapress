@@ -38,8 +38,7 @@ jQuery(function ($) {
             $('.panier-abo-col input', parent).each(function () {
                 try {
                     sum += parseFloat(this.value) * parseFloat($(this).data('count'));
-                }
-                catch (e) {
+                } catch (e) {
                 }
             });
             if (!isNaN(sum)) {
@@ -47,8 +46,7 @@ jQuery(function ($) {
                 $('.panier-lieu-col', parent).each(function () {
                     $(this).text((sum * parseFloat($(this).data('factor'))).toFixed(2));
                 });
-            }
-            else
+            } else
                 totalCol.val('');
         };
 
@@ -90,11 +88,13 @@ jQuery(function ($) {
         });
         updateSum();
     });
-    $(".placeholders-help").DataTable({
-        "paging": false,
-        "info": false,
-        "ordering": false,
-        //'responsive': true,
-        "searching": true,
-    });
+    if (typeof $.fn.DataTable !== "undefined") {
+        $(".placeholders-help").DataTable({
+            "paging": false,
+            "info": false,
+            "ordering": false,
+            //'responsive': true,
+            "searching": true,
+        });
+    }
 });
