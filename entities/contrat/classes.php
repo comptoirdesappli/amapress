@@ -488,6 +488,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_self_subscribe', 0 );
 	}
 
+	public function canSelfEdit() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_self_edit', 0 );
+	}
+
 	public function isFull( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
 		$max_adhs       = $this->getMax_adherents();
 		$max_quant_adhs = 0;

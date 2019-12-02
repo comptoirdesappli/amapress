@@ -1160,6 +1160,45 @@ class AmapressAdhesion extends TitanEntity {
 		return $ret;
 	}
 
+	/**
+	 * @return float
+	 */
+	public function getContrat_quantite_factor( $quantite_id, $dist_date = null ) {
+		if ( ! $this->getContrat_instance() ) {
+			return 0;
+		}
+		if ( $this->getContrat_instance()->isPanierVariable() ) {
+			return 0;
+		}
+
+		$factors = $this->getCustomAsFloatArray( 'amapress_adhesion_contrat_quantite_factors' );
+		/** @var AmapressContrat_quantite[] $quants */
+		$quants = $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
+
+		$ret = [];
+		foreach ( $quants as $quant ) {
+			if ( $quant->ID != $quantite_id ) {
+				continue;
+			}
+
+			$date_factor = 1;
+			if ( $dist_date ) {
+				$date_factor = $this->getContrat_instance()->getDateFactor( $dist_date, $quant->ID );
+			}
+			$factor = 1;
+			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
+				$factor = $factors[ $quant->ID ];
+			}
+			if ( abs( $factor * $date_factor ) < 0.001 ) {
+				continue;
+			}
+
+			return $factor;
+		}
+
+		return 0;
+	}
+
 	/** @return array */
 	public function getPaniersVariables() {
 		return $this->getCustomAsArray( 'amapress_adhesion_panier_variables' );
@@ -1758,6 +1797,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return $new_contrat_id
 		       && $new_contrat_id != $this->getContrat_instanceId()
 		       && ! $this->isNotRenewable();
+	}
+
+	public function canSelfEdit() {
+		return $this->getContrat_instance()->canSelfEdit()
+		       && self::TO_CONFIRM == $this->getStatus()
+		       && Amapress::start_of_week( $this->getDate_debut() ) > Amapress::start_of_week( amapress_time() );
 	}
 
 	public function cloneAdhesion( $as_draft = true ) {

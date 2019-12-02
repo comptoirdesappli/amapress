@@ -1088,7 +1088,7 @@ jQuery(function($) {
 				'group'       => '4/6 - Paniers',
 				'desc'        => 'Ce contrat a un contenu de panier à décrire chaque semaine',
 			),
-			'rattrapage'            => array(
+			'rattrapage'     => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1187,14 +1187,22 @@ jQuery(function($) {
 			),
 
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe'        => array(
+			'self_subscribe' => array(
 				'name'        => amapress__( 'Activer' ),
 				'type'        => 'checkbox',
 				'group'       => '5/6 - Pré-inscription en ligne',
 				'desc'        => 'Rendre accessible les pré-inscriptions en ligne pour ce contrat',
 				'show_column' => false,
 			),
-			'date_ouverture'        => array(
+			'self_edit'      => array(
+				'name'        => amapress__( 'Editer' ),
+				'type'        => 'checkbox',
+				'group'       => '5/6 - Pré-inscription en ligne',
+				'desc'        => 'Autoriser l\'édition de l\'inscription jusqu\'à sa validation',
+				'default'     => false,
+				'show_column' => false,
+			),
+			'date_ouverture' => array(
 				'name'          => amapress__( 'Ouverture' ),
 				'type'          => 'date',
 				'group'         => '5/6 - Pré-inscription en ligne',
