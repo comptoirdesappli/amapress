@@ -408,7 +408,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			return $a->getContrat_instance()->ID;
 		}, $adhs );
 
-		if ( in_array( $contrat_id, $adhs_contrat_ids ) ) {
+		if ( empty( $_REQUEST['edit_inscr_id'] ) && in_array( $contrat_id, $adhs_contrat_ids ) ) {
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $admin_mode ) {
 				ob_clean();
@@ -480,15 +480,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	$edit_inscription = null;
 	if ( ! empty( $_REQUEST['edit_inscr_id'] ) ) {
-		$edit_inscription = AmapressAdhesion::getBy( intval( $_REQUEST['inscr_id'] ) );
-		if ( empty( $edit_inscription ) ) {
+		Amapress::setFilterForReferent( false );
+		$edit_inscription = AmapressAdhesion::getBy( intval( $_REQUEST['edit_inscr_id'] ) );
+		Amapress::setFilterForReferent( true );
+
+		if ( ! $edit_inscription ) {
 			wp_die( $invalid_access_message );
 		}
 		if ( ! $edit_inscription->canSelfEdit() ) {
-			wp_die( 'Cette incription n\'est pas éditable' );
+			ob_clean();
+
+			return 'Cette incription n\'est pas éditable';
 		}
 		if ( empty( $_REQUEST['user_id'] ) || $edit_inscription->getAdherentId() != intval( $_REQUEST['user_id'] ) ) {
-			wp_die( 'Cette incription n\'est pas à vous' );
+			ob_clean();
+
+			return 'Cette incription n\'est pas à vous';
 		}
 	}
 
@@ -1420,9 +1427,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="contrat_id" value="' . $adh->getContrat_instanceId() . '" />
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
 <input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
-</form></li>';
+</form>';
 					}
-					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em><br/>' . $print_contrat . $edit_contrat . '</li>';
+					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
 				}
 			}
 			echo '</ul>';
@@ -1676,8 +1683,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				foreach ( $lieux as $lieu ) {
 					$lieu_id    = $lieu->ID;
 					$lieu_title = $lieu->linkToPermalinkBlank( esc_html( $lieu->getLieuTitle() ) ) . ' (' . esc_html( $lieu->getFormattedAdresse() ) . ')';
-					$selected   = selected( $edit_inscription && $lieu_id == $edit_inscription->getLieuId(), true, false );
-					echo "<p style='margin-top: 0;margin-bottom: 0'><input id='lieu-$lieu_id' name='lieu_id' $selected value='$lieu_id' type='radio' class='required' /><label for='lieu-$lieu_id'>$lieu_title</label></p>";
+					$checked    = checked( $edit_inscription && $lieu_id == $edit_inscription->getLieuId(), true, false );
+					echo "<p style='margin-top: 0;margin-bottom: 0'><input id='lieu-$lieu_id' name='lieu_id' $checked value='$lieu_id' type='radio' class='required' /><label for='lieu-$lieu_id'>$lieu_title</label></p>";
 				}
 			} else {
 				echo '<p>Je récupérerai mon panier à ' . esc_html( $lieux[0]->getLieuTitle() ) . '</p>';
@@ -1933,10 +1940,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$quant_var_editor .= '</select>';
 				}
 
-				$selected = selected( $edit_inscription && $edit_inscription->getContrat_quantite_factor( $quantite->ID ) > 0, true, false );
-				$type     = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
+				$checked = checked( $edit_inscription && $edit_inscription->getContrat_quantite_factor( $quantite->ID ) > 0, true, false );
+				$type    = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
 				echo '<p style="margin-top: 1em; margin-bottom: 0"><label for="' . $id_quant . '">
-			<input id="' . $id_quant . '" name="quants[]" ' . $selected . ' class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor-id="' . $id_factor . '" data-price="' . $price . '"/> 
+			<input id="' . $id_quant . '" name="quants[]" ' . $checked . ' class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor-id="' . $id_factor . '" data-price="' . $price . '"/> 
 			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' ' . $price_compute_text . ' = <span id="' . $id_price . '">' . $price . '</span>€</label></p>';
 
 				$spec_dates = $quantite->getSpecificDistributionDates();
@@ -2113,27 +2120,33 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					continue;
 				}
 
-				$selected           = selected( $edit_inscription && $edit_inscription->getPaiements() == $nb_cheque, true, false );
+				$checked            = checked( $edit_inscription && $edit_inscription->getPaiements() == $nb_cheque, true, false );
 				$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
 				$option             = esc_html( $cheques['desc'] );
 				$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
 				$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
-				echo "<input type='radio' '.$selected.' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' /><label for='cheques-$nb_cheque'>$nb_cheque chèque(s) : $option</label><br/>";
+				$chq_label          = '';
+				if ( $cheque_main_amount != $last_cheque ) {
+					$chq_label = "$nb_cheque chèque(s) : ";
+				}
+				echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 			}
 			if ( $contrat->getAllow_Cash() ) {
-				$selected = selected( $edit_inscription && 'esp' == $edit_inscription->getMainPaiementType(), true, false );
-				echo "<input type='radio' name='cheques' id='cheques-esp' value='-1' class='input-nb-cheques required' /><label for='cheques-esp'>En espèces</label><br/>";
+				$checked = checked( $edit_inscription && 'esp' == $edit_inscription->getMainPaiementType(), true, false );
+				echo "<label for='cheques-esp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-esp' $checked value='-1' class='input-nb-cheques required' />En espèces</label><br/>";
 			}
 			if ( $contrat->getAllow_Transfer() ) {
-				$selected = selected( $edit_inscription && 'vir' == $edit_inscription->getMainPaiementType(), true, false );
-				echo "<input type='radio' name='cheques' id='cheques-vir' value='-2' class='input-nb-cheques required' /><label for='cheques-vir'>Par virement</label><br/>";
+				$checked = checked( $edit_inscription && 'vir' == $edit_inscription->getMainPaiementType(), true, false );
+				echo "<label for='cheques-vir' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-vir' $checked value='-2' class='input-nb-cheques required' />Par virement</label><br/>";
 			}
 			if ( $contrat->getAllowAmapienInputPaiementsDetails() ) {
 				$amapien  = AmapressUser::getBy( $user_id );
 				$emetteur = esc_attr( $amapien->getDisplayName() );
 				echo '<script type="application/javascript">
 jQuery(function($) {
-    $(\'.input-nb-cheques\').change(function() {
+    var show_cheque_line = function() {
+        if (!$(this).is(":checked"))
+            return;
         var nb_cheques = parseInt($(this).val());
         var main_amount = $(this).data("main-amount");
         var last_amount = $(this).data("last-amount");
@@ -2149,7 +2162,8 @@ jQuery(function($) {
                $(".amps-pmt-amount", this).text(last_amount);
            i++;
         });
-    });
+    };
+    $(\'.input-nb-cheques\').each(show_cheque_line).change(show_cheque_line);
 });
 </script>';
 				echo '<table id="cheques-details"><thead>
@@ -2159,13 +2173,15 @@ jQuery(function($) {
 <th>Emetteur</th>
 <th>Montant</th>
 </thead><tbody>';
+				Amapress::setFilterForReferent( false);
 				$edit_all_paiements = $edit_inscription ? $edit_inscription->getAllPaiements() : null;
+				Amapress::setFilterForReferent( true);
 				$req                = ( $paiements_info_required ? 'required' : '' );
 				for ( $i = 1; $i <= 12; $i ++ ) {
-					$edit_paiement   = $edit_all_paiements && isset( $edit_all_paiements[ $i ] ) ? $edit_all_paiements[ $i ] : null;
+					$edit_paiement   = $edit_all_paiements && isset( $edit_all_paiements[ $i - 1 ] ) ? $edit_all_paiements[ $i - 1 ] : null;
 					$paiements_dates = array_map(
 						function ( $d ) use ( $edit_paiement ) {
-							$selected = selected( $edit_paiement->getDate(), $d, false );
+							$selected = selected( $edit_paiement && Amapress::start_of_day( $edit_paiement->getDate() ) == Amapress::start_of_day( $d ), true, false );
 
 							return '<option ' . $selected . ' value="' . esc_attr( $d ) . '">' . esc_html( date_i18n( 'd/m/Y', $d ) ) . '</option>';
 						}, $contrat->getPaiements_Liste_dates()
@@ -2179,7 +2195,7 @@ jQuery(function($) {
 					$paiement_num      = esc_attr( $edit_paiement ? $edit_paiement->getNumero() : '' );
 					$paiement_banque   = esc_attr( $edit_paiement ? $edit_paiement->getBanque() : '' );
 					$paiement_emetteur = esc_attr( $edit_paiement ? $edit_paiement->getEmetteur() : $emetteur );
-					$paiements_dates = implode( '', $paiements_dates );
+					$paiements_dates   = implode( '', $paiements_dates );
 					echo "<tr style='display: none'>
 <td><select id='pmt-$i-date' name='pmt[$i][date]' class='$req'>
 $paiements_dates
@@ -2326,7 +2342,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			'meta_input'   => $meta,
 		);
 		if ( $edit_inscription ) {
-			$my_post['ID'] = $edit_inscription;
+			$my_post['ID'] = $edit_inscription->ID;
 			$new_id        = wp_update_post( $my_post, true );
 		} else {
 			$new_id = wp_insert_post( $my_post, true );
@@ -2335,8 +2351,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			//TODO ???
 			wp_die( 'Une erreur s\'est produite' );
 		}
+		if ( $edit_inscription && $cheques > 0 ) {
+			delete_post_meta( $new_id, 'amapress_adhesion_pmt_type' );
+		}
 
-		$inscription = AmapressAdhesion::getBy( $new_id );
+		Amapress::setFilterForReferent( false );
+		$inscription = AmapressAdhesion::getBy( $new_id, true );
+		Amapress::setFilterForReferent( true);
 		if ( $inscription->getContrat_instance()->getManage_Cheques() ) {
 			$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? $_REQUEST['pmt'] : [] );
 		}
@@ -2383,6 +2404,21 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				$online_contrats_end_step_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
 			} else {
 				$online_contrats_end_step_message = str_replace( '%%print_button%%', '', $online_contrats_end_step_message );
+			}
+			if ( $inscription->canSelfEdit() ) {
+				$inscription_url = add_query_arg( [
+					'step'       => 'inscr_contrat_date_lieu',
+					'contrat_id' => $inscription->getContrat_instanceId()
+				] );
+				echo '<br/>
+<form method="get" action="' . esc_attr( $inscription_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="inscr_contrat_date_lieu" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="contrat_id" value="' . $inscription->getContrat_instanceId() . '" />
+<input type="hidden" name="edit_inscr_id" value="' . $inscription->ID . '" />
+<input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
+</form>';
 			}
 			echo amapress_replace_mail_placeholders( $online_contrats_end_step_message, $amapien, $inscription );
 
@@ -2526,7 +2562,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
             });
             jQuery('.quant-var').each(function () {
                 var $this = jQuery(this);
+                var priceUnit = parseFloat($this.data('price-unit'));
                 var val = parseFloat($this.val());
+                $this.data('price', val * priceUnit);
                 if (val <= 0) {
                     $this.css('visibility', 'hidden');
                     $this.parent().find('a').css('visibility', 'hidden');
@@ -2535,8 +2573,6 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
                 var $this = jQuery(this);
                 var priceUnit = parseFloat($this.data('price-unit'));
                 var val = parseFloat($this.val());
-//                var priceElt = jQuery('#' + $this.data('price-id'));
-//                priceElt.text(val * priceUnit);
                 $this.data('price', val * priceUnit);
                 computeTotal();
             });

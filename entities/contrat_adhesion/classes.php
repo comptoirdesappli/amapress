@@ -1168,6 +1168,11 @@ class AmapressAdhesion extends TitanEntity {
 			return 0;
 		}
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
+			$paniers = $this->getPaniersVariables();
+			if ( isset( $paniers[ $dist_date ] ) && isset( $paniers[ $dist_date ][ $quantite_id ] ) ) {
+				return $paniers[ $dist_date ][ $quantite_id ];
+			}
+
 			return 0;
 		}
 
@@ -1716,10 +1721,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	/**
 	 * @return AmapressAmapien_paiement[]
 	 */
-	public function getAllPaiements() {
+	public function getAllPaiements( $no_cache = false ) {
 		$key = "amapress_get_contrat_paiements_{$this->ID}";
 		$res = wp_cache_get( $key );
-		if ( false === $res ) {
+		if ( $no_cache || false === $res ) {
 			$query = array(
 				'posts_per_page' => - 1,
 				'post_type'      => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
@@ -1799,10 +1804,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		       && ! $this->isNotRenewable();
 	}
 
-	public function canSelfEdit() {
+	public function canSelfEdit( $days_before = 3 ) {
 		return $this->getContrat_instance()->canSelfEdit()
 		       && self::TO_CONFIRM == $this->getStatus()
-		       && Amapress::start_of_week( $this->getDate_debut() ) > Amapress::start_of_week( amapress_time() );
+		       && Amapress::add_days( $this->getDate_debut(), - abs( $days_before ) ) > Amapress::start_of_day( amapress_time() );
 	}
 
 	public function cloneAdhesion( $as_draft = true ) {
@@ -1941,6 +1946,15 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$contrat_paiements       = $this->getAllPaiements();
 		$all_paiements           = AmapressContrats::get_all_paiements( $contrat_instance->ID );
 
+		$deleted = false;
+		for ( $i = $this->getMainPaiementType() != 'chq' ? 0 : $nb_paiements; $i < count( $contrat_paiements ); $i ++ ) {
+			wp_delete_post( $contrat_paiements[ $i ]->ID, true );
+			$deleted = true;
+		}
+		if ( $deleted ) {
+			$contrat_paiements = $this->getAllPaiements( true );
+		}
+
 		$all_paiements_by_dates = array_group_by( $all_paiements,
 			function ( AmapressAmapien_paiement $p ) {
 				return Amapress::start_of_day( $p->getDate() );
@@ -2059,6 +2073,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			} else {
 				$my_post['ID'] = $id;
 				wp_update_post( $my_post, true );
+				if ( 'chq' == $this->getMainPaiementType() ) {
+					delete_post_meta( $id, 'amapress_contrat_paiement_type' );
+				}
 			}
 			$pre_filled_paiement_index += 1;
 		}
