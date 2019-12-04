@@ -1687,7 +1687,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					echo "<p style='margin-top: 0;margin-bottom: 0'><input id='lieu-$lieu_id' name='lieu_id' $checked value='$lieu_id' type='radio' class='required' /><label for='lieu-$lieu_id'>$lieu_title</label></p>";
 				}
 			} else {
-				echo '<p>Je récupérerai mon panier à ' . esc_html( $lieux[0]->getLieuTitle() ) . '</p>';
+				$lieu_title = $lieux[0]->linkToPermalinkBlank( esc_html( $lieux[0]->getLieuTitle() ) ) . ' (' . esc_html( $lieux[0]->getFormattedAdresse() ) . ')';
+				echo '<p>Je récupérerai mon panier à ' . $lieu_title . '</p>';
 				echo '<input name="lieu_id" value="' . $lieux[0]->ID . '" type="hidden" />';
 			}
 			//			foreach ( $dates as $date ) {
