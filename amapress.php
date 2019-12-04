@@ -1480,7 +1480,7 @@ add_action( 'admin_init', function () {
 				'error', false );
 		}
 
-		if ( Amapress::getOption( 'test_mail_mode' ) ) {
+		if ( Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 			amapress_add_admin_notice( 'Le site est en <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_tests_config' ) . '">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
 				'info', false, false );
 		}
