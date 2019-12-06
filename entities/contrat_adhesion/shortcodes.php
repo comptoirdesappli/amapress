@@ -1078,17 +1078,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( $tax->term_id == $reseau_amap_term ) {
 				$tax_amount = $adh_period->getMontantReseau();
 			}
-			$ret .= '<tr>';
-			$ret .= '<th style="text-align: left; width: auto">
+			if ( ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) && abs( $tax_amount ) < 0.001 ) {
+				$ret .= '<input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />';
+			} else {
+				$ret .= '<tr>';
+				$ret .= '<th style="text-align: left; width: auto">
 <label for="amapress_pmt_amount-' . $tax->term_id . '">' . esc_html( $tax->name ) . '</label>
 ' . ( ! empty( $tax->description ) ? '<p style="font-style: italic; font-weight: normal">' . $tax->description . '</p>' : '' ) . '
 </th>';
-			if ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) {
-				$ret .= '<td><input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />' . $tax_amount . '&nbsp;€</td>';
-			} else {
-				$ret .= '<td><input type="number" id="amapress_pmt_amount-' . $tax->term_id . '" style="width: 80%" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="price required amapress_pmt_cat_amount" value="' . $tax_amount . '" />&nbsp;€</td>';
+				if ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) {
+					$ret .= '<td><input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />' . $tax_amount . '&nbsp;€</td>';
+				} else {
+					$ret .= '<td><input type="number" id="amapress_pmt_amount-' . $tax->term_id . '" style="width: 80%" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="price required amapress_pmt_cat_amount" value="' . $tax_amount . '" />&nbsp;€</td>';
+				}
+				$ret .= '</tr>';
 			}
-			$ret .= '</tr>';
 		}
 		$ret .= '</table>';
 		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
