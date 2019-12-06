@@ -272,6 +272,9 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_pmt_user_input', 1 );
 	}
 
+	public function getAllow_Delivery_Pay() {
+		return $this->getCustom( 'amapress_contrat_instance_allow_deliv_pay', 0 );
+	}
 	public function getAllow_Cash() {
 		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}
@@ -1359,8 +1362,12 @@ class AmapressContrat_instance extends TitanEntity {
 			$row["quantite_dates"]         = implode( ', ', array_map( function ( $d ) {
 				return date_i18n( 'd/m/Y', $d );
 			}, $remaining_dates ) );
-			$row["quantite_total"]         = Amapress::formatPrice( $quant->getPrix_unitaire() * $remaining_distrib_sum );
-			$row["quantite_prix_unitaire"] = Amapress::formatPrice( $quant->getPrix_unitaire() );
+			if ( $quant->getPrix_unitaire() > 0 ) {
+				$row["quantite_total"] = Amapress::formatPrice( $quant->getPrix_unitaire() * $remaining_distrib_sum );
+			} else {
+				$row["quantite_total"] = $quant->getPrix_unitaireDisplay();
+			}
+			$row["quantite_prix_unitaire"] = $quant->getPrix_unitaireDisplay();
 			$row["quantite_description"]   = $quant->getDescription();
 			$row["quantite_unite"]         = $quant->getPriceUnitDisplay();
 			$paiements                     = [];
@@ -1442,7 +1449,7 @@ class AmapressContrat_instance extends TitanEntity {
 				if ( ! $contrat_quantite->isInDistributionDates( $date ) ) {
 					continue;
 				}
-				$quant_labels[] = esc_html( '___ x ' . $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaire() . '€' : '' ) );
+				$quant_labels[] = esc_html( '___ x ' . $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaireDisplay() : '' ) );
 			}
 
 			return implode( $separator, $quant_labels );
@@ -1452,7 +1459,7 @@ class AmapressContrat_instance extends TitanEntity {
 				if ( ! $contrat_quantite->isInDistributionDates( $date ) ) {
 					continue;
 				}
-				$quant_labels[] = esc_html( $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaire() . '€' : '' ) );
+				$quant_labels[] = esc_html( $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaireDisplay() : '' ) );
 			}
 
 			return implode( $separator, $quant_labels );
@@ -1522,10 +1529,12 @@ class AmapressContrat_instance extends TitanEntity {
 				$placeholders["quantite_nb_distrib#$i"] = $nb_remaining_distrib;
 				if ( $this->isQuantiteVariable() ) {
 					$placeholders["quantite_total#$i"] = '';
-				} else {
+				} elseif ( $quant->getPrix_unitaire() > 0 ) {
 					$placeholders["quantite_total#$i"] = Amapress::formatPrice( $quant->getPrix_unitaire() * $nb_remaining_distrib );
+				} else {
+					$placeholders["quantite_total#$i"] = $quant->getPrix_unitaireDisplay();
 				}
-				$placeholders["quantite_prix_unitaire#$i"] = Amapress::formatPrice( $quant->getPrix_unitaire() );
+				$placeholders["quantite_prix_unitaire#$i"] = $quant->getPrix_unitaireDisplay();
 				$placeholders["quantite_description#$i"]   = $quant->getDescription();
 				$placeholders["quantite_unite#$i"]         = $quant->getPriceUnitDisplay();
 				$placeholders["quantite_dates_distrib#$i"] = implode( ', ', array_map( function ( $d, $f ) {
@@ -2037,6 +2046,15 @@ class AmapressContrat_quantite extends TitanEntity {
 //    {
 //        return $this->getCustomAsFloat('amapress_contrat_quantite_max_quantite');
 //    }
+
+	public function getPrix_unitaireDisplay() {
+		$price_unit = $this->getPrix_unitaire();
+		if ( abs( $price_unit ) < 0.001 ) {
+			return 'Prix au poids';
+		} else {
+			return Amapress::formatPrice( $price_unit );
+		}
+	}
 
 	public function getPrix_unitaire() {
 		return $this->getCustomAsFloat( 'amapress_contrat_quantite_prix_unitaire' );

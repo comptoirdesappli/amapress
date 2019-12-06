@@ -164,6 +164,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
 					'vir' => 'Virement',
+					'dlv' => 'A la livraison',
 				),
 				'default'  => 'chq',
 				'required' => true,

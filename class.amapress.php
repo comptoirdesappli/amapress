@@ -4009,8 +4009,8 @@ class Amapress {
 		return self::get_page_with_shortcode_href( 'inscription-en-ligne', 'amp_preinscr_href' );
 	}
 
-	public static function formatPrice( $number ) {
-		return number_format( floatval( $number ), 2, ',', ' ' );
+	public static function formatPrice( $number, $with_unit = false ) {
+		return number_format( floatval( $number ), 2, ',', ' ' ) . ( $with_unit ? '€' : '' );
 	}
 
 	public static function rename_roles() {

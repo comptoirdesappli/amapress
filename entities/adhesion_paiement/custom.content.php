@@ -450,7 +450,7 @@ function amapress_paiements_editor( $post_id ) {
 	            	} else if ("vir" === type) {
 	            		fields.prop("disabled", true);
 	            	    fields.val("Vir.");
-	            	} else if ("chq" === type) {
+	            	} else if ("chq" === type || "dlv" === type) {
 	            	    fields.prop("disabled", false);
 	            	}
 	            };
@@ -597,6 +597,7 @@ function amapress_paiements_editor( $post_id ) {
 <option value='chq' " . selected( $pmt_type, 'chq', false ) . ">Chèque</option>
 <option value='esp' " . selected( $pmt_type, 'esp', false ) . ">Espèces</option>
 <option value='vir' " . selected( $pmt_type, 'vir', false ) . ">Virement</option>
+<option value='dlv' " . selected( $pmt_type, 'dlv', false ) . ">A la livraison</option>
 </select></td>
 <td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
 <td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>

@@ -732,6 +732,9 @@ class AmapressAdhesion extends TitanEntity {
 					if ( 'vir' == $adh->getMainPaiementType() ) {
 						return 'Par virement';
 					}
+					if ( 'dlv' == $adh->getMainPaiementType() || abs( $adh->getTotalAmount() ) < 0.001 ) {
+						return 'A la livraison';
+					}
 					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
 
 					return $o['desc'];
@@ -772,7 +775,17 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['total']                            = [
 				'desc' => 'Total du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return Amapress::formatPrice( $adh->getTotalAmount() );
+					if ( $adh->getTotalAmount() > 0 ) {
+						return Amapress::formatPrice( $adh->getTotalAmount() );
+					} else {
+						return '-paiement à la livraison-';
+					}
+				}
+			];
+			$ret['produits_paiements_livraison'] = [
+				'desc' => 'Produits payables à la livraison',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getQuantite_pay_at_delivery();
 				}
 			];
 			self::$properties                        = $ret;
@@ -862,8 +875,12 @@ class AmapressAdhesion extends TitanEntity {
 					$quant      = $date_quant['contrat_quantite'];
 					$date_price += ( $date_quant['quantite'] * $quant->getPrix_unitaire() );
 				}
-				$placeholders["quantite_date#$i"]                    = date_i18n( 'd/m/Y', $date );
-				$placeholders["quantite_total#$i"]                   = Amapress::formatPrice( $date_price );
+				$placeholders["quantite_date#$i"] = date_i18n( 'd/m/Y', $date );
+				if ( abs( $date_price ) < 0.001 ) {
+					$placeholders["quantite_total#$i"] = 'A la livraison';
+				} else {
+					$placeholders["quantite_total#$i"] = Amapress::formatPrice( $date_price );
+				}
 				$placeholders["quantite_description#$i"]             = $this->getContrat_quantites_AsString( $date, true );
 				$placeholders["quantite_description_no_price#$i"]    = $this->getContrat_quantites_AsString( $date );
 				$placeholders["quantite_description_br#$i"]          = $this->getContrat_quantites_AsString( $date, true, '<br />' );
@@ -896,10 +913,15 @@ class AmapressAdhesion extends TitanEntity {
 				$placeholders["quantite_dates#$i"]         = implode( ', ', array_map( function ( $d ) {
 					return date_i18n( 'd/m/Y', $d );
 				}, $remaining_dates ) );
-				$placeholders["quantite_sous_total#$i"]    = Amapress::formatPrice( $quant->getPrice() );
-				$placeholders["quantite_total#$i"]         = Amapress::formatPrice( $quant->getPrice() * $remaining_distrib_sum );
+				if ( abs( $quant->getPrice() ) < 0.001 ) {
+					$placeholders["quantite_sous_total#$i"] = 'A la livraison';
+					$placeholders["quantite_total#$i"]      = 'A la livraison';
+				} else {
+					$placeholders["quantite_sous_total#$i"] = Amapress::formatPrice( $quant->getPrice() );
+					$placeholders["quantite_total#$i"]      = Amapress::formatPrice( $quant->getPrice() * $remaining_distrib_sum );
+				}
 				$placeholders["quantite_nombre#$i"]        = $quant->getFactor();
-				$placeholders["quantite_prix_unitaire#$i"] = Amapress::formatPrice( $quant->getContratQuantite()->getPrix_unitaire() );
+				$placeholders["quantite_prix_unitaire#$i"] = $quant->getContratQuantite()->getPrix_unitaireDisplay();
 				$placeholders["quantite_description#$i"]   = $quant->getContratQuantite()->getDescription();
 				$placeholders["quantite_unite#$i"]         = $quant->getContratQuantite()->getPriceUnitDisplay();
 				$i                                         += 1;
@@ -907,26 +929,50 @@ class AmapressAdhesion extends TitanEntity {
 			}
 		}
 
-		$paiements = $this->getAllPaiements();
-		$i         = 1;
-		foreach ( $paiements as $paiement ) {
-			$placeholders["paiement_type#$i"]     = $paiement->getTypeFormatted();
-			$placeholders["paiement_numero#$i"]   = $paiement->getNumero();
-			$placeholders["paiement_emetteur#$i"] = $paiement->getEmetteur();
-			$placeholders["paiement_banque#$i"]   = $paiement->getBanque();
-			$placeholders["paiement_montant#$i"]  = Amapress::formatPrice( $paiement->getAmount() );
-			$placeholders["paiement_date#$i"]     = date_i18n( 'd/m/Y', $paiement->getDate() );
-			$placeholders["paiement_status#$i"]   = $paiement->getStatusDisplay();
+		if ( 'dlv' == $this->getMainPaiementType() || abs( $this->getTotalAmount() ) < 0.001 ) {
+			$paiements = $this->getContrat_instance()->isPanierVariable() ? array_keys( $this->getPaniersVariables() ) : $this->getRemainingDates();
+			$i         = 1;
+			foreach ( $paiements as $paiement_date ) {
+				$placeholders["paiement_type#$i"]     = '';
+				$placeholders["paiement_numero#$i"]   = '';
+				$placeholders["paiement_emetteur#$i"] = '';
+				$placeholders["paiement_banque#$i"]   = '';
+				$placeholders["paiement_montant#$i"]  = '';
+				$placeholders["paiement_date#$i"]     = date_i18n( 'd/m/Y', $paiement_date );
+				$placeholders["paiement_status#$i"]   = '';
 
-			$placeholders["paiement_{$i}_type"]     = $placeholders["paiement_type#$i"];
-			$placeholders["paiement_{$i}_numero"]   = $placeholders["paiement_numero#$i"];
-			$placeholders["paiement_{$i}_emetteur"] = $placeholders["paiement_emetteur#$i"];
-			$placeholders["paiement_{$i}_banque"]   = $placeholders["paiement_banque#$i"];
-			$placeholders["paiement_{$i}_montant"]  = $placeholders["paiement_montant#$i"];
-			$placeholders["paiement_{$i}_date"]     = $placeholders["paiement_date#$i"];
-			$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
+				$placeholders["paiement_{$i}_type"]     = $placeholders["paiement_type#$i"];
+				$placeholders["paiement_{$i}_numero"]   = $placeholders["paiement_numero#$i"];
+				$placeholders["paiement_{$i}_emetteur"] = $placeholders["paiement_emetteur#$i"];
+				$placeholders["paiement_{$i}_banque"]   = $placeholders["paiement_banque#$i"];
+				$placeholders["paiement_{$i}_montant"]  = $placeholders["paiement_montant#$i"];
+				$placeholders["paiement_{$i}_date"]     = $placeholders["paiement_date#$i"];
+				$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
 
-			$i += 1;
+				$i += 1;
+			}
+		} else {
+			$paiements = $this->getAllPaiements();
+			$i         = 1;
+			foreach ( $paiements as $paiement ) {
+				$placeholders["paiement_type#$i"]     = $paiement->getTypeFormatted();
+				$placeholders["paiement_numero#$i"]   = $paiement->getNumero();
+				$placeholders["paiement_emetteur#$i"] = $paiement->getEmetteur();
+				$placeholders["paiement_banque#$i"]   = $paiement->getBanque();
+				$placeholders["paiement_montant#$i"]  = Amapress::formatPrice( $paiement->getAmount() );
+				$placeholders["paiement_date#$i"]     = date_i18n( 'd/m/Y', $paiement->getDate() );
+				$placeholders["paiement_status#$i"]   = $paiement->getStatusDisplay();
+
+				$placeholders["paiement_{$i}_type"]     = $placeholders["paiement_type#$i"];
+				$placeholders["paiement_{$i}_numero"]   = $placeholders["paiement_numero#$i"];
+				$placeholders["paiement_{$i}_emetteur"] = $placeholders["paiement_emetteur#$i"];
+				$placeholders["paiement_{$i}_banque"]   = $placeholders["paiement_banque#$i"];
+				$placeholders["paiement_{$i}_montant"]  = $placeholders["paiement_montant#$i"];
+				$placeholders["paiement_{$i}_date"]     = $placeholders["paiement_date#$i"];
+				$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
+
+				$i += 1;
+			}
 		}
 
 		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
@@ -1263,7 +1309,7 @@ class AmapressAdhesion extends TitanEntity {
 				/** @var AmapressContrat_quantite $contrat_quantite */
 				$contrat_quantite = $q['contrat_quantite'];
 				$quantite         = $q['quantite'];
-				$quant_labels[]   = esc_html( $contrat_quantite->formatValue( $quantite ) . ' x ' . $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaire() . '€' : '' ) );
+				$quant_labels[]   = esc_html( $contrat_quantite->formatValue( $quantite ) . ' x ' . $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaireDisplay() : '' ) );
 			}
 
 			return implode( $separator, $quant_labels );
@@ -1274,6 +1320,38 @@ class AmapressAdhesion extends TitanEntity {
 					return $vv->getTitle() . ( $show_price_unit ? ' à ' . Amapress::formatPrice( $vv->getPrice() ) . '€' : '' );
 				}
 				, $this->getContrat_quantites( $date ) );
+
+			return implode( $separator, $quant_labels );
+		}
+	}
+
+	public function getQuantite_pay_at_delivery( $date = null, $separator = ', ' ) {
+		if ( empty( $this->getContrat_instance() ) ) {
+			return '';
+		}
+		if ( $this->getContrat_instance()->isPanierVariable() ) {
+			$quant_labels = array();
+			foreach ( $this->getVariables_Contrat_quantites( $date ) as $q ) {
+				/** @var AmapressContrat_quantite $contrat_quantite */
+				$contrat_quantite = $q['contrat_quantite'];
+				if ( $contrat_quantite->getPrix_unitaire() > 0 ) {
+					continue;
+				}
+				$quantite       = $q['quantite'];
+				$quant_labels[] = esc_html( $contrat_quantite->formatValue( $quantite ) . ' x ' . $contrat_quantite->getTitle() );
+			}
+
+			return implode( $separator, $quant_labels );
+		} else {
+			$quant_labels = array_map(
+				function ( $vv ) {
+					/** @var AmapressAdhesionQuantite $vv */
+					return $vv->getTitle();
+				}
+				, array_filter( $this->getContrat_quantites( $date ), function ( $vv ) {
+				/** @var AmapressAdhesionQuantite $vv */
+				return abs( $vv->getPrice() ) < 0.001;
+			} ) );
 
 			return implode( $separator, $quant_labels );
 		}

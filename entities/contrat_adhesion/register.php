@@ -484,6 +484,7 @@ jQuery(function($) {
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
 					'vir' => 'Virement',
+					'dlv' => 'A la livraison',
 				),
 				'default'     => 'chq',
 				'required'    => true,
@@ -964,7 +965,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_debut() ),
 					date_i18n( TitanFrameworkOptionDate::$default_date_format, $contrat_instance->getDate_fin() ),
 					$quant_var_editor,
-					esc_html( $quantite->getTitle() . ' ( ' . Amapress::formatPrice( $quantite->getPrix_unitaire() ) . ' € ' . $quantite->getPriceUnitDisplay() . ')' )
+					esc_html( $quantite->getTitle() . ' ( ' . $quantite->getPrix_unitaireDisplay() . ' ' . $quantite->getPriceUnitDisplay() . ')' )
 				);
 
 				$ret .= "<script type='text/javascript'>jQuery('#$id').change(function() {

@@ -1342,7 +1342,7 @@ jQuery(function($) {
 //						),
 
 			// 6/6 - reglements
-			'paiements'             => array(
+			'paiements'        => array(
 				'name'         => amapress__( 'Nombre de chèques' ),
 				'type'         => 'multicheck',
 				'desc'         => 'Sélectionner le nombre de règlements autorisés par le producteur',
@@ -1365,7 +1365,17 @@ jQuery(function($) {
 					'12' => '12 chèques',
 				)
 			),
-			'allow_cash'            => array(
+			'allow_deliv_pay'  => array(
+				'name'        => amapress__( 'Règlement à la livraison' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlement en plusieurs fois',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Autoriser le règlement à la livraison pour ce contrat',
+			),
+			'allow_cash'       => array(
 				'name'        => amapress__( 'Règlement en espèces' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1375,7 +1385,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement en espèces pour ce contrat',
 			),
-			'allow_bktrfr'          => array(
+			'allow_bktrfr'     => array(
 				'name'        => amapress__( 'Règlement par virement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1385,7 +1395,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement par virement pour ce contrat',
 			),
-			'manage_paiements'      => array(
+			'manage_paiements' => array(
 				'name'        => amapress__( 'Répartition des chèques/règlement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -2179,6 +2189,8 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
     <p class="description"><a
                 href="https://wiki.amapress.fr/contrats/exemple_paniers" target="_blank">* Consulter les instructions
             spécifiques et exemples</a></p>
+    <p class="description">Pour les produits <strong>payables au poids à la livraison</strong>, indiquez un prix
+        unitaire de <strong>0</strong>.</p>
     <p class="description">La colonne <strong>Fact. quant.</strong> permet d'indiquer la quantité totale à fournir au
         producteur :
         <br/>- par exemple, pour un contrat légumes, 0.5 pour un demi panier, 1 pour un panier, 2 pour un double ; 3

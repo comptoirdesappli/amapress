@@ -994,7 +994,7 @@ class AmapressPaniers {
 
 						$produits_objects[] = array(
 							'produit'  => esc_html( $contrat_quantite->getTitle() ),
-							'price'    => $contrat_quantite->getPrix_unitaire(),
+							'price'    => $contrat_quantite->getPrix_unitaireDisplay(),
 							'quantite' => $contrat_quantite->formatValue( $quantite ),
 						);
 					}
@@ -1006,7 +1006,7 @@ class AmapressPaniers {
 				foreach ( AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() ) as $contrat_quantite ) {
 					$produits_objects[] = array(
 						'produit'  => esc_html( $contrat_quantite->getTitle() ),
-						'price'    => $contrat_quantite->getPrix_unitaire(),
+						'price'    => $contrat_quantite->getPrix_unitaireDisplay(),
 						'quantite' => $contrat_quantite->getPriceUnitDisplay(),
 					);
 				}
