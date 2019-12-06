@@ -1051,7 +1051,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			return ( 'Aucune période d\'adhésion n\'est configurée.' );
 		}
 
-		echo '<h4>Étape 3/8 : Adhésion (obligatoire)</h4>';
+		if ( $for_logged ) {
+			echo '<h4>Étape Adhésion (obligatoire)</h4>';
+		} else {
+			echo '<h4>Étape 3/8 : Adhésion (obligatoire)</h4>';
+		}
 		echo $adh_period->getOnlineDescription();
 
 		$taxes            = get_categories( array(
@@ -1237,7 +1241,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$amapien = AmapressUser::getBy( $user_id );
 		if ( ! $admin_mode ) {
 			if ( ! Amapress::toBool( $atts['show_contrats'] ) ) {
-				echo '<h4>Étape 4/8 : les contrats</h4>';
+				if ( $for_logged ) {
+					echo '<h4>Vos contrats</h4>';
+				} else {
+					echo '<h4>Étape 4/8 : les contrats</h4>';
+				}
 			}
 		} else {
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
@@ -1588,8 +1596,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			return ( $additional_css . '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
 		}
+		if ( $for_logged ) {
+			echo '<h4>Étape 1/4 : Date et lieu - ' . esc_html( $contrat->getTitle() ) . '</h4>';
+		} else {
+			echo '<h4>Étape 5/8 : Date et lieu - ' . esc_html( $contrat->getTitle() ) . '</h4>';
+		}
 		?>
-        <h4>Étape 5/8 : Date et lieu - <?php echo esc_html( $contrat->getTitle() ) ?></h4>
+
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
 			<?php
 			$before_close_hours = 0;
@@ -1783,9 +1796,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
 		}
 
-		?>
-        <h4>Étape 6/8 : Panier - <?php echo esc_html( $contrat->getTitle() ); ?></h4>
-		<?php
+		if ( $for_logged ) {
+			echo '<h4>Étape 2/4 : Panier - ' . esc_html( $contrat->getTitle() ) . '</h4>';
+		} else {
+			echo '<h4>Étape 6/8 : Panier - ' . esc_html( $contrat->getTitle() ) . '</h4>';
+		}
 		$min_total = $contrat->getMinEngagement();
 
 		$grouped_dates = from( $dates )->groupBy( function ( $d ) {
@@ -2001,7 +2016,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$next_step_url = add_query_arg( [ 'step' => 'inscr_contrat_create' ] );
 
 		$pay_at_deliv = [];
-		echo '<h4>Étape 7/8 : Règlement</h4>';
+		if ( $for_logged ) {
+			echo '<h4>Étape 3/4 : Règlement</h4>';
+		} else {
+			echo '<h4>Étape 7/8 : Règlement</h4>';
+		}
 		if ( $contrat->isPanierVariable() ) {
 			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? $_REQUEST['panier_vars'] : [];
 			if ( empty( $panier_vars ) ) {
@@ -2409,7 +2428,12 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				/** @var AmapressContrat_instance $c */
 				return $c->getModelTitle() . ( ! empty( $c->getSubName() ) ? ' - ' . $c->getSubName() : '' );
 			}, $user_subscribable_contrats ) ) );
-			echo '<h4>étape 8/8 : Félicitations !</h4>';
+			if ( $for_logged ) {
+				echo '<h4>étape 4/4 : Félicitations !</h4>';
+			} else {
+				echo '<h4>étape 8/8 : Félicitations !</h4>';
+			}
+
 			$online_contrats_end_step_message = wp_unslash( Amapress::getOption( 'online_contrats_end_step_message' ) );
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte.</div>';
 			if ( Amapress::toBool( 'send_contrat_confirm' ) ) {
