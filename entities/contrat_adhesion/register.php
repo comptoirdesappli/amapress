@@ -176,7 +176,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return;
 				}
 				$message = "L'amapien {$adh->getAdherent()->getDisplayName()} n'a pas de contrat principal : {$principal_contrat->getTitle()}";
-			} else {
+			} else if ( ! Amapress::getOption( 'disable_principal', false ) ) {
 				$message = 'Pas de contrat principal actif';
 			}
 
