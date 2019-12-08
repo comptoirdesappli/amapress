@@ -168,6 +168,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 			}
 
+			$message = '';
 			if ( $principal_contrat ) {
 				Amapress::setFilterForReferent( false );
 				$other_adhs = AmapressAdhesion::getUserActiveAdhesions( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
