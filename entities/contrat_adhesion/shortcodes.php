@@ -2409,7 +2409,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		}
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
-			if ( Amapress::toBool( 'send_contrat_confirm' ) ) {
+			if ( Amapress::toBool( $atts['send_contrat_confirm'] ) ) {
 				$inscription->sendConfirmationMail();
 			}
 		}
@@ -2440,7 +2440,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 
 			$online_contrats_end_step_message = wp_unslash( Amapress::getOption( 'online_contrats_end_step_message' ) );
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte.</div>';
-			if ( Amapress::toBool( 'send_contrat_confirm' ) ) {
+			if ( Amapress::toBool( $atts['send_contrat_confirm'] ) ) {
 				echo '<p>Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 			}
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
