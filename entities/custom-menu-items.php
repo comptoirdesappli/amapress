@@ -106,9 +106,18 @@ add_filter( 'wp_get_nav_menu_items', function ( $items, $menu ) {
 						$the_id = amapress_get_forum_id_from_post_id( $the_id );
 					}
 				}
+				if ( 'custom' == $item->object && ! empty( $item->url ) ) {
+					global $amapress_no_filter_amps_lo;
+					$amapress_no_filter_amps_lo = true;
+					$the_id                     = url_to_postid( $item->url );
+					$amapress_no_filter_amps_lo = false;
+					if ( ! $the_id && ! empty( $item->post_name ) ) {
+						$the_id = get_page_by_path( $item->post_name );
+					}
+				}
 				if ( get_post_meta( $the_id, 'amps_lo', true ) != 1 || get_post_meta( $the_id, 'amps_rd', true ) ) {
 //					if ( ! in_array( $item->url, $not_public_archive ) ) {
-						$all_items[] = $item;
+					$all_items[] = $item;
 //					}
 				}
 			}

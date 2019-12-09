@@ -67,21 +67,24 @@ function amapress_add_tax_query( WP_Query $query, $tax_query ) {
 add_action( 'pre_get_posts', 'amapress_filter_posts' );
 function amapress_filter_posts( WP_Query $query ) {
 	if ( ! amapress_is_user_logged_in() && ! $query->is_main_query() ) {
-		amapress_add_meta_query( $query, array(
-			array(
-				'relation' => 'OR',
+		global $amapress_no_filter_amps_lo;
+		if ( ! $amapress_no_filter_amps_lo ) {
+			amapress_add_meta_query( $query, array(
 				array(
-					'key'     => "amps_lo",
-					'compare' => 'NOT EXISTS',
-				),
-				array(
-					'key'     => "amps_lo",
-					'value'   => 0,
-					'compare' => '=',
-					'type'    => 'NUMERIC',
-				),
-			)
-		) );
+					'relation' => 'OR',
+					array(
+						'key'     => "amps_lo",
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => "amps_lo",
+						'value'   => 0,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
+				)
+			) );
+		}
 	}
 
 	$pts = AmapressEntities::getPostTypes();
