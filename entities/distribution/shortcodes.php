@@ -617,6 +617,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						$ret      .= '<td style="text-align: center">';
 						$td_resps = is_array( $resp ) ? $resp : [ $resp ];
 						foreach ( $td_resps as $r ) {
+							if ( ! $r ) {
+								continue;
+							}
 							$ret .= $r->getDisplay( $atts );
 							if ( $is_user_part_of || $is_current_user_resp_amap ) {
 								$is_resp = $is_resp || $r->ID == $user_id;
