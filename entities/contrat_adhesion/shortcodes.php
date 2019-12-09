@@ -231,6 +231,8 @@ function amapress_self_inscription( $atts, $content = null ) {
 			'allow_coadherents_inscription'    => 'true',
 			'allow_coadherents_adhesion'       => 'true',
 			'show_coadherents_address'         => 'false',
+			'contrat_print_button_text'        => 'Imprimer',
+			'adhesion_print_button_text'       => 'Imprimer',
 			'only_contrats'                    => '',
 			'shorturl'                         => '',
 			'adhesion_shift_weeks'             => 0,
@@ -240,9 +242,11 @@ function amapress_self_inscription( $atts, $content = null ) {
 		]
 		, $atts );
 
-	$for_logged = Amapress::toBool( $atts['for_logged'] );
-	$ret        = '';
-	$admin_mode = Amapress::toBool( $atts['admin_mode'] );
+	$contrat_print_button_text  = $atts['contrat_print_button_text'];
+	$adhesion_print_button_text = $atts['adhesion_print_button_text'];
+	$for_logged                 = Amapress::toBool( $atts['for_logged'] );
+	$ret                        = '';
+	$admin_mode                 = Amapress::toBool( $atts['admin_mode'] );
 	if ( $admin_mode && ! is_admin() ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
 	}
@@ -299,7 +303,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 			if ( empty( $key ) && amapress_can_access_admin() ) {
-				$ret .= '<div style="color:red">L\'argmument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [inscription-en-ligne] de cette page. L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.</div>';
+				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [inscription-en-ligne] de cette page. L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.</div>';
 			} else {
 				$ret .= '<div class="alert alert-danger">Vous êtes dans un espace sécurisé. Accès interdit</div>';
 			}
@@ -1200,7 +1204,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'adh_id'          => $adh_paiement->ID,
 					'inscr_key'       => $key
 				] ),
-				'Imprimer', true, true, 'btn btn-default'
+				$adhesion_print_button_text, true, true, 'btn btn-default'
 			);
 			$online_subscription_greating_adhesion = str_replace( '%%print_button%%', $print_bulletin, $online_subscription_greating_adhesion );
 		} else {
@@ -1289,7 +1293,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								'adh_id'          => $adh_paiement->ID,
 								'inscr_key'       => $key
 							] ),
-							'Imprimer', true, true, 'btn btn-default'
+							$adhesion_print_button_text, true, true, 'btn btn-default'
 						);
 					}
 					echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
@@ -1407,7 +1411,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							'inscr_id'        => $adh->ID,
 							'inscr_key'       => $key
 						] ),
-						'Imprimer', true, true, 'btn btn-default'
+						$contrat_print_button_text, true, true, 'btn btn-default'
 					);
 				}
 				if ( $admin_mode ) {
@@ -1736,7 +1740,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'inscr_id'        => $adh->ID,
 					'inscr_key'       => $key
 				] ),
-				'Imprimer', true, true, 'btn btn-default'
+				$contrat_print_button_text, true, true, 'btn btn-default'
 			);
 		}
 		$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
@@ -2454,7 +2458,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 						'inscr_id'        => $inscription->ID,
 						'inscr_key'       => $key
 					] ),
-					'Imprimer', true, true, 'btn btn-default'
+					$contrat_print_button_text, true, true, 'btn btn-default'
 				);
 				$online_contrats_end_step_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
 			} else {
