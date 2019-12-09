@@ -1732,6 +1732,27 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( $adh->getAdherentId() != intval( $_GET['user_id'] ) ) {
 			wp_die( $invalid_access_message );
 		}
+		if ( ! empty( $_GET['cancel_inscr_id'] ) ) {
+			if ( intval( $_GET['cancel_inscr_id'] ) != $adh->ID ) {
+				wp_die( $invalid_access_message );
+			}
+			if ( ! $adh->canSelfEdit() ) {
+				wp_die( $invalid_access_message );
+			}
+			if ( isset( $_GET['confirm'] ) ) {
+				if ( ! wp_trash_post( $adh->ID ) ) {
+					wp_die( $invalid_access_message );
+				}
+				echo '<p>Votre inscription ' . esc_html( $adh->getTitle() ) . ' a été annulée avec succès.</p>';
+				echo '<p>' . Amapress::makeLink( $contrats_step_url, 'Retourner à la liste des contrats' ) . '</p>';
+
+				return ob_get_clean();
+			} else {
+				echo '<p>Vous avez demandé l\'annulation de l\'inscription suivante :<br/>
+' . Amapress::makeLink( add_query_arg( 'confirm', 'T' ), 'Confirmer l\'annulation' ) . '<br/>
+' . Amapress::makeLink( $contrats_step_url, 'Retourner à la liste des contrats' ) . '</p>';
+			}
+		}
 		$print_contrat = '';
 		if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
 			$print_contrat = Amapress::makeButtonLink(
@@ -2446,13 +2467,14 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				echo '<h4>étape 8/8 : Félicitations !</h4>';
 			}
 
-			$online_contrats_end_step_message = wp_unslash( Amapress::getOption( 'online_contrats_end_step_message' ) );
+			$online_contrats_end_step_message      = wp_unslash( Amapress::getOption( 'online_contrats_end_step_message' ) );
+			$online_contrats_end_step_edit_message = wp_unslash( Amapress::getOption( 'online_contrats_end_step_edit_message' ) );
 			echo '<div class="alert alert-success">Votre pré-inscription a bien été prise en compte.</div>';
 			if ( Amapress::toBool( $atts['send_contrat_confirm'] ) ) {
 				echo '<p>Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 			}
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
-				$print_contrat                    = Amapress::makeButtonLink(
+				$print_contrat                         = Amapress::makeButtonLink(
 					add_query_arg( [
 						'inscr_assistant' => 'generate_contrat',
 						'inscr_id'        => $inscription->ID,
@@ -2460,17 +2482,18 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					] ),
 					$contrat_print_button_text, true, true, 'btn btn-default'
 				);
-				$online_contrats_end_step_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
+				$online_contrats_end_step_message      = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
+				$online_contrats_end_step_edit_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_edit_message );
 			} else {
-				$online_contrats_end_step_message = str_replace( '%%print_button%%', '', $online_contrats_end_step_message );
+				$online_contrats_end_step_message      = str_replace( '%%print_button%%', '', $online_contrats_end_step_message );
+				$online_contrats_end_step_edit_message = str_replace( '%%print_button%%', '', $online_contrats_end_step_edit_message );
 			}
 			if ( $inscription->canSelfEdit() ) {
 				$inscription_url = add_query_arg( [
 					'step'       => 'inscr_contrat_date_lieu',
 					'contrat_id' => $inscription->getContrat_instanceId()
 				] );
-				echo '<br/>
-<form method="get" action="' . esc_attr( $inscription_url ) . '">
+				$modify_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -2478,7 +2501,28 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 <input type="hidden" name="edit_inscr_id" value="' . $inscription->ID . '" />
 <input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
 </form>';
+				$cancel_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="details" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="contrat_id" value="' . $inscription->ID . '" />
+<input type="hidden" name="cancel_inscr_id" value="' . $inscription->ID . '" />
+<input type="submit" value="Annuler" class="btn btn-default btn-assist-inscr" />
+</form>';
+				if ( strpos( $online_contrats_end_step_edit_message, '%%modify_button%%' ) !== false ) {
+					$online_contrats_end_step_edit_message = str_replace( '%%modify_button%%', $modify_button, $online_contrats_end_step_edit_message );
+				} else {
+					echo '<br/>' . $modify_button;
+				}
+				if ( strpos( $online_contrats_end_step_edit_message, '%%cancel_button%%' ) !== false ) {
+					$online_contrats_end_step_edit_message = str_replace( '%%cancel_button%%', $cancel_button, $online_contrats_end_step_edit_message );
+				} else {
+					echo '<br/>' . $cancel_button;
+				}
+			} else {
+				$online_contrats_end_step_edit_message = '';
 			}
+			echo amapress_replace_mail_placeholders( $online_contrats_end_step_edit_message, $amapien, $inscription );
 			echo amapress_replace_mail_placeholders( $online_contrats_end_step_message, $amapien, $inscription );
 
 			if ( Amapress::toBool( $atts['show_contrats'] ) ) {

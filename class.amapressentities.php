@@ -1264,7 +1264,19 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => wpautop( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les chèques/règlements correspondants lors de la prochaine distribution\n%%print_button%%" ),
 											'desc'    => 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>' .
 											             AmapressAdhesion::getPlaceholdersHelp( [
-												             'print_button' => 'Bouton Imprimer le contrat'
+												             'print_button' => 'Bouton Imprimer/Télécharger le contrat'
+											             ], false ),
+										),
+										array(
+											'id'      => 'online_contrats_end_step_edit_message',
+											'name'    => 'Inscription terminée - Possibilité édition/annulation',
+											'type'    => 'editor',
+											'default' => wpautop( "Veuillez vérifier le contrat : %%print_button%%\nSi vous constatez une erreur, vous pouvez modifier votre inscription : %%modify_button%%\nVous pouvez également l'annuler : %%cancel_button%%" ),
+											'desc'    => 'Instruction pour l\'édition ou l\'annulation à la fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Les placeholders %%print_button%%, %%modify_button%%, %%cancel_button%% permettent d\'afficher respectivement le bouton Imprimer/Télécharger, Modifier et Annuler l\inscription<br/>' .
+											             AmapressAdhesion::getPlaceholdersHelp( [
+												             'print_button'  => 'Bouton Imprimer/Télécharger le contrat',
+												             'modify_button' => 'Bouton Modifier l\'inscription',
+												             'cancel_button' => 'Bouton Annuler l\'inscription'
 											             ], false ),
 										),
 										array(
