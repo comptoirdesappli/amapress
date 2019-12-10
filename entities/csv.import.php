@@ -308,10 +308,13 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 	if ( isset( $settings['csv_validator'] ) && is_callable( $settings['csv_validator'], false ) ) {
 		return $settings['csv_validator'];
 	}
-	$label = ! empty( $settings['name'] ) ? $settings['name'] : $field_name;
-	$type  = $settings['type'];
+	$label    = ! empty( $settings['name'] ) ? $settings['name'] : $field_name;
+	$required = isset( $settings['required'] ) ? $settings['required'] : false;
+	$type     = $settings['type'];
 	if ( $type == 'date' ) {
-		return function ( $value ) use ( $label ) {
+		$has_time = isset( $settings['time'] ) ? $settings['time'] : false;
+
+		return function ( $value ) use ( $label, $has_time, $required ) {
 			try {
 				if ( is_wp_error( $value ) ) {
 					return $value;
@@ -319,18 +322,27 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				if ( is_string( $value ) ) {
 					$value = trim( $value );
 				}
+				if ( ! $required && empty( $value ) ) {
+					return null;
+				}
+				$ret_date = 0;
 				if ( is_float( $value ) || is_int( $value ) || preg_match( '/^\d+$/', strval( $value ) ) ) {
-					return PHPExcel_Shared_Date::ExcelToPHP( intval( $value ) );
+					$ret_date = PHPExcel_Shared_Date::ExcelToPHP( intval( $value ) );
 				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4}$/', $value ) ) {
-					return DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format, $value )->getTimestamp();
+					$ret_date = DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format, $value )->getTimestamp();
 				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4} \d{2}:\d{2}$/', $value ) ) {
-					return DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format . ' ' . TitanFrameworkOptionDate::$default_time_format, $value )->getTimestamp();
+					$ret_date = DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format . ' ' . TitanFrameworkOptionDate::$default_time_format, $value )->getTimestamp();
 				} else if ( preg_match( '/^\d{2}:\d{2}$/', $value ) ) {
-					return DateTime::createFromFormat( date( TitanFrameworkOptionDate::$default_date_format, 0 ) . ' ' . TitanFrameworkOptionDate::$default_time_format, $value )->getTimestamp();
+					$ret_date = DateTime::createFromFormat( date( TitanFrameworkOptionDate::$default_date_format, 0 ) . ' ' . TitanFrameworkOptionDate::$default_time_format, $value )->getTimestamp();
 				} else if ( preg_match( '/^\d{1,2}-\d{1,2}-\d{2}$/', $value ) ) {
-					return DateTime::createFromFormat( 'm-d-y', $value )->getTimestamp();
+					$ret_date = DateTime::createFromFormat( 'm-d-y', $value )->getTimestamp();
 				} else {
 					return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label'" );
+				}
+				if ( $has_time ) {
+					return $ret_date;
+				} else {
+					return Amapress::start_of_day( $ret_date );
 				}
 			} catch ( Exception $e ) {
 				return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label': {$e->getMessage()}" );
@@ -338,12 +350,18 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 		};
 	} else if ( $type == 'checkbox' ) {
 		return function ( $value ) use ( $label ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
 			$v = strtolower( trim( $value ) );
 
 			return $v == "true" || $v == "vrai" || $v == "oui" || $v == 1;
 		};
 	} else if ( $type == 'float' || $type == 'number' || $type == 'price' ) {
 		return function ( $value ) use ( $label ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
 			try {
 				return floatval( trim( trim( $value, '€' ) ) );
 			} catch ( Exception $e ) {
@@ -352,6 +370,9 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 		};
 	} else if ( $type == 'select' ) {
 		return function ( $value ) use ( $label, $settings ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
 			$v = strtolower( trim( $value ) );
 			if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
 				$labels = array_combine(
@@ -372,6 +393,9 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 		};
 	} else if ( 'select-posts' == $type || 'multicheck-posts' == $type ) {
 		return function ( $value ) use ( $label, $settings ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
 			if ( is_string( $value ) ) {
 				$value = trim( $value );
 			}
@@ -416,6 +440,9 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 		};
 	} else if ( 'select-users' == $type || 'multicheck-users' == $type ) {
 		return function ( $value ) use ( $label ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
 			if ( is_string( $value ) ) {
 				$value = trim( $value );
 			}
@@ -464,6 +491,9 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 		};
 	} else if ( 'multicheck' == $type ) {
 		return function ( $value ) use ( $label, $settings ) {
+			if ( is_wp_error( $value ) ) {
+				return $value;
+			}
 			$vs   = trim( strtolower( trim( $value ) ), ',' );
 			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
 				if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
@@ -495,14 +525,16 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 			return implode( ',', $vs );
 		};
 	} else if ( 'multidate' == $type ) {
-		return function ( $value ) use ( $label, $settings ) {
+		return function ( $value ) use ( $label, $settings, $required ) {
 			if ( is_wp_error( $value ) ) {
 				return $value;
 			}
 			$vs   = trim( strtolower( trim( $value ) ), ',' );
+			if ( ! $required && empty( $vs ) ) {
+				return null;
+			}
 			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
 				try {
-					$dt = 0;
 					if ( is_float( $v ) || is_int( $v ) || preg_match( '/^\d+$/', strval( $v ) ) ) {
 						$dt = PHPExcel_Shared_Date::ExcelToPHP( intval( $v ) );
 					} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4}$/', $v ) ) {
