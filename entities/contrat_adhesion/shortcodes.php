@@ -1168,7 +1168,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		$attachments = [];
-		$doc_file    = $adh_paiement->generateBulletinDoc( false );
+		try {
+			$doc_file = $adh_paiement->generateBulletinDoc( false );
+		} catch ( Exception $ex ) {
+			wp_die( 'Impossible de générer le bulletin d\'adhésion. Merci de réessayer en appuyant sur F5' );
+		}
 		if ( ! empty( $doc_file ) ) {
 			$attachments[] = $doc_file;
 			$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );
