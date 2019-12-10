@@ -1026,7 +1026,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
             <div class="amap-agreement">
-				<?php echo amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ), null ); ?>
+	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ) ), null ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
@@ -1077,7 +1077,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$ret              .= '<input type="hidden" name="user_id" value="' . esc_attr( $user_id ) . '"/>';
 		$amap_term        = Amapress::getOption( 'adhesion_amap_term' );
 		$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
-		$ret              .= '<table style="max-width: 50%">';
+		$ret              .= '<table style="max-width: 70%">';
 		foreach ( $taxes as $tax ) {
 			$tax_amount = 0;
 			if ( $tax->term_id == $amap_term ) {
@@ -1095,9 +1095,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 ' . ( ! empty( $tax->description ) ? '<p style="font-style: italic; font-weight: normal">' . $tax->description . '</p>' : '' ) . '
 </th>';
 				if ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) {
-					$ret .= '<td><input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />' . $tax_amount . '&nbsp;€</td>';
+					$ret .= '<td style="min-width: 8em"><input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />' . $tax_amount . '&nbsp;€</td>';
 				} else {
-					$ret .= '<td><input type="number" id="amapress_pmt_amount-' . $tax->term_id . '" style="width: 80%" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="price required amapress_pmt_cat_amount" value="' . $tax_amount . '" />&nbsp;€</td>';
+					$ret .= '<td style="min-width: 8em"><input type="number" id="amapress_pmt_amount-' . $tax->term_id . '" style="width: 80%" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="price required amapress_pmt_cat_amount" value="' . $tax_amount . '" />&nbsp;€</td>';
 				}
 				$ret .= '</tr>';
 			}
