@@ -1540,7 +1540,7 @@ function amapress_get_contrat_quantite_datatable(
 			'paging'       => false,
 			'init_as_html' => $options['no_script'] || ! $show_all_dates,
 			'no_script'    => $options['no_script'],
-			'bSort'        => true,
+			'bSort'        => ! $contrat_instance->isPanierVariable(),
 		);
 		if ( $show_all_dates ) {
 			$dt_options['rowGroup'] = [
