@@ -1026,7 +1026,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
             <div class="amap-agreement">
-	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ) ), null ); ?>
+	            <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ), null ) ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
@@ -1281,7 +1281,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					echo '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
-<input type="hidden" name="step" value="adhesion" />
+<input type="hidden" name="step" value="' . ( $activate_agreement ? 'agreement' : 'adhesion' ) . '" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
