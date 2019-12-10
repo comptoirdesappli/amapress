@@ -1237,11 +1237,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		Amapress::setFilterForReferent( false );
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		Amapress::setFilterForReferent( true );
-		$adhs = array_filter( $adhs,
-			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
-				/** @var AmapressAdhesion $adh */
-				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
-			} );
+//		$adhs = array_filter( $adhs,
+//			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
+//				/** @var AmapressAdhesion $adh */
+//				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
+//			} );
 		if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal ) {
 			foreach ( $adhs as $adh ) {
 				if ( $adh->getContrat_instance()->isPrincipal() ) {
@@ -2452,7 +2452,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				$inscription->sendReferentsNotificationMail( false, $notify_email );
 			}
 
+			Amapress::setFilterForReferent( false );
 			$adhs                               = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+			Amapress::setFilterForReferent( true );
 			$adhs_contrat_ids                   = array_map( function ( $a ) {
 				/** @var AmapressAdhesion $a */
 				return $a->getContrat_instance()->ID;
