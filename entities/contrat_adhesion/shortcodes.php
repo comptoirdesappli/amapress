@@ -1444,13 +1444,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							'contrat_id' => $adh->getContrat_instanceId()
 						] );
 						$edit_contrat    = '<br/>
-<form method="get" action="' . esc_attr( $inscription_url ) . '">
+<form style="display: inline-block; margin-left: 5px" method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $adh->getContrat_instanceId() . '" />
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
 <input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
+</form>';
+						$edit_contrat    .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="details" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="contrat_id" value="' . $adh->ID . '" />
+<input type="hidden" name="cancel_inscr_id" value="' . $adh->ID . '" />
+<input type="submit" value="Annuler" class="btn btn-default btn-assist-inscr" />
 </form>';
 					}
 					echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
