@@ -423,6 +423,21 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet l\'inscription aux contrats complémentaires en cours d\'année',
 			'args' => [
+				'filter_multi_contrat'             => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
+				'agreement'                        => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'check_principal'                  => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
+				'adhesion'                         => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
+				'send_adhesion_confirm'            => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_contrat_confirm'             => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
+				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
+				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'adhesion_shift_weeks'             => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
+				'paniers_modulables_editor_height' => '(350 par défaut) Hauteur de l\'éditeur de paniers modulables (en px)',
+				'show_adherents_infos'             => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
+				'contact_referents'                => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
+				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
+				'paiements_info_required'          => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
+				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables'
 			]
 		] );
 	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription',
