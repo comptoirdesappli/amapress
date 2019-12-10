@@ -2070,6 +2070,9 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	echo "<td><input style='width: 5em' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></td>";
 	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Facteur quantité' value='$quantite' /></td>";
 	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
+		if ( empty( $unit ) ) {
+			$unit = 'unit';
+		}
 		echo "<td><select style='width: 100%' class='required' name='amapress_quant_data[$id][unit]'>";
 		echo '<option value="">--Unité de prix--</option>';
 		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">pièce</option>';
