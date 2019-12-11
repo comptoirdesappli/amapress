@@ -146,6 +146,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 				} else {
 					$ret .= '<div class="alert alert-info">Pour donner accès à cette page d\'inscription aux distributions, veuillez leur envoyer le lien suivant : 
 <pre>' . $url . '</pre>
+Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
 ' . ( ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '' ) . '
 Vous pouvez également utiliser l\'un des QRCode suivants : 
