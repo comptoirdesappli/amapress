@@ -224,6 +224,8 @@ function amapress_register_shortcodes() {
 				'past_weeks'             => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
 				'max_dates'              => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
 				'lieu'                   => 'Filtre de lieu',
+				'show_contrats_desc'     => '(Par défaut “true”) Afficher la liste des contrats pour chaque date',
+				'show_contrats_count'    => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
 				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 			]
@@ -246,6 +248,8 @@ function amapress_register_shortcodes() {
 				'past_weeks'             => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
 				'max_dates'              => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
 				'lieu'                   => 'Filtre de lieu',
+				'show_contrats_desc'     => '(Par défaut “true”) Afficher la liste des contrats pour chaque date',
+				'show_contrats_count'    => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
 				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 			]
