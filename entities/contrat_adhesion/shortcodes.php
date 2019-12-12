@@ -183,18 +183,39 @@ add_action( 'amapress_init', function () {
 	}
 } );
 
-function amapress_mes_contrats( $atts, $content = null ) {
+function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
+	$atts               = wp_parse_args( $atts );
+	$atts['for_logged'] = 'true';
+	unset( $atts['key'] );
+
+	return amapress_self_inscription( $atts, $content, $tag );
+}
+
+function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	$atts                  = wp_parse_args( $atts );
 	$atts['for_logged']    = 'true';
-	$atts['show_contrats'] = 'true';
+	unset( $atts['edit_names'] );
+	unset( $atts['only_contrats'] );
+	unset( $atts['shorturl'] );
+	unset( $atts['max_coadherents'] );
+	unset( $atts['mob_phone_required'] );
+	unset( $atts['allow_remove_coadhs'] );
+	unset( $atts['track_no_renews'] );
+	unset( $atts['track_no_renews_email'] );
+	unset( $atts['notify_email'] );
+	unset( $atts['allow_coadherents_inscription'] );
+	unset( $atts['allow_coadherents_access'] );
+	unset( $atts['allow_coadherents_adhesion'] );
+	unset( $atts['show_coadherents_address'] );
+	unset( $atts['email'] );
 
-	return amapress_self_inscription( $atts, $content );
+	return amapress_self_inscription( $atts, $content, $tag );
 }
 
 /**
  * @param $atts
  */
-function amapress_self_inscription( $atts, $content = null ) {
+function amapress_self_inscription( $atts, $content = null, $tag ) {
 	amapress_ensure_no_cache();
 
 	$step              = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
@@ -204,7 +225,6 @@ function amapress_self_inscription( $atts, $content = null ) {
 		[
 			'key'                              => '',
 			'for_logged'                       => 'false',
-			'show_contrats'                    => 'false',
 			'filter_multi_contrat'             => 'false',
 			'admin_mode'                       => 'false',
 			'agreement'                        => 'false',
@@ -276,7 +296,7 @@ function amapress_self_inscription( $atts, $content = null ) {
 			return '<div class="alert alert-danger">Accès interdit</div>';
 		}
 		if ( ! isset( $_REQUEST['step'] ) ) {
-			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
+			if ( 'mes-contrats' == $tag ) {
 				$step = 'contrats';
 			} else {
 				$step = 'coords_logged';
@@ -1257,13 +1277,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} );
 		$amapien = AmapressUser::getBy( $user_id );
 		if ( ! $admin_mode ) {
-			if ( ! Amapress::toBool( $atts['show_contrats'] ) ) {
 				if ( $for_logged ) {
 					echo '<h4>Vos contrats</h4>';
 				} else {
 					echo '<h4>Étape 4/8 : les contrats</h4>';
 				}
-			}
 		} else {
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
 		}
@@ -1595,7 +1613,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 
-		if ( ! $admin_mode && $has_principal_contrat && ! Amapress::toBool( $atts['show_contrats'] ) ) {
+		if ( ! $admin_mode && $has_principal_contrat && 'mes-contrats' != $tag ) {
 			echo '<p>J\'ai fini :<br/>
 <form method="get" action="' . esc_attr( $the_end_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
@@ -2540,7 +2558,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			echo amapress_replace_mail_placeholders( $online_contrats_end_step_edit_message, $amapien, $inscription );
 			echo amapress_replace_mail_placeholders( $online_contrats_end_step_message, $amapien, $inscription );
 
-			if ( Amapress::toBool( $atts['show_contrats'] ) ) {
+			if ( 'mes-contrats' == $tag ) {
 				echo '<p>Retourner à la liste de mes contrats :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
@@ -2562,7 +2580,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				}
 			}
 
-			if ( ! $admin_mode && ! Amapress::toBool( $atts['show_contrats'] ) ) {
+			if ( ! $admin_mode && 'mes-contrats' != $tag ) {
 				echo '<p>J\'ai fini :<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
