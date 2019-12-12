@@ -317,12 +317,15 @@ class AmapressDistribution extends Amapress_EventBase {
 		return in_array( $this->getLieuId(), $user_lieu_ids );
 	}
 
-	public function inscrireResponsable( $user_id, $role = 0, $allow_anonymous = false ) {
+	public function inscrireResponsable(
+		$user_id, $role = 0,
+		$allow_anonymous = false, $allow_not_member = false
+	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
-		if ( ! amapress_can_access_admin() ) {
+		if ( ! $allow_not_member && ! amapress_can_access_admin() ) {
 			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
 				wp_die( 'Vous ne faites pas partie de cette distribution.' );
 			}

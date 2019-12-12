@@ -302,11 +302,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( $user_id, $from_date );
 		/** @var AmapressDistribution $dist */
 		foreach ( $all_dists as $dist ) {
-			if ( ! in_array( $dist->getLieuId(), $user_lieux_ids ) ) {
+			if ( ! $inscr_all_distrib && ! in_array( $dist->getLieuId(), $user_lieux_ids ) ) {
 				continue;
 			}
 			$dist_contrat_ids = $dist->getContratIds();
-			if ( count( array_intersect( $adhesions_contrat_ids, $dist_contrat_ids ) ) > 0 ) {
+			if ( $inscr_all_distrib || count( array_intersect( $adhesions_contrat_ids, $dist_contrat_ids ) ) > 0 ) {
 				$max_dates --;
 				if ( $max_dates < 0 ) {
 					continue;
@@ -600,7 +600,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter une personne</a></a></p>';
 						}
 
-						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
+						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
 							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
@@ -744,7 +744,10 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	}
 
 	$dist = AmapressDistribution::getBy( $dist_id );
-	switch ( $dist->inscrireResponsable( $user_id, isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0 ) ) {
+	switch ( $dist->inscrireResponsable( $user_id,
+		isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
+		false,
+		isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
 		case 'already_in_list':
 			if ( $is_current ) {
 				echo '<p class="error">Vous êtes déjà inscrit</p>';
@@ -821,7 +824,10 @@ add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
 	}
 
 	$dist = AmapressDistribution::getBy( $dist_id );
-	switch ( $dist->inscrireResponsable( $user_id, isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0, true ) ) {
+	switch ( $dist->inscrireResponsable( $user_id,
+		isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
+		true,
+		isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
 		case 'already_in_list':
 			echo '<p class="error">Vous êtes déjà inscrit</p>';
 			break;
