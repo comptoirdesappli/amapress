@@ -192,8 +192,8 @@ function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
 }
 
 function amapress_mes_contrats( $atts, $content = null, $tag ) {
-	$atts                  = wp_parse_args( $atts );
-	$atts['for_logged']    = 'true';
+	$atts               = wp_parse_args( $atts );
+	$atts['for_logged'] = 'true';
 	unset( $atts['edit_names'] );
 	unset( $atts['only_contrats'] );
 	unset( $atts['shorturl'] );
@@ -208,6 +208,11 @@ function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	unset( $atts['allow_coadherents_adhesion'] );
 	unset( $atts['show_coadherents_address'] );
 	unset( $atts['email'] );
+	if ( isset( $atts['allow_adhesion'] ) ) {
+		$atts['adhesion'] = $atts['allow_adhesion'];
+	} else {
+		$atts['adhesion'] = 'true';
+	}
 
 	return amapress_self_inscription( $atts, $content, $tag );
 }
@@ -235,6 +240,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'send_contrat_confirm'             => 'true',
 			'send_referents'                   => 'true',
 			'send_tresoriers'                  => 'true',
+			'allow_inscriptions'               => 'true',
 			'allow_new_mail'                   => 'true',
 			'track_no_renews'                  => 'false',
 			'track_no_renews_email'            => get_option( 'admin_email' ),
@@ -1277,11 +1283,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} );
 		$amapien = AmapressUser::getBy( $user_id );
 		if ( ! $admin_mode ) {
-				if ( $for_logged ) {
-					echo '<h4>Vos contrats</h4>';
-				} else {
-					echo '<h4>Étape 4/8 : les contrats</h4>';
-				}
+			if ( $for_logged ) {
+				echo '<h4>Vos contrats</h4>';
+			} else {
+				echo '<h4>Étape 4/8 : les contrats</h4>';
+			}
 		} else {
 			echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
 		}
@@ -1297,15 +1303,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
 
 				if ( empty( $adh_paiement ) ) {
-					echo '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong><br/>
+					if ( 'mes-contrats' == $tag && ! $activate_adhesion ) {
+						echo '<p><strong>Vous n\'avez pas d\'adhésion à l\'AMAP</strong></p>';
+					} else {
+						echo '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="' . ( $activate_agreement ? 'agreement' : 'adhesion' ) . '" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
-					if ( $activate_adhesion ) {
-						return ob_get_clean();
+						if ( $activate_adhesion ) {
+							return ob_get_clean();
+						}
 					}
 				} else {
 					$print_bulletin = '';
@@ -1360,8 +1370,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php
 		}
 
-		$display_remaining_contrats = true;
-		if ( ! $admin_mode && ! $has_principal_contrat ) {
+		$allow_inscriptions           = Amapress::toBool( 'allow_inscriptions' );
+		$display_remaining_contrats   = true;
+		if ( ! $admin_mode && ! $allow_inscriptions ) {
+			$display_remaining_contrats = false;
+		}
+		if ( ! $admin_mode && ! $has_principal_contrat && $allow_inscriptions ) {
 			$display_remaining_contrats = false;
 			if ( ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
 				echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
@@ -1471,7 +1485,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
 <input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
 </form>';
-						$edit_contrat    .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
+						$edit_contrat .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="details" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -1484,26 +1498,30 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 			echo '</ul>';
-			if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
-				echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
-				$display_remaining_contrats = false;
-			} else {
-				if ( ! empty( $user_subscribable_contrats ) ) {
-					if ( ! $admin_mode ) {
-						echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
-					} else {
-						echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+			if ( $allow_inscriptions ) {
+				if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
+					echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+					$display_remaining_contrats = false;
+				} else {
+					if ( ! empty( $user_subscribable_contrats ) ) {
+						if ( ! $admin_mode ) {
+							echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
+						} else {
+							echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+						}
 					}
 				}
 			}
 		} else {
-			if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
+			if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() && $allow_inscriptions ) {
 				echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
 				$display_remaining_contrats = false;
 			} else {
 				if ( ! $admin_mode ) {
 					echo '<p>Vous n\'avez pas encore de contrats</p>';
-					echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+					if ( $allow_inscriptions ) {
+						echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+					}
 				} else {
 					echo '<p>Il/Elle n\'a pas encore de contrats</p>';
 					echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
@@ -2480,7 +2498,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			}
 
 			Amapress::setFilterForReferent( false );
-			$adhs                               = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+			$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 			Amapress::setFilterForReferent( true );
 			$adhs_contrat_ids                   = array_map( function ( $a ) {
 				/** @var AmapressAdhesion $a */
