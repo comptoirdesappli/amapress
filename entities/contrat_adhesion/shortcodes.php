@@ -1370,8 +1370,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php
 		}
 
-		$allow_inscriptions           = Amapress::toBool( 'allow_inscriptions' );
-		$display_remaining_contrats   = true;
+		$allow_inscriptions         = Amapress::toBool( $atts['allow_inscriptions'] );
+		$display_remaining_contrats = true;
 		if ( ! $admin_mode && ! $allow_inscriptions ) {
 			$display_remaining_contrats = false;
 		}
