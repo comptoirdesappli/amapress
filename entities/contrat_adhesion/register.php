@@ -1487,7 +1487,7 @@ function amapress_get_contrat_quantite_datatable(
 
 	//
 	$next_distrib_text = '';
-	$next_distrib_text            .= '<p>' . Amapress::makeLink(
+	$next_distrib_text .= '<p>' . Amapress::makeLink(
 			$root_url . '&all&date=first',
 			'Récapitulatif contrat ' . $contrat_instance->getTitle() ) . ' | ' .
 	                      Amapress::makeLink(
@@ -1497,13 +1497,16 @@ function amapress_get_contrat_quantite_datatable(
 		                      $root_url,
 		                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) .
 	                      '</p><hr/>';
-	$next_distrib_text            .= '<p>' . Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) . '</p><hr/>';
+	$next_distrib_text .= '<p>' . Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) . '</p><hr/>';
 
+	$print_title = '';
 	if ( $show_all_dates ) {
 		if ( $date_is_first ) {
 			$next_distrib_text .= '<h4>Informations pour le contrat ' . $contrat_instance->getTitle() . '</h4>';
+			$print_title       = 'Récapitulatif pour le contrat ' . $contrat_instance->getTitle();
 		} else {
 			$next_distrib_text .= '<h4>Informations pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+			$print_title       = 'Récapitulatif pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . ' pour le contrat ' . $contrat_instance->getTitle();
 		}
 		if ( ! $date_is_current ) {
 			$next_distrib_text .= '<p>' . Amapress::makeLink(
@@ -1512,6 +1515,11 @@ function amapress_get_contrat_quantite_datatable(
 		}
 	} else {
 		$next_distrib_text .= '<h4>Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+		if ( $dist ) {
+			$print_title = 'Récapitulatif pour la prochaine distribution (' . date_i18n( 'd/m/Y', $dist->getDate() ) . ') pour le contrat ' . $contrat_instance->getTitle();
+		} else {
+			$print_title = 'Récapitulatif pour la prochaine distribution pour le contrat ' . $contrat_instance->getTitle();
+		}
 		if ( ! $date_is_current ) {
 			$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url,
 					'Revenir à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
@@ -1588,8 +1596,18 @@ function amapress_get_contrat_quantite_datatable(
 			$columns, $data,
 			$dt_options,
 			array(
-				Amapress::DATATABLES_EXPORT_EXCEL,
-				Amapress::DATATABLES_EXPORT_PRINT
+				[
+					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+					'title'  => $print_title
+				],
+				[
+					'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
+					'title'         => $print_title,
+//					'autoPrint' => false,
+					'exportOptions' => [
+						'rowGroup' => true
+					]
+				],
 			) );
 	}
 	if ( ! $show_all_dates && ( 'text' == $options['mode'] || 'both' == $options['mode'] ) ) {
