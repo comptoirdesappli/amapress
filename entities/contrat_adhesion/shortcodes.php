@@ -359,7 +359,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	if ( ! $admin_mode ) {
 		$subscribable_contrats         = array_filter( $subscribable_contrats, function ( $c ) {
 			/** @var AmapressContrat_instance $c */
-			return $c->canSelfSubscribe();
+			return $c->canSelfSubscribe() && ! $c->isEnded();
 		} );
 		$all_subscribable_contrats_ids = array_map( function ( $c ) {
 			return $c->ID;
