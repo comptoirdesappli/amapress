@@ -899,6 +899,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 														'show_all_dates'   => $is_all,
 														'show_adherents'   => ! $is_all,
 														'show_empty_lines' => ! $is_all,
+														'show_price'       => isset( $_GET['with_prices'] ),
 													] );
 												},
 											),
