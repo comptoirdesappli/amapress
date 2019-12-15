@@ -102,7 +102,7 @@ add_action( 'amapress_init', function () {
 			$quest_email = get_option( 'admin_email' );
 		}
 
-		if ( ! Amapress::isHtmlEmpty( $quest1 ) || ! Amapress::isHtmlEmpty( $quest2 ) ) {
+		if ( ! Amapress::isHtmlEmpty( $quest1_answser ) || ! Amapress::isHtmlEmpty( $quest2_answser ) ) {
 			$amapien           = AmapressUser::getBy( $user_id );
 			$user_display_name = $amapien->getDisplayName();
 			$user_email        = $amapien->getEmail();
