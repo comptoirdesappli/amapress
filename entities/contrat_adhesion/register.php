@@ -1257,7 +1257,7 @@ function amapress_get_contrat_quantite_datatable(
 		$all_distribs = array_merge( $all_distribs, $next_next_distribs );
 	}
 	foreach ( $all_distribs as $d ) {
-		$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $d->getDate(), true, false );
+		$adhesions = AmapressContrats::get_active_adhesions( $contrat_instance_id, null, $lieu_id, $d ? $d->getDate() : $date, true, false );
 		$real_date = $d ? $d->getRealDateForContrat( $contrat_instance_id ) : $date;
 		foreach ( $contrat_instance_quantites as $quant ) {
 			if ( $contrat_instance->isPanierVariable() && empty( $quant ) && ! $show_adherents ) {
@@ -1374,9 +1374,9 @@ function amapress_get_contrat_quantite_datatable(
 			$all_quant_adh_count = 0;
 			$all_quant_count     = 0;
 			$all_quant_sum       = 0;
-			$all_quant_price     = [];
-			$all_quant_all_price = 0;
-//			$all_quant_fact_adh_count = [];
+//			$all_quant_price     = [];
+			$all_quant_all_price      = 0;
+			$all_quant_fact_adh_count = [];
 			foreach ( $adhesions as $adh ) {
 				if ( empty( $quand_id ) ) {
 					$all_quant_adh_count += 1;
@@ -1393,9 +1393,6 @@ function amapress_get_contrat_quantite_datatable(
 						$all_quant_count += 1;
 						$all_quant_sum   += $adh_quant['quantite'];
 
-						if ( empty( $all_quant_price[ $quant_key ] ) ) {
-							$all_quant_price[ $quant_key ] = 0;
-						}
 						/** @var AmapressContrat_quantite $local_quant */
 						$local_quant         = $adh_quant['contrat_quantite'];
 						$all_quant_all_price += $adh_quant['quantite'] * $local_quant->getPrix_unitaire();
