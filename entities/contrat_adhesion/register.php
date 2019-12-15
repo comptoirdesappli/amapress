@@ -1211,34 +1211,63 @@ function amapress_get_contrat_quantite_datatable(
 	}
 
 	$columns[] = array(
-		'title' => 'Quantité',
+		'title' => 'Description',
 		'data'  => array(
 			'_'    => 'quant',
 			'sort' => 'quant',
 		)
 	);
-	$lieux     = Amapress::get_lieux();
-	if ( count( $lieux ) > 1 ) {
-		foreach ( $lieux as $lieu ) {
+	if ( ! $contrat_instance->isPanierVariable() ) {
+		$lieux = Amapress::get_lieux();
+		if ( count( $lieux ) > 1 ) {
+			foreach ( $lieux as $lieu ) {
+				$columns[] = array(
+					'title' => $lieu->getShortName(),
+					'data'  => array(
+						'_'    => "lieu_{$lieu->ID}",
+						'sort' => "lieu_{$lieu->ID}",
+					)
+				);
+			}
 			$columns[] = array(
-				'title' => $lieu->getShortName(),
+				'title' => 'Tous',
 				'data'  => array(
-					'_'    => "lieu_{$lieu->ID}",
-					'sort' => "lieu_{$lieu->ID}",
+					'_'    => 'all',
+					'sort' => 'all',
 				)
 			);
+		} else {
+			foreach ( $lieux as $lieu ) {
+				$columns[] = array(
+					'title' => $lieu->getTitle(),
+					'data'  => array(
+						'_'    => "all",
+						'sort' => "all",
+					)
+				);
+			}
 		}
 	}
+	if ( $show_adherents ) {
+		$columns[] = array(
+			'title' => 'Adhérents',
+			'data'  => array(
+				'_'    => "all_adhs",
+				'sort' => "all_adhs",
+			)
+		);
+	}
 	$columns[] = array(
-		'title' => 'Tous',
+		'title' => 'Quantité',
 		'data'  => array(
-			'_'    => 'all',
-			'sort' => 'all',
+			'_'    => "all_num",
+			'sort' => "all_num",
 		)
 	);
+
 	if ( $show_price ) {
 		$columns[] = array(
-			'title' => 'Montant',
+			'title' => 'Total',
 			'data'  => array(
 				'_'    => 'price_d',
 				'sort' => 'price',
@@ -1454,6 +1483,8 @@ function amapress_get_contrat_quantite_datatable(
 			$row['price_d'] = Amapress::formatPrice( $total_price, true );
 			$row['price']   = $total_price;
 
+			$row['all_adhs'] = $all_quant_adh_count;
+			$row['all_num']  = $all_quant_count;
 			if ( empty( $all_quant_adh_count ) ) {
 				$row['all']     = '';
 				$row['all_txt'] = '';
