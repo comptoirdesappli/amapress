@@ -1179,7 +1179,7 @@ function amapress_get_contrat_quantite_datatable(
 			'show_adherents'          => true,
 			'show_all_dates'          => false,
 			'show_price'              => false,
-			'show_empty_lines'        => true,
+			'show_empty_lines'        => ! $contrat_instance->isPanierVariable(),
 			'show_sum_fact_details'   => true,
 			'show_fact_details'       => $contrat_instance->isQuantiteVariable(),
 			'show_equiv_quantite'     => from( $contrat_instance_quantites )->distinct( function ( $c ) {
