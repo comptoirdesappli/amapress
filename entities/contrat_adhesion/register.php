@@ -1275,6 +1275,7 @@ function amapress_get_contrat_quantite_datatable(
 		);
 	}
 
+	$overall_total_price          = 0;
 	$contrat_instance_quantites[] = null;
 	$data                         = array();
 	$all_distribs                 = [ $dist ];
@@ -1482,6 +1483,9 @@ function amapress_get_contrat_quantite_datatable(
 //			}
 			$row['price_d'] = Amapress::formatPrice( $total_price, true );
 			$row['price']   = $total_price;
+			if ( $quant ) {
+				$overall_total_price += $total_price;
+			}
 
 			$row['all_adhs'] = $all_quant_adh_count;
 			$row['all_num']  = $all_quant_count;
@@ -1661,6 +1665,10 @@ function amapress_get_contrat_quantite_datatable(
 		}
 		$output .= implode( ', ', $output_quants );
 		$output .= '</p>';
+
+	}
+	if ( $show_price ) {
+		$output .= '<p><strong>Total: ' . Amapress::formatPrice( $overall_total_price, true ) . '</strong></p>';
 	}
 
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">' .
