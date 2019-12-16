@@ -543,7 +543,7 @@ function amapress_paiements_editor( $post_id ) {
 	$def_id   = - 1;
 	foreach ( $contrat_paiements as $paiement ) {
 		$id       = $paiement ? $paiement->ID : $def_id --;
-		$pmt_type = esc_attr( $paiement ? $paiement->getType() : 'chq' );
+		$pmt_type = esc_attr( $paiement ? $paiement->getType() : $adhesion->getMainPaiementType() );
 		$numero   = esc_attr( $paiement ? $paiement->getNumero() : '' );
 		$banque   = esc_attr( $paiement ? $paiement->getBanque() : '' );
 		$adherent = esc_attr( $paiement ? $paiement->getEmetteur() : $adhesion->getAdherent()->getDisplayName() );
@@ -651,13 +651,13 @@ function amapress_save_paiements_editor( $adhesion_id ) {
 				'meta_input'   => array(
 					'amapress_contrat_paiement_adhesion'         => $adhesion_id,
 					'amapress_contrat_paiement_contrat_instance' => $contrat_instance_id,
-					'amapress_contrat_paiement_date'             => $quant_data['date'],
-					'amapress_contrat_paiement_status'           => $quant_data['status'],
-					'amapress_contrat_paiement_type'             => $quant_data['type'],
-					'amapress_contrat_paiement_amount'           => $refresh ? 0 : $quant_data['amount'],
-					'amapress_contrat_paiement_numero'           => isset( $quant_data['numero'] ) ? $quant_data['numero'] : '',
-					'amapress_contrat_paiement_emetteur'         => $quant_data['adherent'],
-					'amapress_contrat_paiement_banque'           => ( 'esp' == $quant_data['type'] ? 'Esp.' : $quant_data['banque'] ),
+					'amapress_contrat_paiement_date'     => $quant_data['date'],
+					'amapress_contrat_paiement_status'   => $quant_data['status'],
+					'amapress_contrat_paiement_type'     => $quant_data['type'],
+					'amapress_contrat_paiement_amount'   => $refresh ? 0 : $quant_data['amount'],
+					'amapress_contrat_paiement_numero'   => isset( $quant_data['numero'] ) ? $quant_data['numero'] : '',
+					'amapress_contrat_paiement_emetteur' => $quant_data['adherent'],
+					'amapress_contrat_paiement_banque'   => ( 'chq' != $quant_data['type'] ? '' : $quant_data['banque'] ),
 				),
 			);
 			if ( $quant_id < 0 ) {
