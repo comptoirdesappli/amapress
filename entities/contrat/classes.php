@@ -2110,7 +2110,11 @@ class AmapressContrat_quantite extends TitanEntity {
 	public function getQuantiteOptions() {
 		$confs = $this->getQuantiteConfig();
 		if ( empty( $confs ) ) {
-			$confs = '0>10:1';
+			if ( $this->getContrat_instance()->isPanierVariable() ) {
+				$confs = '0>25:1';
+			} else {
+				$confs = '0>10:1';
+			}
 		}
 
 		$options = array();
