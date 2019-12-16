@@ -28,6 +28,8 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 //            'items_list' => 'xxx',
 		),
 		'row_actions'     => array(
+			'mark_rcv'               => 'Marquer reçu',
+			'unmark_rcv'             => 'Marquer Non reçu',
 			'generate_bulletin_docx' => [
 				'label'     => 'Générer le bulletin (DOCX)',
 				'condition' => function ( $adh_id ) {
@@ -138,6 +140,17 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'type' => 'readonly',
 				'unit' => '€',
 				'desc' => 'Montant',
+			),
+		),
+		'bulk_actions'    => array(
+			'amp_adh_pmt_mark_recv' => array(
+				'label'    => 'Marquer reçu',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant l\'opération',
+					'0'  => 'Une erreur s\'est produit pendant l\'opération',
+					'1'  => 'Un règlement a été marqué comme reçu avec succès',
+					'>1' => '%s règlements ont été marqués comme reçus avec succès',
+				),
 			),
 		),
 	);

@@ -8,6 +8,8 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	private static $entities_cache = array();
 	const INTERNAL_POST_TYPE = 'amps_cont_pmt';
 	const POST_TYPE = 'contrat_paiement';
+	const NOT_RECEIVED = 'not_received';
+	const RECEIVED = 'received';
 
 	/**
 	 * @param $post_or_id
@@ -58,6 +60,9 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		return $this->getCustomAsInt( 'amapress_contrat_paiement_adhesion' );
 	}
 
+	public function setStatus( $status ) {
+		$this->setCustom( 'amapress_contrat_paiement_status', $status );
+	}
 
 	public function getStatusDisplay() {
 		$this->ensure_init();

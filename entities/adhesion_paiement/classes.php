@@ -7,6 +7,8 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	const INTERNAL_POST_TYPE = 'amps_adh_pmt';
 	const POST_TYPE = 'adhesion_paiement';
 	const PAIEMENT_TAXONOMY = 'amps_paiement_category';
+	const NOT_RECEIVED = 'not_received';
+	const RECEIVED = 'received';
 
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
@@ -63,6 +65,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public function getDate() {
 		return $this->getCustom( 'amapress_adhesion_paiement_date' );
+	}
+
+	public function setStatus( $status ) {
+		$this->setCustom( 'amapress_adhesion_paiement_status', $status );
 	}
 
 	public function getStatusDisplay() {

@@ -31,7 +31,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 			'_dyn_'   => 'amapress_paiements_views',
 			'exp_csv' => true,
 		),
-		'fields'           => array(
+		'fields'       => array(
 //            'user' => array(
 //                'name' => amapress__('Amapien'),
 //                'type' => 'select-users',
@@ -85,7 +85,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'searchable'   => true,
 				'show_column'  => false,
 			),
-			'contrat'       => array(
+			'contrat'  => array(
 				'name'   => amapress__( 'Contrat' ),
 				'type'   => 'custom',
 				'hidden' => true,
@@ -115,7 +115,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //					}
 //				),
 			),
-			'lieu'   => array(
+			'lieu'     => array(
 				'name'       => amapress__( 'Lieu' ),
 				'type'       => 'custom',
 				'hidden'     => true,
@@ -145,7 +145,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					}
 				),
 			),
-			'status' => array(
+			'status'   => array(
 				'name'         => amapress__( 'Statut' ),
 				'type'         => 'select',
 				'options'      => array(
@@ -161,7 +161,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'placeholder' => 'Tous les statut',
 				),
 			),
-			'type'   => array(
+			'type'     => array(
 				'name'       => amapress__( 'Type' ),
 				'type'       => 'select',
 				'options'    => array(
@@ -178,7 +178,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'placeholder' => 'Tous les type',
 				),
 			),
-			'amount' => array(
+			'amount'   => array(
 				'name'         => amapress__( 'Montant' ),
 				'type'         => 'float',
 				'unit'         => '€',
@@ -186,7 +186,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'desc'         => 'Montant du chèque/espèces/virement',
 				'csv_required' => true,
 			),
-			'numero' => array(
+			'numero'   => array(
 				'name'         => amapress__( 'Numéro du chèque' ),
 				'type'         => 'text',
 				'required'     => false,
@@ -195,13 +195,13 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'csv_required' => true,
 				'searchable'   => true,
 			),
-			'banque'        => array(
+			'banque'   => array(
 				'name'       => amapress__( 'Banque' ),
 				'type'       => 'text',
 				'desc'       => 'Banque émettrice ou "Esp." pour des règlements en espèces ou "Vir." pour virement',
 				'searchable' => true,
 			),
-			'emetteur'      => array(
+			'emetteur' => array(
 				'name'       => amapress__( 'Emetteur' ),
 				'type'       => 'text',
 				'required'   => true,
@@ -216,6 +216,21 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'save' => 'amapress_save_contrat_paiements_categories',
 //                'desc' => 'Répartitions',
 //            ),
+		),
+		'row_actions'  => array(
+			'mark_rcv'   => 'Marquer reçu',
+			'unmark_rcv' => 'Marquer Non reçu',
+		),
+		'bulk_actions' => array(
+			'amp_cnt_pmt_mark_recv' => array(
+				'label'    => 'Marquer reçu',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant l\'opération',
+					'0'  => 'Une erreur s\'est produit pendant l\'opération',
+					'1'  => 'Un règlement a été marqué comme reçu avec succès',
+					'>1' => '%s règlements ont été marqués comme reçus avec succès',
+				),
+			),
 		),
 	);
 
