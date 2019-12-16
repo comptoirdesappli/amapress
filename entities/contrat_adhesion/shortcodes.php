@@ -2525,7 +2525,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			'amapress_adhesion_date_debut'       => $start_date,
 			'amapress_adhesion_contrat_instance' => $contrat_id,
 			'amapress_adhesion_message'          => $message,
-			'amapress_adhesion_paiements'        => ( - 1 == $cheques ? 1 : ( $cheques > 0 ? $cheques : 0 ) ),
+			'amapress_adhesion_paiements'        => ( $cheques < 0 ? 1 : ( $cheques > 0 ? $cheques : 0 ) ),
 			'amapress_adhesion_lieu'             => $lieu_id,
 		];
 		if ( - 1 == $cheques ) {
