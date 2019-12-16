@@ -490,7 +490,11 @@ jQuery(function($) {
 				'default'     => 'chq',
 				'required'    => true,
 				'desc'        => 'Moyen de règlement principal : chèques ou espèces ou virement',
-				'show_column' => false,
+				'show_column' => true,
+				'top_filter'  => array(
+					'name'        => 'amapress_pmt_type',
+					'placeholder' => 'Tous les type de paiement',
+				),
 			),
 			'paiements'         => array(
 				'name'        => amapress__( 'Nombre de paiements' ),

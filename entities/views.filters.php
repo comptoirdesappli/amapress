@@ -361,6 +361,19 @@ function amapress_adhesion_views() {
 		"post_type=amps_adhesion&amapress_date=ended",
 		'Arrêtées/Clotûrées' );
 
+	amapress_add_view_button(
+		$ret, 'pmt_esp',
+		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=esp",
+		'Espèces' );
+	amapress_add_view_button(
+		$ret, 'pmt_vir',
+		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=vir",
+		'Virement' );
+	amapress_add_view_button(
+		$ret, 'pmt_dlv',
+		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=dlv",
+		'A la livraison' );
+
 	//    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",
@@ -556,6 +569,24 @@ function amapress_paiements_views() {
 			"post_type=amps_cont_pmt&amapress_contrat_inst={$contrat->ID}",
 			$contrat->getTitle() );
 	}
+
+	amapress_add_view_button(
+		$ret, 'not_received',
+		"post_type=amps_cont_pmt&amapress_date=active&amapress_status=not_received",
+		'Non reçu' );
+
+	amapress_add_view_button(
+		$ret, 'pmt_esp',
+		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=esp",
+		'Espèces' );
+	amapress_add_view_button(
+		$ret, 'pmt_vir',
+		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=vir",
+		'Virement' );
+//	amapress_add_view_button(
+//		$ret, 'pmt_dlv',
+//		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=dlv",
+//		'A la livraison' );
 
 	return $ret;
 }
