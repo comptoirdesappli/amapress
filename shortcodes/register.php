@@ -427,13 +427,13 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet l\'inscription aux contrats complémentaires en cours d\'année',
 			'args' => [
-				'allow_inscriptions'    => '(booléen, true par défaut) : autorise l\'inscription aux contrats',
-				'allow_adhesion'        => '(booléen, true par défaut) : autorise l\'adhésion à l\'AMAP',
-				'filter_multi_contrat'  => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'             => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
-				'check_principal'       => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
-				'send_adhesion_confirm' => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
-				'send_contrat_confirm'  => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
+				'allow_inscriptions'               => '(booléen, true par défaut) : autorise l\'inscription aux contrats',
+				'allow_adhesion'                   => '(booléen, true par défaut) : autorise l\'adhésion à l\'AMAP',
+				'filter_multi_contrat'             => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
+				'agreement'                        => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'check_principal'                  => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
+				'send_adhesion_confirm'            => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_contrat_confirm'             => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
 				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
 				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'adhesion_shift_weeks'             => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
@@ -747,7 +747,7 @@ function amapress_register_shortcodes() {
 			[ 'since_days' => 30 ],
 			$atts );
 		$id   = 'agenda-url-' . md5( uniqid() );
-		$url  = esc_attr( Amapress_Agenda_ICAL_Export::get_link_href(), intval( $atts['since_days'] ) );
+		$url  = esc_attr( Amapress_Agenda_ICAL_Export::get_link_href( false, intval( $atts['since_days'] ) ) );
 
 		return "<div class='input-group'><input id='$id' type='text' value='$url' class='form-control' style='max-width: 80%' /><span class='input-group-addon'><button class='btn btn-secondary copy-agenda-url' type='button' data-clipboard-target='#{$id}'><span class='fa fa-copy' /></button></span><script type='text/javascript'>jQuery(function($) { new Clipboard('.copy-agenda-url'); });</script></div>";
 	},
@@ -755,6 +755,28 @@ function amapress_register_shortcodes() {
 			'desc' => 'Copieur de lien de configuration de la synchronisation d\'un calendrier ICAL dans l\'agenda de l\'amapien',
 			'args' => [
 				'since_days' => '(Par défaut 30) Nombre de jours d\'historique de l\'agenda',
+			]
+		] );
+
+	amapress_register_shortcode( 'agenda-url-button', function ( $atts ) {
+		$atts = shortcode_atts(
+			[
+				'since_days' => 30,
+				'title'      => 'Ajouter mon calendrier AMAP à mon agenda'
+			],
+			$atts );
+		$id   = 'agenda-url_btn-' . md5( uniqid() );
+		$url  = Amapress_Agenda_ICAL_Export::get_link_href( false, intval( $atts['since_days'] ) );
+		$url  = preg_replace( '/^http/', 'webcal', $url );
+		$url  = esc_attr( $url );
+
+		return Amapress::makeButtonLink( $url, $atts['title'], true, true, 'btn btn-default btn-add-cal' );
+	},
+		[
+			'desc' => 'Bouton d\'ajout de synchronisation de son calendrier (ICAL) dans l\'agenda de l\'amapien',
+			'args' => [
+				'since_days' => '(Par défaut 30) Nombre de jours d\'historique de l\'agenda',
+				'title'      => '(Par défaut Ajouter mon calendrier AMAP à mon agenda) Titre du bouton',
 			]
 		] );
 
