@@ -926,6 +926,12 @@ function amapress_register_shortcodes() {
 			if ( ! empty( $desc ) ) {
 				$li .= "<br/><em>$desc</em>";
 			}
+			if ( current_user_can( 'list_users' ) ) {
+				$li .= '<br/>' . Amapress::makeLink( admin_url( 'users.php?amapress_mllst_id=' . $mailing_list_configuration->ID ), 'Voir les membres', true, true );
+			}
+			if ( current_user_can( 'manage_options' ) ) {
+				$li .= '<br/>' . Amapress::makeLink( $mailing_list_configuration->getAdminEditLink(), 'Voir la configuration', true, true );
+			}
 			$li        .= '</li>';
 			$entries[] = $li;
 		}
@@ -939,6 +945,12 @@ function amapress_register_shortcodes() {
 			}
 			if ( ! empty( $desc ) ) {
 				$li .= "<br/><em>$desc</em>";
+			}
+			if ( current_user_can( 'list_users' ) ) {
+				$li .= '<br/>' . Amapress::makeLink( admin_url( 'users.php?amapress_mlgrp_id=' . $ml->ID ), 'Voir les membres', true, true );
+			}
+			if ( current_user_can( 'manage_options' ) ) {
+				$li .= '<br/>' . Amapress::makeLink( $ml->getAdminEditLink(), 'Voir la configuration', true, true );
 			}
 			$li        .= '</li>';
 			$entries[] = $li;
