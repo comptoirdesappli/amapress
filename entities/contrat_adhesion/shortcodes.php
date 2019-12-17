@@ -250,30 +250,31 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'paniers_modulables_editor_height' => 350,
 			'edit_names'                       => 'true',
 			'allow_remove_coadhs'              => 'false',
-			'contact_referents'             => 'true',
-			'show_adherents_infos'          => 'true',
+			'contact_referents'                => 'true',
+			'show_adherents_infos'             => 'true',
 //			'allow_edit_inscriptions'          => 'true',
-			'allow_coadherents_access'      => 'true',
-			'allow_coadherents_inscription' => 'true',
-			'allow_coadherents_adhesion'    => 'true',
-			'show_coadherents_address'      => 'false',
-			'contrat_print_button_text'     => 'Imprimer',
-			'adhesion_print_button_text'    => 'Imprimer',
-			'only_contrats'                 => '',
-			'shorturl'                      => '',
-			'show_due_amounts'              => 'false',
-			'adhesion_shift_weeks'          => 0,
-			'before_close_hours'            => 24,
-			'max_coadherents'               => 3,
-			'email'                         => get_option( 'admin_email' ),
+			'allow_coadherents_access'         => 'true',
+			'allow_coadherents_inscription'    => 'true',
+			'allow_coadherents_adhesion'       => 'true',
+			'show_coadherents_address'         => 'false',
+			'contrat_print_button_text'        => 'Imprimer',
+			'adhesion_print_button_text'       => 'Imprimer',
+			'only_contrats'                    => '',
+			'shorturl'                         => '',
+			'show_due_amounts'                 => 'false',
+			'show_delivery_details'            => 'false',
+			'adhesion_shift_weeks'             => 0,
+			'before_close_hours'               => 24,
+			'max_coadherents'                  => 3,
+			'email'                            => get_option( 'admin_email' ),
 		]
 		, $atts );
 
-	$contrat_print_button_text     = $atts['contrat_print_button_text'];
-	$adhesion_print_button_text    = $atts['adhesion_print_button_text'];
-	$for_logged                    = Amapress::toBool( $atts['for_logged'] );
-	$ret                           = '';
-	$admin_mode                    = Amapress::toBool( $atts['admin_mode'] );
+	$contrat_print_button_text  = $atts['contrat_print_button_text'];
+	$adhesion_print_button_text = $atts['adhesion_print_button_text'];
+	$for_logged                 = Amapress::toBool( $atts['for_logged'] );
+	$ret                        = '';
+	$admin_mode                 = Amapress::toBool( $atts['admin_mode'] );
 	if ( $admin_mode && ! is_admin() ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
 	}
@@ -288,6 +289,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$track_no_renews               = Amapress::toBool( $atts['track_no_renews'] );
 	$show_coadherents_address      = Amapress::toBool( $atts['show_coadherents_address'] );
 	$show_due_amounts              = Amapress::toBool( $atts['show_due_amounts'] );
+	$show_delivery_details         = Amapress::toBool( $atts['show_delivery_details'] );
 //	$allow_edit_inscriptions       = Amapress::toBool( $atts['allow_edit_inscriptions'] );
 	$notify_email = $atts['notify_email'];
 	if ( ! $allow_coadherents_inscription ) {
@@ -1435,10 +1437,23 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 		} else if ( ! empty( $adhs ) ) {
-			if ( $show_due_amounts ) {
-				echo '<p>' . Amapress::makeButtonLink( add_query_arg( [
+			if ( $show_due_amounts || $show_delivery_details ) {
+				echo '<p>';
+				if ( $show_due_amounts ) {
+					echo Amapress::makeButtonLink( add_query_arg( [
 						'step' => 'details_all_paiements',
-					] ), 'Récapitulatif des sommes dues', true, true, 'btn btn-default' ) . '</p>';
+					] ), 'Récapitulatif des sommes dues', true, true, 'btn btn-default' );
+				}
+				if ( $show_delivery_details ) {
+					echo Amapress::makeButtonLink( add_query_arg( [
+						'step' => 'details_all_delivs',
+					] ), 'Récapitulatif des livraisons (par date)', true, true, 'btn btn-default' );
+					echo Amapress::makeButtonLink( add_query_arg( [
+						'step'    => 'details_all_delivs',
+						'by_prod' => '1',
+					] ), 'Récapitulatif des livraisons (par producteur)', true, true, 'btn btn-default' );
+				}
+				echo '</p>';
 			}
 			if ( ! $admin_mode ) {
 				echo '<p>Vos contrats :</p>';
@@ -1447,7 +1462,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			echo '<ul style="list-style-type: disc">';
 			foreach ( $adhs as $adh ) {
-				$print_contrat        = '';
+				$print_contrat = '';
 				if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
 					$print_contrat = Amapress::makeButtonLink(
 						add_query_arg( [
@@ -1483,7 +1498,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							'step'       => 'inscr_contrat_date_lieu',
 							'contrat_id' => $adh->getContrat_instanceId()
 						] );
-						$edit_contrat = '<br/>
+						$edit_contrat    = '<br/>
 <form style="display: inline-block; margin-left: 5px" method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
@@ -1492,7 +1507,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
 <input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
 </form>';
-						$edit_contrat .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
+						$edit_contrat    .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="details" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -1797,7 +1812,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
 		Amapress::setFilterForReferent( true );
 
-		echo '<h4>Récapitulatif des sommes dues</h4>';
+		$print_title = 'Récapitulatif des sommes dues';
+		echo '<h4>' . esc_html( $print_title ) . '</h4>';
 		$columns   = [];
 		$columns[] = array(
 			'title' => 'Producteur',
@@ -1849,8 +1865,168 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'searching' => false,
 			),
 			array(
-				Amapress::DATATABLES_EXPORT_EXCEL,
-				Amapress::DATATABLES_EXPORT_PRINT
+				[
+					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+					'title'  => $print_title
+				],
+				[
+					'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
+					'title'         => $print_title,
+					'exportOptions' => [
+						'rowGroup' => true
+					]
+				],
+			) );
+	} else if ( 'details_all_delivs' == $step ) {
+		if ( ! $show_delivery_details ) {
+			wp_die( $invalid_access_message );
+		}
+		if ( $for_logged && amapress_is_user_logged_in() ) {
+			$user_id = wp_get_current_user()->ID;
+		} else {
+			if ( empty( $_REQUEST['user_id'] ) ) {
+				wp_die( $invalid_access_message );
+			}
+			$user_id = intval( $_REQUEST['user_id'] );
+		}
+
+		Amapress::setFilterForReferent( false );
+		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, false, true );
+		Amapress::setFilterForReferent( true );
+
+		$print_title = 'Récapitulatif des livraisons';
+		echo '<h4>' . esc_html( $print_title ) . '</h4>';
+		$columns = [];
+		if ( isset( $_GET['by_prod'] ) ) {
+			$columns[] = array(
+				'title' => 'Producteur',
+				'data'  => array(
+					'_'    => 'prod',
+					'sort' => 'prod',
+				)
+			);
+			$columns[] = array(
+				'title' => 'Date',
+				'data'  => array(
+					'_'    => 'date_d',
+					'sort' => 'date',
+				)
+			);
+		} else {
+			$columns[] = array(
+				'title' => 'Date',
+				'data'  => array(
+					'_'    => 'date_d',
+					'sort' => 'date',
+				)
+			);
+			$columns[] = array(
+				'title' => 'Producteur',
+				'data'  => array(
+					'_'    => 'prod',
+					'sort' => 'prod',
+				)
+			);
+		}
+
+		$columns[] = array(
+			'title' => 'Description',
+			'data'  => array(
+				'_'    => 'desc',
+				'sort' => 'desc',
+			)
+		);
+		$columns[] = array(
+			'title' => 'Quantité',
+			'data'  => array(
+				'_'    => 'fact',
+				'sort' => 'fact',
+			)
+		);
+		$columns[] = array(
+			'title' => 'Total',
+			'data'  => array(
+				'_'    => 'total_d',
+				'sort' => 'total',
+			)
+		);
+
+		$data = [];
+		foreach ( $adhs as $adh ) {
+			if ( $adh->getContrat_instance()->isPanierVariable() ) {
+				$paniers = $adh->getPaniersVariables();
+				foreach ( $adh->getRemainingDates() as $date ) {
+					foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
+						if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
+							$row           = [];
+							$row['date_d'] = date_i18n( 'd/m/Y', $date );
+							$row['date']   = $date;
+
+							$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+							                  . '<br />'
+							                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+							$row['desc']    = $quant->getTitle();
+							$row['fact']    = $paniers[ $date ][ $quant->ID ];
+							$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
+							$row['total_d'] = Amapress::formatPrice( $price, true );
+							$row['total']   = $price;
+							$data[]         = $row;
+						}
+					}
+				}
+
+			} else {
+				foreach ( $adh->getRemainingDates() as $date ) {
+					foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
+						$row           = [];
+						$row['date_d'] = date_i18n( 'd/m/Y', $date );
+						$row['date']   = $date;
+
+						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+						                  . '<br />'
+						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+						$row['desc']    = $quant->getTitle();
+						$row['fact']    = $quant->getFactor();
+						$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
+						$row['total']   = $quant->getPrice();
+						$data[]         = $row;
+					}
+				}
+			}
+		}
+		if ( isset( $_GET['by_prod'] ) ) {
+			usort( $data, function ( $a, $b ) {
+				return strcmp( $a['prod'], $b['prod'] );
+			} );
+		} else {
+			usort( $data, function ( $a, $b ) {
+				if ( $a['date'] == $b['date'] ) {
+					return 0;
+				}
+
+				return $a['date'] > $b['date'] ? 1 : - 1;
+			} );
+		}
+		echo amapress_get_datatable( 'details_all_delivs', $columns, $data,
+			array(
+				'paging'    => false,
+				'searching' => false,
+				'rowGroup'  => [
+					'dataSrc' => isset( $_GET['by_prod'] ) ? 'prod' : 'date_d',
+				]
+			),
+			array(
+				[
+					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+					'title'  => $print_title
+				],
+				[
+					'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
+					'title'         => $print_title,
+					'exportOptions' => [
+						'rowGroup' => true
+					]
+				],
 			) );
 	} else if ( 'details' == $step ) {
 		if ( empty( $_GET['contrat_id'] ) ) {
