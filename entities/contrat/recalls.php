@@ -30,6 +30,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	} );
 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-excl-producteurs' ) );
+	$send_to_producteurs      = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-send-producteurs' ) );
 
 	$sent_mails = false;
 	foreach ( $contrats_by_producteurs as $producteur_id => $contrats ) {
@@ -41,6 +42,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 		if ( empty( $producteur ) ) {
 			continue;
 		}
+		$send_to_producteur = in_array( $producteur_id, $send_to_producteurs );
 
 		/** @var AmapressContrat $contrat */
 		foreach ( $contrats as $contrat ) {
@@ -76,8 +78,12 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 			$replacements['producteur_contrats'] = $producteur->getContratsNames();
 
 			$referent_ids = $contrat->getAllReferentsIds();
+			if ( $send_to_producteur ) {
+				$referent_ids = array_merge( $referent_ids, $producteur->getUser()->getAllEmails() );
+			}
 
-			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), "Référents " . $producteur->getTitle(), 'referents' );
+			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ),
+				$send_to_producteur ? 'Producteur et référents ' . $producteur->getTitle() : 'Référents ' . $producteur->getTitle(), 'referents' );
 			$subject      = Amapress::getOption( 'distribution-quantites-recall-mail-subject' );
 			$content      = Amapress::getOption( 'distribution-quantites-recall-mail-content' );
 			foreach ( $replacements as $k => $v ) {
@@ -376,9 +382,18 @@ function amapress_contrat_quantites_recall_options() {
 		array(
 			'id'        => 'distribution-quantites-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs',
+			'name'      => 'Producteurs exclus',
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
 			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'orderby'   => 'post_title',
+			'order'     => 'ASC',
+		),
+		array(
+			'id'        => 'distribution-quantites-recall-send-producteurs',
+			'type'      => 'multicheck-posts',
+			'name'      => 'Envoi Producteurs',
+			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
+			'desc'      => 'Envoyer les rappels au producteur (par défaut uniquement aux référents) pour les producteurs suivants :',
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
