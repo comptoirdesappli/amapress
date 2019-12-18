@@ -1644,7 +1644,6 @@ add_filter( 'admin_footer_text', function ( $content ) {
 
 						if ( $current_tab_id == $tab_id ) {
 							$tab_title = $tab_name;
-							break;
 						}
 					}
 				}
@@ -1668,7 +1667,6 @@ add_filter( 'admin_footer_text', function ( $content ) {
 
 								if ( $current_tab_id == $tab_id ) {
 									$tab_title = $tab_name;
-									break;
 								}
 							}
 						}
