@@ -749,44 +749,50 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 					),
 					'tabs'     => array(
 						'Ajouter Inscription Contrat '   => array(
-							'id'        => 'add_inscription',
-							'desc'      => '',
-							'use_form'  => false,
-							'use_table' => false,
-							'options'   => array(
+							'id'         => 'add_inscription',
+							'desc'       => '',
+							'use_form'   => false,
+							'use_table'  => false,
+							'capability' => 'edit_contrat_instance',
+							'options'    => array(
 								array(
-									'id'     => 'add_user_inscr',
-									'type'   => 'custom',
-									'bare'   => true,
-									'custom' => 'amapress_create_user_and_adhesion_assistant',
+									'id'         => 'add_user_inscr',
+									'type'       => 'custom',
+									'bare'       => true,
+									'capability' => 'edit_contrat_instance',
+									'custom'     => 'amapress_create_user_and_adhesion_assistant',
 								)
 							),
 						),
 						'Ajouter un coadhérent'          => array(
-							'id'        => 'add_coadherent',
-							'desc'      => '',
-							'use_form'  => false,
-							'use_table' => false,
-							'options'   => array(
+							'id'         => 'add_coadherent',
+							'desc'       => '',
+							'use_form'   => false,
+							'use_table'  => false,
+							'capability' => 'edit_contrat_instance',
+							'options'    => array(
 								array(
-									'id'     => 'add_user_coinscr',
-									'type'   => 'custom',
-									'bare'   => true,
-									'custom' => 'amapress_create_ooadhesion_assistant',
+									'id'         => 'add_user_coinscr',
+									'type'       => 'custom',
+									'bare'       => true,
+									'capability' => 'edit_contrat_instance',
+									'custom'     => 'amapress_create_ooadhesion_assistant',
 								)
 							),
 						),
 						'Ajouter une personne hors AMAP' => array(
-							'id'        => 'add_other_user',
-							'desc'      => '',
-							'use_form'  => false,
-							'use_table' => false,
-							'options'   => array(
+							'id'         => 'add_other_user',
+							'desc'       => '',
+							'use_form'   => false,
+							'use_table'  => false,
+							'capability' => 'edit_contrat_instance',
+							'options'    => array(
 								array(
-									'id'     => 'add_user_other',
-									'type'   => 'custom',
-									'bare'   => true,
-									'custom' => 'amapress_create_user_for_distribution',
+									'id'         => 'add_user_other',
+									'type'       => 'custom',
+									'bare'       => true,
+									'capability' => 'edit_contrat_instance',
+									'custom'     => 'amapress_create_user_for_distribution',
 								)
 							),
 						),
@@ -859,7 +865,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								'name'       => 'Quantités à la prochaine distribution',
 								'menu_title' => 'Quantités',
 								'position'   => '25.2',
-								'capability' => 'edit_distribution',
+								'capability' => 'edit_contrat',
 								'menu_icon'  => 'dashicons-chart-pie',
 							),
 							'options'  => array(),
@@ -919,7 +925,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								'name'       => 'Statistiques des contrats',
 								'menu_title' => 'Statistiques',
 								'position'   => '25.2',
-								'capability' => 'edit_distribution',
+								'capability' => 'edit_contrat',
 								'menu_icon'  => 'dashicons-chart-bar',
 							),
 							'options'  => array(
@@ -2635,7 +2641,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'settings' => array(
 								'name'       => 'Liste émargement',
 								'position'   => '25.16',
-								'capability' => 'edit_distribution',
+								'capability' => 'edit_contrat_instance',
 								'icon'       => 'dashicons-admin-tools',
 							),
 							'options'  => array(

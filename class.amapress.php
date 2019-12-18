@@ -769,6 +769,18 @@ class Amapress {
 			'delete'  => false,
 			'publish' => false,
 		) );
+		self::add_post_role( 'producteur', 'panier', 'paniers', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'producteur', 'distribution', 'distributions', array(
+			'read'    => false,
+			'edit'    => false,
+			'delete'  => false,
+			'publish' => false,
+		) );
 		self::add_post_role( 'producteur', 'mailing_group', 'mailing_groups', array(
 			'read'    => false,
 			'edit'    => false,

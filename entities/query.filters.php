@@ -238,6 +238,36 @@ function amapress_filter_posts( WP_Query $query ) {
 				'compare' => 'IN',
 				'type'    => 'NUMERIC'
 			);
+		} else if ( $pt == 'contrat_instance' ) {
+			$prod_ids    = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+			$contrat_ids = [];
+			foreach ( $prod_ids as $prod_id ) {
+				foreach ( AmapressContrats::get_contrats( $prod_id, false, false ) as $contrat ) {
+					$contrat_ids[] = $contrat->ID;
+				}
+			}
+			$meta[] = array(
+				'key'     => "amapress_contrat_instance_model",
+				'value'   => amapress_prepare_in( $contrat_ids ),
+				'compare' => 'IN',
+				'type'    => 'NUMERIC'
+			);
+		} else if ( $pt == 'panier' ) {
+			$prod_ids             = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+			$contrat_instance_ids = [];
+			foreach ( $prod_ids as $prod_id ) {
+				foreach ( AmapressContrats::get_contrats( $prod_id, false, false ) as $contrat ) {
+					foreach ( AmapressContrats::get_all_contrat_instances_by_contrat_ids( $contrat->ID ) as $contrat_instance_id ) {
+						$contrat_instance_ids[] = $contrat_instance_id;
+					}
+				}
+			}
+			$meta[] = array(
+				'key'     => "amapress_panier_contrat_instance",
+				'value'   => amapress_prepare_in( $contrat_instance_ids ),
+				'compare' => 'IN',
+				'type'    => 'NUMERIC'
+			);
 		}
 		if ( count( $meta ) > 0 ) {
 			if ( count( $meta ) > 1 ) {
