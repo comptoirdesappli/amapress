@@ -928,7 +928,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			array(
 				'id'         => 'amapress_state',
 				'title'      => $dash_state . 'Etat Amapress',
-				'capability' => 'manage_options',
+				'capability' => 'manage_amapress',
 				'href'       => admin_url( 'admin.php?page=amapress_state' ),
 			),
 			array(
