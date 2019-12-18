@@ -274,3 +274,8 @@ span.description {
     background-color: #fff;
     padding: 5px 20px;
 }
+
+.widefat.elm-ignored-messages {
+    table-layout: fixed;
+    width: 100%;
+}
