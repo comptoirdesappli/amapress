@@ -1178,7 +1178,13 @@ class AmapressAdhesion extends TitanEntity {
 	 */
 	public function getContrat_quantites( $dist_date ) {
 		if ( $this->getContrat_instance() && $this->getContrat_instance()->isPanierVariable() ) {
-			return [];
+			$quants = $this->getVariables_Contrat_quantites( $dist_date );
+			$ret    = [];
+			foreach ( $quants as $quant ) {
+				$ret[ $quant['contrat_quantite']->ID ] = new AmapressAdhesionQuantite( $quant['contrat_quantite'], $quant['quantite'] );
+			}
+
+			return $ret;
 		}
 
 		$factors = $this->getCustomAsFloatArray( 'amapress_adhesion_contrat_quantite_factors' );
