@@ -895,11 +895,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													}
 
 													$is_all = isset( $_GET['all'] );
+
 													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date, [
 														'show_all_dates'   => $is_all,
 														'show_adherents'   => ! $is_all,
 														'show_empty_lines' => ! $is_all,
 														'show_price'       => isset( $_GET['with_prices'] ),
+														'group_by'         => $is_all && isset( $_GET['by'] ) ? $_GET['by'] : 'none',
 													] );
 												},
 											),

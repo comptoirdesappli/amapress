@@ -1182,6 +1182,7 @@ function amapress_get_contrat_quantite_datatable(
 			'show_contact_producteur' => true,
 			'show_adherents'          => true,
 			'show_all_dates'          => false,
+			'group_by'                => 'none',
 			'show_price'              => false,
 			'show_empty_lines'        => ! $contrat_instance->isPanierVariable(),
 			'show_sum_fact_details'   => true,
@@ -1195,6 +1196,7 @@ function amapress_get_contrat_quantite_datatable(
 		)
 	);
 
+	$group_by              = $options['group_by'];
 	$show_empty_lines      = $options['show_empty_lines'];
 	$show_adherents        = $options['show_adherents'];
 	$show_equiv_quantite   = $options['show_equiv_quantite'];
@@ -1516,9 +1518,37 @@ function amapress_get_contrat_quantite_datatable(
 			if ( ! $show_empty_lines && 0 == $all_quant_adh_count ) {
 				continue;
 			}
-			$data[] = $row;
+			if ( 'month' == $group_by || 'quarter' == $group_by ) {
+				if ( 'quarter' == $group_by ) {
+					$quarter          = ceil( intval( date( 'n', $real_date ) ) / 3 );
+					$row['date']      = "T$quarter";
+					$row['date_sort'] = "T$quarter";
+				} else {
+					$row['date']      = date_i18n( 'm/Y', $real_date );
+					$row['date_sort'] = date( 'Y-m', $real_date );
+				}
+				$key = $row['date_sort'] . $row['quant'];
+				if ( isset( $data[ $key ] ) ) {
+					foreach ( $row as $k => $v ) {
+						if ( 'quant' == $k || 'date' == $k ) {
+							continue;
+						}
+						if ( is_string( $v ) ) {
+							$data[ $key ][ $k ] .= $v;
+						} else {
+							$data[ $key ][ $k ] += $v;
+						}
+					}
+					$data[ $key ]['price_d'] = Amapress::formatPrice( $data[ $key ]['price'], true );
+				} else {
+					$data[ $key ] = $row;
+				}
+			} else {
+				$data[] = $row;
+			}
 		}
 	}
+	$data = array_values( $data);
 //	<h4>' . esc_html( $contrat_instance->getTitle() ) . '</h4>
 
 	//
@@ -1533,7 +1563,13 @@ function amapress_get_contrat_quantite_datatable(
 		                      $root_url,
 		                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) .
 	                      '</p><hr/>';
-	$next_distrib_text .= '<p>' . Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) . '</p><hr/>';
+	$next_distrib_text .= '<p>' .
+	                      Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) .
+	                      ' | ' .
+	                      Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ) .
+	                      ' | ' .
+	                      Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ) .
+	                      '</p><hr/>';
 
 	$print_title = '';
 	if ( $show_all_dates ) {
