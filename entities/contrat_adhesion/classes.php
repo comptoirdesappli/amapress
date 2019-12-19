@@ -1891,6 +1891,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	public function canSelfEdit( $days_before = 3 ) {
 		return $this->getContrat_instance()->canSelfEdit()
 		       && self::TO_CONFIRM == $this->getStatus()
+		       && Amapress::end_of_day( $this->getContrat_instance()->getDate_cloture() ) > Amapress::start_of_day( amapress_time() )
 		       && Amapress::add_days( $this->getDate_debut(), - abs( $days_before ) ) > Amapress::start_of_day( amapress_time() );
 	}
 
