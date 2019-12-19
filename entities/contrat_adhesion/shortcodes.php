@@ -253,20 +253,21 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'contact_referents'                => 'true',
 			'show_adherents_infos'             => 'true',
 //			'allow_edit_inscriptions'          => 'true',
-			'allow_coadherents_access'         => 'true',
-			'allow_coadherents_inscription'    => 'true',
-			'allow_coadherents_adhesion'       => 'true',
-			'show_coadherents_address'         => 'false',
-			'contrat_print_button_text'        => 'Imprimer',
-			'adhesion_print_button_text'       => 'Imprimer',
-			'only_contrats'                    => '',
-			'shorturl'                         => '',
-			'show_due_amounts'                 => 'false',
-			'show_delivery_details'            => 'false',
-			'adhesion_shift_weeks'             => 0,
-			'before_close_hours'               => 24,
-			'max_coadherents'                  => 3,
-			'email'                            => get_option( 'admin_email' ),
+			'allow_coadherents_access'      => 'true',
+			'allow_coadherents_inscription' => 'true',
+			'allow_coadherents_adhesion'    => 'true',
+			'show_coadherents_address'      => 'false',
+			'contrat_print_button_text'     => 'Imprimer',
+			'adhesion_print_button_text'    => 'Imprimer',
+			'only_contrats'                 => '',
+			'shorturl'                      => '',
+			'show_due_amounts'              => 'false',
+			'show_delivery_details'         => 'false',
+			'show_calendar_delivs'          => 'false',
+			'adhesion_shift_weeks'          => 0,
+			'before_close_hours'            => 24,
+			'max_coadherents'               => 3,
+			'email'                         => get_option( 'admin_email' ),
 		]
 		, $atts );
 
@@ -1374,6 +1375,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php
 		}
 
+		if ( Amapress::toBool( $atts['show_calendar_delivs'] ) ) {
+			echo '<p>';
+			echo Amapress::makeButtonLink( add_query_arg( [
+				'step' => 'calendar_delivs',
+			] ), 'Calendrier des livraisons', true, true, 'btn btn-default' );
+			echo '</p>';
+		}
+
 		$allow_inscriptions         = Amapress::toBool( $atts['allow_inscriptions'] );
 		$display_remaining_contrats = true;
 		if ( ! $admin_mode && ! $allow_inscriptions ) {
@@ -2026,6 +2035,71 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'exportOptions' => [
 						'rowGroup' => true
 					]
+				],
+			) );
+	} else if ( 'calendar_delivs' == $step ) {
+		$print_title = 'Calendrier des livraisons';
+		echo '<h4>' . esc_html( $print_title ) . '</h4>';
+		$dates = [];
+		foreach ( $subscribable_contrats as $contrat ) {
+			foreach ( $contrat->getRemainingDates() as $d ) {
+				$dates[] = $d;
+			}
+		}
+		$dates = array_unique( $dates );
+		sort( $dates );
+		$columns   = [];
+		$columns[] = array(
+			'title' => 'Producteur',
+			'data'  => array(
+				'_'    => 'prod',
+				'sort' => 'prod',
+			)
+		);
+		foreach ( $dates as $date ) {
+			$columns[] = array(
+				'title' => date_i18n( 'd/m/Y', $date ),
+				'data'  => array(
+					'_'    => 'date_' . $date,
+					'sort' => 'date_' . $date,
+				)
+			);
+		}
+
+		$data = [];
+		foreach ( $subscribable_contrats as $contrat ) {
+			$row             = [];
+			$row['prod']     = $contrat->getModel()->getTitle()
+			                   . '<br />'
+			                   . '<em>' . $contrat->getModel()->getProducteur()->getTitle() . '</em>';
+			$remaining_dates = $contrat->getRemainingDates();
+			foreach ( $dates as $date ) {
+				if ( in_array( $date, $remaining_dates ) ) {
+					$row[ 'date_' . $date ] = 'X';
+				} else {
+					$row[ 'date_' . $date ] = '';
+				}
+			}
+			$data[] = $row;
+		}
+
+		echo amapress_get_datatable( 'calend_delivs', $columns, $data,
+			array(
+				'paging'      => false,
+				'searching'   => false,
+				'responsive'  => false,
+				'scrollX'     => true,
+				'scrollY'     => '300px',
+				'fixedHeader' => true,
+			),
+			array(
+				[
+					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+					'title'  => $print_title
+				],
+				[
+					'extend' => Amapress::DATATABLES_EXPORT_PRINT,
+					'title'  => $print_title,
 				],
 			) );
 	} else if ( 'details' == $step ) {
