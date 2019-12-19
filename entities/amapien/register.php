@@ -35,12 +35,12 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => 'Rôle dans l\'AMAP',
 //            ),
-			'head_amapress4'  => array(
+			'head_amapress4'    => array(
 				'id'   => 'fonctions_sect',
 				'name' => amapress__( 'Fonctions' ),
 				'type' => 'heading',
 			),
-			'all_roles'       => array(
+			'all_roles'         => array(
 				'name'        => amapress__( 'Fonctions actuelles' ),
 				'show_column' => false,
 				'type'        => 'custom',
@@ -65,7 +65,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return $roles;
 				}
 			),
-			'role_desc'       => array(
+			'role_desc'         => array(
 				'type'        => 'custom',
 				'name'        => amapress__( 'Rôle sur le site' ),
 				'show_column' => false,
@@ -87,7 +87,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br />Ouvre tous les droits sur le site</p>';
 				}
 			),
-			'amap_roles'      => array(
+			'amap_roles'        => array(
 				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -99,7 +99,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'adh_type'        => array(
+			'adh_type'          => array(
 				'name'          => amapress__( 'Type' ),
 				'type'          => 'custom',
 				'show_column'   => true,
@@ -115,7 +115,7 @@ function amapress_register_entities_amapien( $entities ) {
 					echo $amapien ? $amapien->getAdherentTypeDisplay() : '';
 				}
 			),
-			'intermittent'    => array(
+			'intermittent'      => array(
 				'name'              => amapress__( 'Intermittent' ),
 				'type'              => 'custom',
 				'custom_csv_sample' => function ( $option, $arg ) {
@@ -159,7 +159,7 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 				'show_column'       => false,
 			),
-			'no_renew'        => array(
+			'no_renew'          => array(
 				'name'       => amapress__( 'Non renouvellement' ),
 				'type'       => 'checkbox',
 				'desc'       => 'L\'amapien n\'a pas renouvelé',
@@ -167,7 +167,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv_import' => false,
 				'default'    => 0,
 			),
-			'no_renew_reason' => array(
+			'no_renew_reason'   => array(
 				'name'       => amapress__( 'Motif' ),
 				'type'       => 'text',
 				'default'    => '',
@@ -175,7 +175,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv_import' => false,
 				'desc'       => 'Motif de non renouvellement',
 			),
-			'last_login'      => array(
+			'last_login'        => array(
 				'name'        => amapress__( 'Dernière connexion' ),
 				'type'        => 'custom',
 				'show_on'     => 'none',
@@ -191,12 +191,12 @@ function amapress_register_entities_amapien( $entities ) {
 					return date_i18n( 'd/m/Y H:i:s', intval( $last_login ) );
 				}
 			),
-			'head_amapress0'  => array(
+			'head_amapress0'    => array(
 				'id'   => 'amapress_sect',
 				'name' => amapress__( 'Amapress' ),
 				'type' => 'heading',
 			),
-			'avatar'          => array(
+			'avatar'            => array(
 				'name'            => amapress__( 'Avatar' ),
 				'selector-title'  => 'Sélectionnez/téléversez votre photo',
 				'selector-button' => 'Utiliser cette photo',
@@ -205,33 +205,33 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'            => 'Avatar',
 				'show_column'     => false,
 			),
-			'head_amapress'   => array(
+			'head_amapress'     => array(
 				'id'   => 'address_sect',
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
 			),
-			'adresse'         => array(
+			'adresse'           => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Adresse',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'code_postal'     => array(
+			'code_postal'       => array(
 				'name'       => amapress__( 'Code postal' ),
 				'type'       => 'text',
 				'desc'       => 'Code postal',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'ville'              => array(
+			'ville'             => array(
 				'name'       => amapress__( 'Ville' ),
 				'type'       => 'text',
 				'desc'       => 'Ville',
 				'searchable' => true,
 //                'required' => true,
 			),
-			'adresse_localized'  => array(
+			'adresse_localized' => array(
 				'name'                   => amapress__( 'Localisé' ),
 				'type'                   => 'address',
 				'use_as_field'           => false,
@@ -918,6 +918,19 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'icon'       => 'dashicons-pressthis',
 				'capability' => 'read',
 				'href'       => $pre_inscr_href,
+			);
+		}
+	}
+
+	if ( amapress_can_access_admin() ) {
+		$inter_inscr_href = Amapress::get_page_with_shortcode_href( 'intermittents-inscription', 'amps_inscr_int_page' );
+		if ( ! empty( $inter_inscr_href ) ) {
+			$main_items[] = array(
+				'id'         => 'amapress_goto_interinscr_page',
+				'title'      => 'Inscription Intermittent',
+				'icon'       => 'dashicons-none flaticon-business-2',
+				'capability' => 'read',
+				'href'       => $inter_inscr_href,
 			);
 		}
 	}
