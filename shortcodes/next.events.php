@@ -302,7 +302,7 @@ function amapress_get_event_html( $ev_date, $arr, $lieu_hour_dic, $first_lieu, $
 					$has_img = true;
 				}
 				$has_text = $show_text || empty( $icon );
-				$ret      .= '<a class="evt-link ' . ( $has_text ? 'evt-text ' : '' ) . ( $has_img ? 'evt-img ' : '' ) . '" href="' . $ev->getLink() . '">' . ( $show_icon ? $icon : '' ) . ( $has_text ? $ev->getLabel() : '' ) . '</a>';
+				$ret      .= '<a class="evt-link ' . ( $has_text ? ' evt-text ' : '' ) . ( $has_img ? ' evt-img ' : '' ) . ' ' . $ev->getClass() . '" href="' . $ev->getLink() . '">' . ( $show_icon ? $icon : '' ) . ( $has_text ? $ev->getLabel() : '' ) . '</a>';
 				$init     = false;
 			}
 			$ret .= '</div>';

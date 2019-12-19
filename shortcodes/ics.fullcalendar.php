@@ -62,7 +62,7 @@ function amapress_fullcalendar( $atts ) {
                 var parsed = ICAL.parse(res);
                 parsed[2].forEach(function (event) {
                     if (event[0] !== 'vevent') return;
-                    var summary, location, start, end, url, description;
+                    var summary, location, start, end, url, description, css;
                     event[1].forEach(function (event_item) {
                         switch (event_item[0]) {
                             case 'location':
@@ -83,6 +83,9 @@ function amapress_fullcalendar( $atts ) {
                             case 'dtend':
                                 end = event_item[3];
                                 break;
+                            case 'x-amps-css':
+                                css = event_item[3];
+                                break;
                         }
                     });
                     if (summary && location && start && end) {
@@ -97,7 +100,8 @@ function amapress_fullcalendar( $atts ) {
                             start: start,
                             end: end,
                             url: url,
-                            location: location
+                            location: location,
+                            classNames: css ? [css] : []
                         })
                     }
                 });
