@@ -1584,33 +1584,9 @@ function get_admin_menu_item_title( $menu_item_file, $submenu_as_parent = true )
 			}
 		}
 
-		// Get top-level parent item
-		foreach ( $menu as $key => $menu_item ) {
-			if ( array_keys( $menu_item, $top_file, true ) ) {
-				$item = $menu[ $key ];
-				break;
-			}
-		}
-
 		// If the $menu_item_file parameter doesn't match any menu item, return false
 		if ( ! $sub_item ) {
 			return false;
-		}
-
-		// Get URL
-		$menu_file = $item[2];
-
-		if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
-			$menu_file = substr( $menu_file, 0, $pos );
-		}
-
-		// Handle current for post_type=post|page|foo pages, which won't match $self.
-		$self_type = ! empty( $typenow ) ? $self . '?post_type=' . $typenow : 'nothing';
-		$menu_hook = get_plugin_page_hook( $sub_item[2], $item[2] );
-
-		$sub_file = $sub_item[2];
-		if ( false !== ( $pos = strpos( $sub_file, '?' ) ) ) {
-			$sub_file = substr( $sub_file, 0, $pos );
 		}
 
 		$title = $sub_item[0];

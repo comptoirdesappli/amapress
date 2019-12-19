@@ -64,8 +64,8 @@ function menu_sanitize_html_class( $sanitized, $class ) {
 	return $sanitized;
 }
 
-add_filter( 'submenu_file', 'amapress_highlight_menu', 99, 3 );
-function amapress_highlight_menu( $submenu, $parent ) {
+add_filter( 'submenu_file', 'amapress_highlight_menu', 99, 1 );
+function amapress_highlight_menu( $submenu ) {
 	global $parent_file;
 	global $submenu_file;
 
@@ -92,6 +92,39 @@ function amapress_highlight_menu( $submenu, $parent ) {
 	}
 
 	return $submenu;
+}
+
+add_filter( 'parent_file', 'amapress_highlight_menu_parent', 99, 1 );
+function amapress_highlight_menu_parent( $file ) {
+	global $parent_file;
+	global $submenu_file;
+
+	$post      = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : null;
+	$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : null;
+	if ( empty( $post_type ) && ! empty( $post ) ) {
+		$post_type = get_post_type( intval( $post ) );
+	}
+	if ( empty( $post_type ) && isset( $_GET['view'] ) ) {
+		$post_type = $_GET['view'];
+	}
+	if ( empty( $post_type ) && isset( $_GET['taxonomy'] ) ) {
+		$post_type = $_GET['taxonomy'];
+	}
+
+	foreach ( AmapressEntities::getMenu() as $m ) {
+		if ( isset( $m['subpages'] ) ) {
+			foreach ( $m['subpages'] as $subpage ) {
+				if ( isset( $subpage['post_type'] ) && $subpage['post_type'] == $post_type ) { // admin_url($slug) == $full_url) {
+					$parent_file  = $m['id'];
+					$submenu_file = $subpage['slug'];
+
+					return $parent_file;
+				}
+			}
+		}
+	}
+
+	return $file;
 }
 
 // Add to the admin_init action hook

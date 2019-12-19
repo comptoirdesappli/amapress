@@ -272,6 +272,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'menu_icon'  => 'dashicons-tag',
 							'menu_title' => 'Catégories de produits',
 							'capability' => 'edit_produit',
+							'post_type'  => 'amps_produit_category',
 							'slug'       => 'edit-tags.php?taxonomy=amps_produit_category',
 						),
 					),
@@ -307,6 +308,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'menu_icon'  => 'dashicons-tag',
 							'menu_title' => 'Catégories de recettes',
 							'capability' => 'edit_recette',
+							'post_type'  => 'amps_recette_category',
 							'slug'       => 'edit-tags.php?taxonomy=amps_recette_category',
 						),
 //						array(
@@ -409,6 +411,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'menu_icon'  => 'dashicons-tag',
 							'menu_title' => 'Catégories d\'évènements',
 							'capability' => 'edit_amap_event',
+							'post_type'  => 'amps_amap_event_category',
 							'slug'       => 'edit-tags.php?taxonomy=amps_amap_event_category',
 						),
 						array(
@@ -1544,6 +1547,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'menu_icon'  => 'dashicons-tag',
 							'menu_title' => 'Configuration',
 							'capability' => 'edit_adhesion_paiement',
+							'post_type'  => 'amps_paiement_category',
 							'slug'       => 'edit-tags.php?taxonomy=amps_paiement_category',
 						),
 						array(
