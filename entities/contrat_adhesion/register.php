@@ -1223,8 +1223,8 @@ function amapress_get_contrat_quantite_datatable(
 			'sort' => 'quant',
 		)
 	);
+	$lieux     = Amapress::get_lieux();
 	if ( ! $contrat_instance->isPanierVariable() ) {
-		$lieux = Amapress::get_lieux();
 		if ( count( $lieux ) > 1 ) {
 			foreach ( $lieux as $lieu ) {
 				$columns[] = array(
