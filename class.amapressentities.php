@@ -995,6 +995,26 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 						),
 						array(
 							'subpage'  => true,
+							'id'       => 'contrats_finances',
+							'settings' => array(
+								'name'       => 'Finances',
+								'menu_title' => 'Finances',
+								'position'   => '25.2',
+								'capability' => 'edit_contrat',
+								'menu_icon'  => 'dashicons-chart-line',
+							),
+							'options'  => array(
+								array(
+									'name'   => amapress__( 'Statistiques financières' ),
+									'bare'   => 'true',
+									'type'   => 'custom',
+									'custom' => 'amapress_producteurs_finances_custom'
+								)
+							),
+							'tabs'     => array()
+						),
+						array(
+							'subpage'  => true,
 							'id'       => 'contrats_archives',
 							'settings' => array(
 								'name'       => 'Archivage des contrats et inscriptions',

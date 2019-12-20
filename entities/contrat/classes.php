@@ -275,6 +275,7 @@ class AmapressContrat_instance extends TitanEntity {
 	public function getAllow_Delivery_Pay() {
 		return $this->getCustom( 'amapress_contrat_instance_allow_deliv_pay', 0 );
 	}
+
 	public function getAllow_Cash() {
 		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}
@@ -1861,6 +1862,7 @@ class AmapressContrat_instance extends TitanEntity {
 				} );
 			$line              = [
 				'date'                  => date_i18n( 'd/m/Y', $date ),
+				'date_int'              => $date,
 				'lieu_all_inscriptions' => count( $date_inscriptions )
 			];
 
@@ -1875,6 +1877,7 @@ class AmapressContrat_instance extends TitanEntity {
 						} );
 					$line[ 'lieu_' . $lieu_id . '_inscriptions' ] = count( $lieu_inscriptions );
 
+					$lieu_price = 0;
 					foreach ( $quantites as $quantite ) {
 						$quantite_sum                                           = from( $lieu_inscriptions )->sum(
 							function ( $inscription ) use ( $quantite, $date ) {
@@ -1887,11 +1890,26 @@ class AmapressContrat_instance extends TitanEntity {
 
 								return 0;
 							} );
+						$quantite_price                                         = from( $lieu_inscriptions )->sum(
+							function ( $inscription ) use ( $quantite, $date ) {
+								/** @var AmapressAdhesion $inscription */
+								foreach ( $inscription->getContrat_quantites( $date ) as $q ) {
+									if ( $q->getId() == $quantite->ID ) {
+										return $q->getPrice();
+									}
+								}
+
+								return 0;
+							} );
+						$lieu_price                                             += $quantite_price;
 						$line[ 'lieu_' . $lieu_id . '_q' . $quantite->getID() ] = $quantite_sum;
+						$line[ 'lieu_' . $lieu_id . '_p' . $quantite->getID() ] = $quantite_price;
 					}
+					$line[ 'lieu_' . $lieu_id . '_p' ] = $lieu_price;
 				}
 			}
 
+			$all_price = 0;
 			foreach ( $quantites as $quantite ) {
 				$quantite_sum                              = from( $date_inscriptions )->sum(
 					function ( $inscription ) use ( $quantite, $date ) {
@@ -1904,8 +1922,22 @@ class AmapressContrat_instance extends TitanEntity {
 
 						return 0;
 					} );
+				$quantite_price                            = from( $date_inscriptions )->sum(
+					function ( $inscription ) use ( $quantite, $date ) {
+						/** @var AmapressAdhesion $inscription */
+						foreach ( $inscription->getContrat_quantites( $date ) as $q ) {
+							if ( $q->getId() == $quantite->ID ) {
+								return $q->getPrice();
+							}
+						}
+
+						return 0;
+					} );
+				$all_price                                 += $quantite_price;
 				$line[ 'lieu_all_q' . $quantite->getID() ] = $quantite_sum;
+				$line[ 'lieu_all_p' . $quantite->getID() ] = $quantite_price;
 			}
+			$line['lieu_all_p'] = $all_price;
 
 			$lines[] = $line;
 		}
