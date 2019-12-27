@@ -68,6 +68,9 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	if ( empty( $to ) ) {
 		$to = get_option( 'admin_email' );
 	}
+	if ( empty( $subject ) || empty( $message ) ) {
+		throw new Exception( 'Empty mail ???' );
+	}
 	if ( is_array( $to ) ) {
 		$to = implode( ', ', $to );
 	}
