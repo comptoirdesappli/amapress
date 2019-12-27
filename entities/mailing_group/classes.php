@@ -803,7 +803,7 @@ class AmapressMailingGroup extends TitanEntity {
 		];
 
 		foreach ( $placeholders as $k => $v ) {
-			$content = str_replace( "%%$k%%", $v, $content );
+			$content = str_replace( "%%$k%%", ! empty( $v ) ? $v : '', $content );
 		}
 
 		return amapress_replace_mail_placeholders( $content, null, null );
