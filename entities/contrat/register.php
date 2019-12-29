@@ -288,7 +288,7 @@ function amapress_register_entities_contrat( $entities ) {
 </style>';
 			}
 		},
-		'row_actions'      => array(
+		'row_actions'  => array(
 			'renew'              => array(
 				'label'     => 'Renouveler (prolongement)',
 				'condition' => 'amapress_can_renew_contrat_instance',
@@ -411,16 +411,36 @@ function amapress_register_entities_contrat( $entities ) {
 //				'show_on'   => 'none',
 //			],
 		),
-		'labels'           => array(
+		'bulk_actions' => array(
+			'amp_incr_cloture' => array(
+				'label'    => 'Reporter date clôture (1j)',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant l\'opération',
+					'0'  => 'Une erreur s\'est produit pendant l\'opération',
+					'1'  => 'Date de clôture repoussée d\'un jour',
+					'>1' => 'Dates de clôture repoussées d\'un jour',
+				),
+			),
+			'amp_decr_cloture' => array(
+				'label'    => 'Diminuer date clôture (1j)',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant l\'opération',
+					'0'  => 'Une erreur s\'est produit pendant l\'opération',
+					'1'  => 'Date de clôture diminuée d\'un jour',
+					'>1' => 'Dates de clôture diminuées d\'un jour',
+				),
+			),
+		),
+		'labels'       => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajout modèle de contrat',
 			'edit_item'    => 'Éditer - Modèle de contrat',
 		),
-		'views'            => array(
+		'views'        => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_contrat_instance_views',
 		),
-		'fields'           => array(
+		'fields'       => array(
 			//renouvellement
 			'renouv'                => array(
 				'name'        => amapress__( 'Options' ),
@@ -2601,3 +2621,23 @@ add_action( 'admin_post_archive_contrat', function () {
 	echo '<p style="color: green">Archivage effectué</p>';
 	die();
 } );
+
+add_filter( 'amapress_bulk_action_amp_incr_cloture', 'amapress_bulk_action_amp_incr_cloture', 10, 2 );
+function amapress_bulk_action_amp_incr_cloture( $sendback, $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+		$contrat_instance->addClotureDays( 1 );
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
+}
+
+add_filter( 'amapress_bulk_action_amp_decr_cloture', 'amapress_bulk_action_amp_decr_cloture', 10, 2 );
+function amapress_bulk_action_amp_decr_cloture( $sendback, $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+		$contrat_instance->addClotureDays( - 1 );
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
+}

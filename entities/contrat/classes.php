@@ -351,6 +351,11 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_cloture' );
 	}
 
+	public function addClotureDays( $days = 1 ) {
+		$date = $this->getDate_cloture();
+		$this->setCustom( 'amapress_contrat_instance_date_cloture', Amapress::add_days( $date, $days ) );
+	}
+
 	public function getDate_debut() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_debut' );
 	}
