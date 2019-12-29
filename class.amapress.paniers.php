@@ -91,7 +91,8 @@ class AmapressPaniers {
 					}
 				} else if ( count( $paniers ) > 1 ) {
 					array_shift( $paniers );
-					foreach ( $paniers as $panier ) {
+					foreach ( $paniers as $panier_post ) {
+						$panier                = AmapressPanier::getBy( $panier_post );
 						$res[ $contrat->ID ][] = array(
 							'lieux' => $lieux_ids,
 							'date'  => Amapress::start_of_day( $panier->getDate() )
