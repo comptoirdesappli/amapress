@@ -1605,14 +1605,18 @@ add_filter( 'admin_footer_text', function ( $content ) {
 	$title     = get_admin_menu_item_title( $parent_file );
 	$subtitle  = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
 	$tab_title = '';
-	if ( 'admin.php' == $pagenow && ! empty( $_GET['page'] ) && ! empty( $_GET['tab'] ) ) {
+	if ( 'admin.php' == $pagenow && ! empty( $_GET['page'] ) ) {
 		$current_page_id = $_GET['page'];
-		$current_tab_id  = stripslashes( $_GET['tab'] );
+		$current_tab_id  = ! empty( $_GET['tab'] ) ? stripslashes( $_GET['tab'] ) : '';
 		foreach ( AmapressEntities::getMenu() as $item ) {
 			if ( isset( $item['id'] ) && $current_page_id == $item['id'] ) {
 				if ( ! empty( $item['tabs'] ) && is_array( $item['tabs'] ) ) {
 					if ( ! empty( $item['settings']['name'] ) ) {
 						$subtitle = $item['settings']['name'];
+					}
+					if ( ! empty( $item['settings']['menu_title'] ) ) {
+						$menu_subtitle = $item['settings']['menu_title'];
+						$subtitle      = ! empty( $subtitle ) ? "$menu_subtitle ($subtitle)" : $menu_subtitle;
 					}
 					foreach ( $item['tabs'] as $tab_name => $tab ) {
 						if ( isset( $tab['id'] ) ) {
@@ -1623,6 +1627,10 @@ add_filter( 'admin_footer_text', function ( $content ) {
 
 						if ( $current_tab_id == $tab_id ) {
 							$tab_title = $tab_name;
+						}
+						if ( ! $current_tab_id ) {
+							$tab_title = $tab_name;
+							break;
 						}
 					}
 				}
@@ -1636,7 +1644,11 @@ add_filter( 'admin_footer_text', function ( $content ) {
 						if ( ! empty( $subitem['settings']['name'] ) ) {
 							$subtitle = $subitem['settings']['name'];
 						}
-						if ( ! empty( $subitem['tabs'] ) ) {
+						if ( ! empty( $subitem['settings']['menu_title'] ) ) {
+							$menu_subtitle = $subitem['settings']['menu_title'];
+							$subtitle      = ! empty( $subtitle ) ? "$menu_subtitle ($subtitle)" : $menu_subtitle;
+						}
+						if ( ! empty( $subitem['tabs'] ) && is_array( $subitem['tabs'] ) ) {
 							foreach ( $subitem['tabs'] as $tab_name => $tab ) {
 								if ( isset( $tab['id'] ) ) {
 									$tab_id = $tab['id'];
@@ -1646,6 +1658,10 @@ add_filter( 'admin_footer_text', function ( $content ) {
 
 								if ( $current_tab_id == $tab_id ) {
 									$tab_title = $tab_name;
+								}
+								if ( ! $current_tab_id ) {
+									$tab_title = $tab_name;
+									break;
 								}
 							}
 						}
