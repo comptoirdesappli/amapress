@@ -211,7 +211,7 @@ function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	if ( isset( $atts['allow_adhesion'] ) ) {
 		$atts['adhesion'] = $atts['allow_adhesion'];
 	} else {
-		$atts['adhesion'] = 'true';
+		$atts['adhesion'] = 'false';
 	}
 
 	return amapress_self_inscription( $atts, $content, $tag );
@@ -253,21 +253,21 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'contact_referents'                => 'true',
 			'show_adherents_infos'             => 'true',
 //			'allow_edit_inscriptions'          => 'true',
-			'allow_coadherents_access'      => 'true',
-			'allow_coadherents_inscription' => 'true',
-			'allow_coadherents_adhesion'    => 'true',
-			'show_coadherents_address'      => 'false',
-			'contrat_print_button_text'     => 'Imprimer',
-			'adhesion_print_button_text'    => 'Imprimer',
-			'only_contrats'                 => '',
-			'shorturl'                      => '',
-			'show_due_amounts'              => 'false',
-			'show_delivery_details'         => 'false',
-			'show_calendar_delivs'          => 'false',
-			'adhesion_shift_weeks'          => 0,
-			'before_close_hours'            => 24,
-			'max_coadherents'               => 3,
-			'email'                         => get_option( 'admin_email' ),
+			'allow_coadherents_access'         => 'true',
+			'allow_coadherents_inscription'    => 'true',
+			'allow_coadherents_adhesion'       => 'true',
+			'show_coadherents_address'         => 'false',
+			'contrat_print_button_text'        => 'Imprimer',
+			'adhesion_print_button_text'       => 'Imprimer',
+			'only_contrats'                    => '',
+			'shorturl'                         => '',
+			'show_due_amounts'                 => 'false',
+			'show_delivery_details'            => 'false',
+			'show_calendar_delivs'             => 'false',
+			'adhesion_shift_weeks'             => 0,
+			'before_close_hours'               => 24,
+			'max_coadherents'                  => 3,
+			'email'                            => get_option( 'admin_email' ),
 		]
 		, $atts );
 
@@ -413,7 +413,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$max_contrat_date = $c->getDate_fin();
 		}
 	}
-	if ( empty( $subscribable_contrats ) ) {
+	if ( 'mes-contrats' != $tag && empty( $subscribable_contrats ) ) {
 		ob_clean();
 
 		if ( amapress_can_access_admin() ) {
@@ -424,7 +424,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	}
 
 	//TODO better ???
-	$adh_period_date = Amapress::add_a_week( $min_contrat_date, $atts['adhesion_shift_weeks'] );
+	$adh_period_date = Amapress::add_a_week( $min_contrat_date <= 0 ? amapress_time() : $min_contrat_date, $atts['adhesion_shift_weeks'] );
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 	$adhesion_step_url = add_query_arg( 'step', 'adhesion', remove_query_arg( [ 'contrat_id', 'message' ] ) );
@@ -491,7 +491,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			ob_clean();
 
 			return 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
-		} else if ( ! $user_has_contrat ) {
+		} else if ( 'mes-contrats' != $tag && ! $user_has_contrat ) {
 			ob_clean();
 
 			return 'Les inscriptions en ligne sont closes.';
@@ -1308,8 +1308,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
 
 				if ( empty( $adh_paiement ) ) {
-					if ( 'mes-contrats' == $tag && ! $activate_adhesion ) {
-						echo '<p><strong>Vous n\'avez pas d\'adhésion à l\'AMAP</strong></p>';
+					if ( 'mes-contrats' == $tag ) {
+						echo '<p><strong>Vous n\'avez pas d\'adhésion à l\'AMAP sur la période ' . esc_html( $adh_period->getTitle() ) . '</strong></p>';
 					} else {
 						echo '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
@@ -1655,7 +1655,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '</ul>';
 			} else {
 				if ( ! $admin_mode ) {
-					echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
+					if ( empty( $subscribable_contrats ) ) {
+						echo '<p>Les inscriptions sont closes.</p>';
+					} else {
+						echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
+					}
 				} else {
 					echo '<p>Il/Elle est inscrit à tous les contrats que vous gérez.</p>';
 				}

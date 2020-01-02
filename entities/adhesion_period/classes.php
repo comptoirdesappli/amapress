@@ -63,7 +63,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 					),
 					array(
 						'key'     => 'amapress_adhesion_period_date_fin',
-						'value'   => Amapress::end_of_day( $date ),
+						'value'   => Amapress::start_of_day( $date ),
 						'compare' => '>=',
 						'type'    => 'NUMERIC'
 					),
