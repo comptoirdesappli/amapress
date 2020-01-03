@@ -1832,7 +1832,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			'title' => 'Producteur',
 			'data'  => array(
 				'_'    => 'prod',
-				'sort' => 'prod',
+				'sort' => 'prod_sort',
 			)
 		);
 		$columns[] = array(
@@ -1860,17 +1860,20 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$data = [];
 		foreach ( $adhs as $adh ) {
-			$row             = [];
-			$row['prod']     = $adh->getContrat_instance()->getModel()->getTitle()
-			                   . '<br />'
-			                   . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-			$row['opt_pmts'] = $adh->getProperty( 'option_paiements' );
-			$info            = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
-			$info            .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
-			$row['info']     = $info;
-			$row['total_d']  = Amapress::formatPrice( $adh->getTotalAmount(), true );
-			$row['total']    = $adh->getTotalAmount();
-			$data[]          = $row;
+			$row              = [];
+			$row['prod']      = date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_debut() ) .
+			                    ' - ' . $adh->getContrat_instance()->getModel()->getTitle()
+			                    . '<br />'
+			                    . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+			$row['prod_sort'] = date_i18n( 'Y-m-d', $adh->getContrat_instance()->getDate_debut() ) .
+			                    $adh->getContrat_instance()->getModel()->getTitle();
+			$row['opt_pmts']  = $adh->getProperty( 'option_paiements' );
+			$info             = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
+			$info             .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
+			$row['info']      = $info;
+			$row['total_d']   = Amapress::formatPrice( $adh->getTotalAmount(), true );
+			$row['total']     = $adh->getTotalAmount();
+			$data[]           = $row;
 		}
 		echo amapress_get_datatable( 'details_all_paiements', $columns, $data,
 			array(
