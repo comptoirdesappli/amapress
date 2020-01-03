@@ -1507,10 +1507,10 @@ function amapress_get_contrat_quantite_datatable(
 	                      '</p><hr/>';
 	$next_distrib_text .= '<p>' .
 	                      Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) .
-	                      ' | ' .
-	                      Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ) .
-	                      ' | ' .
-	                      Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ) .
+	                      ( $show_all_dates ? ' | ' .
+	                                          Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ) .
+	                                          ' | ' .
+	                                          Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ) : '' ) .
 	                      '</p><hr/>';
 
 	$print_title = '';
