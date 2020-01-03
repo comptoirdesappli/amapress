@@ -1805,6 +1805,10 @@ function amapress_get_producteurs_finances_datatable(
 					if ( 'prod' == $k || 'date' == $k || 'date_sort' == $k ) {
 						continue;
 					}
+					if ( 'all_adhs' == $k ) {
+						$data[ $key ][ $k ] = $v > $data[ $key ][ $k ] ? $v : $data[ $key ][ $k ];
+						continue;
+					}
 					if ( is_string( $v ) ) {
 						$data[ $key ][ $k ] .= $v;
 					} else {
