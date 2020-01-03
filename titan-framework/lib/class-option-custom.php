@@ -15,6 +15,7 @@ class TitanFrameworkOptionCustom extends TitanFrameworkOption {
 		'show_desc'            => false,
 		'custom_csv_sample'    => null,
 		'join_meta_key'        => null,
+		'join_on'              => null,
 		'sort_column'          => null,
 		'column'               => null,
 		'use_custom_as_column' => false,
@@ -90,6 +91,7 @@ class TitanFrameworkOptionCustom extends TitanFrameworkOption {
 			echo '<tr><td colspan="2" style="margin: 0; padding: 0">';
 			echo $cnt;
 			echo '</td></tr>';
+
 			return;
 		}
 
@@ -119,10 +121,30 @@ class TitanFrameworkOptionCustom extends TitanFrameworkOption {
 			$id_column  = 'post_id';
 		}
 
-		return
-			$join .
-			$wpdb->prepare( " LEFT JOIN $meta_table as amp_pm ON $main_table.ID = amp_pm.$id_column and amp_pm.meta_key=%s ", $this->settings['join_meta_key'] ) .
-			" LEFT JOIN $wpdb->users as amp_sort ON amp_pm.meta_value = amp_sort.ID ";
+		$sort_column = $this->settings['sort_column'];
+
+		switch ( $this->settings['join_on'] ) {
+			case 'post':
+				return
+					$join .
+					$wpdb->prepare( " LEFT JOIN $meta_table as amp_pm ON $main_table.ID = amp_pm.$id_column and amp_pm.meta_key=%s ", $this->settings['join_meta_key'] ) .
+					" LEFT JOIN $wpdb->posts as amp_sort ON amp_pm.meta_value = amp_sort.ID ";
+			case 'post_meta':
+				return
+					$join .
+					$wpdb->prepare( " LEFT JOIN $meta_table as amp_pm ON $main_table.ID = amp_pm.$id_column and amp_pm.meta_key=%s ", $this->settings['join_meta_key'] ) .
+					$wpdb->prepare( " LEFT JOIN $wpdb->postmeta as amp_sort ON amp_pm.meta_value = amp_sort.post_id AND amp_sort.meta_key=%s", $sort_column );
+			case  'user_meta':
+				return
+					$join .
+					$wpdb->prepare( " LEFT JOIN $meta_table as amp_pm ON $main_table.ID = amp_pm.$id_column and amp_pm.meta_key=%s ", $this->settings['join_meta_key'] ) .
+					$wpdb->prepare( " LEFT JOIN $wpdb->usermeta as amp_sort ON amp_pm.meta_value = amp_sort.user_id AND amp_sort.meta_key=%s", $sort_column );
+			default:
+				return
+					$join .
+					$wpdb->prepare( " LEFT JOIN $meta_table as amp_pm ON $main_table.ID = amp_pm.$id_column and amp_pm.meta_key=%s ", $this->settings['join_meta_key'] ) .
+					" LEFT JOIN $wpdb->users as amp_sort ON amp_pm.meta_value = amp_sort.ID ";
+		}
 	}
 
 	public function getSQLOrderBy( $order, $type ) {
@@ -131,6 +153,13 @@ class TitanFrameworkOptionCustom extends TitanFrameworkOption {
 		}
 
 		$sort_column = $this->settings['sort_column'];
+
+		switch ( $this->settings['join_on'] ) {
+			case 'post_meta':
+			case  'user_meta':
+				$sort_column = 'meta_value';
+				break;
+		}
 
 		return ( 'user' == $type ? 'ORDER BY' : '' ) . " amp_sort.$sort_column " . ( strpos( $order, ' DESC' ) === false ? 'ASC' : 'DESC' );
 	}

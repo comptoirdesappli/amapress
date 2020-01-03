@@ -199,6 +199,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'group'         => '1/ Informations',
 				'name'          => amapress__( 'Adhérent' ),
 				'join_meta_key' => 'amapress_adhesion_adherent',
+				'join_on'       => 'user',
 				'sort_column'   => 'display_name',
 				'type'          => 'custom',
 				'column'        => function ( $post_id ) {
@@ -242,6 +243,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'type'          => 'custom',
 				'join_meta_key' => 'amapress_adhesion_adherent',
 				'sort_column'   => 'last_name',
+				'join_on'       => 'user_meta',
 				'column'        => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
 					if ( ! $adh->getAdherentId() ) {
@@ -259,6 +261,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'name'          => amapress__( 'Email' ),
 				'type'          => 'custom',
 				'join_meta_key' => 'amapress_adhesion_adherent',
+				'join_on'       => 'user',
 				'sort_column'   => 'user_email',
 				'column'        => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
