@@ -2131,7 +2131,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				wp_die( $invalid_access_message );
 			}
 			if ( isset( $_GET['confirm'] ) ) {
-				if ( ! wp_trash_post( $adh->ID ) ) {
+				if ( ! wp_delete_post( $adh->ID, true ) ) {
 					wp_die( $invalid_access_message );
 				}
 				echo '<p>Votre inscription ' . esc_html( $adh->getTitle() ) . ' a été annulée avec succès.</p>';
