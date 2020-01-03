@@ -915,7 +915,7 @@ class AmapressContrats {
 			$query = array(
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
 				'posts_per_page' => - 1,
-				'post_status'    => 'any',
+				'post_status'    => [ 'publish', 'draft' ],
 				'meta_query'     => $meta_query
 			);
 
