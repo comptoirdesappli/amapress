@@ -2850,6 +2850,7 @@ class Amapress {
 		wp_enqueue_style( 'leaflet', plugin_dir_url( __FILE__ ) . 'css/leaflet.css' );
 
 		wp_enqueue_script( 'datatable', plugin_dir_url( __FILE__ ) . 'js/datatables.min.js', array( 'jquery' ), true );
+		wp_enqueue_script( 'datatable-row-print-btn', plugin_dir_url( __FILE__ ) . 'js/dt.rowgroup.print.js', array( 'datatable' ), true );
 		wp_enqueue_style( 'datatable', plugin_dir_url( __FILE__ ) . 'css/datatables.min.css' );
 		wp_enqueue_script( 'amapress-front', plugins_url( '/js/front.js?v=' . $plugin_version, __FILE__ ), array( 'jquery' ), true );
 		wp_localize_script( 'amapress-front', 'amapress', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
