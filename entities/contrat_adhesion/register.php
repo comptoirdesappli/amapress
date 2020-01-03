@@ -1705,7 +1705,7 @@ function amapress_get_contrat_quantite_datatable(
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">' .
 	       $next_distrib_text .
 	       $contact_producteur .
-	       '<p><em>Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . ( $date != $real_date ? ' (panier déplacé du ' . date_i18n( 'd/m/Y', $real_date ) . ')' : '' ) . '</em></p>' .
+	       '<p><em>Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . ( ! $show_all_dates && $date != $real_date ? ' (panier déplacé du ' . date_i18n( 'd/m/Y', $real_date ) . ')' : '' ) . '</em></p>' .
 	       $output . '</div>';
 }
 
