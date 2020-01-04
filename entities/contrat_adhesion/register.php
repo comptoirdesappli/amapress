@@ -1338,13 +1338,12 @@ function amapress_get_contrat_quantite_datatable(
 					$adhesion        = $adhesions[0];
 					$row['adherent'] = $adhesion->getAdherent()->getSortableDisplayName();
 				}
-				if ( $show_all_dates ) {
-					$row['date']      = date_i18n( 'd/m/Y', $real_date );
-					$row['date_sort'] = date( 'Y-m-d', $real_date );
-				}
-				$quant_title  = $quant ? $quant->getTitle() : '-toutes-';
-				$row['quant'] = $quant ? $quant->getTitle() : '¤-Toutes-¤';
-				$quand_id     = $quant ? $quant->getID() : 0;
+				$row['date']      = date_i18n( 'd/m/Y', $real_date );
+				$row['date_sort'] = date( 'Y-m-d', $real_date );
+				$quant_title      = $quant ? $quant->getTitle() : '-toutes-';
+				$row['quant']     = $quant ? $quant->getTitle() : '¤-Toutes-¤';
+				$row['qid']       = $quant ? str_pad( $quant->ID, 8, '0', STR_PAD_LEFT ) : '99999999';
+				$quand_id         = $quant ? $quant->getID() : 0;
 				if ( count( $lieux ) > 1 ) {
 					foreach ( $lieux as $lieu ) {
 						$lieu_quant_adh_count      = 0;
@@ -1530,8 +1529,8 @@ function amapress_get_contrat_quantite_datatable(
 	}
 	$data = array_values( $data );
 	usort( $data, function ( $a, $b ) use ( $show_adherents ) {
-		$key_a = $a['date_sort'] . '-' . ( $show_adherents ? $a['adherent'] : '' ) . '-' . $a['quant'];
-		$key_b = $b['date_sort'] . '-' . ( $show_adherents ? $b['adherent'] : '' ) . '-' . $b['quant'];
+		$key_a = $a['date_sort'] . '-' . ( $show_adherents ? $a['adherent'] : '' ) . '-' . $a['qid'];
+		$key_b = $b['date_sort'] . '-' . ( $show_adherents ? $b['adherent'] : '' ) . '-' . $b['qid'];
 
 		return strcasecmp( $key_a, $key_b );
 	} );
