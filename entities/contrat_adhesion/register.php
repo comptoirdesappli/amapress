@@ -1714,7 +1714,7 @@ function amapress_get_contrat_quantite_datatable(
 function amapress_producteurs_finances_custom() {
 	return amapress_get_producteurs_finances_datatable( null, [
 		'group_date_by' => isset( $_GET['date_by'] ) ? $_GET['date_by'] : 'none',
-		'group_by'      => isset( $_GET['by'] ) ? $_GET['by'] : 'none',
+		'group_by'      => isset( $_GET['by'] ) ? $_GET['by'] : 'date',
 	] );
 }
 
