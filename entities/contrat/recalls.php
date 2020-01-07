@@ -69,6 +69,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 					'show_contact_producteur' => false,
 					'show_price'              => $contrat->isPanierVariable() && $show_price_modulables,
 					'no_script'               => true,
+					'for_placeholder'         => true,
 				] );
 			$replacements['producteur_paniers_quantites_text'] = amapress_get_contrat_quantite_datatable(
 				$contrat->ID, null,
@@ -77,6 +78,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				'show_price'              => $contrat->isPanierVariable() && $show_price_modulables,
 				'mode'                    => 'text',
 				'no_script'               => true,
+				'for_placeholder'         => true,
 			] );
 
 			$replacements['producteur_paniers_quantites_prix']      = $tbl_style . amapress_get_contrat_quantite_datatable(
@@ -85,6 +87,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 					'show_contact_producteur' => false,
 					'show_price'              => true,
 					'no_script'               => true,
+					'for_placeholder'         => true,
 				] );
 			$replacements['producteur_paniers_quantites_text_prix'] = amapress_get_contrat_quantite_datatable(
 				$contrat->ID, null,
@@ -93,6 +96,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				'show_price'              => true,
 				'mode'                    => 'text',
 				'no_script'               => true,
+				'for_placeholder'         => true,
 			] );
 
 			$replacements['lien_contrats_quantites'] = Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );

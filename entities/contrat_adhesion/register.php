@@ -1186,20 +1186,22 @@ function amapress_get_contrat_quantite_datatable(
 			'show_adherents'          => true,
 			'show_adherents_count'    => true,
 			'show_all_dates'          => false,
-			'group_by'                => 'none',
-			'show_price'              => false,
-			'show_empty_lines'        => ! $contrat_instance->isPanierVariable(),
-			'show_sum_fact_details'   => true,
-			'show_fact_details'       => $contrat_instance->isQuantiteVariable(),
-			'show_equiv_quantite'     => from( $contrat_instance_quantites )->distinct( function ( $c ) {
+			'group_by'              => 'none',
+			'show_price'            => false,
+			'show_empty_lines'      => ! $contrat_instance->isPanierVariable(),
+			'show_sum_fact_details' => true,
+			'show_fact_details'     => $contrat_instance->isQuantiteVariable(),
+			'show_equiv_quantite'   => from( $contrat_instance_quantites )->distinct( function ( $c ) {
 					/** @var AmapressContrat_quantite $c */
 					return $c->getQuantite();
 				} )->count() > 1,
-			'no_script'               => false,
-			'mode'                    => 'both',
+			'no_script'             => false,
+			'mode'                  => 'both',
+			'for_placeholder'       => false,
 		)
 	);
 
+	$for_placeholder       = Amapress::toBool( $options['for_placeholder'] );
 	$group_by              = $options['group_by'];
 	$show_empty_lines      = $options['show_empty_lines'];
 	$show_adherents        = $options['show_adherents'];
@@ -1538,27 +1540,29 @@ function amapress_get_contrat_quantite_datatable(
 
 	//
 	$next_distrib_text = '';
-	$next_distrib_text .= '<p>' . Amapress::makeLink(
-			$root_url . '&all&date=first',
-			'Récapitulatif contrat ' . $contrat_instance->getTitle() ) . ' | ' .
-	                      Amapress::makeLink(
-		                      $root_url . '&all',
-		                      'Quantités par date à partir du ' . date_i18n( 'd/m/Y' ) ) . ' | ' .
-	                      Amapress::makeLink(
-		                      $root_url,
-		                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) .
-	                      '</p><hr/>';
-	$next_distrib_text .= '<p>' .
-	                      Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) .
-	                      ' | ' .
-	                      Amapress::makeLink( add_query_arg( 'with_adherent', 'T' ), 'Afficher les amapiens' ) .
-	                      ( $show_all_dates ? ' | ' .
-	                                          Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ) .
-	                                          ' | ' .
-	                                          Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ) .
-	                                          ' | ' .
-	                                          Amapress::makeLink( add_query_arg( 'by', 'date' ), 'Afficher par date' ) : '' ) .
-	                      '</p><hr/>';
+	if ( ! $for_placeholder ) {
+		$next_distrib_text .= '<p>' . Amapress::makeLink(
+				$root_url . '&all&date=first',
+				'Récapitulatif contrat ' . $contrat_instance->getTitle() ) . ' | ' .
+		                      Amapress::makeLink(
+			                      $root_url . '&all',
+			                      'Quantités par date à partir du ' . date_i18n( 'd/m/Y' ) ) . ' | ' .
+		                      Amapress::makeLink(
+			                      $root_url,
+			                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) .
+		                      '</p><hr/>';
+		$next_distrib_text .= '<p>' .
+		                      Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) .
+		                      ' | ' .
+		                      Amapress::makeLink( add_query_arg( 'with_adherent', 'T' ), 'Afficher les amapiens' ) .
+		                      ( $show_all_dates ? ' | ' .
+		                                          Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ) .
+		                                          ' | ' .
+		                                          Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ) .
+		                                          ' | ' .
+		                                          Amapress::makeLink( add_query_arg( 'by', 'date' ), 'Afficher par date' ) : '' ) .
+		                      '</p><hr/>';
+	}
 
 	$print_title = '';
 	if ( $show_all_dates ) {
@@ -1569,7 +1573,7 @@ function amapress_get_contrat_quantite_datatable(
 			$next_distrib_text .= '<h4>Informations pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
 			$print_title       = 'Récapitulatif pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . ' pour le contrat ' . $contrat_instance->getTitle();
 		}
-		if ( ! $date_is_current ) {
+		if ( ! $date_is_current && ! $for_placeholder ) {
 			$next_distrib_text .= '<p>' . Amapress::makeLink(
 					$root_url . '&all',
 					'Afficher les quantités à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
@@ -1581,16 +1585,18 @@ function amapress_get_contrat_quantite_datatable(
 		} else {
 			$print_title = 'Récapitulatif pour la prochaine distribution pour le contrat ' . $contrat_instance->getTitle();
 		}
-		if ( ! $date_is_current ) {
-			$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url,
-					'Revenir à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
-		}
-		if ( ! $date_is_first ) {
-			$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url . '&date=first',
-					'Revenir à la première distribution à partir du ' . date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() ) ) . '</p><hr/>';
+		if ( ! $for_placeholder ) {
+			if ( ! $date_is_current ) {
+				$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url,
+						'Revenir à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
+			}
+			if ( ! $date_is_first ) {
+				$next_distrib_text .= '<p>' . Amapress::makeLink( $root_url . '&date=first',
+						'Revenir à la première distribution à partir du ' . date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() ) ) . '</p><hr/>';
+			}
 		}
 	}
-	if ( $options['show_next_distrib'] && ! $show_all_dates ) {
+	if ( $options['show_next_distrib'] && ! $show_all_dates && ! $for_placeholder ) {
 		$next_distrib_text .= '<p>' . ( $dist && Amapress::end_of_day( $dist->getDate() ) > amapress_time() ? 'Prochaine distribution: ' : 'Distribution du ' ) .
 		                      ( $dist ? Amapress::makeLink( $dist->getPermalink(),
 			                      (
