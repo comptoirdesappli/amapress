@@ -31,6 +31,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-excl-producteurs' ) );
 	$send_to_producteurs      = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-send-producteurs' ) );
+	$send_referents           = Amapress::getOption( 'distribution-quantites-recall-send-referents' );
 
 	$sent_mails = false;
 	foreach ( $contrats_by_producteurs as $producteur_id => $contrats ) {
@@ -99,13 +100,23 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 			$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
 			$replacements['producteur_contrats'] = $producteur->getContratsNames();
 
-			$referent_ids = $contrat->getAllReferentsIds();
+			$send_title = [];
 			if ( $send_to_producteur ) {
+				$send_title[] = 'Producteur';
+				if ( $send_referents ) {
+					$send_title[] = 'Référents';
+					$referent_ids = $contrat->getAllReferentsIds();
+				} else {
+					$referent_ids = [];
+				}
 				$referent_ids[] = $producteur->getUserId();
+			} else {
+				$send_title[] = 'Référents';
+				$referent_ids = $contrat->getAllReferentsIds();
 			}
 
 			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ),
-				$send_to_producteur ? 'Producteur et référents ' . $producteur->getTitle() : 'Référents ' . $producteur->getTitle(), 'referents' );
+				implode( ' et ', $send_title ) . $producteur->getTitle(), 'referents' );
 			$subject      = Amapress::getOption( 'distribution-quantites-recall-mail-subject' );
 			$content      = Amapress::getOption( 'distribution-quantites-recall-mail-content' );
 			foreach ( $replacements as $k => $v ) {
@@ -408,6 +419,13 @@ function amapress_contrat_quantites_recall_options() {
 			'multiple'     => true,
 			'tags'         => true,
 			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'id'      => 'distribution-quantites-recall-send-referents',
+			'name'    => 'Envoi aux référents',
+			'type'    => 'checkbox',
+			'desc'    => 'Envoyer les quantités à livrer aux référents',
+			'default' => 1,
 		),
 		array(
 			'id'        => 'distribution-quantites-recall-excl-producteurs',
