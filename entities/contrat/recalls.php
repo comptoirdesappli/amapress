@@ -34,6 +34,10 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 	$sent_mails = false;
 	foreach ( $contrats_by_producteurs as $producteur_id => $contrats ) {
+		if ( isset( $args['prod_id'] ) && $producteur_id != $args['prod_id'] ) {
+			continue;
+		}
+
 		if ( in_array( $producteur_id, $disabled_for_producteurs ) ) {
 			continue;
 		}
