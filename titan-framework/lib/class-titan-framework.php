@@ -175,7 +175,7 @@ class TitanFramework {
 			if ( is_admin() && isset( $this->optionsUsed[ $option->settings['id'] ] ) ) {
 				self::displayFrameworkError(
 					sprintf( __( 'All option IDs per namespace must be unique. The id %s has been used multiple times.', TF_I18NDOMAIN ),
-						'<code>' . $option->settings['id'] . '</code>'
+						'<code>' . $option->settings['id'] . ( isset( $option->settings['name'] ) ? '/' . $option->settings['name'] : '' ) . '</code>'
 					)
 				);
 			}
