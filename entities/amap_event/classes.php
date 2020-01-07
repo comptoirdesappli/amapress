@@ -151,7 +151,33 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			return 'evt_typ_' . $t->slug;
 		}, $terms );
 
-		return implode( ', ', $term_names );
+		return implode( ' ', $term_names );
+	}
+
+	public function getTypeIcon() {
+		$this->ensure_init();
+		$terms = get_the_terms( $this->ID, 'amps_amap_event_category' );
+		if ( empty( $terms ) ) {
+			return '';
+		}
+		$term_icons = array_map( function ( $t ) {
+			/** @var WP_Term $t */
+			$icon_id = Amapress::getOption( 'agenda_amap_event_' . $t->term_id . '_icon' );
+			if ( empty( $icon_id ) ) {
+				return null;
+			}
+			$url = wp_get_attachment_image_src( $icon_id, 'produit-thumb' );
+			if ( $url ) {
+				return $url[0];
+			}
+
+			return null;
+		}, $terms );
+		$term_icons = array_filter( $term_icons, function ( $i ) {
+			return ! empty( $i );
+		} );
+
+		return array_shift( $term_icons );
 	}
 
 	public function getCategoriesDisplay() {
@@ -239,6 +265,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 		$ret         = array();
 		$class_names = $this->getCategoriesCSS();
 		$categories  = $this->getCategoriesDisplay();
+		$icon        = Amapress::coalesce_icons( $this->getTypeIcon(), 'dashicons dashicons-groups' );
 		if ( empty( $user_id ) || $user_id <= 0 ) {
 			$date     = $this->getStartDateAndHour();
 			$date_end = $this->getEndDateAndHour();
@@ -246,13 +273,13 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 				'ev_id'    => "ev-{$this->ID}",
 				'date'     => $date,
 				'date_end' => $date_end,
-				'class'    => "agenda-inscription-amap-event $class_names",
+				'class'    => "agenda-amap-event agenda-inscription-amap-event $class_names",
 				'type'     => 'amap_event',
 				'category' => 'Évènements' . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
 				'lieu'     => $this,
 				'priority' => 60,
 				'label'    => $this->getTitle(),
-				'icon'     => 'dashicons dashicons-groups',
+				'icon'     => $icon,
 				'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
 				'href'     => $this->getPermalink()
 			) );
@@ -271,7 +298,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'lieu'     => $this,
 					'priority' => 60,
 					'label'    => $this->getTitle(),
-					'icon'     => 'dashicons dashicons-groups',
+					'icon'     => $icon,
 					'alt'      => 'Vous êtes inscript pour ' . $this->getTitle() . ' le ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
@@ -280,13 +307,13 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'ev_id'    => "ev-{$this->ID}",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-inscription-amap-event",
+					'class'    => "agenda-amap-event agenda-inscription-amap-event $class_names",
 					'type'     => 'amap_event',
 					'category' => 'Évènements',
 					'lieu'     => $this,
 					'priority' => 60,
 					'label'    => $this->getTitle(),
-					'icon'     => 'dashicons dashicons-groups',
+					'icon'     => $icon,
 					'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );

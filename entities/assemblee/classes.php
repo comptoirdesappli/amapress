@@ -104,7 +104,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 					'ev_id'    => "asm-{$this->ID}",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-inscription-assemblee",
+					'class'    => "agenda-assemblee agenda-inscription-assemblee",
 					'type'     => 'assemblee_generale',
 					'category' => 'Assemblées générales',
 					'lieu'     => $asm_lieu,

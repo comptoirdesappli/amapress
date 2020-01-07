@@ -856,7 +856,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					'ev_id'    => "intermittence-{$this->ID}-recup",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-inter-panier-recup",
+					'class'    => "agenda-intermittence agenda-inter-panier-recup",
 					'type'     => 'inter-recup',
 					'category' => 'Paniers à récupérer',
 					'priority' => 15,

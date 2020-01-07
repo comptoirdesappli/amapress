@@ -16,7 +16,7 @@ function amapress_customizer_init() {
 	if ( ! is_admin() && ! is_customize_preview() ) {
 		return;
 	}
-	
+
 	$titan    = TitanFramework::getInstance( 'amapress' );
 	$contrats = AmapressContrats::get_contrats();
 
@@ -169,12 +169,20 @@ function amapress_customizer_init() {
 //    ));
 
 	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Dates', 'amapress' ),
+		'name'  => __( 'Pastilles de dates', 'amapress' ),
 		'panel' => 'Amapress Agenda',
 	) );
 	$section->createOption( array(
-		'name' => __( 'Pastille des dates', 'amapress' ),
+		'desc' => __( 'Options de couleurs pour les pastilles de dates du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events)', 'amapress' ),
+		'type' => 'note',
+	) );
+	$section->createOption( array(
+		'name' => __( 'Par défaut :', 'amapress' ),
 		'type' => 'heading',
+	) );
+	$section->createOption( array(
+		'desc' => __( 'Options de couleurs par défaut (quel que soit le type d\'évènement de la date)', 'amapress' ),
+		'type' => 'note',
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des dates', 'amapress' ),
@@ -198,35 +206,39 @@ function amapress_customizer_init() {
 		'css'     => '.evt-date { border: 1pt solid value }',
 	) );
 
+//	$section->createOption( array(
+//		'name' => __( 'Contour des dates', 'amapress' ),
+//		'type' => 'heading',
+//	) );
+//	$section->createOption( array(
+//		'name'    => __( "Couleur de fond des dates", 'amapress' ),
+//		'id'      => "agenda_event_bg",
+//		'type'    => 'color',
+//		'default' => '',
+//		'css'     => '.event { background-color: value }',
+//	) );
+//	$section->createOption( array(
+//		'name'    => __( "Couleur de bordure des évènements", 'amapress' ),
+//		'id'      => "agenda_event_brd",
+//		'type'    => 'color',
+//		'default' => '',
+//		'css'     => '.event { border: 1pt solid value }',
+//	) );
+
 	$section->createOption( array(
-		'name' => __( 'Contour des dates', 'amapress' ),
+		'name' => __( 'Par type d\'évènement :', 'amapress' ),
 		'type' => 'heading',
 	) );
-	$section->createOption( array(
-		'name'    => __( "Couleur de fond des dates", 'amapress' ),
-		'id'      => "agenda_event_bg",
-		'type'    => 'color',
-		'default' => '',
-		'css'     => '.event { background-color: value }',
-	) );
-	$section->createOption( array(
-		'name'    => __( "Couleur de bordure des évènements", 'amapress' ),
-		'id'      => "agenda_event_brd",
-		'type'    => 'color',
-		'default' => '',
-		'css'     => '.event { border: 1pt solid value }',
-	) );
-
 	foreach (
 		array(
-			'visite'             => 'Visite',
-			'inter-recup'        => 'Récupération panier intermittent',
-			'intermittence'      => 'Panier intermittent',
 			'distribution'       => 'Distribution',
 			'resp-distribution'  => 'Responsable distribution',
-			'user-paiement'      => 'Encaissement de chèque',
+			'inter-recup'        => 'Récupération panier intermittent',
+			'intermittence'      => 'Panier intermittent disponible',
+			'visite'             => 'Visite',
+			'amap_event'         => 'Evènement',
 			'assemblee_generale' => 'Assemblée générale',
-			'amap_event'         => 'Evênement',
+			'user-paiement'      => 'Encaissement de chèque',
 		) as $type => $name
 	) {
 		$section->createOption( array(
@@ -258,10 +270,17 @@ function amapress_customizer_init() {
 
 
 	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Lieux', 'amapress' ),
+		'name'  => __( 'Lieux et producteurs', 'amapress' ),
 		'panel' => 'Amapress Agenda',
 	) );
-	//assemblées
+	$section->createOption( array(
+		'desc' => __( 'Options de couleurs pour les liens des lieux de distribution/fermes des évènements/visites du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events)', 'amapress' ),
+		'type' => 'note',
+	) );
+	$section->createOption( array(
+		'name' => __( 'Par défaut pour les lieux de distribution :', 'amapress' ),
+		'type' => 'heading',
+	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des lieux', 'amapress' ),
 		'id'      => 'agenda_lieux_col_fg',
@@ -290,22 +309,64 @@ function amapress_customizer_init() {
 		'default' => '',
 		'css'     => '.evt-lieu .evt-lieu-cnt { border-color: value }',
 	) );
+//	$section->createOption( array(
+//		'name'    => __( 'Couleur de séparateur des lieux', 'amapress' ),
+//		'id'      => 'agenda_lieux_col_sep',
+//		'type'    => 'color',
+//		'default' => '#A6C79D',
+//		'css'     => '.evt-cnt-inner:nth-child(1n+2) { border-top-color: value }',
+//	) );
 	$section->createOption( array(
-		'name'    => __( 'Couleur de séparateur des lieux', 'amapress' ),
-		'id'      => 'agenda_lieux_col_sep',
+		'name' => __( 'Par défaut pour les fermes/visites :', 'amapress' ),
+		'type' => 'heading',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur du texte des fermes', 'amapress' ),
+		'id'      => 'agenda_fermes_col_fg',
 		'type'    => 'color',
-		'default' => '#A6C79D',
-		'css'     => '.evt-cnt-inner:nth-child(1n+2) { border-top-color: value }',
+		'default' => '',
+		'css'     => '.evt-type-visite + .evt-lieu .evt-lieu-cnt, .evt-type-visite + .evt-lieu .evt-lieu-cnt * { color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur du picto des fermes', 'amapress' ),
+		'id'      => 'agenda_fermes_picto_fg',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.evt-type-visite + .evt-lieu .evt-lieu-cnt i.fa { color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur de fond des fermes', 'amapress' ),
+		'id'      => 'agenda_fermes_col_bg',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.evt-type-visite + .evt-lieu .evt-lieu-cnt { background-color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur de bordure des fermes', 'amapress' ),
+		'id'      => 'agenda_fermes_col_brd',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.evt-type-visite + .evt-lieu .evt-lieu-cnt { border-color: value }',
 	) );
 
-	$lieux = Amapress::get_lieux();
+	$producteurs = Amapress::get_producteurs();
+	$lieux       = Amapress::get_lieux();
+	if ( 1 == count( $lieux ) ) {
+		$lieux = [];
+	}
+	$lieux = array_merge( $lieux, $producteurs );
 
+	/** @var TitanEntity $lieu */
 	foreach ( $lieux as $lieu ) {
-		$section = $titan->createCustomizer( array(
-			'name'  => __( $lieu->getTitle(), 'amapress' ),
-			'panel' => 'Amapress Agenda',
+//		$section = $titan->createCustomizer( array(
+//			'name'  => __( $lieu->getTitle(), 'amapress' ),
+//			'panel' => 'Amapress Agenda',
+//		) );
+		$section->createOption( array(
+			'name' => __( $lieu->getTitle(), 'amapress' ),
+			'id'   => 'agenda_lieux_' . $lieu->ID . '_head',
+			'type' => 'heading',
 		) );
-		//assemblées
 		$section->createOption( array(
 			'name'    => __( 'Couleur du texte de ' . $lieu->getTitle(), 'amapress' ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_fg',
@@ -335,16 +396,18 @@ function amapress_customizer_init() {
 //    ));
 
 	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Responsables distribution', 'amapress' ),
+		'name'  => __( 'Types d\'évènements', 'amapress' ),
 		'panel' => 'Amapress Agenda',
 	) );
-//	//responsables distribution
-//	$section->createOption( array(
-//		'name'    => __( 'Icône des responsables distribution', 'amapress' ),
-//		'id'      => 'agenda_resp_distrib_icon',
-//		'type'    => 'text',
-//		'default' => '',
-//	) );
+	$section->createOption( array(
+		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
+		'type' => 'note',
+	) );
+	$section->createOption( array(
+		'name' => __( 'Responsables distribution', 'amapress' ),
+		'type' => 'heading',
+	) );
+	//resp distrib
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des responsables distribution', 'amapress' ),
 		'id'      => 'agenda_resp_distrib_col_fg',
@@ -367,50 +430,11 @@ function amapress_customizer_init() {
 		'css'     => '.agenda-resp-distrib { border-color: value }',
 	) );
 
-	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Visites à la ferme', 'amapress' ),
-		'panel' => 'Amapress Agenda',
-	) );
-	//visites
-//	$section->createOption( array(
-//		'name'    => __( 'Icône des visites', 'amapress' ),
-//		'id'      => 'agenda_visite_icon',
-//		'type'    => 'text',
-//		'default' => '',
-//	) );
 	$section->createOption( array(
-		'name'    => __( 'Couleur du texte des visites', 'amapress' ),
-		'id'      => 'agenda_visite_col_fg',
-		'type'    => 'color',
-		'default' => '',
-		'css'     => '.agenda-visite, .agenda-visite * { color: value }',
+		'name' => __( 'Assemblées générales', 'amapress' ),
+		'type' => 'heading',
 	) );
-	$section->createOption( array(
-		'name'    => __( 'Couleur de fond des visites', 'amapress' ),
-		'id'      => 'agenda_visite_col_bg',
-		'type'    => 'color',
-		'default' => '',
-		'css'     => '.agenda-visite { background-color: value }',
-	) );
-	$section->createOption( array(
-		'name'    => __( 'Couleur de bordure des visites', 'amapress' ),
-		'id'      => 'agenda_visite_col_brd',
-		'type'    => 'color',
-		'default' => '',
-		'css'     => '.agenda-visite { border-color: value }',
-	) );
-
-	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Assemblées générales', 'amapress' ),
-		'panel' => 'Amapress Agenda',
-	) );
-	//assemblées
-//	$section->createOption( array(
-//		'name'    => __( 'Icône des assemblées', 'amapress' ),
-//		'id'      => 'agenda_assemblee_icon',
-//		'type'    => 'text',
-//		'default' => 'dashicons dashicons-admin-post',
-//	) );
+	//AG
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des assemblées', 'amapress' ),
 		'id'      => 'agenda_assemblee_col_fg',
@@ -433,17 +457,11 @@ function amapress_customizer_init() {
 		'css'     => '.agenda-assemblee { border-color: value }',
 	) );
 
-	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Paiements', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+	$section->createOption( array(
+		'name' => __( 'Encaissements', 'amapress' ),
+		'type' => 'heading',
 	) );
 	//paiements
-//	$section->createOption( array(
-//		'name'    => __( 'Icône des paiements', 'amapress' ),
-//		'id'      => 'agenda_contrat_paiement_icon',
-//		'type'    => 'text',
-//		'default' => 'dashicons dashicons-admin-post',
-//	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur du texte des paiements', 'amapress' ),
 		'id'      => 'agenda_contrat_paiement_col_fg',
@@ -466,30 +484,144 @@ function amapress_customizer_init() {
 		'css'     => '.agenda-contrat-paiement { border-color: value }',
 	) );
 
-//	$section = $titan->createCustomizer( array(
-//		'name'  => __( 'Commandes', 'amapress' ),
-//		'panel' => 'Amapress Agenda',
-//	) );
-	//paiements
-//	$section->createOption( array(
-//		'name'    => __( 'Icône des commandes', 'amapress' ),
-//		'id'      => 'agenda_commande_icon',
-//		'type'    => 'text',
-//		'default' => 'dashicons dashicons-admin-post',
-//	) );
-//
-//	$section = $titan->createCustomizer( array(
-//		'name'  => __( 'Contrats', 'amapress' ),
-//		'panel' => 'Amapress Agenda',
-//	) );
-//	//paiements
-//	$section->createOption( array(
-//		'name'    => __( 'Icône des contrats', 'amapress' ),
-//		'id'      => 'agenda_contrat_icon',
-//		'type'    => 'text',
-//		'default' => 'dashicons dashicons-admin-post',
-//	) );
+	$section = $titan->createCustomizer( array(
+		'name'  => __( 'Visites à la ferme', 'amapress' ),
+		'panel' => 'Amapress Agenda',
+	) );
+	$section->createOption( array(
+		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
+		'type' => 'note',
+	) );
+	$section->createOption( array(
+		'name' => __( 'Visites à la ferme', 'amapress' ),
+		'type' => 'heading',
+	) );
+	//visites
+	$section->createOption( array(
+		'name'    => __( 'Couleur du texte des visites', 'amapress' ),
+		'id'      => 'agenda_visite_col_fg',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.agenda-visite, .agenda-visite * { color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur de fond des visites', 'amapress' ),
+		'id'      => 'agenda_visite_col_bg',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.agenda-visite { background-color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur de bordure des visites', 'amapress' ),
+		'id'      => 'agenda_visite_col_brd',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.agenda-visite { border-color: value }',
+	) );
+	foreach ( $producteurs as $prod ) {
+		$section->createOption( array(
+			'name' => __( 'Visites à la ferme - ', 'amapress' ) . $prod->getTitle(),
+			'id'   => 'agenda_visite_' . $prod->ID . '_heading',
+			'type' => 'heading',
+		) );
+		$section->createOption( array(
+			'name'    => __( 'Couleur du texte', 'amapress' ),
+			'id'      => 'agenda_visite_' . $prod->ID . '_col_fg',
+			'type'    => 'color',
+			'default' => '',
+			'css'     => '.agenda-visite.visit_prod_' . $prod->ID . ', .agenda-visite.visit_prod_' . $prod->ID . ' * { color: value }',
+		) );
+		$section->createOption( array(
+			'name'    => __( 'Couleur de fond', 'amapress' ),
+			'id'      => 'agenda_visite_' . $prod->ID . '_col_bg',
+			'type'    => 'color',
+			'default' => '',
+			'css'     => '.agenda-visite.visit_prod_' . $prod->ID . ' { background-color: value }',
+		) );
+		$section->createOption( array(
+			'name'    => __( 'Couleur de bordure', 'amapress' ),
+			'id'      => 'agenda_visite_' . $prod->ID . '_col_brd',
+			'type'    => 'color',
+			'default' => '',
+			'css'     => '.agenda-visite.visit_prod_' . $prod->ID . ' { border-color: value }',
+		) );
+	}
 
+	$section = $titan->createCustomizer( array(
+		'name'  => __( 'Evènements', 'amapress' ),
+		'panel' => 'Amapress Agenda',
+	) );
+	$section->createOption( array(
+		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
+		'type' => 'note',
+	) );
+	$section->createOption( array(
+		'name' => __( 'Evènements', 'amapress' ),
+		'type' => 'heading',
+	) );
+	//events
+	$section->createOption( array(
+		'name'    => __( 'Couleur du texte des évènements', 'amapress' ),
+		'id'      => 'agenda_amap_event_col_fg',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.agenda-amap-event, .agenda-amap-event * { color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur de fond des évènements', 'amapress' ),
+		'id'      => 'agenda_amap_event_col_bg',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.agenda-amap-event { background-color: value }',
+	) );
+	$section->createOption( array(
+		'name'    => __( 'Couleur de bordure des évènements', 'amapress' ),
+		'id'      => 'agenda_amap_event_col_brd',
+		'type'    => 'color',
+		'default' => '',
+		'css'     => '.agenda-amap-event { border-color: value }',
+	) );
+
+	$terms = get_terms( AmapressAmap_event::CATEGORY,
+		array(
+			'taxonomy'   => AmapressAmap_event::CATEGORY,
+			'hide_empty' => false,
+		) );
+	/** @var WP_Term $term */
+	foreach ( $terms as $term ) {
+		$section->createOption( array(
+			'name' => __( 'Evènements - ', 'amapress' ) . $term->name,
+			'type' => 'heading',
+		) );
+		//events
+		$section->createOption( array(
+			'name' => __( 'Icône', 'amapress' ),
+			'id'   => 'agenda_amap_event_' . $term->term_id . '_icon',
+			'type' => 'upload',
+			'css'  => '/* value */',
+		) );
+		$section->createOption( array(
+			'name'    => __( 'Couleur du texte', 'amapress' ),
+			'id'      => 'agenda_amap_event_' . $term->term_id . '_col_fg',
+			'type'    => 'color',
+			'default' => '',
+			'css'     => '.agenda-amap-event.evt_typ_' . $term->slug . ', .agenda-amap-event.evt_typ_' . $term->slug . ' * { color: value }',
+		) );
+		$section->createOption( array(
+			'name'    => __( 'Couleur de fond', 'amapress' ),
+			'id'      => 'agenda_amap_event_' . $term->term_id . '_col_bg',
+			'type'    => 'color',
+			'default' => '',
+			'css'     => '.agenda-amap-event.evt_typ_' . $term->slug . ' { background-color: value }',
+		) );
+		$section->createOption( array(
+			'name'    => __( 'Couleur de bordure', 'amapress' ),
+			'id'      => 'agenda_amap_event_' . $term->term_id . '_col_brd',
+			'type'    => 'color',
+			'default' => '',
+			'css'     => '.agenda-amap-event.evt_typ_' . $term->slug . ' { border-color: value }',
+		) );
+	}
 //	foreach ( $contrats as $contrat ) {
 //		$tit     = $contrat->getTitle();
 //		$id      = $contrat->ID; //get_post_meta($contrat->ID, 'amapress_contrat_instance_model', true);
