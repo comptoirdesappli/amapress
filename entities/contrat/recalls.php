@@ -97,7 +97,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 			$referent_ids = $contrat->getAllReferentsIds();
 			if ( $send_to_producteur ) {
-				$referent_ids = array_merge( $referent_ids, $producteur->getUser()->getAllEmails() );
+				$referent_ids[] = $producteur->getUserId();
 			}
 
 			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ),
