@@ -292,7 +292,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'ev_id'    => "ev-{$this->ID}-resp",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-amap-event $class_names",
+					'class'    => "agenda-amap-event agenda-inscrit-amap-event $class_names",
 					'type'     => 'amap_event',
 					'category' => 'Évènements' . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
 					'lieu'     => $this,

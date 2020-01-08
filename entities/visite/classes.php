@@ -151,7 +151,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'ev_id'    => "visite-{$this->ID}-resp",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-visite visit_prod_" . $producteur->ID,
+					'class'    => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
 					'type'     => 'visite',
 					'category' => 'Visites',
 					'priority' => 90,

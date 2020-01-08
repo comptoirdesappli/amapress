@@ -241,7 +241,7 @@ GROUP BY $wpdb->posts.ID" );
 					'ev_id'    => "upmt-{$this->ID}",
 					'date'     => $date,
 					'date_end' => $date,
-					'type'     => 'user-paiement',
+					'type'     => 'user-paiement contrat-paiement',
 					'category' => 'Encaissements',
 					'label'    => "Encaissement {$price}€",
 					'class'    => "agenda-user-paiement",
