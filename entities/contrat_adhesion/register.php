@@ -1183,7 +1183,7 @@ function amapress_get_contrat_quantite_datatable(
 		array(
 			'show_next_distrib'       => true,
 			'show_contact_producteur' => true,
-			'show_adherents'          => true,
+			'show_adherents'          => $contrat_instance->isPanierVariable(),
 			'show_adherents_count'    => true,
 			'show_all_dates'          => false,
 			'group_by'                => 'none',
