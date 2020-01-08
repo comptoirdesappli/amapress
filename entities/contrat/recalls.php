@@ -99,6 +99,26 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				'for_placeholder'         => true,
 			] );
 
+			$replacements['producteur_paniers_quantites_amapiens']      = $tbl_style . amapress_get_contrat_quantite_datatable(
+					$contrat->ID, null,
+					$dist->getDate(), [
+					'show_contact_producteur' => false,
+					'show_price'              => false,
+					'show_adherents'          => true,
+					'no_script'               => true,
+					'for_placeholder'         => true,
+				] );
+			$replacements['producteur_paniers_quantites_amapiens_prix'] = $tbl_style . amapress_get_contrat_quantite_datatable(
+					$contrat->ID, null,
+					$dist->getDate(), [
+					'show_contact_producteur' => false,
+					'show_price'              => true,
+					'show_adherents'          => true,
+					'no_script'               => true,
+					'for_placeholder'         => true,
+				] );
+
+
 			$replacements['lien_contrats_quantites'] = Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
 
 			$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
@@ -389,14 +409,16 @@ function amapress_contrat_quantites_recall_options() {
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
 			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
-				             'producteur_contrats'                    => 'Contrats du producteur',
-				             'producteur_nom'                         => 'Nom du producteur',
-				             'lien_contrats_quantites'                => 'Lien vers les quantités à la prochaine distribution',
-				             'producteur_paniers_quantites_text'      => 'Quantités à la prochaine distribution (en texte)',
-				             'producteur_paniers_quantites_text_prix' => 'Quantités à la prochaine distribution (en texte avec montants)',
-				             'producteur_paniers_quantites'           => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-				             'producteur_paniers_quantites_prix'      => 'Quantités à la prochaine distribution (en tableau avec montants)',
-				             'producteur_contact'                     => 'Coordonnées du producteur',
+				             'producteur_contrats'                        => 'Contrats du producteur',
+				             'producteur_nom'                             => 'Nom du producteur',
+				             'lien_contrats_quantites'                    => 'Lien vers les quantités à la prochaine distribution',
+				             'producteur_paniers_quantites_text'          => 'Quantités à la prochaine distribution (en texte)',
+				             'producteur_paniers_quantites_text_prix'     => 'Quantités à la prochaine distribution (en texte avec montants)',
+				             'producteur_paniers_quantites'               => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
+				             'producteur_paniers_quantites_prix'          => 'Quantités à la prochaine distribution (en tableau avec montants)',
+				             'producteur_paniers_quantites_amapiens'      => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
+				             'producteur_paniers_quantites_amapiens_prix' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
+				             'producteur_contact'                         => 'Coordonnées du producteur',
 			             ], null, [], 'recall' ),
 		),
 		array(
