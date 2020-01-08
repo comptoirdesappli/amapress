@@ -1576,11 +1576,12 @@ function amapress_get_contrat_quantite_datatable(
 					'Afficher les quantités à partir du ' . date_i18n( 'd/m/Y' ) ) . '</p><hr/>';
 		}
 	} else {
-		$next_distrib_text .= '<h4>Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
 		if ( $dist ) {
-			$print_title = 'Récapitulatif pour la prochaine distribution (' . date_i18n( 'd/m/Y', $dist->getDate() ) . ') pour le contrat ' . $contrat_instance->getTitle();
+			$next_distrib_text .= '<h4>Informations pour la prochaine distribution du ' . date_i18n( 'd/m/Y', $dist->getDate() ) . '</h4>';
+			$print_title       = 'Récapitulatif pour la prochaine distribution (' . date_i18n( 'd/m/Y', $dist->getDate() ) . ') pour le contrat ' . $contrat_instance->getTitle();
 		} else {
-			$print_title = 'Récapitulatif pour la prochaine distribution pour le contrat ' . $contrat_instance->getTitle();
+			$next_distrib_text .= '<h4>Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+			$print_title       = 'Récapitulatif pour la prochaine distribution pour le contrat ' . $contrat_instance->getTitle();
 		}
 		if ( ! $for_placeholder ) {
 			if ( ! $date_is_current ) {
