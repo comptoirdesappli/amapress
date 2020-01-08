@@ -1766,3 +1766,7 @@ add_action( 'pre_get_posts', function ( $query ) {
 	}
 
 } );
+
+add_filter( 'admin_title', function ( $admin_title, $title ) {
+	return strip_tags( do_shortcode( $admin_title ) );
+}, 10, 2 );
