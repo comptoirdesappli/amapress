@@ -130,8 +130,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'subpage'  => true,
 							'id'       => 'mailinggroup_moderation',
 							'settings' => array(
-								'name'       => 'Emails en attente',
-								'menu_title' => 'Emails en attente',
+								'name'       => 'Emails en attente [waiting-mlgrp-count]',
+								'menu_title' => 'Emails en attente [waiting-mlgrp-count]',
 								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-shield',
 							),
