@@ -371,7 +371,7 @@ class AmapressMailingGroup extends TitanEntity {
 		try {
 			$mailbox = $this->getMailbox();
 		} catch ( Exception $ex ) {
-			error_log( "Erreur IMAP/POP3: " . $ex->getMessage() );
+			error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
 
 			return false;
 		}
@@ -482,7 +482,7 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 			}
 		} catch ( Exception $ex ) {
-			error_log( "Erreur IMAP/POP3 : " . $ex->getMessage() );
+			error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
 
 			return false;
 		} finally {
