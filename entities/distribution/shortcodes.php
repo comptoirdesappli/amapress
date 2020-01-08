@@ -164,10 +164,18 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			}
 		}
 		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
-			$ret .= '<div class="alert alert-danger">Vous êtes dans un espace sécurisé. Accès interdit</div>';
-			$ret .= $content;
+			if ( empty( $key ) && amapress_can_access_admin() ) {
+				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [' . $tag . '] de cette page : par exemple "[' . $tag . ' key='
+				        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.</div>';
+				$ret .= $content;
 
-			return $ret;
+				return $ret;
+			} elseif ( ! amapress_is_user_logged_in() ) {
+				$ret .= '<div class="alert alert-danger">Vous êtes dans un espace sécurisé. Accès interdit</div>';
+				$ret .= $content;
+
+				return $ret;
+			}
 		}
 
 		if ( amapress_is_user_logged_in() ) {
