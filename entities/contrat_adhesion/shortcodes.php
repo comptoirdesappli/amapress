@@ -336,6 +336,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( empty( $key ) && amapress_can_access_admin() ) {
 				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [inscription-en-ligne] de cette page : par exemple "[inscription-en-ligne key='
 				        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.</div>';
+			} elseif ( ! empty( $key ) && empty( $_REQUEST['key'] ) && amapress_is_user_logged_in() ) {
+				$url              = esc_attr( add_query_arg( 'key', $key, get_permalink() ) );
+				$mes_contrat_href = esc_attr( Amapress::get_mes_contrats_page_href() );
+				$ret              .= "<p>Pour accéder à l'assistant d'inscription, cliquez <a href='$url'>ici</a></p>";
+				if ( ! empty( $mes_contrat_href ) ) {
+					$ret .= "<p>Pour accéder à vos contrats, cliquez <a href='$mes_contrat_href'>ici</a></p>";
+				}
 			} else {
 				$ret .= '<div class="alert alert-danger">Vous êtes dans un espace sécurisé. Accès interdit</div>';
 			}
