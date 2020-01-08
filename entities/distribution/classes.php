@@ -451,7 +451,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			array(
 				'key'     => 'amapress_distribution_date',
 				'value'   => Amapress::start_of_day( $date ),
-				'compare' => '>',
+				'compare' => '>=',
 				'type'    => 'NUMERIC'
 			),
 		);
