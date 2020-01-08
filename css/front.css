@@ -193,6 +193,14 @@ a.evt-link img {
     box-shadow: none !important;
 }
 
+a.evt-link {
+    display: inline-block !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border-radius: 4px;
+    padding: 4px;
+}
+
 a.evt-link.evt-img {
     box-shadow: none !important;
 }

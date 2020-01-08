@@ -328,11 +328,12 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
 				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'min_time'      => '(Par défaut “08:00:00”) Heure minimale affichée',
-				'max_time'      => '(Par défaut “22:00:00”) Heure maximale affichée',
-				'default_view'  => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
-				'url'           => 'Url du calendrier à afficher (ICS)',
+				'header_right' => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'min_time'     => '(Par défaut “08:00:00”) Heure minimale affichée',
+				'max_time'     => '(Par défaut “22:00:00”) Heure maximale affichée',
+				'default_view' => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
+				'url'          => 'Url du calendrier à afficher (ICS)',
+				'icon_size'    => '(Par défaut, 1em) Taille des icônes des évènements',
 			]
 		] );
 	amapress_register_shortcode( 'amapress-amapien-agenda-viewer', function ( $atts ) {
@@ -352,6 +353,7 @@ function amapress_register_shortcodes() {
 				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
 				'min_time'      => '(Par défaut “08:00:00”) Heure minimale affichée',
 				'max_time'      => '(Par défaut “22:00:00”) Heure maximale affichée',
+				'icon_size'     => '(Par défaut, 1em) Taille des icônes des évènements',
 				'default_view'  => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
 			]
 		] );
@@ -375,6 +377,7 @@ function amapress_register_shortcodes() {
 				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
 				'min_time'      => '(Par défaut “08:00:00”) Heure minimale affichée',
 				'max_time'      => '(Par défaut “22:00:00”) Heure maximale affichée',
+				'icon_size'     => '(Par défaut, 1em) Taille des icônes des évènements',
 				'default_view'  => '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>',
 			]
 		] );

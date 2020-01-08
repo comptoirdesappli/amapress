@@ -489,7 +489,7 @@ function registerTitanFrameworkOptionUploadControl() {
 			}
 
 			?>
-            <div class='tf-upload'>
+            <div class='tf-upload tf-upload-inner'>
                 <span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
                 <div class='thumbnail tf-image-preview'><?php echo $previewImage ?></div>
                 <input type='hidden' value="<?php echo esc_attr( $this->value() ); ?>" <?php $this->link(); ?>/>

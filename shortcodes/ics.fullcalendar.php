@@ -22,6 +22,7 @@ function amapress_fullcalendar( $atts ) {
 			'header_right'  => 'month,listMonth,listWeek',
 			'min_time'      => '08:00:00',
 			'max_time'      => '22:00:00',
+			'icon_size'     => '1em',
 			'default_view'  => 'listMonth',
 			'url'           => '',
 		],
@@ -56,13 +57,18 @@ function amapress_fullcalendar( $atts ) {
                 editable: false,
                 minTime: "<?php echo $atts['min_time']; ?>",
                 maxTime: "<?php echo $atts['max_time']; ?>",
+                eventRender: function (event, eventElement) {
+                    if (event.imageurl) {
+                        $('.fc-title, .fc-list-item-title', eventElement).prepend("<img src='" + event.imageurl + "' style='display:inline-block;vertical-align:middle;width:<?php echo $atts['icon_size']; ?>; height:<?php echo $atts['icon_size']; ?>' />");
+                    }
+                }
             });
             $.get('<?php echo $atts['url']; ?>', function (res) {
                 var events = [];
                 var parsed = ICAL.parse(res);
                 parsed[2].forEach(function (event) {
                     if (event[0] !== 'vevent') return;
-                    var summary, location, start, end, url, description;
+                    var summary, location, start, end, url, description, css, icon;
                     event[1].forEach(function (event_item) {
                         switch (event_item[0]) {
                             case 'location':
@@ -83,6 +89,12 @@ function amapress_fullcalendar( $atts ) {
                             case 'dtend':
                                 end = event_item[3];
                                 break;
+                            case 'x-amps-css':
+                                css = event_item[3];
+                                break;
+                            case 'x-amps-icon':
+                                icon = event_item[3];
+                                break;
                         }
                     });
                     if (summary && location && start && end) {
@@ -97,7 +109,9 @@ function amapress_fullcalendar( $atts ) {
                             start: start,
                             end: end,
                             url: url,
-                            location: location
+                            location: location,
+                            className: css ? css.split(' ') : '',
+                            imageurl: icon,
                         })
                     }
                 });

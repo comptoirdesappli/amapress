@@ -189,7 +189,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'ev_id'    => "upmt-{$this->ID}",
 				'date'     => $date,
 				'date_end' => $date,
-				'type'     => 'user-paiement',
+				'type'     => 'user-paiement adhesion-paiement',
 				'category' => 'Encaissements',
 				'label'    => "Encaissement {$price}€",
 				'class'    => "agenda-user-paiement",

@@ -166,11 +166,14 @@ class Amapress_Agenda_ICAL_Export {
 
 		date_default_timezone_set( "UTC" );
 		foreach ( $events as $event ) {
+			/** @var Amapress_EventEntry $event */
 			$uid               = md5( $event->getEventId() );                                           //Universal unique ID
 			$title             = $event->getLabel();
 			$url               = $event->getLink();
 			$desc              = $event->getAlt();
 			$categories        = $event->getCategory();
+			$css               = $event->getClass();
+			$icon              = $event->getIcon();
 			$dtstamp           = self::toUTCString( current_time( 'timestamp' ) );                  //date stamp for now.
 			$created_date      = self::toUTCString( $event->getStartDate() );    //time event created
 			$start_date        = self::toUTCString( $event->getStartDate() );      //event start date
@@ -187,6 +190,10 @@ class Amapress_Agenda_ICAL_Export {
 			echo "CREATED:" . $created_date . "\n";
 			echo "DTSTART:" . $start_date . "\n";
 			echo "DTEND:" . $end_date . "\n";
+			echo "X-AMPS-CSS:" . self::ical_split( 'X-AMPS-CSS:', $css ) . "\n";
+			if ( ! empty( $icon ) && strpos( $icon, '/' ) !== false && strpos( $icon, '<' ) !== 0 ) {
+				echo "X-AMPS-ICON:" . self::ical_split( 'X-AMPS-ICON:', $icon ) . "\n";
+			}
 			if ( $reoccurrence_rule ) {
 				echo "RRULE:" . $reoccurrence_rule . "\n";
 			}
