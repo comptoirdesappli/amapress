@@ -311,7 +311,7 @@ function amapress_register_shortcodes() {
 
 	amapress_register_shortcode( 'adhesion-request-count', 'amapress_adhesion_request_count_shortcode',
 		[
-			'desc' => '',
+			'desc' => 'Nombre de demandes d\'adhésions en attente',
 			'args' => [
 			]
 		] );
