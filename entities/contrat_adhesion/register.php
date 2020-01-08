@@ -1651,6 +1651,7 @@ function amapress_get_contrat_quantite_datatable(
 			'init_as_html' => $options['no_script'] || ( ! $show_all_dates && ! $show_adherents ),
 			'no_script'    => $options['no_script'],
 			'bSort'        => ! $contrat_instance->isPanierVariable(),
+			'empty_desc'   => 'Pas de livraison',
 		);
 		if ( $show_all_dates ) {
 			$dt_options['rowGroup'] = [

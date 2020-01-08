@@ -66,6 +66,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			'paging'       => false,
 			'initComplete' => null,
 			'info'         => false,
+			'empty_desc'   => 'Aucune données dans le tableau',
 			'nowrap'       => true,
 			'data'         => $data,
 			'cell-border'  => false,
@@ -92,6 +93,13 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	$nowrap      = $options['nowrap'] ? 'nowrap' : '';
 	$cellborder  = $options['cell-border'] ? 'cell-border' : '';
 	$table_style = "table-layout:{$options['table-layout']}";
+
+	if ( ! empty( $options['empty_desc'] ) ) {
+		if ( empty( $options["language"] ) ) {
+			$options["language"] = [];
+		}
+		$options["language"] = array_merge( $options["language"], array( 'emptyTable' => $options['empty_desc'] ) );
+	}
 
 	unset( $options['table-layout'] );
 	if ( ! empty( $exports ) ) {
@@ -147,8 +155,12 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			}
 			$table_content .= '</tr>';
 		}
+		if ( empty( $data ) ) {
+			$table_content .= '<tr><td colspan="' . count( $columns ) . '">' . esc_html( $options['empty_desc'] ) . '</td></tr>';
+		}
 		$table_content .= '</tbody>';
 	}
+	unset( $options['empty_desc'] );
 
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
