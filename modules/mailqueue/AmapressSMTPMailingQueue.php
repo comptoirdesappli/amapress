@@ -191,7 +191,7 @@ class AmapressSMTPMailingQueue {
 		if ( ! $handle ) {
 			return false;
 		}
-		fwrite( $handle, json_encode( $data ) );
+		fwrite( $handle, json_encode( $data, JSON_INVALID_UTF8_IGNORE ) );
 		fclose( $handle );
 
 		return true;
@@ -301,7 +301,7 @@ class AmapressSMTPMailingQueue {
 			try {
 				self::sendMail( $data );
 			} catch ( Exception $ex ) {
-
+				@error_log( $ex->getMessage() );
 			} finally {
 				@unlink( $file );
 			}
