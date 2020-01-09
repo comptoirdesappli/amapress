@@ -287,6 +287,8 @@ function amapress_register_entities_contrat( $entities ) {
 }
 </style>';
 			}
+
+			echo '<script type="text/javascript">jQuery(function($) { $("body > div#ui-datepicker-div").hide(); });</script>';
 		},
 		'row_actions'  => array(
 			'renew'              => array(
