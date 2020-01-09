@@ -713,6 +713,30 @@ class AmapressMailingGroup extends TitanEntity {
 		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
 	}
 
+	public function resendModerationMail( $msg_id ) {
+		$msg = $this->loadMessage( 'waiting', $msg_id );
+		if ( ! $msg ) {
+			error_log( 'resendModerationMail - loadMessage failed' );
+
+			return false;
+		}
+		if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-mods',
+			$msg, $this->getModeratorsEmails(),
+			[
+				[
+					'name'   => 'email.eml',
+					'inline' => false,
+					'file'   => $msg['eml_file']
+				]
+			] ) ) {
+			error_log( 'resendModerationMail - sendMailByParamName - waiting-mods failed' );
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private function saveMailForModeration( $msg_id, $date, $clean_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, $is_unknown ) {
 		if ( ! $this->storeMail( 'waiting', $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers,
 			[ 'date' => amapress_time(), 'eml_file' => $eml_file, 'clean_from' => $clean_from ] ) ) {
@@ -736,7 +760,7 @@ class AmapressMailingGroup extends TitanEntity {
 			}
 		}
 		if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-mods',
-			$msg, $this->getEmailsFromQueries( $this->getModeratorsQueries() ),
+			$msg, $this->getModeratorsEmails(),
 			[
 				[
 					'name'   => 'email.eml',
@@ -750,6 +774,10 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 
 		return true;
+	}
+
+	public function getModeratorsEmails() {
+		return $this->getEmailsFromQueries( $this->getModeratorsQueries() );
 	}
 
 	private function sendMailByParamName( $param, $msg, $to, $attachments = [] ) {

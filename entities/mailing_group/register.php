@@ -451,6 +451,10 @@ function amapress_get_mailing_group_waiting_list( $mailing_group_id ) {
 			'title' => '',
 			'data'  => 'reject'
 		),
+		array(
+			'title' => '',
+			'data'  => 'resend_mods'
+		),
 	);
 	$data    = array();
 	foreach ( $ml->getMailWaitingModeration() as $m ) {
@@ -459,6 +463,7 @@ function amapress_get_mailing_group_waiting_list( $mailing_group_id ) {
 			'date'         => ! empty( $m['date'] ) ? date_i18n( 'd/m/Y H:i:s', $m['date'] ) : '',
 			'subject'      => $m['subject'],
 			'content'      => $m['content'],
+			'resend_mods'  => amapress_get_mailgroup_action_form( 'Renvoyer la demande de modération', 'amapress_mailgroup_resend_mods', $ml->ID, $m['id'] ),
 			'distribute'   => amapress_get_mailgroup_action_form( 'Distribuer', 'amapress_mailgroup_distribute', $ml->ID, $m['id'] ),
 			'reject_quiet' => amapress_get_mailgroup_action_form( 'Rejetter sans prévenir', 'amapress_mailgroup_reject_quiet', $ml->ID, $m['id'] ),
 			'reject'       => amapress_get_mailgroup_action_form( 'Rejetter', 'amapress_mailgroup_reject', $ml->ID, $m['id'] ),
@@ -529,6 +534,22 @@ function admin_action_amapress_mailgroup_distribute() {
 	exit();
 }
 
+add_action( 'admin_action_amapress_mailgroup_resend_mods', 'admin_action_amapress_mailgroup_resend_mods' );
+function admin_action_amapress_mailgroup_resend_mods() {
+	$mailing_group_id = $_REQUEST['mailgroup_id'];
+	$msg_id           = $_REQUEST['msg_id'];
+	$ml               = AmapressMailingGroup::getBy( $mailing_group_id );
+	if ( $ml ) {
+		$ml->resendModerationMail( $msg_id );
+	}
+	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
+		echo "Mail de demande de modération renvoyé avec succès pour le message $msg_id ";
+	} else {
+		wp_redirect( $_SERVER['HTTP_REFERER'] );
+	}
+	exit();
+}
+
 function amapress_fetch_mailinggroups() {
 	foreach (
 		get_posts( [
@@ -572,6 +593,23 @@ add_action( 'init', function () {
 			wp_schedule_event( time(), 'daily', 'amps_mlgf_clean_arc' );
 		}
 		add_action( 'amps_mlgf_clean_arc', 'amapress_clean_mailinggroups_archives' );
+
+		if ( ! wp_next_scheduled( 'amps_mlgf_notif_waiting' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'amps_mlgf_notif_waiting' );
+		}
+		add_action( 'amps_mlgf_notif_waiting', function () {
+			foreach ( AmapressMailingGroup::getAll() as $mlgrp ) {
+				$waiting_count = $mlgrp->getMailWaitingModerationCount();
+				if ( $waiting_count > 0 ) {
+					$signature = get_bloginfo( 'name' );
+					$subject   = "[{$mlgrp->getSimpleName()}] $waiting_count mail(s) sont en attente de modération";
+					$url       = admin_url( 'admin.php?page=mailinggroup_moderation&tab=mailgrp-moderate-tab-' . $mlgrp->ID );
+					$message   = "Bonjour,\n$waiting_count mail(s) sont en attente de modération pour {$mlgrp->getName()}.\n<a href='$url'>Voir les mails en attente</a>\n$signature";
+					amapress_wp_mail( $mlgrp->getModeratorsEmails(), $subject, $message );
+				}
+			}
+		} );
+
 
 		amapress_register_shortcode( 'waiting-mlgrp-count', function () {
 			$cnt = 0;
