@@ -157,6 +157,15 @@ class Amapress {
 		return ceil( $first->diff( $second )->days / 7.0 );
 	}
 
+	public static function wrapIf( $content, $condition, $open_tag = 'strong' ) {
+		list( $close_tag ) = explode( ' ', $open_tag );
+		if ( $condition ) {
+			return "<$open_tag>$content</$close_tag>";
+		} else {
+			return $content;
+		}
+	}
+
 	public static function makeLink( $url, $title = null, $escape_title = true, $blank = false ) {
 		if ( empty( $title ) ) {
 			$title = $url;

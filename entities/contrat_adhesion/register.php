@@ -1538,26 +1538,28 @@ function amapress_get_contrat_quantite_datatable(
 
 	$next_distrib_text = '';
 	if ( ! $for_placeholder ) {
-		$next_distrib_text .= '<p>' . Amapress::makeLink(
+		$next_distrib_text .= '<p>' . Amapress::wrapIf( Amapress::makeLink(
 				$root_url . '&all&date=first',
-				'Récapitulatif contrat ' . $contrat_instance->getTitle() ) . ' | ' .
-		                      Amapress::makeLink(
+				'Récapitulatif contrat ' . $contrat_instance->getTitle() ), $show_all_dates && $date_is_first ) . ' | ' .
+		                      Amapress::wrapIf( Amapress::makeLink(
 			                      $root_url . '&all',
-			                      'Quantités par date à partir du ' . date_i18n( 'd/m/Y' ) ) . ' | ' .
-		                      Amapress::makeLink(
+			                      'Quantités par date à partir du ' . date_i18n( 'd/m/Y' ) ), $show_all_dates && ! $date_is_first ) . ' | ' .
+		                      Amapress::wrapIf( Amapress::makeLink(
 			                      $root_url,
-			                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ) .
+			                      'Quantités à la prochaine distribution à partir du ' . date_i18n( 'd/m/Y' ) ), ! $show_all_dates && $date_is_current ) .
 		                      '</p><hr/>';
 		$next_distrib_text .= '<p>' .
-		                      Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) .
+		                      ( $show_price ? Amapress::makeLink( remove_query_arg( 'with_prices' ), 'Masquer les montants' )
+			                      : Amapress::makeLink( add_query_arg( 'with_prices', 'T' ), 'Afficher les montants' ) ) .
 		                      ' | ' .
-		                      Amapress::makeLink( add_query_arg( 'with_adherent', 'T' ), 'Afficher les amapiens' ) .
+		                      ( $show_adherents ? Amapress::makeLink( remove_query_arg( 'with_adherent' ), 'Masquer les amapiens' )
+			                      : Amapress::makeLink( add_query_arg( 'with_adherent', 'T' ), 'Afficher les amapiens' ) ) .
 		                      ( $show_all_dates ? ' | ' .
-		                                          Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ) .
+		                                          Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ), 'month' == $group_by ) .
 		                                          ' | ' .
-		                                          Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ) .
+		                                          Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'quarter' ), 'Afficher par trimestre' ), 'quarter' == $group_by ) .
 		                                          ' | ' .
-		                                          Amapress::makeLink( add_query_arg( 'by', 'date' ), 'Afficher par date' ) : '' ) .
+		                                          Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'date' ), 'Afficher par date' ), 'date' == $group_by || 'none' == $group_by ) : '' ) .
 		                      '</p><hr/>';
 	}
 
