@@ -1325,6 +1325,7 @@ function amapress_get_contrat_quantite_datatable(
 			} );
 		}
 		$real_date = $d ? $d->getRealDateForContrat( $contrat_instance_id ) : $date;
+		/** @var AmapressAdhesion[] $adhesions */
 		foreach (
 			array_merge( $show_adherents ? array_map( function ( $adh ) {
 				return [ $adh ];
@@ -1390,6 +1391,8 @@ function amapress_get_contrat_quantite_datatable(
 							array_values( $lieu_quant_fact_adh_count )
 						) );
 
+						$row["lieu_{$lieu->ID}_adhs"] = $lieu_quant_adh_count;
+						$row["lieu_{$lieu->ID}_num"]  = $lieu_quant_count;
 						if ( empty( $lieu_quant_adh_count ) ) {
 							$row["lieu_{$lieu->ID}"]     = '';
 							$row["lieu_{$lieu->ID}_txt"] = '';
@@ -1692,6 +1695,7 @@ function amapress_get_contrat_quantite_datatable(
 						$output_quants[] = esc_html( $row["lieu_{$lieu->ID}_txt"] );
 					}
 				}
+				$output .= '(' . $row["lieu_{$lieu->ID}_adhs"] . ' adhérent(s)) ; ';
 				$output .= implode( ', ', $output_quants );
 				$output .= '</p>';
 			}
@@ -1703,6 +1707,7 @@ function amapress_get_contrat_quantite_datatable(
 				$output_quants[] = strpos( $row["all_txt"], '=' ) !== false ? '[' . $row["all_txt"] . ']' : $row["all_txt"];
 			}
 		}
+		$output .= '(' . $row["all_adhs"] . ' adhérent(s)) ; ';
 		$output .= implode( ', ', $output_quants );
 		$output .= '</p>';
 
