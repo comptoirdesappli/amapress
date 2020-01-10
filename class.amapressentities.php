@@ -1086,11 +1086,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Emails - Envoi liste des chèques'      => array(
-									'id'      => 'amp_tab_recall_liste_cheques',
-									'desc'    => '',
-									'options' => amapress_contrat_paiements_recall_options(),
-								),
 								'Emails - Envoi des quantités à livrer' => array(
 									'id'      => 'amp_tab_recall_quantites_distrib',
 									'desc'    => '',
@@ -1105,6 +1100,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'id'      => 'amp_tab_inscr_validate_distrib',
 									'desc'    => '',
 									'options' => amapress_inscriptions_to_validate_recall_options(),
+								),
+								'Emails - Envoi liste des chèques'      => array(
+									'id'      => 'amp_tab_recall_liste_cheques',
+									'desc'    => '',
+									'options' => amapress_contrat_paiements_recall_options(),
 								),
 							),
 						),
