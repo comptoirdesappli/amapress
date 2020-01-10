@@ -935,6 +935,19 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		}
 	}
 
+	if ( amapress_can_access_admin() ) {
+		$distrib_inscr_href = Amapress::get_inscription_distrib_page_href();
+		if ( ! empty( $distrib_inscr_href ) ) {
+			$main_items[] = array(
+				'id'         => 'amapress_goto_distinscr_page',
+				'title'      => 'Inscription Distrib',
+				'icon'       => 'dashicons-store',
+				'capability' => 'read',
+				'href'       => $distrib_inscr_href,
+			);
+		}
+	}
+
 	$main_items = array_merge(
 		$main_items,
 		array(
