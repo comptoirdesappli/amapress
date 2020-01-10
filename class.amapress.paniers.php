@@ -199,7 +199,17 @@ class AmapressPaniers {
 
 				return implode( '_', $user_ids );
 			} );
-		$liste     = array();
+		$sums      = [
+			'adhs' => count( $adhesions ),
+		];
+		foreach ( AmapressContrats::get_contrat_quantites( $contrat_instance_id ) as $quant ) {
+			$sums["quants"]["quant_{$quant->ID}"] = [
+				'sum'   => 0,
+				'price' => 0,
+				'label' => $quant->getTitle(),
+			];
+		}
+		$liste = array();
 		/** @var AmapressAdhesion[] $adhs */
 		foreach ( $adhesions as $user_ids => $adhs ) {
 			$line = array();
@@ -225,6 +235,11 @@ class AmapressPaniers {
 				if ( $adh->getContrat_instanceId() == $contrat_instance_id &&
 				     ( $lieu_id == null || $adh->getLieuId() == $lieu_id )
 				) {
+					foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
+						$qid                                   = $quant->getID();
+						$sums["quants"]["quant_$qid"]['sum']   += $quant->getFactor();
+						$sums["quants"]["quant_$qid"]['price'] += $quant->getPrice();
+					}
 					$line['lieu']    = $adh->getLieu()->getShortName();
 					$line['content'] = $adh->getContrat_quantites_AsString( $date );
 					if ( ! empty( $line['content'] ) ) {
@@ -240,7 +255,14 @@ class AmapressPaniers {
 
 		return array(
 			'columns' => $columns,
-			'data'    => $liste
+			'data'    => $liste,
+			'adhs'    => $sums['adhs'],
+			'quants'  => $sums['quants'],
+			'resume'  => implode( ', ', array_map( function ( $q ) {
+				return "{$q['sum']} x {$q['label']}";
+			}, array_filter( array_values( $sums['quants'] ), function ( $q ) {
+				return $q['sum'] > 0;
+			} ) ) )
 		);
 	}
 

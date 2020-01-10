@@ -552,6 +552,7 @@ line-height: 1.1;
 						Amapress::DATATABLES_EXPORT_EXCEL,
 						Amapress::DATATABLES_EXPORT_PRINT
 					) );
+				echo '<p>En tout: ' . $panier_commandes['adhs'] . ' adhérent(s) ; ' . esc_html( $panier_commandes['resume'] ) . '</p>';
 			}
 		}
 	}
