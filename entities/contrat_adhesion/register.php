@@ -1327,7 +1327,7 @@ function amapress_get_contrat_quantite_datatable(
 		$real_date = $d ? $d->getRealDateForContrat( $contrat_instance_id ) : $date;
 		/** @var AmapressAdhesion[] $adhesions */
 		foreach (
-			array_merge( $show_adherents ? array_map( function ( $adh ) {
+			array_merge( $show_adherents && count( $all_adhesions ) > 1 ? array_map( function ( $adh ) {
 				return [ $adh ];
 			}, $all_adhesions ) : [], [ $all_adhesions ] ) as $adhesions
 		) {
