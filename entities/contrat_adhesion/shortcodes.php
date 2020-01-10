@@ -239,6 +239,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'send_adhesion_confirm'            => 'true',
 			'send_contrat_confirm'             => 'true',
 			'send_referents'                   => 'true',
+			'allow_inscription_all_dates'      => 'false',
 			'send_tresoriers'                  => 'true',
 			'allow_inscriptions'               => 'true',
 			'allow_new_mail'                   => 'true',
@@ -1724,11 +1725,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 					return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
 				} );
-				$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
+				$allow_all_dates      = Amapress::toBool( $atts['allow_inscription_all_dates'] );
+				$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture, $allow_all_dates ) {
 					$real_date = $contrat->getRealDateForDistribution( $d );
 
 					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
-					       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
+					       && ( $allow_all_dates || empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 				} );
 			} else {
 				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
