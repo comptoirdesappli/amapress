@@ -2691,6 +2691,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type' => 'editor',
 										),
 										array(
+											'id'      => 'liste-emargement-disable-liste',
+											'name'    => 'Masquer la liste d\'émargement',
+											'desc'    => 'Pour une amap qui n\'a que des paniers modulables, la liste d\'émargement est inutile car elle ne contient que des Var.',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
 											'id'      => 'liste-emargement-show-phone',
 											'name'    => 'Afficher les numéros de téléphone',
 											'type'    => 'checkbox',

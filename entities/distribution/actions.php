@@ -511,22 +511,25 @@ line-height: 1.1;
 
 //    amapress_display_messages_for_post('dist-messages', $dist->ID);
 
-	if ( ! $for_pdf ) {
-		echo '<h3 class="liste-emargement">Liste</h3>';
+	$show_liste = ! Amapress::getOption( 'liste-emargement-disable-liste' );
+	if ( $show_liste ) {
+		if ( ! $for_pdf ) {
+			echo '<h3 class="liste-emargement">Liste</h3>';
+		}
+		amapress_echo_datatable( 'liste-emargement', $columns, $liste,
+			array(
+				'paging'       => false,
+				'searching'    => false,
+				'nowrap'       => false,
+				'responsive'   => false,
+				'init_as_html' => true,
+				'no_script'    => $for_pdf,
+				'aaSorting'    => [ [ 0, 'asc' ] ]
+			),
+			array(
+				Amapress::DATATABLES_EXPORT_EXCEL
+			) );
 	}
-	amapress_echo_datatable( 'liste-emargement', $columns, $liste,
-		array(
-			'paging'       => false,
-			'searching'    => false,
-			'nowrap'       => false,
-			'responsive'   => false,
-			'init_as_html' => true,
-			'no_script'    => $for_pdf,
-			'aaSorting'    => [ [ 0, 'asc' ] ]
-		),
-		array(
-			Amapress::DATATABLES_EXPORT_EXCEL
-		) );
 
 	$had_paniers_variables = false;
 	foreach ( $dist->getContrats() as $contrat ) {
@@ -535,9 +538,11 @@ line-height: 1.1;
 			$panier_commandes = AmapressPaniers::getPanierVariableCommandes( $contrat->ID, $panier_date );
 
 			if ( ! empty( $panier_commandes['data'] ) ) {
-				$had_paniers_variables = true;
+//				if ( ! $show_liste && $had_paniers_variables ) {
 				echo '<br pagebreak="true"/>';
-				echo '<h3 class="liste-emargement-contrat-variable">Détails des paniers - ' . esc_html( $contrat->getTitle() ) . '</h3>';
+//				}
+				$had_paniers_variables = true;
+				echo '<h3 class="liste-emargement-contrat-variable">Détails des paniers - ' . esc_html( $contrat->getTitle() ) . ' - Distribution du ' . date_i18n( 'd/m/Y', $dist->getDate() ) . '</h3>';
 				amapress_echo_datatable( 'liste-emargement-contrat-variable-' . $contrat->ID,
 					$panier_commandes['columns'], $panier_commandes['data'],
 					array(
