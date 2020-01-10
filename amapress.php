@@ -1616,7 +1616,7 @@ add_filter( 'admin_footer_text', function ( $content ) {
 					}
 					if ( ! empty( $item['settings']['menu_title'] ) ) {
 						$menu_subtitle = $item['settings']['menu_title'];
-						$subtitle      = ! empty( $subtitle ) ? "$menu_subtitle ($subtitle)" : $menu_subtitle;
+						$subtitle      = ! empty( $subtitle ) && $menu_subtitle != $subtitle ? "$menu_subtitle ($subtitle)" : $menu_subtitle;
 					}
 					foreach ( $item['tabs'] as $tab_name => $tab ) {
 						if ( isset( $tab['id'] ) ) {
@@ -1646,7 +1646,7 @@ add_filter( 'admin_footer_text', function ( $content ) {
 						}
 						if ( ! empty( $subitem['settings']['menu_title'] ) ) {
 							$menu_subtitle = $subitem['settings']['menu_title'];
-							$subtitle      = ! empty( $subtitle ) ? "$menu_subtitle ($subtitle)" : $menu_subtitle;
+							$subtitle      = ! empty( $subtitle ) && $subtitle != $menu_subtitle ? "$menu_subtitle ($subtitle)" : $menu_subtitle;
 						}
 						if ( ! empty( $subitem['tabs'] ) && is_array( $subitem['tabs'] ) ) {
 							foreach ( $subitem['tabs'] as $tab_name => $tab ) {
