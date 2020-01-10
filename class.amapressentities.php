@@ -908,7 +908,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date, [
 														'show_all_dates'       => $is_all,
 														'show_adherents_count' => ! $is_all,
-														'show_empty_lines'     => ! $is_all,
+														'show_empty_lines'     => ! $is_all && ! isset( $_GET['without_empty'] ),
 														'show_price'           => isset( $_GET['with_prices'] ),
 														'show_adherents'       => isset( $_GET['with_adherent'] ),
 														'group_by'             => $is_all && isset( $_GET['by'] ) ? $_GET['by'] : 'none',

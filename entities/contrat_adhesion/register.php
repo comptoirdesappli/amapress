@@ -1557,6 +1557,9 @@ function amapress_get_contrat_quantite_datatable(
 		                      ' | ' .
 		                      ( $show_adherents ? Amapress::makeLink( remove_query_arg( 'with_adherent' ), 'Masquer les amapiens' )
 			                      : Amapress::makeLink( add_query_arg( 'with_adherent', 'T' ), 'Afficher les amapiens' ) ) .
+		                      ( ! $show_all_dates && ! $show_adherents ? ' | ' .
+		                                                                 ( $show_empty_lines ? Amapress::makeLink( add_query_arg( 'without_empty', 'T' ), 'Masquer les lignes vides' )
+			                                                                 : Amapress::makeLink( remove_query_arg( 'without_empty' ), 'Afficher les lignes vides' ) ) : '' ) .
 		                      ( $show_all_dates ? ' | ' .
 		                                          Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'month' ), 'Afficher par mois' ), 'month' == $group_by ) .
 		                                          ' | ' .
