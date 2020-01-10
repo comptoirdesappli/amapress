@@ -98,7 +98,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$response = json_decode( wp_remote_retrieve_body( $request ), true );
 
 			if ( ! is_array( $response ) || empty( $response['Response']['View'][0]['Result'] ) ) {
-				error_log( "Nominatim resolution failed: $details_url" );
+				error_log( "Here Maps resolution failed: $details_url" );
 
 				return null;
 			}
