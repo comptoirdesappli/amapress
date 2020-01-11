@@ -2583,6 +2583,23 @@ class Amapress {
 
 		$m = self::getTitanInstance()->createMetaBox(
 			array(
+				'name'        => 'Amapress Aide',
+				'context'     => 'side',
+				'priority'    => 'high',
+				'post_type'   => $post_types,
+				'show_column' => false,
+			)
+		);
+		$m->createOption(
+			array(
+				'id'   => 'amps_sc_edit_help',
+				'type' => 'note',
+				'desc' => 'Accéder à <a href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '" target="_blank">l\'aide des shortcodes</a>',
+			)
+		);
+
+		$m = self::getTitanInstance()->createMetaBox(
+			array(
 				'name'             => 'Amapress Protection',
 				'context'          => 'side',
 				'priority'         => 'high',
@@ -2609,6 +2626,8 @@ class Amapress {
 				'show_column' => false,
 			)
 		);
+
+
 //        var_dump(count($m->options));
 	}
 
