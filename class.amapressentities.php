@@ -3349,7 +3349,11 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Cette page permet la création des comptes utilisateur et de leurs coordonnées : amapien, co-adhérents. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_utilisateurs', 'Aide', true, true ),
+									'desc' => '
+Cette page permet la création des comptes utilisateur et de leurs coordonnées : amapien, co-adhérents. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_utilisateurs', 'Aide', true, true ) .
+									          '<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
 								),
 								array(
 									'type'      => 'save',
@@ -3374,7 +3378,11 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonction du choix de leurs paniers. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_inscriptions', 'Aide', true, true ),
+									'desc' => '
+Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonction du choix de leurs paniers. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_inscriptions', 'Aide', true, true ) .
+									          '<br/>Utilisez le bouton <strong>Télécharger le modèle multi contrat</strong> (import avec contrats en colonnes) ou les boutons <strong>Télécharger le modèle "<em>Nom du contrat</em>"</strong> (import avec les configurations de paniers en colonnes) pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
 								),
 								array(
 									'name'    => 'Modèle multi contrat',
@@ -3382,7 +3390,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'buttons' => [
 										[
 											'class'  => 'button button-primary  button-import-model',
-											'text'   => 'Télécharger le modèle',
+											'text'   => 'Télécharger le modèle multi contrat',
 											'action' => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_multi',
 										]
 									]
@@ -3456,8 +3464,11 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								array(
 									'type' => 'note',
 									'desc' => '
-Cette page permet d\'importer les configurations de paniers pour vos contrats<br/>
-Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du produit et la colonne "Contenu" à sa description.'
+Cette page permet d\'importer les configurations de paniers pour vos contrats
+<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>La colonne "Titre" correspond au nom du produit et la colonne "Contenu" à sa description.
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
 								),
 								array(
 									'type'      => 'save',
@@ -3500,8 +3511,13 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Cette page permet d\'importer les producteurs<br/>
-Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du producteur ou de sa ferme et la colonne "Contenu" à son historique. Les utilisateurs correspondant doivent être créés au préalable'
+									'desc' => '
+Cette page permet d\'importer les producteurs
+<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>La colonne "Titre" correspond au nom du producteur ou de sa ferme et la colonne "Contenu" à son historique. Les utilisateurs correspondant doivent être créés au préalable
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
+
 								),
 								array(
 									'type'      => 'save',
@@ -3525,8 +3541,12 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Cette page permet d\'importer les productions des producteurs<br/>
-Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom de la production (par ex, <i>Légumes, Champignons</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable'
+									'desc' => '
+Cette page permet d\'importer les productions des producteurs
+<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>La colonne "Titre" correspond au nom de la production (par ex, <i>Légumes, Champignons</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)'
 								),
 								array(
 									'type'      => 'save',
@@ -3550,7 +3570,12 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Cette page permet d\'importer les contrats'
+									'desc' => '
+Cette page permet d\'importer les contrats
+<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>Les producteurs et productions correspondant doivent être créés au préalable
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)'
 								),
 								array(
 									'type'      => 'save',
@@ -3581,7 +3606,12 @@ Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => 'Dans l\'excel modèle téléchargeable ci-dessous, la colonne "Titre" correspond au nom du produit (par ex, <i>Radis ronds, Batavia</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable'
+									'desc' => '
+Cette page permet la création des produits des producteurs
+<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>La colonne "Titre" correspond au nom du produit (par ex, <i>Radis ronds, Batavia</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
 								),
 								array(
 									'type'      => 'save',
