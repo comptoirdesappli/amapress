@@ -1385,17 +1385,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'href'  => $new_page_href,
 			'categ' => '1/ Site public',
 		],
-		'front_next_events'             => [
+		'front_next_events'        => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_produits'                => [
+		'front_produits'           => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
 		],
-		'front_nous_trouver'            => [
+		'front_nous_trouver'       => [
 			'desc'  => 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution',
 			'href'  => $front_page_edit_href,
 			'categ' => '2/ Page Accueil - Infos utiles',
@@ -1984,6 +1984,55 @@ function amapress_format_php_size( $size ) {
 	return is_numeric( $size ) ? amapress_format_filesize( $size ) : $size;
 }
 
+function amapress_wp_db_stats() {
+	global $wpdb;
+
+	$posts_count    = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->posts" );
+	$postmeta_count = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->postmeta" );
+	$users_count    = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->users" );
+	$usermeta_count = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->usermeta" );
+
+	echo '<h2>Tables rows count</h2>';
+	echo "<p>Table '$wpdb->posts' rows: $posts_count</p>";
+	echo "<p>Table '$wpdb->postmeta' rows: $postmeta_count</p>";
+	echo "<p>Table '$wpdb->users' rows: $posts_count</p>";
+	echo "<p>Table '$wpdb->usermeta' rows: $posts_count</p>";
+
+//	echo '<h2>Posts count by type</h2>';
+//	$results = $wpdb->get_results( "SELECT post_type, COUNT(*) as post_count FROM $wpdb->posts GROUP BY post_type", ARRAY_A );
+//	foreach ( $results as &$r ) {
+//		$post_type = $r['post_type'];
+//		$pt        = get_post_type_object( $post_type );
+//		if ( $pt ) {
+//			$r['post_type'] = "{$pt->label} ($post_type)";
+//		}
+//	}
+//	amapress_echo_datatable( 'posts_count_per_type',
+//		[
+//			[ 'title' => 'Post type', 'data' => 'post_type' ],
+//			[ 'title' => 'Posts count', 'data' => 'post_count' ],
+//		], $results );
+	echo '<h2>Posts meta stats by type</h2>';
+	$results = $wpdb->get_results( "SELECT post_type, COUNT(distinct p.ID) as post_count, 
+COUNT(*) as post_meta_count 
+FROM $wpdb->posts as p INNER JOIN $wpdb->postmeta as pm ON p.ID = pm.post_id GROUP BY p.post_type", ARRAY_A );
+	foreach ( $results as &$r ) {
+		$post_type = $r['post_type'];
+		$pt        = get_post_type_object( $post_type );
+		if ( $pt ) {
+			$r['post_type'] = "{$pt->label} ($post_type)";
+		}
+		$r['post_meta_avg'] = (int) ( $r['post_meta_count'] / $r['post_count'] );
+	}
+	amapress_echo_datatable( 'avg_postmeta_per_type',
+		[
+			[ 'title' => 'Post type', 'data' => 'post_type' ],
+			[ 'title' => 'Posts count', 'data' => 'post_count' ],
+			[ 'title' => 'Postmeta count', 'data' => 'post_meta_count' ],
+			[ 'title' => 'Avg postmeta', 'data' => 'post_meta_avg' ],
+		], $results );
+}
+
 function amapress_echo_and_check_amapress_state_page() {
 	if ( current_user_can( 'update_core' ) ) {
 		if ( isset( $_GET['generate_full_amap'] ) ) {
@@ -2053,6 +2102,12 @@ function amapress_echo_and_check_amapress_state_page() {
 
 			return;
 		}
+
+		if ( isset( $_GET['wp_db_stats'] ) ) {
+			amapress_wp_db_stats();
+
+			return;
+		}
 	}
 
 	$labels = array(
@@ -2117,6 +2172,7 @@ function amapress_echo_and_check_amapress_state_page() {
 
 		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">Voir les extensions installées</a></p>';
 		echo '<p><a href="' . esc_attr( add_query_arg( 'phpinfo', 'T' ) ) . '" target="_blank">Afficher PHP Infos</a></p>';
+		echo '<p><a href="' . esc_attr( add_query_arg( 'wp_db_stats', 'T' ) ) . '" target="_blank">Afficher Stats WP_DB</a></p>';
 	}
 
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
