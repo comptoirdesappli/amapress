@@ -115,6 +115,34 @@ function amapress_register_entities_amapien( $entities ) {
 					echo $amapien ? $amapien->getAdherentTypeDisplay() : '';
 				}
 			),
+			'diffusion'         => array(
+				'name'        => amapress__( 'Diffusion' ),
+				'type'        => 'custom',
+				'show_column' => false,
+				'csv_import'  => false,
+				'custom'      => function ( $user_id ) {
+					$amapien = AmapressUser::getBy( $user_id );
+
+					$mlgrps = [];
+					foreach ( AmapressMailingGroup::getAll() as $mlgrp ) {
+						if ( in_array( $amapien->ID, $mlgrp->getMembersIds() ) ) {
+							$mlgrps[] = Amapress::makeLink( $mlgrp->getAdminEditLink(), $mlgrp->getName() );
+						}
+					}
+					$mllsts = [];
+					foreach ( Amapress_MailingListConfiguration::getAll() as $mllst ) {
+						if ( in_array( $amapien->ID, $mllst->getMembersIds() ) ) {
+							$mllsts[] = Amapress::makeLink( $mllst->getAdminEditLink(), $mllst->getName() );
+						}
+					}
+					$ret = '<div id="amapress_user_diffusion">';
+					$ret .= '<p>Membres des mailing-listes: ' . ( empty( $mllsts ) ? '<em>aucune</em>' : implode( ', ', $mllsts ) ) . '</p>';
+					$ret .= '<p>Membres des Emails groupés: ' . ( empty( $mlgrps ) ? '<em>aucun</em>' : implode( ', ', $mlgrps ) ) . '</p>';
+					$ret .= '</div>';
+
+					return $ret;
+				},
+			),
 			'intermittent'      => array(
 				'name'              => amapress__( 'Intermittent' ),
 				'type'              => 'custom',
@@ -243,7 +271,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'town_field_name'        => 'amapress_user_ville',
 				'show_on'                => 'edit-only',
 			),
-			'head_amapress2'     => array(
+			'head_amapress2'    => array(
 				'id'   => 'phones_sect',
 				'name' => amapress__( 'Téléphones' ),
 				'type' => 'heading',
@@ -1033,7 +1061,7 @@ add_action( 'personal_options', 'amapress_add_infos_to_user_editor', 20 );
 function amapress_add_infos_to_user_editor( WP_User $user ) {
 	$amapien = AmapressUser::getBy( $user );
 	echo "<tr class='row-action-wrap'><th scope='row'><label>Liens</label></th><td>
-<a href='#contrats_sect'>Contrats</a>, <a href='#fonctions_sect'>Fonctions</a>, <a href='#address_sect'>Coordonnées</a>, <a href='#phones_sect'>Téléphones</a>, <a href='#coadh_sect'>Co-adhérents</a>, 
+<a href='#contrats_sect'>Contrats</a>, <a href='#fonctions_sect'>Fonctions</a>, <a href='#amapress_user_diffusion'>Diffusion</a>, <a href='#address_sect'>Coordonnées</a>, <a href='#phones_sect'>Téléphones</a>, <a href='#coadh_sect'>Co-adhérents</a>, 
 	</td></tr>";
 	$last_login = get_user_meta( $user->ID, 'last_login', true );
 	$user_infos = 'Utilisateur créé le ' . date_i18n( 'd/m/Y H:i:s', strtotime( $user->user_registered ) );
