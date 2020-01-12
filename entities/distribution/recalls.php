@@ -317,6 +317,12 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 
 	$subject = Amapress::getOption( 'distribution-miss-resps-recall-mail-subject' );
 	$content = Amapress::getOption( 'distribution-miss-resps-recall-mail-content' );
+	$url     = Amapress::get_inscription_distrib_page_href();
+	if ( ! empty( $url ) ) {
+		$inscription_link = Amapress::makeLink( $url, 'S\'inscrire comme responsable de distribution' );
+	} else {
+		$inscription_link = '#page non configurée#';
+	}
 
 	$subject = str_replace( '%%nb_resp_manquants%%', $missing_resps_count, $subject );
 	$subject = str_replace( '%%nb_resp_requis%%', $required_resps_count, $subject );
@@ -324,6 +330,7 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 	$content = str_replace( '%%nb_resp_manquants%%', $missing_resps_count, $content );
 	$content = str_replace( '%%nb_resp_requis%%', $required_resps_count, $content );
 	$content = str_replace( '%%nb_resp_inscrits%%', $resps_count, $content );
+	$content = str_replace( '%%lien_inscription%%', $inscription_link, $content );
 
 	$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
 	amapress_send_message(
@@ -474,13 +481,14 @@ function amapress_distribution_missing_responsables_recall_options() {
 			'id'      => 'distribution-miss-resps-recall-mail-content',
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, il manque %%nb_resp_manquants%% responsable(s) de distribution sur les %%nb_resp_requis%% requis.\nPensez à vous inscrire ! Merci\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, il manque %%nb_resp_manquants%% responsable(s) de distribution sur les %%nb_resp_requis%% requis.\n%%lien_inscription%%\nPensez à vous inscrire ! Merci\n\n%%nom_site%%" ),
 			'desc'    =>
 				AmapressDistribution::getPlaceholdersHelp(
 					[
 						'nb_resp_manquants' => 'Nombre de responsables de distribution manquants à la distribution',
 						'nb_resp_inscrits'  => 'Nombre de responsables inscrits à la distribution',
 						'nb_resp_requis'    => 'Nombre de responsables requis à la distribution',
+						'lien_inscription'  => 'Lien "S\'inscrire comme responsable de distribution" vers la page d\'inscription aux distributions',
 					]
 				),
 		),
