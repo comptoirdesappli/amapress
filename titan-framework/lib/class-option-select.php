@@ -116,7 +116,11 @@ class TitanFrameworkOptionSelect extends TitanFrameworkOption {
 			$titles[] = $this->getArchived( $v );
 		}
 
-		echo implode( ',', $titles );
+		if ( empty( $titles ) && isset( $this->settings['empty_column_text'] ) ) {
+			echo $this->settings['empty_column_text'];
+		} else {
+			echo implode( ', ', $titles );
+		}
 	}
 
 	public
