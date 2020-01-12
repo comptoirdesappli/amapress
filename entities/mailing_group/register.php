@@ -63,7 +63,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			'host'                   => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Serveur' ),
-				'desc'        => 'Adresse du serveur IMAP/POP3',
+				'desc'        => 'Adresse du serveur IMAP/POP3<br/>Par exemple, pour OVH, le serveur IMAP/POP3 est ssl0.ovh.net',
 				'type'        => 'text',
 				'required'    => true,
 				'show_column' => false,
@@ -71,7 +71,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			'port'                   => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Port' ),
-				'desc'        => 'Port d\'accès au serveur IMAP/POP3',
+				'desc'        => 'Port d\'accès au serveur IMAP/POP3<br/>Ports par défaut : IMAP 143; IMAP SSL 993; POP3 110 ; POP3 SSL 995',
 				'type'        => 'number',
 				'default'     => 993,
 				'required'    => true,
@@ -80,7 +80,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			'username'               => array(
 				'group'        => 'Serveur',
 				'name'         => amapress__( 'Utilisateur' ),
-				'desc'         => 'Nom d\'utilisateur',
+				'desc'         => 'Nom d\'utilisateur<br/>Par ex, chez OVH, l\'adresse email complète',
 				'type'         => 'text',
 				'autocomplete' => false,
 				'required'     => true,
@@ -134,7 +134,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			'smtp_out_note'          => array(
 				'group'       => 'Serveur sortant',
 				'type'        => 'note',
-				'desc'        => 'Saisir la configuration SMTP pour l\'envoi des mails par cet boîte mail ou laisser vide pour utiliser la configuration mail de l\'hébergement',
+				'desc'        => 'Laisser vide pour utiliser la configuration mail de l\'hébergement (recommandé) ou saisir la configuration SMTP pour l\'envoi des mails par cet boîte mail',
 				'show_column' => false,
 			),
 			'smtp_host'              => array(
@@ -145,7 +145,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			),
 			'smtp_port'              => array(
 				'name'        => 'Port',
-				'group'       => 'Serveur sortant',
+				'group'       => 'Serveur sortant<br/>Ports par défaut : SMTP 25; SMTP SSL 465; SMTP TLS 587',
 				'type'        => 'number',
 				'show_column' => false,
 			),

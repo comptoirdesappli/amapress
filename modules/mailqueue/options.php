@@ -72,7 +72,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 					array(
 						'type' => 'note',
-						'desc' => 'Saisir la configuration SMTP de votre fournisseur ou laisser vide pour utiliser la configuration mail de l\'hébergement',
+						'desc' => 'Laisser vide pour utiliser la configuration mail de l\'hébergement (recommandé) ou saisir la configuration SMTP de votre fournisseur',
 					),
 					array(
 						'id'   => 'mail_queue_from_name',
@@ -96,12 +96,13 @@ function amapress_mailing_queue_menu_options() {
 					),
 					array(
 						'id'   => 'mail_queue_smtp_host',
-						'name' => 'Host',
+						'name' => 'SMTP Host',
 						'type' => 'text',
 					),
 					array(
 						'id'   => 'mail_queue_smtp_port',
-						'name' => 'Port',
+						'name' => 'SMTP Port',
+						'desc' => 'Default ports : SMTP 25; SMTP SSL 465; SMTP TLS 587',
 						'type' => 'number',
 					),
 					array(
