@@ -221,7 +221,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'        => 'Cocher le ou les groupes à intégrer.',
 				'options'     => 'amapress_get_mailinglist_moderators_queries',
 //				'required'    => true,
-				'show_column' => false,
+				'show_column' => true,
 			),
 			'moderators_other_users' => array(
 				'group'        => 'Modérateurs',
@@ -230,7 +230,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'show_column'  => false,
+				'show_column'  => true,
 			),
 			'free_queries'           => array(
 				'group'       => 'Non modérés',
