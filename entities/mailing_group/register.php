@@ -318,7 +318,7 @@ function amapress_get_mailing_group_members_count( $mailing_group_id ) {
 		return '';
 	}
 
-	$members_url = admin_url( 'users.php?amapress_mlgrp_id=' . $mailing_group_id );
+	$members_url = $ml->getAdminMembersLink();
 
 	return "<a target='_blank' href='$members_url'>{$ml->getMembersCount()}</a>";
 }

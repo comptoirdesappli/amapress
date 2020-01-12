@@ -55,6 +55,10 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 		return explode( ':', $name )[1];
 	}
 
+	public function getAdminMembersLink() {
+		return admin_url( 'users.php?amapress_mllst_id=' . $this->ID );
+	}
+
 	public function getMembersQueries() {
 		$ret   = $this->getCustomAsArray( 'amapress_mailinglist_queries' );
 		$users = $this->getCustomAsIntArray( 'amapress_mailinglist_other_users' );

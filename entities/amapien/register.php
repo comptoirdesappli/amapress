@@ -126,13 +126,13 @@ function amapress_register_entities_amapien( $entities ) {
 					$mlgrps = [];
 					foreach ( AmapressMailingGroup::getAll() as $mlgrp ) {
 						if ( in_array( $amapien->ID, $mlgrp->getMembersIds() ) ) {
-							$mlgrps[] = Amapress::makeLink( $mlgrp->getAdminEditLink(), $mlgrp->getName() );
+							$mlgrps[] = Amapress::makeLink( $mlgrp->getAdminMembersLink(), $mlgrp->getName(), true, true );
 						}
 					}
 					$mllsts = [];
 					foreach ( Amapress_MailingListConfiguration::getAll() as $mllst ) {
 						if ( in_array( $amapien->ID, $mllst->getMembersIds() ) ) {
-							$mllsts[] = Amapress::makeLink( $mllst->getAdminEditLink(), $mllst->getName() );
+							$mllsts[] = Amapress::makeLink( $mllst->getAdminMembersLink(), $mllst->getName(), true, true );
 						}
 					}
 					$ret = '<div id="amapress_user_diffusion">';
@@ -276,19 +276,19 @@ function amapress_register_entities_amapien( $entities ) {
 				'name' => amapress__( 'Téléphones' ),
 				'type' => 'heading',
 			),
-			'telephone'          => array(
+			'telephone'         => array(
 				'name'       => amapress__( 'Téléphone' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
-			'telephone2'         => array(
+			'telephone2'        => array(
 				'name'       => amapress__( 'Téléphone 2' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 2',
 				'searchable' => true,
 			),
-			'telephone3'         => array(
+			'telephone3'        => array(
 				'name'        => amapress__( 'Téléphone 3' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 3',
@@ -1153,3 +1153,17 @@ function amapress_row_action_user_resend_welcome( $user_id ) {
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
+
+add_action( 'admin_head-users.php', function () {
+	$override_title = '';
+	if ( ! empty( $_GET['amapress_mllst_id'] ) ) {
+		$ml             = Amapress_MailingListConfiguration::getBy( $_GET['amapress_mllst_id'] );
+		$override_title = 'Membres de ' . $ml->getName();
+	} elseif ( ! empty( $_GET['amapress_mlgrp_id'] ) ) {
+		$ml             = AmapressMailingGroup::getBy( $_GET['amapress_mlgrp_id'] );
+		$override_title = 'Membres de ' . $ml->getName();
+	}
+	if ( ! empty( $override_title ) ) {
+		echo '<script type="">jQuery(function($) { $(".wp-heading-inline").text(' . wp_json_encode( $override_title ) . ');});</script>';
+	}
+} );

@@ -54,6 +54,10 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->getCustom( 'amapress_mailing_group_desc' );
 	}
 
+	public function getAdminMembersLink() {
+		return admin_url( 'users.php?amapress_mlgrp_id=' . $this->ID );
+	}
+
 	public function getMembersQueries() {
 		$ret   = $this->getCustomAsArray( 'amapress_mailing_group_queries' );
 		$users = $this->getCustomAsIntArray( 'amapress_mailing_group_other_users' );
