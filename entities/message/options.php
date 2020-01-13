@@ -171,6 +171,16 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					}
 				case 'expiration_reset_pass':
 					return Amapress::getOption( 'welcome-mail-expiration' );
+
+				case 'lien_inscription_distrib':
+					$inscription_distrib_link = Amapress::get_inscription_distrib_page_href();
+					if ( ! empty( $url ) ) {
+						$inscription_distrib_link = Amapress::makeLink( $inscription_distrib_link, 'S\'inscrire comme responsable de distribution' );
+					} else {
+						$inscription_distrib_link = '#page inscription aux distributions non configurée#';
+					}
+
+					return $inscription_distrib_link;
 				case 'site_icon_url':
 					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
 					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
@@ -336,15 +346,16 @@ function amapress_replace_mail_placeholders_help(
 	$include_sender = true,
 	$include_target = true
 ) {
-	$ret                          = [];
-	$ret["nom_site"]              = 'Nom de l\'AMAP';
-	$ret["site_name"]             = 'Nom de l\'AMAP';
-	$ret["expiration_reset_pass"] = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
-	$ret["url"]                   = 'Url du site de l\'AMAP';
-	$ret["site_url"]              = 'Url du site de l\'AMAP';
-	$ret["description"]           = 'Description du site de l\'AMAP';
-	$ret["site_description"]      = 'Description du site de l\'AMAP';
-	$ret["site:admin_email"]      = 'Email de l\'admin du site'; //subopt
+	$ret                             = [];
+	$ret["nom_site"]                 = 'Nom de l\'AMAP';
+	$ret["site_name"]                = 'Nom de l\'AMAP';
+	$ret["expiration_reset_pass"]    = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
+	$ret['lien_inscription_distrib'] = 'Lien vers la page d\'inscription comme responsable de distribution';
+	$ret["url"]                      = 'Url du site de l\'AMAP';
+	$ret["site_url"]                 = 'Url du site de l\'AMAP';
+	$ret["description"]              = 'Description du site de l\'AMAP';
+	$ret["site_description"]         = 'Description du site de l\'AMAP';
+	$ret["site:admin_email"]         = 'Email de l\'admin du site'; //subopt
 //	$ret["site:language"]               = 'Langue du site'; //subopt
 	$ret["site:rss_url"]       = 'Lien RSS du site'; //subopt
 	$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
