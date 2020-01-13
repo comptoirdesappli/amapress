@@ -140,6 +140,14 @@ class AmapressSMTPMailingQueue {
 				@unlink( $filename );
 			}
 		}
+		foreach (
+			AmapressSMTPMailingQueue::loadDataFromFiles( true, 'errored' )
+			as $filename => $email
+		) {
+			if ( $email['time'] < $clean_date ) {
+				@unlink( $filename );
+			}
+		}
 	}
 
 	/**

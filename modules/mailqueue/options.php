@@ -166,7 +166,7 @@ function amapress_mailing_queue_menu_options() {
 						'type'    => 'number',
 						'step'    => 1,
 						'default' => 90,
-						'name'    => 'Nettoyer les logs (jours)',
+						'name'    => 'Nettoyer les logs et mails en erreur (jours)',
 					),
 					array(
 						'type' => 'save',
