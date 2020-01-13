@@ -2949,6 +2949,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 </form></p>';
 				} else {
 					echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
+					echo '<p>Retourner à la liste de mes contrats :<br/>
+<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="contrats" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+</form></p>';
 				}
 			}
 
@@ -2969,7 +2976,6 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 	} else if ( 'the_end' == $step ) {
 		echo '<h4>Félicitations, vous avez terminé vos inscriptions !</h4>';
 		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_final_step_message' ), null ) );
-
 	}
 	?>
     <style type="text/css">
