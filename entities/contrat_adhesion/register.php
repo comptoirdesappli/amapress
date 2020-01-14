@@ -897,11 +897,6 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 
 				$had_contrat = true;
 				$ret         .= amapress_get_datatable( 'quant-commandes', $columns, $data, array(
-					'bSort'        => true,
-					'paging'       => false,
-					'searching'    => true,
-					'bAutoWidth'   => true,
-					'responsive'   => false,
 					'initComplete' => 'function() {
                     jQuery(".contrat_panier_vars-select").parent().click(
                         function() {
@@ -910,11 +905,15 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
                     );
                     jQuery(".contrat_panier_vars-select.contrat_panier_vars-empty").css(\'visibility\', \'hidden\');
                     }',
+					'bSort'        => false,
+					'paging'       => false,
+					'searching'    => true,
+					'bAutoWidth'   => true,
+					'responsive'   => false,
+					'init_as_html' => true,
 					'scrollX'      => true,
-//                    'fixedHeader' => array(
-//                        'headerOffset' => 32,
-//                    ),
-					'fixedColumns' => array( 'leftColumns' => 1 ),
+					'scrollY'      => 350,
+					'fixedColumns' => array( 'leftColumns' => 2 ),
 				) );
 			}
 		} else {
