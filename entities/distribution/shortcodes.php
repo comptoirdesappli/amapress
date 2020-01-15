@@ -132,9 +132,11 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'inscr_all_distrib'        => 'false',
 		'allow_resp_dist_manage'   => 'false',
 		'manage_all_subscriptions' => 'false',
+		'column_date_width'        => '5em',
 		'key'                      => '',
 	), $atts );
 
+	$column_date_width   = $atts['column_date_width'];
 	$show_contrats_desc  = Amapress::toBool( $atts['show_contrats_desc'] );
 	$show_contrats_count = Amapress::toBool( $atts['show_contrats_count'] );
 
@@ -366,13 +368,13 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		if ( $for_pdf ) {
 			$ret .= '<th class="dist-col-date">Date</th>';
 		} else {
-			$ret .= '<th class="dist-col-date" style="width: 5em">Date</th>';
+			$ret .= '<th class="dist-col-date" style="width: ' . $column_date_width . '">Date</th>';
 		}
 		if ( $for_emargement ) {
 			if ( $for_pdf ) {
 				$ret .= '<th>Produits</th>';
 			} else {
-				$ret .= '<th style="width: 5em">Produits</th>';
+				$ret .= '<th style="width: ' . $column_date_width . '">Produits</th>';
 			}
 		}
 
@@ -381,7 +383,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		/** @var AmapressLieu_distribution $user_lieu */
 //        foreach ($user_lieux as $lieu_id) {
 		for ( $i = 1; $i <= $lieux_needed_resps[ $lieu_id ]; $i ++ ) {
-			$width     = ! $for_pdf ? 'width: calc(100 / ' . $lieux_needed_resps[ $lieu_id ] . ' - 5em)' : '';
+			$width     = ! $for_pdf ? 'width: calc(100 / ' . $lieux_needed_resps[ $lieu_id ] . ' - ' . $column_date_width . ')' : '';
 			$role_name = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-name" ) );
 			if ( empty( $role_name ) ) {
 				$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name" ) );
