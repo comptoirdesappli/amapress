@@ -2175,7 +2175,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
             <th style="padding-left: 10px">Intitulé*</th>
             <th title="Description">Desc.</th>
             <th style="width: 50px">Prix*</th>
-            <th style="width: 40px"
+            <th style="width: 50px"
                 title="Facteur quantité: par ex, 0.5 pour demi panier et 1 pour panier. 0 si non utile pour le contrat">
                 Fact. quant.
             </th>
