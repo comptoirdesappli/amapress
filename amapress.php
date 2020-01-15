@@ -880,6 +880,11 @@ function amapress_check_info_visibility( $value, $name, AmapressUser $user ) {
 		if ( $name == 'roles' ) {
 			return true;
 		}
+		if ( in_array( $name, [ 'email', 'tel', 'tel_fixe', 'tel_mobile', 'adresse' ] ) ) {
+			if ( ! amapress_is_user_logged_in() ) {
+				return false;
+			}
+		}
 		$user_right = $user->getDisplayRight( $name );
 		if ( ! empty( $user_right ) && $user_right != 'default' ) {
 			return Amapress::toBool( $user_right );
