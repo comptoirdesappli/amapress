@@ -831,7 +831,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'priority' => 10,
 						'lieu'     => $this->getRealLieu(),
 						'label'    => 'A échanger ' . $this->getPaniersTitles( false ),
-						'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
+						'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_mytoexchange.jpg',
 						'alt'      => 'Votre panier ' . $this->getPaniersTitles( true, true ) . ' reste à échanger',
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
@@ -846,7 +846,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'priority' => 5,
 						'lieu'     => $this->getRealLieu(),
 						'label'    => 'Echange ' . $this->getPaniersTitles( false ),
-						'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
+						'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_exchanged.jpg',
 						'alt'      => 'Votre panier ' . $this->getPaniersTitles( true, true ) . ' a été échanger',
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
@@ -862,7 +862,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					'priority' => 15,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => 'Récupérer panier ' . $this->getPaniersTitles( false ),
-					'icon'     => Amapress::getOption( "agenda_intermittence_icon" ),
+					'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
 					'alt'      => 'Panier ' . $this->getPaniersTitles( true, true ) . ' de ' . $this->getAdherent()->getDisplayName() . ' à récupérer',
 					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
@@ -881,7 +881,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 							'priority' => 10,
 							'lieu'     => $this->getRealLieu(),
 							'label'    => 'A échanger ' . $this->getPaniersTitles( false ),
-							'icon'     => 'fa fa-shopping-basket',
+							'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_avail.jpg',
 							'alt'      => 'Panier ' . $this->getPaniersTitles( true, true ) . ' à échanger',
 							'href'     => $paniers_url
 						) );

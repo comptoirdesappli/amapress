@@ -320,15 +320,15 @@ function amapress_get_event_html( $ev_date, $arr, $lieu_hour_dic, $first_lieu, $
 					$query['date']                = intval( $dist->getDate() );
 					$query['lieu_id']             = $lieu->getLieuId();
 
-					if ( Amapress::isIntermittenceEnabled() ) {
-						$adhs = AmapressPaniers::getPanierIntermittents( $query );
-						if ( count( $adhs ) > 0 ) {
-							$paniers_url = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug();
-//                                $paniers_url = $dist->getPermalink();
-							$paniers_cnt = count( $adhs );
-							$ret         .= "<div class='evt-panier-intermittent'><a href='$paniers_url'><span class='badge'>$paniers_cnt</span> panier(s) intermittent(s)</a></div>";
-						}
-					}
+//					if ( Amapress::isIntermittenceEnabled() ) {
+//						$adhs = AmapressPaniers::getPanierIntermittents( $query );
+//						if ( count( $adhs ) > 0 ) {
+//							$paniers_url = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug();
+////                                $paniers_url = $dist->getPermalink();
+//							$paniers_cnt = count( $adhs );
+//							$ret         .= "<div class='evt-panier-intermittent'><a href='$paniers_url'><span class='badge'>$paniers_cnt</span> panier(s) intermittent(s)</a></div>";
+//						}
+//					}
 				}
 			}
 		}
