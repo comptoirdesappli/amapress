@@ -199,7 +199,16 @@ class AmapressSMTPMailingQueue {
 		if ( ! $handle ) {
 			return false;
 		}
-		fwrite( $handle, json_encode( $data, JSON_INVALID_UTF8_IGNORE ) );
+		if ( ! defined( 'JSON_INVALID_UTF8_IGNORE' ) ) {
+			foreach ( $data as $k => $v ) {
+				if ( is_string( $v ) ) {
+					$data[ $k ] = iconv( 'UTF-8', 'UTF-8//IGNORE', $v );
+				}
+			}
+			fwrite( $handle, json_encode( $data ) );
+		} else {
+			fwrite( $handle, json_encode( $data, JSON_INVALID_UTF8_IGNORE ) );
+		}
 		fclose( $handle );
 
 		return true;
