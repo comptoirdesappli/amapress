@@ -696,6 +696,9 @@ add_filter( 'post_thumbnail_html', function ( $html, $post_id, $post_thumbnail_i
 	$post_type = get_post_type( $post_id );
 
 	if ( AmapressContrat::INTERNAL_POST_TYPE == $post_type || AmapressContrat_instance::INTERNAL_POST_TYPE == $post_type ) {
+		if ( is_string( $size ) && in_array( $size, [ 'medium_large', 'large', 'full' ] ) ) {
+			return '';
+		}
 		if ( get_image_height( $size ) !== get_image_width( $size ) ) {
 			return '';
 		}
