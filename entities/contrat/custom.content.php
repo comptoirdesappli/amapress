@@ -109,6 +109,16 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	foreach ( AmapressContrats::get_active_contrat_instances_by_contrat( $contrat_id ) as $c ) {
 		$content .= amapress_get_panel_start( 'Contrat - ' . esc_html( $c->getTitle() ) );
 		$content .= wpautop( $c->getContratInfo() );
+
+		if ( $c->getDate_ouverture() < amapress_time() && amapress_time() < $c->getDate_cloture() ) {
+			$inscription_contrats_link = Amapress::get_pre_inscription_page_href();
+			if ( empty( $inscription_contrats_link ) ) {
+				$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+			}
+			if ( ! empty( $inscription_contrats_link ) ) {
+				$content .= '<div>' . Amapress::makeButtonLink( $inscription_contrats_link, 'S\'inscrire', true, true ) . '</div>';
+			}
+		}
 		if ( $edit_contrat_url = get_edit_post_link( $c->ID ) ) {
 			$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier ce contrat</a></div>';
 		}
