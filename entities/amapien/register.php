@@ -77,6 +77,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br/><span style="text-decoration: underline">Important :</span> Sélectionner et compléter la fiche producteur avec l’utilisateur correspondant</p>
 <p><strong>Amap Coordinateur</strong> : <em>Peut éditer le collectif, créer un compte utilisateur, accède aux listes d’émargement, ...</em>
 <br /><span style="text-decoration: underline">Important :</span> Membre du collectif, cocher l’étiquette Fonction correspondante ci-dessous</p>
+<p><strong>Amap Rédacteur</strong> : <em>Accède à la publication d’articles et de recettes</em></p>
 <p><strong>Amapien</strong> : <em>Accède aux information personnalisées disponible sur le site vitrine</em>
 <br />Rôle par défaut</p>
 <p><strong>Amap Trésorier</strong> : <em>Accède au menu “Gestion adhésion”</em></p>
