@@ -181,6 +181,27 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					}
 
 					return $inscription_distrib_link;
+				case 'lien_mes_contrats':
+					$mes_contrats_link = Amapress::get_mes_contrats_page_href();
+					if ( ! empty( $url ) ) {
+						$mes_contrats_link = Amapress::makeLink( $mes_contrats_link, 'Mes contrats' );
+					} else {
+						$mes_contrats_link = '#page mes contrats non configurée#';
+					}
+
+					return $mes_contrats_link;
+				case 'lien_inscription_contrats':
+					$inscription_contrats_link = Amapress::get_pre_inscription_page_href();
+					if ( empty( $inscription_contrats_link ) ) {
+						$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+					}
+					if ( ! empty( $url ) ) {
+						$inscription_contrats_link = Amapress::makeLink( $inscription_contrats_link, 'S\'inscrire aux contrats' );
+					} else {
+						$inscription_contrats_link = '#page inscription contrats non configurée#';
+					}
+
+					return $inscription_contrats_link;
 				case 'site_icon_url':
 					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
 					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
@@ -346,16 +367,18 @@ function amapress_replace_mail_placeholders_help(
 	$include_sender = true,
 	$include_target = true
 ) {
-	$ret                             = [];
-	$ret["nom_site"]                 = 'Nom de l\'AMAP';
-	$ret["site_name"]                = 'Nom de l\'AMAP';
-	$ret["expiration_reset_pass"]    = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
-	$ret['lien_inscription_distrib'] = 'Lien vers la page d\'inscription comme responsable de distribution';
-	$ret["url"]                      = 'Url du site de l\'AMAP';
-	$ret["site_url"]                 = 'Url du site de l\'AMAP';
-	$ret["description"]              = 'Description du site de l\'AMAP';
-	$ret["site_description"]         = 'Description du site de l\'AMAP';
-	$ret["site:admin_email"]         = 'Email de l\'admin du site'; //subopt
+	$ret                              = [];
+	$ret["nom_site"]                  = 'Nom de l\'AMAP';
+	$ret["site_name"]                 = 'Nom de l\'AMAP';
+	$ret["expiration_reset_pass"]     = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
+	$ret['lien_inscription_distrib']  = 'Lien vers la page d\'inscription comme responsable de distribution';
+	$ret['lien_inscription_contrats'] = 'Lien vers la page d\'inscription aux contrats (ou Mes contrats à défaut)';
+	$ret['lien_mes_contrats']         = 'Lien vers la page Mes contrats';
+	$ret["url"]                       = 'Url du site de l\'AMAP';
+	$ret["site_url"]                  = 'Url du site de l\'AMAP';
+	$ret["description"]               = 'Description du site de l\'AMAP';
+	$ret["site_description"]          = 'Description du site de l\'AMAP';
+	$ret["site:admin_email"]          = 'Email de l\'admin du site'; //subopt
 //	$ret["site:language"]               = 'Langue du site'; //subopt
 	$ret["site:rss_url"]       = 'Lien RSS du site'; //subopt
 	$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
