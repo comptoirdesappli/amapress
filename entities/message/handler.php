@@ -344,7 +344,7 @@ function amapress_get_collectif_target_queries() {
 		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Rôle "' . $role->name . '"';
 	}
 
-	return $ret;
+	return amapress_user_queries_link_wrap( $ret );
 }
 
 
@@ -373,7 +373,17 @@ function amapress_prepare_message_target( $query_string, $title, $target_type, $
 
 function amapress_add_message_target( &$arr, $query_string, $title, $target_type ) {
 	$opt                        = amapress_prepare_message_target( $query_string, $title, $target_type );
-	$arr[ json_encode( $opt ) ] = sprintf( '%s (%d destinataires)', $title, count( amapress_get_users_for_message( $opt['users_query'], $opt['users_query_fields'] ) ) );
+	$members                    = amapress_get_users_for_message( $opt['users_query'], $opt['users_query_fields'] );
+	$count                      = count( $members );
+	$opt['members']             = implode( ', ', array_map(
+		function ( $u ) {
+			/** @var WP_User $u */
+			return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $u->ID ), sprintf( '%s (%s)', $u->display_name, $u->user_email ), true, true );
+		}, $members
+	) );
+	$arr[ json_encode( $opt ) ] = sprintf( _n( '%s (%d destinataires)', '%s (%d destinataires)', $count, 'amapress' ),
+		$title,
+		$count );
 }
 
 function amapress_message_get_targets() {

@@ -185,6 +185,18 @@ function amapress_mailinglist_user_mails( $display_name, WP_User $user, TitanFra
 	//if ($id == '')
 }
 
+function amapress_user_queries_link_wrap( $queries ) {
+	foreach ( $queries as $k => $v ) {
+		$count = get_users_count( $k );;
+		$queries[ $k ] = $v . ' (' . Amapress::makeLink(
+				admin_url( 'users.php?' . $k ),
+				sprintf( _n( '%s membre', '%s membres', $count, 'amapress' ), number_format_i18n( $count ) )
+				, true, true ) . ')';
+	}
+
+	return $queries;
+}
+
 function amapress_get_mailinglist_queries() {
 	$ret = array();
 
@@ -232,9 +244,9 @@ function amapress_get_mailinglist_queries() {
 //        $ret["amapress_contrat={$contrat->ID}&amapress_role=access_admin"] = "Responsables AMAP - {$contrat->getModelTitle()}";
 //    }
 
-	$ret["amapress_contrat=intermittent"]   = "Intermittents";
-	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
-	$ret["amapress_role=resp_distrib"]      = 'Prochains responsables de distributions';
+	$ret["amapress_contrat=intermittent"] = "Intermittents";
+	$ret["amapress_role=referent_lieu"]   = "Référents lieux";
+	$ret["amapress_role=resp_distrib"]    = 'Prochains responsables de distributions';
 
 	foreach (
 		get_categories( array(
@@ -248,7 +260,7 @@ function amapress_get_mailinglist_queries() {
 		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Membres du collectif avec rôle "' . $role->name . '"';
 	}
 
-	return $ret;
+	return amapress_user_queries_link_wrap( $ret );
 }
 
 function amapress_has_mailinglist_moderators_queries( TitanFrameworkOption $option ) {
@@ -292,7 +304,7 @@ function amapress_get_mailinglist_moderators_queries() {
 
 //    $ret["amapress_role=resp_distrib"] = "Prochains responsables de distributions";
 
-	return $ret;
+	return amapress_user_queries_link_wrap( $ret );
 }
 
 function amapress_get_mailinglists( TitanFrameworkOption $option ) {

@@ -3851,11 +3851,23 @@ Par exemple :</p>
 					),
 					'options'  => array(
 						array(
-							'id'       => 'msg_target',
-							'name'     => 'Destinataire',
-							'type'     => 'select',
-							'options'  => 'amapress_message_get_targets',
-							'required' => true,
+							'id'           => 'msg_target',
+							'name'         => 'Destinataire',
+							'type'         => 'select',
+							'options'      => 'amapress_message_get_targets',
+							'required'     => true,
+							'after_option' => function ( $option ) {
+								echo '<p>Sera envoyé à : <span id="amapress_msg_target_members"></span></p>';
+								echo '<script type="text/javascript">
+jQuery(function($) {
+    var on_change = function() {
+       var opt = JSON.parse($(this).val());
+       $("#amapress_msg_target_members").html(opt["members"]);
+   };
+   $("#amapress_msg_target").change(on_change).each(on_change); 
+});
+</script>';
+							},
 						),
 						array(
 							'id'       => 'send_mode',
