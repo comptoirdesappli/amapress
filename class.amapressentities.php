@@ -3740,7 +3740,15 @@ Cette page permet la création des produits des producteurs
 									'name'   => 'Shortcodes',
 									'type'   => 'custom',
 									'custom' => function () {
-										$ret = '<table class="placeholders-help display">';
+										$ret .= '<p>Un <strong>shortcode</strong> est un type de balisage qui permet l\'ajout de <strong><em>fonctionnalités interactives configurables</em></strong> dans le <em>contenu</em> des <strong>pages, articles, présentations, widgets</strong> du <em>site vitrine</em>. La syntaxe est la suivante : <code>[<em>nom-du-shortcode</em> argument1=valeur1 argument2=valeur2]</code> (<code>argument1</code> et <code>argument2</code> permettent la configuration du shortcode <code><em>nom-du-shortcode</em></code>) ou <code>[<em>nom-du-shortcode</em>]</code> (sans paramètre) ou encore <code>[<em>nom-du-shortcode</em> argument1=valeur1 argument2=valeur2]xxx[/<em>nom-du-shortcode</em>]</code> (si le shortcode <code><em>nom-du-shortcode</em></code> prend en charge son contenu)
+Par exemple :</p>
+<ul>
+<li><code>[inscription-distrib]</code> : permet d\'afficher le tableau d\'inscription comme responsable de distribution</li>
+<li><code>[inscription-en-ligne key=xxx email=un.mail@votre-amap.fr]Les inscriptions en ligne sont ouvertes sur notre espace privé ![/inscription-en-ligne]</code> : permet l\'inscription en ligne aux contrats</li>
+<li><code>[amapiens-role-list show_tel=false show_lieu=false]</code> : permet d\'afficher le tableau des membres du collectif</li>
+</ul>
+<p>Amapress expose les shortcodes suivants :</p>';
+										$ret .= '<table class="placeholders-help display">';
 										$ret .= '<thead><tr><th>Shortcode</th><th>Description</th></tr></thead>';
 										$ret .= '<tbody>';
 										global $all_amapress_shortcodes_descs;
