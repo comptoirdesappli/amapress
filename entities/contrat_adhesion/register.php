@@ -185,6 +185,7 @@ function amapress_register_entities_adhesion( $entities ) {
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 
+			echo '<script type="text/javascript">jQuery(function($) { $("body > div#ui-datepicker-div").hide(); });</script>';
 		},
 		'views'            => array(
 			'remove'  => array( 'mine' ),
