@@ -143,6 +143,12 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				implode( ' et ', $send_title ) . $producteur->getTitle(), 'referents' );
 			$subject      = Amapress::getOption( 'distribution-quantites-recall-mail-subject' );
 			$content      = Amapress::getOption( 'distribution-quantites-recall-mail-content' );
+			if ( $contrat->isPanierVariable() ) {
+				$content_modulable = Amapress::getOption( 'distribution-quantites-modulable-recall-mail-content' );
+				if ( ! empty( trim( strip_tags( $content_modulable ) ) ) ) {
+					$content = $content_modulable;
+				}
+			}
 			foreach ( $replacements as $k => $v ) {
 				$subject = str_replace( "%%$k%%", $v, $subject );
 				$content = str_replace( "%%$k%%", $v, $content );
@@ -408,6 +414,25 @@ function amapress_contrat_quantites_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
 			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
+				             'producteur_contrats'                        => 'Contrats du producteur',
+				             'producteur_nom'                             => 'Nom du producteur',
+				             'lien_contrats_quantites'                    => 'Lien vers les quantités à la prochaine distribution',
+				             'producteur_paniers_quantites_text'          => 'Quantités à la prochaine distribution (en texte)',
+				             'producteur_paniers_quantites_text_prix'     => 'Quantités à la prochaine distribution (en texte avec montants)',
+				             'producteur_paniers_quantites'               => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
+				             'producteur_paniers_quantites_prix'          => 'Quantités à la prochaine distribution (en tableau avec montants)',
+				             'producteur_paniers_quantites_amapiens'      => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
+				             'producteur_paniers_quantites_amapiens_prix' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
+				             'producteur_contact'                         => 'Coordonnées du producteur',
+			             ], null, [], 'recall' ),
+		),
+		array(
+			'id'      => 'distribution-quantites-modulable-recall-mail-content',
+			'name'    => 'Contenu de l\'email - Paniers modulables',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\nDétails par amapien:\n%%producteur_paniers_quantites_amapiens%%\n\n%%nom_site%%" ),
+			'desc'    => 'Spécifique aux paniers modulables. Si vide, le contenu du mail général sera utlisé.<br/> Les placeholders suivants sont disponibles:' .
 			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
 				             'producteur_contrats'                        => 'Contrats du producteur',
 				             'producteur_nom'                             => 'Nom du producteur',
