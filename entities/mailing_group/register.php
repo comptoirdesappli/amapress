@@ -342,7 +342,7 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 			'title' => 'Date',
 			'data'  => array(
 				'_'    => 'date',
-				'sort' => 'date',
+				'sort' => 'date_sort',
 			)
 		),
 		array(
@@ -391,6 +391,7 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 		$data[] = array(
 			'from'      => esc_html( $m['from'] ),
 			'date'      => ! empty( $m['date'] ) ? date_i18n( 'd/m/Y H:i:s', $m['date'] ) : '',
+			'date_sort' => ! empty( $m['date'] ) ? date_i18n( 'Y-m-d-H-i-s', $m['date'] ) : '',
 			'subject'   => $m['subject'],
 			'content'   => $m['content'],
 			'type'      => $m['type'] == 'accepted' ? 'Distribué' : 'Rejetté',
