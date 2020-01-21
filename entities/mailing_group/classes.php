@@ -582,7 +582,11 @@ class AmapressMailingGroup extends TitanEntity {
 		foreach ( $types as $type ) {
 //			if ( 'waiting' == $type || 'errored' == $type || 'logged' == $type ) {
 			foreach ( glob( $this->getUploadDir( $type ) . '*.json' ) as $filename ) {
-				$emails[ $filename ] = $this->loadMessageFile( $filename );
+				$msg = $this->loadMessageFile( $filename );
+				if ( empty( $msg['id'] ) ) {
+					$msg['id'] = pathinfo( $filename )['filename'];
+				}
+				$emails[ $filename ] = $msg;
 			}
 //			}
 		}

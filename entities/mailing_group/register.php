@@ -488,6 +488,9 @@ function amapress_get_mailgroup_action_form( $button_text, $action, $mailgroup_i
 
 add_action( 'admin_action_amapress_mailgroup_reject', 'admin_action_amapress_mailgroup_reject' );
 function admin_action_amapress_mailgroup_reject() {
+	if ( empty( $_REQUEST['mailgroup_id'] ) || empty( $_REQUEST['msg_id'] ) ) {
+		wp_die( 'Invalid request' );
+	}
 	$mailing_group_id = $_REQUEST['mailgroup_id'];
 	$msg_id           = $_REQUEST['msg_id'];
 	$ml               = AmapressMailingGroup::getBy( $mailing_group_id );
@@ -504,6 +507,9 @@ function admin_action_amapress_mailgroup_reject() {
 
 add_action( 'admin_action_amapress_mailgroup_reject_quiet', 'admin_action_amapress_mailgroup_reject_quiet' );
 function admin_action_amapress_mailgroup_reject_quiet() {
+	if ( empty( $_REQUEST['mailgroup_id'] ) || empty( $_REQUEST['msg_id'] ) ) {
+		wp_die( 'Invalid request' );
+	}
 	$mailing_group_id = $_REQUEST['mailgroup_id'];
 	$msg_id           = $_REQUEST['msg_id'];
 	$ml               = AmapressMailingGroup::getBy( $mailing_group_id );
@@ -520,6 +526,9 @@ function admin_action_amapress_mailgroup_reject_quiet() {
 
 add_action( 'admin_action_amapress_mailgroup_distribute', 'admin_action_amapress_mailgroup_distribute' );
 function admin_action_amapress_mailgroup_distribute() {
+	if ( empty( $_REQUEST['mailgroup_id'] ) || empty( $_REQUEST['msg_id'] ) ) {
+		wp_die( 'Invalid request' );
+	}
 	$mailing_group_id = $_REQUEST['mailgroup_id'];
 	$msg_id           = $_REQUEST['msg_id'];
 	$ml               = AmapressMailingGroup::getBy( $mailing_group_id );
@@ -536,6 +545,9 @@ function admin_action_amapress_mailgroup_distribute() {
 
 add_action( 'admin_action_amapress_mailgroup_resend_mods', 'admin_action_amapress_mailgroup_resend_mods' );
 function admin_action_amapress_mailgroup_resend_mods() {
+	if ( empty( $_REQUEST['mailgroup_id'] ) || empty( $_REQUEST['msg_id'] ) ) {
+		wp_die( 'Invalid request' );
+	}
 	$mailing_group_id = $_REQUEST['mailgroup_id'];
 	$msg_id           = $_REQUEST['msg_id'];
 	$ml               = AmapressMailingGroup::getBy( $mailing_group_id );
