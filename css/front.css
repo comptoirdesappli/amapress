@@ -238,11 +238,6 @@ a.evt-link.evt-img {
     float: left;
 }
 
-.inscr-list-info * {
-    max-width: 7em;
-    white-space: normal !important;
-}
-
 .visite-inscr-list .inscr-list-info, .visite-inscr-list .inscr-list-info > * {
     max-width: 10em;
     white-space: normal !important;

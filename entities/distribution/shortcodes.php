@@ -687,6 +687,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		//$ret .= '<script type="text/javascript">jQuery(function($) {$("#inscr-distrib-table").DataTable().fixedHeader.enable(true);});</script>';
 	}
 
+	$ret .= '<style type="text/css">.inscr-list-info * {
+    max-width: ' . $column_date_width . ';
+    white-space: normal !important;
+}</style>';
 	if ( is_admin() ) {
 		$ret .= '<style type="text/css">.dist-col-date {display: none}</style>';
 		$ret .= '<script type="text/javascript">
