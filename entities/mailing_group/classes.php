@@ -586,6 +586,10 @@ class AmapressMailingGroup extends TitanEntity {
 				if ( empty( $msg['id'] ) ) {
 					$msg['id'] = pathinfo( $filename )['filename'];
 				}
+				if ( empty( $msg['from'] ) ) {
+					@unlink( $filename );
+					continue;
+				}
 				$emails[ $filename ] = $msg;
 			}
 //			}
