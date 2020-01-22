@@ -1181,7 +1181,7 @@ function amapress_row_action_user_remove_collectif( $user_id ) {
 	if ( ! is_wp_error( $terms ) ) {
 		/** @var WP_Term $term */
 		foreach (
-			as $term
+			$terms as $term
 		) {
 			wp_remove_object_terms( $user_id, $term->term_id, AmapressUser::AMAP_ROLE );
 		}
