@@ -297,7 +297,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'telephone4'         => array(
+			'telephone4'        => array(
 				'name'        => amapress__( 'Téléphone 4' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 4',
@@ -305,7 +305,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'moyen'              => array(
+			'moyen'             => array(
 				'name'        => amapress__( 'Moyen préféré' ),
 				'type'        => 'select',
 				'show_column' => false,
@@ -511,12 +511,12 @@ function amapress_register_entities_amapien( $entities ) {
 			'exp_csv'   => true,
 		),
 		'row_actions'         => array(
-			'add_inscription' => [
+			'add_inscription'  => [
 				'label'  => 'Ajout Inscription Contrat',
 				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
 				'target' => '_blank',
 			],
-			'relocate'        => array(
+			'relocate'         => array(
 				'label'     => 'Géolocaliser',
 				'condition' => function ( $user_id ) {
 					$user = AmapressUser::getBy( $user_id );
@@ -525,9 +525,23 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 				'confirm'   => true,
 			),
-			'resend_welcome'  => array(
+			'resend_welcome'   => array(
 				'label'   => 'Renvoyer l\'email de bienvenue',
 				'confirm' => true,
+			),
+			'remove_collectif' => array(
+				'label'     => 'Supprimer du collectif',
+				'confirm'   => true,
+				'condition' => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+
+					$user_ids = get_users(
+						[ 'amapress_role' => 'collectif', 'fields' => 'ids' ]
+					);
+
+					return $user && in_array( $user->ID, $user_ids );
+				},
+				'show_on'   => 'editor',
 			)
 		),
 	);
@@ -1151,6 +1165,28 @@ function amapress_row_action_user_relocate( $user_id ) {
 add_action( 'amapress_row_action_user_resend_welcome', 'amapress_row_action_user_resend_welcome' );
 function amapress_row_action_user_resend_welcome( $user_id ) {
 	wp_send_new_user_notifications( $user_id, 'user' );
+
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_user_remove_collectif', 'amapress_row_action_user_remove_collectif' );
+function amapress_row_action_user_remove_collectif( $user_id ) {
+	$user = AmapressUser::getBy( $user_id );
+	if ( ! $user ) {
+		wp_die( 'Amapien introuvable' );
+	}
+
+	$terms = wp_get_object_terms( $user_id, AmapressUser::AMAP_ROLE,
+		array( 'fields' => 'all' ) );
+	if ( ! is_wp_error( $terms ) ) {
+		/** @var WP_Term $term */
+		foreach (
+			as $term
+		) {
+			wp_remove_object_terms( $user_id, $term->term_id, AmapressUser::AMAP_ROLE );
+		}
+	}
+	$user->getUser()->set_role( 'amapien' );
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
