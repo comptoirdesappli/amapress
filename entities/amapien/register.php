@@ -205,13 +205,13 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'       => 'Motif de non renouvellement',
 			),
 			'last_login'        => array(
-				'name'        => amapress__( 'Dernière connexion' ),
-				'type'        => 'custom',
-				'show_on'     => 'none',
-				'show_column' => true,
-				'csv'         => false,
-				'sort_column' => 'last_login',
-				'column'      => function ( $user_id ) {
+				'name'                 => amapress__( 'Dernière connexion' ),
+				'type'                 => 'custom',
+				'show_column'          => true,
+				'csv'                  => false,
+				'sort_column'          => 'last_login',
+				'use_custom_as_column' => true,
+				'custom'               => function ( $user_id ) {
 					$last_login = get_user_meta( $user_id, 'last_login', true );
 					if ( empty( $last_login ) ) {
 						return '';
