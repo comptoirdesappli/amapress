@@ -110,7 +110,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 						'type'       => 'amap_role',
 						'lieu'       => null,
 						'object_id'  => $this->ID,
-						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ) . '#amapress_user_amap_roles',
 						'other_link' => admin_url( "users.php?{$amap_role->taxonomy}={$amap_role->slug}" ),
 					);
 			}
@@ -136,7 +136,8 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 							'type'       => 'referent_producteur',
 							'lieu'       => $lieu_id,
 							'object_id'  => $contrat->ID,
-							'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
+							'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ) .
+							                ( $owner_id == $contrat->ID ? '#2/-référents-spécifiques' : '#2/-référents' ),
 							'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
 						);
 				}
@@ -151,7 +152,8 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 						'type'       => 'referent_producteur',
 						'lieu'       => null,
 						'object_id'  => $contrat->ID,
-						'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ),
+						'edit_link'  => admin_url( "post.php?post={$owner_id}&action=edit" ) .
+						                ( $owner_id == $contrat->ID ? '#2/-référents-spécifiques' : '#2/-référents' ),
 						'other_link' => admin_url( "users.php?amapress_role=referent_producteur" ),
 					);
 				//}
@@ -202,7 +204,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 							'type'       => 'tresorier',
 							'lieu'       => null,
 							'object_id'  => $this->ID,
-							'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+							'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ) . '#role',
 							'other_link' => admin_url( "users.php?role={$r}" ),
 						);
 				} else {
@@ -213,7 +215,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 							'lieu'       => null,
 							'object_id'  => $this->ID,
 							'role'       => $r,
-							'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+							'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ) . '#role',
 							'other_link' => admin_url( "users.php?role={$r}" ),
 						);
 				}
@@ -227,7 +229,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 						'type'       => 'intermittent',
 						'lieu'       => null,
 						'object_id'  => $this->ID,
-						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ),
+						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ) . '#amapress_user_intermittent',
 						'other_link' => admin_url( "users.php?amapress_contrat=intermittent" ),
 					);
 			}
@@ -243,6 +245,18 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 			function ( $role ) {
 //            return '<a href="'.esc_attr($role['edit_link']).'">'.esc_html($role['title']).'</a>';
 				return $role['title'];
+			}, $this->getAmapRoles() ) ) );
+	}
+
+	public
+	function getAmapRolesStringLinks() {
+		return implode( ', ', array_unique( array_map(
+			function ( $role ) {
+				if ( ! empty( $role['edit_link'] ) ) {
+					return '<a target="_blank" href="' . esc_attr( $role['edit_link'] ) . '">' . esc_html( $role['title'] ) . '</a>';
+				} else {
+					return esc_html( $role['title'] );
+				}
 			}, $this->getAmapRoles() ) ) );
 	}
 

@@ -51,7 +51,7 @@ function amapress_register_entities_amapien( $entities ) {
 					if ( ! $amapien ) {
 						return '';
 					}
-					$roles = esc_html( $amapien->getAmapRolesString() );
+					$roles = $amapien->getAmapRolesStringLinks();
 
 					return $roles;
 				},
@@ -93,7 +93,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
 				'desc'        => '
-<p>Pour identifier ou contacter un membre du collectif via la fonctionnalité trombinoscope du site, sélectionner l’étiquette correspondante ci-dessous ou la <a href="' . admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ) . '">créer</a> :</p>
+<p id="amapress_user_amap_roles">Pour identifier ou contacter un membre du collectif via la fonctionnalité trombinoscope du site, sélectionner l’étiquette correspondante ci-dessous ou la <a href="' . admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ) . '">créer</a> :</p>
 <p><em>Exemple : Accueil nouveaux,  Boite Contact,  Convivialité-apéro,  Coordination associative,  Distributions, Feuille de chou,  Responsable Intermittents,  Ouverture vers l\'extérieur,  Panier solidaire,  Référent miel,  Relais Réseau AMAP IdF,  Responsable légal,  Site internet,  Sortie à la ferme…</em></p>
 <p>Pour modifier le collectif : <a href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Editer le collectif</a></p>',
 				'show_column' => false,
@@ -164,10 +164,10 @@ function amapress_register_entities_amapien( $entities ) {
 					$amapien = AmapressUser::getBy( $user_id, true );
 					if ( $amapien ) {
 						if ( $amapien->isIntermittent() ) {
-							$ret .= '<p>L\'utilisateur est intermittent et reçoit des alertes lorsque des paniers sont occasionnellement disponibles</p>';
+							$ret .= '<p id="amapress_user_intermittent">L\'utilisateur est intermittent et reçoit des alertes lorsque des paniers sont occasionnellement disponibles</p>';
 							$ret .= '<input class="button button-secondary" type="submit" name="desinscr_intermittent" value="Désinscrire de la liste des intermittents" />';
 						} else {
-							$ret .= '<p>L\'utilisateur n\'est pas intermittent</p>';
+							$ret .= '<p id="amapress_user_intermittent">L\'utilisateur n\'est pas intermittent</p>';
 							$ret .= '<input class="button button-secondary" type="submit" name="inscr_intermittent" value="Inscrire sur la liste des intermittents" />';
 						}
 					}
