@@ -105,6 +105,9 @@ function amapress_custom_post_content( $content ) {
 	if ( ! is_user_logged_in() && get_post_meta( get_the_ID(), 'amps_lo', true ) == 1 ) {
 		return '';
 	}
+	if ( is_admin() ) {
+		return '';
+	}
 
 	if ( is_main_query() ) {
 		$old_content = $content;
