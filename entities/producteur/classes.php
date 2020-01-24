@@ -167,6 +167,19 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 		return AmapressUser::getBy( $id );
 	}
 
+	public function removeReferent( $user_id ) {
+		for ( $num = 1; $num <= 3; $num ++ ) {
+			foreach ( array_merge( [ null ], Amapress::get_lieu_ids() ) as $lieu_id ) {
+				$meta_name = 'amapress_producteur_referent' . ( $num > 1 ? $num : '' ) . ( $lieu_id ? '_' . $lieu_id : '' );
+				$v         = $this->getCustom( $meta_name );
+				if ( $v == $user_id ) {
+					$this->deleteCustom( $meta_name );
+				}
+			}
+		}
+		delete_transient( AmapressContrats::REFS_PROD_TRANSIENT );
+	}
+
 	/** @return int */
 	private function getReferentNumId( $lieu_id = null, $num = 1, $for_lieu_only = false ) {
 		$lieu_name = ( $lieu_id ? $lieu_id : 'defaut' );

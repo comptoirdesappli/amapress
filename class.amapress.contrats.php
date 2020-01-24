@@ -618,13 +618,14 @@ class AmapressContrats {
 		return self::getReferentProducteursAndLieux( 'all' );
 	}
 
+	const REFS_PROD_TRANSIENT = 'amps_refs_prods';
 
 	public static function getReferentProducteursAndLieux( $user_id = null ) {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
 
-		$key = "amps_refs_prods";
+		$key = self::REFS_PROD_TRANSIENT;
 		$res = get_transient( $key );
 		if ( false === $res ) {
 			Amapress::setFilterForReferent( false );

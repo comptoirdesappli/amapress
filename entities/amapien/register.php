@@ -297,7 +297,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'telephone4'        => array(
+			'telephone4'     => array(
 				'name'        => amapress__( 'Téléphone 4' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 4',
@@ -305,7 +305,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'moyen'             => array(
+			'moyen'          => array(
 				'name'        => amapress__( 'Moyen préféré' ),
 				'type'        => 'select',
 				'show_column' => false,
@@ -315,13 +315,13 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'desc'        => 'Moyen de communication préféré',
 			),
-			'head_amapress6'     => array(
+			'head_amapress6' => array(
 				'id'      => 'contrats_sect',
 				'name'    => amapress__( 'Contrats' ),
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
-			'contrats'           => array(
+			'contrats'       => array(
 				'name'                     => amapress__( 'Contrats' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
@@ -530,9 +530,10 @@ function amapress_register_entities_amapien( $entities ) {
 				'confirm' => true,
 			),
 			'remove_collectif' => array(
-				'label'     => 'Supprimer du collectif',
-				'confirm'   => true,
-				'condition' => function ( $user_id ) {
+				'label'      => 'Supprimer du collectif',
+				'confirm'    => true,
+				'capability' => 'manage_contrats',
+				'condition'  => function ( $user_id ) {
 					$user = AmapressUser::getBy( $user_id );
 
 					$user_ids = get_users(
@@ -541,7 +542,7 @@ function amapress_register_entities_amapien( $entities ) {
 
 					return $user && in_array( $user->ID, $user_ids );
 				},
-				'show_on'   => 'editor',
+				'show_on'    => 'editor',
 			)
 		),
 	);
@@ -1115,7 +1116,7 @@ jQuery(function($) {
   $("#role").addClass("check_amap_role");
   jQuery.validator.addMethod("check_amap_role", function (value, element) {
 	' . $check_role_js_code . '
-  }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement : ' . $ref_prod_message . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");
+  }, "<p class=\'error\'>Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement : ' . str_replace( '"', "'", $ref_prod_message ) . '. Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.</p>");
 });
 </script>';
 }
@@ -1187,6 +1188,20 @@ function amapress_row_action_user_remove_collectif( $user_id ) {
 		}
 	}
 	$user->getUser()->set_role( 'amapien' );
+
+	$refs = AmapressContrats::getReferentProducteursAndLieux( $user->ID );
+	foreach ( $refs as $ref ) {
+		foreach ( $ref['contrat_ids'] as $contrat_id ) {
+			$contrat = AmapressContrat::getBy( $contrat_id );
+			if ( $contrat ) {
+				$contrat->removeReferent( $user->ID );
+			}
+		}
+		$producteur = AmapressProducteur::getBy( $ref['producteur'] );
+		if ( $producteur ) {
+			$producteur->removeReferent( $user->ID );
+		}
+	}
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
