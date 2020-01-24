@@ -115,7 +115,10 @@ function amapress_row_actions_handler() {
 		$post_type = $typenow;
 		$id        = $_REQUEST['amp_id'];
 
-		$post_type = amapress_simplify_post_type( 'users.php' == $pagenow ? 'user' : $post_type );
+		$post_type = amapress_simplify_post_type(
+			'users.php' == $pagenow
+			|| 'user-edit.php' == $pagenow
+			|| 'profile.php' == $pagenow ? 'user' : $post_type );
 		$type      = AmapressEntities::getPostType( $post_type );
 		$action    = $_REQUEST['action'];
 		if ( ! empty( $type['row_actions'][ $action ] ) ) {
