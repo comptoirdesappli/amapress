@@ -1,19 +1,23 @@
 <?php
 /**
  * @package Amapress
+ * @author Comptoir des Applis
+ * @license GPL-2.0+
+ * @link https://github.com/comptoirdesappli/amapress
  */
 /*
-Plugin Name: Amapress
-Plugin URI: http://amapress.fr/
-Description: 
-Version: 0.91.135
-Requires PHP: 5.6
-Requires WP: 4.4
-Author: ShareVB
-Author URI: http://amapress.fr/
-License: GPLv2 or later
-Text Domain: amapress
-GitHub Plugin URI: comptoirdesappli/amapress
+ * Plugin Name:         Amapress
+ * Plugin URI:          https://github.com/comptoirdesappli/amapress
+ * Description:         Plugin de Gestion & Communication pour les AMAP
+ * Version:             0.92.0
+ * Requires             PHP: 5.6
+ * Requires at least:   4.4
+ * Author:              Comptoir des Applis
+ * Author URI:          http://amapress.fr/
+ * License:             GNU General Public License v2
+ * License URI:         http://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:         amapress
+ * GitHub Plugin URI:   https://github.com/comptoirdesappli/amapress
 */
 
 /*
@@ -48,7 +52,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 104 );
-define( 'AMAPRESS_VERSION', '0.91.135' );
+define( 'AMAPRESS_VERSION', '0.92.0' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
