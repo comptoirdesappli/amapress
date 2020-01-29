@@ -66,7 +66,7 @@ class AmapressUpdateNotifier {
 					$info        = plugins_api( 'plugin_information', array( 'slug' => $data->slug ) ); // get repository plugin info
 					$message     .= "\n" . sprintf( __( "Plugin: %s n'est pas à jour. Merci de mettre à jour de la version %s à la version %s", "amapress" ), $plugin_info['Name'], $plugin_info['Version'], $data->new_version ) . "\n";
 					$message     .= "\t" . sprintf( __( "Détails: %s", "amapress" ), $data->url ) . "\n";
-					$message     .= "\t" . sprintf( __( "Changelog: %s%s", "amapress" ), $data->url, "changelog/" ) . "\n";
+					//$message     .= "\t" . sprintf( __( "Changelog: %s%s", "amapress" ), $data->url, "changelog/" ) . "\n";
 					if ( isset( $info->tested ) && version_compare( $info->tested, $wp_version, '>=' ) ) {
 						$compat = sprintf( __( 'Compatibility with WordPress %1$s: 100%% (according to its author)' ), $cur_wp_version );
 					} elseif ( isset( $info->compatibility[ $wp_version ][ $data->new_version ] ) ) {
