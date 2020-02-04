@@ -11,7 +11,7 @@
  * Description:         Plugin de Gestion & Communication pour les AMAP
  * Version:             0.92.5
  * Requires             PHP: 5.6
- * Requires at least:   4.4
+ * Requires at least:   4.6
  * Author:              Comptoir des Applis
  * Author URI:          http://amapress.fr/
  * License:             GNU General Public License v2
