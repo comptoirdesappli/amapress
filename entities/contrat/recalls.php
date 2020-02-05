@@ -598,6 +598,29 @@ function amapress_contrat_renew_recall_options() {
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_renew',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'contrat-renew-recall-2',
+			'name'                => 'Rappel 2',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_renew',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'contrat-renew-recall-3',
+			'name'                => 'Rappel 3',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_renew',
+			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},

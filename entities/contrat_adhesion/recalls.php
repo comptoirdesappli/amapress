@@ -70,11 +70,13 @@ add_action( 'amapress_recall_inscriptions_validate', function ( $args ) {
 function amapress_inscriptions_to_validate_recall_options() {
 	return array(
 		array(
-			'id'                  => 'inscriptions-validate-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Inscriptions à valider',
-			'type'                => 'event-scheduler',
-			'hook_name'           => 'amapress_recall_inscriptions_validate',
+			'id'         => 'inscriptions-validate-recall-1',
+			'name'       => 'Rappel 1',
+			'desc'       => 'Inscriptions à valider',
+			'type'       => 'event-scheduler',
+			'show_after' => true,
+			'hook_name'  => 'amapress_recall_inscriptions_validate',
+
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},
@@ -84,6 +86,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Inscriptions à valider',
 			'type'                => 'event-scheduler',
+			'show_after'          => true,
 			'hook_name'           => 'amapress_recall_inscriptions_validate',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
