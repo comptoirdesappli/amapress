@@ -64,7 +64,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 
 		do_action( 'tf_scheduler_option_changed', $this->getID(), $this );
 
-		$this->updateScheduler();
+		$this->updateScheduler( true );
 
 		return $ret;
 	}
@@ -80,11 +80,11 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 	public static function updateAllSchedulers() {
 		/** @var TitanFrameworkOptionEventScheduler $option */
 		foreach ( self::$scheduler_options as $option ) {
-			$option->updateScheduler();
+			$option->updateScheduler( false );
 		}
 	}
 
-	private function updateScheduler() {
+	private function updateScheduler( $from_save ) {
 		$hook_name           = $this->settings['hook_name'];
 		$hook_args_generator = $this->settings['hook_args_generator'];
 		if ( ! empty( $hook_name ) && ! empty( $hook_args_generator ) ) {
@@ -93,14 +93,18 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 				[];
 			if ( ! empty( $all_args ) ) {
 				$value = $this->getValue();
+				$this->clear_all_scheduled_hook( $hook_name );
+				foreach ( $all_args as $args ) {
+					wp_clear_scheduled_hook( $hook_name, $args );
+				}
 				if ( isset( $value['enabled'] ) && $value['enabled'] ) {
 					foreach ( $all_args as $args ) {
 						if ( ! isset( $args['time'] ) ) {
 							continue;
 						}
-						$time = $args['time'];
+						$time              = $args['time'];
+						$args['option_id'] = $this->getID();
 						unset( $args['time'] );
-						wp_clear_scheduled_hook( $hook_name, $args );
 						$event_date = self::getEventDateTime( $time, $value );
 						if ( $event_date > time() ) {
 							wp_schedule_single_event( $event_date, $hook_name, [ $args ] );
@@ -109,6 +113,39 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 				}
 			}
 		}
+	}
+
+	private function clear_all_scheduled_hook( $hook ) {
+		if ( function_exists( '_get_cron_array' ) && function_exists( '_set_cron_array' ) ) {
+			$crons = _get_cron_array();
+			if ( empty( $crons ) ) {
+				return 0;
+			}
+
+			$results = 0;
+			foreach ( $crons as $timestamp => $cron ) {
+				if ( isset( $cron[ $hook ] ) ) {
+					foreach ( $crons[ $timestamp ][ $hook ] as $key => $value ) {
+						if ( empty( $value['args'][0]['option_id'] ) || $this->getID() == $value['args'][0]['option_id'] ) {
+							$results += 1;
+							unset( $crons[ $timestamp ][ $hook ][ $key ] );
+						}
+					}
+					if ( empty( $crons[ $timestamp ][ $hook ] ) ) {
+						unset( $crons[ $timestamp ][ $hook ] );
+					}
+				}
+				if ( empty( $crons[ $timestamp ] ) ) {
+					unset( $crons[ $timestamp ] );
+				}
+			}
+
+			_set_cron_array( $crons );
+
+			return $results;
+		}
+
+		return false;
 	}
 
 	/** @return int */
