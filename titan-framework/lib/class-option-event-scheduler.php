@@ -240,8 +240,8 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 	public function display( $postID = null ) {
 		$value = $this->getValue( $postID );
 
-		$days_input          = '<span><input id="' . $this->getID() . '-days" name="' . $this->getID() . '-days" type="number" style="width: 3em" class="number required" min="0" step="1" value="' . $value['days'] . '" ' . disabled( ! $value['enabled'], true, false ) . ' /></span>';
-		$hours_minutes_input = '<span><input id="' . $this->getID() . '-hours" name="' . $this->getID() . '-hours" type="number" style="width: 3em"  class="number required" min="0" max="23" step="1" value="' . $value['hours'] . '" ' . disabled( ! $value['enabled'], true, false ) . ' />h<input id="' . $this->getID() . '-minutes" name="' . $this->getID() . '-minutes" type="number" style="width: 3em"  class="number required" min="0" max="59" step="1" value="' . $value['minutes'] . '" ' . disabled( ! $value['enabled'], true, false ) . ' /></span>';
+		$days_input          = '<span><input id="' . $this->getID() . '-days" name="' . $this->getID() . '-days" type="number" style="width: 4em" class="number required" min="0" step="1" value="' . $value['days'] . '" ' . disabled( ! $value['enabled'], true, false ) . ' /></span>';
+		$hours_minutes_input = '<span><input id="' . $this->getID() . '-hours" name="' . $this->getID() . '-hours" type="number" style="width: 4em"  class="number required" min="0" max="23" step="1" value="' . $value['hours'] . '" ' . disabled( ! $value['enabled'], true, false ) . ' />h<input id="' . $this->getID() . '-minutes" name="' . $this->getID() . '-minutes" type="number" style="width: 4em"  class="number required" min="0" max="59" step="1" value="' . $value['minutes'] . '" ' . disabled( ! $value['enabled'], true, false ) . ' /></span>';
 		$pos_input           = '<select id="' . $this->getID() . '-pos" style="width: 5em;min-width: 5em" name="' . $this->getID() . '-pos" class="required" ' . disabled( ! $value['enabled'], true, false ) . '>' .
 		                       tf_parse_select_options( [
 			                       'before' => 'avant',
