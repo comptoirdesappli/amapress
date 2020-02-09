@@ -158,7 +158,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$content,
 				'', $target_users, $dist, array(),
 				amapress_get_recall_cc_from_option( 'distribution-quantites-recall-cc' ) );
-			echo '<p>Email de rappel des quantités aux producteurs envoyé</p>';
+			echo '<p>Email de rappel des quantités aux producteurs envoyé : ' . esc_html( $producteur->getTitle() ) . '</p>';
 			$sent_mails = true;
 		}
 	}

@@ -1338,9 +1338,13 @@ function amapress_get_contrat_quantite_datatable(
 				/** @var AmapressContrat_quantite $quant */
 				$row = array();
 				if ( $show_adherents ) {
-					/** @var AmapressAdhesion $adhesion */
-					$adhesion        = $adhesions[0];
-					$row['adherent'] = $adhesion->getAdherent()->getSortableDisplayName();
+					if ( isset( $adhesions[0] ) ) {
+						/** @var AmapressAdhesion $adhesion */
+						$adhesion        = $adhesions[0];
+						$row['adherent'] = $adhesion->getAdherent()->getSortableDisplayName();
+					} else {
+						$row['adherent'] = '';
+					}
 				}
 				$row['date']      = date_i18n( 'd/m/Y', $real_date );
 				$row['date_sort'] = date( 'Y-m-d', $real_date );
