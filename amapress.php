@@ -647,7 +647,7 @@ function get_image_sizes() {
 function get_image_size( $size ) {
 	$sizes = get_image_sizes();
 
-	if ( isset( $sizes[ $size ] ) ) {
+	if ( is_string( $size ) && isset( $sizes[ $size ] ) ) {
 		return $sizes[ $size ];
 	}
 
