@@ -136,7 +136,7 @@ jQuery(function($) {
 					}
 					$dists = AmapressDistribution::get_distributions(
 						Amapress::add_a_month( $panier->getDate(), - 2 ),
-						Amapress::add_a_month( $panier->getDate(), 2 ),
+						Amapress::add_a_month( $panier->getDate(), 4 ),
 						'ASC' );
 
 					foreach ( $dists as $dist ) {
