@@ -813,7 +813,7 @@ class AmapressMailingGroup extends TitanEntity {
 			$moderator = AmapressUser::getBy( amapress_current_user_id() );
 		}
 
-		$subject = $msg['subject'];
+		$subject = ! empty( $msg['subject'] ) ? $msg['subject'] : '';
 		global $phpmailer;
 
 		// (Re)create it, if it's gone missing
@@ -823,9 +823,12 @@ class AmapressMailingGroup extends TitanEntity {
 			$phpmailer = new PHPMailer( true );
 		}
 
-		$body    = $phpmailer->html2text( $msg['content'] );
+		$body    = $phpmailer->html2text( ! empty( $msg['content'] ) ? $msg['content'] : '' );
 		$summary = wpautop( "\n------\nSujet: $subject\n$body\n------\n" );
 
+		if ( empty( $msg['id'] ) ) {
+			$msg['id'] = '';
+		}
 
 		$placeholders = [
 			'liste_nom'              => $this->getName(),
@@ -835,7 +838,7 @@ class AmapressMailingGroup extends TitanEntity {
 			'moderated_by_name'      => $moderator ? $moderator->getDisplayName() : '',
 			'msg_subject'            => $subject,
 			'msg_summary'            => $summary,
-			'sender'                 => esc_html( $msg['from'] ),
+			'sender'                 => esc_html( ! empty( $msg['from'] ) ? $msg['from'] : '' ),
 			'msg_waiting_link'       => Amapress::makeLink( admin_url( 'admin.php?page=mailinggroup_moderation&tab=mailgrp-moderate-tab-' . $this->ID ), 'Voir' ),
 			'msg_reject_silent_link' => amapress_get_mailgroup_action_form( 'Rejetter sans prévenir', 'amapress_mailgroup_reject_quiet', $this->ID, $msg['id'] ),
 			'msg_reject_notif_link'  => amapress_get_mailgroup_action_form( 'Rejetter', 'amapress_mailgroup_reject', $this->ID, $msg['id'] ),
