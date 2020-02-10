@@ -56,7 +56,11 @@ add_action( 'amapress_recall_resp_distrib', function ( $args ) {
 			strtolower( sanitize_file_name( 'liste-emargement-tous-contrats-' . $dist->getTitle() . '.pdf' ) ) );
 	}
 
-	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
+	if ( Amapress::getOption( 'distribution-resp-recall-send-bcc' ) ) {
+		$responsable_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
+	} else {
+		$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
+	}
 	amapress_send_message(
 		Amapress::getOption( 'distribution-resp-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-resp-recall-mail-content' ),
@@ -102,7 +106,11 @@ add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-tous-contrats-' . $dist->getTitle() . '.pdf' ) ) );
 
-	$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Emargement de " . $dist->getTitle(), "distribution" );
+	if ( Amapress::getOption( 'distribution-emargement-recall-send-bcc' ) ) {
+		$responsable_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $responsable_ids ), "Emargement de " . $dist->getTitle(), "distribution" );
+	} else {
+		$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Emargement de " . $dist->getTitle(), "distribution" );
+	}
 	amapress_send_message(
 		Amapress::getOption( 'distribution-emargement-recall-mail-subject' ),
 		Amapress::getOption( 'distribution-emargement-recall-mail-content' ),
@@ -636,6 +644,13 @@ function amapress_distribution_responsable_recall_options() {
 			'default'  => '[Rappel] Vous êtes inscrit responsable à %%post:title%%',
 		),
 		array(
+			'id'      => 'distribution-resp-recall-send-bcc',
+			'name'    => 'Envoi Bcc',
+			'type'    => 'checkbox',
+			'desc'    => 'Envoyer le mail avec les responsables en Bcc (au lieu de destinataire direct) : ne permet plus la communication des responsables de la semaine entre eux.',
+			'default' => 0,
+		),
+		array(
 			'id'      => 'distribution-resp-recall-send-liste',
 			'name'    => 'Liste émargement',
 			'type'    => 'checkbox',
@@ -713,6 +728,13 @@ function amapress_distribution_emargement_recall_options() {
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},
+		),
+		array(
+			'id'      => 'distribution-emargement-recall-send-bcc',
+			'name'    => 'Envoi Bcc',
+			'type'    => 'checkbox',
+			'desc'    => 'Envoyer le mail avec les responsables en Bcc (au lieu de destinataire direct) : ne permet plus la communication des responsables de la semaine entre eux.',
+			'default' => 0,
 		),
 		array(
 			'id'       => 'distribution-emargement-recall-mail-subject',
