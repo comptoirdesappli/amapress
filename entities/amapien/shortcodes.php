@@ -177,11 +177,7 @@ function amapress_amapiens_map_shortcode( $atts ) {
 		}
 		$query           = array(
 			'meta_query'    => array(
-				array(
-					'relation' => 'OR',
-					array( 'key' => 'pw_user_status', 'compare' => 'NOT EXISTS' ),
-					array( 'key' => 'pw_user_status', 'value' => 'approved', 'compare' => '=' )
-				),
+				amapress_get_user_meta_filter(),
 			),
 			'amapress_lieu' => $lieu->ID,
 		);

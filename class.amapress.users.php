@@ -730,11 +730,7 @@ jQuery(function($) {
 		$lng = floatval( get_user_meta( $user_id, 'amapress_user_long', true ) );
 
 		$users = get_users( array(
-			'meta_query' => array(
-				'relation' => 'OR',
-				array( 'key' => 'pw_user_status', 'compare' => 'NOT EXISTS' ),
-				array( 'key' => 'pw_user_status', 'value' => 'approved', 'compare' => '=' ),
-			),
+			'meta_query' => amapress_get_user_meta_filter(),
 			'order'      => 'ASC',
 			'orderby'    => 'display_name',
 			'exclude'    => array( $user_id ),
@@ -808,14 +804,7 @@ jQuery(function($) {
 		}
 
 		$base_query = array(
-			'meta_query'    => array(
-				'relation' => 'AND',
-				array(
-					'relation' => 'OR',
-					array( 'key' => 'pw_user_status', 'compare' => 'NOT EXISTS' ),
-					array( 'key' => 'pw_user_status', 'value' => 'approved', 'compare' => '=' ),
-				)
-			),
+			'meta_query'    => amapress_get_user_meta_filter(),
 			'amapress_lieu' => $lieu_ids,
 			'order'         => 'ASC',
 			'orderby'       => 'display_name',

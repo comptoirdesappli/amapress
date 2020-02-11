@@ -272,6 +272,14 @@ function amapress_register_entities_amapien( $entities ) {
 				'town_field_name'        => 'amapress_user_ville',
 				'show_on'                => 'edit-only',
 			),
+			'hidaddr'           => array(
+				'name'       => amapress__( 'Trombinoscope' ),
+				'type'       => 'checkbox',
+				'desc'       => 'Ne pas apparaître sur le trombinoscope',
+				'show_on'    => 'edit-only',
+				'csv_import' => false,
+				'default'    => 0,
+			),
 			'head_amapress2'    => array(
 				'id'   => 'phones_sect',
 				'name' => amapress__( 'Téléphones' ),
@@ -1219,3 +1227,23 @@ add_action( 'admin_head-users.php', function () {
 		echo '<script type="">jQuery(function($) { $(".wp-heading-inline").text(' . wp_json_encode( $override_title ) . ');});</script>';
 	}
 } );
+
+function amapress_get_user_meta_filter() {
+	$ret = array(
+		'relation' => 'AND',
+		array(
+			'relation' => 'OR',
+			array( 'key' => 'pw_user_status', 'compare' => 'NOT EXISTS' ),
+			array( 'key' => 'pw_user_status', 'value' => 'approved', 'compare' => '=' ),
+		),
+	);
+	if ( ! amapress_can_access_admin() ) {
+		$ret[] = array(
+			'relation' => 'OR',
+			array( 'key' => 'amapress_user_hidaddr', 'compare' => 'NOT EXISTS' ),
+			array( 'key' => 'amapress_user_hidaddr', 'value' => '0', 'compare' => '=' ),
+		);
+	}
+
+	return $ret;
+}
