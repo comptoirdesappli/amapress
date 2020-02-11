@@ -339,6 +339,13 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	}
 
 	public
+	function isHiddenFromTrombi() {
+		$this->ensure_init();
+
+		return ! empty( $this->custom['amapress_user_hidaddr'] );
+	}
+
+	public
 	function getTelephone() {
 		$this->ensure_init();
 		if ( empty( $this->custom['amapress_user_telephone'] ) ) {

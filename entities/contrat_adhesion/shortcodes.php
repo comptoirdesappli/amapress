@@ -25,6 +25,11 @@ add_action( 'amapress_init', function () {
 		if ( ! $user_id ) {
 			wp_redirect_and_exit( add_query_arg( 'message', 'cannot_create_user' ) );
 		}
+		if ( isset( $_REQUEST['hidaddr'] ) ) {
+			update_user_meta( $user_id, 'amapress_user_hidaddr', 1 );
+		} else {
+			delete_user_meta( $user_id, 'amapress_user_hidaddr' );
+		}
 
 		$notify_email = get_option( 'admin_email' );
 		if ( ! empty( $_REQUEST['notify_email'] ) ) {
@@ -689,6 +694,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$edit_names               = Amapress::toBool( $atts['edit_names'] ) || empty( $user );
 		$adherents_infos          = '';
 		$adherents_custom_message = '';
+		$hidaddr                  = false;
 
 		if ( $user ) {
 //			if ( is_multisite() ) {
@@ -702,6 +708,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$activate_adhesion = false;
 			}
 
+			$hidaddr            = $amapien->isHiddenFromTrombi();
 			$user_message       = 'Vous êtes déjà membre de l’AMAP, vérifiez vos coordonnées :';
 			$user_firt_name     = $user->first_name;
 			$user_last_name     = $user->last_name;
@@ -819,6 +826,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <th style="text-align: left; width: auto"><label for="address">Adresse : </label></th>
                     <td><textarea style="width: 100%" rows="4" id="address" name="address"
                                   class=""><?php echo esc_textarea( $user_address ); ?></textarea></td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"></th>
+                    <td>
+                        <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+                                                    id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                        </label>
+                    </td>
                 </tr>
             </table>
             <div>
