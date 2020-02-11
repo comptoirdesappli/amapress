@@ -129,6 +129,7 @@ function amapress_process_user_profile_data() {
 			'amapress_user_telephone'   => sanitize_text_field( $_POST['amapress_user_telephone'] ),
 			'amapress_user_telephone2'  => sanitize_text_field( $_POST['amapress_user_telephone2'] ),
 			'amapress_user_moyen'       => sanitize_text_field( $_POST['amapress_user_moyen'] ),
+			'amapress_user_hidaddr'     => isset( $_POST['amapress_user_hidaddr'] ) ? 1 : 0,
 			'user_pass'                 => isset( $_POST['pass1'] ) ? $_POST['pass1'] : null,
 		);
 
@@ -214,6 +215,12 @@ function amapress_process_user_profile_data() {
 					AmapressUsers::resolveUserAddress( $user_id );
 				}
 
+			} elseif ( $key == 'amapress_user_hidaddr' ) {
+				if ( empty( $value ) ) {
+					delete_user_meta( $user_id, $key );
+				} else {
+					update_user_meta( $user_id, $key, $value );
+				}
 			} elseif ( $key == 'user_pass' ) {
 
 				$res = wp_set_password( $user_data['user_pass'], $user_id );

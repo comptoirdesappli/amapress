@@ -124,8 +124,15 @@ function amapress_edit_user_info_shortcode( $atts ) {
                    value="<?php echo esc_attr( wp_unslash( get_user_meta( $user_info->ID, 'amapress_user_ville', true ) ) ); ?>"/>
         </div>
         <div class="form-group">
+            <label for="amapress_user_hidaddr">
+                <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
+			        <?php echo checked( 1, get_user_meta( $user_info->ID, 'amapress_user_hidaddr', true ) ); ?>/>
+		        <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
+            </label>
+        </div>
+        <div class="form-group">
             <label for="amapress_user_moyen">
-				<?php _e( 'Moyen de communication préféré', 'amapress' ) ?><br/>
+			    <?php _e( 'Moyen de communication préféré', 'amapress' ) ?><br/>
             </label>
             <select class="form-control" name="amapress_user_moyen" id="amapress_user_moyen">
                 <option
