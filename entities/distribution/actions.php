@@ -233,18 +233,23 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		);
 	}
 
-	$all_adhs  = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids,
+	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+	$all_adhs            = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids,
 		null, $dist_lieu_id, $date, true, false );
-	$liste     = array();
-	$adhesions = array_group_by(
+	$liste               = array();
+	$adhesions           = array_group_by(
 		$all_adhs,
-		function ( $adh ) use ( $date ) {
+		function ( $adh ) use ( $date, $allow_partial_coadh ) {
 			/** @var AmapressAdhesion $adh */
 			if ( ! $adh->getAdherentId() ) {
 				return '';
 			}
-			$user     = $adh->getAdherent()->getUser();
-			$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date ) );
+			$user = $adh->getAdherent()->getUser();
+			if ( $allow_partial_coadh ) {
+				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date, $adh->getContrat_instanceId() ) );
+			} else {
+				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date ) );
+			}
 
 			return implode( '_', $user_ids );
 		} );

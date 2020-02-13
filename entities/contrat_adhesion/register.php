@@ -996,16 +996,26 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 
 add_action( 'wp_ajax_check_inscription_unique', function () {
 	$contrats = $_POST['contrats'];
-	$user     = $_POST['user'];
+	$user_id  = $_POST['user'];
 	$post_ID  = $_POST['post_ID'];
 	$related  = isset( $_POST['related'] ) ? $_POST['related'] : 0;
 
 	$contrats = array_unique( array_map( 'intval', explode( ',', $contrats ) ) );
 
-	$adhs = array();
+	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+
+	$user_id = intval( $user_id );
+	$adhs    = array();
 	foreach ( $contrats as $contrat ) {
-		foreach ( AmapressAdhesion::getUserActiveAdhesions( intval( $user ), $contrat ) as $adh ) {
+		foreach ( AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat ) as $adh ) {
 			if ( $adh->getID() == $post_ID || $adh->getID() == $related ) {
+				continue;
+			}
+			if ( $allow_partial_coadh
+			     && $adh->getAdherentId() != $user_id
+			     && $adh->getAdherent2Id() != $user_id
+			     && $adh->getAdherent3Id() != $user_id
+			     && $adh->getAdherent4Id() != $user_id ) {
 				continue;
 			}
 
