@@ -1682,6 +1682,10 @@ add_filter( 'admin_footer_text', function ( $content ) {
 			}
 		}
 	}
+	if ( empty( $subtitle ) ) {
+		$subtitle = get_admin_page_title();
+	}
+
 	$content .= ' | <strong>' .
 	            Amapress::makeLink( '#', 'Tableau de bord>' . $title
 	                                     . ( ! empty( $subtitle ) ? '>' . $subtitle : '' )
