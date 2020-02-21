@@ -105,6 +105,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'          => 'custom',
 				'show_column'   => true,
 				'csv_import'    => false,
+				'show_on'       => 'edit-only',
 				'desc'          => 'Type d\'adhérent (Principal, Co-adhérent...)',
 				'custom'        => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
@@ -120,6 +121,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'        => amapress__( 'Diffusion' ),
 				'type'        => 'custom',
 				'show_column' => false,
+				'show_on'     => 'edit-only',
 				'csv_import'  => false,
 				'custom'      => function ( $user_id ) {
 					$amapien = AmapressUser::getBy( $user_id );
@@ -147,6 +149,7 @@ function amapress_register_entities_amapien( $entities ) {
 			'intermittent'      => array(
 				'name'              => amapress__( 'Intermittent' ),
 				'type'              => 'custom',
+				'show_on'           => 'edit-only',
 				'custom_csv_sample' => function ( $option, $arg ) {
 					return array(
 						'true',
@@ -208,6 +211,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'                 => amapress__( 'Dernière connexion' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
+				'show_on'              => 'edit-only',
 				'csv'                  => false,
 				'sort_column'          => 'last_login',
 				'use_custom_as_column' => true,
@@ -276,7 +280,6 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'       => amapress__( 'Trombinoscope' ),
 				'type'       => 'checkbox',
 				'desc'       => 'Ne pas apparaître sur le trombinoscope',
-				'show_on'    => 'edit-only',
 				'csv_import' => false,
 				'default'    => 0,
 			),
@@ -305,7 +308,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'telephone4'     => array(
+			'telephone4'        => array(
 				'name'        => amapress__( 'Téléphone 4' ),
 				'type'        => 'text',
 				'desc'        => 'Téléphone 4',
@@ -313,7 +316,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'moyen'          => array(
+			'moyen'             => array(
 				'name'        => amapress__( 'Moyen préféré' ),
 				'type'        => 'select',
 				'show_column' => false,
@@ -323,13 +326,13 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'desc'        => 'Moyen de communication préféré',
 			),
-			'head_amapress6' => array(
+			'head_amapress6'    => array(
 				'id'      => 'contrats_sect',
 				'name'    => amapress__( 'Contrats' ),
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
-			'contrats'       => array(
+			'contrats'          => array(
 				'name'                     => amapress__( 'Contrats' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
@@ -1226,6 +1229,12 @@ add_action( 'admin_head-users.php', function () {
 	if ( ! empty( $override_title ) ) {
 		echo '<script type="">jQuery(function($) { $(".wp-heading-inline").text(' . wp_json_encode( $override_title ) . ');});</script>';
 	}
+} );
+
+add_action( 'admin_head-user-new.php', function () {
+	echo '<script type="">jQuery(function($) { 
+      $("#role").closest("tr").insertAfter($("#fonctions_role_desc").closest("tr"));
+});</script>';
 } );
 
 function amapress_get_user_meta_filter() {
