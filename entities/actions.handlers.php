@@ -291,7 +291,7 @@ function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $
 	$term_id = Amapress::getOption( "resp-$event_type-amap-role" );
 	if ( ! empty( $term_id ) ) {
 		$emails = AmapressUser::getEmailsForAmapRole( $term_id );
-		if ( ! empty( $headers ) ) {
+		if ( ! empty( $emails ) ) {
 			$headers[] = 'Reply-To: ' . implode( ',', $emails );
 		}
 	}
