@@ -95,7 +95,9 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 				[];
 			if ( ! empty( $all_args ) ) {
 				$value = $this->getValue();
-				$this->clear_all_scheduled_hook( $hook_name );
+				if ( $from_save ) {
+					$this->clear_all_scheduled_hook( $hook_name );
+				}
 				foreach ( $all_args as $args ) {
 					wp_clear_scheduled_hook( $hook_name, $args );
 				}
