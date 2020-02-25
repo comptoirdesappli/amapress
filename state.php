@@ -304,6 +304,10 @@ function amapress_get_state() {
 		'<strong>Plugin recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
 		'warning' );
 
+	$state['05_config'][] = amapress_check_plugin_install( 'pwa', 'Progressive Web App',
+		'<strong>Recommandé</strong> : permet au site d\'être vu comme une application mobile et ajouté à l\'écran d\'accueil',
+		'info' );
+
 	$permalink_structure = get_option( 'permalink_structure' );
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		$state['05_config'][] = amapress_get_check_state(
