@@ -566,12 +566,15 @@ function amapress_amapien_affect_coadherents( TitanFrameworkMetaBox $metabox, $u
 	if ( $metabox->post_type != 'user' ) {
 		return;
 	}
-	$user = AmapressUser::getBy( $userID );
-	foreach ( AmapressAdhesion::getUserActiveAdhesions( $userID ) as $adh ) {
-		if ( $adh->getAdherentId() == $userID ) {
-			$adh->setAdherent2( $user->getCoAdherent1() );
-			$adh->setAdherent3( $user->getCoAdherent2() );
-			$adh->setAdherent4( $user->getCoAdherent3() );
+	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+	if ( ! $allow_partial_coadh ) {
+		$user = AmapressUser::getBy( $userID );
+		foreach ( AmapressAdhesion::getUserActiveAdhesions( $userID ) as $adh ) {
+			if ( $adh->getAdherentId() == $userID ) {
+				$adh->setAdherent2( $user->getCoAdherent1() );
+				$adh->setAdherent3( $user->getCoAdherent2() );
+				$adh->setAdherent4( $user->getCoAdherent3() );
+			}
 		}
 	}
 }

@@ -1131,6 +1131,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => false,
 										),
 										array(
+											'id'      => 'allow_partial_coadh',
+											'name'    => 'Autoriser la co-adhésion partielle sur seulement certains contrats',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
 											'id'      => 'renouv_days',
 											'name'    => 'Durée en jour de la période de renouvellement',
 											'type'    => 'number',

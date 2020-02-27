@@ -1685,6 +1685,44 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	/**
 	 * @return AmapressAdhesion[]
 	 */
+	public static function getUserActiveAdhesionsWithAllowPartialCheck(
+		$user_id = null,
+		$contrat_instance_id = null,
+		$date = null,
+		$ignore_renouv_delta = false,
+		$allow_not_logged = false
+	) {
+		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+		if ( $allow_partial_coadh ) {
+			return AmapressAdhesion::getUserActiveDirectAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+		} else {
+			return AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+		}
+	}
+
+	/**
+	 * @return AmapressAdhesion[]
+	 */
+	public static function getUserActiveDirectAdhesions(
+		$user_id = null,
+		$contrat_instance_id = null,
+		$date = null,
+		$ignore_renouv_delta = false,
+		$allow_not_logged = false
+	) {
+		$all_adhs = self::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+
+		return array_filter( $all_adhs, function ( $adh ) use ( $user_id ) {
+			return $adh->getAdherentId() == $user_id
+			       || $adh->getAdherent2Id() == $user_id
+			       || $adh->getAdherent3Id() == $user_id
+			       || $adh->getAdherent4Id() == $user_id;
+		} );
+	}
+
+	/**
+	 * @return AmapressAdhesion[]
+	 */
 	public static function getUserActiveAdhesions(
 		$user_id = null,
 		$contrat_instance_id = null,

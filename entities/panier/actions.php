@@ -32,7 +32,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$contrat_ids = array_map( function ( $c ) {
 		/** @var AmapressAdhesion $c */
 		return $c->getContrat_instanceId();
-	}, AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $dist->getDate() ) );
+	}, AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, $dist->getDate() ) );
 //	$cnt         = 0;
 	$panier_ids = [];
 //	$failed      = 0;

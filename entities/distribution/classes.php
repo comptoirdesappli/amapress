@@ -591,7 +591,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			}
 		} else {
-			$adhesions         = AmapressAdhesion::getUserActiveAdhesions();
+			$adhesions         = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
 			$lieu              = $this->getLieu();
 			$lieu_substitution = $this->getLieuSubstitution();
 			if ( ! empty( $lieu_substitution ) ) {

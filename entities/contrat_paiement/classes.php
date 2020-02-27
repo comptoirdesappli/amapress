@@ -233,7 +233,7 @@ GROUP BY $wpdb->posts.ID" );
 			$price     = $this->getAmount();
 			$num       = $this->getNumero();
 			$date      = $this->getDate();
-			$adhesions = AmapressAdhesion::getUserActiveAdhesions();
+			$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
 			if ( $adhesions ) {
 				$adh = array_shift( $adhesions );
 				//TODO page link
