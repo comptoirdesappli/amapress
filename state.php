@@ -308,6 +308,18 @@ function amapress_get_state() {
 		'<strong>Recommandé</strong> : permet au site d\'être vu comme une application mobile et ajouté à l\'écran d\'accueil',
 		'info' );
 
+	$pwa_short_name       = Amapress::getOption( 'pwa_short_name' );
+	$state['05_config'][] = amapress_get_check_state(
+		amapress_is_plugin_active( 'pwa' ) ? ( ! empty( $pwa_short_name ) ? 'success' : 'warning' ) : 'info',
+		'Configuration Progressive Web App',
+		'Configurer un nom court (max 12 caractères), une couleur de thème et un type d\'affichage',
+		admin_url( 'admin.php?page=amapress_options_page&tab=amp_pwa_config' )
+	);
+
+	$state['05_config'][] = amapress_check_plugin_install( 'autoptimize', 'Autoptimize',
+		'<strong>Recommandé</strong> : permet d\'optimiser la vitesse du site',
+		amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
+
 	$permalink_structure = get_option( 'permalink_structure' );
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		$state['05_config'][] = amapress_get_check_state(

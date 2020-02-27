@@ -72,3 +72,20 @@ if ( class_exists( 'WP_Service_Worker_Scripts' ) ) {
 		}
 	);
 }
+
+add_filter( 'web_app_manifest', function ( $manifest ) {
+	$pwa_short_name = Amapress::getOption( 'pwa_short_name' );
+	if ( ! empty( $pwa_short_name ) ) {
+		$manifest['short_name'] = $pwa_short_name;
+	}
+	$pwa_theme_color = Amapress::getOption( 'pwa_theme_color' );
+	if ( ! empty( $pwa_theme_color ) ) {
+		$manifest['theme_color'] = $pwa_theme_color;
+	}
+	$pwa_display = Amapress::getOption( 'pwa_display' );
+	if ( ! empty( $pwa_display ) ) {
+		$manifest['display'] = $pwa_display;
+	}
+
+	return $manifest;
+} );

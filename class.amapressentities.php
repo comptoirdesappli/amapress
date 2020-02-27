@@ -2483,6 +2483,45 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
+						'PWA'                      => array(
+							'id'      => 'amp_pwa_config',
+							'desc'    => 'Une <a href="https://fr.wikipedia.org/wiki/Progressive_web_app" target="_blank">progressive web app</a> (<strong>PWA</strong>, applications web progressives en français) est une application web qui consiste en des pages ou des sites web, et qui peuvent apparaître à l\'utilisateur de la même manière que les applications natives ou les applications mobiles.',
+							'options' => array(
+								array(
+									'id'         => 'pwa_short_name',
+									'name'       => 'Nom court',
+									'type'       => 'text',
+									'maxlength'  => '',
+									'desc'       => 'Nom court pour le raccourci de l\'application, 12 caractères maximum',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'pwa_theme_color',
+									'name'       => 'Couleur du thème',
+									'type'       => 'color',
+									'default'    => '',
+									'desc'       => 'Couleur du thème de l\'application',
+									'capability' => 'manage_options',
+								),
+								array(
+									'id'         => 'pwa_display',
+									'name'       => 'Affichage',
+									'type'       => 'select',
+									'default'    => 'minimal-ui',
+									'desc'       => 'Type d\'affichage de l\'application',
+									'options'    => [
+										'fullscreen' => 'Plein écran',
+										'standalone' => 'Application (standard)',
+										'minimal-ui' => 'Application (avec navigateur)',
+										'browser'    => 'Navigateur',
+									],
+									'capability' => 'manage_options',
+								),
+								array(
+									'type' => 'save',
+								),
+							),
+						),
 						'Conversion PDF et autres' => array(
 							'id'      => 'amp_convertws_config',
 							'desc'    => '',
