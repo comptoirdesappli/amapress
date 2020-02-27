@@ -171,7 +171,7 @@ function amapress_register_entities_adhesion( $entities ) {
 			$message = '';
 			if ( $principal_contrat ) {
 				Amapress::setFilterForReferent( false );
-				$other_adhs = AmapressAdhesion::getUserActiveAdhesions( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
+				$other_adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $adh->getAdherentId(), $principal_contrat->ID, $adh->getDate_debut(), true );
 				Amapress::setFilterForReferent( true );
 				if ( ! empty( $other_adhs ) ) {
 					return;
@@ -810,7 +810,9 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 		$date_debut );
 	$excluded_contrat_ids  = [];
 	if ( TitanFrameworkOption::isOnNewScreen() && ! empty( $_GET['amapress_adhesion_adherent'] ) ) {
-		foreach ( AmapressAdhesion::getUserActiveAdhesions( intval( $_GET['amapress_adhesion_adherent'] ) ) as $user_adh ) {
+		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+
+		foreach ( AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( intval( $_GET['amapress_adhesion_adherent'] ) ) as $user_adh ) {
 			$excluded_contrat_ids[] = $user_adh->getContrat_instanceId();
 		}
 	}
@@ -1007,15 +1009,8 @@ add_action( 'wp_ajax_check_inscription_unique', function () {
 	$user_id = intval( $user_id );
 	$adhs    = array();
 	foreach ( $contrats as $contrat ) {
-		foreach ( AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat ) as $adh ) {
+		foreach ( AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, $contrat ) as $adh ) {
 			if ( $adh->getID() == $post_ID || $adh->getID() == $related ) {
-				continue;
-			}
-			if ( $allow_partial_coadh
-			     && $adh->getAdherentId() != $user_id
-			     && $adh->getAdherent2Id() != $user_id
-			     && $adh->getAdherent3Id() != $user_id
-			     && $adh->getAdherent4Id() != $user_id ) {
 				continue;
 			}
 
@@ -2319,7 +2314,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 
 
 			Amapress::setFilterForReferent( false );
-			$adhs = AmapressAdhesion::getUserActiveAdhesions( $user->ID );
+			$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user->ID );
 			Amapress::setFilterForReferent( true );
 			usort( $adhs, function ( $a, $b ) {
 				return strcmp( $a->getTitle(), $b->getTitle() );

@@ -243,7 +243,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$max_dates = 1000;
 	}
 
-	$adhesions             = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, $from_date, false, $allow_anonymous_access );
+	$adhesions             = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, $from_date, false, $allow_anonymous_access );
 	$adhesions_contrat_ids = array_map( function ( $a ) {
 		/** @var AmapressAdhesion $a */
 		return $a->getContrat_instanceId();

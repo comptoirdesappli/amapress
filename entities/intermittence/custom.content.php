@@ -219,7 +219,7 @@ function amapress_get_paniers_intermittents_table(
 		$prices    = array();
 		foreach ( $adh as $a ) {
 			foreach ( $a->getContrat_instances() as $contrat_instance ) {
-				$adhesions = AmapressAdhesion::getUserActiveAdhesions( $a->getAdherent()->ID, $contrat_instance->ID );
+				$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $a->getAdherent()->ID, $contrat_instance->ID );
 				if ( empty( $adhesions ) ) {
 					continue;
 				}

@@ -178,7 +178,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$price     = $this->getAmount();
 			$num       = $this->getNumero();
 			$date      = $this->getDate();
-			$adhesions = AmapressAdhesion::getUserActiveAdhesions( $user_id );
+			$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id );
 			if ( empty( $adhesions ) ) {
 				return $ret;
 			}

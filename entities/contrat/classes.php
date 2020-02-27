@@ -1689,7 +1689,7 @@ class AmapressContrat_instance extends TitanEntity {
 
 	/** @return AmapressAdhesion[] */
 	public function getAdhesionsForUser( $user_id = null, $date = null, $ignore_renouv_delta = false ) {
-		return AmapressAdhesion::getUserActiveAdhesions( $user_id, $this->ID, $date, $ignore_renouv_delta );
+		return AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, $this->ID, $date, $ignore_renouv_delta );
 	}
 
 	/**
@@ -1700,7 +1700,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$key     = "amapress_get_user_active_contrat_instances_{$user_id}_{$key_ids}_{$date}_{$ignore_renouv_delta}";
 		$res     = wp_cache_get( $key );
 		if ( false === $res ) {
-			$ads = AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat_id, $date, $ignore_renouv_delta );
+			$ads = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, $contrat_id, $date, $ignore_renouv_delta );
 			$res = array();
 			foreach ( $ads as $ad ) {
 				$res[] = $ad->getContrat_instanceId();

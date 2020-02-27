@@ -451,7 +451,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 
 		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, $ignore_renouv_delta, true );
+		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
 		$adhs             = array_filter( $adhs,
 			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
@@ -481,7 +481,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$user_id = intval( $_REQUEST['user_id'] );
 
 		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, $ignore_renouv_delta, true );
+		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
 		$adhs = array_filter( $adhs,
 			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
@@ -1292,7 +1292,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$has_principal_contrat = $user_has_contrat;
 
 		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, $ignore_renouv_delta, true );
+		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
 //		$adhs = array_filter( $adhs,
 //			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
@@ -1848,7 +1848,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, $ignore_renouv_delta, true );
+		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
 
 		$print_title = 'Récapitulatif des sommes dues';
@@ -1933,7 +1933,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, $ignore_renouv_delta, true );
+		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
 
 		$print_title = 'Récapitulatif des livraisons';
@@ -2869,7 +2869,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			}
 
 			Amapress::setFilterForReferent( false );
-			$adhs = AmapressAdhesion::getUserActiveAdhesions( $user_id, null, null, $ignore_renouv_delta, true );
+			$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 			Amapress::setFilterForReferent( true );
 			$adhs_contrat_ids                   = array_map( function ( $a ) {
 				/** @var AmapressAdhesion $a */

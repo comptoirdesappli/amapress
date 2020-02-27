@@ -25,7 +25,7 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 		return '';
 	}
 
-	$adhs             = AmapressAdhesion::getUserActiveAdhesions();
+	$adhs             = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
 	$adhesion_columns = array(
 		array(
 			'title' => 'Contrat',

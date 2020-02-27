@@ -1002,7 +1002,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$this->adh_type = 'co';
 			} else {
 				Amapress::setFilterForReferent( false );
-				$adhs = AmapressAdhesion::getUserActiveAdhesions( $this->ID, null, null, false, true );
+				$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $this->ID, null, null, false, true );
 				Amapress::setFilterForReferent( true );
 				$adh_user_ids = [];
 				foreach ( $adhs as $adh ) {
