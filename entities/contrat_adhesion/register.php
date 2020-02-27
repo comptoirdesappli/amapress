@@ -148,6 +148,8 @@ function amapress_register_entities_adhesion( $entities ) {
 		'edit_header'      => function ( $post ) {
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
+			echo '<script type="text/javascript">jQuery(function($) { $("body > div#ui-datepicker-div").hide(); });</script>';
+
 			$adh = AmapressAdhesion::getBy( $post );
 			if ( ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 				return;
@@ -181,11 +183,10 @@ function amapress_register_entities_adhesion( $entities ) {
 				$message = 'Pas de contrat principal actif';
 			}
 
-			$class = 'notice notice-warning';
-
-			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
-
-			echo '<script type="text/javascript">jQuery(function($) { $("body > div#ui-datepicker-div").hide(); });</script>';
+			if ( ! empty( $message ) ) {
+				$class = 'notice notice-warning';
+				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+			}
 		},
 		'views'            => array(
 			'remove'  => array( 'mine' ),
