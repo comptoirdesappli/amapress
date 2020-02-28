@@ -1818,6 +1818,9 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 	$state['37_plugins_add'][] = amapress_check_plugin_install( 'bbpress', 'bbPress',
 		'<strong>Optionnel</strong> : Permet de gérer un forum (avec toutes ses fonctionnalités) sur le site.',
 		'info' );
+	$state['37_plugins_add'][] = amapress_check_plugin_install( 'email-subscribers', 'Email Subscribers & Newsletters',
+		'<strong>Optionnel</strong> : permet aux amapiens d\'être notifiés des nouveaux articles ; permet de générer une newsletter avec le contenu récemment mis à jour',
+		'info' );
 
 	$state['38_plugins_adv']   = array();
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'wordpress-seo', 'Yoast SEO',
@@ -1841,11 +1844,14 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'error-log-monitor', 'Error Log Monitor',
 		'<strong>Dev/Debug</strong> : Permet de logger les erreurs PHP/Wordpress et de les envoyer automatiquement au support Amapress pour aider à son développement',
 		'info' );
-	$state['01_plugins'][]     = amapress_check_plugin_install( 'query-monitor', 'Query Monitor',
+	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'query-monitor', 'Query Monitor',
 		'<strong>Dev/Debug</strong> : permet d\'analyser les performances du site pour aider Amapress à son développement',
 		'info' );
-	$state['01_plugins'][]     = amapress_check_plugin_install( 'wp-crontrol', 'Wp Crontrol',
+	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'wp-crontrol', 'Wp Crontrol',
 		'<strong>Dev/Debug</strong> : permet de voir et lancer manuellement les tâches planifiées de WordPress',
+		'info' );
+	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'secupress', 'SecuPress Free',
+		'<strong>Avancé</strong> : permet de scanner, vérifier et corriger la sécurité de votre installation WordPress',
 		'info' );
 
 	$clean_messages = '';
