@@ -2489,11 +2489,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'options' => array(
 								array(
 									'id'         => 'pwa_short_name',
-									'name'       => 'Nom court',
+									'name'       => 'Nom de l\'application',
 									'type'       => 'text',
 									'maxlength'  => '',
-									'desc'       => 'Nom court pour le raccourci de l\'application, 12 caractères maximum',
+									'desc'       => 'Nom du raccourci de l\'application (12 caractères maximum)',
 									'capability' => 'manage_options',
+									'maxlength'  => 25,
 								),
 								array(
 									'id'         => 'pwa_theme_color',
@@ -2511,9 +2512,9 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'desc'       => 'Type d\'affichage de l\'application',
 									'options'    => [
 										'fullscreen' => 'Plein écran',
-										'standalone' => 'Application (standard)',
-										'minimal-ui' => 'Application (avec navigateur)',
-										'browser'    => 'Navigateur',
+										'standalone' => 'Application native',
+										'minimal-ui' => 'Navigateur minimal',
+										'browser'    => 'Navigateur complet',
 									],
 									'capability' => 'manage_options',
 								),
