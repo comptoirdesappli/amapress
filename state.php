@@ -2325,6 +2325,16 @@ add_action( 'pre_current_active_plugins', function ( $plugins ) {
 	echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a></p>';
 } );
 
+add_action( 'admin_init', function ( $plugins ) {
+	global $pagenow;
+	if ( 'update-core.php' == $pagenow ) {
+		amapress_add_admin_notice(
+			'<a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">Rafraichir le cache Github Updater</a>',
+			'info', false, false
+		);
+	}
+} );
+
 add_action( 'activate_plugin', 'amapress_clean_state_transient' );
 add_action( 'save_post', 'amapress_clean_state_transient' );
 add_action( 'tf_save_options_amapress', 'amapress_clean_state_transient' );
