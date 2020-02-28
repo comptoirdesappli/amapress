@@ -13,6 +13,7 @@ function amapress_register_entities_distribution( $entities ) {
 //                'logged_or_public' => true,
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
+		'comments'         => true,
 		'editor'           => false,
 		'title'            => false,
 		'title_format'     => 'amapress_distribution_title_formatter',

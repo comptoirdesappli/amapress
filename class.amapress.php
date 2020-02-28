@@ -1872,6 +1872,9 @@ class Amapress {
 			if ( array_key_exists( 'excerpt', $conf ) && $conf['excerpt'] === true ) {
 				$supports[] = 'excerpt';
 			}
+			if ( array_key_exists( 'comments', $conf ) && $conf['comments'] === true ) {
+				$supports[] = 'comments';
+			}
 
 			if ( array_key_exists( 'slug', $conf ) && ! empty( $conf['slug'] ) ) {
 				//TODO do faster if needed

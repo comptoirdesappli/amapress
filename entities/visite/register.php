@@ -7,13 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_visite' );
 function amapress_register_entities_visite( $entities ) {
 	$entities['visite'] = array(
-		'singular'         => amapress__( 'Visite à la ferme' ),
+		'singular'           => amapress__( 'Visite à la ferme' ),
 		'plural'             => amapress__( 'Visites à la ferme' ),
 		'public'             => true,
 		'logged_or_public'   => true,
 		'show_in_menu'       => false,
 		'show_in_nav_menu'   => false,
 		'editor'             => false,
+		'comments'           => true,
 		'title'              => false,
 		'thumb'              => true,
 		'title_format'       => 'amapress_visite_title_formatter',

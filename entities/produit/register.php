@@ -13,6 +13,7 @@ function amapress_register_entities_produit( $entities ) {
 		'editor'                  => true,
 		'slug'                    => amapress__( 'produits' ),
 		'show_in_menu'            => false,
+		'comments'                => true,
 		'quick_edit'              => false,
 		'has_archive'             => true,
 		'import_by_meta'          => false,

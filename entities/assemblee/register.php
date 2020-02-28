@@ -7,13 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_assemblee' );
 function amapress_register_entities_assemblee( $entities ) {
 	$entities['assemblee_generale'] = array(
-		'internal_name'    => 'amps_assemblee',
-		'singular'         => amapress__( 'Assemblée générale' ),
-		'plural'           => amapress__( 'Assemblées générales' ),
-		'public'           => true,
+		'internal_name'      => 'amps_assemblee',
+		'singular'           => amapress__( 'Assemblée générale' ),
+		'plural'             => amapress__( 'Assemblées générales' ),
+		'public'             => true,
 		'logged_or_public'   => true,
 		'show_in_menu'       => false,
 		'show_in_nav_menu'   => false,
+		'comments'           => true,
 		'editor'             => false,
 		'title'              => false,
 		'thumb'              => true,
