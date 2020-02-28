@@ -180,11 +180,11 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 				esc_textarea( stripslashes( $this->getValue() ) )
 			);
 		}
-		self::echoLoc();
+		self::echoLoc( null, true );
 		$this->echoOptionFooter( false );
 	}
 
-	private function echoLoc( $postID = null ) {
+	private function echoLoc( $postID = null, $with_help = false ) {
 		$get_fn = $this->settings['user'] ? 'get_user_meta' : 'get_post_meta';
 		$postID = $this->getPostID( $postID );
 		$id     = ! empty( $this->settings['field_name_prefix'] ) ? $this->settings['field_name_prefix'] : $this->getID();
@@ -205,7 +205,26 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			if ( 'google' == self::$geoprovider && empty( self::$google_map_api_key ) ) {
 				echo "<p class='$id unlocalized-address'><strong>Pas de clé Google API configurée</strong> - Adresse non localisée$loc_err</p>";
 			} else {
-				echo "<p class='$id unlocalized-address'>Adresse non localisée$loc_err</p>";
+				if ( $this->settings['use_as_field'] ) {
+					$full_address = $this->getValue( $postID );
+				} else {
+					$full_address = call_user_func( $get_fn, $postID, $this->settings['address_field_name'], true ) .
+					                ', ' . call_user_func( $get_fn, $postID, $this->settings['postal_code_field_name'], true ) .
+					                ' ' . call_user_func( $get_fn, $postID, $this->settings['town_field_name'], true );
+				}
+				$help = '';
+				if ( $with_help ) {
+					if ( ! empty( $full_address ) ) {
+						$help = '<br/><a target="_blank" href="' . esc_url(
+								'https://www.openstreetmap.org/search?query=' . $full_address
+							) . '">Rechercher l\'adresse sur OpenStreetMap</a> afin d\'en trouver la bonne forme (par exemple, sans précision du batiment, étage, ...)';
+					}
+				}
+				if ( ! empty( $full_address ) ) {
+					echo "<p class='$id unlocalized-address'>Adresse non localisée$loc_err$help</p>";
+				} else {
+					echo "<p class='$id'>Pas d'adresse</p>";
+				}
 			}
 		}
 	}
