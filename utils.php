@@ -155,9 +155,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			}
 			$table_content .= '</tr>';
 		}
-		if ( empty( $data ) ) {
-			$table_content .= '<tr><td colspan="' . count( $columns ) . '">' . esc_html( $options['empty_desc'] ) . '</td></tr>';
-		}
+//		if ( empty( $data ) ) {
+//			$table_content .= '<tr><td colspan="' . count( $columns ) . '">' . esc_html( $options['empty_desc'] ) . '</td></tr>';
+//		}
 		$table_content .= '</tbody>';
 	}
 	unset( $options['empty_desc'] );
