@@ -33,7 +33,7 @@ class AmapressSMTPMailingQueue {
 			add_filter( 'cron_schedules', [ $this, 'addWpCronInterval' ] );
 
 			if ( ! wp_next_scheduled( 'amps_smq_start_queue' ) ) {
-				$this->refreshWpCron();
+				wp_schedule_event( time(), 'amps_smq', 'amps_smq_start_queue' );
 			}
 
 			if ( ! wp_next_scheduled( 'amps_smq_clean_log' ) ) {
@@ -51,9 +51,7 @@ class AmapressSMTPMailingQueue {
 	 * (Re)sets wp_cron, e.g. on activation and interval update.
 	 */
 	public function refreshWpCron() {
-		if ( wp_next_scheduled( 'amps_smq_start_queue' ) ) {
-			wp_clear_scheduled_hook( 'amps_smq_start_queue' );
-		}
+		wp_clear_scheduled_hook( 'amps_smq_start_queue' );
 		wp_schedule_event( time(), 'amps_smq', 'amps_smq_start_queue' );
 	}
 
