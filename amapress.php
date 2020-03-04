@@ -334,6 +334,7 @@ require_once( AMAPRESS__PLUGIN_DIR . 'utils/import-posts-from-csv.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'utils/import-users-from-csv.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'utils/class.amapress-taxonomy.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'utils/pwa.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'utils/js-error-log.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/row.actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/bulk.actions.php' );
