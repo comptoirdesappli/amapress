@@ -230,8 +230,8 @@ function amapress_get_state() {
 		'<strong>Recommandé</strong> : Permet de remplacer facilement une image ou un contrat Word dans la « Media Library » de Wordpress',
 		'warning' );
 
-	$state['02_plugins_not'] = array();
-	$state['01_plugins'][] = amapress_check_plugin_not_active( 'aryo-activity-log', 'Activity Log',
+	$state['02_plugins_not']   = array();
+	$state['02_plugins_not'][] = amapress_check_plugin_not_active( 'aryo-activity-log', 'Activity Log',
 		'<strong>Non recommandé</strong> : ce plugin peut entrainer des lenteurs du Tableau de Bord et du site en général; Permet de tracer l\'activité des utilisateurs dans votre AMAP (création, modification, suppression de contenu, pages, articles, utilisateurs...)',
 		'warning' );
 
