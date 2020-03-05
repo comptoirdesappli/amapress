@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:svg="http://www.w3.org/2000/svg"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        width="14mm"
+        height="14mm"
+        viewBox="0 0 49.6063 49.606299"
+        id="svg2"
+        version="1.1"
+        inkscape:version="0.91 r13725"
+        sodipodi:docname="add2home.svg"
+        inkscape:export-filename="/Users/salva/workspace/wp-add-to-homescreen/wp-add-to-homescreen/lib/imgs/add2home.png"
+        inkscape:export-xdpi="150"
+        inkscape:export-ydpi="150">
+    <defs
+            id="defs4">
+        <symbol
+                id="symbol14535">
+            <title
+                    id="title14537">Smartphone
+            </title>
+            <path
+                    d="M 34,2.02 14,2 c -2.21,0 -4,1.79 -4,4 l 0,36 c 0,2.21 1.79,4 4,4 l 20,0 c 2.21,0 4,-1.79 4,-4 L 38,6 C 38,3.79 36.21,2.02 34,2.02 Z m 0,35.98 -20,0 0,-28 20,0 0,28 z"
+                    style="stroke:none"
+                    id="path14539"
+                    inkscape:connector-curvature="0"/>
+        </symbol>
+        <filter
+                style="color-interpolation-filters:sRGB;"
+                inkscape:label="Drop Shadow"
+                id="filter22048">
+            <feFlood
+                    flood-opacity="0.313726"
+                    flood-color="rgb(0,0,0)"
+                    result="flood"
+                    id="feFlood22050"/>
+            <feComposite
+                    in="flood"
+                    in2="SourceGraphic"
+                    operator="in"
+                    result="composite1"
+                    id="feComposite22052"/>
+            <feGaussianBlur
+                    in="composite1"
+                    stdDeviation="0.8"
+                    result="blur"
+                    id="feGaussianBlur22054"/>
+            <feOffset
+                    dx="1.94289e-16"
+                    dy="2.77556e-17"
+                    result="offset"
+                    id="feOffset22056"/>
+            <feComposite
+                    in="SourceGraphic"
+                    in2="offset"
+                    operator="over"
+                    result="composite2"
+                    id="feComposite22058"/>
+        </filter>
+    </defs>
+    <sodipodi:namedview
+            id="base"
+            pagecolor="#ffffff"
+            bordercolor="#666666"
+            borderopacity="1.0"
+            inkscape:pageopacity="0.0"
+            inkscape:pageshadow="2"
+            inkscape:zoom="5.6"
+            inkscape:cx="-1.1325976"
+            inkscape:cy="-10.106878"
+            inkscape:document-units="px"
+            inkscape:current-layer="layer1"
+            showgrid="false"
+            fit-margin-top="0"
+            fit-margin-left="0"
+            fit-margin-right="0"
+            fit-margin-bottom="0"
+            inkscape:window-width="2560"
+            inkscape:window-height="1391"
+            inkscape:window-x="1280"
+            inkscape:window-y="1"
+            inkscape:window-maximized="1"/>
+    <metadata
+            id="metadata7">
+        <rdf:RDF>
+            <cc:Work
+                    rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type
+                        rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+                <dc:title/>
+            </cc:Work>
+        </rdf:RDF>
+    </metadata>
+    <g
+            inkscape:label="Capa 1"
+            inkscape:groupmode="layer"
+            id="layer1"
+            transform="translate(-358.04724,-498.5748)">
+        <g
+                id="use27067"
+                style="fill:#359c0c;stroke:#ffffff;stroke-opacity:1;filter:url(#filter22048)"
+                transform="translate(358.85039,499.37795)">
+            <title
+                    id="title27087">Smartphone
+            </title>
+            <path
+                    id="path27089"
+                    style="stroke:#ffffff;stroke-opacity:1"
+                    d="M 34,2.02 14,2 c -2.21,0 -4,1.79 -4,4 l 0,36 c 0,2.21 1.79,4 4,4 l 20,0 c 2.21,0 4,-1.79 4,-4 L 38,6 C 38,3.79 36.21,2.02 34,2.02 Z"
+                    inkscape:connector-curvature="0"
+                    sodipodi:nodetypes="ccssssssc"/>
+        </g>
+        <rect
+                style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+                id="rect22002"
+                width="22.67857"
+                height="30.17857"
+                x="371.51111"
+                y="508.28867"/>
+        <g
+                style="font-style:normal;font-weight:normal;font-size:17.08722687px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#359c0c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                id="text27081">
+            <path
+                    d="m 383.55123,518.02148 0,4.64726 4.64726,0 0,1.41838 -4.64726,0 0,4.64725 -1.40169,0 0,-4.64725 -4.64726,0 0,-1.41838 4.64726,0 0,-4.64726 1.40169,0 z"
+                    style=""
+                    id="path21860"/>
+        </g>
+    </g>
+</svg>
