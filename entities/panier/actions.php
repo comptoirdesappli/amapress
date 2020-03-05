@@ -25,7 +25,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'wp_ajax_echanger_panier', function () {
 	$dist_id = intval( $_POST['dist'] );
-	$user_id = isset( $_POST['user'] ) ? intval( $_POST['user'] ) : null;
+	$user_id = isset( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	if ( $user_id != amapress_current_user_id() ) {
+		if ( ! amapress_can_access_admin() ) {
+			echo '<p class="error">Accès interdit</p>';
+			die();
+		}
+	}
 	$dist    = AmapressDistribution::getBy( $dist_id );
 
 	Amapress::setFilterForReferent( false );
