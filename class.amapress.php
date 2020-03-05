@@ -1834,6 +1834,7 @@ class Amapress {
 				$scope['public']            = true;
 				$scope['has_archive']       = true;
 				$scope['show_in_nav_menus'] = true;
+				$scope['show_in_admin_bar'] = true;
 			}
 			if ( $conf['public'] === 'adminonly' ) {
 				$scope['public']            = false;
@@ -1848,6 +1849,9 @@ class Amapress {
 			}
 			if ( array_key_exists( 'show_in_nav_menu', $conf ) && $conf['show_in_nav_menu'] === false ) {
 				$scope['show_in_nav_menus'] = false;
+			}
+			if ( array_key_exists( 'show_in_admin_bar', $conf ) && $conf['show_in_admin_bar'] === false ) {
+				$scope['show_in_admin_bar'] = false;
 			}
 			if ( array_key_exists( 'has_archive', $conf ) ) {
 				$scope['has_archive'] = $conf['has_archive'];
