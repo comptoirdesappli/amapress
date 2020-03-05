@@ -11,6 +11,7 @@ function amapress_register_entities_page( $entities ) {
 		'internal_name'   => 'page',
 		'default_orderby' => 'post_title',
 		'default_order'   => 'ASC',
+		'public_comments' => true,
 		'fields'          => array(
 //            'logged_only' => array(
 //                'name' => amapress__('Amapiens seulement'),

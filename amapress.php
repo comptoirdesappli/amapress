@@ -51,7 +51,7 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 104 );
+define( 'AMAPRESS_DB_VERSION', 105 );
 define( 'AMAPRESS_VERSION', '0.92.95' );
 //remove_role('responable_amap');
 
@@ -1788,3 +1788,38 @@ add_action( 'pre_get_posts', function ( $query ) {
 add_filter( 'admin_title', function ( $admin_title, $title ) {
 	return strip_tags( do_shortcode( $admin_title ) );
 }, 10, 2 );
+
+add_action( 'pre_get_comments', function ( $comments_query ) {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$post_id = get_the_ID();
+	$type    = AmapressEntities::getPostType( amapress_simplify_post_type( get_post_type( $post_id ) ) );
+	if ( $type && empty( $type['public_comments'] ) && ! amapress_is_user_logged_in() ) {
+		$comments_query->query_vars['comment__in'] = array( 0 );
+	}
+} );
+
+add_filter( 'pre_option_comment_registration', function () {
+	if ( is_admin() ) {
+		return false;
+	}
+
+	$post_id = get_the_ID();
+
+	// Only available on wp-comments-post.php, not on regular post pages.
+	if ( isset( $_POST['comment_post_ID'] ) ) {
+		$post_id = (int) $_POST['comment_post_ID'];
+	}
+
+	$type = AmapressEntities::getPostType( amapress_simplify_post_type( get_post_type( $post_id ) ) );
+
+	if ( $type ) {
+		if ( empty( $type['public_comments'] ) ) {
+			return 1;
+		}
+	}
+
+	return false;
+} );

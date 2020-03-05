@@ -15,6 +15,7 @@ function amapress_register_entities_visite( $entities ) {
 		'show_in_nav_menu'   => false,
 		'editor'             => false,
 		'comments'           => true,
+		'public_comments'    => false,
 		'title'              => false,
 		'thumb'              => true,
 		'title_format'       => 'amapress_visite_title_formatter',

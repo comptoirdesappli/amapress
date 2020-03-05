@@ -15,6 +15,7 @@ function amapress_register_entities_assemblee( $entities ) {
 		'show_in_menu'       => false,
 		'show_in_nav_menu'   => false,
 		'comments'           => true,
+		'public_comments'    => false,
 		'editor'             => false,
 		'title'              => false,
 		'thumb'              => true,

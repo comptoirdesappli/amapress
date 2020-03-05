@@ -13,6 +13,7 @@ function amapress_register_entities_amap_event( $entities ) {
 		'thumb'              => true,
 		'editor'             => true,
 		'comments'           => true,
+		'public_comments'    => false,
 		'logged_or_public'   => true,
 		'special_options'    => array(),
 		'show_in_menu'       => false,

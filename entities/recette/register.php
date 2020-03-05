@@ -16,6 +16,7 @@ function amapress_register_entities_recette( $entities ) {
 		'thumb'                   => true,
 		'show_in_menu'            => false,
 		'comments'                => true,
+		'public_comments'         => true,
 		'quick_edit'              => false,
 		'menu_icon'               => 'flaticon-cooking',
 		'custom_archive_template' => true,
