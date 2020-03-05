@@ -77,47 +77,51 @@ if ( class_exists( 'WP_Service_Worker_Scripts' ) ) {
 			?>
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-            <style>
-                .ad2hs-prompt {
-                    background-color: rgb(59, 134, 196); /* Blue */
-                    border: none;
-                    display: none;
-                    color: white;
-                    padding: 15px 32px;
-                    text-align: center;
-                    text-decoration: none;
-                    font-size: 16px;
-
-                    position: absolute;
-                    margin: 0 1rem 1rem;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    width: calc(100% - 32px);
-                }
-
-                .ios-prompt {
-                    background-color: #fcfcfc;
-                    border: 1px solid #666;
-                    display: none;
-                    padding: 0.8rem 1rem 0 0.5rem;
-                    text-decoration: none;
-                    font-size: 16px;
-                    color: #555;
-
-                    position: absolute;
-                    margin: 0 auto 1rem;
-                    left: 1rem;
-                    right: 1rem;
-                    bottom: 0;
-                }
-            </style>
 			<?php
+			if ( is_home() ) {
+				?>
+                <style>
+                    .ad2hs-prompt {
+                        background-color: rgb(59, 134, 196); /* Blue */
+                        border: none;
+                        display: none;
+                        color: white;
+                        padding: 15px 32px;
+                        text-align: center;
+                        text-decoration: none;
+                        font-size: 16px;
+
+                        position: absolute;
+                        margin: 0 1rem 1rem;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        width: calc(100% - 32px);
+                    }
+
+                    .ios-prompt {
+                        background-color: #fcfcfc;
+                        border: 1px solid #666;
+                        display: none;
+                        padding: 0.8rem 1rem 0 0.5rem;
+                        text-decoration: none;
+                        font-size: 16px;
+                        color: #555;
+
+                        position: absolute;
+                        margin: 0 auto 1rem;
+                        left: 1rem;
+                        right: 1rem;
+                        bottom: 0;
+                    }
+                </style>
+				<?php
+			}
 		}
 	} );
 
 	add_action( 'wp_footer', function () {
-		if ( wp_is_mobile() ) {
+		if ( wp_is_mobile() && is_home() ) {
 			?>
             <button type="button" class="ad2hs-prompt">Installer l'application</button>
             <div class="ios-prompt">
