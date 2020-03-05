@@ -53,16 +53,25 @@ add_action( 'wp_ajax_echanger_panier', function () {
 		$panier_ids[] = $panier->ID;
 	}
 
+	if ( Amapress::getOption( 'allow_partial_exchange' ) && ! empty( $_POST['panier-id'] ) ) {
+		$panier_id = intval( $_POST['panier-id'] );
+		if ( in_array( $panier_id, $panier_ids ) ) {
+			$panier_ids = [ $panier_id ];
+		} else {
+			$panier_ids = [];
+		}
+	}
+
 	$cnt = count( $panier_ids );
 
-	if ( amapress_echanger_panier( $panier_ids, $user_id, isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) != 'ok' ) {
+	if ( $cnt > 0 && amapress_echanger_panier( $panier_ids, $user_id, isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) != 'ok' ) {
 		echo '<p class="error">Erreur lors de l\'échange du panier</p>';
 		die();
 	}
 
 	if ( $user_id == amapress_current_user_id() ) {
 		if ( $cnt == 0 ) {
-			echo '<p class="success">Vous n\'avez pas de panier à cette distribution</p>';
+			echo '<p class="error">Vous n\'avez pas de panier à cette distribution</p>';
 		} else if ( $cnt > 1 ) {
 			echo '<p class="success">Vos paniers ont été inscrits sur la liste des paniers à échanger</p>';
 		} else {
@@ -71,7 +80,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	} else {
 		$user = AmapressUser::getBy( $user_id );
 		if ( $cnt == 0 ) {
-			echo '<p class="success">' . $user->getDisplayName() . ' n\'a pas de panier à cette distribution</p>';
+			echo '<p class="error">' . $user->getDisplayName() . ' n\'a pas de panier à cette distribution</p>';
 		} else if ( $cnt > 1 ) {
 			echo '<p class="success">Les paniers de ' . $user->getDisplayName() . ' ont été inscrits sur la liste des paniers à échanger</p>';
 		} else {
@@ -136,7 +145,8 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 		]
 	);
 	foreach ( $existing_paniers as $p ) {
-		if ( $p->getStatus() != AmapressIntermittence_panier::CANCELLED ) {
+		if ( $p->getStatus() != AmapressIntermittence_panier::CANCELLED
+		     && count( array_intersect( $p->getPanierIds(), $panier_ids ) ) > 0 ) {
 			return 'already';
 		}
 	}

@@ -342,7 +342,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					}
 					break;
 				case AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT:
-					$ret .= '<span class="repreneurè-waiting">Repreneur(s) en attente de validation</span>';
+					$ret .= '<span class="repreneur-waiting">Repreneur(s) en attente de validation</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'to_exchange':
@@ -357,6 +357,14 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					$ret .= '<span class="echange-done">Cession effectuée</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
+			}
+			if ( Amapress::getOption( 'allow_partial_exchange' ) && $can_subscribe ) {
+				//inter_partial_exchanges
+				echo '<br/>' . Amapress::makeButtonLink(
+						$dist->getPermalink() . '#inter_partial_exchanges',
+						'Faire un échange partiel',
+						true, true
+					);
 			}
 			$ret .= '</td>';
 

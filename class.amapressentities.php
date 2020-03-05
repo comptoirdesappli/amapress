@@ -2166,6 +2166,12 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'checkbox',
 											'default' => true,
 										),
+										array(
+											'id'      => 'allow_partial_exchange',
+											'name'    => 'Autoriser les la cession partielle de paniers',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
 //								array(
 //									'id'   => 'intermittence_contrat_model',
 //									'name' => 'Modèle de contrat des intermittents',

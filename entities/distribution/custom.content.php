@@ -250,6 +250,48 @@ function amapress_get_custom_content_distribution( $content ) {
 					echo '<span class="echange-done">Cession effectuée</span>';
 					break;
 			}
+			if ( Amapress::getOption( 'allow_partial_exchange' ) && $can_subscribe ) {
+				echo '<div id="inter_partial_exchanges">';
+				foreach ( $paniers as $panier ) {
+					$is_intermittent = 'exchangeable';
+					if ( ! in_array( $panier->getContrat_instanceId(), $user_contrats ) ) {
+						continue;
+					}
+					$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId() );
+					if ( ! empty( $status ) ) {
+						$is_intermittent = $status;
+					}
+
+					$panier_title       = $panier->getContrat_instance()->getModel()->getTitle();
+					$ceder_panier_title = 'Céder mon panier "' . $panier_title . '"';
+					switch ( $is_intermittent ) {
+						case 'exchangeable':
+							if ( $can_subscribe ) {
+								$id = "info_{$dist->ID}";
+								echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '"></textarea><br/>';
+								echo '<button  type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="echanger_panier" data-message="val:#' . $id . '" data-confirm="Etes-vous sûr de vouloir céder votre/vos paniers ?"
+					data-dist="' . $dist->ID . '" data-panier-id="' . $panier->ID . '" data-user="' . amapress_current_user_id() . '">' . $ceder_panier_title . '</button></div>';
+							} else {
+								echo '<span class="echange-closed">Cessions de paniers closes</span>';
+							}
+							break;
+						case 'to_exchange':
+							echo '<span class="panier-to-exchange">Panier "' . $panier_title . '" en attente de repreneur</span>';
+							break;
+						case 'exchanged':
+							echo '<span class="panier-exchanged">Panier "' . $panier_title . '" cédé</span>';
+							break;
+						case 'exch_valid_wait':
+							echo '<span class="panier-exchanged">Panier "' . $panier_title . '" en attente de validation de reprise</span>';
+							break;
+						case 'closed':
+							echo '<span class="echange-done">Cession panier "' . $panier_title . '" effectuée</span>';
+							break;
+					}
+				}
+				echo '</div>';
+			}
 			amapress_echo_panel_end();
 		}
 
