@@ -51,7 +51,7 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 105 );
+define( 'AMAPRESS_DB_VERSION', 106 );
 define( 'AMAPRESS_VERSION', '0.92.105' );
 //remove_role('responable_amap');
 
