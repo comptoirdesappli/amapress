@@ -350,7 +350,15 @@ class AmapressDistributions {
 				}
 				if ( empty( $dist_contrats ) || $clean ) {
 					$add_to_unassociate = true;
-					if ( ! $eval && ( empty( $dist_contrats ) || $already_exists ) ) {
+					if ( ! $eval && empty( $dist_contrats ) ) {
+						$reports = AmapressPaniers::getPaniersForDist( $dist_date );
+						if ( ! empty( $reports ) ) {
+							$add_to_unassociate = false;
+						} else {
+							wp_delete_post( $dist_id );
+						}
+					}
+					if ( ! $eval && $already_exists ) {
 						wp_delete_post( $dist_id );
 					}
 				}
