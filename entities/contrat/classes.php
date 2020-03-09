@@ -297,6 +297,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_allow_bktrfr', 0 );
 	}
 
+	public function getAllow_LocalMoney() {
+		return $this->getCustom( 'amapress_contrat_instance_allow_locmon', 0 );
+	}
+
 	public function getNb_responsables_Supplementaires() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_nb_resp_supp', 0 );
 	}
@@ -1139,11 +1143,14 @@ class AmapressContrat_instance extends TitanEntity {
 					return strip_tags( $adh->getPaiementsMention() );
 				}
 				$paiements = [];
-				if ( 'esp' == $adh->getAllow_Cash() ) {
+				if ( $adh->getAllow_Cash() ) {
 					$paiements[] = 'en espèces';
 				}
-				if ( 'vir' == $adh->getAllow_Transfer() ) {
+				if ( $adh->getAllow_Transfer() ) {
 					$paiements[] = 'par virement';
+				}
+				if ( $adh->getAllow_LocalMoney() ) {
+					$paiements[] = 'en monnaie locale';
 				}
 				foreach ( $adh->getPossiblePaiements() as $nb_cheques ) {
 					$paiements[] = "$nb_cheques chq.";

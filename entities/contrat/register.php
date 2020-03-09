@@ -1398,7 +1398,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement à la livraison pour ce contrat',
 			),
-			'allow_cash'       => array(
+			'allow_cash'        => array(
 				'name'        => amapress__( 'Règlement en espèces' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1408,7 +1408,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement en espèces pour ce contrat',
 			),
-			'allow_bktrfr'     => array(
+			'allow_bktrfr'      => array(
 				'name'        => amapress__( 'Règlement par virement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1418,7 +1418,17 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Autoriser le règlement par virement pour ce contrat',
 			),
-			'manage_paiements' => array(
+			'allow_locmon'      => array(
+				'name'        => amapress__( 'Règlement en monnaie locale' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlement en plusieurs fois',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Autoriser le règlement en monnaie locale pour ce contrat',
+			),
+			'manage_paiements'  => array(
 				'name'        => amapress__( 'Répartition des chèques/règlement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlement en plusieurs fois',
@@ -1428,7 +1438,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Gérer la répartition des chèques/règlement dans Amapress',
 			),
-			'paiements_mention'     => array(
+			'paiements_mention' => array(
 				'name'        => amapress__( 'Message au sujet des chèques/règlement' ),
 				'type'        => 'editor',
 				'group'       => '6/6 - Règlement en plusieurs fois',

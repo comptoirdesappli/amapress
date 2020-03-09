@@ -490,6 +490,7 @@ jQuery(function($) {
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
 					'vir' => 'Virement',
+					'mon' => 'Monnaie locale',
 					'dlv' => 'A la livraison',
 				),
 				'default'     => 'chq',

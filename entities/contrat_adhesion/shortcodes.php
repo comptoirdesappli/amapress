@@ -2627,6 +2627,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$checked = checked( $edit_inscription && 'vir' == $edit_inscription->getMainPaiementType(), true, false );
 				echo "<label for='cheques-vir' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-vir' $checked value='-2' class='input-nb-cheques required' />Par virement</label><br/>";
 			}
+			if ( $contrat->getAllow_LocalMoney() ) {
+				$checked = checked( $edit_inscription && 'mon' == $edit_inscription->getMainPaiementType(), true, false );
+				echo "<label for='cheques-mon' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-mon' $checked value='-4' class='input-nb-cheques required' />En monnaie locale</label><br/>";
+			}
 			if ( $contrat->getAllowAmapienInputPaiementsDetails() && $total > 0 ) {
 				$amapien  = AmapressUser::getBy( $user_id );
 				$emetteur = esc_attr( $amapien->getDisplayName() );
@@ -2819,6 +2823,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		}
 		if ( - 3 == $cheques ) {
 			$meta['amapress_adhesion_pmt_type'] = 'dlv';
+		}
+		if ( - 4 == $cheques ) {
+			$meta['amapress_adhesion_pmt_type'] = 'mon';
 		}
 		if ( ! empty( $quantite_ids ) ) {
 			$meta['amapress_adhesion_contrat_quantite'] = $quantite_ids;

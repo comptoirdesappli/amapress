@@ -108,6 +108,8 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 				return 'Espèces';
 			case 'vir':
 				return 'Virement';
+			case 'mon':
+				return 'Monnaie locale';
 			case 'dlv':
 				return 'A la livraison';
 		}
@@ -248,7 +250,7 @@ GROUP BY $wpdb->posts.ID" );
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
 					'icon'     => 'flaticon-business',
-					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'dlv' == $this->getType() ? ' à la livraison' : '' ) ) ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'mon' == $this->getType() ? ' du paiement en monnaie locale ' : ( 'dlv' == $this->getType() ? ' à la livraison' : '' ) ) ) ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 					'href'     => '/mes-adhesions'
 				) );
 			}

@@ -116,7 +116,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'name'         => amapress__( 'Numéro du chèque' ),
 				'type'         => 'text',
 				'required'     => true,
-				'desc'         => 'Numéro du chèque ou "Esp." pour un règlement en espèces ou "Vir." pour un virement',
+				'desc'         => 'Numéro du chèque ou "Esp." pour un règlement en espèces ou "Vir." pour un virement ou "Mon." pour un règlement en monnaie locale',
 				'import_key'   => true,
 				'csv_required' => true,
 				'searchable'   => true,

@@ -370,6 +370,10 @@ function amapress_adhesion_views() {
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=vir",
 		'Virement' );
 	amapress_add_view_button(
+		$ret, 'pmt_vir',
+		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=mon",
+		'Monnaie locale' );
+	amapress_add_view_button(
 		$ret, 'pmt_dlv',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=dlv",
 		'A la livraison' );

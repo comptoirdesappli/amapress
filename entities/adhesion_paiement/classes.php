@@ -196,7 +196,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'lieu'     => $adh->getLieu(),
 				'priority' => 0,
 				'icon'     => 'flaticon-business',
-				'alt'      => 'Vous allez être encaissé ' . ( 'Esp.' == $num ? 'des espèces remises ' : ( 'Vir.' == $num ? 'du virement ' : 'du chèque numéro ' . $num ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+				'alt'      => 'Vous allez être encaissé ' . ( 'Esp.' == $num ? 'des espèces remises ' : ( 'Vir.' == $num ? 'du virement ' : ( 'Mon.' == $num ? 'du paiement en monnaie locale ' : 'du chèque numéro ' . $num ) ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
 				'href'     => '/mes-adhesions'
 			) );
 		}

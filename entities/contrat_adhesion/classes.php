@@ -732,6 +732,9 @@ class AmapressAdhesion extends TitanEntity {
 					if ( 'vir' == $adh->getMainPaiementType() ) {
 						return 'Par virement';
 					}
+					if ( 'mon' == $adh->getMainPaiementType() ) {
+						return 'En monnaie locale';
+					}
 					if ( 'dlv' == $adh->getMainPaiementType() || abs( $adh->getTotalAmount() ) < 0.001 ) {
 						return 'A la livraison';
 					}
@@ -2189,6 +2192,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			}
 			if ( null == $paiement && 'vir' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'vir';
+			}
+			if ( null == $paiement && 'mon' == $this->getMainPaiementType() ) {
+				$meta['amapress_contrat_paiement_type'] = 'mon';
 			}
 			$my_post = array(
 				'post_type'    => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
