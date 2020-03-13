@@ -1533,7 +1533,7 @@ class AmapressContrat_instance extends TitanEntity {
 		if ( $this->isPanierVariable() ) {
 			foreach ( $this->getRemainingDates( $date_first_distrib ) as $date ) {
 				$placeholders["quantite_date#$i"]                    = date_i18n( 'd/m/Y', $date );
-				$placeholders["quantite_total#$i"]                   = '';
+				$placeholders["quantite_total#$i"]                   = str_repeat( chr( 160 ), 4 );
 				$placeholders["quantite_description#$i"]             = $this->getContrat_quantites_AsString( $date, true );
 				$placeholders["quantite_description_no_price#$i"]    = $this->getContrat_quantites_AsString( $date );
 				$placeholders["quantite_description_br#$i"]          = $this->getContrat_quantites_AsString( $date, true, '<br />' );
