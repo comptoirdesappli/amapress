@@ -1628,6 +1628,24 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 
+	/** @return array */
+	public function getTotalAmountByMonth() {
+		if ( ! $this->getContrat_instanceId() ) {
+			return [];
+		}
+		$dates           = $this->getRemainingDates();
+		$by_month_totals = [];
+		foreach ( $dates as $date ) {
+			$month = date( 'M', $date );
+			if ( empty( $by_month_totals[ $month ] ) ) {
+				$by_month_totals[ $month ] = 0;
+			}
+			$by_month_totals[ $month ] += $this->getContrat_quantites_Price( $date );
+		}
+
+		return $by_month_totals;
+	}
+
 	private static $paiement_cache = null;
 
 	/** @return  AmapressAdhesion[] */

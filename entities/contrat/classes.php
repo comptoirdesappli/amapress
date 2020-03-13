@@ -293,6 +293,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}
 
+	public function getPayByMonth() {
+		return $this->getCustom( 'amapress_contrat_instance_pay_month', 0 );
+	}
+
 	public function getAllow_Transfer() {
 		return $this->getCustom( 'amapress_contrat_instance_allow_bktrfr', 0 );
 	}
@@ -1820,8 +1824,6 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getChequeOptionsForTotal( $nb_cheque, $total ) {
-//		$last_cheque = $this->getMinChequeAmount();
-
 		if ( $nb_cheque > 1 ) {
 			if ( ( $total / $nb_cheque ) * 2 == intval( $total / $nb_cheque * 2 ) ) {
 				$last_cheque        = $total / $nb_cheque;

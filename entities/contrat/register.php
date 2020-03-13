@@ -1510,8 +1510,18 @@ jQuery(function($) {
 					'12' => '12 chèques',
 				)
 			),
-			'allow_deliv_pay'       => array(
-				'name'        => amapress__( 'A la livraison' ),
+			'pay_month'       => array(
+				'name'        => amapress__( 'Paiement au mois' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlements',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Activer le calcul des paiements multiples réparti au mois',
+			),
+			'allow_deliv_pay' => array(
+				'name'        => amapress__( 'Règlement à la livraison' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',

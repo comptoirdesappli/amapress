@@ -2642,6 +2642,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			echo '<h4>Étape 7/8 : Règlement</h4>';
 		}
+		$by_month_totals = [];
 		if ( $contrat->isPanierVariable() ) {
 			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? $_REQUEST['panier_vars'] : [];
 			if ( empty( $panier_vars ) ) {
@@ -2664,6 +2665,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$total         += $factor * $quant->getPrix_unitaire();
 					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 						$pay_at_deliv[] = $quant->getTitle();
+					} else {
+						$month = date( 'M', $date_k );
+						if ( empty( $by_month_totals[ $month ] ) ) {
+							$by_month_totals[ $month ] = 0;
+						}
+						$by_month_totals[ $month ] += $factor * $quant->getPrix_unitaire();
 					}
 				}
 				if ( ! empty( $date_values ) ) {
@@ -2733,6 +2740,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$total           += $dates_factors * $factor * $quant->getPrix_unitaire();
 				if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 					$pay_at_deliv[] = $quant->getTitle();
+				} else {
+					foreach ( $dates as $date_k ) {
+						$month = date( 'M', $date_k );
+						if ( empty( $by_month_totals[ $month ] ) ) {
+							$by_month_totals[ $month ] = 0;
+						}
+						$by_month_totals[ $month ] += $contrat->getDateFactor( $d, $q_id ) * $factor * $quant->getPrix_unitaire();
+					}
 				}
 			}
 
@@ -2776,7 +2791,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( $contrat->getManage_Cheques() ) {
 			$min_cheque_amount = $contrat->getMinChequeAmount();
 			if ( $total > 0 ) {
-				foreach ( $contrat->getPossiblePaiements() as $nb_cheque ) {
+				$possible_cheques = $contrat->getPossiblePaiements();
+				if ( $contrat->getPayByMonth() ) {
+					$max_cheques      = count( array_filter( $by_month_totals, function ( $v ) {
+						return $v > 0;
+					} ) );
+					$possible_cheques = [ 1, $max_cheques ];
+				}
+				foreach ( $possible_cheques as $nb_cheque ) {
 					if ( $total / $nb_cheque < $min_cheque_amount ) {
 						continue;
 					}
