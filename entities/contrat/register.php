@@ -1444,7 +1444,7 @@ jQuery(function($) {
 				'group'       => '6/6 - Règlement en plusieurs fois',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'show_column' => false,
-				'desc'        => 'Message au sujet des chèques/règlement par exemple pour indiquer les particuliers si la gestion est externe à Amapress',
+				'desc'        => 'Précisez les modalités de règlement : "Ordre du chèque  : XXXX", et nom du référent pour la collecte. "Numéro de l\'IBAN/BIC" et libellé pour les virements, preuve du virement demandée...',
 			),
 			'paiements_ordre'       => array(
 				'name'        => amapress__( 'Ordre des chèques' ),
