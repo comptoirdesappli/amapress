@@ -418,6 +418,10 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 					return $v;
 				}
 
+				if ( is_string( $v ) ) {
+					$v = trim( $v );
+				}
+
 				$id = Amapress::resolve_post_id( $v, $settings['post_type'] );
 				if ( $id <= 0 ) {
 					$post_type = amapress_unsimplify_post_type( $settings['post_type'] );
@@ -471,6 +475,11 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				if ( is_wp_error( $v ) ) {
 					return $v;
 				}
+
+				if ( is_string( $v ) ) {
+					$v = trim( $v );
+				}
+
 				$id = Amapress::resolve_user_id( $v );
 				if ( $id <= 0 ) {
 					$url      = add_query_arg( 's', $v, admin_url( 'users.php' ) );
@@ -496,10 +505,14 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 			}
 			$vs   = trim( strtolower( trim( $value ) ), ',' );
 			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
+				if ( is_string( $v ) ) {
+					$v = trim( $v );
+				}
+
 				if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
 					$labels = array_combine(
 						array_map( function ( $a ) {
-							return strtolower( $a );
+							return trim( strtolower( $a ) );
 						}, array_values( $settings['options'] ) ),
 						array_keys( $settings['options'] ) );
 					if ( ! array_key_exists( $v, $labels ) ) {
@@ -529,11 +542,15 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 			if ( is_wp_error( $value ) ) {
 				return $value;
 			}
-			$vs   = trim( strtolower( trim( $value ) ), ',' );
+			$vs = trim( strtolower( trim( $value ) ), ',' );
 			if ( ! $required && empty( $vs ) ) {
 				return null;
 			}
 			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
+				if ( is_string( $v ) ) {
+					$v = trim( $v );
+				}
+
 				try {
 					if ( is_float( $v ) || is_int( $v ) || preg_match( '/^\d+$/', strval( $v ) ) ) {
 						$dt = PHPExcel_Shared_Date::ExcelToPHP( intval( $v ) );
