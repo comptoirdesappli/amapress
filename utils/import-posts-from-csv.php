@@ -715,7 +715,13 @@ class Amapress_Import_Posts_CSV {
 						if ( isset( $postdata['ID'] ) ) {
 							$post = get_post( $postdata['ID'] );
 						}
-						if ( ! $post && $posts_update ) {
+						$has_meta_import_keys = false;
+						foreach ( AmapressEntities::getPostTypeFields( amapress_simplify_post_type( $post_type ) ) as $field_k => $field ) {
+							if ( isset( $field['import_key'] ) && $field['import_key'] ) {
+								$has_meta_import_keys = true;
+							}
+						}
+						if ( ! $post && $posts_update && ! $has_meta_import_keys ) {
 							if ( isset( $postdata['post_name'] ) ) {
 								$post = get_page_by_path( $postdata['post_name'], OBJECT, amapress_unsimplify_post_type( $post_type ) );
 							}
