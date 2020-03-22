@@ -1115,7 +1115,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['paiements_mention'] = [
 			'desc' => 'Mention pour les paiements',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				return wp_strip_all_tags( wp_unslash( $adh->getPaiementsMention() ) );
+				return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getPaiementsMention() ) ) );
 			}
 		];
 		$ret['nb_dates']                         = [
@@ -1139,9 +1139,9 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['option_paiements'] = [
 			'desc' => 'Option de paiement choisie',
 			'func' => function ( AmapressContrat_instance $adh ) {
-				if ( ! $adh->getManage_Cheques() ) {
-					return strip_tags( $adh->getPaiementsMention() );
-				}
+//				if ( ! $adh->getManage_Cheques() ) {
+//					return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getPaiementsMention() ) ) );
+//				}
 				$paiements = [];
 				if ( $adh->getAllow_Cash() ) {
 					$paiements[] = 'en espèces';

@@ -723,9 +723,9 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['option_paiements']                 = [
 				'desc' => 'Option de paiement choisie',
 				'func' => function ( AmapressAdhesion $adh ) {
-					if ( ! $adh->getContrat_instance()->getManage_Cheques() ) {
-						return strip_tags( $adh->getContrat_instance()->getPaiementsMention() );
-					}
+//					if ( ! $adh->getContrat_instance()->getManage_Cheques() ) {
+//						return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getContrat_instance()->getPaiementsMention() ) ) );
+//					}
 					if ( 'esp' == $adh->getMainPaiementType() ) {
 						return 'En espèces';
 					}
@@ -752,7 +752,7 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['paiements_mention'] = [
 				'desc' => 'Mention pour les paiements',
 				'func' => function ( AmapressAdhesion $adh ) {
-					return wp_strip_all_tags( wp_unslash( $adh->getContrat_instance()->getPaiementsMention() ) );
+					return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getContrat_instance()->getPaiementsMention() ) ) );
 				}
 			];
 			$ret['quantites']                        = [
