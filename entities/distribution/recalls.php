@@ -550,10 +550,29 @@ function amapress_distribution_all_amapiens_recall_options() {
 				AmapressDistribution::getPlaceholdersHelp(),
 		),
 		array(
+			'id'           => 'distribution-amapiens-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Emails en copie',
+		),
+		array(
+			'id'           => 'distribution-amapiens-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
 			'id'      => 'distribution-amapiens-recall-send-indiv',
 			'name'    => 'Envoi individuel',
 			'type'    => 'checkbox',
-			'desc'    => 'Envoyer le détails des paniers individuellement à chaque amapien',
+			'desc'    => 'Envoyer le détails des paniers individuellement à chaque amapien (au du rappel collectif ci-dessus)',
 			'default' => false,
 		),
 		array(
@@ -575,25 +594,6 @@ function amapress_distribution_all_amapiens_recall_options() {
 						'livraison_details_prix' => 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné'
 					]
 				),
-		),
-		array(
-			'id'           => 'distribution-amapiens-recall-cc',
-			'name'         => amapress__( 'Cc' ),
-			'type'         => 'select-users',
-			'autocomplete' => true,
-			'multiple'     => true,
-			'tags'         => true,
-			'desc'         => 'Emails en copie',
-		),
-		array(
-			'id'           => 'distribution-amapiens-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
-			'type'         => 'select',
-			'options'      => 'amapress_get_collectif_target_queries',
-			'autocomplete' => true,
-			'multiple'     => true,
-			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
 		),
 		array(
 			'type' => 'save',
