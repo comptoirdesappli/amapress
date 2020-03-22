@@ -1932,6 +1932,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
 
+		$by_prod = isset( $_GET['by_prod'] );
+
 		Amapress::setFilterForReferent( false );
 		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
@@ -1939,7 +1941,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$print_title = 'Récapitulatif des livraisons';
 		echo '<h4>' . esc_html( $print_title ) . '</h4>';
 		$columns = [];
-		if ( isset( $_GET['by_prod'] ) ) {
+		if ( $by_prod ) {
 			$columns[] = array(
 				'title' => 'Producteur',
 				'data'  => array(
@@ -2036,7 +2038,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 		}
-		if ( isset( $_GET['by_prod'] ) ) {
+		if ( $by_prod ) {
 			usort( $data, function ( $a, $b ) {
 				return strcmp( $a['prod'], $b['prod'] );
 			} );
@@ -2054,7 +2056,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'paging'    => false,
 				'searching' => false,
 				'rowGroup'  => [
-					'dataSrc' => isset( $_GET['by_prod'] ) ? 'prod' : 'date_d',
+					'dataSrc' => $by_prod ? 'prod' : 'date_d',
 				]
 			),
 			array(
