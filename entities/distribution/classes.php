@@ -177,7 +177,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		$site_email = Amapress::getOption( 'email_from_mail' );
 
-		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $mails ) ) . '&subject=Distribution du ' .
+		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', array_unique( $mails ) ) ) . '&subject=Distribution du ' .
 		       date_i18n( 'D j F Y' );
 	}
 
@@ -205,7 +205,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		return 'sms:' . urlencode( implode( ',', $phones ) ) . '?body=Distribution du ' .
+		return 'sms:' . urlencode( implode( ',', array_unique( $phones ) ) ) . '?body=Distribution du ' .
 		       date_i18n( 'D j F Y' );
 	}
 
