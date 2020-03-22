@@ -151,6 +151,19 @@ class AmapressDistribution extends Amapress_EventBase {
 		       date_i18n( 'D j F Y' );
 	}
 
+	/** @return int[] */
+	public function getMainAdherentsIds() {
+		$ids = [];
+		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
+			/** @var AmapressAdhesion $adh */
+			if ( ! empty( $adh->getAdherentId() ) ) {
+				$ids[] = $adh->getAdherentId();
+			}
+		}
+
+		return array_unique( $ids );
+	}
+
 	public function getMailtoAmapiens() {
 		$mails = [];
 		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {

@@ -359,18 +359,146 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 		return;
 	}
 
-	$dist_id     = $dist->ID;
-	$contrat_ids = implode( ',', $dist->getContratIds() );
-	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+	if ( Amapress::getOption( 'distribution-amapiens-recall-send-indiv' ) ) {
+		$columns_no_price     = [];
+		$columns_no_price[]   = array(
+			'title' => 'Producteur',
+			'data'  => array(
+				'_'    => 'prod',
+				'sort' => 'prod',
+			)
+		);
+		$columns_no_price[]   = array(
+			'title' => 'Description',
+			'data'  => array(
+				'_'    => 'desc',
+				'sort' => 'desc',
+			)
+		);
+		$columns_no_price[]   = array(
+			'title' => 'Quantité',
+			'data'  => array(
+				'_'    => 'fact',
+				'sort' => 'fact',
+			)
+		);
+		$columns_with_price   = array_merge( $columns_no_price );
+		$columns_with_price[] = array(
+			'title' => 'Total',
+			'data'  => array(
+				'_'    => 'total_d',
+				'sort' => 'total',
+			)
+		);
 
-	$amapien_users = amapress_prepare_message_target_bcc( $query, "Amapiens de " . $dist->getTitle(), "distribution", true );
-	amapress_send_message(
-		Amapress::getOption( 'distribution-amapiens-recall-mail-subject' ),
-		Amapress::getOption( 'distribution-amapiens-recall-mail-content' ),
-		'', $amapien_users, $dist, array(),
-		amapress_get_recall_cc_from_option( 'distribution-amapiens-recall-cc' ),
-		null, $dist->getResponsablesResponsablesDistributionsReplyto()
-	);
+		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+		$date                = $dist->getDate();
+		$all_adhs            = AmapressContrats::get_active_adhesions( $dist->getContratIds(),
+			null, $dist->getLieuId(), $date, true, false );
+		$adhesions           = array_group_by(
+			$all_adhs,
+			function ( $adh ) use ( $date, $allow_partial_coadh ) {
+				/** @var AmapressAdhesion $adh */
+				if ( ! $adh->getAdherentId() ) {
+					return '';
+				}
+				$user = $adh->getAdherent()->getUser();
+				if ( $allow_partial_coadh ) {
+					$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date, $adh->getContrat_instanceId() ) );
+				} else {
+					$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date ) );
+				}
+
+				return implode( '_', $user_ids );
+			} );
+		foreach ( $adhesions as $user_ids => $adhs ) {
+			$user_ids = explode( '_', $user_ids );
+			if ( isset( $_GET['user_id'] ) && ! in_array( $_GET['user_id'], $user_ids ) ) {
+				continue;
+			}
+
+			$data = [];
+			foreach ( $adhs as $adh ) {
+				/** @var AmapressAdhesion $adh */
+				if ( $adh->getContrat_instance()->isPanierVariable() ) {
+					$paniers = $adh->getPaniersVariables();
+					foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
+						if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
+							$row            = [];
+							$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+							                  . '<br />'
+							                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+							$row['desc']    = $quant->getTitle();
+							$row['fact']    = $paniers[ $date ][ $quant->ID ];
+							$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
+							$row['total_d'] = Amapress::formatPrice( $price, true );
+							$row['total']   = $price;
+							$data[]         = $row;
+						}
+					}
+				} else {
+					foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
+						$row            = [];
+						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+						                  . '<br />'
+						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+						$row['desc']    = $quant->getTitle();
+						$row['fact']    = $quant->getFactor();
+						$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
+						$row['total']   = $quant->getPrice();
+						$data[]         = $row;
+					}
+				}
+			}
+
+			$replacements = [];
+
+			$dt_options                             = array(
+				'paging'       => false,
+				'init_as_html' => true,
+				'no_script'    => true,
+				'bSort'        => false,
+				'empty_desc'   => 'Pas de livraison',
+			);
+			$tbl_style                              = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+			$replacements['livraison_details_prix'] = $tbl_style . amapress_get_datatable(
+					'dist-recap-' . $dist->ID,
+					$columns_with_price, $data,
+					$dt_options );
+			$replacements['livraison_details']      = $tbl_style . amapress_get_datatable(
+					'dist-recap-' . $dist->ID,
+					$columns_no_price, $data,
+					$dt_options );
+
+			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $user_ids ),
+				"Amapiens de " . $dist->getTitle(), "distribution" );
+			$subject      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
+			$content      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-content' );
+			foreach ( $replacements as $k => $v ) {
+				$subject = str_replace( "%%$k%%", $v, $subject );
+				$content = str_replace( "%%$k%%", $v, $content );
+			}
+			amapress_send_message(
+				$subject,
+				$content,
+				'', $target_users, $dist, array(),
+				null, null, $dist->getResponsablesResponsablesDistributionsReplyto() );
+		}
+	} else {
+		$dist_id     = $dist->ID;
+		$contrat_ids = implode( ',', $dist->getContratIds() );
+		$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+
+		$amapien_users = amapress_prepare_message_target_bcc( $query,
+			"Amapiens de " . $dist->getTitle(), "distribution", true );
+		amapress_send_message(
+			Amapress::getOption( 'distribution-amapiens-recall-mail-subject' ),
+			Amapress::getOption( 'distribution-amapiens-recall-mail-content' ),
+			'', $amapien_users, $dist, array(),
+			amapress_get_recall_cc_from_option( 'distribution-amapiens-recall-cc' ),
+			null, $dist->getResponsablesResponsablesDistributionsReplyto()
+		);
+	}
 	echo '<p>Email de rappel de distribution envoyé</p>';
 } );
 
@@ -420,6 +548,33 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
 			'desc'    =>
 				AmapressDistribution::getPlaceholdersHelp(),
+		),
+		array(
+			'id'      => 'distribution-amapiens-recall-send-indiv',
+			'name'    => 'Envoi individuel',
+			'type'    => 'checkbox',
+			'desc'    => 'Envoyer le détails des paniers individuellement à chaque amapien',
+			'default' => false,
+		),
+		array(
+			'id'       => 'distribution-amapiens-indiv-recall-mail-subject',
+			'name'     => 'Sujet de l\'email',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Infos sur %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-amapiens-indiv-recall-mail-content',
+			'name'    => 'Contenu de l\'email',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, vous aurez :\n\n%%livraison_details%%\n\n%%nom_site%%" ),
+			'desc'    =>
+				AmapressDistribution::getPlaceholdersHelp(
+					[
+						'livraison_details'      => 'Tableau détaillant les paniers livrés (sans montants) à cette distribution pour un amapien donné',
+						'livraison_details_prix' => 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné'
+					]
+				),
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc',
