@@ -139,6 +139,21 @@ function amapress_get_custom_content_distribution( $content ) {
 			echo $panel_resp;
 		}
 
+		if ( amapress_is_user_logged_in() && ! empty( $dist->getGardiensIds() ) ) {
+			amapress_echo_panel_start( 'Gardiens de paniers' );
+			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
+				echo '<p>Vous êtes inscrit Gardien de paniers</p>';
+			}
+			echo amapress_gardiens_paniers_map( $dist_id );
+			echo '<ul>';
+			echo implode( '', array_map( function ( $u ) {
+				/** @var AmapressUser $u */
+				return '<li>' . $u->getDisplayName() . '(' . $u->getContacts() . ( ! $u->isAdresse_localized() ? ' / non localisé' : '' ) . ')</li>';
+			}, $dist->getGardiens() ) );
+			echo '</ul>';
+			amapress_echo_panel_end();
+		}
+
 		$instructions = '';
 		if ( $is_resp || $is_resp_amap ) {
 			$add_text = '';

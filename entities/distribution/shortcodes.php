@@ -131,6 +131,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'show_contrats_count'      => 'false',
 		'inscr_all_distrib'        => 'false',
 		'allow_resp_dist_manage'   => 'false',
+		'allow_gardiens'           => 'false',
 		'manage_all_subscriptions' => 'false',
 		'column_date_width'        => '5em',
 		'key'                      => '',
@@ -139,6 +140,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 	$column_date_width   = $atts['column_date_width'];
 	$show_contrats_desc  = Amapress::toBool( $atts['show_contrats_desc'] );
 	$show_contrats_count = Amapress::toBool( $atts['show_contrats_count'] );
+	$allow_gardiens      = Amapress::toBool( $atts['allow_gardiens'] );
 
 	$allow_anonymous_access = false;
 	$ret                    = '';
@@ -377,6 +379,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$ret .= '<th style="width: ' . $column_date_width . '">Produits</th>';
 			}
 		}
+		if ( ! $for_emargement && ! $for_pdf && $allow_gardiens ) {
+			$ret .= '<th>Gardiens paniers</th>';
+		}
 
 		$has_role_names = false;
 		/** @var AmapressLieu_distribution $user_lieu */
@@ -504,7 +509,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				}
 				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
 				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
-				$colspan_cls     = 'resp-col resp-col-' . ( $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
+
+				$colspan_cls = 'resp-col resp-col-' . ( ( ! $for_emargement && ! $for_pdf && $allow_gardiens ? 1 : 0 ) + $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {
 					$arr = array( '' => '-amapien-' );
@@ -535,6 +541,41 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$is_resp = $is_resp || $resp->ID == $user_id;
 					if ( $is_resp ) {
 						break;
+					}
+				}
+
+				if ( ! $for_emargement && ! $for_pdf && $allow_gardiens ) {
+					$inscr_another = '';
+					if ( ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap ) && $can_subscribe ) {
+						$inscr_another = '';
+						if ( ! is_admin() ) {
+							$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
+						}
+						$inscr_another .= '<div class="inscription-other-user">
+<select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-gardien="T data-dist="' . $dist->ID . '">Inscrire gardien</button>
+</div>';
+						if ( ! is_admin() ) {
+							$inscr_another .= '</form>';
+						}
+						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter une personne</a></a></p>';
+					}
+
+					$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
+					$missing    = '';
+					if ( ! $for_pdf ) {
+						if ( ! in_array( amapress_current_user_id(), $dist->getGardiensIds() ) && $can_subscribe ) {
+							$missing = $inscr_self;
+						} else if ( empty( $dist->getGardiensIds() ) ) {
+							$missing = "<span class='distrib-resp-missing'>0 gardien</span>";
+						} else {
+							$missing = '<span>' . count( $dist->getGardiensIds() ) . ' gardien(s)</span>';
+						}
+					}
+					if ( $is_user_part_of ) {
+						$ret .= "<td class='$colspan_cls incr-list-resp incr-missing'>$missing$inscr_another</td>";
+					} else {
+						$ret .= "<td class='$colspan_cls incr-list-resp incr-not-part'>$inscr_another</td>";
 					}
 				}
 
@@ -728,9 +769,10 @@ function amapress_histo_inscription_distrib_shortcode( $atts ) {
 }
 
 add_action( 'wp_ajax_desinscrire_distrib_action', function () {
-	$dist_id    = intval( $_POST['dist'] );
-	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
-	$is_current = ( amapress_current_user_id() == $user_id );
+	$dist_id     = intval( $_POST['dist'] );
+	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
+	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$is_current  = ( amapress_current_user_id() == $user_id );
 	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
 		echo '<p class="error">Non autorisé</p>';
 		die();
@@ -738,7 +780,9 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 
 
 	$dist = AmapressDistribution::getBy( $dist_id );
-	switch ( $dist->desinscrireResponsable( $user_id ) ) {
+	switch ( $for_gardien ?
+		$dist->desinscrireGardien( $user_id ) :
+		$dist->desinscrireResponsable( $user_id ) ) {
 		case 'not_inscr':
 			if ( $is_current ) {
 				echo '<p class="error">Vous n\'êtes pas inscrit</p>';
@@ -757,9 +801,10 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 	die();
 } );
 add_action( 'wp_ajax_inscrire_distrib_action', function () {
-	$dist_id    = intval( $_POST['dist'] );
-	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
-	$is_current = amapress_current_user_id() == $user_id;
+	$dist_id     = intval( $_POST['dist'] );
+	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
+	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$is_current  = amapress_current_user_id() == $user_id;
 	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
 	                          || amapress_can_access_admin()
 	                          || AmapressDistributions::isCurrentUserResponsableThisWeek()
@@ -770,10 +815,14 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	}
 
 	$dist = AmapressDistribution::getBy( $dist_id );
-	switch ( $dist->inscrireResponsable( $user_id,
-		isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
-		false,
-		isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
+	switch ( $for_gardien ?
+		$dist->inscrireGardien( $user_id,
+			false,
+			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) :
+		$dist->inscrireResponsable( $user_id,
+			isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
+			false,
+			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
 		case 'already_in_list':
 			if ( $is_current ) {
 				echo '<p class="error">Vous êtes déjà inscrit</p>';
@@ -799,11 +848,12 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 } );
 
 add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
-	$dist_id = intval( $_POST['dist'] );
-	$user_id = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : 0;
-	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
-	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
-	$is_ok   = false;
+	$dist_id     = intval( $_POST['dist'] );
+	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
+	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : 0;
+	$key         = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$post_id     = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$is_ok       = false;
 	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $post_id ) ) {
 		$post = get_post( $post_id );
 		if ( $post ) {
@@ -819,7 +869,9 @@ add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
 	}
 
 	$dist = AmapressDistribution::getBy( $dist_id );
-	switch ( $dist->desinscrireResponsable( $user_id, true ) ) {
+	switch ( $for_gardien ?
+		$dist->desinscrireGardien( $user_id, true ) :
+		$dist->desinscrireResponsable( $user_id, true ) ) {
 		case 'not_inscr':
 			echo '<p class="error">Vous n\'êtes pas inscrit</p>';
 			break;
@@ -830,11 +882,12 @@ add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
 	die();
 } );
 add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
-	$dist_id = intval( $_POST['dist'] );
-	$user_id = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
-	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
-	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
-	$is_ok   = false;
+	$dist_id     = intval( $_POST['dist'] );
+	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
+	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$key         = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$post_id     = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$is_ok       = false;
 	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $post_id ) ) {
 		$post = get_post( $post_id );
 		if ( $post ) {
@@ -850,10 +903,14 @@ add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
 	}
 
 	$dist = AmapressDistribution::getBy( $dist_id );
-	switch ( $dist->inscrireResponsable( $user_id,
-		isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
-		true,
-		isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
+	switch ( $for_gardien ?
+		$dist->inscrireGardien( $user_id,
+			true,
+			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) :
+		$dist->inscrireResponsable( $user_id,
+			isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
+			true,
+			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
 		case 'already_in_list':
 			echo '<p class="error">Vous êtes déjà inscrit</p>';
 			break;
