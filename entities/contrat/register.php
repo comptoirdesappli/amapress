@@ -1232,6 +1232,19 @@ jQuery(function($) {
 				'required'      => true,
 				'desc'          => 'Date d\'ouverture des inscriptions en ligne',
 				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'custom_column' => function ( $option, $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					$color   = 'green';
+					if ( $contrat
+					     && ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
+					          || $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
+					     ) ) {
+						$color = 'orange';
+					}
+					echo "<span style='color:$color'>";
+					echo date_i18n( 'd/m/Y', $contrat->getDate_ouverture() );
+					echo '</span>';
+				},
 				'before_option' =>
 					function ( $option ) {
 						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
@@ -1251,12 +1264,25 @@ jQuery(function($) {
 					},
 			),
 			'date_cloture'          => array(
-				'name'       => amapress__( 'Clôture' ),
-				'type'       => 'date',
-				'group'      => '5/6 - Pré-inscription en ligne',
-				'required'   => true,
-				'desc'       => 'Date de clôture des inscriptions en ligne',
-				'readonly'   => 'amapress_is_contrat_instance_readonly',
+				'name'          => amapress__( 'Clôture' ),
+				'type'          => 'date',
+				'group'         => '5/6 - Pré-inscription en ligne',
+				'required'      => true,
+				'desc'          => 'Date de clôture des inscriptions en ligne',
+				'readonly'      => 'amapress_is_contrat_instance_readonly',
+				'custom_column' => function ( $option, $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					$color   = 'green';
+					if ( $contrat
+					     && ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
+					          || $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
+					     ) ) {
+						$color = 'orange';
+					}
+					echo "<span style='color:$color'>";
+					echo date_i18n( 'd/m/Y', $contrat->getDate_cloture() );
+					echo '</span>';
+				},
 //				'before_option' =>
 //					function ( $option ) {
 //						if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
