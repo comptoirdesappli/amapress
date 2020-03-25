@@ -350,11 +350,8 @@ function amapress_update_title_contrat( WP_Post $post ) {
 
 add_action( 'edit_form_after_title', 'amapress_edit_post_title_handler' );
 function amapress_edit_post_title_handler( WP_Post $post ) {
-	if ( ! post_type_supports( $post->post_type, 'title' ) ) {
+	if ( ! post_type_supports( $post->post_type, 'title' ) && ! empty( $post->post_title ) ) {
 		$post_type = get_post_type_object( $post->post_type );
-		if ( empty( $post->post_title ) ) {
-			return;
-		}
 		?>
         <div id="titlediv">
             <div id="titlewrap">
