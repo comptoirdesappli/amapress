@@ -23,14 +23,14 @@ function amapress_register_entities_distribution( $entities ) {
 		'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-store',
 		'row_actions'      => array(
-			'emargement'      => [
+			'emargement'             => [
 				'label'  => 'Liste émargement',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
 				},
 			],
-			'quant_prod'      => [
+			'quant_prod'             => [
 				'label'  => 'Quantités producteurs',
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
@@ -39,7 +39,7 @@ function amapress_register_entities_distribution( $entities ) {
 						admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
 				},
 			],
-			'mailto_resp'     => [
+			'mailto_resp'            => [
 				'label'     => 'Email aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -55,7 +55,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'smsto_resp'      => [
+			'smsto_resp'             => [
 				'label'     => 'SMS aux responsables',
 				'target'    => '_blank',
 				'confirm'   => true,
@@ -71,7 +71,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'mailto_amapiens' => [
+			'mailto_amapiens'        => [
 				'label'   => 'Email aux amapiens',
 				'target'  => '_blank',
 				'confirm' => true,
@@ -104,6 +104,18 @@ function amapress_register_entities_distribution( $entities ) {
 				'confirm' => true,
 			],
 		),
+		'edit_header'      => function ( $post ) {
+			if ( TitanFrameworkOption::isOnNewScreen() ) {
+				echo amapress_get_admin_notice(
+					'L\'ajout d\'une distribution ne doit se faire que si une distribution exceptionnelle a lieu en dehors des distributions plannifiées !',
+					'warning', false
+				);
+			}
+		},
+		'labels'           => array(
+			'add_new'      => 'Planifier une distribution exceptionnelle',
+			'add_new_item' => 'Nouvelle distribution exceptionnelle',
+		),
 		'views'            => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_distribution_views',
@@ -126,7 +138,9 @@ function amapress_register_entities_distribution( $entities ) {
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
 				'group'      => 'Infos',
-				'readonly'   => true,
+				'readonly'   => function ( $post_id ) {
+					return ! TitanFrameworkOption::isOnNewScreen();
+				},
 				'desc'       => 'Date de distribution',
 			),
 			'lieu' => array(
@@ -140,7 +154,9 @@ function amapress_register_entities_distribution( $entities ) {
 					'name'        => 'amapress_lieu',
 					'placeholder' => 'Toutes les lieux',
 				),
-				'readonly'   => true,
+				'readonly'   => function ( $post_id ) {
+					return ! TitanFrameworkOption::isOnNewScreen();
+				},
 				'desc'       => 'Lieu de distribution',
 				'searchable' => true,
 			),
