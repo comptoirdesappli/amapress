@@ -638,7 +638,7 @@ class Amapress {
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => false,
-			'publish' => false,
+			'publish' => true,
 		) );
 		self::add_post_role( 'administrator', 'recette', 'recettes', array(
 			'read'          => true,
