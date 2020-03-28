@@ -1776,7 +1776,7 @@ add_action( 'pre_get_posts', function ( $query ) {
 	if ( ( is_category() || is_archive() ) && $query->is_main_query() ) {
 		$post_type = $query->get( 'post_type' );
 		if ( ! is_array( $post_type ) ) {
-			$pt = AmapressEntities::getPostType( amapress_unsimplify_post_type( $post_type ) );
+			$pt = AmapressEntities::getPostType( amapress_simplify_post_type( $post_type ) );
 			if ( $pt ) {
 				if ( isset( $pt['default_orderby'] ) ) {
 					$default_orderby = $pt['default_orderby'];
@@ -1784,7 +1784,7 @@ add_action( 'pre_get_posts', function ( $query ) {
 						$query->query_vars['orderby']  = 'meta_value_num';
 						$query->query_vars['meta_key'] = $default_orderby;
 					} else {
-						$query->query_vars['orderby'] = 'meta_value_num';
+						$query->query_vars['orderby'] = $default_orderby;
 					}
 				}
 				if ( isset( $pt['default_order'] ) ) {
