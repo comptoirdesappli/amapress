@@ -100,10 +100,12 @@ function amapress_mailing_queue_menu_options() {
 						'type' => 'text',
 					),
 					array(
-						'id'   => 'mail_queue_smtp_port',
-						'name' => 'SMTP Port',
-						'desc' => 'Default ports : SMTP 25; SMTP SSL 465; SMTP TLS 587',
-						'type' => 'number',
+						'id'     => 'mail_queue_smtp_port',
+						'name'   => 'SMTP Port',
+						'desc'   => 'Default ports : SMTP 25; SMTP SSL 465; SMTP TLS 587',
+						'type'   => 'number',
+						'max'    => 65535,
+						'slider' => false,
 					),
 					array(
 						'id'   => 'mail_queue_smtp_timeout',
