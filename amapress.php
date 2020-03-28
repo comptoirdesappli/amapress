@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.92.120
+ * Version:             0.93.0
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -52,7 +52,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 106 );
-define( 'AMAPRESS_VERSION', '0.92.120' );
+define( 'AMAPRESS_VERSION', '0.93.0' );
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1770,6 +1770,72 @@ add_action( 'admin_post_tf_event_scheduler_test', function () {
 	echo '<p>Rappel terminé</p>';
 	die();
 } );
+
+//panier, distribution, amap_event, assemblee, visite
+
+add_filter( 'get_next_post_join', 'amapress_get_adjacent_post_join', 10, 5 );
+add_filter( 'get_previous_post_join', 'amapress_get_adjacent_post_join', 10, 5 );
+function amapress_get_adjacent_post_join( $join, $in_same_term, $excluded_terms, $taxonomy, WP_Post $post ) {
+	if ( false !== strpos( $post->post_type, 'amps_' ) ) {
+		$pt = AmapressEntities::getPostType( amapress_simplify_post_type( $post->post_type ) );
+		if ( $pt ) {
+			if ( isset( $pt['default_orderby'] ) ) {
+				$default_orderby = $pt['default_orderby'];
+				if ( false !== strpos( $default_orderby, 'amapress_' ) ) {
+					global $wpdb;
+					$join .= $wpdb->prepare( " INNER JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id AND pm.meta_key = %s ", $default_orderby );
+				}
+			}
+		}
+	}
+
+	return $join;
+}
+
+add_filter( 'get_next_post_where', 'amapress_get_adjacent_post_where', 10, 5 );
+add_filter( 'get_previous_post_where', 'amapress_get_adjacent_post_where', 10, 5 );
+function amapress_get_adjacent_post_where( $where, $in_same_term, $excluded_terms, $taxonomy, WP_Post $post ) {
+	if ( false !== strpos( $post->post_type, 'amps_' ) ) {
+		$pt = AmapressEntities::getPostType( amapress_simplify_post_type( $post->post_type ) );
+		if ( $pt ) {
+			if ( isset( $pt['default_orderby'] ) ) {
+				global $wpdb;
+				$default_orderby = $pt['default_orderby'];
+				if ( false !== strpos( $default_orderby, 'amapress_' ) ) {
+					$where = preg_replace( '/WHERE p.post_date\s+(\S+).+?AND/',
+						$wpdb->prepare( 'WHERE CAST(pm.meta_value as UNSIGNED) ${1} %s AND',
+							get_post_meta( $post->ID, $default_orderby, true ) ), $where );
+				} else {
+					$where = preg_replace( '/WHERE p.post_date\s+(\S+).+?AND/',
+						$wpdb->prepare( 'WHERE p.' . $default_orderby . ' ${1} %s AND',
+							$post->$default_orderby ), $where );
+				}
+			}
+		}
+	}
+
+	return $where;
+}
+
+add_filter( 'get_previous_post_sort', 'amapress_get_adjacent_post_sort', 10, 2 );
+add_filter( 'get_next_post_sort', 'amapress_get_adjacent_post_sort', 10, 2 );
+function amapress_get_adjacent_post_sort( $orderby, WP_Post $post ) {
+	if ( false !== strpos( $post->post_type, 'amps_' ) ) {
+		$pt = AmapressEntities::getPostType( amapress_simplify_post_type( $post->post_type ) );
+		if ( $pt ) {
+			if ( isset( $pt['default_orderby'] ) ) {
+				$default_orderby = $pt['default_orderby'];
+				if ( false !== strpos( $default_orderby, 'amapress_' ) ) {
+					$orderby = str_replace( 'p.post_date', 'CAST(pm.meta_value as UNSIGNED)', $orderby );
+				} else {
+					$orderby = str_replace( 'p.post_date', 'p.' . $default_orderby, $orderby );
+				}
+			}
+		}
+	}
+
+	return $orderby;
+}
 
 add_action( 'pre_get_posts', function ( $query ) {
 	/* @var WP_Query $query */
