@@ -451,7 +451,7 @@ class AmapressMailingGroup extends TitanEntity {
 
 					$is_site_member = false !== get_user_by( 'email', $mail->fromAddress );
 					if ( ! $is_site_member ) {
-						if ( preg_match( '/mailer-daemon|sympa|listserv|majordomo|smartlist|mailman/', $mail->fromAddress ) ) {
+						if ( preg_match( '/^(mailer-daemon|postmaster|hostmaster|abuse|junk|sympa|listserv|majordomo|smartlist|mailman)@/i', $mail->fromAddress ) ) {
 							$res = true;
 						} else if ( 'moderate' == $unk_action && ( empty( $bl_regex ) || ! preg_match( "/$bl_regex/", $mail->fromAddress ) ) ) {
 							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, true );
