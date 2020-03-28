@@ -29,10 +29,11 @@ function amapress_register_entities_mailing_groups( $entities ) {
 						echo amapress_get_admin_notice( 'Erreur de configuration : l\'extension IMAP n\'est pas installée, les emails groupés sont désactivés.', 'error', false );
 					}
 					if ( ! empty( $ml->getSmtpHost() ) ) {
-						if ( $ml->testSMTP() ) {
-							echo amapress_get_admin_notice( 'Configuration SMTP OK', 'success', false );
+						$res = $ml->testSMTP();
+						if ( true !== $res ) {
+							echo amapress_get_admin_notice( 'Erreur de configuration, connexion au SMTP ' . $ml->getSmtpHost() . ' impossible : ' . $res, 'error', false );
 						} else {
-							echo amapress_get_admin_notice( 'Erreur de configuration : connexion au SMTP ' . $ml->getSmtpHost() . ' impossible', 'error', false );
+							echo amapress_get_admin_notice( 'Configuration SMTP OK', 'success', false );
 						}
 					}
 				}
@@ -74,6 +75,8 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'        => 'Port d\'accès au serveur IMAP/POP3<br/>Ports par défaut : IMAP 143; IMAP SSL 993; POP3 110 ; POP3 SSL 995',
 				'type'        => 'number',
 				'default'     => 993,
+				'max'         => 65535,
+				'slider'      => false,
 				'required'    => true,
 				'show_column' => false,
 			),
@@ -145,8 +148,11 @@ function amapress_register_entities_mailing_groups( $entities ) {
 			),
 			'smtp_port'              => array(
 				'name'        => 'Port',
-				'group'       => 'Serveur sortant<br/>Ports par défaut : SMTP 25; SMTP SSL 465; SMTP TLS 587',
+				'group'       => 'Serveur sortant',
 				'type'        => 'number',
+				'desc'        => 'Ports par défaut : SMTP 25; SMTP SSL 465; SMTP TLS 587',
+				'max'         => 65535,
+				'slider'      => false,
 				'show_column' => false,
 			),
 			'smtp_encryption'        => array(
