@@ -571,6 +571,7 @@ class AmapressUsers {
 jQuery(function($) {
               $(".form-field").has("#url").hide();
               $(".form-field").has("#user_login").hide();
+              $("#email, #first_name, #last_name").addClass("required");
 });
 </script>';
 
