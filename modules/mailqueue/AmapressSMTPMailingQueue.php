@@ -5,7 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class AmapressSMTPMailingQueue {
-	public function __construct() {
+	private $mlgrp_id;
+
+	public function __construct( $mlgrp_id = '' ) {
+		$this->mlgrp_id = $mlgrp_id;
 		$this->init();
 	}
 
@@ -16,43 +19,32 @@ class AmapressSMTPMailingQueue {
 		// Actions
 		add_action( 'phpmailer_init', [ $this, 'initMailer' ] );
 
-//		if(isset($_GET['smqProcessQueue'])) {
-//			add_action('init', function() {
-//				$this->processQueue();
-//			});
-//		}
-
-		add_action( 'init', function () {
-			load_plugin_textdomain( 'smtp-mailing-queue', false, 'smtp-mailing-queue/languages/' );
-		} );
-
 		if ( ! defined( 'FREE_PAGES_PERSO' ) || ! FREE_PAGES_PERSO ) {
-			add_action( 'amps_smq_start_queue', [ $this, 'processQueue' ] );
-
-			// Filter
 			add_filter( 'cron_schedules', [ $this, 'addWpCronInterval' ] );
 
-			if ( ! wp_next_scheduled( 'amps_smq_start_queue' ) ) {
-				wp_schedule_event( time(), 'amps_smq', 'amps_smq_start_queue' );
+			$start_queue_hook_name = 'amps_smq_start_queue' . $this->mlgrp_id;
+			add_action( $start_queue_hook_name, [ $this, 'processQueue' ] );
+			if ( ! wp_next_scheduled( $start_queue_hook_name ) ) {
+				wp_schedule_event( time(), 'amps_smq', $start_queue_hook_name );
 			}
 
-			if ( ! wp_next_scheduled( 'amps_smq_clean_log' ) ) {
-				wp_schedule_event( time(), 'daily', 'amps_smq_clean_log' );
+			$clean_log_hook_name = 'amps_smq_clean_log' . $this->mlgrp_id;
+			add_action( $clean_log_hook_name, [ $this, 'cleanLogs' ] );
+			if ( ! wp_next_scheduled( $clean_log_hook_name ) ) {
+				wp_schedule_event( time(), 'daily', $clean_log_hook_name );
 			}
-			add_action( 'amps_smq_clean_log', [ $this, 'cleanLogs' ] );
 
 			add_action( 'tf_set_value_amapress_mail_queue_interval', [ $this, 'refreshWpCron' ] );
 		}
-//		add_action('tf_set_value_amapress_mail_queue_limit', [$this, 'refreshWpCron']);
-//        $this->refreshWpCron();
 	}
 
 	/**
 	 * (Re)sets wp_cron, e.g. on activation and interval update.
 	 */
 	public function refreshWpCron() {
-		wp_clear_scheduled_hook( 'amps_smq_start_queue' );
-		wp_schedule_event( time(), 'amps_smq', 'amps_smq_start_queue' );
+		$start_queue_hook_name = 'amps_smq_start_queue' . $this->mlgrp_id;
+		wp_clear_scheduled_hook( $start_queue_hook_name );
+		wp_schedule_event( time(), 'amps_smq', $start_queue_hook_name );
 	}
 
 	/**
@@ -63,7 +55,6 @@ class AmapressSMTPMailingQueue {
 	 * @return array
 	 */
 	public function addWpCronInterval( $schedules ) {
-//		$interval = get_option('smtp_mailing_queue_advanced')['wpcron_interval'];
 		$mail_queue_interval   = Amapress::getOption( 'mail_queue_interval' );
 		$interval              = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 30;
 		$schedules['amps_smq'] = [
@@ -79,7 +70,7 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @param string|array $to
 	 * @param string $subject
-	 * @param string $message
+	 * @param array|string $message
 	 * @param array|string $headers
 	 * @param array $attachments
 	 *
@@ -112,16 +103,15 @@ class AmapressSMTPMailingQueue {
 			$retries = apply_filters( 'amapress_mail_queue_retries', 1 );
 			do {
 				$time    = amapress_time();
-				$errors  = self::sendMail( compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ) );
+				$errors  = self::sendMail( $this->mlgrp_id,
+					compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ) );
 				$retries -= 1;
 			} while ( $retries > 0 && ! empty( $errors ) );
 
 			return empty( $errors );
 		} else {
-			return self::storeMail( 'waiting', $to, $subject, $message, $headers, $attachments );
+			return self::storeMail( $this->mlgrp_id, 'waiting', $to, $subject, $message, $headers, $attachments );
 		}
-//		else {
-//		}
 	}
 
 	public function cleanLogs() {
@@ -131,7 +121,7 @@ class AmapressSMTPMailingQueue {
 		}
 		$clean_date = Amapress::add_days( Amapress::start_of_day( time() ), - $mail_queue_log_clean_days );
 		foreach (
-			AmapressSMTPMailingQueue::loadDataFromFiles( true, 'logged' )
+			self::loadDataFromFiles( $this->mlgrp_id, true, 'logged' )
 			as $filename => $email
 		) {
 			if ( $email['time'] < $clean_date ) {
@@ -139,7 +129,7 @@ class AmapressSMTPMailingQueue {
 			}
 		}
 		foreach (
-			AmapressSMTPMailingQueue::loadDataFromFiles( true, 'errored' )
+			self::loadDataFromFiles( $this->mlgrp_id, true, 'errored' )
 			as $filename => $email
 		) {
 			if ( $email['time'] < $clean_date ) {
@@ -161,7 +151,7 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return bool
 	 */
-	public static function storeMail( $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0 ) {
+	public static function storeMail( $mlgrp_id, $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0 ) {
 		require_once ABSPATH . WPINC . '/class-phpmailer.php';
 
 		$time = $time ?: amapress_time();
@@ -188,7 +178,7 @@ class AmapressSMTPMailingQueue {
 			}
 		}
 
-		$fileName   = self::getUploadDir( $type ) . microtime( true ) . '.json';
+		$fileName   = self::getUploadDir( $mlgrp_id, $type ) . microtime( true ) . '.json';
 		$data['to'] = implode( ',', $validEmails );
 		if ( ! empty( $invalidEmails ) ) {
 			$data['invalid_to'] = implode( ',', $invalidEmails );
@@ -212,8 +202,8 @@ class AmapressSMTPMailingQueue {
 		return true;
 	}
 
-	public static function getErroredMailsCount() {
-		return count( glob( self::getUploadDir( 'errored' ) . '*.json' ) );
+	public static function getErroredMailsCount( $mlgrp_id = '' ) {
+		return count( glob( self::getUploadDir( $mlgrp_id, 'errored' ) . '*.json' ) );
 	}
 
 	/**
@@ -224,11 +214,9 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return string upload dir
 	 */
-	public static function getUploadDir( $type = 'waiting' ) {
+	public static function getUploadDir( $mlgrp_id = '', $type = 'waiting' ) {
 		$subfolder = '';
 		switch ( $type ) {
-//			case 'waiting':
-//				break;
 			case 'errored':
 				$subfolder = 'invalid/';
 				break;
@@ -236,7 +224,7 @@ class AmapressSMTPMailingQueue {
 				$subfolder = 'logs/';
 				break;
 		}
-		$dir     = wp_upload_dir()['basedir'] . '/amapress-smtp-mailing-queue/';
+		$dir     = wp_upload_dir()['basedir'] . '/amapress-smtp-mailing-queue' . ( ! empty( $mlgrp_id ) ? '-' . $mlgrp_id : '' ) . '/';
 		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
 			$handle = @fopen( $dir . '.htaccess', "w" );
@@ -262,17 +250,24 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return array Mail data
 	 */
-	public static function loadDataFromFiles( $ignoreLimit = false, $types = [ 'waiting' ] ) {
+	public static function loadDataFromFiles( $mlgrp_id, $ignoreLimit = false, $types = [ 'waiting' ] ) {
 		$queue_limit = Amapress::getOption( 'mail_queue_limit' );
-		$emails      = [];
-		$i           = 0;
+		if ( ! empty( $mlgrp_id ) ) {
+			$mlgrp = AmapressMailingGroup::getBy( $mlgrp_id );
+			if ( $mlgrp && $mlgrp->getSmtpMaxMailsPerHour() > 0 ) {
+				$mail_queue_interval = Amapress::getOption( 'mail_queue_interval' );
+				$queue_limit         = $mlgrp->getSmtpMaxMailsPerHour() / 3600.0 * $mail_queue_interval;
+			}
+		}
+		$emails = [];
+		$i      = 0;
 		if ( ! is_array( $types ) ) {
 			$types = [ $types ];
 		}
 
 		foreach ( $types as $type ) {
 			if ( 'waiting' == $type || 'errored' == $type || 'logged' == $type ) {
-				foreach ( glob( self::getUploadDir( $type ) . '*.json' ) as $filename ) {
+				foreach ( glob( self::getUploadDir( $mlgrp_id, $type ) . '*.json' ) as $filename ) {
 					$emails[ $filename ]             = json_decode( file_get_contents( $filename ), true );
 					$emails[ $filename ]['type']     = $type;
 					$emails[ $filename ]['basename'] = basename( $filename );
@@ -283,15 +278,6 @@ class AmapressSMTPMailingQueue {
 				}
 			}
 		}
-//		if ( 'both' === $invalid || true === $invalid ) {
-//			foreach ( glob( self::getUploadDir( true ) . '*.json' ) as $filename ) {
-//				$emails[ $filename ] = json_decode( file_get_contents( $filename ), true );
-//				$i ++;
-//				if ( ! $ignoreLimit && ! empty( $queue_limit ) && $i >= $queue_limit ) {
-//					break;
-//				}
-//			}
-//		}
 
 		return $emails;
 	}
@@ -300,7 +286,7 @@ class AmapressSMTPMailingQueue {
 	 * Processes mailing queue.
 	 */
 	public function processQueue() {
-		$mails = $this->loadDataFromFiles( false, [ 'errored', 'waiting' ] );
+		$mails = $this->loadDataFromFiles( $this->mlgrp_id, false, [ 'errored', 'waiting' ] );
 		foreach ( $mails as $file => $data ) {
 			if ( 'errored' == $data['type'] ) {
 				$retries = isset( $data['retries_count'] ) ? $data['retries_count'] : 0;
@@ -314,7 +300,7 @@ class AmapressSMTPMailingQueue {
 				}
 			}
 			try {
-				self::sendMail( $data );
+				self::sendMail( $this->mlgrp_id, $data );
 			} catch ( Exception $ex ) {
 				@error_log( $ex->getMessage() );
 			} finally {
@@ -332,7 +318,7 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return array Success
 	 */
-	public static function sendMail( $data ) {
+	public static function sendMail( $mlgrp_id, $data ) {
 		if ( ! empty( $data['attachments'] ) ) {
 			$data['attachments'] = array_filter( $data['attachments'],
 				function ( $v ) {
@@ -344,7 +330,7 @@ class AmapressSMTPMailingQueue {
 				}
 			);
 		}
-		require_once( 'AmapressSMTPMailingQueueOriginal.php' );
+		require_once 'AmapressSMTPMailingQueueOriginal.php';
 		if ( ! isset( $data['to'] ) ) {
 			$data['to'] = '';
 		}
@@ -363,25 +349,25 @@ class AmapressSMTPMailingQueue {
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
 			@error_log( 'Email send Error : ' . implode( ' ; ', $errors ) );
-			self::storeMail( 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
+			self::storeMail( $mlgrp_id, 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
 		} else {
-			self::storeMail( 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
+			self::storeMail( $mlgrp_id, 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		}
 
 		return $errors;
 	}
 
-	public static function deleteFile( $type, $msg_file ) {
-		$file = self::getUploadDir( $type ) . $msg_file;
+	public static function deleteFile( $mlgrp_id, $type, $msg_file ) {
+		$file = self::getUploadDir( $mlgrp_id, $type ) . $msg_file;
 		@unlink( $file );
 	}
 
-	public static function retrySendMessage( $msg_file ) {
-		$file            = self::getUploadDir( 'errored' ) . $msg_file;
+	public static function retrySendMessage( $mlgrp_id, $msg_file ) {
+		$file            = self::getUploadDir( $mlgrp_id, 'errored' ) . $msg_file;
 		$msg             = json_decode( file_get_contents( $file ), true );
 		$msg['type']     = 'errored';
 		$msg['basename'] = basename( $file );
-		$errors          = self::sendMail( $msg );
+		$errors          = self::sendMail( $mlgrp_id, $msg );
 		@unlink( $file );
 
 		return empty( $errors );

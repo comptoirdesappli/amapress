@@ -569,8 +569,13 @@ function amapress_global_init() {
 
 	global $amapress_smtpMailingQueue;
 	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );
-	$amapress_smtpMailingQueue = new AmapressSMTPMailingQueue();
-
+	$amapress_smtpMailingQueue        = [];
+	$amapress_smtpMailingQueue['def'] = new AmapressSMTPMailingQueue();
+	foreach ( AmapressMailingGroup::getAll() as $mlgrp ) {
+		if ( ! empty( $mlgrp->getSmtpHost() ) ) {
+			$amapress_smtpMailingQueue[ 'm' . $mlgrp->ID ] = new AmapressSMTPMailingQueue( $mlgrp->ID );
+		}
+	}
 	if ( ! wp_next_scheduled( 'amps_cleanings' ) ) {
 		wp_schedule_event( time(), 'daily', 'amps_cleanings' );
 	}
@@ -1248,7 +1253,7 @@ add_filter( 'user_has_cap', 'amapress_user_has_cap', 10, 3 );
 
 if ( ! function_exists( 'wp_mail' ) ) {
 	function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-		/** @var AmapressSMTPMailingQueue $amapress_smtpMailingQueue */
+		/** @var AmapressSMTPMailingQueue[] $amapress_smtpMailingQueue */
 		global $amapress_smtpMailingQueue;
 
 		if ( empty( $to ) ) {
@@ -1259,7 +1264,12 @@ if ( ! function_exists( 'wp_mail' ) ) {
 		}
 
 		if ( $amapress_smtpMailingQueue ) {
-			return $amapress_smtpMailingQueue->wp_mail( $to, $subject, $message, $headers, $attachments );
+			if ( is_array( $message ) && ! empty( $message['ml_grp_id'] )
+			     && isset( $amapress_smtpMailingQueue[ 'm' . $message['ml_grp_id'] ] ) ) {
+				return $amapress_smtpMailingQueue[ 'm' . $message['ml_grp_id'] ]->wp_mail( $to, $subject, $message, $headers, $attachments );
+			} else {
+				return $amapress_smtpMailingQueue['def']->wp_mail( $to, $subject, $message, $headers, $attachments );
+			}
 		} else {
 //            wp_mail($to, $subject, $message, $headers, $attachments);
 			die( "Uh, no wp_mail ???" );

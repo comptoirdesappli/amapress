@@ -179,20 +179,20 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'type'        => 'checkbox',
 				'show_column' => false,
 			),
-			'smtp_out_note2'         => array(
+			'smtp_out_note2'     => array(
 				'group'       => 'Serveur sortant',
 				'type'        => 'note',
 				'desc'        => 'Si les identifiants sont les mêmes que l\'accès IMAP/POP, laissez les champs vides (et cocher la case "Avec authentication ?")',
 				'show_column' => false,
 			),
-			'smtp_auth_username'     => array(
+			'smtp_auth_username' => array(
 				'name'         => 'Username',
 				'group'        => 'Serveur sortant',
 				'autocomplete' => false,
 				'type'         => 'text',
 				'show_column'  => false,
 			),
-			'smtp_auth_password'     => array(
+			'smtp_auth_password' => array(
 				'name'         => 'Password',
 				'group'        => 'Serveur sortant',
 				'type'         => 'text',
@@ -200,14 +200,22 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'is_password'  => true,
 				'show_column'  => false,
 			),
-			'subject_pref'           => array(
+			'smtp_max_per_hour'  => array(
+				'name'        => 'Emails par heure',
+				'group'       => 'Serveur sortant',
+				'type'        => 'number',
+				'desc'        => 'Nombre maximum d\'envoi de mail par heure autorisé',
+				'max'         => 10000,
+				'show_column' => false,
+			),
+			'subject_pref'       => array(
 				'group'       => 'Description',
 				'name'        => amapress__( 'Préfixe Sujet' ),
 				'type'        => 'text',
 				'show_column' => false,
 				'desc'        => 'Préfixe à ajouter au sujet des emails relayés'
 			),
-			'moderation'             => array(
+			'moderation'         => array(
 				'group'    => 'Modération',
 				'name'     => amapress__( 'Modération' ),
 				'type'     => 'select',

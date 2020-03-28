@@ -185,21 +185,21 @@ function amapress_mailing_queue_menu_options() {
 	);
 }
 
-function amapress_mailing_queue_waiting_mail_list() {
-	return amapress_mailing_queue_mail_list( 'waiting-mails', 'waiting' );
+function amapress_mailing_queue_waiting_mail_list( $mlgrp_id = '' ) {
+	return amapress_mailing_queue_mail_list( 'waiting-mails', $mlgrp_id, 'waiting' );
 }
 
-function amapress_mailing_queue_errored_mail_list() {
-	return amapress_mailing_queue_mail_list( 'errored-mails', 'errored' );
+function amapress_mailing_queue_errored_mail_list( $mlgrp_id = '' ) {
+	return amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
 }
 
-function amapress_mailing_queue_logged_mail_list() {
-	return amapress_mailing_queue_mail_list( 'logged-mails', 'logged', [
+function amapress_mailing_queue_logged_mail_list( $mlgrp_id = '' ) {
+	return amapress_mailing_queue_mail_list( 'logged-mails', $mlgrp_id, 'logged', [
 		'order' => [ 0, 'desc' ],
 	] );
 }
 
-function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
+function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] ) {
 	//compact('to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors')
 	$columns   = array();
 	$columns[] = array(
@@ -240,7 +240,7 @@ function amapress_mailing_queue_mail_list( $id, $type, $options = [] ) {
 //            'data' => '',
 //        ),
 //);
-	$emails = AmapressSMTPMailingQueue::loadDataFromFiles( true, $type );
+	$emails = AmapressSMTPMailingQueue::loadDataFromFiles( $mlgrp_id, true, $type );
 	$data   = array();
 	foreach ( $emails as $email ) {
 		$headers = implode( '<br/>', array_map( function ( $h ) {
@@ -315,7 +315,8 @@ function admin_action_amapress_delete_queue_msg() {
 
 	$type     = $_REQUEST['type'];
 	$msg_file = $_REQUEST['msg_file'];
-	AmapressSMTPMailingQueue::deleteFile( $type, $msg_file );
+	$mlgrp_id = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
+	AmapressSMTPMailingQueue::deleteFile( $mlgrp_id, $type, $msg_file );
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 		echo "Email $msg_file supprimé avec succès";
 	} else {
@@ -331,7 +332,8 @@ function admin_action_amapress_retry_queue_send_msg() {
 	}
 
 	$msg_file = $_REQUEST['msg_file'];
-	$res      = AmapressSMTPMailingQueue::retrySendMessage( $msg_file );
+	$mlgrp_id = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
+	$res      = AmapressSMTPMailingQueue::retrySendMessage( $mlgrp_id, $msg_file );
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 		if ( $res ) {
 			echo "Email $msg_file renvoyé avec succès";

@@ -130,8 +130,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'subpage'  => true,
 							'id'       => 'mailinggroup_moderation',
 							'settings' => array(
-								'name'       => 'Emails en attente [waiting-mlgrp-count]',
-								'menu_title' => 'Emails en attente [waiting-mlgrp-count]',
+								'name'       => 'Modération - Emails en attente [waiting-mlgrp-count]',
+								'menu_title' => 'Modération [waiting-mlgrp-count]',
 								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-shield',
 							),
@@ -193,6 +193,120 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												'type'   => 'custom',
 												'custom' => function () use ( $ml_id ) {
 													return amapress_get_mailing_group_archive_list( $ml_id, 'accepted' );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_mailqueue',
+							'settings' => array(
+								'name'       => 'Emails sortants en attente',
+								'menu_title' => 'Files attente',
+								'capability' => 'read_mailing_group',
+								'menu_icon'  => 'dashicons-clock',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                                       = $ml->ID;
+									$tabs[ $ml->getName() . amapress__( ' - File d\'attente' ) ] = array(
+										'id'      => 'mailgrp-mailqueue-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-mailqueue-' . $ml_id,
+												'name'   => 'File d\'attente',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_mailing_queue_waiting_mail_list( $ml_id );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_mailerrors',
+							'settings' => array(
+								'name'       => 'Emails sortants en erreur',
+								'menu_title' => 'Erreurs',
+								'capability' => 'read_mailing_group',
+								'menu_icon'  => 'dashicons-dismiss',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                               = $ml->ID;
+									$tabs[ $ml->getName() . amapress__( ' - Erreurs' ) ] = array(
+										'id'      => 'mailgrp-mailerrors-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-mailerrors-' . $ml_id,
+												'name'   => 'Erreurs',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_mailing_queue_errored_mail_list( $ml_id );
+												},
+											),
+										)
+									);
+								}
+
+								return $tabs;
+							},
+						),
+						array(
+							'subpage'  => true,
+							'id'       => 'mailinggroup_maillog',
+							'settings' => array(
+								'name'       => 'Log des emails sortants',
+								'menu_title' => 'Logs',
+								'capability' => 'read_mailing_group',
+								'menu_icon'  => 'dashicons-text-page',
+							),
+							'options'  => array(),
+							'tabs'     => function () {
+								$tabs = array();
+								$mls  = AmapressMailingGroup::getAll();
+								usort( $mls, function ( $a, $b ) {
+									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
+								} );
+								foreach ( $mls as $ml ) {
+									$ml_id                                            = $ml->ID;
+									$tabs[ $ml->getName() . amapress__( ' - Logs' ) ] = array(
+										'id'      => 'mailgrp-maillog-tab-' . $ml_id,
+										'desc'    => '',
+										'options' => array(
+											array(
+												'id'     => 'mailgrp-maillog-' . $ml_id,
+												'name'   => 'Logs',
+												'bare'   => true,
+												'type'   => 'custom',
+												'custom' => function () use ( $ml_id ) {
+													return amapress_mailing_queue_logged_mail_list( $ml_id );
 												},
 											),
 										)

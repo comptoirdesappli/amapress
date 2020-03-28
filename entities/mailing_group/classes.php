@@ -176,6 +176,10 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->getCustom( 'amapress_mailing_group_smtp_host' );
 	}
 
+	public function getSmtpMaxMailsPerHour() {
+		return $this->getCustom( 'amapress_mailing_group_smtp_max_per_hour' );
+	}
+
 	public function getSmtpPort() {
 		return $this->getCustomAsInt( 'amapress_mailing_group_smtp_port', 25 );
 	}
@@ -665,7 +669,8 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	private function sendMail( $clean_from, $from, $to, $cc, $subject, $body, $headers ) {
-		if ( ! empty( $cc ) ) {
+		$is_ext_smtp = ! empty( $this->getSmtpHost() );
+		if ( ! $is_ext_smtp && ! empty( $cc ) ) {
 			$headers[] = 'Cc: ' . $cc;
 		}
 		if ( empty( $clean_from ) ) {
@@ -674,7 +679,9 @@ class AmapressMailingGroup extends TitanEntity {
 		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
 		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
 
-		$headers[] = 'Bcc: ' . implode( ',', array_unique( $members_emails ) );
+		if ( ! $is_ext_smtp ) {
+			$headers[] = 'Bcc: ' . implode( ',', array_unique( $members_emails ) );
+		}
 		$headers   = array_filter( $headers, function ( $h ) {
 			return 0 !== strpos( $h, 'From' );
 		} );
@@ -722,7 +729,24 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 		$body['ml_grp_id'] = $this->ID;
 
-		return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
+		if ( $is_ext_smtp ) {
+			$res = false;
+			foreach ( $members_emails as $members_email ) {
+				$local_headers = array_merge( $headers, [
+					'Bcc: ' . $members_email
+				] );
+				$res           = $res | wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $local_headers, $body['attachments'] );
+			}
+			if ( ! $is_ext_smtp && ! empty( $cc ) ) {
+				$headers[] = 'Cc: ' . $cc;
+
+				$res = $res | wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
+			}
+
+			return $res;
+		} else {
+			return wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
+		}
 	}
 
 	public function resendModerationMail( $msg_id ) {
