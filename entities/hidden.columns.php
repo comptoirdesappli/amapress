@@ -15,7 +15,7 @@ add_filter( 'default_hidden_columns', function ( $hidden, $screen ) {
 	} elseif ( 'users' == $screen->id ) {
 		$pt = 'user';
 	} else {
-		return $hidden;
+		return apply_filters( "amapress_{$screen->id}_default_hidden_columns", $hidden, $screen );
 	}
 
 	$fields     = AmapressEntities::getPostTypeFields( $pt );

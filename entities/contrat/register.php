@@ -35,28 +35,29 @@ function amapress_can_renew_same_period_contrat_instance( $post_or_user ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_contrat' );
 function amapress_register_entities_contrat( $entities ) {
 	$entities['contrat']          = array(
-		'singular'                => amapress__( 'Production' ),
-		'plural'                  => amapress__( 'Productions' ),
-		'public'                  => true,
-		'thumb'                   => true,
-		'editor'                  => true,
-		'special_options'         => array(),
-		'show_in_menu'            => false,
-		'slug'                    => 'contrats',
-		'custom_archive_template' => true,
-		'menu_icon'               => 'flaticon-note',
-		'default_orderby'         => 'post_title',
-		'default_order'           => 'ASC',
-		'views'                   => array(
+		'singular'                 => amapress__( 'Production' ),
+		'plural'                   => amapress__( 'Productions' ),
+		'public'                   => true,
+		'thumb'                    => true,
+		'editor'                   => true,
+		'special_options'          => array(),
+		'show_in_menu'             => false,
+		'slug'                     => 'contrats',
+		'custom_archive_template'  => true,
+		'menu_icon'                => 'flaticon-note',
+		'default_orderby'          => 'post_title',
+		'default_order'            => 'ASC',
+		'other_def_hidden_columns' => array( 'amps_lo' ),
+		'views'                    => array(
 			'remove'  => array( 'mine' ),
 			'exp_csv' => true,
 		),
-		'groups'                  => [
+		'groups'                   => [
 			'Producteur' => [
 				'context' => 'side',
 			],
 		],
-		'edit_header'             => function ( $post ) {
+		'edit_header'              => function ( $post ) {
 			$contrat = AmapressContrat::getBy( $post );
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getProducteur() ) ) {

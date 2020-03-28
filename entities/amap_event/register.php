@@ -9,32 +9,33 @@ function amapress_register_entities_amap_event( $entities ) {
 	$entities['amap_event'] = array(
 		'singular'           => amapress__( 'Evènement' ),
 		'plural'             => amapress__( 'Evènements' ),
-		'public'             => true,
-		'thumb'              => true,
-		'editor'             => true,
-		'comments'           => true,
-		'public_comments'    => false,
-		'logged_or_public'   => true,
-		'special_options'    => array(),
-		'show_in_menu'       => false,
-		'show_in_nav_menu'   => false,
-		'slug'               => 'evenements',
-		'menu_icon'          => 'dashicons-groups',
-		'redirect_archive'   => 'amapress_redirect_agenda',
-		'default_orderby'    => 'amapress_amap_event_date',
-		'default_order'      => 'ASC',
-		'show_admin_bar_new' => true,
-		'groups'             => array(
+		'public'                   => true,
+		'thumb'                    => true,
+		'editor'                   => true,
+		'comments'                 => true,
+		'public_comments'          => false,
+		'logged_or_public'         => true,
+		'special_options'          => array(),
+		'show_in_menu'             => false,
+		'show_in_nav_menu'         => false,
+		'slug'                     => 'evenements',
+		'menu_icon'                => 'dashicons-groups',
+		'redirect_archive'         => 'amapress_redirect_agenda',
+		'default_orderby'          => 'amapress_amap_event_date',
+		'default_order'            => 'ASC',
+		'other_def_hidden_columns' => array( 'amps_lo', 'comments', 'taxonomy-amps_amap_event_category' ),
+		'show_admin_bar_new'       => true,
+		'groups'                   => array(
 			'Visibilité' => [
 				'context' => 'side',
 			],
 		),
-		'views'              => array(
+		'views'                    => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_amap_event_views',
 			'exp_csv' => true,
 		),
-		'edit_header'        => function ( $post ) {
+		'edit_header'              => function ( $post ) {
 			$event = AmapressAmap_event::getBy( $post, true );
 			if ( $event ) {
 				if ( 'lieu_externe' == $event->getType() ) {
@@ -48,7 +49,7 @@ function amapress_register_entities_amap_event( $entities ) {
 			}
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
-		'fields'             => array(
+		'fields'                   => array(
 			'public'      => array(
 				'desc'  => 'Publique ?',
 				'group' => 'Visibilité',
@@ -110,21 +111,23 @@ function amapress_register_entities_amap_event( $entities ) {
 					),
 					'lieu_externe' => array(
 						'lieu_externe_nom'           => array(
-							'name'       => amapress__( 'Lieu ext.' ),
-							'type'       => 'text',
-							'desc'       => 'Lieu externe',
-							'group'      => '2/ Emplacement',
-							'searchable' => true,
-							'required'   => true,
+							'name'           => amapress__( 'Lieu ext.' ),
+							'type'           => 'text',
+							'desc'           => 'Lieu externe',
+							'group'          => '2/ Emplacement',
+							'searchable'     => true,
+							'required'       => true,
+							'col_def_hidden' => true,
 						),
 						'lieu_externe_adresse'       => array(
-							'name'         => amapress__( 'Adresse ext.' ),
-							'type'         => 'address',
-							'use_as_field' => true,
-							'desc'         => 'Adresse',
-							'group'        => '2/ Emplacement',
-							'searchable'   => true,
-							'required'     => true,
+							'name'           => amapress__( 'Adresse ext.' ),
+							'type'           => 'address',
+							'use_as_field'   => true,
+							'desc'           => 'Adresse',
+							'group'          => '2/ Emplacement',
+							'searchable'     => true,
+							'required'       => true,
+							'col_def_hidden' => true,
 						),
 						'lieu_externe_acces'         => array(
 							'name'        => amapress__( 'Accès' ),

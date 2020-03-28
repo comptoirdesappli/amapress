@@ -11,19 +11,20 @@ function amapress_is_current_user_producteur( $post_id = null ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_producteur' );
 function amapress_register_entities_producteur( $entities ) {
 	$entities['producteur'] = array(
-		'singular'                => amapress__( 'Producteur' ),
-		'plural'                  => amapress__( 'Producteurs' ),
-		'public'                  => true,
-		'editor'                  => true,
-		'thumb'                   => true,
-		'slug'                    => amapress__( 'producteurs' ),
-		'menu_icon'               => 'flaticon-tractor',
-		'show_in_menu'            => false,
-		'quick_edit'              => false,
-		'custom_archive_template' => true,
-		'default_orderby'         => 'post_title',
-		'default_order'           => 'ASC',
-		'row_actions'             => array(
+		'singular'                 => amapress__( 'Producteur' ),
+		'plural'                   => amapress__( 'Producteurs' ),
+		'public'                   => true,
+		'editor'                   => true,
+		'thumb'                    => true,
+		'slug'                     => amapress__( 'producteurs' ),
+		'menu_icon'                => 'flaticon-tractor',
+		'show_in_menu'             => false,
+		'quick_edit'               => false,
+		'custom_archive_template'  => true,
+		'default_orderby'          => 'post_title',
+		'default_order'            => 'ASC',
+		'other_def_hidden_columns' => array( 'amps_lo' ),
+		'row_actions'              => array(
 			'relocate' => array(
 				'label'     => 'Géolocaliser',
 				'condition' => function ( $user_id ) {
@@ -34,16 +35,16 @@ function amapress_register_entities_producteur( $entities ) {
 				'confirm'   => true,
 			),
 		),
-		'views'                   => array(
+		'views'                    => array(
 			'remove'  => array( 'mine' ),
 			'exp_csv' => true,
 		),
-		'groups'                  => array(
+		'groups'                   => array(
 			'Infos' => [
 				'context' => 'side',
 			],
 		),
-		'edit_header'             => function ( $post ) {
+		'edit_header'              => function ( $post ) {
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				$producteur = AmapressProducteur::getBy( $post );
 				if ( empty( $producteur->getUser() ) ) {

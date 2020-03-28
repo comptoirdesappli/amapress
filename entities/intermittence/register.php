@@ -146,7 +146,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				}
 			),
 			'adh_message'        => array(
-				'name'       => amapress__( 'Message aux repreneurs' ),
+				'name'       => amapress__( 'Message au repreneur' ),
 				'type'       => 'readonly',
 				'desc'       => 'Message',
 				'searchable' => true,

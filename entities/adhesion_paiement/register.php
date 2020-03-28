@@ -309,3 +309,21 @@ add_action( 'init', function () {
 		wp_redirect_and_exit( add_query_arg( 'amapress_contrat', 'active' ) );
 	}
 } );
+
+add_filter( 'amapress_gestion-adhesions_page_adhesion_paiements_default_hidden_columns', function ( $hidden ) {
+	return array_merge( $hidden, [
+		'amapress_user_no_renew',
+		'amapress_user_no_renew_reason',
+		'amapress_user_last_login',
+		'amapress_user_adresse',
+		'amapress_user_hidaddr',
+		'amapress_user_telephone2',
+		'amapress_user_telephone3',
+		'amapress_user_telephone4',
+		'amapress_user_co-adherent-1',
+		'amapress_user_co-adherent-2',
+		'amapress_user_co-adherent-3',
+		'amapress_user_co-adherents',
+		'amapress_user_co-adherents-infos',
+	] );
+} );

@@ -15,23 +15,24 @@ function amapress_register_entities_panier( $entities ) {
 		'show_in_nav_menu' => false,
 		'editor'           => false,
 		'title'            => false,
-		'title_format'     => 'amapress_panier_title_formatter',
-		'slug_format'      => 'from_title',
-		'slug'             => amapress__( 'paniers' ),
-		'redirect_archive' => 'amapress_redirect_agenda',
-		'menu_icon'        => 'fa-menu fa-shopping-basket',
-		'views'            => array(
+		'title_format'             => 'amapress_panier_title_formatter',
+		'slug_format'              => 'from_title',
+		'slug'                     => amapress__( 'paniers' ),
+		'redirect_archive'         => 'amapress_redirect_agenda',
+		'menu_icon'                => 'fa-menu fa-shopping-basket',
+		'views'                    => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_panier_views',
 		),
-		'groups'           => [
+		'groups'                   => [
 			'Modification' => [
 				'context' => 'side',
 			]
 		],
-		'default_orderby'  => 'amapress_panier_date',
-		'default_order'    => 'ASC',
-		'fields'           => array(
+		'default_orderby'          => 'amapress_panier_date',
+		'default_order'            => 'ASC',
+		'other_def_hidden_columns' => array( 'amps_lo', 'comments' ),
+		'fields'                   => array(
 			'date'              => array(
 				'name'       => amapress__( 'Livraison du panier' ),
 				'type'       => 'date',
@@ -78,14 +79,15 @@ function amapress_register_entities_panier( $entities ) {
 				}
 			),
 			'produits_selected' => array(
-				'name'         => amapress__( 'Produits associés' ),
-				'type'         => 'select-posts',
-				'post_type'    => AmapressProduit::INTERNAL_POST_TYPE,
-				'desc'         => 'Produits associés aux paniers',
-				'multiple'     => true,
-				'tags'         => true,
-				'autocomplete' => true,
-				'group'        => '2/ Contenu',
+				'name'           => amapress__( 'Produits associés' ),
+				'type'           => 'select-posts',
+				'post_type'      => AmapressProduit::INTERNAL_POST_TYPE,
+				'desc'           => 'Produits associés aux paniers',
+				'multiple'       => true,
+				'tags'           => true,
+				'autocomplete'   => true,
+				'group'          => '2/ Contenu',
+				'col_def_hidden' => true,
 			),
 //			'produits'         => array(
 //				'name'   => amapress__( 'Panier' ),
