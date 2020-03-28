@@ -452,6 +452,24 @@ class AmapressMailingGroup extends TitanEntity {
 					$is_site_member = false !== get_user_by( 'email', $mail->fromAddress );
 					if ( ! $is_site_member ) {
 						if ( preg_match( '/^(mailer-daemon|postmaster|hostmaster|abuse|junk|sympa|listserv|majordomo|smartlist|mailman)@/i', $mail->fromAddress ) ) {
+							global $phpmailer;
+							if ( ! ( $phpmailer instanceof PHPMailer ) ) {
+								require_once ABSPATH . WPINC . '/class-phpmailer.php';
+								require_once ABSPATH . WPINC . '/class-smtp.php';
+								$phpmailer = new PHPMailer( true );
+							}
+							amapress_wp_mail( get_option( 'admin_email' ),
+								'Envoi en rejet sur la liste ' . $this->getName(),
+								wpautop( "Bonjour,\n\n Un mail de rejet par un destinataire a été reçu pour la liste " . $this->getName()
+								         . ":\n------\nSujet: $subject\n" . $phpmailer->html2text( $content ) . "\n------\n\n" .
+								         get_bloginfo( 'name' ) ),
+								'', [
+									[
+										'name'   => 'email.eml',
+										'inline' => false,
+										'file'   => $eml_file
+									]
+								] );
 							$res = true;
 						} else if ( 'moderate' == $unk_action && ( empty( $bl_regex ) || ! preg_match( "/$bl_regex/", $mail->fromAddress ) ) ) {
 							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, true );
