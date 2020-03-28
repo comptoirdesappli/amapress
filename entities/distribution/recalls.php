@@ -453,23 +453,27 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 
 			$replacements = [];
 
-			$dt_options                             = array(
-				'paging'       => false,
-				'init_as_html' => true,
-				'no_script'    => true,
-				'bSort'        => false,
-				'empty_desc'   => 'Pas de livraison',
-			);
-			$tbl_style                              = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
-			$replacements['livraison_details_prix'] = $tbl_style . amapress_get_datatable(
-					'dist-recap-' . $dist->ID,
-					$columns_with_price, $data,
-					$dt_options );
-			$replacements['livraison_details']      = $tbl_style . amapress_get_datatable(
-					'dist-recap-' . $dist->ID,
-					$columns_no_price, $data,
-					$dt_options );
-
+			if ( empty( $data ) ) {
+				$replacements['livraison_details_prix'] = 'Vous n\'avez pas de produit à cette livraison';
+				$replacements['livraison_details']      = 'Vous n\'avez pas de produit à cette livraison';
+			} else {
+				$dt_options                             = array(
+					'paging'       => false,
+					'init_as_html' => true,
+					'no_script'    => true,
+					'bSort'        => false,
+					'empty_desc'   => 'Pas de livraison',
+				);
+				$tbl_style                              = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+				$replacements['livraison_details_prix'] = $tbl_style . amapress_get_datatable(
+						'dist-recap-' . $dist->ID,
+						$columns_with_price, $data,
+						$dt_options );
+				$replacements['livraison_details']      = $tbl_style . amapress_get_datatable(
+						'dist-recap-' . $dist->ID,
+						$columns_no_price, $data,
+						$dt_options );
+			}
 			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $user_ids ),
 				"Amapiens de " . $dist->getTitle(), "distribution" );
 			$subject      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
