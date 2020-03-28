@@ -192,12 +192,17 @@ function amapress_get_paniers_intermittents_table(
 		);
 	}
 
-	$ahs_by_date = array_group_by( $adhs,
-		function ( $a ) {
+	$allow_partial_exchange = Amapress::getOption( 'allow_partial_exchange' );
+	$ahs_by_date            = array_group_by( $adhs,
+		function ( $a ) use ( $allow_partial_exchange ) {
+			if ( $allow_partial_exchange ) {
+				return $a->ID;
+			}
+
 			/** @var AmapressIntermittence_panier $a */
 			return "{$a->getDate()}-{$a->getAdherent()->ID}-{$a->getRealLieu()->ID}";
 		} );
-	$data        = array();
+	$data                   = array();
 	foreach ( $ahs_by_date as $adh ) {
 		/** @var AmapressIntermittence_panier[] $adh */
 		$ad          = $adh[0];

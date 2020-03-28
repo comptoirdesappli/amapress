@@ -328,6 +328,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 				}
 			}
 
+			$user_paniers_count = count( array_intersect( $adhesions_contrat_ids, $dist->getContratIds() ) );
 
 			$ret .= '<td>';
 			switch ( $is_intermittent ) {
@@ -336,13 +337,23 @@ function amapress_echanger_panier_shortcode( $atts ) {
 						$id  = "info_{$dist->ID}";
 						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '" style="box-sizing: border-box"></textarea><br/>';
 						$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button echange-panier" 
-						data-confirm="Etes-vous sûr de vouloir céder votre panier ?" data-action="echanger_panier" data-dist="' . $dist->ID . '" data-message="val:#' . $id . '" data-user="' . $user_id . '">' . $ceder_title . '</button></div>';
+						data-confirm="Etes-vous sûr de vouloir céder votre panier ?" data-action="echanger_panier" data-dist="' . $dist->ID . '" data-message="val:#' . $id . '" data-user="' . $user_id . '">' . $ceder_title . '</button>';
+						if ( Amapress::getOption( 'allow_partial_exchange' )
+						     && $user_paniers_count > 1 ) {
+							$ret .= '&#xA0;';
+							$ret .= Amapress::makeButtonLink(
+								$dist->getPermalink() . '#inter_partial_exchanges',
+								'Faire un échange partiel',
+								true, true, 'btn btn-default'
+							);
+						}
+						$ret .= '</div>';
 					} else {
 						$ret .= '<span class="echange-closed">Cessions de paniers closes</span>';
 					}
 					break;
 				case AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT:
-					$ret .= '<span class="repreneurè-waiting">Repreneur(s) en attente de validation</span>';
+					$ret .= '<span class="repreneur-waiting">Repreneur(s) en attente de validation</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'to_exchange':
@@ -357,6 +368,14 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					$ret .= '<span class="echange-done">Cession effectuée</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
+			}
+			if ( Amapress::getOption( 'allow_partial_exchange' ) && $can_subscribe ) {
+				//inter_partial_exchanges
+				echo '<br/>' . Amapress::makeButtonLink(
+						$dist->getPermalink() . '#inter_partial_exchanges',
+						'Faire un échange partiel',
+						true, true
+					);
 			}
 			$ret .= '</td>';
 
