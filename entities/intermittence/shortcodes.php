@@ -369,6 +369,14 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					$ret .= $manage_my_exchanges_link;
 					break;
 			}
+			if ( Amapress::getOption( 'allow_partial_exchange' ) && $can_subscribe ) {
+				//inter_partial_exchanges
+				echo '<br/>' . Amapress::makeButtonLink(
+						$dist->getPermalink() . '#inter_partial_exchanges',
+						'Faire un échange partiel',
+						true, true
+					);
+			}
 			$ret .= '</td>';
 
 		}
