@@ -16,7 +16,7 @@ function amapress_get_custom_content_produit( $content ) {
 	$producteurs = $prod->getProducteurs();
 	echo '<h3>' . _n( 'Producteur', 'Producteurs', count( $producteurs ), 'amapress' ) . '</h3>';
 	foreach ( $producteurs as $producteur ) {
-		if ( $producteur ) {
+		if ( $producteur && $producteur->getPost() ) {
 			echo '<p><a href="' . $producteur->getPermalink() . '">' . $producteur->getTitle() . '</a></p>';
 		}
 	}
