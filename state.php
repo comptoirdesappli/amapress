@@ -678,7 +678,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'resp-distrib-amap-role',
 			'resp-visite-amap-role',
 			'resp-intermittents-amap-role',
-			'resp-amap_event-amap-role'
+			'resp-amap_event-amap-role',
+			Amapress::getOption( 'enable-gardiens-paniers' ) ? 'resp-distrib-gardien-amap-role' : ''
 		] as $option
 	) {
 		if ( ! empty( $option ) && empty( Amapress::getOption( $option ) ) ) {

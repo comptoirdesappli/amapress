@@ -277,22 +277,33 @@ function amapress_mail_to_current_user( $subject, $message, $user_id = null, Tit
 	amapress_wp_mail( implode( ',', $user->getAllEmails() ), $subject, $message, $headers, $attachments, $cc, $bcc );
 }
 
-function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $event_type = 'event', $replace_callback = null ) {
-	$subject = Amapress::getOption( "inscr-$event_type-mail-subject" );
+function amapress_mail_current_user_inscr(
+	TitanEntity $post, $user_id = null, $event_type = 'event',
+	$replace_callback = null, $mail_type = null, $reply_to = null
+) {
+	if ( empty( $mail_type ) ) {
+		$mail_type = $event_type;
+	}
+
+	$subject = Amapress::getOption( "inscr-$mail_type-mail-subject" );
 	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
 		$subject = Amapress::getOption( 'inscr-event-mail-subject' );
 	}
-	$content = Amapress::getOption( "inscr-$event_type-mail-content" );
+	$content = Amapress::getOption( "inscr-$mail_type-mail-content" );
 	if ( empty( $content ) || empty( trim( $content ) ) ) {
 		$content = Amapress::getOption( 'inscr-event-mail-content' );
 	}
 
 	$headers = [];
-	$term_id = Amapress::getOption( "resp-$event_type-amap-role" );
-	if ( ! empty( $term_id ) ) {
-		$emails = AmapressUser::getEmailsForAmapRole( $term_id );
-		if ( ! empty( $emails ) ) {
-			$headers[] = 'Reply-To: ' . implode( ',', $emails );
+	if ( ! empty( $reply_to ) ) {
+		$headers[] = 'Reply-To: ' . $reply_to;
+	} else {
+		$term_id = Amapress::getOption( "resp-$event_type-amap-role" );
+		if ( ! empty( $term_id ) ) {
+			$emails = AmapressUser::getEmailsForAmapRole( $term_id );
+			if ( ! empty( $emails ) ) {
+				$headers[] = 'Reply-To: ' . implode( ',', $emails );
+			}
 		}
 	}
 
@@ -304,23 +315,39 @@ function amapress_mail_current_user_inscr( TitanEntity $post, $user_id = null, $
 	amapress_mail_to_current_user( $subject, $content, $user_id, $post, [], null, null, $headers );
 }
 
-function amapress_mail_current_user_desinscr( TitanEntity $post, $user_id = null, $event_type = 'event' ) {
-	$subject = Amapress::getOption( "desinscr-$event_type-mail-subject" );
+function amapress_mail_current_user_desinscr(
+	TitanEntity $post, $user_id = null, $event_type = 'event',
+	$replace_callback = null, $mail_type = null, $reply_to = null
+) {
+	if ( empty( $mail_type ) ) {
+		$mail_type = $event_type;
+	}
+
+	$subject = Amapress::getOption( "desinscr-$mail_type-mail-subject" );
 	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
 		$subject = Amapress::getOption( 'desinscr-event-mail-subject' );
 	}
-	$content = Amapress::getOption( "desinscr-$event_type-mail-content" );
+	$content = Amapress::getOption( "desinscr-$mail_type-mail-content" );
 	if ( empty( $content ) || empty( trim( $content ) ) ) {
 		$content = Amapress::getOption( 'desinscr-event-mail-content' );
 	}
 
 	$headers = [];
-	$term_id = Amapress::getOption( "resp-$event_type-amap-role" );
-	if ( ! empty( $term_id ) ) {
-		$emails = AmapressUser::getEmailsForAmapRole( $term_id );
-		if ( ! empty( $headers ) ) {
-			$headers[] = 'Reply-To: ' . implode( ',', $emails );
+	if ( ! empty( $reply_to ) ) {
+		$headers[] = 'Reply-To: ' . $reply_to;
+	} else {
+		$term_id = Amapress::getOption( "resp-$event_type-amap-role" );
+		if ( ! empty( $term_id ) ) {
+			$emails = AmapressUser::getEmailsForAmapRole( $term_id );
+			if ( ! empty( $emails ) ) {
+				$headers[] = 'Reply-To: ' . implode( ',', $emails );
+			}
 		}
+	}
+
+	if ( $replace_callback && is_callable( $replace_callback, false ) ) {
+		$subject = call_user_func( $replace_callback, $subject, $user_id, $post );
+		$content = call_user_func( $replace_callback, $content, $user_id, $post );
 	}
 
 	amapress_mail_to_current_user( $subject, $content, $user_id, $post, [], null, null, $headers );

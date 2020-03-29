@@ -636,6 +636,51 @@ line-height: 1.1;
 			) );
 	}
 
+
+	if ( Amapress::getOption( 'enable-gardiens-paniers' ) && ! empty( $dist->getPaniersGarde() ) ) {
+		if ( ! $for_pdf ) {
+			echo '<br/>';
+		}
+		echo '<h3>* Garde(s) de panier(s)</h3>';
+		$col_gardiens  = array(
+			array(
+				'title' => 'Gardien',
+				'data'  => 'gardien'
+			),
+			array(
+				'title' => 'Amapien',
+				'data'  => 'amapien'
+			),
+			array(
+				'title' => 'Paniers',
+				'data'  => 'paniers'
+			),
+		);
+		$data_gardiens = [];
+		foreach ( $dist->getGardiensIds() as $gardien_id ) {
+			$gardien = AmapressUser::getBy( $gardien_id );
+			foreach ( $dist->getGardiensPaniersAmapiensIds( $gardien_id ) as $amapien_id ) {
+				$amapien         = AmapressUser::getBy( $amapien_id );
+				$data_gardiens[] = [
+					'gardien' => $gardien->getSortableDisplayName() . '(' . $gardien->getTelTo( true, false, false, ',' ) . ')',
+					'amapien' => $amapien->getSortableDisplayName() . '(' . $amapien->getTelTo( true, false, false, ',' ) . ')',
+					'paniers' => $dist->getPaniersDescription( $amapien_id ),
+				];
+			}
+		}
+		amapress_echo_datatable( 'gardes-paniers',
+			$col_gardiens, $data_gardiens,
+			array(
+				'paging'       => false,
+				'searching'    => false,
+				'nowrap'       => false,
+				'responsive'   => false,
+				'init_as_html' => true,
+				'no_script'    => $for_pdf,
+			)
+		);
+	}
+
 	if ( Amapress::toBool( Amapress::getOption( 'liste-emargement-show-lieu-instructions' ) ) ) {
 		$lieu = ( $dist->getLieuSubstitution() ? $dist->getLieuSubstitution() : $dist->getLieu() );
 
@@ -686,5 +731,56 @@ add_action( 'amapress_do_query_action_distribution_liste-emargement-excel', func
 		'</div>',
 		strtolower( sanitize_file_name( 'liste-emargement-' . $dist->getTitle() . '.xlsx' ) ),
 		'Liste d\'émargement - ' . $dist->getTitle() );
+	die();
+} );
+
+
+add_action( 'wp_ajax_desinscrire_garde', function () {
+	$dist_id    = intval( $_POST['dist'] );
+	$gardien_id = intval( $_POST['gardien'] );
+	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$is_current = ( amapress_current_user_id() == $user_id );
+	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+	switch ( $dist->faireGarder( $user_id, $gardien_id, false, false,
+		isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
+		case 'not_inscr':
+			echo '<p class="error">Non gardé</p>';
+			break;
+		case 'ok':
+			echo '<p class="success">Désaffectation du gardien de paniers prise en compte</p>';
+			break;
+	}
+	die();
+} );
+add_action( 'wp_ajax_inscrire_garde', function () {
+	$dist_id    = intval( $_POST['dist'] );
+	$gardien_id = intval( $_POST['gardien'] );
+	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$is_current = amapress_current_user_id() == $user_id;
+	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
+	                          || amapress_can_access_admin()
+	                          || AmapressDistributions::isCurrentUserResponsableThisWeek()
+	                          || AmapressDistributions::isCurrentUserResponsableNextWeek()
+		) ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+	switch ( $dist->faireGarder( $user_id, $gardien_id, true, false,
+		isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
+		case 'already_in_list':
+			echo '<p class="error">Panier(s) déjà gardé(s)</p>';
+			break;
+		case 'ok':
+			echo '<p class="success">Garde de panier(s) prise en compte</p>';
+			break;
+	}
 	die();
 } );

@@ -687,6 +687,14 @@ jQuery(function($) {
 		}
 	}
 
+	public static function distanceFormatMeter( $lat1, $lon1, $lat2, $lon2 ) {
+		$dist = self::distance( $lat1, $lon1, $lat2, $lon2, 'K' );
+		if ( $dist < 1 ) {
+			return intval( $dist * 1000 ) . 'm';
+		} else {
+			return round( $dist, 1 ) . 'km';
+		}
+	}
 	public static function distance( $lat1, $lon1, $lat2, $lon2, $unit ) {
 		$theta = $lon1 - $lon2;
 		$dist  = sin( deg2rad( $lat1 ) ) * sin( deg2rad( $lat2 ) ) + cos( deg2rad( $lat1 ) ) * cos( deg2rad( $lat2 ) ) * cos( deg2rad( $theta ) );

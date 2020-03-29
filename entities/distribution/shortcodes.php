@@ -131,7 +131,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'show_contrats_count'      => 'false',
 		'inscr_all_distrib'        => 'false',
 		'allow_resp_dist_manage'   => 'false',
-		'allow_gardiens'           => 'false',
+		'allow_gardiens'           => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
 		'manage_all_subscriptions' => 'false',
 		'column_date_width'        => '5em',
 		'key'                      => '',
@@ -553,7 +553,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 						$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-gardien="T data-dist="' . $dist->ID . '">Inscrire gardien</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-gardien="T" data-dist="' . $dist->ID . '">Inscrire gardien</button>
 </div>';
 						if ( ! is_admin() ) {
 							$inscr_another .= '</form>';
@@ -562,20 +562,21 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					}
 
 					$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
-					$missing    = '';
+					$info       = '';
 					if ( ! $for_pdf ) {
-						if ( ! in_array( amapress_current_user_id(), $dist->getGardiensIds() ) && $can_subscribe ) {
-							$missing = $inscr_self;
-						} else if ( empty( $dist->getGardiensIds() ) ) {
-							$missing = "<span class='distrib-resp-missing'>0 gardien</span>";
+						if ( ! ( ! in_array( amapress_current_user_id(), $dist->getGardiensIds() ) && $can_subscribe ) ) {
+							$inscr_self = '';
+						}
+						if ( empty( $dist->getGardiensIds() ) ) {
+							$info = "<span class='distrib-resp-missing'>0 gardien</span>";
 						} else {
-							$missing = '<span>' . count( $dist->getGardiensIds() ) . ' gardien(s)</span>';
+							$info .= '<a href="' . $dist->getPermalink() . '" target="_blank">' . count( $dist->getGardiensIds() ) . ' gardien(s)</a>';
 						}
 					}
 					if ( $is_user_part_of ) {
-						$ret .= "<td class='$colspan_cls incr-list-resp incr-missing'>$missing$inscr_another</td>";
+						$ret .= "<td class='$colspan_cls incr-list-resp incr-missing'>$info$inscr_self$inscr_another</td>";
 					} else {
-						$ret .= "<td class='$colspan_cls incr-list-resp incr-not-part'>$inscr_another</td>";
+						$ret .= "<td class='$colspan_cls incr-list-resp incr-not-part'>$info$inscr_another</td>";
 					}
 				}
 
@@ -788,6 +789,13 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 				echo '<p class="error">Vous n\'êtes pas inscrit</p>';
 			} else {
 				echo '<p class="error">Non inscrit</p>';
+			}
+			break;
+		case 'has_gardes':
+			if ( $is_current ) {
+				echo '<p class="error">Des amapiens vous ont confiés des paniers à cette distributions</p>';
+			} else {
+				echo '<p class="error">Gardes de paniers en cours</p>';
 			}
 			break;
 		case 'ok':

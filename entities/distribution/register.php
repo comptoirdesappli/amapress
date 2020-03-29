@@ -543,5 +543,8 @@ function amapress_gardiens_paniers_map( $dist_id, $show_email = true, $show_tel 
 		);
 	}
 
+	if ( empty( $markers ) ) {
+		return '';
+	}
 	return amapress_generate_map( $markers, 'map' );
 }
