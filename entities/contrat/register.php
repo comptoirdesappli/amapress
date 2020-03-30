@@ -298,18 +298,18 @@ function amapress_register_entities_contrat( $entities ) {
 				'show_on'   => 'list',
 				'confirm'   => true,
 			),
-			'renew_same_period'  => array(
+			'renew_same_period' => array(
 				'label'     => 'Renouveler (même période)',
 				'condition' => 'amapress_can_renew_same_period_contrat_instance',
 				'show_on'   => 'list',
 				'confirm'   => true,
 			),
-			'clone'              => [
+			'clone'             => [
 				'label'   => 'Dupliquer',
 				'show_on' => 'list',
 				'confirm' => true,
 			],
-			'generate_contrat'   => [
+			'generate_contrat'  => [
 				'label'     => 'Générer le contrat papier (DOCX)',
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -318,20 +318,16 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
 				},
 			],
-//			'mailto_amapiens'    => [
-//				'label'     => 'Email aux amapiens',
-//				'target'    => '_blank',
+			'mailto_amapiens'   => [
+				'label'     => 'Email aux amapiens',
+				'target'    => '_blank',
 //				'confirm'   => true,
-//				'href'      => function ( $adh_id ) {
-//					$contrat = AmapressContrat_instance::getBy( $adh_id );
-//
-//					return $contrat->getMailtoAmapiens();
-//				},
-//				'condition' => function ( $adh_id ) {
-//					return TitanFrameworkOption::isOnEditScreen();
-//				},
-//				'show_on'   => 'editor',
-//			],
+				'href'      => admin_url( 'admin.php?page=amapress_messages_page' ),
+				'condition' => function ( $adh_id ) {
+					return TitanFrameworkOption::isOnEditScreen();
+				},
+				'show_on'   => 'editor',
+			],
 //			'smsto_amapiens'     => [
 //				'label'     => 'Sms aux amapiens',
 //				'target'    => '_blank',
@@ -346,7 +342,7 @@ function amapress_register_entities_contrat( $entities ) {
 //				},
 //				'show_on'   => 'editor',
 //			],
-			'show_distribs'      => [
+			'show_distribs'     => [
 				'label'   => 'Historique des distributions',
 				'target'  => '_blank',
 				'href'    => function ( $adh_id ) {

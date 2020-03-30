@@ -118,14 +118,11 @@ function amapress_get_custom_content_distribution( $content ) {
 			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">SMS aux responsables</a>';
 		}
 
-		$mailto = $dist->getMailtoAmapiens();
-		if ( ! empty( $mailto ) ) {
-			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">Email aux amapiens</a>';
-		}
-		$smsto = $dist->getSMStoAmapiens();
-		if ( ! empty( $smsto ) ) {
-			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">SMS aux amapiens</a>';
-		}
+		$btns[] = '<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_messages_page' ) . '" class="btn btn-default">Email aux amapiens</a>';
+//		$smsto  = $dist->getSMStoAmapiens();
+//		if ( ! empty( $smsto ) ) {
+//			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">SMS aux amapiens</a>';
+//		}
 	}
 	?>
 

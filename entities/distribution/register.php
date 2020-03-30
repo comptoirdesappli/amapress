@@ -72,17 +72,13 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-//			'mailto_amapiens'        => [
-//				'label'   => 'Email aux amapiens',
-//				'target'  => '_blank',
+			'mailto_amapiens'        => [
+				'label'   => 'Email aux amapiens',
+				'target'  => '_blank',
 //				'confirm' => true,
-//				'href'    => function ( $dist_id ) {
-//					$dist = AmapressDistribution::getBy( $dist_id );
-//
-//					return $dist->getMailtoAmapiens();
-//				},
-//				'show_on' => 'editor',
-//			],
+				'href'    => admin_url( 'admin.php?page=amapress_messages_page' ),
+				'show_on' => 'editor',
+			],
 //			'smsto_amapiens'         => [
 //				'label'   => 'Sms aux amapiens',
 //				'target'  => '_blank',
