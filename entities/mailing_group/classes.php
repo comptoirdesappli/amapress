@@ -424,13 +424,13 @@ class AmapressMailingGroup extends TitanEntity {
 
 				if ( ! $is_from_list ) {
 					$cc           = ''; //implode( ', ', $mail->cc );
-					$from         = ! empty( $mail->fromName ) ? "{$mail->fromName} <{$mail->fromAddress}>" : $mail->fromAddress;
+					$from         = ! empty( $mail->fromName ) ? "\"{$mail->fromName}\" <{$mail->fromAddress}>" : $mail->fromAddress;
 					$cleaned_from = '';
 					if ( self::hasRestrictiveDMARC( $mail->fromAddress ) ) {
 						$headers[]    = "X-Original-From: $from";
 						$cleaned_from = ! empty( $mail->fromName )
-							? "{$mail->fromName} <{$this->getName()}>"
-							: "{$this->getName()} <{$this->getName()}>";
+							? "\"{$mail->fromName}\" <{$this->getName()}>"
+							: "\"{$this->getName()}\" <{$this->getName()}>";
 					}
 					$date    = $mail->date;
 					$subject = $mail->subject;
@@ -711,7 +711,7 @@ class AmapressMailingGroup extends TitanEntity {
 		if ( empty( $desc ) ) {
 			$desc = $this->getSimpleName();
 		}
-		$to = "{$desc} <{$this->getName()}>";
+		$to = "\"{$desc}\" <{$this->getName()}>";
 
 		$site_url  = get_bloginfo( 'url' );
 		$headers[] = 'Return-Path: ' . $admin_email;
