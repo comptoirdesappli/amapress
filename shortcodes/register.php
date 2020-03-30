@@ -918,7 +918,7 @@ function amapress_register_shortcodes() {
 
 		$atts = shortcode_atts(
 			array(
-				'sms' => 'yes',
+				'sms' => 'no',
 			),
 			$atts );
 
@@ -967,9 +967,14 @@ function amapress_register_shortcodes() {
 			$entries[] = $li;
 		}
 		sort( $entries );
-		echo '<ul>';
-		echo implode( '', $entries );
-		echo '</ul>';
+
+		if ( empty( $entries ) ) {
+			echo '<p>Aucune mailing list et aucun Emails groupés configuré</p>';
+		} else {
+			echo '<ul class="sh-listes-diffusions" style="margin-left: 1.5em;list-style: disc">';
+			echo implode( '', $entries );
+			echo '</ul>';
+		}
 
 		return ob_get_clean();
 	},

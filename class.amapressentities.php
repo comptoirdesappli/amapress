@@ -4057,6 +4057,15 @@ Par exemple :</p>
 					),
 					'options'  => array(
 						array(
+							'id'     => 'msg_ml_lists_desc',
+							'bare'   => true,
+							'type'   => 'custom',
+							'custom' => function ( $option ) {
+								echo '<p>Vous pouvez également envoyer un mail via les listes suivantes:</p>';
+								echo do_shortcode( '[listes-diffusions]' );
+							}
+						),
+						array(
 							'id'           => 'msg_target',
 							'name'         => 'Destinataire',
 							'type'         => 'select',
