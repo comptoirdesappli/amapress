@@ -4098,6 +4098,8 @@ jQuery(function($) {
 							'name'     => 'Sujet de l\'email',
 							'type'     => 'text',
 							'required' => true,
+							'default'  => '[AMAP] ',
+							'desc'     => 'Pensez à préfixer le sujet de votre mail avec un motif du type [AMAP] ou [' . get_bloginfo( 'name' ) . '] pour être mieux identifié par les destinataires'
 						),
 						array(
 							'id'       => 'msg_content',
@@ -4105,11 +4107,11 @@ jQuery(function($) {
 							'type'     => 'editor',
 							'required' => true,
 						),
-						array(
-							'id'   => 'msg_content_for_sms',
-							'name' => 'Contenu du sms associé',
-							'type' => 'textarea',
-						),
+//						array(
+//							'id'   => 'msg_content_for_sms',
+//							'name' => 'Contenu du sms associé',
+//							'type' => 'textarea',
+//						),
 						array(
 							'type'      => 'save',
 							'save'      => 'Envoyer',

@@ -292,7 +292,7 @@ function amapress_handle_send_message() {
 
 	$subject     = $_REQUEST['amapress_msg_subject'];
 	$content     = $_REQUEST['amapress_msg_content'];
-	$content_sms = $_REQUEST['amapress_msg_content_for_sms'];
+	$content_sms = isset( $_REQUEST['amapress_msg_content_for_sms'] ) ? $_REQUEST['amapress_msg_content_for_sms'] : '';
 
 	amapress_send_message_and_record( $subject, $content, $content_sms, $opt );
 //    'target_name' => array(
