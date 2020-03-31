@@ -32,7 +32,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 			die();
 		}
 	}
-	$dist    = AmapressDistribution::getBy( $dist_id );
+	$dist = AmapressDistribution::getBy( $dist_id );
 
 	Amapress::setFilterForReferent( false );
 	$contrat_ids = array_map( function ( $c ) {
@@ -64,7 +64,11 @@ add_action( 'wp_ajax_echanger_panier', function () {
 
 	$cnt = count( $panier_ids );
 
-	if ( $cnt > 0 && amapress_echanger_panier( $panier_ids, $user_id, isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) != 'ok' ) {
+	$target_id = isset( $_REQUEST['target'] ) ? intval( $_REQUEST['target'] ) : null;
+	if ( $cnt > 0 && amapress_echanger_panier(
+		                 $panier_ids, $user_id,
+		                 isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '',
+		                 $target_id ) != 'ok' ) {
 		echo '<p class="error">Erreur lors de l\'échange du panier</p>';
 		die();
 	}
@@ -82,16 +86,26 @@ add_action( 'wp_ajax_echanger_panier', function () {
 		if ( $cnt == 0 ) {
 			echo '<p class="error">' . $user->getDisplayName() . ' n\'a pas de panier à cette distribution</p>';
 		} else if ( $cnt > 1 ) {
-			echo '<p class="success">Les paniers de ' . $user->getDisplayName() . ' ont été inscrits sur la liste des paniers à échanger</p>';
+			if ( $target_id ) {
+				$target = AmapressUser::getBy( $target_id );
+				echo '<p class="success">Les paniers de ' . esc_html( $user->getDisplayName() ) . ' ont été attribués à ' . esc_html( $target->getDisplayName() ) . '</p>';
+			} else {
+				echo '<p class="success">Les paniers de ' . esc_html( $user->getDisplayName() ) . ' ont été inscrits sur la liste des paniers à échanger</p>';
+			}
 		} else {
-			echo '<p class="success">Le panier de ' . $user->getDisplayName() . ' a été inscrit sur la liste des paniers à échanger</p>';
+			if ( $target_id ) {
+				$target = AmapressUser::getBy( $target_id );
+				echo '<p class="success">Le panier de ' . esc_html( $user->getDisplayName() ) . ' a été attribué à ' . esc_html( $target->getDisplayName() ) . '</p>';
+			} else {
+				echo '<p class="success">Le panier de ' . esc_html( $user->getDisplayName() ) . ' a été inscrit sur la liste des paniers à échanger</p>';
+			}
 		}
 	}
 
 	die();
 } );
 
-function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null ) {
+function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null, $target_user_id = null ) {
 	if ( ! amapress_is_user_logged_in() ) {
 		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 	}
@@ -141,7 +155,7 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 	$existing_paniers = AmapressPaniers::getPanierIntermittents(
 		[
 			'date'     => $panier_date,
-			'adherent' => amapress_current_user_id(),
+			'adherent' => $user_id,
 		]
 	);
 	foreach ( $existing_paniers as $p ) {
@@ -151,36 +165,62 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 		}
 	}
 
+	$my_post_meta = array(
+		'amapress_intermittence_panier_date'             => $panier_date,
+		'amapress_intermittence_panier_panier'           => $panier_ids,
+		'amapress_intermittence_panier_contrat_instance' => $contrat_instance_ids,
+		'amapress_intermittence_panier_adherent'         => $user_id,
+		'amapress_intermittence_panier_lieu'             => $lieu_id,
+		'amapress_intermittence_panier_status'           => 'to_exchange',
+		'amapress_intermittence_panier_adh_message'      => $message,
+	);
+	if ( $target_user_id ) {
+		$my_post_meta['amapress_intermittence_panier_status']    = 'exchanged';
+		$my_post_meta['amapress_intermittence_panier_repreneur'] = $target_user_id;
+	}
 	$my_post = array(
 		'post_type'    => AmapressIntermittence_panier::INTERNAL_POST_TYPE,
 		'post_content' => '',
 		'post_status'  => 'publish',
-		'meta_input'   => array(
-			'amapress_intermittence_panier_date'             => $panier_date,
-			'amapress_intermittence_panier_panier'           => $panier_ids,
-			'amapress_intermittence_panier_contrat_instance' => $contrat_instance_ids,
-			'amapress_intermittence_panier_adherent'         => amapress_current_user_id(),
-			'amapress_intermittence_panier_lieu'             => $lieu_id,
-			'amapress_intermittence_panier_status'           => 'to_exchange',
-			'amapress_intermittence_panier_adh_message'      => $message,
-		),
+		'meta_input'   => $my_post_meta,
 	);
 	$new_id  = wp_insert_post( $my_post );
 
-	amapress_send_panier_intermittent_available( $new_id );
+	if ( $target_user_id ) {
+		amapress_send_panier_intermittent_affected( $new_id );
+	} else {
+		amapress_send_panier_intermittent_available( $new_id );
+	}
 
 	return 'ok';
+}
+
+function amapress_send_panier_intermittent_affected( $intermittence_panier_id ) {
+	if ( is_a( $intermittence_panier_id, 'WP_Post' ) ) {
+		$intermittence_panier_id = $intermittence_panier_id->ID;
+	}
+	$inter = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
+
+	amapress_mail_to_current_user(
+		Amapress::getOption( 'intermittence-panier-admin-adh-mail-subject' ),
+		Amapress::getOption( 'intermittence-panier-admin-adh-mail-content' ),
+		$inter->getAdherent()->ID,
+		$inter, [], null, null,
+		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $inter->getLieuId() ) );
+
+	amapress_mail_to_current_user(
+		Amapress::getOption( 'intermittence-panier-admin-rep-mail-subject' ),
+		Amapress::getOption( 'intermittence-panier-admin-rep-mail-content' ),
+		$inter->getRepreneur()->ID,
+		$inter, [], null, null,
+		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $inter->getLieuId() ) );
 }
 
 function amapress_send_panier_intermittent_available( $intermittence_panier_id ) {
 	if ( is_a( $intermittence_panier_id, 'WP_Post' ) ) {
 		$intermittence_panier_id = $intermittence_panier_id->ID;
 	}
-	$inter = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
-//    $panier = $inter->getPanier();
-//    $dist = AmapressPaniers::getDistribution($panier->getDate(), $inter->getLieu()->ID);
-	//amapress_contrat=intermittent
-	//$intermit = amapress_prepare_message_target("post_type=amps_inter_adhe&amapress_date=active|amapress_adhesion_intermittence_user", "Les intermittents", "intermittent");
+	$inter    = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
 	$intermit = amapress_prepare_message_target_bcc( "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-panier-dispo-mail-subject' ),

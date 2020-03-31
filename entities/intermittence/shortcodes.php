@@ -202,18 +202,39 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		$user_id = Amapress::resolve_user_id( $atts['user'] );
 	}
 
+	if ( amapress_can_access_admin() ) {
+		if ( ! $for_other_users && isset( $_GET['admin_mode'] ) ) {
+			$for_other_users = true;
+		}
+		if ( ! $for_other_users ) {
+			echo '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
+					'Passer en mode Admin' ) . '</p>';
+		}
+	}
+
 	$ret = '';
 	if ( $for_other_users && $is_resp_distrib ) {
-		$users = array( '' => '--Sélectionner un amapien--' );
-		/** @var WP_User $user */
-		foreach ( get_users() as $user ) {
-			$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
-		}
-		$user_select = '<form class="echanger-panier-other-user">
-<select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default panier-echanger-other-button">Afficher l\'échange de paniers</button>
+		if ( ! empty( $_REQUEST['user_id'] ) ) {
+			$user_id = intval( $_REQUEST['user_id'] );
+			echo '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
+					'Choisir un autre amapien' ) . '</p>';
+			$amapien = AmapressUser::getBy( $user_id );
+			if ( $amapien ) {
+				echo '<h3>Paniers de ' . esc_html( $amapien->getDisplayName() ) . '</h3>';
+			}
+		} else {
+			$users = array( '' => '--Sélectionner un amapien--' );
+			/** @var WP_User $user */
+			foreach ( get_users( 'amapress_contrat=active' ) as $user ) {
+				$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+			}
+			$user_select = '<form class="echanger-panier-other-user">
+<select name="user_id" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
+<input type="hidden" name="admin_mode" value="T" />
+<button type="submit" class="btn btn-default panier-echanger-other-button">Afficher l\'échange de paniers</button>
 </form>';
-		$ret         .= $user_select;
+			$ret         .= $user_select;
+		}
 	}
 
 	$adhesions             = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id );
@@ -221,27 +242,11 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		/** @var AmapressAdhesion $a */
 		return $a->getContrat_instanceId();
 	}, $adhesions );
-//    $contrat_instances = AmapressContrats::get_active_contrat_instances();
-	$from_date = amapress_time();
-//    if ($atts['show_past']) {
-//        foreach ($contrat_instances as $contrat_instance) {
-//            if ($contrat_instance->getDate_debut() < $from_date)
-//                $from_date = $contrat_instance->getDate_debut();
-//        }
-//    }
-//    $is_current_user_resp_amap = amapress_current_user_can('responsable_amap') || amapress_current_user_can('administrator') || amapress_current_user_can('manage_distributions');
+	$from_date             = amapress_time();
 
-//    $lieux = Amapress::get_lieux();
-//    $lieux_needed_resps = array();
-//    foreach ($lieux as $lieu) {
-//        $lieux_needed_resps[$lieu->ID] = 0;
-//    }
 	$all_dists = AmapressDistribution::get_next_distributions( $from_date );
-//    if ($is_current_user_resp_amap) {
-//        $dists = $all_dists;
-//    } else {
-	$lieu_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id() );
-	$dists    = array();
+	$lieu_ids  = AmapressUsers::get_user_lieu_ids( $user_id );
+	$dists     = array();
 	/** @var AmapressDistribution $dist */
 	foreach ( $all_dists as $dist ) {
 		$dist_contrat_ids = $dist->getContratIds();
@@ -251,13 +256,6 @@ function amapress_echanger_panier_shortcode( $atts ) {
 			}
 		}
 	}
-//    $user_lieux = array();
-//    foreach ($dists as $dist) {
-//        $lieu_id = $dist->getLieuId();
-//        if ($dist->getLieuSubstitutionId() > 0)
-//            $lieu_id = $dist->getLieuSubstitutionId();
-//        if (!in_array($lieu_id, $user_lieux)) $user_lieux[] = $lieu_id;
-//    }
 
 	$ret .= '<div>';
 	$ret .= '<table class="table echange-paniers-list" width="100%">';
@@ -265,11 +263,6 @@ function amapress_echanger_panier_shortcode( $atts ) {
 	$ret .= '<tr>';
 	$ret .= '<th width="30%">Date</th>';
 	$ret .= '<th></th>';
-//    /** @var AmapressLieu_distribution $user_lieu */
-//    foreach ($user_lieux as $lieu_id) {
-//        $user_lieu = AmapressLieu_distribution::getBy($lieu_id);
-//        $ret .= '<th>' . esc_html($user_lieu->getShortName()) . '</th>';
-//    }
 	$ret .= '</tr>';
 	$ret .= '</thead>';
 
@@ -294,7 +287,11 @@ function amapress_echanger_panier_shortcode( $atts ) {
 			}
 		}
 		sort( $contrat_names );
-		$ceder_title   = count( $contrat_names ) > 1 ? 'Céder mes ' . count( $contrat_names ) . ' paniers' : 'Céder mon panier';
+		if ( $user_id != amapress_current_user_id() ) {
+			$ceder_title = count( $contrat_names ) > 1 ? 'Céder ses ' . count( $contrat_names ) . ' paniers' : 'Céder son panier';
+		} else {
+			$ceder_title = count( $contrat_names ) > 1 ? 'Céder mes ' . count( $contrat_names ) . ' paniers' : 'Céder mon panier';
+		}
 		$contrat_names = implode( ', ', $contrat_names );
 		$ret           .= '<th scope="row" width="30%">';
 		$ret           .= '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>';
@@ -305,11 +302,22 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		}
 
 		$manage_my_exchanges_link = '';
-		$manage_my_exchanges_href = Amapress::get_page_with_shortcode_href( 'amapien-paniers-intermittents', 'amps_manage_paniers_inter' );
-		if ( ! empty( $manage_my_exchanges_href ) ) {
-			$manage_my_exchanges_link = '<p><a href="' . esc_attr( $manage_my_exchanges_href ) . '">Gérer l\'échange</a></p>';
+		if ( $user_id == amapress_current_user_id() ) {
+			$manage_my_exchanges_href = Amapress::get_page_with_shortcode_href( 'amapien-paniers-intermittents', 'amps_manage_paniers_inter' );
+			if ( ! empty( $manage_my_exchanges_href ) ) {
+				$manage_my_exchanges_link = '<p><a href="' . esc_attr( $manage_my_exchanges_href ) . '">Gérer l\'échange</a></p>';
+			}
 		}
 
+		$users = array( '' => '--Sélectionner un amapien--' );
+		if ( $for_other_users ) {
+			/** @var WP_User $user */
+			foreach ( get_users() as $user ) {
+				if ( $user->ID != $user_id ) {
+					$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+				}
+			}
+		}
 
 		foreach ( $date_dists as $dist ) {
 			if ( ! in_array( $dist->getLieuId(), $lieu_ids ) ) {
@@ -321,8 +329,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 
 			$is_intermittent = 'exchangeable';
 			foreach ( AmapressPaniers::getPaniersForDist( $date ) as $panier ) {
-				$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId() );
-//                    var_dump($status);
+				$status = AmapressPaniers::isIntermittent( $panier->ID, $dist->getLieuId(), $user_id );
 				if ( ! empty( $status ) ) {
 					$is_intermittent = $status;
 				}
@@ -335,10 +342,12 @@ function amapress_echanger_panier_shortcode( $atts ) {
 				case 'exchangeable':
 					if ( $can_subscribe ) {
 						$id  = "info_{$dist->ID}";
-						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4><textarea id="' . $id . '" style="box-sizing: border-box"></textarea><br/>';
+						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">Informations</h4>';
+						$ret .= '<textarea id="' . $id . '" style="box-sizing: border-box"></textarea><br/>';
 						$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button echange-panier" 
-						data-confirm="Etes-vous sûr de vouloir céder votre panier ?" data-action="echanger_panier" data-dist="' . $dist->ID . '" data-message="val:#' . $id . '" data-user="' . $user_id . '">' . $ceder_title . '</button>';
-						if ( Amapress::getOption( 'allow_partial_exchange' )
+						data-confirm="Etes-vous sûr de vouloir céder ce panier ?" data-action="echanger_panier" 
+						data-dist="' . $dist->ID . '" data-message="val:#' . $id . '" data-user="' . $user_id . '">' . $ceder_title . '</button>';
+						if ( ! $for_other_users && Amapress::getOption( 'allow_partial_exchange' )
 						     && $user_paniers_count > 1 ) {
 							$ret .= '&#xA0;';
 							$ret .= Amapress::makeButtonLink(
@@ -346,6 +355,16 @@ function amapress_echanger_panier_shortcode( $atts ) {
 								'Faire un échange partiel',
 								true, true, 'btn btn-default'
 							);
+						}
+						if ( $for_other_users && amapress_can_access_admin() ) {
+
+							$target_select_id = 'target_user_id' . $dist->ID;
+							$ret              .= '<hr/>';
+							$ret              .= '<select id="' . $target_select_id . '" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
+							$ret              .= '<button  type="button" class="btn btn-default amapress-ajax-button echange-panier" 
+						data-confirm="Etes-vous sûr de vouloir céder ce panier à l\'amapien sélectionné ?" data-action="echanger_panier" 
+						data-dist="' . $dist->ID . '" data-target="val:#' . $target_select_id . '" 
+						data-message="val:#' . $id . '" data-user="' . $user_id . '">' . $ceder_title . ' pour le repreneur sélectionné</button>';
 						}
 						$ret .= '</div>';
 					} else {
@@ -368,14 +387,6 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					$ret .= '<span class="echange-done">Cession effectuée</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
-			}
-			if ( Amapress::getOption( 'allow_partial_exchange' ) && $can_subscribe ) {
-				//inter_partial_exchanges
-				echo '<br/>' . Amapress::makeButtonLink(
-						$dist->getPermalink() . '#inter_partial_exchanges',
-						'Faire un échange partiel',
-						true, true
-					);
 			}
 			$ret .= '</td>';
 

@@ -2204,7 +2204,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 									)
 								),
-								'Email - Panier annulation - repreneur'     => array(
+								'Email - Panier annulation - repreneur'                 => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -2242,6 +2242,52 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier-desc%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Email - Panier reprise - définie par Responsable AMAP' => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name' => 'Email à l\'amapien',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-admin-adh-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Attribution de votre panier %%post:panier%% à %%post:repreneur-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-admin-adh-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc%%) a été attribué par un responsable de l\'AMAP à %%post:repreneur-nom%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'name' => 'Email à l\'amapien repreneur',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'intermittence-panier-admin-rep-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Attribution de %%post:panier%% de %%post:adherent-nom%%',
+										),
+										array(
+											'id'      => 'intermittence-panier-admin-rep-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\nUn responsable de l\'AMAP vous a attribué la reprise du panier de %%post:adherent-nom%% (%%post:adherent-coords%%) : (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
 										),
