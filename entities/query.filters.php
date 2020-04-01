@@ -1782,6 +1782,17 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 					$contrat_ids = array();
 				}
 			}
+			if ( isset( $uqi->query_vars['amapress_subcontrat'] ) ) {
+				$amapress_subcontrat = $uqi->query_vars['amapress_subcontrat'];
+				$contrat_ids         = array_filter( $contrat_ids, function ( $contrat_id ) use ( $amapress_subcontrat ) {
+					$contrat = AmapressContrat_instance::getBy( $contrat_id );
+					if ( ! $contrat ) {
+						return false;
+					}
+
+					return 0 === strcasecmp( trim( $amapress_subcontrat ), trim( $contrat->getSubName() ) );
+				} );
+			}
 			$contrat_ids = amapress_prepare_in_sql( $contrat_ids );
 			$user_ids    = array();
 			foreach (
@@ -1920,6 +1931,9 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 add_filter( 'users_list_table_query_args', function ( $args ) {
 	if ( isset( $_GET['amapress_contrat'] ) ) {
 		$args['amapress_contrat'] = $_GET['amapress_contrat'];
+	}
+	if ( isset( $_GET['amapress_subcontrat'] ) ) {
+		$args['amapress_subcontrat'] = $_GET['amapress_subcontrat'];
 	}
 	if ( isset( $_GET['amapress_lieu'] ) ) {
 		$args['amapress_lieu'] = $_GET['amapress_lieu'];

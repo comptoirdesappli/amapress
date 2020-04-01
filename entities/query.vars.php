@@ -21,6 +21,7 @@ function amapress_add_query_vars( $query_vars ) {
 	$query_vars[] = 'amapress_contrat_inst';
 	$query_vars[] = 'amapress_contrat_qt';
 	$query_vars[] = 'amapress_contrat';
+	$query_vars[] = 'amapress_subcontrat';
 	$query_vars[] = 'amapress_coadherents';
 	$query_vars[] = 'amapress_post';
 	$query_vars[] = 'amapress_status';
