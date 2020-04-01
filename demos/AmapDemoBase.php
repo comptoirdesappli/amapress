@@ -264,6 +264,11 @@ class AmapDemoBase {
 			echo "<p>Updating all post titles and slug</p>";
 			amapress_update_all_posts();
 
+			foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
+				AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
+				AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+			}
+
 			echo "<p>Committing import</p>";
 			self::commitTransaction();
 
