@@ -2134,6 +2134,7 @@ class Amapress {
 		$generated_ids      = [];
 		$around_address_lat = Amapress::get_lieux()[0]->getAdresseLatitude();
 		$around_address_lng = Amapress::get_lieux()[0]->getAdresseLongitude();
+		$relative_time      = 0;
 
 		$user_roles_terms = AmapDemoBase::dumpTerms( AmapressUser::AMAP_ROLE );
 		$produits_terms   = AmapDemoBase::dumpTerms( AmapressProduit::CATEGORY );
@@ -2143,15 +2144,15 @@ class Amapress {
 		$ret .= '$this->createTerms(' . var_export( $produits_terms, true ) . ', \'' . AmapressProduit::CATEGORY . '\');' . "\n";
 		$ret .= '$this->createTerms(' . var_export( $recettes_terms, true ) . ', \'' . AmapressRecette::CATEGORY . '\');' . "\n";
 
-		$update_user_callback = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng, $anonymize ) {
+		$update_user_callback                          = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng, $anonymize ) {
 			if ( $anonymize ) {
 				$rnd                                     = AmapDemoBase::generateRandomAddress( $around_address_lat, $around_address_lng, 2000 );
 				$usermeta['amapress_user_long']          = ! empty( $rnd ) ? $rnd['lon'] : '';
 				$usermeta['amapress_user_lat']           = ! empty( $rnd ) ? $rnd['lat'] : '';
 				$usermeta['amapress_user_location_type'] = 'ROOFTOP';
 				$usermeta['amapress_user_adresse']       = ! empty( $rnd ) ? $rnd['address'] : '';
-				$usermeta['amapress_user_code_postal']   = ! empty( $rnd ) ? $rnd['postcode'] : '';
-				$usermeta['amapress_user_ville']         = ! empty( $rnd ) ? $rnd['city'] : '';
+				$usermeta['amapress_user_code_postal'] = ! empty( $rnd ) ? $rnd['postcode'] : '';
+				$usermeta['amapress_user_ville']       = ! empty( $rnd ) ? $rnd['city'] : '';
 			}
 			unset( $usermeta['amapress_user_co-adherents'] );
 			unset( $usermeta['amapress_user_allow_show_email'] );
@@ -2160,7 +2161,7 @@ class Amapress {
 			unset( $usermeta['amapress_user_allow_show_tel_mobile'] );
 			unset( $usermeta['amapress_user_allow_show_avatar'] );
 		};
-		$update_post_callback = function ( $post, &$postdata, &$postmeta ) {
+		$update_post_callback                          = function ( $post, &$postdata, &$postmeta ) use ( $relative_time ) {
 			if ( AmapressLieu_distribution::INTERNAL_POST_TYPE == $post['post_type'] ) {
 //'amapress_lieu_distribution_adresse
 //'amapress_lieu_distribution_code_postal
@@ -2185,6 +2186,21 @@ class Amapress {
 					}
 					$postmeta['amapress_adhesion_contrat_quantite'] = $arr2;
 				}
+				if ( ! empty( $postmeta['amapress_adhesion_panier_variables'] ) ) {
+					$rt = $relative_time;
+					if ( ! $rt ) {
+						$rt = amapress_time();
+					}
+					$new_paniers = [];
+					foreach ( $postmeta['amapress_adhesion_panier_variables'] as $k => $v ) {
+						$new_date_panier = [];
+						foreach ( $v as $kk => $vv ) {
+							$new_date_panier["posts[$kk]"] = $vv;
+						}
+						$new_paniers[ 'now+' . ( intval( $k ) - Amapress::start_of_day( $rt ) ) ] = $new_date_panier;
+					}
+					$postmeta['amapress_adhesion_panier_variables'] = $new_paniers;
+				}
 				if ( isset( $postmeta['amapress_adhesion_contrat_quantite_factors'] ) ) {
 					$arr  = $postmeta['amapress_adhesion_contrat_quantite_factors'];
 					$arr2 = [];
@@ -2200,7 +2216,6 @@ class Amapress {
 			unset( $postmeta['amapress_lieu_distribution_instructions_privee'] );
 			unset( $postmeta['amapress_lieu_distribution_contact_externe'] );
 		};
-		$relative_time        = 0;
 		$media                = [];
 
 
