@@ -1914,6 +1914,36 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
                                                    AND amps_pm_contrat.meta_value = %d)", $period->ID );
 			}
+		} elseif ( $amapress_adhesion == 'ok' ) {
+			$min_date = amapress_time();
+			$max_date = amapress_time();
+			$period   = AmapressAdhesionPeriod::getCurrent();
+			if ( ! $period ) {
+				$contrats = AmapressContrats::get_active_contrat_instances();
+				foreach ( $contrats as $c ) {
+					if ( $min_date > $c->getDate_debut() ) {
+						$min_date = $c->getDate_debut();
+					}
+					if ( $max_date < $c->getDate_fin() ) {
+						$max_date = $c->getDate_fin();
+					}
+				}
+				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
+                                                   FROM $wpdb->postmeta amps_pmach
+                                                   INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
+                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   AND amps_pmach.meta_value IS NOT NULL
+                                                   AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
+                                                   AND amps_pm_contrat.meta_value BETWEEN %d AND %d)", intval( $min_date ), intval( $max_date ) );
+			} else {
+				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
+                                                   FROM $wpdb->postmeta amps_pmach
+                                                   INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
+                                                   AND amps_pmach.meta_value IS NOT NULL
+                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
+                                                   AND amps_pm_contrat.meta_value = %d)", $period->ID );
+			}
 		}
 	}
 	$uqi->query_where .= $where;

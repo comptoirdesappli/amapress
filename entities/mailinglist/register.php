@@ -211,11 +211,37 @@ function amapress_get_mailinglist_queries() {
 		}
 	}
 
-	$ret["amapress_contrat=active"] = "Amapiens avec contrat";
+
+	$ret['all=T']                                    = 'Tous les utilisateurs enregistrés';
+	$ret["amapress_role=never_logged"]               = "Amapiens jamais connectés";
+	$ret["amapress_adhesion=ok"]                     = "Amapiens avec adhésion";
+	$ret["amapress_adhesion=nok"]                    = "Amapiens sans adhésion";
+	$ret["amapress_contrat=no&amapress_adhesion=ok"] = "Amapiens avec adhésion sans contrat";
+	$ret["amapress_contrat=no"]                      = "Amapiens sans contrat";
+	$ret["amapress_contrat=active"]                  = "Amapiens avec contrat";
+	$ret["amapress_contrat=coadherent"]              = "Co-adhérents";
+	$ret["amapress_contrat=with_coadherent"]         = "Amapiens avec co-adhérents";
 
 
+	$sub_names = [];
 	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
 		$ret["amapress_contrat={$contrat->ID}"] = "Amapiens - Contrat {$contrat->getTitle()}";
+		$sub_contrats                           = AmapressContrats::get_active_contrat_instances_by_contrat( $contrat->ID );
+		foreach ( $sub_contrats as $contrat_instance ) {
+			if ( ! empty( $contrat_instance->getSubName() ) ) {
+				$sub_names[] = trim( $contrat_instance->getSubName() );
+				if ( count( $sub_contrats ) > 1 ) {
+					$ret[ "amapress_contrat={$contrat->ID}&amapress_subcontrat=" .
+					      urlencode( $contrat_instance->getSubName() ) ] = "Amapiens - Contrat {$contrat->getTitle()} - {$contrat_instance->getSubName()}";
+				}
+			}
+		}
+	}
+	if ( ! empty( $sub_names ) ) {
+		$sub_names = array_unique( $sub_names );
+		foreach ( $sub_names as $sub_name ) {
+			$ret[ 'amapress_contrat=active&amapress_subcontrat=' . urlencode( $sub_name ) ] = "Amapiens avec contrats - {$sub_name}";
+		}
 	}
 
 //	$ret["amapress_role=referent_producteur"] = "Référents producteurs";
@@ -244,9 +270,10 @@ function amapress_get_mailinglist_queries() {
 //        $ret["amapress_contrat={$contrat->ID}&amapress_role=access_admin"] = "Responsables AMAP - {$contrat->getModelTitle()}";
 //    }
 
-	$ret["amapress_contrat=intermittent"] = "Intermittents";
-	$ret["amapress_role=referent_lieu"]   = "Référents lieux";
-	$ret["amapress_role=resp_distrib"]    = 'Prochains responsables de distributions';
+	$ret["amapress_contrat=intermittent"]     = "Intermittents";
+	$ret["amapress_role=referent_lieu"]       = "Référents lieux";
+	$ret["amapress_role=referent_producteur"] = "Référents Producteurs";
+	$ret["amapress_role=resp_distrib"]        = 'Prochains responsables de distributions';
 
 	foreach (
 		get_categories( array(
@@ -301,6 +328,18 @@ function amapress_get_mailinglist_moderators_queries() {
 	$ret["amapress_role=referent_lieu"] = "Référents lieux";
 	$ret["amapress_role=amap_role_any"] = "Amapiens avec rôles";
 	$ret["role=administrator"]          = "Administrateurs";
+
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAP_ROLE,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Membres du collectif avec rôle "' . $role->name . '"';
+	}
 
 //    $ret["amapress_role=resp_distrib"] = "Prochains responsables de distributions";
 
