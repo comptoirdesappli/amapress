@@ -990,7 +990,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								$tabs              = array();
 								$contrat_instances = AmapressContrats::get_active_contrat_instances();
 								usort( $contrat_instances, function ( $a, $b ) {
-									return strcmp( $a->getTitle(), $b->getTitle() );
+									/** @var AmapressContrat_instance $a */
+									/** @var AmapressContrat_instance $b */
+									if ( $a->getDate_debut() == $b->getDate_debut() ) {
+										return strcmp( $a->getTitle(), $b->getTitle() );
+									} else {
+										return $a->getDate_debut() < $b->getDate_debut() ? - 1 : 1;
+									}
 								} );
 								foreach ( $contrat_instances as $contrat_instance ) {
 									$contrat_id                            = $contrat_instance->ID;
