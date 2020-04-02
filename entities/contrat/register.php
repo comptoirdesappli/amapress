@@ -72,7 +72,7 @@ function amapress_register_entities_contrat( $entities ) {
 
 			echo '<h2>Présentation de la production <em>(Légumes, Champignons, Pains...)</em></h2>';
 		},
-		'fields'                  => array(
+		'fields'                   => array(
 //			'amapress_icon_id' => array(
 //				'name'    => amapress__( 'Icône' ),
 //				'type'    => 'upload',
@@ -298,18 +298,18 @@ function amapress_register_entities_contrat( $entities ) {
 				'show_on'   => 'list',
 				'confirm'   => true,
 			),
-			'renew_same_period' => array(
+			'renew_same_period'  => array(
 				'label'     => 'Renouveler (même période)',
 				'condition' => 'amapress_can_renew_same_period_contrat_instance',
 				'show_on'   => 'list',
 				'confirm'   => true,
 			),
-			'clone'             => [
+			'clone'              => [
 				'label'   => 'Dupliquer',
 				'show_on' => 'list',
 				'confirm' => true,
 			],
-			'generate_contrat'  => [
+			'generate_contrat'   => [
 				'label'     => 'Générer le contrat papier (DOCX)',
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -318,7 +318,7 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
 				},
 			],
-			'mailto_amapiens'   => [
+			'mailto_amapiens'    => [
 				'label'     => 'Email aux amapiens',
 				'target'    => '_blank',
 //				'confirm'   => true,
@@ -342,7 +342,7 @@ function amapress_register_entities_contrat( $entities ) {
 //				},
 //				'show_on'   => 'editor',
 //			],
-			'show_distribs'     => [
+			'show_distribs'      => [
 				'label'   => 'Historique des distributions',
 				'target'  => '_blank',
 				'href'    => function ( $adh_id ) {
@@ -1245,7 +1245,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'date_ouverture'        => array(
+			'date_ouverture' => array(
 				'name'           => amapress__( 'Ouverture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1260,6 +1260,7 @@ jQuery(function($) {
 					if ( $contrat
 					     && ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
 					          || $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
+					          || ! $contrat->canSelfSubscribe()
 					     ) ) {
 						$color = 'orange';
 					}
@@ -1285,7 +1286,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'          => array(
+			'date_cloture'   => array(
 				'name'           => amapress__( 'Clôture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1300,6 +1301,7 @@ jQuery(function($) {
 					if ( $contrat
 					     && ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
 					          || $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
+					          || ! $contrat->canSelfSubscribe()
 					     ) ) {
 						$color = 'orange';
 					}
@@ -1352,7 +1354,7 @@ jQuery(function($) {
 
 
 			//Statut
-			'is_principal'          => array(
+			'is_principal'   => array(
 				'name'        => amapress__( 'Contrat principal' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
@@ -1360,7 +1362,7 @@ jQuery(function($) {
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'                => array(
+			'status'         => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1375,7 +1377,52 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'                 => array(
+			'status_type'    => array(
+				'name'    => amapress__( 'Résumé' ),
+				'type'    => 'custom',
+				'column'  => function ( $post_id ) {
+					$ret     = [];
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					if ( $contrat->isPanierVariable() ) {
+						$ret[] = 'Paniers modulables';
+					} else {
+						$ret[] = 'Contrats';
+					}
+					if ( $contrat->isPrincipal() ) {
+						$ret[] = 'principal';
+					}
+					if ( $contrat->canSelfEdit() ) {
+						$ret[] = 'éditable';
+					}
+					if ( ! empty( $contrat->getPossiblePaiements() ) ) {
+						$ret[] = implode( ';', $contrat->getPossiblePaiements() ) . ' chèque(s)';
+					}
+					if ( $contrat->getAllow_Transfer() ) {
+						$ret[] = 'virement';
+					}
+					if ( $contrat->getAllow_Cash() ) {
+						$ret[] = 'espèces';
+					}
+					if ( $contrat->getAllow_LocalMoney() ) {
+						$ret[] = 'monnaie locale';
+					}
+					if ( $contrat->getAllow_Delivery_Pay() ) {
+						$ret[] = 'à la livraison';
+					}
+					if ( $contrat
+					     && ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
+					          || $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
+					          || ! $contrat->canSelfSubscribe()
+					     ) ) {
+						$ret[] = '<span style="color:orange">clos depuis ' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '</span>';
+					}
+
+					return implode( ', ', $ret );
+				},
+				'csv'     => false,
+				'show_on' => 'list-only',
+			),
+			'ended'          => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'csv_import'  => false,
