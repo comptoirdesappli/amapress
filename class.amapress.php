@@ -174,9 +174,12 @@ class Amapress {
 		return '<a href="' . esc_attr( $url ) . '"' . ( $blank ? ' target="_blank"' : '' ) . '>' . ( $escape_title ? esc_html( $title ) : $title ) . '</a>';
 	}
 
-	public static function makeButtonLink( $url, $title = null, $escape_title = true, $blank = false, $classes = 'button button-secondary' ) {
+	public static function makeButtonLink( $url, $title = null, $escape_title = true, $blank = false, $classes = null ) {
 		if ( empty( $title ) ) {
 			$title = $url;
+		}
+		if ( empty( $classes ) ) {
+			$classes = is_admin() ? 'button button-secondary' : 'btn btn-default';
 		}
 
 		return '<a class="' . $classes . '" href="' . esc_attr( $url ) . '"' . ( $blank ? ' target="_blank"' : '' ) . '>' . ( $escape_title ? esc_html( $title ) : $title ) . '</a>';
@@ -2144,15 +2147,15 @@ class Amapress {
 		$ret .= '$this->createTerms(' . var_export( $produits_terms, true ) . ', \'' . AmapressProduit::CATEGORY . '\');' . "\n";
 		$ret .= '$this->createTerms(' . var_export( $recettes_terms, true ) . ', \'' . AmapressRecette::CATEGORY . '\');' . "\n";
 
-		$update_user_callback                          = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng, $anonymize ) {
+		$update_user_callback = function ( $user, &$userdata, &$usermeta ) use ( $around_address_lat, $around_address_lng, $anonymize ) {
 			if ( $anonymize ) {
 				$rnd                                     = AmapDemoBase::generateRandomAddress( $around_address_lat, $around_address_lng, 2000 );
 				$usermeta['amapress_user_long']          = ! empty( $rnd ) ? $rnd['lon'] : '';
 				$usermeta['amapress_user_lat']           = ! empty( $rnd ) ? $rnd['lat'] : '';
 				$usermeta['amapress_user_location_type'] = 'ROOFTOP';
 				$usermeta['amapress_user_adresse']       = ! empty( $rnd ) ? $rnd['address'] : '';
-				$usermeta['amapress_user_code_postal'] = ! empty( $rnd ) ? $rnd['postcode'] : '';
-				$usermeta['amapress_user_ville']       = ! empty( $rnd ) ? $rnd['city'] : '';
+				$usermeta['amapress_user_code_postal']   = ! empty( $rnd ) ? $rnd['postcode'] : '';
+				$usermeta['amapress_user_ville']         = ! empty( $rnd ) ? $rnd['city'] : '';
 			}
 			unset( $usermeta['amapress_user_co-adherents'] );
 			unset( $usermeta['amapress_user_allow_show_email'] );
@@ -2161,7 +2164,7 @@ class Amapress {
 			unset( $usermeta['amapress_user_allow_show_tel_mobile'] );
 			unset( $usermeta['amapress_user_allow_show_avatar'] );
 		};
-		$update_post_callback                          = function ( $post, &$postdata, &$postmeta ) use ( $relative_time ) {
+		$update_post_callback = function ( $post, &$postdata, &$postmeta ) use ( $relative_time ) {
 			if ( AmapressLieu_distribution::INTERNAL_POST_TYPE == $post['post_type'] ) {
 //'amapress_lieu_distribution_adresse
 //'amapress_lieu_distribution_code_postal
