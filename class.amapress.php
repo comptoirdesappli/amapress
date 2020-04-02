@@ -1098,8 +1098,8 @@ class Amapress {
 		self::add_post_role( 'coordinateur_amap', 'adhesion_request', 'adhesion_requests', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
+			'delete'  => true,
+			'publish' => true,
 		) );
 		self::add_post_role( 'coordinateur_amap', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
@@ -1221,7 +1221,7 @@ class Amapress {
 		self::add_post_role( 'responsable_amap', 'adhesion_request', 'adhesion_requests', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => false,
+			'delete'  => true,
 			'publish' => true,
 		) );
 //        self::add_post_role('responsable_amap', 'contrat_paiement', 'contrat_paiements', $read = true, $edit = true, $delete = false);
@@ -1540,8 +1540,8 @@ class Amapress {
 		self::add_post_role( 'referent', 'adhesion_request', 'adhesion_requests', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
+			'delete'  => true,
+			'publish' => true,
 		) );
 		self::add_post_role( 'referent', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
