@@ -212,7 +212,6 @@ function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	unset( $atts['allow_coadherents_access'] );
 	unset( $atts['allow_coadherents_adhesion'] );
 	unset( $atts['show_coadherents_address'] );
-	unset( $atts['email'] );
 	if ( isset( $atts['allow_adhesion'] ) ) {
 		$atts['adhesion'] = $atts['allow_adhesion'];
 	} else {
