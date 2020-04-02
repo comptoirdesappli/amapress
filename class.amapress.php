@@ -808,8 +808,8 @@ class Amapress {
 		self::add_post_role( 'producteur', 'post', 'posts', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
+			'delete'  => true,
+			'publish' => true,
 		) );
 
 		$r = get_role( 'producteur' );
@@ -1328,8 +1328,8 @@ class Amapress {
 		self::add_post_role( 'responsable_amap', 'post', 'posts', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
+			'delete'  => true,
+			'publish' => true,
 		) );
 
 		self::add_post_role( 'responsable_amap', 'adhesion_request', 'adhesion_requests', array(
