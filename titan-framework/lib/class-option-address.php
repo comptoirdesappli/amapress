@@ -207,10 +207,14 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			} else {
 				if ( $this->settings['use_as_field'] ) {
 					$full_address = $this->getValue( $postID );
-				} else {
+				} elseif ( ! empty( $this->settings['address_field_name'] )
+				           && ! empty( $this->settings['postal_code_field_name'] )
+				           && ! empty( $this->settings['town_field_name'] ) ) {
 					$full_address = call_user_func( $get_fn, $postID, $this->settings['address_field_name'], true ) .
 					                ', ' . call_user_func( $get_fn, $postID, $this->settings['postal_code_field_name'], true ) .
 					                ' ' . call_user_func( $get_fn, $postID, $this->settings['town_field_name'], true );
+				} elseif ( ! empty( $this->settings['address_field_name'] ) ) {
+					$full_address = call_user_func( $get_fn, $postID, $this->settings['address_field_name'], true );
 				}
 				$help = '';
 				if ( $with_help ) {
