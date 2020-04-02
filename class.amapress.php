@@ -408,21 +408,24 @@ class Amapress {
 				'edit'          => false,
 				'delete'        => false,
 				'publish'       => false,
-				'delete_others' => false,
+				'edit_others'   => null,
+				'delete_others' => null,
 			) );
 
-		$read    = $args['read'];
-		$edit    = $args['edit'];
-		$delete  = $args['delete'];
-		$publish = $args['publish'];
-//        $delete_others = $args['delete_others'];
+		$read          = $args['read'];
+		$edit          = $args['edit'];
+		$delete        = $args['delete'];
+		$publish       = $args['publish'];
+		$delete_others = $args['delete_others'];
+		if ( null === $delete_others ) {
+			$delete_others = $delete;
+		}
+		$edit_others = $args['edit_others'];
+		if ( null === $edit_others ) {
+			$edit_others = $edit;
+		}
 
 		$admins = get_role( $role_name );
-
-//        $pts = AmapressEntities::getPostTypes();
-//        $pt = $pts[$singular];
-//        $name = isset($pt['internal_name']) ? $pt['internal_name'] : 'amps_'. $singular;
-//        $plural = $singular . 's';
 
 		if ( $read ) {
 			$admins->add_cap( 'read_' . $singular );
@@ -436,12 +439,15 @@ class Amapress {
 			$admins->add_cap( 'edit_' . $plural );
 			$admins->add_cap( 'edit_published_' . $plural );
 			$admins->add_cap( 'edit_private_' . $plural );
-			$admins->add_cap( 'edit_others_' . $plural );
 		} else {
 			$admins->remove_cap( 'edit_' . $singular );
 			$admins->remove_cap( 'edit_' . $plural );
 			$admins->remove_cap( 'edit_published_' . $plural );
 			$admins->remove_cap( 'edit_private_' . $plural );
+		}
+		if ( $edit_others ) {
+			$admins->add_cap( 'edit_others_' . $plural );
+		} else {
 			$admins->remove_cap( 'edit_others_' . $plural );
 		}
 		if ( $publish ) {
@@ -459,15 +465,18 @@ class Amapress {
 				$admins->remove_cap( 'delete_' . $singular );
 			}
 			$admins->add_cap( 'delete_' . $plural );
-			$admins->add_cap( 'delete_others_' . $plural );
 			$admins->add_cap( 'delete_private_' . $plural );
 			$admins->add_cap( 'delete_published_' . $plural );
 		} else {
 			$admins->remove_cap( 'delete_' . $singular );
 			$admins->remove_cap( 'delete_' . $plural );
-			$admins->remove_cap( 'delete_others_' . $plural );
 			$admins->remove_cap( 'delete_private_' . $plural );
 			$admins->remove_cap( 'delete_published_' . $plural );
+		}
+		if ( $delete_others ) {
+			$admins->add_cap( 'delete_others_' . $plural );
+		} else {
+			$admins->remove_cap( 'delete_others_' . $plural );
 		}
 	}
 
@@ -800,16 +809,18 @@ class Amapress {
 			'publish' => false,
 		) );
 		self::add_post_role( 'producteur', 'recette', 'recettes', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => false,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 		self::add_post_role( 'producteur', 'post', 'posts', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 
 		$r = get_role( 'producteur' );
@@ -919,10 +930,11 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'tresorier', 'post', 'posts', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 		self::add_post_role( 'tresorier', 'mailing_group', 'mailing_groups', array(
 			'read'    => true,
@@ -1070,10 +1082,11 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'coordinateur_amap', 'post', 'posts', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 		self::add_post_role( 'coordinateur_amap', 'page', 'pages', array(
 			'read'    => true,
@@ -1155,10 +1168,11 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'redacteur_amap', 'post', 'posts', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 
 		$r = get_role( 'redacteur_amap' );
