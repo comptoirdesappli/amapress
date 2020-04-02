@@ -84,13 +84,10 @@ class AmapressContrats {
 		                 //|| count($commands[$contrat_id]['orphan']) > 0
 		                 || count( $paniers[ $contrat_id ] ) > 0;
 
-		return sprintf( 'Distributions : %d manquantes ; %d à associer ; %d à déassocier\n
-                        Paniers : %d manquants\n
-                        Comandes : %d manquants ; %d à annuler',
+		return sprintf( "Distributions : %d manquantes ; %d à associer ; %d à déassocier\n
+                        Paniers : %d manquants",
 			count( $dists[ $contrat_id ]['missing'] ), count( $dists[ $contrat_id ]['associate'] ), count( $dists[ $contrat_id ]['unassociate'] ),
-			count( $paniers[ $contrat_id ] ),
-			0, //count($commands[$contrat_id]['missing']),
-			0 //count($commands[$contrat_id]['orphan'])
+			count( $paniers[ $contrat_id ] )
 		);
 	}
 
