@@ -10,7 +10,7 @@ function amapress_register_entities_amapien( $entities ) {
 		'internal_name'            => 'user',
 		'csv_required_fields'      => array( 'user_email', 'first_name', 'last_name' ),
 		'other_def_hidden_columns' => array( 'bbp_user_role', 'posts', 'last_name' ),
-		'bulk_actions'             => array(
+		'bulk_actions' => array(
 			'amp_resend_welcome' => array(
 				'label'    => 'Renvoyer l\'email de bienvenue',
 				'messages' => array(
@@ -30,7 +30,7 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 			),
 		),
-		'fields'                   => array(
+		'fields'       => array(
 //            'role_desc' => array(
 //                'name' => amapress__('Rôle dans l\'AMAP'),
 //                'type' => 'text',
@@ -531,15 +531,15 @@ function amapress_register_entities_amapien( $entities ) {
 //                ),
 //            ),
 		),
-		'help_new'            => array(),
-		'help_edit'           => array(),
-		'help_view'           => array(),
-		'help_profile'        => array(),
-		'views'               => array(
+		'help_new'     => array(),
+		'help_edit'    => array(),
+		'help_view'    => array(),
+		'help_profile' => array(),
+		'views'        => array(
 			'_dyn_all_' => 'amapress_user_views',
 			'exp_csv'   => true,
 		),
-		'row_actions'         => array(
+		'row_actions'  => array(
 			'add_inscription'  => [
 				'label'  => 'Ajout Inscription Contrat',
 				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
@@ -1246,6 +1246,15 @@ add_action( 'admin_head-users.php', function () {
 	} elseif ( ! empty( $_GET['amapress_mlgrp_id'] ) ) {
 		$ml             = AmapressMailingGroup::getBy( $_GET['amapress_mlgrp_id'] );
 		$override_title = 'Membres de ' . $ml->getName();
+		if ( $ml->getIncludeAdhesionRequest() ) {
+			echo amapress_get_admin_notice(
+				'Cet Email groupé contient également les ' .
+				Amapress::makeLink( admin_url( 'edit.php?post_type=amps_adh_req&amapress_date=active&amapress_status=to_confirm' ),
+					'demandes d\'adhésions non confirmées' ),
+				'info',
+				false, false
+			);
+		}
 	}
 	if ( ! empty( $override_title ) ) {
 		echo '<script type="">jQuery(function($) { $(".wp-heading-inline").text(' . wp_json_encode( $override_title ) . ');});</script>';

@@ -204,6 +204,10 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->getCustom( 'amapress_mailing_group_smtp_auth_password' );
 	}
 
+	public function getIncludeAdhesionRequest() {
+		return $this->getCustom( 'amapress_mailing_group_inc_adh_requests' );
+	}
+
 	public function distributeMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
@@ -303,6 +307,18 @@ class AmapressMailingGroup extends TitanEntity {
 		return count( glob( $this->getUploadDir( 'waiting' ) . '*.json' ) );
 	}
 
+	public function getAdhesionRequestEmailsIfActive() {
+		$user_emails = [];
+		if ( $this->getIncludeAdhesionRequest() ) {
+			foreach ( AmapressAdhesionRequest::getAllToConfirm() as $adh_request ) {
+				if ( ! empty( $adh_request->getEmail() ) ) {
+					$user_emails[] = $adh_request->getEmail();
+				}
+			}
+		}
+
+		return $user_emails;
+	}
 	public function getMembersCount() {
 		$user_emails = [];
 		foreach ( $this->getMembersQueries() as $query ) {
@@ -312,7 +328,7 @@ class AmapressMailingGroup extends TitanEntity {
 			}
 		}
 		$user_emails = array_merge( $user_emails, $this->getRawEmails() );
-
+		$user_emails = array_merge( $user_emails, $this->getAdhesionRequestEmailsIfActive() );
 		return count( array_unique( $user_emails ) );
 	}
 
@@ -652,7 +668,11 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function isMember( $senderAddress ) {
-		return in_array( $senderAddress, $this->getEmailsFromQueries( $this->getMembersQueries() ) );
+		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
+		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
+		$members_emails = array_merge( $members_emails, $this->getAdhesionRequestEmailsIfActive() );
+
+		return in_array( $senderAddress, $members_emails );
 	}
 
 	public function isFreeMember( $senderAddress ) {
@@ -696,6 +716,7 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
 		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
+		$members_emails = array_merge( $members_emails, $this->getAdhesionRequestEmailsIfActive() );
 
 		if ( ! $is_ext_smtp ) {
 			$headers[] = 'Bcc: ' . implode( ',', array_unique( $members_emails ) );

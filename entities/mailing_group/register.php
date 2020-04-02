@@ -272,7 +272,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'custom'  => 'amapress_get_mailing_group_waiting_list',
 				'show_on' => 'edit-only',
 			),
-			'members_count'          => array(
+			'members_count'    => array(
 				'group'   => 'Membres',
 				'name'    => amapress__( 'Membres' ),
 				'type'    => 'custom',
@@ -281,7 +281,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'custom'  => 'amapress_get_mailing_group_members_count',
 				'show_on' => 'edit-only',
 			),
-			'queries'                => array(
+			'queries'          => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Groupes inclus' ),
 				'type'        => 'multicheck',
@@ -290,7 +290,14 @@ function amapress_register_entities_mailing_groups( $entities ) {
 //				'required'    => true,
 				'show_column' => false,
 			),
-			'other_users'            => array(
+			'inc_adh_requests' => array(
+				'group'       => 'Membres',
+				'name'        => amapress__( 'Inclure les demandes d\'adhésion' ),
+				'type'        => 'checkbox',
+				'desc'        => 'Inclure les demandes d\'adhésion non confirmées (Liste d\'attente)',
+				'show_column' => false,
+			),
+			'other_users'      => array(
 				'group'        => 'Membres',
 				'name'         => amapress__( 'Amapiens hors groupe' ),
 				'type'         => 'select-users',
@@ -300,7 +307,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'         => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
 				'show_column'  => false,
 			),
-			'raw_users'              => array(
+			'raw_users'        => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Membres supplémentaires (emails)' ),
 				'type'        => 'textarea',
