@@ -1900,3 +1900,11 @@ add_filter( 'pre_option_comment_registration', function () {
 
 	return false;
 } );
+
+add_filter( 'auth_cookie_expiration', function ( $length, $user_id, $remember ) {
+	if ( $remember ) {
+		return intval( Amapress::getOption( 'auth_expiration_remember' ) ) * DAY_IN_SECONDS;
+	} else {
+		return intval( Amapress::getOption( 'auth_expiration' ) ) * DAY_IN_SECONDS;
+	}
+} );
