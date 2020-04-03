@@ -10,7 +10,7 @@ function amapress_register_entities_amapien( $entities ) {
 		'internal_name'            => 'user',
 		'csv_required_fields'      => array( 'user_email', 'first_name', 'last_name' ),
 		'other_def_hidden_columns' => array( 'bbp_user_role', 'posts', 'last_name' ),
-		'bulk_actions' => array(
+		'bulk_actions'             => array(
 			'amp_resend_welcome' => array(
 				'label'    => 'Renvoyer l\'email de bienvenue',
 				'messages' => array(
@@ -30,7 +30,7 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 			),
 		),
-		'fields'       => array(
+		'fields'                   => array(
 //            'role_desc' => array(
 //                'name' => amapress__('Rôle dans l\'AMAP'),
 //                'type' => 'text',
@@ -531,15 +531,15 @@ function amapress_register_entities_amapien( $entities ) {
 //                ),
 //            ),
 		),
-		'help_new'     => array(),
-		'help_edit'    => array(),
-		'help_view'    => array(),
-		'help_profile' => array(),
-		'views'        => array(
+		'help_new'                 => array(),
+		'help_edit'                => array(),
+		'help_view'                => array(),
+		'help_profile'             => array(),
+		'views'                    => array(
 			'_dyn_all_' => 'amapress_user_views',
 			'exp_csv'   => true,
 		),
-		'row_actions'  => array(
+		'row_actions'              => array(
 			'add_inscription'  => [
 				'label'  => 'Ajout Inscription Contrat',
 				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
@@ -1024,7 +1024,8 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		}
 	}
 
-	$main_items = array_merge(
+	$backup_status = amapress_get_updraftplus_backup_status();
+	$main_items    = array_merge(
 		$main_items,
 		array(
 			array(
@@ -1070,7 +1071,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 					array(
 						'id'         => 'amapress_backup',
-						'title'      => ( 'active' == amapress_is_plugin_active( 'updraftplus' ) ? '<span class="dashicons dashicons-yes" style="color: green"></span>' : '<span class="dashicons dashicons-warning" style="color:red"></span>' ) . 'Sauvegardes',
+						'title'      => ( 'inactive' == $backup_status || 'plugin_missing' == $backup_status ?
+								'<span class="dashicons dashicons-warning" style="color:red"></span>' :
+								( 'local' == $backup_status ?
+									'<span class="dashicons dashicons-warning" style="color:orange"></span>' :
+									'<span class="dashicons dashicons-yes" style="color: green"></span>' )
+						                ) . 'Sauvegardes',
 						'capability' => 'manage_options',
 						'href'       => 'active' == amapress_is_plugin_active( 'updraftplus' ) ? admin_url( 'options-general.php?page=updraftplus' ) : admin_url( 'admin.php?page=amapress_state' ),
 					),

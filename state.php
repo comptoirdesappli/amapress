@@ -162,14 +162,19 @@ function amapress_is_plugin_active( $plugin_slug ) {
 	return in_array( $plugin_slug, $active_plugins ) ? 'active' : ( in_array( $plugin_slug, $installed_plugins ) ? 'installed' : 'not-installed' );
 }
 
-function amapress_check_plugin_install( $plugin_slug, $plugin_name, $message_if_install_needed, $not_installed_level = 'warning' ) {
+function amapress_check_plugin_install(
+	$plugin_slug, $plugin_name, $message_if_install_needed,
+	$not_installed_level = 'warning', $installed_level = 'success',
+	$values = null
+) {
 	$is_active = amapress_is_plugin_active( $plugin_slug );
 
 	return amapress_get_check_state(
-		$is_active == 'active' ? 'success' : $not_installed_level,
+		$is_active == 'active' ? $installed_level : $not_installed_level,
 		$plugin_name . ( $is_active != 'active' ? ' (' . ( $is_active == 'not-installed' ? 'installer' : 'activer' ) . ')' : '' ),
 		$message_if_install_needed . ' ' . Amapress::makeLink( 'https://fr.wordpress.org/plugins/' . $plugin_slug, 'En savoir plus', true, true ),
-		$is_active == 'not-installed' ? amapress_get_plugin_install_link( $plugin_slug ) : ( $is_active == 'installed' ? amapress_get_plugin_activate_link( $plugin_slug ) : '' )
+		$is_active == 'not-installed' ? amapress_get_plugin_install_link( $plugin_slug ) : ( $is_active == 'installed' ? amapress_get_plugin_activate_link( $plugin_slug ) : '' ),
+		$values
 	);
 }
 
@@ -196,12 +201,20 @@ function amapress_clean_state_transient() {
 function amapress_get_state() {
 	amapress_clean_state_transient();
 
-	$state                 = array();
-	$state['01_plugins']   = array();
-	$state['01_plugins'][] = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
-		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. <br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.',
-		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
+	$state                              = array();
+	$state['01_plugins']                = array();
+	$backup_status                      = amapress_get_updraftplus_backup_status();
+	$state['01_plugins'][]              = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
+		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. 
+<br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. 
+Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.
+<br/><strong>Configuration recommandée:</strong> sauvegarde quotidienne de la base de données et hebdomadaire des fichiers avec envoi sur un stockage externe type Dropbox
+<br/>Etat actuel: sauvegarde ' . $backup_status . ' (' . amapress_get_updraftplus_backup_last_backup_date() . ')
+<br/>',
+		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info',
+		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ?
+			( 'inactive' == $backup_status ? 'error' : ( 'local' == $backup_status ? 'warning' : 'success' ) ) : 'info' );
+	$state['01_plugins'][]              = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'block-bad-queries', 'Block Bad Queries',
@@ -993,7 +1006,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	);
 
 
-	$state['15_posts'][]                        = amapress_get_check_state(
+	$state['15_posts'][] = amapress_get_check_state(
 		count( $subscribable_contrat_instances ) == 0 ? 'warning' : ( count( $subscribable_contrat_instances ) < count( $contrat_types ) ? 'warning' : 'success' ),
 		'Modèles de contrats',
 		'Créer au moins un modèle de contrat par contrat pour permettre aux amapiens d\'adhérer',
@@ -1880,6 +1893,37 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 	);
 
 	return $state;
+}
+
+function amapress_get_updraftplus_backup_last_backup_date() {
+	$updraft_last_backup = maybe_unserialize( get_option( 'updraft_last_backup' ) );
+	if ( ! empty( $updraft_last_backup ) ) {
+		if ( is_array( $updraft_last_backup ) && ! empty( $updraft_last_backup['backup_time'] ) ) {
+			return date_i18n( 'd/m/Y H:i:s', $updraft_last_backup['backup_time'] );
+		} else {
+			return 'Date inconnue';
+		}
+	}
+
+	return 'Jamais';
+}
+
+function amapress_get_updraftplus_backup_status() {
+	if ( amapress_is_plugin_active( 'updraftplus' ) ) {
+		$updraft_interval          = get_option( 'updraft_interval' );
+		$updraft_interval_database = get_option( 'updraft_interval_database' );
+		if ( empty( $updraft_interval ) || empty( $updraft_interval_database ) ) {
+			return 'inactive';
+		}
+		$updraft_service = maybe_unserialize( get_option( 'updraft_service' ) );
+		if ( empty( $updraft_service ) ) {
+			return 'local';
+		} else {
+			return is_array( $updraft_service ) ? implode( ',', $updraft_service ) : $updraft_service;
+		}
+	} else {
+		return 'plugin_missing';
+	}
 }
 
 function amapress_embedded_phpinfo() {
