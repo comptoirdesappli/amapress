@@ -174,7 +174,7 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 		// we want to reverse this for the plain text arena of emails.
 		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
-		if ( 'user' !== $notify ) {
+		if ( 'user' !== $notify && Amapress::getOption( 'notify_admin_new_user' ) ) {
 			$message = sprintf( __( 'New user registration on your site %s:' ), $blogname ) . "\r\n\r\n";
 			$message .= sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
 			$message .= sprintf( __( 'Email: %s' ), $user->getUser()->user_email ) . "\r\n";
@@ -190,6 +190,67 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 		$message = amapress_replace_mail_placeholders( Amapress::getOption( 'welcome_mail' ), $user );
 
 		amapress_wp_mail( $user->getUser()->user_email, $subject, $message );
+	}
+}
+
+if ( ! function_exists( 'wp_password_change_notification' ) ) {
+	function wp_password_change_notification( $user ) {
+		/** @var WP_User $user */
+		// Send a copy of password change notification to the admin,
+		// but check to see if it's the admin whose password we're changing, and skip this.
+		if ( 0 !== strcasecmp( $user->user_email, get_option( 'admin_email' ) ) ) {
+			$can_access_admin = false;
+			if ( isset( $user->roles ) && is_array( $user->roles ) ) {
+				foreach ( amapress_can_access_admin_roles() as $r ) {
+					if ( in_array( $r, $user->roles ) ) {
+						$can_access_admin = true;
+					}
+				}
+			}
+			if ( ! Amapress::getOption( $can_access_admin ? 'notify_admin_pwd_resp' : 'notify_admin_pwd_amapien' ) ) {
+				return;
+			}
+			/* translators: %s: User name. */
+			$message = sprintf( __( 'Password changed for user: %s' ), $user->user_login ) . "\r\n";
+			// The blogname option is escaped with esc_html() on the way into the database in sanitize_option().
+			// We want to reverse this for the plain text arena of emails.
+			$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+
+			$wp_password_change_notification_email = array(
+				'to'      => get_option( 'admin_email' ),
+				/* translators: Password change notification email subject. %s: Site title. */
+				'subject' => __( '[%s] Password Changed' ),
+				'message' => $message,
+				'headers' => '',
+			);
+
+			/**
+			 * Filters the contents of the password change notification email sent to the site admin.
+			 *
+			 * @param array $wp_password_change_notification_email {
+			 *     Used to build wp_mail().
+			 *
+			 * @type string $to The intended recipient - site admin email address.
+			 * @type string $subject The subject of the email.
+			 * @type string $message The body of the email.
+			 * @type string $headers The headers of the email.
+			 * }
+			 *
+			 * @param WP_User $user User object for user whose password was changed.
+			 * @param string $blogname The site title.
+			 *
+			 * @since 4.9.0
+			 *
+			 */
+			$wp_password_change_notification_email = apply_filters( 'wp_password_change_notification_email', $wp_password_change_notification_email, $user, $blogname );
+
+			wp_mail(
+				$wp_password_change_notification_email['to'],
+				wp_specialchars_decode( sprintf( $wp_password_change_notification_email['subject'], $blogname ) ),
+				$wp_password_change_notification_email['message'],
+				$wp_password_change_notification_email['headers']
+			);
+		}
 	}
 }
 

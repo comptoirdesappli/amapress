@@ -2567,7 +2567,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Email de bienvenue'       => array(
+						'Email de bienvenue' => array(
 							'id'      => 'welcome_mail',
 							'desc'    => '',
 							'options' => array(
@@ -2613,7 +2613,40 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Géolocalisation'          => array(
+						'Notifications'      => array(
+							'id'      => 'amp_notif_config',
+							'desc'    => '',
+							'options' => array(
+								array(
+									'id'         => 'notify_admin_new_user',
+									'name'       => 'Nouveau compte',
+									'type'       => 'checkbox',
+									'desc'       => 'Notifier l\'administrateur des inscriptions de nouveaux comptes utilisateurs',
+									'capability' => 'manage_options',
+									'default'    => true,
+								),
+								array(
+									'id'         => 'notify_admin_pwd_resp',
+									'name'       => 'Changement de mot de passe (Responsables)',
+									'type'       => 'checkbox',
+									'desc'       => 'Notifier l\'administrateur des changements de mots de passe des comptes avec accès au Tableau de bord',
+									'capability' => 'manage_options',
+									'default'    => true,
+								),
+								array(
+									'id'         => 'notify_admin_pwd_amapien',
+									'name'       => 'Changement de mot de passe (Amapiens)',
+									'type'       => 'checkbox',
+									'desc'       => 'Notifier l\'administrateur des changements de mots de passe des amapiens',
+									'capability' => 'manage_options',
+									'default'    => true,
+								),
+								array(
+									'type' => 'save',
+								),
+							)
+						),
+						'Géolocalisation'    => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
