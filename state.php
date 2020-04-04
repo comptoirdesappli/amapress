@@ -201,10 +201,10 @@ function amapress_clean_state_transient() {
 function amapress_get_state() {
 	amapress_clean_state_transient();
 
-	$state                              = array();
-	$state['01_plugins']                = array();
-	$backup_status                      = amapress_get_updraftplus_backup_status();
-	$state['01_plugins'][]              = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
+	$state                 = array();
+	$state['01_plugins']   = array();
+	$backup_status         = amapress_get_updraftplus_backup_status();
+	$state['01_plugins'][] = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
 		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. 
 <br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. 
 Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.
@@ -214,7 +214,7 @@ Configurer ici pour sauvegarder les données de votre site vers un drive ou stoc
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info',
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ?
 			( 'inactive' == $backup_status ? 'error' : ( 'local' == $backup_status ? 'warning' : 'success' ) ) : 'info' );
-	$state['01_plugins'][]              = amapress_check_plugin_install( 'akismet', 'Akismet',
+	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'block-bad-queries', 'Block Bad Queries',
@@ -2139,7 +2139,56 @@ FROM $wpdb->posts as p INNER JOIN $wpdb->postmeta as pm ON p.ID = pm.post_id GRO
 
 function amapress_echo_and_check_amapress_state_page() {
 	if ( current_user_can( 'update_core' ) ) {
+		if ( isset( $_GET['generate_amap_options'] ) ) {
+			$options_to_generate = [
+				'resp_role_1-name',
+				'resp_role_2-name',
+				'resp_role_3-name',
+				'resp_role_4-name',
+				'resp_role_5-name',
+				'resp_role_6-name',
+				'resp_role_1-desc',
+				'resp_role_2-desc',
+				'resp_role_3-desc',
+				'resp_role_4-desc',
+				'resp_role_5-desc',
+				'resp_role_6-desc',
+				'pwa_short_name',
+				'allow_partial_coadh',
+				'disable_principal',
+				'online_new_user_quest1',
+				'online_new_user_quest2',
+				'online_norenew_message',
+				'online_principal_user_message',
+				'online_coadh_user_message',
+				'online_adhesion_coadh_message',
+				'online_subscription_agreement',
+				'online_subscription_greating_adhesion',
+				'online_contrats_step_message',
+				'online_contrats_end_step_message',
+				'online_contrats_end_step_edit_message',
+				'online_final_step_message',
+				'allow_partial_exchange',
+				'intermit_self_inscr'
+			];
+			$generated_value     = [];
+			foreach ( $options_to_generate as $k ) {
+				$v = Amapress::getOption( $k );
+				if ( ! empty( $v ) ) {
+					$generated_value[ $k ] = wp_unslash( $v );
+				}
+			}
+			$code = '$options_values = ' . var_export( $generated_value, true ) . ";\n";
+			$code .= 'foreach ($options_values as $k => $v) {' . "\n";
+			$code .= '    Amapress::setOption($k, $v);' . "\n";
+			$code .= '}';
+			echo '<textarea cols="80" rows="100" style="width: 100%; font-family: monospace">';
+			echo esc_textarea( wp_kses_decode_entities( wp_specialchars_decode( preg_replace( '/\<\/?pre\>/', '',
+				$code ), ENT_QUOTES ) ) );
+			echo '</textarea>';
+		}
 		if ( isset( $_GET['generate_full_amap'] ) ) {
+			echo '<p>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_state&generate_amap_options=T' ), 'Générer les options' ) . '</p>';
 			echo '<textarea cols="80" rows="100" style="width: 100%; font-family: monospace">';
 			echo esc_textarea( wp_kses_decode_entities( wp_specialchars_decode( preg_replace( '/\<\/?pre\>/', '',
 				Amapress::generate_full_amap( ! isset( $_REQUEST['no_anonymize'] ) ) ), ENT_QUOTES ) ) );
