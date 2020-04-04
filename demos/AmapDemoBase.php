@@ -269,6 +269,20 @@ class AmapDemoBase {
 				AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
 			}
 
+			foreach (
+				array(
+					'adhesion_amap_term'        => 'Adhésion AMAP',
+					'adhesion_reseau_amap_term' => 'Adhésion Réseau AMAP',
+				) as $k => $v
+			) {
+				if ( ! term_exists( $v, 'amps_paiement_category' ) ) {
+					Amapress::setOption( $k, wp_insert_term( $v, 'amps_paiement_category' ) );
+				} else {
+					$t = term_exists( $v, 'amps_paiement_category' );
+					Amapress::setOption( $k, $t['term_id'] );
+				}
+			}
+
 			echo "<p>Committing import</p>";
 			self::commitTransaction();
 
