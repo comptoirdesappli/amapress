@@ -1556,16 +1556,20 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 				return "<a href='{$l}' target='_blank'>{$tit}</a>";
 			}, $not_online_contrats ) ) : '' )
 	);
-	$with_word_contrats         = array_filter( $subscribable_contrat_instances, function ( $c ) {
+	$with_word_contrats = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe() && $c->getContratWordModelId();
 	} );
-	$without_word_contrats      = array_filter( AmapressContrats::get_active_contrat_instances(), function ( $c ) {
+	$with_word_contrats_invalid = array_filter( $subscribable_contrat_instances, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->canSelfSubscribe() && $c->getContratWordModelId() && true !== $c->getContratModelDocStatus();
+	} );
+	$without_word_contrats = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe() && ! $c->getContratWordModelId();
 	} );
 	$state['26_online_inscr'][] = amapress_get_check_state(
-		count( $without_word_contrats ) > 0 ? 'warning' : 'success',
+		empty( $with_word_contrats ) ? 'warning' : ( ! empty( $with_word_contrats_invalid ) ? 'error' : 'success' ),
 		'Modèles de contrats avec contrat DOCX (Word) associé',
 		'Préparer un contrat papier personnalisé (DOCX) <a target="_blank" href="' .
 		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) .
@@ -1573,10 +1577,15 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
 		'<strong>Contrats avec Word attaché :</strong> ' . ( count( $online_contrats ) == 0 ? 'aucun' : implode( ', ', array_map( function ( $dn ) {
 			/** @var AmapressContrat_instance $dn */
-			$l   = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
-			$tit = esc_html( $dn->getTitle() );
+			$l           = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+			$tit         = esc_html( $dn->getTitle() );
+			$status      = $dn->getContratModelDocStatus();
+			$status_text = '';
+			if ( true !== $status ) {
+				$status_text = ' (<span class="' . $status['status'] . '">' . esc_html( $status['message'] ) . '</span>)';
+			}
 
-			return "<a href='{$l}' target='_blank'>{$tit}</a>";
+			return "<a href='{$l}' target='_blank'>{$tit}{$status_text}</a>";
 		}, $with_word_contrats ) ) ) .
 		( count( $without_word_contrats ) > 0 ? '<br /><strong>Contrats sans Word attaché :</strong> ' . implode( ', ', array_map( function ( $dn ) {
 				/** @var AmapressContrat_instance $dn */
