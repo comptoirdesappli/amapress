@@ -39,7 +39,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 //        'redirect_archive' => 'amapress_redirect_agenda',
 		'menu_icon'        => 'dashicons-email-alt',
 		'fields'           => array(
-			'name'       => array(
+			'name'                   => array(
 				'group'    => 'Nom',
 				'name'     => amapress__( 'Nom' ),
 				'type'     => 'select',
@@ -47,12 +47,12 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'options'  => 'amapress_get_mailinglists',
 				'required' => true,
 			),
-			'desc'       => array(
+			'desc'                   => array(
 				'group' => 'Description',
 				'name'  => amapress__( 'Description' ),
 				'type'  => 'text',
 			),
-			'moderation' => array(
+			'moderation'             => array(
 				'group'       => 'Modération',
 				'name'        => amapress__( 'Modération' ),
 				'type'        => 'select',
@@ -254,8 +254,6 @@ function amapress_get_mailinglist_queries() {
 //		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
 //	}
 
-	$ret["role=producteur"] = "Producteurs";
-
 	$ret["amapress_role=collectif_no_prod"]                         = "Membres du collectif (sans les producteurs)";
 	$ret["amapress_role=collectif"]                                 = 'Membres du collectif (avec les producteurs)';
 	$ret["amapress_role=collectif_no_prod&amapress_contrat=active"] = "Membres du collectif avec contrat(s) (sans les producteurs)";
@@ -274,6 +272,12 @@ function amapress_get_mailinglist_queries() {
 	$ret["amapress_role=referent_lieu"]       = "Référents lieux";
 	$ret["amapress_role=referent_producteur"] = "Référents Producteurs";
 	$ret["amapress_role=resp_distrib"]        = 'Prochains responsables de distributions';
+	$ret["role=producteur"]                   = "Producteurs";
+	$ret["role=administrator"]                = "Administrateurs Amap";
+	$ret["role=responsable_amap"]             = "Responsables Amap";
+	$ret["role=tresorier"]                    = "Trésoriers Amap";
+	$ret["role=redacteur_amap"]               = "Rédacteurs Amap";
+	$ret["role=coordinateur_amap"]            = "Coordinateurs Amap";
 
 	foreach (
 		get_categories( array(
