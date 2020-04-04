@@ -359,6 +359,11 @@ class AmapressDistribution extends Amapress_EventBase {
 				$this->ensure_init();
 				foreach ( $this->custom as $k => $v ) {
 					if ( strpos( $k, 'amapress_distribution_resp_' ) === 0 ) {
+						$role_user_id = intval( substr( $k, 27 ) );
+						if ( ! in_array( $role_user_id, $responsables ) ) {
+							$this->deleteCustom( $k );
+							continue;
+						}
 						if ( $v == $role ) {
 							return 'already_taken';
 						}
