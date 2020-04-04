@@ -819,7 +819,7 @@ class Amapress {
 			'read'          => true,
 			'edit'          => true,
 			'delete'        => true,
-			'publish'       => true,
+			'publish'       => false,
 			'delete_others' => false,
 		) );
 
