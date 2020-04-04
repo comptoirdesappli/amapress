@@ -17,6 +17,10 @@ class AmapDemoBase {
 	}
 
 	protected function createUser( $userdata ) {
+		if ( empty( $userdata['user_pass'] ) ) {
+			$userdata['user_pass'] = '';
+		}
+
 		return wp_insert_user( $userdata );
 	}
 
@@ -248,6 +252,10 @@ class AmapDemoBase {
 
 	}
 
+	protected function printMemoryUsage() {
+		echo '<p>' . ( function_exists( 'memory_get_usage' ) ? round( memory_get_usage() / 1024 / 1024, 2 ) : 0 ) . 'MB</p>';
+	}
+
 	public function createAMAP( $shift_weeks = 0 ) {
 		echo "<p>Starting import</p>";
 		self::startTransaction();
@@ -261,13 +269,9 @@ class AmapDemoBase {
 
 			$this->onCreateAmap( Amapress::start_of_day( Amapress::add_a_week( amapress_time(), $shift_weeks ) ) );
 
+
 			echo "<p>Updating all post titles and slug</p>";
 			amapress_update_all_posts();
-
-			foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
-				AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
-				AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
-			}
 
 			foreach (
 				array(
@@ -285,6 +289,11 @@ class AmapDemoBase {
 
 			echo "<p>Committing import</p>";
 			self::commitTransaction();
+
+			foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
+				AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
+				AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+			}
 
 		} catch ( Exception $exception ) {
 			self::abortTransaction();
