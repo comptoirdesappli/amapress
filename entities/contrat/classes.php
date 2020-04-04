@@ -621,6 +621,14 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getContratModelDocFileName() {
+		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
+			if ( $this->isPanierVariable() ) {
+				return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique_modulables.docx';
+			} else {
+				return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique.docx';
+			}
+		}
+
 		return get_attached_file( $this->getContratWordModelId(), true );
 	}
 
@@ -638,6 +646,14 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getContratPapierModelDocFileName() {
+		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
+			if ( $this->isPanierVariable() ) {
+				return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique_modulables.docx';
+			} else {
+				return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique.docx';
+			}
+		}
+
 		return get_attached_file( $this->getContratPapierWordModelId(), true );
 	}
 
@@ -794,7 +810,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getSubName();
 			}
 		];
-		$ret['contrat_lien']                     = [
+		$ret['contrat_lien'] = [
 			'desc' => 'Lien vers la présentation du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				if ( empty( $adh->getModel() ) ) {
@@ -960,7 +976,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu_court']                       = [
+		$ret['lieu_court'] = [
 			'desc' => 'Lieu de distribution (nom court)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -984,7 +1000,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu_adresse']                     = [
+		$ret['lieu_adresse'] = [
 			'desc' => 'Adresse du lieu de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -1010,7 +1026,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['contrat_fin_annee']                = [
+		$ret['contrat_fin_annee'] = [
 			'desc' => 'Année de fin du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'Y', $adh->getDate_fin() );
@@ -1058,7 +1074,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getModel()->getProducteur()->getUser()->getEmail();
 			}
 		];
-		$ret['nb_paiements']                     = [
+		$ret['nb_paiements'] = [
 			'desc' => 'Nombre de chèques/règlements possibles',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getPossiblePaiements() );
@@ -1100,7 +1116,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}
 			}
 		];
-		$ret['mention_speciale']                 = [
+		$ret['mention_speciale'] = [
 			'desc' => 'Champ Mention spéciale du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getSpecialMention();
@@ -1118,7 +1134,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getPaiementsMention() ) ) );
 			}
 		];
-		$ret['nb_dates']                         = [
+		$ret['nb_dates'] = [
 			'desc' => 'Nombre de dates de distributions restantes',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return count( $adh->getRemainingDates( $first_date_distrib ) );
@@ -1130,7 +1146,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getRemainingDatesWithFactors( $first_date_distrib );
 			}
 		];
-		$ret['dates_distribution_par_mois']      = [
+		$ret['dates_distribution_par_mois'] = [
 			'desc' => 'Dates de distributions regroupées par mois',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				return implode( ' ; ', $adh->getFormattedDatesDistribMois( $first_date_distrib ) );

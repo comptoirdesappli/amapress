@@ -29,6 +29,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	public function getModelDocFileName() {
+		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
+			return AMAPRESS__PLUGIN_DIR . 'templates/bulletin_adhesion_generique.docx';
+		}
+
 		return get_attached_file( $this->getWordModelId(), true );
 	}
 
