@@ -1755,8 +1755,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$where .= " AND 0 = 1";
 			}
 		} else {
-			$op   = 'IN';
-			$date = Amapress::end_of_day( amapress_time() );
+			$op          = 'IN';
+			$date        = Amapress::end_of_day( amapress_time() );
+			$contrat_ids = array();
 			if ( $amapress_contrat == 'no' || $amapress_contrat == 'none' ) {
 				$contrat_ids = AmapressContrats::get_active_contrat_instances_ids();
 				$op          = 'NOT IN';
@@ -1772,14 +1773,14 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				}
 				if ( $id ) {
 					$post = get_post( $id );
-					$pt   = amapress_simplify_post_type( $post->post_type );
-					if ( 'contrat_instance' == $pt ) {
-						$contrat_ids = array( $id );
-					} else if ( 'contrat' == $pt ) {
-						$contrat_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $id );
+					if ( $post ) {
+						$pt = amapress_simplify_post_type( $post->post_type );
+						if ( 'contrat_instance' == $pt ) {
+							$contrat_ids = array( $id );
+						} else if ( 'contrat' == $pt ) {
+							$contrat_ids = AmapressContrats::get_active_contrat_instances_ids_by_contrat( $id );
+						}
 					}
-				} else {
-					$contrat_ids = array();
 				}
 			}
 			if ( isset( $uqi->query_vars['amapress_subcontrat'] ) ) {
