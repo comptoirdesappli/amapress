@@ -209,7 +209,7 @@ function amapress_get_state() {
 <br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. 
 Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.
 <br/><strong>Configuration recommandée:</strong> sauvegarde quotidienne de la base de données et hebdomadaire des fichiers avec envoi sur un stockage externe type Dropbox
-<br/>Etat actuel: sauvegarde ' . $backup_status . ' (' . amapress_get_updraftplus_backup_last_backup_date() . ')
+<br/>Etat actuel: sauvegarde ' . $backup_status . ' (' . amapress_get_updraftplus_backup_last_backup_date() . '), ' . amapress_get_updraftplus_backup_intervals() . '
 <br/>',
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info',
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ?
@@ -1915,6 +1915,14 @@ function amapress_get_updraftplus_backup_last_backup_date() {
 	}
 
 	return 'Jamais';
+}
+
+function amapress_get_updraftplus_backup_intervals() {
+	$updraft_interval          = get_option( 'updraft_interval' );
+	$updraft_interval_database = get_option( 'updraft_interval_database' );
+
+	return 'Fichiers: ' . ( ! empty( $updraft_interval ) ? $updraft_interval : 'manuel' ) .
+	       ' ; DB: ' . ( ! empty( $updraft_interval_database ) ? $updraft_interval_database : 'manuel' );
 }
 
 function amapress_get_updraftplus_backup_status() {
