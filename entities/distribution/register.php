@@ -300,6 +300,17 @@ function amapress_register_entities_distribution( $entities ) {
 //                'searchable' => true,
 			),
 
+			'gardiens' => array(
+				'name'         => amapress__( 'Gardiens de paniers' ),
+				'group'        => '2/ Responsables',
+				'type'         => 'select-users',
+				'autocomplete' => true,
+				'multiple'     => true,
+				'tags'         => true,
+				'desc'         => 'Amapiens se proposant de garder des paniers',
+				'readonly'     => true,
+			),
+
 			'info' => array(
 				'name'  => amapress__( 'Informations spécifiques' ),
 				'type'  => 'editor',
@@ -512,4 +523,41 @@ function amapress_distribution_hours_setter() {
 	echo '</ul>';
 
 	TitanFrameworkOptionDate::createCalendarScript();
+}
+
+function amapress_gardiens_paniers_map( $dist_id, $show_email = true, $show_tel = true, $show_address = false ) {
+	if ( ! amapress_is_user_logged_in() ) {
+		return '';
+	}
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+
+	$me_id = amapress_current_user_id();
+
+	$markers = array();
+	foreach ( $dist->getGardiens() as $user ) {
+		if ( ! $user->isAdresse_localized() ) {
+			continue;
+		}
+		$markers[] = array(
+			'longitude' => $user->getUserLongitude(),
+			'latitude'  => $user->getUserLatitude(),
+			'url'       => ( $show_email ? 'mailto:' . $user->getEmail() : null ),
+			'title'     => $user->getDisplayName(),
+			'icon'      => ( $user->ID == $me_id ? 'man' : 'green' ),
+			'content'   => $user->getDisplay( [
+				'show_email'      => $show_email,
+				'show_tel'        => $show_tel,
+				'show_tel_fixe'   => $show_tel,
+				'show_tel_mobile' => $show_tel,
+				'show_adresse'    => $show_address,
+				'show_avatar'     => 'default',
+			] ),
+		);
+	}
+
+	if ( empty( $markers ) ) {
+		return '';
+	}
+	return amapress_generate_map( $markers, 'map' );
 }

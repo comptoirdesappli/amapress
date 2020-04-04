@@ -739,6 +739,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
+								'Emails - Gardiens de paniers - Rappel'                           => array(
+									'id'      => 'amp_tab_recall_gardien_paniers',
+									'desc'    => '',
+									'options' => amapress_distribution_gardiens_recall_options(),
+								),
 								'Emails - Vérification de distribution - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
@@ -802,6 +807,93 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'id'      => 'amp_tab_role_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_roles_options(),
+								),
+								'Gardiens de paniers'                    => array(
+									'id'      => 'amp_tab_gardiens_paniers_distrib',
+									'desc'    => '',
+									'options' => [
+										array(
+											'id'   => 'enable-gardiens-paniers',
+											'name' => 'Activer',
+											'desc' => 'Activer le système de gardiens de paniers',
+											'type' => 'checkbox',
+										),
+										array(
+											'name' => 'Email à l\'amapien faisant garder son panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'inscr-distrib-gardiened-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Garde de vos paniers par %%gardien%% à %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-distrib-gardiened-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'textarea',
+											'default' => "Bonjour,\n\n%%gardien%% (%%gardien_contact%%) gardera vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
+													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
+													'gardien'          => 'Nom du gardien de panier choisi',
+													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+												], false ),
+										),
+										array(
+											'name' => 'Email au gardien de panier',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'inscr-distrib-gardieneur-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Garde de panier de %%amapien%% à %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-distrib-gardieneur-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'textarea',
+											'default' => "Bonjour,\n\n%%amapien%% (%%amapien_contact%%) vous a attribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
+													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
+													'gardien'          => 'Nom du gardien de panier choisi',
+													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+												], false ),
+										),
+										array(
+											'name' => 'Email au gardien de panier (désaffectation)',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'desinscr-distrib-gardieneur-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Désaffectation garde de panier de %%amapien%% à %%post:title%%',
+										),
+										array(
+											'id'      => 'desinscr-distrib-gardieneur-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'textarea',
+											'default' => "Bonjour,\n\n%%amapien%% vous a désattribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
+													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
+													'gardien'          => 'Nom du gardien de panier choisi',
+													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+												], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									],
 								),
 							),
 						),
@@ -3599,6 +3691,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										array(
 											'type' => 'note',
 											'desc' => 'Etiquettes de rôles Amap particulières. Permet, par ex, d\'affecter les Reply To des emails automatiques aux personnes qui gèrent les visites, les distributions, les intermittents',
+										),
+										array(
+											'id'       => 'resp-distrib-gardien-amap-role',
+											'name'     => 'Rôle des responsables des gardiens de paniers',
+											'type'     => 'select-categories',
+											'taxonomy' => AmapressUser::AMAP_ROLE,
 										),
 										array(
 											'id'       => 'resp-distrib-amap-role',

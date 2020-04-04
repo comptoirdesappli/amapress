@@ -691,15 +691,16 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 			'resp-distrib-amap-role',
 			'resp-visite-amap-role',
 			'resp-intermittents-amap-role',
-			'resp-amap_event-amap-role'
+			'resp-amap_event-amap-role',
+			Amapress::getOption( 'enable-gardiens-paniers' ) ? 'resp-distrib-gardien-amap-role' : ''
 		] as $option
 	) {
-		if ( empty( Amapress::getOption( $option ) ) ) {
+		if ( ! empty( $option ) && empty( Amapress::getOption( $option ) ) ) {
 			$empty_resp_roles = true;
 		}
 	}
 	$state['10_users'][] = amapress_get_check_state(
-		count( $amap_roles ) == 0 ? 'warning' : 'success',
+		count( $amap_roles ) == 0 || $empty_resp_roles ? 'warning' : 'success',
 		'Rôle descriptif spécifiques des membres du collectif',
 		'<a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
 		admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )

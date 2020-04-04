@@ -136,6 +136,79 @@ function amapress_get_custom_content_distribution( $content ) {
 			echo $panel_resp;
 		}
 
+		if ( amapress_is_user_logged_in() && Amapress::getOption( 'enable-gardiens-paniers' ) ) {
+			amapress_echo_panel_start( 'Gardiens de paniers' );
+			echo amapress_gardiens_paniers_map( $dist_id );
+			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
+				echo '<p style="font-weight: bold; margin-top: 1em">Vous êtes inscrit Gardien de paniers</p>';
+			}
+			$current_amapien = AmapressUser::getBy( amapress_current_user_id() );
+			$gardien_id      = $dist->getPanierGardienId( amapress_current_user_id() );
+			if ( ! empty( $gardien_id ) ) {
+				$gardien = AmapressUser::getBy( $gardien_id );
+				echo '<p style="font-weight: bold; margin-top: 1em">Votre/vos panier(s) seront gardés par ' . $gardien->getDisplayName() . '(' . $gardien->getContacts() . ')</p>';
+			}
+			$gardien_amapien_ids = $dist->getGardiensPaniersAmapiensIds( amapress_current_user_id() );
+			if ( ! empty( $gardien_amapien_ids ) ) {
+				echo '<p>Vous gardez les paniers de : ' .
+				     implode( ', ', array_map( function ( $uid ) {
+					     $u = AmapressUser::getBy( $uid );
+
+					     return sprintf( '%s (%s)', $u->getDisplayName(), $u->getContacts() );
+				     }, $gardien_amapien_ids ) )
+				     . '</p>';
+			}
+			echo '<table>';
+			echo implode( '', array_map( function ( $u ) use ( $current_amapien, $gardien_id, $dist_id, $can_subscribe, $user_contrats ) {
+				$link = '';
+				if ( $can_subscribe && ! empty( $user_contrats ) ) {
+					if ( empty( $gardien_id ) && $u->ID != amapress_current_user_id() ) {
+						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="inscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et l\'affectez-vous à la garde votre panier ?"
+					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Affecter la garde</button></div>';
+					} elseif ( $u->ID == $gardien_id ) {
+						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="desinscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment le désaffecter de la garde votre panier ?"
+					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Désaffecter la garde</button></div>';
+					}
+				}
+
+				/** @var AmapressUser $u */
+				$ret = '<tr>';
+				$ret .= '<td>' . $link . '</td>';
+				$ret .= '<td>' . esc_html( $u->getDisplayName() ) . '</td>';
+				$ret .= '<td>' . ( $u->getContacts() ) . '</td>';
+				$ret .= '<td>' . esc_html(
+						! $u->isAdresse_localized() ?
+							'amapien non localisé' :
+							( $current_amapien->isAdresse_localized() ?
+								sprintf( 'à %s (à vol d\'oiseau)',
+									AmapressUsers::distanceFormatMeter(
+										$current_amapien->getUserLatitude(),
+										$current_amapien->getUserLongitude(),
+										$u->getUserLatitude(),
+										$u->getUserLongitude() ) )
+								: 'Vous n\'êtes pas localisé'
+							) ) . '</td>';
+				$ret .= '</tr>';
+
+				return $ret;
+			}, $dist->getGardiens() ) );
+			echo '</table>';
+
+			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
+				$inscription_href = Amapress::get_inscription_distrib_page_href();
+				if ( ! empty( $inscription_href ) ) {
+					echo '<p>' . Amapress::makeButtonLink(
+							$inscription_href, 'Se proposer comme gardien de panier',
+							true, true
+						) . '</p>';
+				}
+			}
+
+			amapress_echo_panel_end();
+		}
+
 		$instructions = '';
 		if ( $is_resp || $is_resp_amap ) {
 			$add_text = '';
