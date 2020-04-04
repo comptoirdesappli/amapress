@@ -1806,6 +1806,22 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 			return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName(), true, true );
 		}, AmapressMailingGroup::getAll() ) )
 	);
+	$should_use_smtp       = array_filter( AmapressMailingGroup::getAll(), function ( $ml ) {
+		/* @var AmapressMailingGroup $ml */
+		return $ml->shouldUseSmtp();
+	} );
+	if ( ! empty( $should_use_smtp ) ) {
+		$state['36_mailing'][] = amapress_get_check_state(
+			'warning',
+			'Emails groupés - SMTP recommandé',
+			'Ces Emails groupés devraient être configuré pour utiliser le SMTP du compte IMAP qu\'ils relayent',
+			admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page' ),
+			implode( ', ', array_map( function ( $ml ) {
+				/** @var AmapressMailingGroup $ml */
+				return Amapress::makeLink( $ml->getAdminEditLink(), $ml->getName(), true, true );
+			}, $should_use_smtp ) )
+		);
+	}
 	$state['36_mailing'][] = amapress_get_check_state(
 		'do',
 		'Liste de diffusions - Gestion externe sur un service Sympa (Sud-Ouest2.org, Ouvaton...) ',

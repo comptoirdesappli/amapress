@@ -35,6 +35,10 @@ function amapress_register_entities_mailing_groups( $entities ) {
 						} else {
 							echo amapress_get_admin_notice( 'Configuration SMTP OK', 'success', false );
 						}
+					} elseif ( $ml->shouldUseSmtp() ) {
+						echo amapress_get_admin_notice(
+							sprintf( 'Cette Email Groupé contient %d membres, le SMTP du compte IMAP devrait être configuré pour les envois.', $ml->getMembersCount() ),
+							'warning', false );
 					}
 				}
 			}
@@ -179,20 +183,20 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'type'        => 'checkbox',
 				'show_column' => false,
 			),
-			'smtp_out_note2'     => array(
+			'smtp_out_note2'         => array(
 				'group'       => 'Serveur sortant',
 				'type'        => 'note',
 				'desc'        => 'Si les identifiants sont les mêmes que l\'accès IMAP/POP, laissez les champs vides (et cocher la case "Avec authentication ?")',
 				'show_column' => false,
 			),
-			'smtp_auth_username' => array(
+			'smtp_auth_username'     => array(
 				'name'         => 'Username',
 				'group'        => 'Serveur sortant',
 				'autocomplete' => false,
 				'type'         => 'text',
 				'show_column'  => false,
 			),
-			'smtp_auth_password' => array(
+			'smtp_auth_password'     => array(
 				'name'         => 'Password',
 				'group'        => 'Serveur sortant',
 				'type'         => 'text',
@@ -200,7 +204,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'is_password'  => true,
 				'show_column'  => false,
 			),
-			'smtp_max_per_hour'  => array(
+			'smtp_max_per_hour'      => array(
 				'name'        => 'Emails par heure',
 				'group'       => 'Serveur sortant',
 				'type'        => 'number',
@@ -208,14 +212,14 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'max'         => 10000,
 				'show_column' => false,
 			),
-			'subject_pref'       => array(
+			'subject_pref'           => array(
 				'group'       => 'Description',
 				'name'        => amapress__( 'Préfixe Sujet' ),
 				'type'        => 'text',
 				'show_column' => false,
 				'desc'        => 'Préfixe à ajouter au sujet des emails relayés'
 			),
-			'moderation'         => array(
+			'moderation'             => array(
 				'group'    => 'Modération',
 				'name'     => amapress__( 'Modération' ),
 				'type'     => 'select',
@@ -272,7 +276,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'custom'  => 'amapress_get_mailing_group_waiting_list',
 				'show_on' => 'edit-only',
 			),
-			'members_count'    => array(
+			'members_count'          => array(
 				'group'   => 'Membres',
 				'name'    => amapress__( 'Membres' ),
 				'type'    => 'custom',
@@ -281,7 +285,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'custom'  => 'amapress_get_mailing_group_members_count',
 				'show_on' => 'edit-only',
 			),
-			'queries'          => array(
+			'queries'                => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Groupes inclus' ),
 				'type'        => 'multicheck',
@@ -290,14 +294,14 @@ function amapress_register_entities_mailing_groups( $entities ) {
 //				'required'    => true,
 				'show_column' => false,
 			),
-			'inc_adh_requests' => array(
+			'inc_adh_requests'       => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Inclure les demandes d\'adhésion' ),
 				'type'        => 'checkbox',
 				'desc'        => 'Inclure les demandes d\'adhésion non confirmées (Liste d\'attente)',
 				'show_column' => false,
 			),
-			'other_users'      => array(
+			'other_users'            => array(
 				'group'        => 'Membres',
 				'name'         => amapress__( 'Amapiens hors groupe' ),
 				'type'         => 'select-users',
@@ -307,7 +311,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'         => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
 				'show_column'  => false,
 			),
-			'raw_users'        => array(
+			'raw_users'              => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Membres supplémentaires (emails)' ),
 				'type'        => 'textarea',

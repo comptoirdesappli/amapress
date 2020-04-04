@@ -329,7 +329,12 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 		$user_emails = array_merge( $user_emails, $this->getRawEmails() );
 		$user_emails = array_merge( $user_emails, $this->getAdhesionRequestEmailsIfActive() );
+
 		return count( array_unique( $user_emails ) );
+	}
+
+	public function shouldUseSmtp() {
+		return ( $this->getMembersCount() > 25 );
 	}
 
 	public function testParams() {
