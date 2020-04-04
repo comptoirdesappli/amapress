@@ -13,21 +13,21 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
-		'special_options' => array(),
-		'slug'            => 'adhesions_paiements',
-		'title_format'    => 'amapress_adhesion_paiement_title_formatter',
-		'slug_format'     => 'from_title',
-		'title'           => false,
-		'editor'          => false,
-		'menu_icon'       => 'flaticon-business',
-		'default_orderby' => 'post_title',
-		'default_order'   => 'ASC',
-		'labels'          => array(
+		'special_options'  => array(),
+		'slug'             => 'adhesions_paiements',
+		'title_format'     => 'amapress_adhesion_paiement_title_formatter',
+		'slug_format'      => 'from_title',
+		'title'            => false,
+		'editor'           => false,
+		'menu_icon'        => 'flaticon-business',
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
+		'labels'           => array(
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Saisie chèques adhésion',
 //            'items_list' => 'xxx',
 		),
-		'row_actions'     => array(
+		'row_actions'      => array(
 			'mark_rcv'               => 'Marquer reçu',
 			'unmark_rcv'             => 'Marquer Non reçu',
 			'generate_bulletin_docx' => [
@@ -47,12 +47,12 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				},
 			],
 		),
-		'views'           => array(
+		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_adhesion_paiement_views',
 			'exp_csv' => true,
 		),
-		'fields'          => array(
+		'fields'           => array(
 			'user'         => array(
 				'name'         => amapress__( 'Amapien' ),
 				'type'         => 'select-users',
@@ -142,7 +142,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'desc' => 'Montant',
 			),
 		),
-		'bulk_actions'    => array(
+		'bulk_actions'     => array(
 			'amp_adh_pmt_mark_recv' => array(
 				'label'    => 'Marquer reçu',
 				'messages' => array(
@@ -160,7 +160,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 
 
 function amapress_get_adhesion_paiements_summary( $paiement_id ) {
-	$taxes   = get_categories( array(
+	$taxes = get_categories( array(
 		'orderby'    => 'name',
 		'order'      => 'ASC',
 		'taxonomy'   => 'amps_paiement_category',
@@ -261,7 +261,7 @@ add_filter( 'tf_select_users_title', 'amapress_adhesion_paiement_select_user_tit
 function amapress_adhesion_paiement_select_user_title( $title, $user, $option ) {
 	if ( isset( $option->owner->settings['post_type'] )
 	     && ( in_array( AmapressAdhesion_paiement::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] )
-	     || in_array( AmapressAmapien_paiement::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] )
+	          || in_array( AmapressAmapien_paiement::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] )
 	          || in_array( AmapressAdhesion::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) ) {
 //    if ($option_id == 'amapress_adhesion_paiement_user') {
 		$amapien = AmapressUser::getBy( $user->ID );

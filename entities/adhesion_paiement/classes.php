@@ -289,7 +289,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'bulletin-adhesion-' . $this->ID . '-' . $this->getUser()->getSortableDisplayName() . '-' . date_i18n( 'Y-m-d', $this->getPeriod()->getDate_debut() ) . $ext );
 	}
 
-	public function generateBulletinDoc( $editable ) {
+	public function generateBulletinDoc( $editable, $check_only = false ) {
 		$out_filename   = $this->getBulletinDocFileName();
 		$model_filename = $this->getPeriod()->getModelDocFileName();
 		if ( empty( $model_filename ) ) {
@@ -306,7 +306,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		}
 
 		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
-		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $model_filename );
+		$templateProcessor = new Phptemplate_withnewline( $model_filename );
+
+		if ( $check_only ) {
+			return Phptemplate_withnewline::getUnknownPlaceholders( $model_filename, $placeholders );
+		}
+
 		foreach ( $placeholders as $k => $v ) {
 			$templateProcessor->setValue( $k, $v );
 		}
@@ -320,12 +325,21 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $out_filename;
 	}
 
-	public static function getPlaceholdersHelp( $additional_helps = [], $for_word = false, $show_toggler = true ) {
+	public static function getPlaceholders() {
 		$ret = [];
 
+		foreach ( amapress_replace_mail_placeholders_help( '', false, false ) as $k => $v ) {
+			$ret[ $k ] = $v;
+		}
 		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
 			$ret[ $prop_name ] = $prop_desc;
 		}
+
+		return $ret;
+	}
+
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_word = false, $show_toggler = true ) {
+		$ret = self::getPlaceholders();
 
 		return Amapress::getPlaceholdersHelpTable( 'adhesion-placeholders', $ret,
 			'de l\'adhésion', $additional_helps, ! $for_word,
@@ -337,50 +351,50 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                     = [];
-			$ret['date_debut']       = [
+			$ret                         = [];
+			$ret['date_debut']           = [
 				'desc' => 'Date début de la période d\'adhésion (par ex, 01/09/2018)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin']         = [
+			$ret['date_fin']             = [
 				'desc' => 'Date fin de période d\'adhésion (par ex, 31/08/2019)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['date_debut_annee'] = [
+			$ret['date_debut_annee']     = [
 				'desc' => 'Année de début de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin_annee']   = [
+			$ret['date_fin_annee']       = [
 				'desc' => 'Année de fin de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['paiement_date']    = [
+			$ret['paiement_date']        = [
 				'desc' => 'Date du paiement/adhésion à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate() );
 				}
 			];
-			$ret['montant_amap']     = [
+			$ret['montant_amap']         = [
 				'desc' => 'Montant versé à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantAmap() );
 				}
 			];
-			$ret['montant_reseau']   = [
+			$ret['montant_reseau']       = [
 				'desc' => 'Montant versé au réseau de l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau() );
 				}
 			];
-			$ret['tresoriers']       = [
+			$ret['tresoriers']           = [
 				'desc' => 'Nom des référents de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -448,13 +462,13 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getCode_postal();
 				}
 			];
-			$ret['adherent.ville'] = [
+			$ret['adherent.ville']       = [
 				'desc' => 'Ville adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getVille();
 				}
 			];
-			$ret['adherent.rue'] = [
+			$ret['adherent.rue']         = [
 				'desc' => 'Rue (adresse) adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getAdresse();

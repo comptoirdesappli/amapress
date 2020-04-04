@@ -36,6 +36,13 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return get_attached_file( $this->getWordModelId(), true );
 	}
 
+	public function getModelDocStatus() {
+		$model_file   = $this->getModelDocFileName();
+		$placeholders = AmapressAdhesion_paiement::getPlaceholders();
+
+		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, 'Bulletin d\'adhésion' );
+	}
+
 	public function getMontantReseau() {
 		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_reseau' );
 	}

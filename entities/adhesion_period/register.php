@@ -23,6 +23,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 			'add_new'      => 'Ajouter',
 			'add_new_item' => 'Ajouter une période d\'adhésion',
 		),
+		'edit_header'      => function ( $post ) {
+			$period = new AmapressAdhesionPeriod( $post->ID );
+			$result = $period->getModelDocStatus();
+			if ( true !== $result ) {
+				echo amapress_get_admin_notice( $result['message'], $result['status'], false );
+			}
+		},
 		'row_actions'      => array(
 			'renew' => [
 				'label'   => 'Renouveler',
