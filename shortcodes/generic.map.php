@@ -152,7 +152,6 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 
 		return $htm . '<script type="text/javascript">
                 //<![CDATA[
-                var map;
                 function initMap' . $amapress_map_instance . '() {
                   var pos = new google.maps.LatLng(' . $latitude . ',' . $longitude . ');
                   ' . $js_acces . '
@@ -215,6 +214,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 
 		return $htm . '<script type="text/javascript">
                 //<![CDATA[
+                jQuery(function() {
 var map = L.map(\'map' . $amapress_map_instance . '\').fitBounds(' . json_encode( $coords ) . ');
 // add an OpenStreetMap tile layer
 L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
@@ -231,6 +231,7 @@ L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
 					    icon: marker.icon ? L.icon({iconUrl: marker.icon}) : null}).addTo(map);
 					    m.bindPopup((marker.url ? "<h4><a href="+marker.url+" target=\'_blank\'>"+marker.title+"<a/></h4>" : "<h4>"+marker.title+"</h4>") + (marker.content || ""));
                 }
+                });
                 //]]>
 </script>';
 	}
