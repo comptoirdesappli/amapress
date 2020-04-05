@@ -688,14 +688,18 @@ jQuery(function($) {
 		}
 	}
 
-	public static function distanceFormatMeter( $lat1, $lon1, $lat2, $lon2 ) {
-		$dist = self::distance( $lat1, $lon1, $lat2, $lon2, 'K' );
+	public static function formatMeters( $dist ) {
 		if ( $dist < 1 ) {
 			return intval( $dist * 1000 ) . 'm';
 		} else {
 			return round( $dist, 1 ) . 'km';
 		}
 	}
+
+	public static function distanceFormatMeter( $lat1, $lon1, $lat2, $lon2 ) {
+		return self::formatMeters( self::distance( $lat1, $lon1, $lat2, $lon2, 'K' ) );
+	}
+
 	public static function distance( $lat1, $lon1, $lat2, $lon2, $unit ) {
 		$theta = $lon1 - $lon2;
 		$dist  = sin( deg2rad( $lat1 ) ) * sin( deg2rad( $lat2 ) ) + cos( deg2rad( $lat1 ) ) * cos( deg2rad( $lat2 ) ) * cos( deg2rad( $theta ) );
@@ -722,12 +726,10 @@ jQuery(function($) {
 			'user'  => amapress_current_user_id(),
 		), $atts, 'users_near' );
 
-//        $lieu_ids = AmapressUsers::get_current_user_lieu_ids();
-
 		ob_start();
 		$user_id = AmapressUsers::get_user_id( $atts['user'] );
-		$loc     = get_user_meta( $user_id, 'amapress_user_location_type', true );
-		if ( empty( $loc ) ) {
+		$amapien = AmapressUser::getBy( $user_id );
+		if ( ! $amapien->isAdresse_localized() ) {
 			if ( $user_id == amapress_current_user_id() ) {
 				return 'Votre adresse n\'est pas localisée.';
 			} else {
@@ -735,29 +737,45 @@ jQuery(function($) {
 			}
 		}
 
-		$lat = floatval( get_user_meta( $user_id, 'amapress_user_lat', true ) );
-		$lng = floatval( get_user_meta( $user_id, 'amapress_user_long', true ) );
+		$lat = $amapien->getUserLatitude();
+		$lng = $amapien->getUserLongitude();
 
-		$users = get_users( array(
-			'meta_query' => amapress_get_user_meta_filter(),
-			'order'      => 'ASC',
-			'orderby'    => 'display_name',
-			'exclude'    => array( $user_id ),
-		) );
+		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( $user_id );
+		/** @var AmapressUser[] $users */
+		$users = [];
+		foreach ( $user_lieux_ids as $lieu_id ) {
+			foreach (
+				get_users_cached( array(
+					'amapress_lieu' => $lieu_id,
+					'meta_query'    => amapress_get_user_meta_filter(),
+					'fields'        => 'all_with_meta',
+				) ) as $user
+			) {
+				if ( $user_id == $user->ID ) {
+					continue;
+				}
+				$users[ $user->ID ] = AmapressUser::getBy( $user );
+			}
+		}
 
 		$users_dists = array();
 		foreach ( $users as $user ) {
-			$loc = get_user_meta( $user_id, 'amapress_user_location_type', true );
-			if ( ! empty( $loc ) ) {
-				$u_lat         = floatval( get_user_meta( $user->ID, 'amapress_user_lat', true ) );
-				$u_lng         = floatval( get_user_meta( $user->ID, 'amapress_user_long', true ) );
+			if ( $user->isAdresse_localized() ) {
 				$users_dists[] = array(
 					'user' => $user,
-					'dist' => AmapressUsers::distance( $lat, $lng, $u_lat, $u_lng, 'K' )
+					'dist' => AmapressUsers::distance( $lat, $lng, $user->getUserLatitude(), $user->getUserLongitude(), 'K' )
 				);
 			}
 		}
-		usort( $users_dists, array( 'AmapressUsers', 'sort_user_dist' ) );
+		usort( $users_dists, function ( $a, $b ) {
+			if ( $a['dist'] < $b['dist'] ) {
+				return - 1;
+			} elseif ( $a['dist'] > $b['dist'] ) {
+				return 1;
+			} else {
+				return 0;
+			}
+		} );
 
 		$cnt = count( $users_dists );
 		if ( $cnt > $atts['count'] ) {
@@ -766,7 +784,12 @@ jQuery(function($) {
 		echo '<table>';
 		echo '<tr><th>Amapien</th><th>Distance</th></tr>';
 		for ( $i = 0; $i < $cnt; $i ++ ) {
-			echo '<tr><td><a href="' . get_author_posts_url( $users_dists[ $i ]['user']->ID ) . '">' . $users_dists[ $i ]['user']->display_name . '</a></td><td>' . $users_dists[ $i ]['dist'] . ' km</td></tr>';
+			/** @var AmapressUser $user */
+			$user = $users_dists[ $i ]['user'];
+			echo '<tr>
+<td>' . Amapress::makeLink( 'mailto:' . $user->getEmail(), $user->getDisplayName() ) . '</td>
+<td>' . AmapressUsers::formatMeters( $users_dists[ $i ]['dist'] ) . '</td>
+</tr>';
 		}
 		echo '</table>';
 
@@ -774,16 +797,6 @@ jQuery(function($) {
 		ob_end_clean();
 
 		return $t;
-	}
-
-	public static function sort_user_dist( $a, $b ) {
-		if ( $a['dist'] < $b['dist'] ) {
-			return - 1;
-		} else if ( $a['dist'] > $b['dist'] ) {
-			return 1;
-		} else {
-			return 0;
-		}
 	}
 
 	public static function trombinoscope_role_shortcode( $atts ) {
