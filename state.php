@@ -1559,11 +1559,11 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	);
 	$with_word_contrats = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
-		return $c->canSelfSubscribe() && $c->getContratWordModelId();
+		return $c->canSelfSubscribe() && ! empty( $c->getContratModelDocFileName() );
 	} );
 	$with_word_contrats_invalid = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
-		return $c->canSelfSubscribe() && $c->getContratWordModelId() && true !== $c->getContratModelDocStatus();
+		return $c->canSelfSubscribe() && ! empty( $c->getContratModelDocFileName() ) && true !== $c->getContratModelDocStatus();
 	} );
 	$without_word_contrats = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
@@ -2253,6 +2253,8 @@ function amapress_echo_and_check_amapress_state_page() {
 				wp_die( 'Query Monitor est actif, merci de le désactiver avant import (risque de dépassement de mémoire)' );
 			}
 
+			set_time_limit( 0 );
+
 			require_once 'demos/AmapDemoBase.php';
 			$demo_file = $_SERVER['DOCUMENT_ROOT'] . '/../demos/' . $_GET['import_amap'];
 			if ( ! file_exists( $demo_file ) ) {
@@ -2461,7 +2463,11 @@ function amapress_echo_and_check_amapress_state_page() {
 		$( "#amps-state-accordion" ).accordion({
 			heightStyle: "content",
 			collapsible: true,
-			active : "none"
+		    //set localStorage for current index on activate event
+		    activate: function(event, ui) {        
+		        localStorage.setItem("amps_state_idx", $(this).accordion("option", "active"));
+		    },
+		    active: (typeof localStorage !== \'undefined\' ? parseInt(localStorage.getItem("amps_state_idx")) : "none")
 		});
 	});
 </script>';
