@@ -1396,7 +1396,7 @@ jQuery(function($) {
 					if ( $contrat->isPanierVariable() ) {
 						$ret[] = 'Paniers modulables';
 					} else {
-						$ret[] = 'Contrats';
+						$ret[] = 'Contrat récurrent';
 					}
 					if ( $contrat->isPrincipal() ) {
 						$ret[] = 'principal';
@@ -1425,8 +1425,9 @@ jQuery(function($) {
 					          || ! $contrat->canSelfSubscribe()
 					     ) ) {
 						$ret[] = '<span style="color:orange">clos depuis ' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '</span>';
+					} else {
+						$ret[] = '<span style="color: green">inscriptions ouvertes</span>';
 					}
-
 					return implode( ', ', $ret );
 				},
 				'csv'     => false,
