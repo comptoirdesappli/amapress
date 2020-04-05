@@ -761,6 +761,15 @@ class Amapress_Import_Posts_CSV {
 						$posttaxo = apply_filters( "amapress_import_apply_default_values_to_posts_taxonomy", $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
 					}
 
+					$postdata = apply_filters( "amapress_import_{$post_type}_check_resolved_post_data_before_update", $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti );
+					if ( is_wp_error( $postdata ) ) {
+						$errors[ $rkey ][] = $postdata;
+						continue;
+					}
+					if ( empty( $postdata['ID'] ) ) {
+						$update = false;
+					}
+
 					if ( $update ) {
 						$post_id = wp_update_post( $postdata, true );
 					} else {

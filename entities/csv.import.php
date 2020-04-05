@@ -626,6 +626,8 @@ function amapress_get_visites_import_page() {
 
 add_action( 'tf_custom_admin_amapress_action_import', 'amapress_process_csv_import' );
 function amapress_process_csv_import() {
+	global $amapress_imported_csv_contrats;
+	$amapress_imported_csv_contrats = [];
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressAdhesion::POST_TYPE );
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressAdhesion_intermittence::POST_TYPE);
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressAmapien_paiement::POST_TYPE);
@@ -911,3 +913,64 @@ function amapress_csv_users_import_required_headers( $required_headers ) {
 
 	return $required_headers;
 }
+
+add_filter( 'amapress_import_contrat_instance_check_resolved_post_data_before_update',
+	function ( $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti ) {
+		if ( isset( $postdata['ID'] ) ) {
+			$post_id = $postdata['ID'];
+			$contrat = AmapressContrat_instance::getBy( $post_id, true );
+			if ( $contrat->isArchived() ) {
+				return new WP_Error( 'contrat_archived', sprintf( 'Le contrat %s est archivé !', $contrat->getTitle() ) );
+			}
+			if ( ! isset( $_REQUEST['amapress_override_contrat_with_inscriptions'] ) ) {
+				$adhs = AmapressContrats::get_active_adhesions( $post_id );
+				if ( ! empty( $adhs ) ) {
+					return new WP_Error( 'contrat_has_inscr', sprintf( 'Le contrat %s a des inscriptions : modifier ses paramètres peut modifier ou annuler ses inscriptions en cours.  <br/>Si vous êtes sûr, cocher la case "Autoriser la mise à jour de contrats avec inscriptions actives"', $contrat->getTitle() ) );
+				}
+			}
+
+		}
+
+		return $postdata;
+	}, 10, 7 );
+
+add_filter( 'amapress_import_contrat_quantite_check_resolved_post_data_before_update',
+	function ( $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti ) {
+		if ( isset( $postmeta['amapress_contrat_quantite_contrat_instance'] ) ) {
+			$post_id = $postmeta['amapress_contrat_quantite_contrat_instance'];
+			$contrat = AmapressContrat_instance::getBy( $post_id, true );
+			if ( $contrat->isArchived() ) {
+				return new WP_Error( 'contrat_archived', sprintf( 'Le contrat %s est archivé !', $contrat->getTitle() ) );
+			}
+			$amapress_override_all_contrat_quantites = isset( $_REQUEST['amapress_override_all_contrat_quantites'] );
+			if ( ! isset( $_REQUEST['amapress_override_contrat_with_inscriptions'] )
+			     || $amapress_override_all_contrat_quantites ) {
+				$adhs = AmapressContrats::get_active_adhesions( $post_id );
+				if ( ! empty( $adhs ) ) {
+					if ( ! $amapress_override_all_contrat_quantites ) {
+						return new WP_Error( 'contrat_has_inscr', sprintf( 'Le contrat %s a des inscriptions : modifier ses configurations de paniers peut modifier ou annuler ses inscriptions en cours. <br/>Si vous êtes sûr, cocher la case "Autoriser la mise à jour de contrats avec inscriptions actives"', $contrat->getTitle() ) );
+					} else {
+						return new WP_Error( 'contrat_has_inscr', sprintf( 'Le contrat %s a des inscriptions : supprimer ses configurations de paniers avant de réimporter des nouvelles aurait pour conséquence d\'annuler ses inscriptions en cours. Vous devez mettre à jour les configurations de paniers dans %s', $contrat->getTitle(), Amapress::makeLink( $contrat->getAdminEditLink(), 'la configuration du contrat' ) ) );
+					}
+				}
+			}
+
+			global $amapress_imported_csv_contrats;
+			if ( empty( $amapress_imported_csv_contrats ) ) {
+				$amapress_imported_csv_contrats = [];
+			}
+
+			if ( $amapress_override_all_contrat_quantites ) {
+				if ( ! in_array( $post_id, $amapress_imported_csv_contrats ) ) {
+					$amapress_imported_csv_contrats[] = $post_id;
+					$quantites                        = AmapressContrats::get_contrat_quantites( $post_id );
+					foreach ( $quantites as $quantite ) {
+						wp_delete_post( $quantite->ID, true );
+					}
+					unset( $postdata['ID'] );
+				}
+			}
+		}
+
+		return $postdata;
+	}, 10, 7 );

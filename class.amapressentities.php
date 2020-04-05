@@ -3908,6 +3908,20 @@ Cette page permet d\'importer les configurations de paniers pour vos contrats
 									'desc'       => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
 								),
 								array(
+									'id'         => 'contrat_quantite_override_contrat_with_inscriptions',
+									'input_name' => 'amapress_override_contrat_with_inscriptions',
+									'name'       => amapress__( 'Mise à jour avec inscriptions en cours' ),
+									'type'       => 'checkbox',
+									'desc'       => 'Autoriser la mise à jour de contrats avec inscriptions actives<br/><strong style="color:red">Attention : modifier les configurations de paniers d\'un contrat peut modifier ou annuler ses inscriptions en cours</strong>',
+								),
+								array(
+									'id'         => 'override_all_contrat_quantites',
+									'input_name' => 'amapress_override_all_contrat_quantites',
+									'name'       => amapress__( 'Réimporter toutes les configurations de paniers' ),
+									'type'       => 'checkbox',
+									'desc'       => 'Réimporter toutes les configurations de paniers des contrats présents dans l\'excel (permet de conserver l\'ordre)<br/><strong style="color:red">Attention : cette option n\'est pas pas possible pour les contrats ayant déjà des inscriptions. Pour ces contrats, Vous devez mettre à jour les configurations de paniers directement dans la configuration du contrat.</strong>',
+								),
+								array(
 									'id'     => 'import_contrat_quantites',
 									'name'   => 'Importer des quantités pour les contrats',
 									'type'   => 'custom',
@@ -4002,6 +4016,13 @@ Cette page permet d\'importer les contrats
 									'name'       => amapress__( 'Ignorer les colonnes inconnues' ),
 									'type'       => 'checkbox',
 									'desc'       => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
+								),
+								array(
+									'id'         => 'contrat_override_contrat_with_inscriptions',
+									'input_name' => 'amapress_override_contrat_with_inscriptions',
+									'name'       => amapress__( 'Mise à jour avec inscriptions en cours' ),
+									'type'       => 'checkbox',
+									'desc'       => 'Autoriser la mise à jour de contrats avec inscriptions actives<br/><strong style="color:red">Attention : modifier les configurations de paniers d\'un contrat peut modifier ou annuler ses inscriptions en cours</strong>',
 								),
 								array(
 									'id'     => 'import_contrats',
