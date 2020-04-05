@@ -2119,8 +2119,8 @@ function amapress_wp_db_stats() {
 	echo '<h2>Tables rows count</h2>';
 	echo "<p>Table '$wpdb->posts' rows: $posts_count</p>";
 	echo "<p>Table '$wpdb->postmeta' rows: $postmeta_count</p>";
-	echo "<p>Table '$wpdb->users' rows: $posts_count</p>";
-	echo "<p>Table '$wpdb->usermeta' rows: $posts_count</p>";
+	echo "<p>Table '$wpdb->users' rows: $users_count</p>";
+	echo "<p>Table '$wpdb->usermeta' rows: $usermeta_count</p>";
 
 //	echo '<h2>Posts count by type</h2>';
 //	$results = $wpdb->get_results( "SELECT post_type, COUNT(*) as post_count FROM $wpdb->posts GROUP BY post_type", ARRAY_A );
