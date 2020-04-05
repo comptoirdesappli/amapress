@@ -1255,7 +1255,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'date_ouverture' => array(
+			'date_ouverture'        => array(
 				'name'           => amapress__( 'Ouverture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1296,7 +1296,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'   => array(
+			'date_cloture'          => array(
 				'name'           => amapress__( 'Clôture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1364,7 +1364,7 @@ jQuery(function($) {
 
 
 			//Statut
-			'is_principal'   => array(
+			'is_principal'          => array(
 				'name'        => amapress__( 'Contrat principal' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
@@ -1372,7 +1372,7 @@ jQuery(function($) {
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'         => array(
+			'status'                => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1387,7 +1387,7 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'status_type'    => array(
+			'status_type'           => array(
 				'name'    => amapress__( 'Résumé' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1403,6 +1403,8 @@ jQuery(function($) {
 					}
 					if ( $contrat->canSelfEdit() ) {
 						$ret[] = 'éditable';
+					} else {
+						$ret[] = 'non éditable';
 					}
 					if ( ! empty( $contrat->getPossiblePaiements() ) ) {
 						$ret[] = implode( ';', $contrat->getPossiblePaiements() ) . ' chèque(s)';
@@ -1420,20 +1422,27 @@ jQuery(function($) {
 						$ret[] = 'à la livraison';
 					}
 					if ( $contrat
-					     && ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
-					          || $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
-					          || ! $contrat->canSelfSubscribe()
-					     ) ) {
+					     && $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
+					) {
+						$ret[] = '<span style="color:orange">ouvrira le ' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '</span>';
+					} elseif ( $contrat
+					           && $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
+					) {
 						$ret[] = '<span style="color:orange">clos depuis ' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '</span>';
+					} elseif ( $contrat
+					           && ! $contrat->canSelfSubscribe()
+					) {
+						$ret[] = '<span style="color:orange">inscription fermée</span>';
 					} else {
-						$ret[] = '<span style="color: green">inscriptions ouvertes</span>';
+						$ret[] = '<span style="color: green">inscription ouverte</span>';
 					}
+
 					return implode( ', ', $ret );
 				},
 				'csv'     => false,
 				'show_on' => 'list-only',
 			),
-			'ended'          => array(
+			'ended'                 => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'csv_import'  => false,
