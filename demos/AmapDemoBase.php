@@ -12,7 +12,24 @@ class AmapDemoBase {
 	protected $taxonomies = [];
 	protected $medias = [];
 
+	protected function handleContrats( $postarr ) {
+		if ( ! empty( [ 'meta_input' ] ) ) {
+			if ( ! empty( $postarr['meta_input']['amapress_contrat_instance_date_debut'] ) ) {
+				$postarr['meta_input']['amapress_contrat_instance_date_ouverture'] =
+					Amapress::add_a_week( intval( $postarr['meta_input']['amapress_contrat_instance_date_debut'] ), - 3 );
+				$postarr['meta_input']['amapress_contrat_instance_date_cloture']   =
+					Amapress::add_a_week( intval( $postarr['meta_input']['amapress_contrat_instance_date_fin'] ), - 4 );
+				$postarr['meta_input']['amapress_contrat_instance_self_subscribe'] = 1;
+				$postarr['meta_input']['amapress_contrat_instance_self_edit']      = 1;
+			}
+		}
+
+		return $postarr;
+	}
+
 	protected function createPost( $postarr ) {
+		$postarr = $this->handleContrats( $postarr );
+
 		return wp_insert_post( $postarr );
 	}
 
