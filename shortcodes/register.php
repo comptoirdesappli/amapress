@@ -692,6 +692,49 @@ function amapress_register_shortcodes() {
 			]
 		] );
 
+	amapress_register_shortcode( 'display-if-logged', function ( $atts, $content = null ) {
+		return do_shortcode( '[display-if role=logged]' );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode si l\'amapien est connecté',
+			'args' => []
+		] );
+	amapress_register_shortcode( 'display-if-not-logged', function ( $atts, $content = null ) {
+		return do_shortcode( '[display-if role=not_logged]' );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode si l\'amapien n\'est pas connecté',
+			'args' => []
+		] );
+	amapress_register_shortcode( 'display-if-no-contrat', function ( $atts, $content = null ) {
+		return do_shortcode( '[display-if role=no_contrat]' );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode si l\'amapien n\'a pas de contrat en cours',
+			'args' => []
+		] );
+	amapress_register_shortcode( 'display-if-intermittent', function ( $atts, $content = null ) {
+		return do_shortcode( '[display-if role=intermittent]' );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode si l\'amapien est intermittent',
+			'args' => []
+		] );
+	amapress_register_shortcode( 'display-if-responsable-distrib', function ( $atts, $content = null ) {
+		return do_shortcode( '[display-if role=responsable_distrib]' );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode si l\'amapien est responsable de distribution cette semaine',
+			'args' => []
+		] );
+	amapress_register_shortcode( 'display-if-responsable-amap', function ( $atts, $content = null ) {
+		return do_shortcode( '[display-if role=responsable_amap]' );
+	},
+		[
+			'desc' => 'Affiche le contenu du shortcode si l\'amapien a accès au Tableau de bord (responsables AMAP)',
+			'args' => []
+		] );
+
 	amapress_register_shortcode( 'responsable-distrib-info', function ( $atts ) {
 		amapress_ensure_no_cache();
 
