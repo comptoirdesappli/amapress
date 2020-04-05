@@ -279,3 +279,7 @@ span.description {
     table-layout: fixed;
     width: 100%;
 }
+
+.import-errors {
+    white-space: pre-wrap;
+}
