@@ -2195,7 +2195,13 @@ FROM $wpdb->posts as p INNER JOIN $wpdb->postmeta as pm ON p.ID = pm.post_id GRO
 		[
 			[ 'title' => 'Name', 'data' => 'name' ],
 			[ 'title' => 'Value', 'data' => 'value' ],
-		], $results );
+		], $results,
+		array(
+			'paging'     => true,
+			'sorting'    => false,
+			'searching'  => true,
+			'responsive' => false,
+		) );
 }
 
 function amapress_echo_and_check_amapress_state_page() {
