@@ -1527,6 +1527,12 @@ add_action( 'admin_init', function () {
 					'warning', false, false );
 			}
 		}
+		if ( 'active' == amapress_is_plugin_active( 'amapress-installer' ) ) {
+			amapress_add_admin_notice(
+				sprintf( 'Vous venez d\'installer Amapress : %s le plugin "Installateur du plugin Amapress"',
+					Amapress::makeLink( amapress_get_plugin_desactivate_link( 'amapress-installer' ), 'désactivez' ) ),
+				'error', false, false );
+		}
 
 		$errored_mails_count = AmapressSMTPMailingQueue::getErroredMailsCount();
 		if ( $errored_mails_count > 0 ) {
