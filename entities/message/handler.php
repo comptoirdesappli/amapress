@@ -519,32 +519,9 @@ function amapress_message_get_targets() {
 	$res['Evènements'] = $ret;
 
 	$ret = array();
-	//commandes
-	$cnt   = array();
-	$query = new WP_Query( 'post_type=amps_commande&amapress_date=next&orderby=meta_key&meta_key=amapress_commande_date_distrib&order=ASC' );
-	foreach ( $query->get_posts() as $commande ) {
-		$cmd_id  = $commande->ID;
-		$lieu_id = intval( get_post_meta( $cmd_id, 'amapress_commande_lieu', true ) );
-		if ( ! isset( $cnt[ $lieu_id ] ) ) {
-			$cnt[ $lieu_id ] = 5;
-		}
-		if ( $cnt[ $lieu_id ] == 0 ) {
-			continue;
-		}
-
-		$contrat_id = intval( get_post_meta( $cmd_id, 'amapress_commande_contrat_instance', true ) );
-
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$cmd_id|amapress_commande_date_distrib", "Les amapiens inscrit à {$commande->post_title}", "commande" );
-
-		$cnt[ $lieu_id ] -= 1;
-	}
-	$res['Commandes'] = $ret;
-
-	$ret = array();
 	//avec adhésion
 	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens avec contrats", "with-contrats" );
 	//intermittants
-//    amapress_add_message_target($ret, "post_type=amps_inter_adhe&amapress_date=active|amapress_adhesion_intermittence_user", "Les intermittents", "intermittent");
 	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
 	//sans adhésion
 	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );

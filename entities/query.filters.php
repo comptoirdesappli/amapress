@@ -574,7 +574,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			},
 			explode( ',', $query->query_vars['amapress_contrat_inst'] )
 		);
-		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' || 'panier' == $pt ) {
+		if ( $pt == 'adhesion' || $pt == 'intermittence_panier' || 'panier' == $pt ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_contrat_instance",
@@ -655,7 +655,7 @@ function amapress_filter_posts( WP_Query $query ) {
 	}
 	if ( ! empty( $query->query_vars['amapress_contrat'] ) ) {
 		$amapress_contrat = Amapress::resolve_post_id( $query->query_vars['amapress_contrat'], 'amps_contrat' );
-		if ( $pt == 'adhesion' || $pt == 'commande' || $pt == 'intermittence_panier' || $pt == 'panier' ) {
+		if ( $pt == 'adhesion' || $pt == 'intermittence_panier' || $pt == 'panier' ) {
 			$active_contrat_insts = AmapressContrats::get_all_contrat_instances_by_contrat_ids( $amapress_contrat );
 			if ( empty( $active_contrat_insts ) ) {
 				$active_contrat_insts = array_map(
@@ -824,7 +824,7 @@ function amapress_filter_posts( WP_Query $query ) {
 
 	if ( ! empty( $query->query_vars['amapress_lieu'] ) ) {
 		$amapress_lieu = Amapress::resolve_post_id( $query->query_vars['amapress_lieu'], 'amps_lieu_distribution' );
-		if ( $pt == 'adhesion' || $pt == 'amap_event' || $pt == 'assemblee_generale' || $pt == 'commande' || $pt == 'intermittence_panier' ) {
+		if ( $pt == 'adhesion' || $pt == 'amap_event' || $pt == 'assemblee_generale' || $pt == 'intermittence_panier' ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_lieu",

@@ -672,18 +672,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
-		self::add_post_role( 'administrator', 'commande', 'commandes', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'administrator', 'user_commande', 'user_commandes', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
 		self::add_post_role( 'administrator', 'intermittence_panier', 'intermittence_paniers', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1057,12 +1045,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
-		self::add_post_role( 'coordinateur_amap', 'commande', 'commandes', array(
-			'read' => true,
-		) );
-		self::add_post_role( 'coordinateur_amap', 'user_commande', 'user_commandes', array(
-			'read' => false,
-		) );
 		self::add_post_role( 'coordinateur_amap', 'intermittence_panier', 'intermittence_paniers', array(
 			'read' => false,
 		) );
@@ -1297,18 +1279,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
-		self::add_post_role( 'responsable_amap', 'commande', 'commandes', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'responsable_amap', 'user_commande', 'user_commandes', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => false,
-		) );
 		self::add_post_role( 'responsable_amap', 'intermittence_panier', 'intermittence_paniers', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1489,18 +1459,6 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'referent', 'amap_event', 'amap_events', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'referent', 'commande', 'commandes', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'referent', 'user_commande', 'user_commandes', array(
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => true,

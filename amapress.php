@@ -311,13 +311,9 @@ require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.users.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.paniers.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.distributions.php' );
-require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.commandes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.contrats.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/class-amapress-event-base.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/class-amapress-calendar.php' );
-//require_once(AMAPRESS__PLUGIN_DIR . 'class.amapressadmin.php');
-//require_once(AMAPRESS__PLUGIN_DIR . 'class.amapressmembership.php');
-//require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress-widget.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/include.entities.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'options/customizer.php' );

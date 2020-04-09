@@ -186,9 +186,6 @@ class Amapress_Calendar {
 			case AmapressAssemblee_generale::INTERNAL_POST_TYPE:
 				$events[] = new AmapressAssemblee_generale( $events_id );
 				break;
-			case AmapressCommande::INTERNAL_POST_TYPE:
-				$events[] = new AmapressCommande( $events_id );
-				break;
 			case AmapressIntermittence_panier::INTERNAL_POST_TYPE:
 				$events[] = AmapressIntermittence_panier::getBy( $events_id );
 				break;
