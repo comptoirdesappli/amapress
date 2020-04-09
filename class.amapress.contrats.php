@@ -256,8 +256,10 @@ class AmapressContrats {
 		$include_futur = true
 	) {
 		if ( empty( $date ) ) {
-			$date = Amapress::end_of_day( amapress_time() );
+			$date = amapress_time();
 		}
+		$date = Amapress::end_of_day( $date );
+
 
 		$filter = Amapress::getFilterForReferent();
 		$key    = "amapress_get_active_contrat_instances_ids_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}_{$filter}";
@@ -320,8 +322,10 @@ class AmapressContrats {
 	 */
 	public static function get_active_contrat_instances( $contrat_instance_id = null, $date = null, $ignore_renouv_delta = false, $include_futur = true ) {
 		if ( empty( $date ) ) {
-			$date = Amapress::end_of_day( amapress_time() );
+			$date = amapress_time();
 		}
+		$date = Amapress::end_of_day( $date );
+
 
 		$key = "amapress_get_active_contrat_instances_{$contrat_instance_id}_{$date}_{$ignore_renouv_delta}";
 		$res = wp_cache_get( $key );
