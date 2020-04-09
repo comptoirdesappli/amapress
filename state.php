@@ -4,6 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+require_once AMAPRESS__PLUGIN_DIR . '/utils/install-from-github.php';
+
 add_action( 'template_redirect', function () {
 	if ( 'shouldredirect' == get_query_var( 'amp_action' ) ) {
 		wp_die( '<strong style="color: #2b542c">Redirection réussie</strong>' );
@@ -167,13 +169,31 @@ function amapress_check_plugin_install(
 	$not_installed_level = 'warning', $installed_level = 'success',
 	$values = null
 ) {
-	$is_active = amapress_is_plugin_active( $plugin_slug );
+	if ( is_array( $plugin_slug ) ) {
+		$is_active        = amapress_is_plugin_active( $plugin_slug['short_slug'] );
+		$action_link      = amapress_install_plugin_from_github_url(
+			$plugin_slug['slug'],
+			$plugin_slug['name'],
+			$plugin_slug['github_repo']
+		);
+		$plugin_info_link = Amapress::makeLink( 'https://github.com/' . $plugin_slug['github_repo'],
+			'En savoir plus', true, true );
+		$install_link     = $action_link;
+		$activate_link    = $action_link;
+	} else {
+		$is_active = amapress_is_plugin_active( $plugin_slug );
+
+		$plugin_info_link = Amapress::makeLink( 'https://fr.wordpress.org/plugins/' . $plugin_slug,
+			'En savoir plus', true, true );
+		$install_link     = amapress_get_plugin_install_link( $plugin_slug );
+		$activate_link    = amapress_get_plugin_activate_link( $plugin_slug );
+	}
 
 	return amapress_get_check_state(
 		$is_active == 'active' ? $installed_level : $not_installed_level,
 		$plugin_name . ( $is_active != 'active' ? ' (' . ( $is_active == 'not-installed' ? 'installer' : 'activer' ) . ')' : '' ),
-		$message_if_install_needed . ' ' . Amapress::makeLink( 'https://fr.wordpress.org/plugins/' . $plugin_slug, 'En savoir plus', true, true ),
-		$is_active == 'not-installed' ? amapress_get_plugin_install_link( $plugin_slug ) : ( $is_active == 'installed' ? amapress_get_plugin_activate_link( $plugin_slug ) : '' ),
+		$message_if_install_needed . ' ' . $plugin_info_link,
+		$is_active == 'not-installed' ? $install_link : ( $is_active == 'installed' ? $activate_link : '' ),
 		$values
 	);
 }
@@ -223,7 +243,14 @@ Configurer ici pour sauvegarder les données de votre site vers un drive ou stoc
 	$state['01_plugins'][] = amapress_check_plugin_install( 'new-user-approve', 'New User Approve',
 		'<strong>Optionnel</strong> : Installer ce plugin si le paramètre « Création de compte sur le site » (Section 2 – configuration) est activé. Une inscription en ligne nécessitera une validation de l’utilisateur par un administrateur.',
 		Amapress::userCanRegister() ? 'error' : 'info' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'google-sitemap-generator', 'Google Sitemap Generator',
+	$state['01_plugins'][] = amapress_check_plugin_install(
+		[
+			'short_slug'  => 'google-sitemap-generator',
+			'slug'        => 'google-sitemap-generator/sitemap.php',
+			'name'        => 'Google XML Sitemaps (BlueChip fork)',
+			'github_repo' => 'chesio/google-sitemap-generator',
+		],
+		'Google XML Sitemaps (BlueChip fork)',
 		'<strong>Recommandé</strong> : Utilisation simple, améliore le référencement du site en générant un plan du site et en notifiant les moteurs de recherche des modifications du site. 
 <br/>Après activation rendez-vous dans sa <a target="_blank" href="' . admin_url( 'options-general.php?page=google-sitemap-generator%2Fsitemap.php#sm_includes' ) . '">configuration</a> (Section Contenu du sitemap/Autres types d\'article) et cocher les cases "Inclure les articles de type Produits/Recettes/Producteurs/Lieux de distribution/Productions"',
 		defined( 'AMAPRESS_DEMO_MODE' ) ? 'info' : 'warning' );
