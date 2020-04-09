@@ -30,11 +30,6 @@ function amapress_do_query_action_distribution_desinscr_resp() {
 	}
 }
 
-add_action( 'amapress_do_query_action_distribution_panier_garder', 'amapress_do_query_action_distribution_panier_garder' );
-function amapress_do_query_action_distribution_panier_garder() {
-	//TODO
-}
-
 add_filter( 'amapress_get_custom_title_distribution_liste-emargement', 'amapress_get_custom_title_distribution_liste_emargement' );
 function amapress_get_custom_title_distribution_liste_emargement( $content ) {
 	if ( ! amapress_is_user_logged_in() ) {

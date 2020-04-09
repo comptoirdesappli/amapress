@@ -23,20 +23,16 @@ function amapress_add_rewrite_rules() {
 		$rewrite_root = '^index.php/';
 	}
 
-	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/([^/]+)/sample/pdf/?', 'index.php?post_type=amps_contrat&name=$matches[1]&amp_action=sample_pdf&subview=$matches[2]', 'top' );
-	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/([^/]+)/pdf/?', 'index.php?post_type=amps_contrat&name=$matches[1]&amp_action=pdf&subview=$matches[2]', 'top' );
 	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/([^/]+)/?', 'index.php?post_type=amps_contrat&name=$matches[1]&viewmode=details&subview=$matches[2]', 'top' );
 	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/?', 'index.php?post_type=amps_contrat&name=$matches[1]&viewmode=details', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/(inscription|s-inscrire|sinscrire|participer|devenir-responsable)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=inscr_resp', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/(desinscription|desinscrire)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=desinscr_resp', 'top' );
-	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/garder/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=panier_garder', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/liste-emargement/([^/]+)/([^/]+)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amapress_contrat=$matches[2]&amapress_contrat_qt=$matches[3]&amp_action=liste-emargement', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/liste-emargement/excel/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=liste-emargement-excel', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/liste-emargement/pdf/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=liste-emargement-pdf', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/liste-emargement/([^/]+)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amapress_contrat=$matches[2]&amp_action=liste-emargement', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/liste-emargement/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=liste-emargement', 'top' );
 	add_rewrite_rule( $rewrite_root . 'assemblees/([^/]+)/(inscription|s-inscrire|sinscrire|participer|y-aller)/?', 'index.php?post_type=amps_assemblee&name=$matches[1]&amp_action=participer', 'top' );
-//	add_rewrite_rule( $rewrite_root . 'commandes/([^/]+)/(commander)/?', 'index.php?post_type=amps_commande&name=$matches[1]&amp_action=commander', 'top' );
 	add_rewrite_rule( $rewrite_root . 'shouldredirect/?', 'index.php?amp_action=shouldredirect', 'top' );
 
 	amapress_add_page_if_not_exists( 'paniers-intermittents-page',
