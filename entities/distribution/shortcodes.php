@@ -11,25 +11,11 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 		return $post_its;
 	}
 
-//	$is_resp_amap = amapress_can_access_admin();
+	$is_resp_amap = amapress_can_access_admin();
+	$user_id      = amapress_current_user_id();
 
-//	$date           = amapress_time();
-//	$next_week_date = Amapress::add_a_week( amapress_time() );
-//	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
-
-	$user_id = amapress_current_user_id();
-
-	//$lieux = count( Amapress::get_lieu_ids() );
 	$arg_next_distribs = ! empty( $args['distrib'] ) ? $args['distrib'] : 2;
-	$weeks             = $arg_next_distribs;
-	do {
-		$next_distribs = AmapressDistribution::getNextDistribsUserResponsable( null, $weeks, null );
-		$dates         = array_unique( array_map( function ( $d ) {
-			/** @var AmapressDistribution $d */
-			return Amapress::start_of_day( $d->getDate() );
-		}, $next_distribs ) );
-		$weeks         += 1;
-	} while ( $weeks < 15 && count( $dates ) < $arg_next_distribs );
+	$next_distribs     = AmapressDistribution::getNextDistribs( null, $arg_next_distribs, $arg_next_distribs );
 
 	foreach ( $next_distribs as $dist ) {
 		if ( empty( $dist->getContratIds() ) ) {
@@ -40,6 +26,8 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 		$lieu    = $dist->getLieu();
 		if ( in_array( $user_id, $dist->getResponsablesIds() ) ) {
 			$content .= '<p class="resp-distribution">Vous êtes responsable de distribution</p>';
+		} elseif ( ! $is_resp_amap ) {
+			continue;
 		}
 		$content .= '<p>' . esc_html( $lieu->getShortName() ) . '</p>';
 		$content .= amapress_get_button( 'Liste d\'émargement',
@@ -53,7 +41,6 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 			'title_html' => Amapress::makeLink( $dist->getPermalink(), date_i18n( 'd/m/Y', $dist->getDate() ) . ' - Distribution' ),
 			'content'    => $content,
 		);
-
 	}
 
 	return $post_its;
@@ -68,16 +55,8 @@ function amapress_responsables_distrib_shortcode( $atts ) {
 		'distrib' => 2,
 	), $atts );
 
-	$arg_next_distribs = intval( $atts['distrib'] );
-	$weeks             = $arg_next_distribs;
-	do {
-		$next_distribs = AmapressDistribution::getNextDistribsUserResponsable( null, $weeks, null );
-		$dates         = array_unique( array_map( function ( $d ) {
-			/** @var AmapressDistribution $d */
-			return Amapress::start_of_day( $d->getDate() );
-		}, $next_distribs ) );
-		$weeks         += 1;
-	} while ( $weeks < 15 && count( $dates ) < $arg_next_distribs );
+	$arg_next_distribs = ! empty( $atts['distrib'] ) ? $atts['distrib'] : 2;
+	$next_distribs     = AmapressDistribution::getNextDistribs( null, $arg_next_distribs, $arg_next_distribs );
 
 	$ret = '';
 	foreach ( $next_distribs as $dist ) {

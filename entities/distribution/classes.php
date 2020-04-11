@@ -852,7 +852,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				if ( $adhesion->getLieuId() == $this->getLieuId()
 				     && in_array( $adhesion->getContrat_instanceId(), $contrats )
 				) {
-						$quants = $adhesion->getContrat_quantites( $dist_date );
+					$quants = $adhesion->getContrat_quantites( $dist_date );
 					if ( empty( $quants ) ) {
 						continue;
 					}
@@ -1324,31 +1324,32 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressDistribution[] */
 	public
-	static function getNextDistribsUserResponsable(
-		$date = null, $weeks = 1, $user_id = null
+	static function getNextDistribs(
+		$date = null, $weeks = 1, $min_weeks = 0
 	) {
-		$is_resp_amap = amapress_can_access_admin();
-
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
 		$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
-		$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
+		$dists          = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
 
-		if ( ! $user_id ) {
-			$user_id = amapress_current_user_id();
-		}
+		$num_weeks = count( array_unique( array_map( function ( $d ) {
+			/** @var AmapressDistribution $d */
+			return Amapress::start_of_week( $d->getDate() );
+		}, $dists ) ) );
 
-		$ret = [];
-		foreach ( $next_distribs as $dist ) {
-			if ( ! $is_resp_amap && ! in_array( $user_id, $dist->getResponsablesIds() ) ) {
-				continue;
+		if ( $num_weeks < $min_weeks ) {
+			$next_dists = AmapressDistribution::get_next_distributions( Amapress::start_of_day( Amapress::add_days( Amapress::end_of_week( $next_week_date ), 1 ) ) );
+			while ( ! empty( $next_dists ) && $num_weeks < $min_weeks ) {
+				$dists[]   = array_shift( $next_dists );
+				$num_weeks = count( array_unique( array_map( function ( $d ) {
+					/** @var AmapressDistribution $d */
+					return Amapress::start_of_week( $d->getDate() );
+				}, $dists ) ) );
 			}
-
-			$ret[] = $dist;
 		}
 
-		return $ret;
+		return $dists;
 	}
 
 	/** @return AmapressIntermittence_panier[] */
