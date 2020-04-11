@@ -697,12 +697,12 @@ class AmapressContrats {
 	/**
 	 * @return AmapressContrat_quantite[]
 	 */
-	public static function get_contrat_quantites( $contrat_instance_id ) {
-		$key = "amapress_get_contrat_quantites_$contrat_instance_id";
+	public static function get_contrat_quantites( $contrat_instance_id, $date = null ) {
+		$key = "amapress_get_contrat_quantites_{$contrat_instance_id}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$active_contrat_instance_ids = [];
-			foreach ( AmapressContrats::get_active_contrat_instances_ids() as $cid ) {
+			foreach ( AmapressContrats::get_active_contrat_instances_ids( null, $date ) as $cid ) {
 				if ( false === wp_cache_get( "amapress_get_contrat_quantites_$cid" ) ) {
 					$active_contrat_instance_ids[] = $cid;
 				}
@@ -710,7 +710,7 @@ class AmapressContrats {
 			if ( ! in_array( $contrat_instance_id, $active_contrat_instance_ids ) ) {
 				$active_contrat_instance_ids[] = $contrat_instance_id;
 			}
-			$query   = array(
+			$query = array(
 				'post_type'      => AmapressContrat_quantite::INTERNAL_POST_TYPE,
 				'post_status'    => array( 'publish', 'draft' ),
 				'posts_per_page' => - 1,

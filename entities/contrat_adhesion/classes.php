@@ -185,7 +185,7 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['date_debut_lettre']                = [
+			$ret['date_debut_lettre'] = [
 				'desc' => 'Date début du contrat (par ex, 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'j F Y', $adh->getDate_debut() );
@@ -1161,8 +1161,6 @@ class AmapressAdhesion extends TitanEntity {
 		/** @var AmapressContrat_quantite[] $quants */
 		$quants = $this->getCustomAsEntityArray( 'amapress_adhesion_contrat_quantite', 'AmapressContrat_quantite' );
 
-//		amapress_dump($this->getCustom('amapress_adhesion_contrat_quantite'));
-
 		$ret = [];
 		foreach ( $quants as $quant ) {
 			$date_factor = 1;
@@ -1173,6 +1171,10 @@ class AmapressAdhesion extends TitanEntity {
 			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
 				$factor = $factors[ $quant->ID ];
 			}
+			if ( $this->hasBeforeEndDate_fin() && $dist_date > $this->getDate_fin() ) {
+				$date_factor = 0;
+			}
+
 			if ( abs( $factor * $date_factor ) < 0.001 ) {
 				continue;
 			}
@@ -1216,6 +1218,10 @@ class AmapressAdhesion extends TitanEntity {
 			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
 				$factor = $factors[ $quant->ID ];
 			}
+			if ( $this->hasBeforeEndDate_fin() && $dist_date > $this->getDate_fin() ) {
+				$date_factor = 0;
+			}
+
 			if ( abs( $factor * $date_factor ) < 0.001 ) {
 				continue;
 			}
@@ -1238,7 +1244,7 @@ class AmapressAdhesion extends TitanEntity {
 		$date = Amapress::start_of_day( $date );
 
 		$quants      = array();
-		$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instanceId() );
+		$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instanceId(), $date );
 		$quant_by_id = array_combine( array_map( function ( $c ) {
 			return $c->ID;
 		}, $quant_by_id ), $quant_by_id );
@@ -1661,13 +1667,14 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$contrat_instance_id = null,
 		$date = null,
 		$ignore_renouv_delta = false,
-		$allow_not_logged = false
+		$allow_not_logged = false,
+		$include_futur = true
 	) {
 		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
 		if ( $allow_partial_coadh ) {
-			return AmapressAdhesion::getUserActiveDirectAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+			return AmapressAdhesion::getUserActiveDirectAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 		} else {
-			return AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+			return AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 		}
 	}
 
@@ -1679,9 +1686,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$contrat_instance_id = null,
 		$date = null,
 		$ignore_renouv_delta = false,
-		$allow_not_logged = false
+		$allow_not_logged = false,
+		$include_futur = true
 	) {
-		$all_adhs = self::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+		$all_adhs = self::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 
 		return array_filter( $all_adhs, function ( $adh ) use ( $user_id ) {
 			return $adh->getAdherentId() == $user_id
@@ -1699,9 +1707,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$contrat_instance_id = null,
 		$date = null,
 		$ignore_renouv_delta = false,
-		$allow_not_logged = false
+		$allow_not_logged = false,
+		$include_futur = true
 	) {
-		$ids = self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged );
+		$ids = self::getUserActiveAdhesionIds( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 		if ( empty( $ids ) ) {
 			return [];
 		}

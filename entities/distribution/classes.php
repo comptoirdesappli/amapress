@@ -803,7 +803,8 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			}
 		} else {
-			$adhesions         = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, $this->getDate() );
+			$relative_date     = Amapress::start_of_year( Amapress::add_a_month( amapress_time(), - 12 ) );
+			$adhesions         = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, $relative_date );
 			$lieu              = $this->getLieu();
 			$lieu_substitution = $this->getLieuSubstitution();
 			if ( ! empty( $lieu_substitution ) ) {
@@ -851,11 +852,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				if ( $adhesion->getLieuId() == $this->getLieuId()
 				     && in_array( $adhesion->getContrat_instanceId(), $contrats )
 				) {
-					if ( $adhesion->getContrat_instance()->isPanierVariable() ) {
-						$quants = $adhesion->getVariables_Contrat_quantites( $dist_date );
-					} else {
 						$quants = $adhesion->getContrat_quantites( $dist_date );
-					}
 					if ( empty( $quants ) ) {
 						continue;
 					}
