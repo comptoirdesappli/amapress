@@ -191,13 +191,13 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'j F Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin_lettre']                  = [
+			$ret['date_fin_lettre'] = [
 				'desc' => 'Date fin du contrat (par ex, 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'j F Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['date_debut_complete']              = [
+			$ret['date_debut_complete'] = [
 				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j F Y', $adh->getDate_debut() );
@@ -335,7 +335,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			];
-			$ret['adherent.prenom']                  = [
+			$ret['adherent.prenom'] = [
 				'desc' => 'Prénom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->first_name;
@@ -720,7 +720,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString();
 				}
 			];
-			$ret['quantites_prix']                   = [
+			$ret['quantites_prix'] = [
 				'desc' => 'Quantité(s) choisie(s) avec prix unitaire',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -1145,6 +1145,8 @@ class AmapressAdhesion extends TitanEntity {
 	 * @return AmapressAdhesionQuantite[]
 	 */
 	public function getContrat_quantites( $dist_date ) {
+		$dist_date = Amapress::start_of_day( $dist_date );
+
 		if ( $this->getContrat_instance() && $this->getContrat_instance()->isPanierVariable() ) {
 			$quants = $this->getVariables_Contrat_quantites( $dist_date );
 			$ret    = [];
@@ -1233,6 +1235,7 @@ class AmapressAdhesion extends TitanEntity {
 		if ( ! $this->getContrat_instance()->isPanierVariable() ) {
 			return array();
 		}
+		$date = Amapress::start_of_day( $date );
 
 		$quants      = array();
 		$quant_by_id = AmapressContrats::get_contrat_quantites( $this->getContrat_instanceId() );
