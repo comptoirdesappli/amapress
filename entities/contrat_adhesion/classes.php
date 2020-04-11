@@ -1803,6 +1803,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				'posts_per_page' => - 1,
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
 				'fields'         => 'ids',
+				'orderby'        => 'none',
 				'meta_query'     => $meta_query
 			);
 			$res   = get_posts( $query );
