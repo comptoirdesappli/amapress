@@ -681,7 +681,7 @@ function amapress_can_delete_user( $can, $user_id ) {
 		}
 
 		$where  = implode( ' OR ', $meta_query );
-		$values = $wpdb->get_col( "SELECT DISTINCT $wpdb->postmeta.meta_value FROM $wpdb->postmeta WHERE $where" );
+		$values = amapress_get_col_cached( "SELECT DISTINCT $wpdb->postmeta.meta_value FROM $wpdb->postmeta WHERE $where" );
 		foreach ( $values as $v ) {
 			$v = maybe_unserialize( $v );
 			if ( is_array( $v ) ) {

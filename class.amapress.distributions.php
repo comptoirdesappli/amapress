@@ -64,7 +64,7 @@ class AmapressDistributions {
 				Amapress::end_of_day( $end_date )
 			);
 			$resp_ids = [];
-			foreach ( $wpdb->get_col( $query ) as $responsables ) {
+			foreach ( amapress_get_col_cached( $query ) as $responsables ) {
 				$v = maybe_unserialize( $responsables );
 				if ( is_array( $v ) ) {
 					$resp_ids += $v;
@@ -106,7 +106,7 @@ class AmapressDistributions {
 				Amapress::end_of_day( $end_date )
 			);
 			$resp_ids = [];
-			foreach ( $wpdb->get_col( $query ) as $responsables ) {
+			foreach ( amapress_get_col_cached( $query ) as $responsables ) {
 				$v = maybe_unserialize( $responsables );
 				if ( is_array( $v ) ) {
 					$resp_ids += $v;

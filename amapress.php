@@ -519,7 +519,7 @@ if ( ! function_exists( 'get_users_count' ) ) {
 
 		global $wpdb;
 		$query = "SELECT COUNT(DISTINCT $wpdb->users.ID) $user_search->query_from $user_search->query_where";
-		$res   = wp_cache_get( $query );
+		$res   = wp_cache_get( 'get_users_count' . md5( $query ) );
 		if ( false === $res ) {
 			$res = intval( $wpdb->get_var( $query ) );
 			wp_cache_set( $query, $res );
@@ -1305,19 +1305,28 @@ add_action( 'save_post', function () {
 } );
 
 
-//add_filter('posts_distinct', function() {
-//    return 'DISTINCT';
-//},1);
-//
-//add_filter('posts_groupby', function($sql) {
-//	return '';
-//},1);
+function amapress_get_col_cached( $query ) {
+	$key = 'amapress_get_col_cached' . md5( $query );
+	$res = wp_cache_get( $key );
+	if ( false === $res ) {
+		global $wpdb;
+		$res = $wpdb->get_col( $query );
+		wp_cache_set( $key, $res );
+	}
 
-function get_posts_by_meta_query( $meta_query ) {
-	global $wpdb;
-	$meta_sql = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
+	return $res;
+}
 
-	return $wpdb->get_col( "SELECT DISTINCT $wpdb->posts.ID FROM $wpdb->posts {$meta_sql['join']} WHERE 1=1 AND $wpdb->posts.post_status = 'publish' {$meta_sql['where']}" );
+function amapress_get_results_cached( $query, $output = OBJECT ) {
+	$key = 'amapress_get_col_cached' . md5( $query );
+	$res = wp_cache_get( $key );
+	if ( false === $res ) {
+		global $wpdb;
+		$res = $wpdb->get_results( $query, $output );
+		wp_cache_set( $key, $res );
+	}
+
+	return $res;
 }
 
 function amapress_display_post_types_nav_box() {

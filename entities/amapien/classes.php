@@ -582,7 +582,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		if ( null === self::$coadherents ) {
 			global $wpdb;
 			self::$coadherents = array_group_by(
-				$wpdb->get_results(
+				amapress_get_results_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
 WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ),

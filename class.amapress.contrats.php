@@ -1147,7 +1147,7 @@ class AmapressContrats {
 
 				global $wpdb;
 				$res = array_merge( $res,
-					$wpdb->get_col(
+					amapress_get_col_cached(
 						"SELECT mt3.meta_value
 FROM $wpdb->postmeta
 LEFT JOIN $wpdb->postmeta AS mt1
@@ -1175,7 +1175,7 @@ AND CAST(mt2.meta_value AS UNSIGNED) >= $date ) )"
 				if ( empty( self::$related_user_cache[ $rel_key ] ) ) {
 					global $wpdb;
 					self::$related_user_cache[ $rel_key ] = array_group_by(
-						$wpdb->get_results(
+						amapress_get_results_cached(
 							"SELECT DISTINCT mt3.meta_value as user_id, $wpdb->postmeta.meta_value
 FROM $wpdb->postmeta
 LEFT JOIN $wpdb->postmeta AS mt1
