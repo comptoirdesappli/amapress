@@ -931,7 +931,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function getEditLink() {
-		return admin_url( 'user-edit.php?user_id=' . $this->getUser()->ID );
+		return admin_url( 'user-edit.php?user_id=' . $this->ID );
 	}
 
 	public function getContacts() {
