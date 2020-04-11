@@ -1369,6 +1369,16 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function getContrat_quantites_IDs() {
+		if ( $this->getContrat_instance()->isPanierVariable() ) {
+			$ids     = [];
+			$paniers = $this->getPaniersVariables();
+			foreach ( $paniers as $panier ) {
+				$ids = array_merge( $ids, array_keys( $panier ) );
+			}
+
+			return array_unique( $ids );
+		}
+
 		return $this->getCustomAsIntArray( 'amapress_adhesion_contrat_quantite' );
 	}
 
@@ -1618,7 +1628,7 @@ class AmapressAdhesion extends TitanEntity {
 		if ( null === self::$paiement_cache ) {
 			global $wpdb;
 			$coadhs = array_group_by(
-				$wpdb->get_results(
+				amapress_get_results_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
 WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ),
@@ -1845,13 +1855,22 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 						'type'    => 'NUMERIC'
 					),
 				),
-				'orderby'        => 'meta_value_num',
-				'order'          => 'ASC',
-				'meta_key'       => 'amapress_contrat_paiement_date'
+				'orderby'        => 'none',
 			);
 			$res   = array_map( function ( $p ) {
 				return new AmapressAmapien_paiement( $p );
 			}, get_posts( $query ) );
+			usort( $res, function ( $a, $b ) {
+				/** @var AmapressAmapien_paiement $a */
+				/** @var AmapressAmapien_paiement $b */
+				$da = $a->getDate();
+				$db = $b->getDate();
+				if ( $da == $db ) {
+					return 0;
+				} else {
+					return $da < $db ? - 1 : 1;
+				}
+			} );
 			wp_cache_set( $key, $res );
 		}
 
