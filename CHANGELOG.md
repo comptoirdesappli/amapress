@@ -1,3 +1,10 @@
+# 0.93.90 (2020-04-11)
+* **Etat Amapress:** remplacement et installation de Google XML Sitemaps (BlueChip fork) depuis Github pour filtrage des articles/pages et autres types exclus
+* affichage message de désactivation de l'installateur d'Amapress après son utilisation
+* edition modèle contrat, correction check utilisation des quantités pour autoriser leur suppression
+* optimisations post-its et inscriptions responsables de distribution
+* optimisations diverses
+
 # 0.93.75 (2020-04-05)
 * **Contrats:** amélioration affichage colonne Résumé (contrat pas encore ouvert à inscription en ligne et contrat récurrents)
 * **Imports CSV:**
