@@ -37,7 +37,7 @@ function amapress_get_users_for_message( $users_query, $users_query_fields, $wit
 		}
 	} else {
 		$query = new WP_Query();
-		$query->parse_query( $users_query . '&posts_per_page=-1' );
+		$query->parse_query( $users_query . '&posts_per_page=-1&post_status=publish' );
 		foreach ( $query->get_posts() as $post ) {
 			foreach ( $users_query_fields as $query_field ) {
 				$o = Amapress::get_post_meta_array( $post->ID, $query_field );
@@ -387,6 +387,12 @@ function amapress_add_message_target( &$arr, $query_string, $title, $target_type
 }
 
 function amapress_message_get_targets() {
+	$users     = get_users();
+	$users_ids = array_map( function ( $u ) {
+		return $u->ID;
+	}, $users );
+	update_meta_cache( 'user', $users_ids );
+	cache_users( $users_ids );
 	$res = array();
 
 //    $producteurs = get_posts(
