@@ -130,10 +130,13 @@ class AmapressDistributions {
 			$user_id = amapress_current_user_id();
 		}
 
-		return count( get_posts( array(
+		$key        = "isCurrentUserResponsableBetween-$start_date-$end_date-$user_id";
+		$post_count = wp_cache_get( $key );
+		if ( false === $post_count ) {
+			$post_count = get_posts_count( array(
 				'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
 				'posts_per_page' => - 1,
-				'fields'         => array( 'ID' ),
+				'orderby'        => 'none',
 				'meta_query'     => array(
 					'relation' => 'AND',
 					array(
@@ -144,10 +147,16 @@ class AmapressDistributions {
 					),
 					amapress_prepare_like_in_array( 'amapress_distribution_responsables', $user_id ),
 				),
-			) ) ) > 0;
+			) );
+			wp_cache_set( $key, $post_count );
+		}
+
+		return $post_count > 0;
 	}
 
-	public static function isCurrentUserResponsableThisWeek( $user_id = null, $date = null ) {
+	public static function isCurrentUserResponsableThisWeek(
+		$user_id = null, $date = null
+	) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return false;
 		}
@@ -161,7 +170,9 @@ class AmapressDistributions {
 		return self::isCurrentUserResponsableBetween( Amapress::start_of_week( $date ), Amapress::end_of_week( $date ), $user_id );
 	}
 
-	public static function isCurrentUserResponsableNextWeek( $user_id = null, $date = null ) {
+	public static function isCurrentUserResponsableNextWeek(
+		$user_id = null, $date = null
+	) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return false;
 		}
@@ -175,7 +186,9 @@ class AmapressDistributions {
 		return self::isCurrentUserResponsableBetween( Amapress::start_of_week( Amapress::add_a_week( $date ) ), Amapress::end_of_week( Amapress::add_a_week( $date ) ), $user_id );
 	}
 
-	public static function isCurrentUserResponsable( $dist_id, $user_id = null ) {
+	public static function isCurrentUserResponsable(
+		$dist_id, $user_id = null
+	) {
 		if ( ! amapress_is_user_logged_in() ) {
 			return false;
 		}
@@ -188,7 +201,9 @@ class AmapressDistributions {
 		return in_array( $user_id, $resp_ids );
 	}
 
-	public static function generate_distributions( $contrat_id, $from_now = true, $eval = false ) {
+	public static function generate_distributions(
+		$contrat_id, $from_now = true, $eval = false
+	) {
 		$key = 'amps_gen_dist_' . $contrat_id;
 		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
 		if ( ! empty( $res ) ) {
