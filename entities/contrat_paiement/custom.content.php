@@ -73,12 +73,31 @@ function amapress_user_paiments_column_export( $value, $colname, $post_id ) {
 	return $amount_fmt;
 }
 
+add_action( 'load-edit.php', function () {
+	//optimize loading of corresponding screen in backoffice
+	$screen = get_current_screen();
+	if ( 'edit-amps_adhesion' == $screen->id ) {
+		$adhesions = AmapressContrats::get_active_adhesions();
+		$user_ids  = array_map( function ( $a ) {
+			/** @var AmapressAdhesion $a */
+			return $a->getAdherentId();
+		}, $adhesions );
+		$user_ids  = array_merge( $user_ids, array_map( function ( $a ) {
+			/** @var AmapressAdhesion $a */
+			return $a->getAdherent2Id();
+		}, $adhesions ) );
+		$user_ids  = array_unique( $user_ids );
+		update_meta_cache( 'user', $user_ids );
+		cache_users( $user_ids );
+	} elseif ( 'edit-amps_cont_pmt' == $screen->id ) {
+		AmapressContrats::get_active_adhesions();
+	}
+} );
+
 add_filter( 'manage_amps_adhesion_posts_custom_column', 'amapress_user_paiments_column_display', 10, 2 );
 function amapress_user_paiments_column_display( $colname, $post_id ) {
-//    $adh = AmapressAdhesion::getBy($post_id);
 	$all_adhesions = AmapressContrats::get_active_adhesions();
-//    var_dump(array_keys($all_adhesions));
-	$adh = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
+	$adh           = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
 	if ( $colname == 'amapress_total_amount' ) {
 		echo sprintf( '%.02f', $adh->getTotalAmount() );
 
@@ -88,33 +107,10 @@ function amapress_user_paiments_column_display( $colname, $post_id ) {
 	if ( $colname != 'amapress_received_amount' ) {
 		return;
 	}
-//    $args = array(
-//        'post_type' => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
-//        'posts_per_page' => -1,
-//        'meta_query' => array(
-//            array(
-//                'key' => 'amapress_contrat_paiement_adhesion',
-//                'value' => $post_id,
-//            ),
-//            array(
-//                'key' => 'amapress_contrat_paiement_status',
-//                'value' => array('received', 'bank'),
-//                'compare' => 'IN'
-//            ),),
-//    );
-//
-//
-//    $posts = get_posts($args);
-//    $amount = 0;
-//    foreach ($posts as $post) {
-//        $p = new AmapressAmapien_paiement($post);
-//        $amount += $p->getAmount();
-//    }
 
 	$all_paiements = AmapressAmapien_paiement::getAllActiveByAdhesionId();
 
 	$amount = 0;
-//	$total_amount         = $adh->getTotalAmount();
 	$related_amount       = 0;
 	$related_total_amount = 0;
 
