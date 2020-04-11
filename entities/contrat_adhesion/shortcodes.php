@@ -360,6 +360,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 	}
 
+	//optimize loading of producteur and user
+	$all_prods          = Amapress::get_producteurs();
+	$all_prods_user_ids = array_map( function ( $p ) {
+		/** @var AmapressProducteur $p */
+		return $p->getUserId();
+	}, $all_prods );
+	cache_users( $all_prods_user_ids );
+
+	//optimize loading of referents and user
+	$all_refs          = AmapressContrats::getAllReferentProducteursAndLieux();
+	$all_refs_user_ids = array_map( function ( $r ) {
+		return $r['ref_id'];
+	}, $all_refs );
+	update_meta_cache( 'user', $all_refs_user_ids );
+	cache_users( $all_refs_user_ids );
+
 	$additional_css = '<style type="text/css">' . esc_html( wp_unslash( Amapress::getOption( 'online_inscr_css' ) ) ) . '</style>';
 
 	ob_start();
