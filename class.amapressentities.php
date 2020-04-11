@@ -68,19 +68,22 @@ class AmapressEntities {
 	static function getMenu() {
 		if ( empty( AmapressEntities::$menu ) ) {
 			$contrats_model_buttons = [];
-			$contrat_instances      = AmapressContrats::get_active_contrat_instances();
-			usort( $contrat_instances, function ( $a, $b ) {
-				/** @var AmapressContrat_instance $a */
-				/** @var AmapressContrat_instance $b */
-				return strcmp( $a->getTitle(), $b->getTitle() );
-			} );
-			foreach ( $contrat_instances as $contrat_instance ) {
-				$contrats_model_buttons[] = array(
-					'type'   => 'action',
-					'class'  => 'button button-primary button-import-model',
-					'text'   => 'Télécharger le modèle "' . $contrat_instance->getTitle() . '"',
-					'action' => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' . $contrat_instance->ID,
-				);
+			//required for overall optimize
+			if ( amapress_is_user_logged_in() ) {
+				$contrat_instances = AmapressContrats::get_active_contrat_instances();
+				usort( $contrat_instances, function ( $a, $b ) {
+					/** @var AmapressContrat_instance $a */
+					/** @var AmapressContrat_instance $b */
+					return strcmp( $a->getTitle(), $b->getTitle() );
+				} );
+				foreach ( $contrat_instances as $contrat_instance ) {
+					$contrats_model_buttons[] = array(
+						'type'   => 'action',
+						'class'  => 'button button-primary button-import-model',
+						'text'   => 'Télécharger le modèle "' . $contrat_instance->getTitle() . '"',
+						'action' => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' . $contrat_instance->ID,
+					);
+				}
 			}
 			AmapressEntities::$menu = array(
 				array(
@@ -137,6 +140,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => function () {
+								if ( ! amapress_is_user_logged_in() ) {
+									return [];
+								}
 								$tabs = array();
 								$mls  = AmapressMailingGroup::getAll();
 								usort( $mls, function ( $a, $b ) {
@@ -1029,6 +1035,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => function () {
+								if ( ! amapress_is_user_logged_in() ) {
+									return [];
+								}
 								$tabs              = array();
 								$contrat_instances = AmapressContrats::get_active_contrat_instances(
 									null, Amapress::add_a_month( amapress_time(), - 3 )
@@ -2659,7 +2668,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Email de bienvenue' => array(
+						'Email de bienvenue'       => array(
 							'id'      => 'welcome_mail',
 							'desc'    => '',
 							'options' => array(
@@ -2705,7 +2714,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Notifications'      => array(
+						'Notifications'            => array(
 							'id'      => 'amp_notif_config',
 							'desc'    => '',
 							'options' => array(
@@ -2738,7 +2747,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							)
 						),
-						'Géolocalisation'    => array(
+						'Géolocalisation'          => array(
 							'id'      => 'amp_google_api_config',
 							'desc'    => '',
 							'options' => array(
