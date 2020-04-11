@@ -41,16 +41,22 @@ class Amapress_EventBase extends TitanEntity {
 	 * @return Amapress_EventBase[]
 	 */
 	public static function query_events( $meta_query, $order = 'NONE' ) {
-		$class = get_called_class();
-		$ret   = array_map( function ( $p ) use ( $class ) {
-			return new $class( $p );
-		},
-			get_posts( array(
-				'posts_per_page' => - 1,
-				'post_type'      => static::INTERNAL_POST_TYPE,
-				'meta_query'     => $meta_query,
-				'orderby'        => 'none'
-			) ) );
+		$k   = md5( serialize( $meta_query ) );
+		$key = "AmasEventBase_query_events-{$k}";
+		$ret = wp_cache_get( $key );
+		if ( false === $ret ) {
+			$class = get_called_class();
+			$ret   = array_map( function ( $p ) use ( $class ) {
+				return new $class( $p );
+			},
+				get_posts( array(
+					'posts_per_page' => - 1,
+					'post_type'      => static::INTERNAL_POST_TYPE,
+					'meta_query'     => $meta_query,
+					'orderby'        => 'none'
+				) ) );
+			wp_cache_set( $key, $ret );
+		}
 		if ( $order != 'NONE' ) {
 			self::sort_events( $ret, $order );
 		}
