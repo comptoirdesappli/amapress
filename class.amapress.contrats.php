@@ -663,7 +663,6 @@ class AmapressContrats {
 						} else {
 							foreach ( $prod->getReferentsIds( $lieu_id ) as $ref_id ) {
 								if ( $ref_id ) {
-//                    if (!$ignore_lieu)
 									$res[] = array(
 										'ref_id'               => $ref_id,
 										'lieu'                 => $lieu_id,
@@ -699,38 +698,53 @@ class AmapressContrats {
 	 * @return AmapressContrat_quantite[]
 	 */
 	public static function get_contrat_quantites( $contrat_instance_id ) {
-		$key = "amapress_get_contrat_quantites_{$contrat_instance_id}";
+		$key = "amapress_get_contrat_quantites_$contrat_instance_id";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$query = array(
+			$active_contrat_instance_ids = [];
+			foreach ( AmapressContrats::get_active_contrat_instances_ids() as $cid ) {
+				if ( false === wp_cache_get( "amapress_get_contrat_quantites_$cid" ) ) {
+					$active_contrat_instance_ids[] = $cid;
+				}
+			}
+			if ( ! in_array( $contrat_instance_id, $active_contrat_instance_ids ) ) {
+				$active_contrat_instance_ids[] = $contrat_instance_id;
+			}
+			$query   = array(
 				'post_type'      => AmapressContrat_quantite::INTERNAL_POST_TYPE,
 				'post_status'    => array( 'publish', 'draft' ),
 				'posts_per_page' => - 1,
-//            'orderby' => 'meta_value_num',
-//            'order' => 'ASC',
-//            'meta_key' => 'amapress_contrat_quantite_quantite',
+				'orderby'        => 'none',
 				'meta_query'     => array(
 					array(
 						'key'     => 'amapress_contrat_quantite_contrat_instance',
-						'value'   => $contrat_instance_id,
-						'compare' => '=',
+						'value'   => amapress_prepare_in( $active_contrat_instance_ids ),
+						'compare' => 'IN',
 						'type'    => 'NUMERIC'
 					),
 				)
 			);
-			$res   = array_map( function ( $p ) {
+			$all_res = array_map( function ( $p ) {
 				return AmapressContrat_quantite::getBy( $p );
 			}, get_posts( $query ) );
-			usort( $res, function ( $a, $b ) {
-				/** @var AmapressContrat_quantite $a */
-				/** @var AmapressContrat_quantite $b */
-				if ( abs( $a->getQuantite() - $b->getQuantite() ) < 0.01 ) {
-					return $a->ID < $b->ID ? - 1 : 1;
-				} else {
-					return $a->getQuantite() < $b->getQuantite() ? - 1 : 1;
-				}
-			} );
-			wp_cache_set( $key, $res );
+			foreach (
+				array_group_by( $all_res, function ( $q ) {
+					/** @var AmapressContrat_quantite $q */
+					return $q->getContrat_instanceId();
+				} ) as $cid => $quants
+			) {
+				usort( $quants, function ( $a, $b ) {
+					/** @var AmapressContrat_quantite $a */
+					/** @var AmapressContrat_quantite $b */
+					if ( abs( $a->getQuantite() - $b->getQuantite() ) < 0.01 ) {
+						return $a->ID < $b->ID ? - 1 : 1;
+					} else {
+						return $a->getQuantite() < $b->getQuantite() ? - 1 : 1;
+					}
+				} );
+				wp_cache_set( "amapress_get_contrat_quantites_$cid", $quants );
+			}
+			$res = wp_cache_get( $key );
 		}
 
 		return $res;
@@ -847,16 +861,14 @@ class AmapressContrats {
 			$query        = array(
 				'post_type'      => AmapressAdhesion::INTERNAL_POST_TYPE,
 				'posts_per_page' => - 1,
+				'orderby'        => 'none',
 				'meta_query'     => $meta_query
 			);
 
 			$res = array();
 			foreach ( get_posts( $query ) as $p ) {
 				$res[ $p->ID ] = AmapressAdhesion::getBy( $p );
-//				$res[ $p->ID ]->getLieuId();
 			}
-//			var_dump($query);
-//			var_dump($res);
 			wp_cache_set( $key, $res );
 		}
 
