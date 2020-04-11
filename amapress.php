@@ -477,6 +477,7 @@ if ( ! function_exists( 'get_posts_count' ) ) {
 		$args['fields']         = 'ids';
 		$args['no_found_rows']  = true;
 		$args['posts_per_page'] = - 1;
+		$args['orderby']        = 'none';
 		$posts                  = get_posts( $args );
 
 		return count( $posts );
