@@ -115,9 +115,13 @@ class Amapress_Calendar {
 		}
 		self::$get_next_events_start_date = $date;
 
+		//optimize loading inside get_next_distributions
+		AmapressContrats::get_active_contrat_instances( null, $date );
+
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
+
 		/** @var Amapress_EventBase[] $events */
 		$events = array();
 		$t      = AmapressDistribution::get_next_distributions( $date );

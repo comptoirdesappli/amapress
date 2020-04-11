@@ -49,6 +49,7 @@ class Amapress_EventBase extends TitanEntity {
 				'posts_per_page' => - 1,
 				'post_type'      => static::INTERNAL_POST_TYPE,
 				'meta_query'     => $meta_query,
+				'orderby'        => 'none'
 			) ) );
 		if ( $order != 'NONE' ) {
 			self::sort_events( $ret, $order );
