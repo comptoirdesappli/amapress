@@ -2246,6 +2246,11 @@ class AmapressContrat_quantite extends TitanEntity {
 		return $this->getCustomAsEntity( 'amapress_contrat_quantite_contrat_instance', 'AmapressContrat_instance' );
 	}
 
+	/** @return int */
+	public function getContrat_instanceId() {
+		return $this->getCustomAsInt( 'amapress_contrat_quantite_contrat_instance' );
+	}
+
 //    public function getMax_Commandable()
 //    {
 //        return $this->getCustomAsFloat('amapress_contrat_quantite_max_quantite');
