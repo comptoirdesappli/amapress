@@ -779,9 +779,9 @@ class AmapressDistribution extends Amapress_EventBase {
 			if ( ! empty( $lieu_substitution ) ) {
 				$lieu = $lieu_substitution;
 			}
-			$dist_date     = $this->getStartDateAndHour();
-			$dist_date_end = $this->getEndDateAndHour();
-			$contrats      = $this->getContrats();
+			$dist_date_start = $this->getStartDateAndHour();
+			$dist_date_end   = $this->getEndDateAndHour();
+			$contrats        = $this->getContrats();
 			foreach ( $contrats as $contrat ) {
 				if ( empty( $contrat ) || empty( $contrat->getModel() ) ) {
 					continue;
@@ -789,7 +789,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "dist-{$this->ID}",
-					'date'     => $dist_date,
+					'date'     => $dist_date_start,
 					'date_end' => $dist_date_end,
 					'type'     => 'distribution',
 					'category' => 'Distributions',
@@ -803,19 +803,20 @@ class AmapressDistribution extends Amapress_EventBase {
 				) );
 			}
 		} else {
-			$adhesions         = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
+			$adhesions         = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, $this->getDate() );
 			$lieu              = $this->getLieu();
 			$lieu_substitution = $this->getLieuSubstitution();
 			if ( ! empty( $lieu_substitution ) ) {
 				$lieu = $lieu_substitution;
 			}
-			$dist_date     = $this->getStartDateAndHour();
-			$dist_date_end = $this->getEndDateAndHour();
-			$resps         = $this->getResponsablesIds();
+			$dist_date       = $this->getDate();
+			$dist_date_start = $this->getStartDateAndHour();
+			$dist_date_end   = $this->getEndDateAndHour();
+			$resps           = $this->getResponsablesIds();
 			if ( in_array( $user_id, $resps ) ) {
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "dist-{$this->ID}-resp",
-					'date'     => $dist_date,
+					'date'     => $dist_date_start,
 					'date_end' => $dist_date_end,
 					'class'    => 'agenda-distrib agenda-resp-distrib',
 					'category' => 'Responsable de distribution',
@@ -832,7 +833,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			if ( in_array( $user_id, $gardiens ) ) {
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "dist-{$this->ID}-gardien",
-					'date'     => $dist_date,
+					'date'     => $dist_date_start,
 					'date_end' => $dist_date_end,
 					'class'    => 'agenda-distrib agenda-gardien-panier',
 					'category' => 'Gardien de panier',
@@ -861,7 +862,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					$ret[] = new Amapress_EventEntry( array(
 						'ev_id'    => "dist-{$this->ID}",
 						'id'       => $this->ID,
-						'date'     => $dist_date,
+						'date'     => $dist_date_start,
 						'date_end' => $dist_date_end,
 						'class'    => "agenda-distrib agenda-contrat-{$adhesion->getContrat_instance()->getModelTitle()}",
 						'type'     => 'distribution',
