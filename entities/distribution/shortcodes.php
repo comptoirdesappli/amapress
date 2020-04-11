@@ -333,6 +333,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
+	//optimize producteur load
+	Amapress::get_producteurs();
+
 	$all_user_lieux = array();
 	foreach ( $dists as $dist ) {
 		$lieu_id = $dist->getLieuId();
