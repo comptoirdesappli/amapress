@@ -128,7 +128,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
     <div class="distribution">
         <div class="btns">
-	        <?php echo implode( '', $btns ) ?>
+			<?php echo implode( '', $btns ) ?>
         </div>
 		<?php
 
@@ -142,7 +142,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				echo '<p><strong>Vous n\'avez pas de contrats à cette distribution</strong></p>';
 			}
 			echo amapress_gardiens_paniers_map( $dist_id );
-			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
+			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds( false ) ) ) {
 				echo '<p style="font-weight: bold; margin-top: 1em">Vous êtes inscrit Gardien de paniers</p>';
 			}
 			$current_amapien = AmapressUser::getBy( amapress_current_user_id() );
@@ -161,8 +161,27 @@ function amapress_get_custom_content_distribution( $content ) {
 				     }, $gardien_amapien_ids ) )
 				     . '</p>';
 			}
-			echo '<table>';
-			echo implode( '', array_map( function ( $u ) use ( $current_amapien, $gardien_id, $dist_id, $can_subscribe, $user_contrats ) {
+			echo wp_unslash( Amapress::getOption( 'gardiens-paniers-message' ) );
+			$columns = array(
+				array(
+					'title' => '',
+					'data'  => 'link',
+				),
+				array(
+					'title' => 'Nom',
+					'data'  => 'name'
+				),
+				array(
+					'title' => 'Contacts',
+					'data'  => 'contacts'
+				),
+				array(
+					'title' => 'Infos',
+					'data'  => 'infos'
+				),
+			);
+
+			$data = array_map( function ( $u ) use ( $current_amapien, $gardien_id, $dist_id, $can_subscribe, $user_contrats ) {
 				$link = '';
 				if ( $can_subscribe && ! empty( $user_contrats ) ) {
 					if ( empty( $gardien_id ) && $u->ID != amapress_current_user_id() ) {
@@ -177,11 +196,11 @@ function amapress_get_custom_content_distribution( $content ) {
 				}
 
 				/** @var AmapressUser $u */
-				$ret = '<tr>';
-				$ret .= '<td>' . $link . '</td>';
-				$ret .= '<td>' . esc_html( $u->getDisplayName() ) . '</td>';
-				$ret .= '<td>' . ( $u->getContacts() ) . '</td>';
-				$ret .= '<td>' . esc_html(
+				return array(
+					'link'     => $link,
+					'name'     => esc_html( $u->getDisplayName() ),
+					'contacts' => $u->getContacts(),
+					'info'     => esc_html(
 						! $u->isAdresse_localized() ?
 							'amapien non localisé' :
 							( $current_amapien->isAdresse_localized() ?
@@ -192,12 +211,17 @@ function amapress_get_custom_content_distribution( $content ) {
 										$u->getUserLatitude(),
 										$u->getUserLongitude() ) )
 								: 'Vous n\'êtes pas localisé'
-							) ) . '</td>';
-				$ret .= '</tr>';
+							) )
+				);
+			}, $dist->getGardiens() );
 
-				return $ret;
-			}, $dist->getGardiens() ) );
-			echo '</table>';
+			amapress_echo_datatable( 'all-gardiens', $columns, $data,
+				array(
+					'searching'    => true,
+					'nowrap'       => false,
+					'responsive'   => false,
+					'init_as_html' => 'true'
+				) );
 
 			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
 				$inscription_href = Amapress::get_inscription_distrib_page_href();
@@ -207,6 +231,70 @@ function amapress_get_custom_content_distribution( $content ) {
 							true, true
 						) . '</p>';
 				}
+			}
+
+			if ( amapress_can_access_admin() && Amapress::end_of_day( $dist_date ) > amapress_time() ) {
+				amapress_echo_panel_start( 'Pour les responsables AMAP' );
+				$users = [ '' => '--Sélectionner un amapien--' ];
+				//precache
+				get_users();
+				foreach ( $dist->getMainAdherentsIds( true ) as $user_id ) {
+					$user               = AmapressUser::getBy( $user_id );
+					$users[ $user->ID ] = sprintf( '%s (%s)', $user->getDisplayName(), $user->getEmail() );
+				}
+				echo '<form><label for="other-amapien">Amapien demandeur</label>';
+				echo '<select name="other-amapien" id="other-amapien" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
+				echo '<br/><label for="other-gardien">Gardien</label>';
+				echo '<select name="other-gardien" id="other-gardien" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
+				echo '<br/><button type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="inscrire_garde" data-confirm="Etes-vous sûr ?"
+					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">Affecter la garde</button></form>';
+				echo '<hr/>';
+
+				$columns = array(
+					array(
+						'title' => '',
+						'data'  => 'link',
+					),
+					array(
+						'title' => 'Gardien',
+						'data'  => 'gardien'
+					),
+					array(
+						'title' => 'Demandeur',
+						'data'  => 'amapien'
+					),
+				);
+
+				$data = [];
+				foreach ( $dist->getGardiens( true ) as $gardien ) {
+					if ( ! $gardien ) {
+						continue;
+					}
+					foreach ( $dist->getGardiensPaniersAmapiensIds( $gardien->ID ) as $amapien_id ) {
+						$amapien = AmapressUser::getBy( $amapien_id );
+						if ( ! $amapien ) {
+							continue;
+						}
+						$data[] = array(
+							'link'    => '<button type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="desinscrire_garde" data-confirm="Etes-vous sûr ?"
+					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">Désaffecter la garde</button>',
+							'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts() ),
+							'amapien' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getContacts() ),
+						);
+					}
+				}
+
+				amapress_echo_datatable( 'all-gardes', $columns, $data,
+					array(
+						'searching'    => true,
+						'nowrap'       => false,
+						'responsive'   => false,
+						'init_as_html' => 'true'
+					) );
+
+				amapress_echo_panel_end();
 			}
 
 			amapress_echo_panel_end();

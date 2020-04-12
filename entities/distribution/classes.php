@@ -114,13 +114,23 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	/** @return AmapressUser[] */
-	public function getGardiens() {
-		return $this->getCustomAsEntityArray( 'amapress_distribution_gardiens', 'AmapressUser' );
+	public function getGardiens( $include_private = false ) {
+		return array_map( function ( $id ) {
+			return AmapressUser::getBy( $id );
+		}, $this->getGardiensIds( $include_private ) );
 	}
 
 	/** @return int[] */
-	public function getGardiensIds() {
-		return $this->getCustomAsIntArray( 'amapress_distribution_gardiens' );
+	public function getGardiensIds( $include_private = false ) {
+
+		$ids = $this->getCustomAsIntArray( 'amapress_distribution_gardiens' );
+		if ( $include_private ) {
+			foreach ( $this->getPaniersGarde() as $v ) {
+				$ids[] = intval( $v );
+			}
+		}
+
+		return array_unique( $ids );
 	}
 
 	public function getPaniersDescription( $amapien_id ) {
@@ -346,12 +356,15 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	/** @return int[] */
-	public function getMainAdherentsIds() {
+	public function getMainAdherentsIds( $include_coadherents = true ) {
 		$ids = [];
 		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
 			/** @var AmapressAdhesion $adh */
 			if ( ! empty( $adh->getAdherentId() ) ) {
 				$ids[] = $adh->getAdherentId();
+				if ( $include_coadherents ) {
+					$ids = array_merge( $ids, AmapressContrats::get_related_users( $adh->getAdherentId() ) );
+				}
 			}
 		}
 
@@ -830,7 +843,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'href'     => $this->getPermalink()
 				) );
 			}
-			$gardiens = $this->getGardiensIds();
+			$gardiens = $this->getGardiensIds( true );
 			if ( in_array( $user_id, $gardiens ) ) {
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "dist-{$this->ID}-gardien",

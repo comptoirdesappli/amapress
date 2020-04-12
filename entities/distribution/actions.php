@@ -649,7 +649,7 @@ line-height: 1.1;
 			),
 		);
 		$data_gardiens = [];
-		foreach ( $dist->getGardiensIds() as $gardien_id ) {
+		foreach ( $dist->getGardiensIds( true ) as $gardien_id ) {
 			$gardien = AmapressUser::getBy( $gardien_id );
 			foreach ( $dist->getGardiensPaniersAmapiensIds( $gardien_id ) as $amapien_id ) {
 				$amapien         = AmapressUser::getBy( $amapien_id );

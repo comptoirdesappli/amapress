@@ -32,7 +32,7 @@ add_action( 'amapress_recall_gardien_paniers', function ( $args ) {
 
 		return;
 	}
-	$gardien_ids = $dist->getGardiensIds();
+	$gardien_ids = $dist->getGardiensIds( true );
 	if ( empty( $gardien_ids ) ) {
 		echo '<p>Pas de gardiens</p>';
 
