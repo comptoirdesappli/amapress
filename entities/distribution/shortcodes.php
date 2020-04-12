@@ -106,6 +106,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'user'                     => null,
 		'lieu'                     => null,
 		'date'                     => null,
+		'distrib_links'            => 'true',
 		'show_contrats_desc'       => 'true',
 		'show_contrats_count'      => 'false',
 		'inscr_all_distrib'        => 'false',
@@ -120,6 +121,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 	$show_contrats_desc  = Amapress::toBool( $atts['show_contrats_desc'] );
 	$show_contrats_count = Amapress::toBool( $atts['show_contrats_count'] );
 	$allow_gardiens      = Amapress::toBool( $atts['allow_gardiens'] );
+	$distrib_links       = Amapress::toBool( $atts['distrib_links'] );
 
 	$allow_anonymous_access = false;
 	$ret                    = '';
@@ -459,7 +461,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			if ( $show_contrats_count ) {
 				$contrats_content .= '<p class="inscr-list-contrats">' . esc_html( $contrat_count ) . '</p>';
 			}
-			$date_content = '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . $hours . '</p>';
+			$date_display = date_i18n( 'D j M Y', $date ) . $hours;
+			$date_content = '<p class="inscr-list-date">' .
+			                ( $distrib_links ? Amapress::makeLink( $dist->getPermalink(), $date_display, true, true ) : esc_html( $date_display ) ) .
+			                '</p>';
 			$ret          .= '<th scope="row" class="inscr-list-info dist-col-date">';
 			$ret          .= $date_content;
 			if ( ! $for_emargement ) {
