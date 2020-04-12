@@ -137,7 +137,7 @@ function amapress_get_custom_content_distribution( $content ) {
 		}
 
 		if ( amapress_is_user_logged_in() && Amapress::getOption( 'enable-gardiens-paniers' ) ) {
-			amapress_echo_panel_start( 'Gardiens de paniers' );
+			amapress_echo_panel_start_no_esc( '<a id="panel_gardiens_paniers"/>Gardiens de paniers' );
 			if ( empty( $user_contrats ) ) {
 				echo '<p><strong>Vous n\'avez pas de contrats à cette distribution</strong></p>';
 			}

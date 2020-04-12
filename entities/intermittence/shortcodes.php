@@ -352,9 +352,15 @@ function amapress_echanger_panier_shortcode( $atts ) {
 							$ret .= '&#xA0;';
 							$ret .= Amapress::makeButtonLink(
 								$dist->getPermalink() . '#inter_partial_exchanges',
-								'Faire un échange partiel',
-								true, true, 'btn btn-default'
+								'Faire un échange partiel <span class="dashicons dashicons-external"></span>',
+								false, true, 'btn btn-default'
 							);
+						}
+						if ( Amapress::getOption( 'enable-gardiens-paniers' ) ) {
+							$ret .= '&#xA0;';
+							$ret .= Amapress::makeButtonLink(
+								$dist->getPermalink() . '#panel_gardiens_paniers',
+								'Trouver un gardien de paniers <span class="dashicons dashicons-external"></span>', false, true );
 						}
 						if ( $for_other_users && amapress_can_access_admin() ) {
 
