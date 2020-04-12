@@ -1921,3 +1921,33 @@ add_filter( 'auth_cookie_expiration', function ( $length, $user_id, $remember ) 
 		return intval( Amapress::getOption( 'auth_expiration' ) ) * DAY_IN_SECONDS;
 	}
 }, 10, 3 );
+
+add_filter( 'sm_exclude_post_ids', function ( $excluded_ids ) {
+	global $wpdb;
+
+	$logged_or_public_ids = [];
+	foreach ( AmapressEntities::getPostTypes() as $name => $conf ) {
+		if ( isset( $conf['logged_or_public'] ) && $conf['logged_or_public'] ) {
+			$key                  = "amapress_{$name}_public";
+			$logged_or_public_ids = array_merge( $logged_or_public_ids,
+				$wpdb->get_col( $wpdb->prepare( "SELECT mod786_posts.ID
+FROM {$wpdb->posts}
+LEFT JOIN {$wpdb->postmeta}
+ON ({$wpdb->posts}.ID = {$wpdb->postmeta}.post_id
+AND {$wpdb->postmeta}.meta_key = %s )
+LEFT JOIN {$wpdb->postmeta} AS mt1
+ON ( {$wpdb->posts}.ID = mt1.post_id )
+WHERE ( ( {$wpdb->postmeta}.post_id IS NULL
+OR ( mt1.meta_key = %s
+AND CAST(mt1.meta_value AS SIGNED) = '0' ) ) )
+AND {$wpdb->posts}.post_type = %s
+AND (({$wpdb->posts}.post_status = 'publish'))", $key, $key, amapress_unsimplify_post_type( $name ) )
+				) );
+		}
+	}
+	$logged_only_ids = $wpdb->get_col( "SELECT {$wpdb->postmeta}.post_id
+FROM {$wpdb->postmeta}
+WHERE {$wpdb->postmeta}.meta_key = 'amps_lo' AND CAST({$wpdb->postmeta}.meta_value AS SIGNED) = 1" );
+
+	return array_unique( array_merge( $excluded_ids, $logged_only_ids, $logged_or_public_ids ) );
+} );
