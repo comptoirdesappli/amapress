@@ -174,7 +174,7 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 
 				case 'lien_inscription_distrib':
 					$inscription_distrib_link = Amapress::get_inscription_distrib_page_href();
-					if ( ! empty( $url ) ) {
+					if ( ! empty( $inscription_distrib_link ) ) {
 						$inscription_distrib_link = Amapress::makeLink( $inscription_distrib_link, 'S\'inscrire comme responsable de distribution' );
 					} else {
 						$inscription_distrib_link = '#page inscription aux distributions non configurée#';
@@ -183,7 +183,7 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					return $inscription_distrib_link;
 				case 'lien_mes_contrats':
 					$mes_contrats_link = Amapress::get_mes_contrats_page_href();
-					if ( ! empty( $url ) ) {
+					if ( ! empty( $mes_contrats_link ) ) {
 						$mes_contrats_link = Amapress::makeLink( $mes_contrats_link, 'Mes contrats' );
 					} else {
 						$mes_contrats_link = '#page mes contrats non configurée#';
@@ -195,7 +195,7 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					if ( empty( $inscription_contrats_link ) ) {
 						$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
 					}
-					if ( ! empty( $url ) ) {
+					if ( ! empty( $inscription_contrats_link ) ) {
 						$inscription_contrats_link = Amapress::makeLink( $inscription_contrats_link, 'S\'inscrire aux contrats' );
 					} else {
 						$inscription_contrats_link = '#page inscription contrats non configurée#';
