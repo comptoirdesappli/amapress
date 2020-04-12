@@ -202,6 +202,15 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					}
 
 					return $inscription_contrats_link;
+				case 'lien_carte_amapiens':
+					$amapiens_map_link = Amapress::get_page_with_shortcode_href( 'amapiens-map', 'amps_amapiens_map_href' );
+					if ( ! empty( $amapiens_map_link ) ) {
+						$amapiens_map_link = Amapress::makeLink( $amapiens_map_link, 'Carte des amapiens' );
+					} else {
+						$amapiens_map_link = '#page [amapiens-map] non configurée#';
+					}
+
+					return $amapiens_map_link;
 				case 'site_icon_url':
 					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
 					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
@@ -374,6 +383,7 @@ function amapress_replace_mail_placeholders_help(
 	$ret['lien_inscription_distrib']  = 'Lien vers la page d\'inscription comme responsable de distribution';
 	$ret['lien_inscription_contrats'] = 'Lien vers la page d\'inscription aux contrats (ou Mes contrats à défaut)';
 	$ret['lien_mes_contrats']         = 'Lien vers la page Mes contrats';
+	$ret['lien_carte_amapiens']       = 'Lien vers la page Carte des amapiens';
 	$ret["url"]                       = 'Url du site de l\'AMAP';
 	$ret["site_url"]                  = 'Url du site de l\'AMAP';
 	$ret["description"]               = 'Description du site de l\'AMAP';
