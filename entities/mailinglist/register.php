@@ -200,7 +200,11 @@ function amapress_user_queries_link_wrap( $queries ) {
 function amapress_get_mailinglist_queries() {
 	$ret = array();
 
-	$lieux = Amapress::get_lieux();
+	$lieux = array_filter( Amapress::get_lieux(),
+		function ( $lieu ) {
+			/** @var AmapressLieu_distribution $lieu */
+			return $lieu->isPrincipal();
+		} );
 
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
@@ -304,7 +308,11 @@ function amapress_has_mailinglist_moderators_queries( TitanFrameworkOption $opti
 function amapress_get_mailinglist_moderators_queries() {
 	$ret = array();
 
-	$lieux = Amapress::get_lieux();
+	$lieux = array_filter( Amapress::get_lieux(),
+		function ( $lieu ) {
+			/** @var AmapressLieu_distribution $lieu */
+			return $lieu->isPrincipal();
+		} );
 
 	$ret["amapress_role=referent_producteur"] = "Référents producteurs";
 	if ( count( $lieux ) > 1 ) {
