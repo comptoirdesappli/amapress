@@ -825,6 +825,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type' => 'checkbox',
 										),
 										array(
+											'id'      => 'gardiens-paniers-message',
+											'name'    => 'Information',
+											'type'    => 'textarea',
+											'default' => 'La garde de panier se fait sur la base du volontariat. Si vous ne trouvez pas de gardiens, veuillez écrire à [à compléter]',
+											'desc'    => 'Message au sujet des gardiens de paniers à afficher sur la page de chaque distribution pour informer sur la procédure de garde de paniers.',
+										),
+										array(
 											'name' => 'Email à l\'amapien faisant garder son panier',
 											'type' => 'heading',
 										),
