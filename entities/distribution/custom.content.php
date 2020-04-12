@@ -142,6 +142,10 @@ function amapress_get_custom_content_distribution( $content ) {
 				echo '<p><strong>Vous n\'avez pas de contrats à cette distribution</strong></p>';
 			}
 			echo amapress_gardiens_paniers_map( $dist_id );
+			$amapiens_map_link = Amapress::get_page_with_shortcode_href( 'amapiens-map', 'amps_amapiens_map_href' );
+			if ( ! empty( $amapiens_map_link ) ) {
+				echo '<p>' . Amapress::makeLink( $amapiens_map_link, 'Voir la carte complète des amapiens', true, true ) . '</p>';
+			}
 			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds( false ) ) ) {
 				echo '<p style="font-weight: bold; margin-top: 1em">Vous êtes inscrit Gardien de paniers</p>';
 			}
