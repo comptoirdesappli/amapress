@@ -1,3 +1,18 @@
+# 0.93.100 (2020-04-12)
+* **Emails groupés:** n'afficher que les groupes relatifs aux lieux principaux (Modérateurs et Membres)
+* **Etat Amapress:** check des paramètres Adresse web de WordPress (URL) et Adresse web du site (URL) pour préfixe HTTPS si SSL activé (et Really Simple SSL conseillé comme outil uniquement si tout est déjà SSL)
+* **Gardiens paniers:** 
+    - espace intermittents, absent céder son panier, lien vers les distributions pour faire garder son panier
+    - interface pour les responsables pour gérer les gardes et affectation directement depuis la page de chaque distribution + gestion des échanges privés définis par les responsables + interface de choix de gardiens en datatable
+    - lien vers la carte complète des amapiens
+    - lien vers la distribution depuis shortcode inscription responsables de distributions
+    - message personnalisable sur la page de chaque distribution
+* placeholders lien vers la page de la carte des amapiens %%lien_carte_amapiens%%
+* **Editeur de menu:** ajout d'un type d'entrée Prochaine distribution
+* shortcodes des prochaines distributions next-distrib-*, next-emargement-*, amapress-redirect-next-* en fonction de l'amapien connecté et de ses livraison + shortcode next-distrib-deliv, listes des prochaines distributions et livraisons
+* **Référencement:** intégration exclusion des pages protégées (donc vides pour les moteurs de recherches) et des évènements privés (donc vides également) pour Google XML Sitemaps (BlueChip fork)
+* possibilité d'ajouter des destinataires en copie des emails de notification de nouveaux utilisateurs et de changement de mot de passe
+
 # 0.93.90 (2020-04-11)
 * **Etat Amapress:** remplacement et installation de Google XML Sitemaps (BlueChip fork) depuis Github pour filtrage des articles/pages et autres types exclus
 * affichage message de désactivation de l'installateur d'Amapress après son utilisation
