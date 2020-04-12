@@ -629,6 +629,13 @@ function amapress_register_shortcodes() {
 			'args' => [
 			]
 		] );
+	amapress_register_shortcode( 'next-distrib-deliv', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Listes des prochaines distributions avec contrats livrés',
+			'args' => [
+				'distrib' => 5,
+			]
+		] );
 
 	amapress_register_shortcode( 'liste-emargement-button', function ( $atts, $content = null ) {
 		if ( is_singular( AmapressDistribution::INTERNAL_POST_TYPE ) ) {

@@ -659,7 +659,34 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		return stripslashes( $desc );
 	}
+
 //
+	public static function getUserNextDistributions( $user_id = null, $date = null, $max_distribs = 0 ) {
+		$distribs  = AmapressDistribution::get_next_distributions( $date );
+		$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id );
+		$ret       = [];
+		foreach ( $distribs as $distrib ) {
+			$contrats = $distrib->getContratIds();
+			foreach ( $adhesions as $adhesion ) {
+				if ( $adhesion->getLieuId() == $distrib->getLieuId()
+				     && in_array( $adhesion->getContrat_instanceId(), $contrats )
+				) {
+					$quants = $adhesion->getContrat_quantites( $distrib->getDate() );
+					if ( empty( $quants ) ) {
+						continue;
+					}
+
+					$ret[] = $distrib;
+					break;
+				}
+			}
+			if ( $max_distribs && count( $ret ) == $max_distribs ) {
+				break;
+			}
+		}
+
+		return $ret;
+	}
 
 	/**
 	 * @param int $lieu_id
