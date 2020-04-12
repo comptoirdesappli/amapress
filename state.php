@@ -1012,19 +1012,6 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		                                               }, $not_subscribable_contrat_types ) ) . '</p>' : '' )
 	);
 
-	$contrat_types                      = get_posts( array(
-		'post_type'      => AmapressContrat::INTERNAL_POST_TYPE,
-		'post_status'    => [ 'publish' ],
-		'posts_per_page' => - 1,
-		'meta_query'     => array(
-			array(
-				'key'     => 'amapress_contrat_producteur',
-				'value'   => amapress_prepare_in( array_map( 'Amapress::to_id', $producteurs ) ),
-				'compare' => 'IN',
-				'type'    => 'NUMERIC',
-			)
-		)
-	) );
 	$active_contrat_instances           = AmapressContrats::get_active_contrat_instances();
 	$not_subscribable_contrat_instances = array_filter(
 		$contrat_types,
@@ -1103,14 +1090,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	}
 
 	foreach (
-		get_posts(
-			[
-				'post_type'      => AmapressProducteur::INTERNAL_POST_TYPE,
-				'posts_per_page' => - 1,
-			]
-		) as $post
+		Amapress::get_producteurs() as $prod
 	) {
-		$prod = AmapressProducteur::getBy( $post );
 		if ( empty( $prod->getUser() ) ) {
 			$state['15_posts'][] = amapress_get_check_state(
 				'error',
@@ -1121,14 +1102,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		}
 	}
 	foreach (
-		get_posts(
-			[
-				'post_type'      => AmapressContrat::INTERNAL_POST_TYPE,
-				'posts_per_page' => - 1,
-			]
-		) as $post
+		AmapressContrats::get_contrats() as $contrat
 	) {
-		$contrat = AmapressContrat::getBy( $post );
 		if ( empty( $contrat->getProducteur() ) ) {
 			$state['15_posts'][] = amapress_get_check_state(
 				'error',
@@ -2059,7 +2034,7 @@ function amapress_get_mysql_version() {
 function amapress_get_mysql_data_usage() {
 	global $wpdb;
 	$data_usage   = 0;
-	$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
+	$tablesstatus = amapress_get_results_cached( "SHOW TABLE STATUS" );
 	foreach ( $tablesstatus as $tablestatus ) {
 		$data_usage += $tablestatus->Data_length;
 	}
@@ -2071,7 +2046,7 @@ function amapress_get_mysql_data_usage() {
 function amapress_get_mysql_index_usage() {
 	global $wpdb;
 	$index_usage  = 0;
-	$tablesstatus = $wpdb->get_results( "SHOW TABLE STATUS" );
+	$tablesstatus = amapress_get_results_cached( "SHOW TABLE STATUS" );
 	foreach ( $tablesstatus as $tablestatus ) {
 		$index_usage += $tablestatus->Index_length;
 	}
