@@ -3382,6 +3382,27 @@ class Amapress {
 
 		$items[] = $item;
 
+		$item = new stdClass();
+
+		$item->object_id        = $i ++;
+		$item->ID               = 0;
+		$item->db_id            = 0;
+		$item->object           = 'next_distribution';
+		$item->menu_item_parent = 0;
+		$item->post_parent      = 0;
+		$item->type             = 'amapress-next-distribution';
+		$item->title            = __( 'Prochaine distribution', 'amapress' );
+		$item->type_label       = __( 'Prochaine distribution', 'amapress' );
+		$item->url              = get_post_type_archive_link( AmapressDistribution::INTERNAL_POST_TYPE );
+		$item->target           = '';
+		$item->attr_title       = '';
+		if ( empty( $item->classes ) ) {
+			$item->classes = array();
+		}
+		$item->xfn = '';
+
+		$items[] = $item;
+
 		foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
 			$item = new stdClass();
 
@@ -3458,12 +3479,27 @@ class Amapress {
 					}
 				}
 			} else if ( $item->type == 'amapress-custom-latest' && ! is_admin() ) {
+				amapress_ensure_no_cache();
+
 				$types = array_merge( [ 'post' ], array_keys( AmapressEntities::getPostTypes() ) );
 				foreach ( $types as $post_type ) {
 					if ( $item->object == 'latest_' . $post_type ) {
 						$item->url = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
 						break;
 					}
+				}
+			} elseif ( $item->type == 'amapress-next-distribution' ) {
+				amapress_ensure_no_cache();
+
+				$next_distribs = AmapressDistribution::getUserNextDistributions( null, null, 1 );
+				/** @var AmapressDistribution $next_distrib */
+				$next_distrib = array_shift( $next_distribs );
+				if ( ! $next_distrib ) {
+					$next_distrib = AmapressDistribution::getNextDistribution();
+				}
+				if ( $next_distrib ) {
+					$item->url        = $next_distrib->getPermalink();
+					$item->attr_title = $next_distrib->getTitle();
 				}
 			} else if ( $item->type == 'amapress-custom-link' ) {
 				foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
