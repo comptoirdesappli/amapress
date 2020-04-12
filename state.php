@@ -340,9 +340,29 @@ Configurer ici pour sauvegarder les données de votre site vers un drive ou stoc
 		'Passer votre site en HTTPS améliore sa sécurité et son référencement. Voir plugin Really Simple SSL ci-dessous.',
 		''
 	);
+	if ( is_ssl() ) {
+		$siteurl = get_option( 'siteurl' );
+		if ( ! empty( $siteurl ) && 0 !== strpos( $siteurl, 'https:' ) ) {
+			$state['05_config'][] = amapress_get_check_state(
+				'error',
+				'Paramètre "Adresse web de WordPress (URL)" non HTTPS',
+				'Devrait contenir "' . str_replace( 'http:', 'https:', $siteurl ) . '" au lieu de "' . $siteurl . '"',
+				admin_url( 'options-general.php' )
+			);
+		}
+		$home = get_option( 'home' );
+		if ( ! empty( $home ) && 0 !== strpos( $home, 'https:' ) ) {
+			$state['05_config'][] = amapress_get_check_state(
+				'error',
+				'Paramètre "Adresse web du site (URL)" non HTTPS',
+				'Devrait contenir "' . str_replace( 'http:', 'https:', $home ) . '" au lieu de "' . $home . '"',
+				admin_url( 'options-general.php' )
+			);
+		}
+	}
 	$state['05_config'][] = amapress_check_plugin_install( 'really-simple-ssl', 'Really Simple SSL',
 		'<strong>Plugin recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
-		'warning' );
+		is_ssl() ? 'info' : 'warning' );
 
 	$state['05_config'][] = amapress_check_plugin_install( 'pwa', 'Progressive Web App',
 		'<strong>Recommandé</strong> : permet au site d\'être vu comme une application mobile et d\'ajouter un raccourci à l\'écran d\'accueil',
