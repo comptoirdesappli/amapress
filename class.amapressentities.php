@@ -2750,6 +2750,15 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'default'    => true,
 								),
 								array(
+									'id'           => 'admin-notify-cc',
+									'name'         => amapress__( 'Cc' ),
+									'type'         => 'select-users',
+									'autocomplete' => true,
+									'multiple'     => true,
+									'tags'         => true,
+									'desc'         => 'Destinataires en copie des emails de notification',
+								),
+								array(
 									'type' => 'save',
 								),
 							)

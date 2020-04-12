@@ -179,7 +179,15 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 			$message .= sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
 			$message .= sprintf( __( 'Email: %s' ), $user->getUser()->user_email ) . "\r\n";
 
-			@wp_mail( get_option( 'admin_email' ), sprintf( __( '[%s] New User Registration' ), $blogname ), $message );
+			$cc      = amapress_get_recall_cc_from_option( 'admin-notify-cc' );
+			$headers = '';
+			if ( ! empty( $cc ) ) {
+				$headers = 'Cc: ' . implode( ',', $cc );
+			}
+
+			@wp_mail( get_option( 'admin_email' ),
+				sprintf( __( '[%s] New User Registration' ), $blogname ),
+				$message, $headers );
 		}
 
 		if ( 'admin' === $notify || ( empty( $deprecated ) && empty( $notify ) ) ) {
@@ -216,12 +224,14 @@ if ( ! function_exists( 'wp_password_change_notification' ) ) {
 			// We want to reverse this for the plain text arena of emails.
 			$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
+			$cc = amapress_get_recall_cc_from_option( 'admin-notify-cc' );
+
 			$wp_password_change_notification_email = array(
 				'to'      => get_option( 'admin_email' ),
 				/* translators: Password change notification email subject. %s: Site title. */
 				'subject' => __( '[%s] Password Changed' ),
 				'message' => $message,
-				'headers' => '',
+				'headers' => ! empty( $cc ) ? 'Cc: ' . implode( ',', $cc ) : '',
 			);
 
 			/**
