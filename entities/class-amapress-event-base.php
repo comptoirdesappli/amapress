@@ -115,4 +115,203 @@ class Amapress_EventBase extends TitanEntity {
 			],
 		];
 	}
+
+	public function getSlotsConf() {
+		$cache_key = static::INTERNAL_POST_TYPE . 'getSlotsConf-' . $this->ID;
+		$res       = wp_cache_get( $cache_key );
+		if ( false === $res ) {
+			$active_slots = $this->getSlots();
+			$key          = 'amapress_' . static::POST_TYPE . '_slots_conf';
+			$slots_conf   = $this->getCustom( $key, Amapress::getOption( $key ) );
+			$res          = [];
+			if ( ! empty( $slots_conf ) ) {
+				foreach ( explode( '|', $slots_conf ) as $conf ) {
+					$m = array();
+					//18h00-20h00[10m;2p]|
+					if ( preg_match( '/(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?(?:\[(?<inter>\d*[05])m(?:in)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
+						if ( ! isset( $m['start_h'] ) || ! isset( $m['end_h'] ) ) {
+							continue;
+						}
+						$start_h = intval( ltrim( $m['start_h'], '0' ) );
+						$start_m = isset( $m['start_m'] ) ? intval( ltrim( $m['start_m'], '0' ) ) : 0;
+						$end_h   = intval( ltrim( $m['end_h'], '0' ) );
+						$end_m   = isset( $m['end_m'] ) ? intval( ltrim( $m['end_m'], '0' ) ) : 0;
+
+						$inter = isset( $m['inter'] ) ? intval( $m['inter'] ) : 0;
+						$max   = isset( $m['max'] ) ? intval( $m['max'] ) : 0;
+
+						$dt_start = new DateTime();
+						$dt_start->setTimestamp( $this->getStartDateAndHour() );
+						$dt_start->setTime( $start_h, $start_m );
+						$dt_end = new DateTime();
+						$dt_end->setTimestamp( $this->getStartDateAndHour() );
+						$dt_end->setTime( $end_h, $end_m );
+
+						while ( $dt_start < $dt_end ) {
+							$inter_start = $dt_start->getTimestamp();
+							if ( $inter > 0 ) {
+								$dt_start->modify( "+{$inter} minutes" );
+							} else {
+								$dt_start = $dt_end;
+							}
+							$inter_end     = $dt_start->getTimestamp();
+							$key           = strval( $inter_start );
+							$current_usage = 0;
+							foreach ( $active_slots as $s ) {
+								$current_usage += ( $s == $key ? 1 : 0 );
+							}
+							$res[ $key ] = [
+								'display'  => date_i18n( 'H:i', $inter_start ) . '-' . date_i18n( 'H:i', $inter_end ),
+								'date'     => $inter_start,
+								'date_end' => $inter_end,
+								'max'      => $max,
+								'current'  => $current_usage
+							];
+						}
+					}
+				}
+
+			}
+			wp_cache_set( $cache_key, $res );
+		}
+
+		return $res;
+	}
+
+	public function isMemberOf( $user_id ) {
+		return true;
+	}
+
+	public function getMailEventType() {
+		return static::POST_TYPE;
+	}
+
+	public function getSlots() {
+		$key = 'amapress_' . static::POST_TYPE . '_slots';
+
+		return $this->getCustomAsArray( $key );
+	}
+
+	private function setSlots( $slots ) {
+		$key = 'amapress_' . static::POST_TYPE . '_slots';
+		$this->setCustom( $key, $slots );
+	}
+
+	public function getSlotInfoForUser( $user_id ) {
+		if ( empty( $user_id ) ) {
+			$user_id = amapress_current_user_id();
+		}
+
+		$confs = $this->getSlotsConf();
+		$slots = $this->getSlots();
+		if ( isset( $slots["u{$user_id}"] ) ) {
+			$slot = $slots["u{$user_id}"];
+
+			return isset( $confs[ $slot ] ) ? $confs[ $slot ] : null;
+		} else {
+			return null;
+		}
+	}
+
+	public function getUserIdsForSlot( $slot ) {
+		$amapien_ids = [];
+		foreach ( $this->getSlots() as $k => $v ) {
+			if ( $v == $slot ) {
+				$amapien_ids[] = intval( substr( $k, 1 ) );
+			}
+		}
+
+		return $amapien_ids;
+	}
+
+	public function getAvailableSlots() {
+		return array_filter( $this->getSlotsConf(), function ( $conf ) {
+			return $conf['max'] <= 0 || $conf['current'] < $conf['max'];
+		} );
+	}
+
+	public function manageSlot( $user_id, $slot, $set = true ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		if ( empty( $user_id ) ) {
+			$user_id = amapress_current_user_id();
+		}
+
+		if ( ! amapress_can_access_admin() ) {
+			if ( ! $this->isMemberOf( $user_id ) ) {
+				wp_die( 'Vous n\'en faites pas partie.' );
+			}
+		}
+
+		$slot      = strval( $slot );
+		$all_slots = $this->getSlotsConf();
+		if ( ! isset( $all_slots[ $slot ] ) ) {
+			wp_die( 'Créneau non déclaré' );
+		}
+
+		$requested_slot = $all_slots[ $slot ];
+		$slots          = $this->getSlots();
+		if ( ! $slots ) {
+			$slots = array();
+		}
+
+		$requested_slot_max = $requested_slot['max'];
+		if ( $requested_slot_max ) {
+			foreach ( $slots as $s ) {
+				if ( $s == $slot ) {
+					$requested_slot_max -= 1;
+				}
+			}
+			if ( $requested_slot < 1 ) {
+				return 'full';
+			}
+		}
+
+		if ( $set ) {
+			if ( ! amapress_can_access_admin() && ! empty( $slots["u{$user_id}"] ) ) {
+				return 'already_in_list';
+			} else {
+				$slots["u{$user_id}"] = $slot;
+				$this->setSlots( $slots );
+
+				if ( amapress_current_user_id() == $user_id ) {
+					amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
+						function ( $content, $user_id, $post ) use ( $requested_slot ) {
+							$content = str_replace( '%%creneau%%',
+								$requested_slot['display'], $content );
+							$content = str_replace( '%%creneau_date_heure%%',
+								date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
+
+							return $content;
+						}, static::POST_TYPE . '-slot'
+					);
+				} else {
+					amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
+						function ( $content, $user_id, $post ) use ( $requested_slot ) {
+							$content = str_replace( '%%creneau%%',
+								$requested_slot['display'], $content );
+							$content = str_replace( '%%creneau_date_heure%%',
+								date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
+
+							return $content;
+						}, static::POST_TYPE . '-admin-slot'
+					);
+				}
+
+				return 'ok';
+			}
+		} else {
+			if ( ! isset( $slots["u{$user_id}"] ) ) {
+				return 'not_inscr';
+			} else {
+//				$slot = $slots["u{$user_id}"];
+				unset( $slots["u{$user_id}"] );
+				$this->setSlots( $slots );
+
+				return 'ok';
+			}
+		}
+	}
 }
