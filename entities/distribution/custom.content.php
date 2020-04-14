@@ -191,11 +191,11 @@ function amapress_get_custom_content_distribution( $content ) {
 					if ( empty( $gardien_id ) && $u->ID != amapress_current_user_id() ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et l\'affectez-vous à la garde votre panier ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Affecter la garde</button></div>';
+					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Affecter la garde</button>';
 					} elseif ( $u->ID == $gardien_id ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment le désaffecter de la garde votre panier ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Désaffecter la garde</button></div>';
+					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Désaffecter la garde</button>';
 					}
 				}
 
