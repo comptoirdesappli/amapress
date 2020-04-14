@@ -2442,9 +2442,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-admin-adh-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc%%) a été attribué par un responsable de l\'AMAP à %%post:repreneur-nom%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc%%) a été attribué par un responsable de l\'AMAP '%%responsable%%' à %%post:repreneur-nom%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												AmapressIntermittence_panier::getPlaceholdersHelp( [
+													'responsable' => 'Nom et coordonnées du responsable ayant fait l\'affectation du panier'
+												], false ),
 										),
 										array(
 											'name' => 'Email à l\'amapien repreneur',
@@ -2461,9 +2463,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'intermittence-panier-admin-rep-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\nUn responsable de l\'AMAP vous a attribué la reprise du panier de %%post:adherent-nom%% (%%post:adherent-coords%%) : (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\nUn responsable de l\'AMAP '%%responsable%%' vous a attribué la reprise du panier de %%post:adherent-nom%% (%%post:adherent-coords%%) : (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												AmapressIntermittence_panier::getPlaceholdersHelp( [
+													'responsable' => 'Nom et coordonnées du responsable ayant fait l\'affectation du panier'
+												], false ),
 										),
 										array(
 											'type' => 'save',

@@ -201,16 +201,25 @@ function amapress_send_panier_intermittent_affected( $intermittence_panier_id ) 
 	}
 	$inter = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
 
+	$responsable      = AmapressUser::getBy( amapress_current_user_id() );
+	$responsable_html = sprintf( '%s (%s)',
+		Amapress::makeLink( 'mailto:' . $responsable->getEmail(), $responsable->getDisplayName() ),
+		$responsable->getContacts() );
+
+	$content = Amapress::getOption( 'intermittence-panier-admin-adh-mail-content' );
+	$content = str_replace( '%%responsable%%', $responsable_html, $content );
 	amapress_mail_to_current_user(
 		Amapress::getOption( 'intermittence-panier-admin-adh-mail-subject' ),
-		Amapress::getOption( 'intermittence-panier-admin-adh-mail-content' ),
+		$content,
 		$inter->getAdherent()->ID,
 		$inter, [], null, null,
 		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $inter->getLieuId() ) );
 
+	$content = Amapress::getOption( 'intermittence-panier-admin-rep-mail-content' );
+	$content = str_replace( '%%responsable%%', $responsable_html, $content );
 	amapress_mail_to_current_user(
 		Amapress::getOption( 'intermittence-panier-admin-rep-mail-subject' ),
-		Amapress::getOption( 'intermittence-panier-admin-rep-mail-content' ),
+		$content,
 		$inter->getRepreneur()->ID,
 		$inter, [], null, null,
 		AmapressIntermittence_panier::getResponsableIntermittentsReplyto( $inter->getLieuId() ) );
