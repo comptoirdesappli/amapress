@@ -1,3 +1,14 @@
+# 0.94.0 (2020-04-14)
+* **Créneaux horaires:** mettre le nom du responsable qui fait l'affectation dans le mail de confirmation
+* **Distributions:** créneaux horaires
+    - pour les amapies pour récupérer leurs paniers pour chaque distribution
+    - inscription sur la page des inscriptions des responsables des distributions 
+    - affectation en mode admin (dans la liste d'émargement) 
+    - rappels individuels à chaque amapiens avec ses paniers et le créneau affecté ou choisi 
+    - dans l'agenda 
+    - affichage dans la liste d'émargement
+* **Intermittents:** mettre le nom du responsable qui fait l'affectation du panier dans le mail de confirmation
+
 # 0.93.100 (2020-04-12)
 * **Emails groupés:** n'afficher que les groupes relatifs aux lieux principaux (Modérateurs et Membres)
 * **Etat Amapress:** check des paramètres Adresse web de WordPress (URL) et Adresse web du site (URL) pour préfixe HTTPS si SSL activé (et Really Simple SSL conseillé comme outil uniquement si tout est déjà SSL)
