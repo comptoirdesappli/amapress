@@ -211,6 +211,10 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
 
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
+		}
+
 		$participants = $this->getParticipantsIds();
 		if ( in_array( $user_id, $participants ) ) {
 			return 'already_in_list';
@@ -227,6 +231,10 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	public function desinscrireParticipant( $user_id ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
 		}
 
 		$participants = $this->getParticipantsIds();

@@ -243,6 +243,9 @@ class Amapress_EventBase extends TitanEntity {
 			if ( ! $this->isMemberOf( $user_id ) ) {
 				wp_die( 'Vous n\'en faites pas partie.' );
 			}
+			if ( Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+				wp_die( 'Clos et passé' );
+			}
 		}
 
 		$slot      = strval( $slot );

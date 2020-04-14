@@ -162,6 +162,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			}
 		}
 
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
+		}
+
 		$gardiens = $this->getGardiensIds();
 		if ( ! $gardiens ) {
 			$gardiens = array();
@@ -181,6 +185,10 @@ class AmapressDistribution extends Amapress_EventBase {
 	public function desinscrireGardien( $user_id, $allow_anonymous = false ) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
 		}
 
 		$gardiens = $this->getGardiensIds();
@@ -241,6 +249,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
 				wp_die( 'Vous ne faites pas partie de cette distribution.' );
 			}
+		}
+
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
 		}
 
 		if ( empty( $user_id ) ) {
@@ -551,6 +563,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			}
 		}
 
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
+		}
+
 		$responsables        = $this->getResponsablesIds();
 		$needed_responsables = AmapressDistributions::get_required_responsables( $this->ID );
 		if ( ! $responsables ) {
@@ -598,6 +614,10 @@ class AmapressDistribution extends Amapress_EventBase {
 	public function desinscrireResponsable( $user_id, $allow_anonymous = false ) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
 		}
 
 		$responsables = $this->getResponsablesIds();
