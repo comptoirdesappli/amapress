@@ -956,11 +956,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'      => 'inscr-distribution-admin-slot-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n\nUn responsable vous a affecté le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n\nUn responsable '%%responsable%%' vous a affecté le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												AmapressDistribution::getPlaceholdersHelp( [
 													'creneau'            => 'Créneau choisi',
-													'creneau_date_heure' => 'Date et heure du créneau choisi'
+													'creneau_date_heure' => 'Date et heure du créneau choisi',
+													'responsable'        => 'Nom et coordonnées du responsable ayant fait l\'affectation du créneau'
 												], false ),
 										),
 										array(

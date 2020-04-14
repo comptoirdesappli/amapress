@@ -288,12 +288,19 @@ class Amapress_EventBase extends TitanEntity {
 						}, static::POST_TYPE . '-slot'
 					);
 				} else {
+					$responsable      = AmapressUser::getBy( amapress_current_user_id() );
+					$responsable_html = sprintf( '%s (%s)',
+						Amapress::makeLink( 'mailto:' . $responsable->getEmail(), $responsable->getDisplayName() ),
+						$responsable->getContacts() );
+
 					amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
-						function ( $content, $user_id, $post ) use ( $requested_slot ) {
+						function ( $content, $user_id, $post ) use ( $requested_slot, $responsable_html ) {
 							$content = str_replace( '%%creneau%%',
 								$requested_slot['display'], $content );
 							$content = str_replace( '%%creneau_date_heure%%',
 								date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
+							$content = str_replace( '%%responsable%%',
+								$responsable_html, $content );
 
 							return $content;
 						}, static::POST_TYPE . '-admin-slot'
