@@ -387,23 +387,7 @@ function amapress_add_message_target( &$arr, $query_string, $title, $target_type
 }
 
 function amapress_message_get_targets() {
-	$users     = get_users();
-	$users_ids = array_map( function ( $u ) {
-		return $u->ID;
-	}, $users );
-	update_meta_cache( 'user', $users_ids );
-	cache_users( $users_ids );
-	$res = array();
-
-//    $producteurs = get_posts(
-//        array(
-//            'post_type' => 'amps_producteur',
-//            'posts_per_page' => -1,
-//            'order' => 'post_title',
-//            'orderby' => 'ASC'
-//        ));
-//    foreach ($producteurs as $prod) {
-//    }
+	amapress_precache_all_users();
 
 	$ret = array();
 	amapress_add_message_target( $ret, "user:me", "Moi - Test", 'me' );

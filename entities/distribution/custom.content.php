@@ -246,7 +246,8 @@ function amapress_get_custom_content_distribution( $content ) {
 				amapress_echo_panel_start( 'Pour les responsables AMAP' );
 				$users = [ '' => '--Sélectionner un amapien--' ];
 				//precache
-				get_users();
+				amapress_precache_all_users();
+
 				foreach ( $dist->getMainAdherentsIds( true ) as $user_id ) {
 					$user               = AmapressUser::getBy( $user_id );
 					$users[ $user->ID ] = sprintf( '%s (%s)', $user->getDisplayName(), $user->getEmail() );

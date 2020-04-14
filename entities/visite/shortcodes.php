@@ -43,6 +43,7 @@ function amapress_inscription_visite_shortcode( $atts ) {
 		$can_subscribe   = Amapress::start_of_day( $date ) > Amapress::start_of_day( amapress_time() );
 
 		$users = [ '' => '--Sélectionner un amapien--' ];
+		amapress_precache_all_users();
 		foreach ( get_users() as $user ) {
 			$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
 		}

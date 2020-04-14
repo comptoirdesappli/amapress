@@ -2364,6 +2364,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 		Amapress::setFilterForReferent( false );
 		$all_user_adhs = AmapressContrats::get_active_adhesions();
 		Amapress::setFilterForReferent( true );
+		amapress_precache_all_users();
 		/** @var WP_User $user */
 		foreach ( get_users() as $user ) {
 			$user_adhs            = from( $all_user_adhs )
@@ -2548,6 +2549,7 @@ function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $o
 		echo '<h4>1/ Choisir l\'adhérent principal</h4>';
 		$options       = [];
 		$all_user_adhs = AmapressContrats::get_active_adhesions();
+		amapress_precache_all_users();
 		/** @var WP_User $user */
 		foreach ( get_users() as $user ) {
 			$user_adhs            = from( $all_user_adhs )

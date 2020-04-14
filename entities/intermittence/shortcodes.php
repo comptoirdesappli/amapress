@@ -311,6 +311,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 
 		$users = array( '' => '--Sélectionner un amapien--' );
 		if ( $for_other_users ) {
+			amapress_precache_all_users();
 			/** @var WP_User $user */
 			foreach ( get_users() as $user ) {
 				if ( $user->ID != $user_id ) {

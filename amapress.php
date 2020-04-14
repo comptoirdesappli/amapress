@@ -142,6 +142,16 @@ function amapress_dump( $v ) {
 	echo '</pre>';
 }
 
+function amapress_precache_all_users() {
+	$res = wp_cache_get( 'amapress_precache_all_users' );
+	if ( false === $res ) {
+		$users_ids = get_users( 'fields=ID' );
+		update_meta_cache( 'user', $users_ids );
+		cache_users( $users_ids );
+		wp_cache_set( 'amapress_precache_all_users', true );
+	}
+}
+
 global $amapress_notices;
 $amapress_notices = array();
 function amapress_add_admin_notice( $message, $type, $is_dismissible, $escape = true ) {

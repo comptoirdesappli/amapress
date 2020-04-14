@@ -20,6 +20,7 @@ function amapress_get_custom_content_amap_event( $content ) {
 	$is_resp         = in_array( amapress_current_user_id(), $amap_event->getParticipantsIds() );
 
 	$users = [ '' => '--Sélectionner un amapien--' ];
+	amapress_precache_all_users();
 	foreach ( get_users() as $user ) {
 		$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
 	}
