@@ -814,7 +814,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_roles_options(),
 								),
-								'Gardiens de paniers'                    => array(
+								'Gardiens de paniers'       => array(
 									'id'      => 'amp_tab_gardiens_paniers_distrib',
 									'desc'    => '',
 									'options' => [
@@ -901,6 +901,66 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
 													'gardien'          => 'Nom du gardien de panier choisi',
 													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+												], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									],
+								),
+								'Créneaux de distributions' => array(
+									'id'      => 'amp_tab_distrib_slots',
+									'desc'    => '',
+									'options' => [
+										array(
+											'id'      => 'inscr-distribution-slot-close',
+											'type'    => 'number',
+											'step'    => 1,
+											'default' => 24,
+											'name'    => 'Fermer l\'inscription aux créneaux de distributions X heures avant la distribution',
+										),
+										array(
+											'name' => 'Email à l\'amapien choisissant un créneau',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'inscr-distribution-slot-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Choix du créneau %%creneau%% à %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-distribution-slot-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'textarea',
+											'default' => wpautop( "Bonjour,\n\nVous avez choisi le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'creneau'            => 'Créneau choisi',
+													'creneau_date_heure' => 'Date et heure du créneau choisi'
+												], false ),
+										),
+										array(
+											'name' => 'Email à l\'amapien affecté à un créneau',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'inscr-distribution-admin-slot-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Affectation du créneau %%creneau%% à %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-distribution-admin-slot-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nUn responsable vous a affecté le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressDistribution::getPlaceholdersHelp( [
+													'creneau'            => 'Créneau choisi',
+													'creneau_date_heure' => 'Date et heure du créneau choisi'
 												], false ),
 										),
 										array(

@@ -870,6 +870,23 @@ class AmapressDistribution extends Amapress_EventBase {
 					'href'     => $this->getPermalink()
 				) );
 			}
+			$current_user_slot = $this->getSlotInfoForUser( amapress_current_user_id() );
+			if ( $current_user_slot ) {
+				$ret[] = new Amapress_EventEntry( array(
+					'ev_id'    => "dist-{$this->ID}-creneau",
+					'date'     => $current_user_slot['date'],
+					'date_end' => $current_user_slot['date_end'],
+					'class'    => 'agenda-distrib agenda-creneau-panier',
+					'category' => 'Créneau de récupération',
+					'lieu'     => $lieu,
+					'type'     => 'creneau-panier',
+					'priority' => 45,
+					'label'    => 'Créneau de récupération',
+					'icon'     => 'dashicons dashicons-clock',
+					'alt'      => 'Créneau pour récupérer vos paniers : ' . $current_user_slot['display'],
+					'href'     => $this->getPermalink()
+				) );
+			}
 			$gardiens = $this->getGardiensIds( true );
 			if ( in_array( $user_id, $gardiens ) ) {
 				$ret[] = new Amapress_EventEntry( array(
@@ -1447,5 +1464,13 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	public function getResponsablesResponsablesDistributionsReplyto( $event_type = 'distrib' ) {
 		return self::getResponsablesRespDistribReplyto( $this->getLieuId(), $event_type );
+	}
+
+	public function isMemberOf( $user_id ) {
+		return $this->isUserMemberOf( $user_id, true );
+	}
+
+	public function getMailEventType() {
+		return 'distrib';
 	}
 }

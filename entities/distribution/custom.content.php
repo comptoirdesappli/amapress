@@ -132,6 +132,11 @@ function amapress_get_custom_content_distribution( $content ) {
         </div>
 		<?php
 
+		$current_user_slot = $dist->getSlotInfoForUser( amapress_current_user_id() );
+		if ( $current_user_slot ) {
+			echo '<p class="amapien-has-creneau" style="text-align: center;color: orange">Vous avez le créneau ' . esc_html( $current_user_slot['display'] ) . '</p>';
+		}
+
 		if ( $need_responsables ) {
 			echo $panel_resp;
 		}

@@ -574,10 +574,34 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 						$columns_no_price, $data,
 						$dt_options );
 			}
+
+			$slot_info  = '';
+			$slot_confs = $dist->getSlotsConf();
+			if ( ! empty( $slot_confs ) ) {
+				$slots = [];
+				foreach ( $user_ids as $user_id ) {
+					$slot = $dist->getSlotInfoForUser( $user_id );
+					if ( $slot ) {
+						$slots[ strval( $slot['date'] ) ] = $slot;
+					}
+				}
+				$slot_info = implode( ', ', array_map( function ( $s ) {
+					return $s['display'];
+				}, $slots ) );
+			}
+			$replacements['creneau_horaire'] = $slot_info;
+
 			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $user_ids ),
 				"Amapiens de " . $dist->getTitle(), "distribution" );
 			$subject      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
 			$content      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-content' );
+
+			if ( ! empty( $slot_info ) ) {
+				$content = preg_replace( '/\[\/?creneau\]/', '', $content );
+			} else {
+				$content = preg_replace( '/\[creneau\].+?\[\/creneau\]/', '', $content );
+			}
+
 			foreach ( $replacements as $k => $v ) {
 				$subject = str_replace( "%%$k%%", $v, $subject );
 				$content = str_replace( "%%$k%%", $v, $content );
@@ -690,10 +714,12 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'id'      => 'distribution-amapiens-indiv-recall-mail-content',
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, vous aurez :\n\n%%livraison_details%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\n\n[creneau]Vous avez choisi (ou on vous a affecté) le créneau horaire <strong>%%creneau_horaire%%</strong> pour récupérer vos paniers[/creneau]\n\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, vous aurez :\n\n%%livraison_details%%\n\n%%nom_site%%" ),
 			'desc'    =>
+				'La syntaxe [creneau]xxx[/creneau] permet de cibler le texte le texte affiché lorsque des créneaux horaires de récupération de paniers sont en place pour la distribution concernée.<br />Les placeholders suivants sont disponibles:' .
 				AmapressDistribution::getPlaceholdersHelp(
 					[
+						'creneau_horaire'        => 'Créneau horaire choisi ou affecté',
 						'livraison_details'      => 'Tableau détaillant les paniers livrés (sans montants) à cette distribution pour un amapien donné',
 						'livraison_details_prix' => 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné'
 					]

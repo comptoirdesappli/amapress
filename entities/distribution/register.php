@@ -177,7 +177,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'  => 'Heure début particulière pour cette livraison',
 				'group' => '1/ Partage',
 			),
-			'heure_fin_spec'    => array(
+			'heure_fin_spec' => array(
 				'name'  => amapress__( 'Heure de fin' ),
 				'type'  => 'date',
 				'date'  => false,
@@ -185,7 +185,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'  => 'Heure fin particulière pour cette livraison',
 				'group' => '1/ Partage',
 			),
-			'contrats'          => array(
+			'contrats'       => array(
 				'name'       => amapress__( 'Contrats' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_contrat_inst',
@@ -201,7 +201,16 @@ function amapress_register_entities_distribution( $entities ) {
 				),
 //                'searchable' => true,
 			),
-			'paniers'           => array(
+			'slots_conf'     => array(
+				'name'  => amapress__( 'Créneaux' ),
+				'type'  => 'text',
+				'desc'  => 'Configuration des créneaux disponibles pour la récupération des paniers (en italique les parties facultatives): <strong>HH</strong>h<em>MM</em>-<strong>HH</strong>h<em>MM</em><em>[]</em>
+<br/>Le nombre maximum de personnes est facultatif ; si l\'intervalle en minutes n\'est pas précisé, la plage entière est considérée comme un seul créneau
+<br/>Peut contenir plusieurs créneaux différents séparés par |, par ex : 18h-19h|20h-21h
+<br/>Par exemple, toutes les 10 mins entre 18h et 20h avec 2 personnes maximum par créneau:',
+				'group' => '1/ Partage',
+			),
+			'paniers'        => array(
 				'name'              => amapress__( 'Panier(s)' ),
 				'group'             => '1/ Partage',
 				'desc'              => 'Paniers à cette distribution',

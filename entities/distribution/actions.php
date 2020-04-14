@@ -140,7 +140,15 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		}, $all_contrat_instances
 	);
 	$dist_lieu_id             = $dist->getLieuId();
-
+	$dist_slots_conf          = $dist->getSlotsConf();
+	$dist_slots_options       = [];
+	foreach ( $dist_slots_conf as $k => $conf ) {
+		if ( $conf['max'] <= 0 ) {
+			$dist_slots_options[ $k ] = $conf['display'];
+		} else {
+			$dist_slots_options[ $k ] = sprintf( '%s (%d/%d)', $conf['display'], intval( $conf['current'] ), intval( $conf['max'] ) );
+		}
+	}
 	$show_address = Amapress::getOption( 'liste-emargement-show-address' );
 	if ( isset( $_GET['show_address'] ) ) {
 		$show_address = Amapress::toBool( $_GET['show_address'] );
@@ -179,6 +187,15 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		),
 
 	);
+	if ( ! empty( $dist_slots_conf ) ) {
+		$columns[] = array(
+			'title' => 'Créneau',
+			'data'  => array(
+				'_'    => 'slot',
+				'sort' => 'slot_sort',
+			)
+		);
+	}
 	if ( $show_address ) {
 		$columns[] = array(
 			'title' => 'Adresse',
@@ -274,6 +291,36 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$users = array_map( function ( $user_id ) {
 			return amapress_get_user_by_id_or_archived( intval( $user_id ) );
 		}, $user_ids );
+
+		if ( ! empty( $dist_slots_conf ) ) {
+			$slots     = [];
+			$slot_sort = Amapress::end_of_week( $dist->getDate() );
+			foreach ( $user_ids as $user_id ) {
+				$slot = $dist->getSlotInfoForUser( $user_id );
+				if ( $slot ) {
+					$slots[ strval( $slot['date'] ) ] = $slot;
+					if ( $slot['date'] < $slot_sort ) {
+						$slot_sort = $slot['date'];
+					}
+				}
+			}
+			$line['slot_sort'] = date_i18n( 'Y-m-d-H-i', $slot_sort );
+			$slot_display      = implode( ',', array_map( function ( $s ) {
+				return $s['display'];
+			}, $slots ) );
+			if ( amapress_can_access_admin() && ! $for_pdf ) {
+				$affect_slot_id = 'affect-slot-' . $user_ids[0];
+				$affect_slot    = "<select id='$affect_slot_id'>";
+				$affect_slot    .= tf_parse_select_options( $dist_slots_options, $slot_sort, false );
+				$affect_slot    .= '</select>';
+				$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="inscrire_slot" data-confirm="Etes-vous sûr d\'affecter ce créneau à cet amapien ?"
+					data-dist="' . $dist_id . '" data-slot="val:#' . $affect_slot_id . '" data-user="' . $user_ids[0] . '">Affecter</button>';
+
+				$slot_display .= '<br/>' . $affect_slot;
+			}
+			$line['slot'] = $slot_display;
+		}
 
 		$line['first_name'] = implode( ' / ', array_map( function ( $user ) {
 				return $user->first_name;
@@ -375,7 +422,15 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$liste[] = $line;
 	}
 
-	usort( $liste, function ( $a, $b ) {
+	usort( $liste, function ( $a, $b ) use ( $dist_slots_conf ) {
+		if ( ! empty( $dist_slots_conf ) ) {
+			if ( $a['slot_sort'] < $b['slot_sort'] ) {
+				return - 1;
+			} elseif ( $a['slot_sort'] > $b['slot_sort'] ) {
+				return 1;
+			}
+		}
+
 		return strcasecmp( wp_strip_all_tags( $a['last_name'] ), wp_strip_all_tags( $b['last_name'] ) );
 	} );
 
@@ -772,6 +827,57 @@ add_action( 'wp_ajax_inscrire_garde', function () {
 			break;
 		case 'ok':
 			echo '<p class="success">Garde de panier(s) prise en compte</p>';
+			break;
+	}
+	die();
+} );
+
+add_action( 'wp_ajax_desinscrire_slot', function () {
+	$dist_id    = intval( $_POST['dist'] );
+	$slot       = strval( $_POST['slot'] );
+	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$is_current = ( amapress_current_user_id() == $user_id );
+	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+	switch ( $dist->manageSlot( $user_id, $slot, false ) ) {
+		case 'not_inscr':
+			echo '<p class="error">Vous n\'aviez pas choisi de créneau</p>';
+			break;
+		case 'ok':
+			echo '<p class="success">Désaffectation du créneau prise en compte</p>';
+			break;
+	}
+	die();
+} );
+add_action( 'wp_ajax_inscrire_slot', function () {
+	$dist_id    = intval( $_POST['dist'] );
+	$slot       = strval( $_POST['slot'] );
+	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
+	$is_current = amapress_current_user_id() == $user_id;
+	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
+	                          || amapress_can_access_admin()
+	                          || AmapressDistributions::isCurrentUserResponsableThisWeek()
+	                          || AmapressDistributions::isCurrentUserResponsableNextWeek()
+		) ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+	$dist = AmapressDistribution::getBy( $dist_id );
+	switch ( $dist->manageSlot( $user_id, $slot, true ) ) {
+		case 'already_in_list':
+			echo '<p class="error">Vous avez déjà choisi un créneau</p>';
+			break;
+		case 'full':
+			echo '<p class="error">Ce créneau est complet</p>';
+			break;
+		case 'ok':
+			echo '<p class="success">Choix du créneau pris en compte</p>';
 			break;
 	}
 	die();

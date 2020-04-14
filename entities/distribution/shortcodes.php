@@ -314,6 +314,14 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
+	$has_slots = false;
+	foreach ( $dists as $dist ) {
+		if ( ! empty( $dist->getSlotsConf() ) ) {
+			$has_slots = true;
+			break;
+		}
+	}
+
 	//optimize producteur load
 	Amapress::get_producteurs();
 
@@ -363,8 +371,13 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$ret .= '<th style="width: ' . $column_date_width . '">Produits</th>';
 			}
 		}
-		if ( ! $for_emargement && ! $for_pdf && $allow_gardiens ) {
-			$ret .= '<th>Gardiens paniers</th>';
+		if ( ! $for_emargement && ! $for_pdf ) {
+			if ( $has_slots ) {
+				$ret .= '<th>Créneau</th>';
+			}
+			if ( $allow_gardiens ) {
+				$ret .= '<th>Gardiens paniers</th>';
+			}
 		}
 
 		$has_role_names = false;
@@ -497,7 +510,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_week( $date ) > Amapress::start_of_week( amapress_time() ) );
 				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() ) );
 
-				$colspan_cls = 'resp-col resp-col-' . ( ( ! $for_emargement && ! $for_pdf && $allow_gardiens ? 1 : 0 ) + $lieux_needed_resps[ $lieu_id ] + ( $is_current_user_resp_amap ? 1 : 0 ) );
+				$colspan_cls = 'resp-col resp-col-' . ( ( ! $for_emargement && ! $for_pdf && $allow_gardiens ? 1 : 0 )
+				                                        + ( ! $for_emargement && ! $for_pdf && $has_slots ? 1 : 0 )
+				                                        + $lieux_needed_resps[ $lieu_id ]
+				                                        + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {
 					$arr = array( '' => '-amapien-' );
@@ -529,6 +545,48 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					if ( $is_resp ) {
 						break;
 					}
+				}
+
+				if ( ! $for_emargement && ! $for_pdf && $has_slots ) {
+					$ret                   .= "<td class='$colspan_cls incr-list-resp incr-missing'>";
+					$can_change_slot       = $is_user_part_of && amapress_time() < ( $dist->getStartDateAndHour()
+					                                                                 - Amapress::getOption( 'inscr-distribution-slot-close' ) * HOUR_IN_SECONDS );
+					$slot_for_current_user = $dist->getSlotInfoForUser( $user_id );
+					if ( $slot_for_current_user ) {
+						$ret .= esc_html( $slot_for_current_user['display'] );
+						if ( $can_change_slot ) {
+							$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="desinscrire_slot" data-confirm="Etes-vous sûr vous désinscrire de ce créneau ?"
+					data-dist="' . $dist->ID . '" data-slot="' . strval( $slot_for_current_user['date'] ) . '">Désinscrire</button>';
+						}
+					} else {
+						if ( $can_change_slot ) {
+							$dist_slots_options = [];
+							foreach ( $dist->getAvailableSlots() as $k => $conf ) {
+								if ( $conf['max'] <= 0 ) {
+									$dist_slots_options[ $k ] = $conf['display'];
+								} else {
+									$dist_slots_options[ $k ] = sprintf( '%s (%d/%d)', $conf['display'], intval( $conf['current'] ), intval( $conf['max'] ) );
+								}
+							}
+
+							if ( ! empty( $dist_slots_options ) ) {
+								$affect_slot_id = 'affect-slot-' . $dist->ID;
+								$affect_slot    = "<select id='$affect_slot_id'>";
+								$affect_slot    .= tf_parse_select_options( $dist_slots_options, null, false );
+								$affect_slot    .= '</select>';
+								$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
+					data-action="inscrire_slot" data-confirm="Etes-vous sûr de vous inscrire à ce créneau ?"
+					data-dist="' . $dist->ID . '" data-slot="val:#' . $affect_slot_id . '">S\'inscrire</button>';
+								$ret            .= $affect_slot;
+							} else {
+								$ret .= 'aucun';
+							}
+						} elseif ( $is_user_part_of ) {
+							$ret .= '<span style="color: orange">clos</span>';
+						}
+					}
+					$ret .= "</td>";
 				}
 
 				if ( ! $for_emargement && ! $for_pdf && $allow_gardiens ) {
