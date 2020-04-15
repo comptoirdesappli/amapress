@@ -166,6 +166,18 @@ class Amapress {
 		}
 	}
 
+	public static function makeWikiLink( $url, $title = 'Documentation Amapress', $escape_title = true ) {
+		return '<span class="dashicons dashicons-admin-site-alt"></span>&nbsp;' . self::makeLink( $url,
+				$title,
+				$escape_title, true );
+	}
+
+	public static function makeInternalLink( $url, $title = null, $escape_title = true ) {
+		return '<span class="dashicons dashicons-sos"></span>&nbsp;' . self::makeLink( $url,
+				$title,
+				$escape_title, true );
+	}
+
 	public static function makeLink( $url, $title = null, $escape_title = true, $blank = false ) {
 		if ( empty( $title ) ) {
 			$title = $url;
@@ -2580,7 +2592,7 @@ class Amapress {
 
 		$m = self::getTitanInstance()->createMetaBox(
 			array(
-				'name'        => 'Amapress Aide',
+				'name'        => 'Aide',
 				'context'     => 'side',
 				'priority'    => 'high',
 				'post_type'   => $post_types,
@@ -2591,7 +2603,11 @@ class Amapress {
 			array(
 				'id'   => 'amps_sc_edit_help',
 				'type' => 'note',
-				'desc' => 'Accéder à <a href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '" target="_blank">l\'aide des shortcodes</a>',
+				'desc' => Amapress::makeInternalLink(
+						admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ),
+						'Liste des shortcodes' ) .
+				          '<br/>' .
+				          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/shortcodes' ),
 			)
 		);
 
@@ -2619,7 +2635,8 @@ class Amapress {
 				'bare_id'     => true,
 				'name'        => amapress__( 'Rediriger non connectés vers' ),
 				'type'        => 'select-pages',
-				'desc'        => 'Laisser vide pour rediriger vers la page de connexion ou rediriger vers une page spécifique',
+				'desc'        => 'Par défaut : les internautes non connectés sont redirigés vers la page de connexion<br/>'
+				                 . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/protection' ),
 				'show_column' => false,
 			)
 		);
