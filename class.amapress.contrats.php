@@ -934,6 +934,10 @@ class AmapressContrats {
 			$res = array_map( function ( $p ) {
 				return AmapressAdhesion::getBy( $p );
 			}, get_posts( $query ) );
+			$res = array_filter( $res, function ( $a ) {
+				/** @var AmapressAdhesion $a */
+				return $a->getContrat_instance();
+			} );
 			wp_cache_set( $key, $res );
 		}
 
