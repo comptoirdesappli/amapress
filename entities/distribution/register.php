@@ -170,19 +170,19 @@ function amapress_register_entities_distribution( $entities ) {
 				'searchable' => true,
 			),
 			'heure_debut_spec'  => array(
-				'name'  => amapress__( 'Heure de début' ),
+				'name'  => amapress__( 'Heure début' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
-				'desc'  => 'Heure début particulière pour cette livraison',
+				'desc'  => 'Heure de début exceptionnelle',
 				'group' => '1/ Partage',
 			),
 			'heure_fin_spec' => array(
-				'name'  => amapress__( 'Heure de fin' ),
+				'name'  => amapress__( 'Heure fin' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
-				'desc'  => 'Heure fin particulière pour cette livraison',
+				'desc'  => 'Heure de fin exceptionnelle',
 				'group' => '1/ Partage',
 			),
 			'contrats'       => array(
@@ -202,18 +202,17 @@ function amapress_register_entities_distribution( $entities ) {
 //                'searchable' => true,
 			),
 			'slots_conf'     => array(
-				'name'  => amapress__( 'Créneaux' ),
+				'name'  => amapress__( 'Créneau(x)' ),
 				'type'  => 'text',
-				'desc'  => 'Configuration des créneaux disponibles pour la récupération des paniers (en italique les parties facultatives): <strong>HH</strong>h<em>MM</em>-<strong>HH</strong>h<em>MM</em><em>[]</em>
-<br/>Le nombre maximum de personnes est facultatif ; si l\'intervalle en minutes n\'est pas précisé, la plage entière est considérée comme un seul créneau
-<br/>Peut contenir plusieurs créneaux différents séparés par |, par ex : 18h-19h|20h-21h
-<br/>Par exemple, toutes les 10 mins entre 18h et 20h avec 2 personnes maximum par créneau:',
+				'desc'  => 'Configurer un créneau de la forme : <strong>Heure Début-Heure Fin</strong>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
+<br/>Exemple : 18h00-20h00[10min;2p]<br/>' .
+				           Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' ),
 				'group' => '1/ Partage',
 			),
 			'paniers'        => array(
 				'name'              => amapress__( 'Panier(s)' ),
 				'group'             => '1/ Partage',
-				'desc'              => 'Paniers à cette distribution',
+				'desc'              => 'Panier(s) livré(s) à cette date',
 				'show_column'       => false,
 //				'bare'              => true,
 				'include_columns'   => array(
@@ -266,7 +265,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'name'        => amapress__( 'Nombre' ),
 				'type'        => 'number',
 				'required'    => true,
-				'desc'        => 'Indiquer le nombre de responsables de distributions supplémentaires',
+				'desc'        => 'Indiquer le nombre de responsable(s) de distribution supplémentaire(s)',
 				'group'       => '2/ Responsables',
 				'default'     => 0,
 				'show_column' => false,
@@ -278,7 +277,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Indiquer tous les responsables de distribution',
+				'desc'         => 'Naviguer pour ajouter des gardiens de panier et des responsables de distribution',
 //				'before_option' => function ( $o ) {
 //					if ( Amapress::hasRespDistribRoles() ) {
 //						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
@@ -295,6 +294,7 @@ function amapress_register_entities_distribution( $entities ) {
 //						echo '<p style="color:red">Aucune page du site ne contient le shortcode [inscription-distrib] (qui permet de gérer l\'inscription aux distributions)</p>';
 //					}
 					$dist = AmapressDistribution::getBy( $option->getPostID() );
+					echo '<div style="overflow-x: scroll">';
 					echo amapress_inscription_distrib_shortcode(
 						[
 							'date'                     => $dist->getDate(),
@@ -305,18 +305,19 @@ function amapress_register_entities_distribution( $entities ) {
 							'manage_all_subscriptions' => 'true',
 						]
 					);
+					echo '</div>';
 				},
 //                'searchable' => true,
 			),
 
 			'gardiens' => array(
-				'name'         => amapress__( 'Gardiens de paniers' ),
+				'name'         => amapress__( 'Gardien de panier(s)' ),
 				'group'        => '2/ Responsables',
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Amapiens se proposant de garder des paniers',
+				'desc'         => 'Amapiens volontaires pour garder des paniers d’amapiens indisponibles',
 				'readonly'     => true,
 			),
 

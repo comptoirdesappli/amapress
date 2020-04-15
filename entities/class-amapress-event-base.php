@@ -128,7 +128,7 @@ class Amapress_EventBase extends TitanEntity {
 				foreach ( explode( '|', $slots_conf ) as $conf ) {
 					$m = array();
 					//18h00-20h00[10m;2p]|
-					if ( preg_match( '/(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?(?:\[(?<inter>\d*[05])m(?:in)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
+					if ( preg_match( '/(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?(?:\[(?<inter>\d*[05])m(?:i?n)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
 						if ( ! isset( $m['start_h'] ) || ! isset( $m['end_h'] ) ) {
 							continue;
 						}

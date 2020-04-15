@@ -598,12 +598,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 						$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-gardien="T" data-dist="' . $dist->ID . '">Inscrire gardien</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-gardien="T" data-dist="' . $dist->ID . '">Inscrire</button>
 </div>';
 						if ( ! is_admin() ) {
 							$inscr_another .= '</form>';
 						}
-						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter une personne</a></a></p>';
+						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
 					}
 
 					$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
@@ -706,7 +706,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							if ( ! is_admin() ) {
 								$inscr_another .= '</form>';
 							}
-							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter une personne</a></a></p>';
+							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
 						}
 
 						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
