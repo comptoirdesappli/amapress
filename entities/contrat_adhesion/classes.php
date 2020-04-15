@@ -1234,7 +1234,14 @@ class AmapressAdhesion extends TitanEntity {
 
 	/** @return array */
 	public function getPaniersVariables() {
-		return $this->getCustomAsArray( 'amapress_adhesion_panier_variables' );
+		$paniers = $this->getCustomAsArray( 'amapress_adhesion_panier_variables' );
+		foreach ( $paniers as $panier ) {
+			if ( is_string( $panier ) && is_serialized( $panier ) ) {
+				return maybe_unserialize( $panier );
+			}
+		}
+
+		return $paniers;
 	}
 
 	public function getVariables_Contrat_quantites( $date ) {
