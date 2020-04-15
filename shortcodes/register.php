@@ -449,7 +449,12 @@ function amapress_register_shortcodes() {
 				'contact_referents'                => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'paiements_info_required'          => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
-				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables'
+				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables',
+				'show_delivery_details'            => '(false par défaut) Afficher un lien Récapitulatif des livraisons',
+				'show_due_amounts'                 => '(false par défaut) Afficher un lien Récapitulatif des sommes dues',
+				'show_calendar_delivs'             => '(false par défaut) Afficher un lien Calendrier des livraisons',
+				'show_current_inscriptions'        => '(true par défaut) Afficher les inscriptions en cours et à venir',
+				'show_editable_inscriptions'       => '(true par défaut) Afficher les inscriptions encore éditables',
 			]
 		] );
 	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription',
@@ -484,6 +489,8 @@ function amapress_register_shortcodes() {
 				'show_coadherents_address'         => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
 				'show_delivery_details'            => '(false par défaut) Afficher un lien Récapitulatif des livraisons',
 				'show_calendar_delivs'             => '(false par défaut) Afficher un lien Calendrier des livraisons',
+				'show_current_inscriptions'        => '(true par défaut) Afficher les inscriptions en cours et à venir',
+				'show_editable_inscriptions'       => '(true par défaut) Afficher les inscriptions encore éditables',
 				'show_due_amounts'                 => '(false par défaut) Afficher un lien Récapitulatif des sommes dues',
 				'contact_referents'                => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
@@ -523,6 +530,8 @@ function amapress_register_shortcodes() {
 				'show_delivery_details'            => '(false par défaut) Afficher un lien Récapitulatif des livraisons',
 				'show_due_amounts'                 => '(false par défaut) Afficher un lien Récapitulatif des sommes dues',
 				'show_calendar_delivs'             => '(false par défaut) Afficher un lien Calendrier des livraisons',
+				'show_current_inscriptions'        => '(true par défaut) Afficher les inscriptions en cours et à venir',
+				'show_editable_inscriptions'       => '(true par défaut) Afficher les inscriptions encore éditables',
 				'contact_referents'                => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'paiements_info_required'          => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
