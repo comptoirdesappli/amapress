@@ -2306,16 +2306,17 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
             <th style="width: 50px">Prix*</th>
             <th style="width: 50px"
                 title="Facteur quantité: par ex, 0.5 pour demi panier et 1 pour panier. 0 si non utile pour le contrat">
-                Fact. quant.
+                Fact. quant.<span class="dashicons dashicons-editor-help"></span>
             </th>
 			<?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
                 <th style="width: 60px">Unité*</th>
                 <th style="width: 70px"
-                    title="Options de quantités possibles, par ex : 1-3;5;10 pour autoriser 1,2,3,5,10">Quantités config
+                    title="Options de quantités possibles, par ex : 1-3;5;10 pour autoriser 1,2,3,5,10">Quantités config<span
+                            class="dashicons dashicons-editor-help"></span>
                 </th>
 			<?php } ?>
             <th title="Dates spécifiques de distribution du type de panier"
-            >Dates spec.
+            >Dates spec.<span class="dashicons dashicons-editor-help"></span>
             </th>
             <th style="width: 50px">Max Adhs.</th>
             <th>Produits</th>
