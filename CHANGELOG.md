@@ -1,3 +1,8 @@
+# 0.94.10 (2020-04-16)
+* **Shortcodes:** 
+    - _inscription en ligne (connecté et non connecté) et mes-contrats_, ajout de paramètres **show_current_inscriptions** (pour pouvoir désactiver l'affichage des inscriptions en cours) et **show_editable_inscriptions** (pour désactiver aussi l'affichage des inscriptions encore éditables)
+    - _mes-contrats_, gestion du paramètre **only_contrats**
+
 # 0.94.0 (2020-04-14)
 * **Créneaux horaires:** mettre le nom du responsable qui fait l'affectation dans le mail de confirmation
 * **Distributions:** créneaux horaires

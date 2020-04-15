@@ -200,7 +200,6 @@ function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	$atts               = wp_parse_args( $atts );
 	$atts['for_logged'] = 'true';
 	unset( $atts['edit_names'] );
-	unset( $atts['only_contrats'] );
 	unset( $atts['shorturl'] );
 	unset( $atts['max_coadherents'] );
 	unset( $atts['mob_phone_required'] );
