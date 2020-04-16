@@ -24,6 +24,7 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 
 ## Trouver de l'aide
 
-- **Wiki**: https://wiki.amapress.fr/accueil
-- Site: https://amapress.fr
-- **Contact**: contact@amapress.fr
+* **Wiki**: [https://wiki.amapress.fr/accueil](https://wiki.amapress.fr/accueil)
+* **Forum**: [https://forum.amapress.fr](https://forum.amapress.fr/)
+* Site: [https://amapress.fr](https://amapress.fr)
+* **Contact**: [contact@amapress.fr](mailto:contact@amapress.fr)

@@ -19,6 +19,10 @@ Guide d'_installation_: https://wiki.amapress.fr/admin/installation_zip
 ### Configuration
 Première _configuration_ : aller dans _Tableau de bord>État d'Amapress_ : https://wiki.amapress.fr/admin/etat_amapress
 
+### Aide
+* [Wiki](https://wiki.amapress.fr/accueil)
+* [Forum](https://forum.amapress.fr/)
+
 ### Fonctionnalités
 * Gestion des _adhésions_ à l'AMAP : https://wiki.amapress.fr/contrats/dates
 * Gestion des _inscriptions aux contrats_ : https://wiki.amapress.fr/contrats/gestion
@@ -35,8 +39,9 @@ Première _configuration_ : aller dans _Tableau de bord>État d'Amapress_ : http
 * _Recettes_
 * _Régulation_ des emails du site
 
-## Frequently Asked Questions / Trouver de l'aide
+## Frequently Asked Questions
 
-* _Wiki_: https://wiki.amapress.fr/accueil
-* Site: https://amapress.fr
-* _Contact_: contact@amapress.fr
+* _Wiki_: [https://wiki.amapress.fr/accueil](https://wiki.amapress.fr/accueil)
+* _Forum_: [https://forum.amapress.fr](https://forum.amapress.fr/)
+* Site: [https://amapress.fr](https://amapress.fr)
+* _Contact_: [contact@amapress.fr](mailto:contact@amapress.fr)
