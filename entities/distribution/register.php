@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_distribution' );
 function amapress_register_entities_distribution( $entities ) {
 	$entities['distribution'] = array(
-		'singular'         => amapress__( 'Distribution hebdomadaire' ),
-		'plural'           => amapress__( 'Distributions hebdomadaires' ),
+		'singular'                 => amapress__( 'Distribution hebdomadaire' ),
+		'plural'                   => amapress__( 'Distributions hebdomadaires' ),
 		'public'                   => true,
 //                'logged_or_public' => true,
 		'show_in_menu'             => false,
@@ -101,7 +101,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'confirm' => true,
 			],
 		),
-		'edit_header'      => function ( $post ) {
+		'edit_header'              => function ( $post ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
 				echo amapress_get_admin_notice(
 					'L\'ajout d\'une distribution ne doit se faire que si une distribution exceptionnelle a lieu en dehors des distributions plannifiées !',
@@ -109,22 +109,22 @@ function amapress_register_entities_distribution( $entities ) {
 				);
 			}
 		},
-		'labels'           => array(
+		'labels'                   => array(
 			'add_new'      => 'Planifier une distribution exceptionnelle',
 			'add_new_item' => 'Nouvelle distribution exceptionnelle',
 		),
-		'views'            => array(
+		'views'                    => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_distribution_views',
 		),
-		'groups'           => array(
+		'groups'                   => array(
 			'Infos' => [
 				'context' => 'side',
 			],
 		),
-		'default_orderby'  => 'amapress_distribution_date',
-		'default_order'    => 'ASC',
-		'fields'           => array(
+		'default_orderby'          => 'amapress_distribution_date',
+		'default_order'            => 'ASC',
+		'fields'                   => array(
 			'date' => array(
 				'name'       => amapress__( 'Date de distribution' ),
 				'type'       => 'date',
@@ -177,7 +177,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'  => 'Heure de début exceptionnelle',
 				'group' => '1/ Partage',
 			),
-			'heure_fin_spec' => array(
+			'heure_fin_spec'    => array(
 				'name'  => amapress__( 'Heure fin' ),
 				'type'  => 'date',
 				'date'  => false,
@@ -185,7 +185,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'  => 'Heure de fin exceptionnelle',
 				'group' => '1/ Partage',
 			),
-			'contrats'       => array(
+			'contrats'          => array(
 				'name'       => amapress__( 'Contrats' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_contrat_inst',
@@ -201,15 +201,26 @@ function amapress_register_entities_distribution( $entities ) {
 				),
 //                'searchable' => true,
 			),
-			'slots_conf'     => array(
+			'slots_conf'        => array(
 				'name'  => amapress__( 'Créneau(x)' ),
 				'type'  => 'text',
-				'desc'  => 'Configurer un créneau de la forme : <strong>Heure Début-Heure Fin</strong>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
+				'desc'  => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$dist = AmapressDistribution::getBy( $option->getPostID() );
+
+					return 'Configurer un créneau de la forme : <strong>Heure Début-Heure Fin</strong>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
 <br/>Exemple : 18h00-20h00[10min;2p]<br/>' .
-				           Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' ),
+					       sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
+						       date_i18n( 'H:i', $dist->getStartDateAndHour() ),
+						       date_i18n( 'H:i', $dist->getEndDateAndHour() ),
+						       $dist->getSlotsDescription()
+					       ) .
+					       '<br/>' .
+					       Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
+				},
 				'group' => '1/ Partage',
 			),
-			'paniers'        => array(
+			'paniers'           => array(
 				'name'              => amapress__( 'Panier(s)' ),
 				'group'             => '1/ Partage',
 				'desc'              => 'Panier(s) livré(s) à cette date',
@@ -569,5 +580,6 @@ function amapress_gardiens_paniers_map( $dist_id, $show_email = true, $show_tel 
 	if ( empty( $markers ) ) {
 		return '';
 	}
+
 	return amapress_generate_map( $markers, 'map' );
 }

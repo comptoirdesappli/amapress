@@ -116,6 +116,19 @@ class Amapress_EventBase extends TitanEntity {
 		];
 	}
 
+	public function getSlotsDescription() {
+		$slots = $this->getSlotsConf();
+		if ( empty( $slots ) ) {
+			return 'pas de créneaux horaires configurés';
+		} else {
+			return sprintf( '%d créneau(x) ; %s',
+				count( $slots ),
+				implode( ', ', array_map( function ( $s ) {
+					return $s['display'];
+				}, $slots ) ) );
+		}
+	}
+
 	public function getSlotsConf() {
 		$cache_key = static::INTERNAL_POST_TYPE . 'getSlotsConf-' . $this->ID;
 		$res       = wp_cache_get( $cache_key );
