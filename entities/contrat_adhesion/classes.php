@@ -179,7 +179,7 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin']                         = [
+			$ret['date_fin'] = [
 				'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
@@ -2034,7 +2034,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$mail_content = preg_replace( '/\[\/?sans_contrat\]/', '', $mail_content );
 		}
 
-		$refs_mails = $inscription->getContrat_instance()->getAllReferentsEmails();
+		$refs_mails = $inscription->getContrat_instance()->getAllReferentsEmails( $this->getLieuId() );
 		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
 			'Reply-To: ' . implode( ',', $refs_mails )
 		], $attachments );
@@ -2051,7 +2051,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
 
 		$referents = [];
-		foreach ( $inscription->getContrat_instance()->getReferentsIds() as $ref_id ) {
+		foreach ( $inscription->getContrat_instance()->getReferentsIds( $this->getLieuId() ) as $ref_id ) {
 			$user_obj  = AmapressUser::getBy( $ref_id );
 			$referents = array_merge( $referents, $user_obj->getAllEmails() );
 		}
