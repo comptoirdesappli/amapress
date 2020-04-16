@@ -1372,7 +1372,7 @@ jQuery(function($) {
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'                => array(
+			'status'      => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1387,10 +1387,20 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'status_type'           => array(
-				'name'    => amapress__( 'Résumé' ),
-				'type'    => 'custom',
-				'column'  => function ( $post_id ) {
+			'ended'       => array(
+				'name'        => amapress__( 'Clôturer' ),
+				'type'        => 'checkbox',
+				'csv_import'  => false,
+				'group'       => 'Statut',
+				'desc'        => 'Ferme le contrat (<strong>Renouveler le contrat avant de cocher cette case</strong>)',
+				'show_on'     => 'edit-only',
+				'show_column' => false,
+			),
+			'status_type' => array(
+				'name'                 => amapress__( 'Résumé' ),
+				'type'                 => 'custom',
+				'use_custom_as_column' => true,
+				'custom'               => function ( $post_id ) {
 					$ret     = [];
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat->isPanierVariable() ) {
@@ -1434,24 +1444,16 @@ jQuery(function($) {
 					) {
 						$ret[] = '<span style="color:orange">inscription fermée</span>';
 					} else {
-						$ret[] = '<span style="color: green">inscription ouverte</span>';
+						$ret[] = sprintf( '<span style="color: green">inscription ouverte (%s&gt;%s)</span>',
+							date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ),
+							date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
 					}
 
 					return implode( ', ', $ret );
 				},
-				'csv'     => false,
-				'show_on' => 'list-only',
+				'csv'                  => false,
+				'group'                => 'Statut',
 			),
-			'ended'                 => array(
-				'name'        => amapress__( 'Clôturer' ),
-				'type'        => 'checkbox',
-				'csv_import'  => false,
-				'group'       => 'Statut',
-				'desc'        => 'Ferme le contrat (<strong>Renouveler le contrat avant de cocher cette case</strong>)',
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-			),
-
 //						'quantite_multi'        => array(
 //							'name'        => amapress__( 'Quantités multiples' ),
 //							'type'        => 'checkbox',
