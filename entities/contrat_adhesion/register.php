@@ -2326,7 +2326,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			usort( $adhs, function ( $a, $b ) {
 				return strcmp( $a->getTitle(), $b->getTitle() );
 			} );
-			echo '<p><strong>Ses contrats :</strong></p>';
+			echo '<p><strong>Ses contrats/commandes :</strong></p>';
 			echo '<ul style="list-style-type: circle">';
 			foreach ( $adhs as $adh ) {
 				$renew_url = '';

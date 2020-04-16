@@ -455,6 +455,7 @@ function amapress_register_shortcodes() {
 				'show_calendar_delivs'             => '(false par défaut) Afficher un lien Calendrier des livraisons',
 				'show_current_inscriptions'        => '(true par défaut) Afficher les inscriptions en cours et à venir',
 				'show_editable_inscriptions'       => '(true par défaut) Afficher les inscriptions encore éditables',
+				'use_contrat_term'                 => '(true par défaut) Utiliser le terme Contrat si true et Commande si false',
 			]
 		] );
 	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription',
@@ -496,7 +497,8 @@ function amapress_register_shortcodes() {
 				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'paiements_info_required'          => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
 				'email'                            => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
-				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables'
+				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables',
+				'use_contrat_term'                 => '(true par défaut) Utiliser le terme Contrat si true et Commande si false',
 			]
 		] );
 	amapress_register_shortcode( 'inscription-en-ligne-connecte', 'amapress_logged_self_inscription',
@@ -536,7 +538,8 @@ function amapress_register_shortcodes() {
 				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
 				'paiements_info_required'          => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
 				'email'                            => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
-				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables'
+				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables',
+				'use_contrat_term'                 => '(true par défaut) Utiliser le terme Contrat si true et Commande si false',
 			]
 		] );
 
