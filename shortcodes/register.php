@@ -456,6 +456,11 @@ function amapress_register_shortcodes() {
 				'show_current_inscriptions'        => '(true par défaut) Afficher les inscriptions en cours et à venir',
 				'show_editable_inscriptions'       => '(true par défaut) Afficher les inscriptions encore éditables',
 				'use_contrat_term'                 => '(true par défaut) Utiliser le terme Contrat si true et Commande si false',
+				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet, par exemple, de faire une page dédiée aux paniers modulables et commandes' .
+				                                      '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+						/** @var AmapressContrat $c */
+						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
+					}, AmapressContrats::get_contrats() ) ),
 			]
 		] );
 	amapress_register_shortcode( 'inscription-en-ligne', 'amapress_self_inscription',
@@ -473,7 +478,11 @@ function amapress_register_shortcodes() {
 				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
 				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'edit_names'                       => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
-				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un contrat donné avec une autre clé',
+				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) avec une autre clé' .
+				                                      '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+						/** @var AmapressContrat $c */
+						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
+					}, AmapressContrats::get_contrats() ) ),
 				'shorturl'                         => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
 				'adhesion_shift_weeks'             => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
 				'max_coadherents'                  => '(3 par défaut) Nombre maximum de co-adhérents',
@@ -515,7 +524,11 @@ function amapress_register_shortcodes() {
 				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
 				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'edit_names'                       => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
-				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un contrat donné avec une autre clé',
+				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) ou commande(s)' .
+				                                      '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+						/** @var AmapressContrat $c */
+						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
+					}, AmapressContrats::get_contrats() ) ),
 				'adhesion_shift_weeks'             => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
 				'max_coadherents'                  => '(3 par défaut) Nombre maximum de co-adhérents',
 				'mob_phone_required'               => '(false par défaut) Téléphones (mobiles) requis',
