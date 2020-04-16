@@ -937,19 +937,24 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'Référents Producteurs',
 		'Associer le(s) référent(s) producteur pour chacun des producteurs ou productions',
 		admin_url( 'edit.php?post_type=amps_producteur' ),
-		implode( ', ', array_map( function ( $u ) {
+		implode( '<br/>', array_map( function ( $u ) {
 			$dn = AmapressProducteur::getBy( $u );
-			$l  = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+			$l  = $dn->getAdminEditLink();
 
-			$refs = [];
+			$no_ref_lieu = [];
+			$refs        = [];
 			foreach ( $dn->getContrats() as $contrat ) {
 				foreach ( Amapress::get_lieux() as $lieu ) {
-					foreach ( $contrat->getReferentsIds( $lieu->ID ) as $referents_id ) {
+					$lieu_ref_ids = $contrat->getReferentsIds( $lieu->ID );
+					foreach ( $lieu_ref_ids as $referents_id ) {
 						$user   = AmapressUser::getBy( $referents_id );
 						$refs[] = sprintf( count( $dn->getContrats() ) == 1 ? '%1$s (%3$s)' : '%1$s (%2$s/%3$s)',
 							Amapress::makeLink( $user->getEditLink(), $user->getDisplayName(), true, true ),
 							Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle(), true, true ),
 							Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getShortName(), true, true ) );
+					}
+					if ( empty( $lieu_ref_ids ) ) {
+						$no_ref_lieu[] = $lieu;
 					}
 				}
 			}
@@ -958,7 +963,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 				$refs[] = '<strong>Pas de référent</strong>';
 			}
 
-			$refs = '(' . implode( ', ', $refs ) . ')';
+			$refs = '(' . implode( ', ', $refs );
+			if ( ! empty( $no_ref_lieu ) ) {
+				$refs .= ' ; ' . implode( ' ; ', array_map( function ( $lieu ) {
+						/** @var AmapressLieu_distribution $lieu */
+						return sprintf( '<em>Pas de référent à %s</em>', Amapress::makeLink( $lieu->getAdminEditLink(), $lieu->getTitle() ) );
+					}, $no_ref_lieu ) );
+			}
+			$refs .= ')';
 
 			return "<a href='{$l}' target='_blank'>{$dn->getTitle()}</a>$refs";
 		}, $producteurs ) )
