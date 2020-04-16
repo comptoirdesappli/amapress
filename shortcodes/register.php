@@ -229,6 +229,8 @@ function amapress_register_shortcodes() {
 				'show_contrats_count'    => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
 				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
+				'allow_gardiens'         => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
+				'allow_slots'            => '(Par défault true) Autoriser le choix de créneaux'
 			]
 		] );
 	amapress_register_shortcode( 'anon-inscription-distrib', 'amapress_inscription_distrib_shortcode',
@@ -254,6 +256,8 @@ function amapress_register_shortcodes() {
 				'show_contrats_count'    => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
 				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
+				'allow_gardiens'         => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
+				'allow_slots'            => '(Par défault true) Autoriser le choix de créneaux'
 			]
 		] );
 	amapress_register_shortcode( 'resp-distrib-contacts', 'amapress_responsables_distrib_shortcode',

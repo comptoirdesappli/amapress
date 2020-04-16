@@ -112,6 +112,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'inscr_all_distrib'        => 'false',
 		'allow_resp_dist_manage'   => 'false',
 		'allow_gardiens'           => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
+		'allow_slots'              => 'true',
 		'manage_all_subscriptions' => 'false',
 		'column_date_width'        => '5em',
 		'key'                      => '',
@@ -320,6 +321,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$has_slots = true;
 			break;
 		}
+	}
+	if ( ! Amapress::toBool( $atts['allow_slots'] ) ) {
+		$has_slots = false;
 	}
 
 	//optimize producteur load
