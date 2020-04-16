@@ -1075,7 +1075,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$contrat_to_renew = get_posts( 'post_type=amps_contrat_inst&amapress_date=renew' );
 	if ( ! empty( $contrat_to_renew ) ) {
 		$state['15_posts'][] = amapress_get_check_state(
-			'error',
+			'warning',
 			'Contrats à renouveler/clôturer',
 			'Les contrats suivants sont à renouveler/clôturer pour la saison suivante',
 			admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=renew' ),
