@@ -1,3 +1,29 @@
+# 0.94.25 (2020-04-18)
+* **Créneaux distribution:** 
+    - affichage des créneaux horaires et des horaires de distribution configurés
+    - paramètre _allow_slots_ pour pouvoir désactiver le choix de créneau par les amapiens (et les laisser fixer par les reponsables)
+    - documentation paramètre _allow_gardiens_
+    - tranche horaire facultative (hérite des horaires de l'évènement/distribution..) pour calculer les créneaux
+* **Etat Amapress:** 
+    - check lieu avec contrat sans référent producteur
+* **Inscription distributions:** 
+    - paramètre _responsive_ (auto pour détection si affichage mobile)
+    - paramètre _fixed_column_width_ (Par défaut, %) pour fixer la largeur des colonnes Responsables ; % pour répartir la largeur de colonnes sur la largeur du tableau ; en em ou px pour forcer une largeur fixe
+    - paramètre _scroll_x_ pour autoriser le scroll horizontal si fixed_column_width est en valeur fixe em/px
+    - paramètre _scroll_y_ (en px) pour limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions
+    - paramètre _font_size_ pour définir la taille relative du texte dans la vue en % ou em
+    - paramètres _show_adresse_ et _show_roles_ à _false_ par défaut
+    - bouton _Passer en mode Admin_ pour les responsables
+    - paramètre _show_responsables_, pour ne pas afficher les colonnes d'inscription _Responsable de distribution_, par exemple pour faire une vue _Créneaux distributions et Gardiens de paniers_ seulement.
+* **Rappels:** 
+    - rappels "Contrats ouverts ou bientôt ouverts" et "Contrats bientôt fermés"
+* **Shortcodes:** 
+    - inscription en ligne (connecté et non connecté) et mes-contrats, ajout de paramètres _show_current_inscriptions_ (pour pouvoir désactiver l'affichage des inscriptions en cours) et _show_editable_inscriptions_ (pour désactiver aussi l'affichage des inscriptions encore éditables)
+    - mes-contrats, gestion du paramètre _only_contrats_
+    - mes-contrats, inscriptions en ligne non connecté et connecté, paramètre _use_contrat_term_ pour passer les termes de Contrat à Commande
+    - paramètre only_contrats, affichage des valeurs possibles (ID des productions)
+* Contrats, colonne Résumé, affichage dates ouverture inscription + dans Editer contrat en dessous de Statut
+
 # 0.94.10 (2020-04-16)
 * **Shortcodes:** 
     - _inscription en ligne (connecté et non connecté) et mes-contrats_, ajout de paramètres **show_current_inscriptions** (pour pouvoir désactiver l'affichage des inscriptions en cours) et **show_editable_inscriptions** (pour désactiver aussi l'affichage des inscriptions encore éditables)

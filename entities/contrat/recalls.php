@@ -10,6 +10,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+/** @return array */
+function amapress_get_contrats_cron( $type ) {
+	$ret = [];
+	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
+		switch ( $type ) {
+			case 'open':
+				if ( $contrat->canSelfSubscribe() ) {
+					$ret[] = [
+						'id'    => $contrat->getID(),
+						'time'  => $contrat->getDate_ouverture(),
+						'type'  => $type,
+						'title' => 'Ouverture inscriptions (' .
+						           date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) .
+						           ') - ' . $contrat->getTitle()
+					];
+				}
+				break;
+			case 'close':
+				if ( $contrat->canSelfSubscribe() ) {
+					$ret[] = [
+						'id'    => $contrat->getID(),
+						'time'  => $contrat->getDate_ouverture(),
+						'type'  => $type,
+						'title' => 'Clôture inscriptions (' .
+						           date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) .
+						           ') - ' . $contrat->getTitle()
+					];
+				}
+				break;
+			case 'start':
+				$ret[] = [
+					'id'    => $contrat->getID(),
+					'time'  => $contrat->getDate_debut(),
+					'type'  => $type,
+					'title' => 'Début (' .
+					           date_i18n( 'd/m/Y', $contrat->getDate_debut() ) .
+					           ') - ' . $contrat->getTitle()
+				];
+				break;
+			case 'end':
+				$ret[] = [
+					'id'    => $contrat->getID(),
+					'time'  => $contrat->getDate_fin(),
+					'type'  => $type,
+					'title' => 'Fin (' .
+					           date_i18n( 'd/m/Y', $contrat->getDate_fin() ) .
+					           ') - ' . $contrat->getTitle()
+				];
+				break;
+		}
+
+	}
+
+	return $ret;
+}
 
 add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
@@ -369,6 +424,91 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 
 } );
 
+add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
+	$contrat = AmapressContrat_instance::getBy( $args['id'] );
+	if ( null == $contrat ) {
+		echo '<p>Contrat intouvable</p>';
+
+		return;
+	}
+
+	$today = Amapress::start_of_day( amapress_time() );
+	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) < $today ) {
+		echo '<p>Contrat clos</p>';
+
+		return;
+	}
+
+	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrat-' . $args['type'] . '-recall-excl-producteurs' ) );
+	if ( in_array( $contrat->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
+		echo '<p>Producteur exclu</p>';
+
+		return;
+	}
+
+	$replacements = [];
+
+	if ( Amapress::start_of_day( $contrat->getDate_ouverture() ) < $today ) {
+		$replacements['ouvre_jours'] = 'depuis ' . round( ( amapress_time() - $contrat->getDate_ouverture() ) / ( 24 * HOUR_IN_SECONDS ) ) . ' jour(s)';
+		$replacements['ouvre_date']  = 'depuis le ' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() );
+	} else {
+		$replacements['ouvre_jours'] = 'dans ' . round( ( $contrat->getDate_ouverture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) . ' jour(s)';
+		$replacements['ouvre_date']  = 'le ' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() );
+	}
+
+	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) > $today ) {
+		$replacements['ferme_jours'] = 'dans ' . round( ( $contrat->getDate_cloture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) . ' jour(s)';
+		$replacements['ferme_date']  = 'le ' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() );
+	}
+
+	$headers = 'Reply-To: ' . implode( ',', $contrat->getAllReferentsEmails() );
+
+	$user_ids = [];
+	switch ( Amapress::getOption( 'contrat-' . $args['type'] . '-recall-targets' ) ) {
+		case 'with-contrat':
+			$user_ids = get_users( [
+				'amapress_contrat' => 'active',
+				'fields'           => 'ids'
+			] );
+			break;
+		case 'same-lieu':
+			foreach ( $contrat->getLieuxIds() as $lieu_id ) {
+				$user_ids = array_merge( $user_ids, get_users( [
+					'amapress_lieu' => $lieu_id,
+					'fields'        => 'ids'
+				] ) );
+			}
+			break;
+		case 'all':
+			$user_ids = get_users( [
+				'fields' => 'ids'
+			] );
+			break;
+	}
+	$user_with_this_contrat = get_users( [
+		'amapress_contrat' => $contrat->ID,
+		'fields'           => 'ids'
+	] );
+	if ( ! empty( $user_with_this_contrat ) ) {
+		$user_ids = array_diff( $user_ids, $user_with_this_contrat );
+	}
+	$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $user_ids ), 'Amapiens', 'amapiens' );
+	$subject      = Amapress::getOption( 'contrat-' . $args['type'] . '-recall-mail-subject' );
+	$content      = Amapress::getOption( 'contrat-' . $args['type'] . '-recall-mail-content' );
+	foreach ( $replacements as $k => $v ) {
+		$subject = str_replace( "%%$k%%", $v, $subject );
+		$content = str_replace( "%%$k%%", $v, $content );
+	}
+	amapress_send_message(
+		$subject,
+		$content,
+		'', $target_users, $contrat, array(),
+		amapress_get_recall_cc_from_option( 'contrat-' . $args['type'] . '-recall-cc' ),
+		null, $headers
+	);
+	echo '<p>Email de rappel envoyé</p>';
+} );
+
 function amapress_contrat_quantites_recall_options() {
 	return array(
 		array(
@@ -687,5 +827,202 @@ function amapress_contrat_renew_recall_options() {
 	);
 }
 
-//function amapress_contrat_renew_recall_options() {
-//}
+function amapress_contrat_open_recall_options() {
+	return array(
+		array(
+			'id'                  => 'contrat-open-recall-1',
+			'name'                => 'Rappel 1',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_openclose',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_contrats_cron( 'open' );
+			},
+		),
+		array(
+			'id'                  => 'contrat-open-recall-2',
+			'name'                => 'Rappel 2',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_openclose',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_contrats_cron( 'open' );
+			},
+		),
+		array(
+			'id'                  => 'contrat-open-recall-3',
+			'name'                => 'Rappel 3',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_openclose',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_contrats_cron( 'open' );
+			},
+		),
+		array(
+			'id'      => 'contrat-open-recall-targets',
+			'name'    => 'Destinataires',
+			'type'    => 'radio',
+			'options' => [
+				'with-contrat' => 'Amapiens avec contrat',
+				'same-lieu'    => 'Amapiens des lieux de distributions de ce contrat',
+				'all'          => 'Tous les amapiens',
+			],
+			'default' => 'all',
+		),
+		array(
+			'id'       => 'contrat-open-recall-mail-subject',
+			'name'     => 'Sujet de l\'email',
+			'type'     => 'text',
+			'sanitize' => false,
+			'default'  => 'Inscriptions %%contrat_type_complet%% - ouverture préinscription %%ouvre_date%%',
+		),
+		array(
+			'id'      => 'contrat-open-recall-mail-content',
+			'name'    => 'Contenu de l\'email',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions sont ouvertes %%ouvre_date%%\n et fermeront %%ferme_date%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             Amapress::getPlaceholdersHelpTable( 'liste-open-placeholders', [
+				             'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
+				             'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
+				             'ferme_jours' => 'Clôture en jours: "dans X jours"',
+				             'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
+			             ], null, [], 'recall' ),
+		),
+		array(
+			'id'           => 'contrat-open-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Emails en copie',
+		),
+		array(
+			'id'           => 'contrat-open-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'id'        => 'contrat-open-recall-excl-producteurs',
+			'type'      => 'multicheck-posts',
+			'name'      => 'Producteurs',
+			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
+			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'orderby'   => 'post_title',
+			'order'     => 'ASC',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
+function amapress_contrat_close_recall_options() {
+	return array(
+		array(
+			'id'                  => 'contrat-close-recall-1',
+			'name'                => 'Rappel 1',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_openclose',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_contrats_cron( 'close' );
+			},
+		),
+		array(
+			'id'                  => 'contrat-close-recall-2',
+			'name'                => 'Rappel 2',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_openclose',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_contrats_cron( 'close' );
+			},
+		),
+		array(
+			'id'                  => 'contrat-close-recall-3',
+			'name'                => 'Rappel 3',
+			'desc'                => 'Contrats à renouveler',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_openclose',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_contrats_cron( 'close' );
+			},
+		),
+		array(
+			'id'      => 'contrat-close-recall-targets',
+			'name'    => 'Destinataires',
+			'type'    => 'radio',
+			'options' => [
+				'with-contrat' => 'Amapiens avec contrat',
+				'same-lieu'    => 'Amapiens des lieux de distributions de ce contrat',
+				'all'          => 'Tous les amapiens',
+			],
+			'default' => 'all',
+		),
+		array(
+			'id'       => 'contrat-close-recall-mail-subject',
+			'name'     => 'Sujet de l\'email',
+			'type'     => 'text',
+			'sanitize' => false,
+			'default'  => 'Inscriptions %%contrat_type_complet%% - clôture %%ferme_date%%',
+		),
+		array(
+			'id'      => 'contrat-close-recall-mail-content',
+			'name'    => 'Contenu de l\'email',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions ferment %%ferme_jours%%, %%ferme_date%%\n\n%%nom_site%%" ),
+			'desc'    => 'Les placeholders suivants sont disponibles:' .
+			             Amapress::getPlaceholdersHelpTable( 'liste-close-placeholders', [
+				             'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
+				             'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
+				             'ferme_jours' => 'Clôture en jours: "dans X jours"',
+				             'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
+			             ], null, [], 'recall' ),
+		),
+		array(
+			'id'           => 'contrat-close-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Emails en copie',
+		),
+		array(
+			'id'           => 'contrat-close-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'id'        => 'contrat-close-recall-excl-producteurs',
+			'type'      => 'multicheck-posts',
+			'name'      => 'Producteurs',
+			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
+			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'orderby'   => 'post_title',
+			'order'     => 'ASC',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
