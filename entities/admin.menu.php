@@ -247,7 +247,9 @@ add_action( 'admin_bar_menu', 'amapress_admin_bar_new_entities', 900, 1 );
 function amapress_admin_bar_new_entities( WP_Admin_Bar $admin_bar ) {
 	$create_new_items = [];
 	foreach ( AmapressEntities::getPostTypes() as $name => $conf ) {
-		if ( isset( $conf['show_admin_bar_new'] ) && true === $conf['show_admin_bar_new'] && current_user_can( "publish_$name" ) ) {
+		if ( isset( $conf['show_admin_bar_new'] )
+		     && true === $conf['show_admin_bar_new']
+		     && current_user_can( "publish_$name" ) ) {
 			$internal_post_type = isset( $conf['internal_name'] ) ? $conf['internal_name'] : 'amps_' . $name;
 			$create_new_items[] = [
 				'id'    => "new-$internal_post_type",
@@ -255,6 +257,10 @@ function amapress_admin_bar_new_entities( WP_Admin_Bar $admin_bar ) {
 				'title' => $conf['singular'],
 				'href'  => admin_url( "post-new.php?post_type=$internal_post_type" ),
 			];
+		} elseif ( isset( $conf['show_admin_bar_new'] )
+		           && false === $conf['show_admin_bar_new'] ) {
+			$internal_post_type = isset( $conf['internal_name'] ) ? $conf['internal_name'] : 'amps_' . $name;
+			$admin_bar->remove_node( 'new-' . $internal_post_type );
 		}
 	}
 	amapress_admin_bar_add_items( $create_new_items, $admin_bar, 'new-content' );

@@ -7,19 +7,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_panier' );
 function amapress_register_entities_panier( $entities ) {
 	$entities['panier'] = array(
-		'singular'         => amapress__( 'Panier' ),
-		'plural'           => amapress__( 'Paniers' ),
-		'public'           => true,
-		'logged_or_public' => true,
-		'show_in_menu'     => false,
-		'show_in_nav_menu' => false,
-		'editor'           => false,
-		'title'            => false,
+		'singular'                 => amapress__( 'Panier' ),
+		'plural'                   => amapress__( 'Paniers' ),
+		'public'                   => true,
+		'logged_or_public'         => true,
+		'show_in_menu'             => false,
+		'show_in_nav_menu'         => false,
+		'editor'                   => false,
+		'title'                    => false,
 		'title_format'             => 'amapress_panier_title_formatter',
 		'slug_format'              => 'from_title',
 		'slug'                     => amapress__( 'paniers' ),
 		'redirect_archive'         => 'amapress_redirect_agenda',
 		'menu_icon'                => 'fa-menu fa-shopping-basket',
+		'show_admin_bar_new'       => false,
 		'views'                    => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_panier_views',

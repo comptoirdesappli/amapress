@@ -48,6 +48,7 @@ function amapress_register_entities_contrat( $entities ) {
 		'default_orderby'          => 'post_title',
 		'default_order'            => 'ASC',
 		'other_def_hidden_columns' => array( 'amps_lo' ),
+		'show_admin_bar_new'       => false,
 		'views'                    => array(
 			'remove'  => array( 'mine' ),
 			'exp_csv' => true,

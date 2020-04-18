@@ -23,6 +23,7 @@ function amapress_register_entities_distribution( $entities ) {
 		'redirect_archive'         => 'amapress_redirect_agenda',
 		'menu_icon'                => 'dashicons-store',
 		'other_def_hidden_columns' => array( 'amps_lo', 'comments' ),
+		'show_admin_bar_new'       => false,
 		'row_actions'              => array(
 			'emargement'             => [
 				'label'  => 'Liste émargement',

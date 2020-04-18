@@ -19,6 +19,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 		'menu_icon'               => 'fa-menu fa-map-signs',
 		'default_orderby'         => 'post_title',
 		'default_order'           => 'ASC',
+		'show_admin_bar_new'      => false,
 		'row_actions'             => array(
 			'relocate' => array(
 				'label'     => 'Géolocaliser',

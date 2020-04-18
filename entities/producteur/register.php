@@ -24,6 +24,7 @@ function amapress_register_entities_producteur( $entities ) {
 		'default_orderby'          => 'post_title',
 		'default_order'            => 'ASC',
 		'other_def_hidden_columns' => array( 'amps_lo' ),
+		'show_admin_bar_new'       => false,
 		'row_actions'              => array(
 			'relocate' => array(
 				'label'     => 'Géolocaliser',
