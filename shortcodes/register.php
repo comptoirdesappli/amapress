@@ -235,7 +235,8 @@ function amapress_register_shortcodes() {
 				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 				'allow_gardiens'         => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
-				'allow_slots'            => '(Par défault true) Autoriser le choix de créneaux'
+				'allow_slots'            => '(Par défault true) Autoriser le choix de créneaux',
+				'show_responsables'      => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution'
 			]
 		] );
 	amapress_register_shortcode( 'anon-inscription-distrib', 'amapress_inscription_distrib_shortcode',
@@ -267,7 +268,8 @@ function amapress_register_shortcodes() {
 				'inscr_all_distrib'      => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage' => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 				'allow_gardiens'         => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
-				'allow_slots'            => '(Par défault true) Autoriser le choix de créneaux'
+				'allow_slots'            => '(Par défault true) Autoriser le choix de créneaux',
+				'show_responsables'      => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution'
 			]
 		] );
 	amapress_register_shortcode( 'resp-distrib-contacts', 'amapress_responsables_distrib_shortcode',

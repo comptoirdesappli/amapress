@@ -114,6 +114,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'allow_resp_dist_manage'   => 'false',
 		'allow_gardiens'           => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
 		'allow_slots'              => 'true',
+		'show_responsables'        => 'true',
 		'manage_all_subscriptions' => 'false',
 		'column_date_width'        => '5em',
 		'fixed_column_width'       => '%',
@@ -359,6 +360,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
+	$show_responsables = Amapress::toBool( $atts['show_responsables'] );
 	//optimize producteur load
 	Amapress::get_producteurs();
 
@@ -463,7 +465,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		/** @var AmapressLieu_distribution $user_lieu */
 		/** @var AmapressLieu_distribution $user_lieu */
 //        foreach ($user_lieux as $lieu_id) {
-		for ( $i = 1; $i <= $lieux_needed_resps[ $lieu_id ]; $i ++ ) {
+		for ( $i = 1; $i <= ( $show_responsables ? $lieux_needed_resps[ $lieu_id ] : 0 ); $i ++ ) {
 			$role_name = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-name" ) );
 			if ( empty( $role_name ) ) {
 				$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name" ) );
@@ -708,68 +710,72 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					}
 				}
 
-				if ( $has_role_names ) {
-					usort( $resps, function ( $a, $b ) use ( $dist ) {
-						$role_a = $dist->getResponsableRoleId( $a );
-						if ( empty( $role_a ) ) {
-							$role_a = 999;
-						}
-						$role_b = $dist->getResponsableRoleId( $b );
-						if ( empty( $role_b ) ) {
-							$role_b = 999;
-						}
-						if ( $role_a == $role_b ) {
-							return 0;
+				if ( $show_responsables ) {
+					if ( $has_role_names ) {
+						usort( $resps, function ( $a, $b ) use ( $dist ) {
+							$role_a = $dist->getResponsableRoleId( $a );
+							if ( empty( $role_a ) ) {
+								$role_a = 999;
+							}
+							$role_b = $dist->getResponsableRoleId( $b );
+							if ( empty( $role_b ) ) {
+								$role_b = 999;
+							}
+							if ( $role_a == $role_b ) {
+								return 0;
+							}
+
+							return $role_a < $role_b ? - 1 : 1;
+						} );
+						$max_resp_role = 0;
+						foreach ( $resps as $r ) {
+							$role = $dist->getResponsableRoleId( $r->ID );
+							if ( $role > 0 ) {
+								$row_resps[ $role - 1 ] = $r;
+							}
+							$max_resp_role = $role > $max_resp_role ?
+								$role : $max_resp_role;
 						}
 
-						return $role_a < $role_b ? - 1 : 1;
-					} );
-					$max_resp_role = 0;
-					foreach ( $resps as $r ) {
-						$role = $dist->getResponsableRoleId( $r->ID );
-						if ( $role > 0 ) {
-							$row_resps[ $role - 1 ] = $r;
-						}
-						$max_resp_role = $role > $max_resp_role ?
-							$role : $max_resp_role;
-					}
-
-					$start = $max_resp_role;
-					foreach ( $resps as $r ) {
-						if ( $start >= $needed ) {
-							if ( ! is_array( $row_resps[ $needed - 1 ] ) ) {
-								$row_resps[ $needed - 1 ] = [ $row_resps[ $needed - 1 ] ];
+						$start = $max_resp_role;
+						foreach ( $resps as $r ) {
+							if ( $start >= $needed ) {
+								if ( ! is_array( $row_resps[ $needed - 1 ] ) ) {
+									$row_resps[ $needed - 1 ] = [ $row_resps[ $needed - 1 ] ];
+								}
+								$role = $dist->getResponsableRoleId( $r->ID );
+								if ( $role <= 0 ) {
+									$row_resps[ $needed - 1 ][] = $r;
+								}
+								continue;
 							}
 							$role = $dist->getResponsableRoleId( $r->ID );
 							if ( $role <= 0 ) {
-								$row_resps[ $needed - 1 ][] = $r;
+								$row_resps[ $start ] = $r;
+								$start               += 1;
 							}
-							continue;
 						}
-						$role = $dist->getResponsableRoleId( $r->ID );
-						if ( $role <= 0 ) {
+					} else {
+						usort( $resps, function ( $resp, $b ) use ( $user_id ) {
+							if ( $resp->ID == $user_id ) {
+								return - 1;
+							} else {
+								return 0;
+							}
+						} );
+
+						$start = $needed - count( $resps ) >= 0 ? $needed - count( $resps ) : 0;
+						foreach ( $resps as $r ) {
+							if ( $start >= $needed ) {
+								break;
+							}
+
 							$row_resps[ $start ] = $r;
 							$start               += 1;
 						}
 					}
 				} else {
-					usort( $resps, function ( $resp, $b ) use ( $user_id ) {
-						if ( $resp->ID == $user_id ) {
-							return - 1;
-						} else {
-							return 0;
-						}
-					} );
-
-					$start = $needed - count( $resps ) >= 0 ? $needed - count( $resps ) : 0;
-					foreach ( $resps as $r ) {
-						if ( $start >= $needed ) {
-							break;
-						}
-
-						$row_resps[ $start ] = $r;
-						$start               += 1;
-					}
+					$row_resps = [];
 				}
 
 				$i = 1;
