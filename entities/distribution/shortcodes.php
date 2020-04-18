@@ -93,9 +93,9 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'show_tel'                 => 'default',
 		'show_tel_fixe'            => 'default',
 		'show_tel_mobile'          => 'default',
-		'show_adresse'             => 'default',
+		'show_adresse'             => 'false',
 		'show_avatar'              => 'default',
-		'show_roles'               => 'default',
+		'show_roles'               => 'false',
 		'show_for_resp'            => 'true',
 		'show_title'               => 'true',
 		'for_emargement'           => 'false',
@@ -109,20 +109,39 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'distrib_links'            => 'true',
 		'show_contrats_desc'       => 'true',
 		'show_contrats_count'      => 'false',
+		'show_no_contrat'          => 'true',
 		'inscr_all_distrib'        => 'false',
 		'allow_resp_dist_manage'   => 'false',
 		'allow_gardiens'           => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
 		'allow_slots'              => 'true',
 		'manage_all_subscriptions' => 'false',
 		'column_date_width'        => '5em',
+		'fixed_column_width'       => '%',
+		'scroll_x'                 => '',
+		'scroll_y'                 => '',
+		'font_size'                => '',
 		'key'                      => '',
 	), $atts );
 
+	$fixed_column_width  = $atts['fixed_column_width'];
 	$column_date_width   = $atts['column_date_width'];
 	$show_contrats_desc  = Amapress::toBool( $atts['show_contrats_desc'] );
 	$show_contrats_count = Amapress::toBool( $atts['show_contrats_count'] );
 	$allow_gardiens      = Amapress::toBool( $atts['allow_gardiens'] );
 	$distrib_links       = Amapress::toBool( $atts['distrib_links'] );
+	$responsive          = $atts['responsive'];
+	if ( 'auto' === $responsive ) {
+		$responsive = wp_is_mobile();
+	} else {
+		$responsive = Amapress::toBool( $responsive );
+	}
+	if ( ! empty( $atts['scroll_x'] ) ) {
+		$responsive = false;
+	}
+
+	if ( '%' == $fixed_column_width ) {
+		$atts['scroll_x'] = '';
+	}
 
 	$allow_anonymous_access = false;
 	$ret                    = '';
@@ -251,15 +270,21 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	if ( $current_post && $current_post->post_type == AmapressDistribution::INTERNAL_POST_TYPE ) {
 		$is_resp_distrib = $is_current_user_resp_amap || AmapressDistributions::isCurrentUserResponsable( $current_post->ID, $user_id );
 	}
+
+	$allow_manage_others = ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap );
 	if ( ! Amapress::toBool( $atts['show_for_resp'] ) ) {
-		$is_current_user_resp_amap = false;
+		$allow_manage_others = false;
+	} elseif ( $allow_manage_others ) {
+		$allow_manage_others = ! empty( $_GET['for_resp'] );
 	}
+
 
 	$for_pdf        = Amapress::toBool( $atts['for_pdf'] );
 	$for_emargement = Amapress::toBool( $atts['for_emargement'] );
 	if ( $for_pdf ) {
 		$is_current_user_resp_amap = false;
 		$is_resp_distrib           = false;
+		$allow_manage_others       = false;
 	}
 
 	$lieux              = Amapress::get_lieux();
@@ -326,6 +351,14 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$has_slots = false;
 	}
 
+	if ( $is_current_user_resp_amap ) {
+		if ( ! $allow_manage_others ) {
+			echo '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Passer en mode Admin' ) . '</p>';
+		} else {
+			echo '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), 'Repasser en mode Amapien' ) . '</p>';
+		}
+	}
+
 	//optimize producteur load
 	Amapress::get_producteurs();
 
@@ -352,6 +385,17 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
+//	$ret .= '<script type="">jQuery(function($) {
+//    $(".distrib-inscr-list").DataTable({
+//    	"paginate": true
+//    });
+//});</script>';
+
+	if ( is_numeric( $show_contrats_desc ) ) {
+		$ret .= '<style type="text/css">.inscr-list-contrats {
+-webkit-line-clamp: ' . $show_contrats_desc . ' !important;overflow: hidden;display: -webkit-box;-webkit-box-orient: vertical; }</style>';
+	}
+
 	foreach ( $all_user_lieux as $lieu_id ) {
 		$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 		if ( Amapress::toBool( $atts['show_title'] ) ) {
@@ -360,13 +404,39 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) && ! is_admin() ) {
 			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
 		}
-		$ret .= '<table id="inscr-distrib-table-' . $lieu_id . '" class="table display ' . ( Amapress::toBool( $atts['responsive'] ) ? 'responsive' : '' ) . ' distrib-inscr-list" width="100%" style="table-layout: fixed; word-break: break-all;" cellspacing="0">';
-		$ret .= '<thead>';
+
+		if ( $for_pdf ) {
+			$responsive = false;
+			$data_atts  = '';
+		} else {
+			if ( ! empty( $atts['font_size'] ) ) {
+				$ret .= '<style type="text/css">.distrib-inscr-list { font-size: ' . $atts['font_size'] . ' !important;}</style>';
+			}
+			$data_atts = [];
+			if ( ! empty( $atts['scroll_x'] ) ) {
+				$data_atts['scroll-x']        = $atts['scroll_x'];
+				$data_atts['fixed-columns']   = 'true';
+				$data_atts['scroll-collapse'] = 'false';
+			}
+			if ( ! empty( $atts['scroll_y'] ) ) {
+				$data_atts['scroll-y'] = $atts['scroll_y'];
+			}
+			$data_atts['auto-width'] = 'false';
+			$data_atts               = implode( ' ', array_map( function ( $k, $v ) {
+				return 'data-' . $k . '="' . esc_attr( $v ) . '"';
+			}, array_keys( $data_atts ), array_values( $data_atts ) ) );
+		}
+		if ( $for_pdf || '%' == $fixed_column_width ) {
+			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display ' . ( $responsive ? 'responsive ' : '' ) . '" width="100%" style="table-layout: fixed; word-break: break-all;hyphens: auto" cellspacing="0">';
+		} else {
+			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display ' . ( $responsive ? 'responsive ' : '' ) . '" style="width: auto;table-layout: fixed; word-break: break-all;" cellspacing="0">';
+		}
+		$ret .= '<thead >';
 		$ret .= '<tr>';
 		if ( $for_pdf ) {
 			$ret .= '<th class="dist-col-date">Date</th>';
 		} else {
-			$ret .= '<th class="dist-col-date" style="width: ' . $column_date_width . '">Date</th>';
+			$ret .= '<th class="dist-col-date" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Date</th>';
 		}
 		if ( $for_emargement ) {
 			if ( $for_pdf ) {
@@ -375,12 +445,17 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$ret .= '<th style="width: ' . $column_date_width . '">Produits</th>';
 			}
 		}
+		if ( '%' == $fixed_column_width ) {
+			$width = ! $for_pdf ? 'width: calc(100% / ' . $lieux_needed_resps[ $lieu_id ] . ' - ' . $column_date_width . ')' : '';
+		} else {
+			$width = ! $for_pdf ? 'width:' . $fixed_column_width . ';min-width:' . $fixed_column_width : '';
+		}
 		if ( ! $for_emargement && ! $for_pdf ) {
 			if ( $has_slots ) {
-				$ret .= '<th>Créneau</th>';
+				$ret .= '<th style="' . $width . ';text-align: center">Créneau</th>';
 			}
 			if ( $allow_gardiens ) {
-				$ret .= '<th>Gardiens paniers</th>';
+				$ret .= '<th style="' . $width . ';text-align: center">Gardiens paniers</th>';
 			}
 		}
 
@@ -389,7 +464,6 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		/** @var AmapressLieu_distribution $user_lieu */
 //        foreach ($user_lieux as $lieu_id) {
 		for ( $i = 1; $i <= $lieux_needed_resps[ $lieu_id ]; $i ++ ) {
-			$width     = ! $for_pdf ? 'width: calc(100 / ' . $lieux_needed_resps[ $lieu_id ] . ' - ' . $column_date_width . ')' : '';
 			$role_name = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-name" ) );
 			if ( empty( $role_name ) ) {
 				$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name" ) );
@@ -469,20 +543,25 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					date_i18n( 'H:i', $dist->getEndDateAndHour() ) );
 			}
 			$lieu_users       = array();
-			$contrat_count    = count( $contrat_names ) . ' contrat(s)';
+			$contrat_count    = count( $contrat_names ) . ' contrat(s) livré(s)';
 			$contrat_names    = implode( ', ', $contrat_names );
 			$contrats_content = '';
 			if ( $show_contrats_desc ) {
-				$contrats_content .= '<p class="inscr-list-contrats">' . esc_html( $contrat_names ) . '</p>';
+				$contrats_content .= '<p class="inscr-list-contrats" title="' . esc_attr( $contrat_names ) . '">' . esc_html( $contrat_names ) . '</p>';
 			}
 			if ( $show_contrats_count ) {
-				$contrats_content .= '<p class="inscr-list-contrats">' . esc_html( $contrat_count ) . '</p>';
+				$contrats_content .= '<p class="inscr-list-contrats" title="' . esc_attr( $contrat_names ) . '">' . esc_html( $contrat_count ) . '</p>';
+			}
+			if ( ! $for_pdf && ! $for_emargement && Amapress::toBool( $atts['show_no_contrat'] ) ) {
+				if ( ! $dist->isUserMemberOf( $user_id, true, $adhesions ) ) {
+					$contrats_content .= '<p class="inscr-list-contrats"><strong>Pas de livraison pour vous</strong></p>';
+				}
 			}
 			$date_display = date_i18n( 'D j M Y', $date ) . $hours;
 			$date_content = '<p class="inscr-list-date">' .
 			                ( $distrib_links ? Amapress::makeLink( $dist->getPermalink(), $date_display, true, true ) : esc_html( $date_display ) ) .
 			                '</p>';
-			$ret          .= '<th scope="row" class="inscr-list-info dist-col-date">';
+			$ret          .= '<th scope="row" class="inscr-list-info dist-col-date" style="vertical-align: middle;word-break: break-word">';
 			$ret          .= $date_content;
 			if ( ! $for_emargement ) {
 				$ret .= $contrats_content;
@@ -504,7 +583,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				}
 
 //                $ret .= '<td>';
-				$is_user_part_of = $inscr_all_distrib || $dist->isUserMemberOf( $user_id, true );
+				$is_user_part_of = $inscr_all_distrib || $dist->isUserMemberOf( $user_id, true, $adhesions );
 				$resps           = $dist->getResponsables();
 				$needed          = AmapressDistributions::get_required_responsables( $dist->ID );
 				$row_resps       = [];
@@ -516,8 +595,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 				$colspan_cls = 'resp-col resp-col-' . ( ( ! $for_emargement && ! $for_pdf && $allow_gardiens ? 1 : 0 )
 				                                        + ( ! $for_emargement && ! $for_pdf && $has_slots ? 1 : 0 )
-				                                        + $lieux_needed_resps[ $lieu_id ]
-				                                        + ( $is_current_user_resp_amap ? 1 : 0 ) );
+				                                        + $lieux_needed_resps[ $lieu_id ] );
+//				                                        + ( $is_current_user_resp_amap ? 1 : 0 ) );
 
 				if ( ! isset( $lieu_users[ $lieu_id ] ) ) {
 					$arr = array( '' => '-amapien-' );
@@ -595,7 +674,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 				if ( ! $for_emargement && ! $for_pdf && $allow_gardiens ) {
 					$inscr_another = '';
-					if ( ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap ) && $can_subscribe ) {
+					if ( $allow_manage_others && $can_subscribe ) {
 						$inscr_another = '';
 						if ( ! is_admin() ) {
 							$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
@@ -698,7 +777,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$resp_idx = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
 						$inscr_another = '';
-						if ( ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap ) && $can_subscribe ) {
+						if ( $allow_manage_others && $can_subscribe ) {
 							$inscr_another = '';
 							if ( ! is_admin() ) {
 								$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
@@ -735,12 +814,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								continue;
 							}
 							$ret .= $r->getDisplay( $atts );
-							if ( $is_user_part_of || $is_current_user_resp_amap ) {
+							if ( $is_user_part_of || $allow_manage_others ) {
 								$is_resp = $is_resp || $r->ID == $user_id;
 								if ( $can_unsubscribe ) {
 									if ( $r->ID == $user_id ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">Me désinscrire</button>';
-									} else if ( ( $is_resp_distrib && $allow_resp_dist_manage ) || $is_current_user_resp_amap ) {
+									} else if ( $allow_manage_others ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
 									}
 								}
@@ -775,7 +854,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$ret .= '</tbody>';
 		$ret .= '</table>';
 
-		//$ret .= '<script type="text/javascript">jQuery(function($) {$("#inscr-distrib-table").DataTable().fixedHeader.enable(true);});</script>';
+//		$ret .= '<script type="text/javascript">jQuery(function($) {$(".distrib-inscr-list").DataTable().fixedHeader.enable(true);});</script>';
 	}
 
 	$ret .= '<style type="text/css">.inscr-list-info * {

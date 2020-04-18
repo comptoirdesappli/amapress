@@ -527,12 +527,30 @@ class AmapressDistribution extends Amapress_EventBase {
 		return array_unique( $res );
 	}
 
-	public function isUserMemberOf( $user_id, $guess_renew = false ) {
-		$user_contrats_ids = AmapressContrat_instance::getContratInstanceIdsForUser( $user_id,
-			null,
-			$this->getDate(),
-			$guess_renew );
-		$dist_contrat_ids  = array_map( function ( $c ) {
+	/**
+	 * @param int $user_id
+	 * @param bool $guess_renew
+	 * @param AmapressAdhesion[]|null $precache_user_adhesions
+	 *
+	 * @return bool
+	 */
+	public function isUserMemberOf( $user_id, $guess_renew = false, $precache_user_adhesions = null ) {
+		if ( null !== $precache_user_adhesions ) {
+			$user_contrats_ids = [];
+			$user_lieu_ids     = [];
+			foreach ( $precache_user_adhesions as $adh ) {
+				if ( ! empty( $adh->getContrat_quantites( $this->getDate() ) ) ) {
+					$user_contrats_ids[] = $adh->getContrat_instanceId();
+					$user_lieu_ids[]     = $adh->getLieuId();
+				}
+			}
+		} else {
+			$user_contrats_ids = AmapressContrat_instance::getContratInstanceIdsForUser( $user_id,
+				null,
+				$this->getDate(),
+				$guess_renew );
+		}
+		$dist_contrat_ids = array_map( function ( $c ) {
 			return $c->ID;
 		}, $this->getContrats() );
 
@@ -543,8 +561,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			return false;
 		}
 
-		$user_lieu_ids = AmapressUsers::get_user_lieu_ids( $user_id,
-			$this->getDate() );
+		if ( null === $precache_user_adhesions ) {
+			$user_lieu_ids = AmapressUsers::get_user_lieu_ids( $user_id,
+				$this->getDate() );
+		}
 
 		return in_array( $this->getLieuId(), $user_lieu_ids );
 	}
