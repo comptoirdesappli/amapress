@@ -76,6 +76,10 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			'language'     => array( 'url' => '//cdn.datatables.net/plug-ins/1.10.11/i18n/French.json' ),
 		) );
 
+	if ( 'auto' === $options['responsive'] ) {
+		$options['responsive'] = wp_is_mobile();
+	}
+
 	$init_as_html = $options['init_as_html'];
 	if ( $init_as_html ) {
 		unset( $options['columns'] );
