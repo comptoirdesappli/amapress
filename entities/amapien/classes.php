@@ -695,7 +695,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	function getDisplay(
 		$args = array()
 	) {
-		$args = wp_parse_args( $args, array(
+		$args       = wp_parse_args( $args, array(
 			'show_avatar'     => 'default',
 			'show_email'      => 'default',
 			'show_tel'        => 'default',
@@ -705,24 +705,26 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			'show_adresse'    => 'default',
 			'show_roles'      => 'default',
 		) );
-		$ret  = '';
-		$ret  .= '<div class="user-profile-info">';
-		$ret  .= ( amapress_check_info_visibility( $args['show_avatar'], 'avatar', $this ) == true ?
-			$this->wrapIfNotEmpty( '<div class="user-photo">', $this->getAvatar(), '</div>' ) :
+		$show_roles = amapress_check_info_visibility( $args['show_roles'], 'roles', $this );
+		$roles      = $this->getAmapRolesString();
+		$ret        = '';
+		$ret        .= '<div class="user-profile-info">';
+		$ret        .= ( amapress_check_info_visibility( $args['show_avatar'], 'avatar', $this ) == true ?
+			$this->wrapIfNotEmpty( '<div class="user-photo" title="' . esc_attr( $roles ) . '">', $this->getAvatar(), '</div>' ) :
 			'' );
 		if ( amapress_can_access_admin() ) {
-			$ret .= '<div class="user-name"><a href="' . admin_url( 'user-edit.php?user_id=' . $this->ID ) . '">' . esc_html( $this->getDisplayName() ) . '</a></div>';
+			$ret .= '<div class="user-name" title="' . esc_attr( $roles ) . '"><a href="' . admin_url( 'user-edit.php?user_id=' . $this->ID ) . '">' . esc_html( $this->getDisplayName() ) . '</a></div>';
 		} else {
-			$ret .= '<div class="user-name">' . esc_html( $this->getDisplayName() ) . '</div>';
+			$ret .= '<div class="user-name" title="' . esc_attr( $roles ) . '">' . esc_html( $this->getDisplayName() ) . '</div>';
 		}
 		$ret             .= ( amapress_check_info_visibility( $args['show_email'], 'email', $this ) == true ?
-			$this->wrapIfNotEmpty( '<div class="user-email"><a href="mailto:', esc_attr( $this->getEmail() ) . '">', esc_html( $this->getEmail() ) . '</a></div>' ) :
+			$this->wrapIfNotEmpty( '<div class="user-email"><a href="mailto:' . esc_attr( $this->getEmail() ) . '">', esc_html( $this->getEmail() ), '</a></div>' ) :
 			'' );
-		$roles           = $this->getAmapRolesString();
-		$ret             .= ( amapress_check_info_visibility( $args['show_roles'], 'roles', $this ) && ! empty( $roles ) ?
-			$this->wrapIfNotEmpty( '<div class="user-roles">', esc_html( $roles ), '</div>' ) :
+		$ret             .= ( $show_roles && ! empty( $roles ) ?
+			$this->wrapIfNotEmpty( '<div class="user-roles" title="' . esc_attr( $roles ) . '">', esc_html( $roles ), '</div>' ) :
 			'' );
-		$ret             .= ( amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_fixe'], 'tel_fixe', $this ) ?
+		$show_tel_fix    = amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_fixe'], 'tel_fixe', $this );
+		$ret             .= ( $show_tel_fix ?
 			$this->wrapIfNotEmpty( '<div class="user-tel-fixe">Fix: ', $this->getTelTo( false ), '</div>' ) :
 			'' );
 		$show_tel_mobile = amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_mobile'], 'tel_mobile', $this );
