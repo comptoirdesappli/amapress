@@ -253,28 +253,28 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'max_produit_label_width'          => '10em',
 			'paiements_info_required'          => 'false',
 			'paniers_modulables_editor_height' => 350,
-			'edit_names'                    => 'true',
-			'allow_remove_coadhs'           => 'false',
-			'contact_referents'             => 'true',
-			'show_adherents_infos'          => 'true',
-			'allow_coadherents_access'      => 'true',
-			'allow_coadherents_inscription' => 'true',
-			'allow_coadherents_adhesion'    => 'true',
-			'show_coadherents_address'      => 'false',
-			'contrat_print_button_text'     => 'Imprimer',
-			'adhesion_print_button_text'    => 'Imprimer',
-			'only_contrats'                 => '',
-			'shorturl'                      => '',
-			'show_due_amounts'              => 'false',
-			'show_delivery_details'         => 'false',
-			'show_calendar_delivs'          => 'false',
-			'show_current_inscriptions'     => 'true',
-			'show_editable_inscriptions'    => 'true',
-			'adhesion_shift_weeks'          => 0,
-			'before_close_hours'            => 24,
-			'max_coadherents'               => 3,
-			'use_contrat_term'              => 'true',
-			'email'                         => get_option( 'admin_email' ),
+			'edit_names'                       => 'true',
+			'allow_remove_coadhs'              => 'false',
+			'contact_referents'                => 'true',
+			'show_adherents_infos'             => 'true',
+			'allow_coadherents_access'         => 'true',
+			'allow_coadherents_inscription'    => 'true',
+			'allow_coadherents_adhesion'       => 'true',
+			'show_coadherents_address'         => 'false',
+			'contrat_print_button_text'        => 'Imprimer',
+			'adhesion_print_button_text'       => 'Imprimer',
+			'only_contrats'                    => '',
+			'shorturl'                         => '',
+			'show_due_amounts'                 => 'false',
+			'show_delivery_details'            => 'false',
+			'show_calendar_delivs'             => 'false',
+			'show_current_inscriptions'        => 'true',
+			'show_editable_inscriptions'       => 'true',
+			'adhesion_shift_weeks'             => 0,
+			'before_close_hours'               => 24,
+			'max_coadherents'                  => 3,
+			'use_contrat_term'                 => 'true',
+			'email'                            => get_option( 'admin_email' ),
 		]
 		, $atts );
 
@@ -608,17 +608,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	if ( 'email' == $step ) {
 		?>
-		<h2>Bienvenue dans
-			l’assistant <?php echo( $use_contrat_term ? 'd’inscription aux contrats producteurs' : 'de commande aux producteurs' ) ?>
-			de <?php echo get_bloginfo( 'name' ); ?></h2>
-		<h4>Étape 1/8 : Email</h4>
-		<form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
-		      class="amapress_validate">
-			<label for="email">Pour démarrer votre inscription à l’AMAP pour la saison
+        <h2>Bienvenue dans
+            l’assistant <?php echo( $use_contrat_term ? 'd’inscription aux contrats producteurs' : 'de commande aux producteurs' ) ?>
+            de <?php echo get_bloginfo( 'name' ); ?></h2>
+        <h4>Étape 1/8 : Email</h4>
+        <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
+              class="amapress_validate">
+            <label for="email">Pour démarrer votre inscription à l’AMAP pour la saison
 				<?php echo date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) ?>
-				, renseignez votre
-				adresse mail :</label>
-			<input id="email" name="email" type="text" class="email required" placeholder="email"/>
+                , renseignez votre
+                adresse mail :</label>
+            <input id="email" name="email" type="text" class="email required" placeholder="email"/>
 			<?php
 			if ( $track_no_renews ) {
 				?>
@@ -2007,10 +2007,28 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'sort' => 'info',
 			)
 		);
-
+		$columns[] = array(
+			'title' => 'Statut',
+			'data'  => array(
+				'_'    => 'status',
+				'sort' => 'status',
+			)
+		);
 
 		$data = [];
 		foreach ( $adhs as $adh ) {
+			$paiements        = $adh->getAllPaiements();
+			$paiements_status = [];
+			foreach ( $paiements as $paiement ) {
+				$paiements_status[] = sprintf(
+					'%s %s (<span style="color: %s">%s</span>)',
+					$paiement->getTypeFormatted(),
+					Amapress::formatPrice( $paiement->getAmount(), true ),
+					'not_received' == $paiement->getStatus() ? 'orange' : 'green',
+					$paiement->getStatusDisplay()
+				);
+				$paiement->getStatus();
+			}
 			$row              = [];
 			$row['prod']      = date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_debut() ) .
 			                    ' - ' . $adh->getContrat_instance()->getModel()->getTitle()
@@ -2024,12 +2042,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$row['info']      = $info;
 			$row['total_d']   = Amapress::formatPrice( $adh->getTotalAmount(), true );
 			$row['total']     = $adh->getTotalAmount();
+			$row['status']    = implode( ' ; ', $paiements_status );
 			$data[]           = $row;
 		}
 		echo amapress_get_datatable( 'details_all_paiements', $columns, $data,
 			array(
-				'paging'    => false,
-				'searching' => false,
+				'paging'     => false,
+				'searching'  => false,
+				'responsive' => false,
+				'nowrap'     => false,
 			),
 			array(
 				[
