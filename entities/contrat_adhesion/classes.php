@@ -173,7 +173,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
 				}
 			];
-			$ret['date_debut']                       = [
+			$ret['date_debut'] = [
 				'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
@@ -693,9 +693,8 @@ class AmapressAdhesion extends TitanEntity {
 					if ( 'dlv' == $adh->getMainPaiementType() || abs( $adh->getTotalAmount() ) < 0.001 ) {
 						return 'A la livraison';
 					}
-					$o = $adh->getContrat_instance()->getChequeOptionsForTotal( $adh->getPaiements(), $adh->getTotalAmount() );
 
-					return $o['desc'];
+					return $adh->getChequeOptions();
 				}
 			];
 			$ret['paiements_ordre'] = [
@@ -1523,6 +1522,54 @@ class AmapressAdhesion extends TitanEntity {
 		return $this->getCustom( 'amapress_adhesion_pmt_fin', 0 );
 	}
 
+	public function getChequeOptions() {
+		$amount = $this->getTotalAmount();
+		if ( $this->getContrat_instance()->getPayByMonth() ) {
+			if ( 1 == $this->getPaiements() ) {
+				return sprintf( "1 chèque de %0.2f €", $amount );
+			} else {
+				$by_months = $this->getTotalAmountByMonth();
+
+				return sprintf( '%d chq. (%s)', $this->getPaiements(),
+					implode( ' ; ', array_map( function ( $month, $month_amount ) {
+						return sprintf( "%s: 1 chèque de %0.2f €",
+							$month,
+							$month_amount );
+					}, array_keys( $by_months ), array_values( $by_months ) ) ) );
+			}
+		} else {
+			$option = $this->getContrat_instance()->getChequeOptionsForTotal( $this->getPaiements(), $amount );
+
+			return sprintf( '%d chq. (%s)', $this->getPaiements(), $option['desc'] );
+		}
+	}
+
+	public function getPossibleChequeOptions() {
+		$amount = $this->getTotalAmount();
+		if ( $this->getContrat_instance()->getPayByMonth() ) {
+			$cheques_options = [];
+			if ( in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
+				$cheques_options[] = sprintf( "1 chèque de %0.2f €", $amount );
+			}
+			$by_months = $this->getTotalAmountByMonth();
+			if ( in_array( count( $by_months ), $this->getContrat_instance()->getPossiblePaiements() ) ) {
+				$cheques_options[] = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+					return sprintf( "%s: 1 chèque de %0.2f €",
+						$month,
+						$month_amount );
+				}, array_keys( $by_months ), array_values( $by_months ) ) );
+			}
+		} else {
+			$cheques_options = array_map( function ( $v ) use ( $amount ) {
+				$option = $this->getContrat_instance()->getChequeOptionsForTotal( $v, $amount );
+
+				return sprintf( '%d (%s)', $v, $option['desc'] );
+			}, $this->getContrat_instance()->getPossiblePaiements() );
+		}
+
+		return $cheques_options;
+	}
+
 	/** @return AmapressUser */
 	public function getAdherent() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_adherent', 'AmapressUser' );
@@ -1636,7 +1683,7 @@ class AmapressAdhesion extends TitanEntity {
 		$dates           = $this->getRemainingDates();
 		$by_month_totals = [];
 		foreach ( $dates as $date ) {
-			$month = date( 'M', $date );
+			$month = date_i18n( 'M', $date );
 			if ( empty( $by_month_totals[ $month ] ) ) {
 				$by_month_totals[ $month ] = 0;
 			}
@@ -2163,17 +2210,27 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 		sort( $new_paiement_date );
 
-		$nb_paiements      = count( $contrat_paiements );
-		$paiements_options = $contrat_instance->getChequeOptionsForTotal( $nb_paiements, $this->getTotalAmount() );
-		$amounts           = [];
-		if ( $paiements_options['remain_amount'] > 0 ) {
-			for ( $i = 0; $i < $nb_paiements - 1; $i ++ ) {
-				$amounts[] = $paiements_options['main_amount'];
+		$nb_paiements = count( $contrat_paiements );
+		$amounts      = [];
+		if ( $contrat_instance->getPayByMonth() ) {
+			if ( 1 == $this->getPaiements() ) {
+				$amounts[] = $this->getTotalAmount();
+			} else {
+				foreach ( $this->getTotalAmountByMonth() as $month_amount ) {
+					$amounts[] = $month_amount;
+				}
 			}
-			$amounts[] = $paiements_options['remain_amount'];
 		} else {
-			for ( $i = 0; $i < $nb_paiements; $i ++ ) {
-				$amounts[] = $paiements_options['main_amount'];
+			$paiements_options = $contrat_instance->getChequeOptionsForTotal( $nb_paiements, $this->getTotalAmount() );
+			if ( $paiements_options['remain_amount'] > 0 ) {
+				for ( $i = 0; $i < $nb_paiements - 1; $i ++ ) {
+					$amounts[] = $paiements_options['main_amount'];
+				}
+				$amounts[] = $paiements_options['remain_amount'];
+			} else {
+				for ( $i = 0; $i < $nb_paiements; $i ++ ) {
+					$amounts[] = $paiements_options['main_amount'];
+				}
 			}
 		}
 		$pre_filled_paiement_index = 1;

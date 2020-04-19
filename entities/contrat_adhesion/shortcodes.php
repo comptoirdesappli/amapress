@@ -2666,7 +2666,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 						$pay_at_deliv[] = $quant->getTitle();
 					} else {
-						$month = date( 'M', $date_k );
+						$month = date_i18n( 'M', $date_k );
 						if ( empty( $by_month_totals[ $month ] ) ) {
 							$by_month_totals[ $month ] = 0;
 						}
@@ -2742,7 +2742,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$pay_at_deliv[] = $quant->getTitle();
 				} else {
 					foreach ( $dates as $date_k ) {
-						$month = date( 'M', $date_k );
+						$month = date_i18n( 'M', $date_k );
 						if ( empty( $by_month_totals[ $month ] ) ) {
 							$by_month_totals[ $month ] = 0;
 						}
@@ -2803,16 +2803,33 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						continue;
 					}
 
-					$checked            = checked( $edit_inscription && $edit_inscription->getPaiements() == $nb_cheque, true, false );
-					$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
-					$option             = esc_html( $cheques['desc'] );
-					$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
-					$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
-					$chq_label          = '';
-					if ( $cheque_main_amount != $last_cheque ) {
-						$chq_label = "$nb_cheque chèque(s) : ";
+					$checked = checked( $edit_inscription && $edit_inscription->getPaiements() == $nb_cheque, true, false );
+					if ( $contrat->getPayByMonth() ) {
+						if ( 1 === $nb_cheque ) {
+							$cheques   = Amapress::formatPrice( $total, true );
+							$chq_label = sprintf( "1 chèque de %0.2f €", $total );
+						} else {
+							$cheques   = implode( '|', array_map( function ( $month_amount ) {
+								return Amapress::formatPrice( $month_amount, true );
+							}, $by_month_totals ) );
+							$chq_label = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+								return sprintf( "%s: 1 chèque de %0.2f €",
+									$month,
+									$month_amount );
+							}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
+						}
+						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
+					} else {
+						$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
+						$option             = esc_html( $cheques['desc'] );
+						$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
+						$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
+						$chq_label          = '';
+						if ( $cheque_main_amount != $last_cheque ) {
+							$chq_label = "$nb_cheque chèque(s) : ";
+						}
+						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 					}
-					echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 				}
 			} else {
 				echo '<p><strong>Paiement à la livraison</strong></p>';
@@ -2842,20 +2859,37 @@ jQuery(function($) {
         if (!$(this).is(":checked"))
             return;
         var nb_cheques = parseInt($(this).val());
-        var main_amount = $(this).data("main-amount");
-        var last_amount = $(this).data("last-amount");
-        var i = 0;
-        $("#cheques-details tr").each(function() {
-           if (i<=nb_cheques) {
-                $(this).show();
-           } else {
-                $(this).hide();
-           }
-           $(".amps-pmt-amount", this).text(main_amount);
-           if (i == nb_cheques)
-               $(".amps-pmt-amount", this).text(last_amount);
-           i++;
-        });
+        var cheques_details = $(this).data("cheques-details");
+        if (cheques_details) {
+            cheques_details = cheques_details.split("|");
+            var i = 0;
+            $("#cheques-details tr").each(function() {
+               if (i<=nb_cheques) {
+                    $(this).show();
+               } else {
+                    $(this).hide();
+               }
+               //skip header
+               if (i > 0)
+                    $(".amps-pmt-amount", this).text(cheques_details[i - 1]);
+               i++;
+            }); 
+        } else {
+            var main_amount = $(this).data("main-amount");
+            var last_amount = $(this).data("last-amount");
+            var i = 0;
+            $("#cheques-details tr").each(function() {
+               if (i<=nb_cheques) {
+                    $(this).show();
+               } else {
+                    $(this).hide();
+               }
+               $(".amps-pmt-amount", this).text(main_amount);
+               if (i == nb_cheques)
+                   $(".amps-pmt-amount", this).text(last_amount);
+               i++;
+            });  
+        }
     };
     $(\'.input-nb-cheques\').each(show_cheque_line).change(show_cheque_line);
 });

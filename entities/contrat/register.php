@@ -1373,7 +1373,7 @@ jQuery(function($) {
 				'group'       => 'Statut',
 				'desc'        => 'Rendre obligatoire ce contrat (Par ex : Contrat légumes)',
 			),
-			'status'      => array(
+			'status'                => array(
 				'name'    => amapress__( 'Statut' ),
 				'type'    => 'custom',
 				'column'  => function ( $post_id ) {
@@ -1388,7 +1388,7 @@ jQuery(function($) {
 				'desc'    => 'Statut',
 				'show_on' => 'edit-only',
 			),
-			'ended'       => array(
+			'ended'                 => array(
 				'name'        => amapress__( 'Clôturer' ),
 				'type'        => 'checkbox',
 				'csv_import'  => false,
@@ -1397,7 +1397,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'status_type' => array(
+			'status_type'           => array(
 				'name'                 => amapress__( 'Résumé' ),
 				'type'                 => 'custom',
 				'use_custom_as_column' => true,
@@ -1419,6 +1419,9 @@ jQuery(function($) {
 					}
 					if ( ! empty( $contrat->getPossiblePaiements() ) ) {
 						$ret[] = implode( ';', $contrat->getPossiblePaiements() ) . ' chèque(s)';
+					}
+					if ( $contrat->getAllow_Transfer() ) {
+						$ret[] = 'répartition au mois';
 					}
 					if ( $contrat->getAllow_Transfer() ) {
 						$ret[] = 'virement';
@@ -1510,7 +1513,7 @@ jQuery(function($) {
 					'12' => '12 chèques',
 				)
 			),
-			'pay_month'       => array(
+			'pay_month'             => array(
 				'name'        => amapress__( 'Paiement au mois' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1518,10 +1521,10 @@ jQuery(function($) {
 				'required'    => true,
 				'default'     => false,
 				'show_column' => false,
-				'desc'        => 'Activer le calcul des paiements multiples réparti au mois',
+				'desc'        => 'Activer la répartition par mois pour les règlements par chèques en plusieurs fois',
 			),
-			'allow_deliv_pay' => array(
-				'name'        => amapress__( 'Règlement à la livraison' ),
+			'allow_deliv_pay'       => array(
+				'name'        => amapress__( 'A la livraison' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
@@ -1658,7 +1661,7 @@ jQuery(function($) {
 							$price                   = $quant->getPrix_unitaire();
 							$total                   = $remaining_dates_factors * $price;
 							$options                 = '';
-							if ( ! $contrat_instance->isQuantiteVariable() ) {
+							if ( ! $contrat_instance->isQuantiteVariable() && ! $contrat_instance->isPanierVariable() ) {
 								foreach ( $contrat_instance->getPossiblePaiements() as $nb_cheque ) {
 									$o = $contrat_instance->getChequeOptionsForTotal( $nb_cheque, $total );
 									if ( empty( $o ) ) {
