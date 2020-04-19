@@ -674,7 +674,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Listes des prochaines distributions avec contrats livrés',
 			'args' => [
-				'distrib' => 5,
+				'distrib' => '(Par défaut 5) Nombre de distributions',
 			]
 		] );
 
