@@ -178,6 +178,12 @@ class Amapress {
 				$escape_title, true );
 	}
 
+	public static function makeExternalLink( $url, $title = null, $escape_title = true ) {
+		return '<span class="dashicons dashicons-external"></span>&nbsp;' . self::makeLink( $url,
+				$title,
+				$escape_title, true );
+	}
+
 	public static function makeLink( $url, $title = null, $escape_title = true, $blank = false ) {
 		if ( empty( $title ) ) {
 			$title = $url;

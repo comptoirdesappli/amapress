@@ -11,7 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 ## Description
 
-Plugin de Gestion & Communication pour les AMAP
+Extension de Gestion & Communication pour les AMAP
 
 ### Installation
 Guide d'_installation_: https://wiki.amapress.fr/admin/installation_zip

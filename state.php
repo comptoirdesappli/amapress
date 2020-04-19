@@ -127,7 +127,7 @@ function amapress_get_plugin_desactivate_link( $plugin_slug ) {
 	);
 }
 
-function amapress_get_check_state( $state, $name, $message, $link, $values = null, $target_blank = true ) {
+function amapress_get_check_state( $state, $name, $message, $link, $values = null, $target_blank = true, $icon = '' ) {
 	return array(
 		'state'        => $state,
 		'name'         => $name,
@@ -135,6 +135,7 @@ function amapress_get_check_state( $state, $name, $message, $link, $values = nul
 		'link'         => $link,
 		'values'       => $values,
 		'target_blank' => $target_blank,
+		'icon'         => $icon,
 	);
 }
 
@@ -176,25 +177,26 @@ function amapress_check_plugin_install(
 			$plugin_slug['name'],
 			$plugin_slug['github_repo']
 		);
-		$plugin_info_link = Amapress::makeLink( 'https://github.com/' . $plugin_slug['github_repo'],
-			'En savoir plus', true, true );
+		$plugin_info_link = Amapress::makeExternalLink( 'https://github.com/' . $plugin_slug['github_repo'],
+			'Voir le dépôt GitHub de l\'extension', true );
 		$install_link     = $action_link;
 		$activate_link    = $action_link;
 	} else {
 		$is_active = amapress_is_plugin_active( $plugin_slug );
 
-		$plugin_info_link = Amapress::makeLink( 'https://fr.wordpress.org/plugins/' . $plugin_slug,
-			'En savoir plus', true, true );
+		$plugin_info_link = '<span class="dashicons dashicons-wordpress-alt"></span>&nbsp;' .
+		                    Amapress::makeLink( 'https://fr.wordpress.org/plugins/' . $plugin_slug,
+			                    'Fiche Infos Wordpress', true, true );
 		$install_link     = amapress_get_plugin_install_link( $plugin_slug );
 		$activate_link    = amapress_get_plugin_activate_link( $plugin_slug );
 	}
 
 	return amapress_get_check_state(
 		$is_active == 'active' ? $installed_level : $not_installed_level,
-		$plugin_name . ( $is_active != 'active' ? ' (' . ( $is_active == 'not-installed' ? 'installer' : 'activer' ) . ')' : '' ),
-		$message_if_install_needed . ' ' . $plugin_info_link,
+		$plugin_name . ( $is_active != 'active' ? ' (<span class="dashicons dashicons-admin-plugins"></span> ' . ( $is_active == 'not-installed' ? 'installer' : 'activer' ) . ')' : ' (<span class="dashicons dashicons-plugins-checked"></span> actif)' ),
+		$message_if_install_needed . '<br/>' . $plugin_info_link,
 		$is_active == 'not-installed' ? $install_link : ( $is_active == 'installed' ? $activate_link : '' ),
-		$values
+		$values, true, false
 	);
 }
 
@@ -225,12 +227,11 @@ function amapress_get_state() {
 	$state['01_plugins']   = array();
 	$backup_status         = amapress_get_updraftplus_backup_status();
 	$state['01_plugins'][] = amapress_check_plugin_install( 'updraftplus', 'UpdraftPlus WordPress Backup',
-		'<strong>Recommandé</strong> : Sauvegarde du site. Permet de réinstaller en cas de panne, bug, hack. 
-<br/> Voir la <a target="_blank" href="' . admin_url( 'options-general.php?page=updraftplus' ) . '">Configuration de la sauvegarde</a>. 
-Configurer ici pour sauvegarder les données de votre site vers un drive ou stockage externe.
-<br/><strong>Configuration recommandée:</strong> sauvegarde quotidienne de la base de données et hebdomadaire des fichiers avec envoi sur un stockage externe type Dropbox
-<br/>Etat actuel: sauvegarde ' . $backup_status . ' (' . amapress_get_updraftplus_backup_last_backup_date() . '), ' . amapress_get_updraftplus_backup_intervals() . '
-<br/>',
+		'<strong>Requis</strong> : Réalise la sauvegarde du site. 
+<br/><strong>Etat actuel</strong>: sauvegarde ' . $backup_status . ' (' . amapress_get_updraftplus_backup_last_backup_date() . '), ' . amapress_get_updraftplus_backup_intervals() . '
+<br/><strong>Configuration minimale :</strong> sauvegarde quotidienne de la base de données, sauvegarde hebdomadaire des fichiers, stockage externe
+<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/sauvegarde' ) . '
+<br/><span class="dashicons dashicons-admin-settings"></span> ' . Amapress::makeLink( admin_url( 'options-general.php?page=updraftplus' ), 'Configuration', true, true ),
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info',
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ?
 			( 'inactive' == $backup_status ? 'error' : ( 'local' == $backup_status ? 'warning' : 'success' ) ) : 'info' );
@@ -294,14 +295,14 @@ Configurer ici pour sauvegarder les données de votre site vers un drive ou stoc
 		if ( empty( $github_updater ) ) {
 			$state['05_config'][] = amapress_get_check_state(
 				'error',
-				'Le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
+				'L\'extension GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
 				'Veuillez utiliser l\'installateur automatique qui est affiché en haut du <a target="_blank" href="' . admin_url( 'index.php' ) . '">tableau de bord</a> ou suivre la <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Installation">procédure d\'installation manuelle</a>',
 				''
 			);
 		} elseif ( empty( $github_updater['github_access_token'] ) ) {
 			$state['05_config'][] = amapress_get_check_state(
 				'error',
-				'Un jeton d\'accès GitHub (Personal Access Token) pour le plugin GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
+				'Un jeton d\'accès GitHub (Personal Access Token) pour l\'extension GitHub Updater est requis pour la bonne mise à jour d\'Amapress',
 				'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Messages#personal-github-access-token">lien</a>',
 				admin_url( 'options-general.php?page=github-updater&tab=github_updater_settings&subtab=github' )
 			);
@@ -361,7 +362,7 @@ Configurer ici pour sauvegarder les données de votre site vers un drive ou stoc
 		}
 	}
 	$state['05_config'][] = amapress_check_plugin_install( 'really-simple-ssl', 'Really Simple SSL',
-		'<strong>Plugin recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
+		'<strong>Recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
 		is_ssl() ? 'info' : 'warning' );
 
 	$state['05_config'][] = amapress_check_plugin_install( 'pwa', 'Progressive Web App',
@@ -2357,8 +2358,8 @@ function amapress_echo_and_check_amapress_state_page() {
 	}
 
 	$labels = array(
-		'01_plugins'      => 'Plugins - Recommandés',
-		'02_plugins_not'  => 'Plugins - Non Recommandés',
+		'01_plugins'      => 'Extensions - Recommandées',
+		'02_plugins_not'  => 'Extensions - Non Recommandées',
 		'05_config'       => 'Configuration',
 		'10_users'        => 'Comptes utilisateurs',
 		'15_posts'        => 'Votre AMAP',
@@ -2369,8 +2370,8 @@ function amapress_echo_and_check_amapress_state_page() {
 		'30_recalls'      => 'Rappels',
 		'35_import'       => 'Import CSV',
 		'36_mailing'      => 'Listes de diffusions',
-		'37_plugins_add'  => 'Plugins - Fonctionnalités supplémentaires',
-		'38_plugins_adv'  => 'Plugins - Utilitaires/Avancés',
+		'37_plugins_add'  => 'Extensions - Fonctionnalités supplémentaires',
+		'38_plugins_adv'  => 'Extensions - Utilitaires/Avancés',
 		'40_clean'        => 'Nettoyage',
 	);
 	$i      = 1;
@@ -2478,11 +2479,18 @@ function amapress_echo_and_check_amapress_state_page() {
 				$target = '';
 			}
 
+			$icon = "<span class='dashicons dashicons-external'></span>";
+			if ( false === $check['icon'] ) {
+				$icon = '';
+			} elseif ( ! empty( $check['icon'] ) ) {
+				$icon = $check['icon'];
+			}
+
 			echo "<div class='amapress-check'>";
 			if ( empty( $link ) ) {
-				echo "<p class='check-item state {$state}'>{$title}<span class='dashicons dashicons-external'></span></p>";
+				echo "<p class='check-item state {$state}'>{$title}</p>";
 			} else {
-				echo "<p class='check-item state {$state}'><a href='$link' $target>{$title}</a><span class='dashicons dashicons-external'></span></p>";
+				echo "<p class='check-item state {$state}'><a href='$link' $target>{$title}</a>$icon</p>";
 			}
 			echo "<div class='amapress-check-content'>";
 			if ( ! empty( $values ) ) {

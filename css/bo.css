@@ -7,6 +7,10 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.dashicons {
+    text-decoration: none !important;
+}
+
 #tagsdiv-amps_paiement_category {
     display: none;
 }

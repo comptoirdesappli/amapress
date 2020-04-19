@@ -1545,7 +1545,7 @@ add_action( 'admin_init', function () {
 		}
 		if ( 'active' == amapress_is_plugin_active( 'amapress-installer' ) ) {
 			amapress_add_admin_notice(
-				sprintf( 'Vous venez d\'installer Amapress : %s le plugin "Installateur du plugin Amapress"',
+				sprintf( 'Vous venez d\'installer Amapress : %s l\'extension "Installateur du plugin Amapress"',
 					Amapress::makeLink( amapress_get_plugin_desactivate_link( 'amapress-installer' ), 'désactivez' ) ),
 				'error', false, false );
 		}
