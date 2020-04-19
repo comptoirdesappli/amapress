@@ -694,6 +694,85 @@ function amapress_register_shortcodes() {
 		return '';
 	} );
 
+	amapress_register_shortcode( 'amapien-details-livraisons', function ( $atts, $content = null ) {
+		$atts                = shortcode_atts(
+			array(
+				'user_id'             => null,
+				'ignore_renouv_delta' => true,
+				'by'                  => 'date'
+			), $atts
+		);
+		$user_id             = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : amapress_current_user_id();
+		$ignore_renouv_delta = Amapress::toBool( $atts['ignore_renouv_delta'] );
+
+		return amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, 'producteur' === $atts['by'] );
+	},
+		[
+			'desc' => 'Afficher les détails des livraisons de l\'amapien par date ou producteur',
+			'args' => [
+				'by'                  => '(Par défaut "date") Grouper les livraisons par "date" ou "producteur"',
+				'ignore_renouv_delta' => '(Par défaut true) Ignorer les contrats qui sont dans leur période de renouvellement',
+			]
+		] );
+	amapress_register_shortcode( 'amapien-details-paiements', function ( $atts, $content = null ) {
+		$atts                = shortcode_atts(
+			array(
+				'user_id'             => null,
+				'ignore_renouv_delta' => true,
+			), $atts
+		);
+		$user_id             = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : amapress_current_user_id();
+		$ignore_renouv_delta = Amapress::toBool( $atts['ignore_renouv_delta'] );
+
+		return amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta );
+	},
+		[
+			'desc' => 'Afficher le détails des sommes dues par l\'amapien',
+			'args' => [
+				'ignore_renouv_delta' => '(Par défaut true) Ignorer les contrats qui sont dans leur période de renouvellement',
+			]
+		] );
+	amapress_register_shortcode( 'calendrier-contrats', function ( $atts, $content = null ) {
+		$atts                = shortcode_atts(
+			array(
+				'user_id'             => null,
+				'filter'              => 'all',
+				'ignore_renouv_delta' => true,
+				'include_futur'       => true,
+			), $atts
+		);
+		$user_id             = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : amapress_current_user_id();
+		$ignore_renouv_delta = Amapress::toBool( $atts['ignore_renouv_delta'] );
+		$include_futur       = Amapress::toBool( $atts['include_futur'] );
+
+		switch ( $atts['filter'] ) {
+			case 'user':
+				$adhs     = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, true, null,
+					$ignore_renouv_delta, false, $include_futur );
+				$contrats = [];
+				foreach ( $adhs as $adh ) {
+					$contrats[ $adh->getContrat_instanceId() ] = $adh->getContrat_instance();
+				}
+				break;
+			case 'subscribables':
+				$contrats = AmapressContrats::get_subscribable_contrat_instances();
+				break;
+			default:
+				$contrats = AmapressContrats::get_active_contrat_instances( null, null,
+					$ignore_renouv_delta, $include_futur );
+		}
+
+		return amapress_get_contrats_calendar( $contrats );
+	},
+		[
+			'desc' => 'Afficher le calendrier des livraisons des contrats de l\'amapien ou de tous les contrats',
+			'args' => [
+				'filter'              => '(Par défaut "all") Afficher tous les contrats actifs (all), les contrats ouverts aux inscriptions (subscribables) ou les contrats de l\'amapien (user)',
+				'ignore_renouv_delta' => '(Par défaut true) Ignorer les contrats qui sont dans leur période de renouvellement',
+				'ignore_futur'        => '(Par défaut true) Inclure les contrats non commencés',
+			]
+		] );
+
 	amapress_register_shortcode( 'display-if', function ( $atts, $content = null ) {
 		$atts = shortcode_atts(
 			array(

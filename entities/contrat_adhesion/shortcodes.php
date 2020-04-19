@@ -1972,99 +1972,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
 
-		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
-		Amapress::setFilterForReferent( true );
-
-		$print_title = 'Récapitulatif des sommes dues';
-		echo '<h4>' . esc_html( $print_title ) . '</h4>';
-		$columns   = [];
-		$columns[] = array(
-			'title' => 'Producteur',
-			'data'  => array(
-				'_'    => 'prod',
-				'sort' => 'prod_sort',
-			)
-		);
-		$columns[] = array(
-			'title' => 'Total',
-			'data'  => array(
-				'_'    => 'total_d',
-				'sort' => 'total',
-			)
-		);
-		$columns[] = array(
-			'title' => 'Option paiements',
-			'data'  => array(
-				'_'    => 'opt_pmts',
-				'sort' => 'opt_pmts',
-			)
-		);
-		$columns[] = array(
-			'title' => 'Info',
-			'data'  => array(
-				'_'    => 'info',
-				'sort' => 'info',
-			)
-		);
-		$columns[] = array(
-			'title' => 'Statut',
-			'data'  => array(
-				'_'    => 'status',
-				'sort' => 'status',
-			)
-		);
-
-		$data = [];
-		foreach ( $adhs as $adh ) {
-			$paiements        = $adh->getAllPaiements();
-			$paiements_status = [];
-			foreach ( $paiements as $paiement ) {
-				$paiements_status[] = sprintf(
-					'%s %s (<span style="color: %s">%s</span>)',
-					$paiement->getTypeFormatted(),
-					Amapress::formatPrice( $paiement->getAmount(), true ),
-					'not_received' == $paiement->getStatus() ? 'orange' : 'green',
-					$paiement->getStatusDisplay()
-				);
-				$paiement->getStatus();
-			}
-			$row              = [];
-			$row['prod']      = date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_debut() ) .
-			                    ' - ' . $adh->getContrat_instance()->getModel()->getTitle()
-			                    . '<br />'
-			                    . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-			$row['prod_sort'] = date_i18n( 'Y-m-d', $adh->getContrat_instance()->getDate_debut() ) .
-			                    $adh->getContrat_instance()->getModel()->getTitle();
-			$row['opt_pmts']  = $adh->getProperty( 'option_paiements' );
-			$info             = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
-			$info             .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
-			$row['info']      = $info;
-			$row['total_d']   = Amapress::formatPrice( $adh->getTotalAmount(), true );
-			$row['total']     = $adh->getTotalAmount();
-			$row['status']    = implode( ' ; ', $paiements_status );
-			$data[]           = $row;
-		}
-		echo amapress_get_datatable( 'details_all_paiements', $columns, $data,
-			array(
-				'paging'     => false,
-				'searching'  => false,
-				'responsive' => false,
-				'nowrap'     => false,
-			),
-			array(
-				[
-					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
-					'title'  => $print_title
-				],
-				[
-					'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
-					'title'         => $print_title,
-					'exportOptions' => [
-						'rowGroup' => true
-					]
-				],
-			) );
+		echo amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta );
 	} else if ( 'details_all_delivs' == $step ) {
 		if ( ! $show_delivery_details ) {
 			wp_die( $invalid_access_message );
@@ -2080,209 +1988,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$by_prod = isset( $_GET['by_prod'] );
 
-		Amapress::setFilterForReferent( false );
-		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
-		Amapress::setFilterForReferent( true );
-
-		$print_title = 'Récapitulatif des livraisons';
-		echo '<h4>' . esc_html( $print_title ) . '</h4>';
-		$columns = [];
-		if ( $by_prod ) {
-			$columns[] = array(
-				'title' => 'Producteur',
-				'data'  => array(
-					'_'    => 'prod',
-					'sort' => 'prod',
-				)
-			);
-			$columns[] = array(
-				'title' => 'Date',
-				'data'  => array(
-					'_'    => 'date_d',
-					'sort' => 'date',
-				)
-			);
-		} else {
-			$columns[] = array(
-				'title' => 'Date',
-				'data'  => array(
-					'_'    => 'date_d',
-					'sort' => 'date',
-				)
-			);
-			$columns[] = array(
-				'title' => 'Producteur',
-				'data'  => array(
-					'_'    => 'prod',
-					'sort' => 'prod',
-				)
-			);
-		}
-
-		$columns[] = array(
-			'title' => 'Description',
-			'data'  => array(
-				'_'    => 'desc',
-				'sort' => 'desc',
-			)
-		);
-		$columns[] = array(
-			'title' => 'Quantité',
-			'data'  => array(
-				'_'    => 'fact',
-				'sort' => 'fact',
-			)
-		);
-		$columns[] = array(
-			'title' => 'Total',
-			'data'  => array(
-				'_'    => 'total_d',
-				'sort' => 'total',
-			)
-		);
-
-		$data = [];
-		foreach ( $adhs as $adh ) {
-			if ( $adh->getContrat_instance()->isPanierVariable() ) {
-				$paniers = $adh->getPaniersVariables();
-				foreach ( $adh->getRemainingDates() as $date ) {
-					foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
-						if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
-							$row           = [];
-							$row['date_d'] = date_i18n( 'd/m/Y', $date );
-							$row['date']   = $date;
-
-							$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
-							                  . '<br />'
-							                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-							$row['desc']    = $quant->getTitle();
-							$row['fact']    = $paniers[ $date ][ $quant->ID ];
-							$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
-							$row['total_d'] = Amapress::formatPrice( $price, true );
-							$row['total']   = $price;
-							$data[]         = $row;
-						}
-					}
-				}
-
-			} else {
-				foreach ( $adh->getRemainingDates() as $date ) {
-					foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
-						$row           = [];
-						$row['date_d'] = date_i18n( 'd/m/Y', $date );
-						$row['date']   = $date;
-
-						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
-						                  . '<br />'
-						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-						$row['desc']    = $quant->getTitle();
-						$row['fact']    = $quant->getFactor();
-						$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
-						$row['total']   = $quant->getPrice();
-						$data[]         = $row;
-					}
-				}
-			}
-		}
-		if ( $by_prod ) {
-			usort( $data, function ( $a, $b ) {
-				return strcmp( $a['prod'], $b['prod'] );
-			} );
-		} else {
-			usort( $data, function ( $a, $b ) {
-				if ( $a['date'] == $b['date'] ) {
-					return 0;
-				}
-
-				return $a['date'] > $b['date'] ? 1 : - 1;
-			} );
-		}
-		echo amapress_get_datatable( 'details_all_delivs', $columns, $data,
-			array(
-				'paging'    => false,
-				'searching' => false,
-				'rowGroup'  => [
-					'dataSrc' => $by_prod ? 'prod' : 'date_d',
-				]
-			),
-			array(
-				[
-					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
-					'title'  => $print_title
-				],
-				[
-					'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
-					'title'         => $print_title,
-					'exportOptions' => [
-						'rowGroup' => true
-					]
-				],
-			) );
+		echo amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod );
 	} else if ( 'calendar_delivs' == $step ) {
-		$print_title = 'Calendrier des livraisons';
-		echo '<h4>' . esc_html( $print_title ) . '</h4>';
-		$dates = [];
-		foreach ( $subscribable_contrats as $contrat ) {
-			foreach ( $contrat->getRemainingDates() as $d ) {
-				$dates[] = $d;
-			}
-		}
-		$dates = array_unique( $dates );
-		sort( $dates );
-		$columns   = [];
-		$columns[] = array(
-			'title' => 'Producteur',
-			'data'  => array(
-				'_'    => 'prod',
-				'sort' => 'prod',
-			)
-		);
-		foreach ( $dates as $date ) {
-			$columns[] = array(
-				'title' => date_i18n( 'd/m/Y', $date ),
-				'data'  => array(
-					'_'    => 'date_' . $date,
-					'sort' => 'date_' . $date,
-				)
-			);
-		}
-
-		$data = [];
-		foreach ( $subscribable_contrats as $contrat ) {
-			$row             = [];
-			$row['prod']     = $contrat->getModel()->getTitle()
-			                   . '<br />'
-			                   . '<em>' . $contrat->getModel()->getProducteur()->getTitle() . '</em>';
-			$remaining_dates = $contrat->getRemainingDates();
-			foreach ( $dates as $date ) {
-				if ( in_array( $date, $remaining_dates ) ) {
-					$row[ 'date_' . $date ] = 'X';
-				} else {
-					$row[ 'date_' . $date ] = '';
-				}
-			}
-			$data[] = $row;
-		}
-
-		echo amapress_get_datatable( 'calend_delivs', $columns, $data,
-			array(
-				'paging'      => false,
-				'searching'   => false,
-				'responsive'  => false,
-				'scrollX'     => true,
-				'scrollY'     => '300px',
-				'fixedHeader' => true,
-			),
-			array(
-				[
-					'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
-					'title'  => $print_title
-				],
-				[
-					'extend' => Amapress::DATATABLES_EXPORT_PRINT,
-					'title'  => $print_title,
-				],
-			) );
+		echo amapress_get_contrats_calendar( $subscribable_contrats );
 	} else if ( 'details' == $step ) {
 		if ( empty( $_GET['contrat_id'] ) ) {
 			wp_die( $invalid_access_message );
@@ -3423,4 +3131,330 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 	<?php
 
 	return ob_get_clean();
+}
+
+/**
+ * @param AmapressContrat_instance[] $contrats
+ *
+ * @return array
+ */
+function amapress_get_contrats_calendar( $contrats ) {
+	$print_title = 'Calendrier des livraisons';
+	$ret         = '<h4>' . esc_html( $print_title ) . '</h4>';
+	$dates       = [];
+	foreach ( $contrats as $contrat ) {
+		foreach ( $contrat->getRemainingDates() as $d ) {
+			$dates[] = $d;
+		}
+	}
+	$dates = array_unique( $dates );
+	sort( $dates );
+	$columns   = [];
+	$columns[] = array(
+		'title' => 'Producteur',
+		'data'  => array(
+			'_'    => 'prod',
+			'sort' => 'prod',
+		)
+	);
+	foreach ( $dates as $date ) {
+		$columns[] = array(
+			'title' => date_i18n( 'd/m/Y', $date ),
+			'data'  => array(
+				'_'    => 'date_' . $date,
+				'sort' => 'date_' . $date,
+			)
+		);
+	}
+
+	$data = [];
+	foreach ( $contrats as $contrat ) {
+		$row             = [];
+		$row['prod']     = $contrat->getModel()->getTitle()
+		                   . '<br />'
+		                   . '<em>' . $contrat->getModel()->getProducteur()->getTitle() . '</em>';
+		$remaining_dates = $contrat->getRemainingDates();
+		foreach ( $dates as $date ) {
+			if ( in_array( $date, $remaining_dates ) ) {
+				$row[ 'date_' . $date ] = 'X';
+			} else {
+				$row[ 'date_' . $date ] = '';
+			}
+		}
+		$data[] = $row;
+	}
+
+	$ret .= amapress_get_datatable( 'calend_delivs', $columns, $data,
+		array(
+			'paging'      => false,
+			'searching'   => false,
+			'responsive'  => false,
+			'scrollX'     => true,
+			'scrollY'     => '300px',
+			'fixedHeader' => true,
+		),
+		array(
+			[
+				'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+				'title'  => $print_title
+			],
+			[
+				'extend' => Amapress::DATATABLES_EXPORT_PRINT,
+				'title'  => $print_title,
+			],
+		) );
+
+	return $ret;
+}
+
+/**
+ * @param int $user_id
+ * @param bool $ignore_renouv_delta
+ * @param bool $by_prod
+ *
+ * @return string
+ */
+function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod ) {
+	Amapress::setFilterForReferent( false );
+	$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
+	Amapress::setFilterForReferent( true );
+
+	$print_title = 'Récapitulatif des livraisons';
+	$ret         = '<h4>' . esc_html( $print_title ) . '</h4>';
+	$columns     = [];
+	if ( $by_prod ) {
+		$columns[] = array(
+			'title' => 'Producteur',
+			'data'  => array(
+				'_'    => 'prod',
+				'sort' => 'prod',
+			)
+		);
+		$columns[] = array(
+			'title' => 'Date',
+			'data'  => array(
+				'_'    => 'date_d',
+				'sort' => 'date',
+			)
+		);
+	} else {
+		$columns[] = array(
+			'title' => 'Date',
+			'data'  => array(
+				'_'    => 'date_d',
+				'sort' => 'date',
+			)
+		);
+		$columns[] = array(
+			'title' => 'Producteur',
+			'data'  => array(
+				'_'    => 'prod',
+				'sort' => 'prod',
+			)
+		);
+	}
+
+	$columns[] = array(
+		'title' => 'Description',
+		'data'  => array(
+			'_'    => 'desc',
+			'sort' => 'desc',
+		)
+	);
+	$columns[] = array(
+		'title' => 'Quantité',
+		'data'  => array(
+			'_'    => 'fact',
+			'sort' => 'fact',
+		)
+	);
+	$columns[] = array(
+		'title' => 'Total',
+		'data'  => array(
+			'_'    => 'total_d',
+			'sort' => 'total',
+		)
+	);
+
+	$data = [];
+	foreach ( $adhs as $adh ) {
+		if ( $adh->getContrat_instance()->isPanierVariable() ) {
+			$paniers = $adh->getPaniersVariables();
+			foreach ( $adh->getRemainingDates() as $date ) {
+				foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
+					if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
+						$row           = [];
+						$row['date_d'] = date_i18n( 'd/m/Y', $date );
+						$row['date']   = $date;
+
+						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+						                  . '<br />'
+						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+						$row['desc']    = $quant->getTitle();
+						$row['fact']    = $paniers[ $date ][ $quant->ID ];
+						$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
+						$row['total_d'] = Amapress::formatPrice( $price, true );
+						$row['total']   = $price;
+						$data[]         = $row;
+					}
+				}
+			}
+
+		} else {
+			foreach ( $adh->getRemainingDates() as $date ) {
+				foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
+					$row           = [];
+					$row['date_d'] = date_i18n( 'd/m/Y', $date );
+					$row['date']   = $date;
+
+					$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+					                  . '<br />'
+					                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+					$row['desc']    = $quant->getTitle();
+					$row['fact']    = $quant->getFactor();
+					$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
+					$row['total']   = $quant->getPrice();
+					$data[]         = $row;
+				}
+			}
+		}
+	}
+	if ( $by_prod ) {
+		usort( $data, function ( $a, $b ) {
+			return strcmp( $a['prod'], $b['prod'] );
+		} );
+	} else {
+		usort( $data, function ( $a, $b ) {
+			if ( $a['date'] == $b['date'] ) {
+				return 0;
+			}
+
+			return $a['date'] > $b['date'] ? 1 : - 1;
+		} );
+	}
+	$ret .= amapress_get_datatable( 'details_all_delivs', $columns, $data,
+		array(
+			'paging'    => false,
+			'searching' => false,
+			'rowGroup'  => [
+				'dataSrc' => $by_prod ? 'prod' : 'date_d',
+			]
+		),
+		array(
+			[
+				'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+				'title'  => $print_title
+			],
+			[
+				'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
+				'title'         => $print_title,
+				'exportOptions' => [
+					'rowGroup' => true
+				]
+			],
+		) );
+
+	return $ret;
+}
+
+/**
+ * @param int $user_id
+ * @param bool $ignore_renouv_delta
+ */
+function amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta ) {
+	Amapress::setFilterForReferent( false );
+	$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
+	Amapress::setFilterForReferent( true );
+
+	$print_title = 'Récapitulatif des sommes dues';
+	$ret         = '<h4>' . esc_html( $print_title ) . '</h4>';
+	$columns     = [];
+	$columns[]   = array(
+		'title' => 'Producteur',
+		'data'  => array(
+			'_'    => 'prod',
+			'sort' => 'prod_sort',
+		)
+	);
+	$columns[]   = array(
+		'title' => 'Total',
+		'data'  => array(
+			'_'    => 'total_d',
+			'sort' => 'total',
+		)
+	);
+	$columns[]   = array(
+		'title' => 'Option paiements',
+		'data'  => array(
+			'_'    => 'opt_pmts',
+			'sort' => 'opt_pmts',
+		)
+	);
+	$columns[]   = array(
+		'title' => 'Info',
+		'data'  => array(
+			'_'    => 'info',
+			'sort' => 'info',
+		)
+	);
+	$columns[]   = array(
+		'title' => 'Statut',
+		'data'  => array(
+			'_'    => 'status',
+			'sort' => 'status',
+		)
+	);
+
+	$data = [];
+	foreach ( $adhs as $adh ) {
+		$paiements        = $adh->getAllPaiements();
+		$paiements_status = [];
+		foreach ( $paiements as $paiement ) {
+			$paiements_status[] = sprintf(
+				'%s %s (<span style="color: %s">%s</span>)',
+				$paiement->getTypeFormatted(),
+				Amapress::formatPrice( $paiement->getAmount(), true ),
+				'not_received' == $paiement->getStatus() ? 'orange' : 'green',
+				$paiement->getStatusDisplay()
+			);
+			$paiement->getStatus();
+		}
+		$row              = [];
+		$row['prod']      = date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_debut() ) .
+		                    ' - ' . $adh->getContrat_instance()->getModel()->getTitle()
+		                    . '<br />'
+		                    . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+		$row['prod_sort'] = date_i18n( 'Y-m-d', $adh->getContrat_instance()->getDate_debut() ) .
+		                    $adh->getContrat_instance()->getModel()->getTitle();
+		$row['opt_pmts']  = $adh->getProperty( 'option_paiements' );
+		$info             = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
+		$info             .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
+		$row['info']      = $info;
+		$row['total_d']   = Amapress::formatPrice( $adh->getTotalAmount(), true );
+		$row['total']     = $adh->getTotalAmount();
+		$row['status']    = implode( ' ; ', $paiements_status );
+		$data[]           = $row;
+	}
+	$ret .= amapress_get_datatable( 'details_all_paiements', $columns, $data,
+		array(
+			'paging'     => false,
+			'searching'  => false,
+			'responsive' => false,
+			'nowrap'     => false,
+		),
+		array(
+			[
+				'extend' => Amapress::DATATABLES_EXPORT_EXCEL,
+				'title'  => $print_title
+			],
+			[
+				'extend'        => Amapress::DATATABLES_EXPORT_PRINT,
+				'title'         => $print_title,
+				'exportOptions' => [
+					'rowGroup' => true
+				]
+			],
+		) );
+
+	return $ret;
 }
