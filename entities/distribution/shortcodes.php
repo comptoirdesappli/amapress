@@ -835,6 +835,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					}
 					$i += 1;
 				}
+
+				for ( $j = $needed; $j < $lieux_needed_resps[ $lieu_id ]; $j ++ ) {
+					$ret .= "<td class='$colspan_cls'>&nbsp;</td>";
+				}
 //				if ( $needed - count( $resps ) > 0 ) {
 //
 //
