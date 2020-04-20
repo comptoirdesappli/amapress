@@ -1940,7 +1940,7 @@ add_filter( 'sm_exclude_post_ids', function ( $excluded_ids ) {
 		if ( isset( $conf['logged_or_public'] ) && $conf['logged_or_public'] ) {
 			$key                  = "amapress_{$name}_public";
 			$logged_or_public_ids = array_merge( $logged_or_public_ids,
-				$wpdb->get_col( $wpdb->prepare( "SELECT mod786_posts.ID
+				$wpdb->get_col( $wpdb->prepare( "SELECT {$wpdb->posts}.ID
 FROM {$wpdb->posts}
 LEFT JOIN {$wpdb->postmeta}
 ON ({$wpdb->posts}.ID = {$wpdb->postmeta}.post_id
