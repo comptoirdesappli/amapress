@@ -312,6 +312,15 @@ function amapress_register_shortcodes() {
 			]
 		] );
 //
+
+	amapress_register_shortcode( 'anon-intermittents-inscription', 'amapress_intermittence_anon_inscription_shortcode',
+		[
+			'desc' => 'Inscription sans connexion à la liste des intermittents',
+			'args' => [
+				'key'      => 'Clé de sécurisation de l\'accès à l\'inscription à la liste des intermittents',
+				'shorturl' => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+			]
+		] );
 	amapress_register_shortcode( 'intermittents-inscription', 'amapress_intermittence_inscription_shortcode',
 		[
 			'desc' => 'Inscription d\'un amapien à la liste des intermittents',
