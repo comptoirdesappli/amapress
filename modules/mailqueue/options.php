@@ -189,6 +189,18 @@ function amapress_mailing_queue_waiting_mail_list( $mlgrp_id = '' ) {
 	return amapress_mailing_queue_mail_list( 'waiting-mails', $mlgrp_id, 'waiting' );
 }
 
+function amapress_mailing_queue_waiting_mail_list_count( $mlgrp_id = '' ) {
+	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );
+
+	return count( glob( AmapressSMTPMailingQueue::getUploadDir( $mlgrp_id, 'waiting' ) . '*.json' ) );
+}
+
+function amapress_mailing_queue_errored_mail_list_count( $mlgrp_id = '' ) {
+	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueue.php' );
+
+	return count( glob( AmapressSMTPMailingQueue::getUploadDir( $mlgrp_id, 'errored' ) . '*.json' ) );
+}
+
 function amapress_mailing_queue_errored_mail_list( $mlgrp_id = '' ) {
 	return amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
 }

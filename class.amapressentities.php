@@ -225,8 +225,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
 								} );
 								foreach ( $mls as $ml ) {
-									$ml_id                                                       = $ml->ID;
-									$tabs[ $ml->getName() . amapress__( ' - File d\'attente' ) ] = array(
+									$ml_id                                                                           = $ml->ID;
+									$tabs[ sprintf( '%s  - File d\'attente <span class="badge">%d</span>',
+										$ml->getName(), amapress_mailing_queue_waiting_mail_list_count( $ml_id ) ) ] = array(
 										'id'      => 'mailgrp-mailqueue-tab-' . $ml_id,
 										'desc'    => '',
 										'options' => array(
@@ -263,8 +264,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
 								} );
 								foreach ( $mls as $ml ) {
-									$ml_id                                               = $ml->ID;
-									$tabs[ $ml->getName() . amapress__( ' - Erreurs' ) ] = array(
+									$ml_id                                                                           = $ml->ID;
+									$tabs[ sprintf( '%s  - Erreurs <span class="badge">%d</span>',
+										$ml->getName(), amapress_mailing_queue_errored_mail_list_count( $ml_id ) ) ] = array(
 										'id'      => 'mailgrp-mailerrors-tab-' . $ml_id,
 										'desc'    => '',
 										'options' => array(
