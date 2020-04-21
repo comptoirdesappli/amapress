@@ -781,7 +781,7 @@ class AmapressMailingGroup extends TitanEntity {
 				] );
 				$res           = $res | wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $local_headers, $body['attachments'] );
 			}
-			if ( ! $is_ext_smtp && ! empty( $cc ) ) {
+			if ( ! empty( $cc ) ) {
 				$headers[] = 'Cc: ' . $cc;
 
 				$res = $res | wp_mail( $to, $this->getSubjectPrefix() . ' ' . $subject, $body, $headers, $body['attachments'] );
