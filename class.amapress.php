@@ -4084,7 +4084,8 @@ class Amapress {
 		if ( empty( $href ) ) {
 			/** @var WP_Post $page */
 			foreach ( get_pages() as $page ) {
-				if ( strpos( $page->post_content, '[' . $shortcode ) !== false ) {
+				if ( false !== strpos( $page->post_content, '[' . $shortcode . ' ' )
+				     || false !== strpos( $page->post_content, '[' . $shortcode . ']' ) ) {
 					$href = get_permalink( $page->ID );
 					break;
 				}
