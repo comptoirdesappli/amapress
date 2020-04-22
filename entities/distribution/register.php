@@ -378,7 +378,7 @@ function amapress_distribution_responsable_roles_options() {
 			'name' => 'Rôles des responsables de distribution - pour tous les lieux',
 		);
 	}
-	for ( $i = 1; $i < 6; $i ++ ) {
+	for ( $i = 1; $i <= 10; $i ++ ) {
 		$ret[] = array(
 			'id'   => "resp_role_$i-name",
 			'name' => amapress__( "Nom du rôle $i" ),
@@ -403,7 +403,7 @@ function amapress_distribution_responsable_roles_options() {
 				'name' => 'Rôles des responsables de distribution - pour ' . $lieu->getTitle(),
 			);
 			$lieu_id = $lieu->ID;
-			for ( $i = 1; $i < 6; $i ++ ) {
+			for ( $i = 1; $i <= 10; $i ++ ) {
 				$ret[] = array(
 					'id'   => "resp_role_{$lieu_id}_$i-name",
 					'name' => amapress__( "Nom du rôle $i" ),

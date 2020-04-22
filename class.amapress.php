@@ -23,7 +23,7 @@ class Amapress {
 	}
 
 	public static function hasRespDistribRoles() {
-		for ( $i = 1; $i < 6; $i ++ ) {
+		for ( $i = 1; $i <= 10; $i ++ ) {
 			if ( ! empty( Amapress::getOption( "resp_role_$i-name" ) ) ) {
 				return true;
 			}
