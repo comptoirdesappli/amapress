@@ -157,7 +157,7 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 	$user_address   = isset( $_REQUEST['address'] ) ? $_REQUEST['address'] : '';
 	$user_email     = sanitize_email( $_REQUEST['email'] );
 
-	$user = get_user_by_email( $user_email );
+	$user = get_user_by( 'email', $user_email );
 	if ( $user ) {
 		echo '<p class="error">L\'adresse email ' . $user_email . ' est déjà utilisée.</p>';
 		die();
