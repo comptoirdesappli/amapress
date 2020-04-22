@@ -570,7 +570,7 @@ function amapress_register_shortcodes() {
 				'show_delivery_details'            => '(false par défaut) Afficher un lien Récapitulatif des livraisons',
 				'show_due_amounts'                 => '(false par défaut) Afficher un lien Récapitulatif des sommes dues',
 				'show_calendar_delivs'             => '(false par défaut) Afficher un lien Calendrier des livraisons',
-				'show_current_inscriptions'        => '(true par défaut) Afficher les inscriptions en cours et à venir',
+				'show_current_inscriptions'        => '(false par défaut) Afficher les inscriptions en cours et à venir',
 				'show_editable_inscriptions'       => '(true par défaut) Afficher les inscriptions encore éditables',
 				'contact_referents'                => '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)',
 				'before_close_hours'               => '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant',
@@ -578,6 +578,7 @@ function amapress_register_shortcodes() {
 				'email'                            => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
 				'max_produit_label_width'          => '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables',
 				'use_contrat_term'                 => '(true par défaut) Utiliser le terme Contrat si true et Commande si false',
+				'skip_coords'                      => '(false par défaut) Passer l\'étape de saisie des coordonnées et des coadhérents',
 			]
 		] );
 

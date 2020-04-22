@@ -268,12 +268,13 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_due_amounts'                 => 'false',
 			'show_delivery_details'            => 'false',
 			'show_calendar_delivs'             => 'false',
-			'show_current_inscriptions'        => 'true',
+			'show_current_inscriptions'        => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
 			'show_editable_inscriptions'       => 'true',
 			'adhesion_shift_weeks'             => 0,
 			'before_close_hours'               => 24,
 			'max_coadherents'                  => 3,
 			'use_contrat_term'                 => 'true',
+			'skip_coords'                      => 'false',
 			'email'                            => get_option( 'admin_email' ),
 		]
 		, $atts );
@@ -318,7 +319,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			return '<div class="alert alert-danger">Accès interdit</div>';
 		}
 		if ( ! isset( $_REQUEST['step'] ) ) {
-			if ( 'mes-contrats' == $tag ) {
+			if ( 'mes-contrats' == $tag || Amapress::toBool( $atts['skip_coords'] ) ) {
 				$step = 'contrats';
 			} else {
 				$step = 'coords_logged';
