@@ -76,6 +76,16 @@ class AmapressMailingGroup extends TitanEntity {
 		return $ret;
 	}
 
+	public function getExcludeMembersQueries() {
+		$ret   = $this->getCustomAsArray( 'amapress_mailing_group_excl_queries' );
+		$users = $this->getCustomAsIntArray( 'amapress_mailing_group_excl_other_users' );
+		if ( ! empty( $users ) && count( $users ) > 0 ) {
+			$ret[] = array( 'include' => $users );
+		}
+
+		return $ret;
+	}
+
 	public function getMembersSMSTo() {
 		$phones = [];
 		foreach ( $this->getMembersQueries() as $user_query ) {
@@ -103,6 +113,19 @@ class AmapressMailingGroup extends TitanEntity {
 				$ids[] = intval( $user_id );
 			}
 		}
+
+		$excl_user_ids = [];
+		foreach ( $this->getExcludeMembersQueries() as $user_query ) {
+			if ( is_array( $user_query ) ) {
+				$user_query['fields'] = 'id';
+			} else {
+				$user_query .= '&fields=id';
+			}
+			foreach ( get_users( $user_query ) as $user_id ) {
+				$excl_user_ids[] = intval( $user_id );
+			}
+		}
+		$ids = array_diff( $ids, $excl_user_ids );
 
 		return array_unique( $ids );
 	}
@@ -320,17 +343,7 @@ class AmapressMailingGroup extends TitanEntity {
 		return $user_emails;
 	}
 	public function getMembersCount() {
-		$user_emails = [];
-		foreach ( $this->getMembersQueries() as $query ) {
-			foreach ( get_users( $query ) as $user ) {
-				/* @var WP_User $user */
-				$user_emails[] = $user->user_email;
-			}
-		}
-		$user_emails = array_merge( $user_emails, $this->getRawEmails() );
-		$user_emails = array_merge( $user_emails, $this->getAdhesionRequestEmailsIfActive() );
-
-		return count( array_unique( $user_emails ) );
+		return count( $this->getMembersEmails() );
 	}
 
 	public function shouldUseSmtp() {
@@ -673,11 +686,16 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function isMember( $senderAddress ) {
-		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
-		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
-		$members_emails = array_merge( $members_emails, $this->getAdhesionRequestEmailsIfActive() );
+		return in_array( $senderAddress, $this->getMembersEmails() );
+	}
 
-		return in_array( $senderAddress, $members_emails );
+	private function getMembersEmails() {
+		$members_emails   = $this->getEmailsFromQueries( $this->getMembersQueries() );
+		$members_emails   = array_merge( $members_emails, $this->getRawEmails() );
+		$members_emails   = array_merge( $members_emails, $this->getAdhesionRequestEmailsIfActive() );
+		$excl_user_emails = $this->getEmailsFromQueries( $this->getExcludeMembersQueries() );
+
+		return array_unique( array_diff( $members_emails, $excl_user_emails ) );
 	}
 
 	public function isFreeMember( $senderAddress ) {
@@ -719,9 +737,7 @@ class AmapressMailingGroup extends TitanEntity {
 		if ( empty( $clean_from ) ) {
 			$clean_from = $from;
 		}
-		$members_emails = $this->getEmailsFromQueries( $this->getMembersQueries() );
-		$members_emails = array_merge( $members_emails, $this->getRawEmails() );
-		$members_emails = array_merge( $members_emails, $this->getAdhesionRequestEmailsIfActive() );
+		$members_emails = $this->getMembersEmails();
 
 		if ( ! $is_ext_smtp ) {
 			$headers[] = 'Bcc: ' . implode( ',', array_unique( $members_emails ) );
