@@ -1579,7 +1579,7 @@ jQuery(function($) {
 				'group'       => '6/6 - Règlements',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'show_column' => false,
-				'desc'        => 'Donner des instructions dans l’assistant de pré-inscription en ligne concernant les modalités de règlement',
+				'desc'        => 'Donner des instructions dans l’assistant de pré-inscription en ligne concernant les modalités de règlement<br/>Le placeholder %%id%% peut être utilisé pour mentionner une référence d\'inscription',
 			),
 			'paiements_ordre'       => array(
 				'name'        => amapress__( 'Ordre des chèques' ),

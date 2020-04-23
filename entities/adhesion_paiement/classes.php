@@ -604,6 +604,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getBanque();
 				}
 			];
+			$ret['id']              = [
+				'desc' => 'ID/Réference de l\'adhésion',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getID();
+				}
+			];
 			self::$properties       = $ret;
 		}
 

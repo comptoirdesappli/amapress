@@ -167,7 +167,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getSubName();
 				}
 			];
-			$ret['contrat_lien']                     = [
+			$ret['contrat_lien'] = [
 				'desc' => 'Lien vers la présentation du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getModel()->getPermalink();
@@ -743,6 +743,12 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => 'Produits payables à la livraison',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getQuantite_pay_at_delivery();
+				}
+			];
+			$ret['id'] = [
+				'desc' => 'ID/Réference de l\'inscription',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getID();
 				}
 			];
 			self::$properties = $ret;
