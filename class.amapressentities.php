@@ -4255,14 +4255,15 @@ Cette page permet la création des produits des producteurs
 						'icon'       => 'dashicons-sos',
 					),
 					'tabs'     => array(
-						'Wiki'                                          => array(
+						'Documentation externe'                         => array(
 							'id'      => 'wiki',
 							'desc'    => '',
 							'options' => array(
 								array(
 									'type' => 'note',
 									'bare' => true,
-									'desc' => '<p>Retrouvez l\'aide d\'Amapress sur notre <a href="https://wiki.amapress.fr/accueil" target="_blank">wiki</a></p>',
+									'desc' => '<p>Trouver de l\'aide sur notre ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) .
+									          ' et sur notre ' . Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) . '</p>',
 								),
 							)
 						),
