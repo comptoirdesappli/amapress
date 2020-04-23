@@ -86,21 +86,6 @@ class AmapressMailingGroup extends TitanEntity {
 		return $ret;
 	}
 
-	public function getMembersSMSTo() {
-		$phones = [];
-		foreach ( $this->getMembersQueries() as $user_query ) {
-			foreach ( get_users( $user_query ) as $user ) {
-				$amapien = AmapressUser::getBy( $user );
-				$phones  = array_merge( $phones, $amapien->getPhoneNumbers( true ) );
-			}
-		}
-		if ( empty( $phones ) ) {
-			return '';
-		}
-
-		return 'sms:' . implode( ',', $phones );
-	}
-
 	public function getMembersIds() {
 		$ids = [];
 		foreach ( $this->getMembersQueries() as $user_query ) {
@@ -342,6 +327,7 @@ class AmapressMailingGroup extends TitanEntity {
 
 		return $user_emails;
 	}
+
 	public function getMembersCount() {
 		return count( $this->getMembersEmails() );
 	}

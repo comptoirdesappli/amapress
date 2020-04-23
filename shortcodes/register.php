@@ -1096,24 +1096,14 @@ function amapress_register_shortcodes() {
 			return '';
 		}
 
-		$atts = shortcode_atts(
-			array(
-				'sms' => 'no',
-			),
-			$atts );
-
 		ob_start();
 
-		$do_sms_link = Amapress::toBool( $atts['sms'] ) && amapress_can_access_admin();
 		$entries     = [];
 		foreach ( Amapress_MailingListConfiguration::getAll() as $mailing_list_configuration ) {
 			$li   = '<li>';
 			$name = $mailing_list_configuration->getAddress();
 			$desc = $mailing_list_configuration->getDescription();
 			$li   .= Amapress::makeLink( "mailto:$name", $name );
-			if ( $do_sms_link ) {
-				$li .= ' ; ' . Amapress::makeLink( $mailing_list_configuration->getMembersSMSTo(), 'Envoyer un SMS aux membres' );
-			}
 			if ( ! empty( $desc ) ) {
 				$li .= "<br/><em>$desc</em>";
 			}
@@ -1131,9 +1121,6 @@ function amapress_register_shortcodes() {
 			$name = $ml->getName();
 			$desc = $ml->getDescription();
 			$li   .= Amapress::makeLink( "mailto:$name", $name );
-			if ( $do_sms_link ) {
-				$li .= ' ; ' . Amapress::makeLink( $ml->getMembersSMSTo(), 'Envoyer un SMS aux membres' );
-			}
 			if ( ! empty( $desc ) ) {
 				$li .= "<br/><em>$desc</em>";
 			}
