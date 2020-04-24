@@ -354,9 +354,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 	if ( $is_current_user_resp_amap ) {
 		if ( ! $allow_manage_others ) {
-			echo '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Passer en mode Admin' ) . '</p>';
+			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Passer en mode Admin' ) . '</p>';
 		} else {
-			echo '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), 'Repasser en mode Amapien' ) . '</p>';
+			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), 'Repasser en mode Amapien' ) . '</p>';
 		}
 	}
 
