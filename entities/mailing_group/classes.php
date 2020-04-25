@@ -972,6 +972,24 @@ class AmapressMailingGroup extends TitanEntity {
 		return $mailbox;
 	}
 
+	public static function getAllWaitingForModerationCount() {
+		$count = 0;
+		foreach ( AmapressMailingGroup::getAll() as $ml ) {
+			$count += $ml->getMailWaitingModerationCount();
+		}
+
+		return $count;
+	}
+
+	public static function getAllWaitingCount() {
+		$count = 0;
+		foreach ( AmapressMailingGroup::getAll() as $ml ) {
+			$count += amapress_mailing_queue_waiting_mail_list_count( $ml->ID );
+		}
+
+		return $count;
+	}
+
 
 	/** @return AmapressMailingGroup[] */
 	public static function getAll() {

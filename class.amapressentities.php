@@ -100,7 +100,7 @@ class AmapressEntities {
 					'id'       => 'amapress_gestion_mailinggroup_page',
 					'type'     => 'panel',
 					'settings' => array(
-						'name'       => 'Emails groupés [waiting-mlgrp-count]',
+						'name'       => 'Emails groupés [moderation-mlgrp-count]',
 						'position'   => '24',
 						'capability' => 'read_mailing_group',
 						'icon'       => 'dashicons-email-alt',
@@ -140,8 +140,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'subpage'  => true,
 							'id'       => 'mailinggroup_moderation',
 							'settings' => array(
-								'name'       => 'Modération - Emails en attente [waiting-mlgrp-count]',
-								'menu_title' => 'Modération [waiting-mlgrp-count]',
+								'name'       => 'Modération - Emails en attente [moderation-mlgrp-count]',
+								'menu_title' => 'Modération [moderation-mlgrp-count]',
 								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-shield',
 							),
@@ -219,8 +219,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'subpage'  => true,
 							'id'       => 'mailinggroup_mailqueue',
 							'settings' => array(
-								'name'       => 'Emails sortants en attente',
-								'menu_title' => 'Files attente',
+								'name'       => 'Emails sortants en attente [waiting-mlgrp-count]',
+								'menu_title' => 'Files attente [waiting-mlgrp-count]',
 								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-clock',
 							),

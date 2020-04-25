@@ -670,15 +670,20 @@ add_action( 'init', function () {
 		} );
 
 
+		amapress_register_shortcode( 'moderation-mlgrp-count', function () {
+			$cnt = AmapressMailingGroup::getAllWaitingForModerationCount();
+
+			return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
+		} );
 		amapress_register_shortcode( 'waiting-mlgrp-count', function () {
-			$cnt = 0;
-			foreach ( AmapressMailingGroup::getAll() as $ml ) {
-				$cnt += $ml->getMailWaitingModerationCount();
-			}
+			$cnt = AmapressMailingGroup::getAllWaitingCount();
 
 			return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
 		} );
 	} else {
+		amapress_register_shortcode( 'moderation-mlgrp-count', function () {
+			return '';
+		} );
 		amapress_register_shortcode( 'waiting-mlgrp-count', function () {
 			return '';
 		} );
