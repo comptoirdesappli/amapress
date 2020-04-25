@@ -121,7 +121,14 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'type'    => 'number',
 							'step'    => 1,
 							'default' => 90,
-							'name'    => 'Nettoyer les archives (jours)',
+							'name'    => 'Nettoyer les archives des Emails groupés (jours)',
+						),
+						array(
+							'id'      => 'mail_group_waiting_log_clean_days',
+							'type'    => 'number',
+							'step'    => 1,
+							'default' => 7,
+							'name'    => 'Nettoyer les logs des files d\'attente d\'envoi (jours)',
 						),
 						array(
 							'type' => 'save',

@@ -115,10 +115,16 @@ class AmapressSMTPMailingQueue {
 	}
 
 	public function cleanLogs() {
-		$mail_queue_log_clean_days = Amapress::getOption( 'mail_queue_log_clean_days' );
+		if ( ! empty( $this->mlgrp_id ) ) {
+			$mail_queue_log_clean_days = Amapress::getOption( 'mail_group_waiting_log_clean_days' );
+		} else {
+			$mail_queue_log_clean_days = Amapress::getOption( 'mail_queue_log_clean_days' );
+
+		}
 		if ( $mail_queue_log_clean_days < 0 ) {
 			return;
 		}
+
 		$clean_date = Amapress::add_days( Amapress::start_of_day( time() ), - $mail_queue_log_clean_days );
 		foreach (
 			self::loadDataFromFiles( $this->mlgrp_id, true, 'logged' )
