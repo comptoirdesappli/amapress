@@ -9,7 +9,7 @@ class TitanFrameworkOptionSave extends TitanFrameworkOption {
 	public $defaultSecondarySettings = array(
 		'save'           => '',
 		'reset'          => '',
-		'use_reset'      => true,
+		'use_reset'      => false,
 		'reset_question' => '',
 		'action'         => 'save',
 	);
@@ -20,13 +20,13 @@ class TitanFrameworkOptionSave extends TitanFrameworkOption {
 		}
 
 		if ( empty( $this->settings['save'] ) ) {
-			$this->settings['save'] = __( 'Save Changes', TF_I18NDOMAIN );
+			$this->settings['save'] = __( 'Enregistrer', 'amapress' );
 		}
 		if ( empty( $this->settings['reset'] ) ) {
-			$this->settings['reset'] = __( 'Reset to Defaults', TF_I18NDOMAIN );
+			$this->settings['reset'] = __( 'Remettre par défaut', 'amapress' );
 		}
 		if ( empty( $this->settings['reset_question'] ) ) {
-			$this->settings['reset_question'] = __( 'Are you sure you want to reset ALL options to their default values?', TF_I18NDOMAIN );
+			$this->settings['reset_question'] = __( 'Etes-vous sûr de vouloir remettre toutes les options à leurs valeurs par défaut ?', 'amapress' );
 		}
 
 		?>
