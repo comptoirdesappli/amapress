@@ -1530,6 +1530,13 @@ add_action( 'admin_init', function () {
 				'info', false, false );
 		}
 
+		if ( ! defined( 'DISABLE_WP_CRON' )
+		     && ! empty( AmapressMailingGroup::getAll() ) ) {
+			amapress_add_admin_notice( 'Des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Emails groupés</a> sont configurés et utilisent le Cron par défaut de WordPress. Vous devriez configurer un <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page#amapress_gestion_mailinggroup_page_cron' ) . '">Cron externe</a>.',
+				'warning', false, false );
+			//amapress_gestion_mailinggroup_page_cron
+		}
+
 
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
