@@ -357,6 +357,17 @@ class AmapressSMTPMailingQueue {
 		return $errors;
 	}
 
+	public static function deleteMessageByGroup( $mlgrp_id, $ml_grp_msg_id, $type ) {
+		foreach ( self::loadDataFromFiles( $mlgrp_id, true, [ $type ] ) as $message ) {
+
+			if ( isset( $message['message'] ) && is_array( $message['message'] ) && isset( $message['message']['ml_grp_msg_id'] ) ) {
+				if ( $ml_grp_msg_id == $message['message']['ml_grp_msg_id'] ) {
+					self::deleteFile( $mlgrp_id, $type, $message['basename'] );
+				}
+			}
+		}
+	}
+
 	public static function deleteFile( $mlgrp_id, $type, $msg_file ) {
 		$file = self::getUploadDir( $mlgrp_id, $type ) . $msg_file;
 		@unlink( $file );

@@ -776,6 +776,8 @@ class AmapressMailingGroup extends TitanEntity {
 		$body['ml_grp_id'] = $this->ID;
 
 		if ( $is_ext_smtp ) {
+			$body['ml_grp_msg_id'] = uniqid() . uniqid();
+
 			$res = false;
 			foreach ( $members_emails as $members_email ) {
 				$local_headers = array_merge( $headers, [

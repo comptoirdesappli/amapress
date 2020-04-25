@@ -281,6 +281,20 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 		);
 		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression de cet email ?\')">Supprimer</a>';
 
+		if ( isset( $email['message'] ) && is_array( $email['message'] ) && isset( $email['message']['ml_grp_msg_id'] ) ) {
+			$href            = add_query_arg(
+				array(
+					'action'        => 'amapress_delete_queue_msg',
+					'type'          => $type,
+					'msg_file'      => $email['basename'],
+					'mlgrp_id'      => $mlgrp_id,
+					'ml_grp_msg_id' => $email['message']['ml_grp_msg_id'],
+				),
+				admin_url( 'admin.php' )
+			);
+			$link_delete_msg .= '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression ?\')">Supprimer pour tous les destinataires</a>';
+		}
+
 		$href           = add_query_arg(
 			array(
 				'action'   => 'amapress_retry_queue_send_msg',
@@ -327,10 +341,15 @@ function admin_action_amapress_delete_queue_msg() {
 		wp_die( 'Accès non autorisé' );
 	}
 
-	$type     = $_REQUEST['type'];
-	$msg_file = $_REQUEST['msg_file'];
-	$mlgrp_id = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
-	AmapressSMTPMailingQueue::deleteFile( $mlgrp_id, $type, $msg_file );
+	$type          = $_REQUEST['type'];
+	$msg_file      = $_REQUEST['msg_file'];
+	$mlgrp_id      = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
+	$ml_grp_msg_id = isset( $_REQUEST['ml_grp_msg_id'] ) ? $_REQUEST['ml_grp_msg_id'] : '';
+	if ( ! empty( $ml_grp_msg_id ) ) {
+		AmapressSMTPMailingQueue::deleteMessageByGroup( $mlgrp_id, $ml_grp_msg_id, $type );
+	} else {
+		AmapressSMTPMailingQueue::deleteFile( $mlgrp_id, $type, $msg_file );
+	}
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 		echo "Email $msg_file supprimé avec succès";
 	} else {
