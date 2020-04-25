@@ -1104,7 +1104,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 
 	$items[] = array(
 		'id'         => 'amapress_forum',
-		'title'      => '<span class="ab-icon dashicons-format-chat"></span><span class="ab-label">Forum des Amap</span>',
+		'title'      => '<span class="ab-icon amps-forum dashicons-format-chat"></span><span class="ab-label">Forum des Amap</span>',
 		'capability' => 'read',
 		'href'       => 'https://forum.amapress.fr',
 		'target'     => '_blank',

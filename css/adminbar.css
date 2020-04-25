@@ -63,10 +63,37 @@
         top: 0;
         font-size: 28px;
     }
+
+    #wpadminbar #wp-admin-bar-amapress_forum {
+        display: block;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress_forum > .ab-item > .ab-label {
+        display: none;
+    }
+
+    #wpadminbar #wp-admin-bar-comments > .ab-item {
+        display: none !important;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress_forum > .ab-item > .ab-icon:before {
+        line-height: 46px;
+        height: 46px !important;
+        text-align: center;
+        width: 52px;
+        display: block;
+        content: "\f125";
+        top: 0;
+        font-size: 28px;
+    }
 }
 
 .ab-icon.amps-icon:before {
     color: #e67e22 !important;
+}
+
+.ab-icon.amps-forum:before {
+    color: #2ecc71 !important;
 }
 
 .ab-icon.amps-error:before {
