@@ -117,6 +117,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 ' . ( current_user_can( 'manage_options' ) ? '<h4 id="amapress_gestion_mailinggroup_page_cron">Important</h4><p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 1 à 5 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> et ajouter <code>define(\'DISABLE_WP_CRON\', true);</code> à votre <code>wp-config.php</code></p>' : '' )
 						                . '<p>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/email_groupe' ) . '</p>' . '</div>'
 					),
+					'options'  => array(),
 					'tabs'     => array(),
 					'subpages' => array(
 						array(
