@@ -112,27 +112,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 <li>Modérer les emails en attente : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_moderation' ) . '">Emails en attente</a></li>
 <li>Consulter les archives des emails envoyés : sous-section <a href="' . admin_url( 'admin.php?page=mailinggroup_archives' ) . '">Archives</a></li>
 ' . ( current_user_can( 'manage_options' ) ? '<li>Configurer un nouvel Email groupé : sous-section <a href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Configuration</a></li>' : '' ) . '
+' . ( current_user_can( 'manage_options' ) ? '<li>Configurer les rappels et autres paramètres : <a href="' . admin_url( 'admin.php?page=amapress_mailinggroup_options_page' ) . '">Paramétrage &gt; Emails groupés</a></li>' : '' ) . '
 </ul>
-' . ( current_user_can( 'manage_options' ) ? '<p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 5 à 10 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> </p>' : '' ) . '</div>'
-					),
-					'options'  => array(
-						array(
-							'id'      => 'mail_group_log_clean_days',
-							'type'    => 'number',
-							'step'    => 1,
-							'default' => 90,
-							'name'    => 'Nettoyer les archives des Emails groupés (jours)',
-						),
-						array(
-							'id'      => 'mail_group_waiting_log_clean_days',
-							'type'    => 'number',
-							'step'    => 1,
-							'default' => 7,
-							'name'    => 'Nettoyer les logs des files d\'attente d\'envoi (jours)',
-						),
-						array(
-							'type' => 'save',
-						),
+' . ( current_user_can( 'manage_options' ) ? '<h4>Important</h4><p>Cette fonctionnalité est basée sur le Cron de WordPress. Afin d\'assurer un envoi régulier des emails, vous pouvez créer un cron externe depuis votre hébergement ou toutes les 1 à 5 minutes depuis <a href="https://cron-job.org/" target="_blank">Cron-Job.Org</a> avec l\'url : <code>' . site_url( 'wp-cron.php?doing_wp_cron' ) . '</code> et ajouter <code>define(\'DISABLE_WP_CRON\', true);</code> à votre <code>wp-config.php</code></p>' : '' )
+						                . '<p>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/email_groupe' ) . '</p>' . '</div>'
 					),
 					'tabs'     => array(),
 					'subpages' => array(
@@ -3526,7 +3509,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Emails' => array(
+								'Emails'        => array(
 									'id'      => 'amapress_mailinggroup_mails_opt_page',
 									'desc'    => '',
 									'options' => array(
@@ -3603,17 +3586,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
 										),
 										array(
-											'name' => 'Paramètres',
-											'type' => 'heading',
-										),
-										array(
-											'id'      => 'mailgroup_interval',
-											'name'    => 'Interval',
-											'type'    => 'number',
-											'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
-											'default' => '30',
-										),
-										array(
 											'type' => 'save',
 										),
 									),
@@ -3622,6 +3594,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'      => 'amapress_mailinggroup_conf_opt_page',
 									'desc'    => '',
 									'options' => array(
+										array(
+											'id'      => 'mailgroup_interval',
+											'name'    => 'Interval',
+											'type'    => 'number',
+											'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
+											'default' => '30',
+										),
 										array(
 											'id'      => 'mailinggroup-unk-action',
 											'name'    => 'Action pour expéditeur inconnu',
@@ -3642,9 +3621,23 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										array(
 											'id'      => 'mailinggroup-send-confirm-unk',
 											'name'    => 'Envoyer confirmation aux expéditeurs inconnus',
-											'type'    => 'text',
+											'type'    => 'checkbox',
 											'desc'    => 'Envoyer les confirmations aux expéditeurs inconnus',
 											'default' => false,
+										),
+										array(
+											'id'      => 'mail_group_log_clean_days',
+											'type'    => 'number',
+											'step'    => 1,
+											'default' => 90,
+											'name'    => 'Nettoyer les archives des Emails groupés (jours)',
+										),
+										array(
+											'id'      => 'mail_group_waiting_log_clean_days',
+											'type'    => 'number',
+											'step'    => 1,
+											'default' => 7,
+											'name'    => 'Nettoyer les logs des files d\'attente d\'envoi (jours)',
 										),
 										array(
 											'type' => 'save',
