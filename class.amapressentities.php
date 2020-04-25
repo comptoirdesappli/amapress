@@ -816,7 +816,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_roles_options(),
 								),
-								'Gardiens de paniers'       => array(
+								'Gardiens de paniers'                    => array(
 									'id'      => 'amp_tab_gardiens_paniers_distrib',
 									'desc'    => '',
 									'options' => [
@@ -910,7 +910,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
-								'Créneaux de distributions' => array(
+								'Créneaux de distributions'              => array(
 									'id'      => 'amp_tab_distrib_slots',
 									'desc'    => '',
 									'options' => [
@@ -3001,6 +3001,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'name'       => 'Url du WebService de conversion',
 									'type'       => 'text',
 									'capability' => 'manage_options',
+									'default'    => 'https://convert.amapress.fr',
 								),
 								array(
 									'id'           => 'convertws_user',
