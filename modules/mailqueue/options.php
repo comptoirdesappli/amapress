@@ -274,6 +274,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			array(
 				'action'   => 'amapress_delete_queue_msg',
 				'type'     => $type,
+				'mlgrp_id' => $mlgrp_id,
 				'msg_file' => $email['basename'],
 			),
 			admin_url( 'admin.php' )
@@ -283,6 +284,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 		$href           = add_query_arg(
 			array(
 				'action'   => 'amapress_retry_queue_send_msg',
+				'mlgrp_id' => $mlgrp_id,
 				'msg_file' => $email['basename'],
 			),
 			admin_url( 'admin.php' )
