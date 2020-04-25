@@ -4229,30 +4229,41 @@ class Amapress {
 	public static function updateLocalisation( $postID, $is_user, $root_meta_name, $address_content ) {
 		$save_fn   = $is_user ? 'update_user_meta' : 'update_post_meta';
 		$delete_fn = $is_user ? 'delete_user_meta' : 'delete_post_meta';
+		$get_fn    = $is_user ? 'get_user_meta' : 'get_post_meta';
 		if ( $is_user ) {
 			$root_meta_name = 'amapress_user';
 		}
 
-		$address = TitanFrameworkOptionAddress::lookup_address( $address_content );
-		if ( $address && ! is_wp_error( $address ) ) {
-			call_user_func( $save_fn, $postID, "{$root_meta_name}_long", $address['longitude'] );
-			call_user_func( $save_fn, $postID, "{$root_meta_name}_lat", $address['latitude'] );
-			call_user_func( $save_fn, $postID, "{$root_meta_name}_location_type", $address['location_type'] );
+		$geo = call_user_func( $get_fn, $postID, "{$root_meta_name}_cusgeo", true );
+		if ( ! empty( $geo ) ) {
+			call_user_func( $save_fn, $postID, "{$root_meta_name}_lat", $geo[0] );
+			call_user_func( $save_fn, $postID, "{$root_meta_name}_long", $geo[1] );
+			call_user_func( $save_fn, $postID, "{$root_meta_name}_location_type", 'm' );
 			call_user_func( $delete_fn, $postID, "{$root_meta_name}_loc_err" );
 
 			return true;
 		} else {
-			call_user_func( $delete_fn, $postID, "{$root_meta_name}_long" );
-			call_user_func( $delete_fn, $postID, "{$root_meta_name}_lat" );
-			call_user_func( $delete_fn, $postID, "{$root_meta_name}_location_type" );
-			if ( is_wp_error( $address ) ) {
-				/** @var WP_Error $address */
-				call_user_func( $save_fn, $postID, "{$root_meta_name}_loc_err", $address->get_error_message() );
-			} else {
+			$address = TitanFrameworkOptionAddress::lookup_address( $address_content );
+			if ( $address && ! is_wp_error( $address ) ) {
+				call_user_func( $save_fn, $postID, "{$root_meta_name}_long", $address['longitude'] );
+				call_user_func( $save_fn, $postID, "{$root_meta_name}_lat", $address['latitude'] );
+				call_user_func( $save_fn, $postID, "{$root_meta_name}_location_type", $address['location_type'] );
 				call_user_func( $delete_fn, $postID, "{$root_meta_name}_loc_err" );
-			}
 
-			return false;
+				return true;
+			} else {
+				call_user_func( $delete_fn, $postID, "{$root_meta_name}_long" );
+				call_user_func( $delete_fn, $postID, "{$root_meta_name}_lat" );
+				call_user_func( $delete_fn, $postID, "{$root_meta_name}_location_type" );
+				if ( is_wp_error( $address ) ) {
+					/** @var WP_Error $address */
+					call_user_func( $save_fn, $postID, "{$root_meta_name}_loc_err", $address->get_error_message() );
+				} else {
+					call_user_func( $delete_fn, $postID, "{$root_meta_name}_loc_err" );
+				}
+
+				return false;
+			}
 		}
 	}
 

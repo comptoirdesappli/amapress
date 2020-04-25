@@ -123,6 +123,7 @@ function amapress_register_entities_amap_event( $entities ) {
 							'name'           => amapress__( 'Adresse ext.' ),
 							'type'           => 'address',
 							'use_as_field'   => true,
+							'use_enter_gps'  => true,
 							'desc'           => 'Adresse',
 							'group'          => '2/ Emplacement',
 							'searchable'     => true,

@@ -133,6 +133,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'type'                   => 'address',
 				'field_name_prefix'      => 'amapress_lieu_distribution',
 				'use_as_field'           => false,
+				'use_enter_gps'          => true,
 				'address_field_name'     => 'amapress_lieu_distribution_adresse',
 				'postal_code_field_name' => 'amapress_lieu_distribution_code_postal',
 				'town_field_name'        => 'amapress_lieu_distribution_ville',

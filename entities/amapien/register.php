@@ -278,6 +278,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'                   => amapress__( 'Localisé' ),
 				'type'                   => 'address',
 				'use_as_field'           => false,
+				'use_enter_gps'          => true,
 				'user'                   => true,
 				'csv'                    => false,
 				'field_name_prefix'      => 'amapress_user',
