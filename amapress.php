@@ -584,7 +584,7 @@ function amapress_global_init() {
 	$amapress_smtpMailingQueue        = [];
 	$amapress_smtpMailingQueue['def'] = new AmapressSMTPMailingQueue();
 	foreach ( AmapressMailingGroup::getAll() as $mlgrp ) {
-		if ( ! empty( $mlgrp->getSmtpHost() ) ) {
+		if ( $mlgrp->isExternalSmtp() ) {
 			$amapress_smtpMailingQueue[ 'm' . $mlgrp->ID ] = new AmapressSMTPMailingQueue( $mlgrp->ID );
 		}
 	}

@@ -715,8 +715,12 @@ class AmapressMailingGroup extends TitanEntity {
 		return [];
 	}
 
+	public function isExternalSmtp() {
+		return ! empty( $this->getSmtpHost() );
+	}
+
 	private function sendMail( $clean_from, $from, $to, $cc, $subject, $body, $headers ) {
-		$is_ext_smtp = ! empty( $this->getSmtpHost() );
+		$is_ext_smtp = $this->isExternalSmtp();
 		if ( ! $is_ext_smtp && ! empty( $cc ) ) {
 			$headers[] = 'Cc: ' . $cc;
 		}
@@ -1033,7 +1037,7 @@ class AmapressMailingGroup extends TitanEntity {
 
 	public function testSMTP() {
 		$ml_grp = $this;
-		if ( ! empty( $ml_grp->getSmtpHost() ) ) {
+		if ( $ml_grp->isExternalSmtp() ) {
 			try {
 				require_once ABSPATH . WPINC . '/class-phpmailer.php';
 				require_once ABSPATH . WPINC . '/class-smtp.php';

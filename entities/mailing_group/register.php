@@ -28,7 +28,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 					} else {
 						echo amapress_get_admin_notice( 'Erreur de configuration : l\'extension IMAP n\'est pas installée, les emails groupés sont désactivés.', 'error', false );
 					}
-					if ( ! empty( $ml->getSmtpHost() ) ) {
+					if ( $ml->isExternalSmtp() ) {
 						$res = $ml->testSMTP();
 						if ( true !== $res ) {
 							echo amapress_get_admin_notice( 'Erreur de configuration, connexion au SMTP ' . $ml->getSmtpHost() . ' impossible : ' . $res, 'error', false );

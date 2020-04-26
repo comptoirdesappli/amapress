@@ -427,7 +427,7 @@ class AmapressSMTPMailingQueueOriginal {
 			} else {
 				if ( is_array( $message ) && isset( $message['ml_grp_id'] ) ) {
 					$ml_grp = AmapressMailingGroup::getBy( $message['ml_grp_id'] );
-					if ( $ml_grp && ! empty( $ml_grp->getSmtpHost() ) ) {
+					if ( $ml_grp && $ml_grp->isExternalSmtp() ) {
 						$phpmailer->addCustomHeader( 'X-List-From-Smtp', $ml_grp->getName() );
 						// Set mailer to SMTP
 						$phpmailer->isSMTP();
