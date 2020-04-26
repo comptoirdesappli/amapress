@@ -4276,7 +4276,22 @@ Cette page permet la création des produits des producteurs
 									'type' => 'note',
 									'bare' => true,
 									'desc' => '<p>Trouver de l\'aide sur notre ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) .
-									          ' et sur notre ' . Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) . '</p>',
+									          ' et sur notre ' . Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) . '</p>' .
+									          '<h5>Guides par rôle dans l\'AMAP</h5><p><ul><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/accueil', 'Le guide de l\'administrateur, du reponsable Amap' ) .
+									          '</li><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/amapien/accueil', 'Le guide de l\'amapien' ) .
+									          '</li><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/collectif/accueil', 'Le guide du collectif' ) .
+									          '</li><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/producteur/accueil', 'Le guide du référent producteur' ) .
+									          '</li><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/accueil', 'Le guide du producteur' ) .
+									          '</li><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/tresorier/accueil', 'Le guide du trésorier' ) .
+									          '</li><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/gestion', 'Le guide des contrats' ) .
+									          '</li></ul></p>',
 								),
 							)
 						),
