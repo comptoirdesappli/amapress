@@ -14,7 +14,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 		'show_in_nav_menu' => false,
 		'editor'           => false,
 		'title'            => false,
-		'edit_header'     => function ( $post ) {
+		'edit_header'      => function ( $post ) {
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				$ml = AmapressMailingGroup::getBy( $post, true );
 				if ( $ml ) {
@@ -47,15 +47,15 @@ function amapress_register_entities_mailing_groups( $entities ) {
 //			'add_new'      => 'Configurer une liste de diffusion existante',
 //			'add_new_item' => 'Configurer une liste de diffusion existante',
 //		),
-		'views'           => array(
+		'views'            => array(
 			'remove' => array( 'mine' )
 		),
-		'default_orderby' => 'post_title',
-		'default_order'   => 'ASC',
-		'slug'            => amapress__( 'mailinggroups' ),
-		'menu_icon'       => 'dashicons-email-alt',
-		'fields'          => array(
-			'name'             => array(
+		'default_orderby'  => 'post_title',
+		'default_order'    => 'ASC',
+		'slug'             => amapress__( 'mailinggroups' ),
+		'menu_icon'        => 'dashicons-email-alt',
+		'fields'           => array(
+			'name'                   => array(
 				'group'    => 'Description',
 				'name'     => amapress__( 'Email' ),
 				'type'     => 'text',
@@ -63,12 +63,12 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required' => true,
 				'is_email' => true,
 			),
-			'desc'             => array(
+			'desc'                   => array(
 				'group' => 'Description',
 				'name'  => amapress__( 'Description' ),
 				'type'  => 'text',
 			),
-			'host'             => array(
+			'host'                   => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Serveur' ),
 				'desc'        => 'Adresse du serveur IMAP/POP3<br/>Par exemple, pour OVH, le serveur IMAP/POP3 est ssl0.ovh.net',
@@ -253,6 +253,14 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'tags'         => true,
 				'show_column'  => true,
 			),
+			'inc_moderators'         => array(
+				'group'       => 'Modérateurs',
+				'name'        => amapress__( 'Membres ?' ),
+				'type'        => 'checkbox',
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Inclure les modérateurs dans les membres'
+			),
 			'free_queries'           => array(
 				'group'       => 'Non modérés',
 				'name'        => amapress__( 'Groupes sans modération' ),
@@ -269,6 +277,14 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'multiple'     => true,
 				'tags'         => true,
 				'show_column'  => false,
+			),
+			'inc_free'               => array(
+				'group'       => 'Non modérés',
+				'name'        => amapress__( 'Membres ?' ),
+				'type'        => 'checkbox',
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Inclure les sans modération dans les membres'
 			),
 			'waiting'                => array(
 				'group'   => 'Modération',
@@ -314,7 +330,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'         => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
 				'show_column'  => false,
 			),
-			'raw_users'        => array(
+			'raw_users'              => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Membres supplémentaires (emails)' ),
 				'type'        => 'textarea',
@@ -322,7 +338,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'show_column' => false,
 				'searchable'  => true,
 			),
-			'reply_to'         => array(
+			'reply_to'               => array(
 				'group'       => 'Membres',
 				'name'        => amapress__( 'Reply to' ),
 				'type'        => 'select',
@@ -334,7 +350,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'excl_queries'     => array(
+			'excl_queries'           => array(
 				'group'       => 'Membres exclus',
 				'name'        => amapress__( 'Groupes exclus' ),
 				'type'        => 'multicheck',
@@ -342,7 +358,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'options'     => 'amapress_get_mailinglist_queries',
 				'show_column' => false,
 			),
-			'excl_other_users' => array(
+			'excl_other_users'       => array(
 				'group'        => 'Membres exclus',
 				'name'         => amapress__( 'Amapiens exclus' ),
 				'type'         => 'select-users',

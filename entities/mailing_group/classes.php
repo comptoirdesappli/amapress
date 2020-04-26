@@ -70,8 +70,12 @@ class AmapressMailingGroup extends TitanEntity {
 			$ret[] = array( 'include' => $users );
 		}
 
-		$ret = array_merge( $ret, $this->getFreeMembersQueries() );
-		$ret = array_merge( $ret, $this->getModeratorsQueries() );
+		if ( $this->getCustom( 'amapress_mailing_group_inc_free', false ) ) {
+			$ret = array_merge( $ret, $this->getFreeMembersQueries() );
+		}
+		if ( $this->getCustom( 'amapress_mailing_group_inc_moderators', false ) ) {
+			$ret = array_merge( $ret, $this->getModeratorsQueries() );
+		}
 
 		return $ret;
 	}
@@ -643,7 +647,7 @@ class AmapressMailingGroup extends TitanEntity {
 	private function getEmailsFromQueries( $queries ) {
 		global $wpdb;
 
-		$key = 'amps_mlg_q' . str_replace( ' ', '', var_export( $queries, true ) );
+		$key = 'amps_mlg_q' . md5( serialize( $queries ) );
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res = array_map( function ( $email ) {
