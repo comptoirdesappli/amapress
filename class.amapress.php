@@ -744,6 +744,12 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
+		self::add_post_role( 'administrator', 'reminder', 'reminders', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => true,
+			'publish' => true,
+		) );
 
 		$r = get_role( 'administrator' );
 		$r->add_cap( 'manage_fournisseurs' );
@@ -948,6 +954,13 @@ class Amapress {
 			'delete'  => false,
 			'publish' => false,
 		) );
+		self::add_post_role( 'tresorier', 'reminder', 'reminders', array(
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
+		) );
 
 		$r = get_role( 'tresorier' );
 		$r->add_cap( 'manage_tresorerie' );
@@ -1112,6 +1125,13 @@ class Amapress {
 			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
+		) );
+		self::add_post_role( 'coordinateur_amap', 'reminder', 'reminders', array(
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 
 		$r = get_role( 'coordinateur_amap' );
@@ -1352,6 +1372,13 @@ class Amapress {
 			'delete'  => false,
 			'publish' => false,
 		) );
+		self::add_post_role( 'responsable_amap', 'reminder', 'reminders', array(
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
+		) );
 
 		$r = get_role( 'responsable_amap' );
 		$r->add_cap( 'manage_fournisseurs' );
@@ -1530,6 +1557,13 @@ class Amapress {
 			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
+		) );
+		self::add_post_role( 'referent', 'reminder', 'reminders', array(
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
 		) );
 
 		$r = get_role( 'referent' );

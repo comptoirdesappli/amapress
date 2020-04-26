@@ -51,7 +51,7 @@ define( 'AMAPRESS__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
-define( 'AMAPRESS_DB_VERSION', 107 );
+define( 'AMAPRESS_DB_VERSION', 108 );
 define( 'AMAPRESS_VERSION', '0.94.41' );
 //remove_role('responable_amap');
 
@@ -409,6 +409,8 @@ function amapress_simplify_post_type( $post_type ) {
 			return 'mailinglist';
 		case AmapressMailingGroup::INTERNAL_POST_TYPE:
 			return AmapressMailingGroup::POST_TYPE;
+		case AmapressReminder::INTERNAL_POST_TYPE:
+			return AmapressReminder::POST_TYPE;
 	}
 	if ( strpos( $post_type, 'amps_' ) === 0 ) {
 		return substr( $post_type, 5 );

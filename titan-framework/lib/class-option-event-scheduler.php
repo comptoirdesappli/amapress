@@ -174,6 +174,12 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 
 		$time += $hours * HOUR_IN_SECONDS + $minutes * 60;
 
+		$time = self::adjustTimezone( $time );
+
+		return $time;
+	}
+
+	public static function adjustTimezone( $time ) {
 		$tz = get_option( 'timezone_string' );
 		if ( $tz ) {
 			$timezone = new DateTimeZone( $tz );

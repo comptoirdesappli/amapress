@@ -2529,6 +2529,17 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 					),
 				),
 				array(
+					'type'       => 'page',
+					'title'      => 'Rappels libres',
+					'icon'       => 'dashicons-clock',
+					'menu_title' => 'Rappels libres',
+					'post_type'  => AmapressReminder::INTERNAL_POST_TYPE,
+					'position'   => '25.16',
+					'capability' => 'manage_contenu',
+					'slug'       => 'edit.php?post_type=' . AmapressReminder::INTERNAL_POST_TYPE,
+					'function'   => null,
+				),
+				array(
 					'id'       => 'amapress_options_page',
 					'type'     => 'panel',
 					'settings' => array(
