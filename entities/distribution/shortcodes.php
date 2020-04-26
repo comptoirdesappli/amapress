@@ -354,9 +354,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 	if ( $is_current_user_resp_amap ) {
 		if ( ! $allow_manage_others ) {
-			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Passer en mode Admin' ) . '</p>';
+			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Choisir le mode Administrateur' ) . '</p>';
 		} else {
-			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), 'Repasser en mode Amapien' ) . '</p>';
+			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), 'Choisir le mode Amapien' ) . '</p>';
 		}
 	}
 
@@ -404,7 +404,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
 		}
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) && ! is_admin() ) {
-			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Changer le nombre de responsables du lieu</a></p>';
+			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Modifier le nombre de responsables du lieu</a></p>';
 		}
 
 		if ( $for_pdf ) {
@@ -454,10 +454,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 		if ( ! $for_emargement && ! $for_pdf ) {
 			if ( $has_slots ) {
-				$ret .= '<th style="' . $width . ';text-align: center">Créneau</th>';
+				$ret .= '<th style="' . $width . ';text-align: center">Créneau horaire</th>';
 			}
 			if ( $allow_gardiens ) {
-				$ret .= '<th style="' . $width . ';text-align: center">Gardiens paniers</th>';
+				$ret .= '<th style="' . $width . ';text-align: center">Garde panier</th>';
 			}
 		}
 
@@ -657,7 +657,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								$affect_slot    .= '</select>';
 								$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_slot" data-confirm="Etes-vous sûr de vous inscrire à ce créneau ?"
-					data-dist="' . $dist->ID . '" data-slot="val:#' . $affect_slot_id . '">S\'inscrire</button>';
+					data-dist="' . $dist->ID . '" data-slot="val:#' . $affect_slot_id . '">Réserver</button>';
 								$ret            .= $affect_slot;
 							} else {
 								$ret .= 'aucun';
