@@ -197,7 +197,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 		$this->echoOptionFooter( false );
 	}
 
-	private function echoLoc( $postID = null, $with_help = false ) {
+	private function echoLoc( $postID = null, $with_help = false, $for_column = false ) {
 		$get_fn     = $this->settings['user'] ? 'get_user_meta' : 'get_post_meta';
 		$postID     = $this->getPostID( $postID );
 		$id         = ! empty( $this->settings['field_name_prefix'] ) ? $this->settings['field_name_prefix'] : $this->getID();
@@ -247,7 +247,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			}
 		}
 
-		if ( $this->settings['use_enter_gps'] ) {
+		if ( ! $for_column && $this->settings['use_enter_gps'] ) {
 			$cusgeo = call_user_func( $get_fn, $postID, "{$id}_cusgeo", true );
 			if ( empty( $cusgeo ) ) {
 				$cusgeo = [ 0, 0 ];
@@ -264,7 +264,7 @@ Saisie manuelle: lat.=<input name='$id-custom-lat' type='number' min='-180' max=
 				$this->getValue( $post_id )
 			);
 		}
-		self::echoLoc( $post_id );
+		self::echoLoc( $post_id, false, true );
 	}
 
 	public function cleanValueForSaving( $value ) {
