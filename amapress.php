@@ -501,16 +501,17 @@ if ( ! function_exists( 'get_posts_count' ) ) {
 if ( ! function_exists( 'get_users_cached' ) ) {
 	/** @return WP_User[] */
 	function get_users_cached( $args = array() ) {
-		$args = wp_parse_args( $args );
+		$args                = wp_parse_args( $args );
+		$args['count_total'] = false;
 
-		$query = serialize( $args );
-		$res   = wp_cache_get( $query );
+		$key = 'get_users_cached' . md5( serialize( $args ) );
+		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$user_search = new WP_User_Query();
 			$user_search->prepare_query( $args );
 			$user_search->query();
 			$res = $user_search->get_results();
-			wp_cache_set( $query, $res );
+			wp_cache_set( $key, $res );
 		}
 
 		return $res;
@@ -531,10 +532,11 @@ if ( ! function_exists( 'get_users_count' ) ) {
 
 		global $wpdb;
 		$query = "SELECT COUNT(DISTINCT $wpdb->users.ID) $user_search->query_from $user_search->query_where";
-		$res   = wp_cache_get( 'get_users_count' . md5( $query ) );
+		$key   = 'get_users_count' . md5( $query );
+		$res   = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res = intval( $wpdb->get_var( $query ) );
-			wp_cache_set( $query, $res );
+			wp_cache_set( $key, $res );
 		}
 
 		return $res;
