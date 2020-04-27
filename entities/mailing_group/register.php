@@ -380,9 +380,12 @@ function amapress_get_mailing_group_members_count( $mailing_group_id ) {
 		return '';
 	}
 
-	$members_url = $ml->getAdminMembersLink();
-
-	return "<a target='_blank' href='$members_url'>{$ml->getMembersCount()}</a>";
+	return Amapress::makeLink(
+		$ml->getAdminMembersLink(),
+		sprintf( '%d membre(s) / %d email(s)',
+			count( $ml->getMembersIds() ),
+			$ml->getMembersCount()
+		), true, true );
 }
 
 function amapress_get_mailing_group_waiting( $mailing_group_id ) {
