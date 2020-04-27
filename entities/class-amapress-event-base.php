@@ -81,36 +81,86 @@ class Amapress_EventBase extends TitanEntity {
 
 	public static function getProperties() {
 		return [
-			'evenement'           => [
+			'evenement'                      => [
 				'desc' => 'Nom de l\'évènement',
 				'func' => function ( Amapress_EventBase $ev ) {
 					return esc_html( $ev->getTitle() );
 				}
 			],
-			'lien-evenement'      => [
+			'lien-evenement'                 => [
 				'desc' => 'Lien vers la présentation de l\'évènement',
 				'func' => function ( Amapress_EventBase $ev ) {
 					return Amapress::makeLink( $ev->getPermalink() );
 				}
 			],
-			'lien-evenement-ical' => [
+			'lien-evenement-ical'            => [
 				'desc' => 'Lien ical de l\'évènement',
 				'func' => function ( Amapress_EventBase $ev ) {
 					return add_query_arg( 'events_id', $ev->ID, Amapress_Agenda_ICAL_Export::get_link_href() );
 				}
 			],
-			'lieu-info'           => [
+			'lieu-info'                      => [
 				'desc' => 'Information sur le lieu',
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getLieuInformation();
 				}
 			],
-			'horaires-evenement'  => [
+			'horaires-evenement'             => [
 				'desc' => 'Date et horaires évènement',
 				'func' => function ( Amapress_EventBase $ev ) {
 					return date_i18n( 'D j F Y', $ev->getStartDateAndHour() ) .
 					       ' de ' . date_i18n( 'H:i', $ev->getStartDateAndHour() ) .
 					       ' à ' . date_i18n( 'H:i', $ev->getEndDateAndHour() );
+				}
+			],
+			'amapiens-inscrits-liste'        => [
+				'desc' => 'Amapiens inscrits (en liste à virgules)',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getInscritsList( true );
+				}
+			],
+			'amapiens-creneaux-liste'        => [
+				'desc' => 'Amapiens inscrits (ordre des créneaux)',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getInscritsList( false );
+				}
+			],
+			'amapiens-creneaux-table'        => [
+				'desc' => 'Amapiens inscrits (ordre des créneaux)',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getInscritsTable( false );
+				}
+			],
+			'amapiens-creneaux-table-coords' => [
+				'desc' => 'Amapiens inscrits (ordre des créneaux) avec coordonnées',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getInscritsTable( false, true );
+				}
+			],
+			'amapiens-inscrits-table'        => [
+				'desc' => 'Amapiens inscrits (ordre alphabétique)',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getInscritsTable( false );
+				}
+			],
+			'amapiens-inscrits-table-coords' => [
+				'desc' => 'Amapiens inscrits (ordre alphabétique) avec coordonnées',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getInscritsTable( false, true );
+				}
+			],
+			'creneaux-table'                 => [
+				'desc' => 'Créneaux choisis par les amapiens',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return $ev->getSlotsTable();
+				}
+			],
+			'creneaux-liste'                 => [
+				'desc' => 'Créneaux choisis par les amapiens',
+				'func' => function ( Amapress_EventBase $ev ) {
+					return implode( ', ', array_map( function ( $s ) {
+						return $s['display'];
+					}, $ev->getSlotsConf() ) );
 				}
 			],
 		];
@@ -198,6 +248,10 @@ class Amapress_EventBase extends TitanEntity {
 		return true;
 	}
 
+	public function getMembersIds() {
+		return [];
+	}
+
 	public function getMailEventType() {
 		return static::POST_TYPE;
 	}
@@ -240,10 +294,138 @@ class Amapress_EventBase extends TitanEntity {
 		return $amapien_ids;
 	}
 
+	public function getUserIdsWithAnySlot() {
+		$amapien_ids = [];
+		foreach ( $this->getSlots() as $k => $v ) {
+			$amapien_ids[] = intval( substr( $k, 1 ) );
+		}
+
+		return $amapien_ids;
+	}
+
 	public function getAvailableSlots() {
 		return array_filter( $this->getSlotsConf(), function ( $conf ) {
 			return $conf['max'] <= 0 || $conf['current'] < $conf['max'];
 		} );
+	}
+
+	public function getMembersWithSlots( $order_by_slot = true ) {
+		$res = [];
+		foreach ( $this->getMembersIds() as $user_id ) {
+			$amapien   = AmapressUser::getBy( $user_id );
+			$slot_info = $this->getSlotInfoForUser( $user_id );
+			$res[ sprintf( $order_by_slot ? '%1$08x-%2$s' : '%2$s-%1$08x',
+				$slot_info ? $slot_info['date'] : 0,
+				strtolower( $amapien->getSortableDisplayName() )
+			) ]        = [
+				'slot' => $slot_info,
+				'user' => $amapien
+			];
+		}
+		ksort( $res );
+
+		return $res;
+	}
+
+	public function getInscritsList( $order_by_slot = true ) {
+		return implode( ', ', array_map( function ( $member ) {
+			/** @var AmapressUser $amapien */
+			$amapien   = $member['user'];
+			$slot_info = $member['slot'];
+			if ( $slot_info ) {
+				return sprintf( '%s (%s)',
+					$amapien->getDisplayName(),
+					$slot_info['display'] );
+			} else {
+				return $amapien->getDisplayName();
+			}
+		}, $this->getMembersWithSlots( $order_by_slot ) ) );
+	}
+
+	public function getInscritsTable( $order_by_slot = true, $inc_coords = false ) {
+		$columns   = [];
+		$columns[] = array(
+			'title' => 'Amapien',
+			'data'  => 'amapien'
+		);
+		if ( $inc_coords ) {
+			$columns[] = array(
+				'title' => 'Coordonnées',
+				'data'  => 'coords'
+			);
+		}
+		$columns[] = array(
+			'title' => 'Inscription',
+			'data'  => 'slot'
+		);
+		$data      = [];
+		foreach ( $this->getMembersWithSlots( $order_by_slot ) as $member ) {
+			/** @var AmapressUser $amapien */
+			$amapien   = $member['user'];
+			$slot_info = $member['slot'];
+			$row       = [
+				'amapien' => $amapien->getDisplayName(),
+				'slot'    => '',
+				'coords'  => '',
+			];
+			if ( $slot_info ) {
+				$row['slot'] = $slot_info['display'];
+			}
+			if ( $inc_coords ) {
+				$row['coords'] = $amapien->getContacts();
+			}
+			$data[] = $row;
+		}
+		$dt_options = array(
+			'paging'       => false,
+			'init_as_html' => true,
+			'no_script'    => true,
+			'bSort'        => false,
+		);
+		$tbl_style  = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+
+		return $tbl_style . amapress_get_datatable(
+				'event-inscrits-' . $this->ID . '-' . uniqid(),
+				$columns, $data,
+				$dt_options );
+	}
+
+	public function getSlotsTable() {
+		$columns = [
+			array(
+				'title' => 'Créneau',
+				'data'  => 'slot'
+			),
+			array(
+				'title' => 'Inscrits',
+				'data'  => 'current'
+			),
+			array(
+				'title' => 'Maximum',
+				'data'  => 'max'
+			),
+		];
+
+		$data = [];
+		foreach ( $this->getSlotsConf() as $slot_info ) {
+			$data[] = [
+				'slot'    => $slot_info['display'],
+				'current' => $slot_info['current'],
+				'max'     => $slot_info['max'],
+			];
+		}
+		$dt_options = array(
+			'paging'       => false,
+			'init_as_html' => true,
+			'no_script'    => true,
+			'bSort'        => false,
+		);
+		$tbl_style  = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+
+		return $tbl_style . amapress_get_datatable(
+				'slots-' . $this->ID . '-' . uniqid(),
+				$columns, $data,
+				$dt_options );
 	}
 
 	public function manageSlot( $user_id, $slot, $set = true ) {
