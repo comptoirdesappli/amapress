@@ -636,7 +636,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						$ret .= esc_html( $slot_for_current_user['display'] );
 						if ( $can_change_slot ) {
 							$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="desinscrire_slot" data-confirm="Etes-vous sûr vous désinscrire de ce créneau ?"
+					data-action="distrib_desinscrire_slot" data-confirm="Etes-vous sûr vous désinscrire de ce créneau ?"
 					data-dist="' . $dist->ID . '" data-slot="' . strval( $slot_for_current_user['date'] ) . '">Désinscrire</button>';
 						}
 					} else {
@@ -656,7 +656,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								$affect_slot    .= tf_parse_select_options( $dist_slots_options, null, false );
 								$affect_slot    .= '</select>';
 								$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="inscrire_slot" data-confirm="Etes-vous sûr de vous inscrire à ce créneau ?"
+					data-action="distrib_inscrire_slot" data-confirm="Etes-vous sûr de vous inscrire à ce créneau ?"
 					data-dist="' . $dist->ID . '" data-slot="val:#' . $affect_slot_id . '">Réserver</button>';
 								$ret            .= $affect_slot;
 							} else {

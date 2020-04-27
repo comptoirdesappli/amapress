@@ -1513,4 +1513,10 @@ class AmapressDistribution extends Amapress_EventBase {
 	public function getMailEventType() {
 		return 'distrib';
 	}
+
+	public function getMembersIds() {
+		return $this->getResponsablesIds();
+	}
+
+
 }
