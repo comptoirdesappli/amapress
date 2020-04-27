@@ -13,9 +13,11 @@ function amapress_get_custom_content_visite( $content ) {
 
 //	amapress_echo_button( 'Participer', amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
 
-	$can_subscribe   = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() );
-	$can_unsubscribe = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() ); //TODO
-	$is_resp         = in_array( amapress_current_user_id(), $visite->getParticipantIds() );
+	$user_id               = amapress_current_user_id();
+	$can_subscribe         = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() );
+	$can_unsubscribe       = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() ); //TODO
+	$is_resp               = in_array( $user_id, $visite->getParticipantIds() );
+	$slot_for_current_user = $visite->getSlotInfoForUser( $user_id );
 
 	$users = [ '' => '--Sélectionner un amapien--' ];
 	amapress_precache_all_users();
@@ -37,15 +39,19 @@ function amapress_get_custom_content_visite( $content ) {
 			$inscription .= '<span class="visite-inscr-closed">Inscriptions closes</span>';
 		}
 	} else {
-		if ( $can_unsubscribe ) {
+		if ( $slot_for_current_user ) {
+			$inscription .= '<span>Vous êtes inscrit pour : ' . $slot_for_current_user['display'] . '</span>';
+		} else if ( $can_unsubscribe ) {
 			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-visite="' . $visite->ID . '">Me désinscrire</button>';
 		}
 	}
 
 	if ( ! empty( $inscription ) ) {
-//		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
+		amapress_echo_panel_start( 'Inscription complète et partielle', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
 		echo $inscription;
-//		amapress_echo_panel_end();
+		echo '<hr/>';
+		echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
+		amapress_echo_panel_end();
 	}
 
 	amapress_echo_panel_start( 'Au programme', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-programme' );

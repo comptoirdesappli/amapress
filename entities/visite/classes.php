@@ -47,7 +47,7 @@ class AmapressVisite extends Amapress_EventBase {
 	}
 
 	public function getAu_programme() {
-		return wpautop( stripslashes( $this->custom['amapress_visite_au_programme'] ) );
+		return wpautop( stripslashes( $this->getCustom( 'amapress_visite_au_programme' ) ) );
 	}
 
 	/** @return AmapressUser[] */
@@ -60,7 +60,7 @@ class AmapressVisite extends Amapress_EventBase {
 		return $this->getCustomAsIntArray( 'amapress_visite_participants' );
 	}
 
-	public function inscrireParticipant( $user_id ) {
+	public function inscrireParticipant( $user_id, $send_mail = true ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
@@ -76,13 +76,15 @@ class AmapressVisite extends Amapress_EventBase {
 			$participants[] = $user_id;
 			$this->setCustom( 'amapress_visite_participants', $participants );
 
-			amapress_mail_current_user_inscr( $this, $user_id, 'visite' );
+			if ( $send_mail ) {
+				amapress_mail_current_user_inscr( $this, $user_id, 'visite' );
+			}
 
 			return 'ok';
 		}
 	}
 
-	public function desinscrireParticipant( $user_id ) {
+	public function desinscrireParticipant( $user_id, $send_mail = true ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 		}
@@ -97,7 +99,9 @@ class AmapressVisite extends Amapress_EventBase {
 			unset( $participants[ $key ] );
 			$this->setCustom( 'amapress_visite_participants', $participants );
 
-			amapress_mail_current_user_desinscr( $this, $user_id, 'visite' );
+			if ( $send_mail ) {
+				amapress_mail_current_user_desinscr( $this, $user_id, 'visite' );
+			}
 
 			return 'ok';
 		} else {
@@ -155,20 +159,38 @@ class AmapressVisite extends Amapress_EventBase {
 			$date_end   = $this->getEndDateAndHour();
 			$producteur = $this->getProducteur();
 			if ( in_array( $user_id, $resps ) ) {
-				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "visite-{$this->ID}-resp",
-					'date'     => $date,
-					'date_end' => $date_end,
-					'class'    => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
-					'type'     => 'visite',
-					'category' => 'Visites',
-					'priority' => 90,
-					'lieu'     => $producteur,
-					'label'    => 'Visite ' . $producteur->getTitle(),
-					'icon'     => 'flaticon-sprout',
-					'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
-					'href'     => $this->getPermalink()
-				) );
+				$current_user_slot = $this->getSlotInfoForUser( amapress_current_user_id() );
+				if ( $current_user_slot ) {
+					$ret[] = new Amapress_EventEntry( array(
+						'ev_id'    => "visite-{$this->ID}-resp",
+						'date'     => $current_user_slot['date'],
+						'date_end' => $current_user_slot['date_end'],
+						'class'    => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
+						'type'     => 'visite',
+						'category' => 'Visites',
+						'priority' => 90,
+						'lieu'     => $producteur,
+						'label'    => 'Visite ' . $producteur->getTitle(),
+						'icon'     => 'flaticon-sprout',
+						'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
+						'href'     => $this->getPermalink()
+					) );
+				} else {
+					$ret[] = new Amapress_EventEntry( array(
+						'ev_id'    => "visite-{$this->ID}-resp",
+						'date'     => $date,
+						'date_end' => $date_end,
+						'class'    => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
+						'type'     => 'visite',
+						'category' => 'Visites',
+						'priority' => 90,
+						'lieu'     => $producteur,
+						'label'    => 'Visite ' . $producteur->getTitle(),
+						'icon'     => 'flaticon-sprout',
+						'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
+						'href'     => $this->getPermalink()
+					) );
+				}
 			} else {
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "visite-{$this->ID}",
@@ -208,4 +230,20 @@ class AmapressVisite extends Amapress_EventBase {
 
 		return 'Reply-To: ' . implode( ',', $emails );
 	}
+
+	public function manageSlot( $user_id, $slot, $set = true ) {
+		if ( $set ) {
+			$this->inscrireParticipant( $user_id, false );
+		} else {
+			$this->desinscrireParticipant( $user_id, false );
+		}
+
+		return parent::manageSlot( $user_id, $slot, $set );
+	}
+
+	public function getMembersIds() {
+		return $this->getParticipantIds();
+	}
+
+
 }

@@ -901,7 +901,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
-								'Créneaux de distributions'              => array(
+								'Créneaux de distributions' => array(
 									'id'      => 'amp_tab_distrib_slots',
 									'desc'    => '',
 									'options' => [
@@ -955,6 +955,37 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													'creneau'            => 'Créneau choisi',
 													'creneau_date_heure' => 'Date et heure du créneau choisi',
 													'responsable'        => 'Nom et coordonnées du responsable ayant fait l\'affectation du créneau'
+												], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									],
+								),
+								'Créneaux de visites'       => array(
+									'id'      => 'amp_tab_visite_slots',
+									'desc'    => '',
+									'options' => [
+										array(
+											'name' => 'Email à l\'amapien choisissant un créneau',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'inscr-visite-slot-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre inscription de %%creneau%% à %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-visite-slot-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'textarea',
+											'default' => wpautop( "Bonjour,\n\nVous êtes inscrit pour %%creneau%% à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'creneau'            => 'Créneau choisi',
+													'creneau_date_heure' => 'Date et heure du créneau choisi'
 												], false ),
 										),
 										array(
