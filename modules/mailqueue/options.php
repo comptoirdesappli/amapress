@@ -22,7 +22,7 @@ function amapress_mailing_queue_menu_options() {
 //			),
 		),
 		'tabs'     => array(
-			'Options de la file des emails sortants' => array(
+			'Options de la file des emails sortants'                     => array(
 				'id'      => 'amapress_mailqueue_options',
 				'desc'    => '',
 				'options' => array(
@@ -51,7 +51,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'SMTP externe'                           => array(
+			'SMTP externe'                                               => array(
 				'id'      => 'amapress_mailqueue_stmp',
 				'desc'    => '',
 				'options' => array(
@@ -135,7 +135,8 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'Emails sortants en attente'             => array(
+			'Emails sortants en attente <span class="badge">' .
+			amapress_mailing_queue_waiting_mail_list_count() . '</span>' => array(
 				'id'      => 'amapress_mailqueue_waiting_mails',
 				'desc'    => '',
 				'options' => array(
@@ -147,7 +148,8 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Emails sortants en erreur'              => array(
+			'Emails sortants en erreur <span class="badge">' .
+			amapress_mailing_queue_errored_mail_list_count() . '</span>' => array(
 				'id'      => 'amapress_mailqueue_errored_mails',
 				'desc'    => '',
 				'options' => array(
@@ -159,7 +161,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Log des emails sortants'                => array(
+			'Log des emails sortants'                                    => array(
 				'id'      => 'amapress_mailqueue_mail_logs',
 				'desc'    => '',
 				'options' => array(
