@@ -1995,6 +1995,28 @@ function amapress_get_updraftplus_backup_status() {
 	}
 }
 
+if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
+	function amapress_parse_bounce_mail() {
+		require_once AMAPRESS__PLUGIN_DIR . 'modules/bounceparser/BounceStatus.php';
+		require_once AMAPRESS__PLUGIN_DIR . 'modules/bounceparser/BounceHandler.php';
+
+		if ( ! isset( $_REQUEST['raw'] ) ) {
+			echo '<form method="post">
+<input name="bounce_parser" type="hidden" value="T" />
+<label>Mail de bounce: <textarea name="raw" cols="80" rows="100"></textarea></label>
+<br/>
+<input type="submit" value="Parse" />
+</form>';
+		} else {
+			$bounce_handler      = new rambomst\PHPBounceHandler\BounceHandler();
+			$raw_email           = wp_unslash( $_REQUEST['raw'] );
+			$raw_email           = preg_replace( '/(?<!\r)\n/', "\r\n", $raw_email );
+			$parsed_bounce_email = $bounce_handler->parseEmail( $raw_email );
+
+			amapress_dump( $parsed_bounce_email );
+		}
+	}
+}
 function amapress_embedded_phpinfo() {
 	ob_start();
 	phpinfo();
@@ -2358,6 +2380,14 @@ function amapress_echo_and_check_amapress_state_page() {
 			amapress_wp_db_stats();
 
 			return;
+		}
+
+		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
+			if ( isset( $_REQUEST['bounce_parser'] ) ) {
+				amapress_parse_bounce_mail();
+
+				return;
+			}
 		}
 	}
 

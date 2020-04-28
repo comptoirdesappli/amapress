@@ -482,10 +482,29 @@ class AmapressMailingGroup extends TitanEntity {
 								require_once ABSPATH . WPINC . '/class-smtp.php';
 								$phpmailer = new PHPMailer( true );
 							}
+
+							$undelivered = '';
+							try {
+								require_once AMAPRESS__PLUGIN_DIR . 'modules/bounceparser/BounceStatus.php';
+								require_once AMAPRESS__PLUGIN_DIR . 'modules/bounceparser/BounceHandler.php';
+
+								$bounce_handler      = new rambomst\PHPBounceHandler\BounceHandler();
+								$parsed_bounce_email = $bounce_handler->parseEmail( file_get_contents( $eml_file ) );
+
+								$undelivered = implode( ', ', array_map( function ( $recipient ) {
+									return sprintf( '%s (%s/%s)',
+										$recipient['recipient'],
+										$recipient['action'],
+										$recipient['message']
+									);
+								}, $parsed_bounce_email ) );
+							} catch ( Exception $ex ) {
+							}
+
 							amapress_wp_mail( get_option( 'admin_email' ),
-								'Envoi en rejet sur la liste ' . $this->getName(),
-								wpautop( "Bonjour,\n\n Un mail de rejet par un destinataire a été reçu pour la liste " . $this->getName()
-								         . ":\n------\nSujet: $subject\n" . $phpmailer->html2text( $content ) . "\n------\n\n" .
+								'Message non remis à un ou plusieurs destinataires sur la liste ' . $this->getName(),
+								wpautop( "Bonjour,\n\n Un message n'a pas pu être remis à un ou plusieurs destinataires pour la liste " . $this->getName()
+								         . ":\n------\nDestinataires: $undelivered\n------\nSujet: $subject\n" . $phpmailer->html2text( $content ) . "\n------\n\n" .
 								         get_bloginfo( 'name' ) ),
 								'', [
 									[
