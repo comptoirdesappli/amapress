@@ -225,7 +225,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	}
 
 	foreach ( $all_contrat_instances as $contrat ) {
-		$tit = '<span style="word-break: break-all; white-space: normal;">' . esc_html( $contrat->getModelTitle() ) . '</span>';
+		$tit = '<span class="smart-word-break">' . esc_html( $contrat->getModelTitle() ) . '</span>';
 		if ( ! in_array( $contrat->ID, $dist_contrat_ids ) ) {
 			$tit = '<span class="not-this-dist">' . $tit . '</span>';
 		}

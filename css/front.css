@@ -1007,3 +1007,12 @@ table.docspace_list tr.dir td:first-of-type a {
 .resp-distribution-contacts, .resp-distribution-contacts .amap-panel-title {
     font-size: 0.8em;
 }
+
+.smart-word-break {
+    word-break: break-word !important;
+    -webkit-hyphens: auto !important;
+    -moz-hyphens: auto !important;
+    -ms-hyphens: auto !important;
+    -o-hyphens: auto !important;
+    hyphens: auto !important;
+}

@@ -429,9 +429,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			}, array_keys( $data_atts ), array_values( $data_atts ) ) );
 		}
 		if ( $for_pdf || '%' == $fixed_column_width ) {
-			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display ' . ( $responsive ? 'responsive ' : '' ) . '" width="100%" style="table-layout: fixed; word-break: break-all;hyphens: auto" cellspacing="0">';
+			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" width="100%" style="table-layout: fixed;" cellspacing="0">';
 		} else {
-			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display ' . ( $responsive ? 'responsive ' : '' ) . '" style="width: auto;table-layout: fixed; word-break: break-all;" cellspacing="0">';
+			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" style="width: auto;table-layout: fixed;" cellspacing="0">';
 		}
 		$ret .= '<thead >';
 		$ret .= '<tr>';
@@ -563,7 +563,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$date_content = '<p class="inscr-list-date">' .
 			                ( $distrib_links ? Amapress::makeLink( $dist->getPermalink(), $date_display, true, true ) : esc_html( $date_display ) ) .
 			                '</p>';
-			$ret          .= '<th scope="row" class="inscr-list-info dist-col-date" style="vertical-align: middle;word-break: break-word">';
+			$ret          .= '<th scope="row" class="inscr-list-info dist-col-date smart-word-break" style="vertical-align: middle">';
 			$ret          .= $date_content;
 			if ( ! $for_emargement ) {
 				$ret .= $contrats_content;
