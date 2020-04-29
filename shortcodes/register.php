@@ -503,6 +503,7 @@ function amapress_register_shortcodes() {
 				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
 				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'edit_names'                       => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'send_welcome'                     => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
 				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) avec une autre clé' .
 				                                      '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
@@ -1098,7 +1099,7 @@ function amapress_register_shortcodes() {
 
 		ob_start();
 
-		$entries     = [];
+		$entries = [];
 		foreach ( Amapress_MailingListConfiguration::getAll() as $mailing_list_configuration ) {
 			$li   = '<li>';
 			$name = $mailing_list_configuration->getAddress();

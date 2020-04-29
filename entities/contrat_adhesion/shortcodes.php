@@ -21,16 +21,6 @@ add_action( 'amapress_init', function () {
 			return ! empty( $s );
 		} );
 
-		$user_id = amapress_create_user_if_not_exists( $email, $user_firt_name, $user_last_name, $user_address, $user_phones );
-		if ( ! $user_id ) {
-			wp_redirect_and_exit( add_query_arg( 'message', 'cannot_create_user' ) );
-		}
-		if ( isset( $_REQUEST['hidaddr'] ) ) {
-			update_user_meta( $user_id, 'amapress_user_hidaddr', 1 );
-		} else {
-			delete_user_meta( $user_id, 'amapress_user_hidaddr' );
-		}
-
 		$notify_email = get_option( 'admin_email' );
 		if ( ! empty( $_REQUEST['notify_email'] ) ) {
 			if ( empty( $notify_email ) ) {
@@ -38,6 +28,30 @@ add_action( 'amapress_init', function () {
 			} else {
 				$notify_email .= ',' . $_REQUEST['notify_email'];
 			}
+		}
+
+		add_filter( 'wp_new_user_notification_email_admin', function ( $wp_new_user_notification_email_admin ) use ( $notify_email ) {
+			$wp_new_user_notification_email_admin['to'] .= ',' . $notify_email;
+
+			return $wp_new_user_notification_email_admin;
+		} );
+
+		add_filter( 'new_user_approve_email_admins', function ( $emails ) use ( $notify_email ) {
+			return array_merge( $emails, explode( ',', $notify_email ) );
+		} );
+
+		$notify = null;
+		if ( Amapress::toBool( $_REQUEST['send_welcome'] ) ) {
+			$notify = 'admin';
+		}
+		$user_id = amapress_create_user_if_not_exists( $email, $user_firt_name, $user_last_name, $user_address, $user_phones, $notify );
+		if ( ! $user_id ) {
+			wp_redirect_and_exit( add_query_arg( 'message', 'cannot_create_user' ) );
+		}
+		if ( isset( $_REQUEST['hidaddr'] ) ) {
+			update_user_meta( $user_id, 'amapress_user_hidaddr', 1 );
+		} else {
+			delete_user_meta( $user_id, 'amapress_user_hidaddr' );
 		}
 
 		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
@@ -253,6 +267,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'max_produit_label_width'          => '10em',
 			'paiements_info_required'          => 'false',
 			'paniers_modulables_editor_height' => 350,
+			'send_welcome'                     => 'true',
 			'edit_names'                       => 'true',
 			'allow_remove_coadhs'              => 'false',
 			'contact_referents'                => 'true',
@@ -823,6 +838,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_coords' ) ) ?>">
             <input type="hidden" name="email" value="<?php echo esc_attr( $email ); ?>"/>
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
+            <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
 			<?php if ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>

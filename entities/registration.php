@@ -168,38 +168,95 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 			_deprecated_argument( __FUNCTION__, '4.3.1' );
 		}
 
-		$user = AmapressUser::getBy( $user_id );
+		$amapien = AmapressUser::getBy( $user_id );
+		$user    = $amapien->getUser();
 
 		// The blogname option is escaped with esc_html on the way into the database in sanitize_option
 		// we want to reverse this for the plain text arena of emails.
 		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
 		if ( 'user' !== $notify && Amapress::getOption( 'notify_admin_new_user' ) ) {
+			$switched_locale = switch_to_locale( get_locale() );
+
+			/* translators: %s: Site title. */
 			$message = sprintf( __( 'New user registration on your site %s:' ), $blogname ) . "\r\n\r\n";
-			$message .= sprintf( __( 'Username: %s' ), $user->getUser()->user_login ) . "\r\n\r\n";
-			$message .= sprintf( __( 'Email: %s' ), $user->getUser()->user_email ) . "\r\n";
+			/* translators: %s: User login. */
+			$message .= sprintf( __( 'Username: %s' ), $user->user_login ) . "\r\n\r\n";
+			/* translators: %s: User email address. */
+			$message .= sprintf( __( 'Email: %s' ), $user->user_email ) . "\r\n";
 
-			$cc      = amapress_get_recall_cc_from_option( 'admin-notify-cc' );
-			$headers = '';
-			if ( ! empty( $cc ) ) {
-				$headers = 'Cc: ' . implode( ',', $cc );
+			$wp_new_user_notification_email_admin = array(
+				'to'      => get_option( 'admin_email' ),
+				/* translators: New user registration notification email subject. %s: Site title. */
+				'subject' => __( '[%s] New User Registration' ),
+				'message' => $message,
+				'headers' => '',
+			);
+
+			/**
+			 * Filters the contents of the new user notification email sent to the site admin.
+			 *
+			 * @param array $wp_new_user_notification_email_admin {
+			 *     Used to build wp_mail().
+			 *
+			 * @type string $to The intended recipient - site admin email address.
+			 * @type string $subject The subject of the email.
+			 * @type string $message The body of the email.
+			 * @type string $headers The headers of the email.
+			 * }
+			 *
+			 * @param WP_User $user User object for new user.
+			 * @param string $blogname The site title.
+			 *
+			 * @since 4.9.0
+			 *
+			 */
+			$wp_new_user_notification_email_admin = apply_filters( 'wp_new_user_notification_email_admin', $wp_new_user_notification_email_admin, $user, $blogname );
+
+			wp_mail(
+				$wp_new_user_notification_email_admin['to'],
+				wp_specialchars_decode( sprintf( $wp_new_user_notification_email_admin['subject'], $blogname ) ),
+				$wp_new_user_notification_email_admin['message'],
+				$wp_new_user_notification_email_admin['headers']
+			);
+
+			if ( $switched_locale ) {
+				restore_previous_locale();
 			}
-
-			@wp_mail( get_option( 'admin_email' ),
-				sprintf( __( '[%s] New User Registration' ), $blogname ),
-				$message, $headers );
 		}
 
 		if ( 'admin' === $notify || ( empty( $deprecated ) && empty( $notify ) ) ) {
 			return;
 		}
 
-		$subject = amapress_replace_mail_placeholders( Amapress::getOption( 'welcome_mail_subject' ), $user );
-		$message = amapress_replace_mail_placeholders( Amapress::getOption( 'welcome_mail' ), $user );
+		$subject = amapress_replace_mail_placeholders( Amapress::getOption( 'welcome_mail_subject' ), $amapien );
+		$message = amapress_replace_mail_placeholders( Amapress::getOption( 'welcome_mail' ), $amapien );
 
-		amapress_wp_mail( $user->getUser()->user_email, $subject, $message );
+		amapress_wp_mail( $user->user_email, $subject, $message );
 	}
 }
+
+add_filter( 'wp_new_user_notification_email_admin', function ( $wp_new_user_notification_email_admin ) {
+	$cc = amapress_get_recall_cc_from_option( 'admin-notify-cc' );
+	if ( ! empty( $cc ) ) {
+		if ( empty( $wp_new_user_notification_email_admin['headers'] ) ) {
+			$wp_new_user_notification_email_admin['headers'] = "Cc: " . implode( ',', $cc );
+		} else {
+			$wp_new_user_notification_email_admin['headers'] .= "\nCc: " . implode( ',', $cc );
+		}
+	}
+
+	return $wp_new_user_notification_email_admin;
+} );
+
+add_filter( 'new_user_approve_email_admins', function ( $emails ) {
+	$cc = amapress_get_recall_cc_from_option( 'admin-notify-cc' );
+	if ( empty( $cc ) ) {
+		return $emails;
+	}
+
+	return array_merge( $emails, $cc );
+} );
 
 if ( ! function_exists( 'wp_password_change_notification' ) ) {
 	function wp_password_change_notification( $user ) {

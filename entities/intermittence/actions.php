@@ -8,9 +8,16 @@ function amapress_create_user_if_not_exists(
 	$email_address,
 	$first_name = null, $last_name = null,
 	$address = null, $tel = null,
-	$notify = 'both',
+	$notify = null,
 	$update_existing = true
 ) {
+	if ( empty( $notify ) ) {
+		if ( 'active' == amapress_is_plugin_active( 'new-user-approve' ) ) {
+			$notify = 'admin';
+		} else {
+			$notify = 'both';
+		}
+	}
 	$user = get_user_by( 'email', $email_address );
 	if ( null == $user ) {
 		// Generate the password and create the user
