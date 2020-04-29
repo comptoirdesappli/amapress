@@ -1478,7 +1478,7 @@ function amapress_get_contrat_quantite_datatable(
 
 				$row['price_d'] = Amapress::formatPrice( $total_price, true );
 				$row['price']   = $total_price;
-				if ( $quant ) {
+				if ( $quant && ( ! $show_adherents || 1 == count( $adhesions ) ) ) {
 					$overall_total_price += $total_price;
 				}
 
@@ -1721,12 +1721,20 @@ function amapress_get_contrat_quantite_datatable(
 		}
 		$output        .= '<p>En tout : ';
 		$output_quants = [];
+		$last_row      = null;
 		foreach ( empty( $sum_data ) ? $data : $sum_data as $row ) {
 			if ( ! empty( $row["all_txt"] ) ) {
 				$output_quants[] = strpos( $row["all_txt"], '=' ) !== false ? '[' . $row["all_txt"] . ']' : $row["all_txt"];
 			}
+			$last_row = $row;
 		}
-		$output .= '(' . $row["all_adhs"] . ' adhérent(s)) ; ';
+		$output .= '(' . (
+			$show_adherents ?
+				count( array_unique( array_map( function ( $d ) {
+					return $d['adherent'];
+				}, $data ) ) )
+				: $last_row["all_adhs"]
+			) . ' adhérent(s)) ; ';
 		$output .= implode( ', ', $output_quants );
 		$output .= '</p>';
 
