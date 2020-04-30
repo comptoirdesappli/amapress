@@ -41,7 +41,7 @@ add_action( 'amapress_init', function () {
 		} );
 
 		$notify = null;
-		if ( Amapress::toBool( $_REQUEST['send_welcome'] ) ) {
+		if ( ! Amapress::toBool( $_REQUEST['send_welcome'] ) ) {
 			$notify = 'admin';
 		}
 		$user_id = amapress_create_user_if_not_exists( $email, $user_firt_name, $user_last_name, $user_address, $user_phones, $notify );

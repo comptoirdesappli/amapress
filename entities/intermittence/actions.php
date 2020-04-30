@@ -13,9 +13,13 @@ function amapress_create_user_if_not_exists(
 ) {
 	if ( empty( $notify ) ) {
 		if ( 'active' == amapress_is_plugin_active( 'new-user-approve' ) ) {
-			$notify = 'admin';
+			$notify = 'none';
 		} else {
 			$notify = 'both';
+		}
+	} elseif ( 'admin' === $notify ) {
+		if ( 'active' == amapress_is_plugin_active( 'new-user-approve' ) ) {
+			$notify = 'none';
 		}
 	}
 	$user = get_user_by( 'email', $email_address );
@@ -53,7 +57,9 @@ function amapress_create_user_if_not_exists(
 
 		// Email the user
 //        wp_mail( $email_address, 'Welcome!', 'Your Password: ' . $password );
-		wp_new_user_notification( $user_id, null, $notify );
+		if ( 'none' !== $notify ) {
+			wp_new_user_notification( $user_id, null, $notify );
+		}
 
 		if ( ! empty( $address ) ) {
 			$address = preg_replace( '/(?:\s+-\s+|,\s*)?(\d\s*\d\s*\d\s*\d\s*\d|2\s*[AB]\s*\d\s*\d\s*\d)\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $address );
