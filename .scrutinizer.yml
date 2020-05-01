@@ -1,0 +1,14 @@
+build:
+  nodes:
+    analysis:
+      dependencies:
+        before:
+          - composer require --dev johnpbloch/wordpress
+
+filter:
+  excluded_paths:
+    - "tests/"
+    - "*/ace-min-noconflict/*"
+  dependency_paths:
+    - wordpress/
+    - vendor/
