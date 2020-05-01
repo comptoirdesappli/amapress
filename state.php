@@ -216,6 +216,7 @@ function amapress_clean_state_transient() {
 
 	if ( ! $amapress_clean_state_transient ) {
 		delete_transient( 'amapress_state_summary' );
+		delete_transient( 'amapress_state_check_titles' );
 		$amapress_clean_state_transient = true;
 	}
 }
@@ -235,6 +236,9 @@ function amapress_get_state() {
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info',
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ?
 			( 'inactive' == $backup_status ? 'error' : ( 'local' == $backup_status ? 'warning' : 'success' ) ) : 'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'command-palette', 'Command Palette',
+		'<strong>Recommandé</strong> : Permet une recherche complète dans le Tableau de bord, le titre des pages, les panneaux d\'administration, certains réglages...',
+		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', 'Akismet',
 		'<strong>Recommandé</strong> : Protège le site du SPAM.',
 		'warning' );
@@ -2234,6 +2238,34 @@ FROM $wpdb->posts as p INNER JOIN $wpdb->postmeta as pm ON p.ID = pm.post_id GRO
 		) );
 }
 
+function amapress_state_labels() {
+	$labels = array(
+		'01_plugins'      => 'Extensions - Recommandées',
+		'02_plugins_not'  => 'Extensions - Non Recommandées',
+		'05_config'       => 'Configuration',
+		'10_users'        => 'Comptes utilisateurs',
+		'15_posts'        => 'Votre AMAP',
+		'20_content'      => 'Contenus complémentaires',
+		'24_shortcodes'   => 'Shortcodes configurés',
+		'25_shortcodes'   => 'Shortcodes à configurer',
+		'26_online_inscr' => 'Inscriptions en ligne',
+		'30_recalls'      => 'Rappels',
+		'35_import'       => 'Import CSV',
+		'36_mailing'      => 'Listes de diffusions',
+		'37_plugins_add'  => 'Extensions - Fonctionnalités supplémentaires',
+		'38_plugins_adv'  => 'Extensions - Utilitaires/Avancés',
+		'40_clean'        => 'Nettoyage',
+	);
+
+	$i = 1;
+	foreach ( $labels as $k => $v ) {
+		$labels[ $k ] = "$i/ $v";
+		$i            += 1;
+	}
+
+	return $labels;
+}
+
 function amapress_echo_and_check_amapress_state_page() {
 	if ( current_user_can( 'update_core' ) ) {
 		if ( isset( $_GET['generate_amap_options'] ) ) {
@@ -2391,30 +2423,8 @@ function amapress_echo_and_check_amapress_state_page() {
 		}
 	}
 
-	$labels = array(
-		'01_plugins'      => 'Extensions - Recommandées',
-		'02_plugins_not'  => 'Extensions - Non Recommandées',
-		'05_config'       => 'Configuration',
-		'10_users'        => 'Comptes utilisateurs',
-		'15_posts'        => 'Votre AMAP',
-		'20_content'      => 'Contenus complémentaires',
-		'24_shortcodes'   => 'Shortcodes configurés',
-		'25_shortcodes'   => 'Shortcodes à configurer',
-		'26_online_inscr' => 'Inscriptions en ligne',
-		'30_recalls'      => 'Rappels',
-		'35_import'       => 'Import CSV',
-		'36_mailing'      => 'Listes de diffusions',
-		'37_plugins_add'  => 'Extensions - Fonctionnalités supplémentaires',
-		'38_plugins_adv'  => 'Extensions - Utilitaires/Avancés',
-		'40_clean'        => 'Nettoyage',
-	);
-	$i      = 1;
-	foreach ( $labels as $k => $v ) {
-		$labels[ $k ] = "$i/ $v";
-		$i            += 1;
-	}
-
-	$state = amapress_get_state();
+	$labels = amapress_state_labels();
+	$state  = amapress_get_state();
 
 	if ( current_user_can( 'update_core' ) ) {
 		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {

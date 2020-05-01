@@ -217,7 +217,7 @@
     border-top: 1pt solid #000;
 }
 
-span.description {
+.form-table span.description {
     color: #aaa;
 }
 
