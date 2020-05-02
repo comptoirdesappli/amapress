@@ -194,9 +194,11 @@ class Amapress_EventBase extends TitanEntity {
 					if ( preg_match( '/(?:(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?)?(?:\((?<name>[^\)]+)\))?(?:\[(?<inter>\d*[05])m(?:i?n)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
 						if ( empty( $m['start_h'] ) ) {
 							$m['start_h'] = intval( date( 'H', $this->getStartDateAndHour() ) );
+							$m['start_m'] = intval( date( 'i', $this->getStartDateAndHour() ) );
 						}
 						if ( empty( $m['end_h'] ) ) {
 							$m['end_h'] = intval( date( 'H', $this->getEndDateAndHour() ) );
+							$m['end_m'] = intval( date( 'i', $this->getEndDateAndHour() ) );
 						}
 						$start_h = intval( ltrim( $m['start_h'], '0' ) );
 						$start_m = isset( $m['start_m'] ) ? intval( ltrim( $m['start_m'], '0' ) ) : 0;
