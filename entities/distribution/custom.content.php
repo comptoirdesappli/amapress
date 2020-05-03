@@ -195,12 +195,12 @@ function amapress_get_custom_content_distribution( $content ) {
 				if ( $can_subscribe && ! empty( $user_contrats ) ) {
 					if ( empty( $gardien_id ) && $u->ID != amapress_current_user_id() ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="inscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et l\'affectez-vous à la garde votre panier ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Affecter la garde</button>';
+					data-action="inscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment lui confier la garde de votre panier ?"
+					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Confier la garde</button>';
 					} elseif ( $u->ID == $gardien_id ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="desinscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment le désaffecter de la garde votre panier ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Désaffecter la garde</button>';
+					data-action="desinscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment lui retirer la garde de votre panier ?"
+					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Retirer la garde</button>';
 					}
 				}
 
@@ -258,7 +258,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				echo '<select name="other-gardien" id="other-gardien" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
 				echo '<br/><button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_garde" data-confirm="Etes-vous sûr ?"
-					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">Affecter la garde</button></form>';
+					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">Confier la garde</button></form>';
 				echo '<hr/>';
 
 				$columns = array(
@@ -289,7 +289,7 @@ function amapress_get_custom_content_distribution( $content ) {
 						$data[] = array(
 							'link'    => '<button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="Etes-vous sûr ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">Désaffecter la garde</button>',
+					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">Retirer la garde</button>',
 							'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts() ),
 							'amapien' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getContacts() ),
 						);

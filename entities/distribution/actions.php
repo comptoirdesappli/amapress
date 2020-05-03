@@ -314,8 +314,8 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				$affect_slot    .= tf_parse_select_options( $dist_slots_options, $slot_sort, false );
 				$affect_slot    .= '</select>';
 				$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="distrib_inscrire_slot" data-confirm="Etes-vous sûr d\'affecter ce créneau à cet amapien ?"
-					data-dist="' . $dist_id . '" data-slot="val:#' . $affect_slot_id . '" data-user="' . $user_ids[0] . '">Affecter</button>';
+					data-action="distrib_inscrire_slot" data-confirm="Etes-vous sûr d\'attribuer ce créneau à cet amapien ?"
+					data-dist="' . $dist_id . '" data-slot="val:#' . $affect_slot_id . '" data-user="' . $user_ids[0] . '">Attribuer</button>';
 
 				$slot_display .= '<br/>' . $affect_slot;
 			}
