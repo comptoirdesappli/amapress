@@ -7,8 +7,10 @@ build:
 
 filter:
   excluded_paths:
-    - "tests/"
+    - 'tests/*'
     - "*/ace-min-noconflict/*"
+    - 'vendor/*'
+    - '*.min.js'
   dependency_paths:
     - wordpress/
     - vendor/
