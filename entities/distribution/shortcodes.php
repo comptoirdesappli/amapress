@@ -680,7 +680,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 						$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-gardien="T" data-dist="' . $dist->ID . '">Inscrire</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '">Inscrire</button>
 </div>';
 						if ( ! is_admin() ) {
 							$inscr_another .= '</form>';
@@ -688,11 +688,18 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
 					}
 
-					$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
+					$inscr_self = '<textarea id="garde-msg-' . $dist->ID . '" rows="2" style="display: block" placeholder="Message"></textarea><button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
 					$info       = '';
 					if ( ! $for_pdf ) {
-						if ( ! ( ! in_array( amapress_current_user_id(), $dist->getGardiensIds() ) && $can_subscribe ) ) {
+						if ( ! $can_subscribe ) {
 							$inscr_self = '';
+						}
+						if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
+							if ( $can_unsubscribe ) {
+								$inscr_self = '<button type="button" class="' . $btn_class . ' dist-desinscrire-button"  data-confirm="Etes-vous sûr de vouloir ne plus vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Ne plus me proposer</button>';
+							} else {
+								$inscr_self = '';
+							}
 						}
 						if ( empty( $dist->getGardiensIds() ) ) {
 							$info = "<span class='distrib-resp-missing'>0 gardien</span>";
@@ -956,7 +963,8 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	switch ( $for_gardien ?
 		$dist->inscrireGardien( $user_id,
 			false,
-			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) :
+			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false,
+			isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) :
 		$dist->inscrireResponsable( $user_id,
 			isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
 			false,
@@ -1044,7 +1052,8 @@ add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
 	switch ( $for_gardien ?
 		$dist->inscrireGardien( $user_id,
 			true,
-			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) :
+			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false,
+			isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' ) :
 		$dist->inscrireResponsable( $user_id,
 			isset( $_REQUEST['role'] ) ? intval( $_REQUEST['role'] ) : 0,
 			true,

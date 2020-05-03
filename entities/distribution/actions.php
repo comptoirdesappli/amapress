@@ -684,7 +684,7 @@ line-height: 1.1;
 	}
 
 
-	if ( Amapress::getOption( 'enable-gardiens-paniers' ) && ! empty( $dist->getPaniersGarde() ) ) {
+	if ( Amapress::getOption( 'enable-gardiens-paniers' ) ) { // && ! empty( $dist->getPaniersGarde() ) ) {
 		if ( ! $for_pdf ) {
 			echo '<br/>';
 		}
@@ -705,13 +705,28 @@ line-height: 1.1;
 		);
 		$data_gardiens = [];
 		foreach ( $dist->getGardiensIds( true ) as $gardien_id ) {
-			$gardien = AmapressUser::getBy( $gardien_id );
-			foreach ( $dist->getGardiensPaniersAmapiensIds( $gardien_id ) as $amapien_id ) {
+			$gardien         = AmapressUser::getBy( $gardien_id );
+			$gardien_comment = $dist->getGardienComment( $gardien_id );
+			if ( ! empty( $gardien_comment ) ) {
+				$gardien_comment = '<br /><em>' . esc_html( $gardien_comment ) . '</em>';
+			}
+			$gardes_amapiens = $dist->getGardiensPaniersAmapiensIds( $gardien_id );
+			foreach ( $gardes_amapiens as $amapien_id ) {
 				$amapien         = AmapressUser::getBy( $amapien_id );
 				$data_gardiens[] = [
-					'gardien' => $gardien->getSortableDisplayName() . '(' . $gardien->getTelTo( true, false, false, ',' ) . ')',
+					'gardien' => $gardien->getSortableDisplayName() . '(' . $gardien->getTelTo( true, false, false, ',' ) . ')'
+					             . $gardien_comment,
 					'amapien' => $amapien->getSortableDisplayName() . '(' . $amapien->getTelTo( true, false, false, ',' ) . ')',
 					'paniers' => $dist->getPaniersDescription( $amapien_id ),
+				];
+				$gardien_comment = '';
+			}
+			if ( empty( $gardes_amapiens ) && ! empty( $gardien_comment ) ) {
+				$data_gardiens[] = [
+					'gardien' => $gardien->getSortableDisplayName() . '(' . $gardien->getTelTo( true, false, false, ',' ) . ')'
+					             . $gardien_comment,
+					'amapien' => '',
+					'paniers' => '',
 				];
 			}
 		}

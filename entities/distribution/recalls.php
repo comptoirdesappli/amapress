@@ -105,8 +105,8 @@ add_action( 'amapress_recall_gardien_paniers', function ( $args ) {
 
 			$replacements['gardien']         = $gardien->getDisplayName();
 			$replacements['gardien_contact'] = $gardien->getContacts();
+			$replacements['gardien_comment'] = $dist->getGardienComment( $gardien_id );
 
-			amapress_dump( $amapien_id );
 			$target_users = amapress_prepare_message_target_to( "user:include=" . $amapien_id,
 				"Amapiens de " . $dist->getTitle(), "distribution" );
 			$subject      = Amapress::getOption( 'distribution-amapiens-gardiened-recall-mail-subject' );
@@ -1050,12 +1050,13 @@ function amapress_distribution_gardiens_recall_options() {
 			'id'      => 'distribution-amapiens-gardiened-recall-mail-content',
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nVotre panier sera gardé par %%gardien%% (%%gardien_contact%%) à %%lien_distrib_titre%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nVotre panier sera gardé par %%gardien%% (%%gardien_contact%% / %%gardien_message%%) à %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
 				AmapressDistribution::getPlaceholdersHelp(
 					[
 						'gardien'         => 'Nom du gardien de panier choisi',
 						'gardien_contact' => 'Coordonnées du gardien de panier choisi',
+						'gardien_comment' => 'Message/commentaire du gardien de panier choisi',
 					]
 				),
 		),

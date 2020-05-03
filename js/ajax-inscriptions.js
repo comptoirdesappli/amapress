@@ -14,6 +14,7 @@ jQuery(document).ready(function ($) {
             'key': $this.data('key'),
             'not_member': $this.data('not_member'),
             'post-id': $this.data('post-id'),
+            'message': $this.data('message') ? $($this.data('message').substr(4)).val() : '',
         };
         var $parentForm = $this.parent('form');
         var $parentDiv = $this.parent('.inscription-other-user');

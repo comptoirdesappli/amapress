@@ -839,13 +839,14 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'      => 'inscr-distrib-gardiened-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'textarea',
-											'default' => "Bonjour,\n\n%%gardien%% (%%gardien_contact%%) gardera vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'default' => "Bonjour,\n\n%%gardien%% (%%gardien_contact%% / %%gardien_comment%%) gardera vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [
 													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
 													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
 													'gardien'          => 'Nom du gardien de panier choisi',
 													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+													'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
 												], false ),
 										),
 										array(
@@ -870,6 +871,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
 													'gardien'          => 'Nom du gardien de panier choisi',
 													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+													'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
 												], false ),
 										),
 										array(
@@ -894,6 +896,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
 													'gardien'          => 'Nom du gardien de panier choisi',
 													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+													'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
 												], false ),
 										),
 										array(
@@ -901,7 +904,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
-								'Créneaux de distributions' => array(
+								'Créneaux de distributions'              => array(
 									'id'      => 'amp_tab_distrib_slots',
 									'desc'    => '',
 									'options' => [
@@ -962,7 +965,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
-								'Créneaux de visites'       => array(
+								'Créneaux de visites'                    => array(
 									'id'      => 'amp_tab_visite_slots',
 									'desc'    => '',
 									'options' => [

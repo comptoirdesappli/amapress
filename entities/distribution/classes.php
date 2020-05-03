@@ -150,7 +150,8 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function inscrireGardien(
-		$user_id, $allow_anonymous = false, $allow_not_member = false
+		$user_id, $allow_anonymous = false, $allow_not_member = false,
+		$comment = null
 	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
 			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
@@ -175,6 +176,11 @@ class AmapressDistribution extends Amapress_EventBase {
 		} else {
 			$gardiens[] = $user_id;
 			$this->setCustom( 'amapress_distribution_gardiens', $gardiens );
+			if ( ! empty( $comment ) ) {
+				$this->setCustom( "amapress_distribution_gardien_{$user_id}_comment", $comment );
+			} else {
+				$this->deleteCustom( "amapress_distribution_gardien_{$user_id}_comment" );
+			}
 
 			amapress_mail_current_user_inscr( $this, $user_id, 'distrib-gardien' );
 
@@ -202,6 +208,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			}
 			unset( $gardiens[ $key ] );
 
+			$this->deleteCustom( "amapress_distribution_gardien_{$user_id}_comment" );
 			$this->setCustom( 'amapress_distribution_gardiens', $gardiens );
 
 			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib-gardien' );
@@ -210,6 +217,10 @@ class AmapressDistribution extends Amapress_EventBase {
 		} else {
 			return 'not_inscr';
 		}
+	}
+
+	public function getGardienComment( $gardien_id ) {
+		return $this->getCustom( "amapress_distribution_gardien_{$gardien_id}_comment" );
 	}
 
 	public function getPaniersGarde() {
@@ -278,6 +289,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$content = str_replace( '%%amapien_contacts%%', $amapien->getContacts(), $content );
 						$content = str_replace( '%%gardien%%', $gardien->getDisplayName(), $content );
 						$content = str_replace( '%%gardien_contact%%', $gardien->getContacts(), $content );
+						$content = str_replace( '%%gardien_comment%%', $this->getGardienComment( $gardien->ID ), $content );
 
 						return $content;
 					}, 'distrib-gardieneur', $amapien->getEmail()
@@ -288,6 +300,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$content = str_replace( '%%amapien_contacts%%', $amapien->getContacts(), $content );
 						$content = str_replace( '%%gardien%%', $gardien->getDisplayName(), $content );
 						$content = str_replace( '%%gardien_contact%%', $gardien->getContacts(), $content );
+						$content = str_replace( '%%gardien_comment%%', $this->getGardienComment( $gardien->ID ), $content );
 
 						return $content;
 					}, 'distrib-gardiened', $gardien->getEmail()
@@ -310,6 +323,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$content = str_replace( '%%amapien_contacts%%', $amapien->getContacts(), $content );
 						$content = str_replace( '%%gardien%%', $gardien->getDisplayName(), $content );
 						$content = str_replace( '%%gardien_contact%%', $gardien->getContacts(), $content );
+						$content = str_replace( '%%gardien_comment%%', $this->getGardienComment( $gardien->ID ), $content );
 
 						return $content;
 					}, 'distrib-gardieneur', $amapien->getEmail()

@@ -157,8 +157,13 @@ function amapress_get_custom_content_distribution( $content ) {
 			$current_amapien = AmapressUser::getBy( amapress_current_user_id() );
 			$gardien_id      = $dist->getPanierGardienId( amapress_current_user_id() );
 			if ( ! empty( $gardien_id ) ) {
+				$gardien_comment = $dist->getGardienComment( $gardien_id );
+				if ( ! empty( $gardien_comment ) ) {
+					$gardien_comment = '<br /><em>' . esc_html( $gardien_comment ) . '</em>';
+				}
 				$gardien = AmapressUser::getBy( $gardien_id );
-				echo '<p style="font-weight: bold; margin-top: 1em">Votre/vos panier(s) seront gardés par ' . $gardien->getDisplayName() . '(' . $gardien->getContacts() . ')</p>';
+				echo '<p style="font-weight: bold; margin-top: 1em">Votre/vos panier(s) seront gardés par ' . $gardien->getDisplayName() . '(' . $gardien->getContacts() . ')<em>' . $gardien_comment . '</em></p>';
+
 			}
 			$gardien_amapien_ids = $dist->getGardiensPaniersAmapiensIds( amapress_current_user_id() );
 			if ( ! empty( $gardien_amapien_ids ) ) {
@@ -190,37 +195,42 @@ function amapress_get_custom_content_distribution( $content ) {
 				),
 			);
 
-			$data = array_map( function ( $u ) use ( $current_amapien, $gardien_id, $dist_id, $can_subscribe, $user_contrats ) {
+			$data = array_map( function ( $u ) use ( $current_amapien, $gardien_id, $dist, $can_subscribe, $user_contrats ) {
 				$link = '';
 				if ( $can_subscribe && ! empty( $user_contrats ) ) {
 					if ( empty( $gardien_id ) && $u->ID != amapress_current_user_id() ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment lui confier la garde de votre panier ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Confier la garde</button>';
+					data-dist="' . $dist->ID . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Confier la garde</button>';
 					} elseif ( $u->ID == $gardien_id ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment lui retirer la garde de votre panier ?"
-					data-dist="' . $dist_id . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Retirer la garde</button>';
+					data-dist="' . $dist->ID . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">Retirer la garde</button>';
 					}
 				}
 
 				/** @var AmapressUser $u */
+				$gardien_comment = $dist->getGardienComment( $u->ID );
+				if ( ! empty( $gardien_comment ) ) {
+					$gardien_comment = esc_html( $gardien_comment ) . '<br />';
+				}
+
 				return array(
 					'link'     => $link,
 					'name'     => esc_html( $u->getDisplayName() ),
 					'contacts' => $u->getContacts(),
-					'info'     => esc_html(
-						! $u->isAdresse_localized() ?
-							'amapien non localisé' :
-							( $current_amapien->isAdresse_localized() ?
-								sprintf( 'à %s (à vol d\'oiseau)',
-									AmapressUsers::distanceFormatMeter(
-										$current_amapien->getUserLatitude(),
-										$current_amapien->getUserLongitude(),
-										$u->getUserLatitude(),
-										$u->getUserLongitude() ) )
-								: 'Vous n\'êtes pas localisé'
-							) )
+					'infos'    => $gardien_comment . ( $u->ID != amapress_current_user_id() ? esc_html(
+							! $u->isAdresse_localized() ?
+								'amapien non localisé' :
+								( $current_amapien->isAdresse_localized() ?
+									sprintf( 'à %s (à vol d\'oiseau)',
+										AmapressUsers::distanceFormatMeter(
+											$current_amapien->getUserLatitude(),
+											$current_amapien->getUserLongitude(),
+											$u->getUserLatitude(),
+											$u->getUserLongitude() ) )
+									: 'Vous n\'êtes pas localisé'
+								) ) : '' )
 				);
 			}, $dist->getGardiens() );
 
@@ -286,11 +296,17 @@ function amapress_get_custom_content_distribution( $content ) {
 						if ( ! $amapien ) {
 							continue;
 						}
+
+						$gardien_comment = $dist->getGardienComment( $gardien->ID );
+						if ( ! empty( $gardien_comment ) ) {
+							$gardien_comment = '<br />' . esc_html( $gardien_comment );
+						}
+
 						$data[] = array(
 							'link'    => '<button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="Etes-vous sûr ?"
 					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">Retirer la garde</button>',
-							'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts() ),
+							'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts() ) . $gardien_comment,
 							'amapien' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getContacts() ),
 						);
 					}
