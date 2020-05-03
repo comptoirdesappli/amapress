@@ -125,13 +125,14 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'key'                       => '',
 	), $atts );
 
-	$fixed_column_width  = $atts['fixed_column_width'];
-	$column_date_width   = $atts['column_date_width'];
-	$show_contrats_desc  = Amapress::toBool( $atts['show_contrats_desc'] );
-	$show_contrats_count = Amapress::toBool( $atts['show_contrats_count'] );
-	$allow_gardiens      = Amapress::toBool( $atts['allow_gardiens'] );
-	$distrib_links       = Amapress::toBool( $atts['distrib_links'] );
-	$responsive          = $atts['responsive'];
+	$fixed_column_width      = $atts['fixed_column_width'];
+	$column_date_width       = $atts['column_date_width'];
+	$show_contrats_desc      = Amapress::toBool( $atts['show_contrats_desc'] );
+	$show_contrats_count     = Amapress::toBool( $atts['show_contrats_count'] );
+	$allow_gardiens          = Amapress::toBool( $atts['allow_gardiens'] );
+	$allow_gardiens_comments = Amapress::toBool( $atts['allow_gardiens_comments'] );
+	$distrib_links           = Amapress::toBool( $atts['distrib_links'] );
+	$responsive              = $atts['responsive'];
 	if ( 'auto' === $responsive ) {
 		$responsive = wp_is_mobile();
 	} else {
@@ -688,7 +689,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
 					}
 
-					$inscr_self = '<textarea id="garde-msg-' . $dist->ID . '" rows="2" style="display: block" placeholder="Message"></textarea><button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
+					if ( $allow_gardiens_comments ) {
+						$inscr_self = '<textarea id="garde-msg-' . $dist->ID . '" rows="2" style="display: block; width: 100%; padding: 0" placeholder="Message"></textarea>';
+					} else {
+						$inscr_self = '';
+					}
+					$inscr_self .= '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous proposer comme gardien de panier ?" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">Me proposer</button>';
 					$info       = '';
 					if ( ! $for_pdf ) {
 						if ( ! $can_subscribe ) {

@@ -236,6 +236,7 @@ function amapress_register_shortcodes() {
 				'allow_resp_dist_manage'    => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 				'prefer_inscr_button_first' => '(Par défaut true) Placer les boutons d\'inscription en premier et les inscrits ensuite. False inverse.',
 				'allow_gardiens'            => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
+				'allow_gardiens_comments'   => '(Par défaut, true si actif) Autoriser les gardiens de paniers à mettre un commentaire avec leur inscription',
 				'allow_slots'               => '(Par défault true) Autoriser le choix de créneaux',
 				'show_responsables'         => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution'
 			]
@@ -270,6 +271,7 @@ function amapress_register_shortcodes() {
 				'allow_resp_dist_manage'    => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
 				'prefer_inscr_button_first' => '(Par défaut true) Placer les boutons d\'inscription en premier et les inscrits ensuite. False inverse.',
 				'allow_gardiens'            => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
+				'allow_gardiens_comments'   => '(Par défaut, true si actif) Autoriser les gardiens de paniers à mettre un commentaire avec leur inscription',
 				'allow_slots'               => '(Par défault true) Autoriser le choix de créneaux',
 				'show_responsables'         => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution'
 			]
