@@ -113,6 +113,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'inscr_all_distrib'         => 'false',
 		'allow_resp_dist_manage'    => 'false',
 		'allow_gardiens'            => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
+		'allow_gardiens_comments'   => 'true',
 		'allow_slots'               => 'true',
 		'show_responsables'         => 'true',
 		'manage_all_subscriptions'  => 'false',
