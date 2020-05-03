@@ -324,6 +324,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'allow_remove_coadhs'              => 'false',
 			'contact_referents'                => 'true',
 			'show_adherents_infos'             => 'true',
+			'show_details_button'              => 'false',
 			'allow_coadherents_access'         => 'true',
 			'allow_coadherents_inscription'    => 'true',
 			'allow_coadherents_adhesion'       => 'true',
@@ -1925,16 +1926,28 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						     ( current_user_can( 'edit_post', $adh->ID ) ?
 							     ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>' : '' );
 					} else {
-						$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
-						$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
-								'Vous avez composé votre panier "' . $adh->getContrat_instance()->getModelTitle() . '" (' . Amapress::makeLink( add_query_arg( [
-									'step'       => 'details',
-									'contrat_id' => $adh->ID
-								] ), 'Détails', true, true ) . ') pour ' :
-								'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour ' )
-						                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' € (' . $adh->getProperty( 'option_paiements' ) . ')'
-						                . '<br/>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
-						                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+						$rattrapage = $adh->getProperty( 'dates_rattrapages' );
+						if ( ! Amapress::toBool( $atts['show_details_button'] ) ) {
+							$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
+									'Vous avez composé votre panier "' . $adh->getContrat_instance()->getModelTitle() . '" (' . Amapress::makeLink( add_query_arg( [
+										'step'       => 'details',
+										'contrat_id' => $adh->ID
+									] ), 'Détails', true, true ) . ') pour ' :
+									'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour ' )
+							                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' € (' . $adh->getProperty( 'option_paiements' ) . ')'
+							                . '<br/>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
+							                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+						} else {
+							$contrat_info = '';
+							if ( ! $adh->getContrat_instance()->isPanierVariable() ) {
+								$contrat_info .= 'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '. ';
+							}
+							$contrat_info .= Amapress::makeButtonLink( add_query_arg( [
+								'step'       => 'details',
+								'contrat_id' => $adh->ID
+							] ), 'Détails', true, true );
+						}
+
 						if ( Amapress::toBool( $atts['contact_referents'] ) ) {
 							$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
 							$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' );
