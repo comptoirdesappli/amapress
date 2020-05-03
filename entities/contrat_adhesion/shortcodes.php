@@ -1874,7 +1874,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				echo '</p>';
 			}
-			if ( Amapress::toBool( $atts['show_modify_coords'] ) ) {
+			if ( $amapien->isPrincipalAdherent() && Amapress::toBool( $atts['show_modify_coords'] ) ) {
 				echo '<p>';
 				echo Amapress::makeButtonLink( add_query_arg( [
 					'step' => amapress_is_user_logged_in() ? 'coords_logged' : 'coords',
