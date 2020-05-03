@@ -279,7 +279,8 @@ function amapress_mail_to_current_user( $subject, $message, $user_id = null, Tit
 
 function amapress_mail_current_user_inscr(
 	TitanEntity $post, $user_id = null, $event_type = 'event',
-	$replace_callback = null, $mail_type = null, $reply_to = null
+	$replace_callback = null, $mail_type = null, $reply_to = null,
+	$cc = null
 ) {
 	if ( empty( $mail_type ) ) {
 		$mail_type = $event_type;
@@ -312,7 +313,7 @@ function amapress_mail_current_user_inscr(
 		$content = call_user_func( $replace_callback, $content, $user_id, $post );
 	}
 
-	amapress_mail_to_current_user( $subject, $content, $user_id, $post, [], null, null, $headers );
+	amapress_mail_to_current_user( $subject, $content, $user_id, $post, [], $cc, null, $headers );
 }
 
 function amapress_mail_current_user_desinscr(

@@ -485,6 +485,10 @@ class Amapress_EventBase extends TitanEntity {
 				$slots["u{$user_id}"] = $slot;
 				$this->setSlots( $slots );
 
+				$amapien = AmapressUser::getBy( $user_id );
+				$cc      = $amapien->getAllEmailsWithCoAdherents();
+				$cc      = array_diff( $cc, $amapien->getAllEmails() );
+
 				if ( amapress_current_user_id() == $user_id ) {
 					amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
 						function ( $content, $user_id, $post ) use ( $requested_slot ) {
@@ -494,7 +498,7 @@ class Amapress_EventBase extends TitanEntity {
 								date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
 
 							return $content;
-						}, static::POST_TYPE . '-slot'
+						}, static::POST_TYPE . '-slot', null, $cc
 					);
 				} else {
 					$responsable      = AmapressUser::getBy( amapress_current_user_id() );
@@ -512,7 +516,7 @@ class Amapress_EventBase extends TitanEntity {
 								$responsable_html, $content );
 
 							return $content;
-						}, static::POST_TYPE . '-admin-slot'
+						}, static::POST_TYPE . '-admin-slot', null, $cc
 					);
 				}
 
