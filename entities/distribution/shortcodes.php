@@ -87,41 +87,42 @@ function amapress_responsables_distrib_shortcode( $atts ) {
 
 function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = '' ) {
 	$atts = shortcode_atts( array(
-		'show_past'                => 'false',
-		'show_next'                => 'true',
-		'show_email'               => 'default',
-		'show_tel'                 => 'default',
-		'show_tel_fixe'            => 'default',
-		'show_tel_mobile'          => 'default',
-		'show_adresse'             => 'false',
-		'show_avatar'              => 'default',
-		'show_roles'               => 'false',
-		'show_for_resp'            => 'true',
-		'show_title'               => 'true',
-		'for_emargement'           => 'false',
-		'for_pdf'                  => 'false',
-		'past_weeks'               => 5,
-		'max_dates'                => - 1,
-		'responsive'               => 'false',
-		'user'                     => null,
-		'lieu'                     => null,
-		'date'                     => null,
-		'distrib_links'            => 'true',
-		'show_contrats_desc'       => 'true',
-		'show_contrats_count'      => 'false',
-		'show_no_contrat'          => 'true',
-		'inscr_all_distrib'        => 'false',
-		'allow_resp_dist_manage'   => 'false',
-		'allow_gardiens'           => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
-		'allow_slots'              => 'true',
-		'show_responsables'        => 'true',
-		'manage_all_subscriptions' => 'false',
-		'column_date_width'        => '5em',
-		'fixed_column_width'       => '%',
-		'scroll_x'                 => '',
-		'scroll_y'                 => '',
-		'font_size'                => '',
-		'key'                      => '',
+		'show_past'                 => 'false',
+		'show_next'                 => 'true',
+		'show_email'                => 'default',
+		'show_tel'                  => 'default',
+		'show_tel_fixe'             => 'default',
+		'show_tel_mobile'           => 'default',
+		'show_adresse'              => 'false',
+		'show_avatar'               => 'default',
+		'show_roles'                => 'false',
+		'show_for_resp'             => 'true',
+		'show_title'                => 'true',
+		'for_emargement'            => 'false',
+		'for_pdf'                   => 'false',
+		'past_weeks'                => 5,
+		'max_dates'                 => - 1,
+		'responsive'                => 'false',
+		'user'                      => null,
+		'lieu'                      => null,
+		'date'                      => null,
+		'distrib_links'             => 'true',
+		'show_contrats_desc'        => 'true',
+		'show_contrats_count'       => 'false',
+		'show_no_contrat'           => 'true',
+		'inscr_all_distrib'         => 'false',
+		'allow_resp_dist_manage'    => 'false',
+		'allow_gardiens'            => Amapress::getOption( 'enable-gardiens-paniers' ) ? 'true' : 'false',
+		'allow_slots'               => 'true',
+		'show_responsables'         => 'true',
+		'manage_all_subscriptions'  => 'false',
+		'prefer_inscr_button_first' => 'true',
+		'column_date_width'         => '5em',
+		'fixed_column_width'        => '%',
+		'scroll_x'                  => '',
+		'scroll_y'                  => '',
+		'font_size'                 => '',
+		'key'                       => '',
 	), $atts );
 
 	$fixed_column_width  = $atts['fixed_column_width'];
@@ -228,9 +229,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
-	$allow_resp_dist_manage   = Amapress::toBool( $atts['allow_resp_dist_manage'] );
-	$inscr_all_distrib        = Amapress::toBool( $atts['inscr_all_distrib'] );
-	$manage_all_subscriptions = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
+	$allow_resp_dist_manage    = Amapress::toBool( $atts['allow_resp_dist_manage'] );
+	$inscr_all_distrib         = Amapress::toBool( $atts['inscr_all_distrib'] );
+	$manage_all_subscriptions  = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
+	$prefer_inscr_button_first = Amapress::toBool( $atts['prefer_inscr_button_first'] );
 
 	$required_lieu_id = null;
 	if ( ! empty( $atts['lieu'] ) ) {
@@ -404,7 +406,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
 		}
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) && ! is_admin() ) {
-			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Modifier le nombre de responsables du lieu</a></p>';
+			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Modifier le nombre de responsables de distribution</a></p>';
 		}
 
 		if ( $for_pdf ) {
@@ -759,7 +761,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							}
 						} );
 
-						$start = $needed - count( $resps ) >= 0 ? $needed - count( $resps ) : 0;
+						if ( $prefer_inscr_button_first ) {
+							$start = $needed - count( $resps ) >= 0 ? $needed - count( $resps ) : 0;
+						} else {
+							$start = 0;
+						}
 						foreach ( $resps as $r ) {
 							if ( $start >= $needed ) {
 								break;
@@ -773,7 +779,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$row_resps = [];
 				}
 
-				$i = 1;
+				$added_inscr_button = false;
+				$i                  = 1;
 				foreach ( $row_resps as $resp ) {
 					$resp_idx = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
@@ -796,8 +803,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
 						$missing    = '';
 						if ( ! $for_pdf ) {
-							if ( ( $has_role_names || 1 == $i ) && ! $is_resp && $can_subscribe ) {
-								$missing = $inscr_self;
+							if ( ( $has_role_names || ! $added_inscr_button ) && ! $is_resp && $can_subscribe ) {
+								$missing            = $inscr_self;
+								$added_inscr_button = true;
 							} else {
 								$missing = "<span class='distrib-resp-missing'>manquant</span>";
 							}
