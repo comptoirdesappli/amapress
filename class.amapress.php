@@ -4316,4 +4316,8 @@ class Amapress {
 
 		return $domain;
 	}
+
+	public static function hasPartialCoAdhesion() {
+		return Amapress::getOption( 'allow_partial_coadh' );
+	}
 }

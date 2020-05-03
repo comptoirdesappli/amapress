@@ -161,7 +161,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
-			$ret['contrat_sous_titre']               = [
+			$ret['contrat_sous_titre'] = [
 				'desc' => 'Nom complémentaire du contrat (par ex, Semaine A)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getSubName();
@@ -1709,7 +1709,7 @@ class AmapressAdhesion extends TitanEntity {
 				amapress_get_results_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value, $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ),
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')" ),
 				function ( $o ) {
 					return intval( $o->user_id );
 				} );

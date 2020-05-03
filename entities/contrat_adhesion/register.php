@@ -654,7 +654,7 @@ jQuery(function($) {
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent2() ) {
 							echo $user->getAdherent2()->getDisplayNameWithAdminEditLink();
-						} else if ( $user->getAdherent()->getCoAdherent1() ) {
+						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent1() ) {
 							echo $user->getAdherent()->getCoAdherent1()->getDisplayNameWithAdminEditLink();
 						}
 					}
@@ -664,7 +664,7 @@ jQuery(function($) {
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent2() ) {
 							echo $user->getAdherent2()->getDisplayNameWithAdminEditLink();
-						} else if ( $user->getAdherent()->getCoAdherent1() ) {
+						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent1() ) {
 							echo $user->getAdherent()->getCoAdherent1()->getDisplayNameWithAdminEditLink();
 						}
 					}
@@ -685,7 +685,7 @@ jQuery(function($) {
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent3() ) {
 							echo $user->getAdherent3()->getDisplayNameWithAdminEditLink();
-						} else if ( $user->getAdherent()->getCoAdherent2() ) {
+						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent2() ) {
 							echo $user->getAdherent()->getCoAdherent2()->getDisplayNameWithAdminEditLink();
 						}
 					}
@@ -695,7 +695,7 @@ jQuery(function($) {
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent3() ) {
 							echo $user->getAdherent3()->getDisplayName();
-						} else if ( $user->getAdherent()->getCoAdherent2() ) {
+						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent2() ) {
 							echo $user->getAdherent()->getCoAdherent2()->getDisplayName();
 						}
 					}
@@ -716,7 +716,7 @@ jQuery(function($) {
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent4() ) {
 							echo $user->getAdherent4()->getDisplayNameWithAdminEditLink();
-						} else if ( $user->getAdherent()->getCoAdherent3() ) {
+						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent3() ) {
 							echo $user->getAdherent()->getCoAdherent3()->getDisplayNameWithAdminEditLink();
 						}
 					}
@@ -726,7 +726,7 @@ jQuery(function($) {
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent4() ) {
 							echo $user->getAdherent4()->getDisplayName();
-						} else if ( $user->getAdherent()->getCoAdherent3() ) {
+						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent3() ) {
 							echo $user->getAdherent()->getCoAdherent3()->getDisplayName();
 						}
 					}
@@ -2709,6 +2709,9 @@ add_filter( 'amapress_gestion-contrats_page_contrat_paiements_default_hidden_col
 		'amapress_user_co-adherent-1',
 		'amapress_user_co-adherent-2',
 		'amapress_user_co-adherent-3',
+		'amapress_user_co-foyer-1',
+		'amapress_user_co-foyer-2',
+		'amapress_user_co-foyer-3',
 		'amapress_user_co-adherents',
 		'amapress_user_co-adherents-infos',
 	] );

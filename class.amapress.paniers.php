@@ -193,9 +193,14 @@ class AmapressPaniers {
 
 		$adhesions = array_group_by(
 			AmapressContrats::get_active_adhesions( array( $contrat_instance_id ) ),
-			function ( $adh ) {
+			function ( $adh ) use ( $contrat_instance_id ) {
 				/** @var AmapressAdhesion $adh */
-				$user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID );
+				if ( Amapress::hasPartialCoAdhesion() ) {
+					$user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID,
+						false, null, $contrat_instance_id );
+				} else {
+					$user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID );
+				}
 
 				return implode( '_', $user_ids );
 			} );

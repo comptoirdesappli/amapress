@@ -1121,7 +1121,12 @@ class AmapressContrats {
 	private static $related_user_cache = [];
 
 	/* @return int[] */
-	public static function get_related_users( $user_id, $allow_not_logged = false, $date = null, $contrat_id = null ) {
+	public static function get_related_users(
+		$user_id, $allow_not_logged = false,
+		$date = null, $contrat_id = null,
+		$include_cofoyers = true,
+		$include_coadhs = 'auto'
+	) {
 		if ( ! $allow_not_logged && ! amapress_is_user_logged_in() ) {
 			return [];
 		}
@@ -1132,20 +1137,33 @@ class AmapressContrats {
 
 		$date = Amapress::end_of_day( $date );
 
-		$key = "amapress_get_related_users_{$user_id}_{$date}_{$contrat_id}";
+		$key = "amapress_get_related_users_{$user_id}_{$date}_{$contrat_id}_{$include_cofoyers}_{$include_coadhs}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res  = array( $user_id );
 			$user = AmapressUser::getBy( $user_id );
 			if ( $user ) {
-				if ( $user->getCoAdherent1Id() ) {
-					$res[] = $user->getCoAdherent1Id();
+				if ( true === $include_coadhs || ( 'auto' === $include_coadhs && ! Amapress::hasPartialCoAdhesion() ) ) {
+					if ( $user->getCoAdherent1Id() ) {
+						$res[] = $user->getCoAdherent1Id();
+					}
+					if ( $user->getCoAdherent2Id() ) {
+						$res[] = $user->getCoAdherent2Id();
+					}
+					if ( $user->getCoAdherent3Id() ) {
+						$res[] = $user->getCoAdherent3Id();
+					}
 				}
-				if ( $user->getCoAdherent2Id() ) {
-					$res[] = $user->getCoAdherent2Id();
-				}
-				if ( $user->getCoAdherent3Id() ) {
-					$res[] = $user->getCoAdherent3Id();
+				if ( $include_cofoyers ) {
+					if ( $user->getCoFoyer1Id() ) {
+						$res[] = $user->getCoFoyer1Id();
+					}
+					if ( $user->getCoFoyer2Id() ) {
+						$res[] = $user->getCoFoyer2Id();
+					}
+					if ( $user->getCoFoyer3Id() ) {
+						$res[] = $user->getCoFoyer3Id();
+					}
 				}
 				$res = array_merge( $res, $user->getPrincipalUserIds() );
 			}

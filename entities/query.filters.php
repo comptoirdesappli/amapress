@@ -1709,7 +1709,7 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ) as $user_id
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );
 			}
@@ -1738,7 +1738,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.user_id
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')" ) as $user_id
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );
 			}
@@ -1816,7 +1816,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );
@@ -1873,7 +1873,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );

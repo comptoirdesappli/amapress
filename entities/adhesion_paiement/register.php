@@ -323,6 +323,9 @@ add_filter( 'amapress_gestion-adhesions_page_adhesion_paiements_default_hidden_c
 		'amapress_user_co-adherent-1',
 		'amapress_user_co-adherent-2',
 		'amapress_user_co-adherent-3',
+		'amapress_user_co-foyer-1',
+		'amapress_user_co-foyer-2',
+		'amapress_user_co-foyer-3',
 		'amapress_user_co-adherents',
 		'amapress_user_co-adherents-infos',
 	] );

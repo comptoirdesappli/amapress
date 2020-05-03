@@ -373,7 +373,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'contrats-past'      => array(
+			'contrats-past'     => array(
 				'name'              => amapress__( 'Contrats passés' ),
 				'show_column'       => false,
 				'include_columns'   => array(
@@ -391,12 +391,46 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'              => 'related-posts',
 				'query'             => 'post_type=amps_adhesion&amapress_date=past&amapress_user=%%id%%&orderby=amapress_adhesion_date_debut&order=desc',
 			),
-			'head_amapress3'     => array(
+
+			'head_amapress3' => array(
 				'id'   => 'coadh_sect',
 				'name' => amapress__( 'Co-adhérents' ),
 				'type' => 'heading',
 			),
-			'co-adherent-1'      => array(
+			'co-foyer-1'     => array(
+				'name'         => amapress__( 'Membre du foyer 1' ),
+				'type'         => 'select-users',
+				'desc'         => 'Membre du foyer 1',
+				'autocomplete' => true,
+				'searchable'   => true,
+				'orderby'      => 'display_name',
+				'order'        => 'ASC',
+			),
+			'co-foyer-2'     => array(
+				'name'           => amapress__( 'Membre du foyer 2' ),
+				'type'           => 'select-users',
+				'desc'           => 'Membre du foyer 2',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'searchable'     => true,
+				'autocomplete'   => true,
+				'show_on'        => 'edit-only',
+				'orderby'        => 'display_name',
+				'order'          => 'ASC',
+			),
+			'co-foyer-3'     => array(
+				'name'           => amapress__( 'Membre du foyer 3' ),
+				'type'           => 'select-users',
+				'desc'           => 'Membre du foyer 3',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'searchable'     => true,
+				'autocomplete'   => true,
+				'show_on'        => 'edit-only',
+				'orderby'        => 'display_name',
+				'order'          => 'ASC',
+			),
+			'co-adherent-1'  => array(
 				'name'         => amapress__( 'Co-adhérent 1' ),
 				'type'         => 'select-users',
 				'desc'         => 'Co-adhérent 1',
@@ -405,7 +439,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'co-adherent-2'      => array(
+			'co-adherent-2'  => array(
 				'name'           => amapress__( 'Co-adhérent 2' ),
 				'type'           => 'select-users',
 				'desc'           => 'Co-adhérent 2',
@@ -580,23 +614,23 @@ function amapress_register_entities_amapien( $entities ) {
 	return $entities;
 }
 
-add_action( 'tf_post_save_options_amapress', 'amapress_amapien_affect_coadherents', 10, 2 );
-function amapress_amapien_affect_coadherents( TitanFrameworkMetaBox $metabox, $userID ) {
-	if ( $metabox->post_type != 'user' ) {
-		return;
-	}
-	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
-	if ( ! $allow_partial_coadh ) {
-		$user = AmapressUser::getBy( $userID );
-		foreach ( AmapressAdhesion::getUserActiveAdhesions( $userID ) as $adh ) {
-			if ( $adh->getAdherentId() == $userID ) {
-				$adh->setAdherent2( $user->getCoAdherent1() );
-				$adh->setAdherent3( $user->getCoAdherent2() );
-				$adh->setAdherent4( $user->getCoAdherent3() );
-			}
-		}
-	}
-}
+//add_action( 'tf_post_save_options_amapress', 'amapress_amapien_affect_coadherents', 10, 2 );
+//function amapress_amapien_affect_coadherents( TitanFrameworkMetaBox $metabox, $userID ) {
+//	if ( $metabox->post_type != 'user' ) {
+//		return;
+//	}
+//	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+//	if ( ! $allow_partial_coadh ) {
+//		$user = AmapressUser::getBy( $userID );
+//		foreach ( AmapressAdhesion::getUserActiveAdhesions( $userID ) as $adh ) {
+//			if ( $adh->getAdherentId() == $userID ) {
+//				$adh->setAdherent2( $user->getCoAdherent1() );
+//				$adh->setAdherent3( $user->getCoAdherent2() );
+//				$adh->setAdherent4( $user->getCoAdherent3() );
+//			}
+//		}
+//	}
+//}
 
 add_filter( 'get_role_list', 'amapress_get_role_list', 10, 2 );
 function amapress_get_role_list( $role_list, $user_object ) {
@@ -709,7 +743,8 @@ function amapress_can_delete_user( $can, $user_id ) {
 		wp_cache_set( $key, $users_with_contrats );
 	}
 
-	$related_users   = AmapressContrats::get_related_users( $user_id );
+	$related_users   = AmapressContrats::get_related_users( $user_id,
+		false, null, null, true, true );
 	$related_users[] = $user_id;
 
 	$can_delete = true;
