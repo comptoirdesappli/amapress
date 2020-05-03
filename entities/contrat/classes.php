@@ -1519,7 +1519,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['coadherent.email']                 = [
+		$ret['coadherent.email'] = [
 			'desc' => 'Email co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -1527,6 +1527,21 @@ class AmapressContrat_instance extends TitanEntity {
 		];
 
 		return $ret;
+	}
+
+	/** @return array */
+	public function getDatesByMonth() {
+		$dates           = $this->getRemainingDates();
+		$by_month_totals = [];
+		foreach ( $dates as $date ) {
+			$month = date_i18n( 'M', $date );
+			if ( empty( $by_month_totals[ $month ] ) ) {
+				$by_month_totals[ $month ] = 0;
+			}
+			$by_month_totals[ $month ] += 1;
+		}
+
+		return $by_month_totals;
 	}
 
 	public function getQuantiteTables( $first_date_distrib ) {
@@ -1565,15 +1580,15 @@ class AmapressContrat_instance extends TitanEntity {
 			$paiements                     = [];
 			$amount                        = $quant->getPrix_unitaire() * $remaining_distrib_sum;
 			if ( $this->getPayByMonth() ) {
-				$by_months = $this->getTotalAmountByMonth();
+				$by_months = $this->getDatesByMonth();
 				if ( in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
 					$paiements[] = sprintf( "1 chèque de %0.2f €", $amount );
 				}
 				if ( in_array( count( $by_months ), $this->getContrat_instance()->getPossiblePaiements() ) ) {
-					$paiements[] = implode( ' ; ', array_map( function ( $month, $month_amount ) {
-						return sprintf( "%s: 1 chèque de %0.2f €",
+					$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
+						return sprintf( "%s: 1 chèque pour %d distributions",
 							$month,
-							$month_amount );
+							$month_count );
 					}, array_keys( $by_months ), array_values( $by_months ) ) );
 				}
 			} else {
