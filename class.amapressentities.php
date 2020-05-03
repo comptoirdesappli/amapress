@@ -1086,7 +1086,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'type'       => 'custom',
 									'bare'       => true,
 									'capability' => 'edit_contrat_instance',
-									'custom'     => 'amapress_create_ooadhesion_assistant',
+									'custom'     => 'amapress_create_coadhesion_assistant',
 								)
 							),
 						),

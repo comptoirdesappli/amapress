@@ -2523,16 +2523,17 @@ add_action( 'tf_custom_admin_amapress_action_new_coadherent', function () {
 	$first_name = $_POST['first_name'];
 	$address    = $_POST['address'];
 	$tel        = $_POST['tel'];
+	$type       = $_POST['type'];
 
 	$co_id = amapress_create_user_if_not_exists( $email, $first_name, $last_name, $address, $tel, 'user' );
 
 	$user_id = intval( $_REQUEST['user_id'] );
 	$user    = AmapressUser::getBy( $user_id );
-	$user->addCoadherent( $co_id );
+	$user->addCoadherent( $co_id, null, 'cof' == $type );
 
 	wp_redirect_and_exit( add_query_arg( 'user_id', $user_id ) );
 } );
-function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $option ) {
+function amapress_create_coadhesion_assistant( $post_id, TitanFrameworkOption $option ) {
 	if ( isset( $_REQUEST['user_id'] ) ) {
 		$user_id = intval( $_REQUEST['user_id'] );
 		$user    = AmapressUser::getBy( $user_id );
@@ -2541,9 +2542,9 @@ function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $o
 		echo '<hr />';
 		echo $user->getDisplay();
 		echo '<hr />';
-		echo '<h4>4/ Coadhérents :</h4>';
+		echo '<h4>4/ Coadhérents / Membres du foyer :</h4>';
 
-		foreach ( AmapressContrats::get_related_users( $user_id ) as $co_id ) {
+		foreach ( AmapressContrats::get_related_users( $user_id, false, null, null, true, true ) as $co_id ) {
 			if ( $co_id == $user_id ) {
 				continue;
 			}
@@ -2592,8 +2593,15 @@ function amapress_create_ooadhesion_assistant( $post_id, TitanFrameworkOption $o
 		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
 <td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
 		echo '</tr>';
+		echo '<tr>
+	<th style="text-align: left; width: auto">Type: </th>
+	<td>
+		<label for="type-co"><input id="type-co" name="type" value="co" type="radio" checked="checked" /> Co-adhérent</label>
+		<label for="type-cof"><input id="type-cof" name="type" value="cof" type="radio" /> Membre du foyer</label>
+	</td>
+</tr>';
 		echo '</table>';
-		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Ajouter le coadhérent" />';
+		echo '<input style="min-width: 50%; margin-top: 0.5em" type="submit" class="button button-primary" value="Ajouter le coadhérent" />';
 		echo '</form>';
 	}
 	echo '<hr />';
