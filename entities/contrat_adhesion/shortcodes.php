@@ -105,6 +105,57 @@ add_action( 'amapress_init', function () {
 			$amapien->removeCoadherent( $amapien->getCoAdherent3Id(), $notify_email );
 		}
 
+		if ( ! empty( $_REQUEST['cofoy1_email'] ) ) {
+			$cofoy1_email          = sanitize_email( $_REQUEST['cofoy1_email'] );
+			$cofoy1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_first_name'] ) ? $_REQUEST['cofoy1_first_name'] : '' );
+			$cofoy1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_last_name'] ) ? $_REQUEST['cofoy1_last_name'] : '' );
+			$cofoy1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy1_tels'] ) ? $_REQUEST['cofoy1_tels'] : '' );
+			$cofoy1_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy1_address'] ) ? $_REQUEST['cofoy1_address'] : '' );
+
+			$cofoy1_user_id = amapress_create_user_if_not_exists( $cofoy1_email, $cofoy1_user_firt_name, $cofoy1_user_last_name, $cofoy1_user_address, $cofoy1_user_phones );
+			if ( $cofoy1_user_id ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->addCoadherent( $cofoy1_user_id, $notify_email, true );
+			}
+		} else if ( isset( $_REQUEST['cofoy1_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoFoyer1(), $notify_email, true );
+		}
+
+		if ( ! empty( $_REQUEST['cofoy2_email'] ) ) {
+			$cofoy2_email          = sanitize_email( $_REQUEST['cofoy2_email'] );
+			$cofoy2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_first_name'] ) ? $_REQUEST['cofoy2_first_name'] : '' );
+			$cofoy2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_last_name'] ) ? $_REQUEST['cofoy2_last_name'] : '' );
+			$cofoy2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy2_tels'] ) ? $_REQUEST['cofoy2_tels'] : '' );
+			$cofoy2_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy2_address'] ) ? $_REQUEST['cofoy2_address'] : '' );
+
+			$cofoy2_user_id = amapress_create_user_if_not_exists( $cofoy2_email, $cofoy2_user_firt_name, $cofoy2_user_last_name, $cofoy2_user_address, $cofoy2_user_phones );
+			if ( $cofoy2_user_id ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->addCoadherent( $cofoy2_user_id, $notify_email, true );
+			}
+		} else if ( isset( $_REQUEST['cofoy2_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoFoyer2Id(), $notify_email, true );
+		}
+
+		if ( ! empty( $_REQUEST['cofoy3_email'] ) ) {
+			$cofoy3_email          = sanitize_email( $_REQUEST['cofoy3_email'] );
+			$cofoy3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_first_name'] ) ? $_REQUEST['cofoy3_first_name'] : '' );
+			$cofoy3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_last_name'] ) ? $_REQUEST['cofoy3_last_name'] : '' );
+			$cofoy3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy3_tels'] ) ? $_REQUEST['cofoy3_tels'] : '' );
+			$cofoy3_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy3_address'] ) ? $_REQUEST['cofoy3_address'] : '' );
+
+			$cofoy3_user_id = amapress_create_user_if_not_exists( $cofoy3_email, $cofoy3_user_firt_name, $cofoy3_user_last_name, $cofoy3_user_address, $cofoy3_user_phones );
+			if ( $cofoy3_user_id ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->addCoadherent( $cofoy3_user_id, $notify_email, true );
+			}
+		} else if ( isset( $_REQUEST['cofoy3_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoFoyer3Id(), $notify_email, true );
+		}
+
 
 		$quest1         = wp_unslash( Amapress::getOption( 'online_new_user_quest1' ) );
 		$quest1_answser = '';
@@ -269,6 +320,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'paniers_modulables_editor_height' => 350,
 			'send_welcome'                     => 'true',
 			'edit_names'                       => 'true',
+			'allow_remove_cofoyers'            => 'false',
 			'allow_remove_coadhs'              => 'false',
 			'contact_referents'                => 'true',
 			'show_adherents_infos'             => 'true',
@@ -276,10 +328,12 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'allow_coadherents_inscription'    => 'true',
 			'allow_coadherents_adhesion'       => 'true',
 			'show_coadherents_address'         => 'false',
+			'show_cofoyers_address'            => 'false',
 			'contrat_print_button_text'        => 'Imprimer',
 			'adhesion_print_button_text'       => 'Imprimer',
 			'only_contrats'                    => '',
 			'shorturl'                         => '',
+			'show_modify_coords'               => 'inscription-en-ligne' == $tag ? 'false' : 'true',
 			'show_due_amounts'                 => 'false',
 			'show_delivery_details'            => 'false',
 			'show_calendar_delivs'             => 'false',
@@ -288,6 +342,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'adhesion_shift_weeks'             => 0,
 			'before_close_hours'               => 24,
 			'max_coadherents'                  => 3,
+			'max_cofoyers'                     => 3,
 			'use_contrat_term'                 => 'true',
 			'skip_coords'                      => 'false',
 			'email'                            => get_option( 'admin_email' ),
@@ -309,12 +364,15 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$activate_adhesion             = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement            = Amapress::toBool( $atts['agreement'] );
 	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
+	$allow_remove_cofoys           = Amapress::toBool( $atts['allow_remove_cofoyers'] );
 	$allow_coadherents_inscription = Amapress::toBool( $atts['allow_coadherents_inscription'] );
 	$allow_coadherents_adhesion    = Amapress::toBool( $atts['allow_coadherents_adhesion'] );
 	$show_adherents_infos          = Amapress::toBool( $atts['show_adherents_infos'] );
 	$track_no_renews               = Amapress::toBool( $atts['track_no_renews'] );
 	$show_coadherents_address      = Amapress::toBool( $atts['show_coadherents_address'] );
+	$show_cofoys_address           = Amapress::toBool( $atts['show_cofoyers_address'] );
 	$show_due_amounts              = Amapress::toBool( $atts['show_due_amounts'] );
+	$show_modify_coords            = Amapress::toBool( $atts['show_modify_coords'] );
 	$show_current_inscriptions     = Amapress::toBool( $atts['show_current_inscriptions'] ) || $admin_mode;
 	$show_editable_inscriptions    = Amapress::toBool( $atts['show_editable_inscriptions'] ) || $admin_mode;
 	$show_delivery_details         = Amapress::toBool( $atts['show_delivery_details'] );
@@ -323,8 +381,9 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	if ( ! $allow_coadherents_inscription ) {
 		$show_adherents_infos = true;
 	}
-	$key        = $atts['key'];
-	$max_coadhs = intval( $atts['max_coadherents'] );
+	$key          = $atts['key'];
+	$max_cofoyers = intval( $atts['max_cofoyers'] );
+	$max_coadhs   = intval( $atts['max_coadherents'] );
 	if ( $admin_mode && amapress_is_user_logged_in() && amapress_can_access_admin() ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			$step = 'contrats';
@@ -743,6 +802,24 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$coadh3_mobile_phones  = '';
 		$coadh3_address        = '';
 
+		$cofoy1_user_firt_name = '';
+		$cofoy1_user_last_name = '';
+		$cofoy1_email          = '';
+		$cofoy1_mobile_phones  = '';
+		$cofoy1_address        = '';
+
+		$cofoy2_user_firt_name = '';
+		$cofoy2_user_last_name = '';
+		$cofoy2_email          = '';
+		$cofoy2_mobile_phones  = '';
+		$cofoy2_address        = '';
+
+		$cofoy3_user_firt_name = '';
+		$cofoy3_user_last_name = '';
+		$cofoy3_email          = '';
+		$cofoy3_mobile_phones  = '';
+		$cofoy3_address        = '';
+
 		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
 		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
@@ -789,6 +866,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						$amapien->getCoAdherentsList( true )
 					);
 					$max_coadhs               = 0;
+					$max_cofoyers             = 0;
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 				} else {
 					$adherents_infos          = sprintf(
@@ -826,11 +904,43 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$coadh3_mobile_phones  = implode( '/', $amapien->getCoAdherent3()->getPhoneNumbers() );
 				$coadh3_address        = $amapien->getCoAdherent3()->getFormattedAdresse();
 			}
+
+			if ( $amapien->getCoFoyer1() ) {
+				$cofoy1_user_firt_name = $amapien->getCoFoyer1()->getUser()->first_name;
+				$cofoy1_user_last_name = $amapien->getCoFoyer1()->getUser()->last_name;
+				$cofoy1_email          = $amapien->getCoFoyer1()->getUser()->user_email;
+				$cofoy1_mobile_phones  = implode( '/', $amapien->getCoFoyer1()->getPhoneNumbers() );
+				$cofoy1_address        = $amapien->getCoFoyer1()->getFormattedAdresse();
+			}
+
+			if ( $amapien->getCoFoyer2() ) {
+				$cofoy2_user_firt_name = $amapien->getCoFoyer2()->getUser()->first_name;
+				$cofoy2_user_last_name = $amapien->getCoFoyer2()->getUser()->last_name;
+				$cofoy2_email          = $amapien->getCoFoyer2()->getUser()->user_email;
+				$cofoy2_mobile_phones  = implode( '/', $amapien->getCoFoyer2()->getPhoneNumbers() );
+				$cofoy2_address        = $amapien->getCoFoyer2()->getFormattedAdresse();
+			}
+
+			if ( $amapien->getCoFoyer3() ) {
+				$cofoy3_user_firt_name = $amapien->getCoFoyer3()->getUser()->first_name;
+				$cofoy3_user_last_name = $amapien->getCoFoyer3()->getUser()->last_name;
+				$cofoy3_email          = $amapien->getCoFoyer3()->getUser()->user_email;
+				$cofoy3_mobile_phones  = implode( '/', $amapien->getCoFoyer3()->getPhoneNumbers() );
+				$cofoy3_address        = $amapien->getCoFoyer3()->getFormattedAdresse();
+			}
 		}
 
 		$adh_pmt = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false ) : null;
 		?>
-        <h4>Étape 2/8 : Coordonnées</h4>
+        <h4>
+			<?php
+			if ( 'mes-contrats' == $tag ) {
+				echo 'Coordonnées, co-adhérents et membres du foyer';
+			} else {
+				echo 'Étape 2/8 : Coordonnées, co-adhérents et membres du foyer';
+			}
+			?>
+        </h4>
         <p><?php echo $adherents_infos; ?></p>
 		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
@@ -840,9 +950,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-			<?php if ( $activate_agreement ) { ?>
+			<?php if ( 'mes-contrats' == $tag ) { ?>
+                <input type="hidden" name="coords_next_step" value="contrats"/>
+			<?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-			<?php } else if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
@@ -896,10 +1008,211 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <div>
 				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
+			<?php if ( $max_cofoyers >= 1 ) { ?>
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 1 / Conjoint
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy1_email" name="cofoy1_email"
+                                                                                  class="email"
+                                                                                  value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy1_last_name"
+                                                                                  name="cofoy1_last_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="cofoy1_email"
+                                                                                  value="<?php echo esc_attr( $cofoy1_user_last_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_first_name">Son prénom : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy1_first_name"
+                                                                                  name="cofoy1_first_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="cofoy1_email"
+                                                                                  value="<?php echo esc_attr( $cofoy1_user_firt_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_tels">Téléphone(s) : </label></th>
+                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy1_tels" name="cofoy1_tels"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                  data-if-id="cofoy1_email"
+                                                                                  value="<?php echo esc_attr( $cofoy1_mobile_phones ) ?>"/>
+                        </td>
+                    </tr>
+					<?php if ( $show_cofoys_address ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"><label for="cofoy1_address">Adresse : </label>
+                            </th>
+                            <td><textarea style="width: 100%" rows="4" id="cofoy1_address" name="cofoy1_address"
+                                          class=""><?php echo esc_textarea( $cofoy1_address ); ?></textarea></td>
+                        </tr>
+					<?php } ?>
+					<?php if ( $allow_remove_cofoys && ! empty( $cofoy1_email ) ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"></th>
+                            <td>
+                                <label for="cofoy1_remove"><input type="checkbox" name="cofoy1_remove"
+                                                                  id="cofoy1_remove"/> Je ne suis plus coadhérent
+                                    avec <?php echo esc_html( "$cofoy1_user_firt_name $cofoy1_user_last_name" ) ?>
+                                </label>
+                            </td>
+                        </tr>
+					<?php } ?>
+                </table>
+			<?php } ?>
+			<?php if ( $max_cofoyers >= 2 ) { ?>
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 2 / Conjoint
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy2_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy2_email" name="cofoy2_email"
+                                                                                  class="email"
+                                                                                  value="<?php echo esc_attr( $cofoy2_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy2_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy2_last_name"
+                                                                                  name="cofoy2_last_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="cofoy2_email"
+                                                                                  value="<?php echo esc_attr( $cofoy2_user_last_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy2_first_name">Son prénom : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy2_first_name"
+                                                                                  name="cofoy2_first_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="cofoy2_email"
+                                                                                  value="<?php echo esc_attr( $cofoy2_user_firt_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy2_tels">Téléphone(s) : </label></th>
+                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy2_tels" name="cofoy2_tels"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                  data-if-id="cofoy2_email"
+                                                                                  value="<?php echo esc_attr( $cofoy2_mobile_phones ) ?>"/>
+                        </td>
+                    </tr>
+					<?php if ( $show_cofoys_address ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"><label for="cofoy2_address">Adresse : </label>
+                            </th>
+                            <td><textarea style="width: 100%" rows="4" id="cofoy2_address" name="cofoy2_address"
+                                          class=""><?php echo esc_textarea( $cofoy2_address ); ?></textarea></td>
+                        </tr>
+					<?php } ?>
+					<?php if ( $allow_remove_cofoys && ! empty( $cofoy2_email ) ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"></th>
+                            <td>
+                                <label for="cofoy2_remove"><input type="checkbox" name="cofoy2_remove"
+                                                                  id="cofoy2_remove"/> Je ne suis plus coadhérent
+                                    avec <?php echo esc_html( "$cofoy2_user_firt_name $cofoy2_user_last_name" ) ?>
+                                </label>
+                            </td>
+                        </tr>
+					<?php } ?>
+                </table>
+			<?php } ?>
+			<?php if ( $max_cofoyers >= 3 ) { ?>
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 3 / Conjoint</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy3_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy3_email" name="cofoy3_email"
+                                                                                  class="email"
+                                                                                  value="<?php echo esc_attr( $cofoy3_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy3_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy3_last_name"
+                                                                                  name="cofoy3_last_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="cofoy3_email"
+                                                                                  value="<?php echo esc_attr( $cofoy3_user_last_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy3_first_name">Son prénom : </label>
+                        </th>
+                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy3_first_name"
+                                                                                  name="cofoy3_first_name"
+                                                                                  class="required_if_not_empty single_name"
+                                                                                  data-if-id="cofoy3_email"
+                                                                                  value="<?php echo esc_attr( $cofoy3_user_firt_name ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy3_tels">Téléphone(s) : </label></th>
+                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
+                                                                                  id="cofoy3_tels" name="cofoy3_tels"
+                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                  data-if-id="cofoy3_email"
+                                                                                  value="<?php echo esc_attr( $cofoy3_mobile_phones ) ?>"/>
+                        </td>
+                    </tr>
+					<?php if ( $show_cofoys_address ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"><label for="cofoy3_address">Adresse : </label>
+                            </th>
+                            <td><textarea style="width: 100%" rows="4" id="cofoy3_address" name="cofoy3_address"
+                                          class=""><?php echo esc_textarea( $cofoy3_address ); ?></textarea></td>
+                        </tr>
+					<?php } ?>
+					<?php if ( $allow_remove_cofoys && ! empty( $cofoy3_email ) ) { ?>
+                        <tr>
+                            <th style="text-align: left; width: auto"></th>
+                            <td>
+                                <label for="cofoy3_remove"><input type="checkbox" name="cofoy3_remove"
+                                                                  id="cofoy3_remove"/> Je ne suis plus coadhérent
+                                    avec <?php echo esc_html( "$cofoy3_user_firt_name $cofoy3_user_last_name" ) ?>
+                                </label>
+                            </td>
+                        </tr>
+					<?php } ?>
+                </table>
+			<?php } ?>
+
 			<?php if ( $max_coadhs >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em> / Conjoint</th>
+                        <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em></th>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
@@ -1450,6 +1763,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$amapien->getCoAdherentsList( true )
 				);
 				$max_coadhs               = 0;
+				$max_cofoyers             = 0;
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 			} else {
 				$adherents_infos          = sprintf(
@@ -1560,6 +1874,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				echo '</p>';
 			}
+			if ( Amapress::toBool( $atts['show_modify_coords'] ) ) {
+				echo '<p>';
+				echo Amapress::makeButtonLink( add_query_arg( [
+					'step' => amapress_is_user_logged_in() ? 'coords_logged' : 'coords',
+				] ), 'Coordonnées, co-adhérents, membres du foyer', true, false, 'btn btn-default' );
+				echo '</p>';
+			}
 			$editable_adhs = array_filter( $adhs, function ( $adh ) {
 				/** @var AmapressAdhesion $adh */
 				return $adh->canSelfEdit();
@@ -1618,7 +1939,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
 							$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' );
 						}
-						$edit_contrat = '';
+						$coadherents_info = $adh->getAdherent()->getCoAdherentsList( true, false, true, $adh->getContrat_instanceId() );
+						if ( empty( $coadherents_info ) ) {
+							$coadherents_info = 'aucun';
+						}
+						$coadherents_info = '<br /><strong>Co-adhérents</strong> : ' . $coadherents_info;
+						$edit_contrat     = '';
 						if ( $adh->canSelfEdit() ) {
 							$inscription_url = add_query_arg( [
 								'step'       => 'inscr_contrat_date_lieu',
@@ -1642,7 +1968,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="submit" value="Annuler" class="btn btn-default btn-assist-inscr" />
 </form>';
 						}
-						echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
+						echo '<li style="margin-left: 35px"><strong>' . esc_html( $adh->getTitle() ) . '</strong>' . $coadherents_info . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
 					}
 				}
 				echo '</ul>';
@@ -1968,6 +2294,44 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '<p>Je récupérerai mon panier à ' . $lieu_title . '</p>';
 				echo '<input name="lieu_id" value="' . $lieux[0]->ID . '" type="hidden" />';
 			}
+
+			if ( Amapress::hasPartialCoAdhesion() ) {
+				echo '<p><strong>Co-adhérents</strong></p>';
+
+				if ( $for_logged && amapress_is_user_logged_in() ) {
+					$user_id = wp_get_current_user()->ID;
+				} else {
+					if ( empty( $_REQUEST['user_id'] ) ) {
+						wp_die( $invalid_access_message );
+					}
+					$user_id = intval( $_REQUEST['user_id'] );
+				}
+				$amapien = AmapressUser::getBy( $user_id );
+				$coadhs  = $amapien->getAllDirectlyLinkedCoUsers( true, false );
+				if ( empty( $coadhs ) ) {
+					echo '<p>Vous n\'avez aucun co-adhérent déclaré</p>';
+				} else {
+					if ( $edit_inscription ) {
+						$inscr_coadhs = [
+							$edit_inscription->getAdherentId(),
+							$edit_inscription->getAdherent2Id(),
+							$edit_inscription->getAdherent3Id(),
+							$edit_inscription->getAdherent4Id()
+						];
+					} else {
+						$inscr_coadhs = [];
+					}
+					echo '<p>';
+					/** @var AmapressUser $coadh */
+					foreach ( $coadhs as $coadh ) {
+						echo '<label for="coadh-' . $coadh->ID . '"><input id="coadh-' . $coadh->ID . '" ' .
+						     checked( in_array( $coadh->ID, $inscr_coadhs ), true, false ) . ' type="checkbox" name="coadhs[]" value="' . $coadh->ID . '" /> ' . esc_html( $coadh->getDisplayName() ) . '</label>';
+					}
+					echo '</p>';
+				}
+			}
+
+
 			//			foreach ( $dates as $date ) {
 			//				echo '<option value="' . esc_attr( $date ) . '">' . esc_html( date_i18n( 'd/m/Y', $date ) ) . '</option>';
 			//			}
@@ -2097,6 +2461,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			wp_die( $invalid_access_message );
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
+		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : '';
+		if ( is_array( $coadhs ) ) {
+			$coadhs = implode( ',', $coadhs );
+		}
 
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
@@ -2106,6 +2474,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$next_step_url = add_query_arg( [
 			'step'       => 'inscr_contrat_paiements',
 			'start_date' => $start_date,
+			'coadhs'     => $coadhs,
 			'lieu_id'    => $lieu_id
 		] );
 
@@ -2354,6 +2723,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			wp_die( $invalid_access_message );
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
+		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : '';
+		if ( is_array( $coadhs ) ) {
+			$coadhs = implode( ',', $coadhs );
+		}
 
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
@@ -2693,6 +3066,10 @@ $paiements_dates
 			wp_die( $invalid_access_message );
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
+		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : '';
+		if ( ! is_array( $coadhs ) ) {
+			$coadhs = explode( ',', $coadhs );
+		}
 
 		$message = sanitize_textarea_field( isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' );
 
@@ -2776,6 +3153,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			'amapress_adhesion_paiements'        => ( $cheques < 0 ? 1 : ( $cheques > 0 ? $cheques : 0 ) ),
 			'amapress_adhesion_lieu'             => $lieu_id,
 		];
+		for ( $i = 2; $i <= 4; $i ++ ) {
+			if ( ! empty( $coadhs[ $i - 2 ] ) ) {
+				$meta["amapress_adhesion_adherent{$i}"] = $coadhs[ $i - 2 ];
+			} elseif ( $edit_inscription ) {
+				delete_post_meta( $edit_inscription->ID, "amapress_adhesion_adherent{$i}" );
+			}
+		}
 		if ( - 1 == $cheques ) {
 			$meta['amapress_adhesion_pmt_type'] = 'esp';
 		}
