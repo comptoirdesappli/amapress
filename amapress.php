@@ -67,6 +67,10 @@ function amapress_get_github_updater_url() {
 	return is_multisite() ? network_admin_url( 'settings.php?page=github-updater' ) : admin_url( 'options-general.php?page=github-updater' );
 }
 
+function amapress_is_demo_email_address( $email ) {
+	return false !== strpos( $email, '@example' ) || false !== strpos( $email, '@exemple' );
+}
+
 function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments = array(), $cc = null, $bcc = null ) {
 	$subject = wp_specialchars_decode( $subject );
 	if ( empty( $to ) ) {
@@ -115,7 +119,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		$attachments = [];
 	}
 	global $amapress_send_mail_to;
-	if ( ! empty( $amapress_send_mail_to ) ) {
+	if ( ! empty( $amapress_send_mail_to ) && ! amapress_is_demo_email_address( $amapress_send_mail_to ) ) {
 		$h       = esc_html( var_export( $headers, true ) );
 		$message = "Mail redirigé vers $amapress_send_mail_to pour test\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
 		$to      = $amapress_send_mail_to;
