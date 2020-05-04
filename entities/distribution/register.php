@@ -209,15 +209,26 @@ function amapress_register_entities_distribution( $entities ) {
 					/** @var TitanFrameworkOption $option */
 					$dist = AmapressDistribution::getBy( $option->getPostID() );
 
-					return 'Configurer un créneau de la forme : <strong>Heure Début-Heure Fin</strong>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
+					$ret            = '';
+					$users_in_slots = count( $dist->getUserIdsWithAnySlot() );
+					if ( $users_in_slots > 0 ) {
+						$ret .= sprintf(
+							'<p><strong style="color: red">Attention : %d amapien(s) sont déjà inscrits. Modifier la configuration peut impacter l\'affectation de leurs créneaux</strong></p>',
+							$users_in_slots
+						);
+					}
+
+					$ret .= 'Configurer un créneau de la forme : <strong>Heure Début-Heure Fin</strong>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
 <br/>Exemple : 18h00-20h00[10min;2p]<br/>' .
-					       sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
-						       date_i18n( 'H:i', $dist->getStartDateAndHour() ),
-						       date_i18n( 'H:i', $dist->getEndDateAndHour() ),
-						       $dist->getSlotsDescription()
-					       ) .
-					       '<br/>' .
-					       Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
+					        sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
+						        date_i18n( 'H:i', $dist->getStartDateAndHour() ),
+						        date_i18n( 'H:i', $dist->getEndDateAndHour() ),
+						        $dist->getSlotsDescription()
+					        ) .
+					        '<br/>' .
+					        Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
+
+					return $ret;
 				},
 				'group' => '1/ Partage',
 			),
