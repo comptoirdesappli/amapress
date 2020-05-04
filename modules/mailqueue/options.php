@@ -47,6 +47,14 @@ function amapress_mailing_queue_menu_options() {
 						'default' => '30',
 					),
 					array(
+						'id'      => 'avoid_send_wp_from',
+						'name'    => 'Envoi au site',
+						'type'    => 'checkbox',
+						'desc'    => 'Eviter d\'envoyer les emails avec destinataires en Cc/Bcc à l\'adresse email du site (' . amapress_mail_from( amapress_get_default_wordpress_from_email() ) . ')',
+						'default' => true,
+					),
+					//
+					array(
 						'type' => 'save',
 					),
 				)

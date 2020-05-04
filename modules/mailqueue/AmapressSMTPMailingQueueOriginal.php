@@ -238,16 +238,35 @@ class AmapressSMTPMailingQueueOriginal {
 			$subject = '[Email sans destinataire]' . $subject;
 		}
 
+		$avoid_emails = [];
+		//distribution loop : avoid sending to Mailing Group address if any Bcc
+		if ( ! empty( $bcc ) && is_array( $message ) && isset( $message['ml_grp_id'] ) ) {
+			$ml_grp = AmapressMailingGroup::getBy( $message['ml_grp_id'] );
+			if ( $ml_grp ) {
+				$avoid_emails[] = $ml_grp->getName();
+			}
+		}
+		if ( Amapress::getOption( 'avoid_send_wp_from' ) ) {
+			//dont send intended CC/BCC to WordPress site address
+			if ( ! empty( $cc ) || ! empty( $bcc ) ) {
+				$avoid_emails[] = amapress_mail_from( amapress_get_default_wordpress_from_email() );
+			}
+		}
+
 		foreach ( (array) $to as $recipient ) {
 			try {
 				// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
 				$recipient_name = '';
 				if ( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
-					if ( count( $matches ) == 3 ) {
+					if ( 3 === count( $matches ) ) {
 						$recipient_name = $matches[1];
 						$recipient      = $matches[2];
 					}
 				}
+				if ( in_array( $to, $avoid_emails ) ) {
+					continue;
+				}
+
 				$phpmailer->AddAddress( $recipient, $recipient_name );
 			} catch ( phpmailerException $e ) {
 				$errors[] = $e->errorMessage();
