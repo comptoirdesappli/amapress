@@ -900,6 +900,44 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												], false ),
 										),
 										array(
+											'name' => 'Email au gardien de panier (inscription)',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'inscr-distrib-gardien-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Inscription gardien de panier de %%post:title%%',
+										),
+										array(
+											'id'      => 'inscr-distrib-gardien-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre inscription en tant que gardien de panier de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'name' => 'Email au gardien de panier (désinscription)',
+											'type' => 'heading',
+										),
+										array(
+											'id'       => 'desinscr-distrib-gardien-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Désinscription gardien de panier de %%post:title%%',
+										),
+										array(
+											'id'      => 'desinscr-distrib-gardien-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre désinscription en tant que gardien de panier de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+										),
+										array(
 											'type' => 'save',
 										),
 									],
