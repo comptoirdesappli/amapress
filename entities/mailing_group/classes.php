@@ -38,6 +38,10 @@ class AmapressMailingGroup extends TitanEntity {
 		parent::__construct( $post_id );
 	}
 
+	public function logError( $message ) {
+		error_log( $message );
+	}
+
 	public function getName() {
 		return $this->getCustom( 'amapress_mailing_group_name' );
 	}
@@ -403,7 +407,7 @@ class AmapressMailingGroup extends TitanEntity {
 		try {
 			$mailbox = $this->getMailbox();
 		} catch ( Exception $ex ) {
-			error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
+			//error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
 
 			return false;
 		}
@@ -517,11 +521,11 @@ class AmapressMailingGroup extends TitanEntity {
 						} else if ( 'moderate' == $unk_action && ( empty( $bl_regex ) || ! preg_match( "/$bl_regex/", $mail->fromAddress ) ) ) {
 							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, true );
 							if ( ! $res ) {
-								error_log( 'Cannot save mail for moderation' );
+								$this->logError( 'Cannot save mail for moderation' );
 							}
 						} else {
 							$res = true;
-							error_log( 'Rejected mail from' . $from );
+							$this->logError( 'Rejected mail from' . $from );
 						}
 					} else {
 						if ( $this->isAllowedSender( $mail->fromAddress ) || $this->isAllowedSender( $mail->senderAddress ) ) {
@@ -530,16 +534,16 @@ class AmapressMailingGroup extends TitanEntity {
 
 							$msg = $this->loadMessage( 'accepted', $msg_id );
 							if ( ! $this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] ) ) {
-								error_log( 'fetchMails - sendMailByParamName - waiting-sender failed' );
+								$this->logError( 'fetchMails - sendMailByParamName - waiting-sender failed' );
 							}
 							$res = $this->sendMailFromMsgId( 'accepted', $msg_id );
 							if ( ! $res ) {
-								error_log( 'Cannot send mail to members' );
+								$this->logError( 'Cannot send mail to members' );
 							}
 						} else {
 							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, false );
 							if ( ! $res ) {
-								error_log( 'Cannot save mail for moderation' );
+								$this->logError( 'Cannot save mail for moderation' );
 							}
 						}
 					}
@@ -551,7 +555,7 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 			}
 		} catch ( Exception $ex ) {
-			error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
+			//error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
 
 			return false;
 		} finally {
@@ -827,7 +831,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function resendModerationMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			error_log( 'resendModerationMail - loadMessage failed' );
+			$this->logError( 'resendModerationMail - loadMessage failed' );
 
 			return false;
 		}
@@ -840,7 +844,7 @@ class AmapressMailingGroup extends TitanEntity {
 					'file'   => $msg['eml_file']
 				]
 			] ) ) {
-			error_log( 'resendModerationMail - sendMailByParamName - waiting-mods failed' );
+			$this->logError( 'resendModerationMail - sendMailByParamName - waiting-mods failed' );
 
 			return false;
 		}
@@ -851,21 +855,21 @@ class AmapressMailingGroup extends TitanEntity {
 	private function saveMailForModeration( $msg_id, $date, $clean_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, $is_unknown ) {
 		if ( ! $this->storeMail( 'waiting', $msg_id, $date, $from, $to, $cc, $subject, $content, $body, $headers,
 			[ 'date' => amapress_time(), 'eml_file' => $eml_file, 'clean_from' => $clean_from ] ) ) {
-			error_log( 'saveMailForModeration - storeMail failed' );
+			$this->logError( 'saveMailForModeration - storeMail failed' );
 
 			return false;
 		}
 
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			error_log( 'saveMailForModeration - loadMessage failed' );
+			$this->logError( 'saveMailForModeration - loadMessage failed' );
 
 			return false;
 		}
 
 		if ( Amapress::getOption( 'mailinggroup-send-confirm-unk', false ) || ! $is_unknown ) {
 			if ( ! $this->sendMailByParamName( 'mailinggroup-waiting-sender', $msg, $msg['from'] ) ) {
-				error_log( 'saveMailForModeration - sendMailByParamName - waiting-sender failed' );
+				$this->logError( 'saveMailForModeration - sendMailByParamName - waiting-sender failed' );
 
 				return false;
 			}
@@ -879,7 +883,7 @@ class AmapressMailingGroup extends TitanEntity {
 					'file'   => $msg['eml_file']
 				]
 			] ) ) {
-			error_log( 'saveMailForModeration - sendMailByParamName - waiting-mods failed' );
+			$this->logError( 'saveMailForModeration - sendMailByParamName - waiting-mods failed' );
 
 			return false;
 		}
