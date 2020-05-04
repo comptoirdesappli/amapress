@@ -700,8 +700,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'inscr-event-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [], false ),
 										),
@@ -723,8 +723,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'desinscr-event-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%",
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [], false ),
 										),
@@ -838,8 +838,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'inscr-distrib-gardiened-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\n%%gardien%% (%%gardien_contact%% / %%gardien_comment%%) gardera vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\n%%gardien%% (%%gardien_contact%% / %%gardien_comment%%) gardera vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [
 													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
@@ -850,7 +850,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												], false ),
 										),
 										array(
-											'name' => 'Email au gardien de panier',
+											'name' => 'Email au gardien de panier (affectation)',
 											'type' => 'heading',
 										),
 										array(
@@ -863,8 +863,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'inscr-distrib-gardieneur-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\n%%amapien%% (%%amapien_contact%%) vous a attribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\n%%amapien%% (%%amapien_contact%%) vous a attribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [
 													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
@@ -888,8 +888,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'desinscr-distrib-gardieneur-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
-											'default' => "Bonjour,\n\n%%amapien%% vous a désattribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%",
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\n%%amapien%% vous a désattribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [
 													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
@@ -967,7 +967,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'inscr-distribution-slot-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
+											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVous avez choisi le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [
@@ -1021,7 +1021,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'inscr-visite-slot-mail-content',
 											'name'    => 'Contenu de l\'email',
-											'type'    => 'textarea',
+											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVous êtes inscrit pour %%creneau%% à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [
