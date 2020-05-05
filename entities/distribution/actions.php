@@ -308,7 +308,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			$slot_display      = implode( ',', array_map( function ( $s ) {
 				return $s['display'];
 			}, $slots ) );
-			if ( amapress_can_access_admin() && ! $for_pdf ) {
+			if ( amapress_can_access_admin() && ! $for_pdf && ! isset( $_GET['for_export'] ) ) {
 				$affect_slot_id = 'affect-slot-' . $user_ids[0];
 				$affect_slot    = "<select id='$affect_slot_id'>";
 				$affect_slot    .= tf_parse_select_options( $dist_slots_options, $slot_sort, false );
@@ -524,6 +524,13 @@ line-height: 1.1;
 		} else {
 			echo '<a href="' . esc_attr( add_query_arg( 'all', '' ) ) . '" class="btn btn-default btn-print">Afficher tous les contrats</a>';
 		}
+		if ( ! empty( $dist_slots_conf ) ) {
+			if ( ! isset( $_GET['for_export'] ) ) {
+				echo '<a href="' . esc_attr( add_query_arg( 'for_export', '' ) ) . '" class="btn btn-default btn-print">Vue pour export XLSX si créneaux de distribution</a>';
+			} else {
+				echo '<a href="' . esc_attr( remove_query_arg( 'for_export' ) ) . '" class="btn btn-default btn-print">Revenir à la vue normale</a>';
+			}
+		}
 		echo '<a href="' . esc_attr( $pdf_url ) . '" class="btn btn-default btn-print">Imprimer en PDF</a>';
 		echo '<br/>';
 		if ( current_user_can( 'edit_distribution' ) ) {
@@ -578,9 +585,11 @@ line-height: 1.1;
 				'no_script'    => $for_pdf,
 				'aaSorting'    => [ [ 0, 'asc' ] ]
 			),
-			array(
-				Amapress::DATATABLES_EXPORT_EXCEL
-			) );
+			( empty( $dist_slots_conf ) || isset( $_GET['for_export'] ) ) ?
+				array(
+					Amapress::DATATABLES_EXPORT_EXCEL
+				) : array()
+		);
 	}
 
 	$had_paniers_variables = false;
