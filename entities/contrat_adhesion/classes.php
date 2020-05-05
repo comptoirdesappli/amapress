@@ -40,17 +40,17 @@ class AmapressAdhesionQuantite {
 	 */
 	public function getCode() {
 		$quant = $this->getContratQuantite();
-		if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
-			if ( abs( $this->getFactor() ) < 0.001 ) {
-				return 'Aucun';
-			} else if ( $this->getFactor() != 1 ) {
-				return $this->getFactor() . ' x ' . $quant->getCode();
-			} else {
-				return $quant->getCode();
-			}
+		//if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
+		if ( abs( $this->getFactor() ) < 0.001 ) {
+			return 'Aucun';
+		} else if ( $this->getFactor() != 1 ) {
+			return $this->getFactor() . ' x ' . $quant->getCode();
 		} else {
 			return $quant->getCode();
 		}
+//		} else {
+//			return $quant->getCode();
+//		}
 	}
 
 	/**
