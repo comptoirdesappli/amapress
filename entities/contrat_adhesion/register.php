@@ -1628,7 +1628,20 @@ function amapress_get_contrat_quantite_datatable(
 				                      Amapress::start_of_week( Amapress::add_a_week( amapress_time() ) ) < $dist->getDate() && $dist->getDate() < Amapress::end_of_week( Amapress::add_a_week( amapress_time() ) ) ?
 					                      '<strong>Semaine prochaine</strong> - ' :
 					                      ''
-				                      ) ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false ) : 'non planifiée' ) . '</p>';
+				                      ) ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false ) : 'non planifiée' );
+		$factor            = $contrat_instance->getDateFactor( $dist->getDate() );
+		if ( abs( $factor - 2 ) < 0.001 ) {
+			$factor = 'Double distribution';
+		} else if ( abs( $factor - 1 ) < 0.001 ) {
+			$factor = '';
+		} else {
+			$factor = "$factor distribution";
+		}
+
+		if ( ! empty( $factor ) ) {
+			$next_distrib_text .= ' - <strong style="color:orange">' . esc_html( $factor ) . '</strong>';
+		}
+		$next_distrib_text .= '</p>';
 		if ( $next_next_dist ) {
 			$next_distrib_text .= '<p>Distribution suivante : ' .
 			                      Amapress::makeLink( $root_url . '&all&date=' . date( 'Y-m-d', $next_next_dist->getDate() ),
