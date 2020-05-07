@@ -288,7 +288,21 @@ function amapress_register_entities_distribution( $entities ) {
 				'name'        => amapress__( 'Nombre' ),
 				'type'        => 'number',
 				'required'    => true,
-				'desc'        => 'Indiquer le nombre de responsable(s) de distribution supplémentaire(s)',
+				'desc'        => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$dist = AmapressDistribution::getBy( $option->getPostID() );
+
+					$ret = 'Indiquer le nombre de responsable(s) de distribution <strong>supplémentaire(s)</strong>';
+					if ( $dist ) {
+						$ret .= sprintf(
+							'<br/>Le nombre de responsables de distribution à %s est de %d.',
+							Amapress::makeLink( $dist->getLieu()->getAdminEditLink(), $dist->getLieu()->getTitle() ),
+							$dist->getLieu()->getNb_responsables()
+						);
+					}
+
+					return $ret;
+				},
 				'group'       => '2/ Responsables',
 				'default'     => 0,
 				'show_column' => false,
