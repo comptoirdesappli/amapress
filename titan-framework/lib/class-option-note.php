@@ -34,7 +34,7 @@ class TitanFrameworkOptionNote extends TitanFrameworkOption {
 			echo "<p class='description'>";
 		}
 
-		echo $this->settings['desc'];
+		echo $this->getDesc();
 
 		if ( $this->settings['paragraph'] ) {
 			echo '</p>';

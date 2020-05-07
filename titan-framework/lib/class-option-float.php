@@ -107,7 +107,7 @@ class TitanFrameworkOptionFloat extends TitanFrameworkOption {
 			$this->getID(),
 			esc_attr( $this->getValue() ),
 			$this->settings['unit'],
-			$this->settings['desc']
+			$this->getDesc()
 		);
 		$this->echoOptionFooter( false );
 	}

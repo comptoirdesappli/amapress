@@ -159,7 +159,7 @@ class TitanFrameworkOptionNumber extends TitanFrameworkOption {
 			$this->settings['max'],
 			$this->settings['step'],
 			$this->settings['unit'],
-			$this->settings['desc']
+			$this->getDesc()
 		);
 		$this->echoOptionFooter( false );
 	}

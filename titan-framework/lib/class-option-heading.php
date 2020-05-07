@@ -39,13 +39,14 @@ class TitanFrameworkOptionHeading extends TitanFrameworkOption {
 		if ( ! empty( $this->settings['id'] ) ) {
 			$headingID = $this->settings['id'];
 		}
+		$desc = $this->getDesc();
 		?>
         <tr valign="top" class="even first tf-heading">
             <th scope="row" class="first last" colspan="2">
                 <h3 id="<?php echo esc_attr( $headingID ) ?>"><?php echo $this->settings['name'] ?></h3>
 				<?php
-				if ( ! empty( $this->settings['desc'] ) ) {
-					?><p class='description'><?php echo $this->settings['desc'] ?></p><?php
+				if ( ! empty( $desc ) ) {
+					?><p class='description'><?php echo $desc ?></p><?php
 				}
 				?>
             </th>

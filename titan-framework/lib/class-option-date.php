@@ -225,7 +225,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			$this->getID(),
 			esc_attr( ( $this->getValue() > 0 ) ? date( $dateFormat, $this->getValue() ) : '' ),
 			isset( $this->settings['autocomplete'] ) && $this->settings['autocomplete'] ? 'on' : 'off',
-			$this->settings['desc']
+			$this->getDesc()
 		);
 		$this->echoOptionFooter( false );
 	}
