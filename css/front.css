@@ -542,7 +542,7 @@ ul.quantite-list ul.paiement-list {
 }
 
 .inscr-list-date {
-
+    margin: 0 !important;
 }
 
 .inscr-list-contrats {
@@ -1015,4 +1015,27 @@ table.docspace_list tr.dir td:first-of-type a {
     -ms-hyphens: auto !important;
     -o-hyphens: auto !important;
     hyphens: auto !important;
+}
+
+
+.dataTables_scrollBody::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.dataTables_scrollBody::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.dataTables_scrollBody::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.dataTables_scrollBody::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dataTables_scrollBody table.dataTable {
+    margin: 0 !important;
 }

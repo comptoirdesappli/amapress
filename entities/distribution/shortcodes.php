@@ -102,7 +102,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'for_pdf'                   => 'false',
 		'past_weeks'                => 5,
 		'max_dates'                 => - 1,
-		'responsive'                => 'false',
+		'responsive'                => 'scroll',
 		'user'                      => null,
 		'lieu'                      => null,
 		'date'                      => null,
@@ -118,14 +118,16 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'show_responsables'         => 'true',
 		'manage_all_subscriptions'  => 'false',
 		'prefer_inscr_button_first' => 'true',
-		'column_date_width'         => '5em',
+		'column_date_width'         => '4em',
 		'fixed_column_width'        => '%',
 		'scroll_x'                  => '',
 		'scroll_y'                  => '',
-		'font_size'                 => '',
+		'font_size'                 => '11px',
 		'key'                       => '',
 	), $atts );
 
+	$for_pdf                 = Amapress::toBool( $atts['for_pdf'] );
+	$for_emargement          = Amapress::toBool( $atts['for_emargement'] );
 	$fixed_column_width      = $atts['fixed_column_width'];
 	$column_date_width       = $atts['column_date_width'];
 	$show_contrats_desc      = Amapress::toBool( $atts['show_contrats_desc'] );
@@ -134,8 +136,21 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 	$allow_gardiens_comments = Amapress::toBool( $atts['allow_gardiens_comments'] );
 	$distrib_links           = Amapress::toBool( $atts['distrib_links'] );
 	$responsive              = $atts['responsive'];
+	if ( $for_pdf ) {
+		$responsive = false;
+	}
+
 	if ( 'auto' === $responsive ) {
 		$responsive = wp_is_mobile();
+	} elseif ( 'scroll' === $responsive ) {
+		if ( empty( $column_date_width ) ) {
+			$column_date_width = '4em';
+		}
+		if ( empty( $fixed_column_width ) || '%' === $fixed_column_width ) {
+			$fixed_column_width = '8em';
+		}
+		$atts['scroll_x'] = 'true';
+		$atts['scroll_y'] = '300px';
 	} else {
 		$responsive = Amapress::toBool( $responsive );
 	}
@@ -235,6 +250,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	$inscr_all_distrib         = Amapress::toBool( $atts['inscr_all_distrib'] );
 	$manage_all_subscriptions  = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
 	$prefer_inscr_button_first = Amapress::toBool( $atts['prefer_inscr_button_first'] );
+	if ( $for_emargement || $for_pdf ) {
+		$prefer_inscr_button_first = false;
+	}
 
 	$required_lieu_id = null;
 	if ( ! empty( $atts['lieu'] ) ) {
@@ -284,8 +302,6 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	}
 
 
-	$for_pdf        = Amapress::toBool( $atts['for_pdf'] );
-	$for_emargement = Amapress::toBool( $atts['for_emargement'] );
 	if ( $for_pdf ) {
 		$is_current_user_resp_amap = false;
 		$is_resp_distrib           = false;
@@ -427,41 +443,45 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			if ( ! empty( $atts['scroll_y'] ) ) {
 				$data_atts['scroll-y'] = $atts['scroll_y'];
 			}
-//			$data_atts['auto-width'] = 'false';
-			$data_atts = implode( ' ', array_map( function ( $k, $v ) {
+			$data_atts['auto-width'] = 'false';
+			$data_atts               = implode( ' ', array_map( function ( $k, $v ) {
 				return 'data-' . $k . '="' . esc_attr( $v ) . '"';
 			}, array_keys( $data_atts ), array_values( $data_atts ) ) );
 		}
 		if ( $for_pdf || '%' == $fixed_column_width ) {
 			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" width="100%" style="table-layout: fixed;" cellspacing="0">';
 		} else {
-			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" style="width: auto;table-layout: fixed;" cellspacing="0">';
+			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" style="width:auto;table-layout: fixed;" cellspacing="0">';
 		}
 		$ret .= '<thead >';
 		$ret .= '<tr>';
 		if ( $for_pdf ) {
 			$ret .= '<th class="dist-col-date">Date</th>';
 		} else {
-			$ret .= '<th class="dist-col-date" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Date</th>';
+			$ret .= '<th class="dist-col-date" data-width="' . $column_date_width . '"  style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Date</th>';
 		}
 		if ( $for_emargement ) {
 			if ( $for_pdf ) {
 				$ret .= '<th>Produits</th>';
 			} else {
-				$ret .= '<th style="width: ' . $column_date_width . '">Produits</th>';
+				$ret .= '<th data-width="' . $column_date_width . '" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Produits</th>';
 			}
 		}
 		if ( '%' == $fixed_column_width ) {
-			$width = ! $for_pdf ? 'width: calc(100% / ' . $lieux_needed_resps[ $lieu_id ] . ' - ' . $column_date_width . ')' : '';
+			$width = ! $for_pdf ? 'calc(100% / ' . $lieux_needed_resps[ $lieu_id ] . ' - ' . $column_date_width . ')' : '';
 		} else {
-			$width = ! $for_pdf ? 'width:' . $fixed_column_width : '';
+			$width = ! $for_pdf ? $fixed_column_width : '';
+		}
+		$css_width = '';
+		if ( ! empty( $width ) ) {
+			$css_width = 'width:' . $width;
 		}
 		if ( ! $for_emargement && ! $for_pdf ) {
 			if ( $has_slots ) {
-				$ret .= '<th style="' . $width . ';text-align: center">Créneau horaire</th>';
+				$ret .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">Créneau horaire</th>';
 			}
 			if ( $allow_gardiens ) {
-				$ret .= '<th style="' . $width . ';text-align: center">Garde panier</th>';
+				$ret .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">Garde panier</th>';
 			}
 		}
 
@@ -486,7 +506,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			if ( $has_role_names ) {
 				$role_desc = '<br/><span class="role-distrib-desc">' . $role_desc . '</span>';
 			}
-			$ret .= '<th class="distrib-resp-head" style="' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
+			if ( ! $for_pdf ) {
+				$ret .= '<th class="distrib-resp-head" data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
+			} else {
+				$ret .= '<th class="distrib-resp-head" data-width="' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
+			}
 		}
 		$ret .= '</tr>';
 		$ret .= '</thead>';
@@ -501,13 +525,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$da = $a;
 			$db = $b;
 
-//        if ($da < $today && $db < $today) {
-//            return ($da > $db ? -1 : 1);
-//        } else if ($da > $today && $db > $today){
-//            return ($da < $db ? -1 : 1);
-//        } else {
 			return ( $da < $db ? - 1 : 1 );
-//        }
 		} );
 
 		$ret .= '<tbody>';
@@ -567,8 +585,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$date_content = '<p class="inscr-list-date">' .
 			                ( $distrib_links ? Amapress::makeLink( $dist->getPermalink(), $date_display, true, true ) : esc_html( $date_display ) ) .
 			                '</p>';
-			$ret          .= '<th scope="row" class="inscr-list-info dist-col-date smart-word-break" style="vertical-align: middle">';
-			$ret          .= $date_content;
+			if ( ! $for_pdf ) {
+				$ret .= '<th scope="row" class="inscr-list-info dist-col-date smart-word-break; padding:5px" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . ';vertical-align: middle">';
+			} else {
+				$ret .= '<th scope="row" class="inscr-list-info dist-col-date smart-word-break; padding:5px" style="vertical-align: middle">';
+			}
+			$ret .= $date_content;
 			if ( ! $for_emargement ) {
 				$ret .= $contrats_content;
 			}
@@ -632,7 +654,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				}
 
 				if ( ! $for_emargement && ! $for_pdf && $has_slots ) {
-					$ret                   .= "<td class='resp-col incr-list-resp incr-missing'>";
+					$ret                   .= "<td style='$css_width' class='resp-col incr-list-resp incr-missing'>";
 					$can_change_slot       = $is_user_part_of && amapress_time() < ( $dist->getStartDateAndHour()
 					                                                                 - Amapress::getOption( 'inscr-distribution-slot-close' ) * HOUR_IN_SECONDS );
 					$slot_for_current_user = $dist->getSlotInfoForUser( $user_id );
@@ -715,9 +737,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 					}
 					if ( $is_user_part_of ) {
-						$ret .= "<td class='resp-col incr-list-resp incr-missing'>$info$inscr_self$inscr_another</td>";
+						$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-missing'>$info$inscr_self$inscr_another</td>";
 					} else {
-						$ret .= "<td class='resp-col incr-list-resp incr-not-part'>$info$inscr_another</td>";
+						$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-not-part'>$info$inscr_another</td>";
 					}
 				}
 
@@ -825,12 +847,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							}
 						}
 						if ( $is_user_part_of ) {
-							$ret .= "<td class='resp-col incr-list-resp incr-missing'>$missing$inscr_another</td>";
+							$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-missing'>$missing$inscr_another</td>";
 						} else {
-							$ret .= "<td class='resp-col incr-list-resp incr-not-part'>$inscr_another</td>";
+							$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-not-part'>$inscr_another</td>";
 						}
 					} else {
-						$ret      .= '<td style="text-align: center">';
+						$ret      .= '<td style="' . $css_width . ';text-align: center">';
 						$td_resps = is_array( $resp ) ? $resp : [ $resp ];
 						foreach ( $td_resps as $r ) {
 							if ( ! $r ) {
@@ -854,14 +876,14 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				}
 			}
 			for ( $j = $needed; $j < $lieux_needed_resps[ $lieu_id ]; $j ++ ) {
-				$ret .= "<td class='resp-col'>&nbsp;</td>";
+				$ret .= "<td style='$css_width' class='resp-col'>&nbsp;</td>";
 			}
 			if ( 0 == $needed ) {
 				if ( $has_slots ) {
-					$ret .= "<td class='resp-col'>&nbsp;</td>";
+					$ret .= "<td style='$css_width' class='resp-col'>&nbsp;</td>";
 				}
 				if ( $allow_gardiens ) {
-					$ret .= "<td class='resp-col'>&nbsp;</td>";
+					$ret .= "<td style='$css_width' class='resp-col'>&nbsp;</td>";
 				}
 			}
 			$ret .= '</tr>';
@@ -874,7 +896,6 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	}
 
 	$ret .= '<style type="text/css">.inscr-list-info * {
-    max-width: ' . $column_date_width . ';
     white-space: normal !important;
 }</style>';
 	if ( is_admin() ) {

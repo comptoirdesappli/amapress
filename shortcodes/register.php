@@ -164,16 +164,23 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Historique d\'inscription des responsables aux distributions',
 			'args' => [
-				'show_email'      => '(Par défaut “default”) Afficher les emails',
-				'show_tel'        => '(Par défaut “default”) Afficher les numéros de téléphones',
-				'show_tel_fixe'   => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
-				'show_tel_mobile' => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
-				'show_adresse'    => '(Par défaut “false”) Afficher les adresses',
-				'show_avatar'     => '(Par défaut “default”) Afficher les avatars des amapiens',
-				'show_roles'      => '(Par défaut “false”) Afficher les rôles des membres du collectif',
-				'show_title'      => '(Par défaut “true”) Afficher les noms des lieux',
-				'past_weeks'      => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
-				'lieu'            => 'Filtre de lieu',
+				'show_email'          => '(Par défaut “default”) Afficher les emails',
+				'show_tel'            => '(Par défaut “default”) Afficher les numéros de téléphones',
+				'show_tel_fixe'       => '(Par défaut “default”) Afficher les numéros de téléphones fixes',
+				'show_tel_mobile'     => '(Par défaut “default”) Afficher les numéros de téléphones mobiles',
+				'show_adresse'        => '(Par défaut “false”) Afficher les adresses',
+				'show_avatar'         => '(Par défaut “default”) Afficher les avatars des amapiens',
+				'show_roles'          => '(Par défaut “false”) Afficher les rôles des membres du collectif',
+				'show_title'          => '(Par défaut “true”) Afficher les noms des lieux',
+				'past_weeks'          => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
+				'lieu'                => 'Filtre de lieu',
+				'scroll_x'            => 'Autoriser le scroll horizontal si fixed_column_width est en valeur fixe em/px',
+				'scroll_y'            => '(en px) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions',
+				'font_size'           => '(par défaut 11px) Taille relative du texte dans la vue en % ou em',
+				'show_no_contrat'     => '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien',
+				'show_contrats_desc'  => '(Par défaut “true”) Afficher la liste des contrats pour chaque date ; si entier, limite le nombre de lignes affichées à ce nombre',
+				'show_contrats_count' => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
+				'responsive'          => '(Par défaut scroll) Configuration du mode mobile/responsive : scroll (hauteur de la vue et largeur de colonnes fixes avec barres de défilement), auto (passage en mode pliant sur mobile, répartition en largeur sinon), true/false'
 			]
 		] );
 	amapress_register_shortcode( 'liste-inscription-distrib', function ( $args ) {
@@ -224,11 +231,11 @@ function amapress_register_shortcodes() {
 				'past_weeks'                => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
 				'max_dates'                 => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
 				'lieu'                      => 'Filtre de lieu',
-				'column_date_width'         => '(Par défaut 5em) Largeur de la colonne Dates/Produits',
+				'column_date_width'         => '(Par défaut 4em) Largeur de la colonne Dates/Produits',
 				'fixed_column_width'        => '(Par défaut, %) : fixe la largeur des colonnes Responsables ; % pour répartir la largeur de colonnes sur la largeur du tableau ; en em ou px pour forcer une largeur fixe',
 				'scroll_x'                  => 'Autoriser le scroll horizontal si fixed_column_width est en valeur fixe em/px',
 				'scroll_y'                  => '(en px) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions',
-				'font_size'                 => 'Taille relative du texte dans la vue en % ou em',
+				'font_size'                 => '(par défaut 11px) Taille relative du texte dans la vue en % ou em',
 				'show_no_contrat'           => '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien',
 				'show_contrats_desc'        => '(Par défaut “true”) Afficher la liste des contrats pour chaque date ; si entier, limite le nombre de lignes affichées à ce nombre',
 				'show_contrats_count'       => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
@@ -238,7 +245,8 @@ function amapress_register_shortcodes() {
 				'allow_gardiens'            => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
 				'allow_gardiens_comments'   => '(Par défaut, true si actif) Autoriser les gardiens de paniers à mettre un commentaire avec leur inscription',
 				'allow_slots'               => '(Par défault true) Autoriser le choix de créneaux',
-				'show_responsables'         => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution'
+				'show_responsables'         => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution',
+				'responsive'                => '(Par défaut scroll) Configuration du mode mobile/responsive : scroll (hauteur de la vue et largeur de colonnes fixes avec barres de défilement), auto (passage en mode pliant sur mobile, répartition en largeur sinon), true/false'
 			]
 		] );
 	amapress_register_shortcode( 'anon-inscription-distrib', 'amapress_inscription_distrib_shortcode',
@@ -259,11 +267,11 @@ function amapress_register_shortcodes() {
 				'past_weeks'                => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
 				'max_dates'                 => '(Par défaut “-1”) Nombre maximum de distributions à venir à afficher',
 				'lieu'                      => 'Filtre de lieu',
-				'column_date_width'         => '(Par défaut 5em) Largeur de la colonne Dates/Produits',
+				'column_date_width'         => '(Par défaut 4em) Largeur de la colonne Dates/Produits',
 				'fixed_column_width'        => '(Par défaut, %) : fixe la largeur des colonnes Responsables ; % pour répartir la largeur de colonnes sur la largeur du tableau ; en em ou px pour forcer une largeur fixe',
 				'scroll_x'                  => 'Autoriser le scroll horizontal si fixed_column_width est en valeur fixe em/px',
 				'scroll_y'                  => '(en px) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions',
-				'font_size'                 => 'Taille relative du texte dans la vue en % ou em',
+				'font_size'                 => '(par défaut 11px) Taille relative du texte dans la vue en % ou em',
 				'show_no_contrat'           => '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien',
 				'show_contrats_desc'        => '(Par défaut “true”) Afficher la liste des contrats pour chaque date ; si entier, limite le nombre de lignes affichées à ce nombre',
 				'show_contrats_count'       => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
@@ -273,7 +281,8 @@ function amapress_register_shortcodes() {
 				'allow_gardiens'            => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
 				'allow_gardiens_comments'   => '(Par défaut, true si actif) Autoriser les gardiens de paniers à mettre un commentaire avec leur inscription',
 				'allow_slots'               => '(Par défault true) Autoriser le choix de créneaux',
-				'show_responsables'         => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution'
+				'show_responsables'         => '(Par défault true) Afficher les colonnes d\'inscription Responsable de distribution',
+				'responsive'                => '(Par défaut scroll) Configuration du mode mobile/responsive : scroll (hauteur de la vue et largeur de colonnes fixes avec barres de défilement), auto (passage en mode pliant sur mobile, répartition en largeur sinon), true/false'
 			]
 		] );
 	amapress_register_shortcode( 'resp-distrib-contacts', 'amapress_responsables_distrib_shortcode',
