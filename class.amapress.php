@@ -4341,7 +4341,13 @@ class Amapress {
 		return $domain;
 	}
 
+	private static $has_partial_coadhesion = null;
+
 	public static function hasPartialCoAdhesion() {
-		return Amapress::getOption( 'allow_partial_coadh' );
+		if ( null === self::$has_partial_coadhesion ) {
+			self::$has_partial_coadhesion = Amapress::getOption( 'allow_partial_coadh' );
+		}
+
+		return self::$has_partial_coadhesion;
 	}
 }

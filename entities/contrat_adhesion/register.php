@@ -817,8 +817,6 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 		$date_debut );
 	$excluded_contrat_ids  = [];
 	if ( TitanFrameworkOption::isOnNewScreen() && ! empty( $_GET['amapress_adhesion_adherent'] ) ) {
-		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
-
 		foreach ( AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( intval( $_GET['amapress_adhesion_adherent'] ) ) as $user_adh ) {
 			$excluded_contrat_ids[] = $user_adh->getContrat_instanceId();
 		}
@@ -1010,8 +1008,6 @@ add_action( 'wp_ajax_check_inscription_unique', function () {
 	$related  = isset( $_POST['related'] ) ? $_POST['related'] : 0;
 
 	$contrats = array_unique( array_map( 'intval', explode( ',', $contrats ) ) );
-
-	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
 
 	$user_id = intval( $user_id );
 	$adhs    = array();

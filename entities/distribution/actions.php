@@ -245,7 +245,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		);
 	}
 
-	$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+	$allow_partial_coadh = Amapress::hasPartialCoAdhesion();
 	$all_adhs            = AmapressContrats::get_active_adhesions( $all_contrat_instance_ids,
 		null, $dist_lieu_id, $date, true, false );
 	$liste               = array();

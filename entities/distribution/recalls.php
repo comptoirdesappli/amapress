@@ -482,7 +482,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				'sort' => 'fact',
 			)
 		);
-		$columns_with_price   = array_merge( $columns_no_price );
+		$columns_with_price = array_merge( $columns_no_price );
 		$columns_with_price[] = array(
 			'title' => 'Total',
 			'data'  => array(
@@ -491,7 +491,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 			)
 		);
 
-		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
+		$allow_partial_coadh = Amapress::hasPartialCoAdhesion();
 		$date                = $dist->getDate();
 		$all_adhs            = AmapressContrats::get_active_adhesions( $dist->getContratIds(),
 			null, $dist->getLieuId(), $date, true, false );

@@ -1758,8 +1758,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$allow_not_logged = false,
 		$include_futur = true
 	) {
-		$allow_partial_coadh = Amapress::getOption( 'allow_partial_coadh' );
-		if ( $allow_partial_coadh ) {
+		if ( Amapress::hasPartialCoAdhesion() ) {
 			return AmapressAdhesion::getUserActiveDirectAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 		} else {
 			return AmapressAdhesion::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
