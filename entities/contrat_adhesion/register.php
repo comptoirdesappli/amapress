@@ -1142,6 +1142,69 @@ function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
 //
 //	return $ret;
 //}
+function amapress_get_contrat_quantite_xlsx(
+	$contrat_instance_id,
+	$type
+) {
+	$contrat        = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$group_by       = 'date';
+	$show_adherents = false;
+	switch ( $type ) {
+		case 'adherents_date':
+			$show_adherents  = true;
+			$type_title_file = 'avec-adherents-par-date';
+			$type_title      = 'Avec adherents par date';
+			break;
+		case 'adherents_month':
+			$group_by        = 'month';
+			$show_adherents  = true;
+			$type_title_file = 'avec-adherents-par-mois';
+			$type_title      = 'Avec adhérents par mois';
+			break;
+		case 'adherents_quarter':
+			$group_by        = 'quarter';
+			$show_adherents  = true;
+			$type_title_file = 'avec-adherents-par-trimestre';
+			$type_title      = 'Avec adhérents par trimestre';
+			break;
+		case 'month':
+			$group_by        = 'month';
+			$type_title_file = 'par-mois';
+			$type_title      = 'Par mois';
+			break;
+		case 'quarter':
+			$group_by        = 'quarter';
+			$type_title_file = 'par-trimestre';
+			$type_title      = 'Par trimestre';
+			break;
+		default:
+			$type_title_file = 'par-date';
+			$type_title      = 'Par date';
+			break;
+	}
+	$data = amapress_get_contrat_quantite_datatable(
+		$contrat->ID, null,
+		null, [
+		'show_price'     => $contrat->isPanierVariable(),
+		'show_adherents' => $show_adherents,
+		'show_all_dates' => true,
+		'group_by'       => $group_by,
+		'mode'           => 'xlsx',
+	] );
+
+	$filename = strtolower( sanitize_file_name( "quantites-{$contrat->getModelTitle()}-{$type_title_file}" ) );
+	$title    = "{$contrat->getModelTitle()} - $type_title";
+	if ( strlen( $title ) > 27 ) {
+		$title = substr( $title, 0, 27 ) . '...';
+	}
+
+	return [
+		'data'     => $data['data'],
+		'columns'  => $data['columns'],
+		'filename' => $filename . '.xlsx',
+		'title'    => $title
+	];
+}
 
 function amapress_get_contrat_quantite_datatable(
 	$contrat_instance_id,
@@ -1315,11 +1378,13 @@ function amapress_get_contrat_quantite_datatable(
 		);
 	}
 
-	$overall_total_price          = 0;
-	$contrat_instance_quantites[] = null;
-	$data                         = array();
-	$sum_data                     = array();
-	$all_distribs                 = [ $dist ];
+	$overall_total_price = 0;
+	if ( 'xlsx' !== $options['mode'] ) {
+		$contrat_instance_quantites[] = null;
+	}
+	$data         = array();
+	$sum_data     = array();
+	$all_distribs = [ $dist ];
 	if ( $show_all_dates ) {
 		$all_distribs = [ $dist ];
 		if ( $next_next_dist ) {
@@ -1644,7 +1709,7 @@ function amapress_get_contrat_quantite_datatable(
 		$next_distrib_text .= '</p>';
 		if ( $next_next_dist ) {
 			$next_distrib_text .= '<p>Distribution suivante : ' .
-			                      Amapress::makeLink( $root_url . '&all&date=' . date( 'Y-m-d', $next_next_dist->getDate() ),
+			                      Amapress::makeLink( $root_url . ( $show_all_dates ? '&all' : '' ) . '&date=' . date( 'Y-m-d', $next_next_dist->getDate() ),
 				                      $next_next_dist->getTitle() ) . '</p>';
 		}
 
@@ -1679,6 +1744,13 @@ function amapress_get_contrat_quantite_datatable(
 					                      'show_roles'  => 'false',
 				                      ) ) . '</div>';
 		}
+	}
+
+	if ( 'xlsx' == $options['mode'] ) {
+		return [
+			'columns' => $columns,
+			'data'    => $data
+		];
 	}
 
 	$output = '';

@@ -1440,32 +1440,37 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Emails - Envoi des quantités à livrer'        => array(
+								'Emails - Envoi des quantités à livrer'                => array(
 									'id'      => 'amp_tab_recall_quantites_distrib',
 									'desc'    => '',
 									'options' => amapress_contrat_quantites_recall_options(),
 								),
-								'Emails - Contrats à renouveler'               => array(
+								'Emails - Contrats à renouveler'                       => array(
 									'id'      => 'amp_tab_recall_contrat_renew',
 									'desc'    => '',
 									'options' => amapress_contrat_renew_recall_options(),
 								),
-								'Emails - Contrats ouverts ou bientôt ouverts' => array(
+								'Emails - Contrats ouverts ou bientôt ouverts'         => array(
 									'id'      => 'amp_tab_recall_contrat_open',
 									'desc'    => '',
 									'options' => amapress_contrat_open_recall_options(),
 								),
-								'Emails - Contrats bientôt fermés'             => array(
+								'Emails - Contrats bientôt fermés'                     => array(
 									'id'      => 'amp_tab_recall_contrat_close',
 									'desc'    => '',
 									'options' => amapress_contrat_close_recall_options(),
 								),
-								'Emails - Inscriptions à valider'              => array(
+								'Emails - Récapitulatif à la clôture des inscriptions' => array(
+									'id'      => 'amp_tab_recall_contrat_recap_close',
+									'desc'    => '',
+									'options' => amapress_contrat_recap_cloture_recall_options(),
+								),
+								'Emails - Inscriptions à valider'                      => array(
 									'id'      => 'amp_tab_inscr_validate_distrib',
 									'desc'    => '',
 									'options' => amapress_inscriptions_to_validate_recall_options(),
 								),
-								'Emails - Envoi liste des chèques'             => array(
+								'Emails - Envoi liste des chèques'                     => array(
 									'id'      => 'amp_tab_recall_liste_cheques',
 									'desc'    => '',
 									'options' => amapress_contrat_paiements_recall_options(),

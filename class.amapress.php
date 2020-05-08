@@ -3823,6 +3823,30 @@ class Amapress {
 		}
 	}
 
+	public static function createXLSXFromDatatable( $columns, $data, $title = null ) {
+		$dt_options = array(
+			'paging'       => false,
+			'init_as_html' => true,
+			'no_script'    => true,
+			'bSort'        => false,
+		);
+		$html       = amapress_get_datatable(
+			uniqid( 'ht' ),
+			$columns, $data,
+			$dt_options
+		);
+
+		return self::createXLSXFromHtml( $html, $title );
+	}
+
+	public static function createXLSXFromDatatableAsMailAttachment( $columns, $data, $excel_file_name, $title ) {
+		$objPHPExcel = self::createXLSXFromDatatable( $columns, $data, $title );
+		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
+		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+		$objWriter->save( $filename );
+
+		return $filename;
+	}
 
 	public static function createXLSXFromHtml( $html, $title = null ) {
 		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
