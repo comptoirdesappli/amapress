@@ -226,6 +226,19 @@ function amapress_command_palette_shortcodes_items( $items ) {
 }
 
 add_filter( 'command_palette_items', function ( $items ) {
+	$items = array_merge(
+		[
+			[
+				'type'        => 'Documentation',
+				'id'          => 'sh' . uniqid(),
+				'capability'  => 'read',
+				'title'       => 'Documentation Amapress',
+				'url'         => 'https://wiki.amapress.fr/accueil',
+				'description' => '',
+				'category'    => 'Documentation',
+			]
+		], $items
+	);
 	$items = amapress_command_palette_menu_items( $items );
 	$items = amapress_command_palette_pages_items( $items );
 	$items = amapress_command_palette_state_items( $items );
