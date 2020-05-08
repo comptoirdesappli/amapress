@@ -298,7 +298,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	if ( ! Amapress::toBool( $atts['show_for_resp'] ) ) {
 		$allow_manage_others = false;
 	} elseif ( $allow_manage_others ) {
-		$allow_manage_others = ! empty( $_GET['for_resp'] );
+		$allow_manage_others = is_admin() || ! empty( $_GET['for_resp'] );
 	}
 
 
@@ -372,7 +372,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$has_slots = false;
 	}
 
-	if ( $is_current_user_resp_amap ) {
+	if ( ! is_admin() && $is_current_user_resp_amap ) {
 		if ( ! $allow_manage_others ) {
 			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Choisir le mode Administrateur' ) . '</p>';
 		} else {
