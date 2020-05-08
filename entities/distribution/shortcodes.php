@@ -408,7 +408,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
 		}
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) && ! is_admin() ) {
-			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Modifier le nombre de responsables de distribution</a></p>';
+			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">Modifier le nombre de responsables de distribution du lieu</a></p>';
 		}
 
 		if ( $for_pdf ) {

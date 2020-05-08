@@ -532,9 +532,13 @@ line-height: 1.1;
 			}
 		}
 		echo '<a href="' . esc_attr( $pdf_url ) . '" class="btn btn-default btn-print">Imprimer en PDF</a>';
+		echo '<a href="' . esc_attr( $dist->getPermalink() ) . '" class="btn btn-default">Revenir à la distribution</a>';
+
 		echo '<br/>';
 		if ( current_user_can( 'edit_distribution' ) ) {
-			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
+			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '#amapress_distribution_nb_resp_supp" class="btn btn-default">Ajouter des responsables supplémentaires</a>';
+			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution (infos, horaires, créneaux...)</a>';
+			echo '<br/>';
 			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
 		}
 		$mailto = $dist->getMailtoResponsables();

@@ -103,7 +103,8 @@ function amapress_get_custom_content_distribution( $content ) {
 		}
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
-		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution</a>';
+		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '#amapress_distribution_nb_resp_supp" class="btn btn-default">Ajouter des responsables supplémentaires</a>';
+		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution (infos, horaires, créneaux...)</a>';
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_contrat_instance' ) ) {
 		$btns[] = '<a href="' . esc_attr( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) ) . '" class="btn btn-default">Quantités au producteur</a>';
