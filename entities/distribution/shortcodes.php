@@ -167,20 +167,22 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 	$key                    = $atts['key'];
 	if ( 'anon-inscription-distrib' == $tag ) {
 		if ( amapress_can_access_admin() ) {
-			$url = add_query_arg( 'key', $key, get_permalink() );
+			$sample_key = uniqid() . uniqid();
+			$url        = add_query_arg( 'key', $key, get_permalink() );
 			if ( empty( $_REQUEST['key'] ) ) {
-				$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
 				if ( empty( $key ) ) {
-					$ret .= 'Ajoutez un paramètre key au shortcode, par exemple : [' . $tag . ' key=' . uniqid() . uniqid() . ']';
+					$ret .= amapress_get_panel_start( 'Configuration' );
+					$ret .= '<div style="color:red">Ajoutez la clé suivante à votre shortcode : ' . $sample_key . '<br/>De la forme : [' . $tag . ' key=' . $sample_key . ']</div>';
 				} else {
-					$ret .= '<div class="alert alert-info">Pour donner accès à cette page d\'inscription aux distributions, veuillez leur envoyer le lien suivant : 
+					$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
+					$ret .= '<div class="alert alert-info">Pour donner accès à cette page d\'inscription aux distributions, veuillez envoyer à vos amapiens le lien suivant : 
 <pre>' . $url . '</pre>
 Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
 ' . ( ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '' ) . '
 Vous pouvez également utiliser l\'un des QRCode suivants : 
 <div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
-<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription aux distributions (mais uniquement) sans être connecté sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong></div>';
+<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription aux distributions (mais uniquement) sans saisir son mot de passe sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong></div>';
 					$ret .= amapress_get_panel_end();
 				}
 			} else {
@@ -189,8 +191,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 			if ( empty( $key ) && amapress_can_access_admin() ) {
-				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [' . $tag . '] de cette page : par exemple "[' . $tag . ' key='
-				        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.</div>';
+				$ret .= 'Une fois le shortcode configuré : seuls les amapiens dirigés depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.';
 				$ret .= $content;
 
 				return $ret;
