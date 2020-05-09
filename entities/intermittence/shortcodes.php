@@ -14,13 +14,14 @@ function amapress_intermittence_anon_inscription_shortcode( $atts, $content = nu
 	$ret = '';
 	$key = $atts['key'];
 	if ( amapress_can_access_admin() ) {
-		$url = add_query_arg( 'key', $key, get_permalink() );
+		$sample_key = uniqid() . uniqid();
+		$url        = add_query_arg( 'key', $key, get_permalink() );
 		if ( empty( $_REQUEST['key'] ) ) {
-			$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
 			if ( empty( $key ) ) {
-				$ret .= 'Ajoutez un paramètre key au shortcode, par exemple : [' . $tag . ' key=' . uniqid() . uniqid() . ']';
+				$ret .= amapress_get_panel_start( 'Configuration' );
+				$ret .= '<div style="color:red">Ajoutez la clé suivante à votre shortcode : ' . $sample_key . '<br/>De la forme : [' . $tag . ' key=' . $sample_key . ']</div>';
 			} else {
-				$ret .= '<div class="alert alert-info">Pour donner accès à cette page d\'inscription à la liste des intermittents, veuillez leur envoyer le lien suivant : 
+				$ret .= '<div class="alert alert-info">Pour donner accès à cette page d\'inscription à la liste des intermittents, veuillez envoyer aux nouveaux intermittents le lien suivant : 
 <pre>' . $url . '</pre>
 Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
@@ -36,8 +37,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	}
 	if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 		if ( empty( $key ) && amapress_can_access_admin() ) {
-			$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [' . $tag . '] de cette page : par exemple "[' . $tag . ' key='
-			        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par l\'intermittent pour s\'inscrire.</div>';
+			$ret .= 'Une fois le shortcode configuré : seuls les personnes dirigées depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.';
 			$ret .= $content;
 
 			return $ret;
