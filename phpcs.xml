@@ -28,5 +28,9 @@
         <exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
         <exclude name="WordPress.Files.FileName"/>
         <exclude name="WordPress.PHP.StrictComparisons"/>
+        <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
+        <exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
     </rule>
 </ruleset>
