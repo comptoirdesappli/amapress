@@ -1715,9 +1715,9 @@ function amapress_get_contrat_quantite_datatable(
 
 		if ( ! empty( $next_next_distribs ) ) {
 			$next_distrib_text .= '<p>Distributions suivantes : ' . implode( ', ', array_map(
-					function ( $d ) use ( $contrat_instance_id, $root_url ) {
+					function ( $d ) use ( $contrat_instance_id, $root_url, $show_all_dates ) {
 						/** @var AmapressDistribution $d */
-						return Amapress::makeLink( $root_url . '&all&date=' . date( 'Y-m-d', $d->getDate() ),
+						return Amapress::makeLink( $root_url . ( $show_all_dates ? '&all' : '' ) . '&date=' . date( 'Y-m-d', $d->getDate() ),
 							date_i18n( 'd/m/Y', $d->getDate() ) );
 					}, $next_next_distribs
 				) ) . '</p>';
