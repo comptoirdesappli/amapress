@@ -2457,30 +2457,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			'lieu_id'    => $lieu_id
 		] );
 
-		$dates             = $contrat->getListe_dates();
-		$dates             = array_filter( $dates, function ( $d ) use ( $start_date ) {
+		$dates      = $contrat->getListe_dates();
+		$dates      = array_filter( $dates, function ( $d ) use ( $start_date ) {
 			return $d >= $start_date;
 		} );
-		$rattrapage        = [];
-		$double_rattrapage = [];
-		$un5_rattrapage    = [];
-		foreach ( $dates as $d ) {
-			$the_factor = $contrat->getDateFactor( $d );
-			if ( abs( $the_factor - 2 ) < 0.001 ) {
-				$double_rattrapage[] = date_i18n( 'd/m/Y', $d );
-			} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
-				$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
-			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
-				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
-			}
-		}
-
-		if ( ! empty( $double_rattrapage ) ) {
-			$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
-		}
-		if ( ! empty( $un5_rattrapage ) ) {
-			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
-		}
+		$rattrapage = $contrat->getFormattedRattrapages( $dates );
 
 		if ( $for_logged ) {
 			echo '<h4>Étape 2/4 : Panier - ' . esc_html( $contrat->getTitle() ) . '</h4>';

@@ -1098,15 +1098,10 @@ class AmapressPaniers {
 
 				$url    = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
 				$title  = ! empty( $user_quantites_ids ) ? $user_quantites[ $quantite->getID() ]->getTitle() : $quantite->getTitle();
-				$factor = $quantite->getContrat_instance()->getDateFactor( $pani->getDate() );
-				if ( abs( $factor - 2 ) < 0.001 ) {
-					$factor = 'Double distribution - ';
-				} else if ( abs( $factor - 1 ) < 0.001 ) {
-					$factor = '';
-				} else {
-					$factor = "$factor distribution - ";
+				$factor = $quantite->getContrat_instance()->getDateFactorDisplay( $pani->getDate() );
+				if ( ! empty( $factor ) ) {
+					$title = "$factor - $title";
 				}
-				$title = $factor . $title;
 				echo '<h3><img class="dist-panier-quantite-img" src="' . $url . '" alt="" /> ' . esc_html( $title );
 //                if (amapress_is_user_logged_in()) {
 //                    if ($dist_is_after && !$dist_is_today) {

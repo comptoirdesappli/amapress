@@ -599,6 +599,17 @@ class AmapressContrat_instance extends TitanEntity {
 		return $date_factor;
 	}
 
+	public function getDateFactorDisplay( $date ) {
+		$factor = $this->getDateFactor( $date );
+		if ( abs( $factor - 2 ) < 0.001 ) {
+			return 'Double distribution';
+		} elseif ( abs( $factor - 1 ) < 0.001 ) {
+			return '';
+		} else {
+			return "$factor distribution";
+		}
+	}
+
 	public function getRealDateForDistribution( $date ) {
 		$paniers = AmapressPanier::get_delayed_paniers( null, null, $date, [ 'delayed' ] );
 		foreach ( $paniers as $p ) {
@@ -759,12 +770,13 @@ class AmapressContrat_instance extends TitanEntity {
 				'contrat-papier-' . $this->getTitle() . '-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . $ext );
 	}
 
-	public function getFormattedRattrapages() {
+	public function getFormattedRattrapages( $dates = null ) {
 		$rattrapage        = [];
 		$double_rattrapage = [];
 		$un5_rattrapage    = [];
-		$dates_factors     = 0;
-		$dates             = $this->getRemainingDates();
+		if ( null == $dates ) {
+			$dates = $this->getRemainingDates();
+		}
 		foreach ( $dates as $d ) {
 			$the_factor = $this->getDateFactor( $d );
 			if ( abs( $the_factor - 2 ) < 0.001 ) {
@@ -774,7 +786,6 @@ class AmapressContrat_instance extends TitanEntity {
 			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
 				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
 			}
-			$dates_factors += $the_factor;
 		}
 
 		if ( ! empty( $double_rattrapage ) ) {
@@ -1513,7 +1524,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['coadherent.tel']                   = [
+		$ret['coadherent.tel'] = [
 			'desc' => 'Téléphone co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
