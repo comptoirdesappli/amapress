@@ -107,7 +107,8 @@ function amapress_get_custom_content_distribution( $content ) {
 		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution (infos, horaires, créneaux...)</a>';
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_contrat_instance' ) ) {
-		$btns[] = '<a href="' . esc_attr( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) ) . '" class="btn btn-default">Quantités au producteur</a>';
+		$btns[] = '<a href="' . esc_attr( admin_url( 'admin.php?page=contrats_quantites_next_distrib&date=' . date_i18n( 'Y-m-d', $dist->getDate() ) ) )
+		          . '" class="btn btn-default">Quantités au producteur</a>';
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
 		$mailto = $dist->getMailtoResponsables();
