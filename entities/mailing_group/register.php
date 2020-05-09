@@ -629,12 +629,7 @@ function admin_action_amapress_mailgroup_resend_mods() {
 }
 
 function amapress_fetch_mailinggroups() {
-	foreach (
-		get_posts( [
-			'post_type' => AmapressMailingGroup::INTERNAL_POST_TYPE
-		] ) as $post
-	) {
-		$ml = AmapressMailingGroup::getBy( $post );
+	foreach ( AmapressMailingGroup::getAll() as $ml ) {
 		$ml->fetchMails();
 	}
 }
