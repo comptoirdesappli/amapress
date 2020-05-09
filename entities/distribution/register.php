@@ -57,40 +57,12 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'show_on'   => 'editor',
 			],
-			'smsto_resp'             => [
-				'label'     => 'SMS aux responsables',
-				'target'    => '_blank',
-				'confirm'   => true,
-				'href'      => function ( $dist_id ) {
-					$dist = AmapressDistribution::getBy( $dist_id );
-
-					return $dist->getSMStoResponsables();
-				},
-				'condition' => function ( $dist_id ) {
-					$dist = AmapressDistribution::getBy( $dist_id );
-
-					return ! empty( $dist->getSMStoResponsables() );
-				},
-				'show_on'   => 'editor',
-			],
 			'mailto_amapiens'        => [
 				'label'   => 'Email aux amapiens',
 				'target'  => '_blank',
-//				'confirm' => true,
 				'href'    => admin_url( 'admin.php?page=amapress_messages_page' ),
 				'show_on' => 'editor',
 			],
-//			'smsto_amapiens'         => [
-//				'label'   => 'Sms aux amapiens',
-//				'target'  => '_blank',
-//				'confirm' => true,
-//				'href'    => function ( $dist_id ) {
-//					$dist = AmapressDistribution::getBy( $dist_id );
-//
-//					return $dist->getSMStoAmapiens();
-//				},
-//				'show_on' => 'editor',
-//			],
 			'resend_liste_to_resp'   => [
 				'label'   => 'Renvoyer la liste d\'émargement aux responsables',
 				'show_on' => 'editor',

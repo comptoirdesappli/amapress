@@ -744,24 +744,6 @@ class AmapressContrat_instance extends TitanEntity {
 		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $mails ) ) . '&subject=Contrat ' . $this->getTitle();
 	}
 
-	public function getSMStoAmapiens() {
-		$phones = [];
-		foreach (
-			get_users( [
-				'amapress_contrat' => $this->ID,
-			] ) as $user
-		) {
-			/** @var WP_User $user */
-			$amapien = AmapressUser::getBy( $user );
-			$phones  = array_merge( $phones, $amapien->getPhoneNumbers( true ) );
-		}
-		if ( empty( $phones ) ) {
-			return '';
-		}
-
-		return 'sms:' . urlencode( implode( ',', $phones ) ) . '?body=Contrat ' . $this->getTitle();
-	}
-
 	public function getContratDocFileName( $date_first_distrib ) {
 		$model_filename = $this->getContratModelDocFileName();
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';

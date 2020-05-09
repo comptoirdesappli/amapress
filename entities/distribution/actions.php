@@ -545,15 +545,7 @@ line-height: 1.1;
 		if ( ! empty( $mailto ) ) {
 			echo '<a href="' . $mailto . '" class="btn btn-default">Email aux responsables</a>';
 		}
-		$smsto = $dist->getSMStoResponsables();
-		if ( ! empty( $smsto ) ) {
-			echo '<a href="' . $mailto . '" class="btn btn-default">SMS aux responsables</a>';
-		}
 		echo '<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_messages_page' ) . '" class="btn btn-default">Email aux amapiens</a>';
-//		$smsto = $dist->getSMStoAmapiens();
-//		if ( ! empty( $smsto ) ) {
-//			echo '<a href="' . $mailto . '" class="btn btn-default">SMS aux amapiens</a>';
-//		}
 		if ( current_user_can( 'edit_lieu_distribution' ) ) {
 			echo '<a href="' . esc_attr( $dist->getLieu()->getAdminEditLink() ) . '" class="btn btn-default">Editer les infos du lieu</a>';
 		}

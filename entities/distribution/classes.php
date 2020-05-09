@@ -368,19 +368,6 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 	}
 
-	public function getSMStoResponsables() {
-		$resp_phones = [];
-		foreach ( $this->getResponsables() as $user ) {
-			$resp_phones = array_merge( $resp_phones, array_keys( $user->getPhoneNumbers( true ) ) );
-		}
-		if ( empty( $resp_phones ) ) {
-			return '';
-		}
-
-		return 'sms:' . urlencode( implode( ',', $resp_phones ) ) . '?body=Distribution du ' .
-		       date_i18n( 'D j F Y' );
-	}
-
 	/** @return int[] */
 	public function getMainAdherentsIds( $include_coadherents = true ) {
 		$ids = [];
@@ -424,34 +411,6 @@ class AmapressDistribution extends Amapress_EventBase {
 		$site_email = Amapress::getOption( 'email_from_mail' );
 
 		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', array_unique( $mails ) ) ) . '&subject=Distribution du ' .
-		       date_i18n( 'D j F Y' );
-	}
-
-	public function getSMStoAmapiens() {
-		$phones = [];
-		foreach ( AmapressContrats::get_active_adhesions( $this->getContratIds(), null, $this->getLieuId(), $this->getDate(), true, false ) as $adh ) {
-			/** @var AmapressAdhesion $adh */
-			if ( ! empty( $adh ) && ! empty( $adh->getAdherent() ) ) {
-				$phones = array_merge( $phones, $adh->getAdherent()->getPhoneNumbers( true ) );
-			}
-		}
-
-		$query                        = array();
-		$query['contrat_instance_id'] = $this->getContratIds();
-		$query['lieu_id']             = $this->getLieuId();
-		$query['date']                = $this->getDate();
-		$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
-		foreach ( $paniers as $panier ) {
-			if ( ! empty( $panier->getRepreneur() ) ) {
-				$phones = array_merge( $phones, $panier->getRepreneur()->getPhoneNumbers( true ) );
-			}
-		}
-
-		if ( empty( $phones ) ) {
-			return '';
-		}
-
-		return 'sms:' . urlencode( implode( ',', array_unique( $phones ) ) ) . '?body=Distribution du ' .
 		       date_i18n( 'D j F Y' );
 	}
 

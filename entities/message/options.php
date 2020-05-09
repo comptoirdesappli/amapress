@@ -68,7 +68,7 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 			}
 			$cnt = ! empty( $fmt ) ? "?body=$fmt" : '';
 
-			return "<a href='smsto:$phone$cnt'>SMS</a>";
+			return "<a href='sms:$phone$cnt'>SMS</a>";
 		case "whatsappto":
 			if ( empty( $phone ) ) {
 				return '';
@@ -81,7 +81,7 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 				return '';
 			}
 
-			return "<a href='tel:$phone'>T�l�phone</a>";
+			return "<a href='tel:$phone'>Téléphone</a>";
 		case "locto":
 			$fmt = empty( $fmt ) ? 'Voir sur la carte' : $fmt;
 			if ( ! $user->isAdresse_localized() ) {
