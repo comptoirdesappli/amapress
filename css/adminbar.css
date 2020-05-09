@@ -47,6 +47,40 @@
     white-space: nowrap !important;
 }
 
+tr:hover .row-actions {
+    position: relative !important;
+    z-index: 999;
+    left: 0;
+}
+
+.row-actions span {
+    background-color: #fff;
+    border-color: #333;
+    padding: 5px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-width: 1pt;
+    border-bottom-width: 1pt;
+}
+
+.row-actions span:last-child {
+    border-right-width: 1pt;
+    border-right-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.row-actions span:first-child {
+    border-left-width: 1pt;
+    border-left-style: solid;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.mobile .row-actions span {
+    border: none;
+}
+
 @media screen and (max-width: 782px) {
     #wp-admin-bar-amapress_search_user_admin_bar #amapress_search_user_text {
         width: 55px;
