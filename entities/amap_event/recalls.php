@@ -66,6 +66,8 @@ function amapress_amap_event_inscription_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Inscription à un évènement AMAP',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_amap_event_inscription',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_amap_events_cron();
@@ -132,6 +134,8 @@ function amapress_amap_event_available_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Inscription à un évènement AMAP',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_amap_event_available',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_amap_events_cron();

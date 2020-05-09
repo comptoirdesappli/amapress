@@ -647,6 +647,8 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Infos distribution à tous les amapiens',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_amapiens_distrib',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -657,6 +659,8 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Infos distribution à tous les amapiens',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_amapiens_distrib',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -748,6 +752,8 @@ function amapress_distribution_missing_responsables_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Responsable(s) de distribution manquant(s) à tous les amapiens',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_missing_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -758,6 +764,8 @@ function amapress_distribution_missing_responsables_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Responsable(s) de distribution manquant(s) à tous les amapiens',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_missing_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -828,6 +836,8 @@ function amapress_distribution_verify_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Vérification infos distribution',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_verify_distrib',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -838,6 +848,8 @@ function amapress_distribution_verify_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Vérification infos distribution',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_verify_distrib',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -905,6 +917,8 @@ function amapress_distribution_responsable_recall_options() {
 			'id'                  => 'distribution-resp-recall-2',
 			'name'                => 'Rappel 2',
 			'desc'                => 'Responsables de distribution',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -915,6 +929,8 @@ function amapress_distribution_responsable_recall_options() {
 			'id'                  => 'distribution-resp-recall-3',
 			'name'                => 'Rappel 3',
 			'desc'                => 'Responsables de distribution',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_resp_distrib',
 			'hook_args_generator' => function ( $option ) {
@@ -998,6 +1014,8 @@ function amapress_distribution_gardiens_recall_options() {
 			'id'                  => 'distribution-gardiens-recall-2',
 			'name'                => 'Rappel 2',
 			'desc'                => 'Gardiens de paniers',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_gardien_paniers',
 			'hook_args_generator' => function ( $option ) {
@@ -1008,6 +1026,8 @@ function amapress_distribution_gardiens_recall_options() {
 			'id'                  => 'distribution-gardiens-recall-3',
 			'name'                => 'Rappel 3',
 			'desc'                => 'Gardiens de paniers',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_gardien_paniers',
 			'hook_args_generator' => function ( $option ) {
@@ -1081,6 +1101,8 @@ function amapress_distribution_emargement_recall_options() {
 		array(
 			'id'                  => 'distribution-emargement-recall-2',
 			'name'                => 'Rappel 2',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'desc'                => 'Envoi liste émargement',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_distrib_emargement',
@@ -1092,6 +1114,8 @@ function amapress_distribution_emargement_recall_options() {
 			'id'                  => 'distribution-emargement-recall-3',
 			'name'                => 'Rappel 3',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'desc'                => 'Envoi liste émargement',
 			'hook_name'           => 'amapress_recall_distrib_emargement',
 			'hook_args_generator' => function ( $option ) {
@@ -1192,7 +1216,6 @@ function amapress_distribution_changes_recall_options() {
 			'name'                => 'Rappel jour de distribution 1',
 			'type'                => 'event-scheduler',
 			'desc'                => 'Envoyer un rappels si pas de distribution ou changement du jour habituel',
-//			'scheduler_type'      => 'some_day',
 			'hook_name'           => 'amapress_recall_distrib_thisday',
 			'hook_args_generator' => 'amapress_generate_weeks_cron',
 		),
@@ -1200,8 +1223,9 @@ function amapress_distribution_changes_recall_options() {
 			'id'                  => 'distribution-day-recall2',
 			'name'                => 'Rappel jour de distribution 2',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'desc'                => 'Envoyer un rappels si pas de distribution ou changement du jour habituel',
-//			'scheduler_type'      => 'some_day',
 			'hook_name'           => 'amapress_recall_distrib_thisday',
 			'hook_args_generator' => 'amapress_generate_weeks_cron',
 		),
@@ -1219,6 +1243,8 @@ function amapress_distribution_changes_recall_options() {
 			'id'                  => 'distribution-changes-recall-2',
 			'name'                => 'Rappel changement distribution 2',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'desc'                => 'Changement(s) dans les paniers distribués',
 			'hook_name'           => 'amapress_recall_distrib_changes',
 			'hook_args_generator' => function ( $option ) {

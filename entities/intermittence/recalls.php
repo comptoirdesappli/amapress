@@ -132,6 +132,8 @@ function amapress_intermittence_dispo_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Panier(s) intermittent(s) encore disponibles',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_dispo_panier_intermittent',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -142,6 +144,8 @@ function amapress_intermittence_dispo_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Panier(s) intermittent(s) encore disponibles',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_dispo_panier_intermittent',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -152,6 +156,8 @@ function amapress_intermittence_dispo_recall_options() {
 			'name'                => 'Rappel 4',
 			'desc'                => 'Panier(s) intermittent(s) encore disponibles',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_dispo_panier_intermittent',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
@@ -205,6 +211,8 @@ function amapress_intermittence_validation_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Validation panier intermittent en attente',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_validation_panier_intermittent',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();

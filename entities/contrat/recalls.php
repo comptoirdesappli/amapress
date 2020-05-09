@@ -657,6 +657,8 @@ function amapress_contrat_quantites_recall_options() {
 			'id'                  => 'distribution-quantites-recall-2',
 			'name'                => 'Rappel 2',
 			'desc'                => 'Quantités à livrer',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_quantites',
 			'hook_args_generator' => function ( $option ) {
@@ -667,6 +669,8 @@ function amapress_contrat_quantites_recall_options() {
 			'id'                  => 'distribution-quantites-recall-3',
 			'name'                => 'Rappel 3',
 			'desc'                => 'Quantités à livrer',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_quantites',
 			'hook_args_generator' => function ( $option ) {
@@ -790,6 +794,8 @@ function amapress_contrat_paiements_recall_options() {
 			'id'                  => 'contrats-liste-paiements-recall-2',
 			'name'                => 'Rappel 2',
 			'desc'                => 'Liste des chèques',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -800,6 +806,8 @@ function amapress_contrat_paiements_recall_options() {
 			'id'                  => 'contrats-liste-paiements-recall-3',
 			'name'                => 'Rappel 3',
 			'desc'                => 'Liste des chèques',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -880,6 +888,8 @@ function amapress_contrat_renew_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_contrat_renew',
 			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
@@ -891,6 +901,8 @@ function amapress_contrat_renew_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_contrat_renew',
 			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
@@ -977,6 +989,8 @@ function amapress_contrat_open_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
@@ -988,6 +1002,8 @@ function amapress_contrat_open_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
@@ -1077,6 +1093,8 @@ function amapress_contrat_close_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
@@ -1088,6 +1106,8 @@ function amapress_contrat_close_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Contrats à renouveler',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
 			'hook_args_generator' => function ( $option ) {
@@ -1178,6 +1198,8 @@ function amapress_contrat_recap_cloture_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Récapitulatif des inscriptions à la clotûre',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'show_before'         => false,
 			'show_after'          => true,
 			'hook_name'           => 'amapress_recall_contrat_recap_cloture',
@@ -1190,6 +1212,8 @@ function amapress_contrat_recap_cloture_recall_options() {
 			'name'                => 'Rappel 3',
 			'desc'                => 'Récapitulatif des inscriptions à la clotûre',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'show_before'         => false,
 			'show_after'          => true,
 			'hook_name'           => 'amapress_recall_contrat_recap_cloture',

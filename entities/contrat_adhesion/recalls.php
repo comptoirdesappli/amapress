@@ -86,6 +86,8 @@ function amapress_inscriptions_to_validate_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Inscriptions à valider',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'show_after'          => true,
 			'hook_name'           => 'amapress_recall_inscriptions_validate',
 			'hook_args_generator' => function ( $option ) {

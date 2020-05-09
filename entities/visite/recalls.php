@@ -63,6 +63,8 @@ function amapress_visite_inscription_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Inscription à une visite',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_visite_inscription',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_visites_cron();
@@ -139,6 +141,8 @@ function amapress_visite_available_recall_options() {
 			'name'                => 'Rappel 2',
 			'desc'                => 'Inscription à une visite',
 			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
 			'hook_name'           => 'amapress_recall_visite_available',
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_visites_cron();
