@@ -25,6 +25,18 @@
     top: 3px;
 }
 
+#wpadminbar #wp-admin-bar-amapress_forum > .ab-item > .ab-icon:before {
+    display: block;
+    content: "\f125";
+    top: 3px;
+}
+
+#wpadminbar #wp-admin-bar-amapress_help > .ab-item > .ab-icon:before {
+    display: block;
+    content: "\f468";
+    top: 3px;
+}
+
 .ab-icon-submenu:before {
     vertical-align: middle;
     padding-right: 1px;
@@ -86,6 +98,25 @@
         top: 0;
         font-size: 28px;
     }
+
+    #wpadminbar #wp-admin-bar-amapress_help > .ab-item > .ab-label {
+        display: none;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress_help {
+        display: block;
+    }
+
+    #wpadminbar #wp-admin-bar-amapress_help > .ab-item > .ab-icon:before {
+        line-height: 46px;
+        height: 46px !important;
+        text-align: center;
+        width: 52px;
+        display: block;
+        content: "\f468";
+        top: 0;
+        font-size: 28px;
+    }
 }
 
 .ab-icon.amps-icon:before {
@@ -94,6 +125,10 @@
 
 .ab-icon.amps-forum:before {
     color: #2ecc71 !important;
+}
+
+.ab-icon.amps-aide:before {
+    color: #e67e22 !important;
 }
 
 .ab-icon.amps-error:before {

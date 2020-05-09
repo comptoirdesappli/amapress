@@ -4352,22 +4352,22 @@ Cette page permet la création des produits des producteurs
 								array(
 									'type' => 'note',
 									'bare' => true,
-									'desc' => '<p>Trouver de l\'aide sur notre ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) .
-									          ' et sur notre ' . Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) . '</p>' .
-									          '<h5>Guides par rôle dans l\'AMAP</h5><p><ul><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/accueil', 'Le guide de l\'administrateur, du reponsable Amap' ) .
+									'desc' => '<p>Consultez la ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) . '</p>' .
+									          '<p>Accédez au ' . Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) . ' si vous ne trouvez pas la réponse à votre question</p>' .
+									          '<h5>Un espace dédié pour chaque rôle Amap</h5><p><ul><li>' .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/accueil', 'Accueil de l’Administrateur, du Responsable Amap' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/amapien/accueil', 'Le guide de l\'amapien' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/amapien/accueil', 'Accueil de l’Amapien' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/collectif/accueil', 'Le guide du collectif' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/collectif/accueil', 'Accueil du Collectif' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/producteur/accueil', 'Le guide du référent producteur' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/producteur/accueil', 'Accueil du Référent producteur' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/accueil', 'Le guide du producteur' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/accueil', 'Accueil du Producteur' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/tresorier/accueil', 'Le guide du trésorier' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/tresorier/accueil', 'Accueil du Trésorier' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/gestion', 'Le guide des contrats' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/gestion', 'Accueil de l\'espace contrat' ) .
 									          '</li></ul></p>',
 								),
 							)

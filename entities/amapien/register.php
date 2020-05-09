@@ -392,12 +392,12 @@ function amapress_register_entities_amapien( $entities ) {
 				'query'             => 'post_type=amps_adhesion&amapress_date=past&amapress_user=%%id%%&orderby=amapress_adhesion_date_debut&order=desc',
 			),
 
-			'head_amapress3' => array(
+			'head_amapress3'     => array(
 				'id'   => 'coadh_sect',
 				'name' => amapress__( 'Co-adhérents' ),
 				'type' => 'heading',
 			),
-			'co-foyer-1'     => array(
+			'co-foyer-1'         => array(
 				'name'         => amapress__( 'Membre du foyer 1' ),
 				'type'         => 'select-users',
 				'desc'         => 'Membre du foyer 1',
@@ -406,7 +406,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'co-foyer-2'     => array(
+			'co-foyer-2'         => array(
 				'name'           => amapress__( 'Membre du foyer 2' ),
 				'type'           => 'select-users',
 				'desc'           => 'Membre du foyer 2',
@@ -418,7 +418,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'orderby'        => 'display_name',
 				'order'          => 'ASC',
 			),
-			'co-foyer-3'     => array(
+			'co-foyer-3'         => array(
 				'name'           => amapress__( 'Membre du foyer 3' ),
 				'type'           => 'select-users',
 				'desc'           => 'Membre du foyer 3',
@@ -430,7 +430,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'orderby'        => 'display_name',
 				'order'          => 'ASC',
 			),
-			'co-adherent-1'  => array(
+			'co-adherent-1'      => array(
 				'name'         => amapress__( 'Co-adhérent 1' ),
 				'type'         => 'select-users',
 				'desc'         => 'Co-adhérent 1',
@@ -439,7 +439,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'co-adherent-2'  => array(
+			'co-adherent-2'      => array(
 				'name'           => amapress__( 'Co-adhérent 2' ),
 				'type'           => 'select-users',
 				'desc'           => 'Co-adhérent 2',
@@ -1118,13 +1118,6 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					),
 				]
 			),
-			array(
-				'id'         => 'amapress_help',
-				'title'      => 'Aide',
-				'capability' => 'read',
-				'icon'       => 'dashicons-sos',
-				'href'       => admin_url( 'admin.php?page=amapress_help_page&tab=wiki' ),
-			),
 		)
 	);
 
@@ -1143,6 +1136,16 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		'capability' => 'read',
 		'href'       => 'https://forum.amapress.fr',
 		'target'     => '_blank',
+	);
+
+	$items[] = array(
+		'id'        => 'amapress_help',
+		'title'     => '<span class="ab-icon amps-aide dashicons-sos"></span><span class="ab-label">Aide</span>',
+		'condition' => function () {
+			return amapress_can_access_admin();
+		},
+		'href'      => admin_url( 'admin.php?page=amapress_help_page&tab=wiki' ),
+		'target'    => '_blank',
 	);
 
 	return $items;
