@@ -750,7 +750,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	public function getDisplay(
 		$args = array()
 	) {
-		$args            = wp_parse_args( $args, array(
+		$args       = wp_parse_args( $args, array(
 			'show_avatar'     => 'default',
 			'show_email'      => 'default',
 			'show_tel'        => 'default',
@@ -1125,9 +1125,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return 'co' == $adh_type || 'cof' == $adh_type;
 	}
 
-	public function getCoAdherentsList( $with_contacts = false, $include_me = false, $include_foyer = true, $contrat_id = null ) {
+	public function getCoAdherentsList(
+		$with_contacts = false, $include_me = false,
+		$include_foyer = true, $contrat_id = null, $include_coadhs = 'auto'
+	) {
 		$users = AmapressContrats::get_related_users( $this->ID,
-			true, null, $contrat_id, $include_foyer );
+			true, null, $contrat_id, $include_foyer, $include_coadhs );
 		$res   = [];
 		foreach ( $users as $user_id ) {
 			if ( ! $include_me && $user_id == $this->ID ) {
@@ -1169,6 +1172,29 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			return 'Aucun';
 		} else {
 			return implode( ', ', $res );
+		}
+	}
+
+	public function getAdherentInfo( $admin_mode = false, $with_contacts = true ) {
+		if ( $this->isPrincipalAdherent() ) {
+			return sprintf(
+				$admin_mode ?
+					'Il/Elle est %1$s. <br/>Ses co-adhérents : %2$s. <br/>Membres du foyer : %3$s.' :
+					'Vous êtes %1$s. <br/>Vos co-adhérents : %2$s. <br/>Membres du foyer : %3$s.',
+				$this->getAdherentTypeDisplay(),
+				$this->getCoAdherentsList( $with_contacts, false, false ),
+				$this->getCoAdherentsList( $with_contacts, false, true, null, false )
+			);
+		} else {
+			return sprintf(
+				$admin_mode ?
+					'Il/Elle est %1$s. <br/>Son adhérent principal est %2$s. <br/>Ses autres co-adhérents : %3$s. <br/>Membres du foyer : %4$s.' :
+					'Vous êtes %1$s. <br/>Votre adhérent principal est %2$s. <br/>Vos autres co-adhérents : %3$s. <br/>Membres du foyer : %4$s.',
+				$this->getAdherentTypeDisplay(),
+				$this->getPrincipalAdherentList( $with_contacts ),
+				$this->getCoAdherentsList( $with_contacts, false, false ),
+				$this->getCoAdherentsList( $with_contacts, false, true, null, false )
+			);
 		}
 	}
 }

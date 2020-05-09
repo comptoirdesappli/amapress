@@ -1168,15 +1168,16 @@ class AmapressContrats {
 				$res = array_merge( $res, $user->getPrincipalUserIds() );
 			}
 
-			$active_contrat_instances_ids = amapress_prepare_in_sql(
-				AmapressContrats::get_active_contrat_instances_ids( $contrat_id, $date, true ) );
-			if ( amapress_current_user_id() == $user_id ) {
-				$in = amapress_prepare_in_sql( $res );
+			if ( false !== $include_coadhs ) {
+				$active_contrat_instances_ids = amapress_prepare_in_sql(
+					AmapressContrats::get_active_contrat_instances_ids( $contrat_id, $date, true ) );
+				if ( amapress_current_user_id() == $user_id ) {
+					$in = amapress_prepare_in_sql( $res );
 
-				global $wpdb;
-				$res = array_merge( $res,
-					amapress_get_col_cached(
-						"SELECT mt3.meta_value
+					global $wpdb;
+					$res = array_merge( $res,
+						amapress_get_col_cached(
+							"SELECT mt3.meta_value
 FROM $wpdb->postmeta
 LEFT JOIN $wpdb->postmeta AS mt1
 ON ($wpdb->postmeta.post_id = mt1.post_id
@@ -1197,14 +1198,14 @@ OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) = 0 ) 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) >= $date ) )"
-					) );
-			} else {
-				$rel_key = "{$date}_{$contrat_id}";
-				if ( empty( self::$related_user_cache[ $rel_key ] ) ) {
-					global $wpdb;
-					self::$related_user_cache[ $rel_key ] = array_group_by(
-						amapress_get_results_cached(
-							"SELECT DISTINCT mt3.meta_value as user_id, $wpdb->postmeta.meta_value
+						) );
+				} else {
+					$rel_key = "{$date}_{$contrat_id}";
+					if ( empty( self::$related_user_cache[ $rel_key ] ) ) {
+						global $wpdb;
+						self::$related_user_cache[ $rel_key ] = array_group_by(
+							amapress_get_results_cached(
+								"SELECT DISTINCT mt3.meta_value as user_id, $wpdb->postmeta.meta_value
 FROM $wpdb->postmeta
 LEFT JOIN $wpdb->postmeta AS mt1
 ON ($wpdb->postmeta.post_id = mt1.post_id
@@ -1224,19 +1225,20 @@ OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) = 0 ) 
 OR ( mt2.meta_key = 'amapress_adhesion_date_fin'
 AND CAST(mt2.meta_value AS UNSIGNED) >= $date ) )"
-						),
-						function ( $o ) {
-							return intval( $o->meta_value );
-						} );
-				}
+							),
+							function ( $o ) {
+								return intval( $o->meta_value );
+							} );
+					}
 
-				if ( isset( self::$related_user_cache[ $rel_key ][ $user_id ] ) ) {
-					foreach ( self::$related_user_cache[ $rel_key ][ $user_id ] as $o ) {
-						if ( ! $o->user_id || in_array( $o->user_id, $res ) ) {
-							continue;
+					if ( isset( self::$related_user_cache[ $rel_key ][ $user_id ] ) ) {
+						foreach ( self::$related_user_cache[ $rel_key ][ $user_id ] as $o ) {
+							if ( ! $o->user_id || in_array( $o->user_id, $res ) ) {
+								continue;
+							}
+
+							$res[] = $o->user_id;
 						}
-
-						$res[] = $o->user_id;
 					}
 				}
 			}

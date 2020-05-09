@@ -852,30 +852,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$member_message     = '';
 
 			if ( $show_adherents_infos ) {
+				$adherents_infos = $amapien->getAdherentInfo( $admin_mode );
 				if ( $amapien->isPrincipalAdherent() ) {
-					$adherents_infos          = sprintf(
-						$admin_mode ? 'Il/Elle est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
-						$amapien->getAdherentTypeDisplay(),
-						$amapien->getCoAdherentsList( true )
-					);
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 				} else if ( $amapien->isCoAdherent() ) {
-					$adherents_infos          = sprintf(
-						$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
-						$amapien->getAdherentTypeDisplay(),
-						$amapien->getPrincipalAdherentList( true ),
-						$amapien->getCoAdherentsList( true )
-					);
 					$max_coadhs               = 0;
 					$max_cofoyers             = 0;
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 				} else {
-					$adherents_infos          = sprintf(
-						$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
-						$amapien->getAdherentTypeDisplay(),
-						$amapien->getPrincipalAdherentList( true ),
-						$amapien->getCoAdherentsList( true )
-					);
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 					$adherents_custom_message .= wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 				}
@@ -1749,30 +1733,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		if ( $show_adherents_infos ) {
+			$adherents_infos = $amapien->getAdherentInfo( $admin_mode );
 			if ( $amapien->isPrincipalAdherent() ) {
-				$adherents_infos          = sprintf(
-					$admin_mode ? 'Il/Elle est %1$s. Ses co-adhérents : %2$s' : 'Vous êtes %1$s. Vos co-adhérents : %2$s',
-					$amapien->getAdherentTypeDisplay(),
-					$amapien->getCoAdherentsList( true )
-				);
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 			} else if ( $amapien->isCoAdherent() ) {
-				$adherents_infos          = sprintf(
-					$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
-					$amapien->getAdherentTypeDisplay(),
-					$amapien->getPrincipalAdherentList( true ),
-					$amapien->getCoAdherentsList( true )
-				);
-				$max_coadhs               = 0;
-				$max_cofoyers             = 0;
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 			} else {
-				$adherents_infos          = sprintf(
-					$admin_mode ? 'Il/Elle est %1$s. Son adhérent principal est %2$s. Ses autres co-adhérents : %3$s' : 'Vous êtes %1$s. Votre adhérent principal est %2$s. Vos autres co-adhérents : %3$s',
-					$amapien->getAdherentTypeDisplay(),
-					$amapien->getPrincipalAdherentList( true ),
-					$amapien->getCoAdherentsList( true )
-				);
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 				$adherents_custom_message .= wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_coadh_user_message' ), null ) );
 			}
@@ -1952,7 +1918,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
 							$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' );
 						}
-						$coadherents_info = $adh->getAdherent()->getCoAdherentsList( true, false, true, $adh->getContrat_instanceId() );
+						$coadherents_info = $adh->getAdherent()->getCoAdherentsList( true, false, false, $adh->getContrat_instanceId() );
 						if ( empty( $coadherents_info ) ) {
 							$coadherents_info = 'aucun';
 						}
