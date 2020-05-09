@@ -177,7 +177,9 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				] );
 
 
-			$replacements['lien_contrats_quantites'] = Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
+			$replacements['lien_contrats_quantites'] = Amapress::makeLink(
+				admin_url( 'admin.php?page=contrats_quantites_next_distrib&tab=contrat-quant-tab-' . $contrat->ID . '&date=' . date( 'Y-m-d', $dist->getDate() ) )
+			);
 
 			$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
 			$replacements['producteur_contrats'] = $producteur->getContratsNames();
@@ -593,7 +595,9 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 			'show_all_dates'          => true,
 		] );
 
-	$replacements['lien_contrats_quantites'] = Amapress::makeLink( admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) );
+	$replacements['lien_contrats_quantites'] = Amapress::makeLink(
+		admin_url( 'admin.php?page=contrats_quantites_next_distrib&tab=contrat-quant-tab-' . $contrat_instance->ID . '&all=&date=first&with_prices=T' )
+	);
 
 	$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
 	$replacements['producteur_contrats'] = $producteur->getContratsNames();
