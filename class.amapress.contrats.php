@@ -659,11 +659,19 @@ class AmapressContrats {
 					foreach ( $lieu_ids as $lieu_id ) {
 						$contrat = AmapressContrat::getBy( $contrat_id );
 						if ( $contrat ) {
+							$contrat_lieu_ref_ids = $contrat->getReferentsIds( $lieu_id, true, true );
+							$contrat_ref_ids      = $contrat->getReferentsIds( $lieu_id, false, true );
+							$prod_lieu_ref_ids    = $prod->getReferentsIds( $lieu_id, true );
 							foreach ( $contrat->getReferentsIds( $lieu_id ) as $ref_id ) {
 								if ( $ref_id ) {
 									$res[] = array(
 										'ref_id'               => $ref_id,
 										'lieu'                 => $lieu_id,
+										'level'                =>
+											( in_array( $ref_id, $contrat_lieu_ref_ids ) ? 'contrat_lieu' :
+												( in_array( $ref_id, $contrat_ref_ids ) ? 'contrat' :
+													( in_array( $ref_id, $prod_lieu_ref_ids ) ? 'prod_lieu' :
+														'prod' ) ) ),
 										'producteur'           => $prod->ID,
 										'contrat_ids'          => [ $contrat_id ],
 										'contrat_instance_ids' => $contrat_instance_ids,
@@ -672,10 +680,12 @@ class AmapressContrats {
 							}
 						} else {
 							foreach ( $prod->getReferentsIds( $lieu_id ) as $ref_id ) {
+								$prod_lieu_ref_ids = $prod->getReferentsIds( $lieu_id, true );
 								if ( $ref_id ) {
 									$res[] = array(
 										'ref_id'               => $ref_id,
 										'lieu'                 => $lieu_id,
+										'level'                => ( in_array( $ref_id, $prod_lieu_ref_ids ) ? 'prod_lieu' : 'prod' ),
 										'producteur'           => $prod->ID,
 										'contrat_ids'          => [ $contrat_id ],
 										'contrat_instance_ids' => $contrat_instance_ids,
