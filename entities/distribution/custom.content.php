@@ -156,7 +156,7 @@ function amapress_get_custom_content_distribution( $content ) {
 					$gardien_comment = '<br /><em>' . esc_html( $gardien_comment ) . '</em>';
 				}
 				$gardien = AmapressUser::getBy( $gardien_id );
-				echo '<p style="font-weight: bold; margin-top: 1em">Votre/vos panier(s) seront gardés par ' . $gardien->getDisplayName() . '(' . $gardien->getContacts() . ')<em>' . $gardien_comment . '</em></p>';
+				echo '<p style="font-weight: bold; margin-top: 1em">Votre/vos panier(s) seront gardés par ' . $gardien->getDisplayName() . '(' . $gardien->getContacts( wp_is_mobile() ) . ')<em>' . $gardien_comment . '</em></p>';
 
 			}
 			$gardien_amapien_ids = $dist->getGardiensPaniersAmapiensIds( amapress_current_user_id() );
@@ -165,7 +165,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				     implode( ', ', array_map( function ( $uid ) {
 					     $u = AmapressUser::getBy( $uid );
 
-					     return sprintf( '%s (%s)', $u->getDisplayName(), $u->getContacts() );
+					     return sprintf( '%s (%s)', $u->getDisplayName(), $u->getContacts( wp_is_mobile() ) );
 				     }, $gardien_amapien_ids ) )
 				     . '</p>';
 			}
@@ -212,7 +212,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				return array(
 					'link'     => $link,
 					'name'     => esc_html( $u->getDisplayName() ),
-					'contacts' => $u->getContacts(),
+					'contacts' => $u->getContacts( false ),
 					'infos'    => $gardien_comment . ( $u->ID != amapress_current_user_id() ? esc_html(
 							! $u->isAdresse_localized() ?
 								'amapien non localisé' :
@@ -300,8 +300,8 @@ function amapress_get_custom_content_distribution( $content ) {
 							'link'    => '<button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="Etes-vous sûr ?"
 					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">Retirer la garde</button>',
-							'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts() ) . $gardien_comment,
-							'amapien' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getContacts() ),
+							'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts( false ) ) . $gardien_comment,
+							'amapien' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getContacts( false ) ),
 						);
 					}
 				}

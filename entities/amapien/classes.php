@@ -986,10 +986,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return admin_url( 'user-edit.php?user_id=' . $this->ID );
 	}
 
-	public function getContacts() {
+	public function getContacts( $sms = true ) {
 		$mailto = Amapress::makeLink( 'mailto:' . implode( ',', $this->getAllEmails() ), 'Joindre par email' );
 		$telto  = $this->getTelTo( 'both', false, false, ', ' );
-		$smsto  = $this->getTelTo( true, true, false, ', ' );
+		if ( $sms ) {
+			$smsto = $this->getTelTo( true, true, false, ', ' );
+		}
 
 		return $mailto .
 		       ( ! empty( $telto ) ? ' / Par téléphone : ' . $telto : '' ) .
@@ -1139,7 +1141,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $with_contacts ) {
-				$res[] = $amapien->getDisplayName() . ' (' . $amapien->getContacts() . ')';
+				$res[] = $amapien->getDisplayName() . ' (' . $amapien->getContacts( false ) . ')';
 			} else {
 				$res[] = $amapien->getDisplayName();
 			}
@@ -1162,7 +1164,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $with_contacts ) {
-				$res[] = $amapien->getDisplayName() . ' (' . $amapien->getContacts() . ')';
+				$res[] = $amapien->getDisplayName() . ' (' . $amapien->getContacts( false ) . ')';
 			} else {
 				$res[] = $amapien->getDisplayName();
 			}
