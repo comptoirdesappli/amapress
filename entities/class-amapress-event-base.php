@@ -191,7 +191,7 @@ class Amapress_EventBase extends TitanEntity {
 				foreach ( explode( '|', $slots_conf ) as $conf ) {
 					$m = array();
 					//18h00-20h00[10m;2p]|
-					if ( preg_match( '/(?:(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?)?(?:\((?<name>[^\)]+)\))?(?:\[(?<inter>\d*[05])m(?:i?n)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
+					if ( preg_match( '/(?:(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?)?(?:\((?<name>[^\)]+)\))?(?:\[(?<inter>\d+)m(?:i?n)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
 						if ( empty( $m['start_h'] ) ) {
 							$m['start_h'] = intval( date( 'H', $this->getStartDateAndHour() ) );
 							$m['start_m'] = intval( date( 'i', $this->getStartDateAndHour() ) );
