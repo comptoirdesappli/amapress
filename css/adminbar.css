@@ -77,7 +77,7 @@ tr:hover .row-actions {
     border-bottom-left-radius: 3px;
 }
 
-.mobile .row-actions span {
+.mobile .row-actions span, .row-actions.visible span {
     border: none;
 }
 
