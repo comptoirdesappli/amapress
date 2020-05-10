@@ -342,9 +342,14 @@ function amapress_get_state() {
 	$state['05_config'][] = amapress_get_check_state(
 		is_ssl() ? 'success' : 'warning',
 		is_ssl() ? 'HTTPS Activé' : 'HTTPS Désactivé',
-		'Passer votre site en HTTPS améliore sa sécurité et son référencement. Voir plugin Really Simple SSL ci-dessous.',
+		'Passer votre site en HTTPS améliore sa sécurité et son référencement.'
+		. ( ! is_ssl() ? '<br/>Pour activer le HTTPS simplement dans WordPress, voir plugin Really Simple SSL ci-dessous.' : '' )
+		. ( is_ssl() && current_user_can( 'manage_options' ) ?
+			'<br/><a href="' . esc_attr( add_query_arg( 'check_ssl', 'T' ) ) . '" target="_blank">Vérifier que le contenu du site de votre AMAP référence uniquement du contenu HTTPS</a>'
+			: '' ),
 		''
 	);
+
 	if ( is_ssl() ) {
 		$siteurl = get_option( 'siteurl' );
 		if ( ! empty( $siteurl ) && 0 !== strpos( $siteurl, 'https:' ) ) {
@@ -366,7 +371,7 @@ function amapress_get_state() {
 		}
 	}
 	$state['05_config'][] = amapress_check_plugin_install( 'really-simple-ssl', 'Really Simple SSL',
-		'<strong>Recommandé</strong> : Passer votre site en HTTPS sécurise et protège les échanges de données et les données de votre AMAP.',
+		'<strong>Recommandé</strong> : Aide à passer votre site en HTTPS.',
 		is_ssl() ? 'info' : 'warning' );
 
 	$state['05_config'][] = amapress_check_plugin_install( 'pwa', 'Progressive Web App',
@@ -1999,6 +2004,90 @@ function amapress_get_updraftplus_backup_status() {
 	}
 }
 
+function amapress_check_ssl_in_content() {
+	include AMAPRESS__PLUGIN_DIR . '/utils/srdb.class.php';
+
+	global $wpdb;
+	$host    = $wpdb->parse_db_host( DB_HOST );
+	$siteurl = get_option( 'siteurl' );
+
+	$tables = $wpdb->get_col( 'SHOW TABLES' );
+	$tables = array_filter( $tables, function ( $t ) use ( $wpdb ) {
+		return 0 === strpos( $t, $wpdb->prefix );
+	} );
+	if ( empty( $tables ) ) {
+		echo '<p style="color: red">Impossible de trouver les tables Wordpress ????</p>';
+
+		return;
+	}
+
+	$http_siteurl  = str_replace( 'https://', 'http://', $siteurl );
+	$https_siteurl = str_replace( 'http://', 'https://', $siteurl );
+	$args          = [
+		'name'         => DB_NAME,
+		'user'         => DB_USER,
+		'pass'         => DB_PASSWORD,
+		'host'         => $host[0],
+		'port'         => $host[1],
+		'search'       => $http_siteurl,
+		'replace'      => $https_siteurl,
+		'tables'       => $tables,
+		'exclude_cols' => 'guid',
+		'dry_run'      => true,
+	];
+	$srdb          = new amps_icit_srdb( $args );
+	$changes       = $srdb->report['change'];
+
+
+	echo '<h4>Changement de contenu de la base de donnée pour passer entièrement en HTTPS</h4>';
+
+	if ( 0 == $changes ) {
+		echo sprintf( '<p style="color:green">Tous le contenu de votre site référence déjà "%s"</p>', $https_siteurl );
+	} else {
+		echo sprintf( '<p>Pour passer totalement l\'adresse de votre site de "%s" à <strong>"%s"</strong>, <strong>%d</strong> changement(s) sont nécessaires dans le contenu de la base de données Wordpress.</p>',
+			$http_siteurl, $https_siteurl, $changes );
+		$replace_tables = array_filter( $srdb->report['table_reports'], function ( $t ) {
+			return $t['change'] > 0;
+		} );
+		echo sprintf( '<p>Tables concernées: %s</p>',
+			implode( ', ', array_map( function ( $k, $v ) {
+				return sprintf( '%s <strong>(%d)</strong>', $k, $v['change'] );
+			}, array_keys( $replace_tables ), array_values( $replace_tables ) ) ) );
+
+		$link = ( 'active' == amapress_is_plugin_active( 'updraftplus' ) ? admin_url( 'options-general.php?page=updraftplus' ) : '' );
+		if ( empty( $link ) ) {
+			$link = 'sauvegarde (UpdraftPlus n\'est pas installé !)';
+		} else {
+			$link = Amapress::makeLink( $link, 'sauvergarde UpdraftPlus', true, true );
+		}
+		echo '<p style="color: red; font-weight: bold">Veuillez effectuer une ' . $link . ' de la base de donnée de Wordpress avant d\'effectuer le remplacement de contenu !</p>';
+
+		echo '<p>' . Amapress::makeButtonLink( wp_nonce_url( add_query_arg( 'action', 'update_siteurl' ), 'update_siteurl' ),
+				sprintf( 'Mettre à jour les liens %s en <strong>%s</strong>', $http_siteurl, $https_siteurl ), false ) . '</p>';
+	}
+	if ( isset( $_GET['action'] ) && 'update_siteurl' == $_GET['action'] ) {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'update_siteurl' ) ) {
+			die( 'Invalid nonce' );
+		}
+
+		$args['dry_run'] = false;
+		$srdb            = new amps_icit_srdb( $args );
+		$changes         = $srdb->report['change'];
+		$updates         = $srdb->report['updates'];
+		$errors          = $srdb->report['errors'];
+
+		echo sprintf( '<p>Toutes les références à "%s" ont été passées en <strong>"%s"</strong>, <strong>%d</strong> mises à jour sur <strong>%d</strong> changements ont été effectués</p>',
+			$http_siteurl, $https_siteurl, $updates, $changes );
+
+		if ( ! empty( $errors ) ) {
+			echo '<p style="color:red">Des erreurs sont survenues:<br/>' . amapress_dump( $errors ) . '</p>';
+		}
+
+		echo '<p>' . Amapress::makeButtonLink( remove_query_arg( [ 'action', '_wpnonce' ] ),
+				'Revérifier' ) . '</p>';
+	}
+}
+
 if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
 	function amapress_parse_bounce_mail() {
 		require_once AMAPRESS__PLUGIN_DIR . 'modules/bounceparser/BounceStatus.php';
@@ -2420,6 +2509,12 @@ function amapress_echo_and_check_amapress_state_page() {
 
 				return;
 			}
+		}
+
+		if ( isset( $_REQUEST['check_ssl'] ) ) {
+			amapress_check_ssl_in_content();
+
+			return;
 		}
 	}
 
