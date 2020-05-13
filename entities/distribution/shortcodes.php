@@ -371,7 +371,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			break;
 		}
 	}
-	if ( ! Amapress::toBool( $atts['allow_slots'] ) ) {
+	if ( ! Amapress::toBool( $atts['allow_slots'] ) || is_admin() ) {
 		$has_slots = false;
 	}
 
