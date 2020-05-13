@@ -24,7 +24,6 @@ class AmapressDistributions {
 	}
 
 	public static function get_required_responsables( $dist_id ) {
-		$default                 = get_option( 'amapress_nb_responsables' );
 		$dist                    = AmapressDistribution::getBy( $dist_id );
 		$dist_nb_responsables    = $dist->getNb_responsables_Supplementaires();
 		$lieu_nb_responsables    = $dist->getLieu() ? $dist->getLieu()->getNb_responsables() : 0;
@@ -35,7 +34,7 @@ class AmapressDistributions {
 		if ( $lieu_nb_responsables > 0 ) {
 			return $lieu_nb_responsables + $dist_nb_responsables + $contrat_nb_responsables;
 		} else {
-			return $default + $contrat_nb_responsables;
+			return $dist_nb_responsables + $contrat_nb_responsables;
 		}
 	}
 
