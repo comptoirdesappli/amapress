@@ -451,23 +451,27 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				return 'data-' . $k . '="' . esc_attr( $v ) . '"';
 			}, array_keys( $data_atts ), array_values( $data_atts ) ) );
 		}
+		$table_id = 'inscr-distrib-table-' . $lieu_id;
 		if ( $for_pdf || '%' == $fixed_column_width ) {
-			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" width="100%" style="table-layout: fixed;" cellspacing="0">';
+			$ret .= '<table ' . $data_atts . ' id="' . $table_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" width="100%" style="table-layout: fixed;" cellspacing="0">';
 		} else {
-			$ret .= '<table ' . $data_atts . ' id="inscr-distrib-table-' . $lieu_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" style="width:auto;table-layout: fixed;" cellspacing="0">';
+			$ret .= '<table ' . $data_atts . ' id="' . $table_id . '" class="distrib-inscr-list table display smart-word-break ' . ( $responsive ? 'responsive ' : '' ) . '" style="width:auto;table-layout: fixed;" cellspacing="0">';
 		}
-		$ret .= '<thead >';
-		$ret .= '<tr>';
+		$calc = [];
+		$ret  .= '<thead >';
+		$ret  .= '<tr>';
 		if ( $for_pdf ) {
 			$ret .= '<th class="dist-col-date">Date</th>';
 		} else {
-			$ret .= '<th class="dist-col-date" data-width="' . $column_date_width . '"  style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Date</th>';
+			$calc[] = $column_date_width;
+			$ret    .= '<th class="dist-col-date" data-width="' . $column_date_width . '"  style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Date</th>';
 		}
 		if ( $for_emargement ) {
 			if ( $for_pdf ) {
 				$ret .= '<th>Produits</th>';
 			} else {
-				$ret .= '<th data-width="' . $column_date_width . '" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Produits</th>';
+				$calc[] = $column_date_width;
+				$ret    .= '<th data-width="' . $column_date_width . '" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">Produits</th>';
 			}
 		}
 		if ( '%' == $fixed_column_width ) {
@@ -481,10 +485,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 		if ( ! $for_emargement && ! $for_pdf ) {
 			if ( $has_slots ) {
-				$ret .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">Créneau horaire</th>';
+				$calc[] = $fixed_column_width;
+				$ret    .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">Créneau horaire</th>';
 			}
 			if ( $allow_gardiens ) {
-				$ret .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">Garde panier</th>';
+				$calc[] = $fixed_column_width;
+				$ret    .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">Garde panier</th>';
 			}
 		}
 
@@ -510,7 +516,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$role_desc = '<br/><span class="role-distrib-desc">' . $role_desc . '</span>';
 			}
 			if ( ! $for_pdf ) {
-				$ret .= '<th class="distrib-resp-head" data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
+				$calc[] = $fixed_column_width;
+				$ret    .= '<th class="distrib-resp-head" data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
 			} else {
 				$ret .= '<th class="distrib-resp-head" data-width="' . $width . '" title="' . esc_attr( strip_tags( $role_desc ) ) . '">' . esc_html( $role_name ) . $role_desc . '</th>';
 			}
@@ -894,6 +901,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 		$ret .= '</tbody>';
 		$ret .= '</table>';
+
+		if ( '%' !== $fixed_column_width && ! empty( $calc ) ) {
+			$ret .= '<style type="text/css">#' . $table_id . '_wrapper { width: calc( 20px + ' . implode( ' + ', $calc ) . '); margin: 0 auto; }</style>';
+		}
 
 //		$ret .= '<script type="text/javascript">jQuery(function($) {$(".distrib-inscr-list").DataTable().fixedHeader.enable(true);});</script>';
 	}
