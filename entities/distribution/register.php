@@ -266,11 +266,33 @@ function amapress_register_entities_distribution( $entities ) {
 
 					$ret = 'Indiquer le nombre de responsable(s) de distribution <strong>supplémentaire(s)</strong>';
 					if ( $dist ) {
-						$ret .= sprintf(
-							'<br/>Le nombre de responsables de distribution à %s est de %d.',
-							Amapress::makeLink( $dist->getLieu()->getAdminEditLink(), $dist->getLieu()->getTitle() ),
-							$dist->getLieu()->getNb_responsables()
-						);
+						if ( $dist->getLieuSubstitutionId() ) {
+							$ret .= sprintf(
+								'<br/>Le nombre de responsables de distribution exceptionnellement à %s est de %d.',
+								Amapress::makeLink( $dist->getLieuSubstitution()->getAdminEditLink(), $dist->getLieu()->getTitle() ),
+								$dist->getLieu()->getNb_responsables()
+							);
+						} else {
+							$ret .= sprintf(
+								'<br/>Le nombre de responsables de distribution à %s est de %d.',
+								Amapress::makeLink( $dist->getLieu()->getAdminEditLink(), $dist->getLieu()->getTitle() ),
+								$dist->getLieu()->getNb_responsables()
+							);
+						}
+						$contrat_nb_responsables = [];
+						foreach ( $dist->getContrats() as $contrat ) {
+							if ( $contrat->getNb_responsables_Supplementaires() > 0 ) {
+								$contrat_nb_responsables[] = sprintf( '%s (%d)',
+									$contrat->getModelTitle(),
+									$contrat->getNb_responsables_Supplementaires() );
+							}
+						}
+						if ( ! empty( $contrat_nb_responsables ) ) {
+							$ret .= sprintf(
+								'<br/>Nombre de responsables pour les contrats spécifiques: %s.',
+								implode( ', ', $contrat_nb_responsables )
+							);
+						}
 					}
 
 					return $ret;
