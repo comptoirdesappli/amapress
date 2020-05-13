@@ -150,7 +150,9 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 			$fixed_column_width = '8em';
 		}
 		$atts['scroll_x'] = 'true';
-		$atts['scroll_y'] = '300px';
+		if ( empty( $atts['scroll_y'] ) ) {
+			$atts['scroll_y'] = '300px';
+		}
 	} else {
 		$responsive = Amapress::toBool( $responsive );
 	}
