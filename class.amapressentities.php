@@ -796,7 +796,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'position'   => '25.1',
 								'capability' => 'manage_events',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
@@ -1162,7 +1161,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Calendrier des encaissements des contrats',
 								'menu_title' => 'Calendrier',
-								'position'   => '25.2',
 								'capability' => 'edit_contrat_paiement',
 								'menu_icon'  => 'dashicons-calendar-alt',
 							),
@@ -1215,7 +1213,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Quantités à la prochaine distribution',
 								'menu_title' => 'Quantités',
-								'position'   => '25.2',
 								'capability' => 'edit_contrat',
 								'menu_icon'  => 'dashicons-chart-pie',
 							),
@@ -1282,7 +1279,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Statistiques des contrats',
 								'menu_title' => 'Statistiques',
-								'position'   => '25.2',
 								'capability' => 'edit_contrat',
 								'menu_icon'  => 'dashicons-chart-bar',
 							),
@@ -1354,7 +1350,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Finances',
 								'menu_title' => 'Finances',
-								'position'   => '25.2',
 								'capability' => 'edit_contrat',
 								'menu_icon'  => 'dashicons-chart-line',
 							),
@@ -1374,7 +1369,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Archivage des contrats et inscriptions',
 								'menu_title' => 'Archivage',
-								'position'   => '25.2',
 								'capability' => 'edit_contrat_instance',
 								'menu_icon'  => 'dashicons-book',
 							),
@@ -1434,7 +1428,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Emails et rappels',
 								'menu_title' => 'Emails/Rappels',
-								'position'   => '25.1',
 								'capability' => 'edit_contrat_instance',
 								'menu_icon'  => 'dashicons-email',
 							),
@@ -1483,7 +1476,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'position'   => '25.1',
 								'capability' => 'edit_contrat_instance',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
@@ -2172,7 +2164,6 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'title'      => 'Intermittents',
 							'menu_icon'  => 'post_type',
 							'menu_title' => 'Intermittents',
-//                            'post_type' => AmapressAdhesion_intermittence::INTERNAL_POST_TYPE,
 							'capability' => 'edit_users',
 							'slug'       => 'users.php?amapress_contrat=intermittent',
 						),
@@ -2190,7 +2181,6 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'settings' => array(
 								'name'       => 'Emails et rappels',
 								'menu_title' => 'Emails/Rappels',
-//								'position'   => '25.2',
 								'capability' => 'edit_intermittence_panier',
 								'menu_icon'  => 'dashicons-email',
 							),
@@ -2563,7 +2553,6 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'position'   => '25.1',
 								'capability' => 'manage_events',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
@@ -3254,7 +3243,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Liste émargement',
-								'position'   => '25.16',
 								'capability' => 'edit_contrat_instance',
 								'icon'       => 'dashicons-admin-tools',
 							),
@@ -3362,7 +3350,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Confidentialité',
-								'position'   => '25.16',
 								'capability' => 'manage_amapress',
 								'icon'       => 'dashicons-admin-tools',
 							),
@@ -3432,7 +3419,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Contacts public',
-								'position'   => '25.16',
 								'capability' => 'manage_amapress',
 								'icon'       => 'dashicons-admin-tools',
 							),
@@ -3478,7 +3464,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Listes de diffusion',
-								'position'   => '25.16',
 								'capability' => 'manage_amapress',
 								'icon'       => 'dashicons-admin-tools',
 							),
@@ -3592,7 +3577,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Emails groupés',
-								'position'   => '25.17',
 								'capability' => 'manage_amapress',
 								'icon'       => 'dashicons-admin-tools',
 							),
@@ -3741,7 +3725,6 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Le collectif',
-								'position'   => '25.17',
 								'capability' => 'edit_users',
 //								'icon'       => 'dashicons-admin-tools',
 							),
