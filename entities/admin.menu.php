@@ -4,38 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-add_filter( 'customize_nav_menu_available_item_types', function ( $item_types ) {
-	//var_dump($item_types);
-	return $item_types;
-} );
-add_filter( 'customize_nav_menu_available_items', function ( $items, $type, $object, $page ) {
-	//var_dump($items);
-	//var_dump($type);
-	//var_dump($object);
-	//var_dump($page);
-	return $items;
-}, 10, 4 );
-
-add_action( 'admin_menu', 'amapress_change_admin_menu' );
-function amapress_change_admin_menu() {
-	foreach ( AmapressEntities::getMenu() as $m ) {
-		if ( $m['type'] != 'page' ) {
-			continue;
-		}
-		add_menu_page( do_shortcode( $m['title'] ), do_shortcode( $m['menu_title'] ),
-			$m['capability'], $m['slug'],
-			$m['function'], $m['icon'], $m['position'] );
-	}
-
-//add_action( 'admin_menu', 'amapress_change_admin_menu' );
-//function amapress_change_admin_menu() {
-//	$titan = TitanFramework::getInstance( 'amapress' );
-//
-//	foreach ( AmapressEntities::getMenu() as $m ) {
-//
-//	}
-//}
-
 add_filter( 'sanitize_html_class', 'menu_sanitize_html_class', 10, 2 );
 function menu_sanitize_html_class( $sanitized, $class ) {
 	if ( 0 === strpos( $class, 'dashicons-none' ) ) {
