@@ -349,48 +349,6 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 					'function'   => 'amapress_echo_and_check_amapress_state_page',
 				),
 				array(
-					'id'       => 'amapress_gestion_fournisseurs_page',
-					'type'     => 'panel',
-					'settings' => array(
-						'name'       => 'Producteurs',
-						'position'   => '25.2',
-						'capability' => 'edit_produit',
-						'icon'       => 'dashicons-none flaticon-tractor',
-						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez configurer :</h4><ul style="margin-left: 1em; list-style-type: disc">' .
-						                ( amapress_current_user_can( 'edit_producteur' ) ? ( '<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_producteur' ) . '">producteurs</a> : la présentation des exploitations de vos différents producteurs ainsi que <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" target="_blank">l\'affectation de leurs référents</a>. Vous pouvez également affecter des référents sur les contrats de vos producteurs (<a target="_blank" href="https://wiki.amapress.fr/referent_producteur/fiche_producteur">Voir l\'aide</a>)</li>' ) : '' ) .
-						                ( amapress_current_user_can( 'edit_produit' ) ? ( '<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_produit' ) . '">produits de vos différents producteurs</a>, par exemples les espèces de légumes cultivés, les races de poules, les types de produits ainsi que leur associer des <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_produit_category' ) . '">étiquettes</a>. (Le <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">renseignement des types et tailles de paniers</a> de fait au sein des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a>)</li>' ) : '' ) .
-						                '</ul></div>'
-					),
-					'options'  => array(),
-					'tabs'     => array(),
-					'subpages' => array(
-						array(
-							'title'      => 'Producteurs',
-							'menu_icon'  => 'post_type',
-							'menu_title' => 'Producteurs',
-							'post_type'  => 'amps_producteur',
-							'capability' => 'edit_producteur',
-							'slug'       => 'edit.php?post_type=amps_producteur',
-						),
-						array(
-							'title'      => 'Produits',
-							'menu_icon'  => 'post_type',
-							'menu_title' => 'Produits',
-							'post_type'  => 'amps_produit',
-							'capability' => 'edit_produit',
-							'slug'       => 'edit.php?post_type=amps_produit',
-						),
-						array(
-							'title'      => 'Catégories de produit',
-							'menu_icon'  => 'dashicons-tag',
-							'menu_title' => 'Catégories de produits',
-							'capability' => 'edit_produit',
-							'post_type'  => 'amps_produit_category',
-							'slug'       => 'edit-tags.php?taxonomy=amps_produit_category',
-						),
-					),
-				),
-				array(
 					'id'       => 'amapress_gestion_contenu_page',
 					'type'     => 'panel',
 					'settings' => array(
@@ -1083,8 +1041,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 <li>obtenir des <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_quantites_stats' ) . '">statistiques</a> sur les inscriptions, la <a target="_blank" href="' . admin_url( 'admin.php?page=calendar_contrat_paiements' ) . '">répartition des chèques</a>, la <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) . '">répartition des paniers</a> et des <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_quantites_next_distrib' ) . '">quantités à livrer</a> par les prodcuteurs</li> 
 <li>gérer <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_archives' ) . '">l\'archivage des saisons précédentes</a></li>
 <li>configurer les <a target="_blank" href="' . admin_url( 'admin.php?page=contrats_mails_page' ) . '">emails de rappels</a></li>
-<li>configurer <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ) . '">l\'assistant de préinscription en ligne</a> et obtenir un <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) . '">modèle de contrat Word/DOCX générique</a> pour le préremplissage automatique des contrats lors des inscriptions.</li>
-</ul>
+<li>configurer <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ) . '">l\'assistant de préinscription en ligne</a> et obtenir un <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) . '">modèle de contrat Word/DOCX générique</a> pour le préremplissage automatique des contrats lors des inscriptions.</li>' .
+						                ( amapress_current_user_can( 'edit_producteur' ) ? ( '<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_producteur' ) . '">producteurs</a> : la présentation des exploitations de vos différents producteurs ainsi que <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" target="_blank">l\'affectation de leurs référents</a>. Vous pouvez également affecter des référents sur les contrats de vos producteurs (<a target="_blank" href="https://wiki.amapress.fr/referent_producteur/fiche_producteur">Voir l\'aide</a>)</li>' ) : '' ) .
+						                ( amapress_current_user_can( 'edit_produit' ) ? ( '<li>les <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_produit' ) . '">produits de vos différents producteurs</a>, par exemples les espèces de légumes cultivés, les races de poules, les types de produits ainsi que leur associer des <a target="_blank" href="' . admin_url( 'edit-tags.php?taxonomy=amps_produit_category' ) . '">étiquettes</a>. (Le <a target="_blank" href="https://wiki.amapress.fr/contrats/creation">renseignement des types et tailles de paniers</a> de fait au sein des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ) . '">contrats</a>)</li>' ) : '' ) .
+						                '</ul>
 <p>Consultez l\'aide <a target="_blank" href="https://wiki.amapress.fr/referent_producteur/accueil">Référent Producteur</a></p></div>'
 					),
 					'options'  => array(
@@ -1883,14 +1843,30 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								),
 							),
 						),
-//                        array(
-//                            'title' => 'Commandes',
-//                            'menu_icon' => 'post_type',
-//                            'menu_title' => 'Commandes',
-//                            'post_type' => 'amps_user_commande',
-//                            'capability' => 'edit_user_commande',
-//                            'slug' => 'edit.php?post_type=amps_user_commande&amapress_date=thisweek',
-//                        ),
+						array(
+							'title'      => 'Producteurs',
+							'menu_icon'  => 'post_type',
+							'menu_title' => 'Producteurs',
+							'post_type'  => 'amps_producteur',
+							'capability' => 'edit_producteur',
+							'slug'       => 'edit.php?post_type=amps_producteur',
+						),
+						array(
+							'title'      => 'Produits',
+							'menu_icon'  => 'post_type',
+							'menu_title' => 'Produits',
+							'post_type'  => 'amps_produit',
+							'capability' => 'edit_produit',
+							'slug'       => 'edit.php?post_type=amps_produit',
+						),
+						array(
+							'title'      => 'Catégories de produit',
+							'menu_icon'  => 'dashicons-tag',
+							'menu_title' => 'Catégories de produits',
+							'capability' => 'edit_produit',
+							'post_type'  => 'amps_produit_category',
+							'slug'       => 'edit-tags.php?taxonomy=amps_produit_category',
+						),
 					),
 				),
 				array(
