@@ -9,7 +9,6 @@
 * **Inscription distributions:** 
     - paramètre _responsive_ (auto pour détection si affichage mobile)
     - paramètre _fixed_column_width_ (Par défaut, %) pour fixer la largeur des colonnes Responsables ; % pour répartir la largeur de colonnes sur la largeur du tableau ; en em ou px pour forcer une largeur fixe
-    - paramètre _scroll_x_ pour autoriser le scroll horizontal si fixed_column_width est en valeur fixe em/px
     - paramètre _scroll_y_ (en px) pour limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions
     - paramètre _font_size_ pour définir la taille relative du texte dans la vue en % ou em
     - paramètres _show_adresse_ et _show_roles_ à _false_ par défaut

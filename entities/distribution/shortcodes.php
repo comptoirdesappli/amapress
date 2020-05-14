@@ -118,9 +118,8 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'show_responsables'         => 'true',
 		'manage_all_subscriptions'  => 'false',
 		'prefer_inscr_button_first' => 'true',
-		'column_date_width'         => '4em',
-		'fixed_column_width'        => '%',
-		'scroll_x'                  => '',
+		'column_date_width'         => '6rem',
+		'fixed_column_width'        => '8rem',
 		'scroll_y'                  => '',
 		'font_size'                 => '11px',
 		'key'                       => '',
@@ -140,28 +139,22 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		$responsive = false;
 	}
 
-	if ( 'auto' === $responsive ) {
-		$responsive = wp_is_mobile();
-	} elseif ( 'scroll' === $responsive ) {
+	if ( 'scroll' === $responsive ) {
 		if ( empty( $column_date_width ) ) {
-			$column_date_width = '4em';
+			$column_date_width = '6rem';
 		}
 		if ( empty( $fixed_column_width ) || '%' === $fixed_column_width ) {
-			$fixed_column_width = '8em';
+			$fixed_column_width = '8rem';
 		}
-		$atts['scroll_x'] = 'true';
 		if ( empty( $atts['scroll_y'] ) ) {
 			$atts['scroll_y'] = '300px';
 		}
+	} elseif ( 'auto' === $responsive ) {
+		$fixed_column_width = '%';
+		$responsive         = wp_is_mobile();
 	} else {
-		$responsive = Amapress::toBool( $responsive );
-	}
-	if ( ! empty( $atts['scroll_x'] ) ) {
-		$responsive = false;
-	}
-
-	if ( '%' == $fixed_column_width ) {
-		$atts['scroll_x'] = '';
+		$fixed_column_width = '%';
+		$responsive         = Amapress::toBool( $responsive );
 	}
 
 	$allow_anonymous_access = false;
@@ -434,12 +427,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$responsive = false;
 			$data_atts  = '';
 		} else {
-			if ( ! empty( $atts['font_size'] ) ) {
-				$ret .= '<style type="text/css">.distrib-inscr-list { font-size: ' . $atts['font_size'] . ' !important;}</style>';
-			}
 			$data_atts = [];
-			if ( ! empty( $atts['scroll_x'] ) ) {
-				$data_atts['scroll-x']        = $atts['scroll_x'];
+			if ( '%' !== $fixed_column_width ) {
+				$data_atts['scroll-x']        = 'true';
 				$data_atts['fixed-columns']   = 'true';
 				$data_atts['scroll-collapse'] = 'false';
 			}
@@ -902,8 +892,14 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$ret .= '</tbody>';
 		$ret .= '</table>';
 
+		$table_wrapper_id = '#' . $table_id . '_wrapper';
 		if ( '%' !== $fixed_column_width && ! empty( $calc ) ) {
-			$ret .= '<style type="text/css">#' . $table_id . '_wrapper { width: calc( 20px + ' . implode( ' + ', $calc ) . '); margin: 0 auto; }</style>';
+			$calc = implode( ' + ', $calc );
+			$ret  .= "<style type='text/css'>$table_wrapper_id, $table_wrapper_id * { box-sizing: border-box }
+			    $table_wrapper_id { max-width: calc( 16px + $calc); margin: 0 auto; }</style>";
+		}
+		if ( ! empty( $atts['font_size'] ) ) {
+			$ret .= '<style type="text/css">' . $table_wrapper_id . ' { font-size: ' . $atts['font_size'] . ' !important;}</style>';
 		}
 
 //		$ret .= '<script type="text/javascript">jQuery(function($) {$(".distrib-inscr-list").DataTable().fixedHeader.enable(true);});</script>';
