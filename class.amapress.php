@@ -2046,79 +2046,102 @@ class Amapress {
 		$titan = TitanFramework::getInstance( 'amapress' );
 
 		foreach ( AmapressEntities::getMenu() as $m ) {
-			if ( $m['type'] != 'panel' ) {
-				continue;
-			}
+			if ( 'page' === $m['type'] ) {
+				add_action( 'admin_menu', function () use ( $m ) {
+					add_menu_page( do_shortcode( $m['title'] ), do_shortcode( $m['menu_title'] ),
+						$m['capability'], $m['slug'],
+						$m['function'], $m['icon'], $m['position'] );
+				} );
+			} elseif ( 'panel' === $m['type'] ) {
+				$p = $titan->createAdminPage( array_merge( array( 'id' => $m['id'] ), $m['settings'] ) );
 
-			$s = array_merge( array( 'id' => $m['id'] ), $m['settings'] );
-			$p = $titan->createAdminPage( $s );
-
-			$tabs = isset( $m['tabs'] ) ? $m['tabs'] : null;
-			if ( $tabs && is_callable( $tabs, false ) ) {
-				$tabs = call_user_func( $tabs );
-			}
-			if ( ! empty( $tabs ) ) {
-				foreach ( $tabs as $tab_name => $tab ) {
+				$tabs = isset( $m['tabs'] ) ? $m['tabs'] : null;
+				if ( $tabs && is_callable( $tabs, false ) ) {
+					$tabs = call_user_func( $tabs );
+				}
+				if ( ! empty( $tabs ) ) {
+					foreach ( $tabs as $tab_name => $tab ) {
 //                    if (!empty($tab['capability']) && !amapress_current_user_can($tab['capability'])) continue;
 
-					$t = $p->createTab( array(
-						'name'       => $tab_name,
-						'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
-						'desc'       => $tab['desc'],
-						'use_form'   => ( isset ( $tab['use_form'] ) ? $tab['use_form'] : true ),
-						'use_table'  => ( isset ( $tab['use_table'] ) ? $tab['use_table'] : true ),
-						'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
-					) );
-					foreach ( $tab['options'] as $opt ) {
-						$t->createOption( $opt );
-					}
-				}
-			}
-
-			foreach ( $m['options'] as $opt ) {
-				$p->createOption( $opt );
-			}
-
-			if ( isset( $m['subpages'] ) && count( $m['subpages'] ) > 0 ) {
-				foreach ( $m['subpages'] as $mm ) {
-					if ( ! isset( $mm['subpage'] ) ) {
-						continue;
-					}
-
-					$ss = array_merge(
-						array(
-							'id'     => $mm['id'],
-							'parent' => $m['id'],
-						),
-						$mm['settings'] );
-					$pp = $titan->createAdminPage( $ss );
-
-					$ttabs = isset( $mm['tabs'] ) ? $mm['tabs'] : null;
-					if ( $ttabs && is_callable( $ttabs, false ) ) {
-						$ttabs = call_user_func( $ttabs );
-					}
-					if ( ! empty( $ttabs ) ) {
-						foreach ( $ttabs as $tab_name => $tab ) {
-							$t = $pp->createTab( array(
-								'name'       => $tab_name,
-								'desc'       => $tab['desc'],
-								'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
-								'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
-							) );
-							foreach ( $tab['options'] as $opt ) {
-								$t->createOption( $opt );
-							}
+						$t = $p->createTab( array(
+							'name'       => $tab_name,
+							'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
+							'desc'       => $tab['desc'],
+							'use_form'   => ( isset ( $tab['use_form'] ) ? $tab['use_form'] : true ),
+							'use_table'  => ( isset ( $tab['use_table'] ) ? $tab['use_table'] : true ),
+							'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
+						) );
+						foreach ( $tab['options'] as $opt ) {
+							$t->createOption( $opt );
 						}
 					}
-					foreach ( $mm['options'] as $opt ) {
-						$pp->createOption( $opt );
+				}
+
+				if ( ! empty( $m['options'] ) ) {
+					foreach ( $m['options'] as $opt ) {
+						$p->createOption( $opt );
+					}
+				}
+
+				if ( ! empty( $m['subpages'] ) ) {
+					foreach ( $m['subpages'] as $subpage ) {
+						if ( ! isset( $subpage['subpage'] ) ) {
+							$menu_icon = $subpage['menu_icon'];
+							if ( $menu_icon == 'post_type' && isset( $subpage['post_type'] ) ) {
+								$pt = get_post_type_object( amapress_unsimplify_post_type( $subpage['post_type'] ) );
+								if ( ! $pt ) {
+									die( $subpage['post_type'] );
+								}
+								$menu_icon = $pt->menu_icon;
+							}
+							add_action( 'admin_menu', function () use ( $m, $subpage, $menu_icon ) {
+								$hook = add_submenu_page( $m['id'],
+									do_shortcode( $subpage['title'] ),
+									'<span class="dashicons-before ' . ( empty( $menu_icon ) ? 'dashicons-admin-post' : $menu_icon ) . '" /> ' . do_shortcode( $subpage['menu_title'] ),
+									$subpage['capability'], $subpage['slug'], isset( $subpage['function'] ) ? $subpage['function'] : null );
+								if ( isset( $subpage['hook'] ) ) {
+									add_action( "load-$hook", $subpage['hook'] );
+								}
+							}, 0 );
+						} else {
+							$pp = $titan->createAdminPage( array_merge(
+								array(
+									'id'       => $subpage['id'],
+									'parent'   => $m['id'],
+									'position' => 0,
+								),
+								$subpage['settings'] ) );
+
+							$ttabs = isset( $subpage['tabs'] ) ? $subpage['tabs'] : null;
+							if ( $ttabs && is_callable( $ttabs, false ) ) {
+								$ttabs = call_user_func( $ttabs );
+							}
+							if ( ! empty( $ttabs ) ) {
+								foreach ( $ttabs as $tab_name => $tab ) {
+									$t = $pp->createTab( array(
+										'name'       => $tab_name,
+										'desc'       => $tab['desc'],
+										'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
+										'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
+									) );
+									foreach ( $tab['options'] as $opt ) {
+										$t->createOption( $opt );
+									}
+								}
+							}
+							foreach ( $subpage['options'] as $opt ) {
+								$pp->createOption( $opt );
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 
-	public static function init_post_fields( $fields, $post_type, &$metaboxes, $name, $conf, $conditional_val = null ) {
+	public static function init_post_fields(
+		$fields, $post_type, &$metaboxes, $name, $conf, $conditional_val = null
+	) {
 		$pt = amapress_simplify_post_type( $post_type );
 		foreach ( $fields as $field => $options ) {
 			$group = ! empty( $options['group'] ) ? $options['group'] : 'Options';
@@ -2154,7 +2177,9 @@ class Amapress {
 		}
 	}
 
-	public static function generate_full_amap( $anonymize = true ) {
+	public static function generate_full_amap(
+		$anonymize = true
+	) {
 		require_once 'demos/AmapDemoBase.php';
 
 		$ret                = '';
@@ -2572,7 +2597,9 @@ class Amapress {
 		return $ret;
 	}
 
-	public static function num2alpha( $n ) {
+	public static function num2alpha(
+		$n
+	) {
 		$r = '';
 		for ( $i = 1; $n >= 0 && $i < 10; $i ++ ) {
 			$r = chr( 0x41 + ( $n % pow( 26, $i ) / pow( 26, $i - 1 ) ) ) . $r;
@@ -2685,7 +2712,9 @@ class Amapress {
 //        var_dump(count($m->options));
 	}
 
-	public static function get_help_tabs( $screen_id ) {
+	public static function get_help_tabs(
+		$screen_id
+	) {
 		$tp = AmapressEntities::getPostTypes();
 		//https://codex.wordpress.org/Plugin_API/Admin_Screen_Reference
 		if ( $screen_id == 'users' ) {
@@ -2795,7 +2824,9 @@ class Amapress {
 	 * @subpackage admin/admin
 	 *
 	 */
-	public static function amapress_row_actions( $actions = array(), $post = null ) {
+	public static function amapress_row_actions(
+		$actions = array(), $post = null
+	) {
 		$types = AmapressEntities::getPostTypes();
 		$pt    = amapress_simplify_post_type( $post->post_type );
 		if ( empty( $post ) || ! array_key_exists( $pt, $types ) ) {
@@ -2947,7 +2978,9 @@ class Amapress {
 		wp_enqueue_style( 'dashicons' );
 	}
 
-	public static function to_title( $post ) {
+	public static function to_title(
+		$post
+	) {
 		return $post->post_title;
 	}
 
@@ -3283,7 +3316,9 @@ class Amapress {
 		remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );//since 3.8
 	}
 
-	public static function amapress_disable_months_dropdown( $post_type ) {
+	public static function amapress_disable_months_dropdown(
+		$post_type
+	) {
 		$types = AmapressEntities::getPostTypes();
 		$pt    = amapress_simplify_post_type( get_post_type() );
 		if ( ! $pt || ! array_key_exists( $pt, $types ) ) {
@@ -3520,7 +3555,9 @@ class Amapress {
 
 
 	/* take care of the urls */
-	public static function amapress_menu_filter( $items, $menu, $args ) {
+	public static function amapress_menu_filter(
+		$items, $menu, $args
+	) {
 		$menu_order = count( $items ); /* Offset menu order */
 		$i          = 20000;
 
@@ -3641,7 +3678,9 @@ class Amapress {
 	}
 
 
-	public static function day_name( $day ) {
+	public static function day_name(
+		$day
+	) {
 		switch ( $day ) {
 			case 1:
 				return 'Lundi';
@@ -3662,13 +3701,17 @@ class Amapress {
 		return '';
 	}
 
-	public static function getIDs( $objects ) {
+	public static function getIDs(
+		$objects
+	) {
 		return array_map( function ( $c ) {
 			return $c->ID;
 		}, $objects );
 	}
 
-	public static function get_contrats_list( $producteur_id = null ) {
+	public static function get_contrats_list(
+		$producteur_id = null
+	) {
 		$contrats = AmapressContrats::get_contrats( $producteur_id, true, true );
 		if ( empty( $contrats ) ) {
 			return '<p class="">Aucun contrat n\'est configuré</p>';
@@ -3703,7 +3746,9 @@ class Amapress {
 		return $ret;
 	}
 
-	public static function get_know_more( $url ) {
+	public static function get_know_more(
+		$url
+	) {
 		return '<p class="know-more"><a href="' . $url . '"><i class="fa fa-star-o"></i>&#xA0;En savoir plus</a></p>';
 	}
 
@@ -3713,18 +3758,24 @@ class Amapress {
 //    }
 
 
-	public static function do_nothing( $user_id ) {
+	public static function do_nothing(
+		$user_id
+	) {
 		return true;
 	}
 
-	public static function make_date_and_hour( $date, $time ) {
+	public static function make_date_and_hour(
+		$date, $time
+	) {
 		return mktime( gmdate( 'H', $time ), gmdate( 'i', $time ), gmdate( 's', $time ), gmdate( 'n', $date ), gmdate( 'j', $date ), gmdate( 'Y', $date ) );
 	}
 
 	/** @param mixed $args,...
 	 * @return string
 	 */
-	public static function coalesce_icons( $args ) {
+	public static function coalesce_icons(
+		$args
+	) {
 		foreach ( func_get_args() as $name_or_url ) {
 			$res = self::get_icon( $name_or_url );
 			if ( ! empty( $res ) ) {
@@ -3735,7 +3786,9 @@ class Amapress {
 		return null;
 	}
 
-	public static function get_icon( $name, $alt = '' ) {
+	public static function get_icon(
+		$name, $alt = ''
+	) {
 		if ( empty( $name ) ) {
 			return '';
 		}
@@ -3772,15 +3825,21 @@ class Amapress {
 	public static function plugin_deactivation() {
 	}
 
-	public static function sendPdfFromHtml( $html, $pdf_name = null, $orientation = 'P', $format = 'A4' ) {
+	public static function sendPdfFromHtml(
+		$html, $pdf_name = null, $orientation = 'P', $format = 'A4'
+	) {
 		self::createPdfFromHtml( $html, $pdf_name, 'D', $orientation, $format );
 	}
 
-	public static function getPdfFromHtml( $html, $pdf_name = null, $orientation = 'P', $format = 'A4' ) {
+	public static function getPdfFromHtml(
+		$html, $pdf_name = null, $orientation = 'P', $format = 'A4'
+	) {
 		return self::createPdfFromHtml( $html, $pdf_name, 'S', $orientation, $format );
 	}
 
-	public static function createPdfFromHtmlAsMailAttachment( $html, $pdf_name = null, $orientation = 'P', $format = 'A4' ) {
+	public static function createPdfFromHtmlAsMailAttachment(
+		$html, $pdf_name = null, $orientation = 'P', $format = 'A4'
+	) {
 		$pdf_bytes = self::createPdfFromHtml( $html, $pdf_name, 'S', $orientation, $format );
 		$filename  = Amapress::getAttachmentDir() . '/' . $pdf_name;
 
@@ -3789,7 +3848,9 @@ class Amapress {
 		return $filename;
 	}
 
-	public static function createPdfFromHtml( $html, $pdf_name = null, $dest = false, $orientation = 'P', $format = 'A4' ) {
+	public static function createPdfFromHtml(
+		$html, $pdf_name = null, $dest = false, $orientation = 'P', $format = 'A4'
+	) {
 		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
 		if ( isset( $_GET['test'] ) ) {
 			wp_die( $html );
@@ -3823,7 +3884,9 @@ class Amapress {
 		}
 	}
 
-	public static function createXLSXFromDatatable( $columns, $data, $title = null ) {
+	public static function createXLSXFromDatatable(
+		$columns, $data, $title = null
+	) {
 		$dt_options = array(
 			'paging'       => false,
 			'init_as_html' => true,
@@ -3839,7 +3902,9 @@ class Amapress {
 		return self::createXLSXFromHtml( $html, $title );
 	}
 
-	public static function createXLSXFromDatatableAsMailAttachment( $columns, $data, $excel_file_name, $title ) {
+	public static function createXLSXFromDatatableAsMailAttachment(
+		$columns, $data, $excel_file_name, $title
+	) {
 		$objPHPExcel = self::createXLSXFromDatatable( $columns, $data, $title );
 		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
@@ -3848,7 +3913,9 @@ class Amapress {
 		return $filename;
 	}
 
-	public static function createXLSXFromHtml( $html, $title = null ) {
+	public static function createXLSXFromHtml(
+		$html, $title = null
+	) {
 		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
 		if ( isset( $_GET['test'] ) ) {
 			wp_die( $html );
@@ -3870,7 +3937,9 @@ class Amapress {
 		}
 	}
 
-	public static function sendDocumentFile( $full_file_name, $out_file_name ) {
+	public static function sendDocumentFile(
+		$full_file_name, $out_file_name
+	) {
 		if ( strpos( $out_file_name, '.docx' ) !== false ) {
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document' );
 		} else if ( strpos( $out_file_name, '.xlsx' ) !== false ) {
@@ -3896,7 +3965,9 @@ class Amapress {
 		die();
 	}
 
-	public static function getPlaceholdersHelpForProperties( $props ) {
+	public static function getPlaceholdersHelpForProperties(
+		$props
+	) {
 		$ret = [];
 		foreach ( $props as $prop_name => $prop ) {
 			if ( ! isset( $prop['desc'] ) ) {
@@ -3948,7 +4019,9 @@ class Amapress {
 		return $ret;
 	}
 
-	public static function sendXLSXFromPHPExcelObject( $objPHPExcel, $excel_file_name ) {
+	public static function sendXLSXFromPHPExcelObject(
+		$objPHPExcel, $excel_file_name
+	) {
 		@ob_clean();
 		// Redirect output to a client’s web browser (Excel2007)
 		header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
@@ -3966,11 +4039,15 @@ class Amapress {
 		die();
 	}
 
-	public static function sendXLSXFromHtml( $html, $excel_file_name, $title ) {
+	public static function sendXLSXFromHtml(
+		$html, $excel_file_name, $title
+	) {
 		self::sendXLSXFromPHPExcelObject( self::createXLSXFromHtml( $html, $title ), $excel_file_name );
 	}
 
-	public static function createXLSXFromHtmlAsMailAttachment( $html, $excel_file_name, $title ) {
+	public static function createXLSXFromHtmlAsMailAttachment(
+		$html, $excel_file_name, $title
+	) {
 		$objPHPExcel = self::createXLSXFromHtml( $html, $title );
 		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
@@ -3979,7 +4056,9 @@ class Amapress {
 		return $filename;
 	}
 
-	public static function createXLSXFromPostQueryAsMailAttachment( $query, $excel_file_name, $title ) {
+	public static function createXLSXFromPostQueryAsMailAttachment(
+		$query, $excel_file_name, $title
+	) {
 		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( $query, null, $title );
 		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
@@ -3988,7 +4067,9 @@ class Amapress {
 		return $filename;
 	}
 
-	public static function getContratGenericUrl( $type = 'default' ) {
+	public static function getContratGenericUrl(
+		$type = 'default'
+	) {
 		switch ( $type ) {
 			case 'modulables':
 				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique_modulables.docx';
@@ -4003,7 +4084,9 @@ class Amapress {
 		return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/bulletin_adhesion_generique.docx';
 	}
 
-	public static function cleanFilesOlderThanDays( $dir, $days ) {
+	public static function cleanFilesOlderThanDays(
+		$dir, $days
+	) {
 		$files = glob( trailingslashit( $dir ) . "*" );
 		$now   = time();
 
@@ -4117,7 +4200,9 @@ class Amapress {
 	}
 
 	/** @param PHPExcel_Writer_IWriter $objWriter */
-	public static function outputExcel( $objWriter ) {
+	public static function outputExcel(
+		$objWriter
+	) {
 		$filePath = wp_upload_dir()['basedir'] . '/' . rand( 0, getrandmax() ) . rand( 0, getrandmax() ) . '.tmp';
 		$objWriter->save( $filePath );
 		readfile( $filePath );
@@ -4137,7 +4222,9 @@ class Amapress {
 		return $contact_page;
 	}
 
-	public static function get_page_with_shortcode_href( $shortcode, $transient_name ) {
+	public static function get_page_with_shortcode_href(
+		$shortcode, $transient_name
+	) {
 		$href = get_transient( $transient_name );
 		if ( empty( $href ) ) {
 			/** @var WP_Post $page */
@@ -4170,7 +4257,9 @@ class Amapress {
 		return self::get_page_with_shortcode_href( 'inscription-en-ligne', 'amp_preinscr_href' );
 	}
 
-	public static function formatPrice( $number, $with_unit = false ) {
+	public static function formatPrice(
+		$number, $with_unit = false
+	) {
 		return number_format( floatval( $number ), 2, ',', ' ' ) . ( $with_unit ? '€' : '' );
 	}
 
@@ -4207,7 +4296,9 @@ class Amapress {
 		return $amapress_no_filter_referent;
 	}
 
-	public static function setFilterForReferent( $set ) {
+	public static function setFilterForReferent(
+		$set
+	) {
 		global $amapress_no_filter_referent;
 		global $amapress_no_filter_referent_nesting;
 
@@ -4226,7 +4317,9 @@ class Amapress {
 		}
 	}
 
-	public static function convertToPDF( $filename, $throw_if_fail = false ) {
+	public static function convertToPDF(
+		$filename, $throw_if_fail = false
+	) {
 		$convertws_url  = Amapress::getOption( 'convertws_url' );
 		$convertws_user = Amapress::getOption( 'convertws_user' );
 		$convertws_pass = Amapress::getOption( 'convertws_pass' );
@@ -4284,7 +4377,9 @@ class Amapress {
 		}
 	}
 
-	public static function updateLocalisation( $postID, $is_user, $root_meta_name, $address_content ) {
+	public static function updateLocalisation(
+		$postID, $is_user, $root_meta_name, $address_content
+	) {
 		$save_fn   = $is_user ? 'update_user_meta' : 'update_post_meta';
 		$delete_fn = $is_user ? 'delete_user_meta' : 'delete_post_meta';
 		$get_fn    = $is_user ? 'get_user_meta' : 'get_post_meta';
@@ -4325,11 +4420,15 @@ class Amapress {
 		}
 	}
 
-	public static function isHtmlEmpty( $html ) {
+	public static function isHtmlEmpty(
+		$html
+	) {
 		return empty( trim( wp_strip_all_tags( $html, true ) ) );
 	}
 
-	public static function getSiteDomainName( $tld = false ) {
+	public static function getSiteDomainName(
+		$tld = false
+	) {
 		$domain = parse_url( home_url() )['host'];
 
 		if ( $tld ) {

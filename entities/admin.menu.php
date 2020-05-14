@@ -27,33 +27,14 @@ function amapress_change_admin_menu() {
 			$m['function'], $m['icon'], $m['position'] );
 	}
 
-	foreach ( AmapressEntities::getMenu() as $m ) {
-		if ( $m['type'] != 'panel' ) {
-			continue;
-		}
-
-		foreach ( $m['subpages'] as $subpage ) {
-			if ( isset( $subpage['subpage'] ) ) {
-				continue;
-			}
-			$menu_icon = $subpage['menu_icon'];
-			if ( $menu_icon == 'post_type' && isset( $subpage['post_type'] ) ) {
-				$pt = get_post_type_object( amapress_unsimplify_post_type( $subpage['post_type'] ) );
-				if ( ! $pt ) {
-					die( $subpage['post_type'] );
-				}
-				$menu_icon = $pt->menu_icon;
-			}
-			$hook = add_submenu_page( $m['id'],
-				do_shortcode( $subpage['title'] ),
-				'<span class="dashicons-before ' . ( empty( $menu_icon ) ? 'dashicons-admin-post' : $menu_icon ) . '" /> ' . do_shortcode( $subpage['menu_title'] ),
-				$subpage['capability'], $subpage['slug'], isset( $subpage['function'] ) ? $subpage['function'] : null );
-			if ( isset( $subpage['hook'] ) ) {
-				add_action( "load-$hook", $subpage['hook'] );
-			}
-		}
-	}
-}
+//add_action( 'admin_menu', 'amapress_change_admin_menu' );
+//function amapress_change_admin_menu() {
+//	$titan = TitanFramework::getInstance( 'amapress' );
+//
+//	foreach ( AmapressEntities::getMenu() as $m ) {
+//
+//	}
+//}
 
 add_filter( 'sanitize_html_class', 'menu_sanitize_html_class', 10, 2 );
 function menu_sanitize_html_class( $sanitized, $class ) {
