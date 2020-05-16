@@ -263,7 +263,7 @@ class AmapressSMTPMailingQueueOriginal {
 						$recipient      = $matches[2];
 					}
 				}
-				if ( in_array( $to, $avoid_emails ) ) {
+				if ( in_array( $recipient, $avoid_emails ) ) {
 					continue;
 				}
 
