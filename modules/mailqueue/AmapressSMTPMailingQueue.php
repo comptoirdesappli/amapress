@@ -104,7 +104,8 @@ class AmapressSMTPMailingQueue {
 			do {
 				$time    = amapress_time();
 				$errors  = self::sendMail( $this->mlgrp_id,
-					compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ) );
+					compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time' ),
+					1 == $retries );
 				$retries -= 1;
 			} while ( $retries > 0 && ! empty( $errors ) );
 
@@ -324,7 +325,7 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return array Success
 	 */
-	public static function sendMail( $mlgrp_id, $data ) {
+	public static function sendMail( $mlgrp_id, $data, $store_errors = true ) {
 		if ( ! empty( $data['attachments'] ) ) {
 			$data['attachments'] = array_filter( $data['attachments'],
 				function ( $v ) {
@@ -355,7 +356,9 @@ class AmapressSMTPMailingQueue {
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
 			@error_log( 'Email send Error : ' . implode( ' ; ', $errors ) );
-			self::storeMail( $mlgrp_id, 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
+			if ( $store_errors ) {
+				self::storeMail( $mlgrp_id, 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
+			}
 		} else {
 			self::storeMail( $mlgrp_id, 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		}
