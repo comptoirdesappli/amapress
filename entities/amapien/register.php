@@ -96,7 +96,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'        => '
 <p id="amapress_user_amap_roles">Pour identifier ou contacter un membre du collectif via la fonctionnalité trombinoscope du site, sélectionner l’étiquette correspondante ci-dessous ou la <a href="' . admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ) . '">créer</a> :</p>
 <p><em>Exemple : Accueil nouveaux,  Boite Contact,  Convivialité-apéro,  Coordination associative,  Distributions, Feuille de chou,  Responsable Intermittents,  Ouverture vers l\'extérieur,  Panier solidaire,  Référent miel,  Relais Réseau AMAP IdF,  Responsable légal,  Site internet,  Sortie à la ferme…</em></p>
-<p>Pour modifier le collectif : <a href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Editer le collectif</a></p>',
+<p>Pour modifier le collectif : <a href="' . admin_url( 'users.php?page=amapress_collectif' ) . '">Editer le collectif</a></p>',
 				'show_column' => false,
 				'csv'         => false,
 //                'searchable' => true,
@@ -1010,7 +1010,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'title'      => 'Editer le collectif',
 				'icon'       => 'dashicons-groups',
 				'capability' => 'edit_users',
-				'href'       => admin_url( 'admin.php?page=amapress_collectif' ),
+				'href'       => admin_url( 'users.php?page=amapress_collectif' ),
 			),
 //			array(
 //				'id'         => 'amapress_edit_intermittents',
@@ -1091,19 +1091,19 @@ function amapress_register_admin_bar_menu_items( $items ) {
 						'id'         => 'amapress_welcome_mail',
 						'title'      => 'Email de bienvenue',
 						'capability' => 'manage_amapress',
-						'href'       => admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' ),
+						'href'       => admin_url( 'options-general.php?page=amapress_site_options_page&tab=welcome_mail' ),
 					),
 					array(
 						'id'         => 'amapress_public_contacts',
 						'title'      => 'Contacts public',
 						'capability' => 'manage_amapress',
-						'href'       => admin_url( 'admin.php?page=amapress_contact_options_page' ),
+						'href'       => admin_url( 'options-general.php?page=amapress_options_page&tab=amp_public_contacts_config' ),
 					),
 					array(
 						'id'         => 'amapress_log_mails',
 						'title'      => 'Logs des emails envoyés',
 						'capability' => 'manage_options',
-						'href'       => admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_mail_logs' ),
+						'href'       => admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_mail_logs' ),
 					),
 					array(
 						'id'         => 'amapress_backup',

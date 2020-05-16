@@ -41,7 +41,7 @@ function amapress_get_amap_roles_editor() {
 
 	$ret = '<p>Pour éditer les rôles au sein du collectif utiliser le tableau ci-dessous.</p>';
 	$ret .= '<p>Pour donner des droits d\'accès aux membres du collectif, modifier directement son profil utilisateur en le recherchant depuis le bandeau du site ou depuis la <a href="' . admin_url( 'users.php' ) . '">liste des utilisateurs</a></p>';
-	$ret .= '<p>Pour modifier les référents producteurs, utiliser l\'onglet <a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" class="button button-secondary">Référents producteurs</a></p>';
+	$ret .= '<p>Pour modifier les référents producteurs, utiliser l\'onglet <a href="' . admin_url( 'users.php?page=amapress_collectif&tab=amapress_edit_ref_prods' ) . '" class="button button-secondary">Référents producteurs</a></p>';
 
 	$members_no_desc = array_map( function ( $user ) {
 		$amapien = AmapressUser::getBy( $user );

@@ -159,7 +159,7 @@ function amapress_tabs_model_metabox_editor( $postId, $opt ) {
 			foreach ( $conf['tabs'] as $tab ) {
 				$parts = explode( '=', $tab, 2 );
 				if ( count( $parts ) != 2 ) {
-					echo '<div class="error">Erreur de configuration: chaque tab doit avoir la syntaxe id=label. Trouvé ' . $tab . '. <a href="' . admin_url( 'admin.php?page=amapress_options_page' ) . '">Corriger</a></div>';
+					echo '<div class="error">Erreur de configuration: chaque tab doit avoir la syntaxe id=label. Trouvé ' . $tab . '. <a href="' . admin_url( 'options-general.php?page=amapress_options_page' ) . '">Corriger</a></div>';
 					continue;
 				}
 				echo "<h3>{$parts[1]}</h3>";

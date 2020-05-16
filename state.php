@@ -383,7 +383,7 @@ function amapress_get_state() {
 		amapress_is_plugin_active( 'pwa' ) ? ( ! empty( $pwa_short_name ) ? 'success' : 'warning' ) : 'info',
 		'Configuration Progressive Web App',
 		'Configurer un nom de raccourci (max 12 caractères), une couleur de thème et un type d\'affichage',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_pwa_config' )
+		admin_url( 'options-general.php?page=amapress_pwa_options_page' )
 	);
 
 	$state['05_config'][] = amapress_check_plugin_install( 'autoptimize', 'Autoptimize',
@@ -430,7 +430,7 @@ function amapress_get_state() {
 		$has_site_verif_codes ? 'success' : 'warning',
 		$has_site_verif_codes ? 'Code de vérification du site (Google/Bing) : OK' : 'Codes de vérification du site (Google/Bing) : non renseignés',
 		'Créer des codes de vérification du site depuis les Webmaster Tools pour <a href="https://www.google.com/webmasters/tools/dashboard?hl=fr" target="_blank">Google</a> et <a href="https://www.bing.com/toolbox/webmaster" target="_blank">Bing</a> permet d\'obtenir un meilleur référencement',
-		admin_url( 'admin.php?page=amapress_options_page&tab=site_reference' )
+		admin_url( 'options-general.php?page=amapress_site_options_page&tab=amp_site_reference' )
 	);
 
 	if ( ! function_exists( 'get_filesystem_method' ) ) {
@@ -533,7 +533,7 @@ function amapress_get_state() {
 		empty( $contact_page ) || strpos( $contact_page, '[[' ) !== false ? 'warning' : 'success',
 		'Contenu de la page de contact',
 		'Ajouter les informations nécessaires pour contacter l’Amap pour une nouvelle inscription.',
-		admin_url( 'admin.php?page=amapress_contact_options_page' )
+		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_public_contacts_config' )
 	);
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $front_page_logo ) ? 'warning' : 'success',
@@ -546,7 +546,7 @@ function amapress_get_state() {
 		'info',
 		'Configuration de la liste d\'émargement',
 		'Personnaliser les infos affichées (téléphones, mails, instructions...) sur la liste d\'émargement et sa taille d\'impression.',
-		admin_url( 'admin.php?page=amapress_emargement_options_page' )
+		admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_emargement_options_tab' )
 	);
 
 //    $contrat_anon = Amapress::getOption('contrat_info_anonymous');
@@ -556,7 +556,7 @@ function amapress_get_state() {
 //        empty($contrat_anon) ?
 //            'Ajouter le texte d\'information sur les contrats' :
 //            'Cliquer sur le lien ci-dessus pour éditer le texte d\'information sur les contrats',
-//        admin_url('admin.php?page=amapress_options_page&tab=contrats')
+//        admin_url('options-general.php?page=amapress_options_page&tab=contrats')
 //    );
 
 //    $menu_name = 'primary';
@@ -612,7 +612,7 @@ function amapress_get_state() {
 		'info',
 		'Choix de la géolocalisation (actuellement ' . Amapress::getOption( 'geocode_provider' ) . ') et de l\'affichage des cartes (actuellement ' . Amapress::getOption( 'map_provider' ) . ')',
 		'Vous pouvez choisir entre Nominatim/Open Street Map et Google Maps pour la géolocalisation et l\'affichage des cartes',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_google_api_config' )
+		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_google_api_config' )
 	);
 
 	if ( 'google' == Amapress::getOption( 'geocode_provider' ) || 'google' == Amapress::getOption( 'map_provider' ) ) {
@@ -621,7 +621,7 @@ function amapress_get_state() {
 			! empty( $google_key ) ? 'success' : 'error',
 			'Clé API Google',
 			'<strong>Requis</strong> : Une clé Google API est nécessaire pour le bon fonctionnement de la géolocalisation ',
-			admin_url( 'admin.php?page=amapress_options_page&tab=amp_google_api_config' )
+			admin_url( 'options-general.php?page=amapress_options_page&tab=amp_google_api_config' )
 		);
 	}
 
@@ -633,7 +633,7 @@ function amapress_get_state() {
 			&& ! empty( Amapress::getOption( 'here_map_app_code' ) ) ? 'success' : 'error',
 			'APP ID/APP CODE Here Maps',
 			'<strong>Requis</strong> : des identifiants APP ID/APP CODE sont nécessaires pour le bon fonctionnement de la géolocalisation ',
-			admin_url( 'admin.php?page=amapress_options_page&tab=amp_google_api_config' )
+			admin_url( 'options-general.php?page=amapress_options_page&tab=amp_google_api_config' )
 		);
 	}
 
@@ -641,21 +641,21 @@ function amapress_get_state() {
 		'info',
 		'Adresse mail du site',
 		'Configurer l\'adresse email du site (par défaut, "wordpress", actuellement "<strong>' . esc_html( Amapress::getOption( 'email_from_mail' ) ) . '</strong>") et son nom d\'affichage (par défaut, le nom du site). Pensez à configurer une redirection pour cette adresse dans la configuration de votre hébergement.',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_site_mail_config' )
+		admin_url( 'options-general.php?page=amapress_site_options_page&tab=amp_site_mail_config' )
 	);
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Message sur la page de connexion',
 		'Personnaliser le message qui s\'affiche sur la page de connexion, par exemple, pour rappeler la procédure de récupération de son mot de passe.',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_connection_config#amapress_below_login_message' )
+		admin_url( 'options-general.php?page=amapress_site_options_page&tab=amp_connection_config#amapress_below_login_message' )
 	);
 
 	$state['05_config'][] = amapress_get_check_state(
 		'info',
 		'Email de bienvenue/demande de récupération mot de passe',
 		'Ajoutez et personnalisez le mail de bienvenue que chaque amapien reçoit à la création de son compte ou lorsqu\'il demande à récupérer son mot de passe',
-		admin_url( 'admin.php?page=amapress_options_page&tab=welcome_mail' )
+		admin_url( 'options-general.php?page=amapress_site_options_page&tab=welcome_mail' )
 	);
 
 	$state['05_config'][] = amapress_get_check_state(
@@ -684,7 +684,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'<p>La plupart des hébergeurs ont une limite d\'envoi des emails sortants par heure. Actuellement le site est configuré pour envoyer au maximum ' . $nb_mails . ' emails par heure.
 <br/>Par défaut, Amapress met les mails dans une file d\'attente avant de les envoyer pour éviter les blocages et rejets de l\'hébergeur. 
 <br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des emails envoyés par le site pour traçage des activités (pour une durée configurable).</p>',
-		admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' )
+		admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' )
 	);
 
 	$state['10_users'] = array();
@@ -759,8 +759,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	$state['10_users'][] = amapress_get_check_state(
 		count( $amap_roles ) == 0 || $empty_resp_roles ? 'warning' : 'success',
 		'Rôle descriptif spécifiques des membres du collectif',
-		'<a href="' . admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
-		admin_url( 'admin.php?page=amapress_collectif&tab=amp_amap_roles_config' )
+		'<a href="' . admin_url( 'users.php?page=amapress_collectif&tab=amp_amap_roles_config' ) . '" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements',
+		admin_url( 'users.php?page=amapress_collectif&tab=amp_amap_roles_config' )
 	);
 
 	/** @var WP_User[] $users_no_desc */
@@ -782,8 +782,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$state['10_users'][] = amapress_get_check_state(
 			$only_admins ? 'success' : 'warning',
 			'Membres du collectif sans rôle descriptif',
-			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice. (<em>Les administrateurs n\'ont pas forcement besoin de rôle descriptif</em>)',
-			admin_url( 'admin.php?page=amapress_collectif' ),
+			'<a target="_blank" href="' . admin_url( 'users.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice. (<em>Les administrateurs n\'ont pas forcement besoin de rôle descriptif</em>)',
+			admin_url( 'users.php?page=amapress_collectif' ),
 			implode( ', ', $members_no_desc )
 		);
 	}
@@ -800,7 +800,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$state['10_users'][] = amapress_get_check_state(
 			'info',
 			'Membres du collectif sans contrat',
-			'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_collectif' ) . '">Vérifier</a> les utilisateurs membres du collectif qui n\'ont pas de contrats',
+			'<a target="_blank" href="' . admin_url( 'users.php?page=amapress_collectif' ) . '">Vérifier</a> les utilisateurs membres du collectif qui n\'ont pas de contrats',
 			admin_url( 'users.php?amapress_contrat=no&amapress_role=collectif_no_prod' ),
 			implode( ', ', $members_no_contrats )
 		);
@@ -1220,7 +1220,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'info',
 		'Pages particulières',
 		'Configuration des pages particulières (Mes infos, espace intermittents...)',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_pages_config' )
+		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_pages_config' )
 	);
 	foreach ( AmapressEntities::getMenu() as $item ) {
 		if ( isset( $item['type'] ) && $item['type'] == 'panel' && isset( $item['id'] ) ) {
@@ -1648,7 +1648,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		( empty( $convertws_url ) || empty( $convertws_user ) || empty( $convertws_pass ) ) ? 'warning' : 'success',
 		'Configuration du webservice de conversion DOCX vers PDF (et autres services)',
 		'Un webservice de conversion DOCX vers PDF est nécessaire afin que les amapiens recoivent leur contrat en PDF et non en DOCX.<br/>Vous pouvez faire une <a href="mailto:contact.amapress@gmail.com">demande de code d\'accès</a> au webservice mis en place par l\'équipe Amapress. Ce WebService pourra également fournir d\'autres services, tels que la réduction de poids de PDF.',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_convertws_config' )
+		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_convertws_config' )
 	);
 
 	$adh_period                 = AmapressAdhesionPeriod::getCurrent( $first_online_date );
@@ -1698,14 +1698,14 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$amap_term ? 'success' : 'warning',
 		'Types de cotisation : adhésion à l\'AMAP',
 		'Associer un type de cotisation pour l\'adhésion à l\'AMAP',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ),
+		admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=amp_paiements_config' ),
 		$adh_period && $amap_term ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantAmap() ) . '€' : 'Pas de période d\'adhésion en cours'
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		$reseau_amap_term ? 'success' : 'warning',
 		'Types de cotisation : adhésion au réseau AMAP',
 		'Associer un type de cotisation pour l\'adhésion au réseau AMAP',
-		admin_url( 'admin.php?page=amapress_options_page&tab=amp_paiements_config' ),
+		admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=amp_paiements_config' ),
 		$adh_period && $reseau_amap_term ? 'Pour ' . $adh_period->getTitle() . ', le montant \'' . $reseau_amap_term->name . '\' est de ' . Amapress::formatPrice( $adh_period->getMontantReseau() ) . '€' : 'Pas de période d\'adhésion en cours'
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
