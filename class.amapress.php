@@ -1991,18 +1991,20 @@ class Amapress {
 				}
 			}
 
-			foreach ( $m['options'] as $opt ) {
-				if ( ! isset( $opt['id'] ) || ! isset( $opt['default'] ) ) {
-					continue;
-				}
+			if ( ! empty( $m['options'] ) ) {
+				foreach ( $m['options'] as $opt ) {
+					if ( ! isset( $opt['id'] ) || ! isset( $opt['default'] ) ) {
+						continue;
+					}
 
-				self::$options_default[ $opt['id'] ] =
-					is_callable( $opt['default'], false ) ?
-						call_user_func( $opt['default'], $opt ) :
-						$opt['default'];
+					self::$options_default[ $opt['id'] ] =
+						is_callable( $opt['default'], false ) ?
+							call_user_func( $opt['default'], $opt ) :
+							$opt['default'];
+				}
 			}
 
-			if ( isset( $m['subpages'] ) && count( $m['subpages'] ) > 0 ) {
+			if ( ! empty( $m['subpages'] ) ) {
 				foreach ( $m['subpages'] as $mm ) {
 					if ( ! isset( $mm['subpage'] ) ) {
 						continue;
@@ -2052,6 +2054,8 @@ class Amapress {
 						$m['capability'], $m['slug'],
 						$m['function'], $m['icon'], $m['position'] );
 				} );
+			} elseif ( 'builtin' === $m['type'] ) {
+				self::init_subpages( $m, $titan );
 			} elseif ( 'panel' === $m['type'] ) {
 				$p = $titan->createAdminPage( array_merge( array( 'id' => $m['id'] ), $m['settings'] ) );
 
@@ -2083,58 +2087,7 @@ class Amapress {
 					}
 				}
 
-				if ( ! empty( $m['subpages'] ) ) {
-					foreach ( $m['subpages'] as $subpage ) {
-						if ( ! isset( $subpage['subpage'] ) ) {
-							$menu_icon = $subpage['menu_icon'];
-							if ( $menu_icon == 'post_type' && isset( $subpage['post_type'] ) ) {
-								$pt = get_post_type_object( amapress_unsimplify_post_type( $subpage['post_type'] ) );
-								if ( ! $pt ) {
-									die( $subpage['post_type'] );
-								}
-								$menu_icon = $pt->menu_icon;
-							}
-							add_action( 'admin_menu', function () use ( $m, $subpage, $menu_icon ) {
-								$hook = add_submenu_page( $m['id'],
-									do_shortcode( $subpage['title'] ),
-									'<span class="dashicons-before ' . ( empty( $menu_icon ) ? 'dashicons-admin-post' : $menu_icon ) . '" /> ' . do_shortcode( $subpage['menu_title'] ),
-									$subpage['capability'], $subpage['slug'], isset( $subpage['function'] ) ? $subpage['function'] : null );
-								if ( isset( $subpage['hook'] ) ) {
-									add_action( "load-$hook", $subpage['hook'] );
-								}
-							}, 0 );
-						} else {
-							$pp = $titan->createAdminPage( array_merge(
-								array(
-									'id'       => $subpage['id'],
-									'parent'   => $m['id'],
-									'position' => 0,
-								),
-								$subpage['settings'] ) );
-
-							$ttabs = isset( $subpage['tabs'] ) ? $subpage['tabs'] : null;
-							if ( $ttabs && is_callable( $ttabs, false ) ) {
-								$ttabs = call_user_func( $ttabs );
-							}
-							if ( ! empty( $ttabs ) ) {
-								foreach ( $ttabs as $tab_name => $tab ) {
-									$t = $pp->createTab( array(
-										'name'       => $tab_name,
-										'desc'       => $tab['desc'],
-										'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
-										'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
-									) );
-									foreach ( $tab['options'] as $opt ) {
-										$t->createOption( $opt );
-									}
-								}
-							}
-							foreach ( $subpage['options'] as $opt ) {
-								$pp->createOption( $opt );
-							}
-						}
-					}
-				}
+				self::init_subpages( $m, $titan );
 			}
 		}
 	}
@@ -4448,5 +4401,66 @@ class Amapress {
 		}
 
 		return self::$has_partial_coadhesion;
+	}
+
+	/**
+	 * @param array $m
+	 * @param TitanFramework $titan
+	 */
+	private static function init_subpages( $m, TitanFramework $titan ) {
+		if ( ! empty( $m['subpages'] ) ) {
+			foreach ( $m['subpages'] as $subpage ) {
+				if ( ! isset( $subpage['subpage'] ) ) {
+					$menu_icon = $subpage['menu_icon'];
+					if ( $menu_icon == 'post_type' && isset( $subpage['post_type'] ) ) {
+						$pt = get_post_type_object( amapress_unsimplify_post_type( $subpage['post_type'] ) );
+						if ( ! $pt ) {
+							wp_die( esc_html( 'Unknown post_type: ' . $subpage['post_type'] ) );
+						}
+						$menu_icon = $pt->menu_icon;
+					}
+					add_action( 'admin_menu', function () use ( $m, $subpage, $menu_icon ) {
+						$hook = add_submenu_page( $m['id'],
+							do_shortcode( $subpage['title'] ),
+							( ! empty( $menu_icon ) ? '<span class="dashicons-before ' . $menu_icon . '" /> ' : '' ) . do_shortcode( $subpage['menu_title'] ),
+							$subpage['capability'], $subpage['slug'], isset( $subpage['function'] ) ? $subpage['function'] : null );
+						if ( isset( $subpage['hook'] ) ) {
+							add_action( "load-$hook", $subpage['hook'] );
+						}
+					}, 0 );
+				} else {
+					$pp = $titan->createAdminPage( array_merge(
+						array(
+							'id'       => $subpage['id'],
+							'parent'   => $m['id'],
+							'position' => 0,
+						),
+						$subpage['settings'] ) );
+
+					$ttabs = isset( $subpage['tabs'] ) ? $subpage['tabs'] : null;
+					if ( $ttabs && is_callable( $ttabs, false ) ) {
+						$ttabs = call_user_func( $ttabs );
+					}
+					if ( ! empty( $ttabs ) ) {
+						foreach ( $ttabs as $tab_name => $tab ) {
+							$t = $pp->createTab( array(
+								'name'       => $tab_name,
+								'desc'       => $tab['desc'],
+								'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
+								'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
+							) );
+							foreach ( $tab['options'] as $opt ) {
+								$t->createOption( $opt );
+							}
+						}
+					}
+					if ( ! empty( $subpage['options'] ) ) {
+						foreach ( $subpage['options'] as $opt ) {
+							$pp->createOption( $opt );
+						}
+					}
+				}
+			}
+		}
 	}
 }
