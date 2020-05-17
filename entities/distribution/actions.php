@@ -331,8 +331,8 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val, true, true );
 			}
 			$adh = AmapressUser::getBy( $user );
-			if ( ! empty( $adh->getCoAdherents() ) ) {
-				$val .= ' / ' . esc_html( $adh->getCoAdherents() );
+			if ( ! empty( $adh->getAdditionalCoAdherents() ) ) {
+				$val .= ' / ' . esc_html( $adh->getAdditionalCoAdherents() );
 			}
 
 			return $val;
