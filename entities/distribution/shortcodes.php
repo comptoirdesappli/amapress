@@ -922,7 +922,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			    $table_wrapper_id { max-width: calc( 16px + $calc); margin: 0 auto; }</style>";
 		}
 		if ( ! empty( $atts['font_size'] ) ) {
-			$ret .= '<style type="text/css">' . $table_wrapper_id . ' { font-size: ' . $atts['font_size'] . ' !important;}</style>';
+			$ret .= '<style type="text/css">' . $table_wrapper_id . ', ' . $table_wrapper_id . ' table { font-size: ' . $atts['font_size'] . ' !important;}</style>';
 		}
 
 //		$ret .= '<script type="text/javascript">jQuery(function($) {$(".distrib-inscr-list").DataTable().fixedHeader.enable(true);});</script>';
