@@ -387,18 +387,38 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	//optimize producteur load
 	Amapress::get_producteurs();
 
+	$lieux_contrats_resps = [];
+	for ( $i = 1; $i <= 10; $i ++ ) {
+		$global_resp_contrats = Amapress::getOption( "resp_role_$i-contrats" );
+		foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+			if ( ! isset( $lieux_contrats_resps[ $lieu_id ] ) ) {
+				$lieux_contrats_resps[ $lieu_id ] = [];
+			}
+			$local_resp_contrats = Amapress::getOption( "resp_role_{$lieu_id}_$i-contrats" );
+			if ( empty( $local_resp_contrats ) ) {
+				$local_resp_contrats = $global_resp_contrats;
+			}
+			if ( ! empty( $local_resp_contrats ) ) {
+				foreach ( Amapress::get_array( $local_resp_contrats ) as $local_resp_contrat_id ) {
+					$lieux_contrats_resps[ $lieu_id ][ $local_resp_contrat_id ] = $i;
+				}
+			}
+		}
+	}
+
 	$all_user_lieux = array();
 	foreach ( $dists as $dist ) {
 		$lieu_id = $dist->getLieuId();
 		if ( ! in_array( $lieu_id, $lieu_ids ) ) {
 			continue;
 		}
-//        if ($dist->getLieuSubstitutionId() > 0) {
-//            $lieu_id = $dist->getLieuSubstitutionId();
-//            if (!in_array($lieu_id, $user_lieux_substs)) $user_lieux_substs[] = $lieu_id;
-//            if (!in_array($dist->getDate(), $user_date_substs)) $user_date_substs[] = $dist->getDate();
-//        }
 		$needed = AmapressDistributions::get_required_responsables( $dist->ID );
+		foreach ( $dist->getContratModelIds() as $contrat_id ) {
+			if ( isset( $lieux_contrats_resps[ $lieu_id ][ $contrat_id ] ) ) {
+				$resp_idx = $lieux_contrats_resps[ $lieu_id ][ $contrat_id ];
+				$needed   = $resp_idx > $needed ? $resp_idx : $needed;
+			}
+		}
 		if ( ! in_array( $lieu_id, $all_user_lieux ) ) {
 			$all_user_lieux[] = $lieu_id;
 		}
@@ -409,12 +429,6 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$lieux_needed_resps[ $lieu_id ] = $needed;
 		}
 	}
-
-//	$ret .= '<script type="">jQuery(function($) {
-//    $(".distrib-inscr-list").DataTable({
-//    	"paginate": true
-//    });
-//});</script>';
 
 	if ( is_numeric( $show_contrats_desc ) ) {
 		$ret .= '<style type="text/css">.inscr-list-contrats {
@@ -618,10 +632,17 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				}
 
 //                $ret .= '<td>';
-				$is_user_part_of = $inscr_all_distrib || $dist->isUserMemberOf( $user_id, true, $adhesions );
-				$resps           = $dist->getResponsables();
-				$needed          = AmapressDistributions::get_required_responsables( $dist->ID );
-				$row_resps       = [];
+				$is_user_part_of         = $inscr_all_distrib || $dist->isUserMemberOf( $user_id, true, $adhesions );
+				$resps                   = $dist->getResponsables();
+				$needed                  = AmapressDistributions::get_required_responsables( $dist->ID );
+				$needed_without_contrats = $needed;
+				foreach ( $dist->getContratModelIds() as $contrat_id ) {
+					if ( isset( $lieux_contrats_resps[ $lieu_id ][ $contrat_id ] ) ) {
+						$resp_idx = $lieux_contrats_resps[ $lieu_id ][ $contrat_id ];
+						$needed   = $resp_idx > $needed ? $resp_idx : $needed;
+					}
+				}
+				$row_resps = [];
 				for ( $i = 0; $i < $needed; $i ++ ) {
 					$row_resps[ $i ] = null;
 				}
@@ -646,12 +667,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					}
 					$lieu_users[ $lieu_id ] = $arr;
 				}
-				$users = $lieu_users[ $lieu_id ];
-				$users += $no_contrat_users;
-//                $desinscr_another = '';
-//                if ($is_resp_distrib && $can_subscribe) {
-//                    $desinscr_another = '<button type="button" class="btn btn-default dist-inscrire-button" data-dist="' . $dist->ID . '">Désinscrire</button>';
-//                }
+				$users   = $lieu_users[ $lieu_id ];
+				$users   += $no_contrat_users;
 				$is_resp = false;
 				foreach ( $resps as $resp ) {
 					$is_resp = $is_resp || $resp->ID == $user_id;
@@ -827,50 +844,60 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				foreach ( $row_resps as $resp ) {
 					$resp_idx = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
-						$inscr_another = '';
-						if ( $can_subscribe ) {
-							if ( $allow_manage_others ) {
-								if ( ! is_admin() ) {
-									$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
-								}
-								$inscr_another .= '<div class="inscription-other-user">
+						$is_contrat_resp_col = null;
+						foreach ( $lieux_contrats_resps[ $lieu_id ] as $contrat_id => $ix ) {
+							if ( $resp_idx == $ix ) {
+								$is_contrat_resp_col = in_array( $contrat_id, $dist->getContratModelIds() );
+							}
+						}
+						if ( ( $resp_idx > $needed_without_contrats && true !== $is_contrat_resp_col ) || false === $is_contrat_resp_col ) {
+							$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-not-part'></td>";
+						} else {
+							$inscr_another = '';
+							if ( $can_subscribe ) {
+								if ( $allow_manage_others ) {
+									if ( ! is_admin() ) {
+										$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
+									}
+									$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
 <button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
 </div>';
-								if ( ! is_admin() ) {
-									$inscr_another .= '</form>';
-								}
-								$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
-							} elseif ( ! is_admin() ) {
-								$dist_cofoyers_users = array_combine( array_keys( $cofoyers_users ), array_values( $cofoyers_users ) );
-								foreach ( $dist->getResponsablesIds() as $dist_resp_id ) {
-									unset( $dist_cofoyers_users[ $dist_resp_id ] );
-								}
-								if ( ! empty( $dist_cofoyers_users ) ) {
-									$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
-									$inscr_another .= '<div class="inscription-other-user">
+									if ( ! is_admin() ) {
+										$inscr_another .= '</form>';
+									}
+									$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
+								} elseif ( ! is_admin() ) {
+									$dist_cofoyers_users = array_combine( array_keys( $cofoyers_users ), array_values( $cofoyers_users ) );
+									foreach ( $dist->getResponsablesIds() as $dist_resp_id ) {
+										unset( $dist_cofoyers_users[ $dist_resp_id ] );
+									}
+									if ( ! empty( $dist_cofoyers_users ) ) {
+										$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
+										$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $dist_cofoyers_users, null, false ) . '</select>
 <button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire ce co-adhérent ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
 </div>';
-									$inscr_another .= '</form>';
+										$inscr_another .= '</form>';
+									}
 								}
 							}
-						}
 
-						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
-						$missing    = '';
-						if ( ! $for_pdf ) {
-							if ( ( $has_role_names || ! $added_inscr_button ) && ! $is_resp && $can_subscribe ) {
-								$missing            = $inscr_self;
-								$added_inscr_button = true;
-							} else {
-								$missing = "<span class='distrib-resp-missing'>manquant</span>";
+							$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
+							$missing    = '';
+							if ( ! $for_pdf ) {
+								if ( ( $has_role_names || ! $added_inscr_button ) && ! $is_resp && $can_subscribe ) {
+									$missing            = $inscr_self;
+									$added_inscr_button = true;
+								} else {
+									$missing = "<span class='distrib-resp-missing'>manquant</span>";
+								}
 							}
-						}
-						if ( $is_user_part_of ) {
-							$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-missing'>$missing$inscr_another</td>";
-						} else {
-							$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-not-part'>$inscr_another</td>";
+							if ( $is_user_part_of ) {
+								$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-missing'>$missing$inscr_another</td>";
+							} else {
+								$ret .= "<td style='$css_width' class='resp-col incr-list-resp incr-not-part'>$inscr_another</td>";
+							}
 						}
 					} else {
 						$ret      .= '<td style="' . $css_width . ';text-align: center">';

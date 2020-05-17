@@ -433,6 +433,15 @@ class AmapressDistribution extends Amapress_EventBase {
 		} );
 	}
 
+	/** @return int[] */
+	public function getContratModelIds() {
+		return array_map(
+			function ( $id ) {
+				return AmapressContrat_instance::getBy( $id )->getModelId();
+			}, $this->getContratIds()
+		);
+	}
+
 	public function getRealDateForContrat( $contrat_id ) {
 		$paniers = $this->getDelayedToThisPaniers();
 		foreach ( $paniers as $p ) {

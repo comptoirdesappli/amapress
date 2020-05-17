@@ -410,6 +410,16 @@ function amapress_distribution_responsable_roles_options() {
 			'type' => 'editor',
 			'desc' => 'Description du rôle de responsable de distribution',
 		);
+		$ret[] = array(
+			'id'           => "resp_role_$i-contrats",
+			'name'         => "Contrat(s) (rôle $i)",
+			'type'         => 'select-posts',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'post_type'    => AmapressContrat::INTERNAL_POST_TYPE,
+			'desc'         => 'Activer ce rôle uniquement lors de la distribution de certains contrats',
+		);
 	}
 	$ret[] = array(
 		'type' => 'save',
@@ -434,6 +444,16 @@ function amapress_distribution_responsable_roles_options() {
 					'name' => amapress__( "Description du rôle $i" ),
 					'type' => 'editor',
 					'desc' => 'Description du rôle de responsable de distribution',
+				);
+				$ret[] = array(
+					'id'           => "resp_role_{$lieu_id}_$i-contrats",
+					'name'         => "Contrat(s) (rôle $i)",
+					'type'         => 'select-posts',
+					'autocomplete' => true,
+					'multiple'     => true,
+					'tags'         => true,
+					'post_type'    => AmapressContrat::INTERNAL_POST_TYPE,
+					'desc'         => 'Activer ce rôle uniquement lors de la distribution de certains contrats',
 				);
 			}
 			$ret[] = array(
