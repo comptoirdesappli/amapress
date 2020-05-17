@@ -106,8 +106,8 @@ class TitanFrameworkAdminPage {
 		} else {
 			$this->panelID = add_submenu_page( $this->settings['parent'],
 				$this->settings['name'],
-				do_shortcode( '<span class="dashicons-before ' . ( empty( $this->settings['menu_icon'] ) ? 'dashicons-admin-post' : $this->settings['menu_icon'] ) . '" /> ' .
-				              ( ! empty( $this->settings['menu_title'] ) ? $this->settings['menu_title'] : $this->settings['name'] ) ),
+				( ! empty( $this->settings['menu_icon'] ) ? '<span class="dashicons-before ' . $this->settings['menu_icon'] . '" /> ' : '' ) .
+				do_shortcode( ( ! empty( $this->settings['menu_title'] ) ? $this->settings['menu_title'] : $this->settings['name'] ) ),
 				$this->settings['capability'],
 				$this->settings['id'],
 				array( $this, 'createAdminPage' ) );
@@ -185,9 +185,10 @@ class TitanFrameworkAdminPage {
 			/**
 			 * Fired right before options are saved.
 			 *
+			 * @param TitanFrameworkAdminPage|TitanFrameworkCustomizer|TitanFrameworkMetaBox $this The container currently being saved.
+			 *
 			 * @since 1.0
 			 *
-			 * @param TitanFrameworkAdminPage|TitanFrameworkCustomizer|TitanFrameworkMetaBox $this The container currently being saved.
 			 */
 			$namespace = $this->getOptionNamespace();
 			do_action( "tf_pre_save_options_{$namespace}", $this );
@@ -348,7 +349,7 @@ class TitanFrameworkAdminPage {
 
 						?>
                     </h2>
-					<?php
+				<?php
 				endif;
 
 				?>
@@ -374,11 +375,11 @@ class TitanFrameworkAdminPage {
 						$this->settings['use_table'];
 					if ( $use_form ) {
 					?>
-                    <form method='post' enctype="multipart/form-data">
-						<?php
-							// security
-							wp_nonce_field( $this->settings['id'], TF . '_nonce' );
-						}
+	                <form method='post' enctype="multipart/form-data">
+		                <?php
+		                // security
+		                wp_nonce_field( $this->settings['id'], TF . '_nonce' );
+		                }
 
 						if ( $use_table ) {
 
@@ -414,27 +415,27 @@ class TitanFrameworkAdminPage {
 							?>
                             </tbody>
                         </table>
-						<?php
-						}
-						if ( $use_form ) {
+	                <?php
+	                }
+	                if ( $use_form ) {
 
-						?>
-                    </form>
-				<?php
-				}
+	                ?>
+	                </form>
+                <?php
+                }
 
-				// Reset form. We use JS to trigger a reset from other buttons within the main form
-				// This is used by class-option-save.php
-				if ( $use_form ) :
-					?>
-                    <form method='post' id='tf-reset-form'>
-						<?php
-						// security
-						wp_nonce_field( $this->settings['id'], TF . '_nonce' );
-						?>
-                        <input type='hidden' name='action' value='reset'/>
-                    </form>
-					<?php
+                // Reset form. We use JS to trigger a reset from other buttons within the main form
+                // This is used by class-option-save.php
+                if ( $use_form ) :
+	                ?>
+	                <form method='post' id='tf-reset-form'>
+		                <?php
+		                // security
+		                wp_nonce_field( $this->settings['id'], TF . '_nonce' );
+		                ?>
+		                <input type='hidden' name='action' value='reset'/>
+	                </form>
+                <?php
 				endif;
 
 				do_action( 'tf_admin_page_end' );

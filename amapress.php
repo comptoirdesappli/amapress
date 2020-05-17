@@ -1535,7 +1535,7 @@ add_action( 'admin_init', function () {
 		}
 
 		if ( Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
-			amapress_add_admin_notice( 'Le site est en <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_options_page&tab=amp_tests_config' ) . '">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
+			amapress_add_admin_notice( 'Le site est en <a target="_blank" href="' . admin_url( 'options-general.php?page=amapress_options_page&tab=amp_tests_config' ) . '">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
 				'info', false, false );
 		}
 
@@ -1572,7 +1572,7 @@ add_action( 'admin_init', function () {
 
 		$errored_mails_count = AmapressSMTPMailingQueue::getErroredMailsCount();
 		if ( $errored_mails_count > 0 ) {
-			$errored_mails_url = admin_url( 'admin.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_errored_mails' );
+			$errored_mails_url = admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_errored_mails' );
 			amapress_add_admin_notice( "$errored_mails_count email(s) sortant(s) sont en <a href='$errored_mails_url' target='_blank'>erreur d'envoi</a>",
 				'error', false, false );
 		}

@@ -539,7 +539,7 @@ line-height: 1.1;
 			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '#amapress_distribution_nb_resp_supp" class="btn btn-default">Ajouter des responsables supplémentaires</a>';
 			echo '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">Editer la distribution (infos, horaires, créneaux...)</a>';
 			echo '<br/>';
-			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_emargement_options_page' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
+			echo '<a href="' . esc_attr( admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_emargement_options_tab' ) ) . '" class="btn btn-default">Editer les paramètres de la liste de distribution</a>';
 		}
 		$mailto = $dist->getMailtoResponsables();
 		if ( ! empty( $mailto ) ) {

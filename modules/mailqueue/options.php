@@ -10,16 +10,9 @@ function amapress_mailing_queue_menu_options() {
 		'id'       => 'amapress_mailqueue_options_page',
 		'type'     => 'panel',
 		'settings' => array(
-			'name'       => 'Queue &amp; SMTP',
-			'position'   => '25.16',
+			'name'       => 'File d\'attente &amp; SMTP',
 			'capability' => 'manage_options',
-			'icon'       => 'dashicons-admin-tools',
-		),
-		'options'  => array(
-//			array(
-//				'type' => 'note',
-//				'desc' => 'ici vous pouvez gérer...'
-//			),
+			'menu_icon'  => 'dashicons-migrate',
 		),
 		'tabs'     => array(
 			'Options de la file des emails sortants'                     => array(
