@@ -249,6 +249,13 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	if ( $for_emargement || $for_pdf ) {
 		$prefer_inscr_button_first = false;
 	}
+	$amapien        = AmapressUser::getBy( $user_id );
+	$cofoyers       = $amapien->getAllDirectlyLinkedCoUsers( false, true );
+	$cofoyers_ids   = wp_list_pluck( $cofoyers, 'ID' );
+	$cofoyers_users = [];
+	foreach ( $cofoyers as $cofoyer ) {
+		$cofoyers_users[ $cofoyer->ID ] = $cofoyer->getDisplayName();
+	}
 
 	$required_lieu_id = null;
 	if ( ! empty( $atts['lieu'] ) ) {
@@ -630,10 +637,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							'fields'        => 'all_with_meta',
 						) ) as $user
 					) {
-						$amapien   = AmapressUser::getBy( $user->ID );
-						$user_name = sprintf( '%s (%s)', $user->display_name, $user->user_email );
-						if ( ! empty( $amapien->getAdditionalCoAdherents() ) ) {
-							$user_name .= ' (' . $amapien->getAdditionalCoAdherents() . ')';
+						$user_amapien = AmapressUser::getBy( $user->ID );
+						$user_name    = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+						if ( ! empty( $user_amapien->getAdditionalCoAdherents() ) ) {
+							$user_name .= ' (' . $user_amapien->getAdditionalCoAdherents() . ')';
 						}
 						$arr[ $user->ID ] = $user_name;
 					}
@@ -821,19 +828,33 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$resp_idx = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
 						$inscr_another = '';
-						if ( $allow_manage_others && $can_subscribe ) {
-							$inscr_another = '';
-							if ( ! is_admin() ) {
-								$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
-							}
-							$inscr_another .= '<div class="inscription-other-user">
+						if ( $can_subscribe ) {
+							if ( $allow_manage_others ) {
+								if ( ! is_admin() ) {
+									$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
+								}
+								$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
 <button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
 </div>';
-							if ( ! is_admin() ) {
-								$inscr_another .= '</form>';
+								if ( ! is_admin() ) {
+									$inscr_another .= '</form>';
+								}
+								$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
+							} elseif ( ! is_admin() ) {
+								$dist_cofoyers_users = array_combine( array_keys( $cofoyers_users ), array_values( $cofoyers_users ) );
+								foreach ( $dist->getResponsablesIds() as $dist_resp_id ) {
+									unset( $dist_cofoyers_users[ $dist_resp_id ] );
+								}
+								if ( ! empty( $dist_cofoyers_users ) ) {
+									$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
+									$inscr_another .= '<div class="inscription-other-user">
+<select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $dist_cofoyers_users, null, false ) . '</select>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire ce co-adhérent ?" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">Inscrire</button>
+</div>';
+									$inscr_another .= '</form>';
+								}
 							}
-							$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone">Ajouter un utilisateur</a></a></p>';
 						}
 
 						$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
@@ -864,8 +885,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								if ( $can_unsubscribe ) {
 									if ( $r->ID == $user_id ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">Me désinscrire</button>';
-									} else if ( $allow_manage_others ) {
+									} elseif ( $allow_manage_others ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
+									} elseif ( in_array( $r->ID, $cofoyers_ids ) ) {
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire ce co-adhérent ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
 									}
 								}
 							}
@@ -945,11 +968,16 @@ function amapress_histo_inscription_distrib_shortcode( $atts ) {
 }
 
 add_action( 'wp_ajax_desinscrire_distrib_action', function () {
-	$dist_id     = intval( $_POST['dist'] );
-	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
-	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
-	$is_current  = ( amapress_current_user_id() == $user_id );
-	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsable( $dist_id ) || amapress_can_access_admin() ) ) {
+	$current_user_id = amapress_current_user_id();
+	$dist_id         = intval( $_POST['dist'] );
+	$for_gardien     = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
+	$user_id         = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : $current_user_id;
+	$is_current      = ( $current_user_id == $user_id );
+	$cofoyers_ids    = wp_list_pluck( AmapressUser::getBy( $current_user_id )->getAllDirectlyLinkedCoUsers( false, true ), 'ID' );
+	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
+	                          || amapress_can_access_admin()
+	                          || in_array( $user_id, $cofoyers_ids )
+		) ) {
 		echo '<p class="error">Non autorisé</p>';
 		die();
 	}
@@ -984,14 +1012,15 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 	die();
 } );
 add_action( 'wp_ajax_inscrire_distrib_action', function () {
-	$dist_id     = intval( $_POST['dist'] );
-	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
-	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
-	$is_current  = amapress_current_user_id() == $user_id;
+	$current_user_id = amapress_current_user_id();
+	$dist_id         = intval( $_POST['dist'] );
+	$for_gardien     = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
+	$user_id         = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : $current_user_id;
+	$is_current      = $current_user_id == $user_id;
+	$cofoyers_ids    = wp_list_pluck( AmapressUser::getBy( $current_user_id )->getAllDirectlyLinkedCoUsers( false, true ), 'ID' );
 	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
 	                          || amapress_can_access_admin()
-	                          || AmapressDistributions::isCurrentUserResponsableThisWeek()
-	                          || AmapressDistributions::isCurrentUserResponsableNextWeek()
+	                          || in_array( $user_id, $cofoyers_ids )
 		) ) {
 		echo '<p class="error">Non autorisé</p>';
 		die();

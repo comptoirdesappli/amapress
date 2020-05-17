@@ -1012,6 +1012,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return $emails;
 	}
 
+	/**
+	 * @param bool $include_coadhs
+	 * @param bool $include_cofoyer
+	 *
+	 * @return AmapressUser[]
+	 */
 	public function getAllDirectlyLinkedCoUsers(
 		$include_coadhs = true,
 		$include_cofoyer = true
