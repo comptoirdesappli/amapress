@@ -391,6 +391,10 @@ function amapress_get_active_contrat_month_options( $args ) {
 function amapress_distribution_responsable_roles_options() {
 	$ret   = [];
 	$lieux = Amapress::get_lieux();
+	$lieux = array_filter( $lieux, function ( $l ) {
+		/** @var AmapressLieu_distribution $l */
+		return $l->isPrincipal();
+	} );
 	if ( count( $lieux ) > 1 ) {
 		$ret[] = array(
 			'type' => 'heading',
