@@ -413,13 +413,13 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		return $this->custom['amapress_user_telephone2'];
 	}
 
-	public function getCoAdherents() {
+	public function getAdditionalCoAdherents() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_co-adherents'] ) ? $this->custom['amapress_user_co-adherents'] : '';
 	}
 
-	public function getCoAdherentsInfos() {
+	public function getAdditionalCoAdherentsInfos() {
 		$this->ensure_init();
 
 		return isset( $this->custom['amapress_user_co-adherents-infos'] ) ? trim( $this->custom['amapress_user_co-adherents-infos'] ) : '';

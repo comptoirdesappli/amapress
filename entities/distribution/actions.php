@@ -346,7 +346,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			$phones = array_unique( array_map( function ( $user ) use ( $for_pdf ) {
 				$adh = AmapressUser::getBy( $user );
 
-				return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getCoAdherentsInfos() ) : '' );
+				return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getAdditionalCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getAdditionalCoAdherentsInfos() ) : '' );
 			}, $users ) );
 			$phones = array_filter( $phones, function ( $s ) {
 				return ! empty( trim( $s ) );

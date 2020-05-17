@@ -265,7 +265,7 @@ function amapress_adhesion_paiement_select_user_title( $title, $user, $option ) 
 	          || in_array( AmapressAdhesion::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) ) {
 //    if ($option_id == 'amapress_adhesion_paiement_user') {
 		$amapien = AmapressUser::getBy( $user->ID );
-		$co      = $amapien->getCoAdherents();
+		$co      = $amapien->getAdditionalCoAdherents();
 		$address = $amapien->getFormattedAdresse();
 		if ( ! empty( $address ) ) {
 			$name = sprintf( '%s (%s)', $amapien->getDisplayName(), $address );

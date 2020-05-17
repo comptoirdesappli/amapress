@@ -632,8 +632,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					) {
 						$amapien   = AmapressUser::getBy( $user->ID );
 						$user_name = sprintf( '%s (%s)', $user->display_name, $user->user_email );
-						if ( ! empty( $amapien->getCoAdherents() ) ) {
-							$user_name .= ' (' . $amapien->getCoAdherents() . ')';
+						if ( ! empty( $amapien->getAdditionalCoAdherents() ) ) {
+							$user_name .= ' (' . $amapien->getAdditionalCoAdherents() . ')';
 						}
 						$arr[ $user->ID ] = $user_name;
 					}
