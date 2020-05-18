@@ -1968,10 +1968,6 @@ class Amapress {
 
 	public static function init_options_default() {
 		foreach ( AmapressEntities::getMenu() as $m ) {
-			if ( $m['type'] != 'panel' ) {
-				continue;
-			}
-
 			$tabs = isset( $m['tabs'] ) ? $m['tabs'] : null;
 			if ( $tabs && is_callable( $tabs, false ) ) {
 				$tabs = call_user_func( $tabs );
@@ -2028,15 +2024,17 @@ class Amapress {
 							}
 						}
 					}
-					foreach ( $mm['options'] as $opt ) {
-						if ( ! isset( $opt['id'] ) || ! isset( $opt['default'] ) ) {
-							continue;
-						}
+					if ( ! empty( $mm['options'] ) ) {
+						foreach ( $mm['options'] as $opt ) {
+							if ( ! isset( $opt['id'] ) || ! isset( $opt['default'] ) ) {
+								continue;
+							}
 
-						self::$options_default[ $opt['id'] ] =
-							is_callable( $opt['default'], false ) ?
-								call_user_func( $opt['default'], $opt ) :
-								$opt['default'];
+							self::$options_default[ $opt['id'] ] =
+								is_callable( $opt['default'], false ) ?
+									call_user_func( $opt['default'], $opt ) :
+									$opt['default'];
+						}
 					}
 				}
 			}
