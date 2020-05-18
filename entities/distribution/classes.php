@@ -604,9 +604,18 @@ class AmapressDistribution extends Amapress_EventBase {
 					if ( ! $role ) {
 						return $cnt;
 					}
-					$cnt = str_replace( '%%resp_role%%', esc_html( $this->getResponsableRoleName( $user_id ) ), $cnt );
 
-					return str_replace( '%%resp_role_desc%%', $this->getResponsableRoleDesc( $user_id ), $cnt );
+					return str_replace(
+						[
+							'%%resp_role%%',
+							'%%resp_role_desc%%',
+							'%%resp_role_contrats%%',
+						],
+						[
+							esc_html( $this->getResponsableRoleName( $user_id ) ),
+							esc_html( $this->getResponsableRoleDesc( $user_id ) ),
+							esc_html( $this->getResponsableRoleContrats( $user_id ) ),
+						], $cnt );
 				} );
 
 			return 'ok';
@@ -680,6 +689,27 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		return stripslashes( $desc );
+	}
+
+	public function getResponsableRoleContrats( $user_id, $default = '' ) {
+		$role = $this->getResponsableRoleId( $user_id );
+		if ( empty( $role ) ) {
+			return $default;
+		}
+
+		$contrats = Amapress::get_array( Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-contrats" ) );
+		if ( empty( $contrats ) ) {
+			$contrats = Amapress::get_array( Amapress::getOption( "resp_role_$role-name" ) );
+		}
+
+		return implode( ', ', array_map( function ( $contrat_id ) {
+			$contrat = AmapressContrat::getBy( $contrat_id );
+			if ( ! $contrat ) {
+				return '#unk#';
+			}
+
+			return $contrat->getTitle();
+		}, $contrats ) );
 	}
 
 //

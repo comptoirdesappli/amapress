@@ -839,7 +839,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'resp_role'          => 'Nom du rôle de responsable choisi',
+													'resp_role_desc'     => 'Description du rôle de responsable choisi',
+													'resp_role_contrats' => 'Contrats associés au rôle de responsable choisi',
+												], false ),
 										),
 										array(
 											'type' => 'save',
