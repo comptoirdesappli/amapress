@@ -700,7 +700,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		foreach ( [ '1', '2', '3', '4', '5' ] as $id ) {
 			if ( ! empty( $this->custom[ $key . $id ] ) ) {
 				if ( $this->custom[ $key . $id ] == $coadhrent_id ) {
-					$this->custom[ $key . $id ] = $coadhrent_id;
+					unset( $this->custom[ $key . $id ] );
 					delete_user_meta( $this->ID, $key . $id );
 					self::$coadherents = null;
 					$this->adh_type    = null;
