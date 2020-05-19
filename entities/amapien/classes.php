@@ -743,8 +743,16 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return $this->principal_user_ids;
 	}
 
-	public function getEmail() {
-		return $this->getUser()->user_email;
+	public function getEmail( $index = 1 ) {
+		if ( 1 === $index ) {
+			return $this->getUser()->user_email;
+		} else {
+			if ( ! empty( $this->custom["email$index"] ) ) {
+				return trim( $this->custom["email$index"] );
+			} else {
+				return '';
+			}
+		}
 	}
 
 	public function getDisplay(

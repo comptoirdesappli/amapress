@@ -435,6 +435,11 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet à un amapien de modifier ses coordonnées',
 			'args' => [
+				'max_cofoyers'          => '(3 par défaut) Nombre maximum de membres du foyer',
+				'edit_names'            => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'mob_phone_required'    => '(false par défaut) Téléphones (mobiles) requis',
+				'allow_remove_cofoyers' => '(true par défaut) Autoriser la suppression des membres du foyers',
+				'show_cofoyers_address' => '(false par défaut) Afficher la saisie d\'adresse pour les membres du foyer',
 			]
 		] );
 	amapress_register_shortcode( 'amapien-messages', 'amapress_user_messages_shortcode' );

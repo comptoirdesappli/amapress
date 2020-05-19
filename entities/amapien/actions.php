@@ -115,7 +115,6 @@ function amapress_process_user_profile_data() {
 
 		// Put our data into a better looking array and sanitize it
 		$user_data = array(
-
 			'first_name'                => sanitize_text_field( ! empty( $_POST['first_name'] ) ? $_POST['first_name'] : '' ),
 			'last_name'                 => sanitize_text_field( ! empty( $_POST['last_name'] ) ? $_POST['last_name'] : '' ),
 			'user_email'                => sanitize_email( $_POST['email'] ),
@@ -238,11 +237,76 @@ function amapress_process_user_profile_data() {
 
 		// Display the messages error/success
 		if ( ! is_wp_error( $res ) ) {
+			$notify_email = get_option( 'admin_email' );
+
+			if ( isset( $_REQUEST['cofoy1_remove'] ) ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->removeCoadherent( $amapien->getCoFoyer1Id(), $notify_email, true );
+			} elseif ( ! empty( $_REQUEST['cofoy1_email'] ) ) {
+				$cofoy1_email = sanitize_email( $_REQUEST['cofoy1_email'] );
+				if ( ! empty( $cofoy1_email ) ) {
+					$cofoy1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_first_name'] ) ? $_REQUEST['cofoy1_first_name'] : '' );
+					$cofoy1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_last_name'] ) ? $_REQUEST['cofoy1_last_name'] : '' );
+					$cofoy1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy1_tels'] ) ? $_REQUEST['cofoy1_tels'] : '' );
+					$cofoy1_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy1_address'] ) ? $_REQUEST['cofoy1_address'] : '' );
+
+					$cofoy1_user_id = amapress_create_user_if_not_exists( $cofoy1_email, $cofoy1_user_firt_name, $cofoy1_user_last_name, $cofoy1_user_address, $cofoy1_user_phones );
+					if ( $cofoy1_user_id ) {
+						$amapien = AmapressUser::getBy( $user_id, true );
+						if ( $amapien->getCoFoyer1Id() != $cofoy1_user_id ) {
+							$amapien->removeCoadherent( $amapien->getCoFoyer1Id(), $notify_email, true );
+						}
+						$amapien->addCoadherent( $cofoy1_user_id, $notify_email, true );
+					}
+				}
+			}
+
+			if ( isset( $_REQUEST['cofoy2_remove'] ) ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->removeCoadherent( $amapien->getCoFoyer2Id(), $notify_email, true );
+			} elseif ( ! empty( $_REQUEST['cofoy2_email'] ) ) {
+				$cofoy2_email = sanitize_email( $_REQUEST['cofoy2_email'] );
+				if ( ! empty( $cofoy2_email ) ) {
+					$cofoy2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_first_name'] ) ? $_REQUEST['cofoy2_first_name'] : '' );
+					$cofoy2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_last_name'] ) ? $_REQUEST['cofoy2_last_name'] : '' );
+					$cofoy2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy2_tels'] ) ? $_REQUEST['cofoy2_tels'] : '' );
+					$cofoy2_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy2_address'] ) ? $_REQUEST['cofoy2_address'] : '' );
+
+					$cofoy2_user_id = amapress_create_user_if_not_exists( $cofoy2_email, $cofoy2_user_firt_name, $cofoy2_user_last_name, $cofoy2_user_address, $cofoy2_user_phones );
+					if ( $cofoy2_user_id ) {
+						$amapien = AmapressUser::getBy( $user_id, true );
+						if ( $amapien->getCoFoyer2Id() != $cofoy2_user_id ) {
+							$amapien->removeCoadherent( $amapien->getCoFoyer2Id(), $notify_email, true );
+						}
+						$amapien->addCoadherent( $cofoy2_user_id, $notify_email, true );
+					}
+				}
+			}
+
+			if ( isset( $_REQUEST['cofoy3_remove'] ) ) {
+				$amapien = AmapressUser::getBy( $user_id, true );
+				$amapien->removeCoadherent( $amapien->getCoFoyer3Id(), $notify_email, true );
+			} elseif ( ! empty( $_REQUEST['cofoy3_email'] ) ) {
+				$cofoy3_email = sanitize_email( $_REQUEST['cofoy3_email'] );
+				if ( ! empty( $cofoy3_email ) ) {
+					$cofoy3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_first_name'] ) ? $_REQUEST['cofoy3_first_name'] : '' );
+					$cofoy3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_last_name'] ) ? $_REQUEST['cofoy3_last_name'] : '' );
+					$cofoy3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy3_tels'] ) ? $_REQUEST['cofoy3_tels'] : '' );
+					$cofoy3_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy3_address'] ) ? $_REQUEST['cofoy3_address'] : '' );
+
+					$cofoy3_user_id = amapress_create_user_if_not_exists( $cofoy3_email, $cofoy3_user_firt_name, $cofoy3_user_last_name, $cofoy3_user_address, $cofoy3_user_phones );
+					if ( $cofoy3_user_id ) {
+						$amapien = AmapressUser::getBy( $user_id, true );
+						if ( $amapien->getCoFoyer3Id() != $cofoy3_user_id ) {
+							$amapien->removeCoadherent( $amapien->getCoFoyer3Id(), $notify_email, true );
+						}
+						$amapien->addCoadherent( $cofoy3_user_id, $notify_email, true );
+					}
+				}
+			}
 
 			wp_redirect( '?profile-updated = true' );
-
 		} else {
-
 			wp_redirect( '?profile-updated = false' );
 		}
 		exit;
