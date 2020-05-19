@@ -30,14 +30,14 @@ function amapress_mailing_queue_menu_options() {
 						'name'    => 'Emails par interval',
 						'type'    => 'number',
 						'desc'    => 'Nombre d\'emails envoyés à chaque interval d\'exécution de la file d\'envoi des emails sortants',
-						'default' => '2',
+						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT,
 					),
 					array(
 						'id'      => 'mail_queue_interval',
 						'name'    => 'Interval',
 						'type'    => 'number',
 						'desc'    => 'Interval d\'exécution de la file d\'envoi des emails sortants',
-						'default' => '30',
+						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL,
 					),
 					array(
 						'id'      => 'avoid_send_wp_from',

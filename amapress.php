@@ -53,6 +53,9 @@ define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 108 );
 define( 'AMAPRESS_VERSION', '0.94.91' );
+define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 30 );
+define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 2 );
+
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {

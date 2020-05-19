@@ -56,7 +56,7 @@ class AmapressSMTPMailingQueue {
 	 */
 	public function addWpCronInterval( $schedules ) {
 		$mail_queue_interval   = Amapress::getOption( 'mail_queue_interval' );
-		$interval              = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 30;
+		$interval              = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL;
 		$schedules['amps_smq'] = [
 			'interval' => $interval,
 			'display'  => __( 'Interval for sending mail', 'smtp-mailing-queue' )
@@ -263,7 +263,10 @@ class AmapressSMTPMailingQueue {
 			$mlgrp = AmapressMailingGroup::getBy( $mlgrp_id );
 			if ( $mlgrp && $mlgrp->getSmtpMaxMailsPerHour() > 0 ) {
 				$mail_queue_interval = Amapress::getOption( 'mail_queue_interval' );
-				$queue_limit         = $mlgrp->getSmtpMaxMailsPerHour() / 3600.0 * $mail_queue_interval;
+				if ( empty( $mail_queue_interval ) ) {
+					$mail_queue_interval = AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL;
+				}
+				$queue_limit = $mlgrp->getSmtpMaxMailsPerHour() / 3600.0 * $mail_queue_interval;
 			}
 		}
 		$emails = [];

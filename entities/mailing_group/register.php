@@ -644,7 +644,7 @@ add_action( 'init', function () {
 	if ( extension_loaded( 'imap' ) ) {
 		add_filter( 'cron_schedules', function ( $schedules ) {
 			$mail_queue_interval    = Amapress::getOption( 'mailgroup_interval' );
-			$interval               = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : 30;
+			$interval               = ! empty( $mail_queue_interval ) ? intval( $mail_queue_interval ) : AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL;
 			$schedules['amps_mlgf'] = [
 				'interval' => $interval,
 				'display'  => __( 'Interval for fetching mailing groups', 'amapress' )

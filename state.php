@@ -672,9 +672,12 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	if ( $use_mail_queue ) {
 		$mail_interval = Amapress::getOption( 'mail_queue_interval' );
 		if ( empty( $mail_interval ) ) {
-			$mail_interval = 30;
+			$mail_interval = AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL;
 		}
 		$mail_limite = Amapress::getOption( 'mail_queue_limit' );
+		if ( empty( $mail_limite ) ) {
+			$mail_limite = AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT;
+		}
 		$mails_hours = $mail_limite / (float) $mail_interval * 3600;
 		$nb_mails    = "$mails_hours (max {$mail_limite} emails toute les {$mail_interval}s)";
 	}
