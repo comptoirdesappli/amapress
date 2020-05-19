@@ -989,6 +989,78 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
+								'Inscription distribution'               => array(
+									'id'      => 'amp_inscr_distrib_options_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'inscr-distrib-button-first',
+											'name'    => 'Boutons d\'inscription',
+											'type'    => 'checkbox',
+											'desc'    => 'Placer les boutons d\'inscription en premier et les inscrits ensuite (sauf si des rôles de responsables sont utilisés)',
+											'default' => true,
+										),
+										array(
+											'id'      => 'inscr-distrib-co-adh',
+											'name'    => 'Inscriptions co-adhérents',
+											'type'    => 'checkbox',
+											'desc'    => 'Autoriser l\'inscription des co-adhérents par l\'adhérent principal',
+											'default' => false,
+										),
+										array(
+											'id'      => 'inscr-distrib-co-foyer',
+											'name'    => 'Inscriptions membres foyers',
+											'type'    => 'checkbox',
+											'desc'    => 'Autoriser l\'inscription des membres du foyer par l\'adhérent principal',
+											'default' => true,
+										),
+										array(
+											'id'      => 'inscr-distrib-font-size',
+											'name'    => 'Taille de police',
+											'desc'    => 'Taille (avec unité, par ex, pt/px/em/rem) du tablau d\'inscription des responsables de distribution',
+											'type'    => 'text',
+											'default' => '11px',
+										),
+										array(
+											'id'      => 'inscr-distrib-max-dates',
+											'name'    => 'Distributions',
+											'desc'    => 'Nombre de distribution à afficher pour inscrire les prochains responsables de distribution (-1 = toutes)',
+											'type'    => 'number',
+											'min'     => - 1,
+											'step'    => 1,
+											'default' => - 1,
+											'slider'  => false,
+										),
+										array(
+											'id'      => 'inscr-distrib-column-date-width',
+											'name'    => 'Largeur colonne Date',
+											'desc'    => 'Largeur de la colonne Date en em/rem/px (ne pas mettre de valeur en %)',
+											'type'    => 'text',
+											'default' => '6rem',
+										),
+										array(
+											'id'      => 'inscr-distrib-column-resp-width',
+											'name'    => 'Largeur colonne Responsable',
+											'desc'    => 'Largeur de la colonne Responsable (et Gardien de paniers/Créneaux) en em/rem/px (ne pas mettre de valeur en %)',
+											'type'    => 'text',
+											'default' => '8rem',
+										),
+										array(
+											'id'      => 'inscr-distrib-scroll-y',
+											'name'    => 'Hauteur',
+											'desc'    => 'Hauteur du défilement vertical en px',
+											'type'    => 'number',
+											'min'     => 100,
+											'step'    => 1,
+											'default' => 300,
+											'slider'  => false,
+											'unit'    => 'px'
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
 								'Roles des Responsables de distribution' => array(
 									'id'      => 'amp_tab_role_resp_distrib',
 									'desc'    => '',

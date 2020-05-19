@@ -101,7 +101,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'for_emargement'            => 'false',
 		'for_pdf'                   => 'false',
 		'past_weeks'                => 5,
-		'max_dates'                 => - 1,
+		'max_dates'                 => intval( Amapress::getOption( 'inscr-distrib-max-dates' ) ),
 		'responsive'                => 'scroll',
 		'user'                      => null,
 		'lieu'                      => null,
@@ -117,11 +117,13 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		'allow_slots'               => 'true',
 		'show_responsables'         => 'true',
 		'manage_all_subscriptions'  => 'false',
-		'prefer_inscr_button_first' => 'true',
-		'column_date_width'         => '6rem',
-		'fixed_column_width'        => '8rem',
+		'prefer_inscr_button_first' => Amapress::getOption( 'inscr-distrib-button-first' ) ? 'true' : 'false',
+		'inscr_cofoyers'            => Amapress::getOption( 'inscr-distrib-co-foyer' ) ? 'true' : 'false',
+		'inscr_coadherents'         => Amapress::getOption( 'inscr-distrib-co-adh' ) ? 'true' : 'false',
+		'column_date_width'         => '',
+		'fixed_column_width'        => '',
 		'scroll_y'                  => '',
-		'font_size'                 => '11px',
+		'font_size'                 => Amapress::getOption( 'inscr-distrib-font-size' ),
 		'key'                       => '',
 	), $atts );
 
@@ -141,13 +143,13 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 
 	if ( 'scroll' === $responsive ) {
 		if ( empty( $column_date_width ) ) {
-			$column_date_width = '6rem';
+			$column_date_width = Amapress::getOption( 'inscr-distrib-column-date-width' );
 		}
 		if ( empty( $fixed_column_width ) || '%' === $fixed_column_width ) {
-			$fixed_column_width = '8rem';
+			$fixed_column_width = Amapress::getOption( 'inscr-distrib-column-resp-width' );
 		}
 		if ( empty( $atts['scroll_y'] ) ) {
-			$atts['scroll_y'] = '300px';
+			$atts['scroll_y'] = Amapress::getOption( 'inscr-distrib-scroll-y' ) . 'px';
 		}
 	} elseif ( 'auto' === $responsive ) {
 		$fixed_column_width = '%';
@@ -246,11 +248,13 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	$inscr_all_distrib         = Amapress::toBool( $atts['inscr_all_distrib'] );
 	$manage_all_subscriptions  = Amapress::toBool( $atts['manage_all_subscriptions'] ) && amapress_can_access_admin();
 	$prefer_inscr_button_first = Amapress::toBool( $atts['prefer_inscr_button_first'] );
-	if ( $for_emargement || $for_pdf ) {
+	if ( $for_pdf ) {
 		$prefer_inscr_button_first = false;
 	}
 	$amapien        = AmapressUser::getBy( $user_id );
-	$cofoyers       = $amapien->getAllDirectlyLinkedCoUsers( false, true );
+	$cofoyers       = $amapien->getAllDirectlyLinkedCoUsers(
+		Amapress::toBool( $atts['inscr_coadherents'] ),
+		Amapress::toBool( $atts['inscr_cofoyers'] ) );
 	$cofoyers_ids   = wp_list_pluck( $cofoyers, 'ID' );
 	$cofoyers_users = [];
 	foreach ( $cofoyers as $cofoyer ) {
@@ -1000,7 +1004,7 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 	$for_gardien     = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
 	$user_id         = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : $current_user_id;
 	$is_current      = ( $current_user_id == $user_id );
-	$cofoyers_ids    = wp_list_pluck( AmapressUser::getBy( $current_user_id )->getAllDirectlyLinkedCoUsers( false, true ), 'ID' );
+	$cofoyers_ids    = wp_list_pluck( AmapressUser::getBy( $current_user_id )->getAllDirectlyLinkedCoUsers( true, true ), 'ID' );
 	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
 	                          || amapress_can_access_admin()
 	                          || in_array( $user_id, $cofoyers_ids )
@@ -1044,7 +1048,7 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	$for_gardien     = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
 	$user_id         = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : $current_user_id;
 	$is_current      = $current_user_id == $user_id;
-	$cofoyers_ids    = wp_list_pluck( AmapressUser::getBy( $current_user_id )->getAllDirectlyLinkedCoUsers( false, true ), 'ID' );
+	$cofoyers_ids    = wp_list_pluck( AmapressUser::getBy( $current_user_id )->getAllDirectlyLinkedCoUsers( true, true ), 'ID' );
 	if ( ! $is_current && ! ( AmapressDistributions::isCurrentUserResponsable( $dist_id )
 	                          || amapress_can_access_admin()
 	                          || in_array( $user_id, $cofoyers_ids )
