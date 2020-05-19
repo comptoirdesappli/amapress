@@ -1039,3 +1039,15 @@ table.docspace_list tr.dir td:first-of-type a {
 .dataTables_scrollBody table.dataTable {
     margin: 0 !important;
 }
+
+::-webkit-input-placeholder { /* Edge */
+    font-style: italic;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    font-style: italic;
+}
+
+::placeholder {
+    font-style: italic;
+}
