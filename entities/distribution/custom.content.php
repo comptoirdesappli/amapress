@@ -57,27 +57,24 @@ function amapress_get_custom_content_distribution( $content ) {
 		} else { ?>
             <p class="dist-no-resp">Aucun responsable</p>
 		<?php } ?>
-		<?php if ( count( $responsables ) < $needed_responsables ) { ?>
-            <p class="dist-miss-resp">
-                Il <?php echo( $can_subscribe ? 'manque encore' : 'manquait' ) ?> <?php echo $needed_responsables - count( $responsables ) ?>
-                responsable(s) de
-                distributions.
-            </p>
-			<?php
-			$need_responsables = true;
-			if ( $can_subscribe && ! Amapress::hasRespDistribRoles() && ! $is_resp ) {
-				echo '<p>';
-				amapress_echo_button( 'M\'inscrire', amapress_action_link( $dist_id, 'sinscrire' ), 'fa-fa', false, "Confirmez-vous votre inscription ?" );
-				echo '</p>';
-//                    } else if ($can_unsubscribe && $is_resp) {
-//                        echo '<p>';
-//                        amapress_echo_button("Se désinscrire", amapress_action_link($dist_id, 'desinscrire'), false, "Confirmez-vous votre désinscription ?");
-//                        echo '</p>';
+		<?php
+		if ( count( $responsables ) < $needed_responsables ) {
+			if ( Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() ) ) {
+				$missing_format = 'Il manque encore %d responsable(s) de distributions.';
+			} else {
+				$missing_format = 'Il manquait %d responsable(s) de distributions.';
 			}
-			if ( $is_resp_amap ) {
-				$href = Amapress::get_inscription_distrib_page_href();
-				if ( ! empty( $href ) ) {
+			echo '<p class="dist-miss-resp">' . esc_html( sprintf( $missing_format, $needed_responsables - count( $responsables ) ) ) . '</p>';
+			$need_responsables = true;
+			$href              = Amapress::get_inscription_distrib_page_href();
+			if ( ! empty( $href ) ) {
+				if ( $is_resp_amap ) {
 					echo '<p>Les inscriptions aux distributions des amapiens se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
+				} else {
+					if ( $is_resp ) {
+						echo '<p>Vous êtes responsable de distribution</p>';
+					}
+					echo '<p>Les inscriptions aux distributions s\'effectuent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
 				}
 			}
 			?>
