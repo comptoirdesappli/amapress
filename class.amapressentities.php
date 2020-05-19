@@ -428,7 +428,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'name'    => 'Interval',
 									'type'    => 'number',
 									'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
-									'default' => '30',
+									'default' => '300',
 								),
 								array(
 									'id'      => 'mailinggroup-unk-action',
