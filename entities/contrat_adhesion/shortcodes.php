@@ -55,16 +55,18 @@ add_action( 'amapress_init', function () {
 		}
 
 		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
-			$coadh1_email          = sanitize_email( $_REQUEST['coadh1_email'] );
-			$coadh1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_first_name'] ) ? $_REQUEST['coadh1_first_name'] : '' );
-			$coadh1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_last_name'] ) ? $_REQUEST['coadh1_last_name'] : '' );
-			$coadh1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh1_tels'] ) ? $_REQUEST['coadh1_tels'] : '' );
-			$coadh1_user_address   = sanitize_text_field( ! empty( $_REQUEST['coadh1_address'] ) ? $_REQUEST['coadh1_address'] : '' );
+			$coadh1_email = sanitize_email( $_REQUEST['coadh1_email'] );
+			if ( ! empty( $coadh1_email ) ) {
+				$coadh1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_first_name'] ) ? $_REQUEST['coadh1_first_name'] : '' );
+				$coadh1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_last_name'] ) ? $_REQUEST['coadh1_last_name'] : '' );
+				$coadh1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh1_tels'] ) ? $_REQUEST['coadh1_tels'] : '' );
+				$coadh1_user_address   = sanitize_text_field( ! empty( $_REQUEST['coadh1_address'] ) ? $_REQUEST['coadh1_address'] : '' );
 
-			$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, $coadh1_user_address, $coadh1_user_phones );
-			if ( $coadh1_user_id ) {
-				$amapien = AmapressUser::getBy( $user_id, true );
-				$amapien->addCoadherent( $coadh1_user_id, $notify_email );
+				$coadh1_user_id = amapress_create_user_if_not_exists( $coadh1_email, $coadh1_user_firt_name, $coadh1_user_last_name, $coadh1_user_address, $coadh1_user_phones );
+				if ( $coadh1_user_id ) {
+					$amapien = AmapressUser::getBy( $user_id, true );
+					$amapien->addCoadherent( $coadh1_user_id, $notify_email );
+				}
 			}
 		} else if ( isset( $_REQUEST['coadh1_remove'] ) ) {
 			$amapien = AmapressUser::getBy( $user_id, true );
@@ -72,16 +74,18 @@ add_action( 'amapress_init', function () {
 		}
 
 		if ( ! empty( $_REQUEST['coadh2_email'] ) ) {
-			$coadh2_email          = sanitize_email( $_REQUEST['coadh2_email'] );
-			$coadh2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_first_name'] ) ? $_REQUEST['coadh2_first_name'] : '' );
-			$coadh2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_last_name'] ) ? $_REQUEST['coadh2_last_name'] : '' );
-			$coadh2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh2_tels'] ) ? $_REQUEST['coadh2_tels'] : '' );
-			$coadh2_user_address   = sanitize_text_field( ! empty( $_REQUEST['coadh2_address'] ) ? $_REQUEST['coadh2_address'] : '' );
+			$coadh2_email = sanitize_email( $_REQUEST['coadh2_email'] );
+			if ( ! empty( $coadh2_email ) ) {
+				$coadh2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_first_name'] ) ? $_REQUEST['coadh2_first_name'] : '' );
+				$coadh2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_last_name'] ) ? $_REQUEST['coadh2_last_name'] : '' );
+				$coadh2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh2_tels'] ) ? $_REQUEST['coadh2_tels'] : '' );
+				$coadh2_user_address   = sanitize_text_field( ! empty( $_REQUEST['coadh2_address'] ) ? $_REQUEST['coadh2_address'] : '' );
 
-			$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, $coadh2_user_address, $coadh2_user_phones );
-			if ( $coadh2_user_id ) {
-				$amapien = AmapressUser::getBy( $user_id, true );
-				$amapien->addCoadherent( $coadh2_user_id, $notify_email );
+				$coadh2_user_id = amapress_create_user_if_not_exists( $coadh2_email, $coadh2_user_firt_name, $coadh2_user_last_name, $coadh2_user_address, $coadh2_user_phones );
+				if ( $coadh2_user_id ) {
+					$amapien = AmapressUser::getBy( $user_id, true );
+					$amapien->addCoadherent( $coadh2_user_id, $notify_email );
+				}
 			}
 		} else if ( isset( $_REQUEST['coadh2_remove'] ) ) {
 			$amapien = AmapressUser::getBy( $user_id, true );
@@ -89,71 +93,88 @@ add_action( 'amapress_init', function () {
 		}
 
 		if ( ! empty( $_REQUEST['coadh3_email'] ) ) {
-			$coadh3_email          = sanitize_email( $_REQUEST['coadh3_email'] );
-			$coadh3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_first_name'] ) ? $_REQUEST['coadh3_first_name'] : '' );
-			$coadh3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_last_name'] ) ? $_REQUEST['coadh3_last_name'] : '' );
-			$coadh3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh3_tels'] ) ? $_REQUEST['coadh3_tels'] : '' );
-			$coadh3_user_address   = sanitize_text_field( ! empty( $_REQUEST['coadh3_address'] ) ? $_REQUEST['coadh3_address'] : '' );
+			$coadh3_email = sanitize_email( $_REQUEST['coadh3_email'] );
+			if ( ! empty( $coadh3_email ) ) {
+				$coadh3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_first_name'] ) ? $_REQUEST['coadh3_first_name'] : '' );
+				$coadh3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_last_name'] ) ? $_REQUEST['coadh3_last_name'] : '' );
+				$coadh3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['coadh3_tels'] ) ? $_REQUEST['coadh3_tels'] : '' );
+				$coadh3_user_address   = sanitize_text_field( ! empty( $_REQUEST['coadh3_address'] ) ? $_REQUEST['coadh3_address'] : '' );
 
-			$coadh3_user_id = amapress_create_user_if_not_exists( $coadh3_email, $coadh3_user_firt_name, $coadh3_user_last_name, $coadh3_user_address, $coadh3_user_phones );
-			if ( $coadh3_user_id ) {
-				$amapien = AmapressUser::getBy( $user_id, true );
-				$amapien->addCoadherent( $coadh3_user_id, $notify_email );
+				$coadh3_user_id = amapress_create_user_if_not_exists( $coadh3_email, $coadh3_user_firt_name, $coadh3_user_last_name, $coadh3_user_address, $coadh3_user_phones );
+				if ( $coadh3_user_id ) {
+					$amapien = AmapressUser::getBy( $user_id, true );
+					$amapien->addCoadherent( $coadh3_user_id, $notify_email );
+				}
 			}
 		} else if ( isset( $_REQUEST['coadh3_remove'] ) ) {
 			$amapien = AmapressUser::getBy( $user_id, true );
 			$amapien->removeCoadherent( $amapien->getCoAdherent3Id(), $notify_email );
 		}
 
-		if ( ! empty( $_REQUEST['cofoy1_email'] ) ) {
-			$cofoy1_email          = sanitize_email( $_REQUEST['cofoy1_email'] );
-			$cofoy1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_first_name'] ) ? $_REQUEST['cofoy1_first_name'] : '' );
-			$cofoy1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_last_name'] ) ? $_REQUEST['cofoy1_last_name'] : '' );
-			$cofoy1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy1_tels'] ) ? $_REQUEST['cofoy1_tels'] : '' );
-			$cofoy1_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy1_address'] ) ? $_REQUEST['cofoy1_address'] : '' );
-
-			$cofoy1_user_id = amapress_create_user_if_not_exists( $cofoy1_email, $cofoy1_user_firt_name, $cofoy1_user_last_name, $cofoy1_user_address, $cofoy1_user_phones );
-			if ( $cofoy1_user_id ) {
-				$amapien = AmapressUser::getBy( $user_id, true );
-				$amapien->addCoadherent( $cofoy1_user_id, $notify_email, true );
-			}
-		} else if ( isset( $_REQUEST['cofoy1_remove'] ) ) {
+		if ( isset( $_REQUEST['cofoy1_remove'] ) ) {
 			$amapien = AmapressUser::getBy( $user_id, true );
-			$amapien->removeCoadherent( $amapien->getCoFoyer1(), $notify_email, true );
+			$amapien->removeCoadherent( $amapien->getCoFoyer1Id(), $notify_email, true );
+		} elseif ( ! empty( $_REQUEST['cofoy1_email'] ) ) {
+			$cofoy1_email = sanitize_email( $_REQUEST['cofoy1_email'] );
+			if ( ! empty( $cofoy1_email ) ) {
+				$cofoy1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_first_name'] ) ? $_REQUEST['cofoy1_first_name'] : '' );
+				$cofoy1_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy1_last_name'] ) ? $_REQUEST['cofoy1_last_name'] : '' );
+				$cofoy1_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy1_tels'] ) ? $_REQUEST['cofoy1_tels'] : '' );
+				$cofoy1_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy1_address'] ) ? $_REQUEST['cofoy1_address'] : '' );
+
+				$cofoy1_user_id = amapress_create_user_if_not_exists( $cofoy1_email, $cofoy1_user_firt_name, $cofoy1_user_last_name, $cofoy1_user_address, $cofoy1_user_phones );
+				if ( $cofoy1_user_id ) {
+					$amapien = AmapressUser::getBy( $user_id, true );
+					if ( $amapien->getCoFoyer1Id() != $cofoy1_user_id ) {
+						$amapien->removeCoadherent( $amapien->getCoFoyer1Id(), $notify_email, true );
+					}
+					$amapien->addCoadherent( $cofoy1_user_id, $notify_email, true );
+				}
+			}
 		}
 
-		if ( ! empty( $_REQUEST['cofoy2_email'] ) ) {
-			$cofoy2_email          = sanitize_email( $_REQUEST['cofoy2_email'] );
-			$cofoy2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_first_name'] ) ? $_REQUEST['cofoy2_first_name'] : '' );
-			$cofoy2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_last_name'] ) ? $_REQUEST['cofoy2_last_name'] : '' );
-			$cofoy2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy2_tels'] ) ? $_REQUEST['cofoy2_tels'] : '' );
-			$cofoy2_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy2_address'] ) ? $_REQUEST['cofoy2_address'] : '' );
-
-			$cofoy2_user_id = amapress_create_user_if_not_exists( $cofoy2_email, $cofoy2_user_firt_name, $cofoy2_user_last_name, $cofoy2_user_address, $cofoy2_user_phones );
-			if ( $cofoy2_user_id ) {
-				$amapien = AmapressUser::getBy( $user_id, true );
-				$amapien->addCoadherent( $cofoy2_user_id, $notify_email, true );
-			}
-		} else if ( isset( $_REQUEST['cofoy2_remove'] ) ) {
+		if ( isset( $_REQUEST['cofoy2_remove'] ) ) {
 			$amapien = AmapressUser::getBy( $user_id, true );
 			$amapien->removeCoadherent( $amapien->getCoFoyer2Id(), $notify_email, true );
+		} elseif ( ! empty( $_REQUEST['cofoy2_email'] ) ) {
+			$cofoy2_email = sanitize_email( $_REQUEST['cofoy2_email'] );
+			if ( ! empty( $cofoy2_email ) ) {
+				$cofoy2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_first_name'] ) ? $_REQUEST['cofoy2_first_name'] : '' );
+				$cofoy2_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy2_last_name'] ) ? $_REQUEST['cofoy2_last_name'] : '' );
+				$cofoy2_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy2_tels'] ) ? $_REQUEST['cofoy2_tels'] : '' );
+				$cofoy2_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy2_address'] ) ? $_REQUEST['cofoy2_address'] : '' );
+
+				$cofoy2_user_id = amapress_create_user_if_not_exists( $cofoy2_email, $cofoy2_user_firt_name, $cofoy2_user_last_name, $cofoy2_user_address, $cofoy2_user_phones );
+				if ( $cofoy2_user_id ) {
+					$amapien = AmapressUser::getBy( $user_id, true );
+					if ( $amapien->getCoFoyer2Id() != $cofoy2_user_id ) {
+						$amapien->removeCoadherent( $amapien->getCoFoyer2Id(), $notify_email, true );
+					}
+					$amapien->addCoadherent( $cofoy2_user_id, $notify_email, true );
+				}
+			}
 		}
 
-		if ( ! empty( $_REQUEST['cofoy3_email'] ) ) {
-			$cofoy3_email          = sanitize_email( $_REQUEST['cofoy3_email'] );
-			$cofoy3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_first_name'] ) ? $_REQUEST['cofoy3_first_name'] : '' );
-			$cofoy3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_last_name'] ) ? $_REQUEST['cofoy3_last_name'] : '' );
-			$cofoy3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy3_tels'] ) ? $_REQUEST['cofoy3_tels'] : '' );
-			$cofoy3_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy3_address'] ) ? $_REQUEST['cofoy3_address'] : '' );
-
-			$cofoy3_user_id = amapress_create_user_if_not_exists( $cofoy3_email, $cofoy3_user_firt_name, $cofoy3_user_last_name, $cofoy3_user_address, $cofoy3_user_phones );
-			if ( $cofoy3_user_id ) {
-				$amapien = AmapressUser::getBy( $user_id, true );
-				$amapien->addCoadherent( $cofoy3_user_id, $notify_email, true );
-			}
-		} else if ( isset( $_REQUEST['cofoy3_remove'] ) ) {
+		if ( isset( $_REQUEST['cofoy3_remove'] ) ) {
 			$amapien = AmapressUser::getBy( $user_id, true );
 			$amapien->removeCoadherent( $amapien->getCoFoyer3Id(), $notify_email, true );
+		} elseif ( ! empty( $_REQUEST['cofoy3_email'] ) ) {
+			$cofoy3_email = sanitize_email( $_REQUEST['cofoy3_email'] );
+			if ( ! empty( $cofoy3_email ) ) {
+				$cofoy3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_first_name'] ) ? $_REQUEST['cofoy3_first_name'] : '' );
+				$cofoy3_user_last_name = sanitize_text_field( ! empty( $_REQUEST['cofoy3_last_name'] ) ? $_REQUEST['cofoy3_last_name'] : '' );
+				$cofoy3_user_phones    = sanitize_text_field( ! empty( $_REQUEST['cofoy3_tels'] ) ? $_REQUEST['cofoy3_tels'] : '' );
+				$cofoy3_user_address   = sanitize_text_field( ! empty( $_REQUEST['cofoy3_address'] ) ? $_REQUEST['cofoy3_address'] : '' );
+
+				$cofoy3_user_id = amapress_create_user_if_not_exists( $cofoy3_email, $cofoy3_user_firt_name, $cofoy3_user_last_name, $cofoy3_user_address, $cofoy3_user_phones );
+				if ( $cofoy3_user_id ) {
+					$amapien = AmapressUser::getBy( $user_id, true );
+					if ( $amapien->getCoFoyer3Id() != $cofoy3_user_id ) {
+						$amapien->removeCoadherent( $amapien->getCoFoyer3Id(), $notify_email, true );
+					}
+					$amapien->addCoadherent( $cofoy3_user_id, $notify_email, true );
+				}
+			}
 		}
 
 
@@ -1003,48 +1024,58 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
                                 : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy1_email" name="cofoy1_email"
-                                                                                  class="email"
-                                                                                  value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                                                                                                   type="email"
+                                                                                                   id="cofoy1_email"
+                                                                                                   name="cofoy1_email"
+                                                                                                   class="email <?php echo( ! empty( $cofoy1_email ) ? 'required' : '' ); ?>"
+                                                                                                   value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
-                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy1_last_name"
-                                                                                  name="cofoy1_last_name"
-                                                                                  class="required_if_not_empty single_name"
-                                                                                  data-if-id="cofoy1_email"
-                                                                                  value="<?php echo esc_attr( $cofoy1_user_last_name ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy1_last_name"
+                                                                                                   name="cofoy1_last_name"
+                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   data-if-id="cofoy1_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy1_user_last_name ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy1_first_name">Son prénom : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy1_first_name"
-                                                                                  name="cofoy1_first_name"
-                                                                                  class="required_if_not_empty single_name"
-                                                                                  data-if-id="cofoy1_email"
-                                                                                  value="<?php echo esc_attr( $cofoy1_user_firt_name ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy1_first_name"
+                                                                                                   name="cofoy1_first_name"
+                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   data-if-id="cofoy1_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy1_user_firt_name ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy1_tels">Téléphone(s) : </label></th>
-                        <td><input <?php disabled( ! empty( $cofoy1_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy1_tels" name="cofoy1_tels"
-                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
-                                                                                  data-if-id="cofoy1_email"
-                                                                                  value="<?php echo esc_attr( $cofoy1_mobile_phones ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy1_tels"
+                                                                                                   name="cofoy1_tels"
+                                                                                                   class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
+                                                                                                   data-if-id="cofoy1_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy1_mobile_phones ) ?>"/>
                         </td>
                     </tr>
 					<?php if ( $show_cofoys_address ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"><label for="cofoy1_address">Adresse : </label>
                             </th>
-                            <td><textarea style="width: 100%" rows="4" id="cofoy1_address" name="cofoy1_address"
-                                          class=""><?php echo esc_textarea( $cofoy1_address ); ?></textarea></td>
+                            <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                                                                                                          rows="4"
+                                                                                                          id="cofoy1_address"
+                                                                                                          name="cofoy1_address"
+                                                                                                          class=""><?php echo esc_textarea( $cofoy1_address ); ?></textarea>
+                            </td>
                         </tr>
 					<?php } ?>
 					<?php if ( $allow_remove_cofoys && ! empty( $cofoy1_email ) ) { ?>
@@ -1063,55 +1094,63 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_cofoyers >= 2 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Membre du foyer 2 / Conjoint
+                        <th colspan="2">Membre du foyer 2
                         </th>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy2_email">Son email
                                 : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy2_email" name="cofoy2_email"
-                                                                                  class="email"
-                                                                                  value="<?php echo esc_attr( $cofoy2_email ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
+                                                                                                   type="email"
+                                                                                                   id="cofoy2_email"
+                                                                                                   name="cofoy2_email"
+                                                                                                   class="email <?php echo( ! empty( $cofoy2_email ) ? 'required' : '' ); ?>"
+                                                                                                   value="<?php echo esc_attr( $cofoy2_email ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy2_last_name">Son nom : </label></th>
-                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy2_last_name"
-                                                                                  name="cofoy2_last_name"
-                                                                                  class="required_if_not_empty single_name"
-                                                                                  data-if-id="cofoy2_email"
-                                                                                  value="<?php echo esc_attr( $cofoy2_user_last_name ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy2_last_name"
+                                                                                                   name="cofoy2_last_name"
+                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   data-if-id="cofoy2_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy2_user_last_name ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy2_first_name">Son prénom : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy2_first_name"
-                                                                                  name="cofoy2_first_name"
-                                                                                  class="required_if_not_empty single_name"
-                                                                                  data-if-id="cofoy2_email"
-                                                                                  value="<?php echo esc_attr( $cofoy2_user_firt_name ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy2_first_name"
+                                                                                                   name="cofoy2_first_name"
+                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   data-if-id="cofoy2_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy2_user_firt_name ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy2_tels">Téléphone(s) : </label></th>
-                        <td><input <?php disabled( ! empty( $cofoy2_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy2_tels" name="cofoy2_tels"
-                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
-                                                                                  data-if-id="cofoy2_email"
-                                                                                  value="<?php echo esc_attr( $cofoy2_mobile_phones ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy2_tels"
+                                                                                                   name="cofoy2_tels"
+                                                                                                   value="<?php echo esc_attr( $cofoy2_mobile_phones ) ?>"/>
                         </td>
                     </tr>
 					<?php if ( $show_cofoys_address ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"><label for="cofoy2_address">Adresse : </label>
                             </th>
-                            <td><textarea style="width: 100%" rows="4" id="cofoy2_address" name="cofoy2_address"
-                                          class=""><?php echo esc_textarea( $cofoy2_address ); ?></textarea></td>
+                            <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
+                                                                                                          rows="4"
+                                                                                                          id="cofoy2_address"
+                                                                                                          name="cofoy2_address"
+                                                                                                          class=""><?php echo esc_textarea( $cofoy2_address ); ?></textarea>
+                            </td>
                         </tr>
 					<?php } ?>
 					<?php if ( $allow_remove_cofoys && ! empty( $cofoy2_email ) ) { ?>
@@ -1130,54 +1169,62 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_cofoyers >= 3 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Membre du foyer 3 / Conjoint</th>
+                        <th colspan="2">Membre du foyer 3</th>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy3_email">Son email
                                 : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy3_email" name="cofoy3_email"
-                                                                                  class="email"
-                                                                                  value="<?php echo esc_attr( $cofoy3_email ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
+                                                                                                   type="email"
+                                                                                                   id="cofoy3_email"
+                                                                                                   name="cofoy3_email"
+                                                                                                   class="email <?php echo( ! empty( $cofoy3_email ) ? 'required' : '' ); ?>"
+                                                                                                   value="<?php echo esc_attr( $cofoy3_email ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy3_last_name">Son nom : </label></th>
-                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy3_last_name"
-                                                                                  name="cofoy3_last_name"
-                                                                                  class="required_if_not_empty single_name"
-                                                                                  data-if-id="cofoy3_email"
-                                                                                  value="<?php echo esc_attr( $cofoy3_user_last_name ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy3_last_name"
+                                                                                                   name="cofoy3_last_name"
+                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   data-if-id="cofoy3_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy3_user_last_name ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy3_first_name">Son prénom : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy3_first_name"
-                                                                                  name="cofoy3_first_name"
-                                                                                  class="required_if_not_empty single_name"
-                                                                                  data-if-id="cofoy3_email"
-                                                                                  value="<?php echo esc_attr( $cofoy3_user_firt_name ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy3_first_name"
+                                                                                                   name="cofoy3_first_name"
+                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   data-if-id="cofoy3_email"
+                                                                                                   value="<?php echo esc_attr( $cofoy3_user_firt_name ) ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="cofoy3_tels">Téléphone(s) : </label></th>
-                        <td><input <?php disabled( ! empty( $cofoy3_email ) ); ?> style="width: 100%" type="text"
-                                                                                  id="cofoy3_tels" name="cofoy3_tels"
-                                                                                  class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
-                                                                                  data-if-id="cofoy3_email"
-                                                                                  value="<?php echo esc_attr( $cofoy3_mobile_phones ) ?>"/>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
+                                                                                                   type="text"
+                                                                                                   id="cofoy3_tels"
+                                                                                                   name="cofoy3_tels"
+                                                                                                   value="<?php echo esc_attr( $cofoy3_mobile_phones ) ?>"/>
                         </td>
                     </tr>
 					<?php if ( $show_cofoys_address ) { ?>
                         <tr>
                             <th style="text-align: left; width: auto"><label for="cofoy3_address">Adresse : </label>
                             </th>
-                            <td><textarea style="width: 100%" rows="4" id="cofoy3_address" name="cofoy3_address"
-                                          class=""><?php echo esc_textarea( $cofoy3_address ); ?></textarea></td>
+                            <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
+                                                                                                          rows="4"
+                                                                                                          id="cofoy3_address"
+                                                                                                          name="cofoy3_address"
+                                                                                                          class=""><?php echo esc_textarea( $cofoy3_address ); ?></textarea>
+                            </td>
                         </tr>
 					<?php } ?>
 					<?php if ( $allow_remove_cofoys && ! empty( $cofoy3_email ) ) { ?>
@@ -1203,7 +1250,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
                                 : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
+                        <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="email"
                                                                                   id="coadh1_email" name="coadh1_email"
                                                                                   class="email"
                                                                                   value="<?php echo esc_attr( $coadh1_email ) ?>"/>
@@ -1269,7 +1316,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <th style="text-align: left; width: auto"><label for="coadh2_email">Son email
                                 : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
+                        <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="email"
                                                                                   id="coadh2_email" name="coadh2_email"
                                                                                   class="email"
                                                                                   value="<?php echo esc_attr( $coadh2_email ) ?>"/>
@@ -1335,7 +1382,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <th style="text-align: left; width: auto"><label for="coadh3_email">Son email
                                 : </label>
                         </th>
-                        <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
+                        <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="email"
                                                                                   id="coadh3_email" name="coadh3_email"
                                                                                   class="email"
                                                                                   value="<?php echo esc_attr( $coadh3_email ) ?>"/>
