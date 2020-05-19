@@ -59,6 +59,12 @@ function amapress_register_shortcodes() {
 				]
 			] );
 	}
+
+	$inscr_distrib_conf_link = Amapress::makeLink(
+		admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_inscr_distrib_options_tab' ),
+		'Tableau de bord>Distributions>Configuration, onglet Inscription distribution'
+	);
+
 	amapress_register_shortcode( 'years-since', function ( $atts ) {
 		$atts = shortcode_atts(
 			[ 'year' => '' ],
