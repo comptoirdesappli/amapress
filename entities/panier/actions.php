@@ -129,7 +129,7 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 	foreach ( $panier_ids as $panier_id ) {
 		$panier = AmapressPanier::getBy( $panier_id );
 
-		$can_subscribe = Amapress::start_of_day( $panier->getRealDate() ) >= Amapress::start_of_day( amapress_time() );
+		$can_subscribe = $panier->canCease();
 		if ( ! $can_subscribe ) {
 			return 'too_late';
 		}

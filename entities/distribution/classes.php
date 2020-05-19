@@ -1530,5 +1530,15 @@ class AmapressDistribution extends Amapress_EventBase {
 		return $this->getResponsablesIds();
 	}
 
+	public function canSubscribe() {
+		return $this->canSubscribeType( 'distrib' );
+	}
 
+	public function canUnsubscribe() {
+		return $this->canUnsubscribeType( 'distrib' );
+	}
+
+	public function canCease() {
+		return $this->canSubscribeType( 'intermit' );
+	}
 }

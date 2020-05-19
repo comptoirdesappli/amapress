@@ -363,4 +363,12 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 
 		return 'Reply-To: ' . implode( ',', $emails );
 	}
+
+	public function canSubscribe() {
+		return $this->canSubscribeType( 'event' );
+	}
+
+	public function canUnsubscribe() {
+		return $this->canUnsubscribeType( 'event' );
+	}
 }

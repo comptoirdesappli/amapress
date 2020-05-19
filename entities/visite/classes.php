@@ -245,5 +245,11 @@ class AmapressVisite extends Amapress_EventBase {
 		return $this->getParticipantIds();
 	}
 
+	public function canSubscribe() {
+		return $this->canSubscribeType( 'visite' );
+	}
 
+	public function canUnsubscribe() {
+		return $this->canUnsubscribeType( 'visite' );
+	}
 }

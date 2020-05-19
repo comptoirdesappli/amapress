@@ -41,7 +41,7 @@ function amapress_get_custom_content_distribution( $content ) {
 	ob_start();
 
 	if ( amapress_is_user_logged_in() ) {
-		$can_subscribe = Amapress::end_of_day( $dist_date ) > amapress_time();
+		$can_subscribe = $dist->canSubscribe();
 		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
 		if ( count( $responsables ) > 0 ) {
 			$render_func = 'user_cell';

@@ -58,8 +58,8 @@ function amapress_inscription_visite_shortcode( $atts ) {
 
 
 		$resps           = $event->getParticipants();
-		$can_unsubscribe = Amapress::start_of_day( $date ) > Amapress::start_of_day( amapress_time() ); //TODO
-		$can_subscribe   = Amapress::start_of_day( $date ) > Amapress::start_of_day( amapress_time() );
+		$can_unsubscribe = $event->canUnsubscribe();
+		$can_subscribe   = $event->canSubscribe();
 
 		if ( $has_slots ) {
 			$ret .= "<td>";

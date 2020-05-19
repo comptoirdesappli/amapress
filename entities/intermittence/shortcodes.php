@@ -404,8 +404,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 				continue;
 			}
 
-//                $can_unsubscribe = Amapress::start_of_week($date) <= Amapress::start_of_week(amapress_time());
-			$can_subscribe = Amapress::start_of_day( $date ) >= Amapress::start_of_day( amapress_time() );
+			$can_subscribe = $dist->canCease();
 
 			$is_intermittent = 'exchangeable';
 			foreach ( AmapressPaniers::getPaniersForDist( $date ) as $panier ) {

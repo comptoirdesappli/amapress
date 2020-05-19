@@ -534,4 +534,22 @@ class Amapress_EventBase extends TitanEntity {
 			}
 		}
 	}
+
+	protected function canSubscribeType( $type ) {
+		$before_close_hours = Amapress::getOption( "close-subscribe-{$type}-hours" );
+		if ( empty( $before_close_hours ) ) {
+			$before_close_hours = 24;
+		}
+
+		return ( $this->getStartDateAndHour() - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time();
+	}
+
+	protected function canUnsubscribeType( $type ) {
+		$before_close_hours = Amapress::getOption( "close-unsubscribe-{$type}-hours" );
+		if ( empty( $before_close_hours ) ) {
+			$before_close_hours = 24;
+		}
+
+		return ( $this->getStartDateAndHour() - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time();
+	}
 }

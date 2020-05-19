@@ -14,8 +14,8 @@ function amapress_get_custom_content_visite( $content ) {
 //	amapress_echo_button( 'Participer', amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
 
 	$user_id               = amapress_current_user_id();
-	$can_subscribe         = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() );
-	$can_unsubscribe       = Amapress::start_of_day( $visite->getDate() ) > Amapress::start_of_day( amapress_time() ); //TODO
+	$can_subscribe         = $visite->canSubscribe();
+	$can_unsubscribe       = $visite->canUnsubscribe();
 	$is_resp               = in_array( $user_id, $visite->getParticipantIds() );
 	$slot_for_current_user = $visite->getSlotInfoForUser( $user_id );
 

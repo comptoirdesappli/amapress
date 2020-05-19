@@ -994,6 +994,28 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => array(
 										array(
+											'id'      => 'close-subscribe-distrib-hours',
+											'name'    => 'Clôture inscriptions',
+											'desc'    => 'Clôturer les inscriptions x heures avant la distribution',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)',
+										),
+										array(
+											'id'      => 'close-unsubscribe-distrib-hours',
+											'name'    => 'Clôture désinscriptions',
+											'desc'    => 'Clôturer les désinscriptions x heures avant la distribution',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)',
+										),
+										array(
 											'id'      => 'inscr-distrib-button-first',
 											'name'    => 'Boutons d\'inscription',
 											'type'    => 'checkbox',
@@ -1502,7 +1524,38 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Créneaux de visites' => array(
+								'Inscription visites'    => array(
+									'id'      => 'amp_inscr_visite_options_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'close-subscribe-visite-hours',
+											'name'    => 'Clôture inscriptions',
+											'desc'    => 'Clôturer les inscriptions x heures avant la visite',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
+										array(
+											'id'      => 'close-unsubscribe-visite-hours',
+											'name'    => 'Clôture désinscriptions',
+											'desc'    => 'Clôturer les désinscriptions x heures avant la visite',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
+								'Créneaux de visites'    => array(
 									'id'      => 'amp_tab_visite_slots',
 									'desc'    => '',
 									'options' => [
@@ -1532,6 +1585,37 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type' => 'save',
 										),
 									],
+								),
+								'Inscription évènements' => array(
+									'id'      => 'amp_inscr_event_options_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'close-subscribe-event-hours',
+											'name'    => 'Clôture inscriptions',
+											'desc'    => 'Clôturer les inscriptions x heures avant l\'évènement',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
+										array(
+											'id'      => 'close-unsubscribe-event-hours',
+											'name'    => 'Clôture désinscriptions',
+											'desc'    => 'Clôturer les désinscriptions x heures avant l\'évènement',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
+										array(
+											'type' => 'save',
+										),
+									),
 								),
 							),
 						),
@@ -3122,11 +3206,17 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'checkbox',
 											'default' => false,
 										),
-//								array(
-//									'id'   => 'intermittence_contrat_model',
-//									'name' => 'Modèle de contrat des intermittents',
-//									'type' => 'editor',
-//								),
+										array(
+											'id'      => 'close-subscribe-intermit-hours',
+											'name'    => 'Cession paniers',
+											'desc'    => 'Clôturer les cessions de paniers x heures avant la distribution',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
 										array(
 											'type' => 'save',
 										),

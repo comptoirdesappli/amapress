@@ -15,8 +15,8 @@ function amapress_get_custom_content_amap_event( $content ) {
 
 	ob_start();
 
-	$can_unsubscribe = Amapress::start_of_day( $amap_event->getDate() ) > Amapress::start_of_day( amapress_time() ); //TODO
-	$can_subscribe   = Amapress::start_of_day( $amap_event->getDate() ) > Amapress::start_of_day( amapress_time() );
+	$can_unsubscribe = $amap_event->canUnsubscribe();
+	$can_subscribe   = $amap_event->canSubscribe();
 	$is_resp         = in_array( amapress_current_user_id(), $amap_event->getParticipantsIds() );
 
 	$users = [ '' => '--Sélectionner un amapien--' ];
