@@ -4161,7 +4161,16 @@ class Amapress {
 	}
 
 	public static function getContactInfos() {
-		$contact_page = wp_unslash( Amapress::getOption( 'contrat_info_anonymous' ) );
+		$contact_page = '';
+		if ( amapress_can_access_admin() ) {
+			$contact_page = '<p>' .
+			                self::makeButtonLink(
+				                admin_url( 'options-general.php?page=amapress_options_page&tab=amp_public_contacts_config' ),
+				                'Editer les informations de Contacts public',
+				                true, true
+			                ) . '</p>';
+		}
+		$contact_page .= wp_unslash( Amapress::getOption( 'contrat_info_anonymous' ) );
 		$cf_id        = Amapress::getOption( 'preinscription-form' );
 		if ( $cf_id ) {
 			$cf_post = get_post( $cf_id );

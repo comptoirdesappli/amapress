@@ -3853,12 +3853,31 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 //                                    'type' => 'save',
 //                                ),
 										array(
-											'id'         => 'contrat_info_anonymous',
-											'name'       => 'Information de contact pour les contrats',
-											'type'       => 'editor',
-											'capability' => 'edit_contrat_instances',
-											'default'    => '<p><strong>NOUS RENCONTRER</strong><br />Si vous souhaitez nous rencontrer, vous pouvez nous rendre visite lors d’une distribution :<br /> – [[à compléter contact distribution]]</p>
-<p><strong>NOUS CONTACTER</strong><br /> Et pour nous contacter, vous pouvez nous envoyer un email à :<br /> [[à définir avec l\'adresse de contact]]<br /> <a href="mailto:' . get_option( 'admin_email' ) . '">' . get_option( 'admin_email' ) . '</a></p>'
+											'id'           => 'contrat_info_anonymous',
+											'name'         => 'Information de contact pour les contrats',
+											'type'         => 'editor',
+											'capability'   => 'edit_contrat_instances',
+											'default'      => '<p><strong>NOUS RENCONTRER</strong><br />Si vous souhaitez nous rencontrer, vous pouvez nous rendre visite lors d’une distribution :<br /> – [[à compléter contact distribution]]</p>
+<p><strong>NOUS CONTACTER</strong><br /> Et pour nous contacter, vous pouvez nous envoyer un email à :<br /> [[à définir avec l\'adresse de contact]]<br /> <a href="mailto:' . get_option( 'admin_email' ) . '">' . get_option( 'admin_email' ) . '</a></p>',
+											'after_option' => function ( $options ) {
+												$links = [];
+												foreach ( AmapressContrats::get_contrats() as $contrat ) {
+													$links[] = Amapress::makeLink(
+														$contrat->getPermalink( 'details' ),
+														sprintf( 'Détails du contrat %s', $contrat->getTitle() ),
+														true, true
+													);
+												}
+												$href = Amapress::get_page_with_shortcode_href( 'nous-contacter', false );
+												if ( ! empty( $href ) ) {
+													$links[] = Amapress::makeLink(
+														$href,
+														'Page Contact (shortcode [nous-contacter])'
+													);
+												}
+
+												echo '<p>Ce texte peut s\'afficher dans : ' . implode( ', ', $links ) . '</p>';
+											},
 										),
 										array(
 											'type' => 'save',
