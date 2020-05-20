@@ -101,7 +101,7 @@ class AmapressEntities {
 					'type'     => 'panel',
 					'settings' => array(
 						'name'       => 'Emails groupés [moderation-mlgrp-count]',
-						'position'   => '26',
+						'position'   => '27',
 						'capability' => 'read_mailing_group',
 						'icon'       => 'dashicons-email-alt',
 						'long_desc'  => '<div class="amapress-section-note"><p>Dans cette section, vous pouvez configurer et administrer les <strong>Emails groupés</strong>.</p>
@@ -3619,13 +3619,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 												ob_start();
 												$gm_api_url = 'https://console.developers.google.com/henhouse/?pb=["hh-1","maps_backend",null,[],"https://developers.google.com",null,["static_maps_backend","street_view_image_backend","maps_embed_backend","places_backend","geocoding_backend","directions_backend","distance_matrix_backend","geolocation","elevation_backend","timezone_backend","maps_backend"],null]';
 												?>
-												<a
-													onclick='window.open("<?php echo wp_slash( $gm_api_url ); ?>", "newwindow", "width=600, height=400"); return false;'
-													href='<?php echo $gm_api_url; ?>'
-													class="button-primary"
-													title="<?php _e( 'Générer une clé d\'API - ( vous devez être connecté à votre compte Google )', 'gmaps-api-key' ); ?>">
+                                                <a
+                                                        onclick='window.open("<?php echo wp_slash( $gm_api_url ); ?>", "newwindow", "width=600, height=400"); return false;'
+                                                        href='<?php echo $gm_api_url; ?>'
+                                                        class="button-primary"
+                                                        title="<?php _e( 'Générer une clé d\'API - ( vous devez être connecté à votre compte Google )', 'gmaps-api-key' ); ?>">
 													<?php _e( 'Générer une clé d\'API', 'gmaps-api-key' ); ?>
-												</a>
+                                                </a>
 												<?php echo sprintf( __( 'ou %scliquez ici%s pour Obtenir une clé Google Map', 'geodirectory' ), '<a target="_blank" href="https://console.developers.google.com/flows/enableapi?apiid=static_maps_backend,street_view_image_backend,maps_embed_backend,places_backend,geocoding_backend,directions_backend,distance_matrix_backend,geolocation,elevation_backend,timezone_backend,maps_backend&keyType=CLIENT_SIDE&reusekey=true">', '</a>' ) ?>
 												<?php
 												return ob_get_clean();

@@ -9,8 +9,8 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_adhesion_r
 function amapress_register_entities_adhesion_request( $entities ) {
 	$entities['adhesion_request'] = array(
 		'internal_name'      => 'amps_adh_req',
-		'singular'           => amapress__( 'Demande de préinscription' ),
-		'plural'             => amapress__( 'Demandes de préinscription' ),
+		'singular'           => amapress__( 'Demande d\'adhésion' ),
+		'plural'             => amapress__( 'Demandes d\'adhésion' ),
 		'public'             => 'adminonly',
 		'show_in_menu'       => false,
 		'show_in_nav_menu'   => false,
