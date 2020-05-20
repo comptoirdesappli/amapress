@@ -32,27 +32,13 @@ function amapress_cf7_amapress_field_shortcode_handler( $tag ) {
 	$tags = amapress_get_wfcf7_tags();
 
 	return call_user_func( $tags[ $tag['type'] ]['function'], $tag );
-//    return '<strong style="color:red">Invalid USE</strong>';
 }
 
-//    $tag = new WPCF7_FormTag( $tag );
-//
-//    if ( empty( $tag->name ) )
-//        return '';
-//
-//    WPCF7_FormTagsManager::get_instance()->scan()
-//}
-
-//add_filter( 'wpcf7_validate_text', 'wpcf7_text_validation_filter', 10, 2 );  // in init
 function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
-//    $tag = new WPCF7_FormTag( $tag );
-//    var_dump($tag);
 	if ( 'amapress_field' == $tag['basetype'] ) {
 		$is_required = ( $tag['basetype'] != $tag['type'] );
 		switch ( $tag['name'] ) {
 			case 'prenom':
-				$tag['basetype'] = 'text';
-				break;
 			case 'nom':
 				$tag['basetype'] = 'text';
 				break;
@@ -60,33 +46,68 @@ function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
 				$tag['basetype']  = 'email';
 				$tag['options'][] = 'akismet:author_email';
 				break;
+			case 'adresse':
 			case 'message':
 				$tag['basetype'] = 'textarea';
 				break;
-			case 'adresse':
-				$tag['basetype'] = 'text';
-				break;
-//            case 'code_postal':
-//                $tag['basetype'] = 'text';
-//            case 'ville':
 			case 'telephone':
 				$tag['basetype'] = 'tel';
 				break;
 			case 'lieux':
-				$tag['basetype'] = 'radio';
+				$tag['basetype']  = 'radio';
+				$tag['options'][] = 'use_label_element';
 				foreach ( Amapress::get_lieux() as $lieu ) {
+					if ( ! $lieu->isPrincipal() ) {
+						continue;
+					}
 					$tag['raw_values'][] = $lieu->ID;
 					$tag['values'][]     = $lieu->ID;
 					$tag['labels'][]     = sprintf( '%s (%s)', $lieu->getTitle(), $lieu->getFormattedAdresse() );
 				}
 				break;
 			case 'contrats':
-				$tag['basetype'] = 'checkbox';
-				foreach ( AmapressContrats::get_subscribable_contrat_instances_by_contrat( null ) as $contrat ) {
+				$tag['basetype']  = 'checkbox';
+				$tag['options'][] = 'use_label_element';
+				$contrat_in_order = AmapressContrats::get_contrats( null, true, true );
+				if ( in_array( 'subscribable', $tag['options'] ) ) {
+					$contrat_instances = AmapressContrats::get_subscribable_contrat_instances();
+				} else {
+					$contrat_instances = AmapressContrats::get_active_contrat_instances();
+				}
+				$subscribable_contrats = [];
+				foreach ( $contrat_in_order as $contrat ) {
+					foreach ( $contrat_instances as $contrat_instance ) {
+						if ( $contrat_instance->getModelId() == $contrat->ID ) {
+							$subscribable_contrats[] = $contrat_instance;
+						}
+					}
+				}
+				if ( in_array( 'order', $tag['options'] ) ) {
+					usort( $subscribable_contrats, function ( $a, $b ) {
+						/** @var AmapressContrat_instance $a */
+						/** @var AmapressContrat_instance $b */
+						if ( $a->isPrincipal() && ! $b->isPrincipal() ) {
+							return - 1;
+						}
+						if ( ! $a->isPrincipal() && $b->isPrincipal() ) {
+							return 1;
+						}
+
+						return strcmp( $a->getTitle(), $b->getTitle() );
+					} );
+				}
+				foreach ( $subscribable_contrats as $contrat ) {
 					$tag['raw_values'][] = $contrat->ID;
 					$tag['values'][]     = $contrat->ID;
 					$tag['labels'][]     = $contrat->getTitle();
 				}
+				break;
+			case 'intermittent':
+				$tag['basetype']     = 'checkbox';
+				$tag['options'][]    = 'use_label_element';
+				$tag['raw_values'][] = 1;
+				$tag['values'][]     = 1;
+				$tag['labels'][]     = 'Devenir intermittent';
 				break;
 			default:
 				$tag['basetype'] = 'text';
@@ -94,7 +115,6 @@ function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
 		$tag['type'] = $tag['basetype'] . ( $is_required ? '*' : '' );
 	}
 
-//    var_dump($tag);
 	return $tag;
 }
 

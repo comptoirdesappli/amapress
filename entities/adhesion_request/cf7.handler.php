@@ -4,11 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-add_action( 'tf_custom_admin_amapress_action_init_contact_form', 'tf_custom_admin_amapress_action_init_contact_form', 10, 3 );
-function tf_custom_admin_amapress_action_init_contact_form( $page, $activeTab, $options ) {
-	//TODO create default CF
-}
-
 add_filter( 'wpcf7_collect_mail_tags', 'amapress_wpcf7_collect_mail_tags' );
 function amapress_wpcf7_collect_mail_tags( $mailtags ) {
 	$mailtags[] = 'demande-titre';
@@ -35,6 +30,11 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 	$contrats     = $submission->get_posted_data( 'contrats' );
 	$message      = $submission->get_posted_data( 'message' );
 	$intermittent = $submission->get_posted_data( 'intermittent' );
+	if ( ! empty( $intermittent ) ) {
+		$intermittent = ! empty( $intermittent ) && in_array( 1, $intermittent );
+	} else {
+		$intermittent = false;
+	}
 
 	if ( empty( $lieux ) ) {
 		$lieux = array();
@@ -52,13 +52,21 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 	if ( empty( $contrats ) ) {
 		$contrats = array();
 	}
-	$contrats_noms = array_map( function ( $contrat_id ) {
-		$p = get_post( intval( $contrat_id ) );
+	$contrats_noms      = array_map( function ( $contrat_id ) {
+		$p = AmapressContrat_instance::getBy( intval( $contrat_id ) );
 		if ( empty( $p ) ) {
 			return '';
 		}
 
-		return $p->post_title;
+		return $p->getTitle();
+	}, $contrats );
+	$contrats_model_ids = array_map( function ( $contrat_id ) {
+		$p = AmapressContrat_instance::getBy( intval( $contrat_id ) );
+		if ( empty( $p ) ) {
+			return '';
+		}
+
+		return $p->getModelId();
 	}, $contrats );
 	if ( $intermittent ) {
 		$contrats_noms[] = 'Intermittent';
@@ -74,15 +82,16 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 		'post_content' => $message,
 		'post_status'  => 'publish',
 		'meta_input'   => array(
-			'amapress_adhesion_request_first_name'        => $first_name,
-			'amapress_adhesion_request_last_name'         => $last_name,
-			'amapress_adhesion_request_adresse'           => $adresse,
-			'amapress_adhesion_request_telephone'         => $telephone,
-			'amapress_adhesion_request_email'             => $email,
-			'amapress_adhesion_request_lieux'             => $lieux,
-			'amapress_adhesion_request_contrat_instances' => $contrats,
-			'amapress_adhesion_request_intermittent'      => $intermittent,
-			'amapress_adhesion_request_status'            => 'to_confirm',
+			'amapress_adhesion_request_first_name'       => $first_name,
+			'amapress_adhesion_request_last_name'        => $last_name,
+			'amapress_adhesion_request_adresse'          => $adresse,
+			'amapress_adhesion_request_telephone'        => $telephone,
+			'amapress_adhesion_request_email'            => $email,
+			'amapress_adhesion_request_lieux'            => $lieux,
+			'amapress_adhesion_request_contrats'         => is_array( $contrats_model_ids ) ? implode( ',', $contrats_model_ids ) : $contrats_model_ids,
+			'amapress_adhesion_request_contrat_intances' => is_array( $contrats ) ? implode( ',', $contrats ) : $contrats,
+			'amapress_adhesion_request_intermittent'     => $intermittent,
+			'amapress_adhesion_request_status'           => 'to_confirm',
 		),
 	);
 
@@ -94,13 +103,13 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 			'[demande-titre]',
 			'[demande-href]',
 			'[lieux-noms]',
-			'[contrats-noms]'
+			'[contrats-noms]',
 		),
 		array(
 			$my_post['post_title'],
 			admin_url( 'post.php?post=' . $post_id . '&action=edit' ),
 			$lieux_noms,
-			$contrats_noms
+			$contrats_noms,
 		),
 		$mail
 	);
