@@ -766,6 +766,9 @@ class AmapressContrats {
 			}
 			$res = wp_cache_get( $key );
 		}
+		if ( empty( $res ) ) {
+			$res = [];
+		}
 
 		return $res;
 	}
