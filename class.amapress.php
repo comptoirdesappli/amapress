@@ -4166,7 +4166,9 @@ class Amapress {
 		if ( $cf_id ) {
 			$cf_post = get_post( $cf_id );
 			if ( $cf_post ) {
-				$contact_page .= '<br/>[contact-form-7 id="' . $cf_id . '" title="' . esc_attr( $cf_post->post_title ) . '"]';
+				$cf_shortcode = '[contact-form-7 id="' . $cf_id . '" title="' . esc_attr( $cf_post->post_title ) . '"]';
+				$contact_page .= '<br/>';
+				$contact_page .= do_shortcode( $cf_shortcode );
 			}
 		}
 
