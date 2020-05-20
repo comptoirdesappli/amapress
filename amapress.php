@@ -1676,7 +1676,7 @@ add_filter( 'admin_footer_text', function ( $content ) {
 	$title     = get_admin_menu_item_title( $parent_file );
 	$subtitle  = $submenu_file != $parent_file && ! empty( $submenu_file ) ? get_admin_menu_item_title( $submenu_file ) : '';
 	$tab_title = '';
-	if ( 'admin.php' == $pagenow && ! empty( $_GET['page'] ) ) {
+	if ( ! empty( $_GET['page'] ) ) {
 		$current_page_id = $_GET['page'];
 		$current_tab_id  = ! empty( $_GET['tab'] ) ? stripslashes( $_GET['tab'] ) : '';
 		foreach ( AmapressEntities::getMenu() as $item ) {
