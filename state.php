@@ -274,6 +274,15 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'enable-media-replace', 'Enable Media Replace',
 		'<strong>Recommandé</strong> : Permet de remplacer facilement une image ou un contrat Word dans la « Media Library » de Wordpress',
 		'warning' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
+		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
+		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'really-simple-captcha', 'Really Simple CAPTCHA',
+		'<strong>Optionnel</strong> : Permet de mettre des captcha dans les formulaires Contact Form 7 pour empêcher les bots de spams',
+		'info' );
+	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7-honeypot', 'Honeypot for Contact Form 7',
+		'<strong>Optionnel</strong> : Permet de mettre des pièges à bots de spams dans les formulaires Contact Form 7 (sans impact sur les utilisateurs)',
+		'info' );
 
 	$state['02_plugins_not']   = array();
 	$state['02_plugins_not'][] = amapress_check_plugin_not_active( 'aryo-activity-log', 'Activity Log',
@@ -1890,9 +1899,6 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 		'info' );
 	$state['37_plugins_add'][] = amapress_check_plugin_install( 'count-per-day', 'Count Per Day',
 		'<strong>Optionnel</strong> : Permet d\'obtenir des statistiques de visites journalières simples sans recourir à des moteurs de statistiques externes.',
-		'info' );
-	$state['37_plugins_add'][] = amapress_check_plugin_install( 'contact-form-7', 'Contact Form 7',
-		'<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…',
 		'info' );
 	$state['37_plugins_add'][] = amapress_check_plugin_install( 'icalendrier', 'iCalendrier',
 		'<strong>Optionnel</strong> : Affiche la date du jour avec la fête du jour et les phases de la lune',
