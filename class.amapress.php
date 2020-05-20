@@ -4187,7 +4187,11 @@ class Amapress {
 	public static function get_page_with_shortcode_href(
 		$shortcode, $transient_name
 	) {
-		$href = get_transient( $transient_name );
+		if ( $transient_name ) {
+			$href = get_transient( $transient_name );
+		} else {
+			$href = null;
+		}
 		if ( empty( $href ) ) {
 			/** @var WP_Post $page */
 			foreach ( get_pages() as $page ) {
@@ -4197,7 +4201,9 @@ class Amapress {
 					break;
 				}
 			}
-			set_transient( $transient_name, $href );
+			if ( $transient_name ) {
+				set_transient( $transient_name, $href );
+			}
 		}
 
 		return $href;
