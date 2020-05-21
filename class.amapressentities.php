@@ -242,8 +242,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'subpage'  => true,
 							'id'       => 'mailinggroup_mailerrors',
 							'settings' => array(
-								'name'       => 'Emails sortants en erreur',
-								'menu_title' => 'Erreurs',
+								'name'       => 'Emails sortants en erreur [errored-mlgrp-count]',
+								'menu_title' => 'Erreurs [errored-mlgrp-count]',
 								'capability' => 'read_mailing_group',
 								'menu_icon'  => 'dashicons-dismiss',
 							),

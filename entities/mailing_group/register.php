@@ -694,11 +694,19 @@ add_action( 'init', function () {
 
 			return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
 		} );
+		amapress_register_shortcode( 'errored-mlgrp-count', function () {
+			$cnt = AmapressMailingGroup::getAllErroredCount();
+
+			return "<span class='update-plugins count-$cnt' style='background-color:white;color:black;margin-left:5px;'><span class='plugin-count'>$cnt</span></span>";
+		} );
 	} else {
 		amapress_register_shortcode( 'moderation-mlgrp-count', function () {
 			return '';
 		} );
 		amapress_register_shortcode( 'waiting-mlgrp-count', function () {
+			return '';
+		} );
+		amapress_register_shortcode( 'errored-mlgrp-count', function () {
 			return '';
 		} );
 	}
