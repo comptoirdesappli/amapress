@@ -396,6 +396,16 @@ class AmapressSMTPMailingQueue {
 		return empty( $errors );
 	}
 
+	public static function retrySendAllErroredMessages( $mlgrp_id ) {
+		$waiting_dir  = self::getUploadDir( $mlgrp_id, 'waiting' );
+		$errorred_dir = self::getUploadDir( $mlgrp_id, 'errored' );
+
+		foreach ( glob( $errorred_dir . '*.json' ) as $filename ) {
+			//phpcs:ignore
+			@rename( $filename, $waiting_dir . pathinfo( $filename, PATHINFO_BASENAME ) );
+		}
+	}
+
 	/**
 	 * Sets WordPress phpmailer to SMTP and sets all options.
 	 *

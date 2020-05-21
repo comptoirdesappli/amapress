@@ -205,7 +205,17 @@ function amapress_mailing_queue_errored_mail_list_count( $mlgrp_id = '' ) {
 }
 
 function amapress_mailing_queue_errored_mail_list( $mlgrp_id = '' ) {
-	return amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
+	$href = add_query_arg(
+		array(
+			'action'   => 'amapress_retry_queue_send_all_msg',
+			'mlgrp_id' => $mlgrp_id,
+		),
+		admin_url( 'admin.php' )
+	);
+	$ret  = '<p><a class="button button-secondary" href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la nouvelle tentative d\\\'envoi des emails en erreur ?\')">Renvoyer tous les emails en erreur</a></p>';
+	$ret  .= amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
+
+	return $ret;
 }
 
 function amapress_mailing_queue_logged_mail_list( $mlgrp_id = '' ) {
@@ -381,6 +391,23 @@ function admin_action_amapress_retry_queue_send_msg() {
 	}
 	exit();
 }
+
+add_action( 'admin_action_amapress_retry_queue_send_all_msg', 'admin_action_amapress_retry_queue_send_all_msg' );
+function admin_action_amapress_retry_queue_send_all_msg() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( 'Accès non autorisé' );
+	}
+
+	$mlgrp_id = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
+	AmapressSMTPMailingQueue::retrySendAllErroredMessages( $mlgrp_id );
+	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
+		echo 'Emails en erreur remis pour envoi avec succès';
+	} else {
+		wp_redirect( $_SERVER['HTTP_REFERER'] );
+	}
+	exit();
+}
+
 
 add_action( 'admin_action_amapress_test_mail_config', 'amapress_test_mail_config' );
 function amapress_test_mail_config() {
