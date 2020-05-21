@@ -1118,4 +1118,14 @@ class AmapressMailingGroup extends TitanEntity {
 
 		return true;
 	}
+
+	public function downloadEml( $msg_id, $type = 'accepted' ) {
+		$msg = $this->loadMessage( $type, $msg_id );
+		if ( ! $msg ) {
+			wp_die( 'Message introuvable' );
+		}
+
+		Amapress::sendDocumentFile( $msg['eml_file'], $msg_id . '.eml' );
+	}
+
 }

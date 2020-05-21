@@ -445,6 +445,10 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 				'sort' => 'content',
 			)
 		),
+		array(
+			'title' => '',
+			'data'  => 'dl_eml'
+		),
 	);
 	$data    = array();
 	foreach ( $ml->getMailArchives() as $m ) {
@@ -462,6 +466,10 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 			'type'      => $m['type'] == 'accepted' ? 'Distribué' : 'Rejetté',
 			'moderator' => ( $moderator_user ? $moderator_user->getDisplayName() : '' ) .
 			               isset( $m['mod_date'] ) ? ' le ' . date_i18n( 'd/m/Y H:i:s', $m['mod_date'] ) : '',
+			'dl_eml'    => amapress_get_mailgroup_action_form(
+				'Télécharger le message', 'amapress_mailgroup_download_eml', $ml->ID, $m['id'], [
+				'type' => $type
+			] ),
 		);
 	}
 
@@ -521,6 +529,10 @@ function amapress_get_mailing_group_waiting_list( $mailing_group_id ) {
 			'title' => '',
 			'data'  => 'resend_mods'
 		),
+		array(
+			'title' => '',
+			'data'  => 'dl_eml'
+		),
 	);
 	$data    = array();
 	foreach ( $ml->getMailWaitingModeration() as $m ) {
@@ -533,19 +545,24 @@ function amapress_get_mailing_group_waiting_list( $mailing_group_id ) {
 			'distribute'   => amapress_get_mailgroup_action_form( 'Distribuer', 'amapress_mailgroup_distribute', $ml->ID, $m['id'] ),
 			'reject_quiet' => amapress_get_mailgroup_action_form( 'Rejetter sans prévenir', 'amapress_mailgroup_reject_quiet', $ml->ID, $m['id'] ),
 			'reject'       => amapress_get_mailgroup_action_form( 'Rejetter', 'amapress_mailgroup_reject', $ml->ID, $m['id'] ),
+			'dl_eml'       => amapress_get_mailgroup_action_form(
+				'Télécharger le message', 'amapress_mailgroup_download_eml', $ml->ID, $m['id'], [
+				'type' => 'waiting'
+			] ),
 		);
 	}
 
 	return amapress_get_datatable( 'waiting-mails', $columns, $data );
 }
 
-function amapress_get_mailgroup_action_form( $button_text, $action, $mailgroup_id, $msg_id ) {
+function amapress_get_mailgroup_action_form( $button_text, $action, $mailgroup_id, $msg_id, $others = [] ) {
 	$href = add_query_arg(
-		array(
-			'action'       => $action,
-			'mailgroup_id' => $mailgroup_id,
-			'msg_id'       => $msg_id,
-		),
+		array_merge(
+			array(
+				'action'       => $action,
+				'mailgroup_id' => $mailgroup_id,
+				'msg_id'       => $msg_id,
+			), $others ),
 		admin_url( 'admin.php' )
 	);
 
@@ -627,6 +644,24 @@ function admin_action_amapress_mailgroup_resend_mods() {
 	}
 	exit();
 }
+
+add_action( 'admin_action_amapress_mailgroup_download_eml', 'admin_action_amapress_mailgroup_download_eml' );
+function admin_action_amapress_mailgroup_download_eml() {
+	if ( empty( $_REQUEST['mailgroup_id'] ) || empty( $_REQUEST['msg_id'] ) ) {
+		wp_die( 'Invalid request' );
+	}
+	$mailing_group_id = $_REQUEST['mailgroup_id'];
+	$msg_id           = $_REQUEST['msg_id'];
+	$type             = $_REQUEST['type'];
+	$ml               = AmapressMailingGroup::getBy( $mailing_group_id );
+	if ( $ml ) {
+		$ml->downloadEml( $msg_id, $type );
+	} else {
+		wp_die( 'Mailing group not found' );
+	}
+	exit();
+}
+
 
 function amapress_fetch_mailinggroups() {
 	foreach ( AmapressMailingGroup::getAll() as $ml ) {

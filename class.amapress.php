@@ -3899,6 +3899,9 @@ class Amapress {
 			header( 'Content-Type: application/vnd.oasis.opendocument.text' );
 		} else if ( strpos( $out_file_name, '.pdf' ) !== false ) {
 			header( 'Content-Type: application/pdf' );
+		} else if ( strpos( $out_file_name, '.eml' ) !== false ) {
+			header( 'Content-Type: message/rfc822' );
+
 		} else {
 			header( 'Content-Type: application/octet-stream' );
 		}
