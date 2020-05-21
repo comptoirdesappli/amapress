@@ -480,6 +480,13 @@ class AmapressSMTPMailingQueueOriginal {
 				}
 			}
 		} catch ( phpmailerException $e ) {
+			try {
+				if ( 'smtp' === $phpmailer->Mailer ) {
+					$phpmailer->getSMTPInstance()->reset();
+				}
+			} catch ( Exception $exception ) {
+				$errors[] = $exception->getMessage();
+			}
 			$errors[] = $e->errorMessage();
 		}
 
