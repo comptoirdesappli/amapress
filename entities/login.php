@@ -114,9 +114,9 @@ function amapress_check_access() {
 add_action( 'login_head', 'amapress_login_head' );
 function amapress_login_head() {
 	if ( isset( $_GET['action'] ) && $_GET['action'] === 'register' ) {
-		wp_enqueue_style( 'register_css', AMAPRESS__PLUGIN_URL . '/admin/css/register-form.css' );
+		wp_enqueue_style( 'register_css', AMAPRESS__PLUGIN_URL . '/css/register-form.css' );
 	} else {
-		wp_enqueue_style( 'login_css', AMAPRESS__PLUGIN_URL . '/admin/css/custom-login.css' );
+		wp_enqueue_style( 'login_css', AMAPRESS__PLUGIN_URL . '/css/custom-login.css' );
 	}
 }
 

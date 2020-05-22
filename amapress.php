@@ -334,7 +334,6 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/class-amapress-calendar.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/include.entities.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'options/customizer.php' );
-require_once( AMAPRESS__PLUGIN_DIR . 'options/tabs.models.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'options/options.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'shortcodes/utils.php' );
