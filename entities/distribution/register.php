@@ -190,8 +190,9 @@ function amapress_register_entities_distribution( $entities ) {
 						);
 					}
 
-					$ret .= 'Configurer un créneau de la forme : <strong>Heure Début-Heure Fin</strong>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
-<br/>Exemple : 18h00-20h00[10min;2p]<br/>' .
+					$ret .= 'Configurer un créneau de la forme : <em>Heure Début-Heure Fin</em>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
+<br/>Exemple : 18h00-20h00[10min;2p] ou [5min;3p] (<em>pour prendre en compte les horaires de la distribution</em>)
+<br/>Il est également possible de créer des créneau nommé/fictif par exemple : [5min;5p]|23h-23h30(je suis absent)<br/>' .
 					        sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
 						        date_i18n( 'H:i', $dist->getStartDateAndHour() ),
 						        date_i18n( 'H:i', $dist->getEndDateAndHour() ),
