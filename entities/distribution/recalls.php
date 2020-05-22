@@ -451,6 +451,47 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 	echo '<p>Email de responsables de distribution manquants envoyé</p>';
 } );
 
+add_action( 'amapress_recall_slots_inscr_distrib', function ( $args ) {
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		echo '<p>Distribution introuvable</p>';
+
+		return;
+	}
+
+	$slots = $dist->getSlotsConf();
+	if ( empty( $slots ) ) {
+		echo '<p>Pas de créneaux configurés</p>';
+
+		return;
+	}
+
+	$subject = Amapress::getOption( 'distribution-slot-inscr-recall-mail-subject' );
+	$content = Amapress::getOption( 'distribution-slot-inscr-recall-mail-content' );
+	$url     = Amapress::get_inscription_distrib_page_href();
+	if ( ! empty( $url ) ) {
+		$inscription_link = Amapress::makeLink( $url, 'S\'inscrire à un créneau de distribution' );
+	} else {
+		$inscription_link = '#page non configurée#';
+	}
+
+	$content = str_replace( '%%lien_inscription%%', $inscription_link, $content );
+
+	$dist_without_slots_amapiens_ids = $dist->getWithoutSlotsMemberIds();
+	$amapien_users                   = amapress_prepare_message_target_bcc(
+		'user:include=' . implode( ',', $dist_without_slots_amapiens_ids ),
+		'Amapiens non inscrits aux créneaux de ' . $dist->getTitle(), 'distribution' );
+	amapress_send_message(
+		$subject,
+		$content,
+		'', $amapien_users, $dist, array(),
+		amapress_get_recall_cc_from_option( 'distribution-slot-inscr-recall-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto()
+	);
+	echo '<p>Email d\'inscription aux créneaux de distribution envoyé</p>';
+} );
+
+
 add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
@@ -482,7 +523,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				'sort' => 'fact',
 			)
 		);
-		$columns_with_price = array_merge( $columns_no_price );
+		$columns_with_price   = array_merge( $columns_no_price );
 		$columns_with_price[] = array(
 			'title' => 'Total',
 			'data'  => array(
@@ -818,6 +859,85 @@ function amapress_distribution_missing_responsables_recall_options() {
 	);
 }
 
+function amapress_distribution_slots_inscr_recall_options() {
+	return array(
+		array(
+			'id'                  => 'distribution-slot-inscr-recall-1',
+			'name'                => 'Rappel 1',
+			'desc'                => 'Inscription des amapiens aux créneaux horaires',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_slots_inscr_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-slot-inscr-recall-2',
+			'name'                => 'Rappel 2',
+			'desc'                => 'Inscription des amapiens aux créneaux horaires',
+			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
+			'hook_name'           => 'amapress_recall_slots_inscr_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-slot-inscr-recall-3',
+			'name'                => 'Rappel 3',
+			'desc'                => 'Inscription des amapiens aux créneaux horaires',
+			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
+			'hook_name'           => 'amapress_recall_slots_inscr_distrib',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'       => 'distribution-slot-inscr-recall-mail-subject',
+			'name'     => 'Sujet de l\'email',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Vous n\'êtes pas encore inscrits aux créneaux de distribution à %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-slot-inscr-recall-mail-content',
+			'name'    => 'Contenu de l\'email',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nVous n'êtes pas encore inscrits aux créneaux de distribution pour la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%.\n%%lien_inscription%%\nPensez à vous inscrire ! Merci\n\n%%nom_site%%" ),
+			'desc'    =>
+				AmapressDistribution::getPlaceholdersHelp(
+					[
+						'lien_inscription' => 'Lien "S\'inscrire à un créneau de distribution" vers la page d\'inscription aux distributions',
+					]
+				),
+		),
+		array(
+			'id'           => 'distribution-slot-inscr-recall-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Emails en copie',
+		),
+		array(
+			'id'           => 'distribution-slot-inscr-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
 
 function amapress_distribution_verify_recall_options() {
 	return array(

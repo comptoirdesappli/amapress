@@ -335,6 +335,17 @@ class Amapress_EventBase extends TitanEntity {
 		return $res;
 	}
 
+	public function getWithoutSlotsMemberIds() {
+		$res = [];
+		foreach ( $this->getMembersIds() as $user_id ) {
+			if ( empty( $this->getSlotInfoForUser( $user_id ) ) ) {
+				$res[] = $user_id;
+			}
+		}
+
+		return $res;
+	}
+
 	public function getInscritsList( $order_by_slot = true ) {
 		return implode( ', ', array_map( function ( $member ) {
 			/** @var AmapressUser $amapien */
