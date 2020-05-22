@@ -375,6 +375,10 @@ class AmapressMailingGroup extends TitanEntity {
 		return str_replace( "\r", '', $mailbox->imap( 'fetchbody', [ $msgId, '', $options ] ) );
 	}
 
+	public function getKeepSender() {
+		return $this->getCustom( 'amapress_mailing_group_keep_sender', true );
+	}
+
 	private static $dmarc_cache = [];
 
 	public static function hasRestrictiveDMARC( $email ) {
@@ -454,7 +458,7 @@ class AmapressMailingGroup extends TitanEntity {
 					$cc           = ''; //implode( ', ', $mail->cc );
 					$from         = ! empty( $mail->fromName ) ? "\"{$mail->fromName}\" <{$mail->fromAddress}>" : $mail->fromAddress;
 					$cleaned_from = '';
-					if ( self::hasRestrictiveDMARC( $mail->fromAddress ) ) {
+					if ( ! $this->getKeepSender() || self::hasRestrictiveDMARC( $mail->fromAddress ) ) {
 						$headers[]    = "X-Original-From: $from";
 						$cleaned_from = ! empty( $mail->fromName )
 							? "\"{$mail->fromName}\" <{$this->getName()}>"

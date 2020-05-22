@@ -55,7 +55,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 		'slug'             => amapress__( 'mailinggroups' ),
 		'menu_icon'        => 'dashicons-email-alt',
 		'fields'           => array(
-			'name'                   => array(
+			'name'         => array(
 				'group'    => 'Description',
 				'name'     => amapress__( 'Email' ),
 				'type'     => 'text',
@@ -63,12 +63,39 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required' => true,
 				'is_email' => true,
 			),
-			'desc'                   => array(
+			'desc'         => array(
 				'group' => 'Description',
 				'name'  => amapress__( 'Description' ),
 				'type'  => 'text',
 			),
-			'host'                   => array(
+			'subject_pref' => array(
+				'group'       => 'Description',
+				'name'        => amapress__( 'Préfixe Sujet' ),
+				'type'        => 'text',
+				'show_column' => false,
+				'desc'        => 'Préfixe à ajouter au sujet des emails relayés'
+			),
+			'reply_to'     => array(
+				'group'       => 'Description',
+				'name'        => amapress__( 'Réponse à' ),
+				'type'        => 'select',
+				'desc'        => 'Choisir à qui répondent les destinataires de la liste',
+				'options'     => [
+					'sender' => 'Emetteur',
+					'list'   => 'Liste',
+				],
+				'required'    => true,
+				'show_column' => false,
+			),
+			'keep_sender'  => array(
+				'group'       => 'Description',
+				'name'        => amapress__( 'Emetteur' ),
+				'type'        => 'checkbox',
+				'default'     => true,
+				'show_column' => false,
+				'desc'        => 'Préserver (si possible) l\'émetteur original du mail lors de la diffusion. Décoché : envoi de la part de la liste'
+			),
+			'host'         => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Serveur' ),
 				'desc'        => 'Adresse du serveur IMAP/POP3<br/>Par exemple, pour OVH, le serveur IMAP/POP3 est ssl0.ovh.net',
@@ -76,7 +103,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'port'                   => array(
+			'port'         => array(
 				'group'       => 'Serveur',
 				'name'        => amapress__( 'Port' ),
 				'desc'        => 'Port d\'accès au serveur IMAP/POP3<br/>Ports par défaut : IMAP 143; IMAP SSL 993; POP3 110 ; POP3 SSL 995',
@@ -87,7 +114,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'username'               => array(
+			'username'     => array(
 				'group'        => 'Serveur',
 				'name'         => amapress__( 'Utilisateur' ),
 				'desc'         => 'Nom d\'utilisateur<br/>Par ex, chez OVH, l\'adresse email complète',
@@ -215,13 +242,6 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'max'         => 10000,
 				'show_column' => false,
 			),
-			'subject_pref'           => array(
-				'group'       => 'Description',
-				'name'        => amapress__( 'Préfixe Sujet' ),
-				'type'        => 'text',
-				'show_column' => false,
-				'desc'        => 'Préfixe à ajouter au sujet des emails relayés'
-			),
 			'moderation'             => array(
 				'group'    => 'Modération',
 				'name'     => amapress__( 'Modération' ),
@@ -337,18 +357,6 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'desc'        => 'Liste d\'adresses emails à ajouter à cet Email groupé',
 				'show_column' => false,
 				'searchable'  => true,
-			),
-			'reply_to'               => array(
-				'group'       => 'Membres',
-				'name'        => amapress__( 'Reply to' ),
-				'type'        => 'select',
-				'desc'        => 'Choisir à qui répondent les destinataires de la liste',
-				'options'     => [
-					'sender' => 'Emetteur',
-					'list'   => 'Liste',
-				],
-				'required'    => true,
-				'show_column' => false,
 			),
 			'excl_queries'           => array(
 				'group'       => 'Membres exclus',
