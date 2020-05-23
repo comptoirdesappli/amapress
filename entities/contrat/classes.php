@@ -1574,10 +1574,10 @@ class AmapressContrat_instance extends TitanEntity {
 			$amount                        = $quant->getPrix_unitaire() * $remaining_distrib_sum;
 			if ( $this->getPayByMonth() ) {
 				$by_months = $this->getDatesByMonth();
-				if ( in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
+				if ( in_array( 1, $this->getPossiblePaiements() ) ) {
 					$paiements[] = sprintf( "1 chèque de %0.2f €", $amount );
 				}
-				if ( in_array( count( $by_months ), $this->getContrat_instance()->getPossiblePaiements() ) ) {
+				if ( in_array( count( $by_months ), $this->getPossiblePaiements() ) ) {
 					$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
 						return sprintf( "%s: 1 chèque pour %d distributions",
 							$month,
