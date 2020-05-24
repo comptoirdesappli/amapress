@@ -2579,7 +2579,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			echo '<p>Choisissez la quantité ou la taille de votre panier :</p>';
 		}
-		$quants_full = [];
+		$multiple_rules = [];
+		$quants_full    = [];
 		echo '<form method="post" action="' . $next_step_url . '" class="amapress_validate">';
 		if ( $contrat->isPanierVariable() ) {
 			$columns = array(
@@ -2602,32 +2603,80 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$has_groups = false;
 			$data       = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
-				$has_groups = $has_groups || preg_match( '/^\s*\[[^\]]+\]/', $quant->getTitle() );
-				$row        = array(
+				$multiple       = $quant->getGroupMultiple();
+				$grp_class_name = '';
+				$has_group      = preg_match( '/^\s*\[([^\]]+)\]/', $quant->getTitle(), $matches );
+				if ( $has_group ) {
+					if ( $multiple > 1 && isset( $matches[1] ) ) {
+						$grp_class_name = 'quant_grp_' . sanitize_html_class( $matches[1] );
+						$grp_name       = $matches[1];
+						if ( ! isset( $multiple_rules[ $grp_class_name ] ) ) {
+							$multiple_rules[ $grp_class_name ] = [
+								'class'    => $grp_class_name,
+								'display'  => $grp_name,
+								'multiple' => $multiple,
+							];
+						}
+						$grp_name = esc_attr( $grp_name );
+					}
+					$has_groups = true;
+				}
+				$row     = array(
 					'produit'       => '<span class="panier-mod-produit-label">' . esc_html( $quant->getTitle() ) . ( ! empty( $quant->getDescription() ) ? '<br/><em>' . esc_html( $quant->getDescription() ) . '</em>' : '' ) . '</span>',
 					'prix_unitaire' => esc_html( $quant->getPrix_unitaireDisplay() ),
 				);
-				$options    = $quant->getQuantiteOptions();
+				$options = $quant->getQuantiteOptions();
 				if ( ! isset( $options['0'] ) ) {
 					$options = [ '0' => '0' ] + $options;
 				}
+				$price_unit = esc_attr( $quant->getPrix_unitaire() );
 				foreach ( $dates as $date ) {
-					$price_unit = esc_attr( $quant->getPrix_unitaire() );
-					$ed         = '';
-					$ed         .= "<select style='max-width: none;min-width: 0' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var'>";
-					$ed         .= tf_parse_select_options( $options,
+					$ed = '';
+					$ed .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $grp_class_name'>";
+					$ed .= tf_parse_select_options( $options,
 						$edit_inscription
 							? $edit_inscription->getContrat_quantite_factor( $quant->ID, $date )
 							: null,
 						false );
-					$ed         .= '</select>';
-					$ed         .= '<a title="Recopier la même quantité sur les dates suivantes" href="#" class="quant-var-recopier">&gt;</a>';
+					$ed .= '</select>';
+					$ed .= '<a title="Recopier la même quantité sur les dates suivantes" href="#" class="quant-var-recopier">&gt;</a>';
 					if ( ! $quant->isInDistributionDates( $date ) ) {
 						$ed = '<span class="contrat_panier_vars-na">NA</span>';
 					}
 					$row[ 'd-' . $date ] = $ed;
 				}
 				$data[] = $row;
+			}
+
+			foreach ( $multiple_rules as $grp_class_name => $grp_conf ) {
+				if ( $grp_conf['multiple'] <= 1 ) {
+					continue;
+				}
+				echo '
+<script type="text/javascript">
+    //<![CDATA[
+    jQuery(function ($) {
+        jQuery.validator.addMethod(
+            "' . $grp_class_name . '",
+            function (value, element, params) {
+                var parent = $(element).closest("form");
+                if(!$(element).data(\'reval\')) {
+			        var fields = $(".' . $grp_class_name . '", parent);
+			        fields.data(\'reval\', true).valid();
+			        fields.data(\'reval\', false);
+			    }
+                var sumOfVals = 0;
+                jQuery(parent).find(".quant-var.' . $grp_class_name . '").each(function () {
+                    sumOfVals = sumOfVals + parseInt(jQuery(this).val());
+                });
+                if (0 === (sumOfVals % ' . $grp_conf['multiple'] . ')) return true;
+                return false;
+            },
+            "La quantité pour ' . esc_js( $grp_conf['display'] ) . ' doit être multiple de ' . $grp_conf['multiple'] . '<br/>"
+        );
+    });
+    //]]>
+</script>';
 			}
 
 			echo '<style type="text/css">.quant-var-recopier{text-shadow: none !important; text-decoration: none !important;}.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
@@ -3522,11 +3571,15 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
                 $this.data('price', val * priceUnit);
                 computeTotal();
             });
-            jQuery('.quant-var:first,.quant:first').each(function () {
+            jQuery('.quant-var,.quant:first').each(function () {
                 var $this = jQuery(this);
-                $this.rules('add', {
+                var opt = {
                     min_sum: <?php echo $min_total; ?>,
-                });
+                };
+                if ($this.data('grp-class')) {
+                    opt[$this.data('grp-class')] = true;
+                }
+                $this.rules('add', opt);
             });
             jQuery('.amapress_validate .quant').change(function () {
                 var $this = jQuery(this);

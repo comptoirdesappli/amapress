@@ -1500,7 +1500,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['coadherent.adresse']               = [
+		$ret['coadherent.adresse'] = [
 			'desc' => 'Adresse co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -2316,6 +2316,10 @@ class AmapressContrat_quantite extends TitanEntity {
 		} else {
 			return Amapress::formatPrice( $price_unit );
 		}
+	}
+
+	public function getGroupMultiple() {
+		return $this->getCustomAsInt( 'amapress_contrat_quantite_grp_mult', 1 );
 	}
 
 	public function getPrix_unitaire() {

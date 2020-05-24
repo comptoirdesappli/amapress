@@ -2219,7 +2219,7 @@ function amapress_resolve_contrat_quantite_id( $contrat_instance_id, $contrat_qu
 	return null;
 }
 
-function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $quantite, $produits, $photo, $liste_dates, $max_adhs ) {
+function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instance, $id, $title, $code, $description, $price, $unit, $quantite_conf, $quantite, $produits, $photo, $liste_dates, $max_adhs, $grp_mult ) {
 	if ( $contrat_instance->getModel() == null ) {
 		return '';
 	}
@@ -2246,7 +2246,8 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		echo '<option ' . selected( 'kg', $unit, false ) . ' value="kg">kg</option>';
 		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">L</option>';
 		echo '</select></td>';
-		echo "<td><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' /></td>";
+		echo "<td><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' />
+<br/>Grp. Multiple:<input type='number' class='required number' name='amapress_quant_data[$id][grp_mult]' min='0' step='1' placeholder='Multiple' value='$grp_mult' /></td>";
 	}
 	$all_liste_dates_options = [];
 	foreach ( $contrat_instance->getListe_dates() as $d ) {
@@ -2353,7 +2354,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 			amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
 				$qc, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
-				$quant->getSpecificDistributionDates(), $quant->getMaxAdherents() );
+				$quant->getSpecificDistributionDates(), $quant->getMaxAdherents(), $quant->getGroupMultiple() );
 		}
 		?>
         </tbody>
@@ -2375,7 +2376,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	amapress_quantite_editor_line( $contrat_instance, '%%id%%', '', '', '', 0, 0,
-		'', 0, '', '', [], 0 );
+		'', 0, '', '', [], 0, 1 );
 
 	$new_row = ob_get_clean();
 
@@ -2451,6 +2452,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 					'amapress_contrat_quantite_code'             => ! empty( $quant_data['code'] ) ? $quant_data['code'] : $quant_data['title'],
 					'amapress_contrat_quantite_description'      => $quant_data['desc'],
 					'amapress_contrat_quantite_quantite_config'  => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
+					'amapress_contrat_quantite_grp_mult'         => isset( $quant_data['grp_mult'] ) ? $quant_data['grp_mult'] : null,
 					'amapress_contrat_quantite_unit'             => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
 					'amapress_contrat_quantite_produits'         => isset( $quant_data['produits'] ) ? $quant_data['produits'] : null,
 					'amapress_contrat_quantite_liste_dates'      => ! empty( $quant_data['liste_dates'] ) ? $quant_data['liste_dates'] : null,
