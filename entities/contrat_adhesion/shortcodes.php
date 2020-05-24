@@ -2599,13 +2599,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				);
 			}
 
-			$data = array();
+			$has_groups = false;
+			$data       = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
-				$row     = array(
+				$has_groups = $has_groups || preg_match( '/^\s*\[[^\]]+\]/', $quant->getTitle() );
+				$row        = array(
 					'produit'       => '<span class="panier-mod-produit-label">' . esc_html( $quant->getTitle() ) . ( ! empty( $quant->getDescription() ) ? '<br/><em>' . esc_html( $quant->getDescription() ) . '</em>' : '' ) . '</span>',
 					'prix_unitaire' => esc_html( $quant->getPrix_unitaireDisplay() ),
 				);
-				$options = $quant->getQuantiteOptions();
+				$options    = $quant->getQuantiteOptions();
 				if ( ! isset( $options['0'] ) ) {
 					$options = [ '0' => '0' ] + $options;
 				}
@@ -2630,7 +2632,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			echo '<style type="text/css">.quant-var-recopier{text-shadow: none !important; text-decoration: none !important;}.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
 
-			echo amapress_get_datatable( 'quant-commandes', $columns, $data, array(
+			$js_options = array(
 				'bSort'        => false,
 				'paging'       => false,
 				'searching'    => true,
@@ -2640,7 +2642,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'scrollX'      => true,
 				'scrollY'      => intval( $atts['paniers_modulables_editor_height'] ),
 				'fixedColumns' => array( 'leftColumns' => 2 ),
-			) );
+			);
+			if ( $has_groups ) {
+				$js_options['raw_js_options'] = 'rowGroup: {
+                    dataSrc: function ( row ) {
+                        var grp = row[0].match(/\[([^\]]+)\]/);
+                        if (grp && grp.length > 1)
+                            return grp[1];
+                        return "Autres";
+                    }
+                }';
+				//Datatables rowGroup does not support fixedColumns, so for now, disable it
+				unset( $js_options['fixedColumns'] );
+			}
+
+			echo amapress_get_datatable( 'quant-commandes', $columns, $data, $js_options );
 			echo '<p>* Cliquez sur la case pour faire apparaître le choix de quantités</p>';
 		} else {
 			$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );

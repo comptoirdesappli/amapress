@@ -61,19 +61,20 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	$options = wp_parse_args(
 		$options,
 		array(
-			'columns'      => $columns,
-			'responsive'   => true,
-			'paging'       => false,
-			'initComplete' => null,
-			'info'         => false,
-			'empty_desc'   => 'Aucune données dans le tableau',
-			'nowrap'       => true,
-			'data'         => $data,
-			'cell-border'  => false,
-			'init_as_html' => false,
-			'no_script'    => false,
-			'table-layout' => 'auto',
-			'language'     => array( 'url' => '//cdn.datatables.net/plug-ins/1.10.11/i18n/French.json' ),
+			'columns'        => $columns,
+			'responsive'     => true,
+			'paging'         => false,
+			'initComplete'   => null,
+			'info'           => false,
+			'empty_desc'     => 'Aucune données dans le tableau',
+			'nowrap'         => true,
+			'data'           => $data,
+			'cell-border'    => false,
+			'init_as_html'   => false,
+			'no_script'      => false,
+			'table-layout'   => 'auto',
+			'language'       => array( 'url' => '//cdn.datatables.net/plug-ins/1.10.11/i18n/French.json' ),
+			'raw_js_options' => '',
 		) );
 
 	if ( 'auto' === $options['responsive'] ) {
@@ -93,6 +94,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	if ( ! empty( $initComplete ) ) {
 		$init = ".on('init.dt', $initComplete)";
 	}
+
+	$raw_js_options = $options['raw_js_options'];
+	unset( $options['raw_js_options'] );
 
 	$nowrap      = $options['nowrap'] ? 'nowrap' : '';
 	$cellborder  = $options['cell-border'] ? 'cell-border' : '';
@@ -171,13 +175,18 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='$table_style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	if ( ! $options['no_script'] ) {
+		$json = json_encode( $options );
+		if ( ! empty( $raw_js_options ) ) {
+			$json = substr( $json, 0, strlen( $json ) - 1 );
+			$json .= ',' . $raw_js_options . '}';
+		}
 		$ret .= "<script type='text/javascript'>\n";
 		$ret .= "    //<![CDATA[\n";
 		$ret .= "    jQuery(document).ready(function ($) {\n";
-		$ret .= "        $('#$id')$init.DataTable(" . json_encode( $options ) . ")\n";
+		$ret .= "        $('#$id')$init.DataTable(" . $json . ")\n";
 		$ret .= "    });\n";
 		$ret .= "    //]]>\n";
-		$ret .= "</script>";
+		$ret .= '</script>';
 	}
 
 	return $ret;
