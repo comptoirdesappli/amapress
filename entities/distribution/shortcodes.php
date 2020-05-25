@@ -252,14 +252,19 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	if ( $for_pdf ) {
 		$prefer_inscr_button_first = false;
 	}
-	$amapien        = AmapressUser::getBy( $user_id );
-	$cofoyers       = $amapien->getAllDirectlyLinkedCoUsers(
-		Amapress::toBool( $atts['inscr_coadherents'] ),
-		Amapress::toBool( $atts['inscr_cofoyers'] ) );
-	$cofoyers_ids   = wp_list_pluck( $cofoyers, 'ID' );
-	$cofoyers_users = [];
-	foreach ( $cofoyers as $cofoyer ) {
-		$cofoyers_users[ $cofoyer->ID ] = $cofoyer->getDisplayName();
+	$amapien = AmapressUser::getBy( $user_id );
+	if ( $amapien ) {
+		$cofoyers       = $amapien->getAllDirectlyLinkedCoUsers(
+			Amapress::toBool( $atts['inscr_coadherents'] ),
+			Amapress::toBool( $atts['inscr_cofoyers'] ) );
+		$cofoyers_ids   = wp_list_pluck( $cofoyers, 'ID' );
+		$cofoyers_users = [];
+		foreach ( $cofoyers as $cofoyer ) {
+			$cofoyers_users[ $cofoyer->ID ] = $cofoyer->getDisplayName();
+		}
+	} else {
+		$cofoyers_ids   = [];
+		$cofoyers_users = [];
 	}
 
 	$required_lieu_id = null;
