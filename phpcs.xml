@@ -48,5 +48,6 @@
         <exclude name="WordPress.WhiteSpace"/>
         <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
+        <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict"/>
     </rule>
 </ruleset>
