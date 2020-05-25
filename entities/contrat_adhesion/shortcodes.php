@@ -1508,7 +1508,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( $adh_paiement ) {
 			ob_clean();
 
-			return ( $additional_css . '<p>Vous avez déjà une adhésion</p>' );
+			return ( $additional_css . '<p>Vous avez déjà une adhésion. Vous pouvez aller vers l\'étape <a href="' . $contrats_step_url . '">Contrats</a></p>' );
 		}
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
