@@ -2601,7 +2601,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 
 			$has_groups = false;
-			$data       = array();
+			$grp_data   = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
 				$multiple       = $quant->getGroupMultiple();
 				$grp_class_name = '';
@@ -2645,7 +2645,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 					$row[ 'd-' . $date ] = $ed;
 				}
-				$data[] = $row;
+				if ( ! isset( $grp_data[ $grp_class_name ] ) ) {
+					$grp_data[ $grp_class_name ] = [];
+				}
+				$grp_data[ $grp_class_name ][] = $row;
+			}
+
+			$data = [];
+			foreach ( $grp_data as $k => $grp ) {
+				$data = array_merge( $data, array_values( $grp ) );
 			}
 
 			foreach ( $multiple_rules as $grp_class_name => $grp_conf ) {
