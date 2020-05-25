@@ -115,6 +115,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'options'    => array(
 					'to_confirm' => 'A confirmer',
 					'confirmed'  => 'Confirmée',
+					'cancelled'  => 'Annulée',
 				),
 				'required'   => true,
 				'desc'       => 'Statut',
