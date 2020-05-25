@@ -151,6 +151,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 		if ( empty( $atts['scroll_y'] ) ) {
 			$atts['scroll_y'] = Amapress::getOption( 'inscr-distrib-scroll-y' ) . 'px';
 		}
+		$responsive = false;
 	} elseif ( 'auto' === $responsive ) {
 		$fixed_column_width = '%';
 		$responsive         = wp_is_mobile();
