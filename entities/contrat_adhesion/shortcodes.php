@@ -3569,6 +3569,10 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
                 var priceUnit = parseFloat($this.data('price-unit'));
                 var val = parseFloat($this.val());
                 $this.data('price', val * priceUnit);
+                if (val > 0) {
+                    $this.css('visibility', 'visible');
+                    $this.parent().find('a').css('visibility', 'visible');
+                }
                 computeTotal();
             });
             jQuery('.quant-var,.quant:first').each(function () {

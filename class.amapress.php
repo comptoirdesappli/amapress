@@ -2821,6 +2821,7 @@ class Amapress {
 			wp_enqueue_script( 'amapress-feedback', plugins_url( '/js/feedback.js', __FILE__ ), array( 'jquery' ) );
 			//https://html2canvas.hertzen.com/dist/html2canvas.min.js
 		}
+		wp_enqueue_script( 'autofill-event', plugins_url( '/js/autofill-event.js', __FILE__ ), array( 'jquery' ) );
 
 		wp_enqueue_style( 'amapress-icons', plugins_url( 'css/flaticon.css', __FILE__ ) );
 		wp_enqueue_style( 'font-awesome', plugins_url( '/css/font-awesome.min.css', __FILE__ ) );
@@ -2877,6 +2878,7 @@ class Amapress {
 //		wp_enqueue_style( 'bootstrapstyle', plugins_url( '/css/bootstrap.min.css', __FILE__ ) );
 //		wp_enqueue_script( 'responsive-tabs', plugins_url( '/js/responsive-tabs.js', __FILE__ ), array( 'bootstrap' ), true );
 //		wp_enqueue_script( 'bootstrap', plugins_url( '/js/bootstrap.min.js', __FILE__ ), array( 'jquery' ), true );
+		wp_enqueue_script( 'autofill-event', plugins_url( '/js/autofill-event.js', __FILE__ ), array( 'jquery' ) );
 
 		wp_enqueue_style( 'select2', plugins_url( '/css/select2/select2.min.css', __FILE__ ) );
 		wp_enqueue_script( 'select2', plugins_url( '/js/select2/select2.full.min.js', __FILE__ ), array( 'jquery' ) );
