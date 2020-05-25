@@ -60,8 +60,7 @@ function amapress_user_paiments_column_export( $value, $colname, $post_id ) {
 	if ( isset( $all_paiements[ $post_id ] ) ) {
 		/** @var AmapressAdhesion_paiement $p */
 		foreach ( $all_paiements[ $post_id ] as $p ) {
-			$status = $p->getStatus();
-			if ( 'received' != $status && 'bank' != $status ) {
+			if ( $p->isNotReceived() ) {
 				continue;
 			}
 			$amount += $p->getAmount( $colname );

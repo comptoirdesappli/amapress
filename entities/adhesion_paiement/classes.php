@@ -9,6 +9,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	const PAIEMENT_TAXONOMY = 'amps_paiement_category';
 	const NOT_RECEIVED = 'not_received';
 	const RECEIVED = 'received';
+	const BANK = 'bank';
 
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
@@ -86,8 +87,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		}
 	}
 
+	public function isNotReceived() {
+		return self::NOT_RECEIVED == $this->getStatus();
+	}
+
 	public function getStatus() {
-		return $this->getCustom( 'amapress_adhesion_paiement_status' );
+		return $this->getCustom( 'amapress_adhesion_paiement_status', self::NOT_RECEIVED );
 	}
 
 	public function getNumero() {

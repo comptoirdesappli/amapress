@@ -92,8 +92,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
 					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
-						$status = $p->getStatus();
-						if ( 'received' != $status && 'bank' != $status ) {
+						if ( $p->isNotReceived() ) {
 							continue;
 						}
 						$amount += $p->getAmount( $colname );
@@ -135,8 +134,7 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 	if ( isset( $all_paiements[ $user_id ] ) ) {
 		/** @var AmapressAdhesion_paiement $p */
 		foreach ( $all_paiements[ $user_id ] as $p ) {
-			$status = $p->getStatus();
-			if ( 'received' != $status && 'bank' != $status ) {
+			if ( $p->isNotReceived() ) {
 				continue;
 			}
 			$amount += $p->getAmount( $colname );
@@ -217,8 +215,7 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
 					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
-						$status = $p->getStatus();
-						if ( 'received' != $status && 'bank' != $status ) {
+						if ( $p->isNotReceived() ) {
 							continue;
 						}
 						$amount += $p->getAmount( $colname );
@@ -246,8 +243,7 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 	if ( isset( $all_paiements[ $user_id ] ) ) {
 		/** @var AmapressAdhesion_paiement $p */
 		foreach ( $all_paiements[ $user_id ] as $p ) {
-			$status = $p->getStatus();
-			if ( 'received' != $status && 'bank' != $status ) {
+			if ( $p->isNotReceived() ) {
 				continue;
 			}
 			$amount += $p->getAmount( $colname );
@@ -493,12 +489,8 @@ function amapress_paiements_editor( $post_id ) {
 			}
 			$amount = 0;
 			if ( isset( $all_paiements_by_id[ $related_adhesion_id ] ) ) {
-				/** @var AmapressAdhesion_paiement $p */
+				/** @var AmapressAmapien_paiement $p */
 				foreach ( $all_paiements_by_id[ $related_adhesion_id ] as $p ) {
-					$status = $p->getStatus();
-//					if (  'received' != $status && 'bank' != $status ) {
-//						continue;
-//					}
 					$amount += $p->getAmount();
 				}
 			}
