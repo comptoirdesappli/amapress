@@ -2667,8 +2667,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
         jQuery.validator.addMethod(
             "' . $grp_class_name . '",
             function (value, element, params) {
-                var parent = $(element).closest("form");
-                if(!$(element).data(\'reval\')) {
+                var $element = $(element);
+                var parent = $element.closest("form");
+                if(!$element.data(\'reval\')) {
 			        var fields = $(".' . $grp_class_name . '", parent);
 			        fields.data(\'reval\', true).valid();
 			        fields.data(\'reval\', false);
@@ -2677,10 +2678,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 jQuery(parent).find(".quant-var.' . $grp_class_name . '").each(function () {
                     sumOfVals = sumOfVals + parseInt(jQuery(this).val());
                 });
+                $element.data("mlcnt",sumOfVals);
                 if (0 === (sumOfVals % ' . $grp_conf['multiple'] . ')) return true;
                 return false;
             },
-            "La quantité pour ' . esc_js( $grp_conf['display'] ) . ' doit être multiple de ' . $grp_conf['multiple'] . '<br/>"
+            function(params, element) {
+                return "La quantité pour ' . esc_js( $grp_conf['display'] ) . ' doit être multiple de ' . $grp_conf['multiple'] . '. Actuellement: " + $(element).data("mlcnt") + "<br/>";
+            }
         );
     });
     //]]>
