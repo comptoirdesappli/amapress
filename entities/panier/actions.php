@@ -65,12 +65,24 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$cnt = count( $panier_ids );
 
 	$target_id = isset( $_REQUEST['target'] ) ? intval( $_REQUEST['target'] ) : null;
-	if ( $cnt > 0 && amapress_echanger_panier(
-		                 $panier_ids, $user_id,
-		                 isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '',
-		                 $target_id ) != 'ok' ) {
-		echo '<p class="error">Erreur lors de l\'échange du panier</p>';
-		die();
+	if ( $cnt > 0 ) {
+		$res = amapress_echanger_panier(
+			$dist, $panier_ids, $user_id,
+			isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '',
+			$target_id );
+		if ( $res != 'ok' ) {
+			$msg = 'Erreur lors de l\'échange du panier';
+			switch ( $res ) {
+				case 'too_late':
+					$msg = 'Les cessions de paniers sont closes';
+					break;
+				case 'already':
+					$msg = 'Déjà cédés';
+					break;
+			}
+			echo '<p class="error">' . esc_html( $msg ) . '</p>';
+			die();
+		}
 	}
 
 	if ( $user_id == amapress_current_user_id() ) {
@@ -105,12 +117,12 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	die();
 } );
 
-function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null, $target_user_id = null ) {
+function amapress_echanger_panier( AmapressDistribution $dist, $panier_ids, $user_id = null, $message = null, $target_user_id = null ) {
 	if ( ! amapress_is_user_logged_in() ) {
 		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
 	}
 
-	if ( empty( $panier_ids ) ) {
+	if ( empty( $panier_ids ) || empty( $dist ) ) {
 		wp_die( 'Pas de panier' );
 	}
 
@@ -129,7 +141,7 @@ function amapress_echanger_panier( $panier_ids, $user_id = null, $message = null
 	foreach ( $panier_ids as $panier_id ) {
 		$panier = AmapressPanier::getBy( $panier_id );
 
-		$can_subscribe = $panier->canCease();
+		$can_subscribe = $dist->canCease();
 		if ( ! $can_subscribe ) {
 			return 'too_late';
 		}

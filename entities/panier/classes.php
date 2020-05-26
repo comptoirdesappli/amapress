@@ -269,9 +269,5 @@ class AmapressPanier extends Amapress_EventBase {
 
 		return $prods;
 	}
-
-	public function canCease() {
-		return $this->canSubscribeType( 'intermit' );
-	}
 }
 
