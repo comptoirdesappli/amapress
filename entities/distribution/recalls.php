@@ -478,7 +478,12 @@ add_action( 'amapress_recall_slots_inscr_distrib', function ( $args ) {
 	$content = str_replace( '%%lien_inscription%%', $inscription_link, $content );
 
 	$dist_without_slots_amapiens_ids = $dist->getWithoutSlotsMemberIds();
-	$amapien_users                   = amapress_prepare_message_target_bcc(
+	if ( empty( $dist_without_slots_amapiens_ids ) ) {
+		echo '<p>Tous les membres sont incrits</p>';
+
+		return;
+	}
+	$amapien_users = amapress_prepare_message_target_bcc(
 		'user:include=' . implode( ',', $dist_without_slots_amapiens_ids ),
 		'Amapiens non inscrits aux créneaux de ' . $dist->getTitle(), 'distribution' );
 	amapress_send_message(

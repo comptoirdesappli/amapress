@@ -1527,7 +1527,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getMembersIds() {
-		return $this->getResponsablesIds();
+		return $this->getMainAdherentsIds( false );
 	}
 
 	public function canSubscribe() {
