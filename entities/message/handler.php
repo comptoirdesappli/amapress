@@ -29,7 +29,9 @@ function amapress_get_users_for_message( $users_query, $users_query_fields, $wit
 		);
 	} else if ( strpos( $users_query, 'user:' ) === 0 ) {
 		$users_query = substr( $users_query, 5 );
-		if ( $users_query == 'me' ) {
+		if ( 'include=' === $users_query || 'include=0' === $users_query ) {
+			$users = [];
+		} elseif ( $users_query == 'me' ) {
 			$users = array( amapress_get_user_by_id_or_archived( amapress_current_user_id() ) );
 		} else {
 			$query = new WP_User_Query( $users_query );
