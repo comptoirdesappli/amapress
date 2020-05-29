@@ -165,7 +165,7 @@ class AmapressAdhesion extends TitanEntity {
 					}
 				}
 			];
-			$ret['contrat_titre'] = [
+			$ret['contrat_titre']                    = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
@@ -786,6 +786,8 @@ class AmapressAdhesion extends TitanEntity {
 		}
 		$ret["quantite"]                         = '(Tableau quantité) Libellé quantité avec facteur';
 		$ret["quantite_simple"]                  = '(Tableau quantité) Libellé quantité';
+		$ret["quantite_groupe"]                  = '(Tableau quantité) Groupe du libellé quantité';
+		$ret["quantite_sans_groupe"]             = '(Tableau quantité) Libellé quantité sans groupe';
 		$ret["quantite_code"]                    = '(Tableau quantité) Code quantité';
 		$ret["quantite_nb_dates"]                = '(Tableau quantité) Nombre de dates de distribution restantes';
 		$ret["quantite_nb_distrib"]              = '(Tableau quantité) Nombre de distribution restantes (rattrapages inclus)';
@@ -801,6 +803,23 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["quantite_description_br_no_price"] = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
 		$ret["quantite_unite"]                   = '(Tableau quantité) Unité de la quantité';
 		$ret["quantite_date"]                    = '(Tableau quantité) pour les paniers modulables : date de livraison';
+
+		$ret["quantite_details_date"]          = '(Tableau quantité détails) pour les paniers modulables : Date de distribution';
+		$ret["quantite_details_total"]         = '(Tableau quantité détails) pour les paniers modulables : Prix pour la quuantité choisie';
+		$ret["quantite_details_nombre"]        = '(Tableau quantité détails) pour les paniers modulables : Facteur quantité choisi';
+		$ret["quantite_details_prix_unitaire"] = '(Tableau quantité détails) pour les paniers modulables : Prix à l\'unité';
+		$ret["quantite_details_unite"]         = '(Tableau quantité détails) pour les paniers modulables : Unité de la quantité';
+		$ret["quantite_details_groupe"]        = '(Tableau quantité détails) pour les paniers modulables : Groupe de la quantité';
+		$ret["quantite_details_description"]   = '(Tableau quantité détails) pour les paniers modulables : Description de la quantité';
+
+		$ret['groupe_nom']                              = '(Tableau groupe quantité) nom du groupe de quantité (entre [] dans le libellé de chaque quantité)';
+		$ret['groupe_date']                             = '(Tableau groupe quantité) pour les paniers modulables : date de livraison';
+		$ret["groupe_quantite_description"]             = '(Tableau groupe quantité) pour les paniers modulables : quantités livrées à la date donnée';
+		$ret["groupe_quantite_description_no_price"]    = '(Tableau groupe quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée';
+		$ret["groupe_quantite_description_br"]          = '(Tableau groupe quantité) pour les paniers modulables : quantités livrées à la date donnée avec retour à la ligne entre chaque';
+		$ret["groupe_quantite_description_br_no_price"] = '(Tableau groupe quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
+		$ret["groupe_total"]                            = '(Tableau groupe quantité) total pour le groupe';
+		$ret["groupe_nombre"]                           = '(Tableau groupe quantité) total facteur quantité choisi';
 
 		$ret['paiement_type']     = '(Tableau paiement) Type de paiement (Chèque, espèces, virement...)';
 		$ret['paiement_numero']   = '(Tableau paiement) Numéro du chèque';
@@ -846,12 +865,16 @@ class AmapressAdhesion extends TitanEntity {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
 
-		$lines_count = 0;
+		$details_lines_count = 0;
+		$lines_count         = 0;
+		$group_lines_count   = 0;
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
-			$i = 1;
+			$i  = 1;
+			$ii = 1;
 			foreach ( $this->getPaniersVariables() as $date => $panier ) {
-				$date_price = 0;
-				foreach ( $this->getVariables_Contrat_quantites( $date ) as $date_quant ) {
+				$date_price  = 0;
+				$date_quants = $this->getVariables_Contrat_quantites( $date );
+				foreach ( $date_quants as $date_quant ) {
 					/** @var AmapressContrat_quantite $quant */
 					$quant      = $date_quant['contrat_quantite'];
 					$date_price += ( $date_quant['quantite'] * $quant->getPrix_unitaire() );
@@ -864,10 +887,72 @@ class AmapressAdhesion extends TitanEntity {
 				}
 				$placeholders["quantite_description#$i"]             = $this->getContrat_quantites_AsString( $date, true );
 				$placeholders["quantite_description_no_price#$i"]    = $this->getContrat_quantites_AsString( $date );
-				$placeholders["quantite_description_br#$i"]          = $this->getContrat_quantites_AsString( $date, true, '<br />' );
-				$placeholders["quantite_description_br_no_price#$i"] = $this->getContrat_quantites_AsString( $date, false, '<br />' );
-				$i                                                   += 1;
-				$lines_count                                         += 1;
+				$placeholders["quantite_description_br#$i"]          = '* ' . $this->getContrat_quantites_AsString( $date, true, '<br />* ' );
+				$placeholders["quantite_description_br_no_price#$i"] = '* ' . $this->getContrat_quantites_AsString( $date, false, '<br />* ' );
+
+				$i           += 1;
+				$lines_count += 1;
+
+				foreach ( $date_quants as $date_quant ) {
+					/** @var AmapressContrat_quantite $quant */
+					$quant  = $date_quant['contrat_quantite'];
+					$factor = $date_quant['quantite'];
+
+					$placeholders["quantite_details_date#$ii"] = date_i18n( 'd/m/Y', $date );
+					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
+						$placeholders["quantite_details_total#$ii"] = 'A la livraison';
+					} else {
+						$placeholders["quantite_details_total#$ii"] = Amapress::formatPrice( $quant->getPrix_unitaire() * $factor );
+					}
+					$placeholders["quantite_details_nombre#$ii"]        = $quant->formatValue( $factor );
+					$placeholders["quantite_details_prix_unitaire#$ii"] = $quant->getPrix_unitaireDisplay();
+					$placeholders["quantite_details_unite#$ii"]         = $quant->getPriceUnitDisplay();
+					$placeholders["quantite_details_description#$ii"]   = $quant->getTitle();
+					$placeholders["quantite_details_groupe#$ii"]        = $quant->getGroupName();
+
+					$ii                  += 1;
+					$details_lines_count += 1;
+				}
+			}
+
+			$ii = 1;
+			foreach ( $this->getPaniersVariables() as $date => $panier ) {
+				$date_quants = $this->getContrat_quantites( $date );
+				$grp_names   = [];
+				$grp_totals  = [];
+				$grp_sums    = [];
+				foreach ( $date_quants as $quant ) {
+					$grp_name = $quant->getGroupName();
+					if ( ! in_array( $grp_name, $grp_names ) ) {
+						$grp_names[] = $grp_name;
+					}
+					if ( ! isset( $grp_sums[ $grp_name ] ) ) {
+						$grp_sums[ $grp_name ] = 0;
+					}
+					if ( ! isset( $grp_totals[ $grp_name ] ) ) {
+						$grp_totals[ $grp_name ] = 0;
+					}
+
+					$grp_sums[ $grp_name ]   += $quant->getFactor() / (float) $quant->getGroupMultiple();
+					$grp_totals[ $grp_name ] += $quant->getPrice();
+				}
+				foreach ( $grp_names as $grp_name ) {
+					$placeholders["groupe_nom#$ii"]                              = $grp_name;
+					$placeholders["groupe_date#$ii"]                             = date_i18n( 'd/m/Y', $date );
+					$placeholders["groupe_quantite_description#$ii"]             = $this->getContrat_quantites_AsString( $date, true, ', ', false, $grp_name );
+					$placeholders["groupe_quantite_description_no_price#$ii"]    = $this->getContrat_quantites_AsString( $date, false, ', ', false, $grp_name );
+					$placeholders["groupe_quantite_description_br#$ii"]          = '* ' . $this->getContrat_quantites_AsString( $date, true, '<br/>* ', false, $grp_name );
+					$placeholders["groupe_quantite_description_br_no_price#$ii"] = '* ' . $this->getContrat_quantites_AsString( $date, false, '<br/>* ', false, $grp_name );
+					if ( abs( $grp_totals[ $grp_name ] ) < 0.001 ) {
+						$placeholders["groupe_total#$ii"] = 'A la livraison';
+					} else {
+						$placeholders["groupe_total#$ii"] = Amapress::formatPrice( $grp_totals[ $grp_name ] );
+					}
+					$placeholders["groupe_nombre#$ii"] = round( $grp_sums[ $grp_name ], 2 );
+
+					$ii                += 1;
+					$group_lines_count += 1;
+				}
 			}
 		} else {
 			$quants = $this->getContrat_quantites( null );
@@ -877,8 +962,10 @@ class AmapressAdhesion extends TitanEntity {
 				$remaining_dates_count                     = count( $remaining_dates );
 				$remaining_distrib                         = $this->getRemainingDatesWithFactors( $quant->getId(), true );
 				$remaining_distrib_sum                     = $this->getRemainingDatesWithFactors( $quant->getId() );
-				$placeholders["quantite#$i"]               = $quant->getTitle();
-				$placeholders["quantite_simple#$i"]        = $quant->getContratQuantite()->getTitle();
+				$placeholders["quantite#$i"]               = $quant->getTitleWithFactor();
+				$placeholders["quantite_simple#$i"]        = $quant->getTitleWithoutFactor();
+				$placeholders["quantite_groupe#$i"]        = $quant->getGroupName();
+				$placeholders["quantite_sans_groupe#$i"]   = $quant->getTitleWithoutGroup();
 				$placeholders["quantite_code#$i"]          = $quant->getCode();
 				$placeholders["quantite_nb_dates#$i"]      = $remaining_dates_count;
 				$placeholders["quantite_nb_distrib#$i"]    = $remaining_distrib_sum;
@@ -908,7 +995,44 @@ class AmapressAdhesion extends TitanEntity {
 				$i                                         += 1;
 				$lines_count                               += 1;
 			}
+
+			$ii         = 1;
+			$grp_names  = [];
+			$grp_totals = [];
+			$grp_sums   = [];
+			foreach ( $quants as $quant ) {
+				$grp_name = $quant->getGroupName();
+				if ( ! in_array( $grp_name, $grp_names ) ) {
+					$grp_names[] = $grp_name;
+				}
+				if ( ! isset( $grp_sums[ $grp_name ] ) ) {
+					$grp_sums[ $grp_name ] = 0;
+				}
+				if ( ! isset( $grp_totals[ $grp_name ] ) ) {
+					$grp_totals[ $grp_name ] = 0;
+				}
+
+				$grp_sums[ $grp_name ]   += $quant->getFactor();
+				$grp_totals[ $grp_name ] += $quant->getPrice();
+			}
+			foreach ( $grp_names as $grp_name ) {
+				$placeholders["groupe_nom#$ii"]                              = $grp_name;
+				$placeholders["groupe_quantite_description#$ii"]             = $this->getContrat_quantites_AsString( null, true, ', ', false, $grp_name );
+				$placeholders["groupe_quantite_description_no_price#$ii"]    = $this->getContrat_quantites_AsString( null, false, ', ', false, $grp_name );
+				$placeholders["groupe_quantite_description_br#$ii"]          = '* ' . $this->getContrat_quantites_AsString( null, true, '<br/>* ', false, $grp_name );
+				$placeholders["groupe_quantite_description_br_no_price#$ii"] = '* ' . $this->getContrat_quantites_AsString( null, false, '<br/>* ', false, $grp_name );
+				if ( abs( $grp_totals[ $grp_name ] ) < 0.001 ) {
+					$placeholders["groupe_total#$ii"] = 'A la livraison';
+				} else {
+					$placeholders["groupe_total#$ii"] = Amapress::formatPrice( $grp_totals[ $grp_name ] );
+				}
+				$placeholders["groupe_nombre#$ii"] = $grp_sums[ $grp_name ];
+
+				$ii                += 1;
+				$group_lines_count += 1;
+			}
 		}
+
 
 		if ( 'dlv' == $this->getMainPaiementType() || abs( $this->getTotalAmount() ) < 0.001 ) {
 			$paiements = $this->getContrat_instance()->isPanierVariable() ? array_keys( $this->getPaniersVariables() ) : $this->getRemainingDates();
@@ -981,6 +1105,19 @@ class AmapressAdhesion extends TitanEntity {
 			}
 		}
 
+		try {
+			$templateProcessor->cloneRow( 'quantite_details_date', $details_lines_count );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'quantite_details_nombre', $details_lines_count );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				try {
+					$templateProcessor->cloneRow( 'quantite_description', $details_lines_count );
+				} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				}
+			}
+		}
+
 		$lines_count = count( $paiements );
 		try {
 			$templateProcessor->cloneRow( 'paiement_montant', $lines_count );
@@ -998,6 +1135,16 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			}
 		}
+
+		try {
+			$templateProcessor->cloneRow( 'groupe_date', $group_lines_count );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'groupe_nom', $group_lines_count );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			}
+		}
+
 		foreach ( $placeholders as $k => $v ) {
 			$templateProcessor->setValue( $k, $v );
 		}

@@ -1507,7 +1507,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['coadherent.prenom']                = [
+		$ret['coadherent.prenom'] = [
 			'desc' => 'Prénom co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -1652,19 +1652,31 @@ class AmapressContrat_instance extends TitanEntity {
 			}
 		}
 		if ( 'paper' == $context ) {
-			$ret["quantite"]               = '(Tableau quantité) Libellé quantité avec facteur';
-			$ret["quantite_simple"]        = '(Tableau quantité) Libellé quantité';
-			$ret["quantite_code"]          = '(Tableau quantité) Code quantité';
-			$ret["quantite_nb_distrib"]    = '(Tableau quantité) Nombre de distribution restantes';
-			$ret["quantite_nb_dates"]      = '(Tableau quantité) Nombre de dates de distribution restantes';
-			$ret["quantite_dates_distrib"] = '(Tableau quantité) Distribution restantes avec rattrapages';
-			$ret["quantite_dates"]         = '(Tableau quantité) Dates de distribution restantes';
-			$ret["quantite_total"]         = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
-			$ret["quantite_prix_unitaire"] = '(Tableau quantité) Prix à l\'unité';
-			$ret["quantite_description"]   = '(Tableau quantité) Description de la quantité';
-			$ret["quantite_unite"]         = '(Tableau quantité) Unité de la quantité';
-			$ret["quantite_paiements"]     = '(Tableau quantité) Possibilités de paiements';
+			$ret["quantite"]                         = '(Tableau quantité) Libellé quantité avec facteur';
+			$ret["quantite_simple"]                  = '(Tableau quantité) Libellé quantité';
+			$ret["quantite_groupe"]                  = '(Tableau quantité) Groupe du libellé quantité';
+			$ret["quantite_sans_groupe"]             = '(Tableau quantité) Libellé quantité sans groupe';
+			$ret["quantite_code"]                    = '(Tableau quantité) Code quantité';
+			$ret["quantite_nb_distrib"]              = '(Tableau quantité) Nombre de distribution restantes';
+			$ret["quantite_nb_dates"]                = '(Tableau quantité) Nombre de dates de distribution restantes';
+			$ret["quantite_dates_distrib"]           = '(Tableau quantité) Distribution restantes avec rattrapages';
+			$ret["quantite_dates"]                   = '(Tableau quantité) Dates de distribution restantes';
+			$ret["quantite_total"]                   = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
+			$ret["quantite_prix_unitaire"]           = '(Tableau quantité) Prix à l\'unité';
+			$ret["quantite_description"]             = '(Tableau quantité) Description de la quantité';
+			$ret["quantite_description_no_price"]    = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée';
+			$ret["quantite_description_br"]          = '(Tableau quantité) pour les paniers modulables : quantités livrées à la date donnée avec retour à la ligne entre chaque';
+			$ret["quantite_description_br_no_price"] = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
+			$ret["quantite_unite"]                   = '(Tableau quantité) Unité de la quantité';
+			$ret["quantite_paiements"]               = '(Tableau quantité) Possibilités de paiements';
 
+			$ret["quantite_details_date"]          = '(Tableau quantité détails) pour les paniers modulables : Date de distribution';
+			$ret["quantite_details_total"]         = '(Tableau quantité détails) pour les paniers modulables : Prix pour la quuantité choisie';
+			$ret["quantite_details_nombre"]        = '(Tableau quantité détails) pour les paniers modulables : Facteur quantité choisi';
+			$ret["quantite_details_prix_unitaire"] = '(Tableau quantité détails) pour les paniers modulables : Prix à l\'unité';
+			$ret["quantite_details_unite"]         = '(Tableau quantité détails) pour les paniers modulables : Unité de la quantité';
+			$ret["quantite_details_groupe"]        = '(Tableau quantité détails) pour les paniers modulables : Groupe de la quantité';
+			$ret["quantite_details_description"]   = '(Tableau quantité détails) pour les paniers modulables : Description de la quantité';
 		}
 
 		return $ret;
@@ -1751,9 +1763,11 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['coadherent.tel']       = '';
 		$placeholders['coadherent.email']     = '';
 
-		$quants      = AmapressContrats::get_contrat_quantites( $this->ID );
-		$i           = 1;
-		$lines_count = 0;
+		$quants              = AmapressContrats::get_contrat_quantites( $this->ID );
+		$i                   = 1;
+		$ii                  = 1;
+		$lines_count         = 0;
+		$details_lines_count = 0;
 		if ( $this->isPanierVariable() ) {
 			foreach ( $this->getRemainingDates( $date_first_distrib ) as $date ) {
 				$placeholders["quantite_date#$i"]                    = date_i18n( 'd/m/Y', $date );
@@ -1763,20 +1777,35 @@ class AmapressContrat_instance extends TitanEntity {
 				$placeholders["quantite_description_br#$i"]          = $this->getContrat_quantites_AsString( $date, true, '<br />' );
 				$placeholders["quantite_description_br_no_price#$i"] = $this->getContrat_quantites_AsString( $date, false, '<br />' );
 
+				foreach ( $this->getContrat_quantites( $date ) as $contrat_quantite ) {
+					$placeholders["quantite_details_date#$ii"]          = date_i18n( 'd/m/Y', $date );
+					$placeholders["quantite_details_total#$ii"]         = str_repeat( chr( 160 ), 4 );
+					$placeholders["quantite_details_nombre#$ii"]        = '';
+					$placeholders["quantite_details_groupe#$ii"]        = $contrat_quantite->getGroupName();
+					$placeholders["quantite_details_prix_unitaire#$ii"] = $contrat_quantite->getPrix_unitaireDisplay();
+					$placeholders["quantite_details_unite#$ii"]         = $contrat_quantite->getPriceUnitDisplay();
+					$placeholders["quantite_details_description#$ii"]   = $contrat_quantite->getTitle();
+
+					$ii                  += 1;
+					$details_lines_count += 1;
+				}
+
 				$i           += 1;
 				$lines_count += 1;
 			}
 		} else {
 			foreach ( $quants as $quant ) {
-				$remaining_dates                        = $this->getRemainingDates( $date_first_distrib, $quant->ID );
-				$nb_remaining_dates                     = count( $remaining_dates );
-				$remaining_distrib                      = $this->getRemainingDatesWithFactors( $date_first_distrib, $quant->ID, true );
-				$nb_remaining_distrib                   = $this->getRemainingDatesWithFactors( $date_first_distrib, $quant->ID );
-				$placeholders["quantite#$i"]            = $quant->getTitle();
-				$placeholders["quantite_simple#$i"]     = $quant->getTitle();
-				$placeholders["quantite_code#$i"]       = $quant->getCode();
-				$placeholders["quantite_nb_dates#$i"]   = $nb_remaining_dates;
-				$placeholders["quantite_nb_distrib#$i"] = $nb_remaining_distrib;
+				$remaining_dates                         = $this->getRemainingDates( $date_first_distrib, $quant->ID );
+				$nb_remaining_dates                      = count( $remaining_dates );
+				$remaining_distrib                       = $this->getRemainingDatesWithFactors( $date_first_distrib, $quant->ID, true );
+				$nb_remaining_distrib                    = $this->getRemainingDatesWithFactors( $date_first_distrib, $quant->ID );
+				$placeholders["quantite#$i"]             = $quant->getTitle();
+				$placeholders["quantite_simple#$i"]      = $quant->getTitle();
+				$placeholders["quantite_groupe#$i"]      = $quant->getGroupName();
+				$placeholders["quantite_sans_groupe#$i"] = $quant->getTitleWithoutGroup();
+				$placeholders["quantite_code#$i"]        = $quant->getCode();
+				$placeholders["quantite_nb_dates#$i"]    = $nb_remaining_dates;
+				$placeholders["quantite_nb_distrib#$i"]  = $nb_remaining_distrib;
 				if ( $this->isQuantiteVariable() ) {
 					$placeholders["quantite_total#$i"] = '';
 				} elseif ( $quant->getPrix_unitaire() > 0 ) {
@@ -1865,6 +1894,28 @@ class AmapressContrat_instance extends TitanEntity {
 						$templateProcessor->cloneRow( 'paiement_banque', $lines_count );
 					} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
 					}
+				}
+			}
+		}
+
+		try {
+			$templateProcessor->cloneRow( 'groupe_date', 0 );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'groupe_nom', 0 );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			}
+		}
+
+		try {
+			$templateProcessor->cloneRow( 'quantite_details_date', 0 );
+		} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+			try {
+				$templateProcessor->cloneRow( 'quantite_details_nombre', 0 );
+			} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
+				try {
+					$templateProcessor->cloneRow( 'quantite_details_description', 0 );
+				} catch ( \PhpOffice\PhpWord\Exception\Exception $ex ) {
 				}
 			}
 		}
@@ -2342,6 +2393,24 @@ class AmapressContrat_quantite extends TitanEntity {
 		} else {
 			return Amapress::formatPrice( $price_unit );
 		}
+	}
+
+	public function getGroupName() {
+		$has_group = preg_match( '/^\s*\[([^\]]+)\]/', $this->getTitle(), $matches );
+		if ( $has_group && isset( $matches[1] ) ) {
+			return $matches[1];
+		}
+
+		return '';
+	}
+
+	public function getTitleWithoutGroup() {
+		$has_group = preg_match( '/^\s*\[[^\]]+\](.+)/', $this->getTitle(), $matches );
+		if ( $has_group && isset( $matches[1] ) ) {
+			return $matches[1];
+		}
+
+		return $this->getTitle();
 	}
 
 	public function getGroupMultiple() {
