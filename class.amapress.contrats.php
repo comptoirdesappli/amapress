@@ -717,7 +717,7 @@ class AmapressContrats {
 	/**
 	 * @return AmapressContrat_quantite[]
 	 */
-	public static function get_contrat_quantites( $contrat_instance_id, $date = null ) {
+	public static function get_contrat_quantites( $contrat_instance_id, $date = null, $order_by_groups = true ) {
 		$key = "amapress_get_contrat_quantites_{$contrat_instance_id}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
@@ -768,6 +768,30 @@ class AmapressContrats {
 		}
 		if ( empty( $res ) ) {
 			$res = [];
+		}
+
+		if ( ! $order_by_groups ) {
+			return $res;
+		}
+
+		$ordered_res = [];
+		foreach ( $res as $quant ) {
+			$grp_class_name = '';
+			$has_group      = preg_match( '/^\s*\[([^\]]+)\]/', $quant->getTitle(), $matches );
+			if ( $has_group ) {
+				if ( isset( $matches[1] ) ) {
+					$grp_class_name = sanitize_html_class( $matches[1] );
+				}
+			}
+			if ( ! isset( $ordered_res[ $grp_class_name ] ) ) {
+				$ordered_res[ $grp_class_name ] = [];
+			}
+			$ordered_res[ $grp_class_name ][] = $quant;
+		}
+
+		$res = [];
+		foreach ( $ordered_res as $k => $grp ) {
+			$res = array_merge( $res, array_values( $grp ) );
 		}
 
 		return $res;
