@@ -1988,3 +1988,13 @@ WHERE {$wpdb->postmeta}.meta_key = 'amps_lo' AND CAST({$wpdb->postmeta}.meta_val
 
 	return array_unique( array_merge( $excluded_ids, $logged_only_ids, $logged_or_public_ids ) );
 } );
+
+add_filter( 'wp_sweep_excluded_taxonomies', function ( $excluded_taxonomies ) {
+	$excluded_taxonomies[] = AmapressUser::AMAP_ROLE;
+	$excluded_taxonomies[] = AmapressAdhesion_paiement::PAIEMENT_TAXONOMY;
+	$excluded_taxonomies[] = AmapressAmap_event::CATEGORY;
+	$excluded_taxonomies[] = AmapressProduit::CATEGORY;
+	$excluded_taxonomies[] = AmapressRecette::CATEGORY;
+
+	return $excluded_taxonomies;
+} );
