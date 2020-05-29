@@ -107,6 +107,10 @@ function amapress_get_custom_content_distribution_liste_emargement( $content ) {
 function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$dist = AmapressDistribution::getBy( $dist_id );
 
+	add_filter( 'autoptimize_filter_imgopt_should_lazyload', function ( $should_do ) {
+		return false;
+	} );
+
 	$date             = $dist->getDate();
 	$dist_contrat_ids = $dist->getContratIds();
 	$active_contrats  = AmapressContrats::get_active_contrat_instances( null, $date, false, false );
