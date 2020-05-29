@@ -1834,6 +1834,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 														'show_price'           => isset( $_GET['with_prices'] ),
 														'show_adherents'       => isset( $_GET['with_adherent'] ),
 														'group_by'             => $is_all && isset( $_GET['by'] ) ? $_GET['by'] : 'none',
+														'group_by_group'       => ! isset( $_GET['grp_by_grp'] ) || 'F' != $_GET['grp_by_grp'],
 													] );
 												},
 											),
