@@ -219,6 +219,17 @@ function amapress_get_paniers_intermittents_table(
 		if ( $ad->getRepreneur() != null ) {
 			$repreneur = $ad->getRepreneur()->getDisplay( $show_options );
 		}
+		if ( empty( $repreneur ) ) {
+			$askers = [];
+			foreach ( $ad->getAsk() as $user_id => $user_info ) {
+				$user = AmapressUser::getBy( $user_id );
+				if ( empty( $user ) ) {
+					continue;
+				}
+				$askers[] = $user->getDisplay( $show_options );
+			}
+			$repreneur .= '<strong>Non validé</strong><br/>' . implode( '', $askers );
+		}
 		$paniers   = array();
 		$quantites = array();
 		$prices    = array();
