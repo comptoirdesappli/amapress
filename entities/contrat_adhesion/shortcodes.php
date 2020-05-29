@@ -2427,7 +2427,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
-		if ( $adh->getAdherentId() != intval( $user_id ) ) {
+		if ( $adh->getAdherentId() != $user_id && $adh->getAdherent2Id() != $user_id && $adh->getAdherent3Id() != $user_id ) {
 			wp_die( $invalid_access_message );
 		}
 		if ( ! empty( $_GET['cancel_inscr_id'] ) ) {
