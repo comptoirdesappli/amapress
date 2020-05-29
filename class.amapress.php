@@ -4027,6 +4027,8 @@ class Amapress {
 		$type = 'default'
 	) {
 		switch ( $type ) {
+			case 'modulables_complet':
+				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique_modulables_complet.docx';
 			case 'modulables':
 				return trailingslashit( AMAPRESS__PLUGIN_URL ) . 'templates/contrat_generique_modulables.docx';
 			case 'simple':

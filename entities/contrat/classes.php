@@ -650,7 +650,11 @@ class AmapressContrat_instance extends TitanEntity {
 		$contrat_attachment_id = $this->getCustomAsInt( 'amapress_contrat_instance_word_model' );
 		if ( empty( $contrat_attachment_id ) ) {
 			if ( $this->isPanierVariable() ) {
-				$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_model' );
+				if ( $this->hasGroups() ) {
+					$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_group_model' );
+				} else {
+					$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_model' );
+				}
 			} else {
 				$contrat_attachment_id = Amapress::getOption( 'default_word_model' );
 			}
@@ -662,7 +666,11 @@ class AmapressContrat_instance extends TitanEntity {
 	public function getContratModelDocFileName() {
 		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
 			if ( $this->isPanierVariable() ) {
-				return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique_modulables.docx';
+				if ( $this->hasGroups() ) {
+					return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique_modulables_complet.docx';
+				} else {
+					return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique_modulables.docx';
+				}
 			} else {
 				return AMAPRESS__PLUGIN_DIR . 'templates/contrat_generique.docx';
 			}
@@ -675,7 +683,11 @@ class AmapressContrat_instance extends TitanEntity {
 		$contrat_attachment_id = $this->getCustomAsInt( 'amapress_contrat_instance_word_paper_model' );
 		if ( empty( $contrat_attachment_id ) ) {
 			if ( $this->isPanierVariable() ) {
-				$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_paper_model' );
+				if ( $this->hasGroups() ) {
+					$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_group_paper_model' );
+				} else {
+					$contrat_attachment_id = Amapress::getOption( 'default_word_modulable_paper_model' );
+				}
 			} else {
 				$contrat_attachment_id = Amapress::getOption( 'default_word_paper_model' );
 			}
@@ -1489,19 +1501,19 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['coadherents.contacts']             = [
+		$ret['coadherents.contacts'] = [
 			'desc' => 'Liste des co-adhérents (Prénom, Nom, Emails, Tel) (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
 		];
-		$ret['coadherent']                       = [
+		$ret['coadherent'] = [
 			'desc' => 'Prénom Nom co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
 		];
-		$ret['coadherent.nom']                   = [
+		$ret['coadherent.nom'] = [
 			'desc' => 'Nom co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';

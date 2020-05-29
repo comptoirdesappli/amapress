@@ -2598,6 +2598,8 @@ function amapress_can_delete_attachment( $can, $post_id ) {
 		$attachments[]          = Amapress::getOption( 'default_word_paper_model' );
 		$attachments[]          = Amapress::getOption( 'default_word_modulable_model' );
 		$attachments[]          = Amapress::getOption( 'default_word_modulable_paper_model' );
+		$attachments[]          = Amapress::getOption( 'default_word_modulable_group_model' );
+		$attachments[]          = Amapress::getOption( 'default_word_modulable_group_paper_model' );
 		$single_attachment_keys = array(
 			'amapress_contrat_instance_word_model',
 			'amapress_contrat_instance_word_paper_model',
