@@ -1934,6 +1934,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$contrat_print_button_text, true, true, 'btn btn-default'
 						);
 					}
+					if ( $adh->getContrat_instance()->isPanierVariable() ) {
+						$print_contrat .= Amapress::makeButtonLink( add_query_arg( [
+							'step'       => 'details_all_delivs',
+							'contrat_id' => $adh->ID,
+						] ), 'Livraisons', true, true, 'btn btn-default' );
+
+					}
 					if ( $admin_mode ) {
 						echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) .
 						     ( current_user_can( 'edit_post', $adh->ID ) ?
@@ -2393,9 +2400,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
 
-		$by_prod = isset( $_GET['by_prod'] );
+		$by_prod    = isset( $_GET['by_prod'] );
+		$contrat_id = null;
+		if ( isset( $_GET['contrat_id'] ) ) {
+			$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
+			if ( $adh->getAdherentId() != $user_id && $adh->getAdherent2Id() != $user_id && $adh->getAdherent3Id() != $user_id ) {
+				wp_die( $invalid_access_message );
+			}
+			$contrat_id = $adh->getContrat_instanceId();
+		}
 
-		echo amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod );
+		echo amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod, $contrat_id, isset( $_GET['grp_by_grp'] ) );
 	} else if ( 'calendar_delivs' == $step ) {
 		echo amapress_get_contrats_calendar( $subscribable_contrats );
 	} else if ( 'details' == $step ) {
@@ -2458,6 +2473,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				] ),
 				$contrat_print_button_text, true, true, 'btn btn-default'
 			);
+		}
+		if ( $adh->getContrat_instance()->isPanierVariable() ) {
+			$print_contrat .= Amapress::makeButtonLink( add_query_arg( [
+				'step'       => 'details_all_delivs',
+				'contrat_id' => $adh->ID,
+			] ), 'Livraisons', true, true, 'btn btn-default' );
+
 		}
 		$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
 		$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
@@ -3704,18 +3726,66 @@ function amapress_get_contrats_calendar( $contrats ) {
  * @param int $user_id
  * @param bool $ignore_renouv_delta
  * @param bool $by_prod
+ * @param int[]|int $contrats_ids
  *
  * @return string
  */
-function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod ) {
+function amapress_get_details_all_deliveries(
+	$user_id,
+	$ignore_renouv_delta,
+	$by_prod,
+	$contrats_ids = null,
+	$group_by_group = true,
+	$for_mail = false
+) {
 	Amapress::setFilterForReferent( false );
 	$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 	Amapress::setFilterForReferent( true );
 
-	$print_title = 'Récapitulatif des livraisons';
-	$ret         = '<h4>' . esc_html( $print_title ) . '</h4>';
-	$columns     = [];
-	if ( $by_prod ) {
+	if ( empty( $contrats_ids ) ) {
+		$contrats_ids = [];
+	} elseif ( ! is_array( $contrats_ids ) ) {
+		$contrats_ids = [ $contrats_ids ];
+	} else {
+		$contrats_ids = array_values( $contrats_ids );
+	}
+
+	$is_single_producteur = 1 === count( $contrats_ids );
+	if ( ! empty( $contrats_ids ) ) {
+		$adhs = array_filter( $adhs, function ( $adh ) use ( $contrats_ids ) {
+			/** @var AmapressAdhesion $adh */
+			return in_array( $adh->getContrat_instanceId(), $contrats_ids );
+		} );
+	}
+
+	$has_groups       = false;
+	$contrat_instance = null;
+	$print_title      = 'Récapitulatif des livraisons';
+	if ( $is_single_producteur ) {
+		$contrat_instance = AmapressContrat_instance::getBy( $contrats_ids[0] );
+		$print_title      .= ' : ' . $contrat_instance->getTitle();
+	}
+	$ret     = '<h4>' . esc_html( $print_title ) . '</h4>';
+	$columns = [];
+	if ( $is_single_producteur ) {
+		$columns[] = array(
+			'title' => 'Date',
+			'data'  => array(
+				'_'    => 'date_d',
+				'sort' => 'date',
+			)
+		);
+		if ( $contrat_instance->hasGroups() ) {
+			$has_groups = true;
+			$columns[]  = array(
+				'title' => 'Groupe',
+				'data'  => array(
+					'_'    => 'group',
+					'sort' => 'group',
+				)
+			);
+		}
+	} elseif ( $by_prod ) {
 		$columns[] = array(
 			'title' => 'Producteur',
 			'data'  => array(
@@ -3745,6 +3815,9 @@ function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $b
 				'sort' => 'prod',
 			)
 		);
+	}
+	if ( ! $has_groups ) {
+		$group_by_group = false;
 	}
 
 	$columns[] = array(
@@ -3779,12 +3852,21 @@ function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $b
 						$row           = [];
 						$row['date_d'] = date_i18n( 'd/m/Y', $date );
 						$row['date']   = $date;
+						if ( $has_groups ) {
+							$row['group'] = $quant->getGroupName();
+							$row['desc']  = $quant->getTitleWithoutGroup();
+						} else {
+							$row['desc'] = $quant->getTitle();
+						}
 
-						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
-						                  . '<br />'
-						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-						$row['desc']    = $quant->getTitle();
-						$row['fact']    = $paniers[ $date ][ $quant->ID ];
+						$row['prod'] = $adh->getContrat_instance()->getModel()->getTitle()
+						               . '<br />'
+						               . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+						$row['fact'] = $paniers[ $date ][ $quant->ID ];
+						if ( $group_by_group ) {
+							$row['fact_mult'] = $quant->getGroupMultiple();
+						}
+
 						$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
 						$row['total_d'] = Amapress::formatPrice( $price, true );
 						$row['total']   = $price;
@@ -3799,12 +3881,21 @@ function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $b
 					$row           = [];
 					$row['date_d'] = date_i18n( 'd/m/Y', $date );
 					$row['date']   = $date;
+					if ( $has_groups ) {
+						$row['group'] = $quant->getGroupName();
+						$row['desc']  = $quant->getTitleWithoutGroup();
+					} else {
+						$row['desc'] = $quant->getTitle();
+					}
 
-					$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
-					                  . '<br />'
-					                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-					$row['desc']    = $quant->getTitle();
-					$row['fact']    = $quant->getFactor();
+					$row['prod'] = $adh->getContrat_instance()->getModel()->getTitle()
+					               . '<br />'
+					               . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+					$row['fact'] = $quant->getFactor();
+					if ( $group_by_group ) {
+						$row['fact_mult'] = $quant->getGroupMultiple();
+					}
+
 					$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
 					$row['total']   = $quant->getPrice();
 					$data[]         = $row;
@@ -3812,6 +3903,45 @@ function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $b
 			}
 		}
 	}
+
+	if ( $has_groups && $group_by_group ) {
+		$grouped_data = [];
+		$groupe_mult  = [];
+		foreach ( $data as $row ) {
+			$key                 = $row['date_d'] . $row['prod'] . $row['group'];
+			$groupe_mult[ $key ] = $row['fact_mult'];
+			if ( isset( $grouped_data[ $key ] ) ) {
+				foreach ( $row as $k => $v ) {
+					if ( 'desc' == $k ) {
+						$grouped_data[ $key ][ $k ] .= '<br/> + <strong>' . $row['fact'] . '</strong> x ' . $v;
+						continue;
+					}
+					if ( 'desc' == $k || 'date' == $k || 'date_d' == $k || 'prod' == $k || 'group' == $k ) {
+						continue;
+					}
+					if ( ! is_numeric( $v ) ) {
+						if ( ! empty( $grouped_data[ $key ][ $k ] ) && ! empty( $v ) ) {
+							$grouped_data[ $key ][ $k ] .= ' + ' . $v;
+						} else {
+							$grouped_data[ $key ][ $k ] .= $v;
+						}
+					} else {
+						$grouped_data[ $key ][ $k ] += $v;
+					}
+				}
+				$grouped_data[ $key ]['total_d'] = Amapress::formatPrice( $grouped_data[ $key ]['total'], true );
+			} else {
+				$row['desc']          = '<strong>' . $row['fact'] . '</strong> x ' . $row['desc'];
+				$row['fact']          = (float) $row['fact'];
+				$grouped_data[ $key ] = $row;
+			}
+		}
+		foreach ( $grouped_data as $key => $row ) {
+			$grouped_data[ $key ]['fact'] = $row['fact'] / (float) $groupe_mult[ $key ];
+		}
+		$data = $grouped_data;
+	}
+
 	if ( $by_prod ) {
 		usort( $data, function ( $a, $b ) {
 			return strcmp( $a['prod'], $b['prod'] );
@@ -3824,6 +3954,15 @@ function amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $b
 
 			return $a['date'] > $b['date'] ? 1 : - 1;
 		} );
+	}
+	if ( ! $for_mail && $has_groups ) {
+		$ret .= '<p>';
+		if ( $group_by_group ) {
+			$ret .= Amapress::makeLink( remove_query_arg( 'grp_by_grp' ), 'Ne pas grouper les produits' );
+		} else {
+			$ret .= Amapress::makeLink( add_query_arg( 'grp_by_grp', 'T' ), 'Grouper les produits' );
+		}
+		$ret .= '</p>';
 	}
 	$ret .= amapress_get_datatable( 'details_all_delivs', $columns, $data,
 		array(

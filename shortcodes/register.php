@@ -753,7 +753,8 @@ function amapress_register_shortcodes() {
 		$user_id             = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : amapress_current_user_id();
 		$ignore_renouv_delta = Amapress::toBool( $atts['ignore_renouv_delta'] );
 
-		return amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, 'producteur' === $atts['by'] );
+		return amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta,
+			'producteur' === $atts['by'], null, isset( $_GET['grp_by_grp'] ) );
 	},
 		[
 			'desc' => 'Afficher les détails des livraisons de l\'amapien par date ou producteur',
