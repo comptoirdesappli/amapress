@@ -2639,7 +2639,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								'multiple' => $multiple,
 							];
 						}
-						$grp_name = esc_attr( $grp_name );
 					}
 					$has_groups = true;
 				}
@@ -2865,7 +2864,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						continue;
 					}
 					$quant         = AmapressContrat_quantite::getBy( $q_id );
-					$date_values[] = $quant->getFormattedTitle( $factor );
+					$date_values[] = $quant->getFormattedTitle( $factor, true );
 					$total         += $factor * $quant->getPrix_unitaire();
 					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 						$pay_at_deliv[] = $quant->getTitle();
@@ -2900,7 +2899,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '<li style="margin-left: 35px">' . esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) );
 				echo '<ul style="list-style-type: disc">';
 				foreach ( $quant_descs as $quant_desc ) {
-					echo '<li style="margin-left: 15px">' . esc_html( $quant_desc ) . '</li>';
+					echo '<li style="margin-left: 15px">' . $quant_desc . '</li>';
 				}
 				echo '</ul>';
 				echo '</li>';
@@ -2940,7 +2939,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'f' => $factor,
 				];
 				$quant           = AmapressContrat_quantite::getBy( $q_id );
-				$chosen_quants[] = $quant->getFormattedTitle( $factor );
+				$chosen_quants[] = $quant->getFormattedTitle( $factor, true );
 				$total           += $dates_factors * $factor * $quant->getPrix_unitaire();
 				if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 					$pay_at_deliv[] = $quant->getTitle();
@@ -2974,7 +2973,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				echo '<ul style="list-style-type: disc">';
 				foreach ( $chosen_quants as $q ) {
-					echo '<li style="margin-left: 35px">' . esc_html( $q ) . '</li>';
+					echo '<li style="margin-left: 35px">' . $q . '</li>';
 				}
 				echo '</ul>';
 			}
