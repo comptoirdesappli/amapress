@@ -522,6 +522,19 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_self_edit', 0 );
 	}
 
+	public function hasGroups() {
+		$contrat_instance_quantites = AmapressContrats::get_contrat_quantites( $this->ID );
+		$has_groups                 = false;
+		foreach ( $contrat_instance_quantites as $q ) {
+			if ( ! empty( $q->getGroupName() ) ) {
+				$has_groups = true;
+				break;
+			}
+		}
+
+		return $has_groups;
+	}
+
 	public function isFull( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
 		$max_adhs       = $this->getMax_adherents();
 		$max_quant_adhs = 0;
@@ -1666,6 +1679,19 @@ class AmapressContrat_instance extends TitanEntity {
 			$show_toggler );
 	}
 
+	/** @return AmapressContrat_quantite[] */
+	public function getContrat_quantites( $date = null ) {
+		$res = [];
+		foreach ( AmapressContrats::get_contrat_quantites( $this->ID ) as $contrat_quantite ) {
+			if ( ! $contrat_quantite->isInDistributionDates( $date ) ) {
+				continue;
+			}
+			$res[] = $contrat_quantite;
+		}
+
+		return $res;
+	}
+
 	public function getContrat_quantites_AsString( $date = null, $show_price_unit = false, $separator = ', ' ) {
 		if ( $this->isPanierVariable() || $this->isQuantiteVariable() ) {
 			$quant_labels = array();
@@ -2448,10 +2474,32 @@ class AmapressContrat_quantite extends TitanEntity {
 
 	public
 	function getFormattedTitle(
-		$factor
+		$factor,
+		$as_html = false
 	) {
 		if ( $factor != 1 ) {
-			return "$factor x {$this->getTitle()}";
+			$title     = $this->getTitle();
+			$grp_name  = '';
+			$has_group = preg_match( '/^\s*(\[[^\]]+\])(.+)/', $title, $matches );
+			if ( $has_group ) {
+				if ( isset( $matches[1] ) ) {
+					$grp_name = $matches[1];
+					$title    = $matches[2];
+				}
+			}
+			if ( ! empty( $grp_name ) ) {
+				if ( $as_html ) {
+					return sprintf( '%s <strong>%s</strong> x %s', esc_html( $grp_name ), esc_html( $factor ), esc_html( $title ) );
+				} else {
+					return sprintf( '%s %s x %s', $grp_name, $factor, $title );
+				}
+			} else {
+				if ( $as_html ) {
+					return sprintf( '<strong>%s</strong> x %s', esc_html( $factor ), esc_html( $title ) );
+				} else {
+					return sprintf( '%s x %s', $factor, $title );
+				}
+			}
 		} else {
 			return $this->getTitle();
 		}

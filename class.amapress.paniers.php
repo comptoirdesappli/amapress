@@ -1097,7 +1097,7 @@ class AmapressPaniers {
 				}
 
 				$url    = amapress_get_avatar_url( $quantite->ID, null, 'produit-thumb', 'default_contrat.jpg' );
-				$title  = ! empty( $user_quantites_ids ) ? $user_quantites[ $quantite->getID() ]->getTitle() : $quantite->getTitle();
+				$title  = ! empty( $user_quantites_ids ) ? $user_quantites[ $quantite->getID() ]->getTitleWithFactor() : $quantite->getTitle();
 				$factor = $quantite->getContrat_instance()->getDateFactorDisplay( $pani->getDate() );
 				if ( ! empty( $factor ) ) {
 					$title = "$factor - $title";

@@ -53,16 +53,23 @@ class AmapressAdhesionQuantite {
 //		}
 	}
 
+	public function getGroupName() {
+		return $this->getContratQuantite()->getGroupName();
+	}
+
+	public function getTitleWithoutGroup() {
+		return $this->getContratQuantite()->getTitleWithoutGroup();
+	}
+
 	/**
 	 * @return string
 	 */
-	public function getTitle() {
-		$quant = $this->getContratQuantite();
-		if ( $this->getFactor() != 1 ) {
-			return $this->getFactor() . ' x ' . $quant->getTitle();
-		} else {
-			return $quant->getTitle();
-		}
+	public function getTitleWithFactor( $as_html = false ) {
+		return $this->getContratQuantite()->getFormattedTitle( $this->getFactor(), $as_html );
+	}
+
+	public function getTitleWithoutFactor() {
+		return $this->getContratQuantite()->getTitle();
 	}
 
 	/**
@@ -86,6 +93,9 @@ class AmapressAdhesionQuantite {
 		return $this->getFactor() * $this->getContratQuantite()->getPrix_unitaire();
 	}
 
+	public function getGroupMultiple() {
+		return $this->getContratQuantite()->getGroupMultiple();
+	}
 }
 
 class AmapressAdhesion extends TitanEntity {
@@ -1272,62 +1282,91 @@ class AmapressAdhesion extends TitanEntity {
 		return implode( '<br/>', $dates_desc );
 	}
 
-	public function getContrat_quantites_AsString( $date = null, $show_price_unit = false, $separator = ', ' ) {
+	public function getContrat_quantites_AsString(
+		$date = null,
+		$show_price_unit = false,
+		$separator = ', ',
+		$only_pay_deliv = false,
+		$filter_grp_name = null
+	) {
 		if ( empty( $this->getContrat_instance() ) ) {
 			return '';
 		}
+		if ( null !== $filter_grp_name ) {
+			$filter_grp_name = trim( $filter_grp_name, '[]' );
+		}
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
-			$quant_labels = array();
+			$grouped_quants     = [];
+			$grouped_quants_sum = [];
 			foreach ( $this->getVariables_Contrat_quantites( $date ) as $q ) {
 				/** @var AmapressContrat_quantite $contrat_quantite */
 				$contrat_quantite = $q['contrat_quantite'];
-				$quantite         = $q['quantite'];
-				$quant_labels[]   = esc_html( $contrat_quantite->formatValue( $quantite ) . ' x ' . $contrat_quantite->getTitle() . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaireDisplay() : '' ) );
+				if ( $only_pay_deliv && $contrat_quantite->getPrix_unitaire() > 0 ) {
+					continue;
+				}
+				if ( null !== $filter_grp_name && $contrat_quantite->getGroupName() != $filter_grp_name ) {
+					continue;
+				}
+				$quantite  = $q['quantite'];
+				$title     = $contrat_quantite->getTitle();
+				$grp_name  = '';
+				$has_group = preg_match( '/^\s*(\[[^\]]+\])(.+)/', $contrat_quantite->getTitle(), $matches );
+				if ( $has_group ) {
+					if ( isset( $matches[1] ) ) {
+						$grp_name = $matches[1];
+						$title    = $matches[2];
+					}
+				}
+				if ( ! isset( $grouped_quants[ $grp_name ] ) ) {
+					$grouped_quants[ $grp_name ] = [];
+				}
+				if ( ! isset( $grouped_quants_sum[ $grp_name ] ) ) {
+					$grouped_quants_sum[ $grp_name ] = 0;
+				}
+				$grouped_quants[ $grp_name ][]   =
+					'<strong>' . esc_html( $contrat_quantite->formatValue( $quantite ) ) . '</strong>' .
+					esc_html( ' x ' . $title . ( $show_price_unit ? ' à ' . $contrat_quantite->getPrix_unitaireDisplay() . '€' : '' ) );
+				$grouped_quants_sum[ $grp_name ] += $quantite;
+			}
+			$quant_labels = array();
+			foreach ( $grouped_quants as $grp_name => $labels ) {
+				if ( null !== $filter_grp_name ) {
+					$quant_labels[] = implode( $separator, $labels );
+				} else {
+					$quant_labels[] = sprintf( '<strong>%s</strong>(<em>%s</em>): %s',
+						esc_html( $grp_name ),
+						$grouped_quants_sum[ $grp_name ],
+						implode( ' + ', $labels ) );
+				}
 			}
 
 			return implode( $separator, $quant_labels );
 		} else {
+			$quants       = ( $only_pay_deliv ?
+				array_filter( $this->getContrat_quantites( $date ), function ( $vv ) {
+					/** @var AmapressAdhesionQuantite $vv */
+					return abs( $vv->getPrice() ) < 0.001;
+				} ) :
+				$this->getContrat_quantites( $date ) );
 			$quant_labels = array_map(
 				function ( $vv ) use ( $show_price_unit ) {
 					/** @var AmapressAdhesionQuantite $vv */
-					return $vv->getTitle() . ( $show_price_unit ? ' à ' . Amapress::formatPrice( $vv->getPrice() ) . '€' : '' );
+					return $vv->getTitleWithFactor( true ) . ( $show_price_unit ? ' à ' . Amapress::formatPrice( $vv->getPrice() ) . '€' : '' );
 				}
-				, $this->getContrat_quantites( $date ) );
+				,
+				null !== $filter_grp_name ?
+					array_filter( $quants, function ( $vv ) use ( $filter_grp_name ) {
+						/** @var AmapressAdhesionQuantite $vv */
+						return $filter_grp_name === $vv->getGroupName();
+					} ) : $quants
+			);
 
 			return implode( $separator, $quant_labels );
 		}
 	}
 
 	public function getQuantite_pay_at_delivery( $date = null, $separator = ', ' ) {
-		if ( empty( $this->getContrat_instance() ) ) {
-			return '';
-		}
-		if ( $this->getContrat_instance()->isPanierVariable() ) {
-			$quant_labels = array();
-			foreach ( $this->getVariables_Contrat_quantites( $date ) as $q ) {
-				/** @var AmapressContrat_quantite $contrat_quantite */
-				$contrat_quantite = $q['contrat_quantite'];
-				if ( $contrat_quantite->getPrix_unitaire() > 0 ) {
-					continue;
-				}
-				$quantite       = $q['quantite'];
-				$quant_labels[] = esc_html( $contrat_quantite->formatValue( $quantite ) . ' x ' . $contrat_quantite->getTitle() );
-			}
-
-			return implode( $separator, $quant_labels );
-		} else {
-			$quant_labels = array_map(
-				function ( $vv ) {
-					/** @var AmapressAdhesionQuantite $vv */
-					return $vv->getTitle();
-				}
-				, array_filter( $this->getContrat_quantites( $date ), function ( $vv ) {
-				/** @var AmapressAdhesionQuantite $vv */
-				return abs( $vv->getPrice() ) < 0.001;
-			} ) );
-
-			return implode( $separator, $quant_labels );
-		}
+		return $this->getContrat_quantites_AsString( $date, false, $separator, true );
 	}
 
 	public function getContrat_quantites_Codes_AsString( $date = null ) {
