@@ -2414,7 +2414,12 @@ class AmapressContrat_quantite extends TitanEntity {
 	}
 
 	public function getGroupMultiple() {
-		return $this->getCustomAsInt( 'amapress_contrat_quantite_grp_mult', 1 );
+		$res = $this->getCustomAsInt( 'amapress_contrat_quantite_grp_mult', 1 );
+		if ( $res < 1 ) {
+			$res = 1;
+		}
+
+		return $res;
 	}
 
 	public function getPrix_unitaire() {
