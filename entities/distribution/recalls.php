@@ -588,7 +588,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
 						                  . '<br />'
 						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
-						$row['desc']    = $quant->getTitle();
+						$row['desc']    = $quant->getTitleWithoutFactor();
 						$row['fact']    = $quant->getFactor();
 						$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
 						$row['total']   = $quant->getPrice();
