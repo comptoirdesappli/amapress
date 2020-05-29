@@ -1145,7 +1145,14 @@ function amapress_get_contrat_quantite_xlsx(
 	$contrat        = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$group_by       = 'date';
 	$show_adherents = false;
+	$group_by_group = false;
 	switch ( $type ) {
+		case 'adherents_group_date':
+			$show_adherents  = true;
+			$type_title_file = 'avec-adherents-par-date-groupe';
+			$type_title      = 'Avec adherents par date-groupe';
+			$group_by_group  = true;
+			break;
 		case 'adherents_date':
 			$show_adherents  = true;
 			$type_title_file = 'avec-adherents-par-date';
@@ -1173,6 +1180,11 @@ function amapress_get_contrat_quantite_xlsx(
 			$type_title_file = 'par-trimestre';
 			$type_title      = 'Par trimestre';
 			break;
+		case 'group_date':
+			$type_title_file = 'par-date';
+			$type_title      = 'Par date';
+			$group_by_group  = true;
+			break;
 		default:
 			$type_title_file = 'par-date';
 			$type_title      = 'Par date';
@@ -1185,6 +1197,7 @@ function amapress_get_contrat_quantite_xlsx(
 		'show_adherents' => $show_adherents,
 		'show_all_dates' => true,
 		'group_by'       => $group_by,
+		'group_by_group' => $group_by_group,
 		'mode'           => 'xlsx',
 	] );
 
