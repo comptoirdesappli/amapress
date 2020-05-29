@@ -671,7 +671,7 @@ line-height: 1.1;
 				'show_sms'        => 'false',
 				'show_tel'        => 'false',
 				'show_tel_fixe'   => 'false',
-				'show_tel_mobile' => 'false',
+				'show_tel_mobile' => $show_phone,
 				'show_adresse'    => 'false',
 				'show_roles'      => 'false',
 			),
