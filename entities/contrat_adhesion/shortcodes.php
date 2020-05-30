@@ -317,58 +317,59 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 
 	$atts = shortcode_atts(
 		[
-			'key'                              => '',
-			'for_logged'                       => 'false',
-			'filter_multi_contrat'             => 'false',
-			'admin_mode'                       => 'false',
-			'agreement'                        => 'false',
-			'mob_phone_required'               => 'false',
-			'check_principal'                  => 'true',
-			'adhesion'                         => 'true',
-			'send_adhesion_confirm'            => 'true',
-			'send_contrat_confirm'             => 'true',
-			'send_referents'                   => 'true',
-			'allow_inscription_all_dates'      => 'false',
-			'send_tresoriers'                  => 'true',
-			'ignore_renouv_delta'              => 'true',
-			'allow_inscriptions'               => 'true',
-			'allow_new_mail'                   => 'true',
-			'check_adhesion_received'          => 'false',
-			'track_no_renews'                  => 'false',
-			'track_no_renews_email'            => get_option( 'admin_email' ),
-			'notify_email'                     => '',
-			'max_produit_label_width'          => '10em',
-			'paiements_info_required'          => 'false',
-			'paniers_modulables_editor_height' => 350,
-			'send_welcome'                     => 'true',
-			'edit_names'                       => 'true',
-			'allow_remove_cofoyers'            => 'true',
-			'allow_remove_coadhs'              => 'false',
-			'contact_referents'                => 'true',
-			'show_adherents_infos'             => 'true',
-			'show_details_button'              => 'false',
-			'allow_coadherents_access'         => 'true',
-			'allow_coadherents_inscription'    => 'true',
-			'allow_coadherents_adhesion'       => 'true',
-			'show_coadherents_address'         => 'false',
-			'show_cofoyers_address'            => 'false',
-			'contrat_print_button_text'        => 'Imprimer',
-			'adhesion_print_button_text'       => 'Imprimer',
-			'only_contrats'                    => '',
-			'shorturl'                         => '',
-			'show_modify_coords'               => 'inscription-en-ligne' == $tag ? 'false' : 'true',
-			'show_due_amounts'                 => 'false',
-			'show_delivery_details'            => 'false',
-			'show_calendar_delivs'             => 'false',
-			'show_current_inscriptions'        => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
-			'show_editable_inscriptions'       => 'true',
-			'adhesion_shift_weeks'             => 0,
-			'before_close_hours'               => 24,
-			'max_coadherents'                  => 3,
-			'max_cofoyers'                     => 3,
-			'use_contrat_term'                 => 'true',
-			'skip_coords'                      => 'false',
-			'email'                            => get_option( 'admin_email' ),
+			'key'                                 => '',
+			'for_logged'                          => 'false',
+			'filter_multi_contrat'                => 'false',
+			'admin_mode'                          => 'false',
+			'agreement'                           => 'false',
+			'mob_phone_required'                  => 'false',
+			'check_principal'                     => 'true',
+			'adhesion'                            => 'true',
+			'send_adhesion_confirm'               => 'true',
+			'send_contrat_confirm'                => 'true',
+			'send_referents'                      => 'true',
+			'allow_inscription_all_dates'         => 'false',
+			'send_tresoriers'                     => 'true',
+			'ignore_renouv_delta'                 => 'true',
+			'allow_inscriptions'                  => 'true',
+			'allow_new_mail'                      => 'true',
+			'check_adhesion_received'             => 'false',
+			'check_adhesion_received_or_previous' => 'false',
+			'track_no_renews'                     => 'false',
+			'track_no_renews_email'               => get_option( 'admin_email' ),
+			'notify_email'                        => '',
+			'max_produit_label_width'             => '10em',
+			'paiements_info_required'             => 'false',
+			'paniers_modulables_editor_height'    => 350,
+			'send_welcome'                        => 'true',
+			'edit_names'                          => 'true',
+			'allow_remove_cofoyers'               => 'true',
+			'allow_remove_coadhs'                 => 'false',
+			'contact_referents'                   => 'true',
+			'show_adherents_infos'                => 'true',
+			'show_details_button'                 => 'false',
+			'allow_coadherents_access'            => 'true',
+			'allow_coadherents_inscription'       => 'true',
+			'allow_coadherents_adhesion'          => 'true',
+			'show_coadherents_address'            => 'false',
+			'show_cofoyers_address'               => 'false',
+			'contrat_print_button_text'           => 'Imprimer',
+			'adhesion_print_button_text'          => 'Imprimer',
+			'only_contrats'                       => '',
+			'shorturl'                            => '',
+			'show_modify_coords'                  => 'inscription-en-ligne' == $tag ? 'false' : 'true',
+			'show_due_amounts'                    => 'false',
+			'show_delivery_details'               => 'false',
+			'show_calendar_delivs'                => 'false',
+			'show_current_inscriptions'           => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
+			'show_editable_inscriptions'          => 'true',
+			'adhesion_shift_weeks'                => 0,
+			'before_close_hours'                  => 24,
+			'max_coadherents'                     => 3,
+			'max_cofoyers'                        => 3,
+			'use_contrat_term'                    => 'true',
+			'skip_coords'                         => 'false',
+			'email'                               => get_option( 'admin_email' ),
 		]
 		, $atts );
 
@@ -383,24 +384,28 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
 	}
 
-	$paiements_info_required       = Amapress::toBool( $atts['paiements_info_required'] );
-	$activate_adhesion             = Amapress::toBool( $atts['adhesion'] );
-	$activate_agreement            = Amapress::toBool( $atts['agreement'] );
-	$allow_remove_coadhs           = Amapress::toBool( $atts['allow_remove_coadhs'] );
-	$allow_remove_cofoys           = Amapress::toBool( $atts['allow_remove_cofoyers'] );
-	$allow_coadherents_inscription = Amapress::toBool( $atts['allow_coadherents_inscription'] );
-	$allow_coadherents_adhesion    = Amapress::toBool( $atts['allow_coadherents_adhesion'] );
-	$show_adherents_infos          = Amapress::toBool( $atts['show_adherents_infos'] );
-	$track_no_renews               = Amapress::toBool( $atts['track_no_renews'] );
-	$show_coadherents_address      = Amapress::toBool( $atts['show_coadherents_address'] );
-	$show_cofoys_address           = Amapress::toBool( $atts['show_cofoyers_address'] );
-	$show_due_amounts              = Amapress::toBool( $atts['show_due_amounts'] );
-	$show_modify_coords            = Amapress::toBool( $atts['show_modify_coords'] );
-	$show_current_inscriptions     = Amapress::toBool( $atts['show_current_inscriptions'] ) || $admin_mode;
-	$show_editable_inscriptions    = Amapress::toBool( $atts['show_editable_inscriptions'] ) || $admin_mode;
-	$show_delivery_details         = Amapress::toBool( $atts['show_delivery_details'] );
-	$check_adhesion_received       = Amapress::toBool( $atts['check_adhesion_received'] );
-	$allow_inscriptions            = Amapress::toBool( $atts['allow_inscriptions'] );
+	$paiements_info_required             = Amapress::toBool( $atts['paiements_info_required'] );
+	$activate_adhesion                   = Amapress::toBool( $atts['adhesion'] );
+	$activate_agreement                  = Amapress::toBool( $atts['agreement'] );
+	$allow_remove_coadhs                 = Amapress::toBool( $atts['allow_remove_coadhs'] );
+	$allow_remove_cofoys                 = Amapress::toBool( $atts['allow_remove_cofoyers'] );
+	$allow_coadherents_inscription       = Amapress::toBool( $atts['allow_coadherents_inscription'] );
+	$allow_coadherents_adhesion          = Amapress::toBool( $atts['allow_coadherents_adhesion'] );
+	$show_adherents_infos                = Amapress::toBool( $atts['show_adherents_infos'] );
+	$track_no_renews                     = Amapress::toBool( $atts['track_no_renews'] );
+	$show_coadherents_address            = Amapress::toBool( $atts['show_coadherents_address'] );
+	$show_cofoys_address                 = Amapress::toBool( $atts['show_cofoyers_address'] );
+	$show_due_amounts                    = Amapress::toBool( $atts['show_due_amounts'] );
+	$show_modify_coords                  = Amapress::toBool( $atts['show_modify_coords'] );
+	$show_current_inscriptions           = Amapress::toBool( $atts['show_current_inscriptions'] ) || $admin_mode;
+	$show_editable_inscriptions          = Amapress::toBool( $atts['show_editable_inscriptions'] ) || $admin_mode;
+	$show_delivery_details               = Amapress::toBool( $atts['show_delivery_details'] );
+	$check_adhesion_received             = Amapress::toBool( $atts['check_adhesion_received'] );
+	$check_adhesion_received_or_previous = Amapress::toBool( $atts['check_adhesion_received_or_previous'] );
+	if ( $check_adhesion_received_or_previous ) {
+		$check_adhesion_received = true;
+	}
+	$allow_inscriptions = Amapress::toBool( $atts['allow_inscriptions'] );
 //	$allow_edit_inscriptions       = Amapress::toBool( $atts['allow_edit_inscriptions'] );
 	$notify_email = $atts['notify_email'];
 	if ( ! $allow_coadherents_inscription ) {
@@ -1774,6 +1779,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							] ),
 							$adhesion_print_button_text, true, true, 'btn btn-default'
 						);
+					}
+					if ( $check_adhesion_received_or_previous ) {
+						if ( AmapressAdhesion_paiement::hadUserAnyValidated( $user_id ) ) {
+							$check_adhesion_received = false;
+						}
 					}
 					if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
 						echo sprintf( '<p>Votre adhésion à l\'AMAP sera valable du %s au %s<br />%s</p>',

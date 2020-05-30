@@ -252,6 +252,44 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $res;
 	}
 
+	/** @return AmapressAdhesion_paiement[] */
+	public static function getAllForUserId( $user_id ) {
+		$key = "amapress_AmapressAdhesionPaiement_getAllForUserId_{$user_id}";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = array_map(
+				function ( $p ) {
+					return new AmapressAdhesion_paiement( $p );
+				},
+				get_posts(
+					array(
+						'post_type'      => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+						'meta_query'     => array(
+							array(
+								'key'     => 'amapress_adhesion_paiement_user',
+								'value'   => $user_id,
+								'compare' => '=',
+							),
+						),
+					)
+				) );
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
+	public static function hadUserAnyValidated( $user_id ) {
+		foreach ( self::getAllForUserId( $user_id ) as $adh ) {
+			if ( ! $adh->isNotReceived() ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/** @return AmapressAdhesion_paiement */
 	public static function getForUser( $user_id, $date = null, $create = true ) {
 		$adhs = AmapressAdhesion_paiement::getAllActiveByUserId( $date );
