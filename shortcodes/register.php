@@ -474,14 +474,18 @@ function amapress_register_shortcodes() {
 			]
 		] );
 
+	$contrats_conf_link = Amapress::makeLink(
+		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ),
+		'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats'
+	);
 	amapress_register_shortcode( 'mes-contrats', 'amapress_mes_contrats',
 		[
 			'desc' => 'Permet l\'inscription aux contrats complémentaires en cours d\'année',
 			'args' => [
 				'ignore_renouv_delta'                 => '(booléen, true par défaut) : ignorer la marge de renouvellement des contrats terminés',
 				'allow_inscriptions'                  => '(booléen, true par défaut) : autorise l\'inscription aux contrats',
-				'check_adhesion_received'             => '(booléen, false par défaut) : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
-				'check_adhesion_received_or_previous' => '(booléen, false par défaut) : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
+				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
+				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
 				'allow_adhesion'                      => '(booléen, true par défaut) : autorise l\'adhésion à l\'AMAP',
 				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
 				'agreement'                           => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',

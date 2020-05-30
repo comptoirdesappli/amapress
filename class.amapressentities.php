@@ -2088,6 +2088,18 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => false,
 										),
 										array(
+											'id'      => 'check_adh_rcv',
+											'name'    => 'L\'adhésion doit avoir été validée avant de pouvoir s\'inscrire aux contrats',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'id'      => 'check_adh_rcv_p',
+											'name'    => 'L\'adhésion ou un adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
 											'id'      => 'renouv_days',
 											'name'    => 'Durée en jour de la période de renouvellement',
 											'type'    => 'number',
