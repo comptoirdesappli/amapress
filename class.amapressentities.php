@@ -2244,6 +2244,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(
+											'id'      => 'online_inscr_adhesion_required_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => wpautop( 'Votre adhésion doit être validée avant que vous puissiez vous inscrire aux contrats.' ),
+											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats <strong>si une adhésion validée ou antérieure est nécessaire pour pouvoir s\'inscrire aux contrats</strong><br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
 											'type' => 'save',
 										),
 										array(

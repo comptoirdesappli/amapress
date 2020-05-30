@@ -333,6 +333,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'ignore_renouv_delta'              => 'true',
 			'allow_inscriptions'               => 'true',
 			'allow_new_mail'                   => 'true',
+			'check_adhesion_received'          => 'false',
 			'track_no_renews'                  => 'false',
 			'track_no_renews_email'            => get_option( 'admin_email' ),
 			'notify_email'                     => '',
@@ -398,6 +399,8 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$show_current_inscriptions     = Amapress::toBool( $atts['show_current_inscriptions'] ) || $admin_mode;
 	$show_editable_inscriptions    = Amapress::toBool( $atts['show_editable_inscriptions'] ) || $admin_mode;
 	$show_delivery_details         = Amapress::toBool( $atts['show_delivery_details'] );
+	$check_adhesion_received       = Amapress::toBool( $atts['check_adhesion_received'] );
+	$allow_inscriptions            = Amapress::toBool( $atts['allow_inscriptions'] );
 //	$allow_edit_inscriptions       = Amapress::toBool( $atts['allow_edit_inscriptions'] );
 	$notify_email = $atts['notify_email'];
 	if ( ! $allow_coadherents_inscription ) {
@@ -1733,6 +1736,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
 			}
 		}
+		$adh_paiement = null;
 		if ( ! $admin_mode ) {
 			if ( $allow_coadherents_adhesion || ! $amapien->isCoAdherent() ) {
 				$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
@@ -1771,8 +1775,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$adhesion_print_button_text, true, true, 'btn btn-default'
 						);
 					}
-					echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
+					if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
+						echo sprintf( '<p>Votre adhésion à l\'AMAP sera valable du %s au %s<br />%s</p>',
+							date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
+							date_i18n( 'd/m/Y', $adh_period->getDate_fin() ),
+							$print_bulletin );
+					} else {
+						echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
+					}
 				}
 			}
 
@@ -1803,8 +1814,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			echo '</p>';
 		}
 
-		$allow_inscriptions         = Amapress::toBool( $atts['allow_inscriptions'] );
 		$display_remaining_contrats = true;
+		if ( $check_adhesion_received && $adh_paiement && $adh_paiement->isNotReceived() ) {
+			echo wp_unslash( Amapress::getOption( 'online_inscr_adhesion_required_message' ) );
+			$allow_inscriptions = false;
+		}
 		if ( ! $admin_mode && ! $allow_inscriptions ) {
 			$display_remaining_contrats = false;
 		}
@@ -2044,7 +2058,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( ! $admin_mode ) {
 					if ( ! $use_contrat_term ) {
 						echo '<p>Vous n\'avez pas encore de passé de commandes</p>';
-					} else {
+					} elseif ( $allow_inscriptions ) {
 						echo '<p>Vous n\'avez pas encore de contrats</p>';
 					}
 					if ( $allow_inscriptions ) {
