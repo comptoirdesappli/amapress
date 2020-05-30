@@ -514,8 +514,41 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_is_principal', 0 );
 	}
 
-	public function canSelfSubscribe() {
-		return $this->getCustomAsInt( 'amapress_contrat_instance_self_subscribe', 0 );
+	public function canSelfSubscribe( $user_id = null ) {
+		$res = $this->getCustomAsInt( 'amapress_contrat_instance_self_subscribe', 0 );
+		if ( empty( $res ) ) {
+			return $res;
+		}
+		if ( $user_id ) {
+			$contrats_conditions = $this->canSelfContratsCondition();
+			if ( ! empty( $contrats_conditions ) ) {
+				amapress_dump( $contrats_conditions );
+				$start_date = amapress_time();
+				foreach ( $contrats_conditions as $contrat ) {
+					if ( $contrat->getDate_debut() < $start_date ) {
+						$start_date = $contrat->getDate_debut();
+					}
+				}
+				$all_contrat_ids = array_map( function ( $adh ) {
+					/** @var AmapressAdhesion $adh */
+					return $adh->getContrat_instanceId();
+				}, AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck(
+					$user_id, null, $start_date, false, true, true
+				) );
+				foreach ( $contrats_conditions as $contrat ) {
+					if ( ! in_array( $contrat->ID, $all_contrat_ids ) ) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/** @return AmapressContrat_instance[] */
+	public function canSelfContratsCondition() {
+		return $this->getCustomAsEntityArray( 'amapress_contrat_instance_self_contrats', 'AmapressContrat_instance' );
 	}
 
 	public function canSelfEdit() {
@@ -1495,7 +1528,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['coadherents.noms']                 = [
+		$ret['coadherents.noms'] = [
 			'desc' => 'Liste des co-adhérents (Prénom, Nom) (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';

@@ -1136,7 +1136,7 @@ jQuery(function($) {
 				'group'       => '4/6 - Paniers',
 				'desc'        => 'Rendre accessible la description des paniers',
 			),
-			'rattrapage'            => array(
+			'rattrapage'     => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1239,7 +1239,7 @@ jQuery(function($) {
 			),
 
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe'        => array(
+			'self_subscribe' => array(
 				'name'           => amapress__( 'Activer' ),
 				'type'           => 'checkbox',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1247,7 +1247,21 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'self_edit'             => array(
+			'self_contrats'  => array(
+				'name'           => amapress__( 'Autres contrats' ),
+				'type'           => 'select-posts',
+				'post_type'      => 'amps_contrat_inst',
+				'orderby'        => 'post_title',
+				'order'          => 'ASC',
+				'group'          => '5/6 - Pré-inscription en ligne',
+				'desc'           => 'Rendre accessible les pré-inscriptions en ligne pour ce contrat si l\'amapien a une inscription à l\'un de ces contrats',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'multiple'       => true,
+				'tags'           => true,
+				'autocomplete'   => true,
+			),
+			'self_edit'      => array(
 				'name'           => amapress__( 'Editer' ),
 				'type'           => 'checkbox',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1256,7 +1270,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'date_ouverture'        => array(
+			'date_ouverture' => array(
 				'name'           => amapress__( 'Ouverture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1397,7 +1411,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'status_type'           => array(
+			'status_type'    => array(
 				'name'                 => amapress__( 'Résumé' ),
 				'type'                 => 'custom',
 				'use_custom_as_column' => true,
@@ -1447,6 +1461,10 @@ jQuery(function($) {
 					           && ! $contrat->canSelfSubscribe()
 					) {
 						$ret[] = '<span style="color:orange">inscription fermée</span>';
+					} elseif ( ! empty( $contrat->canSelfContratsCondition() ) ) {
+						$ret[] = sprintf( '<span style="color: green">inscription conditionnelle (%s&gt;%s)</span>',
+							date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ),
+							date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
 					} else {
 						$ret[] = sprintf( '<span style="color: green">inscription ouverte (%s&gt;%s)</span>',
 							date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ),
