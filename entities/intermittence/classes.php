@@ -275,7 +275,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			return 'already';
 		}
 
-		if ( $force || $this->getStartDateAndHour() < amapress_time() ) {
+		if ( ! $force && $this->getStartDateAndHour() < amapress_time() ) {
 			return 'too_late';
 		}
 
