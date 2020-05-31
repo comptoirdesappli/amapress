@@ -90,12 +90,12 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 					continue;
 				}
 				if ( isset( $all_paiements[ $adh->getID() ] ) ) {
-					/** @var AmapressAdhesion_paiement $p */
 					foreach ( $all_paiements[ $adh->getID() ] as $p ) {
+						/** @var AmapressAmapien_paiement $p */
 						if ( $p->isNotReceived() ) {
 							continue;
 						}
-						$amount += $p->getAmount( $colname );
+						$amount += $p->getAmount();
 					}
 				}
 			}

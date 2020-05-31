@@ -40,6 +40,10 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		parent::__construct( $post_id );
 	}
 
+	public function isNotReceived() {
+		return self::NOT_RECEIVED == $this->getStatus();
+	}
+
 	public function getDate() {
 		$this->ensure_init();
 
@@ -80,7 +84,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_contrat_paiement_status', '' );
+		return $this->getCustom( 'amapress_contrat_paiement_status', self::NOT_RECEIVED );
 	}
 
 	public function getAmount() {
