@@ -22,11 +22,7 @@ function amapress_row_action_adhesion_paiement_mark_rcv( $post_id ) {
 
 	}
 
-	wp_redirect_and_exit( remove_query_arg( [
-		'action',
-		'amp_id',
-		'_wpnonce'
-	] ) );
+	wp_redirect_and_exit( wp_get_referer() );
 }
 
 add_action( 'amapress_row_action_adhesion_paiement_unmark_rcv', 'amapress_row_action_adhesion_paiement_unmark_rcv' );
@@ -36,9 +32,5 @@ function amapress_row_action_adhesion_paiement_unmark_rcv( $post_id ) {
 		$adh->setStatus( AmapressAdhesion_paiement::NOT_RECEIVED );
 	}
 
-	wp_redirect_and_exit( remove_query_arg( [
-		'action',
-		'amp_id',
-		'_wpnonce'
-	] ) );
+	wp_redirect_and_exit( wp_get_referer() );
 }

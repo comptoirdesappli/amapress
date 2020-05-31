@@ -31,9 +31,5 @@ function amapress_row_action_adhesion_accept( $post_id ) {
 		$adh->setStatus( AmapressAdhesion::CONFIRMED );
 	}
 
-	wp_redirect_and_exit( remove_query_arg( [
-		'action',
-		'amp_id',
-		'_wpnonce'
-	] ) );
+	wp_redirect_and_exit( wp_get_referer() );
 }
