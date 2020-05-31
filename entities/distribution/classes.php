@@ -509,6 +509,69 @@ class AmapressDistribution extends Amapress_EventBase {
 		return array_unique( $res );
 	}
 
+	public function getSlotInfoForUser( $user_id ) {
+		$res = parent::getSlotInfoForUser( $user_id );
+		if ( empty( $res ) ) {
+			$inter_id = $this->getAdherentRelatedIntermittent( $user_id );
+			$res      = parent::getSlotInfoForUser( $inter_id );
+		}
+		if ( empty( $res ) ) {
+			$inter_id = $this->getIntermittentRelatedAdherent( $user_id );
+			$res      = parent::getSlotInfoForUser( $inter_id );
+		}
+
+		return $res;
+	}
+
+
+	public function getIntermittentRelatedAdherent( $user_id ) {
+		$query                        = [];
+		$query['contrat_instance_id'] = $this->getContratIds();
+		$query['lieu_id']             = $this->getLieuId();
+		$query['date']                = $this->getDate();
+		$query['repreneur']           = $user_id;
+		$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+		foreach ( $paniers as $panier ) {
+			if ( $panier->getAdherentId() ) {
+				return $panier->getAdherentId();
+			}
+		}
+
+		return null;
+	}
+
+	public function getAdherentRelatedIntermittent( $user_id ) {
+		$query                        = [];
+		$query['contrat_instance_id'] = $this->getContratIds();
+		$query['lieu_id']             = $this->getLieuId();
+		$query['date']                = $this->getDate();
+		$query['adherent']            = $user_id;
+		$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+		foreach ( $paniers as $panier ) {
+			if ( $panier->getRepreneurId() ) {
+				return $panier->getRepreneurId();
+			}
+		}
+
+		return null;
+	}
+
+	public function getIntermittentIds() {
+		$query                        = [];
+		$query['contrat_instance_id'] = $this->getContratIds();
+		$query['lieu_id']             = $this->getLieuId();
+		$query['date']                = $this->getDate();
+		$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+		$res                          = [];
+		foreach ( $paniers as $panier ) {
+			if ( $panier->getRepreneurId() ) {
+				$res[] = $panier->getRepreneurId();
+			}
+		}
+
+		return $res;
+	}
+
 	/**
 	 * @param int $user_id
 	 * @param bool $guess_renew
@@ -537,6 +600,11 @@ class AmapressDistribution extends Amapress_EventBase {
 		}, $this->getContrats() );
 
 		if ( count( array_intersect( $user_contrats_ids, $dist_contrat_ids ) ) > 0 ) {
+			return true;
+		}
+		$inter_adherent_id = $this->getIntermittentRelatedAdherent( $user_id );
+		//if $user_id is an intermittent that exchanged with an adherent, it's ok
+		if ( $inter_adherent_id ) {
 			return true;
 		}
 		if ( ! $guess_renew ) {
@@ -1130,13 +1198,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						return Amapress::makeLink( $distrib->getListeEmargementHref() );
 					}
 				],
-				'lieu'              => [
+				'lieu'                             => [
 					'desc' => 'Nom du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return $distrib->getRealLieu()->getTitle();
 					}
 				],
-				'lieu_instruction'  => [
+				'lieu_instruction'                 => [
 					'desc' => 'Instructions du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();
@@ -1145,7 +1213,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $instructions;
 					}
 				],
-				'lieu_instructions' => [
+				'lieu_instructions'                => [
 					'desc' => 'Instructions du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();
@@ -1154,7 +1222,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $instructions;
 					}
 				],
-				'contenu_paniers'   => [
+				'contenu_paniers'                  => [
 					'desc' => 'Contenu des paniers',
 					'func' => function ( AmapressDistribution $distrib ) {
 						$ret = '';
@@ -1176,7 +1244,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $ret;
 					}
 				],
-				'liste_contrats'    => [
+				'liste_contrats'                   => [
 					'desc' => 'Liste des contrats à cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return implode( ', ', array_map(
@@ -1187,13 +1255,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						) );
 					}
 				],
-				'heure_debut'       => [
+				'heure_debut'                      => [
 					'desc' => 'Heure de début de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'H:i', $distrib->getStartDateAndHour() );
 					}
 				],
-				'heure_fin'         => [
+				'heure_fin'                        => [
 					'desc' => 'Heure de fin de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'H:i', $distrib->getEndDateAndHour() );
@@ -1549,7 +1617,10 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getMembersIds() {
-		return $this->getMainAdherentsIds( false );
+		return array_merge(
+			$this->getMainAdherentsIds( false ),
+			$this->getIntermittentIds()
+		);
 	}
 
 	public function canSubscribe() {

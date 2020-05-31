@@ -348,7 +348,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	$btn_class = ( is_admin() ? 'button button-secondary' : 'btn btn-default' );
 
 	$dists = array();
-	if ( $is_current_user_resp_amap || $required_lieu_id ) {
+	if ( $is_current_user_resp_amap || $required_lieu_id || ( empty( $adhesions_contrat_ids ) && $amapien && $amapien->isIntermittent() ) ) {
 		foreach ( $all_dists as $dist ) {
 			$max_dates --;
 			if ( $max_dates < 0 ) {
