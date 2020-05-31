@@ -1132,7 +1132,6 @@ jQuery(function($) {
 				'name'        => amapress__( 'Contenu du panier' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
-				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'group'       => '4/6 - Paniers',
 				'desc'        => 'Rendre accessible la description des paniers',
 			),

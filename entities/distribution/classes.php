@@ -1130,13 +1130,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						return Amapress::makeLink( $distrib->getListeEmargementHref() );
 					}
 				],
-				'lieu'                             => [
+				'lieu'              => [
 					'desc' => 'Nom du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return $distrib->getRealLieu()->getTitle();
 					}
 				],
-				'lieu_instruction'                 => [
+				'lieu_instruction'  => [
 					'desc' => 'Instructions du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();
@@ -1145,7 +1145,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $instructions;
 					}
 				],
-				'lieu_instructions'                => [
+				'lieu_instructions' => [
 					'desc' => 'Instructions du lieu de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();
@@ -1154,7 +1154,29 @@ class AmapressDistribution extends Amapress_EventBase {
 						return $instructions;
 					}
 				],
-				'liste_contrats'                   => [
+				'contenu_paniers'   => [
+					'desc' => 'Contenu des paniers',
+					'func' => function ( AmapressDistribution $distrib ) {
+						$ret = '';
+						foreach ( AmapressPaniers::getPaniersForDist( $distrib->getDate() ) as $panier ) {
+							$contrat_instance = $panier->getContrat_instance();
+							if ( $contrat_instance && $contrat_instance->hasPanier_CustomContent() ) {
+								$ret .= '<h3>' . $contrat_instance->getModelTitle() . '</h3>';
+								foreach ( $contrat_instance->getContrat_quantites( $distrib->getDate() ) as $quant ) {
+									$contenu = $panier->getContenu( $quant );
+									if ( empty( $contenu ) ) {
+										$contenu = '<em>Non renseigné</em>';
+									}
+									$ret .= '<h4>' . $quant->getTitle() . '</h4>';
+									$ret .= '<div>' . $contenu . '</div>';
+								}
+							}
+						}
+
+						return $ret;
+					}
+				],
+				'liste_contrats'    => [
 					'desc' => 'Liste des contrats à cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return implode( ', ', array_map(
@@ -1165,13 +1187,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						) );
 					}
 				],
-				'heure_debut'                      => [
+				'heure_debut'       => [
 					'desc' => 'Heure de début de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'H:i', $distrib->getStartDateAndHour() );
 					}
 				],
-				'heure_fin'                        => [
+				'heure_fin'         => [
 					'desc' => 'Heure de fin de cette distribution',
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'H:i', $distrib->getEndDateAndHour() );
