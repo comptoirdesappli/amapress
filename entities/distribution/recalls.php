@@ -505,16 +505,18 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 		return;
 	}
 
+	$is_test = isset( $args['is_test'] ) && $args['is_test'];
+
 	if ( Amapress::getOption( 'distribution-amapiens-recall-send-indiv' ) ) {
-		$columns_no_price     = [];
-		$columns_no_price[]   = array(
+		$columns_no_price                   = [];
+		$columns_no_price[]                 = array(
 			'title' => 'Producteur',
 			'data'  => array(
 				'_'    => 'prod',
 				'sort' => 'prod',
 			)
 		);
-		$columns_no_price[]   = array(
+		$columns_no_price[]                 = array(
 			'title' => 'Description',
 			'data'  => array(
 				'_'    => 'desc',
@@ -599,6 +601,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 
 			$replacements = [];
 
+			$had_deliveries = false;
 			if ( empty( $data ) ) {
 				$replacements['livraison_details_prix'] = 'Vous n\'avez pas de produit à cette livraison';
 				$replacements['livraison_details']      = 'Vous n\'avez pas de produit à cette livraison';
@@ -619,6 +622,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 						'dist-recap-' . $dist->ID,
 						$columns_no_price, $data,
 						$dt_options );
+				$had_deliveries                         = true;
 			}
 
 			$slot_info  = '';
@@ -657,6 +661,10 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				$content,
 				'', $target_users, $dist, array(),
 				null, null, $dist->getResponsablesResponsablesDistributionsReplyto() );
+
+			if ( $is_test && $had_deliveries ) {
+				break;
+			}
 		}
 	} else {
 		$dist_id     = $dist->ID;

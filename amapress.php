@@ -1810,6 +1810,7 @@ add_action( 'admin_post_tf_event_scheduler_test', function () {
 	$hook_name             = $_REQUEST['hook_name'];
 	$args                  = json_decode( wp_unslash( $_REQUEST['args'] ), true );
 	$args                  = $args[0];
+	$args['is_test']       = true;
 	echo '<p>Rappel lancé pour ' . $args['title'] . '</p>';
 	do_action( $hook_name, $args );
 	echo '<p>Rappel terminé</p>';
