@@ -332,21 +332,36 @@ jQuery(function($) {
 			}
 		}
 		$links = '';
-		if ( $this->settings['show_resend_links'] && ! empty( $hooks ) ) {
-			$links .= '<p>Liens de renvoi: ' . implode( ', ', array_map(
-					function ( $hook ) use ( $value ) {
-						$hook['action'] = 'tf_event_scheduler_resend';
-						$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
-						$title          = esc_html( $hook['title'] );
-						$sent_on        = ! empty( $value['enabled'] ) ? self::getEventDateTime( $hook['time'], $value ) : 0;
-						if ( $sent_on ) {
-							$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y', $sent_on );
-						} else {
-							$sent_on = 'non programmé';
-						}
+		if ( ! empty( $hooks ) ) {
+			if ( $this->settings['show_resend_links'] ) {
+				$links .= '<p>Liens de renvoi: ' . implode( ', ', array_map(
+						function ( $hook ) use ( $value ) {
+							$hook['action'] = 'tf_event_scheduler_resend';
+							$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
+							$title          = esc_html( $hook['title'] );
+							$sent_on        = ! empty( $value['enabled'] ) ? self::getEventDateTime( $hook['time'], $value ) : 0;
+							if ( $sent_on ) {
+								$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y H:i', $sent_on );
+							} else {
+								$sent_on = 'non programmé';
+							}
 
-						return "<a href='$href' target='_blank'>$title ($sent_on)</a>";
-					}, $hooks ) ) . '</p>';
+							return "<a href='$href' target='_blank'>$title ($sent_on)</a>";
+						}, $hooks ) ) . '</p>';
+			} elseif ( ! empty( $value['enabled'] ) ) {
+				$links .= '<p>Envois: ' . implode( ', ', array_map(
+						function ( $hook ) use ( $value ) {
+							$title   = esc_html( $hook['title'] );
+							$sent_on = ! empty( $value['enabled'] ) ? self::getEventDateTime( $hook['time'], $value ) : 0;
+							if ( $sent_on ) {
+								$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y H:i', $sent_on );
+							} else {
+								$sent_on = 'non programmé';
+							}
+
+							return esc_html( "$title ($sent_on)" );
+						}, $hooks ) ) . '</p>';
+			}
 		}
 
 		if ( $this->settings['show_test_links'] && ! empty( $hooks ) ) {
@@ -355,14 +370,8 @@ jQuery(function($) {
 						$hook['action'] = 'tf_event_scheduler_test';
 						$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
 						$title          = esc_html( $hook['title'] );
-						$sent_on        = ! empty( $value['enabled'] ) ? self::getEventDateTime( $hook['time'], $value ) : 0;
-						if ( $sent_on ) {
-							$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y', $sent_on );
-						} else {
-							$sent_on = 'non programmé';
-						}
 
-						return "<a href='$href' target='_blank'>$title ($sent_on)</a>";
+						return "<a href='$href' target='_blank'>$title</a>";
 					}, $hooks ) ) . '</p>';
 		}
 
