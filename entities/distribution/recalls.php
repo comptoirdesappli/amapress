@@ -15,7 +15,7 @@ function amapress_get_next_distributions_cron() {
 	$weeks          = 2;
 	$date           = amapress_time();
 	$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
-	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
+	$next_distribs  = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ), 'ASC' );
 
 	$ret = [];
 	foreach ( $next_distribs as $dist ) {
