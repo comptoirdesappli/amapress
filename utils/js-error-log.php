@@ -47,6 +47,7 @@ class Amapress_JS_Error_Log {
 				html_entity_decode( $error['msg'], ENT_QUOTES ) .
 				', file: ' . $error['url'] . ':' . $error['line'] .
 				', agent: ' . $_SERVER['HTTP_USER_AGENT'] .
+				', user: ' . get_current_user_id() .
 				', referer: ' . $_REQUEST['referer'] );
 			wp_send_json( $error );
 		}
