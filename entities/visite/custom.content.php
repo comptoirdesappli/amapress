@@ -19,13 +19,13 @@ function amapress_get_custom_content_visite( $content ) {
 	$is_resp               = in_array( $user_id, $visite->getParticipantIds() );
 	$slot_for_current_user = $visite->getSlotInfoForUser( $user_id );
 
-	$users = [ '' => '--Sélectionner un amapien--' ];
-	amapress_precache_all_users();
-	foreach ( get_users() as $user ) {
-		$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
-	}
 	$inscr_another = '';
 	if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
+		$users = [ '' => '--Sélectionner un amapien--' ];
+		amapress_precache_all_users();
+		foreach ( get_users() as $user ) {
+			$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+		}
 		$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
 <button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-visite="' . $visite->ID . '">Inscrire</button>
