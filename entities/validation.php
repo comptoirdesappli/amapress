@@ -81,9 +81,9 @@ function amapress_post_validation() {
             jQuery("#amapress_add_user").click(function () {
                 try {
                     window.tinyMCE.triggerSave();
+                } catch (ee) {
                 }
-                catch (ee) {
-                }
+                createBtn.prop('disabled', false);
                 if (jQuery('form#createuser').valid()) {
                     createBtn.click();
                 } else {
@@ -96,9 +96,9 @@ function amapress_post_validation() {
             jQuery("#amapress_update_user, #wp-admin-bar-amapress_update_user_admin_bar button.amapress_update_user").click(function () {
                 try {
                     window.tinyMCE.triggerSave();
+                } catch (ee) {
                 }
-                catch (ee) {
-                }
+                updateBtn.prop('disabled', false);
                 if (jQuery('form#your-profile').valid()) {
                     updateBtn.click();
                 } else {
@@ -111,9 +111,9 @@ function amapress_post_validation() {
             jQuery("#amapress_publish, #wp-admin-bar-amapress_publish_admin_bar button.amapress_publish").click(function () {
                 try {
                     window.tinyMCE.triggerSave();
+                } catch (ee) {
                 }
-                catch (ee) {
-                }
+                publishBtn.prop('disabled', false);
                 if (jQuery('form#post').valid()) {
                     publishBtn.click();
                 } else {
