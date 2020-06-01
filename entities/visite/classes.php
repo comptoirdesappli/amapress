@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class AmapressVisite extends Amapress_EventBase {
+class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu {
 	const INTERNAL_POST_TYPE = 'amps_visite';
 	const POST_TYPE = 'visite';
 
@@ -44,6 +44,32 @@ class AmapressVisite extends Amapress_EventBase {
 	/** @return AmapressProducteur */
 	public function getProducteur() {
 		return $this->getCustomAsEntity( 'amapress_visite_producteur', 'AmapressProducteur' );
+	}
+
+	public function getLieu_externe_nom() {
+		return $this->getCustom( 'amapress_visite_lieu_externe_nom' );
+	}
+
+	public function getLieu_externe_adresse() {
+		return $this->getCustom( 'amapress_visite_lieu_externe_adresse' );
+	}
+
+	public function getLieu_externe_acces() {
+		return stripslashes( $this->getCustom( 'amapress_visite_lieu_externe_acces' ) );
+	}
+
+	public function isLieu_externe_AdresseLocalized() {
+		$v = $this->getCustom( 'amapress_visite_lieu_externe_adresse_location_type' );
+
+		return ! empty( $v );
+	}
+
+	public function getLieu_externe_AdresseLongitude() {
+		return $this->getCustom( 'amapress_visite_lieu_externe_adresse_long' );
+	}
+
+	public function getLieu_externe_AdresseLatitude() {
+		return $this->getCustom( 'amapress_visite_lieu_externe_adresse_lat' );
 	}
 
 	public function getAu_programme() {
@@ -169,7 +195,7 @@ class AmapressVisite extends Amapress_EventBase {
 						'type'     => 'visite',
 						'category' => 'Visites',
 						'priority' => 90,
-						'lieu'     => $producteur,
+						'lieu'     => $this,
 						'label'    => 'Visite ' . $producteur->getTitle(),
 						'icon'     => 'flaticon-sprout',
 						'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
@@ -184,7 +210,7 @@ class AmapressVisite extends Amapress_EventBase {
 						'type'     => 'visite',
 						'category' => 'Visites',
 						'priority' => 90,
-						'lieu'     => $producteur,
+						'lieu'     => $this,
 						'label'    => 'Visite ' . $producteur->getTitle(),
 						'icon'     => 'flaticon-sprout',
 						'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
@@ -200,7 +226,7 @@ class AmapressVisite extends Amapress_EventBase {
 					'type'     => 'visite',
 					'category' => 'Visites',
 					'priority' => 95,
-					'lieu'     => $producteur,
+					'lieu'     => $this,
 					'label'    => 'Visite ' . $producteur->getTitle(),
 					'icon'     => 'flaticon-sprout',
 					'alt'      => 'Une visite est prévue à la ferme le ' . date_i18n( 'd/m/Y', $date ),
@@ -251,5 +277,21 @@ class AmapressVisite extends Amapress_EventBase {
 
 	public function canUnsubscribe() {
 		return $this->canUnsubscribeType( 'visite' );
+	}
+
+	public function getLieuId() {
+		return $this->ID;
+	}
+
+	public function getLieuPermalink() {
+		return $this->getPermalink();
+	}
+
+	public function getLieuTitle() {
+		if ( ! empty( $this->getLieu_externe_nom() ) ) {
+			return $this->getLieu_externe_nom();
+		} else {
+			return $this->getProducteur()->getNomExploitation();
+		}
 	}
 }

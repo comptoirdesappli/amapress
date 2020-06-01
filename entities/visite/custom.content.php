@@ -60,22 +60,53 @@ function amapress_get_custom_content_visite( $content ) {
 	     '</p>';
 	amapress_echo_panel_end();
 
-	//amapress_handle_action_messages();
-
 	amapress_echo_panel_start( 'Adresse', null, 'amap-panel-visite amap-panel-visite-address' );
-	echo '<p class="visite-nom-exploitation">' .
-	     '<a href="' . $visite->getProducteur()->getPermalink() . '">' . $visite->getProducteur()->getNomExploitation() . '</a>' .
-	     '</p>';
-	echo '<p class="visite-adresse-exploitation">' .
-	     $visite->getProducteur()->getFormattedAdresseExploitationHtml() .
-	     '</p>';
+	if ( ! empty( $visite->getLieu_externe_nom() ) ) {
+		echo '<p class="visite-nom">' .
+		     wpautop( $visite->getLieu_externe_nom() ) .
+		     '</p>';
+	} else {
+		echo '<p class="visite-nom-exploitation">' .
+		     '<a href="' . $visite->getProducteur()->getPermalink() . '">' . $visite->getProducteur()->getNomExploitation() . '</a>' .
+		     '</p>';
+	}
+	if ( ! empty( $visite->getLieu_externe_adresse() ) ) {
+		echo '<p class="visite-adresse">' .
+		     wpautop( $visite->getLieu_externe_adresse() ) .
+		     '</p>';
+	} else {
+		echo '<p class="visite-adresse-exploitation">' .
+		     $visite->getProducteur()->getFormattedAdresseExploitationHtml() .
+		     '</p>';
+	}
+
 	amapress_echo_panel_end();
 
 	amapress_echo_panel_start( 'Accès', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-access' );
-	echo '<p>' .
-	     $visite->getProducteur()->getAcces() .
-	     '</p>' .
-	     do_shortcode( "[producteur-map producteur={$visite->getProducteur()->ID} mode=map+streeview]" );
+	if ( ! empty( $visite->getLieu_externe_acces() ) ) {
+		echo wpautop( $visite->getLieu_externe_acces() );
+
+		$markers = array();
+		if ( $visite->isLieu_externe_AdresseLocalized() ) {
+			$markers[] = array(
+				'longitude' => $visite->getLieu_externe_AdresseLongitude(),
+				'latitude'  => $visite->getLieu_externe_AdresseLatitude(),
+				'url'       => $visite->getPermalink(),
+				'title'     => $visite->getLieu_externe_nom(),
+				'access'    => array(
+					'longitude' => $visite->getLieu_externe_AdresseLongitude(),
+					'latitude'  => $visite->getLieu_externe_AdresseLatitude(),
+				)
+			);
+		}
+
+		echo amapress_generate_map( $markers, 'map+streeview' );
+	} else {
+		echo '<p>' .
+		     $visite->getProducteur()->getAcces() .
+		     '</p>' .
+		     do_shortcode( "[producteur-map producteur={$visite->getProducteur()->ID} mode=map+streeview]" );
+	}
 	amapress_echo_panel_end();
 
 	amapress_display_messages_for_post( 'visite-messages', $visite->ID );

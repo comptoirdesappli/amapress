@@ -76,7 +76,7 @@ function amapress_register_entities_visite( $entities ) {
 				'csv_required' => true,
 				'group'        => '2/ Horaires',
 			),
-			'slots_conf'   => array(
+			'slots_conf'           => array(
 				'name'  => amapress__( 'Créneau(x)' ),
 				'type'  => 'text',
 				'desc'  => function ( $option ) {
@@ -105,7 +105,7 @@ function amapress_register_entities_visite( $entities ) {
 				},
 				'group' => '2/ Horaires',
 			),
-			'producteur'   => array(
+			'producteur'           => array(
 				'name'              => amapress__( 'Producteur' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_producteur',
@@ -123,7 +123,36 @@ function amapress_register_entities_visite( $entities ) {
 				'searchable'        => true,
 				'group'             => '3/ Emplacement',
 			),
-			'participants' => array(
+			'lieu_externe_nom'     => array(
+				'name'           => amapress__( 'Lieu ext.' ),
+				'type'           => 'text',
+				'desc'           => 'Lieu externe',
+				'group'          => '3/ Emplacement',
+				'searchable'     => true,
+				'required'       => true,
+				'col_def_hidden' => true,
+			),
+			'lieu_externe_adresse' => array(
+				'name'           => amapress__( 'Adresse ext.' ),
+				'type'           => 'address',
+				'use_as_field'   => true,
+				'use_enter_gps'  => true,
+				'desc'           => 'Adresse',
+				'group'          => '3/ Emplacement',
+				'searchable'     => true,
+				'required'       => true,
+				'col_def_hidden' => true,
+			),
+			'lieu_externe_acces'   => array(
+				'name'        => amapress__( 'Accès' ),
+				'type'        => 'editor',
+				'required'    => false,
+				'desc'        => 'Accès',
+				'group'       => '3/ Emplacement',
+				'searchable'  => true,
+				'show_column' => false,
+			),
+			'participants'         => array(
 				'name'         => amapress__( 'Participants' ),
 				'type'         => 'select-users',
 				'readonly'     => true,
