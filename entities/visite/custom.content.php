@@ -34,7 +34,9 @@ function amapress_get_custom_content_visite( $content ) {
 	$inscription = '';
 	if ( ! $is_resp ) {
 		if ( $can_subscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-visite="' . $visite->ID . '">M\'inscrire</button>';
+			if ( empty( $visite->getSlotsConf() ) ) {
+				$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-visite="' . $visite->ID . '">M\'inscrire</button>';
+			}
 		} else {
 			$inscription .= '<span class="visite-inscr-closed">Inscriptions closes</span>';
 		}
@@ -46,13 +48,10 @@ function amapress_get_custom_content_visite( $content ) {
 		}
 	}
 
-	if ( ! empty( $inscription ) ) {
-		amapress_echo_panel_start( 'Inscription complète et partielle', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
-		echo $inscription;
-		echo '<hr/>';
-		echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
-		amapress_echo_panel_end();
-	}
+	amapress_echo_panel_start( 'Inscription complète et partielle', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
+	echo $inscription;
+	echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
+	amapress_echo_panel_end();
 
 	amapress_echo_panel_start( 'Au programme', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-programme' );
 	echo '<p class="visite-au-programme">' .
