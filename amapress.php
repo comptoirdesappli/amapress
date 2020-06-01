@@ -1999,3 +1999,23 @@ add_filter( 'wp_sweep_excluded_taxonomies', function ( $excluded_taxonomies ) {
 
 	return $excluded_taxonomies;
 } );
+
+add_filter( 'wp_sweep_excluded_termids', function ( $excluded_termids ) {
+	$excluded_termids = array_merge( $excluded_termids, get_terms( array(
+		'hide_empty' => false,
+		'taxonomy'   => AmapressUser::AMAP_ROLE,
+		'fields'     => 'ids',
+	) ) );
+	$excluded_termids = array_merge( $excluded_termids, get_terms( array(
+		'hide_empty' => false,
+		'taxonomy'   => AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+		'fields'     => 'ids',
+	) ) );
+	$excluded_termids = array_merge( $excluded_termids, get_terms( array(
+		'hide_empty' => false,
+		'taxonomy'   => AmapressAmap_event::CATEGORY,
+		'fields'     => 'ids',
+	) ) );
+
+	return $excluded_termids;
+} );

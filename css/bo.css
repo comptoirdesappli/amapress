@@ -287,3 +287,7 @@
 .import-errors {
     white-space: pre-wrap;
 }
+
+.wp-sweep-admin-php .sweep-all {
+    display: none;
+}
