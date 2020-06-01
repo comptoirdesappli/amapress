@@ -72,6 +72,25 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 		return $this->getCustom( 'amapress_visite_lieu_externe_adresse_lat' );
 	}
 
+	public function getStatusDisplay() {
+		$this->ensure_init();
+		switch ( $this->getStatus() ) {
+
+			case 'to_confirm':
+				return 'A confirmer';
+			case 'confirmed':
+				return 'Confirmée';
+			case 'cancelled':
+				return 'Annulée';
+			default:
+				return $this->getStatus();
+		}
+	}
+
+	public function getStatus() {
+		return $this->getCustom( 'amapress_visite_status', 'confirmed' );
+	}
+
 	public function getAu_programme() {
 		return wpautop( stripslashes( $this->getCustom( 'amapress_visite_au_programme' ) ) );
 	}

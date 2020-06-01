@@ -39,6 +39,18 @@ function amapress_register_entities_visite( $entities ) {
 //				'group' => 'Information',
 //				'desc'  => 'Photo',
 //			),
+			'status'       => array(
+				'name'     => amapress__( 'Statut' ),
+				'type'     => 'select',
+				'group'    => '1/ Informations',
+				'options'  => array(
+					'to_confirm' => 'A confirmer',
+					'confirmed'  => 'Confirmée',
+					'cancelled'  => 'Annulée',
+				),
+				'default'  => 'confirmed',
+				'required' => true,
+			),
 			'au_programme' => array(
 				'name'       => amapress__( 'Au programme' ),
 				'type'       => 'editor',

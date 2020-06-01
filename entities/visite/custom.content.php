@@ -48,6 +48,10 @@ function amapress_get_custom_content_visite( $content ) {
 		}
 	}
 
+	amapress_echo_panel_start( 'Statut', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-status' );
+	echo $visite->getStatusDisplay();
+	amapress_echo_panel_end();
+
 	amapress_echo_panel_start( 'Inscription complète et partielle', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
 	echo $inscription;
 	echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
