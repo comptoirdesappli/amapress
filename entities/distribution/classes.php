@@ -513,11 +513,15 @@ class AmapressDistribution extends Amapress_EventBase {
 		$res = parent::getSlotInfoForUser( $user_id );
 		if ( empty( $res ) ) {
 			$inter_id = $this->getAdherentRelatedIntermittent( $user_id );
-			$res      = parent::getSlotInfoForUser( $inter_id );
+			if ( $inter_id ) {
+				$res = parent::getSlotInfoForUser( $inter_id );
+			}
 		}
 		if ( empty( $res ) ) {
 			$inter_id = $this->getIntermittentRelatedAdherent( $user_id );
-			$res      = parent::getSlotInfoForUser( $inter_id );
+			if ( $inter_id ) {
+				$res = parent::getSlotInfoForUser( $inter_id );
+			}
 		}
 
 		return $res;
