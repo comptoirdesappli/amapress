@@ -3388,8 +3388,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					echo '<p>Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 				}
 			}
+			$print_button = '';
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
-				$print_contrat                         = Amapress::makeButtonLink(
+				$print_contrat = Amapress::makeButtonLink(
 					add_query_arg( [
 						'inscr_assistant' => 'generate_contrat',
 						'inscr_id'        => $inscription->ID,
@@ -3397,12 +3398,15 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					] ),
 					$contrat_print_button_text, true, true, 'btn btn-default'
 				);
-				$online_contrats_end_step_message      = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
-				$online_contrats_end_step_edit_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_edit_message );
-			} else {
-				$online_contrats_end_step_message      = str_replace( '%%print_button%%', '', $online_contrats_end_step_message );
-				$online_contrats_end_step_edit_message = str_replace( '%%print_button%%', '', $online_contrats_end_step_edit_message );
 			}
+			if ( $inscription->getContrat_instance()->isPanierVariable() ) {
+				$print_contrat .= Amapress::makeButtonLink( add_query_arg( [
+					'step'       => 'details_all_delivs',
+					'contrat_id' => $inscription->ID,
+				] ), 'Livraisons', true, true, 'btn btn-default' );
+			}
+			$online_contrats_end_step_message      = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
+			$online_contrats_end_step_edit_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_edit_message );
 			if ( $inscription->canSelfEdit() ) {
 				$inscription_url = add_query_arg( [
 					'step'       => 'inscr_contrat_date_lieu',
