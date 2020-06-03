@@ -370,6 +370,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'use_contrat_term'                    => 'true',
 			'skip_coords'                         => 'false',
 			'email'                               => get_option( 'admin_email' ),
+			'use_quantite_tables'                 => 'false',
 		]
 		, $atts );
 
@@ -2880,10 +2881,24 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				wp_die( $invalid_access_message );
 			}
 
+			$columns         = [];
+			$columns['date'] = array(
+				'title' => 'Date',
+				'data'  => array(
+					'_'    => 'date',
+					'sort' => 'date_sort',
+				)
+			);
+			$data            = [];
+
 			$total         = 0;
 			$chosen_quants = [];
 			foreach ( $panier_vars as $date_k => $quant_factors ) {
 				$date_values = [];
+				$row         = [
+					'date'      => date_i18n( 'd/m/Y', $date_k ),
+					'date_sort' => date_i18n( 'Y-m-d', $date_k ),
+				];
 				foreach ( $quant_factors as $quant_k => $factor_v ) {
 					$q_id   = intval( $quant_k );
 					$factor = floatval( $factor_v );
@@ -2891,7 +2906,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						unset( $panier_vars[ $date_k ][ $quant_k ] );
 						continue;
 					}
-					$quant         = AmapressContrat_quantite::getBy( $q_id );
+					$quant = AmapressContrat_quantite::getBy( $q_id );
+
+					$columns["q$q_id"] = array(
+						'title' => $quant->getTitle(),
+						'data'  => "q$q_id",
+					);
+					$row["q$q_id"]     = $factor;
+
 					$date_values[] = $quant->getFormattedTitle( $factor, true );
 					$total         += $factor * $quant->getPrix_unitaire();
 					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
@@ -2903,6 +2925,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						}
 						$by_month_totals[ $month ] += $factor * $quant->getPrix_unitaire();
 					}
+					$data[] = $row;
 				}
 				if ( ! empty( $date_values ) ) {
 					$chosen_quants[ $date_k ] = $date_values;
@@ -2922,17 +2945,32 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$amapien = AmapressUser::getBy( $user_id );
 				echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' avec les options suivantes:</p>';
 			}
-			echo '<ul style="list-style-type: square">';
-			foreach ( $chosen_quants as $dt => $quant_descs ) {
-				echo '<li style="margin-left: 35px">' . esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) );
-				echo '<ul style="list-style-type: disc">';
-				foreach ( $quant_descs as $quant_desc ) {
-					echo '<li style="margin-left: 15px">' . $quant_desc . '</li>';
+			if ( Amapress::toBool( $atts['use_quantite_tables'] ) ) {
+				amapress_echo_datatable( 'quants-recap', $columns, $data,
+					array(
+						'paging'       => false,
+						'searching'    => false,
+						'nowrap'       => true,
+						'responsive'   => false,
+						'scrollX'      => false,
+						'init_as_html' => true,
+					),
+					array(
+						Amapress::DATATABLES_EXPORT_EXCEL
+					) );
+			} else {
+				echo '<ul style="list-style-type: square">';
+				foreach ( $chosen_quants as $dt => $quant_descs ) {
+					echo '<li style="margin-left: 35px">' . esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) );
+					echo '<ul style="list-style-type: disc">';
+					foreach ( $quant_descs as $quant_desc ) {
+						echo '<li style="margin-left: 15px">' . $quant_desc . '</li>';
+					}
+					echo '</ul>';
+					echo '</li>';
 				}
 				echo '</ul>';
-				echo '</li>';
 			}
-			echo '</ul>';
 		} else {
 			$quants = isset( $_REQUEST['quants'] ) ? $_REQUEST['quants'] : [];
 			if ( ! is_array( $quants ) ) {
