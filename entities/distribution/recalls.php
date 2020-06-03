@@ -478,6 +478,10 @@ add_action( 'amapress_recall_slots_inscr_distrib', function ( $args ) {
 	$content = str_replace( '%%lien_inscription%%', $inscription_link, $content );
 
 	$dist_without_slots_amapiens_ids = $dist->getWithoutSlotsMemberIds();
+	$resp_ids                        = $dist->getResponsablesIds();
+	if ( ! empty( $resp_ids ) ) {
+		$dist_without_slots_amapiens_ids = array_diff( $dist_without_slots_amapiens_ids, $resp_ids );
+	}
 	if ( empty( $dist_without_slots_amapiens_ids ) ) {
 		echo '<p>Tous les membres sont incrits</p>';
 
@@ -508,15 +512,15 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 	$is_test = isset( $args['is_test'] ) && $args['is_test'];
 
 	if ( Amapress::getOption( 'distribution-amapiens-recall-send-indiv' ) ) {
-		$columns_no_price                   = [];
-		$columns_no_price[]                 = array(
+		$columns_no_price     = [];
+		$columns_no_price[]   = array(
 			'title' => 'Producteur',
 			'data'  => array(
 				'_'    => 'prod',
 				'sort' => 'prod',
 			)
 		);
-		$columns_no_price[]                 = array(
+		$columns_no_price[]   = array(
 			'title' => 'Description',
 			'data'  => array(
 				'_'    => 'desc',
