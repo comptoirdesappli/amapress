@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.94.120
+ * Version:             0.94.125
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -52,7 +52,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 108 );
-define( 'AMAPRESS_VERSION', '0.94.120' );
+define( 'AMAPRESS_VERSION', '0.94.125' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -1946,6 +1946,29 @@ add_filter( 'pre_option_comment_registration', function () {
 
 	return false;
 } );
+
+add_filter( 'pre_option_comment_moderation', 'amapress_auto_approve_comments' );
+add_filter( 'pre_option_comment_whitelist', 'amapress_auto_approve_comments' );
+function amapress_auto_approve_comments( $option ) {
+	if ( amapress_is_user_logged_in() ) {
+		$post_id = get_the_ID();
+
+		// Only available on wp-comments-post.php, not on regular post pages.
+		if ( isset( $_POST['comment_post_ID'] ) ) {
+			$post_id = (int) $_POST['comment_post_ID'];
+		}
+
+		$type = AmapressEntities::getPostType( amapress_simplify_post_type( get_post_type( $post_id ) ) );
+
+		if ( $type ) {
+			if ( isset( $type['approve_logged_comments'] ) && $type['approve_logged_comments'] ) {
+				return 0;
+			}
+		}
+	}
+
+	return $option;
+}
 
 add_filter( 'auth_cookie_expiration', function ( $length, $user_id, $remember ) {
 	if ( $remember ) {

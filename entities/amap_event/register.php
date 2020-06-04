@@ -7,13 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_amap_event' );
 function amapress_register_entities_amap_event( $entities ) {
 	$entities['amap_event'] = array(
-		'singular'           => amapress__( 'Evènement' ),
-		'plural'             => amapress__( 'Evènements' ),
+		'singular'                 => amapress__( 'Evènement' ),
+		'plural'                   => amapress__( 'Evènements' ),
 		'public'                   => true,
 		'thumb'                    => true,
 		'editor'                   => true,
 		'comments'                 => true,
 		'public_comments'          => false,
+		'approve_logged_comments'  => true,
 		'logged_or_public'         => true,
 		'special_options'          => array(),
 		'show_in_menu'             => false,

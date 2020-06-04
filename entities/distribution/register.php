@@ -15,6 +15,7 @@ function amapress_register_entities_distribution( $entities ) {
 		'show_in_nav_menu'         => false,
 		'comments'                 => true,
 		'public_comments'          => false,
+		'approve_logged_comments'  => true,
 		'editor'                   => false,
 		'title'                    => false,
 		'title_format'             => 'amapress_distribution_title_formatter',
