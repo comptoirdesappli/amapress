@@ -294,6 +294,10 @@ function amapress_register_entities_distribution( $entities ) {
 								implode( ', ', $contrat_nb_responsables )
 							);
 						}
+						$ret .= sprintf(
+							'<br/>Nb. total: %d',
+							AmapressDistributions::get_required_responsables( $dist->ID )
+						);
 					}
 
 					return $ret;
