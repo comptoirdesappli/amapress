@@ -86,6 +86,14 @@ function amapress_register_entities_amap_event( $entities ) {
 				'desc'     => 'Heure fin',
 				'group'    => '1/ Horaires',
 			),
+			'date_fin'    => array(
+				'name'     => amapress__( 'Date de fin l\'évènement' ),
+				'type'     => 'date',
+				'time'     => false,
+				'required' => false,
+				'desc'     => 'Date fin évènement si sur plusieurs jours',
+				'group'    => '1/ Horaires',
+			),
 			'type'        => array(
 				'name'        => amapress__( 'Emplacement' ),
 				'type'        => 'select',

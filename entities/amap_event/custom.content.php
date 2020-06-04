@@ -44,11 +44,18 @@ function amapress_get_custom_content_amap_event( $content ) {
 	echo $inscription;
 
 	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-event amap-panel-event-hours' );
-	echo '<p>' .
-	     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
-	     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
-	     ' à ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
-	     '</p>';
+	if ( $amap_event->hasDateFin() ) {
+		echo '<p>' .
+		     ' Du ' . date_i18n( 'l d F Y H:i', $amap_event->getStartDateAndHour() ) .
+		     ' au ' . date_i18n( 'l d F Y H:i', $amap_event->getEndDateAndHour() ) .
+		     '</p>';
+	} else {
+		echo '<p>' .
+		     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
+		     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
+		     ' à ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
+		     '</p>';
+	}
 	amapress_echo_panel_end();
 
 	amapress_echo_panel_start( 'Description', null, 'amap-panel-event amap-panel-event-desc' );
@@ -180,12 +187,18 @@ function amapress_get_custom_archive_content_amap_event( $content ) {
 		$addr = $amap_event->getLieu_externe_nom() . ', ' . $amap_event->getLieu_externe_adresse();
 	}
 
-	echo '<p>' .
-	     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
-	     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
-	     ' à ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
-	     ' ; Adresse : ' . $addr .
-	     '</p>';
+	if ( $amap_event->hasDateFin() ) {
+		echo '<p>' .
+		     ' Du ' . date_i18n( 'l d F Y H:i', $amap_event->getStartDateAndHour() ) .
+		     ' au ' . date_i18n( 'l d F Y H:i', $amap_event->getEndDateAndHour() ) .
+		     '</p>';
+	} else {
+		echo '<p>' .
+		     ' Le ' . date_i18n( 'l d F Y', $amap_event->getDate() ) .
+		     ' de ' . date_i18n( 'H:i', $amap_event->getStartDateAndHour() ) .
+		     ' à ' . date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) .
+		     '</p>';
+	}
 
 	echo $content;
 

@@ -36,9 +36,11 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 //		if ( $event->getLieuId() > 0 && ! in_array( $event->getLieuId(), $user_lieux ) ) {
 //			continue;
 //		}
-		$date = $event->getDate();
-		$ret  .= '<tr>';
-		$ret  .= '<th scope="row"><p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $event->getDate() ) ) . '</p><p class="inscr-list-title">' . esc_html( sprintf( '%s (%s)', $event->getTitle(), $event->getCategoriesDisplay() ) ) . '</p></th>';
+		$ret .= '<tr>';
+		$ret .= '<th scope="row"><p class="inscr-list-date">' .
+		        esc_html( date_i18n( 'D j M Y', $event->getDate() ) ) .
+		        ( $event->hasDateFin() ? esc_html( ' - ' . date_i18n( 'D j M Y', $event->getDateFin() ) ) : '' ) .
+		        '</p><p class="inscr-list-title">' . esc_html( sprintf( '%s (%s)', $event->getTitle(), $event->getCategoriesDisplay() ) ) . '</p></th>';
 
 		$resps           = $event->getParticipants();
 		$can_unsubscribe = $event->canUnsubscribe();

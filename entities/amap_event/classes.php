@@ -52,11 +52,19 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	}
 
 	public function getEndDateAndHour() {
-		return Amapress::make_date_and_hour( $this->getDate(), $this->getHeure_fin() );
+		return Amapress::make_date_and_hour( $this->hasDateFin() ? $this->getDateFin() : $this->getDate(), $this->getHeure_fin() );
 	}
 
 	public function getDate() {
 		return $this->getCustom( 'amapress_amap_event_date' );
+	}
+
+	public function getDateFin() {
+		return $this->getCustom( 'amapress_amap_event_date_fin' );
+	}
+
+	public function hasDateFin() {
+		return $this->getDateFin() > 0;
 	}
 
 	public function getHeure_debut() {
@@ -268,7 +276,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			$order );
 	}
 
-	/** @return Amapress_EventEntry */
+	/** @return Amapress_EventEntry[] */
 	public function get_related_events( $user_id ) {
 		$ret         = array();
 		$class_names = $this->getCategoriesCSS();
