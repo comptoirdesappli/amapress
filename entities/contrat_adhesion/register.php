@@ -311,16 +311,28 @@ function amapress_register_entities_adhesion( $entities ) {
 				//				'desc'     => 'Statut',
 			),
 			'quantites_editor'  => array(
-				'name'        => amapress__( 'Contrat et Quantité(s)' ),
-				'type'        => 'custom',
-				'show_column' => false,
-				'custom'      => 'amapress_adhesion_contrat_quantite_editor',
-				'save'        => 'amapress_save_adhesion_contrat_quantite_editor',
-				'desc'        => 'Sélectionner <strong>le contrat*</strong> et les quantités/produits associé(s) de cette inscription :
+				'name'         => amapress__( 'Contrat et Quantité(s)' ),
+				'type'         => 'custom',
+				'show_column'  => false,
+				'custom'       => 'amapress_adhesion_contrat_quantite_editor',
+				'save'         => 'amapress_save_adhesion_contrat_quantite_editor',
+				'desc'         => 'Sélectionner <strong>le contrat*</strong> et les quantités/produits associé(s) de cette inscription :
 <br/><strong>* Vous ne pouvez créer une inscription qu\'à un seul contrat à la fois</strong></br/></br/>',
-				'show_desc'   => 'before',
-				'group'       => '2/ Contrat',
-				'csv'         => false,
+				'show_desc'    => 'before',
+				'group'        => '2/ Contrat',
+				'after_option' => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					echo '<p>' . Amapress::makeLink(
+							add_query_arg( [
+								'page'     => 'amps_inscr_details',
+								'inscr_id' => $option->getPostID(),
+							],
+								admin_url( 'admin.php' )
+							),
+							'Récapitulatif des livraisons', true, true
+						) . '</p>';
+				},
+				'csv'          => false,
 //                'show_on' => 'edit',
 			),
 			'contrat_instance'  => array(
@@ -1447,13 +1459,13 @@ function amapress_get_contrat_quantite_datatable(
 						$row['adherent'] = '';
 					}
 				}
-				$row['date']        = date_i18n( 'd/m/Y', $real_date );
-				$row['date_sort']   = date( 'Y-m-d', $real_date );
-				$quant_title        = $quant ? $quant->getTitle() : '-toutes-';
-				$row['quant']       = $quant ? ( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) : '¤-Toutes-¤';
-				$row['group']       = $quant ? $quant->getGroupName() : '--';
-				$row['qid']         = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
-				$quand_id           = $quant ? $quant->getID() : 0;
+				$row['date']      = date_i18n( 'd/m/Y', $real_date );
+				$row['date_sort'] = date( 'Y-m-d', $real_date );
+				$quant_title      = $quant ? $quant->getTitle() : '-toutes-';
+				$row['quant']     = $quant ? ( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) : '¤-Toutes-¤';
+				$row['group']     = $quant ? $quant->getGroupName() : '--';
+				$row['qid']       = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
+				$quand_id         = $quant ? $quant->getID() : 0;
 				if ( count( $lieux ) > 1 ) {
 					foreach ( $lieux as $lieu ) {
 						$lieu_quant_adh_count      = 0;
@@ -2869,4 +2881,29 @@ add_filter( 'amapress_gestion-contrats_page_contrat_paiements_default_hidden_col
 		'amapress_user_co-adherents',
 		'amapress_user_co-adherents-infos',
 	] );
+} );
+
+add_action( 'admin_menu', function () {
+	add_submenu_page( null, 'Récapitulatif de commande',
+		'', 'edit_adhesion', 'amps_inscr_details',
+		function () {
+			$contrat_id = null;
+			if ( isset( $_GET['inscr_id'] ) ) {
+				if ( ! current_user_can( 'edit_adhesion', $_GET['inscr_id'] ) ) {
+					wp_die( 'Access denied' );
+				}
+				$adh = AmapressAdhesion::getBy( intval( $_GET['inscr_id'] ) );
+				if ( empty( $adh ) ) {
+					wp_die( 'Access denied' );
+				}
+
+				$grp_by_grp = isset( $_GET['grp_by_grp'] );
+				echo amapress_get_details_all_deliveries( $adh->getAdherentId(),
+					true, false,
+					$adh->getContrat_instanceId(), $grp_by_grp );
+			} else {
+				wp_die( 'Invalid access' );
+			}
+		}
+	);
 } );

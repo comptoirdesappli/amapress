@@ -3832,7 +3832,7 @@ function amapress_get_details_all_deliveries(
 	$print_title      = 'Récapitulatif des livraisons';
 	if ( $is_single_producteur ) {
 		$contrat_instance = AmapressContrat_instance::getBy( $contrats_ids[0] );
-		$print_title      .= ' : ' . $contrat_instance->getTitle();
+		$print_title      .= ' : ' . array_values( $adhs )[0]->getTitle();
 	}
 	$ret     = '<h4>' . esc_html( $print_title ) . '</h4>';
 	$columns = [];
