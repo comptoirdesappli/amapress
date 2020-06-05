@@ -1927,13 +1927,16 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 		'<strong>GPRD Avancée</strong> : Utilisation avancée, suite d\'outils relatifs à la réglementation européenne RGPD sur la protection des données.',
 		'info' );
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'imsanity', 'Imsanity',
-		'<strong>Optimisation</strong> : Permet d’optimiser le poids des images dans la « Media Library » de Wordpress. Ce plugin est à installer par un webmaster. ',
+		'<strong>Optimisation</strong> : permet d’optimiser le poids des images dans la « Media Library » de Wordpress. Ce plugin est à installer par un webmaster. ',
+		'info' );
+	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'wp-sweep', 'WP Sweep',
+		'<strong>Optimisation</strong> : permet de nettoyer et optimiser la base de données de votre site. <strong>Pensez à faire une sauvegarde avant son utilisation.</strong>',
 		'info' );
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'stops-core-theme-and-plugin-updates', 'Easy Updates Manager',
 		'<strong>Optimisation</strong> : permet de mettre à jour Wordpress, les Extensions et les Thèmes de manière automatique (avec lancement d\'Updraft Plus au préalable)',
 		'info' );
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'media-cleaner', 'Media Cleaner',
-		'<strong>Optimisation</strong> : permet de nettoyer les fichiers média orphelins pour libérer de l\'espace sur votre hébergement. Pensez à faire une sauvegarde avant son utilisation.',
+		'<strong>Optimisation</strong> : permet de nettoyer les fichiers média orphelins pour libérer de l\'espace sur votre hébergement. <strong>Pensez à faire une sauvegarde avant son utilisation.</strong>',
 		'info' );
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'classic-editor', 'Classic Editor',
 		'<strong>Avancé</strong> : permet de restaurer <a href="https://wordpress.org/plugins/classic-editor/" target="_blank">l\'éditeur classique</a> de Wordpress, remplacé par <a href="https://wpformation.com/gutenberg-wordpress-mode-emploi/" target="_blank">l\'éditeur Gutenberg</a> depuis la version 5',
