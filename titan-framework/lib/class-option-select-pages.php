@@ -52,26 +52,6 @@ class TitanFrameworkOptionSelectPages extends TitanFrameworkOptionSelect {
 		return $ret;
 	}
 
-	public function generateMember() {
-		$mn        = strtolower( $this->getMemberName() );
-		$post_type = ucfirst( amapress_simplify_post_type( $this->settings['post_type'] ) );
-
-		return '
-		private $' . $mn . ' = null;
-		public function get' . $this->getMemberName() . '() {
-			$this->ensure_init();
-			$v = $this->custom[\'' . $this->getID() . '\'];
-			if (empty($v)) return null;
-			if ($this->' . $mn . ' == null) $this->' . $mn . ' = new Amapress' . $post_type . '($v);
-			return $this->' . $mn . ';
-		}
-		public function set' . $this->getMemberName() . '($value) {
-			update_post_meta($this->post->ID, \'' . $this->getID() . '\', $value);
-			$this->' . $mn . ' = null;
-		}
-		';
-	}
-
 	/*
 	 * Display for theme customizer
 	 */

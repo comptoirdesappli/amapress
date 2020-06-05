@@ -387,9 +387,4 @@ jQuery(function($) {
 			$this->echoOptionFooterBare( 'before' !== $this->settings['show_desc'] );
 		}
 	}
-
-	public
-	function generateMember() {
-		return '';
-	}
 }

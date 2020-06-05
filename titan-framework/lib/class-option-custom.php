@@ -181,10 +181,6 @@ class TitanFrameworkOptionCustom extends TitanFrameworkOption {
 			'custom'   => $this->settings['custom'],
 		) ) );
 	}
-
-	public function generateMember() {
-		return '';
-	}
 }
 
 // We create a new control for the theme customizer.

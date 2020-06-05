@@ -693,25 +693,4 @@ class TitanFrameworkMetaBox {
 
 		return $obj;
 	}
-
-	public
-	function generateClass(
-		$internal_post_type, $options = null
-	) {
-		$pt        = $this->settings['post_type'];
-		$post_type = amapress_simplify_post_type( is_array( $this->settings['post_type'] ) ? array_shift( $pt ) : $this->settings['post_type'] );
-
-		return 'class ' . ucfirst( $this->owner->optionNamespace ) . ucfirst( $post_type ) . ' extends TitanEntity {
-			const INTERNAL_POST_TYPE = \'' . $internal_post_type . '\';
-			const POST_TYPE = \'' . $post_type . '\';
-
-			function __construct($post_id) {
-				parent::__construct($post_id);
-			}
-
-			' . implode( "\n", array_map( function ( TitanFrameworkOption $o ) {
-				return $o->generateMember();
-			}, $options ? $options : $this->options ) ) . '
-		}';
-	}
 }

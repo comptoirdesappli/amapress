@@ -39,26 +39,6 @@ class TitanFrameworkOptionMulticheckPages extends TitanFrameworkOptionMulticheck
 		return $ret;
 	}
 
-	public function generateMember() {
-		$mn        = $this->getMemberName();
-		$post_type = ucfirst( amapress_simplify_post_type( $this->settings['post_type'] ) );
-
-		return '
-		private $' . $mn . ' = null;
-		public function get' . $mn . '() {
-			$this->ensure_init();
-			$v = $this->custom[\'' . $this->getID() . '\'];
-			if (empty($v)) return array();
-			if ($this->' . $mn . ' == null) $this->' . $mn . ' = array_map(function($o) { return new Amapress' . $post_type . '($o); }, $v);
-			return $this->' . $mn . ';
-		}
-		public function set' . $mn . '($value) {
-			update_post_meta($this->post->ID, \'' . $this->getID() . '\', $value);
-			$this->' . $mn . ' = null;
-		}
-		';
-	}
-
 	/*
 	 * Display for theme customizer
 	 */

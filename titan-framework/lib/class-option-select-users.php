@@ -184,25 +184,6 @@ class TitanFrameworkOptionSelectUsers extends TitanFrameworkOptionSelect {
 		return apply_filters( "tf_select_users_title", $dn, $user, $this );
 	}
 
-	public function generateMember() {
-		$mn = strtolower( $this->getMemberName() );
-
-		return '
-		private $' . $mn . ' = null;
-		public function get' . $this->getMemberName() . '() {
-			$this->ensure_init();
-			$v = $this->custom[\'' . $this->getID() . '\'];
-			if (empty($v)) return null;
-			if ($this->' . $mn . ' == null) $this->' . $mn . ' = AmapressUser::getBy($v);
-			return $this->' . $mn . ';
-		}
-		public function set' . $this->getMemberName() . '($value) {
-			update_post_meta($this->post->ID, \'' . $this->getID() . '\', $value);
-			$this->' . $mn . ' = null;
-		}
-		';
-	}
-
 	/*
 	 * Display for theme customizer
 	 */

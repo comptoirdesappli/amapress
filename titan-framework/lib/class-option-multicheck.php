@@ -200,40 +200,6 @@ class TitanFrameworkOptionMulticheck extends TitanFrameworkOption {
 		?></select><?php
 	}
 
-	public function generateMember() {
-		$mn    = $this->getMemberName();
-		$cases = '';
-		foreach ( $this->settings['options'] as $k => $v ) {
-			if ( is_array( $v ) ) {
-				foreach ( $v as $kk => $vv ) {
-					$cases .= "\ncase '$kk':\n\treturn '$vv';";
-				}
-			} else {
-				$cases .= "\ncase '$k':\n\treturn '$v';";
-			}
-		}
-
-		return '
-		public function get' . $mn . 'Display() {
-			$this->ensure_init();
-			return array_map($this->custom[\'' . $this->getID() . '\'], function($v) {
-				switch ($v) {
-					' . $cases . '
-					default:
-						return $v;
-				}
-			});
-		}
-		public function get' . $mn . '() {
-			$this->ensure_init();
-			return $this->custom[\'' . $this->getID() . '\'];
-		}
-		public function set' . $mn . '($value) {
-			update_post_meta($this->post->ID, \'' . $this->getID() . '\', $value);
-		}
-		';
-	}
-
 	/*
 	 * Display for theme customizer
 	 */

@@ -53,24 +53,6 @@ class TitanFrameworkOptionEditor extends TitanFrameworkOption {
 		return stripslashes( $value );
 	}
 
-	public function generateMember() {
-		$mn = $this->getMemberName();
-
-		return '
-		public function get' . $mn . '() {
-			$this->ensure_init();
-			return wpautop($this->custom[\'' . $this->getID() . '\']);
-		}
-		public function get' . $mn . 'Raw() {
-			$this->ensure_init();
-			return $this->custom[\'' . $this->getID() . '\'];
-		}
-		public function set' . $mn . '($value) {
-			update_post_meta($this->post->ID, \'' . $this->getID() . '\', $value);
-		}
-		';
-	}
-
 	/*
 	 * Display for theme customizer
 	 */
