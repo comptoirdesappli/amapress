@@ -389,7 +389,7 @@ function amapress_get_state() {
 
 	$pwa_short_name       = Amapress::getOption( 'pwa_short_name' );
 	$state['05_config'][] = amapress_get_check_state(
-		amapress_is_plugin_active( 'pwa' ) ? ( ! empty( $pwa_short_name ) ? 'success' : 'warning' ) : 'info',
+		'active' === amapress_is_plugin_active( 'pwa' ) ? ( ! empty( $pwa_short_name ) ? 'success' : 'warning' ) : 'info',
 		'Configuration Progressive Web App',
 		'Configurer un nom de raccourci (max 12 caractères), une couleur de thème et un type d\'affichage',
 		admin_url( 'options-general.php?page=amapress_pwa_options_page' )
@@ -397,7 +397,7 @@ function amapress_get_state() {
 
 	$state['05_config'][] = amapress_check_plugin_install( 'autoptimize', 'Autoptimize',
 		'<strong>Recommandé</strong> : permet d\'optimiser la vitesse du site',
-		amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
+		'active' === amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
 
 	$permalink_structure = get_option( 'permalink_structure' );
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
@@ -1613,7 +1613,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 				return "<a href='{$l}' target='_blank'>{$tit}</a>";
 			}, $not_online_contrats ) ) : '' )
 	);
-	$with_word_contrats = array_filter( $subscribable_contrat_instances, function ( $c ) {
+	$with_word_contrats         = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe() && ! empty( $c->getContratModelDocFileName() );
 	} );
@@ -1621,7 +1621,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe() && ! empty( $c->getContratModelDocFileName() ) && true !== $c->getContratModelDocStatus();
 	} );
-	$without_word_contrats = array_filter( $subscribable_contrat_instances, function ( $c ) {
+	$without_word_contrats      = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
 		return $c->canSelfSubscribe() && ! $c->getContratWordModelId();
 	} );
@@ -1996,7 +1996,7 @@ function amapress_get_updraftplus_backup_intervals() {
 }
 
 function amapress_get_updraftplus_backup_status() {
-	if ( amapress_is_plugin_active( 'updraftplus' ) ) {
+	if ( 'active' === amapress_is_plugin_active( 'updraftplus' ) ) {
 		$updraft_interval          = get_option( 'updraft_interval' );
 		$updraft_interval_database = get_option( 'updraft_interval_database' );
 		if ( empty( $updraft_interval ) || empty( $updraft_interval_database ) ) {
@@ -2009,7 +2009,7 @@ function amapress_get_updraftplus_backup_status() {
 			return is_array( $updraft_service ) ? implode( ',', $updraft_service ) : $updraft_service;
 		}
 	} else {
-		return 'plugin_missing';
+		return 'inactive';
 	}
 }
 
