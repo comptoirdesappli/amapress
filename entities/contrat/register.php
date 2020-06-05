@@ -2633,7 +2633,7 @@ function amapress_can_delete_attachment( $can, $post_id ) {
 		foreach ( $values as $v ) {
 			$v = maybe_unserialize( $v );
 			if ( is_array( $v ) ) {
-				$attachments += $v;
+				$attachments = array_merge( $attachments, $v );
 			} else {
 				$attachments[] = $v;
 			}

@@ -66,7 +66,7 @@ class AmapressDistributions {
 			foreach ( amapress_get_col_cached( $query ) as $responsables ) {
 				$v = maybe_unserialize( $responsables );
 				if ( is_array( $v ) ) {
-					$resp_ids += $v;
+					$resp_ids = array_merge( $resp_ids, $v );
 				} else {
 					$resp_ids[] = $v;
 				}
@@ -108,7 +108,7 @@ class AmapressDistributions {
 			foreach ( amapress_get_col_cached( $query ) as $responsables ) {
 				$v = maybe_unserialize( $responsables );
 				if ( is_array( $v ) ) {
-					$resp_ids += $v;
+					$resp_ids = array_merge( $resp_ids, $v );
 				} else {
 					$resp_ids[] = $v;
 				}
