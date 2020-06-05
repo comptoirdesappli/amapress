@@ -348,6 +348,17 @@ function amapress_get_state() {
 		);
 	}
 
+	if ( 'active' === amapress_is_plugin_active( 'akismet' ) ) {
+		if ( ! amapress_has_akismet_api_key() ) {
+			$state['05_config'][] = amapress_get_check_state(
+				'warning',
+				'Clé API Akismet',
+				'Une clé API doit être configurée pour qu\'Akismet soit fonctionnel',
+				admin_url( 'options-general.php?page=akismet-key-config' )
+			);
+		}
+	}
+
 	$state['05_config'][] = amapress_get_check_state(
 		is_ssl() ? 'success' : 'warning',
 		is_ssl() ? 'HTTPS Activé' : 'HTTPS Désactivé',
@@ -2017,6 +2028,18 @@ function amapress_get_updraftplus_backup_status() {
 	} else {
 		return 'inactive';
 	}
+}
+
+function amapress_has_akismet_api_key() {
+	if ( is_callable( array( 'Akismet', 'get_api_key' ) ) ) {
+		// Akismet v3.0+
+		return (bool) Akismet::get_api_key();
+	}
+	if ( function_exists( 'akismet_get_key' ) ) {
+		return (bool) akismet_get_key();
+	}
+
+	return false;
 }
 
 function amapress_check_ssl_in_content() {
