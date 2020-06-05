@@ -327,7 +327,7 @@ function amapress_get_state() {
 			'error',
 			'Extension PHP ZIP',
 			'L\'extension ZIP de PHP doit être activée pour le bon fonctionnement d\'Amapress',
-			admin_url( 'https://www.php.net/manual/fr/zip.setup.php' )
+			'https://www.php.net/manual/fr/zip.setup.php'
 		);
 	}
 	if ( ! extension_loaded( 'curl' ) ) {
@@ -335,7 +335,7 @@ function amapress_get_state() {
 			'error',
 			'Extension PHP cURL',
 			'L\'extension cURL de PHP doit être activée pour le bon fonctionnement d\'Amapress',
-			admin_url( 'https://www.php.net/manual/fr/curl.setup.php' )
+			'https://www.php.net/manual/fr/curl.setup.php'
 		);
 	}
 
@@ -344,7 +344,7 @@ function amapress_get_state() {
 			'warning',
 			'Extension PHP IMAP',
 			'L\'extension IMAP de PHP doit être activée pour que les Emails groupés soient actifs',
-			admin_url( 'https://www.php.net/manual/fr/imap.setup.php' )
+			'https://www.php.net/manual/fr/imap.setup.php'
 		);
 	}
 
