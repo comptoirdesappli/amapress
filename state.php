@@ -1918,6 +1918,9 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 	$state['37_plugins_add'][] = amapress_check_plugin_install( 'email-subscribers', 'Email Subscribers & Newsletters',
 		'<strong>Optionnel</strong> : permet aux amapiens d\'être notifiés des nouveaux articles ; permet de générer une newsletter avec le contenu récemment mis à jour',
 		'info' );
+	$state['37_plugins_add'][] = amapress_check_plugin_install( 'ml-slider', 'Meta Slider',
+		'<strong>Optionnel</strong> : permet de générer un carrousel/slider de contenu sur votre site, par exemple avec les dernières news sur la page d\'accueil',
+		'info' );
 
 	$state['38_plugins_adv']   = array();
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'wordpress-seo', 'Yoast SEO',
