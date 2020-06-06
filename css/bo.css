@@ -19,6 +19,10 @@
     table-layout: auto;
 }
 
+.gestion-contrats_page_contrats_quantites_stats .titan-framework-panel-wrap .tf-form-table {
+    table-layout: fixed;
+}
+
 .amapress-check a {
     color: black;
 }

@@ -1898,10 +1898,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 													'searching'    => true,
 													'nowrap'       => false,
 													'responsive'   => false,
-													'init_as_html' => true,
-													'fixedHeader'  => array(
-														'headerOffset' => 32
-													),
+													'bAutoWidth'   => true,
+													'scrollX'      => true,
+													'scrollY'      => '350px',
+													'fixedColumns' => [ 'leftColumns' => 2 ],
 												),
 												array(
 													Amapress::DATATABLES_EXPORT_EXCEL
