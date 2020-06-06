@@ -1204,7 +1204,7 @@ function amapress_get_contrat_quantite_xlsx(
 	}
 	$data = amapress_get_contrat_quantite_datatable(
 		$contrat->ID, null,
-		null, [
+		'first', [
 		'show_price'     => $contrat->isPanierVariable(),
 		'show_adherents' => $show_adherents,
 		'show_all_dates' => true,
