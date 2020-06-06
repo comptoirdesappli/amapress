@@ -1816,6 +1816,10 @@ function amapress_get_contrat_quantite_datatable(
 	}
 
 	if ( 'xlsx' == $options['mode'] ) {
+		foreach ( $data as $k => $v ) {
+			$data[ $k ]['price_d'] = $v['price'];
+		}
+
 		return [
 			'columns' => $columns,
 			'data'    => $data
