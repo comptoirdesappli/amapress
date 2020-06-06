@@ -2301,7 +2301,8 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function canBeArchived() {
-		return ! $this->isArchived() && amapress_time() > Amapress::add_a_month( Amapress::end_of_day( $this->getDate_fin() ), 3 );
+		return ! $this->isArchived() && amapress_time() > Amapress::add_a_month(
+				Amapress::end_of_day( $this->getDate_fin() ), Amapress::getOption( 'archive_months', 3 ) );
 	}
 
 	public function isArchived() {

@@ -2104,11 +2104,23 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Durée en jour de la période de renouvellement',
 											'type'    => 'number',
 											'default' => 30,
+											'min'     => 1,
+											'unit'    => 'jours',
 //                                            'capability' => 'manage_amapress',
 										),
 										array(
 											'type' => 'note',
 											'desc' => 'Le renouvellement des contrats se fait dans ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ), 'Tableau de bord>Gestion Contrats> Edition' )
+										),
+										array(
+											'id'      => 'archive_months',
+											'name'    => 'Délai d\'archivage minimum',
+											'type'    => 'number',
+											'unit'    => 'mois',
+											'default' => 3,
+											'min'     => 1,
+											'desc'    => 'Délai en mois après la fin d\'un contrat après lequel l\'archivage devient possible',
+//                                            'capability' => 'manage_amapress',
 										),
 										array(
 											'type' => 'save',
