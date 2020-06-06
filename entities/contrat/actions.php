@@ -5,6 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 add_action( 'admin_post_paiement_table_pdf', function () {
+	if ( ! amapress_can_access_admin() ) {
+		wp_die( 'Accès interdit' );
+	}
+
 	$contrat_instance_id = intval( $_GET['contrat'] );
 	$contrat             = AmapressContrat_instance::getBy( $contrat_instance_id );
 	if ( ! $contrat ) {
@@ -14,9 +18,9 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 		wp_die( "Action impossible pour un contrat archivé" );
 	}
 
-	$lieu_id             = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
-	$format              = isset( $_GET['format'] ) ? $_GET['format'] : 'A3';
-	$html                = amapress_get_paiement_table_by_dates(
+	$lieu_id = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
+	$format  = isset( $_GET['format'] ) ? $_GET['format'] : 'A3';
+	$html    = amapress_get_paiement_table_by_dates(
 		$contrat_instance_id,
 		$lieu_id,
 		array(
@@ -36,6 +40,10 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 } );
 
 add_action( 'admin_post_paiement_table_xlsx', function () {
+	if ( ! amapress_can_access_admin() ) {
+		wp_die( 'Accès interdit' );
+	}
+
 	$contrat_instance_id = intval( $_GET['contrat'] );
 	$contrat             = AmapressContrat_instance::getBy( $contrat_instance_id );
 	if ( ! $contrat ) {
@@ -66,6 +74,10 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 } );
 
 add_action( 'admin_post_archives_inscriptions', function () {
+	if ( ! amapress_can_access_admin() ) {
+		wp_die( 'Accès interdit' );
+	}
+
 	$contrat_instance_id = intval( $_GET['contrat'] );
 	$contrat_instance    = AmapressContrat_instance::getBy( $contrat_instance_id );
 	if ( ! $contrat_instance ) {
@@ -81,6 +93,10 @@ add_action( 'admin_post_archives_inscriptions', function () {
 } );
 
 add_action( 'admin_post_archives_cheques', function () {
+	if ( ! amapress_can_access_admin() ) {
+		wp_die( 'Accès interdit' );
+	}
+
 	$contrat_instance_id = intval( $_GET['contrat'] );
 	$lieu_id             = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
 	$contrat_instance    = AmapressContrat_instance::getBy( $contrat_instance_id );
