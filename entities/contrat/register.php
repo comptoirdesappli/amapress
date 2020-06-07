@@ -2792,6 +2792,8 @@ add_action( 'admin_post_archive_contrat', function () {
 	$contrat->archive();
 
 	echo '<p style="color: green">Archivage effectué</p>';
+
+	echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=contrats_archives' ) ) . '">Retour à la liste des contrats archivables</a></p>';
 	die();
 } );
 
