@@ -1522,7 +1522,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['adherent.email']                   = [
+		$ret['adherent.email'] = [
 			'desc' => 'Email adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -2327,6 +2327,13 @@ class AmapressContrat_instance extends TitanEntity {
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 		$archives_infos['file_inscriptions'] = $filename;
+		foreach ( [ 'adherents_date', 'group_date' ] as $xl_name ) {
+			$xlsx = amapress_get_contrat_quantite_xlsx( $this->ID, $xl_name );
+			Amapress::createXLSXFromDatatableAsFile(
+				$xlsx['columns'], $xlsx['data'], Amapress::getArchivesDir() . '/' . $xlsx['filename'], $xlsx['title']
+			);
+			$archives_infos["file_$xl_name"] = $xlsx['filename'];
+		}
 		//extract paiements xlsx
 		echo '<p>Stockage des excel des chèques</p>';
 		foreach ( ( count( $this->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $this->getLieuxIds() ) : $this->getLieuxIds() ) as $lieu_id ) {

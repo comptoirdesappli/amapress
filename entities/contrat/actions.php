@@ -98,6 +98,7 @@ add_action( 'admin_post_archives_inscriptions', function () {
 	}
 
 	$contrat_instance_id = intval( $_GET['contrat'] );
+	$type                = isset( $_GET['type'] ) ? $_GET['type'] : 'inscriptions';
 	$contrat_instance    = AmapressContrat_instance::getBy( $contrat_instance_id );
 	if ( ! $contrat_instance ) {
 		return;
@@ -108,7 +109,13 @@ add_action( 'admin_post_archives_inscriptions', function () {
 		return;
 	}
 
-	Amapress::sendDocumentFile( Amapress::getArchivesDir() . '/' . $archives_infos['file_inscriptions'], $archives_infos['file_inscriptions'] );
+	if ( isset( $archives_infos["file_$type"] ) ) {
+		Amapress::sendDocumentFile(
+			Amapress::getArchivesDir() . '/' . $archives_infos["file_$type"],
+			$archives_infos["file_$type"] );
+	} else {
+		wp_die( 'Fichier introuvable' );
+	}
 } );
 
 add_action( 'admin_post_archives_cheques', function () {
@@ -128,5 +135,7 @@ add_action( 'admin_post_archives_cheques', function () {
 		return;
 	}
 
-	Amapress::sendDocumentFile( Amapress::getArchivesDir() . '/' . $archives_infos["file_cheques_$lieu_id"], $archives_infos["file_cheques_$lieu_id"] );
+	Amapress::sendDocumentFile(
+		Amapress::getArchivesDir() . '/' . $archives_infos["file_cheques_$lieu_id"],
+		$archives_infos["file_cheques_$lieu_id"] );
 } );

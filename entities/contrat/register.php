@@ -288,6 +288,8 @@ function amapress_register_entities_contrat( $entities ) {
 						$lieu = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
 						echo '<a href="' . admin_url( 'admin-post.php?action=archives_cheques&lieu=' . $lieu_id . '&contrat=' . $post->ID ) . '">Chèques/règlements - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) . ' (XLSX)</a>,';
 					}
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=group_date&contrat=' . $post->ID ) . '">Livraisons par dates (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=adherents_date&contrat=' . $post->ID ) . '">Livraisons par adhérents (XLSX)</a>,';
 					echo '</p>';
 				}
 			}
@@ -1271,7 +1273,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'date_ouverture' => array(
+			'date_ouverture'        => array(
 				'name'           => amapress__( 'Ouverture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
