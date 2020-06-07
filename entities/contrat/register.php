@@ -277,6 +277,8 @@ function amapress_register_entities_contrat( $entities ) {
 					echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">Adhérents (XLSX)</a>,';
 					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">Chèques/règlements (XLSX)</a>,';
 					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques/règlements (PDF)</a>';
+					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=group_date&contrat=' . $post->ID ) . '">Livraisons par dates (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_date&contrat=' . $post->ID ) . '">Livraisons par adhérents (XLSX)</a>,';
 					echo '</p>';
 				} else {
 					echo '<h4>TELECHARGER ARCHIVES</h4>';
@@ -1135,7 +1137,7 @@ jQuery(function($) {
 				'group'       => '4/6 - Paniers',
 				'desc'        => 'Rendre accessible la description des paniers',
 			),
-			'rattrapage'     => array(
+			'rattrapage'            => array(
 				'name'        => amapress__( 'Rattrapage' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1238,7 +1240,7 @@ jQuery(function($) {
 			),
 
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe' => array(
+			'self_subscribe'        => array(
 				'name'           => amapress__( 'Activer' ),
 				'type'           => 'checkbox',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1246,7 +1248,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'self_contrats'  => array(
+			'self_contrats'         => array(
 				'name'           => amapress__( 'Autres contrats' ),
 				'type'           => 'select-posts',
 				'post_type'      => 'amps_contrat_inst',
@@ -1260,7 +1262,7 @@ jQuery(function($) {
 				'tags'           => true,
 				'autocomplete'   => true,
 			),
-			'self_edit'      => array(
+			'self_edit'             => array(
 				'name'           => amapress__( 'Editer' ),
 				'type'           => 'checkbox',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1410,7 +1412,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 				'show_column' => false,
 			),
-			'status_type'    => array(
+			'status_type'           => array(
 				'name'                 => amapress__( 'Résumé' ),
 				'type'                 => 'custom',
 				'use_custom_as_column' => true,

@@ -73,6 +73,25 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModelTitle()} - {$lieu_name}" );
 } );
 
+add_action( 'admin_post_delivery_table_xlsx', function () {
+	if ( ! amapress_can_access_admin() ) {
+		wp_die( 'Accès interdit' );
+	}
+
+	$contrat_instance_id = intval( $_GET['contrat'] );
+	$type                = isset( $_GET['type'] ) ? $_GET['type'] : 'date';
+	$contrat_instance    = AmapressContrat_instance::getBy( $contrat_instance_id );
+	if ( ! $contrat_instance ) {
+		return;
+	}
+
+	$xlsx = amapress_get_contrat_quantite_xlsx( $contrat_instance_id, $type );
+	$xl   = Amapress::createXLSXFromDatatable(
+		$xlsx['columns'], $xlsx['data'], $xlsx['title']
+	);
+	Amapress::sendXLSXFromPHPExcelObject( $xl, $xlsx['filename'] );
+} );
+
 add_action( 'admin_post_archives_inscriptions', function () {
 	if ( ! amapress_can_access_admin() ) {
 		wp_die( 'Accès interdit' );

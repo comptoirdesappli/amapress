@@ -3826,9 +3826,6 @@ class Amapress {
 			$pdf->SetMargins( 15, 15, - 1, true );
 			$pdf->AddPage();
 			@$pdf->writeHTML( $html );
-//			$html2pdf = new \Spipu\Html2Pdf\Html2Pdf( $orientation, $format, 'fr' );
-//			$html2pdf->addExtension(new IgnoreScriptTagExtension());
-//			$html2pdf->writeHTML( $html );
 
 			return $pdf->Output( $pdf_name, $dest );
 		} catch ( Exception $exception ) {
@@ -3864,6 +3861,16 @@ class Amapress {
 		$objWriter->save( $filename );
 
 		return $filename;
+	}
+
+	public static function createXLSXFromDatatableAsFile(
+		$columns, $data, $full_excel_file_name, $title
+	) {
+		$objPHPExcel = self::createXLSXFromDatatable( $columns, $data, $title );
+		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+		$objWriter->save( $full_excel_file_name );
+
+		return $full_excel_file_name;
 	}
 
 	public static function createXLSXFromHtml(
