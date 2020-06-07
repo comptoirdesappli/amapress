@@ -65,7 +65,6 @@ function amapress_next_events_shortcode( $atts ) {
 	}
 	$had_events = false;
 //    var_dump($next_events);
-	$last_date       = null;
 	$lieu_hour_dic   = array();
 	$dt_dic          = array();
 	$evts            = array();
@@ -76,28 +75,34 @@ function amapress_next_events_shortcode( $atts ) {
 		$dt      = $event->getStartDate();
 		$dt_end  = $event->getEndDate();
 		$ev_date = date( 'd/m/Y', $dt );
-		if ( $last_date != $ev_date ) {
-			$last_date = $ev_date;
-		}
 
 		$dt_dic[ $ev_date ] = $dt;
 		if ( ( $to_date > 0 ) && ( $dt > $to_date ) ) {
 			break;
 		}
-		$lieu_hour                   = $event->getLieu()->getLieuId() . '_' . date( 'H:i', $dt ) . '_' . date( 'H:i', $dt_end );
-		$lieu_hour_dic[ $lieu_hour ] = array( 'lieu' => $event->getLieu(), 'date' => $dt, 'date_end' => $dt_end );
-		$type                        = $event->getType();
-		$type_priorities[ $type ]    = $event->getPriority();
-		if ( ! isset( $evts[ $ev_date ] ) ) {
-			$evts[ $ev_date ] = array();
+
+		$days = ( Amapress::start_of_day( $dt_end ) - Amapress::start_of_day( $dt ) ) / DAY_IN_SECONDS + 1;
+		for ( $day = 0; $day < $days; $day ++ ) {
+			$ev_date = date( 'd/m/Y', $dt );
+
+			$dt_dic[ $ev_date ]          = $dt;
+			$lieu_hour                   = $event->getLieu()->getLieuId() . '_' . date( 'H:i', $dt ) . '_' . date( 'H:i', $dt_end );
+			$lieu_hour_dic[ $lieu_hour ] = array( 'lieu' => $event->getLieu(), 'date' => $dt, 'date_end' => $dt_end );
+			$type                        = $event->getType();
+			$type_priorities[ $type ]    = $event->getPriority();
+			if ( ! isset( $evts[ $ev_date ] ) ) {
+				$evts[ $ev_date ] = array();
+			}
+			if ( ! isset( $evts[ $ev_date ][ $lieu_hour ] ) ) {
+				$evts[ $ev_date ][ $lieu_hour ] = array();
+			}
+			if ( ! isset( $evts[ $ev_date ][ $lieu_hour ][ $type ] ) ) {
+				$evts[ $ev_date ][ $lieu_hour ][ $type ] = array();
+			}
+			$evts[ $ev_date ][ $lieu_hour ][ $type ][] = $event;
+
+			$dt += DAY_IN_SECONDS;
 		}
-		if ( ! isset( $evts[ $ev_date ][ $lieu_hour ] ) ) {
-			$evts[ $ev_date ][ $lieu_hour ] = array();
-		}
-		if ( ! isset( $evts[ $ev_date ][ $lieu_hour ][ $type ] ) ) {
-			$evts[ $ev_date ][ $lieu_hour ][ $type ] = array();
-		}
-		$evts[ $ev_date ][ $lieu_hour ][ $type ][] = $event;
 	}
 
 	$month_seps = array();
