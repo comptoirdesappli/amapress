@@ -66,7 +66,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 
 		do_action( 'tf_scheduler_option_changed', $this->getID(), $this );
 
-		$this->updateScheduler( true );
+		$this->updateScheduler();
 
 		return $ret;
 	}
@@ -82,11 +82,11 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 	public static function updateAllSchedulers() {
 		/** @var TitanFrameworkOptionEventScheduler $option */
 		foreach ( self::$scheduler_options as $option ) {
-			$option->updateScheduler( false );
+			$option->updateScheduler();
 		}
 	}
 
-	private function updateScheduler( $from_save ) {
+	private function updateScheduler() {
 		$hook_name           = $this->settings['hook_name'];
 		$hook_args_generator = $this->settings['hook_args_generator'];
 		if ( ! empty( $hook_name ) && ! empty( $hook_args_generator ) ) {
@@ -95,12 +95,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 				[];
 			if ( ! empty( $all_args ) ) {
 				$value = $this->getValue();
-				if ( $from_save ) {
-					$this->clear_all_scheduled_hook( $hook_name );
-				}
-				foreach ( $all_args as $args ) {
-					wp_clear_scheduled_hook( $hook_name, $args );
-				}
+				$this->clear_all_scheduled_hook( $hook_name );
 				if ( isset( $value['enabled'] ) && $value['enabled'] ) {
 					foreach ( $all_args as $args ) {
 						if ( ! isset( $args['time'] ) ) {
