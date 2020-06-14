@@ -1193,7 +1193,7 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 	) ) );
 	$check_role_js_code = 'return true;';
 	if ( $is_ref_prod ) {
-		$check_role_js_code = 'return ("referent" === value) || ("responsable_amap" === value) || ("producteur" === value);';
+		$check_role_js_code = 'return ("referent" === value) || ("administrator" === value) || ("responsable_amap" === value) || ("producteur" === value);';
 	}
 	echo '<script type="text/javascript">
 jQuery(function($) {
