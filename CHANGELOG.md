@@ -1,3 +1,148 @@
+# 0.95.0 (2020-06-19)
+
+* mettre l'url du webservice Amapress à sa valeur par défaut https://convert.amapress.fr 
+* **Distribution:** 
+    - afficher un bouton Inscriptions menant vers la page d'inscriptions aux distributions 
+    - ne pas afficher l'encadré Intermittents si le système n'est pas actif 
+    - affichage du nombre de responsables du lieu, lieu de substitution, contrats 
+    - dans editer distribution (backoffice), en mode admin direct 
+    - précision sur l'édition du nombre de responsable (du lieu, supplémentaires) et séparation des boutons pour éditer les informations de chaque distribution (horaires, créneaux, infos) 
+    - affichage du nombre de responsables de distribution du lieu sous nombre de responsable supplémentaires 
+    - affichage du nombre total de responsables de distributions 
+    - remplacement bouton M'inscrire par un lien vers la page d'inscription aux distributions + refactoring 
+* **Formulaire de demande d'adhésions:** 
+    - ajout du formulaire dans les infos de contacts publics 
+    - placement dans le menu et nommage 
+* **Groupes de produits:** s'assurer que le multiple est > 1 
+* **Inscription distribution:** 
+    - mode scroll, responsive = false sinon le "plus" bug 
+    - rôle de responsables, uniquement pour les lieux principaux si plusieurs 
+* **Inscription en ligne:** 
+    - amélioration affichage des quantités avec gestion des groupes de produits 
+    - autoriser les co-adhérents à voir le détails des inscriptions de l'adhérent principal 
+    - lien vers contrats si déjà une adhésion
+    - intégration complète de New User Approve (pas de notification nouvelle inscription utilisateur native puisque New User Approve envoie une notif) + bug send_welcome (suite issue [#19](https://github.com/comptoirdesappli/amapress/issues/19)) 
+    - option Rendre accessible les pré-inscriptions en ligne pour un contrat uniquement si l'amapien a une inscription à un ou plusieurs autres contrats 
+    - paramètre check_adhesion_received pour empêcher l'inscription tant que l'adhésion n'est pas validée 
+    - paramètre check_adhesion_received_or_previous pour empêcher l'inscription tant que l'adhésion n'est pas validée à moins qu'une adhésion précédente ait été validée 
+    - paramètres globaux dans Tableau de bord>Gestion Contrats>Configuration, onglet Contrats pour la vérification d'adhésions validées 
+    - à la fin d'une inscription, afficher le bouton 'Livraisons' à côté du bouton 'Imprimer' (pour les paniers modulables) 
+    - étape récapitulatif et réglements, paramètre use_quantite_tables pour afficher un tableaux des quantités (date en ligne, quantités en colonnes) 
+    - **connecté:** paramètre skip_coords pour passer l'étape de saisie de coordonnées et des coadhérents + ne pas afficher les inscriptions en cours (par défaut, paramètre show_current_inscriptions) 
+    - **vue Sommes dues:** affichage du statut des réglèments des inscriptions 
+    - correction et gestion de l'autofill quand l'utilisateur fait un retour dans l'historique lors de l'inscription (utilisation du polyfill autofill-event.js) 
+    - intégration  complète avec New User Approve (pas d'envoi de mail de bienvenue) + paramètre send_welcome pour interdire l'envoi du mail de bienvenue si nécessaire + mise à jour du remplacement de wp_new_user_notification (filtre wp_new_user_notification_email_admin) + mise en destinataire des Cc des notifications admin (Tableau de bord>Paramétrage>Paramétrage, onglet Notifications) de nouvel utilisateur à approuver par New User Approve (issue [#19](https://github.com/comptoirdesappli/amapress/issues/19)) 
+    - paniers modulables, gestion de multiples par groupe de produits (syntaxe [] dans l'intitulé) 
+    - paniers modulables, groupage, tri par groupage 
+    - paniers modulables, multiples, afficher le nombre actuel dans l'erreur 
+    - paniers modulables, permettre le groupage suivant la syntaxe [nom du groupe] spécificité (par ex, [Bière blonde] 33cl) dans l'interface de commande 
+    - possibilité de répartition des paiements en plusieurs fois au mois 
+    - gestion du mode "inscription partielle", avec Co-adhérents et Membres du foyer séparés + paramètre show_modify_coords pour afficher un bouton pour modifier ses coordonnées, ses membres du foyer et ses co-adhérents + possibilité de sélection de ses co-adhérents parmi la liste associé à l'adhérent principal 
+* **Quantités à la prochaine distribution:** correction calcul total (doublé) et nombre d'adhérents quand affichage des amapiens 
+* **Rappels:** 
+    - correction mise à jour de la planification si un des arguments du rappels change (heures de distribution, par ex) : suppression de tous les évènements relatifs et replanification 
+    - distributions, individuel aux amapiens, liens tests n'envoyer que quelques mails de test 
+    - amélioration affichage des dates heures de renvois et si pas de lien de renvoi manuel 
+    - quantités à la prochaine distribution, excel quantité joints, gestion des groupes de produits 
+    - quantités à la prochaine distribution, placeholders de quantités avec gestion des groupes de produits 
+    - récapitulatif à la clôture des inscriptions des contrats avec excels en pièces jointes 
+* **Statistiques Contrats:** amélioration interface (scroll) pour les paniers modulables 
+* **Visite:** 
+    - ne pas proposer l'inscription complète s'il y a des créneaux de visite 
+    - affichage d'un message d'avertissement contre les modifications si des amapiens sont déjà inscrits à des créneaux 
+    - statut (confirmée, à confirmer, annulée) 
+    - lieu externe (nom, adresse, accès) 
+    - inscriptions en créneaux configurables (par ex, matin, après-midi, journée) 
+* **Archivage:** gestion des contrat paniers modulables (sauvegarde des récapitulatifs de livraisons) 
+* **Co-adhérents/Membres du foyer:** séparation des deux types ; en mode "inscriptions partielles" les membres du foyer sont "co-adhérents" implicites et les co-adhérents sont attachés "par contrat" ; en mode "inscriptions complètes", les deux types sont implicitement "co-adhérents" sur tous les contrats souscrits 
+* **Command Palette:** ajout Documentation Amapress dans la liste des recherchables 
+* **Commentaires:** auto approbation des commentaires sur les évènements (visites, ag...) si amapien connecté et si l'option est activée quelque soit le réglage de la modération des commentaires dans les options générales 
+* **Contact publics:** liens pour les responsables pour voir le paramètrage des infos de contact depuis la page contact et inversement 
+* **Contenu des paniers:** placeholder contenu_paniers (par ex pour utilisation dans le mail de rappels aux amapiens) 
+* **Contrats:** 
+    - amélioration interface champ Durée de la période de renouvellement et ajout champ Délai d'archivage 
+    - lien de génération des récapitulatifs de livraisons 
+* **Créneaux:** 
+    - nommage des créneaux et gestion des créneaux multiples au même horaire de départ (matin, aprem, journée) 
+    - option pour ne pas envoyer la confirmation (amapien et admin) 
+    - placeholders: amapiens-inscrits-liste, amapiens-creneaux-liste, amapiens-creneaux-table, amapiens-creneaux-table-coords, amapiens-inscrits-table, amapiens-inscrits-table-coords, creneaux-table, creneaux-liste 
+    - syntaxe double parenthèses pour ne pas afficher les horaires des créneaux nommés 
+    - possibilité d'inscription aux créneaux (ou responsable de distribution) par les intermittents + rappels 
+* **Créneaux distribution:** 
+    - affichage d'un message d'avertissement contre les modifications si des amapiens sont déjà inscrits à des créneaux 
+    - complément explications de configuration 
+    - liste émargement, bouton pour passer dans une vue exportable en XLSX 
+    - rappels d'inscription aux créneaux de distributions aux amapiens non encore inscrits 
+* **Demande d'adhésion:** ajout status Annulée 
+* **Edition Inscription:** lien vers une vue Récapitulatif des livraisons 
+* **Mes contrats:** 
+    - paramètre _show_details_button_ pour afficher des boutons Détails à la place de mettre le détails des inscriptions dans la lsite des contrats 
+    - possibilité d'édition complète des membres du foyer 
+* **Mes infos:** possibilité d'édition complète des membres du foyer + refactoring code + validation 
+* **Emails groupés:** 
+    - affichage du nombre de mails en attente et en erreur pour chaque liste 
+    - affichage du nombre de membres et d'emails séparemment 
+    - affichage du nombre de message en attente dans le menu 
+    - affichage nombre de mails en attente d'envoi et de modération dans le menu 
+    - ajout de champs pour exclure des groupes et des utilisateurs individuels 
+    - File attente, logs, suppression par message orginal pour tous les destinataires 
+    - lien pour télécharger le fichier .eml (archives et modération) 
+    - nettoyage logs file d'attentes séparé et à 7 jours par défaut, le nettoyage des archives ne change pas 
+    - option Préserver l'émetteur et regroupage avec préfixe de sujet et Réponse à (Reply to renommé) 
+    - options pour inclure les modérateurs et les sans modération dans les membres 
+    - parsing des mails de bounces pour indiquer les destinataires en erreur 
+    - warning de configuration d'un Cron externe si des Emails groupés sont configurés 
+* **Emails groupés/Mail queue:** bouton pour remettre tous les messages en erreur dans la file d'attente d'envoi 
+* **Espace intermittents:** assistant d'inscription non connecté à l'espace intermittent sécurisé par clé partagée, shortcode [anon-intermittents-inscription] 
+* **Etat Amapress:** 
+    - check clé Akismet 
+    - outil pour mettre à jour le contenu du site (DB) de HTTP en HTTPS 
+    - suggestion plugin Meta Slider 
+    - suggestion plugin WP Sweep 
+* **Evènements:** gestion multi jour 
+* **Formulaire de demande d'adhésions:** 
+    - gestion de l'affichage et sauvegarde en demande d'adhésion des contrats actifs/souscrivables (paramètre) cochés + filtrage et tri par ordre d'affichage  ; case à cocher intermittent ; champ adresse en textarea ; affichage lieux principaux uniquement 
+    - suggestion plugin Contact Form 7 dans les extensions recommandées (1/) + Really Simple Captcha et Honeypot for Contact Form 7 pour l'anti bot de spam 
+* **Gardiens de paniers:** 
+    - message spécifique pour l'inscription et désinscription 
+    - affichage systématique sur la liste d'émargement + gestion désinscription + gestion commentaire du gardien de panier 
+    - paramètre allow_gardiens_comments pour masquer le commentaire d'inscription 
+* **Groupes de produits:** 
+    - amélioration affichage des quantités livrées (contrats, assistant d'inscription) avec mise en gras de la quantité et groupage par groupe produits s'il y en a + refactor getQuantite_pay_at_delivery 
+    - assistant inscription, gestion groupage dans récapitulatif de commandes et boutons Livraisons par contrat (paniers modulables) (+ shortcode) 
+    - génération contrats, gestion dans les tableaux par date (quantite_groupe, quantite_sans_groupe) + amélioration affichage par défaut paniers modulables + tableau détails par date et par produit + tableau par groupe de produits 
+    - gestion séparé d'un modèle de contrat par défaut pour les paniers modulables avec groupes de produits 
+    - lister les quantités dans l'ordre des groupes de produits s'il y en a (get_contrat_quantites) 
+    - Quantités à la prochaine distribution, gestion des groupes de produits + amélioration affichage "non plannifié" (si la date demandée n'a pas de distribution le jour ou suivants) + voir information distribution 
+* **Inscription distributions:** 
+    - amélioration interface par défaut (scroll et réduction de la taille de police) + ordre des responsables sur la liste d'éamargement + doc des paramètres sur le shortcode historique des responsables 
+    - ajout options de réglages de la vue d'inscription (largeur colonne, inscription co-adhérents/membres du foyer, taille de police, hauteur de vue, ordre des boutons d'inscription ...) dans Tableau de bord>Distributions>Configuration, onglet Inscription distribution 
+    - paramètre _prefer_inscr_button_first_ pour placer les boutons d'inscription en premier et les inscrits ensuite. 
+    - rôle de responsables, description placeholders resp_role, resp_role_desc et ajout resp_role_contrats 
+    - rôle de responsables, possibilité d'activer un rôle quand certaines productions sont livrées 
+    - possibilité de gestion des inscriptions des membres du foyer par l'amapien principal 
+    - correction affichage scroll + amapien sans contrat 
+* **Inscriptions/Adhésions:** placeholder %%id%% pour insérer une référence d'inscription/adhésion (par exemple dans la mention au sujet des paiements) 
+* **Inscriptions/Désinscriptions:** paramétrage de la clôture des inscriptions/désinscriptions (distributions, visite, évènements, cession de paniers) en heure avec l'évènement 
+* **Liste émargement:** 
+    - affichage des numéro de mobile (adhérents/repreneurs) pour les échanges de paniers 
+    - affichage du repreneur "non validé" si l'échange est encore en attente 
+* **Mail queue:** affichage du nombre de messages en erreur et en attente d'envoi dans les onglets correspondants 
+* intégration WP-Sweep (exlusion des terms des taxonomies Amapress hors produits et recettes) + cacher "Nettoyer tout" 
+* délai d'expiration de sessions courtes (30 jours) et longues (90 jours) 
+* envoi de message par l'hébergement et Emails groupés, lors de la distribution, ne pas envoyer à l'adresse du site et à chaque Email groupé si Cc/Bcc 
+* gestion de l'exclusion des taxonomies Amapress pour WP-Sweep 
+* gestion des membres du foyer et co-adhérents dans onglet Ajouter une coadhérent 
+* icone Forum des Amap, visible par défaut en mode Mobile + changement de couleur 
+* lien vers le Forum des Amap dans le bandeau Wordpress 
+* possibilité de saisie de coordonnées GPS pour les producteurs, lieu de distribution, évènements externes (et amapiens) si la résolution par adresse ne fonctionne pas (par exemple, les lieux-dits et les fermes isolées sont difficiles à trouver sur OpenStreetMap) 
+* **Quantité à la prochaine distribution:** affichage des rattrapages (double distributions, ...) 
+* **Rappels libres:** système de rappels libre récurrents (ou non) configurable et envoyés par le site (par exemple, rappel de location de lieu de distribution, réglement hébergement...) 
+* **Référents producteurs:** affichage du niveau de liage des référents producteurs (Producteur, Producteur/lieu, Production, Production/lieu) 
+* **Responsables de distribution:** possibilité de rôles de responsables de distribution 6 à 10 
+* **Shortcodes:** amapien-details-livraisons, Afficher les détails des livraisons de l'amapien par date ou producteur + amapien-details-paiements, Afficher le détails des sommes dues par l'amapien + calendrier-contrats, Afficher le calendrier des livraisons des contrats de l'amapien ou de tous les contrats 
+* Recherche dans le Tableau de Bord, son menu, l'Etat d'Amapress, les shortcodes, les titres de pages du site et les panneaux d'administration (titre des onglets et des pages) 
+
 # 0.94.25 (2020-04-18)
 * **Créneaux distribution:** 
     - affichage des créneaux horaires et des horaires de distribution configurés

@@ -502,34 +502,38 @@ class Amapress_EventBase extends TitanEntity {
 				$cc      = array_diff( $cc, $amapien->getAllEmails() );
 
 				if ( amapress_current_user_id() == $user_id ) {
-					amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
-						function ( $content, $user_id, $post ) use ( $requested_slot ) {
-							$content = str_replace( '%%creneau%%',
-								$requested_slot['display'], $content );
-							$content = str_replace( '%%creneau_date_heure%%',
-								date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
+					if ( Amapress::getOption( 'inscr-' . static::POST_TYPE . '-slot-send' ) ) {
+						amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
+							function ( $content, $user_id, $post ) use ( $requested_slot ) {
+								$content = str_replace( '%%creneau%%',
+									$requested_slot['display'], $content );
+								$content = str_replace( '%%creneau_date_heure%%',
+									date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
 
-							return $content;
-						}, static::POST_TYPE . '-slot', null, $cc
-					);
+								return $content;
+							}, static::POST_TYPE . '-slot', null, $cc
+						);
+					}
 				} else {
 					$responsable      = AmapressUser::getBy( amapress_current_user_id() );
 					$responsable_html = sprintf( '%s (%s)',
 						Amapress::makeLink( 'mailto:' . $responsable->getEmail(), $responsable->getDisplayName() ),
 						$responsable->getContacts() );
 
-					amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
-						function ( $content, $user_id, $post ) use ( $requested_slot, $responsable_html ) {
-							$content = str_replace( '%%creneau%%',
-								$requested_slot['display'], $content );
-							$content = str_replace( '%%creneau_date_heure%%',
-								date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
-							$content = str_replace( '%%responsable%%',
-								$responsable_html, $content );
+					if ( Amapress::getOption( 'inscr-' . static::POST_TYPE . '-admin-slot-send' ) ) {
+						amapress_mail_current_user_inscr( $this, $user_id, $this->getMailEventType(),
+							function ( $content, $user_id, $post ) use ( $requested_slot, $responsable_html ) {
+								$content = str_replace( '%%creneau%%',
+									$requested_slot['display'], $content );
+								$content = str_replace( '%%creneau_date_heure%%',
+									date_i18n( 'd/m/Y H:i', $requested_slot['date'] ), $content );
+								$content = str_replace( '%%responsable%%',
+									$responsable_html, $content );
 
-							return $content;
-						}, static::POST_TYPE . '-admin-slot', null, $cc
-					);
+								return $content;
+							}, static::POST_TYPE . '-admin-slot', null, $cc
+						);
+					}
 				}
 
 				return 'ok';
