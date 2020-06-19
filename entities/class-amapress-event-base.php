@@ -191,7 +191,7 @@ class Amapress_EventBase extends TitanEntity {
 				foreach ( explode( '|', $slots_conf ) as $conf ) {
 					$m = array();
 					//18h00-20h00[10m;2p]|
-					if ( preg_match( '/(?:(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?)?(?:\((?<name>[^\)]+)\))?(?:\[(?<inter>\d+)m(?:i?n)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
+					if ( preg_match( '/(?:(?<start_h>\d{1,2})h(?<start_m>\d{2})?-(?<end_h>\d{1,2})h(?<end_m>\d{2})?)?(?:\((?<anon>\()?(?<name>[^\)]+)\)\)?)?(?:\[(?<inter>\d+)m(?:i?n)?(?:[,;](?<max>\d+)p)?\])?/', $conf, $m ) !== false ) {
 						if ( empty( $m['start_h'] ) ) {
 							$m['start_h'] = intval( date( 'H', $this->getStartDateAndHour() ) );
 							$m['start_m'] = intval( date( 'i', $this->getStartDateAndHour() ) );
@@ -208,6 +208,7 @@ class Amapress_EventBase extends TitanEntity {
 						$inter = isset( $m['inter'] ) ? intval( $m['inter'] ) : 0;
 						$max   = isset( $m['max'] ) ? intval( $m['max'] ) : 0;
 						$name  = ! empty( $m['name'] ) ? $m['name'] : '';
+						$anon  = ! empty( $m['anon'] );
 
 						$dt_start = new DateTime();
 						$dt_start->setTimestamp( $this->getStartDateAndHour() );
@@ -234,7 +235,7 @@ class Amapress_EventBase extends TitanEntity {
 								$key = strval( $inter_start ) . '-' . strval( $inter_end );
 							}
 							$res[ $key ] = [
-								'display'  => sprintf( ! empty( $name ) ? '%1$s (%2$s)' : '%2$s',
+								'display'  => sprintf( ! empty( $name ) ? ( $anon ? '%1$s' : '%1$s (%2$s)' ) : '%2$s',
 									$name, $display_hours ),
 								'date'     => $inter_start,
 								'date_end' => $inter_end,
