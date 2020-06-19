@@ -1244,6 +1244,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type' => 'heading',
 										),
 										array(
+											'id'      => 'inscr-distribution-slot-send',
+											'name'    => 'Envoyer',
+											'type'    => 'checkbox',
+											'desc'    => 'Envoyer l\'email ci-dessous',
+											'default' => true,
+										),
+										array(
 											'id'       => 'inscr-distribution-slot-mail-subject',
 											'name'     => 'Sujet de l\'email',
 											'sanitize' => false,
@@ -1264,6 +1271,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'name' => 'Email à l\'amapien affecté à un créneau',
 											'type' => 'heading',
+										),
+										array(
+											'id'      => 'inscr-distribution-admin-slot-send',
+											'name'    => 'Envoyer',
+											'type'    => 'checkbox',
+											'desc'    => 'Envoyer l\'email ci-dessous',
+											'default' => true,
 										),
 										array(
 											'id'       => 'inscr-distribution-admin-slot-mail-subject',
