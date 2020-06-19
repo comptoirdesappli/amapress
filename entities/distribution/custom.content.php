@@ -386,7 +386,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 		//        amapress_echo_panel_start('Panier(s)', 'fa-shopping-basket', 'amap-panel-dist amap-panel-dist-'.$lieu_id.' ');
 
-		if ( amapress_is_user_logged_in() && ! empty( $user_contrats ) ) {
+		if ( amapress_is_user_logged_in() && Amapress::isIntermittenceEnabled() && ! empty( $user_contrats ) ) {
 			amapress_echo_panel_start( 'En cas d\'absence - Espace intermittents' );
 			$paniers       = AmapressPaniers::getPaniersForDist( $dist->getDate() );
 			$ceder_title   = count( $user_contrats ) > 1 ? 'Céder mes ' . count( $user_contrats ) . ' paniers' : 'Céder mon panier';
