@@ -70,12 +70,13 @@ function amapress_get_custom_content_distribution( $content ) {
 			if ( ! empty( $href ) ) {
 				if ( $is_resp_amap ) {
 					echo '<p>Les inscriptions aux distributions des amapiens se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
-				} else {
-					if ( $is_resp ) {
-						echo '<p>Vous êtes responsable de distribution</p>';
-					}
-					echo '<p>Les inscriptions aux distributions s\'effectuent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
 				}
+				if ( $is_resp ) {
+					echo '<p>' . Amapress::makeLink( $href, 'Vous êtes responsable de distribution', true, true ) . '</p>';
+				} else {
+					echo '<p>' . Amapress::makeButtonLink( $href, ! empty( $dist->getSlotsConf() ) ? 'Inscriptions et créneaux horaires' : 'Inscriptions', true, true ) . '</p>';
+				}
+
 			}
 			?>
 			<?php
