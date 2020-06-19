@@ -4199,7 +4199,7 @@ class Amapress {
 	}
 
 	public static function get_page_with_shortcode_href(
-		$shortcode, $transient_name
+		$shortcodes, $transient_name
 	) {
 		if ( $transient_name ) {
 			$href = get_transient( $transient_name );
@@ -4207,12 +4207,14 @@ class Amapress {
 			$href = null;
 		}
 		if ( empty( $href ) ) {
-			/** @var WP_Post $page */
-			foreach ( get_pages() as $page ) {
-				if ( false !== strpos( $page->post_content, '[' . $shortcode . ' ' )
-				     || false !== strpos( $page->post_content, '[' . $shortcode . ']' ) ) {
-					$href = get_permalink( $page->ID );
-					break;
+			foreach ( ! is_array( $shortcodes ) ? [ $shortcodes ] : $shortcodes as $shortcode ) {
+				/** @var WP_Post $page */
+				foreach ( get_pages() as $page ) {
+					if ( false !== strpos( $page->post_content, '[' . $shortcode . ' ' )
+					     || false !== strpos( $page->post_content, '[' . $shortcode . ']' ) ) {
+						$href = get_permalink( $page->ID );
+						break;
+					}
 				}
 			}
 			if ( $transient_name ) {
@@ -4228,7 +4230,10 @@ class Amapress {
 	}
 
 	public static function get_inscription_distrib_page_href() {
-		return self::get_page_with_shortcode_href( 'inscription-distrib', 'amp_inscr_distrib_href' );
+		return self::get_page_with_shortcode_href( [
+			'inscription-distrib',
+			'anon-inscription-distrib'
+		], 'amp_inscr_distrib_href' );
 	}
 
 	public static function get_mes_contrats_page_href() {
