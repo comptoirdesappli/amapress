@@ -979,6 +979,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	static function logUserByLoginKey(
 		$key
 	) {
+		if ( amapress_is_user_logged_in() ) {
+			return;
+		}
 
 		global $wpdb;
 		$user_id = $wpdb->get_var( $wpdb->prepare(
