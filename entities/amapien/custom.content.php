@@ -144,15 +144,15 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_adresse">
-				<?php _e( 'Adresse', 'amapress' ) ?><br/>
+			    <?php _e( 'Adresse', 'amapress' ) ?><br/>
             </label>
             <textarea class="form-control" name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
                       cols="40"
-                      placeholder="Adresse"><?php esc_textarea( $user->getAdresse() ); ?></textarea>
+                      placeholder="Adresse"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
         </div>
         <div class="form-group">
             <label for="amapress_user_code_postal">
-				<?php _e( 'Code postal', 'amapress' ) ?><br/>
+			    <?php _e( 'Code postal', 'amapress' ) ?><br/>
             </label>
             <input class="form-control" type="text" name="amapress_user_code_postal" id="amapress_user_code_postal"
                    value="<?php esc_attr_e( wp_unslash( $user->getCode_postal() ) ); ?>"
