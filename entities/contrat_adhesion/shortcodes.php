@@ -3963,7 +3963,7 @@ function amapress_get_details_all_deliveries(
 						$row['group'] = $quant->getGroupName();
 						$row['desc']  = $quant->getTitleWithoutGroup();
 					} else {
-						$row['desc'] = $quant->getTitle();
+						$row['desc'] = $quant->getTitleWithoutFactor();
 					}
 
 					$row['prod'] = $adh->getContrat_instance()->getModel()->getTitle()
