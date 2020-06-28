@@ -77,7 +77,7 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 					'message' => $model_title . ': placeholders DOCX inconnus : ' . implode( ', ', array_map( function ( $p ) {
 							return '${' . $p . '}';
 						}, $unknowns ) ) . ' ; causes possibles: mauvais type de modèle ou erreur de frappe',
-					'status'  => 'warning'
+					'status'  => 'error'
 				];
 			}
 		} catch ( Exception $ex ) {
