@@ -1697,22 +1697,25 @@ class AmapressContrat_instance extends TitanEntity {
 			}
 		}
 		if ( 'paper' == $context ) {
-			$ret["quantite"]                         = '(Tableau quantité) Libellé quantité avec facteur';
-			$ret["quantite_simple"]                  = '(Tableau quantité) Libellé quantité';
-			$ret["quantite_groupe"]                  = '(Tableau quantité) Groupe du libellé quantité';
-			$ret["quantite_sans_groupe"]             = '(Tableau quantité) Libellé quantité sans groupe';
-			$ret["quantite_code"]                    = '(Tableau quantité) Code quantité';
-			$ret["quantite_nb_distrib"]              = '(Tableau quantité) Nombre de distribution restantes';
-			$ret["quantite_nb_dates"]                = '(Tableau quantité) Nombre de dates de distribution restantes';
-			$ret["quantite_dates_distrib"]           = '(Tableau quantité) Distribution restantes avec rattrapages';
-			$ret["quantite_dates"]                   = '(Tableau quantité) Dates de distribution restantes';
-			$ret["quantite_total"]                   = '(Tableau quantité) Prix pour la quuantité x nombre distrib';
-			$ret["quantite_prix_unitaire"]           = '(Tableau quantité) Prix à l\'unité';
-			$ret["quantite_description"]             = '(Tableau quantité) Description de la quantité';
-			$ret["quantite_description_no_price"]    = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée';
-			$ret["quantite_description_br"]          = '(Tableau quantité) pour les paniers modulables : quantités livrées à la date donnée avec retour à la ligne entre chaque';
-			$ret["quantite_description_br_no_price"] = '(Tableau quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
-			$ret["quantite_unite"]                   = '(Tableau quantité) Unité de la quantité';
+			$ret["quantite"]                         = '(Tableau quantité, contrat simple) Libellé quantité avec facteur';
+			$ret["quantite_simple"]                  = '(Tableau quantité, contrat simple) Libellé quantité';
+			$ret["quantite_groupe"]                  = '(Tableau quantité, contrat simple) Groupe du libellé quantité';
+			$ret["quantite_sans_groupe"]             = '(Tableau quantité, contrat simple) Libellé quantité sans groupe';
+			$ret["quantite_code"]                    = '(Tableau quantité, contrat simple) Code quantité';
+			$ret["quantite_nb_dates"]                = '(Tableau quantité, contrat simple) Nombre de dates de distribution restantes';
+			$ret["quantite_nb_distrib"]              = '(Tableau quantité, contrat simple) Nombre de distribution restantes (rattrapages inclus)';
+			$ret["quantite_dates_distrib"]           = '(Tableau quantité, contrat simple) Distribution restantes avec rattrapages';
+			$ret["quantite_dates"]                   = '(Tableau quantité, contrat simple) Dates de distribution restantes';
+			$ret["quantite_sous_total"]              = '(Tableau quantité, contrat simple) Prix pour la quantité choisie';
+			$ret["quantite_total"]                   = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
+			$ret["quantite_nombre"]                  = '(Tableau quantité, contrat simple) Facteur quantité choisi';
+			$ret["quantite_prix_unitaire"]           = '(Tableau quantité, contrat simple) Prix à l\'unité';
+			$ret["quantite_description"]             = '(Tableau quantité) Description de la quantité ; pour les paniers modulables : quantités livrées à la date donnée';
+			$ret["quantite_description_no_price"]    = '(Tableau quantité, paniers modulables) : quantités livrées sans les prix à la date donnée';
+			$ret["quantite_description_br"]          = '(Tableau quantité, paniers modulables) : quantités livrées à la date donnée avec retour à la ligne entre chaque';
+			$ret["quantite_description_br_no_price"] = '(Tableau quantité, paniers modulables) : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
+			$ret["quantite_unite"]                   = '(Tableau quantité, contrat simple) Unité de la quantité';
+			$ret["quantite_date"]                    = '(Tableau quantité, paniers modulables) : date de livraison';
 			$ret["quantite_paiements"]               = '(Tableau quantité) Possibilités de paiements';
 
 			$ret["quantite_details_date"]          = '(Tableau quantité détails) pour les paniers modulables : Date de distribution';
