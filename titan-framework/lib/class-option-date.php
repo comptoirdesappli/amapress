@@ -74,7 +74,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 	/**
 	 * Cleans up the serialized value before saving
 	 *
-	 * @param    string $value The serialized value
+	 * @param string $value The serialized value
 	 *
 	 * @return    string The cleaned value
 	 * @since    1.4
@@ -104,7 +104,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 	/**
 	 * Cleans the value for getOption
 	 *
-	 * @param    string $value The raw value of the option
+	 * @param string $value The raw value of the option
 	 *
 	 * @return    mixes The cleaned value
 	 * @since    1.4
@@ -152,8 +152,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
                         try {
                             jQuery.datepicker.parseDate('<?php echo self::$default_jquery_date_format ?>', value);
                             return true;
-                        }
-                        catch (e) {
+                        } catch (e) {
                             return false;
                         }
                     },
@@ -252,11 +251,12 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 			$dateFormat = self::$default_time_format;
 		}
 
+		$date = intval( $this->getValue( $post_id ) );
 		echo $this->wrapColumnLink(
 			sprintf( '<span class="input-date%s%s">%s</span>',
 				( $this->settings['date'] ? ' date' : '' ),
 				( $this->settings['time'] ? ' time' : '' ),
-				( $this->getValue( $post_id ) > 0 ) ? date_i18n( $dateFormat, $this->getValue( $post_id ) ) : ''
+				( $date > 0 ) ? date_i18n( $dateFormat, $date ) : ''
 			),
 			$post_id
 		);
@@ -270,9 +270,9 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 	/**
 	 * Registers the theme customizer control, for displaying the option
 	 *
-	 * @param    WP_Customize $wp_enqueue_script The customize object
-	 * @param    TitanFrameworkCustomizerSection $section The section where this option will be placed
-	 * @param    int $priority The order of this control in the section
+	 * @param WP_Customize $wp_enqueue_script The customize object
+	 * @param TitanFrameworkCustomizerSection $section The section where this option will be placed
+	 * @param int $priority The order of this control in the section
 	 *
 	 * @return    void
 	 * @since    1.7
