@@ -2339,7 +2339,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'CSS',
 											'type'    => 'textarea',
 											'default' => '',
-											'desc'    => 'CSS additionnel, par exemple, pour masquer les entêtes et menu',
+											'desc'    => 'CSS additionnel (hors shortcode mes-contrats), par exemple, pour masquer les entêtes et menu',
 										),
 										array(
 											'type' => 'save',

@@ -490,7 +490,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	update_meta_cache( 'user', $all_refs_user_ids );
 	cache_users( $all_refs_user_ids );
 
-	$additional_css = '<style type="text/css">' . esc_html( wp_unslash( Amapress::getOption( 'online_inscr_css' ) ) ) . '</style>';
+	if ( 'mes-contrats' === $tag ) {
+		$additional_css = '';
+	} else {
+		$additional_css = '<style type="text/css">' . esc_html( wp_unslash( Amapress::getOption( 'online_inscr_css' ) ) ) . '</style>';
+	}
 
 	ob_start();
 
