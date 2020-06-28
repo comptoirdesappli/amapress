@@ -2279,7 +2279,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					return Amapress::end_of_week( $real_date ) > amapress_time();
 				} );
 			}
-			$dates            = array_values( $dates );
+			$dates = array_values( $dates );
+			if ( empty( $dates ) ) {
+				wp_die( $invalid_access_message );
+			}
 			$first_avail_date = $dates[0];
 			$is_started       = $first_avail_date != $first_contrat_date;
 			if ( ! $admin_mode ) {
