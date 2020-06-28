@@ -97,7 +97,7 @@ add_filter( 'manage_amps_adhesion_posts_custom_column', 'amapress_user_paiments_
 function amapress_user_paiments_column_display( $colname, $post_id ) {
 	$all_adhesions = AmapressContrats::get_active_adhesions();
 	$adh           = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
-	if ( $colname == 'amapress_total_amount' ) {
+	if ( 'amapress_total_amount' == $colname ) {
 		echo sprintf( '%.02f', $adh->getTotalAmount() );
 
 		return;
