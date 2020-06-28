@@ -203,20 +203,18 @@ function amapress_register_entities_contrat( $entities ) {
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getModel() ) ) {
 					echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de production associée</p></div>';
+				} else {
+					$result = $contrat->getContratModelDocStatus();
+					if ( true !== $result ) {
+						echo amapress_get_admin_notice( $result['message'], $result['status'], false );
+					}
+
+					$result = $contrat->getContratPapierModelDocStatus();
+					if ( true !== $result ) {
+						echo amapress_get_admin_notice( $result['message'], $result['status'], false );
+					}
 				}
-			}
 
-			$result = $contrat->getContratModelDocStatus();
-			if ( true !== $result ) {
-				echo amapress_get_admin_notice( $result['message'], $result['status'], false );
-			}
-
-			$result = $contrat->getContratPapierModelDocStatus();
-			if ( true !== $result ) {
-				echo amapress_get_admin_notice( $result['message'], $result['status'], false );
-			}
-
-			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				$max_nb_paiements = 0;
 				foreach ( $contrat->getPossiblePaiements() as $nb_pmt ) {
 					$max_nb_paiements = max( $nb_pmt, $max_nb_paiements );
