@@ -743,14 +743,14 @@ class AmapressContrat_instance extends TitanEntity {
 
 	public function getContratModelDocStatus() {
 		$model_file   = $this->getContratModelDocFileName();
-		$placeholders = AmapressAdhesion::getPlaceholders();
+		$placeholders = $this->generateContratDoc( $this->getDate_debut(), false, true );
 
 		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, 'Contrat personnalisé' );
 	}
 
 	public function getContratPapierModelDocStatus() {
 		$model_file   = $this->getContratPapierModelDocFileName();
-		$placeholders = AmapressContrat_instance::getPlaceholders( 'paper' );
+		$placeholders = $this->generateContratDoc( $this->getDate_debut(), false, true );
 
 		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, 'Contrat vierge' );
 	}
@@ -1905,7 +1905,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$templateProcessor = new Phptemplate_withnewline( $model_filename );
 
 		if ( $check_only ) {
-			return Phptemplate_withnewline::getUnknownPlaceholders( $model_filename, $placeholders );
+			return $placeholders;
 		}
 
 		try {

@@ -10,21 +10,42 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 		parent::__construct( $documentTemplate );
 	}
 
-	public static function getAllPlaceholders( $document_file_name ) {
-		$phpWord  = \PhpOffice\PhpWord\IOFactory::load( $document_file_name );
-		$sections = $phpWord->getSections();
-		$text     = '';
-		foreach ( $sections as $s ) {
-			$els = $s->getElements();
-			foreach ( $els as $e ) {
-				$class = get_class( $e );
-				if ( method_exists( $class, 'getText' ) ) {
-					$text .= $e->getText();
-				} else {
-					$text .= "\n";
-				}
+	private static function extractText( $obj, $nested = 0 ) {
+		$txt = "";
+		if ( method_exists( $obj, 'getSections' ) ) {
+			foreach ( $obj->getSections() as $section ) {
+				$txt .= " " . self::extractText( $section, $nested + 1 );
+			}
+		} elseif ( method_exists( $obj, 'getElements' ) ) {
+			foreach ( $obj->getElements() as $element ) {
+				$txt .= self::extractText( $element, $nested + 1 );
+			}
+		} elseif ( method_exists( $obj, 'getText' ) ) {
+			// --------------------------------------------------------------
+			// THIS IS THE DIFFERENT BLOCK
+			$extracted = $obj->getText();
+			if ( is_string( $extracted ) === true ) {
+				$txt .= $extracted;
+			} else {
+				$txt .= self::extractText( $extracted, $nested + 1 );
+			}
+			// --------------------------------------------------------------
+		} elseif ( method_exists( $obj, 'getRows' ) ) {
+			foreach ( $obj->getRows() as $row ) {
+				$txt .= " " . self::extractText( $row, $nested + 1 );
+			}
+		} elseif ( method_exists( $obj, 'getCells' ) ) {
+			foreach ( $obj->getCells() as $cell ) {
+				$txt .= " " . self::extractText( $cell, $nested + 1 );
 			}
 		}
+
+		return $txt;
+	}
+
+	public static function getAllPlaceholders( $document_file_name ) {
+		$phpWord      = \PhpOffice\PhpWord\IOFactory::load( $document_file_name );
+		$text         = self::extractText( $phpWord );
 		$placeholders = [];
 		if ( preg_match_all( '/\\$\\{([^\\}]+)\\}/', $text, $placeholders ) ) {
 			return $placeholders[1];

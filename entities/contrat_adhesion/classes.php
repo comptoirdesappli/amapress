@@ -1085,7 +1085,7 @@ class AmapressAdhesion extends TitanEntity {
 		$templateProcessor = new Phptemplate_withnewline( $model_filename );
 
 		if ( $check_only ) {
-			return Phptemplate_withnewline::getUnknownPlaceholders( $model_filename, $placeholders );
+			return $placeholders;
 		}
 
 		try {
