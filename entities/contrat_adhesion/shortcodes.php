@@ -651,17 +651,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	}
 
 	if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal && ! $admin_mode && empty( $principal_contrats ) ) {
-		if ( amapress_can_access_admin() ) {
-			ob_clean();
+		if ( 'mes-contrats' != $tag ) {
+			if ( amapress_can_access_admin() ) {
+				ob_clean();
 
-			return 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
-		} else if ( 'mes-contrats' != $tag && ! $user_has_contrat ) {
-			ob_clean();
+				return 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
+			} elseif ( ! $user_has_contrat ) {
+				ob_clean();
 
-			if ( ! $use_contrat_term ) {
-				return 'Les commandes en ligne sont closes.';
-			} else {
-				return 'Les inscriptions en ligne sont closes.';
+				if ( ! $use_contrat_term ) {
+					return 'Les commandes en ligne sont closes.';
+				} else {
+					return 'Les inscriptions en ligne sont closes.';
+				}
 			}
 		}
 	}
