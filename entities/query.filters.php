@@ -480,6 +480,26 @@ function amapress_filter_posts( WP_Query $query ) {
 //            ));
 //        }
 //    }
+	if ( ! empty( $query->query_vars['amapress_event_tag'] ) ) {
+		$amapress_event_tag = explode( ',', $query->query_vars['amapress_event_tag'] );
+		if ( $pt == AmapressAmap_event::POST_TYPE ) {
+			for ( $i = 0; $i < count( $amapress_event_tag ); $i ++ ) {
+				$amapress_event_tag[ $i ] = Amapress::resolve_tax_id( $amapress_event_tag[ $i ], AmapressAmap_event::CATEGORY );
+			}
+
+			amapress_add_tax_query( $query, array(
+				array(
+					array(
+						'taxonomy' => AmapressAmap_event::CATEGORY,
+						'field'    => 'term_id',
+						'terms'    => amapress_prepare_in( $amapress_event_tag ),
+						'operator' => 'IN',
+						'type'     => 'NUMERIC'
+					)
+				)
+			) );
+		}
+	}
 	if ( ! empty( $query->query_vars['amapress_recette_tag'] ) ) {
 		$amapress_recette_tags = explode( ',', $query->query_vars['amapress_recette_tag'] );
 		if ( $pt == 'recette' ) {
