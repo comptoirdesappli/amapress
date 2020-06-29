@@ -3413,7 +3413,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								'menu_icon'  => 'dashicons-admin-site-alt',
 							),
 							'tabs'     => array(
-								'Référencement'      => array(
+								'Référencement'                                   => array(
 									'id'      => 'amp_site_reference',
 									'desc'    => '',
 									'options' => array(
@@ -3439,7 +3439,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 									)
 								),
-								'Connexion'          => array(
+								'Connexion'                                       => array(
 									'id'      => 'amp_connection_config',
 									'desc'    => '',
 									'options' => array(
@@ -3488,7 +3488,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									)
 								),
-								'Email du site'      => array(
+								'Email du site'                                   => array(
 									'id'      => 'amp_site_mail_config',
 									'desc'    => '',
 									'options' => array(
@@ -3511,7 +3511,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									)
 								),
-								'Email de bienvenue' => array(
+								'Email de bienvenue'                              => array(
 									'id'      => 'welcome_mail',
 									'desc'    => '',
 									'options' => array(
@@ -3557,7 +3557,31 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									)
 								),
-								'Notifications'      => array(
+								'Email de réponse type aux demandes d\'adhésions' => array(
+									'id'      => 'adh_req_reply_mail',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'adh-request-reply-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Votre demande d\'adhésion à %%site_name%%',
+										),
+										array(
+											'id'      => 'adh-request-reply-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%prenom%% %%nom%%,\nVotre demande d\'adhésion a bien été prise en compte. Voici la procédure à suivre:[[à compléter]]\n\n%%nom_site%%" ),
+											'desc'    =>
+												AmapressAdhesionRequest::getPlaceholdersHelp(),
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
+								'Notifications'                                   => array(
 									'id'      => 'amp_notif_config',
 									'desc'    => '',
 									'options' => array(
