@@ -23,10 +23,11 @@ class Amapress_Copyleft_Widget extends WP_Widget {
 	/**
 	 * Front-end display of widget.
 	 *
-	 * @see WP_Widget::widget()
-	 *
 	 * @param array $args Widget arguments.
 	 * @param array $instance Saved values from database.
+	 *
+	 * @see WP_Widget::widget()
+	 *
 	 */
 	public function widget( $args, $instance ) {
 		echo $args['before_widget'];
@@ -37,9 +38,10 @@ class Amapress_Copyleft_Widget extends WP_Widget {
 	/**
 	 * Back-end widget form.
 	 *
+	 * @param array $instance Previously saved values from database.
+	 *
 	 * @see WP_Widget::form()
 	 *
-	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
 	}
@@ -47,12 +49,12 @@ class Amapress_Copyleft_Widget extends WP_Widget {
 	/**
 	 * Sanitize widget form values as they are saved.
 	 *
-	 * @see WP_Widget::update()
-	 *
 	 * @param array $new_instance Values just sent to be saved.
 	 * @param array $old_instance Previously saved values from database.
 	 *
 	 * @return array Updated safe values to be saved.
+	 * @see WP_Widget::update()
+	 *
 	 */
 	public function update( $new_instance, $old_instance ) {
 		return [];
