@@ -322,7 +322,6 @@ require_once( AMAPRESS__PLUGIN_DIR . 'class.amapressentities.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'impersonation.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapressmeseventswidget.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapresscopyleftwidget.php' );
-//require_once(AMAPRESS__PLUGIN_DIR . 'class.amapressmenuwidget.php');
 require_once( AMAPRESS__PLUGIN_DIR . 'utils/class.phptemplate_withnewline.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.users.php' );
