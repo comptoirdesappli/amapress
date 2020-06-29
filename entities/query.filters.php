@@ -520,17 +520,17 @@ function amapress_filter_posts( WP_Query $query ) {
 	}
 
 	if ( ! empty( $query->query_vars['amapress_produit_tag'] ) ) {
-		$amapress_recette_tags = explode( ',', $query->query_vars['amapress_produit_tag'] );
-		if ( $pt == 'recette' ) {
-			for ( $i = 0; $i < count( $amapress_recette_tags ); $i ++ ) {
-				$amapress_recette_tags[ $i ] = Amapress::resolve_tax_id( $amapress_recette_tags[ $i ], 'amps_produit_category' );
+		$amapress_produit_tag = explode( ',', $query->query_vars['amapress_produit_tag'] );
+		if ( $pt == AmapressProduit::POST_TYPE ) {
+			for ( $i = 0; $i < count( $amapress_produit_tag ); $i ++ ) {
+				$amapress_produit_tag[ $i ] = Amapress::resolve_tax_id( $amapress_produit_tag[ $i ], AmapressProduit::CATEGORY );
 			}
 			amapress_add_tax_query( $query, array(
 				array(
 					array(
-						'taxonomy' => 'amps_produit_category',
+						'taxonomy' => AmapressProduit::CATEGORY,
 						'field'    => 'term_id',
-						'terms'    => amapress_prepare_in( $amapress_recette_tags ),
+						'terms'    => amapress_prepare_in( $amapress_produit_tag ),
 						'operator' => 'IN',
 						'type'     => 'NUMERIC'
 					)
