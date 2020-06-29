@@ -322,6 +322,7 @@ require_once( AMAPRESS__PLUGIN_DIR . 'class.amapressentities.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'impersonation.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'widgets/class.amapressmeseventswidget.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'widgets/class.amapresscopyleftwidget.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'widgets/class.amapresscategorieswidget.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'utils/class.phptemplate_withnewline.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'class.amapress.users.php' );
@@ -560,7 +561,7 @@ function array_mode( $arr ) {
 function amapress_register_widgets() {
 	register_widget( 'Amapress_Next_Events_Widget' );
 	register_widget( 'Amapress_Copyleft_Widget' );
-//    register_widget('Amapress_Menu_Widget');
+	register_widget( 'Amapress_Categories_Widget' );
 }
 
 add_action( 'widgets_init', 'amapress_register_widgets' );
