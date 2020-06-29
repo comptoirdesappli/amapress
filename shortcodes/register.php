@@ -526,20 +526,22 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les inscriptions en ligne (amapien non connecté et nouveaux, sécurisée par une clé secrète)',
 			'args' => [
-				'key'                              => 'Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne',
-				'filter_multi_contrat'             => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'                        => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
-				'check_principal'                  => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
-				'adhesion'                         => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
-				'allow_inscription_all_dates'      => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
-				'send_adhesion_confirm'            => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
-				'send_contrat_confirm'             => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
-				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
-				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
-				'edit_names'                       => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
-				'send_welcome'                     => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
-				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) avec une autre clé' .
-				                                      '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+				'key'                                 => 'Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne',
+				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
+				'agreement'                           => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
+				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
+				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
+				'adhesion'                            => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
+				'allow_inscription_all_dates'         => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
+				'send_adhesion_confirm'               => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_contrat_confirm'                => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
+				'send_referents'                      => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
+				'send_tresoriers'                     => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'edit_names'                          => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'send_welcome'                        => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
+				'only_contrats'                       => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) avec une autre clé' .
+				                                         '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
 						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
@@ -580,18 +582,20 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les inscriptions en ligne (amapien connecté)',
 			'args' => [
-				'filter_multi_contrat'             => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'                        => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
-				'check_principal'                  => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
-				'adhesion'                         => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
-				'allow_inscription_all_dates'      => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
-				'send_adhesion_confirm'            => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
-				'send_contrat_confirm'             => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
-				'send_referents'                   => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
-				'send_tresoriers'                  => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
-				'edit_names'                       => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
-				'only_contrats'                    => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) ou commande(s)' .
-				                                      '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
+				'agreement'                           => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
+				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
+				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
+				'adhesion'                            => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
+				'allow_inscription_all_dates'         => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
+				'send_adhesion_confirm'               => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_contrat_confirm'                => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats',
+				'send_referents'                      => '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents',
+				'send_tresoriers'                     => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'edit_names'                          => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'only_contrats'                       => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) ou commande(s)' .
+				                                         '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
 						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
