@@ -3841,7 +3841,11 @@ function amapress_get_details_all_deliveries(
 	$print_title      = 'Récapitulatif des livraisons';
 	if ( $is_single_producteur ) {
 		$contrat_instance = AmapressContrat_instance::getBy( $contrats_ids[0] );
-		$print_title      .= ' : ' . array_values( $adhs )[0]->getTitle();
+		if ( ! empty( $adhs ) ) {
+			$print_title .= ' : ' . array_values( $adhs )[0]->getTitle();
+		} else {
+			$print_title .= ' : ADHESION INVALIDE OU EN BROUILLON !';
+		}
 	}
 	$ret     = '<h4>' . esc_html( $print_title ) . '</h4>';
 	$columns = [];
