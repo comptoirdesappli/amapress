@@ -348,29 +348,30 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'contact_referents'                   => 'true',
 			'show_adherents_infos'                => 'true',
 			'show_details_button'                 => 'false',
-			'allow_coadherents_access'            => 'true',
-			'allow_coadherents_inscription'       => 'true',
-			'allow_coadherents_adhesion'          => 'true',
-			'show_coadherents_address'            => 'false',
-			'show_cofoyers_address'               => 'false',
-			'contrat_print_button_text'           => 'Imprimer',
-			'adhesion_print_button_text'          => 'Imprimer',
-			'only_contrats'                       => '',
-			'shorturl'                            => '',
-			'show_modify_coords'                  => 'inscription-en-ligne' == $tag ? 'false' : 'true',
-			'show_due_amounts'                    => 'false',
-			'show_delivery_details'               => 'false',
-			'show_calendar_delivs'                => 'false',
-			'show_current_inscriptions'           => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
-			'show_editable_inscriptions'          => 'true',
-			'adhesion_shift_weeks'                => 0,
-			'before_close_hours'                  => 24,
-			'max_coadherents'                     => 3,
-			'max_cofoyers'                        => 3,
-			'use_contrat_term'                    => 'true',
-			'skip_coords'                         => 'false',
-			'email'                               => get_option( 'admin_email' ),
-			'use_quantite_tables'                 => 'false',
+			'allow_coadherents_access'      => 'true',
+			'allow_coadherents_inscription' => 'true',
+			'allow_coadherents_adhesion'    => 'true',
+			'show_coadherents_address'      => 'false',
+			'show_cofoyers_address'         => 'false',
+			'contrat_print_button_text'     => 'Imprimer',
+			'adhesion_print_button_text'    => 'Imprimer',
+			'only_contrats'                 => '',
+			'shorturl'                      => '',
+			'show_modify_coords'            => 'inscription-en-ligne' == $tag ? 'false' : 'true',
+			'show_due_amounts'              => 'false',
+			'show_delivery_details'         => 'false',
+			'show_calendar_delivs'          => 'false',
+			'show_current_inscriptions'     => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
+			'show_editable_inscriptions'    => 'true',
+			'adhesion_shift_weeks'          => 0,
+			'before_close_hours'            => 24,
+			'max_coadherents'               => 3,
+			'max_cofoyers'                  => 3,
+			'use_contrat_term'              => 'true',
+			'allow_adhesion_alone'          => 'false',
+			'skip_coords'                   => 'false',
+			'email'                         => get_option( 'admin_email' ),
+			'use_quantite_tables'           => 'false',
 		]
 		, $atts );
 
@@ -379,6 +380,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$adhesion_print_button_text = $atts['adhesion_print_button_text'];
 	$for_logged                 = Amapress::toBool( $atts['for_logged'] );
 	$ret                        = '';
+	$allow_adhesion_alone       = Amapress::toBool( $atts['allow_adhesion_alone'] );
 	$use_contrat_term           = Amapress::toBool( $atts['use_contrat_term'] );
 	$admin_mode                 = Amapress::toBool( $atts['admin_mode'] );
 	if ( $admin_mode && ! is_admin() ) {
@@ -565,7 +567,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$max_contrat_date = $c->getDate_fin();
 		}
 	}
-	if ( 'mes-contrats' != $tag && empty( $subscribable_contrats ) ) {
+	if ( 'mes-contrats' != $tag && empty( $subscribable_contrats ) && ! $allow_adhesion_alone ) {
 		ob_clean();
 
 		if ( amapress_can_access_admin() ) {
@@ -656,7 +658,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				ob_clean();
 
 				return 'Aucun contrat principal. Veuillez définir un contrat principal depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
-			} elseif ( ! $user_has_contrat ) {
+			} elseif ( ! $allow_adhesion_alone && ! $user_has_contrat ) {
 				ob_clean();
 
 				if ( ! $use_contrat_term ) {
@@ -731,7 +733,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
             <label for="email">Pour démarrer votre inscription à l’AMAP pour la saison
-				<?php echo date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) ?>
+				<?php echo $min_contrat_date >= 0 ?
+					date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) :
+					'en cours'
+				?>
                 , renseignez votre
                 adresse mail :</label>
             <input id="email" name="email" type="text" class="email required" placeholder="email"/>
@@ -2199,7 +2204,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						if ( ! $use_contrat_term ) {
 							echo '<p>Les commandes sont closes.</p>';
 						} else {
-							echo '<p>Les inscriptions sont closes.</p>';
+							echo '<p>Les inscriptions en ligne sont closes.</p>';
 						}
 					} else {
 						if ( ! $use_contrat_term ) {
