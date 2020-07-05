@@ -573,10 +573,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( amapress_can_access_admin() ) {
 			return 'Aucun contrat ne permet l\'inscription en ligne. Veuillez activer l\'inscription en ligne depuis ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), 'Edition des contrats' );
 		} else {
+			$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
 			if ( ! $use_contrat_term ) {
-				return 'Les commandes en ligne sont closes.';
+				return '<p>Les commandes en ligne sont closes.</p>' . $closed_message;
 			} else {
-				return 'Les inscriptions en ligne sont closes.';
+				return '<p>Les inscriptions en ligne sont closes.</p>' . $closed_message;
 			}
 		}
 	}
@@ -661,10 +662,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			} elseif ( ! $allow_adhesion_alone && ! $user_has_contrat ) {
 				ob_clean();
 
+				$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
 				if ( ! $use_contrat_term ) {
-					return 'Les commandes en ligne sont closes.';
+					return '<p>Les commandes en ligne sont closes.</p>' . $closed_message;
 				} else {
-					return 'Les inscriptions en ligne sont closes.';
+					return '<p>Les inscriptions en ligne sont closes.</p>' . $closed_message;
 				}
 			}
 		}
@@ -2201,10 +2203,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			} else {
 				if ( ! $admin_mode ) {
 					if ( empty( $subscribable_contrats ) ) {
+						$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
 						if ( ! $use_contrat_term ) {
-							echo '<p>Les commandes sont closes.</p>';
+							echo '<p>Les commandes sont closes.</p>' . $closed_message;
 						} else {
-							echo '<p>Les inscriptions en ligne sont closes.</p>';
+							echo '<p>Les inscriptions en ligne sont closes.</p>' . $closed_message;
 						}
 					} else {
 						if ( ! $use_contrat_term ) {

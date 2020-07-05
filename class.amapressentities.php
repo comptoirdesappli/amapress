@@ -2289,6 +2289,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats <strong>si une adhésion validée ou antérieure est nécessaire pour pouvoir s\'inscrire aux contrats</strong><br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(
+											'id'      => 'online_inscr_closed_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Message supplémentaire lorsque les inscriptions en ligne sont closes (toutes les étapes)',
+										),
+										array(
 											'type' => 'save',
 										),
 										array(
