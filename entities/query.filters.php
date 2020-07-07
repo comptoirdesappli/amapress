@@ -406,7 +406,7 @@ function amapress_filter_posts( WP_Query $query ) {
 	if ( ! empty( $query->query_vars['amapress_pmt_type'] ) ) {
 		$amapress_pmt_type = $query->query_vars['amapress_pmt_type'];
 		$suffix            = 'type';
-		if ( AmapressAdhesion::POST_TYPE == $pt ) {
+		if ( AmapressAdhesion::POST_TYPE == $pt || AmapressAdhesion_paiement::POST_TYPE == $pt ) {
 			$suffix = 'pmt_type';
 		}
 		if ( 'chq' == $amapress_pmt_type ) {

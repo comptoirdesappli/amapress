@@ -141,6 +141,25 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'unit' => '€',
 				'desc' => 'Montant',
 			),
+			'pmt_type'     => array(
+				'name'           => amapress__( 'Moyen de règlement principal' ),
+				'type'           => 'select',
+				'options'        => array(
+					'chq' => 'Chèque',
+					'esp' => 'Espèces',
+					'vir' => 'Virement',
+					'mon' => 'Monnaie locale',
+				),
+				'default'        => 'chq',
+				'required'       => true,
+				'desc'           => 'Moyen de règlement principal : chèques ou espèces ou virement',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'top_filter'     => array(
+					'name'        => 'amapress_pmt_type',
+					'placeholder' => 'Tous les type de paiement',
+				),
+			),
 		),
 		'bulk_actions'     => array(
 			'amp_adh_pmt_mark_recv' => array(

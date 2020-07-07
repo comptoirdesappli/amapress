@@ -72,6 +72,11 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$this->setCustom( 'amapress_adhesion_paiement_status', $status );
 	}
 
+	/** @return string */
+	public function getMainPaiementType() {
+		return $this->getCustom( 'amapress_adhesion_paiement_pmt_type', 'chq' );
+	}
+
 	public function getStatusDisplay() {
 		$this->ensure_init();
 		switch ( $this->getStatus() ) {
@@ -623,37 +628,59 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					}
 				];
 			}
-			$ret['total']           = [
+			$ret['total']             = [
 				'desc' => 'Total de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
-			$ret['montant']         = [
+			$ret['montant']           = [
 				'desc' => 'Total de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
-			$ret['paiement_numero'] = [
+			$ret['paiement_numero']   = [
 				'desc' => 'Numéro du chèque',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getNumero();
 				}
 			];
-			$ret['paiement_banque'] = [
+			$ret['paiement_banque']   = [
 				'desc' => 'Banque du chèque',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getBanque();
 				}
 			];
-			$ret['id']              = [
+			$ret['paiements_mention'] = [
+				'desc' => 'Mention pour les paiements',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getPeriod()->getPaymentInfo() ) ) );
+				}
+			];
+			$ret['option_paiements']  = [
+				'desc' => 'Option de paiement choisie',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					if ( 'esp' == $adh->getMainPaiementType() ) {
+						return 'En espèces';
+					}
+					if ( 'vir' == $adh->getMainPaiementType() ) {
+						return 'Par virement';
+					}
+					if ( 'mon' == $adh->getMainPaiementType() ) {
+						return 'En monnaie locale';
+					}
+
+					return 'Par chèque';
+				}
+			];
+			$ret['id']                = [
 				'desc' => 'ID/Réference de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getID();
 				}
 			];
-			self::$properties       = $ret;
+			self::$properties         = $ret;
 		}
 
 		return self::$properties;

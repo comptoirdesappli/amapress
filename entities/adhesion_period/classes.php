@@ -21,7 +21,11 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	public function getOnlineDescription() {
-		return stripslashes( $this->getCustom( 'amapress_adhesion_period_online_desc' ) );
+		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_online_desc' ) );
+	}
+
+	public function getPaymentInfo() {
+		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_pmt_info' ) );
 	}
 
 	public function getWordModelId() {
@@ -49,6 +53,18 @@ class AmapressAdhesionPeriod extends TitanEntity {
 
 	public function getMontantAmap() {
 		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_amap' );
+	}
+
+	public function getAllow_Cash() {
+		return $this->getCustom( 'amapress_adhesion_period_allow_cash', 0 );
+	}
+
+	public function getAllow_LocalMoney() {
+		return $this->getCustom( 'amapress_adhesion_period_allow_locmon', 0 );
+	}
+
+	public function getAllow_Transfer() {
+		return $this->getCustom( 'amapress_adhesion_period_allow_bktrfr', 0 );
 	}
 
 	/**
