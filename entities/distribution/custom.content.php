@@ -480,22 +480,29 @@ function amapress_get_custom_content_distribution( $content ) {
 		$has_contrats = false;
 		foreach ( $dist_contrats as $contrat_id ) {
 			if ( ! amapress_is_user_logged_in() || in_array( intval( $contrat_id ), $user_contrats ) ) {
-				$contrat_model = get_post( intval( get_post_meta( $contrat_id, 'amapress_contrat_instance_model', true ) ) );
-				$panier        = AmapressPaniers::getPanierForDist( $dist_date, $contrat_id );
-				if ( $panier == null ) {
+				$contrat_instance = AmapressContrat_instance::getBy( $contrat_id );
+				if ( null == $contrat_instance ) {
+					continue;
+				}
+				$contrat_model = $contrat_instance->getModel();
+				if ( null == $contrat_model ) {
+					continue;
+				}
+				$panier = AmapressPaniers::getPanierForDist( $dist_date, $contrat_id );
+				if ( null == $panier ) {
 					continue;
 				}
 
 				$icon = Amapress::coalesce_icons( amapress_get_avatar_url( $contrat_id, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat_model->ID}_icon" ), amapress_get_avatar_url( $contrat_model->ID, null, 'produit-thumb', 'default_contrat.jpg' ) );
 				if ( ! empty( $icon ) && false !== strpos( $icon, '://' ) ) {
-					$icon = '<img src="' . esc_attr( $icon ) . '" class="dist-panier-contrat-img" alt="' . esc_attr( $contrat_model->post_title ) . '" />';
+					$icon = '<img src="' . esc_attr( $icon ) . '" class="dist-panier-contrat-img" alt="' . esc_attr( $contrat_model->getTitle() ) . '" />';
 				}
 
 				$panier_btns = '';
 				if ( $is_resp_amap || current_user_can( 'edit_panier' ) ) {
 					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">Editer le contenu/Déplacer</a>';
 				}
-				amapress_echo_panel_start_no_esc( Amapress::makeLink( get_permalink( $contrat_model ), $contrat_model->post_title, true, true ) . $panier_btns, $icon,
+				amapress_echo_panel_start_no_esc( Amapress::makeLink( get_permalink( $contrat_model ), $contrat_instance->getProperty( 'contrat_type_complet' ), true, true ) . $panier_btns, $icon,
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
 				echo AmapressPaniers::getPanierContentHtml( $panier->ID, $lieu_id );
 				amapress_echo_panel_end();
