@@ -333,7 +333,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Inscription sans connexion à la liste des intermittents',
 			'args' => [
-				'key'      => 'Clé de sécurisation de l\'accès à l\'inscription à la liste des intermittents',
+				'key'      => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'inscription à la liste des intermittents',
 				'shorturl' => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
 			]
 		] );
@@ -600,12 +600,12 @@ function amapress_register_shortcodes() {
 						/** @var AmapressContrat $c */
 						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
-				'adhesion_shift_weeks'             => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
-				'max_coadherents'                  => '(3 par défaut) Nombre maximum de co-adhérents',
-				'max_cofoyers'                     => '(3 par défaut) Nombre maximum de membres du foyer',
-				'mob_phone_required'               => '(false par défaut) Téléphones (mobiles) requis',
-				'track_no_renews'                  => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
-				'track_no_renews_email'            => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'adhesion_shift_weeks'                => '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion',
+				'max_coadherents'                     => '(3 par défaut) Nombre maximum de co-adhérents',
+				'max_cofoyers'                        => '(3 par défaut) Nombre maximum de membres du foyer',
+				'mob_phone_required'                  => '(false par défaut) Téléphones (mobiles) requis',
+				'track_no_renews'                     => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email'               => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
 				'notify_email'                     => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'paniers_modulables_editor_height' => '(350 par défaut) Hauteur de l\'éditeur de paniers modulables (en px)',
 				'show_details_button'              => '(false par défaut) Afficher un bouton Détails pour accéder aux détails des inscriptions au lieu de les afficher directement dans la liste',
