@@ -1020,11 +1020,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-			<?php if ( 'mes-contrats' == $tag ) { ?>
+	        <?php if ( 'mes-contrats' == $tag ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
-			<?php } elseif ( $activate_agreement ) { ?>
+	        <?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+	        <?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 	        <?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
@@ -1627,7 +1627,20 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$ret .= '</table>';
 		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
-		$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque :</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
+		$ret .= $adh_period->getPaymentInfo();
+		$ret .= '<p>';
+		$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="chq" checked="checked" /> Chèque</label>';
+		if ( $adh_period->getAllow_Transfer() ) {
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="vir"/> Virement</label>';
+		}
+		if ( $adh_period->getAllow_Cash() ) {
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="esp" /> Espèces</label>';
+		}
+		if ( $adh_period->getAllow_LocalMoney() ) {
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="mon" /> Monnaie locale</label>';
+		}
+		$ret .= '</p>';
+		$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque/virement :</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
 		$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
 		$ret .= '</form>';
@@ -1672,6 +1685,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_numero'] ) ) {
 			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_numero', $_REQUEST['amapress_adhesion_paiement_numero'] );
+		}
+		if ( isset( $_REQUEST['amapress_adhesion_paiement_pmt_type'] ) ) {
+			$pmt_type = $_REQUEST['amapress_adhesion_paiement_pmt_type'];
+			if ( 'mon' == $pmt_type || 'esp' == $pmt_type || 'vir' == $pmt_type ) {
+				update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_pmt_type', $pmt_type );
+			}
 		}
 		wp_set_post_terms( $adh_paiement->ID, $terms, 'amps_paiement_category' );
 
