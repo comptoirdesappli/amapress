@@ -4,10 +4,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function amapress_sha_secret( $d ) {
+	return sha1( AUTH_KEY . $d . SECURE_AUTH_KEY );
+}
+
 add_action( 'amapress_init', function () {
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_coords' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || $_REQUEST['inscr_key'] != amapress_sha_secret( $request_key ) ) {
 				wp_die( 'Accès interdit' );
 			}
 		}
@@ -234,7 +239,8 @@ add_action( 'amapress_init', function () {
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_contrat' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || $_REQUEST['inscr_key'] != amapress_sha_secret( $request_key ) ) {
 				wp_die( 'Accès interdit' );
 			}
 		}
@@ -254,7 +260,8 @@ add_action( 'amapress_init', function () {
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_bulletin' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			if ( ! isset( $_REQUEST['inscr_key'] ) || ! isset( $_REQUEST['key'] ) || $_REQUEST['inscr_key'] != $_REQUEST['key'] ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || $_REQUEST['inscr_key'] != amapress_sha_secret( $request_key ) ) {
 				wp_die( 'Accès interdit' );
 			}
 		}
@@ -435,9 +442,10 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	} else {
 		if ( amapress_can_access_admin() ) {
 			$url = add_query_arg( 'key', $key, get_permalink() );
-			if ( empty( $_REQUEST['key'] ) ) {
-				$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
-				$ret .= '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : 
+			if ( 'public' != $key ) {
+				if ( empty( $_REQUEST['key'] ) ) {
+					$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
+					$ret .= '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : 
 <pre>' . $url . '</pre>
 Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
@@ -446,15 +454,18 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 <div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
 <strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet de créer des comptes sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site avec des comptes de SPAM.</strong><br />
 Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' ) . '">ici</a> et retrouver toutes les options de ce shortcode dans l\'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">Aide</a>.</div>';
-				$ret .= amapress_get_panel_end();
-			} else {
-				$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">Afficher les instructions d\'accès à cet assistant.</a></div>';
+					$ret .= amapress_get_panel_end();
+				} else {
+					$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">Afficher les instructions d\'accès à cet assistant.</a></div>';
+				}
 			}
 		}
-		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
+		$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
+		if ( empty( $key ) || $request_key != $key ) {
 			if ( empty( $key ) && amapress_can_access_admin() ) {
 				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [inscription-en-ligne] de cette page : par exemple "[inscription-en-ligne key='
-				        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.</div>';
+				        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.
+<br/>Pour une utilisation publique, utilisez key=public</div>';
 			} elseif ( ! empty( $key ) && empty( $_REQUEST['key'] ) && amapress_is_user_logged_in() ) {
 				$url              = esc_attr( add_query_arg( 'key', $key, get_permalink() ) );
 				$mes_contrat_href = esc_attr( Amapress::get_mes_contrats_page_href() );
@@ -988,8 +999,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 <input type="hidden" name="coords_next_step" value="agreement"/>
 			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-			<?php } ?>
-            <input type="hidden" name="inscr_key" value="<?php echo esc_attr( $key ); ?>"/>
+	        <?php } ?>
+            <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
                     <th style="text-align: left; width: auto"><label for="email">Email : </label>
@@ -1691,7 +1702,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				add_query_arg( [
 					'inscr_assistant' => 'generate_bulletin',
 					'adh_id'          => $adh_paiement->ID,
-					'inscr_key'       => $key
+					'inscr_key'       => amapress_sha_secret( $key )
 				] ),
 				$adhesion_print_button_text, true, true, 'btn btn-default'
 			);
@@ -1793,7 +1804,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							add_query_arg( [
 								'inscr_assistant' => 'generate_bulletin',
 								'adh_id'          => $adh_paiement->ID,
-								'inscr_key'       => $key
+								'inscr_key'       => amapress_sha_secret( $key )
 							] ),
 							$adhesion_print_button_text, true, true, 'btn btn-default'
 						);
@@ -1971,7 +1982,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							add_query_arg( [
 								'inscr_assistant' => 'generate_contrat',
 								'inscr_id'        => $adh->ID,
-								'inscr_key'       => $key
+								'inscr_key'       => amapress_sha_secret( $key )
 							] ),
 							$contrat_print_button_text, true, true, 'btn btn-default'
 						);
@@ -2515,7 +2526,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				add_query_arg( [
 					'inscr_assistant' => 'generate_contrat',
 					'inscr_id'        => $adh->ID,
-					'inscr_key'       => $key
+					'inscr_key'       => amapress_sha_secret( $key )
 				] ),
 				$contrat_print_button_text, true, true, 'btn btn-default'
 			);
@@ -3449,7 +3460,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					add_query_arg( [
 						'inscr_assistant' => 'generate_contrat',
 						'inscr_id'        => $inscription->ID,
-						'inscr_key'       => $key
+						'inscr_key'       => amapress_sha_secret( $key )
 					] ),
 					$contrat_print_button_text, true, true, 'btn btn-default'
 				);
