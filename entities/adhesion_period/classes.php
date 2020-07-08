@@ -55,6 +55,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_amap' );
 	}
 
+	public function getAllow_Cheque() {
+		return $this->getCustom( 'amapress_adhesion_period_allow_chq', 1 );
+	}
+
 	public function getAllow_Cash() {
 		return $this->getCustom( 'amapress_adhesion_period_allow_cash', 0 );
 	}

@@ -91,6 +91,15 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'    => 'Pré-inscription en ligne',
 				'desc'     => 'Montant adhésion AMAP',
 			),
+			'allow_chq'    => array(
+				'name'        => amapress__( 'Chèque' ),
+				'type'        => 'checkbox',
+				'group'       => 'Règlements',
+				'required'    => true,
+				'default'     => true,
+				'show_column' => false,
+				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en chèque',
+			),
 			'allow_cash'   => array(
 				'name'        => amapress__( 'Espèces' ),
 				'type'        => 'checkbox',

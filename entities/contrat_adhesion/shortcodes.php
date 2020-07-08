@@ -1629,7 +1629,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
 		$ret .= $adh_period->getPaymentInfo();
 		$ret .= '<p>';
-		$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="chq" checked="checked" /> Chèque</label>';
+		if ( $adh_period->getAllow_Cheque() ) {
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="chq" checked="checked" /> Chèque</label>';
+		}
 		if ( $adh_period->getAllow_Transfer() ) {
 			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="vir"/> Virement</label>';
 		}
