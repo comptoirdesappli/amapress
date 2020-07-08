@@ -28,8 +28,9 @@ function amapress_consider_logged( $logged ) {
 
 function amapress_is_user_logged_in() {
 	global $amapress_not_logged;
-	if ( $amapress_not_logged )
+	if ( $amapress_not_logged ) {
 		return false;
+	}
 
 	if ( isset( $_SESSION['amapress_current_user'] ) ) {
 		if ( $_SESSION['amapress_current_user'] == '_everyone_' ) {
@@ -43,6 +44,12 @@ function amapress_is_user_logged_in() {
 }
 
 function amapress_current_user_can( $capability ) {
+	if ( is_multisite() && is_super_admin() ) {
+		if ( in_array( $capability, amapress_can_access_admin_roles() ) ) {
+			return 'administrator' === $capability;
+		}
+	}
+
 	return amapress_is_user_logged_in() && user_can( amapress_current_user_id(), $capability );
 }
 
@@ -117,7 +124,7 @@ function amapress_impersonation_control() {
                value="other" <?php checked( isset( $_SESSION['amapress_current_user'] ) && is_int( $_SESSION['amapress_current_user'] ) ) ?>>
         <select id="amapress_impersonation_user" <?php disabled( ! is_int( $_SESSION['amapress_current_user'] ) ) ?>>
 			<?php
-            amapress_precache_all_users();
+			amapress_precache_all_users();
 			foreach ( get_users() as $user ) {
 				echo '<option value="' . $user->ID . '" ' . selected( $current_user_id, $user->ID, false ) . '>' . amapress_get_user_display_name( $user->ID ) . '</option>';
 			}
