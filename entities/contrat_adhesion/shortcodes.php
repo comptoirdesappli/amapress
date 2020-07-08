@@ -1020,13 +1020,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-	        <?php if ( 'mes-contrats' == $tag ) { ?>
+			<?php if ( 'mes-contrats' == $tag ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
-	        <?php } elseif ( $activate_agreement ) { ?>
+			<?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-	        <?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-	        <?php } ?>
+			<?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
@@ -2593,7 +2593,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' ) . '</p>';
 		$contrat_info .= '<h3>Lieu</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
 		$contrat_info .= '<h3>Détails</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
-		$contrat_info .= '<h3>Options de paiements</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p>';
+		$contrat_info .= '<h3>Options de paiements</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p><p>Ordre: ' . $adh->getProperty( 'paiements_ordre' ) . '</p>';
 		$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
 		$contrat_info .= '<h3>Référents</h3>';
 		$contrat_info .= '<p>' . $adh->getProperty( 'referents' ) . '</p>';
@@ -3282,6 +3282,10 @@ $paiements_dates
 		} else {
 			echo "<input type='hidden' name='cheques' value='0'/>";
 		}
+		echo '<p>Information pour le réglement :<br/>';
+		echo 'Ordre: ' . wp_unslash( $contrat->getPaiementsOrdre() );
+		echo '<br />' . wp_unslash( $contrat->getPaiementsMention() );
+		echo '</p>';
 		echo '<br />';
 		if ( ! empty( $pay_at_deliv ) ) {
 			echo '<p><strong>Produits payables à la livraison</strong> : ' . implode( ', ', $pay_at_deliv ) . '</p>';
