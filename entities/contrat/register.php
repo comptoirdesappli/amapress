@@ -1533,7 +1533,7 @@ jQuery(function($) {
 				)
 			),
 			'pay_month'             => array(
-				'name'        => amapress__( 'Paiement au mois' ),
+				'name'        => amapress__( 'Paiement mensuel' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
