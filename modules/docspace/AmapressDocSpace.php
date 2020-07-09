@@ -32,6 +32,8 @@ class AmapressDocSpace {
 			[
 				'desc' => "Configure et affiche l'espace documents '$name'",
 				'args' => [
+					'title'     => 'Titre de cet espace documents',
+					'title_tag' => 'Balise utilisée pour le titre (par défaut h4)',
 				]
 			] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueueScripts' ] );
