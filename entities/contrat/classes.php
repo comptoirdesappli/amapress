@@ -1901,12 +1901,12 @@ class AmapressContrat_instance extends TitanEntity {
 			$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
 		}
 
-		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
-		$templateProcessor = new Phptemplate_withnewline( $model_filename );
-
 		if ( $check_only ) {
 			return $placeholders;
 		}
+
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
+		$templateProcessor = new Phptemplate_withnewline( $model_filename );
 
 		try {
 			$templateProcessor->cloneRow( 'quantite_date', $lines_count );
