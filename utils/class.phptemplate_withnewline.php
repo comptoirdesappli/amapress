@@ -56,6 +56,9 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 
 	public static function getUnknownPlaceholders( $document_file_name, $placeholders ) {
 		$placeholder_names = [];
+		if ( ! is_array( $placeholders ) ) {
+			$placeholders = [];
+		}
 		foreach ( array_keys( $placeholders ) as $placeholder ) {
 			$placeholder_names[] = preg_replace( '/#.+/', '', $placeholder );
 		}
