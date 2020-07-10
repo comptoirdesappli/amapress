@@ -1187,8 +1187,12 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 			'distrib' => 5,
 		), $atts
 	);
-	$next_distribs = AmapressDistribution::getUserNextDistributions( null, null, intval( $atts['distrib'] ) );
-	$next_distrib  = ! empty( $next_distribs ) ? $next_distribs[0] : null;
+	if ( amapress_is_user_logged_in() ) {
+		$next_distribs = AmapressDistribution::getUserNextDistributions( null, null, intval( $atts['distrib'] ) );
+	} else {
+		$next_distribs = array_slice( AmapressDistribution::get_next_distributions(), 0, intval( $atts['distrib'] ) );
+	}
+	$next_distrib              = ! empty( $next_distribs ) ? $next_distribs[0] : null;
 
 	switch ( $tag ) {
 		case 'next-distrib-href';
@@ -1228,18 +1232,29 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 			foreach ( $next_distribs as $dist ) {
 				/** @var AmapressDistribution $dist */
 
-				$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( null, null, $dist->getDate() );
-				$content   .= '<li>' . Amapress::makeLink( $dist->getPermalink(), $dist->getTitle(), true, true ) .
-				              ' : ' .
-				              implode( ', ', array_map(
-					              function ( $adhesion ) {
-						              /** @var AmapressAdhesion $adhesion */
-						              return $adhesion->getContrat_instance()->getModel()->getTitle();
-					              }, array_filter( $adhesions, function ( $adhesion ) use ( $dist ) {
-						              /** @var AmapressAdhesion $adhesion */
-						              return ! empty( $adhesion->getContrat_quantites( $dist->getDate() ) );
-					              } )
-				              ) ) . '</li>';
+				if ( amapress_is_user_logged_in() ) {
+					$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( null, null, $dist->getDate() );
+					$content   .= '<li>' . Amapress::makeLink( $dist->getPermalink(), $dist->getTitle(), true, true ) .
+					              ' : ' .
+					              implode( ', ', array_map(
+						              function ( $adhesion ) {
+							              /** @var AmapressAdhesion $adhesion */
+							              return $adhesion->getContrat_instance()->getModelTitleWithSubName();
+						              }, array_filter( $adhesions, function ( $adhesion ) use ( $dist ) {
+							              /** @var AmapressAdhesion $adhesion */
+							              return ! empty( $adhesion->getContrat_quantites( $dist->getDate() ) );
+						              } )
+					              ) ) . '</li>';
+				} else {
+					$content .= '<li>' . Amapress::makeLink( $dist->getPermalink(), $dist->getTitle(), true, true ) .
+					            ' : ' .
+					            implode( ', ', array_map(
+						            function ( $contrat_instance ) {
+							            /** @var AmapressContrat_instance $contrat_instance */
+							            return esc_html( $contrat_instance->getModelTitleWithSubName() );
+						            }, $dist->getContrats()
+					            ) ) . '</li>';
+				}
 			}
 			$content .= '</ul>';
 			break;
