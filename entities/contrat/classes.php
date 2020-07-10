@@ -318,6 +318,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return $model->getTitle();
 	}
 
+	public function getModelTitleWithSubName() {
+		if ( ! empty( $this->getSubName() ) ) {
+			return $this->getModelTitle() . ' - ' . $this->getSubName();
+		} else {
+			return $this->getModelTitle();
+		}
+	}
+
 	/** @return AmapressContrat */
 	public function getModel() {
 		return $this->getCustomAsEntity( 'amapress_contrat_instance_model', 'AmapressContrat' );
@@ -874,11 +882,8 @@ class AmapressContrat_instance extends TitanEntity {
 				if ( empty( $adh->getModel() ) ) {
 					return '';
 				}
-				if ( ! empty( $adh->getSubName() ) ) {
-					return $adh->getModelTitle() . ' - ' . $adh->getSubName();
-				} else {
-					return $adh->getModelTitle();
-				}
+
+				return $adh->getModelTitleWithSubName();
 			}
 		];
 		$ret['contrat_titre_complet']            = [
@@ -1516,7 +1521,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['adherent.tel']                     = [
+		$ret['adherent.tel'] = [
 			'desc' => 'Téléphone adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
