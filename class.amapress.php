@@ -2815,46 +2815,47 @@ class Amapress {
 
 	public static function amapress_insert_admin_scripts() {
 		$plugin_version = AMAPRESS_VERSION;
-
-		if ( Amapress::getOption( 'feedback' ) ) {
-			wp_enqueue_style( 'amapress-feedback', plugins_url( '/css/feedback.css', __FILE__ ) );
-			wp_enqueue_script( 'amapress-feedback', plugins_url( '/js/feedback.js', __FILE__ ), array( 'jquery' ) );
-			//https://html2canvas.hertzen.com/dist/html2canvas.min.js
-		}
-		wp_enqueue_script( 'autofill-event', plugins_url( '/js/autofill-event.js', __FILE__ ), array( 'jquery' ) );
-
-		wp_enqueue_style( 'amapress-icons', plugins_url( 'css/flaticon.css', __FILE__ ) );
-		wp_enqueue_style( 'font-awesome', plugins_url( '/css/font-awesome.min.css', __FILE__ ) );
-		wp_enqueue_style( 'select2', plugins_url( '/css/select2/select2.min.css', __FILE__ ) );
-		wp_enqueue_script( 'select2', plugins_url( '/js/select2/select2.full.min.js', __FILE__ ), array( 'jquery' ) );
-		wp_enqueue_script( 'select2cb', plugins_url( '/js/select2/select2.multi-checkboxes.js', __FILE__ ), array( 'select2' ) );
-		wp_enqueue_style( 'amapress-bo', plugins_url( '/css/bo.css?v=' . $plugin_version, __FILE__ ) );
-		wp_enqueue_style( 'amapress-adminbar', plugins_url( '/css/adminbar.css?v=' . $plugin_version, __FILE__ ) );
-		wp_enqueue_script( 'amapress-script', plugins_url( '/js/amapress.js?v=' . $plugin_version, __FILE__ ), array( 'jquery' ) );
-		wp_enqueue_script( 'jquery-ui-selectmenu' );
-		wp_enqueue_script( 'jquery-ui-accordion' );
-		wp_enqueue_script( 'contrat-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-contrats.js', array( 'jquery' ) );
-		wp_localize_script( 'contrat-status-handle', 'update_contrat_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
-		wp_enqueue_script( 'paiement-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-paiements.js', array( 'jquery' ) );
-		wp_localize_script( 'paiement-status-handle', 'update_paiement_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
-
-		wp_enqueue_script( 'inscriptions-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-inscriptions.js', array( 'jquery' ) );
-		wp_localize_script( 'inscriptions-handle', 'inscriptions', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
-
-		wp_enqueue_script( 'jquery.contextMenu', plugin_dir_url( __FILE__ ) . 'js/jquery.contextMenu.min.js', array( 'jquery' ) );
-		wp_enqueue_style( 'jquery.contextMenu', plugin_dir_url( __FILE__ ) . 'css/contextMenu/jquery.contextMenu.min.css' );
-
-		global $wp_scripts;
-		// get registered script object for jquery-ui
-		$ui = $wp_scripts->query( 'jquery-ui-core' );
-
-		// tell WordPress to load the Smoothness theme from Google CDN
-		$protocol = is_ssl() ? 'https' : 'http';
-		$url      = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
-		wp_enqueue_style( 'jquery-ui-smoothness', $url, false, null );
-
 		global $pagenow;
+
 		if ( 'customize.php' != $pagenow ) {
+
+			if ( Amapress::getOption( 'feedback' ) ) {
+				wp_enqueue_style( 'amapress-feedback', plugins_url( '/css/feedback.css', __FILE__ ) );
+				wp_enqueue_script( 'amapress-feedback', plugins_url( '/js/feedback.js', __FILE__ ), array( 'jquery' ) );
+				//https://html2canvas.hertzen.com/dist/html2canvas.min.js
+			}
+			wp_enqueue_script( 'autofill-event', plugins_url( '/js/autofill-event.js', __FILE__ ), array( 'jquery' ) );
+
+			wp_enqueue_style( 'amapress-icons', plugins_url( 'css/flaticon.css', __FILE__ ) );
+			wp_enqueue_style( 'font-awesome', plugins_url( '/css/font-awesome.min.css', __FILE__ ) );
+			wp_enqueue_style( 'select2', plugins_url( '/css/select2/select2.min.css', __FILE__ ) );
+			wp_enqueue_script( 'select2', plugins_url( '/js/select2/select2.full.min.js', __FILE__ ), array( 'jquery' ) );
+			wp_enqueue_script( 'select2cb', plugins_url( '/js/select2/select2.multi-checkboxes.js', __FILE__ ), array( 'select2' ) );
+			wp_enqueue_style( 'amapress-bo', plugins_url( '/css/bo.css?v=' . $plugin_version, __FILE__ ) );
+			wp_enqueue_style( 'amapress-adminbar', plugins_url( '/css/adminbar.css?v=' . $plugin_version, __FILE__ ) );
+			wp_enqueue_script( 'amapress-script', plugins_url( '/js/amapress.js?v=' . $plugin_version, __FILE__ ), array( 'jquery' ) );
+			wp_enqueue_script( 'jquery-ui-selectmenu' );
+			wp_enqueue_script( 'jquery-ui-accordion' );
+			wp_enqueue_script( 'contrat-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-contrats.js', array( 'jquery' ) );
+			wp_localize_script( 'contrat-status-handle', 'update_contrat_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_enqueue_script( 'paiement-status-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-paiements.js', array( 'jquery' ) );
+			wp_localize_script( 'paiement-status-handle', 'update_paiement_status', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+
+			wp_enqueue_script( 'inscriptions-handle', plugin_dir_url( __FILE__ ) . 'js/ajax-inscriptions.js', array( 'jquery' ) );
+			wp_localize_script( 'inscriptions-handle', 'inscriptions', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+
+			wp_enqueue_script( 'jquery.contextMenu', plugin_dir_url( __FILE__ ) . 'js/jquery.contextMenu.min.js', array( 'jquery' ) );
+			wp_enqueue_style( 'jquery.contextMenu', plugin_dir_url( __FILE__ ) . 'css/contextMenu/jquery.contextMenu.min.css' );
+
+			global $wp_scripts;
+			// get registered script object for jquery-ui
+			$ui = $wp_scripts->query( 'jquery-ui-core' );
+
+			// tell WordPress to load the Smoothness theme from Google CDN
+			$protocol = is_ssl() ? 'https' : 'http';
+			$url      = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
+			wp_enqueue_style( 'jquery-ui-smoothness', $url, false, null );
+
 			wp_enqueue_script( 'datatable', plugin_dir_url( __FILE__ ) . 'js/datatables.min.js', array( 'jquery' ), true );
 			wp_enqueue_script( 'datatable-row-print-btn', plugin_dir_url( __FILE__ ) . 'js/dt.rowgroup.print.js', array( 'datatable' ), true );
 			wp_enqueue_style( 'datatable', plugin_dir_url( __FILE__ ) . 'css/datatables.min.css' );
