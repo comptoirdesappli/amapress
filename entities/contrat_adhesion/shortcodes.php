@@ -355,31 +355,32 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'contact_referents'                   => 'true',
 			'show_adherents_infos'                => 'true',
 			'show_details_button'                 => 'false',
-			'allow_coadherents_access'            => 'true',
-			'allow_coadherents_inscription'       => 'true',
-			'allow_coadherents_adhesion'          => 'true',
-			'show_coadherents_address'            => 'false',
-			'show_cofoyers_address'               => 'false',
-			'contrat_print_button_text'           => 'Imprimer',
-			'adhesion_print_button_text'          => 'Imprimer',
-			'only_contrats'                       => '',
-			'shorturl'                            => '',
-			'show_modify_coords'                  => 'inscription-en-ligne' == $tag ? 'false' : 'true',
-			'show_due_amounts'                    => 'false',
-			'show_delivery_details'               => 'false',
-			'show_calendar_delivs'                => 'false',
-			'show_current_inscriptions'           => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
-			'show_editable_inscriptions'          => 'true',
-			'adhesion_shift_weeks'                => 0,
-			'before_close_hours'                  => 24,
-			'max_coadherents'                     => 3,
-			'max_cofoyers'                        => 3,
-			'use_contrat_term'                    => 'true',
-			'allow_adhesion_alone'                => 'false',
-			'skip_coords'                         => 'false',
-			'check_honeypots'                     => 'true',
-			'email'                               => get_option( 'admin_email' ),
-			'use_quantite_tables'                 => 'false',
+			'allow_coadherents_access'      => 'true',
+			'allow_coadherents_inscription' => 'true',
+			'allow_coadherents_adhesion'    => 'true',
+			'show_coadherents_address'      => 'false',
+			'show_cofoyers_address'         => 'false',
+			'contrat_print_button_text'     => 'Imprimer',
+			'adhesion_print_button_text'    => 'Imprimer',
+			'only_contrats'                 => '',
+			'shorturl'                      => '',
+			'show_modify_coords'            => 'inscription-en-ligne' == $tag ? 'false' : 'true',
+			'show_due_amounts'              => 'false',
+			'show_delivery_details'         => 'false',
+			'show_calendar_delivs'          => 'false',
+			'show_current_inscriptions'     => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
+			'show_editable_inscriptions'    => 'true',
+			'adhesion_shift_weeks'          => 0,
+			'before_close_hours'            => 24,
+			'max_coadherents'               => 3,
+			'max_cofoyers'                  => 3,
+			'use_contrat_term'              => 'true',
+			'show_adhesion_infos'           => 'true',
+			'allow_adhesion_alone'          => 'false',
+			'skip_coords'                   => 'false',
+			'check_honeypots'               => 'true',
+			'email'                         => get_option( 'admin_email' ),
+			'use_quantite_tables'           => 'false',
 		]
 		, $atts );
 
@@ -1862,14 +1863,16 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$check_adhesion_received = false;
 						}
 					}
-					if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
-						echo sprintf( '<p>Votre adhésion à l\'AMAP sera valable du %s au %s<br />%s</p>',
-							date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
-							date_i18n( 'd/m/Y', $adh_period->getDate_fin() ),
-							$print_bulletin );
-					} else {
-						echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
+					if ( Amapress::toBool( $atts['show_adhesion_infos'] ) ) {
+						if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
+							echo sprintf( '<p>Votre adhésion à l\'AMAP sera valable du %s au %s<br />%s</p>',
+								date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
+								date_i18n( 'd/m/Y', $adh_period->getDate_fin() ),
+								$print_bulletin );
+						} else {
+							echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
+						}
 					}
 				}
 			}
