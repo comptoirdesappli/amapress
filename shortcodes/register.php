@@ -741,6 +741,13 @@ function amapress_register_shortcodes() {
 				'distrib' => '(Par défaut 5) Nombre de distributions',
 			]
 		] );
+	amapress_register_shortcode( 'next-distrib-deliv-paniers', 'amapress_next_distrib_shortcode',
+		[
+			'desc' => 'Listes des prochaines distributions avec contenus des paniers',
+			'args' => [
+				'distrib' => '(Par défaut 5) Nombre de distributions',
+			]
+		] );
 
 	amapress_register_shortcode( 'liste-emargement-button', function ( $atts, $content = null ) {
 		if ( is_singular( AmapressDistribution::INTERNAL_POST_TYPE ) ) {

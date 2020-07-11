@@ -786,7 +786,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 //
 	public static function getUserNextDistributions( $user_id = null, $date = null, $max_distribs = 0 ) {
-		$distribs  = AmapressDistribution::get_next_distributions( $date );
+		$distribs  = self::get_next_distributions( $date );
 		$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id );
 		$ret       = [];
 		foreach ( $distribs as $distrib ) {

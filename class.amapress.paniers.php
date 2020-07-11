@@ -296,7 +296,7 @@ class AmapressPaniers {
 //            if (!empty($liste)) {
 //                echo '<br/>';
 //                echo '<h3 class="liste-emargement-contrat-variable">Détails des paniers - '.esc_html($c->getTitle()).'</h3>';
-			return amapress_get_datatable( 'liste-emargement-contrat-variable-' . $c->ID,
+			return amapress_get_datatable( 'liste-emargement-contrat-variable-' . $c->ID . '-' . $panier_id,
 				$panier_commandes['columns'], $panier_commandes['data'],
 				array( 'paging' => false, 'searching' => false ),
 				array(
@@ -1028,7 +1028,7 @@ class AmapressPaniers {
 					}
 				}
 				echo '<h4>Les produits de cette livraison</h4>';
-				echo self::getPanierQuantiteTable( 'all-' . $pani->getContrat_instanceId(), $produits_objects );
+				echo self::getPanierQuantiteTable( 'all-' . $pani->getContrat_instanceId() . '-' . $pani->ID, $produits_objects );
 			} else {
 				$produits_objects = array();
 				foreach ( AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() ) as $contrat_quantite ) {
@@ -1039,7 +1039,7 @@ class AmapressPaniers {
 					);
 				}
 				echo '<h4>Les produits disponibles pour ce contrat</h4>';
-				echo self::getPanierQuantiteTable( 'public-' . $pani->getContrat_instanceId(), $produits_objects );
+				echo self::getPanierQuantiteTable( 'public-' . $pani->getContrat_instanceId() . '-' . $pani->ID, $produits_objects );
 			}
 		} else {
 //			$dist_is_today = Amapress::start_of_day( $pani->getDate() ) == Amapress::start_of_day( amapress_time() );
