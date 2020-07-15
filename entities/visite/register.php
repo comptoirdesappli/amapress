@@ -142,7 +142,6 @@ function amapress_register_entities_visite( $entities ) {
 				'desc'           => 'Lieu externe',
 				'group'          => '3/ Emplacement',
 				'searchable'     => true,
-				'required'       => true,
 				'col_def_hidden' => true,
 			),
 			'lieu_externe_adresse' => array(
@@ -153,7 +152,6 @@ function amapress_register_entities_visite( $entities ) {
 				'desc'           => 'Adresse',
 				'group'          => '3/ Emplacement',
 				'searchable'     => true,
-				'required'       => true,
 				'col_def_hidden' => true,
 			),
 			'lieu_externe_acces'   => array(
