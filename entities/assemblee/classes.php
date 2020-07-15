@@ -8,6 +8,36 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 	const INTERNAL_POST_TYPE = 'amps_assemblee';
 	const POST_TYPE = 'assemblee_generale';
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressAssemblee_generale
+	 */
+	public static function getBy( $post_or_id, $no_cache = false ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressAssemblee_generale' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( $no_cache ) {
+			unset( self::$entities_cache[ $post_id ] );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressAssemblee_generale( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	function __construct( $post_id ) {
 		parent::__construct( $post_id );
 	}
