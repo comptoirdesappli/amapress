@@ -568,4 +568,37 @@ class Amapress_EventBase extends TitanEntity {
 
 		return ( $this->getStartDateAndHour() - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time();
 	}
+
+	public function sendNewCommentMailToMembers( $comment_id ) {
+		$comment = get_comment( $comment_id );
+		if ( null == $comment ) {
+			return;
+		}
+
+		$author  = $comment->comment_author;
+		$amapien = AmapressUser::getBy( $comment->user_id );
+		if ( $amapien ) {
+			$author = $amapien->getDisplayName();
+		}
+
+		$member_ids = $this->getMembersIds();
+		if ( $this->getPost()->post_author ) {
+			$member_ids = array_merge( $member_ids, [ $this->getPost()->post_author ] );
+		}
+		$member_ids = array_diff( $member_ids, [ amapress_current_user_id() ] );
+		if ( empty( $member_ids ) ) {
+			return;
+		}
+		$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $member_ids ), 'Amapiens', 'amapiens' );
+		$subject      = Amapress::getOption( 'comment-event-mail-subject' );
+		$content      = Amapress::getOption( 'comment-event-mail-content' );
+		$commentaire  = sprintf( '%s: %s', $author, $comment->comment_content );
+		$subject      = str_replace( "%%commentaire%%", $commentaire, $subject );
+		$content      = str_replace( "%%commentaire%%", $commentaire, $content );
+		amapress_send_message(
+			$subject,
+			$content,
+			'', $target_users, $this
+		);
+	}
 }

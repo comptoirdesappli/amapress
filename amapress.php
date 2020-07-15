@@ -2042,3 +2042,28 @@ add_filter( 'wp_sweep_excluded_termids', function ( $excluded_termids ) {
 
 	return $excluded_termids;
 } );
+
+add_action( 'comment_post', function ( $comment_id ) {
+	$comment = get_comment( $comment_id );
+	if ( '1' != $comment->comment_approved ) {
+		return;
+	}
+	$post = get_post( $comment->comment_post_ID );
+	if ( null == $post ) {
+		return;
+	}
+	switch ( $post->post_type ) {
+		case AmapressVisite::INTERNAL_POST_TYPE:
+			$event = AmapressVisite::getBy( $post );
+			$event->sendNewCommentMailToMembers( $comment_id );
+			break;
+		case AmapressAmap_event::INTERNAL_POST_TYPE:
+			$event = AmapressAmap_event::getBy( $post );
+			$event->sendNewCommentMailToMembers( $comment_id );
+			break;
+		case AmapressAssemblee_generale::INTERNAL_POST_TYPE:
+			$event = AmapressAssemblee_generale::getBy( $post );
+			$event->sendNewCommentMailToMembers( $comment_id );
+			break;
+	}
+} );

@@ -1464,7 +1464,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Emails - Inscriptions - Evènements (visite, évènement...)'    => array(
+								'Emails - Inscriptions - Evènements (visite, évènement...)'        => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -1487,7 +1487,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Désinscriptions - Evènements (visite, évènement...)' => array(
+								'Emails - Désinscriptions - Evènements (visite, évènement...)'     => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -1510,17 +1510,42 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Visite - Inscription - Rappel'                       => array(
+								'Emails - Nouveau commentaire - Evènements (visite, évènement...)' => array(
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'comment-event-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Nouveau commentaire pour %%post:title%%',
+										),
+										array(
+											'id'      => 'comment-event-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nUn nouveau commentaire a été ajouté à %%post:titre%% (%%post:lien%%):\n%%commentaire%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												Amapress_EventBase::getPlaceholdersHelp( [
+													'commentaire' => 'Contenu du commentaire'
+												], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+								'Emails - Visite - Inscription - Rappel'                           => array(
 									'id'      => 'amp_tab_recall_visite_inscr',
 									'desc'    => '',
 									'options' => amapress_visite_inscription_recall_options(),
 								),
-								'Emails - Visite - Inscription possible - Rappel'              => array(
+								'Emails - Visite - Inscription possible - Rappel'                  => array(
 									'id'      => 'amp_tab_recall_visite_avail',
 									'desc'    => '',
 									'options' => amapress_visite_available_recall_options(),
 								),
-								'Emails - Evènement AMAP - Inscription - Rappel'               => array(
+								'Emails - Evènement AMAP - Inscription - Rappel'                   => array(
 									'id'      => 'amp_tab_recall_amap_event_inscr',
 									'desc'    => '',
 									'options' => amapress_amap_event_inscription_recall_options(),
