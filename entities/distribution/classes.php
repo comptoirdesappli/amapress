@@ -345,7 +345,24 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressUser[] */
 	public function getResponsables() {
-		return $this->getCustomAsEntityArray( 'amapress_distribution_responsables', 'AmapressUser' );
+		$responsables = $this->getCustomAsEntityArray( 'amapress_distribution_responsables', 'AmapressUser' );
+
+		return array_filter( $responsables, function ( $user ) {
+			return null != $user;
+		} );
+	}
+
+	public function getMultiResponsableInscriptionCount( $resp_id ) {
+		$ret              = 0;
+		$responsables_ids = $this->getResponsablesIds();
+		for ( $i = 0; $i < 0xF; $i ++ ) {
+			$multi_user_id = $resp_id | $i << 24;
+			if ( ! in_array( $multi_user_id, $responsables_ids ) ) {
+				$ret += 1;
+			}
+		}
+
+		return $ret;
 	}
 
 	public function getMailtoResponsables( $bcc = false ) {
@@ -646,12 +663,20 @@ class AmapressDistribution extends Amapress_EventBase {
 		if ( ! $responsables ) {
 			$responsables = array();
 		}
-		if ( in_array( $user_id, $responsables ) ) {
+
+		$multi_user_id = $user_id;
+		for ( $i = 0; $i < 0xF; $i ++ ) {
+			$multi_user_id = $user_id | $i << 24;
+			if ( ! in_array( $multi_user_id, $responsables ) ) {
+				break;
+			}
+		}
+		if ( in_array( $multi_user_id, $responsables ) ) {
 			return 'already_in_list';
 		} else if ( count( $responsables ) >= $needed_responsables ) {
 			return 'list_full';
 		} else {
-			$responsables[] = $user_id;
+			$responsables[] = $multi_user_id;
 			if ( $role > 0 ) {
 				$this->ensure_init();
 				foreach ( $this->custom as $k => $v ) {
@@ -666,13 +691,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						}
 					}
 				}
-				$this->setCustom( 'amapress_distribution_resp_' . $user_id, $role );
+				$this->setCustom( 'amapress_distribution_resp_' . $multi_user_id, $role );
 			}
 			$this->setCustom( 'amapress_distribution_responsables', $responsables );
 
 			amapress_mail_current_user_inscr( $this, $user_id, 'distrib',
-				function ( $cnt, $user_id, $post ) {
-					$role = $this->getResponsableRoleId( $user_id );
+				function ( $cnt, $user_id, $post ) use ( $multi_user_id ) {
+					$role = $this->getResponsableRoleId( $multi_user_id );
 					if ( ! $role ) {
 						return $cnt;
 					}
@@ -684,9 +709,9 @@ class AmapressDistribution extends Amapress_EventBase {
 							'%%resp_role_contrats%%',
 						],
 						[
-							esc_html( $this->getResponsableRoleName( $user_id ) ),
-							esc_html( $this->getResponsableRoleDesc( $user_id ) ),
-							esc_html( $this->getResponsableRoleContrats( $user_id ) ),
+							esc_html( $this->getResponsableRoleName( $multi_user_id ) ),
+							esc_html( $this->getResponsableRoleDesc( $multi_user_id ) ),
+							esc_html( $this->getResponsableRoleContrats( $multi_user_id ) ),
 						], $cnt );
 				} );
 
@@ -708,9 +733,15 @@ class AmapressDistribution extends Amapress_EventBase {
 			$responsables = array();
 		}
 
-		if ( ( $key = array_search( $user_id, $responsables ) ) !== false ) {
-			unset( $responsables[ $key ] );
+		$found = false;
+		for ( $i = 0; $i < 0xF; $i ++ ) {
+			if ( ( $key = array_search( $user_id | $i << 24, $responsables ) ) !== false ) {
+				unset( $responsables[ $key ] );
+				$found = true;
+			}
+		}
 
+		if ( $found ) {
 			$this->setCustom( 'amapress_distribution_responsables', $responsables );
 			$this->deleteCustom( 'amapress_distribution_resp_' . $user_id );
 
