@@ -3000,7 +3000,7 @@ class Amapress {
 			echo '<ul>';
 			foreach ( $week_dists as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
-				$resps = AmapressDistributions::get_responsables( $dist->ID );
+				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
 				if ( count( $resps ) == 0 ) {
 					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>Pas de responsables</strong></li>";
@@ -3078,7 +3078,7 @@ class Amapress {
 			echo '<ul>';
 			foreach ( $week_dists as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
-				$resps = AmapressDistributions::get_responsables( $dist->ID );
+				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
 				if ( count( $resps ) == 0 ) {
 					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>Pas de responsables</strong></li>";

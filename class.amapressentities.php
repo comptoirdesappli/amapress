@@ -999,6 +999,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => array(
 										array(
+											'id'      => 'inscr-distrib-allow-multi',
+											'name'    => 'Multi-inscriptions',
+											'type'    => 'checkbox',
+											'desc'    => 'Autoriser un amapien à s\'inscrire plusieurs fois comme responsable de distribution',
+											'default' => true,
+										),
+										array(
 											'id'      => 'close-subscribe-distrib-hours',
 											'name'    => 'Clôture inscriptions',
 											'desc'    => 'Clôturer les inscriptions x heures avant la distribution',

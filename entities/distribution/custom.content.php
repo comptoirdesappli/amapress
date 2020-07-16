@@ -16,7 +16,7 @@ function amapress_get_custom_content_distribution( $content ) {
 		return in_array( $cid, $dist_contrats );
 	} );
 
-	$resp_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
+	$resp_ids = $dist->getResponsablesIds();
 	if ( $resp_ids && count( $resp_ids ) > 0 ) {
 		$responsables = get_users( array( 'include' => array_map( 'intval', $resp_ids ) ) );
 	} else {
@@ -43,7 +43,7 @@ function amapress_get_custom_content_distribution( $content ) {
 	if ( amapress_is_user_logged_in() ) {
 		$can_subscribe = $dist->canSubscribe();
 		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
-		if ( count( $responsables ) > 0 ) {
+		if ( count( $resp_ids ) > 0 ) {
 			$render_func = 'user_cell';
 			if ( amapress_can_access_admin() ||
 			     ( Amapress::start_of_week( Amapress::add_a_week( amapress_time(), - 1 ) ) <= $dist_date
@@ -58,13 +58,13 @@ function amapress_get_custom_content_distribution( $content ) {
             <p class="dist-no-resp">Aucun responsable</p>
 		<?php } ?>
 		<?php
-		if ( count( $responsables ) < $needed_responsables ) {
+		if ( count( $resp_ids ) < $needed_responsables ) {
 			if ( Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() ) ) {
 				$missing_format = 'Il manque encore %d responsable(s) de distributions.';
 			} else {
 				$missing_format = 'Il manquait %d responsable(s) de distributions.';
 			}
-			echo '<p class="dist-miss-resp">' . esc_html( sprintf( $missing_format, $needed_responsables - count( $responsables ) ) ) . '</p>';
+			echo '<p class="dist-miss-resp">' . esc_html( sprintf( $missing_format, $needed_responsables - count( $resp_ids ) ) ) . '</p>';
 			$need_responsables = true;
 			$href              = Amapress::get_inscription_distrib_page_href();
 			if ( ! empty( $href ) ) {

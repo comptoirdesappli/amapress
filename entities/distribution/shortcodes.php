@@ -71,7 +71,11 @@ function amapress_responsables_distrib_shortcode( $atts ) {
 			$content .= '<p><strong>Aucun responsable inscrit</strong></p>';
 		} else {
 			foreach ( $dist->getResponsables() as $responsable ) {
-				$content .= '<p>' . esc_html( $responsable->getDisplayName() ) . ' : ' . $responsable->getTelTo() . '</p>';
+				$multi = $dist->getMultiResponsableInscriptionCount( $responsable->ID );
+				if ( $multi > 1 ) {
+					$multi = sprintf( ' (%d personnes)', $multi );
+				}
+				$content .= '<p>' . esc_html( $responsable->getDisplayName() ) . $multi . ' : ' . $responsable->getTelTo() . '</p>';
 			}
 		}
 
@@ -137,6 +141,7 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 	$allow_gardiens_comments = Amapress::toBool( $atts['allow_gardiens_comments'] );
 	$distrib_links           = Amapress::toBool( $atts['distrib_links'] );
 	$responsive              = $atts['responsive'];
+	$allow_multi_inscription = Amapress::toBool( Amapress::getOption( 'inscr-distrib-allow-multi' ) );
 	if ( $for_pdf ) {
 		$responsive = false;
 	}
@@ -896,7 +901,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">M\'inscrire</button>';
 							$missing    = '';
 							if ( ! $for_pdf ) {
-								if ( ( $has_role_names || ! $added_inscr_button ) && ! $is_resp && $can_subscribe ) {
+								if ( ( $has_role_names || ! $added_inscr_button || $allow_multi_inscription ) && ( ! $is_resp || $allow_multi_inscription ) && $can_subscribe ) {
 									$missing            = $inscr_self;
 									$added_inscr_button = true;
 								} else {
@@ -920,7 +925,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							if ( $is_user_part_of || $allow_manage_others ) {
 								$is_resp = $is_resp || $r->ID == $user_id;
 								if ( $can_unsubscribe ) {
-									if ( $r->ID == $user_id ) {
+									if ( $r->ID & 0x0FFFFFFF == $user_id ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">Me désinscrire</button>';
 									} elseif ( $allow_manage_others ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';
@@ -1192,7 +1197,7 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 	} else {
 		$next_distribs = array_slice( AmapressDistribution::get_next_distributions(), 0, intval( $atts['distrib'] ) );
 	}
-	$next_distrib              = ! empty( $next_distribs ) ? $next_distribs[0] : null;
+	$next_distrib = ! empty( $next_distribs ) ? $next_distribs[0] : null;
 
 	switch ( $tag ) {
 		case 'next-distrib-href';

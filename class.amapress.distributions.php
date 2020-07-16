@@ -15,10 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class AmapressDistributions {
 	public static $initiated = false;
 
-	public static function get_responsables( $dist_id ) {
-		return Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
-	}
-
 	public static function get_visite_participants( $dist_id ) {
 		return Amapress::get_post_meta_array( $dist_id, 'amapress_visite_participants' );
 	}
@@ -195,9 +191,9 @@ class AmapressDistributions {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
-		$resp_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_responsables' );
+		$dist = AmapressDistribution::getBy( $dist_id );
 
-		return in_array( $user_id, $resp_ids );
+		return in_array( $user_id, $dist->getResponsablesIds() );
 	}
 
 	public static function generate_distributions(
