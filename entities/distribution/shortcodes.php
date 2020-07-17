@@ -648,7 +648,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 //                $ret .= '<td>';
 				$is_user_part_of         = $inscr_all_distrib || $dist->isUserMemberOf( $user_id, true, $adhesions );
-				$resps                   = $dist->getResponsables();
+				$resps_ids               = $dist->getResponsablesIds();
 				$needed                  = AmapressDistributions::get_required_responsables( $dist->ID );
 				$needed_without_contrats = $needed;
 				foreach ( $dist->getContratModelIds() as $contrat_id ) {
@@ -657,9 +657,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						$needed   = $resp_idx > $needed ? $resp_idx : $needed;
 					}
 				}
-				$row_resps = [];
+				$row_resps     = [];
+				$row_resps_ids = [];
 				for ( $i = 0; $i < $needed; $i ++ ) {
-					$row_resps[ $i ] = null;
+					$row_resps[ $i ]     = null;
+					$row_resps_ids[ $i ] = null;
 				}
 				$can_unsubscribe = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || $dist->canUnsubscribe() );
 				$can_subscribe   = ! $for_pdf && ( $manage_all_subscriptions || amapress_can_access_admin() || $dist->canSubscribe() );
@@ -685,8 +687,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$users   = $lieu_users[ $lieu_id ];
 				$users   += $no_contrat_users;
 				$is_resp = false;
-				foreach ( $resps as $resp ) {
-					$is_resp = $is_resp || $resp->ID == $user_id;
+				foreach ( $resps_ids as $resp_id ) {
+					$is_resp = $is_resp || ( $resp_id && 0x0FFFFFFF ) == $user_id;
 					if ( $is_resp ) {
 						break;
 					}
@@ -784,7 +786,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 				if ( $show_responsables ) {
 					if ( $has_role_names ) {
-						usort( $resps, function ( $a, $b ) use ( $dist ) {
+						usort( $resps_ids, function ( $a, $b ) use ( $dist ) {
 							$role_a = $dist->getResponsableRoleId( $a );
 							if ( empty( $role_a ) ) {
 								$role_a = 999;
@@ -800,36 +802,40 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							return $role_a < $role_b ? - 1 : 1;
 						} );
 						$max_resp_role = 0;
-						foreach ( $resps as $r ) {
-							$role = $dist->getResponsableRoleId( $r->ID );
+						foreach ( $resps_ids as $r_id ) {
+							$role = $dist->getResponsableRoleId( $r_id );
 							if ( $role > 0 ) {
-								$row_resps[ $role - 1 ] = $r;
+								$row_resps[ $role - 1 ]     = AmapressUser::getBy( $r_id & 0x0FFFFFFF );
+								$row_resps_ids[ $role - 1 ] = $r_id;
 							}
 							$max_resp_role = $role > $max_resp_role ?
 								$role : $max_resp_role;
 						}
 
 						$start = $max_resp_role;
-						foreach ( $resps as $r ) {
+						foreach ( $resps_ids as $r_id ) {
 							if ( $start >= $needed ) {
 								if ( ! is_array( $row_resps[ $needed - 1 ] ) ) {
-									$row_resps[ $needed - 1 ] = [ $row_resps[ $needed - 1 ] ];
+									$row_resps[ $needed - 1 ]     = [ $row_resps[ $needed - 1 ] ];
+									$row_resps_ids[ $needed - 1 ] = [ $row_resps_ids[ $needed - 1 ] ];
 								}
-								$role = $dist->getResponsableRoleId( $r->ID );
+								$role = $dist->getResponsableRoleId( $r_id );
 								if ( $role <= 0 ) {
-									$row_resps[ $needed - 1 ][] = $r;
+									$row_resps[ $needed - 1 ][]     = AmapressUser::getBy( $r_id & 0x0FFFFFFF );
+									$row_resps_ids[ $needed - 1 ][] = $r_id;
 								}
 								continue;
 							}
-							$role = $dist->getResponsableRoleId( $r->ID );
+							$role = $dist->getResponsableRoleId( $r_id );
 							if ( $role <= 0 ) {
-								$row_resps[ $start ] = $r;
-								$start               += 1;
+								$row_resps[ $start ]     = AmapressUser::getBy( $r_id & 0x0FFFFFFF );
+								$row_resps_ids[ $start ] = $r_id;
+								$start                   += 1;
 							}
 						}
 					} else {
-						usort( $resps, function ( $resp, $b ) use ( $user_id ) {
-							if ( $resp->ID == $user_id ) {
+						usort( $resps_ids, function ( $resp_id, $b ) use ( $user_id ) {
+							if ( $resp_id == $user_id ) {
 								return - 1;
 							} else {
 								return 0;
@@ -837,27 +843,31 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						} );
 
 						if ( $prefer_inscr_button_first ) {
-							$start = $needed - count( $resps ) >= 0 ? $needed - count( $resps ) : 0;
+							$start = $needed - count( $resps_ids ) >= 0 ? $needed - count( $resps_ids ) : 0;
 						} else {
 							$start = 0;
 						}
-						foreach ( $resps as $r ) {
+						foreach ( $resps_ids as $r_id ) {
 							if ( $start >= $needed ) {
 								break;
 							}
 
-							$row_resps[ $start ] = $r;
-							$start               += 1;
+							$row_resps[ $start ]     = AmapressUser::getBy( $r_id & 0x0FFFFFFF );
+							$row_resps_ids[ $start ] = $r_id;
+							$start                   += 1;
 						}
 					}
 				} else {
-					$row_resps = [];
+					$row_resps     = [];
+					$row_resps_ids = [];
 				}
 
 				$added_inscr_button = false;
 				$i                  = 1;
+				$x                  = 0;
 				foreach ( $row_resps as $resp ) {
-					$resp_idx = ! $has_role_names ? 0 : $i;
+					$row_resp_ids = $row_resps_ids[ $x ++ ];
+					$resp_idx     = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
 						$is_contrat_resp_col = null;
 						foreach ( $lieux_contrats_resps[ $lieu_id ] as $contrat_id => $ix ) {
@@ -915,9 +925,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							}
 						}
 					} else {
-						$ret      .= '<td style="' . $css_width . ';text-align: center">';
-						$td_resps = is_array( $resp ) ? $resp : [ $resp ];
+						$ret          .= '<td style="' . $css_width . ';text-align: center">';
+						$td_resps     = is_array( $resp ) ? $resp : [ $resp ];
+						$td_resps_ids = is_array( $row_resp_ids ) ? $row_resp_ids : [ $row_resp_ids ];
+						$y            = 0;
 						foreach ( $td_resps as $r ) {
+							$r_id = $td_resps_ids[ $y ++ ];
 							if ( ! $r ) {
 								continue;
 							}
@@ -925,7 +938,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 							if ( $is_user_part_of || $allow_manage_others ) {
 								$is_resp = $is_resp || $r->ID == $user_id;
 								if ( $can_unsubscribe ) {
-									if ( $r->ID & 0x0FFFFFFF == $user_id ) {
+									if ( $r_id == $user_id ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">Me désinscrire</button>';
 									} elseif ( $allow_manage_others ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="Etes-vous sûr de vouloir désinscrire cet amapien ?" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">Désinscrire</button>';

@@ -345,18 +345,21 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	/** @return AmapressUser[] */
 	public function getResponsables() {
-		$responsables = $this->getCustomAsEntityArray( 'amapress_distribution_responsables', 'AmapressUser' );
+		$responsables_ids = $this->getResponsablesIds();
+		$responsables_ids = array_unique( array_map( function ( $id ) {
+			return $id & 0x0FFFFFFF;
+		}, $responsables_ids ) );
 
-		return array_filter( $responsables, function ( $user ) {
-			return null != $user;
-		} );
+		return array_map( function ( $user_id ) {
+			return AmapressUser::getBy( $user_id );
+		}, $responsables_ids );
 	}
 
 	public function getMultiResponsableInscriptionCount( $resp_id ) {
 		$ret              = 0;
 		$responsables_ids = $this->getResponsablesIds();
 		for ( $i = 0; $i < 0xF; $i ++ ) {
-			$multi_user_id = $resp_id | $i << 24;
+			$multi_user_id = $resp_id | $i << 28;
 			if ( ! in_array( $multi_user_id, $responsables_ids ) ) {
 				$ret += 1;
 			}
@@ -667,7 +670,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		$multi_user_id = $user_id;
 		if ( Amapress::toBool( Amapress::getOption( 'inscr-distrib-allow-multi' ) ) ) {
 			for ( $i = 0; $i < 0xF; $i ++ ) {
-				$multi_user_id = $user_id | $i << 24;
+				$multi_user_id = $user_id | $i << 28;
 				if ( ! in_array( $multi_user_id, $responsables ) ) {
 					break;
 				}
@@ -737,7 +740,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		$found = false;
 		for ( $i = 0; $i < 0xF; $i ++ ) {
-			if ( ( $key = array_search( $user_id | $i << 24, $responsables ) ) !== false ) {
+			if ( ( $key = array_search( $user_id | $i << 28, $responsables ) ) !== false ) {
 				unset( $responsables[ $key ] );
 				$found = true;
 			}
