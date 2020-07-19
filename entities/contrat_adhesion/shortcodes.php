@@ -580,7 +580,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$max_contrat_date = $c->getDate_fin();
 		}
 	}
-	if ( 'mes-contrats' != $tag && empty( $subscribable_contrats ) && ! $allow_adhesion_alone ) {
+	if ( ! $admin_mode && 'mes-contrats' != $tag && empty( $subscribable_contrats ) && ! $allow_adhesion_alone ) {
 		ob_clean();
 
 		if ( amapress_can_access_admin() ) {
@@ -2178,7 +2178,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					return in_array( $c->ID, $principal_contrats_ids );
 				} );
 			}
-			if ( Amapress::toBool( $atts['filter_multi_contrat'] ) ) {
+			if ( ! $admin_mode && Amapress::toBool( $atts['filter_multi_contrat'] ) ) {
 				$adhs_contrat_ids           = array_map( function ( $a ) {
 					/** @var AmapressAdhesion $a */
 					return $a->getContrat_instance()->getModelId();
