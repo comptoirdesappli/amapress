@@ -350,6 +350,8 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 		echo '<p>Créé par ' . esc_html( $author->display_name ) . ' à ' . date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ) . ' ; Dernière modification le ' . date_i18n( 'd/m/Y H:i', @strtotime( $post->post_modified ) ) . '</p>';
 	}
 
+	echo '<script type="text/javascript">jQuery(function($) { $("#title").addClass("required"); })</script>';
+
 	$amp_back_to_list = wp_get_referer();
 	if ( isset( $_REQUEST['amp_back_to_list'] ) ) {
 		$amp_back_to_list = $_REQUEST['amp_back_to_list'];
