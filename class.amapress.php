@@ -4171,6 +4171,10 @@ class Amapress {
 		return self::get_page_with_shortcode_href( 'mes-contrats', 'amp_mes_contrats_href' );
 	}
 
+	public static function get_logged_inscription_page_href() {
+		return self::get_page_with_shortcode_href( 'inscription-en-ligne-connecte', 'amp_inscrlog_href' );
+	}
+
 	public static function get_pre_inscription_page_href() {
 		return self::get_page_with_shortcode_href( 'inscription-en-ligne', 'amp_preinscr_href' );
 	}

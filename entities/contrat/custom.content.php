@@ -111,9 +111,13 @@ function amapress_get_custom_content_contrat_default( $content ) {
 		$content .= wpautop( $c->getContratInfo() );
 
 		if ( $c->getDate_ouverture() < amapress_time() && amapress_time() < $c->getDate_cloture() ) {
-			$inscription_contrats_link = Amapress::get_pre_inscription_page_href();
-			if ( empty( $inscription_contrats_link ) ) {
-				$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+			if ( amapress_is_user_logged_in() ) {
+				$inscription_contrats_link = Amapress::get_logged_inscription_page_href();
+				if ( empty( $inscription_contrats_link ) ) {
+					$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+				}
+			} else {
+				$inscription_contrats_link = Amapress::get_pre_inscription_page_href();
 			}
 			if ( ! empty( $inscription_contrats_link ) ) {
 				$content .= '<div>' . Amapress::makeButtonLink( $inscription_contrats_link, 'S\'inscrire', true, true ) . '</div>';

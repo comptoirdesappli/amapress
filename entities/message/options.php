@@ -193,7 +193,10 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 				case 'lien_inscription_contrats':
 					$inscription_contrats_link = Amapress::get_pre_inscription_page_href();
 					if ( empty( $inscription_contrats_link ) ) {
-						$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+						$inscription_contrats_link = Amapress::get_logged_inscription_page_href();
+						if ( empty( $inscription_contrats_link ) ) {
+							$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+						}
 					}
 					if ( ! empty( $inscription_contrats_link ) ) {
 						$inscription_contrats_link = Amapress::makeLink( $inscription_contrats_link, 'S\'inscrire aux contrats' );
