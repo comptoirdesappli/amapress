@@ -708,6 +708,18 @@ class AmapressContrats {
 					return $user_id == $a['ref_id'];
 				}
 			);
+			if ( current_user_can( 'referent' ) && empty( $ret ) ) {
+				$ret = [
+					array(
+						'ref_id'               => $user_id,
+						'lieu'                 => 0,
+						'level'                => 'prod',
+						'producteur'           => 0,
+						'contrat_ids'          => [],
+						'contrat_instance_ids' => [],
+					)
+				];
+			}
 		}
 
 		return $ret;
