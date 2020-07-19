@@ -311,8 +311,9 @@ function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
 }
 
 function amapress_mes_contrats( $atts, $content = null, $tag ) {
-	$atts               = wp_parse_args( $atts );
-	$atts['for_logged'] = 'true';
+	$atts                    = wp_parse_args( $atts );
+	$atts['for_logged']      = 'true';
+	$atts['check_honeypots'] = 'false';
 	unset( $atts['edit_names'] );
 	unset( $atts['shorturl'] );
 	unset( $atts['max_coadherents'] );
