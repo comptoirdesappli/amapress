@@ -1540,7 +1540,7 @@ jQuery(function($) {
 				'required'    => true,
 				'default'     => false,
 				'show_column' => false,
-				'desc'        => 'Activer la répartition par mois pour les règlements par chèques en plusieurs fois',
+				'desc'        => 'Activer la répartition mensuelle de la remise des chèques au producteur',
 			),
 			'allow_deliv_pay'       => array(
 				'name'        => amapress__( 'A la livraison' ),
