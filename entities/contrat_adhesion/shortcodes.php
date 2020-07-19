@@ -281,9 +281,30 @@ add_action( 'amapress_init', function () {
 	}
 } );
 
+function amapress_self_adhesion( $atts, $content = null, $tag ) {
+	$atts                       = wp_parse_args( $atts );
+	$atts['for_logged']         = 'false';
+	$atts['allow_inscriptions'] = 'false';
+	$atts['adhesion']           = 'true';
+
+	return amapress_self_inscription( $atts, $content, $tag );
+}
+
+function amapress_logged_self_adhesion( $atts, $content = null, $tag ) {
+	$atts                       = wp_parse_args( $atts );
+	$atts['for_logged']         = 'true';
+	$atts['check_honeypots']    = 'false';
+	$atts['allow_inscriptions'] = 'false';
+	$atts['adhesion']           = 'true';
+	unset( $atts['key'] );
+
+	return amapress_self_inscription( $atts, $content, $tag );
+}
+
 function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
-	$atts               = wp_parse_args( $atts );
-	$atts['for_logged'] = 'true';
+	$atts                    = wp_parse_args( $atts );
+	$atts['for_logged']      = 'true';
+	$atts['check_honeypots'] = 'false';
 	unset( $atts['key'] );
 
 	return amapress_self_inscription( $atts, $content, $tag );
@@ -344,43 +365,43 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'check_adhesion_received_or_previous' => Amapress::getOption( 'check_adh_rcv_p' ),
 			'track_no_renews'                     => 'false',
 			'track_no_renews_email'               => get_option( 'admin_email' ),
-			'notify_email'                        => '',
-			'max_produit_label_width'             => '10em',
-			'paiements_info_required'             => 'false',
-			'paniers_modulables_editor_height'    => 350,
-			'send_welcome'                        => 'true',
-			'edit_names'                          => 'true',
-			'allow_remove_cofoyers'               => 'true',
-			'allow_remove_coadhs'                 => 'false',
-			'contact_referents'                   => 'true',
-			'show_adherents_infos'                => 'true',
-			'show_details_button'                 => 'false',
-			'allow_coadherents_access'      => 'true',
-			'allow_coadherents_inscription' => 'true',
-			'allow_coadherents_adhesion'    => 'true',
-			'show_coadherents_address'      => 'false',
-			'show_cofoyers_address'         => 'false',
-			'contrat_print_button_text'     => 'Imprimer',
-			'adhesion_print_button_text'    => 'Imprimer',
-			'only_contrats'                 => '',
-			'shorturl'                      => '',
-			'show_modify_coords'            => 'inscription-en-ligne' == $tag ? 'false' : 'true',
-			'show_due_amounts'              => 'false',
-			'show_delivery_details'         => 'false',
-			'show_calendar_delivs'          => 'false',
-			'show_current_inscriptions'     => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
-			'show_editable_inscriptions'    => 'true',
-			'adhesion_shift_weeks'          => 0,
-			'before_close_hours'            => 24,
-			'max_coadherents'               => 3,
-			'max_cofoyers'                  => 3,
-			'use_contrat_term'              => 'true',
-			'show_adhesion_infos'           => 'true',
-			'allow_adhesion_alone'          => 'false',
-			'skip_coords'                   => 'false',
-			'check_honeypots'               => 'true',
-			'email'                         => get_option( 'admin_email' ),
-			'use_quantite_tables'           => 'false',
+			'notify_email'                     => '',
+			'max_produit_label_width'          => '10em',
+			'paiements_info_required'          => 'false',
+			'paniers_modulables_editor_height' => 350,
+			'send_welcome'                     => 'true',
+			'edit_names'                       => 'true',
+			'allow_remove_cofoyers'            => 'true',
+			'allow_remove_coadhs'              => 'false',
+			'contact_referents'                => 'true',
+			'show_adherents_infos'             => 'true',
+			'show_details_button'              => 'false',
+			'allow_coadherents_access'         => 'true',
+			'allow_coadherents_inscription'    => 'true',
+			'allow_coadherents_adhesion'       => 'true',
+			'show_coadherents_address'         => 'false',
+			'show_cofoyers_address'            => 'false',
+			'contrat_print_button_text'        => 'Imprimer',
+			'adhesion_print_button_text'       => 'Imprimer',
+			'only_contrats'                    => '',
+			'shorturl'                         => '',
+			'show_modify_coords'               => 'inscription-en-ligne' == $tag || 'adhesion-en-ligne' == $tag ? 'false' : 'true',
+			'show_due_amounts'                 => 'false',
+			'show_delivery_details'            => 'false',
+			'show_calendar_delivs'             => 'false',
+			'show_current_inscriptions'        => 'inscription-en-ligne-connecte' == $tag ? 'false' : 'true',
+			'show_editable_inscriptions'       => 'true',
+			'adhesion_shift_weeks'             => 0,
+			'before_close_hours'               => 24,
+			'max_coadherents'                  => 3,
+			'max_cofoyers'                     => 3,
+			'use_contrat_term'                 => 'true',
+			'show_adhesion_infos'              => 'true',
+			'allow_adhesion_alone'             => 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag ? 'true' : 'false',
+			'skip_coords'                      => 'false',
+			'check_honeypots'                  => 'true',
+			'email'                            => get_option( 'admin_email' ),
+			'use_quantite_tables'              => 'false',
 		]
 		, $atts );
 

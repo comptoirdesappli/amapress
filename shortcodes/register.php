@@ -639,6 +639,69 @@ function amapress_register_shortcodes() {
 			]
 		] );
 
+	amapress_register_shortcode( 'adhesion-en-ligne', 'amapress_self_adhesion',
+		[
+			'desc' => 'Permet les adhésions en ligne (amapien non connecté et nouveaux, sécurisée par une clé secrète) uniquement (pas d\'inscription aux contrats)',
+			'args' => [
+				'key'                        => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé',
+				'agreement'                  => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'send_adhesion_confirm'      => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_tresoriers'            => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'edit_names'                 => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'send_welcome'               => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
+				'shorturl'                   => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+				'max_coadherents'            => '(3 par défaut) Nombre maximum de co-adhérents',
+				'max_cofoyers'               => '(3 par défaut) Nombre maximum de membres du foyer',
+				'mob_phone_required'         => '(false par défaut) Téléphones (mobiles) requis',
+				'track_no_renews'            => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email'      => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'notify_email'               => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
+				'show_adherents_infos'       => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
+				'show_adhesion_infos'        => '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin',
+				'allow_coadherents_access'   => '(true par défaut) Autoriser l\accès aux co-adhérents',
+				'allow_coadherents_adhesion' => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
+				'allow_remove_coadhs'        => '(false par défaut) Autoriser la suppression des co-adhérents',
+				'allow_remove_cofoyers'      => '(true par défaut) Autoriser la suppression des membres du foyers',
+				'show_coadherents_address'   => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
+				'show_cofoyers_address'      => '(false par défaut) Afficher la saisie d\'adresse pour les membres du foyer',
+				'show_modify_coords'         => '(false par défaut) Afficher un bouton pour modifier les coordonnées, co-adhérents et membres du foyer',
+				'paiements_info_required'    => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
+				'email'                      => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
+				'allow_adhesion_alone'       => '(true par défaut) Autoriser l\'adhésion même si aucun contrat n\'est ouvert à l\'inscription',
+				'check_honeypots'            => '(true par défaut) Détecter et bloquer les bots de spam pour une utilisation publique (key=public) de l\'assistant',
+			]
+		] );
+	amapress_register_shortcode( 'adhesion-en-ligne-connecte', 'amapress_logged_self_adhesion',
+		[
+			'desc' => 'Permet les adhésions en ligne (amapien connecté) uniquement (pas d\'inscription aux contrats)',
+			'args' => [
+				'agreement'                  => '(booléen, false par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'send_adhesion_confirm'      => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_tresoriers'            => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'edit_names'                 => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'send_welcome'               => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
+				'shorturl'                   => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+				'max_coadherents'            => '(3 par défaut) Nombre maximum de co-adhérents',
+				'max_cofoyers'               => '(3 par défaut) Nombre maximum de membres du foyer',
+				'mob_phone_required'         => '(false par défaut) Téléphones (mobiles) requis',
+				'track_no_renews'            => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email'      => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'notify_email'               => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
+				'show_adherents_infos'       => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
+				'show_adhesion_infos'        => '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin',
+				'allow_coadherents_access'   => '(true par défaut) Autoriser l\accès aux co-adhérents',
+				'allow_coadherents_adhesion' => '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents',
+				'allow_remove_coadhs'        => '(false par défaut) Autoriser la suppression des co-adhérents',
+				'allow_remove_cofoyers'      => '(true par défaut) Autoriser la suppression des membres du foyers',
+				'show_coadherents_address'   => '(false par défaut) Afficher la saisie d\'adresse pour les co-adhérents',
+				'show_cofoyers_address'      => '(false par défaut) Afficher la saisie d\'adresse pour les membres du foyer',
+				'show_modify_coords'         => '(false par défaut) Afficher un bouton pour modifier les coordonnées, co-adhérents et membres du foyer',
+				'paiements_info_required'    => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
+				'email'                      => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
+				'allow_adhesion_alone'       => '(true par défaut) Autoriser l\'adhésion même si aucun contrat n\'est ouvert à l\'inscription',
+			]
+		] );
+
 	amapress_register_shortcode( 'intermittent-paniers', 'amapress_intermittent_paniers_shortcode',
 		[
 			'desc' => 'Paniers réservés par un intermittent',
