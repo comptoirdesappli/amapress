@@ -1510,6 +1510,10 @@ add_action( 'admin_init', function () {
 		require_once 'utils/sample_pdf_convert.php';
 		amapress_test_convertpdf_ws();
 	} );
+
+	add_action( 'tf_custom_admin_amapress_action_reset_rights', function () {
+		Amapress::init_roles();
+	} );
 } );
 
 if ( defined( 'WP_CORRECT_OB_END_FLUSH_ALL' ) ) {

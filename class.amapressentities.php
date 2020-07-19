@@ -4028,6 +4028,23 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									),
 								),
+								'Droits'          => array(
+									'id'      => 'amp_rights_config',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'name'    => 'Droits des rôles Amapress',
+											'type'    => 'action-buttons',
+											'buttons' => [
+												[
+													'class'  => 'button button-primary',
+													'text'   => 'Remettre par défaut',
+													'action' => 'reset_rights',
+												]
+											]
+										),
+									),
+								),
 							),
 						),
 					),
