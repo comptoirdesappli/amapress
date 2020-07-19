@@ -482,7 +482,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 					'settings' => array(
 						'name'       => 'Listes de diffusions',
 						'position'   => '83',
-						'capability' => 'manage_amapress',
+						'capability' => 'manage_options',
 						'icon'       => 'dashicons-share-alt',
 						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
 <ul style="margin-left: 1em; list-style-type: disc">
@@ -507,7 +507,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Configuration',
-								'capability' => 'manage_amapress',
+								'capability' => 'manage_options',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
 							'options'  => array(
@@ -818,7 +818,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Emails et rappels',
 								'menu_title' => 'Emails/Rappels',
-								'capability' => 'manage_events',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-email',
 							),
 							'options'  => array(),
@@ -921,7 +921,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'capability' => 'manage_events',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
 							'options'  => array(),
@@ -1466,7 +1466,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								'name'       => 'Emails et rappels',
 								'menu_title' => 'Emails/Rappels',
 //								'position'   => '25.2',
-								'capability' => 'manage_events',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-email',
 							),
 							'options'  => array(),
@@ -1570,7 +1570,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'capability' => 'manage_events',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
 							'options'  => array(),
@@ -2039,7 +2039,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Archivage des contrats et inscriptions',
 								'menu_title' => 'Archivage',
-								'capability' => 'edit_contrat_instance',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-book',
 							),
 							'options'  => array(),
@@ -2064,7 +2064,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Emails et rappels',
 								'menu_title' => 'Emails/Rappels',
-								'capability' => 'edit_contrat_instance',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-email',
 							),
 							'options'  => array(),
@@ -2112,7 +2112,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'capability' => 'edit_contrat_instance',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
 							'options'  => array(),
@@ -2656,7 +2656,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'capability' => 'edit_adhesion_paiement',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
 							'options'  => array(),
@@ -2927,7 +2927,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'settings' => array(
 								'name'       => 'Emails et rappels',
 								'menu_title' => 'Emails/Rappels',
-								'capability' => 'edit_intermittence_panier',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-email',
 							),
 							'options'  => array(),
@@ -3299,7 +3299,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'settings' => array(
 								'name'       => 'Configuration',
 								'menu_title' => 'Configuration',
-								'capability' => 'manage_events',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-admin-generic',
 							),
 							'options'  => array(),
@@ -4075,7 +4075,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 							'type'     => 'panel',
 							'settings' => array(
 								'name'       => 'Le collectif',
-								'capability' => 'edit_users',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-groups',
 							),
 							'tabs'     => array(
@@ -4445,7 +4445,7 @@ Cette page permet d\'importer les configurations de paniers pour vos contrats
 						'Producteurs'               => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
-							'capability' => 'edit_producteur',
+							'capability' => 'manage_amapress',
 							'options'    => array(
 								array(
 									'type' => 'note',
@@ -4475,7 +4475,7 @@ Cette page permet d\'importer les producteurs
 						'Productions'               => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
-							'capability' => 'edit_contrat',
+							'capability' => 'manage_amapress',
 							'options'    => array(
 								array(
 									'type' => 'note',
@@ -4504,7 +4504,7 @@ Cette page permet d\'importer les productions des producteurs
 						'Contrats'                  => array(
 							'id'         => 'import_contrats_tab',
 							'desc'       => '',
-							'capability' => 'edit_contrat_instance',
+							'capability' => 'manage_amapress',
 							'options'    => array(
 								array(
 									'type' => 'note',

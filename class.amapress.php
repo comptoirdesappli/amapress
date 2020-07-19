@@ -593,6 +593,26 @@ class Amapress {
 		return $u->ID;
 	}
 
+	private static function add_role( $role, $display_name, $capabilities ) {
+		$r = get_role( $role );
+		if ( $r ) {
+			foreach ( $capabilities as $k => $v ) {
+				$r->add_cap( $k, $v );
+			}
+		} else {
+			add_role( $role, $display_name, $capabilities );
+		}
+	}
+
+	private static function clear_role( $role ) {
+		$r = get_role( $role );
+		if ( $r ) {
+			foreach ( array_keys( $r->capabilities ) as $role_name ) {
+				$r->remove_cap( $role_name );
+			}
+		}
+	}
+
 	/**
 	 * @return null|WP_Role
 	 */
@@ -783,7 +803,8 @@ class Amapress {
 	}
 
 	public static function init_producteur_role() {
-		add_role( 'producteur', 'Amap Producteur', array( 'read' => true ) );
+		self::clear_role( 'producteur' );
+		self::add_role( 'producteur', 'Amap Producteur', array( 'read' => true ) );
 		self::add_post_role( 'producteur', 'produit', 'produits', array(
 			'read'    => true,
 			'edit'    => true,
@@ -805,18 +826,6 @@ class Amapress {
 		self::add_post_role( 'producteur', 'panier', 'paniers', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
-		) );
-		self::add_post_role( 'producteur', 'distribution', 'distributions', array(
-			'read'    => false,
-			'edit'    => false,
-			'delete'  => false,
-			'publish' => false,
-		) );
-		self::add_post_role( 'producteur', 'mailing_group', 'mailing_groups', array(
-			'read'    => false,
-			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
 		) );
@@ -853,7 +862,8 @@ class Amapress {
 	}
 
 	public static function init_tresorier_role() {
-		add_role( 'tresorier', 'Amap Trésorier',
+		self::clear_role( 'tresorier' );
+		self::add_role( 'tresorier', 'Amap Trésorier',
 			array(
 				'read'         => true,
 				'list_users'   => true,
@@ -911,18 +921,6 @@ class Amapress {
 			'delete'  => false,
 			'publish' => true,
 		) );
-		self::add_post_role( 'tresorier', 'intermittence_panier', 'intermittence_paniers', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => false,
-		) );
-//        self::add_post_role('tresorier', 'adhesion_intermittence', 'adhesion_intermittences', array(
-//            'read' => true,
-//            'edit' => true,
-//            'delete' => true,
-//            'publish' => true,
-//        ));
 		self::add_post_role( 'tresorier', 'adhesion_paiement', 'adhesion_paiements', array(
 			'read'    => true,
 			'edit'    => true,
@@ -930,12 +928,6 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'tresorier', 'adhesion_period', 'adhesion_periods', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'tresorier', 'news', 'newss', array(
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => true,
@@ -960,6 +952,7 @@ class Amapress {
 			'delete'        => true,
 			'publish'       => true,
 			'delete_others' => false,
+			'edit_others'   => false,
 		) );
 
 		$r = get_role( 'tresorier' );
@@ -980,9 +973,7 @@ class Amapress {
 		$r->add_cap( 'upload_files' );
 
 		if ( class_exists( 'bbPress' ) ) {
-//            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
 			$caps = bbp_get_caps_for_role( bbp_get_moderator_role() );
-//            $caps = bbp_get_caps_for_role(bbp_get_participant_role());
 			foreach ( $caps as $cap => $enabled ) {
 				if ( $enabled ) {
 					$r->add_cap( $cap );
@@ -994,7 +985,9 @@ class Amapress {
 	}
 
 	public static function init_coordinateur_role() {
-		add_role( 'coordinateur_amap', 'Amap Coordinateur',
+		self::clear_role( 'coordinateur_amap' );
+
+		self::add_role( 'coordinateur_amap', 'Amap Coordinateur',
 			array(
 				'read'         => true,
 				'list_users'   => true,
@@ -1014,10 +1007,6 @@ class Amapress {
 			'read' => true,
 		) );
 		self::add_post_role( 'coordinateur_amap', 'contrat_quantite', 'contrat_quantites', array(
-			'read' => true,
-		) );
-//        self::add_post_role('coordinateur_amap', 'contrat_paiement', 'contrat_paiements', $read = true, $edit = true, $delete = false);
-		self::add_post_role( 'coordinateur_amap', 'contrat_paiement', 'contrat_paiements', array(
 			'read' => true,
 		) );
 		self::add_post_role( 'coordinateur_amap', 'adhesion', 'adhesions', array(
@@ -1042,7 +1031,6 @@ class Amapress {
 		) );
 		self::add_post_role( 'coordinateur_amap', 'producteur', 'producteurs', array(
 			'read' => true,
-			'edit' => true,
 		) );
 		self::add_post_role( 'coordinateur_amap', 'panier', 'paniers', array(
 			'read'    => true,
@@ -1076,24 +1064,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
-		self::add_post_role( 'coordinateur_amap', 'intermittence_panier', 'intermittence_paniers', array(
-			'read' => false,
-		) );
-//        self::add_post_role('coordinateur_amap', 'adhesion_intermittence', 'adhesion_intermittences', array(
-//            'read' => false,
-//        ));
-		self::add_post_role( 'coordinateur_amap', 'adhesion_paiement', 'adhesion_paiements', array(
-			'read' => false,
-		) );
-		self::add_post_role( 'coordinateur_amap', 'adhesion_period', 'adhesion_periods', array(
-			'read' => false,
-		) );
-		self::add_post_role( 'coordinateur_amap', 'news', 'newss', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
 		self::add_post_role( 'coordinateur_amap', 'post', 'posts', array(
 			'read'          => true,
 			'edit'          => true,
@@ -1116,7 +1086,7 @@ class Amapress {
 		) );
 		self::add_post_role( 'coordinateur_amap', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
-			'edit'    => true,
+			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
 		) );
@@ -1132,20 +1102,14 @@ class Amapress {
 			'delete'        => true,
 			'publish'       => true,
 			'delete_others' => false,
+			'edit_others'   => false,
 		) );
 
 		$r = get_role( 'coordinateur_amap' );
-		$r->add_cap( 'manage_fournisseurs' );
-		$r->add_cap( 'manage_contrats' );
 		$r->add_cap( 'manage_events' );
 		$r->add_cap( 'manage_amapiens' );
 		$r->add_cap( 'manage_contenu' );
-//        $r->add_cap('manage_intermittence');
-//        $r->add_cap('manage_amapress');
 		$r->add_cap( 'manage_categories' );
-//        $r->add_cap('manage_tresorerie');
-//        $r->add_cap('manage_amapien_contrat');
-//        $r->add_cap('import_csv');
 		$r->add_cap( 'list_users' );
 		$r->add_cap( 'edit_users' );
 		$r->add_cap( 'add_users' );
@@ -1157,9 +1121,7 @@ class Amapress {
 		$r->add_cap( 'upload_files' );
 
 		if ( class_exists( 'bbPress' ) ) {
-//            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
 			$caps = bbp_get_caps_for_role( bbp_get_moderator_role() );
-//            $caps = bbp_get_caps_for_role(bbp_get_participant_role());
 			foreach ( $caps as $cap => $enabled ) {
 				if ( $enabled ) {
 					$r->add_cap( $cap );
@@ -1171,7 +1133,9 @@ class Amapress {
 	}
 
 	public static function init_redacteur_role() {
-		add_role( 'redacteur_amap', 'Amap Rédacteur',
+		self::clear_role( 'redacteur_amap' );
+
+		self::add_role( 'redacteur_amap', 'Amap Rédacteur',
 			array(
 				'read'         => true,
 				'list_users'   => false,
@@ -1201,7 +1165,9 @@ class Amapress {
 	}
 
 	public static function init_responsable_role() {
-		add_role( 'responsable_amap', 'Amap Responsable',
+		self::clear_role( 'responsable_amap' );
+
+		self::add_role( 'responsable_amap', 'Amap Responsable',
 			array(
 				'read'         => true,
 				'list_users'   => true,
@@ -1244,7 +1210,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
-//        self::add_post_role('responsable_amap', 'contrat_paiement', 'contrat_paiements', $read = true, $edit = true, $delete = false);
 		self::add_post_role( 'responsable_amap', 'contrat_paiement', 'contrat_paiements', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1323,12 +1288,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => false,
 		) );
-//        self::add_post_role('responsable_amap', 'adhesion_intermittence', 'adhesion_intermittences', array(
-//            'read' => true,
-//            'edit' => true,
-//            'delete' => true,
-//            'publish' => true,
-//        ));
 		self::add_post_role( 'responsable_amap', 'adhesion_paiement', 'adhesion_paiements', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1336,12 +1295,6 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'responsable_amap', 'adhesion_period', 'adhesion_periods', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'responsable_amap', 'news', 'newss', array(
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => true,
@@ -1403,9 +1356,7 @@ class Amapress {
 		$r->add_cap( 'upload_files' );
 
 		if ( class_exists( 'bbPress' ) ) {
-//            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
 			$caps = bbp_get_caps_for_role( bbp_get_moderator_role() );
-//            $caps = bbp_get_caps_for_role(bbp_get_participant_role());
 			foreach ( $caps as $cap => $enabled ) {
 				if ( $enabled ) {
 					$r->add_cap( $cap );
@@ -1417,7 +1368,9 @@ class Amapress {
 	}
 
 	public static function init_referent_role() {
-		add_role( 'referent', 'Amap Référent producteur', array( 'read' => true ) );
+		self::clear_role( 'referent' );
+
+		self::add_role( 'referent', 'Amap Référent producteur', array( 'read' => true ) );
 		self::add_post_role( 'referent', 'contrat', 'contrats', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1436,7 +1389,6 @@ class Amapress {
 			'delete'  => false,
 			'publish' => false,
 		) );
-//        self::add_post_role('referent', 'contrat_paiement', 'contrat_paiements', $read = true, $edit = true, $delete = false);
 		self::add_post_role( 'referent', 'contrat_paiement', 'contrat_paiements', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1481,7 +1433,7 @@ class Amapress {
 		) );
 		self::add_post_role( 'referent', 'lieu_distribution', 'lieu_distributions', array(
 			'read'    => true,
-			'edit'    => true,
+			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
 		) );
@@ -1515,28 +1467,10 @@ class Amapress {
 			'delete'  => true,
 			'publish' => false,
 		) );
-//        self::add_post_role('referent', 'adhesion_intermittence', 'adhesion_intermittences', array(
-//            'read' => true,
-//            'edit' => true,
-//            'delete' => true,
-//            'publish' => true,
-//        ));
-		self::add_post_role( 'referent', 'news', 'newss', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
 		self::add_post_role( 'referent', 'post', 'posts', array(
 			'read'    => true,
 			'edit'    => true,
 			'delete'  => true,
-			'publish' => true,
-		) );
-		self::add_post_role( 'referent', 'page', 'pages', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => false,
 			'publish' => true,
 		) );
 
@@ -1548,7 +1482,7 @@ class Amapress {
 		) );
 		self::add_post_role( 'referent', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
-			'edit'    => true,
+			'edit'    => false,
 			'delete'  => false,
 			'publish' => false,
 		) );
@@ -1564,6 +1498,7 @@ class Amapress {
 			'delete'        => true,
 			'publish'       => true,
 			'delete_others' => false,
+			'edit_others'   => false,
 		) );
 
 		$r = get_role( 'referent' );
@@ -1572,9 +1507,6 @@ class Amapress {
 		$r->add_cap( 'manage_amapiens' );
 		$r->add_cap( 'manage_contenu' );
 		$r->add_cap( 'manage_amapien_contrat' );
-//        $r->add_cap('manage_categories');
-//        $r->add_cap('manage_intermittence');
-//        $r->add_cap('manage_amapress');
 		$r->add_cap( 'import_csv' );
 		$r->add_cap( 'list_users' );
 		$r->add_cap( 'edit_users' );
@@ -1584,9 +1516,7 @@ class Amapress {
 		$r->add_cap( 'upload_files' );
 
 		if ( class_exists( 'bbPress' ) ) {
-//            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
 			$caps = bbp_get_caps_for_role( bbp_get_moderator_role() );
-//            $caps = bbp_get_caps_for_role(bbp_get_participant_role());
 			foreach ( $caps as $cap => $enabled ) {
 				if ( $enabled ) {
 					$r->add_cap( $cap );
@@ -1598,11 +1528,11 @@ class Amapress {
 	}
 
 	public static function init_amapien_role() {
-		add_role( 'amapien', 'Amapien', array( 'read' => true ) );
+		self::clear_role( 'amapien' );
+
+		self::add_role( 'amapien', 'Amapien', array( 'read' => true ) );
 		$r = get_role( 'amapien' );
 		if ( class_exists( 'bbPress' ) ) {
-//            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
-//            $caps = bbp_get_caps_for_role(bbp_get_moderator_role());
 			$caps = bbp_get_caps_for_role( bbp_get_participant_role() );
 			foreach ( $caps as $cap => $enabled ) {
 				if ( $enabled ) {
@@ -1678,10 +1608,10 @@ class Amapress {
 			'show_admin_column' => true,
 			'public'            => true,
 			'capabilities'      => array(
-				'manage_terms' => 'edit_users',
-				'edit_terms'   => 'edit_users',
+				'manage_terms' => 'manage_amapress',
+				'edit_terms'   => 'manage_amapress',
 				'delete_terms' => 'manage_options',
-				'assign_terms' => 'edit_users',
+				'assign_terms' => 'manage_amapress',
 			),
 		) );
 	}
