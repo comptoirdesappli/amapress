@@ -3531,7 +3531,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					echo '<p>Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)</p>';
 				}
 			}
-			$print_button = '';
+			$print_contrat = '';
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
 				$print_contrat = Amapress::makeButtonLink(
 					add_query_arg( [
