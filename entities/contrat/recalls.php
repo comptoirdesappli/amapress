@@ -201,6 +201,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 			);
 
 			$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
+			$replacements['producteur_pseudo']   = ( $producteur->getUser() ? $producteur->getUser()->getUser()->display_name : '' ) . ' (' . $producteur->getTitle() . ')';
 			$replacements['producteur_contrats'] = $producteur->getContratsNames();
 
 			$send_title = [];
@@ -275,6 +276,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 		$replacements['contrat_nom'] = $contrat->getTitle();
 
 		$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
+		$replacements['producteur_pseudo']   = ( $producteur->getUser() ? $producteur->getUser()->getUser()->display_name : '' ) . ' (' . $producteur->getTitle() . ')';
 		$replacements['producteur_contrats'] = $producteur->getContratsNames();
 		$date_remise                         = from( $contrat->getPaiements_Liste_dates() )
 			->orderBy( function ( $d ) {
@@ -640,6 +642,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	);
 
 	$replacements['producteur_nom']      = ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : '' ) . ' (' . $producteur->getTitle() . ')';
+	$replacements['producteur_pseudo']   = ( $producteur->getUser() ? $producteur->getUser()->getUser()->display_name : '' ) . ' (' . $producteur->getTitle() . ')';
 	$replacements['producteur_contrats'] = $producteur->getContratsNames();
 
 	$send_title = [];
@@ -733,6 +736,7 @@ function amapress_contrat_quantites_recall_options() {
 			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
 				             'producteur_contrats'                              => 'Contrats du producteur',
 				             'producteur_nom'                                   => 'Nom du producteur',
+				             'producteur_pseudo'                                => 'Pseudo du producteur',
 				             'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
 				             'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
 				             'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
@@ -754,6 +758,7 @@ function amapress_contrat_quantites_recall_options() {
 			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
 				             'producteur_contrats'                              => 'Contrats du producteur',
 				             'producteur_nom'                                   => 'Nom du producteur',
+				             'producteur_pseudo'                                => 'Pseudo du producteur',
 				             'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
 				             'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
 				             'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
@@ -875,6 +880,7 @@ function amapress_contrat_paiements_recall_options() {
 				             'prochaine_date_remise_cheques' => 'Prochaine date de remise des chèques',
 				             'producteur_contrats'           => 'Contrats du producteur',
 				             'producteur_nom'                => 'Nom du producteur',
+				             'producteur_pseudo'             => 'Pseudo du producteur',
 				             'contrat_nom'                   => 'Nom du contrat',
 				             'lien_contrats_paiements'       => 'Lien vers la liste des chèques à remettre au producteur',
 			             ], null, [], 'recall' ),
@@ -1281,6 +1287,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 			             Amapress::getPlaceholdersHelpTable( 'liste-recap-placeholders', [
 				             'producteur_contrats'                              => 'Contrats du producteur',
 				             'producteur_nom'                                   => 'Nom du producteur',
+				             'producteur_pseudo'                                => 'Pseudo du producteur',
 				             'lien_contrats_quantites'                          => 'Lien vers le récapitulatif des inscriptions',
 				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
 				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',

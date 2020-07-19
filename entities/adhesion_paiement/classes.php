@@ -480,19 +480,25 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getDisplayName();
 				}
 			];
-			$ret['adherent.type']        = [
+			$ret['adherent.type'] = [
 				'desc' => 'Type d\'adhérent (Principal, Co-adhérent...)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getAdherentTypeDisplay();
 				}
 			];
-			$ret['adherent.nom']         = [
+			$ret['adherent.pseudo'] = [
+				'desc' => 'Pseudo adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getUser()->display_name;
+				}
+			];
+			$ret['adherent.nom'] = [
 				'desc' => 'Nom adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getUser()->last_name;
 				}
 			];
-			$ret['adherent.prenom']      = [
+			$ret['adherent.prenom'] = [
 				'desc' => 'Prénom adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getUser()->first_name;
@@ -557,7 +563,18 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $coadh->getDisplayName();
 				}
 			];
-			$ret['coadherent.nom']       = [
+			$ret['coadherent.pseudo'] = [
+				'desc' => 'Pseudo co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getUser()->display_name;
+				}
+			];
+			$ret['coadherent.nom'] = [
 				'desc' => 'Nom co-adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					$coadh = $adh->getUser()->getFirstCoAdherent();

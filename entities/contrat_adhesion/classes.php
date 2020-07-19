@@ -339,6 +339,12 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getAdherentTypeDisplay();
 				}
 			];
+			$ret['adherent.pseudo'] = [
+				'desc' => 'Pseudo adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getUser()->display_name;
+				}
+			];
 			$ret['adherent.nom'] = [
 				'desc' => 'Nom adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -414,7 +420,21 @@ class AmapressAdhesion extends TitanEntity {
 					return $coadh->getDisplayName();
 				}
 			];
-			$ret['coadherent.nom']                   = [
+			$ret['coadherent.pseudo'] = [
+				'desc' => 'Pseudo co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent2();
+					if ( ! $coadh ) {
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
+					}
+
+					return $coadh->getUser()->display_name;
+				}
+			];
+			$ret['coadherent.nom'] = [
 				'desc' => 'Nom co-adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
@@ -484,7 +504,20 @@ class AmapressAdhesion extends TitanEntity {
 					return $coadh->getEmail();
 				}
 			];
-			$ret['producteur.nom']                   = [
+			$ret['producteur.pseudo'] = [
+				'desc' => 'Pseudo producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->display_name;
+				}
+			];
+			$ret['producteur.nom'] = [
 				'desc' => 'Nom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( empty( $adh->getContrat_instance() )
@@ -497,7 +530,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->last_name;
 				}
 			];
-			$ret['producteur.prenom']                = [
+			$ret['producteur.prenom'] = [
 				'desc' => 'Prénom producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( empty( $adh->getContrat_instance() )

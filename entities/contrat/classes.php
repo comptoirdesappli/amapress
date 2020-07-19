@@ -1124,19 +1124,25 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['contrat_fin_annee']                = [
+		$ret['contrat_fin_annee'] = [
 			'desc' => 'Année de fin du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['producteur.nom']                   = [
+		$ret['producteur.pseudo'] = [
+			'desc' => 'Pseudo producteur',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getModel()->getProducteur()->getUser()->getUser()->display_name;
+			}
+		];
+		$ret['producteur.nom'] = [
 			'desc' => 'Nom producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getUser()->getUser()->last_name;
 			}
 		];
-		$ret['producteur.prenom']                = [
+		$ret['producteur.prenom'] = [
 			'desc' => 'Prénom producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getUser()->getUser()->first_name;
@@ -1479,19 +1485,25 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['adherent.type']                    = [
+		$ret['adherent.type'] = [
 			'desc' => 'Type d\'adhérent (Principal, Co-adhérent...) (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
 		];
-		$ret['adherent.nom']                     = [
+		$ret['adherent.pseudo'] = [
+			'desc' => 'Pseudo adhérent (à remplir)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return '';
+			}
+		];
+		$ret['adherent.nom'] = [
 			'desc' => 'Nom adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
 		];
-		$ret['adherent.prenom']                  = [
+		$ret['adherent.prenom'] = [
 			'desc' => 'Prénom adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -1547,6 +1559,12 @@ class AmapressContrat_instance extends TitanEntity {
 		];
 		$ret['coadherent'] = [
 			'desc' => 'Prénom Nom co-adhérent (à remplir)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return '';
+			}
+		];
+		$ret['coadherent.pseudo'] = [
+			'desc' => 'Pseudo co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
@@ -1799,6 +1817,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['total']                = '';
 		$placeholders['adherent']             = '';
 		$placeholders['adherent.type']        = '';
+		$placeholders['adherent.pseudo']      = '';
 		$placeholders['adherent.nom']         = '';
 		$placeholders['adherent.prenom']      = '';
 		$placeholders['adherent.adresse']     = '';
@@ -1810,6 +1829,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['coadherents.noms']     = '';
 		$placeholders['coadherents.contacts'] = '';
 		$placeholders['coadherent']           = '';
+		$placeholders['coadherent.pseudo']    = '';
 		$placeholders['coadherent.nom']       = '';
 		$placeholders['coadherent.prenom']    = '';
 		$placeholders['coadherent.adresse']   = '';
