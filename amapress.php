@@ -1201,10 +1201,10 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 		return $allcaps;
 	}
 
-	$cap = $args[0];
-//    var_dump($cap);
+	$cap     = $args[0];
+	$req_cap = isset( $caps[0] ) ? $caps[0] : $cap;
 	if ( isset( $args[2] ) && ( 'delete_users' == $cap || 'remove_users' == $cap || 'delete_user' == $cap || 'remove_user' == $cap ) ) {
-		$allcaps[ $caps[0] ] = apply_filters( 'amapress_can_delete_user', true, $args[2] );
+		$allcaps[ $req_cap ] = apply_filters( 'amapress_can_delete_user', true, $args[2] );
 	} else if ( isset( $args[2] ) && ( 'edit_users' == $cap || 'edit_user' == $cap ) ) {
 		//do nothing
 	} else if ( isset( $args[2] ) && strpos( $cap, 'delete_' ) === 0 ) {
@@ -1216,10 +1216,7 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 
 		$post_type = amapress_simplify_post_type( get_post_type( $post_id ) );
 
-//        die($post_type);
-		$allcaps[ $caps[0] ] = apply_filters( "amapress_can_delete_$post_type", true, $post_id );
-//        $post_types = AmapressEntities::getPostTypes();
-//        if (isset($post))
+		$allcaps[ $req_cap ] = apply_filters( "amapress_can_delete_$post_type", true, $post_id );
 	} else if ( isset( $args[2] ) && strpos( $cap, 'edit_' ) === 0 ) {
 		if ( ! isset( $allcaps[ $cap ] ) || ! $allcaps[ $cap ] ) {
 			return $allcaps;
@@ -1227,27 +1224,30 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 
 		$post_id = isset( $args[2] ) ? $args[2] : 0;
 
-		$post_type = amapress_simplify_post_type( get_post_type( $post_id ) );
+		$internal_post_type = get_post_type( $post_id );
+		$post_type          = amapress_simplify_post_type( $internal_post_type );
 
-//        die($post_type);
-		$allcaps[ $caps[0] ] = apply_filters( "amapress_can_edit_$post_type", true, $post_id );
-//        $post_types = AmapressEntities::getPostTypes();
-//        if (isset($post))
+		if ( 'edit_post' === $cap && ( 0 === strpos( $internal_post_type, 'amps_' ) ) && ! current_user_can( 'edit_' . $post_type ) ) {
+			$allcaps[ $req_cap ] = false;
+		} else {
+			$allcaps[ $req_cap ] = apply_filters( "amapress_can_edit_$post_type", true, $post_id );
+		}
+
 	} else if ( isset( $args[1] ) ) {
 		$user_id = isset( $args[1] ) ? $args[1] : amapress_current_user_id();
 		$user    = AmapressUser::getBy( $user_id );
 		if ( $user ) {
 			$user_role_caps = $user->getAmapRoleCapabilities();
 			if ( ! empty( $user_role_caps ) && $cap = "access_admin" ) {
-				$allcaps[ $caps[0] ] = true;
+				$allcaps[ $req_cap ] = true;
 			} else if ( in_array( $cap, $user_role_caps ) ) {
-				$allcaps[ $caps[0] ] = true;
+				$allcaps[ $req_cap ] = true;
 			}
 		}
 	}
 
 	if ( 'wpcf7_read_contact_forms' == $cap && ! amapress_current_user_can( 'manage_options' ) ) {
-		$allcaps[ $caps[0] ] = false;
+		$allcaps[ $req_cap ] = false;
 	}
 
 
