@@ -172,7 +172,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
-	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='$table_style' width='100%' cellspacing='0'>$table_content</table>";
+	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='margin:0;$table_style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	if ( ! $options['no_script'] ) {
 		$json = json_encode( $options );
