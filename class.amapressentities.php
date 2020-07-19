@@ -4680,9 +4680,9 @@ Cette page permet la création des produits des producteurs
 									          '</li><li>' .
 									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/collectif/accueil', 'Accueil du Collectif' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/producteur/accueil', 'Accueil du Référent producteur' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/accueil', 'Accueil du Référent producteur' ) .
 									          '</li><li>' .
-									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/accueil', 'Accueil du Producteur' ) .
+									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/producteur/accueil', 'Accueil du Producteur' ) .
 									          '</li><li>' .
 									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/tresorier/accueil', 'Accueil du Trésorier' ) .
 									          '</li><li>' .
