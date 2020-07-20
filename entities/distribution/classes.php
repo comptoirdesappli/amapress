@@ -360,7 +360,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		$responsables_ids = $this->getResponsablesIds();
 		for ( $i = 0; $i < 0xF; $i ++ ) {
 			$multi_user_id = $resp_id | $i << 28;
-			if ( ! in_array( $multi_user_id, $responsables_ids ) ) {
+			if ( in_array( $multi_user_id, $responsables_ids ) ) {
 				$ret += 1;
 			}
 		}
