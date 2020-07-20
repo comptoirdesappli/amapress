@@ -113,6 +113,7 @@ function amapress_register_entities_distribution( $entities ) {
 					return ! TitanFrameworkOption::isOnNewScreen();
 				},
 				'desc'       => 'Date de distribution',
+				'required'   => true,
 			),
 			'lieu' => array(
 				'name'       => amapress__( 'Lieu de distribution' ),
@@ -130,6 +131,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 				'desc'       => 'Lieu de distribution',
 				'searchable' => true,
+				'required'   => true,
 			),
 
 			'lieu_substitution' => array(
@@ -181,26 +183,33 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'  => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$dist = AmapressDistribution::getBy( $option->getPostID() );
+					if ( TitanFrameworkOption::isOnNewScreen() ) {
+						$dist = null;
+					}
 
-					$ret            = '';
-					$users_in_slots = count( $dist->getUserIdsWithAnySlot() );
-					if ( $users_in_slots > 0 ) {
-						$ret .= sprintf(
-							'<p><strong style="color: red">Attention : %d amapien(s) sont déjà inscrits. Modifier la configuration peut impacter l\'affectation de leurs créneaux</strong></p>',
-							$users_in_slots
-						);
+					$ret = '';
+					if ( $dist ) {
+						$users_in_slots = count( $dist->getUserIdsWithAnySlot() );
+						if ( $users_in_slots > 0 ) {
+							$ret .= sprintf(
+								'<p><strong style="color: red">Attention : %d amapien(s) sont déjà inscrits. Modifier la configuration peut impacter l\'affectation de leurs créneaux</strong></p>',
+								$users_in_slots
+							);
+						}
 					}
 
 					$ret .= 'Configurer un créneau de la forme : <em>Heure Début-Heure Fin</em>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
 <br/>Exemple : 18h00-20h00[10min;2p] ou [5min;3p] (<em>pour prendre en compte les horaires de la distribution</em>)
-<br/>Il est également possible de créer des créneau nommé/fictif (doubles parenthèses pour ne pas afficher les horaires) par exemple : [5min;5p]|23h-23h30((je suis absent))<br/>' .
-					        sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
-						        date_i18n( 'H:i', $dist->getStartDateAndHour() ),
-						        date_i18n( 'H:i', $dist->getEndDateAndHour() ),
-						        $dist->getSlotsDescription()
-					        ) .
-					        '<br/>' .
-					        Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
+<br/>Il est également possible de créer des créneau nommé/fictif (doubles parenthèses pour ne pas afficher les horaires) par exemple : [5min;5p]|23h-23h30((je suis absent))<br/>';
+					if ( $dist ) {
+						$ret .= sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
+								date_i18n( 'H:i', $dist->getStartDateAndHour() ),
+								date_i18n( 'H:i', $dist->getEndDateAndHour() ),
+								$dist->getSlotsDescription()
+						        ) . '<br/>';
+					}
+
+					$ret .= Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
 
 					return $ret;
 				},
@@ -265,6 +274,9 @@ function amapress_register_entities_distribution( $entities ) {
 				'desc'        => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$dist = AmapressDistribution::getBy( $option->getPostID() );
+					if ( TitanFrameworkOption::isOnNewScreen() ) {
+						$dist = null;
+					}
 
 					$ret = 'Indiquer le nombre de responsable(s) de distribution <strong>supplémentaire(s)</strong>';
 					if ( $dist ) {
