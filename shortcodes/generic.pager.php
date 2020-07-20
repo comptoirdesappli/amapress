@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function amapress_generic_gallery(
 	$objects,
-	$render_func = null, $options = []
+	$render_func = null, $options = [], $context = null
 ) {
 	$options = wp_parse_args(
 		$options,
@@ -36,11 +36,11 @@ function amapress_generic_gallery(
 	if ( count( $objects ) > 0 ) {
 		$output .= $gallery_div;
 		foreach ( $objects as $o ) {
-			$category = apply_filters( "amapress_gallery_category_{$render_func}", '', $o );
-			$sort     = esc_attr( apply_filters( "amapress_gallery_sort_{$render_func}", '', $o ) );
+			$category = apply_filters( "amapress_gallery_category_{$render_func}", '', $o, $context );
+			$sort     = esc_attr( apply_filters( "amapress_gallery_sort_{$render_func}", '', $o, $context ) );
 			$output   .= "<div class='iso-gallery-item $category' data-sort='$sort'>";
 			if ( $has_custom_content ) {
-				$output .= apply_filters( "amapress_gallery_render_{$render_func}", $o );
+				$output .= apply_filters( "amapress_gallery_render_{$render_func}", $o, $context );
 			} else {
 				$output .= wp_get_attachment_image( $o->ID, $options['size'] );
 			}

@@ -440,7 +440,7 @@ class AmapressUsers {
 //        add_action('wp_ajax_nopriv_user_likebox_action', array('AmapressUsers', 'user_likebox_produit_action'));
 
 		add_filter( 'amapress_gallery_render_user_cell', 'AmapressUsers::amapress_gallery_render_user_cell' );
-		add_filter( 'amapress_gallery_render_user_cell_contact', 'AmapressUsers::amapress_gallery_render_user_cell_contact' );
+		add_filter( 'amapress_gallery_render_user_cell_contact', 'AmapressUsers::amapress_gallery_render_user_cell_contact', 10, 2 );
 		add_filter( 'amapress_gallery_render_user_cell_contact_phone_only', 'AmapressUsers::amapress_gallery_render_user_cell_contact_phone_only' );
 		add_filter( 'amapress_gallery_render_user_cell_with_role', 'AmapressUsers::amapress_gallery_render_user_cell_with_role' );
 
@@ -498,7 +498,7 @@ class AmapressUsers {
 		return $content;
 	}
 
-	public static function amapress_gallery_render_user_cell_contact( $user ) {
+	public static function amapress_gallery_render_user_cell_contact( $user, $context ) {
 		$usr = $user;
 		if ( is_int( $usr ) ) {
 			$usr = amapress_get_user_by_id_or_archived( $usr );
@@ -510,7 +510,15 @@ class AmapressUsers {
 
 		ob_start();
 
-		self::echoUser( $usr, array( 'telephone', 'mail' ) );
+		$custom_footer = null;
+		if ( is_a( $context, 'AmapressDistribution' ) ) {
+			/** @var AmapressDistribution $context */
+			$multi = $context->getMultiResponsableInscriptionCount( $usr->ID );
+			if ( $multi > 1 ) {
+				$custom_footer = sprintf( '<p>(%d personnes)</p>', $multi );
+			}
+		}
+		self::echoUser( $usr, array( 'telephone', 'mail' ), null, null, $custom_footer );
 
 		$content = ob_get_clean();
 
@@ -586,7 +594,7 @@ jQuery(function($) {
 		AmapressUsers::echoUser( $user, $type, $custom_link, $custom_role );
 	}
 
-	public static function echoUser( WP_User $user, $type, $custom_link = null, $custom_role = null ) {
+	public static function echoUser( WP_User $user, $type, $custom_link = null, $custom_role = null, $custom_footer = null ) {
 		if ( ! amapress_is_user_logged_in() ) {
 			$type = 'thumb';
 		}
@@ -663,6 +671,9 @@ jQuery(function($) {
 		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-map', $types ) || $is_full )
 		) {
 			echo do_shortcode( "[user-map user={$user->ID} mode=map" );
+		}
+		if ( $custom_footer ) {
+			echo $custom_footer;
 		}
 		echo '</div>';
 	}

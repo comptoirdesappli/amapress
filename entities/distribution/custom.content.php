@@ -53,7 +53,7 @@ function amapress_get_custom_content_distribution( $content ) {
 			}
 			echo '<div>' . amapress_generic_gallery( $responsables, $render_func, [
 					'if_empty' => 'Pas de responsables'
-				] ) . '</div><br style="clear:both" />';
+				], $dist ) . '</div><br style="clear:both" />';
 		} else { ?>
             <p class="dist-no-resp">Aucun responsable</p>
 		<?php } ?>
