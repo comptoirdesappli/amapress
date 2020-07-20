@@ -355,6 +355,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	$dists = array();
 	if ( $is_current_user_resp_amap || $required_lieu_id || ( empty( $adhesions_contrat_ids ) && $amapien && $amapien->isIntermittent() ) ) {
 		foreach ( $all_dists as $dist ) {
+			if ( empty( $dist->getContratIds() ) ) {
+				continue;
+			}
+
 			$max_dates --;
 			if ( $max_dates < 0 ) {
 				continue;
@@ -365,6 +369,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$user_lieux_ids = AmapressUsers::get_user_lieu_ids( $user_id, $from_date );
 		/** @var AmapressDistribution $dist */
 		foreach ( $all_dists as $dist ) {
+			if ( empty( $dist->getContratIds() ) ) {
+				continue;
+			}
+
 			if ( ! $inscr_all_distrib && ! in_array( $dist->getLieuId(), $user_lieux_ids ) ) {
 				continue;
 			}

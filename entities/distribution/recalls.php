@@ -32,6 +32,10 @@ add_action( 'amapress_recall_gardien_paniers', function ( $args ) {
 
 		return;
 	}
+	if ( empty( $dist->getContratIds() ) ) {
+		return;
+	}
+
 	$gardien_ids = $dist->getGardiensIds( true );
 	if ( empty( $gardien_ids ) ) {
 		echo '<p>Pas de gardiens</p>';
@@ -133,6 +137,10 @@ add_action( 'amapress_recall_resp_distrib', function ( $args ) {
 		return;
 	}
 
+	if ( empty( $dist->getContratIds() ) ) {
+		return;
+	}
+
 	$responsable_ids = $dist->getResponsablesIds();
 	if ( empty( $responsable_ids ) ) {
 		echo '<p>Pas de responsables</p>';
@@ -176,6 +184,10 @@ add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 	if ( null == $dist ) {
 		echo '<p>Distribution introuvable</p>';
 
+		return;
+	}
+
+	if ( empty( $dist->getContratIds() ) ) {
 		return;
 	}
 
@@ -359,6 +371,10 @@ add_action( 'amapress_recall_verify_distrib', function ( $args ) {
 		return;
 	}
 
+	if ( empty( $dist->getContratIds() ) ) {
+		return;
+	}
+
 	$responsable_ids = amapress_get_groups_user_ids_from_option( 'distribution-verify-recall-to' );
 	if ( Amapress::getOption( 'distribution-verify-recall-send-refs', true ) ) {
 		foreach ( $dist->getContrats() as $c ) {
@@ -411,7 +427,10 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 
 	$dist_id     = $dist->ID;
 	$contrat_ids = implode( ',', $dist->getContratIds() );
-	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+	if ( empty( $contrat_ids ) ) {
+		return;
+	}
+	$query = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
 
 	$required_resps_count = AmapressDistributions::get_required_responsables( $dist_id );
 	$resps_count          = count( $dist->getResponsablesIds() );
@@ -456,6 +475,10 @@ add_action( 'amapress_recall_slots_inscr_distrib', function ( $args ) {
 	if ( null == $dist ) {
 		echo '<p>Distribution introuvable</p>';
 
+		return;
+	}
+
+	if ( empty( $dist->getContratIds() ) ) {
 		return;
 	}
 
@@ -506,6 +529,10 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 	if ( null == $dist ) {
 		echo '<p>Distribution introuvable</p>';
 
+		return;
+	}
+
+	if ( empty( $dist->getContratIds() ) ) {
 		return;
 	}
 

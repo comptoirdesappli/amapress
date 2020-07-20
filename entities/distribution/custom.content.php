@@ -40,7 +40,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 	ob_start();
 
-	if ( amapress_is_user_logged_in() ) {
+	if ( amapress_is_user_logged_in() && ! empty( $dist->getContratIds() ) ) {
 		$can_subscribe = $dist->canSubscribe();
 		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
 		if ( count( $resp_ids ) > 0 ) {
@@ -123,6 +123,10 @@ function amapress_get_custom_content_distribution( $content ) {
 			<?php echo implode( '', $btns ) ?>
         </div>
 		<?php
+
+		if ( empty( $dist->getContratIds() ) ) {
+			echo '<p class="dist-cancelled" style="font-weight: bold;color: #FF0000; text-align: center">Distribution annulée ou reportée</p>';
+		}
 
 		$current_user_slot = $dist->getSlotInfoForUser( amapress_current_user_id() );
 		if ( $current_user_slot ) {
