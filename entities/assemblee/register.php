@@ -34,6 +34,17 @@ function amapress_register_entities_assemblee( $entities ) {
 			'exp_csv' => true,
 		),
 		'edit_header'        => function ( $post ) {
+			$event = AmapressAssemblee_generale::getBy( $post, true );
+			if ( $event ) {
+				if ( 'lieu_externe' == $event->getType() ) {
+					if ( ! $event->isLieu_externe_AdresseLocalized() ) {
+						amapress_add_admin_notice( 'Adresse du lieu externe non localisée', 'warning', false );
+					}
+					if ( ! empty( $event->getLieu_externe_adresse_acces() ) && ! $event->isLieu_externe_AdresseAccesLocalized() ) {
+						amapress_add_admin_notice( 'Adresse d\'accès du lieu externe non localisée', 'warning', false );
+					}
+				}
+			}
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
 		'fields'           => array(
@@ -75,15 +86,69 @@ function amapress_register_entities_assemblee( $entities ) {
 				'desc'     => 'Heure fin',
 				'group'    => '2/ Horaires',
 			),
-			'lieu'          => array(
-				'name'              => amapress__( 'Lieu de distribution' ),
-				'type'              => 'select-posts',
-				'post_type'         => 'amps_lieu',
-				'required'          => true,
-				'desc'              => 'Lieu de distribution',
-				'autoselect_single' => true,
-				'searchable'        => true,
-				'group'             => '3/ Emplacement',
+			'type'          => array(
+				'name'        => amapress__( 'Emplacement' ),
+				'type'        => 'select',
+				'options'     => array(
+					'lieu'         => 'Lieu de distribution',
+					'lieu_externe' => 'Adresse externe',
+				),
+				'required'    => true,
+				'group'       => '3/ Emplacement',
+				'conditional' => array(
+					'_default_'    => 'lieu',
+					'lieu'         => array(
+						'lieu' => array(
+							'name'              => amapress__( 'Lieu dist.' ),
+							'type'              => 'select-posts',
+							'post_type'         => 'amps_lieu',
+							'desc'              => 'Lieu',
+							'group'             => '3/ Emplacement',
+							'autoselect_single' => true,
+							'searchable'        => true,
+							'required'          => true,
+						),
+					),
+					'lieu_externe' => array(
+						'lieu_externe_nom'           => array(
+							'name'           => amapress__( 'Lieu ext.' ),
+							'type'           => 'text',
+							'desc'           => 'Lieu externe',
+							'group'          => '3/ Emplacement',
+							'searchable'     => true,
+							'required'       => true,
+							'col_def_hidden' => true,
+						),
+						'lieu_externe_adresse'       => array(
+							'name'           => amapress__( 'Adresse ext.' ),
+							'type'           => 'address',
+							'use_as_field'   => true,
+							'use_enter_gps'  => true,
+							'desc'           => 'Adresse',
+							'group'          => '3/ Emplacement',
+							'searchable'     => true,
+							'required'       => true,
+							'col_def_hidden' => true,
+						),
+						'lieu_externe_acces'         => array(
+							'name'        => amapress__( 'Accès' ),
+							'type'        => 'editor',
+							'required'    => false,
+							'desc'        => 'Accès',
+							'group'       => '3/ Emplacement',
+							'searchable'  => true,
+							'show_column' => false,
+						),
+						'lieu_externe_adresse_acces' => array(
+							'name'        => amapress__( 'Adresse d\'accès' ),
+							'type'        => 'address',
+							'desc'        => 'Adresse d\'accès',
+							'group'       => '3/ Emplacement',
+							'searchable'  => true,
+							'show_column' => false,
+						),
+					),
+				)
 			),
 			'participants'  => array(
 				'name'         => amapress__( 'Participants' ),

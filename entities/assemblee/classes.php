@@ -66,12 +66,64 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_assemblee_generale_heure_fin' );
 	}
 
+	public function getLieu_externe_nom() {
+		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_nom' );
+	}
+
+	public function getLieu_externe_adresse() {
+		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse' );
+	}
+
+	public function getLieu_externe_acces() {
+		return stripslashes( $this->getCustom( 'amapress_assemblee_generale_lieu_externe_acces' ) );
+	}
+
+	public function getLieu_externe_adresse_acces() {
+		return stripslashes( $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_acces' ) );
+	}
+
+	public function isLieu_externe_AdresseLocalized() {
+		$v = $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_location_type' );
+
+		return ! empty( $v );
+	}
+
+	public function getLieu_externe_AdresseLongitude() {
+		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_long' );
+	}
+
+	public function getLieu_externe_AdresseLatitude() {
+		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_lat' );
+	}
+
+	public function getLieu_externe_AdresseAccesLatitude() {
+		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_acces_lat' );
+	}
+
+	public function getLieu_externe_AdresseAccesLongitude() {
+		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_acces_long' );
+	}
+
+	public function isLieu_externe_AdresseAccesLocalized() {
+		$v = $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_acces_location_type' );
+
+		return ! empty( $v );
+	}
+
+	public function getType() {
+		return $this->getCustom( 'amapress_assemblee_generale_type', 'lieu' );
+	}
+
 	public function getOrdre_du_jour() {
 		return wpautop( stripslashes( $this->getCustom( 'amapress_assemblee_generale_ordre_du_jour' ) ) );
 	}
 
 	public function getLieu() {
 		return $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+	}
+
+	public function getLieuId() {
+		return $this->getCustomAsInt( 'amapress_assemblee_generale_lieu' );
 	}
 
 	public function getParticipants() {
@@ -170,6 +222,56 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 
 			return 'ok';
 		}
+	}
+
+	public function desinscrireParticipant( $user_id ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		}
+
+		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			wp_die( 'Clos et passé' );
+		}
+
+		$participants = $this->getParticipantsIds();
+		if ( ( $key = array_search( $user_id, $participants ) ) !== false ) {
+			unset( $participants[ $key ] );
+			$this->setCustom( 'amapress_assemblee_generale_participants', $participants );
+
+			amapress_mail_current_user_desinscr( $this, $user_id, 'assemblee_generale' );
+
+			return 'ok';
+		} else {
+			return 'not_inscr';
+		}
+	}
+
+	public function getLieuPermalink() {
+		/** @var AmapressLieu_distribution $lieu */
+		$lieu = $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+		if ( $lieu ) {
+			return $lieu->getPermalink();
+		} else {
+			return $this->getPermalink();
+		}
+	}
+
+	public function getLieuTitle() {
+		/** @var AmapressLieu_distribution $lieu */
+		$lieu = $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+		if ( $lieu ) {
+			return $lieu->getShortName();
+		} else {
+			return $this->getLieu_externe_nom();
+		}
+	}
+
+	public function canSubscribe() {
+		return $this->canSubscribeType( 'assemblee' );
+	}
+
+	public function canUnsubscribe() {
+		return $this->canUnsubscribeType( 'assemblee' );
 	}
 }
 

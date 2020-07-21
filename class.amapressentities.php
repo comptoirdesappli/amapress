@@ -1668,6 +1668,37 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									),
 								),
+								'Inscription assemblées' => array(
+									'id'      => 'amp_inscr_ag_options_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'      => 'close-subscribe-assemblee-hours',
+											'name'    => 'Clôture inscriptions',
+											'desc'    => 'Clôturer les inscriptions x heures avant l\'AG',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
+										array(
+											'id'      => 'close-unsubscribe-assemblee-hours',
+											'name'    => 'Clôture désinscriptions',
+											'desc'    => 'Clôturer les désinscriptions x heures avant l\'assemblee',
+											'type'    => 'number',
+											'min'     => 1,
+											'step'    => 1,
+											'default' => 24,
+											'slider'  => false,
+											'unit'    => 'heure(s)'
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
 							),
 						),
 					),
