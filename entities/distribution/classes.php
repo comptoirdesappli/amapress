@@ -1269,14 +1269,19 @@ class AmapressDistribution extends Amapress_EventBase {
 						foreach ( AmapressPaniers::getPaniersForDist( $distrib->getDate() ) as $panier ) {
 							$contrat_instance = $panier->getContrat_instance();
 							if ( $contrat_instance && $contrat_instance->hasPanier_CustomContent() ) {
-								$ret .= '<h3>' . $contrat_instance->getModelTitle() . '</h3>';
+								$had_content = false;
+								$lret        = '<h3>' . $contrat_instance->getModelTitle() . '</h3>';
 								foreach ( $contrat_instance->getContrat_quantites( $distrib->getDate() ) as $quant ) {
 									$contenu = $panier->getContenu( $quant );
 									if ( empty( $contenu ) ) {
-										$contenu = '<em>Non renseigné</em>';
+										continue;
 									}
-									$ret .= '<h4>' . $quant->getTitle() . '</h4>';
-									$ret .= '<div>' . $contenu . '</div>';
+									$had_content = true;
+									$lret        .= '<h4>' . $quant->getTitle() . '</h4>';
+									$lret        .= '<div>' . $contenu . '</div>';
+								}
+								if ( $had_content ) {
+									$ret .= $lret;
 								}
 							}
 						}
@@ -1290,7 +1295,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return implode( ', ', array_map(
 							function ( $c ) {
 								/** @var AmapressContrat_instance $c */
-								return $c->getModelTitle();
+								return $c->getModelTitleWithSubName();
 							}, $distrib->getContrats()
 						) );
 					}

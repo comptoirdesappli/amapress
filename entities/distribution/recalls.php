@@ -596,8 +596,11 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				continue;
 			}
 
-			$data = [];
+			$liste_contrats  = [];
+			$contenu_paniers = '';
+			$data            = [];
 			foreach ( $adhs as $adh ) {
+				$has_delivery = false;
 				/** @var AmapressAdhesion $adh */
 				if ( $adh->getContrat_instance()->isPanierVariable() ) {
 					$paniers = $adh->getPaniersVariables();
@@ -613,6 +616,7 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 							$row['total_d'] = Amapress::formatPrice( $price, true );
 							$row['total']   = $price;
 							$data[]         = $row;
+							$has_delivery   = true;
 						}
 					}
 				} else {
@@ -626,7 +630,30 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 						$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
 						$row['total']   = $quant->getPrice();
 						$data[]         = $row;
+						$has_delivery   = true;
 					}
+				}
+				if ( $has_delivery ) {
+					if ( $adh->getContrat_instance()->hasPanier_CustomContent() ) {
+						$panier = AmapressPaniers::getPanierForDist( $dist->getDate(), $adh->getContrat_instanceId() );
+						if ( $panier ) {
+							$had_content = false;
+							$lret        = '<h3>' . $adh->getContrat_instance()->getModelTitle() . '</h3>';
+							foreach ( $adh->getContrat_instance()->getContrat_quantites( $dist->getDate() ) as $quant ) {
+								$contenu = $panier->getContenu( $quant );
+								if ( empty( $contenu ) ) {
+									continue;
+								}
+								$had_content = true;
+								$lret        .= '<h4>' . $quant->getTitle() . '</h4>';
+								$lret        .= '<div>' . $contenu . '</div>';
+							}
+							if ( $had_content ) {
+								$contenu_paniers .= $lret;
+							}
+						}
+					}
+					$liste_contrats[] = $adh->getContrat_instance()->getModelTitleWithSubName();
 				}
 			}
 
@@ -636,6 +663,8 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 			if ( empty( $data ) ) {
 				$replacements['livraison_details_prix'] = 'Vous n\'avez pas de produit à cette livraison';
 				$replacements['livraison_details']      = 'Vous n\'avez pas de produit à cette livraison';
+				$replacements['contenu_paniers']        = '';
+				$replacements['liste_contrats']         = '';
 			} else {
 				$dt_options                             = array(
 					'paging'       => false,
@@ -653,6 +682,8 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 						'dist-recap-' . $dist->ID,
 						$columns_no_price, $data,
 						$dt_options );
+				$replacements['contenu_paniers']        = $contenu_paniers;
+				$replacements['liste_contrats']         = implode( ', ', $liste_contrats );
 				$had_deliveries                         = true;
 			}
 
