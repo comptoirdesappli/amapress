@@ -158,8 +158,6 @@ function amapress_get_custom_content_amap_event( $content ) {
 		<?php }
 
 		echo $inscr_another;
-//		amapress_echo_button( 'Participer', amapress_action_link( $amap_event->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
-
 
 		amapress_echo_panel_end();
 	}
