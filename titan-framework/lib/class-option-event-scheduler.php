@@ -87,6 +87,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 	}
 
 	private function updateScheduler() {
+		$now                 = time();
 		$hook_name           = $this->settings['hook_name'];
 		$hook_args_generator = $this->settings['hook_args_generator'];
 		if ( ! empty( $hook_name ) && ! empty( $hook_args_generator ) ) {
@@ -105,7 +106,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 						$args['option_id'] = $this->getID();
 						unset( $args['time'] );
 						$event_date = self::getEventDateTime( $time, $value );
-						if ( $event_date > time() ) {
+						if ( $event_date > $now ) {
 							wp_schedule_single_event( $event_date, $hook_name, [ $args ] );
 						}
 					}
@@ -121,8 +122,12 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 				return 0;
 			}
 
+			$now     = time();
 			$results = 0;
 			foreach ( $crons as $timestamp => $cron ) {
+				if ( $timestamp < $now ) {
+					continue;
+				}
 				if ( isset( $cron[ $hook ] ) ) {
 					foreach ( $crons[ $timestamp ][ $hook ] as $key => $value ) {
 						if ( empty( $value['args'][0]['option_id'] ) || $this->getID() == $value['args'][0]['option_id'] ) {
