@@ -459,6 +459,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	}
 
 	foreach ( $all_user_lieux as $lieu_id ) {
+		if ( ! is_admin() && empty( $lieux_needed_resps[ $lieu_id ] ) ) {
+			continue;
+		}
 		$user_lieu = AmapressLieu_distribution::getBy( $lieu_id );
 		if ( Amapress::toBool( $atts['show_title'] ) ) {
 			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
