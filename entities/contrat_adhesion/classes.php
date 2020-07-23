@@ -885,7 +885,7 @@ class AmapressAdhesion extends TitanEntity {
 	public function generateContratDoc( $editable, $check_only = false ) {
 		$out_filename   = $this->getContratDocFileName();
 		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
-		if ( empty( $model_filename ) ) {
+		if ( ! $check_only && empty( $model_filename ) ) {
 			return '';
 		}
 
@@ -1113,13 +1113,12 @@ class AmapressAdhesion extends TitanEntity {
 			}
 		}
 
-		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
-
-		$templateProcessor = new Phptemplate_withnewline( $model_filename );
-
 		if ( $check_only ) {
 			return $placeholders;
 		}
+
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
+		$templateProcessor = new Phptemplate_withnewline( $model_filename );
 
 		try {
 			$templateProcessor->cloneRow( 'quantite_date', $lines_count );

@@ -1802,7 +1802,7 @@ class AmapressContrat_instance extends TitanEntity {
 	public function generateContratDoc( $date_first_distrib, $editable, $check_only = false ) {
 		$out_filename   = $this->getContratDocFileName( $date_first_distrib );
 		$model_filename = $this->getContratPapierModelDocFileName();
-		if ( empty( $model_filename ) ) {
+		if ( ! $check_only && empty( $model_filename ) ) {
 			return '';
 		}
 
@@ -1814,6 +1814,7 @@ class AmapressContrat_instance extends TitanEntity {
 		foreach ( self::getProperties( $date_first_distrib ) as $prop_name => $prop_config ) {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
+		$placeholders['quantites']            = '';
 		$placeholders['total']                = '';
 		$placeholders['adherent']             = '';
 		$placeholders['adherent.type']        = '';

@@ -340,7 +340,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	public function generateBulletinDoc( $editable, $check_only = false ) {
 		$out_filename   = $this->getBulletinDocFileName();
 		$model_filename = $this->getPeriod()->getModelDocFileName();
-		if ( empty( $model_filename ) ) {
+		if ( ! $check_only && empty( $model_filename ) ) {
 			return '';
 		}
 
@@ -353,12 +353,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
 
-		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
-		$templateProcessor = new Phptemplate_withnewline( $model_filename );
-
 		if ( $check_only ) {
 			return $placeholders;
 		}
+
+		\PhpOffice\PhpWord\Settings::setTempDir( Amapress::getTempDir() );
+		$templateProcessor = new Phptemplate_withnewline( $model_filename );
 
 		foreach ( $placeholders as $k => $v ) {
 			$templateProcessor->setValue( $k, $v );
