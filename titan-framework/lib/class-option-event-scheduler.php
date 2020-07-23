@@ -179,16 +179,16 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 		return $time;
 	}
 
-	public static function adjustTimezone( $time ) {
+	public static function adjustTimezone( $time, $to_utc = true ) {
 		$tz = get_option( 'timezone_string' );
 		if ( $tz ) {
 			$timezone = new DateTimeZone( $tz );
 			$t        = new DateTime();
 			$t->setTimestamp( $time );
 			$t->setTimezone( $timezone );
-			$time -= $timezone->getOffset( $t );
+			$time += ( $to_utc ? - 1 : 1 ) * $timezone->getOffset( $t );
 		} else {
-			$time -= get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+			$time += ( $to_utc ? - 1 : 1 ) * get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
 		}
 
 		return $time;
@@ -339,7 +339,7 @@ jQuery(function($) {
 							$hook['action'] = 'tf_event_scheduler_resend';
 							$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
 							$title          = esc_html( $hook['title'] );
-							$sent_on        = ! empty( $value['enabled'] ) ? self::getEventDateTime( $hook['time'], $value ) : 0;
+							$sent_on        = ! empty( $value['enabled'] ) ? self::adjustTimezone( self::getEventDateTime( $hook['time'], $value ), false ) : 0;
 							if ( $sent_on ) {
 								$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y H:i', $sent_on );
 							} else {
@@ -352,7 +352,7 @@ jQuery(function($) {
 				$links .= '<p>Envois: ' . implode( ', ', array_map(
 						function ( $hook ) use ( $value ) {
 							$title   = esc_html( $hook['title'] );
-							$sent_on = ! empty( $value['enabled'] ) ? self::getEventDateTime( $hook['time'], $value ) : 0;
+							$sent_on = ! empty( $value['enabled'] ) ? self::adjustTimezone( self::getEventDateTime( $hook['time'], $value ), false ) : 0;
 							if ( $sent_on ) {
 								$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y H:i', $sent_on );
 							} else {
