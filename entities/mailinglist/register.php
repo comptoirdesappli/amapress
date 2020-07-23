@@ -295,6 +295,18 @@ function amapress_get_mailinglist_queries() {
 		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Membres du collectif avec rôle "' . $role->name . '"';
 	}
 
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAPIEN_GROUP,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = 'Groupe amapiens "' . $role->name . '"';
+	}
+
 	return amapress_user_queries_link_wrap( $ret );
 }
 
@@ -337,9 +349,10 @@ function amapress_get_mailinglist_moderators_queries() {
 //        $ret["amapress_contrat={$contrat->ID}&amapress_role=access_admin"] = "Responsables AMAP - {$contrat->getModelTitle()}";
 //    }
 
-	$ret["amapress_role=referent_lieu"] = "Référents lieux";
-	$ret["amapress_role=amap_role_any"] = "Amapiens avec rôles";
-	$ret["role=administrator"]          = "Administrateurs";
+	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
+	$ret["amapress_role=amap_role_any"]     = "Amapiens avec rôles";
+	$ret["amapress_role=amapien_group_any"] = "Amapiens avec groupes";
+	$ret["role=administrator"]              = "Administrateurs";
 
 	foreach (
 		get_categories( array(
@@ -351,6 +364,18 @@ function amapress_get_mailinglist_moderators_queries() {
 	) {
 		/** @var WP_Term $role */
 		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Membres du collectif avec rôle "' . $role->name . '"';
+	}
+
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAPIEN_GROUP,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = 'Groupe amapiens "' . $role->name . '"';
 	}
 
 //    $ret["amapress_role=resp_distrib"] = "Prochains responsables de distributions";

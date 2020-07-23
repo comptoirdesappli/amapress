@@ -89,7 +89,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br />Ouvre tous les droits sur le site</p>';
 				}
 			),
-			'amap_roles'        => array(
+			'amap_roles'     => array(
 				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -101,7 +101,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'adh_type'          => array(
+			'adh_type'       => array(
 				'name'          => amapress__( 'Type' ),
 				'type'          => 'custom',
 				'show_column'   => true,
@@ -118,7 +118,17 @@ function amapress_register_entities_amapien( $entities ) {
 					echo $amapien ? $amapien->getAdherentTypeDisplay() : '';
 				}
 			),
-			'diffusion'         => array(
+			'amapien_groups' => array(
+				'name'        => amapress__( 'Groupes d\'amapien' ),
+				'type'        => 'multicheck-categories',
+				'taxonomy'    => AmapressUser::AMAPIEN_GROUP,
+				'desc'        => '
+<p id="amapress_user_amapien_groups">Pour indiquer l\'appartenance à un groupe d\'amapiens sans être membre du collectif (par ex, Donateur, Membre d\'une autre AMAP pour l\'organisation de visite à la ferme en commun, Ancien producteur...)</p>',
+				'show_column' => false,
+				'csv'         => false,
+//                'searchable' => true,
+			),
+			'diffusion'      => array(
 				'name'        => amapress__( 'Diffusion' ),
 				'type'        => 'custom',
 				'show_column' => false,

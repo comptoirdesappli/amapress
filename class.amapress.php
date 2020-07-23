@@ -1616,6 +1616,21 @@ class Amapress {
 		) );
 	}
 
+	public static function init_amapien_group_category() {
+		$res = register_taxonomy( AmapressUser::AMAPIEN_GROUP, 'user', array(
+			'label'             => 'Groupe Amapien',
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'public'            => true,
+			'capabilities'      => array(
+				'manage_terms' => 'manage_amapress',
+				'edit_terms'   => 'manage_amapress',
+				'delete_terms' => 'manage_options',
+				'assign_terms' => 'manage_amapress',
+			),
+		) );
+	}
+
 	public static function init_amap_event_category() {
 		register_taxonomy( AmapressAmap_event::CATEGORY, AmapressAmap_event::INTERNAL_POST_TYPE, array(
 			'label'             => 'Catégorie d\'évènement',
@@ -1888,6 +1903,7 @@ class Amapress {
 		}
 
 		self::init_amap_role_category();
+		self::init_amapien_group_category();
 		self::init_prpduit_category();
 		self::init_recette_category();
 		self::init_amap_event_category();
@@ -2069,10 +2085,12 @@ class Amapress {
 		$around_address_lng = Amapress::get_lieux()[0]->getAdresseLongitude();
 		$relative_time      = 0;
 
-		$user_roles_terms = AmapDemoBase::dumpTerms( AmapressUser::AMAP_ROLE );
-		$produits_terms   = AmapDemoBase::dumpTerms( AmapressProduit::CATEGORY );
-		$recettes_terms   = AmapDemoBase::dumpTerms( AmapressRecette::CATEGORY );
+		$user_roles_terms      = AmapDemoBase::dumpTerms( AmapressUser::AMAP_ROLE );
+		$amapiens_groups_terms = AmapDemoBase::dumpTerms( AmapressUser::AMAPIEN_GROUP );
+		$produits_terms        = AmapDemoBase::dumpTerms( AmapressProduit::CATEGORY );
+		$recettes_terms        = AmapDemoBase::dumpTerms( AmapressRecette::CATEGORY );
 
+		$ret .= '$this->createTerms(' . var_export( $amapiens_groups_terms, true ) . ', \'' . AmapressUser::AMAPIEN_GROUP . '\');' . "\n";
 		$ret .= '$this->createTerms(' . var_export( $user_roles_terms, true ) . ', \'' . AmapressUser::AMAP_ROLE . '\');' . "\n";
 		$ret .= '$this->createTerms(' . var_export( $produits_terms, true ) . ', \'' . AmapressProduit::CATEGORY . '\');' . "\n";
 		$ret .= '$this->createTerms(' . var_export( $recettes_terms, true ) . ', \'' . AmapressRecette::CATEGORY . '\');' . "\n";
@@ -2454,6 +2472,7 @@ class Amapress {
 		foreach (
 			[
 				AmapressUser::AMAP_ROLE,
+				AmapressUser::AMAPIEN_GROUP,
 				AmapressRecette::CATEGORY,
 				AmapressProduit::CATEGORY
 			] as $taxonomy

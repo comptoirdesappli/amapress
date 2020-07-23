@@ -1670,6 +1670,13 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			} else {
 				$uqi->query_vars[ AmapressUser::AMAP_ROLE ] = $amap_role;
 			}
+		} else if ( strpos( $amapress_role, 'amapien_group_' ) === 0 ) {
+			$amap_role = substr( $amapress_role, 14 );
+			if ( 'any' == $amap_role ) {
+				$uqi->query_vars[ AmapressUser::AMAPIEN_GROUP ] = '*';
+			} else {
+				$uqi->query_vars[ AmapressUser::AMAPIEN_GROUP ] = $amap_role;
+			}
 		}
 	}
 

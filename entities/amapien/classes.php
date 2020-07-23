@@ -6,9 +6,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class AmapressUser extends TitanUserEntity {
 	const AMAP_ROLE = 'amps_amap_role_category';
+	const AMAPIEN_GROUP = 'amps_amgrpcat';
 
 	/** @var WP_Term[] */
 	private $amap_roles = null;
+
+
+	/** @var WP_Term[] */
+	private $amapien_groups = null;
 
 	function __construct( $user_or_id ) {
 		parent::__construct( $user_or_id );
@@ -17,6 +22,7 @@ class AmapressUser extends TitanUserEntity {
 	private static $users_cache = array();
 
 	private static $user_ids_with_roles = null;
+	private static $user_ids_with_groups = null;
 
 	/**
 	 * @param $user_or_id
@@ -49,6 +55,7 @@ class AmapressUser extends TitanUserEntity {
 
 	//TODO gérer l'enregistrement de AMAP_ROLES avant le premier appel wp_set_current_user
 	private $amap_roles_errored = false;
+	private $amapien_groups_errored = false;
 
 	private function ensure_amap_roles() {
 		if ( null !== $this->amap_roles && ! $this->amap_roles_errored ) {
@@ -81,6 +88,37 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 		}
 	}
 
+	private function ensure_amapien_groups() {
+		if ( null !== $this->amapien_groups && ! $this->amapien_groups_errored ) {
+			return;
+		}
+
+		if ( null === self::$user_ids_with_groups ) {
+			global $wpdb;
+			self::$user_ids_with_groups = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT tr.object_id
+FROM $wpdb->term_taxonomy AS tt
+INNER JOIN $wpdb->term_relationships AS tr
+ON tr.term_taxonomy_id = tt.term_taxonomy_id
+WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
+		}
+		if ( ! in_array( $this->getID(), self::$user_ids_with_groups ) ) {
+			$this->amapien_groups         = [];
+			$this->amapien_groups_errored = false;
+
+			return;
+		}
+
+		$res = wp_get_object_terms( $this->getID(), self::AMAPIEN_GROUP,
+			array( 'fields' => 'all', 'orderby' => 'term_id' ) );
+		if ( ! is_wp_error( $res ) ) {
+			$this->amapien_groups         = $res;
+			$this->amapien_groups_errored = false;
+		} else {
+			$this->amapien_groups         = [];
+			$this->amapien_groups_errored = true;
+		}
+	}
+
 	public function getAmapRoleCapabilities() {
 		$this->ensure_amap_roles();
 
@@ -100,6 +138,7 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 	public function getAmapRoles() {
 		$this->ensure_init();
 		$this->ensure_amap_roles();
+		$this->ensure_amapien_groups();
 
 		if ( null === $this->user_roles ) {
 			$this_user_roles = array();
@@ -112,6 +151,17 @@ WHERE tt.taxonomy = 'amps_amap_role_category'" );
 						'object_id'  => $this->ID,
 						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ) . '#amapress_user_amap_roles',
 						'other_link' => admin_url( "users.php?{$amap_role->taxonomy}={$amap_role->slug}" ),
+					);
+			}
+			foreach ( $this->amapien_groups as $amapien_group ) {
+				$this_user_roles["amapien_group_{$amapien_group->term_id}"] =
+					array(
+						'title'      => $amapien_group->name,
+						'type'       => 'amapien_group',
+						'lieu'       => null,
+						'object_id'  => $this->ID,
+						'edit_link'  => admin_url( "user-edit.php?user_id={$this->ID}" ) . '#amapress_user_amapien_groups',
+						'other_link' => admin_url( "users.php?{$amapien_group->taxonomy}={$amapien_group->slug}" ),
 					);
 			}
 			$lieu_ids = Amapress::get_lieu_ids();

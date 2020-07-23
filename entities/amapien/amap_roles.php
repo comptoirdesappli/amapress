@@ -15,6 +15,17 @@ function amapress_get_amap_roles() {
 	) );
 }
 
+/**
+ * @return WP_Term[]|WP_Error
+ */
+function amapress_get_amapien_groups() {
+	return get_terms( array(
+		'hide_empty' => false,
+		'taxonomy'   => AmapressUser::AMAPIEN_GROUP,
+		'fields'     => 'all',
+	) );
+}
+
 function amapress_get_amap_roles_editor() {
 	$terms = amapress_get_amap_roles();
 	usort( $terms, function ( $a, $b ) {
@@ -284,7 +295,8 @@ function amapress_amap_role_parent_menu( $parent = '' ) {
 
 	// If we're editing one of the user taxonomies
 	// We must be within the users menu, so highlight that
-	if ( ! empty( $_GET['taxonomy'] ) && $pagenow == 'edit-tags.php' && $_GET['taxonomy'] == AmapressUser::AMAP_ROLE ) {
+	if ( ! empty( $_GET['taxonomy'] ) && $pagenow == 'edit-tags.php'
+	     && ( $_GET['taxonomy'] == AmapressUser::AMAP_ROLE || $_GET['taxonomy'] == AmapressUser::AMAPIEN_GROUP ) ) {
 		$parent = 'users.php';
 	}
 
@@ -298,6 +310,15 @@ function amapress_amap_role_parent_menu( $parent = '' ) {
  */
 function amapress_amap_role_admin_menu() {
 	$key      = AmapressUser::AMAP_ROLE;
+	$taxonomy = get_taxonomy( $key );
+	add_users_page(
+		$taxonomy->labels->menu_name,
+		$taxonomy->labels->menu_name,
+		$taxonomy->cap->manage_terms,
+		"edit-tags.php?taxonomy={$key}"
+	);
+
+	$key      = AmapressUser::AMAPIEN_GROUP;
 	$taxonomy = get_taxonomy( $key );
 	add_users_page(
 		$taxonomy->labels->menu_name,
@@ -525,3 +546,78 @@ add_action( 'update_post_meta', function ( $meta_id, $post_id, $meta_key, $meta_
 			amapress_get_user_edit_link( $new_user ) ), 'Référent producteur', ( $producteur->getUser() ? $producteur->getUser()->getDisplayName() : $producteur->getTitle() ) . ',' . $lieu->getShortName() );
 	}
 }, 10, 4 );
+
+add_action( 'manage_users_extra_tablenav', function ( $whitch ) {
+	if ( 'top' !== $whitch ) {
+		return;
+	}
+	$groups = amapress_get_amapien_groups();
+	if ( empty( $groups ) ) {
+		return;
+	}
+
+	echo '<div class="alignleft actions">';
+	?>
+    <label class="screen-reader-text" for="amps_amgrpcat_filter"><?php _e( 'Groupe amapiens' ); ?></label>
+    <select name="amps_amgrpcat" id="amps_amgrpcat_filter">
+        <option value=""><?php _e( 'Tous les groupes amapiens' ); ?></option>
+		<?php
+		$current_slug = isset( $_REQUEST['amps_amgrpcat'] ) ? $_REQUEST['amps_amgrpcat'] : '';
+		foreach ( $groups as $grp ) {
+			echo '<option value="' . esc_attr( $grp->slug ) . '" ' . selected( $current_slug, $grp->slug, false ) . '>' . esc_html( $grp->name ) . '</option>';
+		}
+		?>
+    </select>
+	<?php
+	submit_button( 'Filtrer', null, 'amapien_groups_filter', false );
+	echo '</div>';
+
+	echo '<div class="alignleft actions">';
+	?>
+    <label class="screen-reader-text" for="amapien_groups_select"><?php _e( 'Groupe amapiens' ); ?></label>
+    <select name="amapien_groups_select" id="amapien_groups_select">
+        <option value=""><?php _e( 'Groupes amapiens' ); ?></option>
+		<?php
+		foreach ( $groups as $grp ) {
+			echo '<option value="' . esc_attr( $grp->slug ) . '">' . esc_html( $grp->name ) . '</option>';
+		}
+		?>
+    </select>
+	<?php
+	submit_button( 'Ajouter au groupe', null, 'amapien_groups_add', false );
+	submit_button( 'Supprimer du groupe', null, 'amapien_groups_del', false );
+	echo '</div>';
+}, 10, 1 );
+
+add_action( 'admin_init', function () {
+	if ( isset( $_REQUEST['amapien_groups_del'] ) || isset( $_REQUEST['amapien_groups_add'] ) ) {
+		$is_add                = isset( $_REQUEST['amapien_groups_add'] );
+		$amapien_groups_select = $_REQUEST['amapien_groups_select'];
+		$user_ids              = filter_input( INPUT_GET, 'users', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( empty( $user_ids ) ) {
+			return;
+		}
+		foreach ( $user_ids as $user_id ) {
+			if ( $is_add ) {
+				$res = wp_add_object_terms( $user_id, $amapien_groups_select, AmapressUser::AMAPIEN_GROUP );
+			} else {
+				$res = wp_remove_object_terms( $user_id, $amapien_groups_select, AmapressUser::AMAPIEN_GROUP );
+			}
+			if ( is_wp_error( $res ) ) {
+				amapress_dump( $res );
+				die();
+			}
+
+		}
+		$sendback = remove_query_arg( array( 'amp_bulk_count', 'untrashed', 'deleted', 'ids' ), wp_get_referer() );
+		if ( $sendback ) {
+			wp_redirect_and_exit( $sendback );
+		}
+//		$cnt = count( $user_ids );
+//		if ( $is_add ) {
+//			amapress_add_admin_notice( "$cnt amapiens ajoutés au groupe", 'success', true );
+//		} else {
+//			amapress_add_admin_notice( "$cnt amapiens supprimés du groupe", 'success', true );
+//		}
+	}
+} );

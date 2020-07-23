@@ -2019,6 +2019,7 @@ WHERE {$wpdb->postmeta}.meta_key = 'amps_lo' AND CAST({$wpdb->postmeta}.meta_val
 
 add_filter( 'wp_sweep_excluded_taxonomies', function ( $excluded_taxonomies ) {
 	$excluded_taxonomies[] = AmapressUser::AMAP_ROLE;
+	$excluded_taxonomies[] = AmapressUser::AMAPIEN_GROUP;
 	$excluded_taxonomies[] = AmapressAdhesion_paiement::PAIEMENT_TAXONOMY;
 	$excluded_taxonomies[] = AmapressAmap_event::CATEGORY;
 	$excluded_taxonomies[] = AmapressProduit::CATEGORY;
@@ -2031,6 +2032,11 @@ add_filter( 'wp_sweep_excluded_termids', function ( $excluded_termids ) {
 	$excluded_termids = array_merge( $excluded_termids, get_terms( array(
 		'hide_empty' => false,
 		'taxonomy'   => AmapressUser::AMAP_ROLE,
+		'fields'     => 'ids',
+	) ) );
+	$excluded_termids = array_merge( $excluded_termids, get_terms( array(
+		'hide_empty' => false,
+		'taxonomy'   => AmapressUser::AMAPIEN_GROUP,
 		'fields'     => 'ids',
 	) ) );
 	$excluded_termids = array_merge( $excluded_termids, get_terms( array(

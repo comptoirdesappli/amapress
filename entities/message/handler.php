@@ -346,6 +346,18 @@ function amapress_get_collectif_target_queries() {
 		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Rôle "' . $role->name . '"';
 	}
 
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAPIEN_GROUP,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = 'Groupe amapiens "' . $role->name . '"';
+	}
+
 	return amapress_user_queries_link_wrap( $ret );
 }
 
@@ -518,7 +530,20 @@ function amapress_message_get_targets() {
 	//sans adhésion
 	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );
 	amapress_add_message_target( $ret, "never_logged", "Les amapiens jamais connectés", "never-logged" );
-	//
+
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAPIEN_GROUP,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		amapress_add_message_target( $ret, "user:amapress_role=amapien_group_{$role->slug}", 'Groupe amapiens "' . $role->name . '"', "referent-producteur" );
+	}
+
+
 	$res['Amapiens'] = $ret;
 
 	$ret = array();
