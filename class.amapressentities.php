@@ -1111,6 +1111,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type' => 'checkbox',
 										),
 										array(
+											'id'   => 'allow-affect-gardiens',
+											'name' => 'Autoriser',
+											'desc' => 'Autoriser les amapiens à choisir directement leur gardien de paniers',
+											'type' => 'checkbox',
+										),
+										array(
 											'id'      => 'gardiens-paniers-message',
 											'name'    => 'Information',
 											'type'    => 'textarea',
