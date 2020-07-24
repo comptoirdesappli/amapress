@@ -326,6 +326,35 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $adhs[ $user_id ][0];
 	}
 
+	/** @return AmapressAdhesion_paiement */
+	public static function createFakeForUser( $user_id, $date = null ) {
+		$adhs = AmapressAdhesion_paiement::getAllActiveByUserId( $date );
+		if ( empty( $adhs[ $user_id ] ) ) {
+			$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
+			if ( empty( $adh_period ) ) {
+				return null;
+			}
+			$adh                                              = new AmapressAdhesion_paiement( 0 );
+			$adh->custom['amapress_adhesion_paiement_user']   = $user_id;
+			$adh->custom['amapress_adhesion_paiement_period'] = $adh_period->ID;
+			$adh->custom['amapress_adhesion_paiement_date']   = amapress_time();
+			$adh->custom['amapress_adhesion_paiement_status'] = 'not_received';
+
+			return $adh;
+		}
+
+		$adhs[ $user_id ] = array_values( $adhs[ $user_id ] );
+
+		return $adhs[ $user_id ][0];
+	}
+
+	public function getBulletinDocDocStatus() {
+		$model_file   = $this->getBulletinDocFileName();
+		$placeholders = $this->generateBulletinDoc( false, true );
+
+		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, 'Bulletin adhésion' );
+	}
+
 	public function getBulletinDocFileName() {
 		if ( ! $this->getUser() ) {
 			return '';
