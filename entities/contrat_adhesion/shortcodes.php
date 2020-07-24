@@ -1856,6 +1856,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( empty( $adh_paiement ) ) {
 					if ( 'mes-contrats' == $tag ) {
 						echo '<p><strong>Vous n\'avez pas d\'adhésion à l\'AMAP sur la période ' . esc_html( $adh_period->getTitle() ) . '</strong></p>';
+						if ( $check_adhesion_received ) {
+							$allow_inscriptions = false;
+						}
 					} else {
 						echo '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong><br/>
 <form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
@@ -1864,7 +1867,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
-						if ( $activate_adhesion ) {
+						if ( $activate_adhesion || $check_adhesion_received ) {
 							return ob_get_clean();
 						}
 					}
@@ -1927,7 +1930,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		$display_remaining_contrats = true;
-		if ( $check_adhesion_received && $adh_paiement && $adh_paiement->isNotReceived() ) {
+		if ( $check_adhesion_received && ( empty( $adh_paiement ) || $adh_paiement->isNotReceived() ) ) {
 			echo wp_unslash( Amapress::getOption( 'online_inscr_adhesion_required_message' ) );
 			$allow_inscriptions = false;
 		}
