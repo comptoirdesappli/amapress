@@ -541,7 +541,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	$min_total = 0;
 	Amapress::setFilterForReferent( false );
-	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
+	if ( $admin_mode ) {
+		$subscribable_contrats = AmapressContrats::get_active_contrat_instances( null );
+	} else {
+		$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
+	}
 	Amapress::setFilterForReferent( true );
 	$all_subscribable_contrats_ids = array_map( function ( $c ) {
 		return $c->ID;
