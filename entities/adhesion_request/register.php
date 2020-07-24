@@ -60,14 +60,14 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'desc'       => 'Prénom',
 				'searchable' => true,
 			),
-			'last_name'  => array(
+			'last_name'         => array(
 				'name'       => amapress__( 'Nom' ),
 				'type'       => 'text',
 				'required'   => true,
 				'desc'       => 'Nom',
 				'searchable' => true,
 			),
-			'amapien'    => array(
+			'amapien'           => array(
 				'name'                 => amapress__( 'Amapien' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
@@ -83,7 +83,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				},
 				'use_custom_as_column' => true,
 			),
-			'reply_type' => array(
+			'reply_type'        => array(
 				'name'        => amapress__( 'Réponse type' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -94,7 +94,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 					return $adh->getFormattedReplyMail();
 				},
 			),
-			'reply_cnt'  => array(
+			'reply_cnt'         => array(
 				'name'                 => amapress__( 'Réponses' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
@@ -110,7 +110,14 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				},
 				'use_custom_as_column' => true,
 			),
-			'adresse'    => array(
+			'date'              => array(
+				'name'     => amapress__( 'Date demande' ),
+				'type'     => 'date',
+				'time'     => true,
+				'required' => true,
+				'desc'     => 'Date de la demande',
+			),
+			'adresse'           => array(
 				'name'       => amapress__( 'Adresse' ),
 				'type'       => 'textarea',
 				'desc'       => 'Nom',

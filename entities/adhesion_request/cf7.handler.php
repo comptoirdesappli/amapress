@@ -82,6 +82,7 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 		'post_content' => $message,
 		'post_status'  => 'publish',
 		'meta_input'   => array(
+			'amapress_adhesion_request_date'             => amapress_time(),
 			'amapress_adhesion_request_first_name'       => $first_name,
 			'amapress_adhesion_request_last_name'        => $last_name,
 			'amapress_adhesion_request_adresse'          => $adresse,
