@@ -769,8 +769,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
         <h4>Étape 1/8 : Email</h4>
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
-            <label for="email">Pour démarrer votre inscription à l’AMAP pour la saison
-				<?php echo $min_contrat_date >= 0 ?
+            <label for="email" style="display: block">Pour démarrer votre inscription à l’AMAP pour la saison
+		        <?php echo $min_contrat_date >= 0 ?
 					date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) :
 					'en cours'
 				?>
