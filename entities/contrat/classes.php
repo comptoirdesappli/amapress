@@ -1118,7 +1118,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'm/Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['contrat_debut_annee']              = [
+		$ret['contrat_debut_annee'] = [
 			'desc' => 'Année de début du contrat',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'Y', $adh->getDate_debut() );
@@ -1148,7 +1148,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getModel()->getProducteur()->getUser()->getUser()->first_name;
 			}
 		];
-		$ret['producteur.ferme']                 = [
+		$ret['producteur.ferme'] = [
 			'desc' => 'Nom de la ferme producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getNomExploitation();
@@ -1479,7 +1479,7 @@ class AmapressContrat_instance extends TitanEntity {
 					) );
 			}
 		];
-		$ret['adherent']                         = [
+		$ret['adherent'] = [
 			'desc' => 'Prénom Nom adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -1509,7 +1509,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['adherent.adresse']                 = [
+		$ret['adherent.adresse'] = [
 			'desc' => 'Adresse adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -1527,7 +1527,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['adherent.rue']                     = [
+		$ret['adherent.rue'] = [
 			'desc' => 'Rue (adresse) adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
@@ -1775,10 +1775,21 @@ class AmapressContrat_instance extends TitanEntity {
 		return $res;
 	}
 
-	public function getContrat_quantites_AsString( $date = null, $show_price_unit = false, $separator = ', ' ) {
+	public function getContrat_quantites_AsString(
+		$date = null,
+		$show_price_unit = false,
+		$separator = ', ',
+		$filter_grp_name = null
+	) {
+		if ( null !== $filter_grp_name ) {
+			$filter_grp_name = trim( $filter_grp_name, '[]' );
+		}
 		if ( $this->isPanierVariable() || $this->isQuantiteVariable() ) {
 			$quant_labels = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $this->ID ) as $contrat_quantite ) {
+				if ( null !== $filter_grp_name && $contrat_quantite->getGroupName() != $filter_grp_name ) {
+					continue;
+				}
 				if ( ! $contrat_quantite->isInDistributionDates( $date ) ) {
 					continue;
 				}
@@ -1789,6 +1800,9 @@ class AmapressContrat_instance extends TitanEntity {
 		} else {
 			$quant_labels = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $this->ID ) as $contrat_quantite ) {
+				if ( null !== $filter_grp_name && $contrat_quantite->getGroupName() != $filter_grp_name ) {
+					continue;
+				}
 				if ( ! $contrat_quantite->isInDistributionDates( $date ) ) {
 					continue;
 				}
@@ -1814,28 +1828,33 @@ class AmapressContrat_instance extends TitanEntity {
 		foreach ( self::getProperties( $date_first_distrib ) as $prop_name => $prop_config ) {
 			$placeholders[ $prop_name ] = call_user_func( $prop_config['func'], $this );
 		}
-		$placeholders['quantites']            = '';
-		$placeholders['total']                = '';
-		$placeholders['adherent']             = '';
-		$placeholders['adherent.type']        = '';
-		$placeholders['adherent.pseudo']      = '';
-		$placeholders['adherent.nom']         = '';
-		$placeholders['adherent.prenom']      = '';
-		$placeholders['adherent.adresse']     = '';
-		$placeholders['adherent.code_postal'] = '';
-		$placeholders['adherent.ville']       = '';
-		$placeholders['adherent.rue']         = '';
-		$placeholders['adherent.tel']         = '';
-		$placeholders['adherent.email']       = '';
-		$placeholders['coadherents.noms']     = '';
-		$placeholders['coadherents.contacts'] = '';
-		$placeholders['coadherent']           = '';
-		$placeholders['coadherent.pseudo']    = '';
-		$placeholders['coadherent.nom']       = '';
-		$placeholders['coadherent.prenom']    = '';
-		$placeholders['coadherent.adresse']   = '';
-		$placeholders['coadherent.tel']       = '';
-		$placeholders['coadherent.email']     = '';
+		$placeholders['quantites']                    = '';
+		$placeholders['inscription_admin_link']       = '';
+		$placeholders['message']                      = '';
+		$placeholders['quantites_prix']               = '';
+		$placeholders['produits_paiements_livraison'] = '';
+		$placeholders['id']                           = '';
+		$placeholders['total']                        = '';
+		$placeholders['adherent']                     = '';
+		$placeholders['adherent.type']                = '';
+		$placeholders['adherent.pseudo']              = '';
+		$placeholders['adherent.nom']                 = '';
+		$placeholders['adherent.prenom']              = '';
+		$placeholders['adherent.adresse']             = '';
+		$placeholders['adherent.code_postal']         = '';
+		$placeholders['adherent.ville']               = '';
+		$placeholders['adherent.rue']                 = '';
+		$placeholders['adherent.tel']                 = '';
+		$placeholders['adherent.email']               = '';
+		$placeholders['coadherents.noms']             = '';
+		$placeholders['coadherents.contacts']         = '';
+		$placeholders['coadherent']                   = '';
+		$placeholders['coadherent.pseudo']            = '';
+		$placeholders['coadherent.nom']               = '';
+		$placeholders['coadherent.prenom']            = '';
+		$placeholders['coadherent.adresse']           = '';
+		$placeholders['coadherent.tel']               = '';
+		$placeholders['coadherent.email']             = '';
 
 		$quants              = AmapressContrats::get_contrat_quantites( $this->ID );
 		$i                   = 1;
@@ -1925,6 +1944,29 @@ class AmapressContrat_instance extends TitanEntity {
 			$placeholders["paiement_{$i}_montant"]  = $placeholders["paiement_montant#$i"];
 			$placeholders["paiement_{$i}_date"]     = $placeholders["paiement_date#$i"];
 			$placeholders["paiement_{$i}_status"]   = $placeholders["paiement_status#$i"];
+		}
+
+		$ii        = 1;
+		$grp_names = [];
+		foreach ( $quants as $quant ) {
+			$grp_name = $quant->getGroupName();
+			if ( ! in_array( $grp_name, $grp_names ) ) {
+				$grp_names[] = $grp_name;
+			}
+		}
+		foreach ( $grp_names as $grp_name ) {
+			$placeholders["groupe_nom#$ii"]                              = $grp_name;
+			$placeholders["groupe_quantite_description#$ii"]             = $this->getContrat_quantites_AsString( null, true, ', ', $grp_name );
+			$placeholders["groupe_quantite_description_no_price#$ii"]    = $this->getContrat_quantites_AsString( null, false, ', ', $grp_name );
+			$placeholders["groupe_quantite_description_br#$ii"]          = '* ' . $this->getContrat_quantites_AsString( null, true, '<br/>* ', $grp_name );
+			$placeholders["groupe_quantite_description_br_no_price#$ii"] = '* ' . $this->getContrat_quantites_AsString( null, false, '<br/>* ', $grp_name );
+			if ( $this->isPanierVariable() ) {
+				$placeholders["groupe_date#$ii"] = '';
+			}
+			$placeholders["groupe_total#$ii"]  = '';
+			$placeholders["groupe_nombre#$ii"] = '';
+
+			$ii += 1;
 		}
 
 		if ( $check_only ) {
