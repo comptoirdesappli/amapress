@@ -2210,10 +2210,48 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Assistant - Pré-inscription en ligne - Etapes' => array(
+								'Assistant - Inscription/Adhésion en ligne - Etapes' => array(
 									'id'      => 'config_online_inscriptions_messages',
 									'desc'    => '',
 									'options' => [
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape 1 - Email',
+										),
+										array(
+											'id'      => 'online_subscription_email_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Email',
+										),
+										array(
+											'id'   => 'online_subscription_email_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape 2 - Coordonnées, co-adhérents et membres du foyer',
+										),
+										array(
+											'id'      => 'online_subscription_coords_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Coordonnées, co-adhérents et membres du foyer',
+										),
+										array(
+											'id'   => 'online_subscription_coords_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
 										array(
 											'type' => 'heading',
 											'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
@@ -2286,6 +2324,25 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name' => 'Assistant - Étape Adhésion AMAP',
 										),
 										array(
+											'id'      => 'online_subscription_req_adhesion',
+											'name'    => 'Message adhésion requise',
+											'type'    => 'editor',
+											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
+										),
+										array(
+											'id'      => 'online_subscription_adh_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Adhésion (obligatoire)',
+										),
+										array(
+											'id'      => 'online_subscription_adh_valid_step_name',
+											'name'    => 'Nom de l\'étape de validation',
+											'type'    => 'text',
+											'default' => 'Validation du Bulletin d\'adhésion',
+										),
+										array(
 											'id'      => 'online_subscription_greating_adhesion',
 											'name'    => 'Contenu du message de validation',
 											'type'    => 'editor',
@@ -2344,6 +2401,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name' => 'Message - Etape 4/8 - Les contrats',
 										),
 										array(
+											'id'      => 'online_contrats_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => '',
+											'desc'    => '<strong>Nom de remplacement</strong> de l\'étape 4/8 - Les contrats ; par défaut, "Les contrats" ou "Les commandes" suivant l\'argument use_contrat_term',
+										),
+										array(
 											'id'      => 'online_contrats_step_message',
 											'name'    => 'Message',
 											'type'    => 'editor',
@@ -2369,7 +2433,93 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'type' => 'heading',
-											'name' => 'Message - Etape 8/8',
+											'name' => 'Assistant - Étape 7/8 - Date et lieu',
+										),
+										array(
+											'id'      => 'online_subscription_date_lieu_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Date et lieu',
+										),
+										array(
+											'id'   => 'online_subscription_date_lieu_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape 6/8 - Panier',
+										),
+										array(
+											'id'      => 'online_subscription_panier_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Panier',
+										),
+										array(
+											'id'   => 'online_subscription_panier_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape 7/8 - Règlement',
+										),
+										array(
+											'id'      => 'online_subscription_pay_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Règlement',
+										),
+										array(
+											'id'   => 'online_subscription_pay_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Message - Etape 8/8 Félicitations',
+										),
+										array(
+											'id'      => 'online_contrats_end_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Félicitations !',
+										),
+										array(
+											'id'      => 'online_contrats_end_confirm_msg',
+											'name'    => 'Message de confirmation',
+											'type'    => 'editor',
+											'default' => wpautop( 'Votre pré-inscription a bien été prise en compte.' ),
+											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'id'      => 'online_contrats_end_continue_msg',
+											'name'    => 'Message de confirmation',
+											'type'    => 'editor',
+											'default' => wpautop( 'Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (%%remaining_contrats%%)' ),
+											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [
+												'remaining_contrats' => 'Contrat disponibles à l\'inscription'
+											], false ),
+										),
+										array(
+											'id'      => 'online_contrats_end_confirm_mail_msg',
+											'name'    => 'Message au sujet de l\'email de confirmation',
+											'type'    => 'editor',
+											'default' => wpautop( 'Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)' ),
+											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(
 											'id'      => 'online_contrats_end_step_message',
@@ -2392,6 +2542,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												             'modify_button' => 'Bouton Modifier l\'inscription',
 												             'cancel_button' => 'Bouton Annuler l\'inscription'
 											             ], false ),
+										),
+										array(
+											'id'      => 'online_final_step_name',
+											'name'    => 'Nom de l\'étape finale',
+											'type'    => 'text',
+											'default' => 'Félicitations, vous avez terminé vos inscriptions !',
 										),
 										array(
 											'id'      => 'online_final_step_message',
