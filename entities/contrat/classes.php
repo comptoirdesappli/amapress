@@ -522,6 +522,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_is_principal', 0 );
 	}
 
+	public function setSelfSubscribe( $open ) {
+		$this->setCustom( 'amapress_contrat_instance_self_subscribe', $open ? 1 : 0 );
+	}
+
 	public function canSelfSubscribe( $user_id = null ) {
 		$res = $this->getCustomAsInt( 'amapress_contrat_instance_self_subscribe', 0 );
 		if ( empty( $res ) ) {

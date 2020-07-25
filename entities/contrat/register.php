@@ -422,6 +422,24 @@ function amapress_register_entities_contrat( $entities ) {
 //				},
 //				'show_on'   => 'none',
 //			],
+			'open_inscr'  => [
+				'label'     => 'Ouvrir inscriptions',
+				'condition' => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return ! $contrat->canSelfSubscribe()
+					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
+				},
+			],
+			'close_inscr' => [
+				'label'     => 'Fermer inscriptions',
+				'condition' => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->canSelfSubscribe()
+					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
+				},
+			],
 		),
 		'bulk_actions'             => array(
 			'amp_incr_cloture' => array(
@@ -2605,6 +2623,20 @@ function amapress_row_action_contrat_instance_generate_contrat( $post_id ) {
 	$full_file_name = $adhesion->generateContratDoc( $date, true );
 	$file_name      = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
+}
+
+add_action( 'amapress_row_action_contrat_instance_open_inscr', 'amapress_row_action_contrat_instance_open_inscr' );
+function amapress_row_action_contrat_instance_open_inscr( $post_id ) {
+	$contrat = AmapressContrat_instance::getBy( $post_id );
+	$contrat->setSelfSubscribe( true );
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_contrat_instance_close_inscr', 'amapress_row_action_contrat_instance_close_inscr' );
+function amapress_row_action_contrat_instance_close_inscr( $post_id ) {
+	$contrat = AmapressContrat_instance::getBy( $post_id );
+	$contrat->setSelfSubscribe( false );
+	wp_redirect_and_exit( wp_get_referer() );
 }
 
 add_filter( 'amapress_can_delete_attachment', 'amapress_can_delete_attachment', 10, 2 );
