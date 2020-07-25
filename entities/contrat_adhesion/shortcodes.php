@@ -858,6 +858,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	}
 
 	if ( 'email' == $step ) {
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		if ( $adh_period && ( $is_adhesion_mode || $min_contrat_date <= 0 ) ) {
+			$saison = date_i18n( 'F Y', $adh_period->getDate_debut() ) . ' - ' . date_i18n( 'F Y', $adh_period->getDate_fin() );
+		} else {
+			$saison = date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date );
+		}
 		?>
         <h2>Bienvenue dans
             l’assistant <?php
@@ -873,19 +879,18 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			?>
         </h2>
         <h4>
-			<?php
-			echo amapress_step_text( $step, $steps_nums, $steps_count );
-			echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_email_step_name' ) ) );
-			?>
+	        <?php
+	        echo amapress_step_text( $step, $steps_nums, $steps_count );
+	        echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_email_step_name' ) ) );
+	        ?>
         </h4>
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
 			<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_email_step_message' ), null ) ); ?>
             <label for="email" style="display: block">Pour démarrer
                 votre <?php echo( $is_adhesion_mode ? 'adhésion' : 'inscription' ); ?> à l’AMAP pour la saison
-				<?php echo $min_contrat_date >= 0 ?
-					date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date ) :
-					'en cours'
+				<?php
+				echo $saison;
 				?>
                 , renseignez votre
                 adresse mail :</label>
