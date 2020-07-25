@@ -351,6 +351,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$atts = shortcode_atts(
 		[
 			'key'                                 => '',
+			'use_steps_nums'                      => 'true',
 			'for_logged'                          => 'false',
 			'filter_multi_contrat'                => 'false',
 			'admin_mode'                          => 'false',
@@ -594,6 +595,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$steps_nums['inscr_contrat_engage']    = 2;
 		$steps_nums['inscr_contrat_paiements'] = 3;
 		$steps_nums['inscr_contrat_create']    = 4;
+	}
+	if ( ! Amapress::toBool( $atts['use_steps_nums'] ) ) {
+		$steps_nums = [];
 	}
 	function amapress_step_text( $step_id, $steps_nums, $steps_count ) {
 		if ( empty( $steps_nums[ $step_id ] ) ) {
@@ -872,17 +876,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			} else {
 				echo 'd’adhésion';
 			}
-			?>
+	        ?>
             de
-			<?php
-			echo esc_html( get_bloginfo( 'name' ) );
-			?>
+	        <?php
+	        echo esc_html( get_bloginfo( 'name' ) );
+	        ?>
         </h2>
         <h4>
-	        <?php
-	        echo amapress_step_text( $step, $steps_nums, $steps_count );
-	        echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_email_step_name' ) ) );
-	        ?>
+			<?php
+			echo amapress_step_text( $step, $steps_nums, $steps_count );
+			echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_email_step_name' ) ) );
+			?>
         </h4>
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
