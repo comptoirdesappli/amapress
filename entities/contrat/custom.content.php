@@ -102,8 +102,10 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation de la production' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id );
 	$content .= '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>';
 	$content .= '<div class="contrat-pres-prod">' . wpautop( get_the_content() ) . '</div>';
-	if ( $edit_contrat_url = get_edit_post_link( get_the_ID() ) ) {
-		$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier cette présentation</a></div>';
+	if ( amapress_can_access_admin() ) {
+		if ( $edit_contrat_url = get_edit_post_link( get_the_ID() ) ) {
+			$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier cette présentation</a></div>';
+		}
 	}
 	$content .= Amapress::get_know_more( get_permalink( $prod_id ) );
 	$content .= amapress_get_panel_end();
@@ -141,8 +143,10 @@ function amapress_get_custom_content_contrat_default( $content ) {
 				}
 			}
 		}
-		if ( $edit_contrat_url = get_edit_post_link( $c->ID ) ) {
-			$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier ce contrat</a></div>';
+		if ( amapress_can_access_admin() ) {
+			if ( $edit_contrat_url = get_edit_post_link( $c->ID ) ) {
+				$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier ce contrat</a></div>';
+			}
 		}
 		$content .= amapress_get_panel_end();
 	}
