@@ -165,7 +165,7 @@ class AmapressAdhesion extends TitanEntity {
 					}
 				}
 			];
-			$ret['contrat_titre']                    = [
+			$ret['contrat_titre'] = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
@@ -1297,6 +1297,15 @@ class AmapressAdhesion extends TitanEntity {
 	/** @return int */
 	public function getContrat_instanceId() {
 		return $this->getCustomAsInt( 'amapress_adhesion_contrat_instance' );
+	}
+
+	public function getModelId() {
+		$contrat = $this->getContrat_instance();
+		if ( $contrat ) {
+			return $contrat->getModelId();
+		}
+
+		return 0;
 	}
 
 	/** @return int */

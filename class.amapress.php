@@ -3619,15 +3619,18 @@ class Amapress {
 		if ( empty( $contrats ) ) {
 			return '<p class="">Aucun contrat n\'est configuré</p>';
 		}
-		$ret             = '<ul class="contrat-list">';
-		$active_contrats = AmapressAdhesion::getUserActiveAdhesionIds();
-		$used            = array();
+		$ret                 = '<ul class="contrat-list">';
+		$active_contrats_ids = array_map( function ( $a ) {
+			/** @var AmapressAdhesion $a */
+			return $a->getModelId();
+		}, AmapressAdhesion::getUserActiveAdhesions() );
+		$used                = array();
 		foreach ( $contrats as $contrat ) {
 			if ( in_array( $contrat->ID, $used ) ) {
 				continue;
 			}
 			$used[] = $contrat->ID;
-			$lbl    = in_array( $contrat->ID, $active_contrats ) ?
+			$lbl    = in_array( $contrat->ID, $active_contrats_ids ) ?
 				Amapress::getOption( 'front_produits_button_text_if_adherent', 'Adhérent' ) :
 				Amapress::getOption( 'front_produits_button_text_if_not_adherent', 'Découvrir' );
 			//$btn_url = in_array($contrat->ID, $active_contrats) ? trailingslashit(get_post_permalink($contrat->ID)).'details/' : 'Je m\'inscris';
