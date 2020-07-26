@@ -83,14 +83,21 @@ function amapress_get_custom_title_contrat( $content ) {
 
 add_filter( 'amapress_get_custom_content_contrat_default', 'amapress_get_custom_content_contrat_default' );
 function amapress_get_custom_content_contrat_default( $content ) {
-	$contrat_id   = get_the_ID();
-	$contrat      = AmapressContrat::getBy( $contrat_id );
-	$prod         = $contrat->getProducteur();
-	$prod_id      = $prod->ID;
-	$prouits_html = amapress_produits_shortcode(
+	$contrat_id          = get_the_ID();
+	$contrat             = AmapressContrat::getBy( $contrat_id );
+	$prod                = $contrat->getProducteur();
+	$prod_id             = $prod->ID;
+	$prouits_html        = amapress_produits_shortcode(
 		[ 'producteur' => $prod_id, 'columns' => 4 ]
 	);
-	$prod_user    = $prod->getUserId();
+	$prod_user           = $prod->getUserId();
+	$active_contrats_ids = [];
+	if ( amapress_is_user_logged_in() ) {
+		$active_contrats_ids = array_map( function ( $a ) {
+			/** @var AmapressAdhesion $a */
+			return $a->getModelId();
+		}, AmapressAdhesion::getUserActiveAdhesions() );
+	}
 
 	$content = amapress_get_panel_start( Amapress::getOption( 'pres_producteur_title', 'Présentation de la production' ), null, 'amap-panel-pres-prod amap-panel-pres-prod-' . $prod_id );
 	$content .= '<div class="contrat-prod-user">' . do_shortcode( '[amapien-avatar user=' . $prod_user . ']' ) . '</div>';
@@ -111,16 +118,27 @@ function amapress_get_custom_content_contrat_default( $content ) {
 		$content .= wpautop( $c->getContratInfo() );
 
 		if ( $c->getDate_ouverture() < amapress_time() && amapress_time() < $c->getDate_cloture() ) {
+			$mes_contrats_href = Amapress::get_mes_contrats_page_href();
 			if ( amapress_is_user_logged_in() ) {
 				$inscription_contrats_link = Amapress::get_logged_inscription_page_href();
 				if ( empty( $inscription_contrats_link ) ) {
-					$inscription_contrats_link = Amapress::get_mes_contrats_page_href();
+					$inscription_contrats_link = $mes_contrats_href;
 				}
 			} else {
 				$inscription_contrats_link = Amapress::get_pre_inscription_page_href();
 			}
-			if ( ! empty( $inscription_contrats_link ) ) {
-				$content .= '<div>' . Amapress::makeButtonLink( $inscription_contrats_link, 'S\'inscrire', true, true ) . '</div>';
+			if ( in_array( $contrat->ID, $active_contrats_ids ) ) {
+				if ( ! empty( $mes_contrats_href ) ) {
+					$content .= '<div>' . Amapress::makeButtonLink( $mes_contrats_href,
+							'Inscrit',
+							true, true ) . '</div>';
+				}
+			} else {
+				if ( ! empty( $inscription_contrats_link ) ) {
+					$content .= '<div>' . Amapress::makeButtonLink( $inscription_contrats_link,
+							'S\'inscrire',
+							true, true ) . '</div>';
+				}
 			}
 		}
 		if ( $edit_contrat_url = get_edit_post_link( $c->ID ) ) {
