@@ -2178,7 +2178,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'      => 'check_adh_rcv_p',
-											'name'    => 'L\'adhésion ou un adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats',
+											'name'    => 'L\'adhésion ou une adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats',
 											'type'    => 'checkbox',
 											'default' => false,
 										),
