@@ -616,6 +616,10 @@ function amapress_get_productions_import_page() {
 	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressContrat::POST_TYPE );
 }
 
+function amapress_get_adh_pmt_import_page() {
+	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressAdhesion_paiement::POST_TYPE );
+}
+
 function amapress_get_contrats_import_page() {
 	return Amapress_Import_Posts_CSV::get_import_posts_page( AmapressContrat_instance::POST_TYPE );
 }
@@ -629,6 +633,7 @@ function amapress_process_csv_import() {
 	global $amapress_imported_csv_contrats;
 	$amapress_imported_csv_contrats = [];
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressAdhesion::POST_TYPE );
+	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressAdhesion_paiement::POST_TYPE );
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressAdhesion_intermittence::POST_TYPE);
 //    Amapress_Import_Posts_CSV::process_posts_csv_import(AmapressAmapien_paiement::POST_TYPE);
 	Amapress_Import_Posts_CSV::process_posts_csv_import( AmapressProduit::POST_TYPE );
@@ -648,6 +653,7 @@ add_action( 'admin_init', function () {
 	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion::POST_TYPE . '_multi', 'amapress_process_generate_model' );
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAdhesion_intermittence::POST_TYPE, 'amapress_process_generate_model');
 //add_action('tf_custom_admin_amapress_action_generate_model_'.AmapressAmapien_paiement::POST_TYPE, 'amapress_process_generate_model');
+	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressAdhesion_paiement::POST_TYPE, 'amapress_process_generate_model' );
 	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressContrat_quantite::POST_TYPE, 'amapress_process_generate_model' );
 	add_action( 'tf_custom_admin_amapress_action_generate_model_user', 'amapress_process_generate_model' );
 	add_action( 'tf_custom_admin_amapress_action_generate_model_' . AmapressProducteur::POST_TYPE, 'amapress_process_generate_model' );
@@ -673,6 +679,9 @@ function amapress_process_generate_model() {
 //        case 'generate_model_'.AmapressAdhesion_intermittence::POST_TYPE:
 //            Amapress_Import_Posts_CSV::generateModel(AmapressAdhesion_intermittence::POST_TYPE, 'inscriptions_intermittents', array());
 //            break;
+		case 'generate_model_' . AmapressAdhesion_paiement::POST_TYPE:
+			Amapress_Import_Posts_CSV::generateModel( AmapressAdhesion_paiement::POST_TYPE, 'adhesions_amap', array() );
+			break;
 		case 'generate_model_' . AmapressContrat_quantite::POST_TYPE:
 			Amapress_Import_Posts_CSV::generateModel( AmapressContrat_quantite::POST_TYPE, 'contrats_config_paniers', [
 				'post_title',
@@ -746,6 +755,17 @@ function amapress_csv_posts_contrat_quantite_import_required_headers( $required_
 
 	if ( ! empty( $_REQUEST['amapress_import_contrat_quantite_default_contrat_instance'] ) ) {
 		unset( $required_headers['amapress_contrat_quantite_contrat_instance'] );
+	}
+
+	return array_values( $required_headers );
+}
+
+add_filter( 'amapress_csv_posts_adhesion_paiement_import_required_headers', 'amapress_csv_posts_adhesion_paiement_import_required_headers', 10, 2 );
+function amapress_csv_posts_adhesion_paiement_import_required_headers( $required_headers, $headers ) {
+	$required_headers = array_combine( array_values( $required_headers ), array_values( $required_headers ) );
+
+	if ( ! empty( $_REQUEST['amapress_import_adhesion_paiement_default_period'] ) ) {
+		unset( $required_headers['amapress_adhesion_paiement_period'] );
 	}
 
 	return array_values( $required_headers );

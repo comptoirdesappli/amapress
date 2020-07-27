@@ -4737,6 +4737,42 @@ Cette page permet d\'importer les contrats
 								),
 							)
 						),
+						'Adhésions AMAP'            => array(
+							'id'         => 'import_adh_pmt_tab',
+							'desc'       => '',
+							'capability' => 'manage_amapress',
+							'options'    => array(
+								array(
+									'type' => 'note',
+									'desc' => '
+Cette page permet d\'importer les adhésions à l\'AMAP (<strong>sans la répartition des montants/avec les valeurs de montants par défaut</strong>)
+<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+<br/>Les colonnes en italique sont facultatives et peuvent être supprimées
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)'
+								),
+								array(
+									'type'      => 'save',
+									'use_reset' => false,
+									'save'      => 'Télécharger le modèle',
+									'action'    => 'generate_model_' . AmapressAdhesion_paiement::POST_TYPE,
+								),
+								array(
+									'id'                => 'import_adhesion_paiement_default_period',
+									'name'              => amapress__( 'Période d\'adhésion par défaut' ),
+									'type'              => 'select-posts',
+									'post_type'         => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
+									'autoselect_single' => true,
+									'desc'              => 'Période d\'adhésion',
+								),
+								array(
+									'id'     => 'import_adh_pmt',
+									'name'   => 'Importer des adhésions',
+									'type'   => 'custom',
+									'custom' => 'amapress_get_adh_pmt_import_page',
+									'bare'   => true,
+								),
+							)
+						),
 						'Produits'                  => array(
 							'id'         => 'import_produits_tab',
 							'desc'       => '',

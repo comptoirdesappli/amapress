@@ -66,13 +66,10 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 			'period'       => array(
 				'name'              => amapress__( 'Période adhésion' ),
 				'type'              => 'select-posts',
-//                'readonly' => 'edit',
-//                'hidden' => true,
-//                'group' => '2/ Contrat',
 				'post_type'         => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
 				'desc'              => 'Période adhésion',
 				'import_key'        => true,
-//                'required' => true,
+				'required'          => true,
 				'autoselect_single' => true,
 				'top_filter'        => array(
 					'name'        => 'amapress_adhesion_period',
@@ -85,7 +82,6 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'type'         => 'date',
 				'required'     => true,
 				'desc'         => 'Date d\'émission',
-//                'import_key' => true,
 				'csv_required' => true,
 			),
 //            'date_emission' => array(
@@ -113,13 +109,11 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'csv_required' => true,
 			),
 			'numero'       => array(
-				'name'         => amapress__( 'Numéro du chèque' ),
-				'type'         => 'text',
-				'required'     => true,
-				'desc'         => 'Numéro du chèque ou "Esp." pour un règlement en espèces ou "Vir." pour un virement ou "Mon." pour un règlement en monnaie locale',
-				'import_key'   => true,
-				'csv_required' => true,
-				'searchable'   => true,
+				'name'       => amapress__( 'Numéro du chèque' ),
+				'type'       => 'text',
+				'required'   => true,
+				'desc'       => 'Numéro du chèque ou "Esp." pour un règlement en espèces ou "Vir." pour un virement ou "Mon." pour un règlement en monnaie locale',
+				'searchable' => true,
 			),
 			'banque'       => array(
 				'name'       => amapress__( 'Banque' ),
@@ -128,18 +122,20 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'searchable' => true,
 			),
 			'categ_editor' => array(
-				'name'   => amapress__( 'Répartitions' ),
-				'type'   => 'custom',
-				'column' => 'amapress_get_adhesion_paiements_summary',
-				'custom' => 'amapress_get_adhesion_paiements_categories',
-				'save'   => 'amapress_save_adhesion_paiements_categories',
-//                'desc' => 'Répartitions',
+				'name'       => amapress__( 'Répartitions' ),
+				'type'       => 'custom',
+				'column'     => 'amapress_get_adhesion_paiements_summary',
+				'custom'     => 'amapress_get_adhesion_paiements_categories',
+				'save'       => 'amapress_save_adhesion_paiements_categories',
+				'csv_import' => false,
+				'csv_export' => true,
 			),
 			'amount'       => array(
-				'name' => amapress__( 'Montant' ),
-				'type' => 'readonly',
-				'unit' => '€',
-				'desc' => 'Montant',
+				'name'       => amapress__( 'Montant' ),
+				'type'       => 'readonly',
+				'unit'       => '€',
+				'desc'       => 'Montant',
+				'csv_import' => false,
 			),
 			'pmt_type'     => array(
 				'name'           => amapress__( 'Moyen de règlement principal' ),
@@ -252,6 +248,45 @@ jQuery(function($) {
 
 	return $ret;
 }
+
+add_filter( 'amapress_import_adhesion_paiement_apply_default_values_to_posts_meta', 'amapress_import_adhesion_paiement_apply_default_values_to_posts_meta' );
+function amapress_import_adhesion_paiement_apply_default_values_to_posts_meta( $postmeta ) {
+	if ( ! empty( $_REQUEST['amapress_import_adhesion_paiement_default_period'] )
+	     && empty( $postmeta['amapress_adhesion_paiement_period'] ) ) {
+		$postmeta['amapress_adhesion_paiement_period'] = $_REQUEST['amapress_import_adhesion_paiement_default_period'];
+	}
+
+	return $postmeta;
+}
+
+add_action( 'amapress_post_adhesion_paiement_import', 'amapress_post_adhesion_paiement_import', 10, 3 );
+function amapress_post_adhesion_paiement_import( $post_id, $postdata, $postmeta ) {
+	$postmeta['amapress_adhesion_paiement_repartition'] = get_post_meta( $post_id, 'amapress_adhesion_paiement_repartition', true );
+	if ( empty( $postmeta['amapress_adhesion_paiement_repartition'] ) ) {
+		$period = AmapressAdhesionPeriod::getBy( $postmeta['amapress_adhesion_paiement_period'] );
+		if ( $period ) {
+			$rep       = [];
+			$amap_term = Amapress::getOption( 'adhesion_amap_term' );
+			if ( $amap_term ) {
+				$rep[ $amap_term ] = $period->getMontantAmap();
+			}
+			$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+			if ( $reseau_amap_term ) {
+				$rep[ $reseau_amap_term ] = $period->getMontantReseau();
+			}
+			$postmeta['amapress_adhesion_paiement_repartition'] = $rep;
+		}
+	}
+	if ( ! empty( $postmeta['amapress_adhesion_paiement_repartition'] ) ) {
+		wp_set_post_terms( $post_id, array_keys( $postmeta['amapress_adhesion_paiement_repartition'] ), 'amps_paiement_category' );
+		$sum = 0;
+		foreach ( $postmeta['amapress_adhesion_paiement_repartition'] as $k => $v ) {
+			$sum += $v;
+		}
+		update_post_meta( $post_id, 'amapress_adhesion_paiement_amount', $sum );
+	}
+}
+
 
 function amapress_save_adhesion_paiements_categories( $paiement_id ) {
 	if ( isset( $_POST['amapress_pmt_amounts'] ) ) {
