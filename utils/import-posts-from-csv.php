@@ -451,7 +451,7 @@ class Amapress_Import_Posts_CSV {
 		$postdata_taxonomies_names = array();
 		foreach ( get_object_taxonomies( amapress_unsimplify_post_type( $post_type ), 'objects' ) as $tax_name => $tax ) {
 			$postdata_taxonomies[]                  = $tax_name;
-			$postdata_taxonomies_names[ $tax_name ] = $tax['label'];
+			$postdata_taxonomies_names[ $tax_name ] = $tax->label;
 		}
 		$postcustom_fields = apply_filters( "amapress_import_posts_{$post_type}_custom_fields", array(), $post_type );
 //		$postmulti_fields = apply_filters("amapress_import_posts_{$post_type}_is_multi_field", array(), $post_type);
