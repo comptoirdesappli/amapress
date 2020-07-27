@@ -116,7 +116,7 @@ class Amapress_Import_Posts_CSV {
 					                '',
 		                ],
 		                wp_get_referer() ) );
-				} // All posts imported? :D
+                } // All posts imported? :D
 				else {
 					wp_redirect( add_query_arg( 'import', 'success', wp_get_referer() ) );
 				}
@@ -567,15 +567,13 @@ class Amapress_Import_Posts_CSV {
 					}
 				}
 
-				if ( $has_multi ) {
-					$postdata = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_data", $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
-					$postmeta = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
-					$posttaxo = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
+				$postdata = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_data", $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
+				$postmeta = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
+				$posttaxo = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
 
-					$postdata = apply_filters( "amapress_import_apply_default_values_to_posts_data", $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
-					$postmeta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
-					$posttaxo = apply_filters( "amapress_import_apply_default_values_to_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
-				}
+				$postdata = apply_filters( "amapress_import_apply_default_values_to_posts_data", $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
+				$postmeta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
+				$posttaxo = apply_filters( "amapress_import_apply_default_values_to_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
 
 				// A plugin may need to filter the data and meta
 				$postdata  = apply_filters( "amapress_import_{$post_type}_data", $postdata, $postmeta, $posttaxo, $postmulti );
