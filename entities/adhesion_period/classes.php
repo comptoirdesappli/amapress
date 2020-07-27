@@ -12,6 +12,33 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		parent::__construct( $post_id );
 	}
 
+	private static $entities_cache = array();
+
+	/**
+	 * @param $post_or_id
+	 *
+	 * @return AmapressAdhesionPeriod
+	 */
+	public static function getBy( $post_or_id, $no_cache = false ) {
+		if ( is_a( $post_or_id, 'WP_Post' ) ) {
+			$post_id = $post_or_id->ID;
+		} else if ( is_a( $post_or_id, 'AmapressAdhesionPeriod' ) ) {
+			$post_id = $post_or_id->ID;
+		} else {
+			$post_id = intval( $post_or_id );
+		}
+		if ( ! isset( self::$entities_cache[ $post_id ] ) || $no_cache ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				self::$entities_cache[ $post_id ] = null;
+			} else {
+				self::$entities_cache[ $post_id ] = new AmapressAdhesionPeriod( $post );
+			}
+		}
+
+		return self::$entities_cache[ $post_id ];
+	}
+
 	public function getDate_debut() {
 		return $this->getCustom( 'amapress_adhesion_period_date_debut' );
 	}
@@ -101,7 +128,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 				)
 			);
 			$res   = array_map( function ( $p ) {
-				return new AmapressAdhesionPeriod( $p );
+				return AmapressAdhesionPeriod::getBy( $p );
 			}, get_posts( $query ) );
 			if ( count( $res ) > 0 ) {
 				$res = array_shift( $res );
@@ -130,7 +157,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 
 		$my_post = array(
 			'post_title'   => $this->getTitle(),
-			'post_type'    => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
+			'post_type'    => self::INTERNAL_POST_TYPE,
 			'post_content' => '',
 			'post_status'  => $as_draft ? 'draft' : 'publish',
 			'meta_input'   => $meta,
@@ -140,7 +167,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 			return null;
 		}
 
-		return new AmapressAdhesionPeriod( $new_id );
+		return self::getBy( $new_id );
 	}
 }
 

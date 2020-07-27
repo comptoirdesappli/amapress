@@ -24,7 +24,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 			'add_new_item' => 'Ajouter une période d\'adhésion',
 		),
 		'edit_header'      => function ( $post ) {
-			$period = new AmapressAdhesionPeriod( $post->ID );
+			$period = AmapressAdhesionPeriod::getBy( $post->ID );
 			$result = $period->getModelDocStatus();
 			if ( true !== $result ) {
 				echo amapress_get_admin_notice( $result['message'], $result['status'], false );
@@ -141,7 +141,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 
 add_action( 'amapress_row_action_adhesion_period_renew', 'amapress_row_action_adhesion_period_renew' );
 function amapress_row_action_adhesion_period_renew( $post_id ) {
-	$period     = new AmapressAdhesionPeriod( $post_id );
+	$period     = AmapressAdhesionPeriod::getBy( $post_id );
 	$new_period = $period->clonePeriod();
 	if ( ! $new_period ) {
 		wp_die( 'Une erreur s\'est produit lors du renouvellement de la période d\'adhésion. Veuillez réessayer' );

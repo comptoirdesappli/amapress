@@ -223,8 +223,8 @@ function amapress_contrat_paiement_title_formatter( $post_title, WP_Post $post )
 
 add_filter( 'amapress_adhesion_period_title_formatter', 'amapress_adhesion_period_title_formatter', 10, 2 );
 function amapress_adhesion_period_title_formatter( $post_title, WP_Post $post ) {
-	$pmt = new AmapressAdhesionPeriod( $post->ID );
-	if ( ! $pmt->getDate_debut() ) {
+	$pmt = AmapressAdhesionPeriod::getBy( $post->ID );
+	if ( ! $pmt || ! $pmt->getDate_debut() ) {
 		return $post->post_title;
 	}
 
