@@ -27,18 +27,6 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 			'add_new_item' => 'Saisie chèques adhésion',
 //            'items_list' => 'xxx',
 		),
-		'edit_header'      => function ( $post ) {
-			$contrat = new AmapressAdhesionPeriod( $post );
-			if ( TitanFrameworkOption::isOnEditScreen() ) {
-				$faked = AmapressAdhesion_paiement::createFakeForUser( amapress_current_user_id() );
-				if ( $faked ) {
-					$result = $faked->getBulletinDocDocStatus();
-					if ( true !== $result ) {
-						echo amapress_get_admin_notice( $result['message'], $result['status'], false );
-					}
-				}
-			}
-		},
 		'row_actions'      => array(
 			'mark_rcv'               => 'Marquer reçu',
 			'unmark_rcv'             => 'Marquer Non reçu',
