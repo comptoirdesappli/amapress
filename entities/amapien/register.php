@@ -89,7 +89,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br />Ouvre tous les droits sur le site</p>';
 				}
 			),
-			'amap_roles'     => array(
+			'amap_roles'        => array(
 				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -101,7 +101,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'adh_type'       => array(
+			'adh_type'          => array(
 				'name'          => amapress__( 'Type' ),
 				'type'          => 'custom',
 				'show_column'   => true,
@@ -118,7 +118,7 @@ function amapress_register_entities_amapien( $entities ) {
 					echo $amapien ? $amapien->getAdherentTypeDisplay() : '';
 				}
 			),
-			'amapien_groups' => array(
+			'amapien_groups'    => array(
 				'name'        => amapress__( 'Groupes d\'amapien' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAPIEN_GROUP,
@@ -128,7 +128,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'diffusion'      => array(
+			'diffusion'         => array(
 				'name'        => amapress__( 'Diffusion' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -1351,4 +1351,17 @@ function amapress_get_user_meta_filter() {
 	}
 
 	return $ret;
+}
+
+function amapress_get_new_user_approve_user_status( $user_id ) {
+	if ( ! class_exists( 'pw_new_user_approve' ) ) {
+		return '';
+	}
+
+	$user_status = get_user_meta( $user_id, 'pw_user_status', true );
+	if ( empty( $user_status ) ) {
+		$user_status = 'approved';
+	}
+
+	return $user_status;
 }
