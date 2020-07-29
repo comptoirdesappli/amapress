@@ -212,7 +212,7 @@ function amapress_adhesion_paiement_views() {
 	amapress_add_view_button(
 		$ret, 'not_received',
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_status=not_received",
-		'Non reçu' );
+		'Non reçu', false, true );
 
 	amapress_add_view_button(
 		$ret, 'pmt_esp',
@@ -362,7 +362,7 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'to_confirm',
 		"post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm",
-		'A confirmer' );
+		'A confirmer', false, true );
 
 	amapress_add_view_button(
 		$ret, 'to_renew',
@@ -451,7 +451,7 @@ function amapress_user_views( $ret ) {
 				$ret, 'adhe_nok',
 				"amapress_adhesion=nok$query_add",
 				'Adhésions non réglées',
-				true );
+				true, true );
 		}
 		amapress_add_view_button(
 			$ret, 'w_adhe',
@@ -590,7 +590,7 @@ function amapress_paiements_views() {
 	amapress_add_view_button(
 		$ret, 'not_received',
 		"post_type=amps_cont_pmt&amapress_date=active&amapress_status=not_received",
-		'Non reçu' );
+		'Non reçu', false, true );
 
 	amapress_add_view_button(
 		$ret, 'pmt_esp',
@@ -686,11 +686,12 @@ function amapress_produit_views() {
 	return $ret;
 }
 
-function amapress_add_view_button( &$arr, $id, $query, $title, $user = false ) {
+function amapress_add_view_button( &$arr, $id, $query, $title, $user = false, $show_zero = false ) {
 	$btn = amapress_generate_view_button(
 		$query,
 		$title,
-		$user );
+		$user,
+		$show_zero );
 	if ( ! $btn ) {
 		return;
 	}
@@ -708,18 +709,12 @@ function amapress_add_view_export_csv( $name = null, $is_user = false ) {
 	return "<a href='$url'>Exporter <span class='dashicons dashicons-external'></span></a>";
 }
 
-function amapress_generate_view_button( $query, $title, $user = false ) {
+function amapress_generate_view_button( $query, $title, $user = false, $show_zero = false ) {
 	global $wp_query, $pagenow;
 
 	if ( $user ) {
-//        $q = new WP_User_Query($query);
-//        $cnt = $q->get_total();
-//        $g_query = $_SERVER['QUERY_STRING'];
 		$cnt = get_users_count( $query );
 	} else {
-//        $q = new WP_Query($query);
-//        $cnt = $q->found_posts;
-//        $g_query = $wp_query->query;
 		$cnt = get_posts_count( $query );
 	}
 
@@ -743,7 +738,7 @@ function amapress_generate_view_button( $query, $title, $user = false ) {
 		$cls = 'class="current"';
 	}
 
-	if ( $cnt == 0 && ! $is_current ) {
+	if ( ! $show_zero && $cnt == 0 && ! $is_current ) {
 		return null;
 	}
 
