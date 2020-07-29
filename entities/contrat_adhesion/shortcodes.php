@@ -382,6 +382,8 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'contact_referents'                   => 'true',
 			'show_adherents_infos'                => 'true',
 			'show_details_button'                 => 'false',
+			'allow_adhesion_lieu'                 => 'false',
+			'allow_adhesion_message'              => 'false',
 			'allow_coadherents_access'            => 'true',
 			'allow_coadherents_inscription'       => 'true',
 			'allow_coadherents_adhesion'          => 'true',
@@ -876,11 +878,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			} else {
 				echo 'd’adhésion';
 			}
-	        ?>
+			?>
             de
-	        <?php
-	        echo esc_html( get_bloginfo( 'name' ) );
-	        ?>
+			<?php
+			echo esc_html( get_bloginfo( 'name' ) );
+			?>
         </h2>
         <h4>
 			<?php
@@ -1742,15 +1744,35 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . '</h4>';
 		echo $adh_period->getOnlineDescription();
 
-		$taxes            = get_categories( array(
+		$taxes = get_categories( array(
 			'orderby'    => 'name',
 			'order'      => 'ASC',
 			'taxonomy'   => 'amps_paiement_category',
 			'hide_empty' => false,
 		) );
-		$ret              = '';
-		$ret              .= '<form method="post" id="inscr_adhesion" class="amapress_validate" action="' . esc_attr( add_query_arg( 'step', 'save_adhesion' ) ) . '">';
-		$ret              .= '<input type="hidden" name="user_id" value="' . esc_attr( $user_id ) . '"/>';
+		$ret   = '';
+		$ret   .= '<form method="post" id="inscr_adhesion" class="amapress_validate" action="' . esc_attr( add_query_arg( 'step', 'save_adhesion' ) ) . '">';
+		$ret   .= '<input type="hidden" name="user_id" value="' . esc_attr( $user_id ) . '"/>';
+		if ( Amapress::toBool( $atts['allow_adhesion_lieu'] ) ) {
+			$ret .= '<div>';
+			$ret .= '<p>Lieu de distribution souhaité :</p>';
+			foreach ( Amapress::get_lieux() as $lieu ) {
+				if ( ! $lieu->isPrincipal() ) {
+					continue;
+				}
+
+				$ret .= '<label for="adh-lieu-' . $lieu->ID . '"><input name="amapress_adhesion_lieu" value="' . $lieu->ID . '" type="radio" id="adh-lieu-' . $lieu->ID . '" /> ' . esc_html( $lieu->getTitle() ) . '</label>';
+			}
+			$ret .= '</div>';
+		}
+		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
+			$ret .= '<div>';
+			$ret .= '<label for="adh-message" style="display: block">Message à l\'AMAP :</label>
+<textarea id="adh-message" name="amapress_adhesion_message"></textarea>';
+			$ret .= '</div>';
+		}
+		//allow_adhesion_lieu
+		//allow_adhesion_message
 		$amap_term        = Amapress::getOption( 'adhesion_amap_term' );
 		$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
 		$ret              .= '<table style="max-width: 70%">';
@@ -1848,6 +1870,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 		wp_set_post_terms( $adh_paiement->ID, $terms, 'amps_paiement_category' );
+
+		if ( isset( $_REQUEST['amapress_adhesion_message'] ) ) {
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_message', sanitize_textarea_field( $_REQUEST['amapress_adhesion_message'] ) );
+		}
+
+		if ( isset( $_REQUEST['amapress_adhesion_lieu'] ) ) {
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_lieu', $_REQUEST['amapress_adhesion_lieu'] );
+		}
 
 		amapress_compute_post_slug_and_title( $adh_paiement->getPost() );
 

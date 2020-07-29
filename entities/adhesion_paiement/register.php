@@ -156,6 +156,19 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'placeholder' => 'Tous les type de paiement',
 				),
 			),
+			'lieu'     => array(
+				'name'       => amapress__( 'Lieu dist.' ),
+				'type'       => 'select-posts',
+				'post_type'  => 'amps_lieu',
+				'desc'       => 'Lieu de distribution souhaité',
+				'searchable' => true,
+			),
+			'message'  => array(
+				'name'           => amapress__( 'Message' ),
+				'type'           => 'textarea',
+				'desc'           => 'Message à l\'AMAP lors de l\'inscription en ligne',
+				'col_def_hidden' => true,
+			),
 		),
 		'bulk_actions'     => array(
 			'amp_adh_pmt_mark_recv' => array(

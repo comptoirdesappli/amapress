@@ -503,7 +503,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					) ) );
 				}
 			];
-			$ret['adherent']             = [
+			$ret['adherent'] = [
 				'desc' => 'Prénom Nom adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getDisplayName();
@@ -533,7 +533,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getUser()->first_name;
 				}
 			];
-			$ret['adherent.adresse']     = [
+			$ret['adherent.adresse'] = [
 				'desc' => 'Adresse adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getFormattedAdresse();
@@ -720,16 +720,90 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return 'Par chèque';
 				}
 			];
-			$ret['id']                = [
+			$ret['id'] = [
 				'desc' => 'ID/Réference de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getID();
 				}
 			];
-			self::$properties         = $ret;
+			$ret['message'] = [
+				'desc' => 'Mssage à l\'AMAP lors de l\'inscription',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getMessage();
+				}
+			];
+			$ret['lieu'] = [
+				'desc' => 'Lieu de distribution souhaité',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$lieu = $adh->getLieu();
+					if ( ! $lieu ) {
+						return '';
+					}
+
+					return $lieu->getLieuTitle();
+				}
+			];
+			$ret['lieu_court'] = [
+				'desc' => 'Lieu de distribution souhaité (nom court)',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$lieu = $adh->getLieu();
+					if ( ! $lieu ) {
+						return '';
+					}
+
+					return $lieu->getShortName();
+				}
+			];
+			$ret['lieu_heure_debut'] = [
+				'desc' => 'Heure de début de distribution du lieu souhaité',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$lieu = $adh->getLieu();
+					if ( ! $lieu ) {
+						return '';
+					}
+
+					return date_i18n( 'H:i', $lieu->getHeure_debut() );
+				}
+			];
+			$ret['lieu_heure_fin'] = [
+				'desc' => 'Heure de fin de distribution du lieu souhaité',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$lieu = $adh->getLieu();
+					if ( ! $lieu ) {
+						return '';
+					}
+
+					return date_i18n( 'H:i', $lieu->getHeure_fin() );
+				}
+			];
+			$ret['lieu_adresse'] = [
+				'desc' => 'Adresse du lieu de distribution souhaité',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$lieu = $adh->getLieu();
+					if ( ! $lieu ) {
+						return '';
+					}
+
+					return $lieu->getFormattedAdresse();
+				}
+			];
+			self::$properties = $ret;
 		}
 
 		return self::$properties;
+	}
+
+	/** @return AmapressLieu_distribution */
+	public function getLieu() {
+		return $this->getCustomAsEntity( 'amapress_adhesion_paiement_lieu', 'AmapressLieu_distribution' );
+	}
+
+	public function getLieuId() {
+		return $this->getCustomAsInt( 'amapress_adhesion_paiement_lieu' );
+	}
+
+	public function getMessage() {
+		return $this->getCustom( 'amapress_adhesion_paiement_message' );
 	}
 }
 
