@@ -1461,7 +1461,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_coadhs >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 1 <em>(si vous payez les contrats à plusieurs)</em></th>
+                        <th colspan="2">Co adhérent 1 <em>(Partage du contrat et de son règlement)</em></th>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
@@ -1527,7 +1527,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_coadhs >= 2 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 2 <em>(si vous payez les contrats à plusieurs)</em></th>
+                        <th colspan="2">Co adhérent 2 <em>(Partage du contrat et de son règlement)</em></th>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="coadh2_email">Son email
@@ -1593,7 +1593,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_coadhs >= 3 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 3 <em>(si vous payez les contrats à plusieurs)</em></th>
+                        <th colspan="2">Co adhérent 3 <em>(Partage du contrat et de son règlement)</em></th>
                     </tr>
                     <tr>
                         <th style="text-align: left; width: auto"><label for="coadh3_email">Son email

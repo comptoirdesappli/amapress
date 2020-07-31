@@ -1569,7 +1569,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_amap_event_inscription_recall_options(),
 								),
-								'Emails - Evènement AMAP - Inscription possible - Rappel'      => array(
+								'Emails - Evènement AMAP - Inscription possible - Rappel'          => array(
 									'id'      => 'amp_tab_recall_amap_event_avail',
 									'desc'    => '',
 									'options' => amapress_amap_event_available_recall_options(),
@@ -2160,7 +2160,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Contrats'                                      => array(
+								'Contrats'                                           => array(
 									'id'      => 'contrat_config',
 									'desc'    => '',
 									'options' => array(
@@ -2172,9 +2172,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'      => 'allow_partial_coadh',
-											'name'    => 'Autoriser la co-adhésion partielle sur seulement certains contrats',
+											'name'    => 'Autoriser la co-adhésion partielle',
 											'type'    => 'checkbox',
 											'default' => false,
+											'desc'    => 'L\'amapien peut choisir les contrats sur lesquels il souhaite un co-adhérent',
 										),
 										array(
 											'id'      => 'check_adh_rcv',
@@ -2584,7 +2585,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 									]
 								),
-								'Assistant - Pré-inscription en ligne - Emails' => array(
+								'Assistant - Pré-inscription en ligne - Emails'      => array(
 									'id'      => 'config_online_inscriptions_mails',
 									'desc'    => '',
 									'options' => [
@@ -2671,7 +2672,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 									]
 								),
-								'Contrat Word (DOCX) général'                   => array(
+								'Contrat Word (DOCX) général'                        => array(
 									'id'      => 'config_default_contrat_docx',
 									'desc'    => '',
 									'options' => [
@@ -4227,7 +4228,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									),
 								),
-								'Droits'          => array(
+								'Droits'                   => array(
 									'id'      => 'amp_rights_config',
 									'desc'    => '',
 									'options' => array(
