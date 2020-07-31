@@ -2443,7 +2443,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					] );
 					if ( $admin_mode ) {
 						if ( $contrat->isFull() ) {
-							echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ', contrat <strong>COMPLET</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum d\'amapiens et/ou nb maximum d\'amapiens par panier)</li>';
+							if ( $contrat->hasEquivalentQuant() ) {
+								echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ', contrat <strong>COMPLET (' . $contrat->getAdherentsEquivalentQuantites() . ' parts)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum de parts et/ou nb maximum de parts par panier)</li>';
+							} else {
+								echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ', contrat <strong>COMPLET (' . $contrat->getAdherentsCount() . ' amapiens)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum d\'amapiens/parts et/ou nb maximum d\'amapiens/parts par panier)</li>';
+							}
 						} else {
 							echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
 						}
