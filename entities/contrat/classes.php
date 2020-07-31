@@ -1106,13 +1106,13 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['contrat_debut']                    = [
+		$ret['contrat_debut'] = [
 			'desc' => 'Début du contrat (mois/année)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'm/Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['contrat_fin']                      = [
+		$ret['contrat_fin'] = [
 			'desc' => 'Fin du contrat (mois/année)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'm/Y', $adh->getDate_fin() );
@@ -1160,31 +1160,49 @@ class AmapressContrat_instance extends TitanEntity {
 				return $adh->getModel()->getProducteur()->getNomExploitation();
 			}
 		];
-		$ret['producteur.ferme.adresse']         = [
+		$ret['producteur.ferme.adresse'] = [
 			'desc' => 'Adresse de la ferme producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getAdresseExploitation();
 			}
 		];
-		$ret['producteur.adresse']               = [
-			'desc' => 'Adresse producteur',
+		$ret['producteur.adresse'] = [
+			'desc' => 'Adresse complète producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getUser()->getFormattedAdresse();
 			}
 		];
-		$ret['producteur.tel']                   = [
+		$ret['producteur.rue'] = [
+			'desc' => 'Adresse producteur',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getModel()->getProducteur()->getUser()->getAdresse();
+			}
+		];
+		$ret['producteur.code_postal'] = [
+			'desc' => 'Code postal producteur',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getModel()->getProducteur()->getUser()->getCode_postal();
+			}
+		];
+		$ret['producteur.ville'] = [
+			'desc' => 'Ville producteur',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getModel()->getProducteur()->getUser()->getVille();
+			}
+		];
+		$ret['producteur.tel'] = [
 			'desc' => 'Téléphone producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getUser()->getTelephone();
 			}
 		];
-		$ret['producteur.email']                 = [
+		$ret['producteur.email'] = [
 			'desc' => 'Email producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getUser()->getEmail();
 			}
 		];
-		$ret['nb_paiements']                     = [
+		$ret['nb_paiements'] = [
 			'desc' => 'Nombre de chèques/règlements possibles',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getPossiblePaiements() );
@@ -1527,13 +1545,13 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
-		$ret['adherent.code_postal']             = [
+		$ret['adherent.code_postal'] = [
 			'desc' => 'Code postal adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
 		];
-		$ret['adherent.ville']                   = [
+		$ret['adherent.ville'] = [
 			'desc' => 'Ville adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';

@@ -165,7 +165,7 @@ class AmapressAdhesion extends TitanEntity {
 					}
 				}
 			];
-			$ret['contrat_titre'] = [
+			$ret['contrat_titre']                    = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
@@ -589,7 +589,7 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['producteur.adresse']               = [
-				'desc' => 'Adresse producteur',
+				'desc' => 'Adresse complète producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( empty( $adh->getContrat_instance() )
 					     || empty( $adh->getContrat_instance()->getModel() )
@@ -599,6 +599,45 @@ class AmapressAdhesion extends TitanEntity {
 					}
 
 					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getFormattedAdresse();
+				}
+			];
+			$ret['producteur.rue']                   = [
+				'desc' => 'Adresse producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getAdresse();
+				}
+			];
+			$ret['producteur.code_postal']           = [
+				'desc' => 'Code postal producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getCode_postal();
+				}
+			];
+			$ret['producteur.ville']                 = [
+				'desc' => 'Ville producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getVille();
 				}
 			];
 			$ret['producteur.tel']                   = [
