@@ -4437,7 +4437,7 @@ class Amapress {
 						foreach ( $ttabs as $tab_name => $tab ) {
 							$t = $pp->createTab( array(
 								'name'       => $tab_name,
-								'desc'       => $tab['desc'],
+								'desc'       => ! empty( $tab['desc'] ) ? $tab['desc'] : '',
 								'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
 								'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )
 							) );

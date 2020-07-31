@@ -2217,164 +2217,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Assistant - Inscription/Adhésion en ligne - Etapes' => array(
+								'Assistant - Inscription en ligne - Etapes'          => array(
 									'id'      => 'config_online_inscriptions_messages',
 									'desc'    => '',
 									'options' => [
-										array(
-											'type' => 'heading',
-											'name' => 'Assistant - Étape 1 - Email',
-										),
-										array(
-											'id'      => 'online_subscription_email_step_name',
-											'name'    => 'Nom de l\'étape',
-											'type'    => 'text',
-											'default' => 'Email',
-										),
-										array(
-											'id'   => 'online_subscription_email_step_message',
-											'name' => 'Message supplémentaire',
-											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Assistant - Étape 2 - Coordonnées, co-adhérents et membres du foyer',
-										),
-										array(
-											'id'      => 'online_subscription_coords_step_name',
-											'name'    => 'Nom de l\'étape',
-											'type'    => 'text',
-											'default' => 'Coordonnées, co-adhérents et membres du foyer',
-										),
-										array(
-											'id'   => 'online_subscription_coords_step_message',
-											'name' => 'Message supplémentaire',
-											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
-										),
-										array(
-											'id'      => 'online_subscription_agreement_step_name',
-											'name'    => 'Nom de l\'étape',
-											'type'    => 'text',
-											'default' => 'Charte et règlement intérieur de l\'AMAP',
-										),
-										array(
-											'id'      => 'online_subscription_agreement_step_checkbox',
-											'name'    => 'Texte de la case à cocher',
-											'type'    => 'text',
-											'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
-										),
-										array(
-											'id'   => 'online_subscription_agreement',
-											'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
-											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Message - Questions aux nouveaux amapiens (Etapes 2 - Coordonnées)',
-										),
-										array(
-											'id'      => 'online_new_user_quest1',
-											'name'    => 'Question 1',
-											'type'    => 'editor',
-											'default' => '',
-											'desc'    => 'Question au nouvel amapien (par ex, comment avez-vous connu l\'AMAP)',
-										),
-										array(
-											'id'      => 'online_new_user_quest2',
-											'name'    => 'Question 2',
-											'type'    => 'editor',
-											'default' => '',
-											'desc'    => 'Question au nouvel amapien',
-										),
-										array(
-											'id'       => 'online_new_user_quest_email',
-											'name'     => 'Réponses à',
-											'type'     => 'text',
-											'is_email' => true,
-											'desc'     => 'Envoyer les réponses à l\'email renseigné',
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Message - Message aux amapiens qui ne renouvelent pas',
-										),
-										array(
-											'id'      => 'online_norenew_message',
-											'name'    => 'Message',
-											'type'    => 'editor',
-											'default' => '<p>Merci pour votre participation à %%site_name%% et bonne continuation.</p>',
-											'desc'    => 'Message aux amapiens qui ne renouvelent pas',
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Assistant - Étape Adhésion AMAP',
-										),
-										array(
-											'id'      => 'online_subscription_req_adhesion',
-											'name'    => 'Message adhésion requise',
-											'type'    => 'editor',
-											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
-											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
-										),
-										array(
-											'id'      => 'online_subscription_adh_step_name',
-											'name'    => 'Nom de l\'étape',
-											'type'    => 'text',
-											'default' => 'Adhésion (obligatoire)',
-										),
-										array(
-											'id'      => 'online_subscription_adh_valid_step_name',
-											'name'    => 'Nom de l\'étape de validation',
-											'type'    => 'text',
-											'default' => 'Validation du Bulletin d\'adhésion',
-										),
-										array(
-											'id'      => 'online_subscription_greating_adhesion',
-											'name'    => 'Contenu du message de validation',
-											'type'    => 'editor',
-											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . AmapressAdhesion::getPlaceholdersHelp( [
-													'print_button' => 'Bouton Imprimer le bulletin'
-												], false ),
-											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%" ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Message - Cotisation des co-adhérents',
-										),
-										array(
-											'id'      => 'online_adhesion_coadh_message',
-											'name'    => 'Message',
-											'type'    => 'editor',
-											'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
-											'desc'    => 'Message au sujet des adhésions des co-adhérents<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
 										array(
 											'type' => 'heading',
 											'name' => 'Message aux adhérents principaux',
@@ -2585,7 +2431,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 									]
 								),
-								'Assistant - Pré-inscription en ligne - Emails'      => array(
+								'Assistant - Inscription en ligne - Emails'          => array(
 									'id'      => 'config_online_inscriptions_mails',
 									'desc'    => '',
 									'options' => [
@@ -2640,32 +2486,6 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 												"\n%%nom_site%%" ),
 											'desc'    => 'Les placeholders suivants sont disponibles:' .
 											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
-										),
-										array(
-											'type' => 'save',
-										),
-										array(
-											'type' => 'heading',
-											'name' => 'Confirmation - Pré-inscription en ligne',
-										),
-										array(
-											'id'       => 'online_adhesion_confirm-mail-subject',
-											'name'     => 'Objet',
-											'sanitize' => false,
-											'type'     => 'text',
-											'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
-										),
-										array(
-											'id'      => 'online_adhesion_confirm-mail-content',
-											'name'    => 'Contenu',
-											'type'    => 'editor',
-											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
-Nous vous confirmons votre adhésion à %%nom_site%%\n
-[avec_bulletin]Merci d'imprimer le bulletin joint à cet email et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
-[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
-\n\n%%nom_site%%" ),
-											'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2861,7 +2681,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Paiements' => array(
+								'Types de cotisation'                    => array(
 									'id'      => 'amp_paiements_config',
 									'desc'    => '',
 									'options' => array(
@@ -2890,6 +2710,196 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type' => 'save',
 										),
 									)
+								),
+								'Assistant - Adhésion en ligne - Etapes' => array(
+									'id'      => 'config_online_adhesions_messages',
+									'options' => array(
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape 1 - Email',
+										),
+										array(
+											'id'      => 'online_subscription_email_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Email',
+										),
+										array(
+											'id'   => 'online_subscription_email_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape 2 - Coordonnées, co-adhérents et membres du foyer',
+										),
+										array(
+											'id'      => 'online_subscription_coords_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Coordonnées, co-adhérents et membres du foyer',
+										),
+										array(
+											'id'   => 'online_subscription_coords_step_message',
+											'name' => 'Message supplémentaire',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape Règlement intérieur de l\'AMAP',
+										),
+										array(
+											'id'      => 'online_subscription_agreement_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Charte et règlement intérieur de l\'AMAP',
+										),
+										array(
+											'id'      => 'online_subscription_agreement_step_checkbox',
+											'name'    => 'Texte de la case à cocher',
+											'type'    => 'text',
+											'default' => 'J\'ai pris connaissance du règlement et l\'accepte',
+										),
+										array(
+											'id'   => 'online_subscription_agreement',
+											'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
+											'type' => 'editor',
+											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Message - Questions aux nouveaux amapiens (Etapes 2 - Coordonnées)',
+										),
+										array(
+											'id'      => 'online_new_user_quest1',
+											'name'    => 'Question 1',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Question au nouvel amapien (par ex, comment avez-vous connu l\'AMAP)',
+										),
+										array(
+											'id'      => 'online_new_user_quest2',
+											'name'    => 'Question 2',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Question au nouvel amapien',
+										),
+										array(
+											'id'       => 'online_new_user_quest_email',
+											'name'     => 'Réponses à',
+											'type'     => 'text',
+											'is_email' => true,
+											'desc'     => 'Envoyer les réponses à l\'email renseigné',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Message - Message aux amapiens qui ne renouvelent pas',
+										),
+										array(
+											'id'      => 'online_norenew_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => '<p>Merci pour votre participation à %%site_name%% et bonne continuation.</p>',
+											'desc'    => 'Message aux amapiens qui ne renouvelent pas',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Assistant - Étape Adhésion AMAP',
+										),
+										array(
+											'id'      => 'online_subscription_req_adhesion',
+											'name'    => 'Message adhésion requise',
+											'type'    => 'editor',
+											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
+										),
+										array(
+											'id'      => 'online_subscription_adh_step_name',
+											'name'    => 'Nom de l\'étape',
+											'type'    => 'text',
+											'default' => 'Adhésion (obligatoire)',
+										),
+										array(
+											'id'      => 'online_subscription_adh_valid_step_name',
+											'name'    => 'Nom de l\'étape de validation',
+											'type'    => 'text',
+											'default' => 'Validation du Bulletin d\'adhésion',
+										),
+										array(
+											'id'      => 'online_subscription_greating_adhesion',
+											'name'    => 'Contenu du message de validation',
+											'type'    => 'editor',
+											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . AmapressAdhesion::getPlaceholdersHelp( [
+													'print_button' => 'Bouton Imprimer le bulletin'
+												], false ),
+											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%" ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Message - Cotisation des co-adhérents',
+										),
+										array(
+											'id'      => 'online_adhesion_coadh_message',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
+											'desc'    => 'Message au sujet des adhésions des co-adhérents<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
+								'Assistant - Adhésion en ligne - Emails' => array(
+									'id'      => 'config_online_adhesions_mails',
+									'options' => array(
+										array(
+											'type' => 'heading',
+											'name' => 'Confirmation - Pré-inscription en ligne',
+										),
+										array(
+											'id'       => 'online_adhesion_confirm-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
+										),
+										array(
+											'id'      => 'online_adhesion_confirm-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
+Nous vous confirmons votre adhésion à %%nom_site%%\n
+[avec_bulletin]Merci d'imprimer le bulletin joint à cet email et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
+[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
+\n\n%%nom_site%%" ),
+											'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+									),
 								),
 							),
 						),

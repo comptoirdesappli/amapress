@@ -1738,18 +1738,31 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@' . Amapress::getSiteDomainName( true ) . ']'
 	);
-	$assistant_conf_url         = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
+	$assistant_inscr_conf_url = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
+	$assistant_adh_conf_url = admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
-		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant inscription en ligne',
-		'Si vous souhaitez inclure une étape "Règlement de l\'AMAP" préalable à l\'inscription aux contrats, saisir le titre de l\'étape et le règlement <a href="' . $assistant_conf_url . '" target="_blank">ici</a>, puis ajouter "agreement=true dans le shortcode [inscription-en-ligne]".',
-		$assistant_conf_url
+		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant adhésion/inscription en ligne',
+		'Si vous souhaitez inclure une étape "Règlement de l\'AMAP" préalable à l\'inscription aux contrats, saisir le titre de l\'étape et le règlement <a href="' . $assistant_adh_conf_url . '" target="_blank">ici</a>, puis ajouter "agreement=true dans le shortcode [inscription-en-ligne] ou [adhesion-en-ligne]".',
+		$assistant_adh_conf_url
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Autres réglages de l\'assistant adhésions en ligne',
+		'Vous pouvez y configurer les messages de certaines étapes.',
+		$assistant_adh_conf_url
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Autres réglages de l\'assistant inscription en ligne',
 		'Vous pouvez y configurer les messages de certaines étapes.',
-		$assistant_conf_url
+		$assistant_inscr_conf_url
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		'Emails envoyés par l\'assistant adhésion en ligne',
+		'Vous pouvez y configurer les mails de confirmation.',
+		admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_mails' )
 	);
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',

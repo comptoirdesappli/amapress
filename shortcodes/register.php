@@ -488,7 +488,7 @@ function amapress_register_shortcodes() {
 				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
 				'allow_adhesion'                      => '(booléen, true par défaut) : autorise l\'adhésion à l\'AMAP',
 				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
 				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
 				'send_adhesion_confirm'               => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
 				'allow_inscription_all_dates'         => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
@@ -532,7 +532,7 @@ function amapress_register_shortcodes() {
 				'key'                                 => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé',
 				'use_steps_nums'                      => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
-				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
 				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
 				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
 				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
@@ -593,7 +593,7 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
 				'use_steps_nums'                      => '(booléen, true par défaut) : afficher les numéros d\'étapes',
-				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
 				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
 				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
 				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
@@ -653,7 +653,7 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'key'                        => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé',
 				'use_steps_nums'             => '(booléen, true par défaut) : afficher les numéros d\'étapes',
-				'agreement'                  => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'agreement'                  => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
 				'send_adhesion_confirm'      => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
 				'send_tresoriers'            => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'edit_names'                 => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
@@ -686,7 +686,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les adhésions en ligne (amapien connecté) uniquement (pas d\'inscription aux contrats)',
 			'args' => [
-				'agreement'                  => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Tableau de bord > Gestion Contrats > onglet Assistant - Pré-inscription en ligne' ) . ')',
+				'agreement'                  => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
 				'use_steps_nums'             => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'send_adhesion_confirm'      => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
 				'send_tresoriers'            => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
