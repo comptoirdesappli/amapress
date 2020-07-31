@@ -1265,10 +1265,17 @@ class AmapressDistribution extends Amapress_EventBase {
 				'paniers_instructions_distribution' => [
 					'desc' => 'Instructions de distribution des paniers',
 					'func' => function ( AmapressDistribution $distrib ) {
-						$ret = '';
+						$ret       = '';
+						$model_ids = [];
 						foreach ( AmapressPaniers::getPaniersForDist( $distrib->getDate() ) as $panier ) {
 							$contrat_instance = $panier->getContrat_instance();
 							if ( $contrat_instance && $contrat_instance->getModel() ) {
+								if ( in_array( $contrat_instance->getModelId(), $model_ids ) ) {
+									continue;
+								}
+
+								$model_ids[] = $contrat_instance->getModelId();
+
 								$contrat = $contrat_instance->getModel();
 								if ( strlen( trim( wp_strip_all_tags( $contrat->getInstructionsDistribution() ) ) ) > 0 ) {
 									$ret .= '<h3>' . $contrat_instance->getModelTitle() . '</h3>';
