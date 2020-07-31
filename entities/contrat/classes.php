@@ -1137,6 +1137,12 @@ class AmapressContrat_instance extends TitanEntity {
 		$ret['producteur.pseudo'] = [
 			'desc' => 'Pseudo producteur',
 			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getModel()->getProducteur()->getUser()->getUser()->nickname;
+			}
+		];
+		$ret['producteur.nom_public'] = [
+			'desc' => 'Nom public producteur',
+			'func' => function ( AmapressContrat_instance $adh ) {
 				return $adh->getModel()->getProducteur()->getUser()->getUser()->display_name;
 			}
 		];
@@ -1501,6 +1507,12 @@ class AmapressContrat_instance extends TitanEntity {
 				return '';
 			}
 		];
+		$ret['adherent.nom_public'] = [
+			'desc' => 'Nom public adhérent (à remplir)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return '';
+			}
+		];
 		$ret['adherent.nom'] = [
 			'desc' => 'Nom adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
@@ -1569,6 +1581,12 @@ class AmapressContrat_instance extends TitanEntity {
 		];
 		$ret['coadherent.pseudo'] = [
 			'desc' => 'Pseudo co-adhérent (à remplir)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return '';
+			}
+		];
+		$ret['coadherent.nom_public'] = [
+			'desc' => 'Nom public co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
 			}
@@ -1842,6 +1860,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['adherent']                     = '';
 		$placeholders['adherent.type']                = '';
 		$placeholders['adherent.pseudo']              = '';
+		$placeholders['adherent.nom_public']          = '';
 		$placeholders['adherent.nom']                 = '';
 		$placeholders['adherent.prenom']              = '';
 		$placeholders['adherent.adresse']             = '';
@@ -1854,6 +1873,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['coadherents.contacts']         = '';
 		$placeholders['coadherent']                   = '';
 		$placeholders['coadherent.pseudo']            = '';
+		$placeholders['coadherent.nom_public']        = '';
 		$placeholders['coadherent.nom']               = '';
 		$placeholders['coadherent.prenom']            = '';
 		$placeholders['coadherent.adresse']           = '';

@@ -342,6 +342,12 @@ class AmapressAdhesion extends TitanEntity {
 			$ret['adherent.pseudo'] = [
 				'desc' => 'Pseudo adhérent',
 				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getUser()->nickname;
+				}
+			];
+			$ret['adherent.nom_public'] = [
+				'desc' => 'Nom public adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->display_name;
 				}
 			];
@@ -431,6 +437,20 @@ class AmapressAdhesion extends TitanEntity {
 						}
 					}
 
+					return $coadh->getUser()->nickname;
+				}
+			];
+			$ret['coadherent.nom_public'] = [
+				'desc' => 'Nom public co-adhérent',
+				'func' => function ( AmapressAdhesion $adh ) {
+					$coadh = $adh->getAdherent2();
+					if ( ! $coadh ) {
+						$coadh = $adh->getAdherent()->getFirstCoAdherent();
+						if ( ! $coadh ) {
+							return '';
+						}
+					}
+
 					return $coadh->getUser()->display_name;
 				}
 			];
@@ -506,6 +526,19 @@ class AmapressAdhesion extends TitanEntity {
 			];
 			$ret['producteur.pseudo'] = [
 				'desc' => 'Pseudo producteur',
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( empty( $adh->getContrat_instance() )
+					     || empty( $adh->getContrat_instance()->getModel() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur() )
+					     || empty( $adh->getContrat_instance()->getModel()->getProducteur()->getUser() ) ) {
+						return '';
+					}
+
+					return $adh->getContrat_instance()->getModel()->getProducteur()->getUser()->getUser()->nickname;
+				}
+			];
+			$ret['producteur.nom_public'] = [
+				'desc' => 'Nom public producteur',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( empty( $adh->getContrat_instance() )
 					     || empty( $adh->getContrat_instance()->getModel() )

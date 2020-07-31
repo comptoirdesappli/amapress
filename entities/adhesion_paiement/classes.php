@@ -518,6 +518,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$ret['adherent.pseudo'] = [
 				'desc' => 'Pseudo adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getUser()->getUser()->nickname;
+				}
+			];
+			$ret['adherent.nom_public'] = [
+				'desc' => 'Nom public adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getUser()->display_name;
 				}
 			];
@@ -594,6 +600,17 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			];
 			$ret['coadherent.pseudo'] = [
 				'desc' => 'Pseudo co-adhérent',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					$coadh = $adh->getUser()->getFirstCoAdherent();
+					if ( ! $coadh ) {
+						return '';
+					}
+
+					return $coadh->getUser()->nickname;
+				}
+			];
+			$ret['coadherent.nom_public'] = [
+				'desc' => 'Nom public co-adhérent',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					$coadh = $adh->getUser()->getFirstCoAdherent();
 					if ( ! $coadh ) {
