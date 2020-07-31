@@ -937,6 +937,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => true,
 										),
 										array(
+											'id'      => 'liste-emargement-show-dist-instructions',
+											'name'    => 'Afficher les instructions de distribution des contrats',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
 											'id'   => 'liste-emargement-general-message',
 											'name' => 'Message général',
 											'type' => 'editor',

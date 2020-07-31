@@ -2164,6 +2164,7 @@ class Amapress {
 			}
 			unset( $postmeta['amapress_intermittence_panier_adh_cancel_message'] );
 			unset( $postmeta['amapress_intermittence_panier_adh_message'] );
+			unset( $postmeta['amapress_contrat_instr_distrib'] );
 			unset( $postmeta['amapress_lieu_distribution_instructions_privee'] );
 			unset( $postmeta['amapress_lieu_distribution_contact_externe'] );
 		};

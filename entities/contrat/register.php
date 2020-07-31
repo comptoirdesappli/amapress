@@ -99,7 +99,7 @@ function amapress_register_entities_contrat( $entities ) {
 //                'required' => true,
 //                'desc' => 'Nombre de maximum d\'adhérents',
 //            ),
-			'producteur' => array(
+			'producteur'    => array(
 				'name'              => amapress__( 'Producteur' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_producteur',
@@ -126,7 +126,7 @@ function amapress_register_entities_contrat( $entities ) {
 					return false;
 				},
 			),
-			'referent'   => array(
+			'referent'      => array(
 				'name'         => amapress__( 'Référent' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
@@ -138,7 +138,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'referent2'  => array(
+			'referent2'     => array(
 				'name'         => amapress__( 'Référent 2' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
@@ -150,7 +150,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'referent3'  => array(
+			'referent3'     => array(
 				'name'         => amapress__( 'Référent 3' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
@@ -162,7 +162,7 @@ function amapress_register_entities_contrat( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
-			'contrats'   => array(
+			'contrats'      => array(
 				'name'            => amapress__( 'Contrats' ),
 				'show_column'     => true,
 				'group'           => 'Contrats',
@@ -173,6 +173,14 @@ function amapress_register_entities_contrat( $entities ) {
 				),
 				'type'            => 'related-posts',
 				'query'           => 'post_type=amps_contrat_inst&amapress_date=active&amapress_contrat=%%id%%',
+			),
+			'instr_distrib' => array(
+				'name'       => amapress__( 'Instructions de distribution' ),
+				'type'       => 'editor',
+				'required'   => false,
+				'group'      => '3/ Distributions',
+				'desc'       => 'Instructions de distribution de ce contrat',
+				'searchable' => true,
 			),
 		),
 	);
@@ -693,7 +701,7 @@ jQuery(function($) {
 				'group'          => '2/6 - Paramètres généraux',
 				'required'       => true,
 				'readonly'       => 'amapress_is_contrat_instance_readonly',
-				'desc'           => 'Nombre maximum d’inscriptions autorisées par le producteur',
+				'desc'           => 'Nombre maximum d’inscriptions (ou parts) autorisées par le producteur',
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),

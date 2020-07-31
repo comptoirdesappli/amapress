@@ -1164,7 +1164,7 @@ function amapress_distribution_responsable_recall_options() {
 			'id'      => 'distribution-resp-recall-mail-content',
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
+			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu et des contrats:\n\n%%lieu_instructions%%\n%%paniers_instructions_distribution%%\n\n%%nom_site%%" ),
 			'desc'    =>
 				AmapressDistribution::getPlaceholdersHelp(),
 		),

@@ -366,6 +366,16 @@ function amapress_get_custom_content_distribution( $content ) {
 					true, null, 'btn-print-liste' );
 			}
 			$instructions .= amapress_get_panel_end();
+
+			$paniers_instructions_distribution = $dist->getProperty( 'paniers_instructions_distribution' );
+			if ( ! empty( $paniers_instructions_distribution ) ) {
+				$instructions .= amapress_get_panel_start_no_esc( $add_text . 'Instructions de distribution',
+					'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ',
+					'instructions-dist' );
+				$instructions .= $paniers_instructions_distribution;
+				$instructions .= amapress_get_panel_end();
+			}
+
 			if ( $is_resp ) {
 				echo $instructions;
 			}

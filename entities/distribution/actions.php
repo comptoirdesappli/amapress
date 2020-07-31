@@ -765,6 +765,15 @@ line-height: 1.1;
 		}
 	}
 
+	if ( Amapress::toBool( Amapress::getOption( 'liste-emargement-show-dist-instructions' ) ) ) {
+		$paniers_instructions_distribution = $dist->getProperty( 'paniers_instructions_distribution' );
+		if ( ! empty( $paniers_instructions_distribution ) ) {
+			echo '<br pagebreak="true"/>';
+			echo '<h3 class="liste-emargement-instructions">' . esc_html( 'Instructions de distribution</h3>' );
+			echo $paniers_instructions_distribution;
+		}
+	}
+
 	$content = ob_get_contents();
 	ob_clean();
 	//|amapress_adhesion_adherent,amapress_adhesion_co-adherents|amapress_post=$dist_id|amapress_distribution_date", "Les amapiens inscrit à {$distrib->post_title}", "distribution");
