@@ -337,6 +337,17 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_model' );
 	}
 
+	public function getMaxUseEquivalentQuant() {
+		return $this->getCustom( 'amapress_contrat_instance_use_equiv', 0 );
+	}
+
+	public function hasEquivalentQuant() {
+		return from( AmapressContrats::get_contrat_quantites( $this->ID, null, false ) )->distinct( function ( $c ) {
+				/** @var AmapressContrat_quantite $c */
+				return $c->getQuantite();
+			} )->count() > 1;
+	}
+
 	public function getMax_adherents() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_max_adherents', 0 );
 	}
@@ -577,6 +588,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function isFull( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
+		$use_equiv      = $this->getMaxUseEquivalentQuant();
 		$max_adhs       = $this->getMax_adherents();
 		$max_quant_adhs = 0;
 		if ( $contrat_quantite_id ) {
@@ -588,16 +600,56 @@ class AmapressContrat_instance extends TitanEntity {
 			$adhs = AmapressContrats::get_active_adhesions( $this->ID, $contrat_quantite_id, $lieu_id, $date );
 			Amapress::setFilterForReferent( true );
 
-			if ( $max_adhs > 0 && count( $adhs ) >= $max_adhs ) {
+			$adhs_count = 0;
+			foreach ( $adhs as $adh ) {
+				if ( $use_equiv ) {
+					foreach ( $adh->getContrat_quantites( null ) as $q ) {
+						$adhs_count += $q->getQuantite();
+					}
+				} else {
+					$adhs_count += 1;
+				}
+			}
+
+			if ( $max_adhs > 0 && $adhs_count >= $max_adhs ) {
 				return true;
 			}
 
-			if ( $max_quant_adhs > 0 && count( $adhs ) >= $max_quant_adhs ) {
+			if ( $max_quant_adhs > 0 && $adhs_count >= $max_quant_adhs ) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public function getAdherentsCount( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
+		if ( empty( $date ) && empty( $lieu_id ) && empty( $contrat_quantite_id ) ) {
+			return get_posts_count( "post_type=amps_adhesion&amapress_contrat_inst={$this->ID}" );
+		}
+		Amapress::setFilterForReferent( false );
+		$adhs = AmapressContrats::get_active_adhesions( $this->ID, $contrat_quantite_id, $lieu_id, $date );
+		Amapress::setFilterForReferent( true );
+
+		return count( $adhs );
+	}
+
+	public function getAdherentsEquivalentQuantites( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
+		if ( ! $this->hasEquivalentQuant() ) {
+			return 0;
+		}
+		Amapress::setFilterForReferent( false );
+		$adhs = AmapressContrats::get_active_adhesions( $this->ID, $contrat_quantite_id, $lieu_id, $date );
+		Amapress::setFilterForReferent( true );
+
+		$adhs_count = 0;
+		foreach ( $adhs as $adh ) {
+			foreach ( $adh->getContrat_quantites( null ) as $q ) {
+				$adhs_count += $q->getQuantite();
+			}
+		}
+
+		return $adhs_count;
 	}
 
 	public function isEnded() {
@@ -1090,7 +1142,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu_heure_fin']                   = [
+		$ret['lieu_heure_fin'] = [
 			'desc' => 'Heure de fin de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -1098,7 +1150,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu_adresse']                     = [
+		$ret['lieu_adresse'] = [
 			'desc' => 'Adresse du lieu de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -1208,13 +1260,13 @@ class AmapressContrat_instance extends TitanEntity {
 				return implode( ', ', $adh->getPossiblePaiements() );
 			}
 		];
-		$ret['dates_rattrapages']                = [
+		$ret['dates_rattrapages'] = [
 			'desc' => 'Description des dates de distribution de rattrapage',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ', ', $adh->getFormattedRattrapages() );
 			}
 		];
-		$ret['dates_rattrapages_list']           = [
+		$ret['dates_rattrapages_list'] = [
 			'desc' => 'Listes html des dates de distribution de rattrapage',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( '<br />', array_map( function ( $s ) {
@@ -1633,6 +1685,39 @@ class AmapressContrat_instance extends TitanEntity {
 			'desc' => 'Email co-adhérent (à remplir)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return '';
+			}
+		];
+
+		$ret['nb_inscriptions'] = [
+			'desc' => 'Nombre d\'adhérents',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getAdherentsCount();
+			}
+		];
+		$ret['nb_parts']        = [
+			'desc' => 'Nombre de parts (contrats avec Facteurs Quantités, par ex, Panier et Demi Panier)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getAdherentsEquivalentQuantites();
+			}
+		];
+		$ret['max_parts']       = [
+			'desc' => 'Nombre de parts maximum',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return $adh->getMax_adherents();
+			}
+		];
+		$ret['dispo_parts']     = [
+			'desc' => 'Nombre de parts disponibles',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				$max = $adh->getMax_adherents();
+				if ( $max <= 0 ) {
+					return 'Pas de quota';
+				}
+				if ( $adh->getMaxUseEquivalentQuant() ) {
+					return $max - $adh->getAdherentsEquivalentQuantites();
+				} else {
+					return $max - $adh->getAdherentsCount();
+				}
 			}
 		];
 

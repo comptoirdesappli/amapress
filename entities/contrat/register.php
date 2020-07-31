@@ -638,7 +638,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_fin'              => array(
+			'date_fin'          => array(
 				'name'          => amapress__( 'Fin' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -670,7 +670,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'model_name'            => array(
+			'model_name'        => array(
 				'name'        => amapress__( 'Nom générique' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -686,7 +686,7 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'                  => array(
+			'name'              => array(
 				'name'           => amapress__( 'Nom complémentaire' ),
 				'group'          => '2/6 - Paramètres généraux',
 				'type'           => 'text',
@@ -695,7 +695,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'max_adherents'         => array(
+			'max_adherents'     => array(
 				'name'           => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'           => 'number',
 				'group'          => '2/6 - Paramètres généraux',
@@ -705,7 +705,15 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'min_engagement'        => array(
+			'use_equiv'         => array(
+				'name'        => amapress__( 'Maximum en part' ),
+				'type'        => 'checkbox',
+				'default'     => false,
+				'show_column' => false,
+				'group'       => '2/6 - Paramètres généraux',
+				'desc'        => 'Compter les maximums en part (Fact. Quant/Facteur quantité) en non en inscriptions',
+			),
+			'min_engagement'    => array(
 				'name'           => amapress__( 'Engagement minimum' ),
 				'type'           => 'number',
 				'group'          => '2/6 - Paramètres généraux',
@@ -1652,7 +1660,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit règlement pour les paiements en plusieurs fois',
 			),
-			'options_paiements'     => array(
+			'options_paiements' => array(
 				'name'        => amapress__( 'Répartition' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlements',
@@ -1752,7 +1760,7 @@ jQuery(function($) {
 //                            'post_type' => 'amps_contrat_quant',
 //                            'parent' => 'amapress_contrat_quantite_contrat_instance',
 //                        ),
-			'inscriptions'          => array(
+			'inscriptions'      => array(
 				'name'                     => amapress__( 'Inscriptions' ),
 				'show_column'              => true,
 				'show_table'               => false,
@@ -1788,6 +1796,23 @@ jQuery(function($) {
 //				),
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
+			),
+			'equiv_quants'      => array(
+				'name'                 => amapress__( 'Parts' ),
+				'type'                 => 'custom',
+				'hidden'               => true,
+				'group'                => 'Inscriptions',
+				'show_on'              => 'edit-only',
+				'use_custom_as_column' => true,
+				'custom'               => function ( $post_id ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+
+					if ( ! $contrat_instance->hasEquivalentQuant() ) {
+						return 'NA';
+					}
+
+					return $contrat_instance->getAdherentsEquivalentQuantites();
+				},
 			),
 //			'contrat'           => array(
 //				'name'       => amapress__( 'Info contrat en ligne' ),
