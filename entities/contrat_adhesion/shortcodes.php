@@ -522,11 +522,18 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	$steps_nums = [];
 	if ( $is_inscription_mode ) {
 		if ( $for_logged ) {
-			$steps_count                           = 4;
-			$steps_nums['coords_logged']           = 1;
-			$steps_nums['agreement']               = 2;
-			$steps_nums['adhesion']                = 3;
-			$steps_nums['save_adhesion']           = 4;
+			$steps_count = 4;
+			if ( ! $activate_agreement || $skip_coords ) {
+				$steps_nums['coords_logged'] = 0;
+				$steps_nums['agreement']     = 0;
+				$steps_nums['adhesion']      = 0;
+				$steps_nums['save_adhesion'] = 0;
+			} else {
+				$steps_nums['coords_logged'] = 1;
+				$steps_nums['agreement']     = 2;
+				$steps_nums['adhesion']      = 3;
+				$steps_nums['save_adhesion'] = 4;
+			}
 			$steps_nums['contrats']                = 0;
 			$steps_nums['inscr_contrat_date_lieu'] = 1;
 			$steps_nums['inscr_contrat_engage']    = 2;
@@ -2028,7 +2035,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption( 'online_subscription_req_adhesion' ) ), null );
 						echo '<p><form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
-<input type="hidden" name="step" value="' . ( $for_logged ? 'coords_logged' : 'coords' ) . '" />
+<input type="hidden" name="step" value="' . ( $skip_coords ? ( $activate_agreement ? 'agreement' : 'adhesion' ) : ( $for_logged ? 'coords_logged' : 'coords' ) ) . '" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
