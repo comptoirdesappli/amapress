@@ -20,7 +20,7 @@
     // setTimeout needed for Chrome as it fills other
     // form fields a little later...
     window.setTimeout(function () {
-      findParentForm(target).find('form input, form select').checkAndTriggerAutoFillEvent();
+      findParentForm(target).find('form.amapress_validate input, form.amapress_validate select').checkAndTriggerAutoFillEvent();
     }, 20);
   });
 
@@ -28,7 +28,7 @@
     // The timeout is needed for Chrome as it auto fills
     // login forms some time after DOMContentLoaded!
     window.setTimeout(function () {
-      $rootElement.find('form input,form select').checkAndTriggerAutoFillEvent();
+      $rootElement.find('form.amapress_validate input, form.amapress_validate select').checkAndTriggerAutoFillEvent();
     }, 200);
   }, false);
 
