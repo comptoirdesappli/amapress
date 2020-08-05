@@ -701,6 +701,7 @@ function amapress_register_shortcodes() {
 				'notify_email'               => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'allow_adhesion_lieu'        => '(booléen, false par défaut) : permettre de choisir son lieu de distribution souhaité dès l\'adhésion',
 				'allow_adhesion_message'     => '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion',
+				'skip_coords'                => '(false par défaut) Passer l\'étape de saisie des coordonnées et des coadhérents',
 				'show_adherents_infos'       => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'show_adhesion_infos'        => '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin',
 				'allow_coadherents_access'   => '(true par défaut) Autoriser l\accès aux co-adhérents',
