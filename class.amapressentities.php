@@ -2219,7 +2219,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								'Assistant - Inscription en ligne - Etapes'          => array(
 									'id'      => 'config_online_inscriptions_messages',
-									'desc'    => '',
+									'desc'    => 'Configuration de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
 										array(
 											'type' => 'heading',
@@ -2433,7 +2433,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 								),
 								'Assistant - Inscription en ligne - Emails'          => array(
 									'id'      => 'config_online_inscriptions_mails',
-									'desc'    => '',
+									'desc'    => 'Configuration des emails de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_mails' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
 										array(
 											'type' => 'heading',
@@ -2713,6 +2713,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 								),
 								'Assistant - Adhésion en ligne - Etapes' => array(
 									'id'      => 'config_online_adhesions_messages',
+									'desc'    => 'Configuration de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Aller à la configuration de l\'inscription' ),
 									'options' => array(
 										array(
 											'type' => 'heading',
@@ -2872,6 +2873,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 								),
 								'Assistant - Adhésion en ligne - Emails' => array(
 									'id'      => 'config_online_adhesions_mails',
+									'desc'    => 'Configuration des emails de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' ), 'Aller à la configuration de l\'inscription' ),
 									'options' => array(
 										array(
 											'type' => 'heading',
