@@ -436,7 +436,7 @@ function amapress_register_entities_contrat( $entities ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
 					return ! $contrat->canSelfSubscribe()
-					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
+					       && Amapress::start_of_day( $contrat->getDate_cloture() ) >= Amapress::start_of_day( amapress_time() );
 				},
 			],
 			'close_inscr' => [
@@ -445,7 +445,7 @@ function amapress_register_entities_contrat( $entities ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
 
 					return $contrat->canSelfSubscribe()
-					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
+					       && Amapress::start_of_day( $contrat->getDate_cloture() ) >= Amapress::start_of_day( amapress_time() );
 				},
 			],
 		),
