@@ -200,7 +200,7 @@ class AmapressDistributions {
 		$contrat_id, $from_now = true, $eval = false
 	) {
 		$key = 'amps_gen_dist_' . $contrat_id;
-		$res = ! $eval ? [] : maybe_unserialize( get_transient( $key ) );
+		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
 		if ( ! empty( $res ) ) {
 //foreach ($res[$contrat_id]['unassociate'] as $a) {
 //	amapress_dump(date_i18n('d/m/Y', $a['date']));
@@ -383,9 +383,9 @@ class AmapressDistributions {
 		}
 
 		if ( ! $eval ) {
-			delete_transient( $key );
+			delete_option( $key );
 		} else {
-			set_transient( $key, $res, 15 * DAY_IN_SECONDS );
+			update_option( $key, $res );
 		}
 
 		return $res;

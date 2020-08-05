@@ -619,6 +619,17 @@ function amapress_global_init() {
 		} );
 	}
 
+	if ( ! wp_next_scheduled( 'amps_clean_gendistpan' ) ) {
+		wp_schedule_event( time(), 'weekly', 'amps_clean_gendistpan' );
+	}
+
+	add_action( 'amps_clean_gendistpan', function () {
+		foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
+			delete_option( "amps_gen_dist_{$contrat->ID}" );
+			delete_option( "amps_gen_pan_{$contrat->ID}" );
+		}
+	} );
+
 	do_action( 'amapress_init' );
 
 //    $users = get_users(

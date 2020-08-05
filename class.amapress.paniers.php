@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class AmapressPaniers {
 	public static function generate_paniers( $contrat_id, $from_now = true, $eval = false ) {
 		$key = 'amps_gen_pan_' . $contrat_id;
-		$res = ! $eval ? [] : maybe_unserialize( get_transient( $key ) );
+		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
 		if ( ! empty( $res ) ) {
 			return $res;
 		}
@@ -148,9 +148,9 @@ class AmapressPaniers {
 		}
 
 		if ( ! $eval ) {
-			delete_transient( $key );
+			delete_option( $key );
 		} else {
-			set_transient( $key, $res, 15 * DAY_IN_SECONDS );
+			update_option( $key, $res );
 		}
 
 		return $res;
