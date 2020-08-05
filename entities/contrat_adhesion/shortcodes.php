@@ -886,10 +886,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo 'd’adhésion';
 			}
 			?>
-            de
-			<?php
+            de «
+	        <?php
 			echo esc_html( get_bloginfo( 'name' ) );
 			?>
+            »
         </h2>
         <h4>
 			<?php
