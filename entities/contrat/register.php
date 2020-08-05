@@ -638,7 +638,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_fin'          => array(
+			'date_fin'              => array(
 				'name'          => amapress__( 'Fin' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -670,7 +670,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'model_name'        => array(
+			'model_name'            => array(
 				'name'        => amapress__( 'Nom générique' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -686,7 +686,7 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'              => array(
+			'name'                  => array(
 				'name'           => amapress__( 'Nom complémentaire' ),
 				'group'          => '2/6 - Paramètres généraux',
 				'type'           => 'text',
@@ -695,7 +695,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'max_adherents'     => array(
+			'max_adherents'         => array(
 				'name'           => amapress__( 'Nombre d’amapiens maximum' ),
 				'type'           => 'number',
 				'group'          => '2/6 - Paramètres généraux',
@@ -704,7 +704,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'use_equiv'         => array(
+			'use_equiv'             => array(
 				'name'        => amapress__( 'Maximum en part' ),
 				'type'        => 'checkbox',
 				'default'     => false,
@@ -713,7 +713,7 @@ jQuery(function($) {
 				'group'       => '2/6 - Paramètres généraux',
 				'desc'        => 'Compter les maximums en part (Fact. Quant/Facteur quantité) en non en inscriptions',
 			),
-			'min_engagement'    => array(
+			'min_engagement'        => array(
 				'name'           => amapress__( 'Engagement minimum' ),
 				'type'           => 'number',
 				'group'          => '2/6 - Paramètres généraux',
@@ -1544,27 +1544,58 @@ jQuery(function($) {
 			'paiements'             => array(
 				'name'           => amapress__( 'Nombre de chèques' ),
 				'type'           => 'multicheck',
-				'desc'           => 'Sélectionner le nombre de règlements autorisés par le producteur',
+				'desc'           => 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)',
 				'group'          => '6/6 - Règlements',
 				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'required'       => true,
 				'csv_required'   => true,
 				'show_column'    => true,
 				'col_def_hidden' => true,
-				'options'        => array(
-					'1'  => '1 chèque',
-					'2'  => '2 chèques',
-					'3'  => '3 chèques',
-					'4'  => '4 chèques',
-					'5'  => '5 chèques',
-					'6'  => '6 chèques',
-					'7'  => '7 chèques',
-					'8'  => '8 chèques',
-					'9'  => '9 chèques',
-					'10' => '10 chèques',
-					'11' => '11 chèques',
-					'12' => '12 chèques',
-				)
+				'options'        => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$contrat = AmapressContrat_instance::getBy( $option->getPostID(), true );
+					$reps    = $contrat->getCustomRepartitions();
+
+					$options     = [
+						'1' => '1 chèque',
+					];
+					$is_readonly = amapress_is_contrat_instance_readonly( $option );
+					for ( $i = 2; $i <= 12; $i ++ ) {
+						$v   = isset( $reps[ $i ] ) ? $reps[ $i ] : '';
+						$rep = '';
+						if ( $is_readonly ) {
+							$v = esc_html( $v );
+							if ( ! empty( $v ) ) {
+								$rep = " ; Rép. :$v";
+							}
+						} else {
+							$v   = esc_attr( $v );
+							$rep = " ; Rép. :<input id='amapress_pmt_repartitions-$i'
+                                       name='amapress_pmt_repartitions[$i]'
+                                       class='text'
+                                       value='$v' />";
+						}
+						$options[ strval( $i ) ] = "$i chèques$rep";
+					}
+
+					return $options;
+				},
+				'custom_save'    => function ( $post_id ) {
+					if ( isset( $_POST['amapress_pmt_repartitions'] ) ) {
+						$amapress_pmt_repartitions = $_POST['amapress_pmt_repartitions'];
+						foreach ( $amapress_pmt_repartitions as $i => $r ) {
+							if ( empty( $r ) ) {
+								unset( $amapress_pmt_repartitions[ $i ] );
+							}
+						}
+						update_post_meta(
+							$post_id,
+							'amapress_contrat_instance_pmt_reps',
+							$amapress_pmt_repartitions );
+					}
+
+					return false;
+				}
 			),
 			'pay_month'             => array(
 				'name'        => amapress__( 'Paiement mensuel' ),
@@ -1660,7 +1691,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Montant minimum du plus petit règlement pour les paiements en plusieurs fois',
 			),
-			'options_paiements' => array(
+			'options_paiements'     => array(
 				'name'        => amapress__( 'Répartition' ),
 				'type'        => 'custom',
 				'group'       => '6/6 - Règlements',
@@ -1760,7 +1791,7 @@ jQuery(function($) {
 //                            'post_type' => 'amps_contrat_quant',
 //                            'parent' => 'amapress_contrat_quantite_contrat_instance',
 //                        ),
-			'inscriptions'      => array(
+			'inscriptions'          => array(
 				'name'                     => amapress__( 'Inscriptions' ),
 				'show_column'              => true,
 				'show_table'               => false,
@@ -1797,7 +1828,7 @@ jQuery(function($) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adhesion&amapress_contrat_inst=%%id%%',
 			),
-			'equiv_quants'      => array(
+			'equiv_quants'          => array(
 				'name'                 => amapress__( 'Parts' ),
 				'type'                 => 'custom',
 				'hidden'               => true,

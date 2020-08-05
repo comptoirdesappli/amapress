@@ -1134,7 +1134,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu_heure_debut']                 = [
+		$ret['lieu_heure_debut'] = [
 			'desc' => 'Heure de début de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -1274,7 +1274,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getFormattedRattrapages() ) );
 			}
 		];
-		$ret['prochaine_date_distrib_complete']  = [
+		$ret['prochaine_date_distrib_complete'] = [
 			'desc' => 'Prochaine date de distribution complète',
 			'func' => function ( AmapressContrat_instance $adh ) use ( $first_date_distrib ) {
 				$date = from( $adh->getRemainingDates( $first_date_distrib ) )->firstOrDefault();
@@ -2177,7 +2177,59 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_min_engagement' );
 	}
 
+	public function getCustomRepartitions() {
+		return $this->getCustomAsArray( 'amapress_contrat_instance_pmt_reps' );
+	}
+
+	public function hasCustomMultiplePaiements() {
+		return ! empty( $this->getCustomRepartitions() );
+	}
+
+	public function getCustomMultipleRepartitionPercent( $nb_paiements, $paiement_index ) {
+		if ( $nb_paiements <= 0 ) {
+			return 0;
+		}
+
+		$reps = $this->getCustomRepartitions();
+		if ( isset( $reps[ $nb_paiements ] ) ) {
+			$percents = array_map( function ( $p ) {
+				return intval( trim( $p, " \t\r\n%" ) );
+			}, explode( ',', $reps[ $nb_paiements ] ) );
+
+			return isset( $percents[ $paiement_index ] ) ? $percents[ $paiement_index ] : 100.0 / $nb_paiements;
+		} else {
+			return 100.0 / $nb_paiements;
+		}
+	}
+
+	/** @return array */
+	public function getTotalAmountByCustom( $nb_paiements, $total ) {
+		$amounts   = [];
+		$remaining = $total;
+		for ( $i = 0; $i < $nb_paiements - 1; $i ++ ) {
+			$percent       = $this->getCustomMultipleRepartitionPercent( $nb_paiements, $i );
+			$cheque_amount = floor( $total * $percent / 100.0 );
+			$amounts[]     = $cheque_amount;
+			$remaining     -= $cheque_amount;
+		}
+		$amounts[] = $remaining;
+
+		return $amounts;
+	}
+
 	public function getChequeOptionsForTotal( $nb_cheque, $total ) {
+		if ( $this->hasCustomMultiplePaiements() ) {
+			$desc = implode( ' ; ', array_map( function ( $amount ) {
+				return sprintf( "1 chèque de %0.2f €",
+					$amount );
+			}, $this->getTotalAmountByCustom( $nb_cheque, $total ) ) );
+
+			return [
+				'desc'          => $desc,
+				'main_amount'   => 0,
+				'remain_amount' => 0,
+			];
+		}
 		if ( $nb_cheque > 1 ) {
 			if ( ( $total / $nb_cheque ) * 2 == intval( $total / $nb_cheque * 2 ) ) {
 				$last_cheque        = $total / $nb_cheque;

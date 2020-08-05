@@ -165,7 +165,7 @@ class AmapressAdhesion extends TitanEntity {
 					}
 				}
 			];
-			$ret['contrat_titre']                    = [
+			$ret['contrat_titre'] = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
@@ -1959,6 +1959,15 @@ class AmapressAdhesion extends TitanEntity {
 
 
 	/** @return array */
+	public function getTotalAmountByCustom() {
+		if ( ! $this->getContrat_instanceId() ) {
+			return [];
+		}
+
+		return $this->getContrat_instance()->getTotalAmountByCustom( $this->getPaiements(), $this->getTotalAmount() );
+	}
+
+	/** @return array */
 	public function getTotalAmountByMonth() {
 		if ( ! $this->getContrat_instanceId() ) {
 			return [];
@@ -2501,6 +2510,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				foreach ( $this->getTotalAmountByMonth() as $month_amount ) {
 					$amounts[] = $month_amount;
 				}
+			}
+		} elseif ( $contrat_instance->hasCustomMultiplePaiements() ) {
+			foreach ( $this->getTotalAmountByCustom() as $cust_amount ) {
+				$amounts[] = $cust_amount;
 			}
 		} else {
 			$paiements_options = $contrat_instance->getChequeOptionsForTotal( $nb_paiements, $this->getTotalAmount() );

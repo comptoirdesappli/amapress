@@ -3375,6 +3375,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
 						}
 						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
+					} elseif ( $contrat->hasCustomMultiplePaiements() ) {
+						$amounts   = $contrat->getTotalAmountByCustom( $nb_cheque, $total );
+						$cheques   = implode( '|', array_map( function ( $amount ) {
+							return Amapress::formatPrice( $amount, true );
+						}, $amounts ) );
+						$chq_label = implode( ' ; ', array_map( function ( $amount ) {
+							return sprintf( "1 chèque de %0.2f €",
+								$amount );
+						}, $amounts ) );
+
+						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
 					} else {
 						$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
 						$option             = esc_html( $cheques['desc'] );
