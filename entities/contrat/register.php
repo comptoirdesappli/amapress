@@ -1313,7 +1313,6 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'desc'           => 'Date d\'ouverture des inscriptions en ligne',
-				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'custom_column'  => function ( $option, $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					$color   = 'green';
@@ -1354,7 +1353,6 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'desc'           => 'Date de clôture des inscriptions en ligne',
-				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'custom_column'  => function ( $option, $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					$color   = 'green';
