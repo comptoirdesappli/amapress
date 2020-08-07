@@ -205,7 +205,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Emails sortants en attente [waiting-mlgrp-count]',
 								'menu_title' => 'Files attente [waiting-mlgrp-count]',
-								'capability' => 'read_mailing_group',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-clock',
 							),
 							'options'  => array(),
@@ -244,7 +244,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Emails sortants en erreur [errored-mlgrp-count]',
 								'menu_title' => 'Erreurs [errored-mlgrp-count]',
-								'capability' => 'read_mailing_group',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-dismiss',
 							),
 							'options'  => array(),
@@ -283,7 +283,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Log des emails sortants',
 								'menu_title' => 'Logs',
-								'capability' => 'read_mailing_group',
+								'capability' => 'manage_amapress',
 								'menu_icon'  => 'dashicons-text-page',
 							),
 							'options'  => array(),
@@ -632,7 +632,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 					'settings' => array(
 						'name'       => 'Distributions',
 						'position'   => '28',
-						'capability' => 'manage_events',
+						'capability' => 'edit_distribution',
 						'icon'       => 'dashicons-store',
 						'long_desc'  => '<div class="amapress-section-note"><h4>Dans cette section, vous pouvez :</h4>
 <ul style="margin-left: 1em; list-style-type: disc">
@@ -1330,7 +1330,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'settings' => array(
 								'name'       => 'Outils',
 								'menu_title' => 'Outils',
-								'capability' => 'manage_events',
+								'capability' => 'edit_distribution',
 								'menu_icon'  => 'dashicons-admin-tools',
 							),
 							'options'  => array(),
@@ -4773,7 +4773,7 @@ Cette page permet d\'importer les contrats
 						'Adhésions AMAP'            => array(
 							'id'         => 'import_adh_pmt_tab',
 							'desc'       => '',
-							'capability' => 'manage_amapress',
+							'capability' => 'edit_adhesion_paiement',
 							'options'    => array(
 								array(
 									'type' => 'note',

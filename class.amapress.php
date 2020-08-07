@@ -840,8 +840,61 @@ class Amapress {
 			'read'          => true,
 			'edit'          => true,
 			'delete'        => true,
-			'publish'       => false,
+			'edit_others'   => false,
+			'publish'       => true,
 			'delete_others' => false,
+		) );
+		self::add_post_role( 'producteur', 'reminder', 'reminders', array(
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'publish'       => true,
+			'delete_others' => false,
+			'edit_others'   => false,
+		) );
+		self::add_post_role( 'producteur', 'amap_event', 'amap_events', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => true,
+		) );
+//		self::add_post_role( 'producteur', 'contrat_instance', 'contrat_instances', array(
+//			'read'    => true,
+//			'edit'    => true,
+//			'delete'  => false,
+//			'publish' => false,
+//		) );
+//		self::add_post_role( 'producteur', 'contrat_quantite', 'contrat_quantites', array(
+//			'read'    => true,
+//			'edit'    => true,
+//			'delete'  => false,
+//			'publish' => false,
+//		) );
+//		self::add_post_role( 'producteur', 'contrat_paiement', 'contrat_paiements', array(
+//			'read'    => true,
+//			'edit'    => true,
+//			'delete'  => false,
+//			'publish' => false,
+//		) );
+//		self::add_post_role( 'producteur', 'adhesion', 'adhesions', array(
+//			'read'    => true,
+//			'edit'    => true,
+//			'delete'  => false,
+//			'publish' => false,
+//		) );
+		self::add_post_role( 'producteur', 'visite', 'visites', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => true,
+			'publish' => true,
+		) );
+		self::add_post_role( 'producteur', 'message', 'messages', array(
+			'read'          => true,
+			'edit'          => true,
+			'edit_others'   => false,
+			'delete'        => true,
+			'delete_others' => false,
+			'publish'       => true,
 		) );
 
 		$r = get_role( 'producteur' );
@@ -890,18 +943,6 @@ class Amapress {
 			'edit'    => true,
 			'delete'  => false,
 			'publish' => true,
-		) );
-		self::add_post_role( 'tresorier', 'panier', 'paniers', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
-		) );
-		self::add_post_role( 'tresorier', 'distribution', 'distributions', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => false,
-			'publish' => false,
 		) );
 		self::add_post_role( 'tresorier', 'recette', 'recettes', array(
 			'read'    => true,
@@ -1407,12 +1448,6 @@ class Amapress {
 			'delete'  => true,
 			'publish' => true,
 		) );
-		self::add_post_role( 'referent', 'assemblee_generale', 'assemblee_generales', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
-		) );
 		self::add_post_role( 'referent', 'produit', 'produits', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1456,29 +1491,33 @@ class Amapress {
 			'publish' => true,
 		) );
 		self::add_post_role( 'referent', 'amap_event', 'amap_events', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'         => true,
+			'edit'         => true,
+			'edit_others'  => false,
+			'delete'       => true,
+			'delete_othes' => false,
+			'publish'      => true,
 		) );
 		self::add_post_role( 'referent', 'intermittence_panier', 'intermittence_paniers', array(
 			'read'    => true,
 			'edit'    => true,
-			'delete'  => true,
+			'delete'  => false,
 			'publish' => false,
 		) );
 		self::add_post_role( 'referent', 'post', 'posts', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'delete_others' => false,
+			'publish'       => true,
 		) );
 
 		self::add_post_role( 'referent', 'adhesion_request', 'adhesion_requests', array(
-			'read'    => true,
-			'edit'    => true,
-			'delete'  => true,
-			'publish' => true,
+			'read'          => true,
+			'edit'          => true,
+			'delete'        => true,
+			'delete_others' => false,
+			'publish'       => true,
 		) );
 		self::add_post_role( 'referent', 'mailinglist', 'mailinglists', array(
 			'read'    => true,
