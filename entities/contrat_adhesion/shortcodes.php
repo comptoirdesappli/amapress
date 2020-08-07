@@ -425,6 +425,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
 	}
 
+	$amapien                             = null;
 	$paiements_info_required             = Amapress::toBool( $atts['paiements_info_required'] );
 	$activate_adhesion                   = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement                  = Amapress::toBool( $atts['agreement'] );
@@ -877,21 +878,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			$saison = date_i18n( 'F Y', $min_contrat_date ) . ' - ' . date_i18n( 'F Y', $max_contrat_date );
 		}
-		?>
-        <h2>Bienvenue dans
-            l’assistant <?php
+
+		$welcome_message = wp_unslash(
+			Amapress::getOption( $is_adhesion_mode ? 'online_subscription_welcome_adh_message' : 'online_subscription_welcome_inscr_message' )
+		);
+		if ( empty( $welcome_message ) ) {
 			if ( $is_inscription_mode ) {
-				echo( $use_contrat_term ? 'd’inscription aux contrats producteurs' : 'de commande aux producteurs' );
+				$welcome_type = ( $use_contrat_term ? 'd’inscription aux contrats producteurs' : 'de commande aux producteurs' );
 			} else {
-				echo 'd’adhésion';
+				$welcome_type = 'd’adhésion';
 			}
-			?>
-            de «
-	        <?php
-			echo esc_html( get_bloginfo( 'name' ) );
-			?>
-            »
-        </h2>
+			$welcome_message = sprintf( 'Bienvenue dans l’assistant %s de « %%%%nom_site%%%% »', $welcome_type );
+		}
+		$welcome_message = amapress_replace_mail_placeholders( $welcome_message, null );
+		?>
+        <h2><?php echo $welcome_message; ?></h2>
         <h4>
 			<?php
 			echo amapress_step_text( $step, $steps_nums, $steps_count );

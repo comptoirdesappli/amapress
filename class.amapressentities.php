@@ -2222,6 +2222,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => 'Configuration de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
 										array(
+											'id'      => 'online_subscription_welcome_inscr_message',
+											'name'    => 'Message de bienvenue',
+											'type'    => 'text',
+											'default' => '',
+											'desc'    => 'Message de bienvenue (non connecté), par défaut, "Bienvenue dans l\'assistant d\'inscription aux contrats producteurs de « AMAP »"',
+										),
+										array(
 											'type' => 'heading',
 											'name' => 'Message aux adhérents principaux',
 										),
@@ -2715,6 +2722,13 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 									'id'      => 'config_online_adhesions_messages',
 									'desc'    => 'Configuration de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Aller à la configuration de l\'inscription' ),
 									'options' => array(
+										array(
+											'id'      => 'online_subscription_welcome_adh_message',
+											'name'    => 'Message de bienvenue',
+											'type'    => 'text',
+											'default' => '',
+											'desc'    => 'Message de bienvenue (non connecté), par défaut, "Bienvenue dans l\'assistant d\'adhésion de « AMAP »"',
+										),
 										array(
 											'type' => 'heading',
 											'name' => 'Assistant - Étape 1 - Email',
