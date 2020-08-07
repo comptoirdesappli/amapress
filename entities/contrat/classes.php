@@ -169,7 +169,6 @@ class AmapressContrat extends TitanEntity {
 				}
 			}
 		}
-		delete_transient( AmapressContrats::REFS_PROD_TRANSIENT );
 	}
 
 	/** @return int */

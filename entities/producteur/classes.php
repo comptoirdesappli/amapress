@@ -177,7 +177,6 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 				}
 			}
 		}
-		delete_transient( AmapressContrats::REFS_PROD_TRANSIENT );
 	}
 
 	/** @return int */

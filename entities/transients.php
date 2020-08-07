@@ -35,13 +35,6 @@ function amapress_clean_transients( $post_id ) {
 		delete_option( 'amps_delay_pan' );
 	}
 
-	if ( AmapressContrat::INTERNAL_POST_TYPE == $post_type
-	     || AmapressContrat_instance::INTERNAL_POST_TYPE == $post_type
-	     || AmapressProducteur::INTERNAL_POST_TYPE == $post_type
-	     || AmapressLieu_distribution::INTERNAL_POST_TYPE == $post_type ) {
-		delete_transient( 'amps_refs_prods' );
-	}
-
 	if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post_type ) {
 		delete_transient( 'amps_adh_to_confirm' );
 	}

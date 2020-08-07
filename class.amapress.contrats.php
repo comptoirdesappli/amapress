@@ -143,10 +143,10 @@ class AmapressContrats {
 	/**
 	 * @return AmapressContrat[]
 	 */
-	public static function get_contrats( $producteur_id = null, $order = true, $filter = false ) {
+	public static function get_contrats( $producteur_id = null, $order = true, $filter = false, $no_cache = false ) {
 		$key = "amapress_get_contrats_{$producteur_id}";
 		$res = wp_cache_get( $key );
-		if ( false === $res ) {
+		if ( $no_cache || false === $res ) {
 			$query = array(
 				'post_type'      => AmapressContrat::INTERNAL_POST_TYPE,
 				'posts_per_page' => - 1,
@@ -436,14 +436,14 @@ class AmapressContrats {
 	/**
 	 * @return int[]
 	 */
-	public static function get_all_contrat_instances_by_contrat_ids( $contrat_id ) {
+	public static function get_all_contrat_instances_by_contrat_ids( $contrat_id, $no_cache = false ) {
 		if ( ! is_array( $contrat_id ) ) {
 			$contrat_id = array( $contrat_id );
 		}
 		$key_ids = implode( '_', $contrat_id );
 		$key     = "amapress_get_all_contrat_instances_by_contrat_$key_ids";
 		$res     = wp_cache_get( $key );
-		if ( false === $res ) {
+		if ( $no_cache || false === $res ) {
 			$query = array(
 				'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'posts_per_page' => - 1,
@@ -629,22 +629,21 @@ class AmapressContrats {
 		return self::getReferentProducteursAndLieux( 'all' );
 	}
 
-	const REFS_PROD_TRANSIENT = 'amps_refs_prods';
 
 	public static function getReferentProducteursAndLieux( $user_id = null ) {
 		if ( ! $user_id ) {
 			$user_id = amapress_current_user_id();
 		}
 
-		$key = self::REFS_PROD_TRANSIENT;
-		$res = get_transient( $key );
+		$key = 'amps_refs_prods';
+		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			Amapress::setFilterForReferent( false );
 
 			$lieu_ids = Amapress::get_lieu_ids();
 			$res      = array();
-			foreach ( Amapress::get_producteurs() as $prod ) {
-				$contrats    = self::get_contrats( $prod->ID, false, false );
+			foreach ( Amapress::get_producteurs( true ) as $prod ) {
+				$contrats    = self::get_contrats( $prod->ID, false, false, true );
 				$contrat_ids = array_map( function ( $c ) {
 					return $c->ID;
 				}, $contrats );
@@ -652,7 +651,7 @@ class AmapressContrats {
 					$contrat_ids = array( 0 );
 				}
 				foreach ( $contrat_ids as $contrat_id ) {
-					$contrat_instance_ids = AmapressContrats::get_all_contrat_instances_by_contrat_ids( [ $contrat_id ] );
+					$contrat_instance_ids = AmapressContrats::get_all_contrat_instances_by_contrat_ids( [ $contrat_id ], true );
 					if ( count( $contrat_instance_ids ) == 0 ) {
 						$contrat_instance_ids = array( 0 );
 					}
@@ -697,7 +696,7 @@ class AmapressContrats {
 				}
 			}
 			Amapress::setFilterForReferent( true );
-			set_transient( $key, $res, HOUR_IN_SECONDS );
+			wp_cache_set( $key, $res );
 		}
 
 		$ret = $res;

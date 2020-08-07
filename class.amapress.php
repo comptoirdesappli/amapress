@@ -236,10 +236,10 @@ class Amapress {
 	/**
 	 * @return AmapressProducteur[]
 	 */
-	public static function get_producteurs() {
+	public static function get_producteurs( $no_cache = false ) {
 		$key = 'get_producteurs';
 		$res = wp_cache_get( $key );
-		if ( false === $res ) {
+		if ( $no_cache || false === $res ) {
 			$res = array_map( function ( $p ) {
 				return AmapressProducteur::getBy( $p );
 			}, get_posts(
@@ -4259,6 +4259,10 @@ class Amapress {
 			$amapress_no_filter_referent_nesting += 1;
 		} else {
 			$amapress_no_filter_referent_nesting -= 1;
+		}
+
+		if ( 0 == $amapress_no_filter_referent_nesting ) {
+			$amapress_no_filter_referent = ! $set;
 		}
 	}
 

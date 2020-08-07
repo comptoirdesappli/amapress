@@ -52,6 +52,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 		}
 		$panier_ids[] = $panier->ID;
 	}
+	Amapress::setFilterForReferent( true );
 
 	if ( Amapress::getOption( 'allow_partial_exchange' ) && ! empty( $_POST['panier'] ) ) {
 		$panier_id = intval( $_POST['panier'] );

@@ -1424,7 +1424,6 @@ function amapress_filter_posts( WP_Query $query ) {
 			}
 		}
 	}
-//	amapress_dump($query->get( 'meta_query' ));
 }
 
 add_action( 'pre_get_users', function ( WP_User_Query $uqi ) {
