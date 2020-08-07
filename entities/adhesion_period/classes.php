@@ -112,24 +112,41 @@ class AmapressAdhesionPeriod extends TitanEntity {
 				'post_type'      => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
 				'posts_per_page' => - 1,
 				'meta_query'     => array(
-					'relation' => 'AND',
+					'relation' => 'OR',
 					array(
-						'key'     => 'amapress_adhesion_period_date_debut',
-						'value'   => Amapress::start_of_day( $date ),
-						'compare' => '<=',
-						'type'    => 'NUMERIC'
+						'relation' => 'AND',
+						array(
+							'key'     => 'amapress_adhesion_period_date_debut',
+							'value'   => Amapress::start_of_day( $date ),
+							'compare' => '<=',
+							'type'    => 'NUMERIC'
+						),
+						array(
+							'key'     => 'amapress_adhesion_period_date_fin',
+							'value'   => Amapress::start_of_day( $date ),
+							'compare' => '>=',
+							'type'    => 'NUMERIC'
+						),
 					),
 					array(
-						'key'     => 'amapress_adhesion_period_date_fin',
-						'value'   => Amapress::start_of_day( $date ),
-						'compare' => '>=',
-						'type'    => 'NUMERIC'
+						'relation' => 'AND',
+						array(
+							'key'     => 'amapress_adhesion_period_date_debut',
+							'value'   => Amapress::start_of_day( $date ),
+							'compare' => '>=',
+							'type'    => 'NUMERIC'
+						),
 					),
 				)
 			);
 			$res   = array_map( function ( $p ) {
 				return AmapressAdhesionPeriod::getBy( $p );
 			}, get_posts( $query ) );
+			usort( $res, function ( $pa, $pb ) {
+				/** @var AmapressAdhesionPeriod $pa */
+				/** @var AmapressAdhesionPeriod $pb */
+				return $pa->getDate_debut() < $pb->getDate_debut() ? - 1 : 1;
+			} );
 			if ( count( $res ) > 0 ) {
 				$res = array_shift( $res );
 			} else {

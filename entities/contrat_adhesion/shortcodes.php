@@ -727,7 +727,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	}
 
 	//TODO better ???
-	$adh_period_date = Amapress::add_a_week( $min_contrat_date <= 0 ? amapress_time() : $min_contrat_date, $atts['adhesion_shift_weeks'] );
+	$adh_period_date = Amapress::add_a_week( $min_contrat_date <= 0 || $min_contrat_date < amapress_time() ? amapress_time() : $min_contrat_date, $atts['adhesion_shift_weeks'] );
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 	$adhesion_step_url = add_query_arg( 'step', 'adhesion', remove_query_arg( [ 'contrat_id', 'message' ] ) );
@@ -1745,7 +1745,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( empty( $adh_period ) ) {
 			ob_clean();
 
-			return ( 'Aucune période d\'adhésion n\'est configurée.' );
+			return ( sprintf( 'Aucune période d\'adhésion n\'est configurée au %s', date_i18n( 'd/m/Y', $adh_period_date ) ) );
 		}
 
 		$step_name = esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_step_name' ) ) );
@@ -1846,7 +1846,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( empty( $adh_period ) ) {
 			ob_clean();
 
-			return ( 'Aucune période d\'adhésion n\'est configurée.' );
+			return ( sprintf( 'Aucune période d\'adhésion n\'est configurée au %s', date_i18n( 'd/m/Y', $adh_period_date ) ) );
 		}
 
 		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
@@ -2023,7 +2023,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( empty( $adh_period ) ) {
 					ob_clean();
 
-					return ( 'Aucune période d\'adhésion n\'est configurée.' );
+					return ( sprintf( 'Aucune période d\'adhésion n\'est configurée au %s', date_i18n( 'd/m/Y', $adh_period_date ) ) );
 				}
 
 				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
