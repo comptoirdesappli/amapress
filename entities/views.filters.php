@@ -211,7 +211,7 @@ function amapress_adhesion_paiement_views() {
 
 	amapress_add_view_button(
 		$ret, 'not_received',
-		"post_type=amps_adh_pmt&amapress_date=active&amapress_status=not_received",
+		"post_type=amps_adh_pmt&amapress_status=not_received",
 		'Non reçu', false, true );
 
 	amapress_add_view_button(
@@ -589,7 +589,7 @@ function amapress_paiements_views() {
 
 	amapress_add_view_button(
 		$ret, 'not_received',
-		"post_type=amps_cont_pmt&amapress_date=active&amapress_status=not_received",
+		"post_type=amps_cont_pmt&amapress_status=not_received",
 		'Non reçu', false, true );
 
 	amapress_add_view_button(
