@@ -8,6 +8,10 @@ function amapress_is_current_user_producteur( $post_id = null ) {
 	return amapress_current_user_can( 'producteur' );
 }
 
+function amapress_is_referents_fields_readonly( $post_id = null ) {
+	return ! amapress_is_admin_or_responsable();
+}
+
 add_filter( 'amapress_register_entities', 'amapress_register_entities_producteur' );
 function amapress_register_entities_producteur( $entities ) {
 	$entities['producteur'] = array(
@@ -66,7 +70,7 @@ function amapress_register_entities_producteur( $entities ) {
 
 			echo '<h2>Présentation du producteur <em>(Biographie, historique de la ferme...)</em></h2>';
 		},
-		'fields'                  => array(
+		'fields'                   => array(
 			'nom_exploitation'     => array(
 				'name'       => amapress__( 'Nom de l\'exploitation' ),
 				'type'       => 'text',
@@ -119,7 +123,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'searchable'   => true,
 				'autocomplete' => true,
 				'orderby'      => 'display_name',
-				'readonly'     => 'amapress_is_current_user_producteur',
+				'readonly'     => 'amapress_is_referents_fields_readonly',
 				'order'        => 'ASC',
 			),
 			'referent2'            => array(
@@ -130,7 +134,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'desc'         => 'Deuxième référent producteur pour tous les lieux',
 				'searchable'   => true,
 				'autocomplete' => true,
-				'readonly'     => 'amapress_is_current_user_producteur',
+				'readonly'     => 'amapress_is_referents_fields_readonly',
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
@@ -142,7 +146,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'desc'         => 'Troisième référent producteur pour tous les lieux',
 				'searchable'   => true,
 				'autocomplete' => true,
-				'readonly'     => 'amapress_is_current_user_producteur',
+				'readonly'     => 'amapress_is_referents_fields_readonly',
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
@@ -170,8 +174,8 @@ function amapress_register_entities_producteur( $entities ) {
 				'query'              => 'post_type=amps_contrat_inst&amapress_date=active&amapress_producteur=%%id%%',
 			),
 		),
-		'help_edit'               => array(),
-		'help_view'               => array(),
+		'help_edit'                => array(),
+		'help_view'                => array(),
 	);
 
 	return $entities;
@@ -189,7 +193,7 @@ function amapress_producteur_fields( $fields ) {
 				'group'        => '2/ Référents',
 				'searchable'   => true,
 				'autocomplete' => true,
-				'readonly'     => 'amapress_is_current_user_producteur',
+				'readonly'     => 'amapress_is_referents_fields_readonly',
 				'desc'         => 'Référent producteur spécifique à ' . $lieu->getTitle(),
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
