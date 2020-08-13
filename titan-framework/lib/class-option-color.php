@@ -61,6 +61,13 @@ class TitanFrameworkOptionColor extends TitanFrameworkOption {
 	public function enqueueColorPickerScript() {
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_style( 'wp-color-picker' );
+		$colorpicker_l10n = array(
+			'clear'         => __( 'Clear' ),
+			'defaultString' => __( 'Default' ),
+			'pick'          => __( 'Select Color' ),
+			'current'       => __( 'Current Color' ),
+		);
+		wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
 		wp_enqueue_script( 'wp-color-picker-alpha', TitanFramework::getURL( '../js/min/wp-color-picker-alpha-min.js', __FILE__ ), array( 'wp-color-picker' ), TF_VERSION );
 	}
 
