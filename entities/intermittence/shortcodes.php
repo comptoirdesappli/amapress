@@ -372,9 +372,9 @@ function amapress_echanger_panier_shortcode( $atts ) {
 			$ceder_title = count( $contrat_names ) > 1 ? 'Céder mes ' . count( $contrat_names ) . ' paniers' : 'Céder mon panier';
 		}
 		$contrat_names = implode( ', ', $contrat_names );
-		$ret           .= '<th scope="row" width="30%">';
+		$ret           .= '<th scope="row" style="width: 30%">';
 		$ret           .= '<p class="inscr-list-date">' . esc_html( date_i18n( 'D j M Y', $date ) ) . '</p>';
-		$ret           .= '<p class="inscr-list-contrats"><a href="' . $dist->getPermalink() . '">' . esc_html( $contrat_names ) . '</a></p></th>';
+		$ret           .= '<p class="inscr-list-contrats smart-word-break"><a href="' . $dist->getPermalink() . '">' . esc_html( $contrat_names ) . '</a></p></th>';
 
 		if ( count( $date_dists ) > 1 ) {
 			$date_dists = [ array_shift( $date_dists ) ];
