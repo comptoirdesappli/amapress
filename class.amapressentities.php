@@ -3947,6 +3947,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'desc' => 'Fichier template de votre thème à utiliser pour l\'affichage des informations Amapress (Producteurs/Productions/Produits/Distributions/Recettes...)',
 											'type' => 'text',
 										),
+										array(
+											'id'   => 'amps-arch-tmpl-file',
+											'name' => 'Fichier template (Archive)',
+											'desc' => 'Fichier template de votre thème à utiliser pour l\'affichage Archives des informations Amapress (Producteurs/Productions/Produits/Distributions/Recettes...)',
+											'type' => 'text',
+										),
 //								array(
 //									'id'   => 'archive-page-template',
 //									'name' => 'Modèle pour les pages d\'archive',

@@ -82,10 +82,17 @@ function amapress_handle_templates( $template ) {
 		return $template;
 	}
 
-	if ( is_main_query() && is_single() && 0 === strpos( $raw_pt, 'amps_' ) ) {
-		$tmpl = Amapress::getOption( 'amps-tmpl-file' );
-		if ( ! empty( $tmpl ) ) {
-			return locate_template( array( $tmpl ) );
+	if ( is_main_query() && 0 === strpos( $raw_pt, 'amps_' ) ) {
+		if ( is_single() ) {
+			$tmpl = Amapress::getOption( 'amps-tmpl-file' );
+			if ( ! empty( $tmpl ) ) {
+				return locate_template( array( $tmpl ) );
+			}
+		} elseif ( is_archive() ) {
+			$tmpl = Amapress::getOption( 'amps-arch-tmpl-file' );
+			if ( ! empty( $tmpl ) ) {
+				return locate_template( array( $tmpl ) );
+			}
 		}
 	}
 
