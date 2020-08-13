@@ -281,25 +281,25 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		$user_id = Amapress::resolve_user_id( $atts['user'] );
 	}
 
+	$ret = '';
 	if ( amapress_can_access_admin() ) {
 		if ( ! $for_other_users && isset( $_GET['admin_mode'] ) ) {
 			$for_other_users = true;
 		}
 		if ( ! $for_other_users ) {
-			echo '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
+			$ret .= '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
 					'Passer en mode Admin' ) . '</p>';
 		}
 	}
 
-	$ret = '';
 	if ( $for_other_users && $is_resp_distrib ) {
 		if ( ! empty( $_REQUEST['user_id'] ) ) {
 			$user_id = intval( $_REQUEST['user_id'] );
-			echo '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
+			$ret     .= '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
 					'Choisir un autre amapien' ) . '</p>';
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $amapien ) {
-				echo '<h3>Paniers de ' . esc_html( $amapien->getDisplayName() ) . '</h3>';
+				$ret .= '<h3>Paniers de ' . esc_html( $amapien->getDisplayName() ) . '</h3>';
 			}
 		} else {
 			$users = array( '' => '--Sélectionner un amapien--' );
