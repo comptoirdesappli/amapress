@@ -3941,6 +3941,12 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'name' => 'Page des paniers intermittents de l\'amapien',
 											'type' => 'select-pages',
 										),
+										array(
+											'id'   => 'amps-tmpl-file',
+											'name' => 'Fichier template (Simple)',
+											'desc' => 'Fichier template de votre thème à utiliser pour l\'affichage des informations Amapress (Producteurs/Productions/Produits/Distributions/Recettes...)',
+											'type' => 'text',
+										),
 //								array(
 //									'id'   => 'archive-page-template',
 //									'name' => 'Modèle pour les pages d\'archive',

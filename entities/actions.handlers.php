@@ -76,9 +76,17 @@ function amapress_handle_templates( $template ) {
 //        return locate_template(array('page.php'));
 //    }
 
-	$pt = amapress_simplify_post_type( get_query_var( 'post_type' ) );
+	$raw_pt = get_query_var( 'post_type' );
+	$pt     = amapress_simplify_post_type( $raw_pt );
 	if ( is_array( $pt ) ) {
 		return $template;
+	}
+
+	if ( is_main_query() && is_single() && 0 === strpos( $raw_pt, 'amps_' ) ) {
+		$tmpl = Amapress::getOption( 'amps-tmpl-file' );
+		if ( ! empty( $tmpl ) ) {
+			return locate_template( array( $tmpl ) );
+		}
 	}
 
 //	$pts = AmapressEntities::getPostTypes();
