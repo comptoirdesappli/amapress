@@ -300,6 +300,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_allow_locmon', 0 );
 	}
 
+	public function getAllow_Prelevement() {
+		return $this->getCustom( 'amapress_contrat_instance_allow_prlv', 0 );
+	}
+
 	public function getNb_responsables_Supplementaires() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_nb_resp_supp', 0 );
 	}
@@ -1350,6 +1354,11 @@ class AmapressContrat_instance extends TitanEntity {
 				foreach ( $adh->getPossiblePaiements() as $nb_cheques ) {
 					$paiements[] = "$nb_cheques chq." . ( $adh->getPayByMonth() ? ' (au mois)' : '' );
 				}
+				if ( $adh->getAllow_Prelevement() ) {
+					foreach ( $adh->getPossiblePaiements() as $nb_cheques ) {
+						$paiements[] = "$nb_cheques prélèvement(s)";
+					}
+				}
 
 				return implode( ' ou ', $paiements );
 			}
@@ -1794,6 +1803,29 @@ class AmapressContrat_instance extends TitanEntity {
 					$paiements[] = $ch['desc'];
 				}
 			}
+			if ( $this->getAllow_Prelevement() ) {
+				if ( $this->getPayByMonth() ) {
+					$by_months = $this->getDatesByMonth();
+					if ( in_array( 1, $this->getPossiblePaiements() ) ) {
+						$paiements[] = sprintf( "1 prélèvement de %0.2f €", $amount );
+					}
+					if ( in_array( count( $by_months ), $this->getPossiblePaiements() ) ) {
+						$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
+							return sprintf( "%s: 1 prélèvement pour %d distributions",
+								$month,
+								$month_count );
+						}, array_keys( $by_months ), array_values( $by_months ) ) );
+					}
+				} else {
+					foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
+						$ch = $this->getChequeOptionsForTotal( $nb_cheque, $amount, 'prélèvement' );
+						if ( ! isset( $ch['desc'] ) ) {
+							continue;
+						}
+						$paiements[] = $ch['desc'];
+					}
+				}
+			}
 			if ( $this->getAllow_Cash() ) {
 				$paiements[] = 'En espèces';
 			}
@@ -2216,10 +2248,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $amounts;
 	}
 
-	public function getChequeOptionsForTotal( $nb_cheque, $total ) {
+	public function getChequeOptionsForTotal( $nb_cheque, $total, $type_paiement = 'chèque' ) {
 		if ( $this->hasCustomMultiplePaiements() ) {
-			$desc = implode( ' ; ', array_map( function ( $amount ) {
-				return sprintf( "1 chèque de %0.2f €",
+			$desc = implode( ' ; ', array_map( function ( $amount ) use ( $type_paiement ) {
+				return sprintf( "1 $type_paiement de %0.2f €",
 					$amount );
 			}, $this->getTotalAmountByCustom( $nb_cheque, $total ) ) );
 
@@ -2245,13 +2277,13 @@ class AmapressContrat_instance extends TitanEntity {
 		$nb = $nb_cheque;
 		if ( $cheque_main_amount == $last_cheque ) {
 			$last_cheque = 0;
-			$option      = sprintf( "$nb chèque(s) de %0.2f €", $cheque_main_amount );
+			$option      = sprintf( "$nb $type_paiement(s) de %0.2f €", $cheque_main_amount );
 		} else if ( $last_cheque == 0 ) {
 			$nb     = 1;
-			$option = sprintf( "1 chèque de %0.2f €", $cheque_main_amount );
+			$option = sprintf( "1 $type_paiement de %0.2f €", $cheque_main_amount );
 		} else {
 			$nb     = $nb_cheque - 1;
-			$option = sprintf( "$nb chèque(s) de %0.2f € et 1 chèque de %0.2f €", $cheque_main_amount, $last_cheque );
+			$option = sprintf( "$nb $type_paiement(s) de %0.2f € et 1 $type_paiement de %0.2f €", $cheque_main_amount, $last_cheque );
 		}
 
 		return [
@@ -2580,7 +2612,7 @@ class AmapressContrat_instance extends TitanEntity {
 			$archives_infos["file_$xl_name"] = $xlsx['filename'];
 		}
 		//extract paiements xlsx
-		echo '<p>Stockage des excel des chèques</p>';
+		echo '<p>Stockage des excel des règlements</p>';
 		foreach ( ( count( $this->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $this->getLieuxIds() ) : $this->getLieuxIds() ) as $lieu_id ) {
 			$lieu        = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
 			$html        = amapress_get_paiement_table_by_dates(
@@ -2592,8 +2624,8 @@ class AmapressContrat_instance extends TitanEntity {
 					'for_pdf'                 => true,
 				) );
 			$objPHPExcel = AMapress::createXLSXFromHtml( $html,
-				'Contrat ' . $this->getTitle() . ' - Chèques - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) );
-			$filename    = 'contrat-' . $this->ID . '-cheques-' . ( 0 == $lieu_id ? 'tous' : strtolower( sanitize_file_name( $lieu->getLieuTitle() ) ) ) . '.xlsx';
+				'Contrat ' . $this->getTitle() . ' - Règlements - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) );
+			$filename    = 'contrat-' . $this->ID . '-reglements-' . ( 0 == $lieu_id ? 'tous' : strtolower( sanitize_file_name( $lieu->getLieuTitle() ) ) ) . '.xlsx';
 			$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 			$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 			$archives_infos["file_cheques_$lieu_id"] = $filename;
@@ -2605,7 +2637,7 @@ class AmapressContrat_instance extends TitanEntity {
 		echo '<p>Stockage des infos du contrat pour archive</p>';
 		$this->setCustom( 'amapress_contrat_instance_archives_infos', $archives_infos );
 
-		echo '<p>Archivage des inscriptions et chèques</p>';
+		echo '<p>Archivage des inscriptions et règlements</p>';
 		global $wpdb;
 		//start transaction
 		$wpdb->query( 'START TRANSACTION' );

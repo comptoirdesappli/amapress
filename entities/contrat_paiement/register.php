@@ -170,6 +170,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'vir' => 'Virement',
 					'mon' => 'Monnaie locale',
 					'dlv' => 'A la livraison',
+					'prl' => 'Prélèvement',
 				),
 				'default'    => 'chq',
 				'required'   => true,
@@ -184,7 +185,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'type'         => 'float',
 				'unit'         => '€',
 				'required'     => true,
-				'desc'         => 'Montant du chèque/espèces/virement',
+				'desc'         => 'Montant du chèque/espèces/virement/prélèvement',
 				'csv_required' => true,
 			),
 			'numero'        => array(

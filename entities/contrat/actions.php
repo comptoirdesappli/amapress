@@ -70,7 +70,7 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 		$lieu_name = $lieu->getShortName();
 	}
 	$date = date_i18n( 'd-m-Y' );
-	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "cheques-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Chèques - {$contrat->getModelTitle()} - {$lieu_name}" );
+	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "reglements-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Règlements - {$contrat->getModelTitle()} - {$lieu_name}" );
 } );
 
 add_action( 'admin_post_delivery_table_xlsx', function () {

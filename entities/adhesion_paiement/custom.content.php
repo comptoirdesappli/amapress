@@ -591,6 +591,7 @@ function amapress_paiements_editor( $post_id ) {
 <option value='vir' " . selected( $pmt_type, 'vir', false ) . ">Virement</option>
 <option value='mon' " . selected( $pmt_type, 'mon', false ) . ">Monnaie locale</option>
 <option value='dlv' " . selected( $pmt_type, 'dlv', false ) . ">A la livraison</option>
+<option value='prl' " . selected( $pmt_type, 'prl', false ) . ">Prélèvement</option>
 </select></td>
 <td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
 <td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>

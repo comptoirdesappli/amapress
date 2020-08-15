@@ -3360,7 +3360,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						continue;
 					}
 
-					$checked = checked( $edit_inscription && $edit_inscription->getPaiements() == $nb_cheque, true, false );
+					$checked = checked( $edit_inscription && 'chq' == $edit_inscription->getMainPaiementType() && $edit_inscription->getPaiements() == $nb_cheque, true, false );
 					if ( $contrat->getPayByMonth() ) {
 						if ( 1 === $nb_cheque ) {
 							$cheques   = Amapress::formatPrice( $total, true );
@@ -3418,6 +3418,63 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$checked = checked( $edit_inscription && 'mon' == $edit_inscription->getMainPaiementType(), true, false );
 				echo "<label for='cheques-mon' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-mon' $checked value='-4' class='input-nb-cheques required' />En monnaie locale</label><br/>";
 			}
+			if ( $contrat->getAllow_Prelevement() ) {
+				if ( $total > 0 ) {
+					$possible_cheques = $contrat->getPossiblePaiements();
+					if ( $contrat->getPayByMonth() ) {
+						$max_cheques      = count( array_filter( $by_month_totals, function ( $v ) {
+							return $v > 0;
+						} ) );
+						$possible_cheques = [ 1, $max_cheques ];
+					}
+					foreach ( $possible_cheques as $nb_cheque ) {
+						if ( $total / $nb_cheque < $min_cheque_amount ) {
+							continue;
+						}
+
+						$checked = checked( $edit_inscription && 'prl' == $edit_inscription->getMainPaiementType() && $edit_inscription->getPaiements() == $nb_cheque, true, false );
+						if ( $contrat->getPayByMonth() ) {
+							if ( 1 === $nb_cheque ) {
+								$cheques   = Amapress::formatPrice( $total, true );
+								$chq_label = sprintf( "1 prélèvement de %0.2f €", $total );
+							} else {
+								$cheques   = implode( '|', array_map( function ( $month_amount ) {
+									return Amapress::formatPrice( $month_amount, true );
+								}, $by_month_totals ) );
+								$chq_label = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+									return sprintf( "%s: 1 prélèvement de %0.2f €",
+										$month,
+										$month_amount );
+								}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
+							}
+							$nb_cheque_val = $nb_cheque + 100;
+							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='{$nb_cheque_val}' class='input-nb-cheques required' />$chq_label</label><br/>";
+						} elseif ( $contrat->hasCustomMultiplePaiements() ) {
+							$amounts       = $contrat->getTotalAmountByCustom( $nb_cheque, $total );
+							$cheques       = implode( '|', array_map( function ( $amount ) {
+								return Amapress::formatPrice( $amount, true );
+							}, $amounts ) );
+							$chq_label     = implode( ' ; ', array_map( function ( $amount ) {
+								return sprintf( "1 prélèvement de %0.2f €",
+									$amount );
+							}, $amounts ) );
+							$nb_cheque_val = $nb_cheque + 100;
+							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label</label><br/>";
+						} else {
+							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total, 'prélèvement' );
+							$option             = esc_html( $cheques['desc'] );
+							$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
+							$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
+							$chq_label          = '';
+							if ( $cheque_main_amount != $last_cheque ) {
+								$chq_label = "$nb_cheque prélèvement(s) : ";
+							}
+							$nb_cheque_val = $nb_cheque = 100;
+							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label$option</label><br/>";
+						}
+					}
+				}
+			}
 			if ( $contrat->getAllowAmapienInputPaiementsDetails() && $total > 0 ) {
 				$amapien  = AmapressUser::getBy( $user_id );
 				$emetteur = esc_attr( $amapien->getDisplayName() );
@@ -3427,6 +3484,8 @@ jQuery(function($) {
         if (!$(this).is(":checked"))
             return;
         var nb_cheques = parseInt($(this).val());
+        if (nb_cheques >= 100)
+            nb_cheques = -1;
         var cheques_details = $(this).data("cheques-details");
         if (cheques_details) {
             cheques_details = cheques_details.split("|");
@@ -3624,7 +3683,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			'amapress_adhesion_date_debut'       => $start_date,
 			'amapress_adhesion_contrat_instance' => $contrat_id,
 			'amapress_adhesion_message'          => $message,
-			'amapress_adhesion_paiements'        => ( $cheques < 0 ? 1 : ( $cheques > 0 ? $cheques : 0 ) ),
+			'amapress_adhesion_paiements'        => ( $cheques < 0 ? 1 : ( $cheques > 0 ? ( $cheques >= 100 ? $cheques - 100 : $cheques ) : 0 ) ),
 			'amapress_adhesion_lieu'             => $lieu_id,
 		];
 		for ( $i = 2; $i <= 4; $i ++ ) {
@@ -3645,6 +3704,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		}
 		if ( - 4 == $cheques ) {
 			$meta['amapress_adhesion_pmt_type'] = 'mon';
+		}
+		if ( $cheques >= 100 ) {
+			$meta['amapress_adhesion_pmt_type'] = 'prl';
 		}
 		if ( ! empty( $quantite_ids ) ) {
 			$meta['amapress_adhesion_contrat_quantite'] = $quantite_ids;
@@ -3672,7 +3734,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			//TODO ???
 			wp_die( 'Une erreur s\'est produite' );
 		}
-		if ( $edit_inscription && $cheques > 0 ) {
+		if ( $edit_inscription && $cheques > 0 && $cheques < 100 ) {
 			delete_post_meta( $new_id, 'amapress_adhesion_pmt_type' );
 		}
 

@@ -313,9 +313,9 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 
 				$lieu               = AmapressLieu_distribution::getBy( $lieu_id );
 				$date               = date_i18n( 'd-m-Y' );
-				$filename_cheques   = strtolower( sanitize_file_name( "cheques-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
+				$filename_cheques   = strtolower( sanitize_file_name( "reglements-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
 				$filename_adherents = strtolower( sanitize_file_name( "adherents-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
-				$title_cheques      = "Chèques - {$contrat_instance->getModelTitle()} - {$lieu->getShortName()}";
+				$title_cheques      = "Règlements - {$contrat_instance->getModelTitle()} - {$lieu->getShortName()}";
 				if ( strlen( $title_cheques ) > 27 ) {
 					$title_cheques = substr( $title_cheques, 0, 27 ) . '...';
 				}
@@ -351,12 +351,12 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 			$content,
 			'', $target_users, $dist, $attachments,
 			amapress_get_recall_cc_from_option( 'contrats-liste-paiements-recall-cc' ) );
-		echo '<p>Email de rappel de la liste des chèques envoyé</p>';
+		echo '<p>Email de rappel de la liste des règlements envoyé</p>';
 		$sent_mails = true;
 	}
 
 	if ( ! $sent_mails ) {
-		echo '<p>Pas de liste de chèque à rappeler à cette distribution</p>';
+		echo '<p>Pas de liste de règlements à rappeler à cette distribution</p>';
 	}
 
 	//%%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%
@@ -832,7 +832,7 @@ function amapress_contrat_paiements_recall_options() {
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-1',
 			'name'                => 'Rappel 1',
-			'desc'                => 'Liste des chèques',
+			'desc'                => 'Liste des règlements',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -842,7 +842,7 @@ function amapress_contrat_paiements_recall_options() {
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-2',
 			'name'                => 'Rappel 2',
-			'desc'                => 'Liste des chèques',
+			'desc'                => 'Liste des règlements',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
@@ -854,7 +854,7 @@ function amapress_contrat_paiements_recall_options() {
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-3',
 			'name'                => 'Rappel 3',
-			'desc'                => 'Liste des chèques',
+			'desc'                => 'Liste des règlements',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',

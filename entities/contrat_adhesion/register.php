@@ -504,10 +504,11 @@ jQuery(function($) {
 					'vir' => 'Virement',
 					'mon' => 'Monnaie locale',
 					'dlv' => 'A la livraison',
+					'prl' => 'Prélèvement',
 				),
 				'default'        => 'chq',
 				'required'       => true,
-				'desc'           => 'Moyen de règlement principal : chèques ou espèces ou virement',
+				'desc'           => 'Moyen de règlement principal : chèques ou espèces ou virement ou prélèvement',
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'top_filter'     => array(

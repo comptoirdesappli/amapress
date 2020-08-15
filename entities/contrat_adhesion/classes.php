@@ -155,7 +155,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getModelTitle();
 				}
 			];
-			$ret['contrat_titre_complet']            = [
+			$ret['contrat_titre_complet'] = [
 				'desc' => 'Nom du contrat (par ex, Légumes 09/2018-08/2019 - Semaine A)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( ! empty( $adh->getContrat_instance()->getSubName() ) ) {
@@ -1809,21 +1809,31 @@ class AmapressAdhesion extends TitanEntity {
 		$amount = $this->getTotalAmount();
 		if ( $this->getContrat_instance()->getPayByMonth() ) {
 			if ( 1 == $this->getPaiements() ) {
-				return sprintf( "1 chèque de %0.2f €", $amount );
+				return sprintf( "1 %s de %0.2f €",
+					'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque',
+					$amount );
 			} else {
 				$by_months = $this->getTotalAmountByMonth();
 
-				return sprintf( '%d chq. (%s)', $this->getPaiements(),
+				return sprintf( '%d %s (%s)',
+					$this->getPaiements(),
+					'prl' == $this->getMainPaiementType() ? 'prélèvement(s)' : 'chq.',
 					implode( ' ; ', array_map( function ( $month, $month_amount ) {
-						return sprintf( "%s: 1 chèque de %0.2f €",
+						return sprintf( "%s: 1 %s de %0.2f €",
 							$month,
+							'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque',
 							$month_amount );
 					}, array_keys( $by_months ), array_values( $by_months ) ) ) );
 			}
 		} else {
-			$option = $this->getContrat_instance()->getChequeOptionsForTotal( $this->getPaiements(), $amount );
+			$option = $this->getContrat_instance()->getChequeOptionsForTotal(
+				$this->getPaiements(), $amount,
+				'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque' );
 
-			return sprintf( '%d chq. (%s)', $this->getPaiements(), $option['desc'] );
+			return sprintf( '%d %s (%s)',
+				$this->getPaiements(),
+				'prl' == $this->getMainPaiementType() ? 'prélèvement(s)' : 'chq.',
+				$option['desc'] );
 		}
 	}
 
@@ -1832,19 +1842,24 @@ class AmapressAdhesion extends TitanEntity {
 		if ( $this->getContrat_instance()->getPayByMonth() ) {
 			$cheques_options = [];
 			if ( in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
-				$cheques_options[] = sprintf( "1 chèque de %0.2f €", $amount );
+				$cheques_options[] = sprintf( "1 %s de %0.2f €",
+					'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque',
+					$amount );
 			}
 			$by_months = $this->getTotalAmountByMonth();
 			if ( in_array( count( $by_months ), $this->getContrat_instance()->getPossiblePaiements() ) ) {
 				$cheques_options[] = implode( ' ; ', array_map( function ( $month, $month_amount ) {
-					return sprintf( "%s: 1 chèque de %0.2f €",
+					return sprintf( "%s: 1 %s de %0.2f €",
+						'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque',
 						$month,
 						$month_amount );
 				}, array_keys( $by_months ), array_values( $by_months ) ) );
 			}
 		} else {
 			$cheques_options = array_map( function ( $v ) use ( $amount ) {
-				$option = $this->getContrat_instance()->getChequeOptionsForTotal( $v, $amount );
+				$option = $this->getContrat_instance()->getChequeOptionsForTotal(
+					$v, $amount,
+					'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque' );
 
 				return sprintf( '%d (%s)', $v, $option['desc'] );
 			}, $this->getContrat_instance()->getPossiblePaiements() );
@@ -2430,15 +2445,16 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		);
 	}
 
-	public function preparePaiements( $pre_filled_paiements = [] ) {
+	public function preparePaiements( $pre_filled_paiements = [], $overwrite = true ) {
 		$contrat_instance        = $this->getContrat_instance();
 		$contrat_paiements_dates = $contrat_instance->getPaiements_Liste_dates();
 		$nb_paiements            = $this->getPaiements();
 		$contrat_paiements       = $this->getAllPaiements();
 		$all_paiements           = AmapressContrats::get_all_paiements( $contrat_instance->ID );
 
-		$deleted = false;
-		for ( $i = $this->getMainPaiementType() != 'chq' ? 0 : $nb_paiements; $i < count( $contrat_paiements ); $i ++ ) {
+		$deleted  = false;
+		$pmt_type = $this->getMainPaiementType();
+		for ( $i = ( $pmt_type != 'chq' ? 0 : $nb_paiements ); $i < count( $contrat_paiements ); $i ++ ) {
 			wp_delete_post( $contrat_paiements[ $i ]->ID, true );
 			$deleted = true;
 		}
@@ -2516,7 +2532,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$amounts[] = $cust_amount;
 			}
 		} else {
-			$paiements_options = $contrat_instance->getChequeOptionsForTotal( $nb_paiements, $this->getTotalAmount() );
+			$paiements_options = $contrat_instance->getChequeOptionsForTotal(
+				$nb_paiements, $this->getTotalAmount(),
+				'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque' );
 			if ( $paiements_options['remain_amount'] > 0 ) {
 				for ( $i = 0; $i < $nb_paiements - 1; $i ++ ) {
 					$amounts[] = $paiements_options['main_amount'];
@@ -2561,14 +2579,17 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				'amapress_contrat_paiement_emetteur'         => $adherent,
 				'amapress_contrat_paiement_banque'           => $banque,
 			);
-			if ( null == $paiement && 'esp' == $this->getMainPaiementType() ) {
+			if ( ( $overwrite || null == $paiement ) && 'esp' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'esp';
 			}
-			if ( null == $paiement && 'vir' == $this->getMainPaiementType() ) {
+			if ( ( $overwrite || null == $paiement ) && 'vir' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'vir';
 			}
-			if ( null == $paiement && 'mon' == $this->getMainPaiementType() ) {
+			if ( ( $overwrite || null == $paiement ) && 'mon' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'mon';
+			}
+			if ( ( $overwrite || null == $paiement ) && 'prl' == $this->getMainPaiementType() ) {
+				$meta['amapress_contrat_paiement_type'] = 'prl';
 			}
 			$my_post = array(
 				'post_type'    => AmapressAmapien_paiement::INTERNAL_POST_TYPE,
@@ -2581,7 +2602,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			} else {
 				$my_post['ID'] = $id;
 				wp_update_post( $my_post, true );
-				if ( 'chq' == $this->getMainPaiementType() ) {
+				if ( ( $overwrite || null == $paiement ) && 'chq' == $this->getMainPaiementType() ) {
 					delete_post_meta( $id, 'amapress_contrat_paiement_type' );
 				}
 			}

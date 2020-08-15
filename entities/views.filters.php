@@ -390,7 +390,10 @@ function amapress_adhesion_views() {
 		$ret, 'pmt_dlv',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=dlv",
 		'A la livraison' );
-
+	amapress_add_view_button(
+		$ret, 'pmt_prl',
+		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=prl",
+		'Prélèvement' );
 	//    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",

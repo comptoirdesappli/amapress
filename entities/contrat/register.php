@@ -229,7 +229,7 @@ function amapress_register_entities_contrat( $entities ) {
 				}
 				$nb_dates_paiements = count( $contrat->getPaiements_Liste_dates() );
 				if ( $max_nb_paiements > $nb_dates_paiements ) {
-					echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( 'Il y a moins de dates d\'encaissement (%d) que le nombre de chèque maximum autorisé (%d)', $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
+					echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( 'Il y a moins de dates d\'encaissement (%d) que le nombre de règlements maximum autorisé (%d)', $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
 				}
 
 
@@ -1479,6 +1479,11 @@ jQuery(function($) {
 					if ( $contrat->getAllow_LocalMoney() ) {
 						$ret[] = 'monnaie locale';
 					}
+					if ( $contrat->getAllow_Prelevement() ) {
+						if ( ! empty( $contrat->getPossiblePaiements() ) ) {
+							$ret[] = implode( ';', $contrat->getPossiblePaiements() ) . ' prélèvement(s)';
+						}
+					}
 					if ( $contrat->getAllow_Delivery_Pay() ) {
 						$ret[] = 'à la livraison';
 					}
@@ -1542,7 +1547,7 @@ jQuery(function($) {
 			'paiements'             => array(
 				'name'           => amapress__( 'Nombre de chèques' ),
 				'type'           => 'multicheck',
-				'desc'           => 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)',
+				'desc'           => 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques/prélèvements (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)',
 				'group'          => '6/6 - Règlements',
 				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'required'       => true,
@@ -1555,7 +1560,7 @@ jQuery(function($) {
 					$reps    = $contrat->getCustomRepartitions();
 
 					$options     = [
-						'1' => '1 chèque',
+						'1' => '1 chèque/prélèvement',
 					];
 					$is_readonly = amapress_is_contrat_instance_readonly( $option );
 					for ( $i = 2; $i <= 12; $i ++ ) {
@@ -1573,7 +1578,7 @@ jQuery(function($) {
                                        class='text'
                                        value='$v' />";
 						}
-						$options[ strval( $i ) ] = "$i chèques$rep";
+						$options[ strval( $i ) ] = "$i chèques/prélèvements$rep";
 					}
 
 					return $options;
@@ -1603,7 +1608,7 @@ jQuery(function($) {
 				'required'    => true,
 				'default'     => false,
 				'show_column' => false,
-				'desc'        => 'Activer la répartition mensuelle de la remise des chèques au producteur',
+				'desc'        => 'Activer la répartition mensuelle de la remise des règlements au producteur',
 			),
 			'allow_deliv_pay'       => array(
 				'name'        => amapress__( 'A la livraison' ),
@@ -1645,6 +1650,15 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en monnaie locale',
 			),
+			'allow_prlv'            => array(
+				'name'        => amapress__( 'Prélèvement' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlements',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par prélèvement',
+			),
 			'manage_paiements'      => array(
 				'name'        => amapress__( 'Répartition des règlements' ),
 				'type'        => 'checkbox',
@@ -1679,7 +1693,7 @@ jQuery(function($) {
 				'show_column'      => false,
 				'show_dates_count' => true,
 				'show_dates_list'  => true,
-				'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les chèques',
+				'desc'             => 'Sélectionner les dates auxquelles le producteur souhaite recevoir les règlements',
 			),
 			'min_cheque_amount'     => array(
 				'name'        => amapress__( 'Montant minimum' ),
@@ -1750,6 +1764,15 @@ jQuery(function($) {
 										continue;
 									}
 									$options .= '<li>' . esc_html( $o['desc'] ) . '</li>';
+								}
+								if ( $contrat_instance->getAllow_Prelevement() ) {
+									foreach ( $contrat_instance->getPossiblePaiements() as $nb_cheque ) {
+										$o = $contrat_instance->getChequeOptionsForTotal( $nb_cheque, $total, 'prélèvement' );
+										if ( empty( $o ) ) {
+											continue;
+										}
+										$options .= '<li>' . esc_html( $o['desc'] ) . '</li>';
+									}
 								}
 							}
 							if ( $contrat_instance->getAllow_Cash() ) {
