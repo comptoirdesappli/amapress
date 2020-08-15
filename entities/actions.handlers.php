@@ -82,20 +82,6 @@ function amapress_handle_templates( $template ) {
 		return $template;
 	}
 
-	if ( is_main_query() && 0 === strpos( $raw_pt, 'amps_' ) ) {
-		if ( is_single() ) {
-			$tmpl = Amapress::getOption( 'amps-tmpl-file' );
-			if ( ! empty( $tmpl ) ) {
-				return locate_template( array( $tmpl ) );
-			}
-		} elseif ( is_archive() ) {
-			$tmpl = Amapress::getOption( 'amps-arch-tmpl-file' );
-			if ( ! empty( $tmpl ) ) {
-				return locate_template( array( $tmpl ) );
-			}
-		}
-	}
-
 //	$pts = AmapressEntities::getPostTypes();
 //	if ( is_main_query() && ! empty( $pt ) && array_key_exists( $pt, $pts ) ) {
 //		if ( isset( $pts[ $pt ]['custom_archive_template'] ) ) {
@@ -110,16 +96,33 @@ function amapress_handle_templates( $template ) {
 //		}
 //	}
 
-	$action = get_query_var( 'amp_action' );
+	$new_template = $template;
+	$action       = get_query_var( 'amp_action' );
 	if ( amapress_is_user_logged_in() ) {
-		$template = apply_filters( "amapress_get_query_action_template_{$pt}_{$action}", $template );
-		$template = apply_filters( "amapress_get_query_action_template_{$action}", $template );
+		$new_template = apply_filters( "amapress_get_query_action_template_{$pt}_{$action}", $new_template );
+		$new_template = apply_filters( "amapress_get_query_action_template_{$action}", $new_template );
 	} else {
-		$template = apply_filters( "amapress_get_public_query_action_template_{$pt}_{$action}", $template );
-		$template = apply_filters( "amapress_get_public_query_action_template_{$action}", $template );
+		$new_template = apply_filters( "amapress_get_public_query_action_template_{$pt}_{$action}", $new_template );
+		$new_template = apply_filters( "amapress_get_public_query_action_template_{$action}", $new_template );
 	}
 
-	return $template;
+	if ( $new_template === $template ) {
+		if ( is_main_query() && 0 === strpos( $raw_pt, 'amps_' ) ) {
+			if ( is_single() ) {
+				$tmpl = Amapress::getOption( 'amps-tmpl-file' );
+				if ( ! empty( $tmpl ) ) {
+					return locate_template( array( $tmpl ) );
+				}
+			} elseif ( is_archive() ) {
+				$tmpl = Amapress::getOption( 'amps-arch-tmpl-file' );
+				if ( ! empty( $tmpl ) ) {
+					return locate_template( array( $tmpl ) );
+				}
+			}
+		}
+	}
+
+	return $new_template;
 }
 
 add_filter( 'get_the_archive_title', function ( $title ) {
