@@ -2492,6 +2492,10 @@ function amapress_echo_and_check_amapress_state_page() {
 				wp_die( 'Query Monitor est actif, merci de le désactiver avant import (risque de dépassement de mémoire)' );
 			}
 
+			if ( 'active' === amapress_is_plugin_active( 'new-user-approve' ) ) {
+				wp_die( 'New User Apprive est actif, merci de le désactiver avant import (pour éviter envoi massif de mails d\'approbation )' );
+			}
+
 			set_time_limit( 0 );
 
 			require_once 'demos/AmapDemoBase.php';
