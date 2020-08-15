@@ -769,6 +769,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	foreach (
 		[
 			'resp-distrib-amap-role',
+			'resp-distrib-gardiens-amap-role',
 			'resp-visite-amap-role',
 			'resp-intermittents-amap-role',
 			'resp-amap_event-amap-role',
