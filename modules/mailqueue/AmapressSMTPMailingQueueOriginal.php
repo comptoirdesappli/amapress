@@ -5,6 +5,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class AmapressSMTPMailingQueueOriginal {
+	public static function GetPHPMailer() {
+		if ( version_compare( get_bloginfo( 'version' ), '5.5-alpha', '<' ) ) {
+			if ( ! class_exists( '\PHPMailer', false ) ) {
+				require_once ABSPATH . WPINC . '/class-phpmailer.php';
+			}
+
+			return new \PHPMailer( true );
+		} else {
+			if ( ! class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) {
+				require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+			}
+
+			if ( ! class_exists( '\PHPMailer\PHPMailer\Exception', false ) ) {
+				require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+			}
+
+			if ( ! class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
+				require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+			}
+
+			return new \PHPMailer\PHPMailer\PHPMailer( true );
+		}
+	}
+
+	public static function EnsurePHPMailerInit() {
+		global $phpmailer;
+
+		// (Re)create it, if it's gone missing
+		if ( ! ( $phpmailer instanceof \PHPMailer ||
+		         $phpmailer instanceof \PHPMailer\PHPMailer\PHPMailer ) ) {
+			$phpmailer = self::GetPHPMailer();
+		}
+	}
+
 	/**
 	 * Send mail, similar to PHP's mail
 	 *
@@ -76,12 +110,7 @@ class AmapressSMTPMailingQueueOriginal {
 		}
 		global $phpmailer;
 
-		// (Re)create it, if it's gone missing
-		if ( ! ( $phpmailer instanceof PHPMailer ) ) {
-			require_once ABSPATH . WPINC . '/class-phpmailer.php';
-			require_once ABSPATH . WPINC . '/class-smtp.php';
-			$phpmailer = new PHPMailer( true );
-		}
+		self::EnsurePHPMailerInit();
 
 		$had_from = false;
 		// Headers
@@ -268,8 +297,8 @@ class AmapressSMTPMailingQueueOriginal {
 				}
 
 				$phpmailer->AddAddress( $recipient, $recipient_name );
-			} catch ( phpmailerException $e ) {
-				$errors[] = $e->errorMessage();
+			} catch ( Exception $e ) {
+				$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 				continue;
 			}
 		}
@@ -306,8 +335,8 @@ class AmapressSMTPMailingQueueOriginal {
 						}
 					}
 					$phpmailer->AddCc( $recipient, $recipient_name );
-				} catch ( phpmailerException $e ) {
-					$errors[] = $e->errorMessage();
+				} catch ( Exception $e ) {
+					$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 					continue;
 				}
 			}
@@ -325,8 +354,8 @@ class AmapressSMTPMailingQueueOriginal {
 						}
 					}
 					$phpmailer->AddBcc( $recipient, $recipient_name );
-				} catch ( phpmailerException $e ) {
-					$errors[] = $e->errorMessage();
+				} catch ( Exception $e ) {
+					$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 					continue;
 				}
 			}
@@ -414,8 +443,8 @@ class AmapressSMTPMailingQueueOriginal {
 					} else {
 						$phpmailer->AddAttachment( $attachment );
 					}
-				} catch ( phpmailerException $e ) {
-					$errors[] = $e->errorMessage();
+				} catch ( Exception $e ) {
+					$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 					continue;
 				}
 			}
@@ -479,7 +508,7 @@ class AmapressSMTPMailingQueueOriginal {
 					$errors[] = $phpmailer->ErrorInfo;
 				}
 			}
-		} catch ( phpmailerException $e ) {
+		} catch ( Exception $e ) {
 			try {
 				if ( 'smtp' === $phpmailer->Mailer ) {
 					$phpmailer->getSMTPInstance()->reset();
@@ -487,7 +516,7 @@ class AmapressSMTPMailingQueueOriginal {
 			} catch ( Exception $exception ) {
 				$errors[] = $exception->getMessage();
 			}
-			$errors[] = $e->errorMessage();
+			$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 		}
 
 		return $errors;

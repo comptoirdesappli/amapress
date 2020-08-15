@@ -485,12 +485,7 @@ class AmapressMailingGroup extends TitanEntity {
 					if ( ! $is_site_member ) {
 						if ( preg_match( '/^(mailer-daemon|postmaster|hostmaster|abuse|junk|sympa|listserv|majordomo|smartlist|mailman)@/i', $mail->fromAddress ) ) {
 							global $phpmailer;
-							if ( ! ( $phpmailer instanceof PHPMailer ) ) {
-								require_once ABSPATH . WPINC . '/class-phpmailer.php';
-								require_once ABSPATH . WPINC . '/class-smtp.php';
-								$phpmailer = new PHPMailer( true );
-							}
-
+							AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
 							$undelivered = '';
 							try {
 								require_once AMAPRESS__PLUGIN_DIR . 'modules/bounceparser/BounceStatus.php';
@@ -932,12 +927,8 @@ class AmapressMailingGroup extends TitanEntity {
 		$subject = ! empty( $msg['subject'] ) ? $msg['subject'] : '';
 		global $phpmailer;
 
-		// (Re)create it, if it's gone missing
-		if ( ! ( $phpmailer instanceof PHPMailer ) ) {
-			require_once ABSPATH . WPINC . '/class-phpmailer.php';
-			require_once ABSPATH . WPINC . '/class-smtp.php';
-			$phpmailer = new PHPMailer( true );
-		}
+		AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
+
 
 		$body    = $phpmailer->html2text( ! empty( $msg['content'] ) ? $msg['content'] : '' );
 		$summary = wpautop( "\n------\nSujet: $subject\n$body\n------\n" );
@@ -1088,9 +1079,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$ml_grp = $this;
 		if ( $ml_grp->isExternalSmtp() ) {
 			try {
-				require_once ABSPATH . WPINC . '/class-phpmailer.php';
-				require_once ABSPATH . WPINC . '/class-smtp.php';
-				$phpmailer = new PHPMailer( true );
+				$phpmailer = AmapressSMTPMailingQueueOriginal::GetPHPMailer();
 
 				// Set mailer to SMTP
 				$phpmailer->isSMTP();
