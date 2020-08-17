@@ -159,7 +159,8 @@ class AmapressSMTPMailingQueue {
 	 * @return bool
 	 */
 	public static function storeMail( $mlgrp_id, $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0 ) {
-		require_once ABSPATH . WPINC . '/class-phpmailer.php';
+		require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php' );
+		AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
 
 		$time = $time ?: amapress_time();
 		$data = compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors', 'retries_count' );
