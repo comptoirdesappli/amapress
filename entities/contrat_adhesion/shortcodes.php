@@ -728,7 +728,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	}
 
 	//TODO better ???
-	$adh_period_date = Amapress::add_a_week( $min_contrat_date <= 0 || $min_contrat_date < amapress_time() ? amapress_time() : $min_contrat_date, $atts['adhesion_shift_weeks'] );
+	$adh_period_date = Amapress::add_a_week( ( $min_contrat_date <= 0 || $min_contrat_date < amapress_time() ) ? amapress_time() : $min_contrat_date, $atts['adhesion_shift_weeks'] );
 
 	$contrats_step_url = add_query_arg( 'step', 'contrats', remove_query_arg( [ 'contrat_id', 'message' ] ) );
 	$adhesion_step_url = add_query_arg( 'step', 'adhesion', remove_query_arg( [ 'contrat_id', 'message' ] ) );
@@ -903,7 +903,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
               class="amapress_validate">
 			<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_email_step_message' ), null ) ); ?>
             <label for="email" style="display: block">Pour démarrer
-                votre <?php echo( $is_adhesion_mode ? 'adhésion' : 'inscription' ); ?> à l’AMAP pour la saison
+                votre <?php echo( $is_adhesion_mode ? 'adhésion' : 'inscription' ); ?> pour la saison
 				<?php
 				echo $saison;
 				?>
@@ -978,7 +978,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			ob_clean();
 
 			return $additional_css . '<p style="font-weight: bold">Les ' . ( $is_adhesion_mode ? 'adhésions' : 'inscriptions' ) . ' avec une nouvelle adresse email ne sont pas autorisées.</p>
-<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.</p>
+<p>Si vous êtes déjà membre, vous avez certainement utilisé une adresse email différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 		}
 
@@ -986,7 +986,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			ob_clean();
 
 			return $additional_css . '<p style="font-weight: bold">Les ' . ( $is_adhesion_mode ? 'adhésions' : 'inscriptions' ) . ' avec une adresse email existante ne sont pas autorisées.</p>
-<p>Si vous êtes déjà membre de l’AMAP, veuillez vous connecter.</p>
+<p>Si vous êtes déjà membre, veuillez vous connecter.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 		}
 
@@ -1070,8 +1070,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$cofoy3_mobile_phones  = '';
 		$cofoy3_address        = '';
 
-		$user_message   = 'Vous êtes nouveau dans l’AMAP, complétez vos coordonnées :';
-		$member_message = '<p>Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.</p>
+		$user_message   = 'Vous êtes nouveau, complétez vos coordonnées :';
+		$member_message = '<p>Si vous êtes déjà membre, vous avez certainement utilisé une adresse email différente.</p>
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 
 		$edit_names               = Amapress::toBool( $atts['edit_names'] ) || empty( $user );
@@ -1092,7 +1092,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 
 			$hidaddr            = $amapien->isHiddenFromTrombi();
-			$user_message       = 'Vous êtes déjà membre de l’AMAP, vérifiez vos coordonnées :';
+			$user_message       = 'Vous êtes déjà membre, vérifiez vos coordonnées :';
 			$user_firt_name     = $user->first_name;
 			$user_last_name     = $user->last_name;
 			$user_address       = $amapien->getFormattedAdresse();
@@ -1776,7 +1776,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
 			$ret .= '<div>';
-			$ret .= '<label for="adh-message" style="display: block">Message à l\'AMAP :</label>
+			$ret .= '<label for="adh-message" style="display: block">Message personnel :</label>
 <textarea id="adh-message" name="amapress_adhesion_message"></textarea>';
 			$ret .= '</div>';
 		}
@@ -1957,7 +1957,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( ! $use_contrat_term ) {
 				echo '<p>Vous pouvez maintenant passer commandes :<br/>';
 			} else {
-				echo '<p>Vous pouvez maintenant vous inscrire aux contrats de l\'AMAP :<br/>';
+				echo '<p>Vous pouvez maintenant vous inscrire aux contrats disponibles :<br/>';
 			}
 			echo '<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
@@ -2031,7 +2031,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				if ( empty( $adh_paiement ) ) {
 					if ( ! $activate_adhesion ) {
-						echo '<p><strong>Vous n\'avez pas d\'adhésion à l\'AMAP sur la période ' . esc_html( $adh_period->getTitle() ) . '</strong></p>';
+						echo '<p><strong>Vous n\'avez pas d\'adhésion sur la période ' . esc_html( $adh_period->getTitle() ) . '</strong></p>';
 						$allow_inscriptions = false;
 					} else {
 						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption( 'online_subscription_req_adhesion' ) ), null );
@@ -2064,12 +2064,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 					if ( Amapress::toBool( $atts['show_adhesion_infos'] ) ) {
 						if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
-							echo sprintf( '<p>Votre adhésion à l\'AMAP sera valable du %s au %s<br />%s</p>',
+							echo sprintf( '<p>Votre adhésion sera valable du %s au %s<br />%s</p>',
 								date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
 								date_i18n( 'd/m/Y', $adh_period->getDate_fin() ),
 								$print_bulletin );
 						} else {
-							echo '<p>Votre adhésion à l\'AMAP est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
+							echo '<p>Votre adhésion est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
 ' . $print_bulletin . '</p>';
 						}
 					}
@@ -2567,9 +2567,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$is_started       = $first_avail_date != $first_contrat_date;
 			if ( ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p>Les commandes en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je contacte l\'AMAP pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
+					echo '<p>Les commandes en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je prends contact pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
 				} else {
-					echo '<p>Les inscriptions en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je contacte l\'AMAP pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
+					echo '<p>Les inscriptions en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je prends contact pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
 				}
 			}
 			echo '<p><strong>Date</strong></p>';
