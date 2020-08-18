@@ -974,6 +974,36 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$user = get_user_by( 'email', $email );
 
+		if ( $user ) {
+			if ( isset( $_REQUEST['no_renew'] ) ) {
+				$reason = sanitize_textarea_field( isset( $_REQUEST['no_renew_reason'] ) ? $_REQUEST['no_renew_reason'] : '' );
+				update_user_meta( $user->ID, 'amapress_user_no_renew', 1 );
+				update_user_meta( $user->ID, 'amapress_user_no_renew_reason', $reason );
+				ob_clean();
+
+				$track_no_renews_email = $atts['track_no_renews_email'];
+				if ( empty( $track_no_renews_email ) ) {
+					$track_no_renews_email = get_option( 'admin_email' );
+				}
+				if ( ! empty( $track_no_renews_email ) ) {
+					$amapien   = AmapressUser::getBy( $user );
+					$edit_link = Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() );
+					amapress_wp_mail(
+						$track_no_renews_email,
+						'Adhésion/Préinscription - Non renouvellement - ' . $amapien->getDisplayName(),
+						amapress_replace_mail_placeholders(
+							wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien ),
+						'', [], $notify_email
+					);
+				}
+
+				return $additional_css . wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_norenew_message' ), null ) );
+			} else {
+				delete_user_meta( $user->ID, 'amapress_user_no_renew' );
+				delete_user_meta( $user->ID, 'amapress_user_no_renew_reason' );
+			}
+		}
+
 		if ( ! Amapress::toBool( $atts['allow_new_mail'] ) && ! $user ) {
 			ob_clean();
 
