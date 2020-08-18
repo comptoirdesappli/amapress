@@ -846,6 +846,15 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												], false ),
 										),
 										array(
+											'id'           => 'inscr-distrib-mail-cc',
+											'name'         => amapress__( 'Cc' ),
+											'type'         => 'select-users',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+											'desc'         => 'Emails en copie',
+										),
+										array(
 											'type' => 'save',
 										),
 									)
@@ -867,6 +876,15 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => wpautop( "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
 												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'id'           => 'desinscr-distrib-mail-cc',
+											'name'         => amapress__( 'Cc' ),
+											'type'         => 'select-users',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+											'desc'         => 'Emails en copie',
 										),
 										array(
 											'type' => 'save',

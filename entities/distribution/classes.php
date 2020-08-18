@@ -718,7 +718,9 @@ class AmapressDistribution extends Amapress_EventBase {
 							esc_html( $this->getResponsableRoleDesc( $multi_user_id ) ),
 							esc_html( $this->getResponsableRoleContrats( $multi_user_id ) ),
 						], $cnt );
-				} );
+				},
+				null, null,
+				amapress_get_recall_cc_from_option( 'inscr-distrib-mail-cc' ) );
 
 			return 'ok';
 		}

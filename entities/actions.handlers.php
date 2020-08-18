@@ -369,5 +369,8 @@ function amapress_mail_current_user_desinscr(
 		$content = call_user_func( $replace_callback, $content, $user_id, $post );
 	}
 
-	amapress_mail_to_current_user( $subject, $content, $user_id, $post, [], null, null, $headers );
+	amapress_mail_to_current_user( $subject, $content,
+		$user_id, $post, [],
+		amapress_get_recall_cc_from_option( "desinscr-$mail_type-mail-cc" ),
+		null, $headers );
 }
