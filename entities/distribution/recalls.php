@@ -178,6 +178,39 @@ add_action( 'amapress_recall_resp_distrib', function ( $args ) {
 	echo '<p>Email aux responsables de distribution envoyé</p>';
 
 } );
+add_action( 'amapress_recall_resp_distrib2', function ( $args ) {
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		echo '<p>Distribution introuvable</p>';
+
+		return;
+	}
+
+	if ( empty( $dist->getContratIds() ) ) {
+		return;
+	}
+
+	$responsable_ids = $dist->getResponsablesIds();
+	if ( empty( $responsable_ids ) ) {
+		echo '<p>Pas de responsables</p>';
+
+		return;
+	}
+
+	if ( Amapress::getOption( 'distribution-resp-recall-2-send-bcc' ) ) {
+		$responsable_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
+	} else {
+		$responsable_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $responsable_ids ), "Responsable de " . $dist->getTitle(), "distribution" );
+	}
+	amapress_send_message(
+		Amapress::getOption( 'distribution-resp-recall-2-mail-subject' ),
+		Amapress::getOption( 'distribution-resp-recall-2-mail-content' ),
+		'', $responsable_users, $dist, [],
+		amapress_get_recall_cc_from_option( 'distribution-resp-recall-2-cc' ),
+		null, $dist->getResponsablesResponsablesDistributionsReplyto() );
+	echo '<p>Email aux responsables de distribution envoyé</p>';
+
+} );
 add_action( 'amapress_recall_distrib_emargement', function ( $args ) {
 	//distribution-emargement-recall-mail-
 	$dist = AmapressDistribution::getBy( $args['id'] );
@@ -1179,6 +1212,89 @@ function amapress_distribution_responsable_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-resp-recall-cc-groups',
+			'name'         => amapress__( 'Groupes Cc' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Groupe(s) en copie',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
+function amapress_distribution_responsable_recall2_options() {
+	return array(
+		array(
+			'id'                  => 'distribution-resp-recall-2-1',
+			'name'                => 'Rappel 1',
+			'desc'                => 'Responsables de distribution',
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_resp_distrib2',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-resp-recall-2-2',
+			'name'                => 'Rappel 2',
+			'desc'                => 'Responsables de distribution',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_resp_distrib2',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'distribution-resp-recall-2-3',
+			'name'                => 'Rappel 3',
+			'desc'                => 'Responsables de distribution',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_resp_distrib2',
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'       => 'distribution-resp-recall-2-mail-subject',
+			'name'     => 'Sujet de l\'email',
+			'sanitize' => false,
+			'type'     => 'text',
+			'default'  => '[Rappel] Vous êtes inscrit responsable à %%post:title%%',
+		),
+		array(
+			'id'      => 'distribution-resp-recall-2-send-bcc',
+			'name'    => 'Envoi Bcc',
+			'type'    => 'checkbox',
+			'desc'    => 'Envoyer le mail avec les responsables en Bcc (au lieu de destinataire direct) : ne permet plus la communication des responsables de la semaine entre eux.',
+			'default' => 0,
+		),
+		array(
+			'id'      => 'distribution-resp-recall-2-mail-content',
+			'name'    => 'Contenu de l\'email',
+			'type'    => 'editor',
+			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint les instructions du lieu et des contrats:\n\n%%lieu_instructions%%\n%%paniers_instructions_distribution%%\n\n%%nom_site%%" ),
+			'desc'    =>
+				AmapressDistribution::getPlaceholdersHelp(),
+		),
+		array(
+			'id'           => 'distribution-resp-recall-2-cc',
+			'name'         => amapress__( 'Cc' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => 'Emails en copie',
+		),
+		array(
+			'id'           => 'distribution-resp-recall-2-cc-groups',
 			'name'         => amapress__( 'Groupes Cc' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',

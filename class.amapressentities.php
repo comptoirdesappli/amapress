@@ -859,7 +859,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Désinscriptions - Distribution'                    => array(
+								'Emails - Désinscriptions - Distribution'                 => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -891,27 +891,32 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Responsables de distribution - Rappel'             => array(
+								'Emails - Responsables de distribution - Rappel'          => array(
 									'id'      => 'amp_tab_recall_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Emails - Gardiens de paniers - Rappel'                      => array(
+								'Emails - Responsables de distribution - Rappel 2'        => array(
+									'id'      => 'amp_tab_recall_resp_distrib2',
+									'desc'    => '',
+									'options' => amapress_distribution_responsable_recall2_options(),
+								),
+								'Emails - Gardiens de paniers - Rappel'                   => array(
 									'id'      => 'amp_tab_recall_gardien_paniers',
 									'desc'    => '',
 									'options' => amapress_distribution_gardiens_recall_options(),
 								),
-								'Emails - Vérification de distribution - Rappel'             => array(
+								'Emails - Vérification de distribution - Rappel'          => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Emails - A tous les amapiens à la distribution - Rappel'    => array(
+								'Emails - A tous les amapiens à la distribution - Rappel' => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
-								'Emails - Envoi liste émargement Excel/PDF'                  => array(
+								'Emails - Envoi liste émargement Excel/PDF'               => array(
 									'id'      => 'amp_tab_recall_emarg',
 									'desc'    => '',
 									'options' => amapress_distribution_emargement_recall_options(),
