@@ -462,6 +462,11 @@ function amapress_user_views( $ret ) {
 			'Amapiens avec contrats',
 			true );
 		amapress_add_view_button(
+			$ret, 'norenew',
+			"amapress_info=norenew$query_add",
+			'Non renouvellement',
+			true );
+		amapress_add_view_button(
 			$ret, 'no_loc',
 			"amapress_info=address_unk&amapress_contrat=active$query_add",
 			'Amapiens non localisés',

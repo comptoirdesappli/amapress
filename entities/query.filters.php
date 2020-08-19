@@ -1509,6 +1509,19 @@ add_action( 'pre_get_users', function ( WP_User_Query $uqi ) {
 					),
 				)
 			) );
+		} else if ( 'norenew' == $amapress_info ) {
+			amapress_add_meta_user_query( $uqi, array(
+				array(
+					array(
+						'relation' => 'AND',
+						array(
+							'key'     => 'amapress_user_no_renew',
+							'compare' => '=',
+							'value'   => 1
+						),
+					),
+				)
+			) );
 		}
 	}
 	if ( isset( $uqi->query_vars['amapress_contrat'] ) ) {
