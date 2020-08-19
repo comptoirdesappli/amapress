@@ -487,9 +487,19 @@ function amapress_user_views( $ret ) {
 			'Intermittents',
 			true );
 		amapress_add_view_button(
-			$ret, 'with_coadh',
+			$ret, 'coadh',
 			"amapress_contrat=coadherent$query_add",
 			'Co-adhérents',
+			true );
+		amapress_add_view_button(
+			$ret, 'with_coadh',
+			"amapress_contrat=with_coadherent$query_add",
+			'Amapiens avec co-adhérents',
+			true );
+		amapress_add_view_button(
+			$ret, 'principal',
+			"amapress_contrat=principal$query_add",
+			'Amapiens Principaux',
 			true );
 		amapress_add_view_button(
 			$ret, 'collectif',
