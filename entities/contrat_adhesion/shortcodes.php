@@ -335,6 +335,14 @@ function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
+function amapress_step_text( $step_id, $steps_nums, $steps_count ) {
+	if ( empty( $steps_nums[ $step_id ] ) ) {
+		return '';
+	}
+
+	return sprintf( 'Étape %d/%d : ', $steps_nums[ $step_id ], $steps_count );
+}
+
 /**
  * @param $atts
  */
@@ -608,13 +616,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	}
 	if ( ! Amapress::toBool( $atts['use_steps_nums'] ) ) {
 		$steps_nums = [];
-	}
-	function amapress_step_text( $step_id, $steps_nums, $steps_count ) {
-		if ( empty( $steps_nums[ $step_id ] ) ) {
-			return '';
-		}
-
-		return sprintf( 'Étape %d/%d : ', $steps_nums[ $step_id ], $steps_count );
 	}
 
 	//optimize loading of producteur and user
