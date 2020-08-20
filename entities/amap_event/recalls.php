@@ -146,7 +146,7 @@ function amapress_amap_event_available_recall_options() {
 			'name'     => 'Sujet de l\'email',
 			'sanitize' => false,
 			'type'     => 'text',
-			'default'  => '[Rappel] Une viste a lieu bientôt : %%post:title%%',
+			'default'  => '[Rappel] Un évènement AMAP a lieu bientôt : %%post:title%%',
 		),
 		array(
 			'id'      => 'amap-event-available-recall-mail-content',
