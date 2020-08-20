@@ -3449,7 +3449,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							continue;
 						}
 
-						$checked = checked( $edit_inscription && 'prl' == $edit_inscription->getMainPaiementType() && $edit_inscription->getPaiements() == $nb_cheque, true, false );
+						$nb_cheque_val = $nb_cheque + 100;
+						$checked       = checked( $edit_inscription && 'prl' == $edit_inscription->getMainPaiementType() && $edit_inscription->getPaiements() == $nb_cheque, true, false );
 						if ( $contrat->getPayByMonth() ) {
 							if ( 1 === $nb_cheque ) {
 								$cheques   = Amapress::formatPrice( $total, true );
@@ -3464,7 +3465,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 										$month_amount );
 								}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
 							}
-							$nb_cheque_val = $nb_cheque + 100;
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='{$nb_cheque_val}' class='input-nb-cheques required' />$chq_label</label><br/>";
 						} elseif ( $contrat->hasCustomMultiplePaiements() ) {
 							$amounts       = $contrat->getTotalAmountByCustom( $nb_cheque, $total );
@@ -3475,7 +3475,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								return sprintf( "1 prélèvement de %0.2f €",
 									$amount );
 							}, $amounts ) );
-							$nb_cheque_val = $nb_cheque + 100;
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label</label><br/>";
 						} else {
 							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total, 'prélèvement' );
@@ -3486,7 +3485,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							if ( $cheque_main_amount != $last_cheque ) {
 								$chq_label = "$nb_cheque prélèvement(s) : ";
 							}
-							$nb_cheque_val = $nb_cheque = 100;
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 						}
 					}
