@@ -485,6 +485,7 @@ class AmapressMailingGroup extends TitanEntity {
 					if ( ! $is_site_member ) {
 						if ( preg_match( '/^(mailer-daemon|postmaster|hostmaster|abuse|junk|sympa|listserv|majordomo|smartlist|mailman)@/i', $mail->fromAddress ) ) {
 							global $phpmailer;
+							require_once AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php';
 							AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
 							$undelivered = '';
 							try {
@@ -926,7 +927,7 @@ class AmapressMailingGroup extends TitanEntity {
 
 		$subject = ! empty( $msg['subject'] ) ? $msg['subject'] : '';
 		global $phpmailer;
-
+		require_once AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php';
 		AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
 
 
@@ -1079,6 +1080,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$ml_grp = $this;
 		if ( $ml_grp->isExternalSmtp() ) {
 			try {
+				require_once AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php';
 				$phpmailer = AmapressSMTPMailingQueueOriginal::GetPHPMailer();
 
 				// Set mailer to SMTP

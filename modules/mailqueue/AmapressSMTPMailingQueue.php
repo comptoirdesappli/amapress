@@ -159,7 +159,7 @@ class AmapressSMTPMailingQueue {
 	 * @return bool
 	 */
 	public static function storeMail( $mlgrp_id, $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0 ) {
-		require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php';
 		AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
 		global $phpmailer;
 
