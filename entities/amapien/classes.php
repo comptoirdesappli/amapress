@@ -489,6 +489,18 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 		}
 	}
 
+	public function getNoRenew() {
+		$this->ensure_init();
+
+		return isset( $this->custom['amapress_user_no_renew'] ) ? intval( $this->custom['amapress_user_no_renew'] ) : 0;
+	}
+
+	public function getNoRenewReason() {
+		$this->ensure_init();
+
+		return isset( $this->custom['amapress_user_no_renew_reason'] ) ? $this->custom['amapress_user_no_renew_reason'] : '';
+	}
+
 	public function getMoyen() {
 		$this->ensure_init();
 

@@ -1869,6 +1869,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
 
+		delete_user_meta( $user_id, 'amapress_user_no_renew' );
+		delete_user_meta( $user_id, 'amapress_user_no_renew_reason' );
+
 		$terms   = array();
 		$amounts = array();
 		foreach ( $_POST['amapress_pmt_amounts'] as $tax_id => $amount ) {
@@ -1983,6 +1986,43 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
 </form></p>';
 		}
+	} else if ( 'norenew' == $step ) {
+		if ( $for_logged && amapress_is_user_logged_in() ) {
+			$user_id = wp_get_current_user()->ID;
+		} else {
+			if ( empty( $_REQUEST['user_id'] ) ) {
+				wp_die( $invalid_access_message );
+			}
+			$user_id = intval( $_REQUEST['user_id'] );
+		}
+		$user = AmapressUser::getBy( $user_id );
+		if ( isset( $_REQUEST['no_renew'] ) ) {
+			$reason = sanitize_textarea_field( isset( $_REQUEST['no_renew_reason'] ) ? $_REQUEST['no_renew_reason'] : '' );
+			update_user_meta( $user->ID, 'amapress_user_no_renew', 1 );
+			update_user_meta( $user->ID, 'amapress_user_no_renew_reason', $reason );
+			ob_clean();
+
+			$track_no_renews_email = $atts['track_no_renews_email'];
+			if ( empty( $track_no_renews_email ) ) {
+				$track_no_renews_email = get_option( 'admin_email' );
+			}
+			if ( ! empty( $track_no_renews_email ) ) {
+				$amapien   = AmapressUser::getBy( $user );
+				$edit_link = Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() );
+				amapress_wp_mail(
+					$track_no_renews_email,
+					'Adhésion/Préinscription - Non renouvellement - ' . $amapien->getDisplayName(),
+					amapress_replace_mail_placeholders(
+						wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien ),
+					'', [], $notify_email
+				);
+			}
+
+			return $additional_css . wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_norenew_message' ), null ) );
+		} else {
+			delete_user_meta( $user->ID, 'amapress_user_no_renew' );
+			delete_user_meta( $user->ID, 'amapress_user_no_renew_reason' );
+		}
 	} else if ( 'contrats' == $step ) {
 		if ( $for_logged && amapress_is_user_logged_in() ) {
 			$user_id = wp_get_current_user()->ID;
@@ -2058,6 +2098,27 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
 </form></p>';
+						if ( $track_no_renews ) {
+							?>
+                            <form method="post"
+                                  action="<?php echo esc_attr( add_query_arg( 'step', 'norenew', remove_query_arg( [
+								      'contrat_id',
+								      'message'
+							      ] ) ) ) ?>">
+                                <div class="amap-preinscr-norenew">
+                                    <h4>Non renouvellement</h4>
+									<?php if ( $amapien->getNoRenew() ) {
+										echo '<p>Votre non renouvellement a été pris en compte !</p>';
+									} ?>
+                                    <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
+                                    <label for="no_renew_reason">Motif (facultatif):</label>
+                                    <textarea id="no_renew_reason" name="no_renew_reason"
+                                              placeholder="Motif (facultatif)"><?php echo esc_textarea( $amapien->getNoRenewReason() ); ?></textarea>
+                                    <input type="submit" name="no_renew" value="Je ne souhaite pas renouveler."/>
+                                </div>
+                            </form>
+							<?php
+						}
 						if ( $activate_adhesion || $check_adhesion_received ) {
 							return ob_get_clean();
 						}
@@ -3467,11 +3528,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							}
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='{$nb_cheque_val}' class='input-nb-cheques required' />$chq_label</label><br/>";
 						} elseif ( $contrat->hasCustomMultiplePaiements() ) {
-							$amounts       = $contrat->getTotalAmountByCustom( $nb_cheque, $total );
-							$cheques       = implode( '|', array_map( function ( $amount ) {
+							$amounts   = $contrat->getTotalAmountByCustom( $nb_cheque, $total );
+							$cheques   = implode( '|', array_map( function ( $amount ) {
 								return Amapress::formatPrice( $amount, true );
 							}, $amounts ) );
-							$chq_label     = implode( ' ; ', array_map( function ( $amount ) {
+							$chq_label = implode( ' ; ', array_map( function ( $amount ) {
 								return sprintf( "1 prélèvement de %0.2f €",
 									$amount );
 							}, $amounts ) );
