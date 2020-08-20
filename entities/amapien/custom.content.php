@@ -20,10 +20,12 @@ function amapress_edit_user_info_shortcode( $atts ) {
 			'edit_names'            => 'true',
 			'max_cofoyers'          => 3,
 			'show_cofoyers_address' => 'false',
+			'show_adherents_infos'  => 'true',
 			'allow_remove_cofoyers' => 'true',
 			'mob_phone_required'    => 'false',
 		], $atts
 	);
+	$show_adherents_infos  = Amapress::toBool( $atts['show_adherents_infos'] );
 	$edit_names            = Amapress::toBool( $atts['edit_names'] );
 	$max_cofoyers          = intval( $atts['max_cofoyers'] );
 	$allow_remove_cofoys   = Amapress::toBool( $atts['allow_remove_cofoyers'] );
@@ -35,6 +37,10 @@ function amapress_edit_user_info_shortcode( $atts ) {
 	<?php
 	$user_id = amapress_current_user_id();
 	$user    = AmapressUser::getBy( $user_id );
+
+	if ( $show_adherents_infos ) {
+		echo '<p>' . $user->getAdherentInfo() . '</p>';
+	}
 
 	$cofoy1_user_firt_name = '';
 	$cofoy1_user_last_name = '';
@@ -160,7 +166,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_ville">
-				<?php _e( 'Ville', 'amapress' ) ?><br/>
+			    <?php _e( 'Ville', 'amapress' ) ?><br/>
             </label>
             <input class="form-control" type="text" name="amapress_user_ville" id="amapress_user_ville"
                    value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
