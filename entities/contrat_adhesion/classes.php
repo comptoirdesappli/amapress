@@ -2563,10 +2563,18 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
 
 			if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ] ) ) {
-				$numero      = $pre_filled_paiements[ $pre_filled_paiement_index ]['num'];
-				$banque      = $pre_filled_paiements[ $pre_filled_paiement_index ]['banque'];
-				$adherent    = $pre_filled_paiements[ $pre_filled_paiement_index ]['emetteur'];
-				$paiement_dt = Amapress::start_of_day( intval( $pre_filled_paiements[ $pre_filled_paiement_index ]['date'] ) );
+				if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ]['num'] ) ) {
+					$numero = $pre_filled_paiements[ $pre_filled_paiement_index ]['num'];
+				}
+				if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ]['banque'] ) ) {
+					$banque = $pre_filled_paiements[ $pre_filled_paiement_index ]['banque'];
+				}
+				if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ]['emetteur'] ) ) {
+					$adherent = $pre_filled_paiements[ $pre_filled_paiement_index ]['emetteur'];
+				}
+				if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ]['date'] ) ) {
+					$paiement_dt = Amapress::start_of_day( intval( $pre_filled_paiements[ $pre_filled_paiement_index ]['date'] ) );
+				}
 			}
 
 			$meta = array(
