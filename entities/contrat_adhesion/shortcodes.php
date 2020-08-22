@@ -226,7 +226,7 @@ add_action( 'amapress_init', function () {
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_agreement' == $_REQUEST['inscr_assistant'] ) {
 		$step = ! empty( $_REQUEST['coords_next_step'] ) ? sanitize_key( $_REQUEST['coords_next_step'] ) : 'contrats';
-		if ( ! isset( $_REQUEST['accept'] ) || ! (int) $_REQUEST['accept'] ) {
+		if ( ! isset( $_REQUEST['accept'] ) ) {
 			$step = 'agreement';
 		}
 		$user_id = isset( $_REQUEST['user_id'] ) ? intval( $_REQUEST['user_id'] ) : 0;
@@ -1737,7 +1737,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
-                                                     class="required"
+                                                     class="required" value="1"
                                                      data-msg="Veuillez cocher la case ci-dessous"/> <?php echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_checkbox' ) ) ); ?>
                 </label>
             </p>
