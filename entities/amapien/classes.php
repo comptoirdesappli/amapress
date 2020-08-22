@@ -707,7 +707,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 	}
 
-	public function addCoadherent( $coadhrent_id, $notify_email = null, $cofoyer = false ) {
+	public function addCoadherent( $coadhrent_id, $notify_email = null, $cofoyer = false, $check_already_associated = true ) {
 		$this->ensure_init();
 
 		if ( empty( $coadhrent_id ) ) {
@@ -721,6 +721,13 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				if ( $this->custom[ $key . $id ] == $coadhrent_id ) {
 					return true;
 				}
+			}
+		}
+
+		if ( $check_already_associated ) {
+			$related_users = AmapressContrats::get_related_users( $this->ID, true );
+			if ( in_array( $coadhrent_id, $related_users ) ) {
+				return true;
 			}
 		}
 
