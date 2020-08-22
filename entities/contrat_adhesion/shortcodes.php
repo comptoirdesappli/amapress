@@ -356,7 +356,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$is_inscription_mode = 'inscription-en-ligne' == $tag || 'inscription-en-ligne-connecte' == $tag;
 	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag;
 
-	$atts = shortcode_atts(
+	$atts                                   = shortcode_atts(
 		[
 			'key'                                 => '',
 			'use_steps_nums'                      => 'true',
@@ -845,7 +845,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		Amapress::setFilterForReferent( true );
 
 		if ( ! $edit_inscription ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		if ( ! $edit_inscription->canSelfEdit() ) {
 			ob_clean();
@@ -968,7 +968,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$email = wp_get_current_user()->user_email;
 		} else {
 			if ( empty( $_REQUEST['email'] ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$email = sanitize_email( $_REQUEST['email'] );
 		}
@@ -1708,7 +1708,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		<?php
 	} else if ( 'agreement' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 
@@ -1748,7 +1748,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		<?php
 	} else if ( 'adhesion' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 
@@ -1852,12 +1852,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	} else if ( 'save_adhesion' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 
 		if ( empty( $_REQUEST['amapress_pmt_amounts'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
@@ -1992,7 +1992,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$user_id = wp_get_current_user()->ID;
 		} else {
 			if ( empty( $_REQUEST['user_id'] ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
@@ -2029,7 +2029,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$user_id = wp_get_current_user()->ID;
 		} else {
 			if ( empty( $_REQUEST['user_id'] ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
@@ -2588,12 +2588,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	} else if ( 'inscr_contrat_date_lieu' == $step ) {
 		$next_step_url = add_query_arg( 'step', 'inscr_contrat_engage' );
 		if ( empty( $_REQUEST['contrat_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		$contrat    = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
 		$lieux = $contrat->getLieux();
@@ -2640,7 +2640,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			$dates = array_values( $dates );
 			if ( empty( $dates ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$first_avail_date = $dates[0];
 			$is_started       = $first_avail_date != $first_contrat_date;
@@ -2732,7 +2732,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$user_id = wp_get_current_user()->ID;
 				} else {
 					if ( empty( $_REQUEST['user_id'] ) ) {
-						wp_die( $invalid_access_message );
+						wp_die( $invalid_access_message ); //phpcs:ignore
 					}
 					$user_id = intval( $_REQUEST['user_id'] );
 				}
@@ -2772,13 +2772,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		<?php
 	} else if ( 'details_all_paiements' == $step ) {
 		if ( ! $show_due_amounts ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		if ( $for_logged && amapress_is_user_logged_in() ) {
 			$user_id = wp_get_current_user()->ID;
 		} else {
 			if ( empty( $_REQUEST['user_id'] ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
@@ -2786,13 +2786,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta );
 	} else if ( 'details_all_delivs' == $step ) {
 		if ( ! $show_delivery_details ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		if ( $for_logged && amapress_is_user_logged_in() ) {
 			$user_id = wp_get_current_user()->ID;
 		} else {
 			if ( empty( $_REQUEST['user_id'] ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
@@ -2802,7 +2802,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( isset( $_GET['contrat_id'] ) ) {
 			$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
 			if ( $adh->getAdherentId() != $user_id && $adh->getAdherent2Id() != $user_id && $adh->getAdherent3Id() != $user_id ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$contrat_id = $adh->getContrat_instanceId();
 		}
@@ -2812,31 +2812,31 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo amapress_get_contrats_calendar( $subscribable_contrats );
 	} else if ( 'details' == $step ) {
 		if ( empty( $_GET['contrat_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		if ( $for_logged && amapress_is_user_logged_in() ) {
 			$user_id = wp_get_current_user()->ID;
 		} else {
 			if ( empty( $_REQUEST['user_id'] ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
 
 		$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
 		if ( $adh->getAdherentId() != $user_id && $adh->getAdherent2Id() != $user_id && $adh->getAdherent3Id() != $user_id ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		if ( ! empty( $_GET['cancel_inscr_id'] ) ) {
 			if ( intval( $_GET['cancel_inscr_id'] ) != $adh->ID ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			if ( ! $adh->canSelfEdit() ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			if ( isset( $_GET['confirm'] ) ) {
 				if ( ! wp_delete_post( $adh->ID, true ) ) {
-					wp_die( $invalid_access_message );
+					wp_die( $invalid_access_message ); //phpcs:ignore
 				}
 				if ( ! $use_contrat_term ) {
 					echo '<p>Votre commande ' . esc_html( $adh->getTitle() ) . ' a été annulée avec succès.</p>';
@@ -2895,15 +2895,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo '<h4>' . esc_html( $adh->getTitle() ) . '</h4><p>' . $contrat_info . '</p>';
 	} else if ( 'inscr_contrat_engage' == $step ) {
 		if ( empty( $_REQUEST['contrat_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		if ( empty( $_REQUEST['lieu_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$lieu_id = intval( $_REQUEST['lieu_id'] );
 		if ( empty( $_REQUEST['start_date'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
 		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -2915,7 +2915,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
 		$next_step_url = add_query_arg( [
@@ -3216,21 +3216,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	} else if ( 'inscr_contrat_paiements' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 		if ( empty( $_REQUEST['contrat_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		if ( empty( $_REQUEST['start_date'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
 
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$next_step_url = add_query_arg( [ 'step' => 'inscr_contrat_create' ] );
 
@@ -3243,7 +3243,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( $contrat->isPanierVariable() ) {
 			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? (array) $_REQUEST['panier_vars'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( empty( $panier_vars ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 
 			$columns         = [];
@@ -3343,7 +3343,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 
 			if ( empty( $quants ) ) {
-				wp_die( $invalid_access_message );
+				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 
 			$factors = isset( $_REQUEST['factors'] ) ? (array) $_REQUEST['factors'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -3650,7 +3650,7 @@ $paiements_dates
 		echo '</p>';
 		echo '<br />';
 		if ( ! empty( $pay_at_deliv ) ) {
-			echo '<p><strong>Produits payables à la livraison</strong> : ' . implode( ', ', $pay_at_deliv ) . '</p>';
+			echo '<p><strong>Produits payables à la livraison</strong> : ' . esc_html( implode( ', ', $pay_at_deliv ) ) . '</p>';
 			echo '<br />';
 		}
 		if ( ! $admin_mode ) {
@@ -3662,19 +3662,19 @@ $paiements_dates
 		echo '</form>';
 	} else if ( 'inscr_contrat_create' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 		if ( empty( $_REQUEST['contrat_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$contrat_id = intval( $_REQUEST['contrat_id'] );
 		if ( empty( $_REQUEST['lieu_id'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$lieu_id = intval( $_REQUEST['lieu_id'] );
 		if ( empty( $_REQUEST['start_date'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
 		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : ''; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -3689,19 +3689,19 @@ $paiements_dates
 		$lieu    = AmapressLieu_distribution::getBy( $lieu_id );
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( ! $amapien || ! $lieu || ! $contrat ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
 		if ( $contrat->getManage_Cheques() && empty( $_REQUEST['cheques'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$cheques = ! isset( $_REQUEST['cheques'] ) ? 0 : intval( $_REQUEST['cheques'] );
 		if ( empty( $_REQUEST['quants'] ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$quants = unserialize( stripslashes( $_REQUEST['quants'] ) ); //phpcs:ignore
 		if ( empty( $quants ) ) {
-			wp_die( $invalid_access_message );
+			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
 		$referents_ids = $contrat->getReferentsIds( $lieu_id );
