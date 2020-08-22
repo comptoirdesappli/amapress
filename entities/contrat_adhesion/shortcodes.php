@@ -11,17 +11,17 @@ function amapress_sha_secret( $d ) {
 add_action( 'amapress_init', function () {
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_coords' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
-			if ( ! isset( $_REQUEST['inscr_key'] ) || $_REQUEST['inscr_key'] != amapress_sha_secret( $request_key ) ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || sanitize_text_field( $_REQUEST['inscr_key'] ) != amapress_sha_secret( $request_key ) ) {
 				wp_die( 'Accès interdit' );
 			}
 		}
-		$email              = sanitize_email( $_REQUEST['email'] );
+		$email              = sanitize_email( isset( $_REQUEST['email'] ) ? $_REQUEST['email'] : '' );
 		$user_firt_name     = sanitize_text_field( ! empty( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '' );
 		$user_last_name     = sanitize_text_field( ! empty( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '' );
-		$user_address       = sanitize_textarea_field( $_REQUEST['address'] );
-		$user_mobile_phones = sanitize_text_field( $_REQUEST['telm'] );
-		$user_fix_phones    = sanitize_text_field( $_REQUEST['telf'] );
+		$user_address       = sanitize_textarea_field( isset( $_REQUEST['address'] ) ? $_REQUEST['address'] : '' );
+		$user_mobile_phones = sanitize_text_field( isset( $_REQUEST['telm'] ) ? $_REQUEST['telm'] : '' );
+		$user_fix_phones    = sanitize_text_field( isset( $_REQUEST['telf'] ) ? $_REQUEST['telf'] : '' );
 		$user_phones        = array_filter( [ $user_mobile_phones, $user_fix_phones ], function ( $s ) {
 			return ! empty( $s );
 		} );
@@ -29,9 +29,9 @@ add_action( 'amapress_init', function () {
 		$notify_email = get_option( 'admin_email' );
 		if ( ! empty( $_REQUEST['notify_email'] ) ) {
 			if ( empty( $notify_email ) ) {
-				$notify_email = $_REQUEST['notify_email'];
+				$notify_email = sanitize_email( $_REQUEST['notify_email'] );
 			} else {
-				$notify_email .= ',' . $_REQUEST['notify_email'];
+				$notify_email .= ',' . sanitize_email( $_REQUEST['notify_email'] );
 			}
 		}
 
@@ -46,7 +46,7 @@ add_action( 'amapress_init', function () {
 		} );
 
 		$notify = null;
-		if ( ! Amapress::toBool( $_REQUEST['send_welcome'] ) ) {
+		if ( isset( $_REQUEST['send_welcome'] ) && ! Amapress::toBool( sanitize_text_field( $_REQUEST['send_welcome'] ) ) ) {
 			$notify = 'admin';
 		}
 		$user_id = amapress_create_user_if_not_exists( $email, $user_firt_name, $user_last_name, $user_address, $user_phones, $notify );
@@ -219,17 +219,17 @@ add_action( 'amapress_init', function () {
 
 		wp_redirect_and_exit(
 			add_query_arg( [
-				'step'    => ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats',
+				'step'    => ! empty( $_REQUEST['coords_next_step'] ) ? sanitize_key( $_REQUEST['coords_next_step'] ) : 'contrats',
 				'user_id' => $user_id,
 			] )
 		);
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_agreement' == $_REQUEST['inscr_assistant'] ) {
-		$step = ! empty( $_REQUEST['coords_next_step'] ) ? $_REQUEST['coords_next_step'] : 'contrats';
-		if ( isset( $_REQUEST['accept'] ) && ! $_REQUEST['accept'] ) {
+		$step = ! empty( $_REQUEST['coords_next_step'] ) ? sanitize_key( $_REQUEST['coords_next_step'] ) : 'contrats';
+		if ( ! isset( $_REQUEST['accept'] ) || ! (int) $_REQUEST['accept'] ) {
 			$step = 'agreement';
 		}
-		$user_id = intval( $_REQUEST['user_id'] );
+		$user_id = isset( $_REQUEST['user_id'] ) ? intval( $_REQUEST['user_id'] ) : 0;
 		wp_redirect_and_exit(
 			add_query_arg( [
 				'step'    => $step,
@@ -239,13 +239,13 @@ add_action( 'amapress_init', function () {
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_contrat' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
-			if ( ! isset( $_REQUEST['inscr_key'] ) || $_REQUEST['inscr_key'] != amapress_sha_secret( $request_key ) ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || sanitize_text_field( $_REQUEST['inscr_key'] ) != amapress_sha_secret( $request_key ) ) {
 				wp_die( 'Accès interdit' );
 			}
 		}
 
-		$inscr_id = intval( $_REQUEST['inscr_id'] );
+		$inscr_id = isset( $_REQUEST['inscr_id'] ) ? intval( $_REQUEST['inscr_id'] ) : 0;
 		if ( empty( $inscr_id ) ) {
 			wp_die( 'Accès interdit' );
 		}
@@ -260,8 +260,8 @@ add_action( 'amapress_init', function () {
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_bulletin' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
-			if ( ! isset( $_REQUEST['inscr_key'] ) || $_REQUEST['inscr_key'] != amapress_sha_secret( $request_key ) ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || sanitize_text_field( $_REQUEST['inscr_key'] ) != amapress_sha_secret( $request_key ) ) {
 				wp_die( 'Accès interdit' );
 			}
 		}
@@ -349,7 +349,7 @@ function amapress_step_text( $step_id, $steps_nums, $steps_count ) {
 function amapress_self_inscription( $atts, $content = null, $tag ) {
 	amapress_ensure_no_cache();
 
-	$step              = isset( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'email';
+	$step              = isset( $_REQUEST['step'] ) ? sanitize_key( $_REQUEST['step'] ) : 'email';
 	$disable_principal = Amapress::getOption( 'disable_principal', false );
 
 	$is_mes_contrats     = 'mes-contrats' == $tag;
@@ -501,7 +501,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 		}
-		$request_key = ! empty( $_REQUEST['key'] ) ? $_REQUEST['key'] : 'public';
+		$request_key = ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : 'public';
 		if ( empty( $key ) || $request_key != $key ) {
 			if ( empty( $key ) && amapress_can_access_admin() ) {
 				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [inscription-en-ligne] de cette page : par exemple "[inscription-en-ligne key='
@@ -823,7 +823,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( isset( $_REQUEST['user_id'] ) ) {
 			$start_step_url = add_query_arg(
 				[
-					'user_id'   => $_REQUEST['user_id'],
+					'user_id'   => intval( $_REQUEST['user_id'] ),
 					'assistant' => 1,
 				], $start_step_url
 			);
@@ -1872,9 +1872,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		delete_user_meta( $user_id, 'amapress_user_no_renew' );
 		delete_user_meta( $user_id, 'amapress_user_no_renew_reason' );
 
-		$terms   = array();
-		$amounts = array();
-		foreach ( $_POST['amapress_pmt_amounts'] as $tax_id => $amount ) {
+		$terms                = array();
+		$amounts              = array();
+		$amapress_pmt_amounts = isset( $_POST['amapress_pmt_amounts'] ) ? (array) $_POST['amapress_pmt_amounts'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		foreach ( $amapress_pmt_amounts as $tax_id => $amount ) {
 			if ( $amount > 0 ) {
 				$terms[]            = intval( $tax_id );
 				$amounts[ $tax_id ] = floatval( $amount );
@@ -1887,14 +1888,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_repartition', $amounts );
 		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_amount', $total_amount );
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_banque'] ) ) {
-			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_banque', $_REQUEST['amapress_adhesion_paiement_banque'] );
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_banque', sanitize_text_field( $_REQUEST['amapress_adhesion_paiement_banque'] ) );
 		}
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_numero'] ) ) {
-			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_numero', $_REQUEST['amapress_adhesion_paiement_numero'] );
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_numero', sanitize_text_field( $_REQUEST['amapress_adhesion_paiement_numero'] ) );
 		}
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_pmt_type'] ) ) {
-			$pmt_type = $_REQUEST['amapress_adhesion_paiement_pmt_type'];
-			if ( 'mon' == $pmt_type || 'esp' == $pmt_type || 'vir' == $pmt_type ) {
+			$pmt_type = sanitize_key( $_REQUEST['amapress_adhesion_paiement_pmt_type'] );
+			if ( 'mon' == $pmt_type || 'esp' == $pmt_type || 'vir' == $pmt_type || 'stp' == $pmt_type ) {
 				update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_pmt_type', $pmt_type );
 			}
 		}
@@ -1905,7 +1906,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		if ( isset( $_REQUEST['amapress_adhesion_lieu'] ) ) {
-			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_lieu', $_REQUEST['amapress_adhesion_lieu'] );
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_lieu', intval( $_REQUEST['amapress_adhesion_lieu'] ) );
 		}
 
 		amapress_compute_post_slug_and_title( $adh_paiement->getPost() );
@@ -2905,10 +2906,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			wp_die( $invalid_access_message );
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
-		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : '';
-		if ( is_array( $coadhs ) ) {
-			$coadhs = implode( ',', $coadhs );
+		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( ! is_array( $coadhs ) ) {
+			$coadhs = explode( ',', $coadhs );
 		}
+		$coadhs = array_map( 'intval', $coadhs );
+		$coadhs = implode( ',', $coadhs );
 
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
@@ -3224,10 +3227,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			wp_die( $invalid_access_message );
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
-		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : '';
-		if ( is_array( $coadhs ) ) {
-			$coadhs = implode( ',', $coadhs );
-		}
 
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( empty( $contrat ) ) {
@@ -3242,7 +3241,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$by_month_totals = [];
 		if ( $contrat->isPanierVariable() ) {
-			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? $_REQUEST['panier_vars'] : [];
+			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? (array) $_REQUEST['panier_vars'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( empty( $panier_vars ) ) {
 				wp_die( $invalid_access_message );
 			}
@@ -3265,7 +3264,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'date'      => date_i18n( 'd/m/Y', $date_k ),
 					'date_sort' => date_i18n( 'Y-m-d', $date_k ),
 				];
-				foreach ( $quant_factors as $quant_k => $factor_v ) {
+				foreach ( (array) $quant_factors as $quant_k => $factor_v ) {
 					$q_id   = intval( $quant_k );
 					$factor = floatval( $factor_v );
 					if ( $factor <= 0 ) {
@@ -3338,7 +3337,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '</ul>';
 			}
 		} else {
-			$quants = isset( $_REQUEST['quants'] ) ? $_REQUEST['quants'] : [];
+			$quants = isset( $_REQUEST['quants'] ) ? (array) $_REQUEST['quants'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( ! is_array( $quants ) ) {
 				$quants = [ $quants ];
 			}
@@ -3347,7 +3346,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				wp_die( $invalid_access_message );
 			}
 
-			$factors = isset( $_REQUEST['factors'] ) ? $_REQUEST['factors'] : [];
+			$factors = isset( $_REQUEST['factors'] ) ? (array) $_REQUEST['factors'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 			$dates = $contrat->getListe_dates();
 			$dates = array_filter( $dates, function ( $d ) use ( $start_date ) {
@@ -3359,6 +3358,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$serial_quants = [];
 			foreach ( $quants as $q ) {
 				$q_id = intval( $q );
+				if ( empty( $q_id ) ) {
+					continue;
+				}
 
 				$dates_factors = 0;
 				foreach ( $dates as $d ) {
@@ -3675,10 +3677,11 @@ $paiements_dates
 			wp_die( $invalid_access_message );
 		}
 		$start_date = intval( $_REQUEST['start_date'] );
-		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : '';
+		$coadhs     = isset( $_REQUEST['coadhs'] ) ? $_REQUEST['coadhs'] : ''; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		if ( ! is_array( $coadhs ) ) {
 			$coadhs = explode( ',', $coadhs );
 		}
+		$coadhs = array_map( 'intval', $coadhs );
 
 		$message = sanitize_textarea_field( isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '' );
 
@@ -3696,7 +3699,7 @@ $paiements_dates
 		if ( empty( $_REQUEST['quants'] ) ) {
 			wp_die( $invalid_access_message );
 		}
-		$quants = unserialize( stripslashes( $_REQUEST['quants'] ) );
+		$quants = unserialize( stripslashes( $_REQUEST['quants'] ) ); //phpcs:ignore
 		if ( empty( $quants ) ) {
 			wp_die( $invalid_access_message );
 		}
@@ -3818,7 +3821,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		$inscription = AmapressAdhesion::getBy( $new_id, true );
 		Amapress::setFilterForReferent( true );
 		if ( $inscription->getContrat_instance()->getManage_Cheques() ) {
-			$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? $_REQUEST['pmt'] : [] );
+			$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? (array) $_REQUEST['pmt'] : [] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
