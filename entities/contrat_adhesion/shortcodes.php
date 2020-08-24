@@ -356,7 +356,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$is_inscription_mode = 'inscription-en-ligne' == $tag || 'inscription-en-ligne-connecte' == $tag;
 	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag;
 
-	$atts                                   = shortcode_atts(
+	$atts = shortcode_atts(
 		[
 			'key'                                 => '',
 			'use_steps_nums'                      => 'true',
@@ -406,6 +406,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_delivery_details'               => 'false',
 			'show_calendar_delivs'                => 'false',
 			'show_current_inscriptions'           => 'inscription-en-ligne-connecte' == $tag || $is_adhesion_mode ? 'false' : 'true',
+			'show_only_subscribable_inscriptions' => $is_inscription_mode ? 'true' : 'false',
 			'show_editable_inscriptions'          => 'true',
 			'adhesion_shift_weeks'                => 0,
 			'before_close_hours'                  => 24,
@@ -447,6 +448,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$show_cofoys_address                 = Amapress::toBool( $atts['show_cofoyers_address'] );
 	$show_due_amounts                    = Amapress::toBool( $atts['show_due_amounts'] );
 	$show_modify_coords                  = Amapress::toBool( $atts['show_modify_coords'] );
+	$show_only_subscribable_inscriptions = Amapress::toBool( $atts['show_only_subscribable_inscriptions'] ) || $admin_mode;
 	$show_current_inscriptions           = Amapress::toBool( $atts['show_current_inscriptions'] ) || $admin_mode;
 	$show_editable_inscriptions          = Amapress::toBool( $atts['show_editable_inscriptions'] ) || $admin_mode;
 	$show_delivery_details               = Amapress::toBool( $atts['show_delivery_details'] );
@@ -2040,11 +2042,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		Amapress::setFilterForReferent( false );
 		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
-//		$adhs = array_filter( $adhs,
-//			function ( $adh ) use ( $all_subscribable_contrats_ids ) {
-//				/** @var AmapressAdhesion $adh */
-//				return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
-//			} );
+		if ( $show_only_subscribable_inscriptions ) {
+			$adhs = array_filter( $adhs,
+				function ( $adh ) use ( $all_subscribable_contrats_ids ) {
+					/** @var AmapressAdhesion $adh */
+					return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
+				} );
+		}
 		if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal ) {
 			foreach ( $adhs as $adh ) {
 				if ( $adh->getContrat_instance()->isPrincipal() ) {
@@ -2284,9 +2288,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				/** @var AmapressAdhesion $adh */
 				return $adh->canSelfEdit();
 			} );
-			if ( $admin_mode || ( $show_editable_inscriptions && ! empty( $editable_adhs ) ) || $show_current_inscriptions ) {
+			if ( $admin_mode || ( $show_editable_inscriptions && ! empty( $editable_adhs ) ) || $show_current_inscriptions || $show_only_subscribable_inscriptions ) {
 				if ( ! $admin_mode ) {
-					if ( $show_current_inscriptions ) {
+					if ( $show_current_inscriptions || $show_only_subscribable_inscriptions ) {
 						if ( ! $use_contrat_term ) {
 							echo '<p>Vos commandes :</p>';
 						} else {
@@ -2307,7 +2311,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 				}
 				echo '<ul style="list-style-type: disc">';
-				foreach ( ( $admin_mode || $show_current_inscriptions ? $adhs : $editable_adhs ) as $adh ) {
+				foreach ( ( $admin_mode || $show_current_inscriptions || $show_only_subscribable_inscriptions ? $adhs : $editable_adhs ) as $adh ) {
 					$print_contrat = '';
 					if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
 						$print_contrat = Amapress::makeButtonLink(
