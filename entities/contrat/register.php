@@ -1650,7 +1650,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en espèce',
 			),
-			'allow_bktrfr'          => array(
+			'allow_bktrfr'      => array(
 				'name'        => amapress__( 'Virement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1660,7 +1660,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par virement',
 			),
-			'allow_locmon'          => array(
+			'allow_locmon'      => array(
 				'name'        => amapress__( 'Monnaie locale' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1670,7 +1670,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en monnaie locale',
 			),
-			'allow_prlv'            => array(
+			'allow_prlv'        => array(
 				'name'        => amapress__( 'Prélèvement' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1679,7 +1679,16 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par prélèvement',
 			),
-			'manage_paiements'      => array(
+			'stripe_key'        => array(
+				'name'        => amapress__( 'Clé Stripe' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlements',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'default'     => '',
+				'show_column' => false,
+				'desc'        => 'Clé des paiement en ligne via Stripe pour ce contrat/producteur. Remplir ce champs active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien le paiement en ligne',
+			),
+			'manage_paiements'  => array(
 				'name'        => amapress__( 'Répartition des règlements' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1689,7 +1698,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Gérer la répartition et le suivi des règlements dans Amapress',
 			),
-			'paiements_mention'     => array(
+			'paiements_mention' => array(
 				'name'        => amapress__( 'Références' ),
 				'type'        => 'editor',
 				'group'       => '6/6 - Règlements',
@@ -1697,7 +1706,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Donner des instructions dans l’assistant de pré-inscription en ligne concernant les modalités de règlement<br/>Le placeholder %%id%% peut être utilisé pour mentionner une référence d\'inscription',
 			),
-			'paiements_ordre'       => array(
+			'paiements_ordre'   => array(
 				'name'        => amapress__( 'Ordre des chèques' ),
 				'type'        => 'text',
 				'group'       => '6/6 - Règlements',

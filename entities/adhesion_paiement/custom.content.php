@@ -447,6 +447,9 @@ function amapress_paiements_editor( $post_id ) {
 	            	} else if ("vir" === type) {
 	            		fields.prop("disabled", true);
 	            	    fields.val("Vir.");
+	            	} else if ("stp" === type) {
+	            		fields.prop("disabled", true);
+	            	    fields.val("Stripe");
 	            	} else if ("mon" === type) {
 	            		fields.prop("disabled", true);
 	            	    fields.val("Mon.");
@@ -592,6 +595,7 @@ function amapress_paiements_editor( $post_id ) {
 <td class='paiement-type'><select name='amapress_paiements_details[$id][type]' style='width: 50px'>
 <option value='chq' " . selected( $pmt_type, 'chq', false ) . ">Chèque</option>
 <option value='esp' " . selected( $pmt_type, 'esp', false ) . ">Espèces</option>
+<option value='stp' " . selected( $pmt_type, 'stp', false ) . ">Paiement en ligne (Stripe)</option>
 <option value='vir' " . selected( $pmt_type, 'vir', false ) . ">Virement</option>
 <option value='mon' " . selected( $pmt_type, 'mon', false ) . ">Monnaie locale</option>
 <option value='dlv' " . selected( $pmt_type, 'dlv', false ) . ">A la livraison</option>

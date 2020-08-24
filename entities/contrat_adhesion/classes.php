@@ -799,6 +799,9 @@ class AmapressAdhesion extends TitanEntity {
 					if ( 'esp' == $adh->getMainPaiementType() ) {
 						return 'En espèces';
 					}
+					if ( 'stp' == $adh->getMainPaiementType() ) {
+						return 'Paiement en ligne';
+					}
 					if ( 'vir' == $adh->getMainPaiementType() ) {
 						return 'Par virement';
 					}
@@ -2605,6 +2608,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			);
 			if ( ( $overwrite || null == $paiement ) && 'esp' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'esp';
+			}
+			if ( ( $overwrite || null == $paiement ) && 'stp' == $this->getMainPaiementType() ) {
+				$meta['amapress_contrat_paiement_type'] = 'stp';
 			}
 			if ( ( $overwrite || null == $paiement ) && 'vir' == $this->getMainPaiementType() ) {
 				$meta['amapress_contrat_paiement_type'] = 'vir';

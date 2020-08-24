@@ -288,6 +288,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_allow_cash', 0 );
 	}
 
+	public function getStripeKey() {
+		return $this->getCustom( 'amapress_contrat_instance_stripe_key', '' );
+	}
+
+	public function getAllow_Stripe() {
+		return ! empty( $this->getStripeKey() );
+	}
+
 	public function getPayByMonth() {
 		return $this->getCustom( 'amapress_contrat_instance_pay_month', 0 )
 		       || $this->getPayByMonthOnly();
