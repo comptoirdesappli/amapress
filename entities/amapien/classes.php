@@ -1173,8 +1173,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 					$adh_user_ids[] = $adh->getAdherentId();
 				}
 				$adh_user_ids = array_unique( $adh_user_ids );
-				if ( 1 == count( $adh_user_ids ) && in_array( $this->ID, $adh_user_ids ) ) {
-					$this->adh_type = 'main';
+				if ( 1 == count( $adh_user_ids ) ) {
+					$this->adh_type = in_array( $this->ID, $adh_user_ids ) ? 'main' : 'co';
 				} else {
 					$this->adh_type = 'mix';
 				}
@@ -1195,7 +1195,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			case 'co':
 				return 'Co-adhérent';
 			case 'mix':
-				return 'Principal et co-adhérent';
+				return 'Co-adhérent (avec contrat(s) propre(s))';
 			default:
 				return 'Inconnu';
 		}
