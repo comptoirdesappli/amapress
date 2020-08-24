@@ -2249,7 +2249,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Message de bienvenue',
 											'type'    => 'text',
 											'default' => '',
-											'desc'    => 'Message de bienvenue (non connecté), par défaut, "Bienvenue dans l\'assistant d\'inscription aux contrats producteurs de « AMAP »"',
+											'desc'    => 'Message de bienvenue (non connecté) (shortcode [inscription-en-ligne]), par défaut, "Bienvenue dans l\'assistant d\'inscription aux contrats producteurs de « AMAP »"',
 										),
 										array(
 											'type' => 'heading',
@@ -2750,7 +2750,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'Message de bienvenue',
 											'type'    => 'text',
 											'default' => '',
-											'desc'    => 'Message de bienvenue (non connecté), par défaut, "Bienvenue dans l\'assistant d\'adhésion de « AMAP »"',
+											'desc'    => 'Message de bienvenue (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Bienvenue dans l\'assistant d\'adhésion de « AMAP »"',
 										),
 										array(
 											'type' => 'heading',
