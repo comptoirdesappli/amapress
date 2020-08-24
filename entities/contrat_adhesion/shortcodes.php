@@ -1843,8 +1843,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="mon" /> Monnaie locale</label>';
 		}
 		$ret .= '</p>';
-		$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque/virement :</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
-		$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
+		if ( $adh_period->getAllowAmapienInputPaiementsDetails() ) {
+			$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque/virement :</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
+			$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
+		}
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
 		$ret .= '</form>';
 

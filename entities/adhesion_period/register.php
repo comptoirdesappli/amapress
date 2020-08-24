@@ -109,7 +109,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en espèce',
 			),
-			'allow_bktrfr' => array(
+			'allow_bktrfr'   => array(
 				'name'        => amapress__( 'Virement' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
@@ -118,7 +118,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par virement',
 			),
-			'allow_locmon' => array(
+			'allow_locmon'   => array(
 				'name'        => amapress__( 'Monnaie locale' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
@@ -127,11 +127,20 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en monnaie locale',
 			),
-			'pmt_info'     => array(
+			'pmt_info'       => array(
 				'name'  => amapress__( 'Info règlements' ),
 				'type'  => 'editor',
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => 'Informations relatives aux règlements (ordres des chèques, virement) à afficher lors de l\'adhésion en ligne',
+			),
+			'pmt_user_input' => array(
+				'name'        => amapress__( 'Libellé règlements' ),
+				'type'        => 'checkbox',
+				'group'       => '5/6 - Pré-inscription en ligne',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant d\'adhésion en ligne',
 			),
 		),
 	);

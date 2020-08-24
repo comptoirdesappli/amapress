@@ -98,6 +98,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return $this->getCustom( 'amapress_adhesion_period_allow_bktrfr', 0 );
 	}
 
+	public function getAllowAmapienInputPaiementsDetails() {
+		return $this->getCustom( 'amapress_adhesion_period_pmt_user_input', 1 );
+	}
+
 	/**
 	 * @return AmapressAdhesionPeriod
 	 */
