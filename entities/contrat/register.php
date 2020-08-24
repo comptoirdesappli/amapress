@@ -1390,7 +1390,7 @@ jQuery(function($) {
 				'type'        => 'checkbox',
 				'group'       => '5/6 - Pré-inscription en ligne',
 				'required'    => true,
-				'default'     => false,
+				'default'     => true,
 				'show_column' => false,
 				'desc'        => 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant de pré-inscription en ligne',
 			),

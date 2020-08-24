@@ -136,9 +136,9 @@ function amapress_register_entities_adhesion_period( $entities ) {
 			'pmt_user_input' => array(
 				'name'        => amapress__( 'Libellé règlements' ),
 				'type'        => 'checkbox',
-				'group'       => '5/6 - Pré-inscription en ligne',
+				'group'       => 'Règlements',
 				'required'    => true,
-				'default'     => false,
+				'default'     => true,
 				'show_column' => false,
 				'desc'        => 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant d\'adhésion en ligne',
 			),
