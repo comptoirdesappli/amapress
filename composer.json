@@ -23,6 +23,7 @@
     "squizlabs/php_codesniffer": "*",
     "wp-coding-standards/wpcs": "*",
     "php-imap/php-imap": "3.0.26",
-    "fzaninotto/faker": "v1.8.0"
+    "fzaninotto/faker": "v1.8.0",
+    "stripe/stripe-php": "v7.49.0"
   }
 }
