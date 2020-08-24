@@ -167,6 +167,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'options'    => array(
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
+					'stp' => 'Paiement en ligne (Stripe)',
 					'vir' => 'Virement',
 					'mon' => 'Monnaie locale',
 					'dlv' => 'A la livraison',

@@ -501,6 +501,7 @@ jQuery(function($) {
 				'options'        => array(
 					'chq' => 'Chèque',
 					'esp' => 'Espèces',
+					'stp' => 'Paiement en ligne (Stripe)',
 					'vir' => 'Virement',
 					'mon' => 'Monnaie locale',
 					'dlv' => 'A la livraison',

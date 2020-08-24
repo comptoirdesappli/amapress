@@ -3490,6 +3490,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$checked = checked( $edit_inscription && 'esp' == $edit_inscription->getMainPaiementType(), true, false );
 				echo "<label for='cheques-esp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-esp' $checked value='-1' class='input-nb-cheques required' />En espèces</label><br/>";
 			}
+			if ( $contrat->getAllow_Stripe() ) {
+				$checked = checked( $edit_inscription && 'stp' == $edit_inscription->getMainPaiementType(), true, false );
+				echo "<label for='cheques-stp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-stp' $checked value='-5' class='input-nb-cheques required' />Paiement en ligne</label><br/>";
+			}
 			if ( $contrat->getAllow_Transfer() ) {
 				$checked = checked( $edit_inscription && 'vir' == $edit_inscription->getMainPaiementType(), true, false );
 				echo "<label for='cheques-vir' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-vir' $checked value='-2' class='input-nb-cheques required' />Par virement</label><br/>";
@@ -3783,6 +3787,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		}
 		if ( - 4 == $cheques ) {
 			$meta['amapress_adhesion_pmt_type'] = 'mon';
+		}
+		if ( - 5 == $cheques ) {
+			$meta['amapress_adhesion_pmt_type'] = 'stp';
 		}
 		if ( $cheques >= 100 ) {
 			$meta['amapress_adhesion_pmt_type'] = 'prl';
