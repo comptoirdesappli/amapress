@@ -1,20 +1,20 @@
 {
-  "_readme": [
-    "This file locks the dependencies of your project to a known state",
-    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-    "This file is @generated automatically"
-  ],
-  "content-hash": "8531093360f17a7b25058da3e387d89f",
-  "packages": [
-    {
-      "name": "athari/yalinqo",
-      "version": "v2.4.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/Athari/YaLinqo.git",
-        "reference": "d973f13b906a9d006b4d76b1542f7e6083f7bfc3"
-      },
-      "dist": {
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "5109ae54a387c8d1adab65a26f49b28e",
+    "packages": [
+        {
+            "name": "athari/yalinqo",
+            "version": "v2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Athari/YaLinqo.git",
+                "reference": "d973f13b906a9d006b4d76b1542f7e6083f7bfc3"
+            },
+            "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/Athari/YaLinqo/zipball/d973f13b906a9d006b4d76b1542f7e6083f7bfc3",
                 "reference": "d973f13b906a9d006b4d76b1542f7e6083f7bfc3",
@@ -116,57 +116,57 @@
             ],
             "time": "2017-07-22T11:58:36+00:00"
         },
-    {
-      "name": "fzaninotto/faker",
-      "version": "v1.8.0",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/fzaninotto/Faker.git",
-        "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f72816b43e74063c8b10357394b6bba8cb1c10de",
-        "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de",
-        "shasum": ""
-      },
-      "require": {
-        "php": "^5.3.3 || ^7.0"
-      },
-      "require-dev": {
-        "ext-intl": "*",
-        "phpunit/phpunit": "^4.8.35 || ^5.7",
-        "squizlabs/php_codesniffer": "^1.5"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-master": "1.8-dev"
-        }
-      },
-      "autoload": {
-        "psr-4": {
-          "Faker\\": "src/Faker/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
         {
-          "name": "François Zaninotto"
-        }
-      ],
-      "description": "Faker is a PHP library that generates fake data for you.",
-      "keywords": [
-        "data",
-        "faker",
-        "fixtures"
-      ],
-      "time": "2018-07-12T10:23:15+00:00"
-    },
-    {
+            "name": "fzaninotto/faker",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f72816b43e74063c8b10357394b6bba8cb1c10de",
+                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3 || ^7.0"
+            },
+            "require-dev": {
+                "ext-intl": "*",
+                "phpunit/phpunit": "^4.8.35 || ^5.7",
+                "squizlabs/php_codesniffer": "^1.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2018-07-12T10:23:15+00:00"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "6.3.0",
             "source": {
@@ -384,60 +384,60 @@
             ],
             "time": "2014-06-05T11:42:24+00:00"
         },
-    {
-      "name": "php-imap/php-imap",
-      "version": "3.0.26",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/barbushin/php-imap.git",
-        "reference": "62664de68468d67050e99ae0ece4ccaf0211155a"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/barbushin/php-imap/zipball/62664de68468d67050e99ae0ece4ccaf0211155a",
-        "reference": "62664de68468d67050e99ae0ece4ccaf0211155a",
-        "shasum": ""
-      },
-      "require": {
-        "ext-iconv": "*",
-        "ext-imap": "*",
-        "ext-mbstring": "*",
-        "php": ">=5.6"
-      },
-      "require-dev": {
-        "phpunit/phpunit": "^5.7",
-        "squizlabs/php_codesniffer": "^3.4"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "PhpImap\\": "src/PhpImap"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
         {
-          "name": "Sergey Barbushin",
-          "email": "barbushin@gmail.com",
-          "homepage": "http://linkedin.com/in/barbushin"
-        }
-      ],
-      "description": "Manage mailboxes, filter/get/delete emails in PHP (supports IMAP/POP3/NNTP)",
-      "homepage": "https://github.com/barbushin/php-imap",
-      "keywords": [
-        "imap",
-        "mail",
-        "mailbox",
-        "php",
-        "pop3",
-        "receive emails"
-      ],
-      "time": "2019-06-14T11:09:59+00:00"
-    },
-    {
+            "name": "php-imap/php-imap",
+            "version": "3.0.26",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barbushin/php-imap.git",
+                "reference": "62664de68468d67050e99ae0ece4ccaf0211155a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/62664de68468d67050e99ae0ece4ccaf0211155a",
+                "reference": "62664de68468d67050e99ae0ece4ccaf0211155a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "ext-imap": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpImap\\": "src/PhpImap"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Barbushin",
+                    "email": "barbushin@gmail.com",
+                    "homepage": "http://linkedin.com/in/barbushin"
+                }
+            ],
+            "description": "Manage mailboxes, filter/get/delete emails in PHP (supports IMAP/POP3/NNTP)",
+            "homepage": "https://github.com/barbushin/php-imap",
+            "keywords": [
+                "imap",
+                "mail",
+                "mailbox",
+                "php",
+                "pop3",
+                "receive emails"
+            ],
+            "time": "2019-06-14T11:09:59+00:00"
+        },
+        {
             "name": "phpdocumentor/reflection-common",
             "version": "1.0.1",
             "source": {
@@ -1104,18 +1104,18 @@
                 "BSD-3-Clause"
             ],
             "authors": [
-              {
-                "name": "Sebastian Bergmann",
-                "email": "sebastian@phpunit.de"
-              }
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                }
             ],
-          "description": "Wrapper around PHP's tokenizer extension.",
-          "homepage": "https://github.com/sebastianbergmann/php-token-stream/",
-          "keywords": [
-            "tokenizer"
-          ],
-          "abandoned": true,
-          "time": "2017-12-04T08:55:13+00:00"
+            "description": "Wrapper around PHP's tokenizer extension.",
+            "homepage": "https://github.com/sebastianbergmann/php-token-stream/",
+            "keywords": [
+                "tokenizer"
+            ],
+            "abandoned": true,
+            "time": "2017-12-04T08:55:13+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -1233,18 +1233,18 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                  "email": "sb@sebastian-bergmann.de",
-                  "role": "lead"
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
                 }
             ],
-          "description": "Mock Object library for PHPUnit",
-          "homepage": "https://github.com/sebastianbergmann/phpunit-mock-objects/",
-          "keywords": [
-            "mock",
-            "xunit"
-          ],
-          "abandoned": true,
-          "time": "2015-10-02T06:51:40+00:00"
+            "description": "Mock Object library for PHPUnit",
+            "homepage": "https://github.com/sebastianbergmann/phpunit-mock-objects/",
+            "keywords": [
+                "mock",
+                "xunit"
+            ],
+            "abandoned": true,
+            "time": "2015-10-02T06:51:40+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1668,20 +1668,20 @@
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2015-06-21T13:59:46+00:00"
         },
-    {
-      "name": "squizlabs/php_codesniffer",
-      "version": "3.5.6",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-        "reference": "e97627871a7eab2f70e59166072a6b767d5834e0"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/e97627871a7eab2f70e59166072a6b767d5834e0",
-        "reference": "e97627871a7eab2f70e59166072a6b767d5834e0",
-        "shasum": ""
-      },
+        {
+            "name": "squizlabs/php_codesniffer",
+            "version": "3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "628a481780561150481a9ec74709092b9759b3ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/628a481780561150481a9ec74709092b9759b3ec",
+                "reference": "628a481780561150481a9ec74709092b9759b3ec",
+                "shasum": ""
+            },
             "require": {
                 "ext-simplexml": "*",
                 "ext-tokenizer": "*",
@@ -1702,23 +1702,80 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "BSD-3-Clause"
-      ],
-      "authors": [
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2018-07-26T23:47:18+00:00"
+        },
         {
-          "name": "Greg Sherwood",
-          "role": "lead"
-        }
-      ],
-      "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
-      "homepage": "https://github.com/squizlabs/PHP_CodeSniffer",
-      "keywords": [
-        "phpcs",
-        "standards"
-      ],
-      "time": "2020-08-10T04:50:15+00:00"
-    },
+            "name": "stripe/stripe-php",
+            "version": "v7.49.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "db6229bff448f7f3bf7f6aee112d5d9ba34ca4ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/db6229bff448f7f3bf7f6aee112d5d9ba34ca4ba",
+                "reference": "db6229bff448f7f3bf7f6aee112d5d9ba34ca4ba",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "2.16.1",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^3.3",
+                "symfony/process": "~3.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Stripe\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "time": "2020-08-19T22:48:20+00:00"
+        },
         {
             "name": "symfony/polyfill-ctype",
             "version": "v1.8.0",
@@ -1949,15 +2006,15 @@
             "name": "wp-coding-standards/wpcs",
             "version": "1.0.0",
             "source": {
-              "type": "git",
-              "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
-              "reference": "539c6d74e6207daa22b7ea754d6f103e9abb2755"
+                "type": "git",
+                "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
+                "reference": "539c6d74e6207daa22b7ea754d6f103e9abb2755"
             },
             "dist": {
-              "type": "zip",
-              "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/539c6d74e6207daa22b7ea754d6f103e9abb2755",
-              "reference": "539c6d74e6207daa22b7ea754d6f103e9abb2755",
-              "shasum": ""
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/539c6d74e6207daa22b7ea754d6f103e9abb2755",
+                "reference": "539c6d74e6207daa22b7ea754d6f103e9abb2755",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3",
@@ -2021,18 +2078,18 @@
                     "Zend\\Escaper\\": "src/"
                 }
             },
-          "notification-url": "https://packagist.org/downloads/",
-          "license": [
-            "BSD-3-Clause"
-          ],
-          "description": "Securely and safely escape HTML, HTML attributes, JavaScript, CSS, and URLs",
-          "keywords": [
-            "ZendFramework",
-            "escaper",
-            "zf"
-          ],
-          "abandoned": "laminas/laminas-escaper",
-          "time": "2018-04-25T15:48:53+00:00"
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Securely and safely escape HTML, HTML attributes, JavaScript, CSS, and URLs",
+            "keywords": [
+                "ZendFramework",
+                "escaper",
+                "zf"
+            ],
+            "abandoned": "laminas/laminas-escaper",
+            "time": "2018-04-25T15:48:53+00:00"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -2068,27 +2125,27 @@
                     "Zend\\Stdlib\\": "src/"
                 }
             },
-          "notification-url": "https://packagist.org/downloads/",
-          "license": [
-            "BSD-3-Clause"
-          ],
-          "description": "SPL extensions, array utilities, error handlers, and more",
-          "keywords": [
-            "ZendFramework",
-            "stdlib",
-            "zf"
-          ],
-          "abandoned": "laminas/laminas-stdlib",
-          "time": "2018-04-30T13:50:40+00:00"
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "SPL extensions, array utilities, error handlers, and more",
+            "keywords": [
+                "ZendFramework",
+                "stdlib",
+                "zf"
+            ],
+            "abandoned": "laminas/laminas-stdlib",
+            "time": "2018-04-30T13:50:40+00:00"
         }
-  ],
-  "packages-dev": [],
-  "aliases": [],
-  "minimum-stability": "stable",
-  "stability-flags": [],
-  "prefer-stable": false,
-  "prefer-lowest": false,
-  "platform": [],
-  "platform-dev": [],
-  "plugin-api-version": "1.1.0"
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
