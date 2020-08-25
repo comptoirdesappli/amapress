@@ -2394,7 +2394,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( 'Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (%%remaining_contrats%%)' ),
 											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [
-												'remaining_contrats' => 'Contrat disponibles à l\'inscription'
+												'remaining_contrats'      => 'Contrat disponibles à l\'inscription',
+												'remaining_contrats_list' => 'Contrat disponibles à l\'inscription (en liste)'
 											], false ),
 										),
 										array(

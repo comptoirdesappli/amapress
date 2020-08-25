@@ -3937,6 +3937,17 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				if ( ! empty( $user_subscribable_contrats ) ) {
 					$online_contrats_end_continue_msg = wp_unslash( Amapress::getOption( 'online_contrats_end_continue_msg' ) );
 					$online_contrats_end_continue_msg = str_replace( '%%remaining_contrats%%', $user_subscribable_contrats_display, $online_contrats_end_continue_msg );
+					$remain_contrats_list             = '<ul style="list-style-type: disc; display: block">';
+					$remain_contrats_list             .= implode( '', array_map(
+						function ( $c ) {
+							/** @var AmapressContrat_instance $c */
+							return '<li style="margin-left: 35px">' . esc_html( $c->getModelTitleWithSubName() ) . '</li>';
+						}, $user_subscribable_contrats
+					) );
+					$remain_contrats_list             .= '</ul>';
+					$online_contrats_end_continue_msg = str_replace( '%%remaining_contrats_list%%', $remain_contrats_list, $online_contrats_end_continue_msg );
+
+
 					echo amapress_replace_mail_placeholders( $online_contrats_end_continue_msg, $inscription->getAdherent() );
 					//
 					echo '<br />';
