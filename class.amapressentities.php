@@ -859,7 +859,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Désinscriptions - Distribution'                 => array(
+								'Emails - Désinscriptions - Distribution'                    => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -891,32 +891,32 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Emails - Responsables de distribution - Rappel'          => array(
+								'Emails - Responsables de distribution - Rappel'             => array(
 									'id'      => 'amp_tab_recall_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
-								'Emails - Responsables de distribution - Rappel 2'        => array(
+								'Emails - Responsables de distribution - Rappel 2'           => array(
 									'id'      => 'amp_tab_recall_resp_distrib2',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_recall2_options(),
 								),
-								'Emails - Gardiens de paniers - Rappel'                   => array(
+								'Emails - Gardiens de paniers - Rappel'                      => array(
 									'id'      => 'amp_tab_recall_gardien_paniers',
 									'desc'    => '',
 									'options' => amapress_distribution_gardiens_recall_options(),
 								),
-								'Emails - Vérification de distribution - Rappel'          => array(
+								'Emails - Vérification de distribution - Rappel'             => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
-								'Emails - A tous les amapiens à la distribution - Rappel' => array(
+								'Emails - A tous les amapiens à la distribution - Rappel'    => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
 									'desc'    => '',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
-								'Emails - Envoi liste émargement Excel/PDF'               => array(
+								'Emails - Envoi liste émargement Excel/PDF'                  => array(
 									'id'      => 'amp_tab_recall_emarg',
 									'desc'    => '',
 									'options' => amapress_distribution_emargement_recall_options(),
@@ -2183,7 +2183,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Contrats'                                           => array(
+								'Contrats'                                  => array(
 									'id'      => 'contrat_config',
 									'desc'    => '',
 									'options' => array(
@@ -2240,7 +2240,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Assistant - Inscription en ligne - Etapes'          => array(
+								'Assistant - Inscription en ligne - Etapes' => array(
 									'id'      => 'config_online_inscriptions_messages',
 									'desc'    => 'Configuration de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
@@ -2461,7 +2461,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 									]
 								),
-								'Assistant - Inscription en ligne - Emails'          => array(
+								'Assistant - Inscription en ligne - Emails' => array(
 									'id'      => 'config_online_inscriptions_mails',
 									'desc'    => 'Configuration des emails de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_mails' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
@@ -2522,7 +2522,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 									]
 								),
-								'Contrat Word (DOCX) général'                        => array(
+								'Contrat Word (DOCX) général'               => array(
 									'id'      => 'config_default_contrat_docx',
 									'desc'    => '',
 									'options' => [
@@ -3770,6 +3770,10 @@ Vérifiez que l'email ne s'est pas glissé dans vos spams\n
 Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le personnaliser sur votre page de profil.\n
 =================================================\n" ),
 											'capability' => 'manage_options',
+										),
+										array(
+											'type' => 'note',
+											'desc' => 'Le réglage du délai d\'expiration du lien de réinitialisation de mot de passe se fait dans ' . Amapress::makeLink( admin_url( 'options-general.php?page=amapress_site_options_page&tab=welcome_mail' ), 'Tableau de bord>Réglages>Site, onglet Email de bienvenue' ),
 										),
 										array(
 											'type' => 'save',
