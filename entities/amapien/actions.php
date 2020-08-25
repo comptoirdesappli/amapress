@@ -376,3 +376,51 @@ function amapress_bulk_action_amp_relocate( $sendback, $user_ids ) {
 
 	return amapress_add_bulk_count( $sendback, count( $localized_users ) );
 }
+
+add_action( 'admin_post_nopriv_inscription_amap_extern', 'amapress_admin_action_nopriv_inscription_amap_extern' );
+function amapress_admin_action_nopriv_inscription_amap_extern() {
+	header( 'Content-Type: text/html; charset=UTF-8' );
+	if ( ! isset( $_REQUEST['email'] ) ) {
+		die( 'Pas d\'email spécifié' );
+	}
+	if ( ! isset( $_REQUEST['group'] ) ) {
+		die( 'Pas de groupe' );
+	}
+	$group_id = Amapress::resolve_tax_id( trim( sanitize_text_field( $_REQUEST['group'] ) ), AmapressUser::AMAPIEN_GROUP );
+	if ( empty( $group_id ) ) {
+		die( 'Groupe inconnu' );
+	}
+
+	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$is_ok   = false;
+	if ( ! empty( $key ) && ! empty( $post_id ) ) {
+		$post = get_post( $post_id );
+		if ( $post ) {
+			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
+				$is_ok = true;
+			}
+		}
+	}
+
+	if ( ! $is_ok ) {
+		echo '<p class="error">Non autorisé</p>';
+		die();
+	}
+
+	$user_firt_name = isset( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '';
+	$user_last_name = isset( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '';
+	$user_phone     = isset( $_REQUEST['phone'] ) ? $_REQUEST['phone'] : '';
+	$user_address   = isset( $_REQUEST['address'] ) ? $_REQUEST['address'] : '';
+	$user_email     = sanitize_email( $_REQUEST['email'] );
+
+	$user = get_user_by( 'email', $user_email );
+	if ( $user ) {
+		echo '<p class="error">L\'adresse email ' . $user_email . ' est déjà utilisée.</p>';
+		die();
+	}
+
+	$user_id = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
+	wp_set_object_terms( $user_id, $group_id, AmapressUser::AMAPIEN_GROUP );
+	echo '<p class="success">Vous êtes maintenant inscrit comme amapien externe</p>';
+}

@@ -329,6 +329,16 @@ function amapress_register_shortcodes() {
 		] );
 //
 
+	amapress_register_shortcode( 'anon-extern-amapien-inscription', 'amapress_extern_user_inscription_shortcode',
+		[
+			'desc' => 'Inscription sans connexion comme amapien externe',
+			'args' => [
+				'key'      => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'inscription',
+				'shorturl' => 'Url raccourcie de la page sur laquelle se trouve cet Assistant d\'inscription',
+				'group'    => 'Groupe Amapien affecté lors de l\'inscription',
+			]
+		] );
+
 	amapress_register_shortcode( 'anon-intermittents-inscription', 'amapress_intermittence_anon_inscription_shortcode',
 		[
 			'desc' => 'Inscription sans connexion à la liste des intermittents',
