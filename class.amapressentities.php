@@ -2428,6 +2428,16 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											             ], false ),
 										),
 										array(
+											'id'      => 'online_contrats_inscription_distrib_msg',
+											'name'    => 'Message inscription aux distributions',
+											'type'    => 'editor',
+											'default' => '',
+											'desc'    => 'Message au sujet des inscriptions nécessaires en tant que responsable de distribution<br/>' . AmapressAdhesion::getPlaceholdersHelp( [
+													'nb_inscriptions'    => 'Nombre d\'inscription comme responsable de distribution sur la période à venir',
+													'dates_inscriptions' => 'Dates d\'inscription comme responsable de distribution sur la période à venir'
+												], false ),
+										),
+										array(
 											'id'      => 'online_final_step_name',
 											'name'    => 'Nom de l\'étape finale',
 											'type'    => 'text',

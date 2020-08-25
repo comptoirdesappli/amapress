@@ -40,6 +40,45 @@ class AmapressDistributions {
 		return Amapress::start_of_day( $d->getTimestamp() );
 	}
 
+	/**
+	 * @param null $user_id
+	 * @param null $date
+	 *
+	 * @return AmapressDistribution[]
+	 */
+	public static function getResponsableDistribForCurrentAdhesions( $user_id = null, $contrat_ids = null, $date = null ) {
+		if ( empty( $date ) ) {
+			$date = amapress_time();
+		}
+		if ( empty( $user_id ) ) {
+			$user_id = amapress_current_user_id();
+		}
+
+		$contrat_ids = AmapressContrat_instance::getContratInstanceIdsForUser( $user_id, $contrat_ids, $date );
+		$min_date    = amapress_time();
+		$max_date    = 0;
+		foreach ( $contrat_ids as $contrat_id ) {
+			$contrat_instance = AmapressContrat_instance::getBy( $contrat_id );
+			if ( $contrat_instance ) {
+				if ( $contrat_instance->getDate_debut() < $min_date ) {
+					$min_date = $contrat_instance->getDate_debut();
+				}
+				if ( $contrat_instance->getDate_debut() > $max_date ) {
+					$max_date = $contrat_instance->getDate_fin();
+				}
+			}
+		}
+
+		$ret = [];
+		foreach ( AmapressDistribution::get_distributions( $min_date, $max_date, 'ASC' ) as $distribution ) {
+			if ( ! empty( array_intersect( $distribution->getContratIds(), $contrat_ids ) ) ) {
+				$ret[] = $distribution;
+			}
+		}
+
+		return $ret;
+	}
+
 	/** @return int[] */
 	public static function getResponsablesBetween( $start_date, $end_date ) {
 		$start_date = Amapress::start_of_day( $start_date );

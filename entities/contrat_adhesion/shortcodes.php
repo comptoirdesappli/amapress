@@ -2582,6 +2582,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 
+		if ( ! $is_mes_contrats ) {
+			$online_contrats_inscription_distrib_msg = wp_unslash( Amapress::getOption( 'online_contrats_inscription_distrib_msg' ) );
+			if ( ! empty( $online_contrats_inscription_distrib_msg ) ) {
+				$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
+				$online_contrats_inscription_distrib_msg = str_replace( '%%nb_inscriptions%%', count( $dist_inscriptions ), $online_contrats_inscription_distrib_msg );
+				$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%', implode( ', ', array_map(
+					function ( $d ) {
+						/** @var AmapressDistribution $d */
+						return date_i18n( 'd/m/Y', $d->getDate() );
+					}, $dist_inscriptions
+				) ), $online_contrats_inscription_distrib_msg );
+				echo amapress_replace_mail_placeholders( $online_contrats_inscription_distrib_msg, $amapien );
+			}
+		}
+
 		if ( ! $admin_mode && $has_principal_contrat && ! $is_mes_contrats && ! $for_logged ) {
 			echo '<p>J\'ai fini :<br/>
 <form method="get" action="' . esc_attr( $the_end_url ) . '">
@@ -3971,6 +3986,21 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
 </form></p>';
+				}
+			}
+
+			if ( ! $is_mes_contrats ) {
+				$online_contrats_inscription_distrib_msg = wp_unslash( Amapress::getOption( 'online_contrats_inscription_distrib_msg' ) );
+				if ( ! empty( $online_contrats_inscription_distrib_msg ) ) {
+					$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
+					$online_contrats_inscription_distrib_msg = str_replace( '%%nb_inscriptions%%', count( $dist_inscriptions ), $online_contrats_inscription_distrib_msg );
+					$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%', implode( ', ', array_map(
+						function ( $d ) {
+							/** @var AmapressDistribution $d */
+							return date_i18n( 'd/m/Y', $d->getDate() );
+						}, $dist_inscriptions
+					) ), $online_contrats_inscription_distrib_msg );
+					echo amapress_replace_mail_placeholders( $online_contrats_inscription_distrib_msg, $inscription->getAdherent() );
 				}
 			}
 
