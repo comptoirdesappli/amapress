@@ -2295,14 +2295,16 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => '',
-											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>' .
+											             Amapress::getPlaceholdersHelpTable( 'online_contrats_step_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'id'      => 'online_inscr_adhesion_required_message',
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( 'Votre adhésion doit être validée avant que vous puissiez vous inscrire aux contrats.' ),
-											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats <strong>si une adhésion validée ou antérieure est nécessaire pour pouvoir s\'inscrire aux contrats</strong><br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats <strong>si une adhésion validée ou antérieure est nécessaire pour pouvoir s\'inscrire aux contrats</strong><br/>' .
+											             Amapress::getPlaceholdersHelpTable( 'online_inscr_adhesion_required_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'id'      => 'online_inscr_closed_message',
@@ -2328,7 +2330,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'   => 'online_subscription_date_lieu_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_date_lieu_step_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2347,7 +2349,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'   => 'online_subscription_panier_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_panier_step_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2366,7 +2368,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'   => 'online_subscription_pay_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2386,24 +2388,24 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Message de confirmation',
 											'type'    => 'editor',
 											'default' => wpautop( 'Votre pré-inscription a bien été prise en compte.' ),
-											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_msg-placeholders', [], null, [], false ),
 										),
 										array(
 											'id'      => 'online_contrats_end_continue_msg',
 											'name'    => 'Message de confirmation',
 											'type'    => 'editor',
 											'default' => wpautop( 'Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (%%remaining_contrats%%)' ),
-											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_contrats_end_continue_msg-placeholders', [
 												'remaining_contrats'      => 'Contrat disponibles à l\'inscription',
 												'remaining_contrats_list' => 'Contrat disponibles à l\'inscription (en liste)'
-											], false ),
+											], null, [], false ),
 										),
 										array(
 											'id'      => 'online_contrats_end_confirm_mail_msg',
 											'name'    => 'Message au sujet de l\'email de confirmation',
 											'type'    => 'editor',
 											'default' => wpautop( 'Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)' ),
-											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_mail_msg-placeholders', [], null, [], false ),
 										),
 										array(
 											'id'      => 'online_contrats_end_step_message',
@@ -2411,9 +2413,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les chèques/règlements correspondants lors de la prochaine distribution\n%%print_button%%" ),
 											'desc'    => 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>' .
-											             AmapressAdhesion::getPlaceholdersHelp( [
+											             Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_message-placeholders', [
 												             'print_button' => 'Bouton Imprimer/Télécharger le contrat'
-											             ], false ),
+											             ], null, [], false ),
 										),
 										array(
 											'id'      => 'online_contrats_end_step_edit_message',
@@ -2421,21 +2423,22 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Veuillez vérifier le contrat : %%print_button%%\nSi vous constatez une erreur, vous pouvez modifier votre inscription : %%modify_button%%\nVous pouvez également l'annuler : %%cancel_button%%" ),
 											'desc'    => 'Instruction pour l\'édition ou l\'annulation à la fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Les placeholders %%print_button%%, %%modify_button%%, %%cancel_button%% permettent d\'afficher respectivement le bouton Imprimer/Télécharger, Modifier et Annuler l\inscription<br/>' .
-											             AmapressAdhesion::getPlaceholdersHelp( [
+											             Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_edit_message-placeholders', [
 												             'print_button'  => 'Bouton Imprimer/Télécharger le contrat',
 												             'modify_button' => 'Bouton Modifier l\'inscription',
 												             'cancel_button' => 'Bouton Annuler l\'inscription'
-											             ], false ),
+											             ], null, [], false ),
 										),
 										array(
 											'id'      => 'online_contrats_inscription_distrib_msg',
 											'name'    => 'Message inscription aux distributions',
 											'type'    => 'editor',
 											'default' => '',
-											'desc'    => 'Message au sujet des inscriptions nécessaires en tant que responsable de distribution<br/>' . AmapressAdhesion::getPlaceholdersHelp( [
-													'nb_inscriptions'    => 'Nombre d\'inscription comme responsable de distribution sur la période à venir',
-													'dates_inscriptions' => 'Dates d\'inscription comme responsable de distribution sur la période à venir'
-												], false ),
+											'desc'    => 'Message au sujet des inscriptions nécessaires en tant que responsable de distribution<br/>' .
+											             Amapress::getPlaceholdersHelpTable( 'online_contrats_inscription_distrib_msg-placeholders', [
+												             'nb_inscriptions'    => 'Nombre d\'inscription comme responsable de distribution sur la période à venir',
+												             'dates_inscriptions' => 'Dates d\'inscription comme responsable de distribution sur la période à venir'
+											             ], null, [], false ),
 										),
 										array(
 											'id'      => 'online_final_step_name',
@@ -2777,7 +2780,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'   => 'online_subscription_email_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_email_step_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2796,7 +2799,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'   => 'online_subscription_coords_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_coords_step_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2821,7 +2824,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'   => 'online_subscription_agreement',
 											'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
 											'type' => 'editor',
-											'desc' => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_agreement-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
@@ -2876,7 +2879,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'      => 'online_subscription_req_adhesion',
 											'name'    => 'Message adhésion requise',
 											'type'    => 'editor',
-											'desc'    => AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_subscription_req_adhesion-placeholders', [], null, [], false ),
 											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
 										),
 										array(
@@ -2895,9 +2898,9 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'      => 'online_subscription_greating_adhesion',
 											'name'    => 'Contenu du message de validation',
 											'type'    => 'editor',
-											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . AmapressAdhesion::getPlaceholdersHelp( [
+											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
 													'print_button' => 'Bouton Imprimer le bulletin'
-												], false ),
+												], 'de l\'amapien', [], false ),
 											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%" ),
 										),
 										array(
@@ -2912,7 +2915,8 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
-											'desc'    => 'Message au sujet des adhésions des co-adhérents<br/>' . AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => 'Message au sujet des adhésions des co-adhérents<br/>' .
+											             Amapress::getPlaceholdersHelpTable( 'online_adhesion_coadh_message-placeholders', [], null, [], false ),
 										),
 										array(
 											'type' => 'save',
