@@ -1328,7 +1328,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             <th style="text-align: left; width: auto"></th>
                             <td>
                                 <label for="cofoy1_remove"><input type="checkbox" name="cofoy1_remove"
-                                                                  id="cofoy1_remove"/> Je ne suis plus coadhérent
+                                                                  id="cofoy1_remove"/> Je ne partage plus de panier
                                     avec <?php echo esc_html( "$cofoy1_user_firt_name $cofoy1_user_last_name" ) ?>
                                 </label>
                             </td>
@@ -1403,7 +1403,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             <th style="text-align: left; width: auto"></th>
                             <td>
                                 <label for="cofoy2_remove"><input type="checkbox" name="cofoy2_remove"
-                                                                  id="cofoy2_remove"/> Je ne suis plus coadhérent
+                                                                  id="cofoy2_remove"/> Je ne partage plus de panier
                                     avec <?php echo esc_html( "$cofoy2_user_firt_name $cofoy2_user_last_name" ) ?>
                                 </label>
                             </td>
@@ -1477,7 +1477,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             <th style="text-align: left; width: auto"></th>
                             <td>
                                 <label for="cofoy3_remove"><input type="checkbox" name="cofoy3_remove"
-                                                                  id="cofoy3_remove"/> Je ne suis plus coadhérent
+                                                                  id="cofoy3_remove"/> Je ne partage plus de panier
                                     avec <?php echo esc_html( "$cofoy3_user_firt_name $cofoy3_user_last_name" ) ?>
                                 </label>
                             </td>
@@ -1544,7 +1544,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             <th style="text-align: left; width: auto"></th>
                             <td>
                                 <label for="coadh1_remove"><input type="checkbox" name="coadh1_remove"
-                                                                  id="coadh1_remove"/> Je ne suis plus coadhérent
+                                                                  id="coadh1_remove"/> Je ne partage plus de panier
                                     avec <?php echo esc_html( "$coadh1_user_firt_name $coadh1_user_last_name" ) ?>
                                 </label>
                             </td>
@@ -1610,7 +1610,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             <th style="text-align: left; width: auto"></th>
                             <td>
                                 <label for="coadh2_remove"><input type="checkbox" name="coadh2_remove"
-                                                                  id="coadh2_remove"/> Je ne suis plus coadhérent
+                                                                  id="coadh2_remove"/> Je ne partage plus de panier
                                     avec <?php echo esc_html( "$coadh2_user_firt_name $coadh2_user_last_name" ) ?>
                                 </label>
                             </td>
@@ -1676,7 +1676,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             <th style="text-align: left; width: auto"></th>
                             <td>
                                 <label for="coadh3_remove"><input type="checkbox" name="coadh3_remove"
-                                                                  id="coadh3_remove"/> Je ne suis plus coadhérent
+                                                                  id="coadh3_remove"/> Je ne partage plus de panier
                                     avec <?php echo esc_html( "$coadh3_user_firt_name $coadh3_user_last_name" ) ?>
                                 </label>
                             </td>
