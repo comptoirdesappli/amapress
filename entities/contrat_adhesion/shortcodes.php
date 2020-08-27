@@ -2591,12 +2591,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( ! empty( $online_contrats_inscription_distrib_msg ) ) {
 				$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
 				$online_contrats_inscription_distrib_msg = str_replace( '%%nb_inscriptions%%', count( $dist_inscriptions ), $online_contrats_inscription_distrib_msg );
-				$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%', implode( ', ', array_map(
-					function ( $d ) {
-						/** @var AmapressDistribution $d */
-						return date_i18n( 'd/m/Y', $d->getDate() );
-					}, $dist_inscriptions
-				) ), $online_contrats_inscription_distrib_msg );
+				$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%',
+					empty( $dist_inscriptions ) ? 'aucune' : implode( ', ', array_map(
+						function ( $d ) {
+							/** @var AmapressDistribution $d */
+							return date_i18n( 'd/m/Y', $d->getDate() );
+						}, $dist_inscriptions
+					) ), $online_contrats_inscription_distrib_msg );
 				echo amapress_replace_mail_placeholders( $online_contrats_inscription_distrib_msg, $amapien );
 			}
 		}
@@ -3998,12 +3999,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				if ( ! empty( $online_contrats_inscription_distrib_msg ) ) {
 					$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
 					$online_contrats_inscription_distrib_msg = str_replace( '%%nb_inscriptions%%', count( $dist_inscriptions ), $online_contrats_inscription_distrib_msg );
-					$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%', implode( ', ', array_map(
-						function ( $d ) {
-							/** @var AmapressDistribution $d */
-							return date_i18n( 'd/m/Y', $d->getDate() );
-						}, $dist_inscriptions
-					) ), $online_contrats_inscription_distrib_msg );
+					$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%',
+						empty( $dist_inscriptions ) ? 'aucune' : implode( ', ', array_map(
+							function ( $d ) {
+								/** @var AmapressDistribution $d */
+								return date_i18n( 'd/m/Y', $d->getDate() );
+							}, $dist_inscriptions
+						) ), $online_contrats_inscription_distrib_msg );
 					echo amapress_replace_mail_placeholders( $online_contrats_inscription_distrib_msg, $inscription->getAdherent() );
 				}
 			}
