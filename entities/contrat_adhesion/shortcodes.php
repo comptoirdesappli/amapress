@@ -2095,7 +2095,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				if ( empty( $adh_paiement ) ) {
 					if ( ! $activate_adhesion ) {
-						echo '<p><strong>Vous n\'avez pas d\'adhésion sur la période ' . esc_html( $adh_period->getTitle() ) . '</strong></p>';
+						echo '<p><strong>Vous n\'avez pas d\'adhésion sur la ' .
+						     esc_html( sprintf( 'Période - %s > %s',
+							     date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
+							     date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) ) ) .
+						     '</strong></p>';
 						$allow_inscriptions = false;
 					} else {
 						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption( 'online_subscription_req_adhesion' ) ), null );
