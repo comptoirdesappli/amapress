@@ -1517,7 +1517,7 @@ add_action( 'admin_init', function () {
 				/** @var AmapressContrat_instance $dn */
 				$l      = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
 				$tit    = esc_html( $dn->getTitle() );
-				$status = '(' . AmapressContrats::contratStatus( $dn->getID(), 'span' ) . ')';
+				$status = AmapressContrats::contratStatus( $dn->getID(), 'span' );
 
 				return "<a href='{$l}' target='_blank'>{$tit}</a> {$status}";
 			}, $contrat_to_generate ) ),
