@@ -71,7 +71,8 @@ class AmapressDistributions {
 
 		$ret = [];
 		foreach ( AmapressDistribution::get_distributions( $min_date, $max_date, 'ASC' ) as $distribution ) {
-			if ( ! empty( array_intersect( $distribution->getContratIds(), $contrat_ids ) ) ) {
+			if ( ! empty( array_intersect( $distribution->getContratIds(), $contrat_ids ) )
+			     && in_array( $user_id, $distribution->getResponsablesIds() ) ) {
 				$ret[] = $distribution;
 			}
 		}
