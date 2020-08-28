@@ -23,9 +23,11 @@ function amapress_edit_user_info_shortcode( $atts ) {
 			'show_adherents_infos'  => 'true',
 			'allow_remove_cofoyers' => 'true',
 			'mob_phone_required'    => 'false',
+			'allow_trombi_decline'  => 'true',
 		], $atts
 	);
 	$show_adherents_infos  = Amapress::toBool( $atts['show_adherents_infos'] );
+	$allow_trombi_decline  = Amapress::toBool( $atts['allow_trombi_decline'] );
 	$edit_names            = Amapress::toBool( $atts['edit_names'] );
 	$max_cofoyers          = intval( $atts['max_cofoyers'] );
 	$allow_remove_cofoys   = Amapress::toBool( $atts['allow_remove_cofoyers'] );
@@ -171,16 +173,18 @@ function amapress_edit_user_info_shortcode( $atts ) {
             <input class="form-control" type="text" name="amapress_user_ville" id="amapress_user_ville"
                    value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
         </div>
-        <div class="form-group">
-            <label for="amapress_user_hidaddr">
-                <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
-					<?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
-				<?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
-            </label>
-        </div>
+	    <?php if ( $allow_trombi_decline ) { ?>
+            <div class="form-group">
+                <label for="amapress_user_hidaddr">
+                    <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
+					    <?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
+				    <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
+                </label>
+            </div>
+	    <?php } ?>
         <div class="form-group">
             <label for="amapress_user_moyen">
-				<?php _e( 'Moyen de communication préféré', 'amapress' ) ?><br/>
+			    <?php _e( 'Moyen de communication préféré', 'amapress' ) ?><br/>
             </label>
             <select class="form-control" name="amapress_user_moyen" id="amapress_user_moyen">
                 <option

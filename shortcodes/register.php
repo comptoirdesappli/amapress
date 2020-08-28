@@ -451,6 +451,7 @@ function amapress_register_shortcodes() {
 				'show_adherents_infos'  => '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents',
 				'allow_remove_cofoyers' => '(true par défaut) Autoriser la suppression des membres du foyers',
 				'show_cofoyers_address' => '(false par défaut) Afficher la saisie d\'adresse pour les membres du foyer',
+				'allow_trombi_decline'  => '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope',
 			]
 		] );
 	amapress_register_shortcode( 'amapien-messages', 'amapress_user_messages_shortcode' );
