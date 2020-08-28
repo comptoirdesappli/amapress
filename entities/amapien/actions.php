@@ -391,6 +391,8 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 	if ( empty( $group_id ) ) {
 		die( 'Groupe inconnu' );
 	}
+	/** @var WP_Term $term */
+	$term = get_term( $group_id, AmapressUser::AMAPIEN_GROUP );
 
 	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
 	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
@@ -423,5 +425,9 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 
 	$user_id = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 	wp_set_object_terms( $user_id, $group_id, AmapressUser::AMAPIEN_GROUP );
-	echo '<p class="success">Vous êtes maintenant inscrit comme amapien externe</p>';
+	echo sprintf(
+		'<p class="success">Vous êtes désormais inscrit sur le site %s en tant qu\'utilisateur %s. Vous allez recevoir un mail de bienvenue avec les instructions dans votre boîte mail.</p>',
+		esc_html( get_bloginfo( 'name' ) ),
+		esc_html( $term->name )
+	);
 }
