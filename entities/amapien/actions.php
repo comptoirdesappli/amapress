@@ -377,6 +377,7 @@ function amapress_bulk_action_amp_relocate( $sendback, $user_ids ) {
 	return amapress_add_bulk_count( $sendback, count( $localized_users ) );
 }
 
+add_action( 'admin_post_inscription_amap_extern', 'amapress_admin_action_nopriv_inscription_amap_extern' );
 add_action( 'admin_post_nopriv_inscription_amap_extern', 'amapress_admin_action_nopriv_inscription_amap_extern' );
 function amapress_admin_action_nopriv_inscription_amap_extern() {
 	header( 'Content-Type: text/html; charset=UTF-8' );
