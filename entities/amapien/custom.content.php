@@ -23,9 +23,11 @@ function amapress_edit_user_info_shortcode( $atts ) {
 			'show_adherents_infos'  => 'true',
 			'allow_remove_cofoyers' => 'true',
 			'mob_phone_required'    => 'false',
+			'address_required'      => 'false',
 			'allow_trombi_decline'  => 'true',
 		], $atts
 	);
+	$address_required      = Amapress::toBool( $atts['address_required'] );
 	$show_adherents_infos  = Amapress::toBool( $atts['show_adherents_infos'] );
 	$allow_trombi_decline  = Amapress::toBool( $atts['allow_trombi_decline'] );
 	$edit_names            = Amapress::toBool( $atts['edit_names'] );
@@ -145,42 +147,45 @@ function amapress_edit_user_info_shortcode( $atts ) {
             <input type="email" class="form-control email" id="email3" name="email3" placeholder="Email 3"
                    value="<?php esc_attr_e( $user->getEmail( 3 ) ); ?>">
         </div>
-        <div class="form-group">
-            <label for="email">Adresse email 4</label>
-            <input type="email" class="form-control email" id="email4" name="email4" placeholder="Email 4"
-                   value="<?php esc_attr_e( $user->getEmail( 4 ) ); ?>">
-        </div>
-        <div class="form-group">
-            <label for="amapress_user_adresse">
+	    <div class="form-group">
+		    <label for="email">Adresse email 4</label>
+		    <input type="email" class="form-control email" id="email4" name="email4" placeholder="Email 4"
+		           value="<?php esc_attr_e( $user->getEmail( 4 ) ); ?>">
+	    </div>
+	    <div class="form-group">
+		    <label for="amapress_user_adresse">
 			    <?php _e( 'Adresse', 'amapress' ) ?><br/>
-            </label>
-            <textarea class="form-control" name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
-                      cols="40"
-                      placeholder="Adresse"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
-        </div>
-        <div class="form-group">
-            <label for="amapress_user_code_postal">
+		    </label>
+		    <textarea class="form-control <?php echo $address_required ? 'required' : ''; ?>"
+		              name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
+		              cols="40"
+		              placeholder="Adresse"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
+	    </div>
+	    <div class="form-group">
+		    <label for="amapress_user_code_postal">
 			    <?php _e( 'Code postal', 'amapress' ) ?><br/>
-            </label>
-            <input class="form-control" type="text" name="amapress_user_code_postal" id="amapress_user_code_postal"
-                   value="<?php esc_attr_e( wp_unslash( $user->getCode_postal() ) ); ?>"
-                   size="5"/>
-        </div>
-        <div class="form-group">
-            <label for="amapress_user_ville">
+		    </label>
+		    <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
+		           name="amapress_user_code_postal" id="amapress_user_code_postal"
+		           value="<?php esc_attr_e( wp_unslash( $user->getCode_postal() ) ); ?>"
+		           size="5"/>
+	    </div>
+	    <div class="form-group">
+		    <label for="amapress_user_ville">
 			    <?php _e( 'Ville', 'amapress' ) ?><br/>
-            </label>
-            <input class="form-control" type="text" name="amapress_user_ville" id="amapress_user_ville"
-                   value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
-        </div>
+		    </label>
+		    <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
+		           name="amapress_user_ville" id="amapress_user_ville"
+		           value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
+	    </div>
 	    <?php if ( $allow_trombi_decline ) { ?>
-            <div class="form-group">
-                <label for="amapress_user_hidaddr">
-                    <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
+		    <div class="form-group">
+			    <label for="amapress_user_hidaddr">
+				    <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
 					    <?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
 				    <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
-                </label>
-            </div>
+			    </label>
+		    </div>
 	    <?php } ?>
         <div class="form-group">
             <label for="amapress_user_moyen">
