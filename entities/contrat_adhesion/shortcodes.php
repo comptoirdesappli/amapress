@@ -910,7 +910,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				<?php
 				echo $saison;
 				?>
-                , renseignez votre
+                , veuillez renseigner votre
                 adresse mail :</label>
             <input id="email" name="email" type="text" class="email required" placeholder="email"/>
 			<?php
