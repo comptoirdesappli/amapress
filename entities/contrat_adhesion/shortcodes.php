@@ -419,6 +419,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'check_honeypots'                     => 'true',
 			'email'                               => get_option( 'admin_email' ),
 			'use_quantite_tables'                 => 'false',
+			'allow_trombi_decline'                => 'true',
 		]
 		, $atts );
 
@@ -436,6 +437,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 
 	$amapien                             = null;
 	$paiements_info_required             = Amapress::toBool( $atts['paiements_info_required'] );
+	$allow_trombi_decline                = Amapress::toBool( $atts['allow_trombi_decline'] );
 	$activate_adhesion                   = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement                  = Amapress::toBool( $atts['agreement'] );
 	$allow_remove_coadhs                 = Amapress::toBool( $atts['allow_remove_coadhs'] );
@@ -1247,19 +1249,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><textarea style="width: 100%" rows="4" id="address" name="address"
                                   class=""><?php echo esc_textarea( $user_address ); ?></textarea></td>
                 </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"></th>
-                    <td>
-                        <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-                                                    id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-                        </label>
-                    </td>
-                </tr>
+	            <?php if ( $allow_trombi_decline ) { ?>
+                    <tr>
+                        <th style="text-align: left; width: auto"></th>
+                        <td>
+                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                            </label>
+                        </td>
+                    </tr>
+	            <?php } ?>
             </table>
             <div>
-				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-			<?php if ( $max_cofoyers >= 1 ) { ?>
+	        <?php if ( $max_cofoyers >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2">Membre du foyer 1 / Conjoint
