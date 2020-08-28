@@ -1120,7 +1120,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$member_message     = '';
 
 			if ( $show_adherents_infos ) {
-				$adherents_infos = $amapien->getAdherentInfo( $admin_mode );
+				$adherents_infos = $amapien->getAdherentInfo( $admin_mode, true, $max_cofoyers > 0 );
 				if ( $amapien->isPrincipalAdherent() ) {
 					$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 				} else if ( $amapien->isCoAdherent() ) {
@@ -2169,7 +2169,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		if ( $show_adherents_infos ) {
-			$adherents_infos = $amapien->getAdherentInfo( $admin_mode );
+			$adherents_infos = $amapien->getAdherentInfo( $admin_mode, true, $max_cofoyers > 0 );
 			if ( $amapien->isPrincipalAdherent() ) {
 				$adherents_custom_message = wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_principal_user_message' ), null ) );
 			} else if ( $amapien->isCoAdherent() ) {

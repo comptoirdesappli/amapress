@@ -1263,12 +1263,15 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 	}
 
-	public function getAdherentInfo( $admin_mode = false, $with_contacts = true ) {
+	public function getAdherentInfo( $admin_mode = false, $with_contacts = true, $with_cofoyers = true ) {
 		if ( $this->isPrincipalAdherent() ) {
 			return sprintf(
 				$admin_mode ?
 					'Il/Elle est %1$s. <br/>Ses co-adhérents : %2$s. <br/>Membres du foyer : %3$s.' :
-					'Vous êtes %1$s. <br/>Vos co-adhérents : %2$s. <br/>Membres du foyer : %3$s.',
+					( $with_cofoyers ?
+						'Vous êtes %1$s. <br/>Vos co-adhérents : %2$s. <br/>Membres du foyer : %3$s.' :
+						'Vous êtes %1$s. <br/>Vos co-adhérents : %2$s.'
+					),
 				$this->getAdherentTypeDisplay(),
 				$this->getCoAdherentsList( $with_contacts, false, false ),
 				$this->getCoAdherentsList( $with_contacts, false, true, null, false )
@@ -1277,7 +1280,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			return sprintf(
 				$admin_mode ?
 					'Il/Elle est %1$s. <br/>Son adhérent principal est %2$s. <br/>Ses autres co-adhérents : %3$s. <br/>Membres du foyer : %4$s.' :
-					'Vous êtes %1$s. <br/>Votre adhérent principal est %2$s. <br/>Vos autres co-adhérents : %3$s. <br/>Membres du foyer : %4$s.',
+					( $with_cofoyers ?
+						'Vous êtes %1$s. <br/>Votre adhérent principal est %2$s. <br/>Vos autres co-adhérents : %3$s. <br/>Membres du foyer : %4$s.' :
+						'Vous êtes %1$s. <br/>Votre adhérent principal est %2$s. <br/>Vos autres co-adhérents : %3$s.' ),
 				$this->getAdherentTypeDisplay(),
 				$this->getPrincipalAdherentList( $with_contacts ),
 				$this->getCoAdherentsList( $with_contacts, false, false ),

@@ -39,7 +39,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
 	$user    = AmapressUser::getBy( $user_id );
 
 	if ( $show_adherents_infos ) {
-		echo '<p>' . $user->getAdherentInfo() . '</p>';
+		echo '<p>' . $user->getAdherentInfo( false, true, $max_cofoyers > 0 ) . '</p>';
 	}
 
 	$cofoy1_user_firt_name = '';
