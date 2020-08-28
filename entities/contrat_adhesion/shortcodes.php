@@ -365,6 +365,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'admin_mode'                          => 'false',
 			'agreement'                           => 'true',
 			'mob_phone_required'                  => 'false',
+			'address_required'                    => 'false',
 			'check_principal'                     => 'true',
 			'adhesion'                            => $is_adhesion_mode || $is_inscription_mode ? 'true' : 'false',
 			'send_adhesion_confirm'               => 'true',
@@ -1245,9 +1246,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="address">Adresse : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+                            : </label></th>
                     <td><textarea style="width: 100%" rows="4" id="address" name="address"
-                                  class=""><?php echo esc_textarea( $user_address ); ?></textarea></td>
+                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+                    </td>
                 </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
                     <tr>
