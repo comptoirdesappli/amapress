@@ -1805,7 +1805,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
 			$ret .= '<div>';
-			$ret .= '<label for="adh-message" style="display: block">Message personnel :</label>
+			$ret .= '<label for="adh-message" style="display: block">Message personnel :</label><br/>
 <textarea id="adh-message" name="amapress_adhesion_message"></textarea>';
 			$ret .= '</div>';
 		}
