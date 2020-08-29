@@ -560,6 +560,11 @@ function amapress_user_views( $ret ) {
 					true );
 			}
 		}
+		amapress_add_view_button(
+			$ret, 'archivable',
+			"amapress_role=archivable$query_add",
+			'Comptes archivables',
+			true );
 	}
 
 //    amapress_add_view_button(
