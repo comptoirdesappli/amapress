@@ -89,10 +89,6 @@ class AmapressExport_Posts {
 
 		$posts = get_posts( $args );
 
-		if ( empty( $posts ) ) {
-			return null;
-		}
-
 		$pt          = amapress_simplify_post_type( $args['post_type'] );
 		$export_name = ! empty( $base_export_name ) ? $base_export_name : $pt;
 
