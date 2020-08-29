@@ -164,7 +164,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'desc'       => 'Montant',
 				'csv_import' => false,
 			),
-			'pmt_type'     => array(
+			'pmt_type'  => array(
 				'name'           => amapress__( 'Moyen de règlement principal' ),
 				'type'           => 'select',
 				'options'        => array(
@@ -183,14 +183,27 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'placeholder' => 'Tous les type de paiement',
 				),
 			),
-			'lieu'     => array(
+			'lieu'      => array(
 				'name'       => amapress__( 'Lieu dist.' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'desc'       => 'Lieu de distribution souhaité',
 				'searchable' => true,
 			),
-			'message'  => array(
+			'lieu_type' => array(
+				'name'           => amapress__( 'Choix du lieu' ),
+				'type'           => 'select',
+				'options'        => array(
+					'none' => 'Aucun',
+					'any'  => 'N\'importe lequel',
+					'one'  => 'Spécifique',
+				),
+				'default'        => 'one',
+				'required'       => true,
+				'show_column'    => true,
+				'col_def_hidden' => true,
+			),
+			'message'   => array(
 				'name'           => amapress__( 'Message' ),
 				'type'           => 'textarea',
 				'desc'           => 'Message à l\'AMAP lors de l\'inscription en ligne',
