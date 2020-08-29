@@ -704,9 +704,9 @@ function amapress_can_delete_user( $can, $user_id ) {
 			'amapress_producteur_referent',
 			'amapress_producteur_referent2',
 			'amapress_producteur_referent3',
-//			'amapress_contrat_referent',
-//			'amapress_contrat_referent2',
-//			'amapress_contrat_referent3',
+			'amapress_contrat_referent',
+			'amapress_contrat_referent2',
+			'amapress_contrat_referent3',
 		);
 		$lieux_ids        = Amapress::get_lieu_ids();
 		if ( count( $lieux_ids ) > 1 ) {
@@ -714,9 +714,9 @@ function amapress_can_delete_user( $can, $user_id ) {
 				$single_user_keys[] = "amapress_producteur_referent_{$lieu_id}";
 				$single_user_keys[] = "amapress_producteur_referent2_{$lieu_id}";
 				$single_user_keys[] = "amapress_producteur_referent3_{$lieu_id}";
-//				$single_user_keys[] = "amapress_contrat_referent_{$lieu_id}";
-//				$single_user_keys[] = "amapress_contrat_referent2_{$lieu_id}";
-//				$single_user_keys[] = "amapress_contrat_referent3_{$lieu_id}";
+				$single_user_keys[] = "amapress_contrat_referent_{$lieu_id}";
+				$single_user_keys[] = "amapress_contrat_referent2_{$lieu_id}";
+				$single_user_keys[] = "amapress_contrat_referent3_{$lieu_id}";
 			}
 		}
 		global $wpdb;
