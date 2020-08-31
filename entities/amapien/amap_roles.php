@@ -172,11 +172,19 @@ function amapress_get_referent_prods_grid() {
 				return strcmp( $a->getTitle(), $b->getTitle() );
 			} );
 
+			if ( empty( $contrat_instances ) ) {
+				$contrat_instances = [ null ];
+			}
+
 			foreach ( $contrat_instances as $contrat_instance ) {
 				$ret .= '<tr>';
 				$ret .= '<td>' . esc_html( $prod->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $prod->getAdminEditLink() . '#2/-référents', 'Modifier ses référents', true, true ) . '</td>';
 				$ret .= '<td>' . esc_html( $contrat->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat->getAdminEditLink() . '#2/-référents-spécifiques', 'Modifier ses référents spécifiques', true, true ) . '</td>';
-				$ret .= '<td>' . esc_html( $contrat_instance->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat_instance->getAdminEditLink(), 'Editer le modèle de contrat', true, true ) . '</td>';
+				if ( $contrat_instance ) {
+					$ret .= '<td>' . esc_html( $contrat_instance->getTitle() ) . '<br/>' . Amapress::makeButtonLink( $contrat_instance->getAdminEditLink(), 'Editer le modèle de contrat', true, true ) . '</td>';
+				} else {
+					$ret .= '<td><em>Pas de contrat actif</em></td>';
+				}
 
 				foreach ( $lieux as $lieu ) {
 					$ret .= '<td>';
@@ -188,7 +196,7 @@ function amapress_get_referent_prods_grid() {
 							return $a['lieu'] == $lieu->ID
 							       && $a['producteur'] == $prod->ID
 							       && in_array( $contrat->ID, $a['contrat_ids'] )
-							       && in_array( $contrat_instance->ID, $a['contrat_instance_ids'] );
+							       && ( null == $contrat_instance || in_array( $contrat_instance->ID, $a['contrat_instance_ids'] ) );
 						} ) as $ref
 					) {
 						$user = AmapressUser::getBy( $ref['ref_id'] );
