@@ -80,7 +80,9 @@ function amapress_send_message_and_record(
 	$attachments = array(), $cc = null, $bcc = null, $headers = array()
 ) {
 	$opt['record'] = true;
+	Amapress::setFilterForReferent( false );
 	amapress_send_message( $subject, $content, $content_sms, $opt, $entity, $attachments, $cc, $bcc, $headers );
+	Amapress::setFilterForReferent( true );
 }
 
 function amapress_send_message(
@@ -403,6 +405,8 @@ function amapress_add_message_target( &$arr, $query_string, $title, $target_type
 function amapress_message_get_targets() {
 	amapress_precache_all_users();
 
+	Amapress::setFilterForReferent( false );
+
 	$ret = array();
 	amapress_add_message_target( $ret, "user:me", "Moi - Test", 'me' );
 	$res['Test'] = $ret;
@@ -549,6 +553,9 @@ function amapress_message_get_targets() {
 	$ret = array();
 	amapress_add_message_target( $ret, "user:amapress_adhesion=nok", "Les amapiens avec adhésion AMAP non réglée", 'adh-nok' );
 	$res['Trésorerie'] = $ret;
+
+	Amapress::setFilterForReferent( true );
+
 
 	return $res;
 }
