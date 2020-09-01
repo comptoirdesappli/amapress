@@ -2510,7 +2510,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'type' => 'heading',
-											'name' => 'Emails - Notification Référents Inscription Contrat',
+											'name' => 'Emails - Notification Référents Nouvelle Inscription Contrat',
 										),
 										array(
 											'id'       => 'online_subscription_referents-mail-subject',
@@ -2529,6 +2529,58 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 												"\nMessage de l'amapien: %%message%%" .
 												"\n%%nom_site%%" ),
 											'desc'    => 'Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Emails - Notification Référents Modification Inscription Contrat',
+										),
+										array(
+											'id'       => 'online_subscription_referents_modif-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Inscription modifiée - %%contrat_titre_complet%% - %%adherent%%',
+										),
+										array(
+											'id'      => 'online_subscription_referents_modif-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop(
+												"Bonjour,\n\nUne inscription a été modifiée et est en attente de validation : %%inscription_admin_link%%" .
+												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
+												"\nMessage de l'amapien: %%message%%" .
+												"\n%%nom_site%%" ),
+											'desc'    => 'Les placeholders suivants sont disponibles:' .
+											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Emails - Notification Référents Annulation Inscription Contrat',
+										),
+										array(
+											'id'       => 'online_subscription_referents_cancel-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Annulation inscription - %%contrat_titre_complet%% - %%adherent%%',
+										),
+										array(
+											'id'      => 'online_subscription_referents_cancel-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop(
+												"Bonjour,\n\nUne inscription a été annulée" .
+												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
+												"\nMessage de l'amapien: %%message%%" .
+												"\n%%nom_site%%" ),
+											'desc'    => 'Les placeholders suivants sont disponibles (hormis %%inscription_admin_link%% car l\'inscription est supprimée suite à l\'envoi de ce mail):' .
 											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
 										),
 										array(

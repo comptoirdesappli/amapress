@@ -2411,12 +2411,20 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		], $attachments );
 	}
 
-	public function sendReferentsNotificationMail( $send_contrat = false, $notify_email = null ) {
+	public function sendReferentsNotificationMail( $send_contrat = false, $notify_email = null, $for_type = 'new' ) {
 		$inscription = $this;
 		$amapien     = $inscription->getAdherent();
 
-		$mail_subject = Amapress::getOption( 'online_subscription_referents-mail-subject' );
-		$mail_content = Amapress::getOption( 'online_subscription_referents-mail-content' );
+		$mail_subject = Amapress::getOption( 'new' == $for_type ?
+			'online_subscription_referents-mail-subject' :
+			( 'cancel' == $for_type ?
+				'online_subscription_referents_cancel-mail-subject' :
+				'online_subscription_referents_modif-mail-subject' ) );
+		$mail_content = Amapress::getOption( 'new' == $for_type ?
+			'online_subscription_referents-mail-content' :
+			( 'cancel' == $for_type ?
+				'online_subscription_referents_cancel-mail-content' :
+				'online_subscription_referents_modif-mail-content' ) );
 
 		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );

@@ -2879,6 +2879,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
 			if ( isset( $_GET['confirm'] ) ) {
+				if ( Amapress::toBool( $atts['send_referents'] ) ) {
+					$adh->sendReferentsNotificationMail( false, $notify_email, 'cancel' );
+				}
+
 				if ( ! wp_delete_post( $adh->ID, true ) ) {
 					wp_die( $invalid_access_message ); //phpcs:ignore
 				}
@@ -3876,7 +3880,8 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 
 		if ( ! $admin_mode ) {
 			if ( Amapress::toBool( $atts['send_referents'] ) ) {
-				$inscription->sendReferentsNotificationMail( false, $notify_email );
+				$inscription->sendReferentsNotificationMail( false, $notify_email,
+					$edit_inscription ? 'modif' : 'new' );
 			}
 
 			Amapress::setFilterForReferent( false );
