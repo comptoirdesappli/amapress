@@ -1677,7 +1677,9 @@ function amapress_get_contrat_quantite_datatable(
 	}
 	if ( $group_by_group ) {
 		foreach ( $data as $key => $row ) {
-			$data[ $key ]['all_num'] = $data[ $key ]['all_num'] / $data[ $key ]['all_mult'];
+			if ( ! empty( $data[ $key ]['all_mult'] ) ) {
+				$data[ $key ]['all_num'] = $data[ $key ]['all_num'] / $data[ $key ]['all_mult'];
+			}
 		}
 	}
 	$data = array_values( $data );
