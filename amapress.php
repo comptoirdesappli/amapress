@@ -1971,6 +1971,7 @@ add_filter( 'pre_option_comment_registration', function () {
 } );
 
 add_filter( 'pre_option_comment_moderation', 'amapress_auto_approve_comments' );
+add_filter( 'pre_option_comment_previously_approved', 'amapress_auto_approve_comments' );
 add_filter( 'pre_option_comment_whitelist', 'amapress_auto_approve_comments' );
 function amapress_auto_approve_comments( $option ) {
 	if ( amapress_is_user_logged_in() ) {
