@@ -1151,6 +1151,156 @@ function amapress_row_actions_adhesion( $actions, $adhesion_id ) {
 //
 //	return $ret;
 //}
+function amapress_get_contrat_column_quantite_datatables(
+	$contrat_instance_id,
+	$date = 'first'
+) {
+	$data_by_date = amapress_get_contrat_column_quantite( $contrat_instance_id, $date, false );
+	$ret          = '';
+	foreach ( $data_by_date as $date => $data ) {
+		$ret .= '<h4>' . esc_html( $date ) . '</h4>';
+		$ret .= amapress_get_datatable( uniqid( 'amps-qc-' ), $data['columns'], $data['data'] );
+	}
+
+	return $ret;
+}
+
+function amapress_get_contrat_column_quantite(
+	$contrat_instance_id,
+	$date = 'first',
+	$return_xl = true
+) {
+	$contrat                    = AmapressContrat_instance::getBy( $contrat_instance_id );
+	$contrat_instance_quantites = AmapressContrats::get_contrat_quantites( $contrat_instance_id );
+	$data                       = amapress_get_contrat_quantite_datatable(
+		$contrat->ID, null,
+		$date, [
+		'show_price'     => true,
+		'show_adherents' => true,
+		'show_all_dates' => true,
+		'group_by'       => 'date',
+		'group_by_group' => false,
+		'mode'           => 'xlsx',
+	] );
+
+	$data_by_date = array_group_by( $data['data'], function ( $row ) {
+		return $row['date'];
+	} );
+
+	foreach ( $data_by_date as $date => $date_data ) {
+		$out_data    = [];
+		$out_columns = [];
+		$quants      = [];
+		$quants_ids  = [];
+
+		foreach ( $date_data as $row ) {
+			$quants_ids[] = $row['quant_id'];
+		}
+		$quants_ids = array_unique( $quants_ids );
+		foreach ( $contrat_instance_quantites as $contrat_instance_quantite ) {
+			if ( in_array( $contrat_instance_quantite->ID, $quants_ids ) ) {
+				$quants[ strval( $contrat_instance_quantite->ID ) ] = $contrat_instance_quantite->getTitle();
+			}
+		}
+
+		foreach ( $quants as $k => $v ) {
+			$out_columns[] = array(
+				'title' => $v,
+				'data'  => "q_$k",
+			);
+		}
+		$out_columns[] = array(
+			'title' => 'Montant total',
+			'data'  => 'total',
+		);
+		$out_columns[] = array(
+			'title' => 'Adhérent',
+			'data'  => 'adherent',
+		);
+		$out_columns[] = array(
+			'title' => 'Téléphone',
+			'data'  => 'adherent_tel'
+		);
+
+		foreach (
+			array_group_by( array_values( $date_data ), function ( $row ) {
+				return $row['adherent'];
+			} ) as $adherent => $adherent_datas
+		) {
+			if ( empty( $out_data[ $adherent ] ) ) {
+				$out_data[ $adherent ] = [
+					'total'    => 0,
+					'adherent' => $adherent,
+				];
+			}
+
+			foreach ( $quants_ids as $q_id ) {
+				$out_data[ $adherent ]["q_$q_id"] = 0;
+			}
+			foreach ( $adherent_datas as $adherent_data ) {
+				$out_data[ $adherent ]['adherent_tel'] = $adherent_data['adherent_tel'];
+				$quant_id                              = $adherent_data['quant_id'];
+				$all_num                               = $adherent_data['all_num'];
+				$price                                 = $adherent_data['price'];
+				if ( ! empty( $out_data[ $adherent ]["q_$quant_id"] ) ) {
+					$out_data[ $adherent ]["q_$quant_id"] += $all_num;
+				} else {
+					$out_data[ $adherent ]["q_$quant_id"] = $all_num;
+				}
+				$out_data[ $adherent ]['total'] += $price;
+			}
+		}
+
+		$data_by_date[ $date ] = [
+			'data'    => array_values( $out_data ),
+			'columns' => $out_columns
+		];
+	}
+
+	if ( ! $return_xl ) {
+		return $data_by_date;
+	}
+
+	$filename = strtolower( sanitize_file_name( "quantites-{$contrat->getModelTitle()}-colonnes" ) );
+	$title    = "{$contrat->getModelTitle()} - Produits en colonnes";
+	if ( strlen( $title ) > 27 ) {
+		$title = substr( $title, 0, 27 ) . '...';
+	}
+
+	$objPHPExcel = new PHPExcel();
+	$objPHPExcel->getProperties()->setCreator( "Amapress" )
+	            ->setLastModifiedBy( "Amapress" )
+	            ->setTitle( ! empty( $title ) ? $title : $filename );
+	$ix = 0;
+	foreach ( $data_by_date as $date => $data ) {
+		$csv_data = [];
+		$row_data = [];
+		foreach ( $data['columns'] as $header ) {
+			$row_data[] = strip_tags( $header['title'] );
+		}
+		$csv_data[] = $row_data;
+
+		foreach ( $data['data'] as $row ) {
+			$row_data = [];
+			foreach ( $data['columns'] as $header ) {
+				$row_data[] = strip_tags( ! empty( $row[ $header['data'] ] ) ? $row[ $header['data'] ] : '' );
+			}
+			$csv_data[] = $row_data;
+		}
+
+		if ( $ix > 0 ) {
+			$objPHPExcel->createSheet();
+		}
+		$objPHPExcel->setActiveSheetIndex( $ix )->fromArray( $csv_data );
+		$objPHPExcel->getActiveSheet()->setTitle( str_replace( '/', '-', $date ) );
+		$ix += 1;
+	}
+	$objPHPExcel->setActiveSheetIndex( 0 );
+
+	return [ 'xl' => $objPHPExcel, 'filename' => $filename . '.xlsx' ];
+}
+
+
 function amapress_get_contrat_quantite_xlsx(
 	$contrat_instance_id,
 	$type
@@ -1160,6 +1310,9 @@ function amapress_get_contrat_quantite_xlsx(
 	$show_adherents = false;
 	$group_by_group = false;
 	switch ( $type ) {
+		case 'quant_column_adherents_by_date':
+			$show_adherents = true;
+			break;
 		case 'adherents_group_date':
 			$show_adherents  = true;
 			$type_title_file = 'avec-adherents-par-date-groupe';
@@ -1454,10 +1607,12 @@ function amapress_get_contrat_quantite_datatable(
 				if ( $show_adherents ) {
 					if ( isset( $adhesions[0] ) ) {
 						/** @var AmapressAdhesion $adhesion */
-						$adhesion        = $adhesions[0];
-						$row['adherent'] = $adhesion->getAdherent()->getSortableDisplayName();
+						$adhesion            = $adhesions[0];
+						$row['adherent']     = $adhesion->getAdherent()->getSortableDisplayName();
+						$row['adherent_tel'] = implode( '/', $adhesion->getAdherent()->getPhoneNumbers( true ) );
 					} else {
-						$row['adherent'] = '';
+						$row['adherent']     = '';
+						$row['adherent_tel'] = '';
 					}
 				}
 				$row['date']      = date_i18n( 'd/m/Y', $real_date );
@@ -1465,6 +1620,7 @@ function amapress_get_contrat_quantite_datatable(
 				$quant_title      = $quant ? $quant->getTitle() : '-toutes-';
 				$row['quant']     = $quant ? ( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) : '¤-Toutes-¤';
 				$row['group']     = $quant ? $quant->getGroupName() : '--';
+				$row['quant_id']  = $quant ? $quant->ID : 0;
 				$row['qid']       = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
 				$quand_id         = $quant ? $quant->getID() : 0;
 				if ( count( $lieux ) > 1 ) {
@@ -1640,7 +1796,7 @@ function amapress_get_contrat_quantite_datatable(
 									continue;
 								}
 							}
-							if ( 'quant' == $k || 'date' == $k || 'date_sort' == $k || 'adherent' == $k || 'group' == $k || 'all_mult' == $k ) {
+							if ( 'quant' == $k || 'quant_id' == $k || 'date' == $k || 'date_sort' == $k || 'adherent_tel' == $k || 'adherent' == $k || 'group' == $k || 'all_mult' == $k ) {
 								continue;
 							}
 							if ( ! is_numeric( $v ) ) {
@@ -1723,6 +1879,12 @@ function amapress_get_contrat_quantite_datatable(
 		                                          ' | ' .
 		                                          Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'date' ), 'Afficher par date' ), 'date' == $group_by || 'none' == $group_by ) : '' ) .
 		                      '</p><hr/>';
+	}
+
+	if ( $contrat_instance->isPanierVariable() ) {
+		$next_distrib_text .= '<p>' . Amapress::makeLink(
+				admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_columns&contrat=' . $contrat_instance_id ),
+				'Télécharger le récapitulatif des quantités avec produits en colonnes', true, true ) . '</p><hr/>';
 	}
 
 	$print_title = '';

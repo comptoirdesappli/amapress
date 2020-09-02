@@ -285,6 +285,7 @@ function amapress_register_entities_contrat( $entities ) {
 					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques/règlements (PDF)</a>';
 					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=group_date&contrat=' . $post->ID ) . '">Livraisons par dates (XLSX)</a>,';
 					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_date&contrat=' . $post->ID ) . '">Livraisons par adhérents (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_columns&contrat=' . $post->ID ) . '">Livraisons par adhérents et quantités en colonnes (XLSX)</a>,';
 					echo '</p>';
 				} else {
 					echo '<h4>TELECHARGER ARCHIVES</h4>';

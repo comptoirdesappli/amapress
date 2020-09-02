@@ -119,8 +119,10 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 					                                      'show_roles'  => 'false',
 				                                      ) ) : '' ) . '</div>';
 
-			$tbl_style                                         = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
-			$replacements['producteur_paniers_quantites']      = $tbl_style . amapress_get_contrat_quantite_datatable(
+			$tbl_style                                            = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+			$replacements['producteur_paniers_quantites_columns'] = $tbl_style . amapress_get_contrat_column_quantite_datatables(
+					$contrat->ID, $dist->getDate() );
+			$replacements['producteur_paniers_quantites']         = $tbl_style . amapress_get_contrat_quantite_datatable(
 					$contrat->ID, null,
 					$dist->getDate(),
 					[
@@ -129,7 +131,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 						'no_script'               => true,
 						'for_placeholder'         => true,
 					] );
-			$replacements['producteur_paniers_quantites_text'] = amapress_get_contrat_quantite_datatable(
+			$replacements['producteur_paniers_quantites_text']    = amapress_get_contrat_quantite_datatable(
 				$contrat->ID, null,
 				$dist->getDate(), [
 				'show_contact_producteur' => false,
@@ -564,18 +566,20 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	}
 	$send_to_producteur = in_array( $producteur_id, $send_to_producteurs );
 
-	$replacements                                 = [];
-	$replacements['producteur_contact']           = '<div><h5>Contact producteur:</h5>' .
-	                                                ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
-		                                                array(
-			                                                'show_avatar' => 'false',
-			                                                'show_tel'    => 'force',
-			                                                'show_sms'    => 'force',
-			                                                'show_email'  => 'force',
-			                                                'show_roles'  => 'false',
-		                                                ) ) : '' ) . '</div>';
-	$tbl_style                                    = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
-	$replacements['producteur_paniers_quantites'] = $tbl_style . amapress_get_contrat_quantite_datatable(
+	$replacements                                         = [];
+	$replacements['producteur_contact']                   = '<div><h5>Contact producteur:</h5>' .
+	                                                        ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
+		                                                        array(
+			                                                        'show_avatar' => 'false',
+			                                                        'show_tel'    => 'force',
+			                                                        'show_sms'    => 'force',
+			                                                        'show_email'  => 'force',
+			                                                        'show_roles'  => 'false',
+		                                                        ) ) : '' ) . '</div>';
+	$tbl_style                                            = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+	$replacements['producteur_paniers_quantites_columns'] = $tbl_style . amapress_get_contrat_column_quantite_datatables(
+			$contrat_instance->ID );
+	$replacements['producteur_paniers_quantites']         = $tbl_style . amapress_get_contrat_quantite_datatable(
 			$contrat_instance->ID, null,
 			null, [
 			'show_contact_producteur' => false,
@@ -662,10 +666,15 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 
 	$attachments = [];
 	foreach ( Amapress::get_array( Amapress::getOption( 'contrat-recap-cloture-xlsx' ) ) as $excel_name ) {
-		$xlsx          = amapress_get_contrat_quantite_xlsx( $contrat_instance->ID, $excel_name );
-		$attachments[] = Amapress::createXLSXFromDatatableAsMailAttachment(
-			$xlsx['columns'], $xlsx['data'], $xlsx['filename'], $xlsx['title']
-		);
+		if ( 'adherents_columns' == $excel_name ) {
+			$xl            = amapress_get_contrat_column_quantite( $contrat_instance->ID );
+			$attachments[] = Amapress::createXLSXFromPHPExcelAsMailAttachment( $xl['xl'], $xl['filename'] );
+		} else {
+			$xlsx          = amapress_get_contrat_quantite_xlsx( $contrat_instance->ID, $excel_name );
+			$attachments[] = Amapress::createXLSXFromDatatableAsMailAttachment(
+				$xlsx['columns'], $xlsx['data'], $xlsx['filename'], $xlsx['title']
+			);
+		}
 	}
 
 	$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ),
@@ -740,6 +749,7 @@ function amapress_contrat_quantites_recall_options() {
 				             'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
 				             'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
 				             'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
+				             'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
 				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
 				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
 				             'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
@@ -762,6 +772,7 @@ function amapress_contrat_quantites_recall_options() {
 				             'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
 				             'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
 				             'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
+				             'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
 				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
 				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
 				             'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
@@ -1290,6 +1301,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 				             'producteur_pseudo'                                => 'Pseudo du producteur',
 				             'lien_contrats_quantites'                          => 'Lien vers le récapitulatif des inscriptions',
 				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
+				             'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
 				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
 				             'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
 				             'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
@@ -1311,6 +1323,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 				'adherents_month'      => 'Récapitulatif par adherent par mois',
 				'adherents_quarter'    => 'Récapitulatif par adherent par trimestre',
 				'adherents_group_date' => 'Récapitulatif par adherent par date par groupe produits',
+				'adherents_columns'    => 'Récapitulatif par adherent par date par groupe produits en colonnes',
 			],
 			'default' => 'all',
 		),

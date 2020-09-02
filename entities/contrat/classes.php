@@ -1113,7 +1113,7 @@ class AmapressContrat_instance extends TitanEntity {
 				}, $adh->getLieux() ) );
 			}
 		];
-		$ret['lieu']                             = [
+		$ret['lieu'] = [
 			'desc' => 'Lieu de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -2607,9 +2607,16 @@ class AmapressContrat_instance extends TitanEntity {
 		foreach ( [ 'adherents_date', 'group_date' ] as $xl_name ) {
 			$xlsx = amapress_get_contrat_quantite_xlsx( $this->ID, $xl_name );
 			Amapress::createXLSXFromDatatableAsFile(
-				$xlsx['columns'], $xlsx['data'], Amapress::getArchivesDir() . '/' . $xlsx['filename'], $xlsx['title']
+				$xlsx['columns'], $xlsx['data'],
+				Amapress::getArchivesDir() . '/' . $xlsx['filename'], $xlsx['title']
 			);
 			$archives_infos["file_$xl_name"] = $xlsx['filename'];
+		}
+		if ( $this->isPanierVariable() ) {
+			$xl = amapress_get_contrat_column_quantite( $this->ID );
+			Amapress::createXLSXFromPHPExcelAsFile( $xl['xl'],
+				Amapress::getArchivesDir() . '/' . $xl['filename'] );
+			$archives_infos['file_adherents_columns'] = $xl['filename'];
 		}
 		//extract paiements xlsx
 		echo '<p>Stockage des excel des règlements</p>';

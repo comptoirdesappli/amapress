@@ -1939,6 +1939,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 
 													$is_all = isset( $_GET['all'] );
 
+//													if ( isset( $_GET['columns'] ) ) {
+//														return amapress_get_contrat_column_quantite_datatables(
+//															$contrat_id, $date );
+//													}
+
 													return amapress_get_contrat_quantite_datatable( $contrat_id, null, $date, [
 														'show_all_dates'       => $is_all,
 														'show_adherents_count' => ! $is_all,

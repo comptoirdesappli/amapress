@@ -85,11 +85,16 @@ add_action( 'admin_post_delivery_table_xlsx', function () {
 		return;
 	}
 
-	$xlsx = amapress_get_contrat_quantite_xlsx( $contrat_instance_id, $type );
-	$xl   = Amapress::createXLSXFromDatatable(
-		$xlsx['columns'], $xlsx['data'], $xlsx['title']
-	);
-	Amapress::sendXLSXFromPHPExcelObject( $xl, $xlsx['filename'] );
+	if ( 'adherents_columns' == $type ) {
+		$xl = amapress_get_contrat_column_quantite( $contrat_instance_id );
+		Amapress::sendXLSXFromPHPExcelObject( $xl['xl'], $xl['filename'] );
+	} else {
+		$xlsx = amapress_get_contrat_quantite_xlsx( $contrat_instance_id, $type );
+		$xl   = Amapress::createXLSXFromDatatable(
+			$xlsx['columns'], $xlsx['data'], $xlsx['title']
+		);
+		Amapress::sendXLSXFromPHPExcelObject( $xl, $xlsx['filename'] );
+	}
 } );
 
 add_action( 'admin_post_archives_inscriptions', function () {

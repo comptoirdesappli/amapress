@@ -3849,11 +3849,25 @@ class Amapress {
 		$columns, $data, $excel_file_name, $title
 	) {
 		$objPHPExcel = self::createXLSXFromDatatable( $columns, $data, $title );
-		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
-		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
-		$objWriter->save( $filename );
 
-		return $filename;
+		return self::createXLSXFromPHPExcelAsMailAttachment( $objPHPExcel, $excel_file_name );
+	}
+
+	public static function createXLSXFromPHPExcelAsMailAttachment(
+		$objPHPExcel, $excel_file_name
+	) {
+		$filename = Amapress::getAttachmentDir() . '/' . $excel_file_name;
+
+		return self::createXLSXFromPHPExcelAsFile( $objPHPExcel, $filename );
+	}
+
+	public static function createXLSXFromPHPExcelAsFile(
+		$objPHPExcel, $full_excel_file_name
+	) {
+		$objWriter = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+		$objWriter->save( $full_excel_file_name );
+
+		return $full_excel_file_name;
 	}
 
 	public static function createXLSXFromDatatableAsFile(
