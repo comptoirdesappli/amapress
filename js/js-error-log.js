@@ -14,7 +14,7 @@
             + "&line=" + line;
         // Replace spaces with +, browsers expect this for form POSTs.
         params = params.replace(/%20/g, '+');
-        req.open('POST', ajaxurl);
+        req.open('POST', js_error_log.ajax_url);
         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         req.send(params);
     };

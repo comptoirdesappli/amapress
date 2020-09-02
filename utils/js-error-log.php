@@ -28,6 +28,8 @@ class Amapress_JS_Error_Log {
 			'js-error-log',
 			plugins_url( 'js/js-error-log.js', AMAPRESS__PLUGIN_FILE )
 		);
+		wp_localize_script( 'js-error-log', 'js_error_log',
+			array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 	}
 
 	public function js_log_error() {
