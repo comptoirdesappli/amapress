@@ -235,10 +235,24 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$subject = str_replace( "%%$k%%", $v, $subject );
 				$content = str_replace( "%%$k%%", $v, $content );
 			}
+
+			$attachments = [];
+			foreach ( Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-xlsx' ) ) as $excel_name ) {
+				if ( 'adherents_columns' == $excel_name ) {
+					$xl            = amapress_get_contrat_column_quantite( $contrat->ID, $dist->getDate() );
+					$attachments[] = Amapress::createXLSXFromPHPExcelAsMailAttachment( $xl['xl'], $xl['filename'] );
+				} else {
+					$xlsx          = amapress_get_contrat_quantite_xlsx( $contrat->ID, $excel_name, $dist->getDate() );
+					$attachments[] = Amapress::createXLSXFromDatatableAsMailAttachment(
+						$xlsx['columns'], $xlsx['data'], $xlsx['filename'], $xlsx['title']
+					);
+				}
+			}
+
 			amapress_send_message(
 				$subject,
 				$content,
-				'', $target_users, $dist, array(),
+				'', $target_users, $dist, $attachments,
 				amapress_get_recall_cc_from_option( 'distribution-quantites-recall-cc' ) );
 			echo '<p>Email de rappel des quantités aux producteurs envoyé : ' . esc_html( $producteur->getTitle() ) . '</p>';
 			$sent_mails = true;
@@ -787,6 +801,19 @@ function amapress_contrat_quantites_recall_options() {
 			'name' => 'Montants paniers modulables',
 			'desc' => 'Afficher les montants pour les paniers modulables',
 			'type' => 'checkbox',
+		),
+		array(
+			'id'      => 'distribution-quantites-recall-xlsx',
+			'name'    => 'Attacher les excels suivants',
+			'type'    => 'multi-check',
+			'options' => [
+				'date'                 => 'Récapitulatif par produit',
+				'group_date'           => 'Récapitulatif par groupe produits',
+				'adherents_date'       => 'Récapitulatif par adherent par produit',
+				'adherents_group_date' => 'Récapitulatif par adherent par groupe produits',
+				'adherents_columns'    => 'Récapitulatif par adherent par groupe produits en colonnes',
+			],
+			'default' => 'all',
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc',

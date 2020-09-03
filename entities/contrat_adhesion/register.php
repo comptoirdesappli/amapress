@@ -1177,7 +1177,7 @@ function amapress_get_contrat_column_quantite(
 		$date, [
 		'show_price'     => true,
 		'show_adherents' => true,
-		'show_all_dates' => true,
+		'show_all_dates' => 'first' == $date,
 		'group_by'       => 'date',
 		'group_by_group' => false,
 		'mode'           => 'xlsx',
@@ -1303,26 +1303,33 @@ function amapress_get_contrat_column_quantite(
 
 function amapress_get_contrat_quantite_xlsx(
 	$contrat_instance_id,
-	$type
+	$type,
+	$date = 'first'
 ) {
 	$contrat        = AmapressContrat_instance::getBy( $contrat_instance_id );
 	$group_by       = 'date';
 	$show_adherents = false;
 	$group_by_group = false;
+	$by_date        = 'par-date';
+	$by_date_title  = 'par date';
+	if ( 'first' != $date ) {
+		$by_date       = date_i18n( 'Y-m-d', $date );
+		$by_date_title = date_i18n( 'd-m-Y', $date );
+	}
 	switch ( $type ) {
 		case 'quant_column_adherents_by_date':
 			$show_adherents = true;
 			break;
 		case 'adherents_group_date':
 			$show_adherents  = true;
-			$type_title_file = 'avec-adherents-par-date-groupe';
-			$type_title      = 'Avec adherents par date-groupe';
+			$type_title_file = 'avec-adherents-' . $by_date . '-groupe';
+			$type_title      = 'Avec adherents ' . $by_date_title . '-groupe';
 			$group_by_group  = true;
 			break;
 		case 'adherents_date':
 			$show_adherents  = true;
-			$type_title_file = 'avec-adherents-par-date';
-			$type_title      = 'Avec adherents par date';
+			$type_title_file = 'avec-adherents-' . $by_date;
+			$type_title      = 'Avec adherents ' . $by_date_title;
 			break;
 		case 'adherents_month':
 			$group_by        = 'month';
@@ -1347,21 +1354,21 @@ function amapress_get_contrat_quantite_xlsx(
 			$type_title      = 'Par trimestre';
 			break;
 		case 'group_date':
-			$type_title_file = 'par-date';
-			$type_title      = 'Par date';
+			$type_title_file = $by_date;
+			$type_title      = $by_date_title;
 			$group_by_group  = true;
 			break;
 		default:
-			$type_title_file = 'par-date';
-			$type_title      = 'Par date';
+			$type_title_file = $by_date;
+			$type_title      = $by_date_title;
 			break;
 	}
 	$data = amapress_get_contrat_quantite_datatable(
 		$contrat->ID, null,
-		'first', [
+		$date, [
 		'show_price'     => $contrat->isPanierVariable(),
 		'show_adherents' => $show_adherents,
-		'show_all_dates' => true,
+		'show_all_dates' => 'first' == $date,
 		'group_by'       => $group_by,
 		'group_by_group' => $group_by_group,
 		'mode'           => 'xlsx',
