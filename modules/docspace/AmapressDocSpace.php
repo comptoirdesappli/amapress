@@ -151,7 +151,7 @@ ENDFORM;
                 });
             });
         }
-	    var clip = new Clipboard('.clip-file-copy');
+	    var clip = new ClipboardJS('.clip-file-copy');
 	    clip.on('success', function(e) {
 	        alert('Lien copié');
         });

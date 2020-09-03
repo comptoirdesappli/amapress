@@ -1112,7 +1112,7 @@ function amapress_register_shortcodes() {
 		$id   = 'agenda-url-' . md5( uniqid() );
 		$url  = esc_attr( Amapress_Agenda_ICAL_Export::get_link_href( false, intval( $atts['since_days'] ) ) );
 
-		return "<div class='input-group'><input id='$id' type='text' value='$url' class='form-control' style='max-width: 80%' /><span class='input-group-addon'><button class='btn btn-secondary copy-agenda-url' type='button' data-clipboard-target='#{$id}'><span class='fa fa-copy' /></button></span><script type='text/javascript'>jQuery(function($) { new Clipboard('.copy-agenda-url'); });</script></div>";
+		return "<div class='input-group'><input id='$id' type='text' value='$url' class='form-control' style='max-width: 80%' /><span class='input-group-addon'><button class='btn btn-secondary copy-agenda-url' type='button' data-clipboard-target='#{$id}'><span class='fa fa-copy' /></button></span><script type='text/javascript'>jQuery(function($) { new ClipboardJS('.copy-agenda-url'); });</script></div>";
 	},
 		[
 			'desc' => 'Copieur de lien de configuration de la synchronisation d\'un calendrier ICAL dans l\'agenda de l\'amapien',
