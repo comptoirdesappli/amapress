@@ -232,9 +232,16 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 	/** @return AmapressProduit[] */
 	public function getProduits() {
-		return array_map( function ( $id ) {
+		$prods = array_map( function ( $id ) {
 			return new AmapressProduit( $id );
 		}, $this->getProduitIds() );
+		usort( $prods, function ( $a, $b ) {
+			/** @var AmapressProduit $a */
+			/** @var AmapressProduit $b */
+			return strcmp( $a->getTitle(), $b->getTitle() );
+		} );
+
+		return $prods;
 	}
 
 	private $produit_ids = null;
@@ -242,24 +249,27 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	/** @return int[] */
 	public function getProduitIds() {
 		if ( null === $this->produit_ids ) {
+			Amapress::setFilterForReferent( false );
 			$this->produit_ids = get_posts( array(
 					'post_type'      => AmapressProduit::INTERNAL_POST_TYPE,
 					'posts_per_page' => - 1,
 					'fields'         => 'ids',
 					'meta_query'     => array(
-						'relation' => 'OR',
 						array(
-							'key'     => 'amapress_produit_producteur',
-							'value'   => $this->ID,
-							'compare' => '=',
-							'type'    => 'NUMERIC',
-						),
-						amapress_prepare_like_in_array( 'amapress_produit_producteur', $this->ID )
+							'relation' => 'OR',
+							array(
+								'key'     => 'amapress_produit_producteur',
+								'value'   => $this->ID,
+								'compare' => '=',
+								'type'    => 'NUMERIC',
+							),
+							amapress_prepare_like_in_array( 'amapress_produit_producteur', $this->ID )
+						)
 					),
-					'order'          => 'ASC',
-					'orderby'        => 'title'
+					'orderby'        => 'none'
 				)
 			);
+			Amapress::setFilterForReferent( true );
 		}
 
 		return $this->produit_ids;
