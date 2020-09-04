@@ -1321,6 +1321,18 @@ add_action( 'admin_head-users.php', function () {
 				false, false
 			);
 		}
+	} elseif ( ! empty( $_GET['amapress_role'] ) && 'archivable' == $_GET['amapress_role'] ) {
+		$override_title = 'Utilisateurs archivables';
+		echo amapress_get_admin_notice(
+			'Cette vue contient les comptes utilisateurs archivables (sans contrats en cours, 
+			non intermittents, non membres du collectif, non membres de groupes Amapiens). 
+			Il est conseillé d\'archiver les contrats terminés (' . Amapress::makeLink( admin_url( 'admin.php?page=contrats_archives' ),
+				'Archivage contrats', true, true ) . ') avant d\'archiver les comptes utilisateurs.<br/>
+			Pour <strong>archiver</strong> les utilisateurs avant suppression, cliquez sur le lien <em>Exporter<span class="dashicons dashicons-external"></span></em><br/>
+			Pour <strong>supprimer</strong> les utilisateurs, cliquez sur la case de sélection globale et choissez l\'action groupée <em>Supprimer</em>',
+			'info',
+			false, false
+		);
 	}
 	if ( ! empty( $override_title ) ) {
 		echo '<script type="">jQuery(function($) { $(".wp-heading-inline").text(' . wp_json_encode( $override_title ) . ');});</script>';

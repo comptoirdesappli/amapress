@@ -4585,6 +4585,13 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								),
 							),
 						),
+						array(
+							'title'      => 'Utilisateurs archivables',
+							'menu_icon'  => 'dashicons-book',
+							'menu_title' => 'Archivables',
+							'capability' => 'manage_amapress',
+							'slug'       => 'users.php?amapress_role=archivable',
+						),
 					),
 				),
 				array(

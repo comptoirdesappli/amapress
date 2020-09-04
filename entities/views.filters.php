@@ -448,7 +448,8 @@ function amapress_user_views( $ret ) {
 		$query_add = '&page=contrat_paiements';
 	}
 
-	if ( ! isset( $_REQUEST['s'] ) ) {
+	if ( ! isset( $_REQUEST['s'] )
+	     && ( empty( $_GET['amapress_role'] ) || 'archivable' != $_GET['amapress_role'] ) ) {
 		if ( empty( $page ) || $page == 'adhesion_paiements' ) {
 			amapress_add_view_button(
 				$ret, 'adhe_nok',
@@ -560,6 +561,9 @@ function amapress_user_views( $ret ) {
 					true );
 			}
 		}
+	}
+
+	if ( amapress_is_admin_or_responsable() ) {
 		amapress_add_view_button(
 			$ret, 'archivable',
 			"amapress_role=archivable$query_add",
