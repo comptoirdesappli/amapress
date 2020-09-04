@@ -411,6 +411,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_editable_inscriptions'          => 'true',
 			'adhesion_shift_weeks'                => 0,
 			'before_close_hours'                  => 24,
+			'show_max_deliv_dates'                => 3,
 			'max_coadherents'                     => 3,
 			'max_cofoyers'                        => 3,
 			'use_contrat_term'                    => 'true',
@@ -432,6 +433,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$allow_adhesion_alone       = Amapress::toBool( $atts['allow_adhesion_alone'] );
 	$use_contrat_term           = Amapress::toBool( $atts['use_contrat_term'] );
 	$admin_mode                 = Amapress::toBool( $atts['admin_mode'] );
+	$show_max_deliv_dates       = intval( $atts['show_max_deliv_dates'] );
 	if ( $admin_mode && ! is_admin() ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
 	}
@@ -1245,39 +1247,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-	            <tr>
-		            <th style="text-align: left; width: auto"><label
-				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-				            : </label></th>
-		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
-		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-		            </td>
-	            </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label
+                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+                            : </label></th>
+                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
+                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+                    </td>
+                </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-		            <tr>
-			            <th style="text-align: left; width: auto"></th>
-			            <td>
-				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-				            </label>
-			            </td>
-		            </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"></th>
+                        <td>
+                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                            </label>
+                        </td>
+                    </tr>
 	            <?php } ?>
             </table>
-	        <div>
+            <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-	        </div>
+            </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-		        <table style="min-width: 50%">
-			        <tr>
-				        <th colspan="2">Membre du foyer 1 / Conjoint
-				        </th>
-			        </tr>
-			        <tr>
-				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-						        : </label>
-				        </th>
-				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 1 / Conjoint
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
@@ -2561,7 +2563,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
 						}
 					} else {
-						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
+						$deliveries_dates = '';
+						if ( count( $contrat->getListe_dates() ) <= $show_max_deliv_dates ) {
+							$deliveries_dates = sprintf( ' - Livraison(s) %s -',
+								implode( ', ', array_map( function ( $d ) {
+									return date_i18n( 'd/m/Y', $d );
+								}, $contrat->getListe_dates() ) )
+							);
+						}
+						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . $deliveries_dates . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
 <br/>
 <form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
