@@ -1374,7 +1374,7 @@ function amapress_get_contrat_quantite_xlsx(
 		'mode'           => 'xlsx',
 	] );
 
-	$filename = strtolower( sanitize_file_name( "quantites-{$contrat->getModelTitle()}-{$type_title_file}" ) );
+	$filename = strtolower( sanitize_file_name( "quantites-{$this->ID}-{$contrat->getModelTitle()}-{$type_title_file}" ) );
 	$title    = "{$contrat->getModelTitle()} - $type_title";
 	if ( strlen( $title ) > 27 ) {
 		$title = substr( $title, 0, 27 ) . '...';
