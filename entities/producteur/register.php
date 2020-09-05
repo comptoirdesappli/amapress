@@ -184,7 +184,7 @@ function amapress_register_entities_producteur( $entities ) {
 add_filter( 'amapress_producteur_fields', 'amapress_producteur_fields' );
 function amapress_producteur_fields( $fields ) {
 	$lieux = Amapress::get_lieux();
-	if ( count( $lieux ) > 1 ) {
+	if ( count( $lieux ) > 1 || isset( $_GET['all_lieux'] ) ) {
 		foreach ( $lieux as $lieu ) {
 			$fields[ 'referent_' . $lieu->ID ] = array(
 				'name'         => amapress__( 'Référent ' . $lieu->getShortName() ),

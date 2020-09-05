@@ -2004,7 +2004,7 @@ jQuery(function($) {
 add_filter( 'amapress_contrat_fields', 'amapress_contrat_fields' );
 function amapress_contrat_fields( $fields ) {
 	$lieux = Amapress::get_lieux();
-	if ( count( $lieux ) > 1 ) {
+	if ( count( $lieux ) > 1 || isset( $_GET['all_lieux'] ) ) {
 		foreach ( $lieux as $lieu ) {
 			$fields[ 'referent_' . $lieu->ID ] = array(
 				'name'         => amapress__( 'Référent ' . $lieu->getShortName() ),
