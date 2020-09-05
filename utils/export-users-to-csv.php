@@ -146,4 +146,89 @@ class AmapressExport_Users {
 			exit;
 		}
 	}
+
+	public static function generate_phpexcel_sheet( $query_string, $base_export_name = null, $title = null ) {
+		$args = array(
+			'fields'         => 'all_with_meta',
+			'posts_per_page' => - 1,
+		);
+		$args = wp_parse_args( $args, wp_parse_args( $query_string ) );
+
+		$users = get_users( $args );
+
+		$name = ! empty( $base_export_name ) ? $base_export_name : 'users';
+
+		$exclude_data = apply_filters( 'amapress_users_export_exclude_data', array(
+			'user_pass',
+			'user_activation_key'
+		) );
+
+		global $wpdb;
+
+		$data_keys = array(
+			'ID',
+			'user_login',
+			'user_pass',
+			'user_nicename',
+			'user_email',
+			'first_name',
+			'last_name',
+			'user_url',
+			'user_registered',
+			'user_activation_key',
+			'user_status',
+			'display_name',
+			'roles'
+		);
+		$meta_keys = $wpdb->get_results( "SELECT distinct(meta_key) FROM $wpdb->usermeta" );
+		$meta_keys = wp_list_pluck( $meta_keys, 'meta_key' );
+		$fields    = array_merge( $data_keys, $meta_keys );
+		$fields    = apply_filters( "amapress_users_export_fields", $fields, $name );
+		$fields    = apply_filters( "amapress_{$name}_export_fields", $fields, $name );
+
+		$csv_data = array();
+		$headers  = array();
+		foreach ( $fields as $key => $field ) {
+			if ( in_array( $field, $exclude_data ) ) {
+				unset( $fields[ $key ] );
+			} else {
+				$header = apply_filters( "amapress_users_get_field_display_name", $field );
+				$header = wp_specialchars_decode( $header );
+				$header = html_entity_decode( $header );
+				if ( empty( $header ) ) {
+					unset( $fields[ $key ] );
+					continue;
+				}
+				$headers[] = $header;
+			}
+		}
+		$csv_data[] = $headers;
+
+		/** @var WP_User $user */
+		foreach ( $users as $user ) {
+			$data = array();
+			foreach ( $fields as $field ) {
+				$value = isset( $user->{$field} ) ? $user->{$field} : '';
+				if ( 'role' == $field || 'roles' == $field ) {
+					$amapien = AmapressUser::getBy( $user );
+					$value   = $amapien->getAmapRolesString();
+				}
+				$value  = apply_filters( 'amapress_users_export_prepare_value', $value, $field, $user );
+				$data[] = is_array( $value ) ? serialize( $value ) : $value;
+			}
+			$csv_data[] = $data;
+		}
+
+		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->getProperties()->setCreator( "Amapress" )
+		            ->setLastModifiedBy( "Amapress" )
+		            ->setTitle( ! empty( $title ) ? $title : $name );
+		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( $csv_data );
+		$objPHPExcel->getActiveSheet()->setTitle( $name );
+		$objPHPExcel->setActiveSheetIndex( 0 );
+
+		return $objPHPExcel;
+	}
 }

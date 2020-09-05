@@ -192,6 +192,85 @@ class AmapressAdhesionPeriod extends TitanEntity {
 
 		return self::getBy( $new_id );
 	}
+
+	public function canBeArchived() {
+		return ! $this->isArchived() && amapress_time() > Amapress::add_a_month(
+				Amapress::end_of_day( $this->getDate_fin() ), Amapress::getOption( 'archive_months', 3 ) );
+	}
+
+	public function isArchived() {
+		return $this->getCustomAsInt( 'amapress_adhesion_period_archived', 0 );
+	}
+
+	public function archive() {
+		if ( ! $this->canBeArchived() ) {
+			return false;
+		}
+
+		$archives_infos = [];
+		//extract inscriptions xlsx
+		echo '<p>Stockage de l\'excel des adhésions</p>';
+		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( 'post_type=amps_adh_pmt&amapress_adhesion_period=' . $this->ID,
+			null, $this->getTitle() . ' - Adhésions' );
+		$filename    = 'periode-' . $this->ID . '-adhesions.xlsx';
+		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
+		$archives_infos['file_adhesions'] = $filename;
+
+		//extract paiements xlsx
+		echo '<p>Stockage des excel des règlements</p>';
+		$_GET['page']     = 'adhesion_paiements';
+		$_GET['adh_date'] = Amapress::add_days( $this->getDate_debut(), 1 );
+		$objPHPExcel      = AmapressExport_Users::generate_phpexcel_sheet( 'amapress_adhesion=all',
+			null, $this->getTitle() . ' - Réglements' );
+		$filename         = 'periode-' . $this->ID . '-paiements.xlsx';
+		$objWriter        = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
+		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
+		$archives_infos['file_paiements'] = $filename;
+
+		$adhesions                         = get_posts( 'post_type=amps_adh_pmt&amapress_adhesion_period=' . $this->ID );
+		$archives_infos['count_adhesions'] = count( $adhesions );
+
+		echo '<p>Stockage des infos du contrat pour archive</p>';
+		$this->setCustom( 'amapress_adhesion_period_archives_infos', $archives_infos );
+
+		echo '<p>Archivage des adhésions et règlements</p>';
+		global $wpdb;
+		//start transaction
+		$wpdb->query( 'START TRANSACTION' );
+		//delete related adhesion paiements
+		foreach ( $adhesions as $adhesion ) {
+			wp_delete_post( $adhesion->ID, true );
+		}
+		//mark archived
+		$this->setCustom( 'amapress_adhesion_period_archived', 1 );
+		//end transaction
+		$wpdb->query( 'COMMIT' );
+	}
+
+	public function getArchiveInfo() {
+		$res = $this->getCustomAsArray( 'amapress_adhesion_period_archives_infos' );
+		if ( empty( $res ) ) {
+			$res = [ 'count_adhesions' => 0 ];
+		}
+
+		return $res;
+	}
+
+	/** @return AmapressAdhesionPeriod[] */
+	public static function getAll() {
+		return array_map(
+			function ( $p ) {
+				return AmapressAdhesionPeriod::getBy( $p );
+			},
+			get_posts(
+				array(
+					'post_type'      => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+				)
+			)
+		);
+	}
 }
 
 

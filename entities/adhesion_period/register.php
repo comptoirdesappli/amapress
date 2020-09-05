@@ -29,6 +29,14 @@ function amapress_register_entities_adhesion_period( $entities ) {
 			if ( true !== $result ) {
 				echo amapress_get_admin_notice( $result['message'], $result['status'], false );
 			}
+
+			if ( $period->isArchived() ) {
+				echo '<h4>TELECHARGER ARCHIVES</h4>';
+				echo '<p>';
+				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&period=' . $post->ID ) . '">Adhésions (XLSX)</a>, ';
+				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&type=paiements&period=' . $post->ID ) . '">Adhésions (Répartition) (XLSX)</a>,';
+				echo '</p>';
+			}
 		},
 		'row_actions'      => array(
 			'renew' => [
@@ -158,3 +166,78 @@ function amapress_row_action_adhesion_period_renew( $post_id ) {
 
 	wp_redirect_and_exit( admin_url( "post.php?post={$new_period->ID}&action=edit" ) );
 }
+
+function amapress_adhesion_period_archivables_view() {
+	$columns = array(
+		array(
+			'title' => 'Période',
+			'data'  => array(
+				'_'    => 'period',
+				'sort' => 'period',
+			)
+		),
+		array(
+			'title' => '',
+			'data'  => 'archive'
+		),
+	);
+
+	$data = array();
+	foreach ( AmapressAdhesionPeriod::getAll() as $period ) {
+		if ( ! $period->canBeArchived() ) {
+			continue;
+		}
+
+		$archive_link = add_query_arg(
+			array(
+				'action'    => 'archive_adh_period',
+				'period_id' => $period->ID,
+			),
+			admin_url( 'admin-post.php' )
+		);
+		$data[]       = array(
+			'period'  => Amapress::makeLink( $period->getAdminEditLink(), $period->getTitle(), true, true ),
+			'archive' => Amapress::makeLink( $archive_link, 'Archiver' ),
+		);
+	}
+
+	return amapress_get_datatable( 'adh_period-archivables-table', $columns, $data );
+}
+
+add_action( 'admin_post_archive_adh_period', function () {
+	$period_id  = isset( $_REQUEST['period_id'] ) ? intval( $_REQUEST['period_id'] ) : 0;
+	$adh_period = AmapressAdhesionPeriod::getBy( $period_id );
+	if ( empty( $adh_period ) ) {
+		wp_die( 'Période d\'adhésion' );
+	}
+
+	if ( ! current_user_can( 'edit_adhesion_period', $period_id ) ) {
+		wp_die( 'Vous n\'avez pas le droit d\'archiver cette période d\'adhésion' );
+	}
+
+	if ( $adh_period->isArchived() ) {
+		wp_die( 'Période d\'adhésion déjà archivée' );
+	}
+
+	if ( ! $adh_period->canBeArchived() ) {
+		wp_die( 'Période d\'adhésion non archivable' );
+	}
+
+	if ( ! isset( $_REQUEST['confirm'] ) ) {
+		echo '<p>Etes-vous sûr de vouloir archiver ' . esc_html( $adh_period->getTitle() ) . ' ? 
+<br />
+<a href = "' . add_query_arg( 'confirm', 'yes' ) . '"> Confirmer l\'archivage</a>';
+		die();
+	}
+
+	if ( 'yes' != $_REQUEST['confirm'] ) {
+		wp_die( 'Archivage de ' . esc_html( $adh_period->getTitle() ) . ' abandonné.' );
+	}
+
+	$adh_period->archive();
+
+	echo '<p style="color: green">Archivage effectué</p>';
+
+	echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=adh_period_archives' ) ) . '">Retour à la liste des périodes d\'adhésion archivables</a></p>';
+	die();
+} );

@@ -2773,6 +2773,31 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 						),
 						array(
 							'subpage'  => true,
+							'id'       => 'adh_period_archives',
+							'settings' => array(
+								'name'       => 'Archivage des adhésions et périodes d\'adhésion',
+								'menu_title' => 'Archivage',
+								'capability' => 'manage_amapress',
+								'menu_icon'  => 'dashicons-book',
+							),
+							'options'  => array(),
+							'tabs'     => array(
+								'Archivables' => array(
+									'id'      => 'adh_period_archivables_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'adh_period_archivables',
+											'name'   => 'Périodes d\'adhésion archivables',
+											'type'   => 'custom',
+											'custom' => 'amapress_adhesion_period_archivables_view',
+										),
+									)
+								),
+							),
+						),
+						array(
+							'subpage'  => true,
 							'id'       => 'amapress_gest_adhesions_conf_opt_page',
 							'settings' => array(
 								'name'       => 'Configuration',

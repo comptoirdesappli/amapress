@@ -129,7 +129,9 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 		return '';
 	}
 
-	$all_paiements = AmapressAdhesion_paiement::getAllActiveByUserId();
+	$all_paiements = AmapressAdhesion_paiement::getAllActiveByUserId(
+		isset( $_GET['adh_date'] ) ? intval( $_GET['adh_date'] ) : null
+	);
 	$amount        = 0;
 	if ( isset( $all_paiements[ $user_id ] ) ) {
 		/** @var AmapressAdhesion_paiement $p */
@@ -238,7 +240,9 @@ function amapress_adhesion_paiements_column_export( $output, $colname, $user_id 
 		return '';
 	}
 
-	$all_paiements = AmapressAdhesion_paiement::getAllActiveByUserId();
+	$all_paiements = AmapressAdhesion_paiement::getAllActiveByUserId(
+		isset( $_GET['adh_date'] ) ? intval( $_GET['adh_date'] ) : null
+	);
 	$amount        = 0;
 	if ( isset( $all_paiements[ $user_id ] ) ) {
 		/** @var AmapressAdhesion_paiement $p */
