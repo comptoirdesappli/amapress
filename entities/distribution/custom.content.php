@@ -537,7 +537,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				if ( $is_resp_amap || current_user_can( 'edit_panier' ) ) {
 					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">Editer le contenu/Déplacer</a>';
 				}
-				amapress_echo_panel_start_no_esc( Amapress::makeLink( get_permalink( $contrat_model ), $contrat_instance->getProperty( 'contrat_type_complet' ), true, true ) . $panier_btns, $icon,
+				amapress_echo_panel_start_no_esc( Amapress::makeLink( $contrat_model->getPermalink(), $contrat_instance->getProperty( 'contrat_type_complet' ), true, true ) . $panier_btns, $icon,
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
 				echo AmapressPaniers::getPanierContentHtml( $panier->ID, $lieu_id );
 				amapress_echo_panel_end();

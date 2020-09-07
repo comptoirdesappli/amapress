@@ -1305,7 +1305,7 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 						$icon = '<img src="' . esc_attr( $icon ) . '" class="dist-panier-contrat-img" alt="' . esc_attr( $contrat_model->getTitle() ) . '" />';
 					}
 
-					amapress_echo_panel_start_no_esc( Amapress::makeLink( get_permalink( $contrat_model ), $contrat_instance->getModelTitleWithSubName(), true, true ), $icon,
+					amapress_echo_panel_start_no_esc( Amapress::makeLink( $contrat_model->getPermalink(), $contrat_instance->getModelTitleWithSubName(), true, true ), $icon,
 						'amap-panel-dist amap-panel-dist-' . $dist->getLieuId() . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
 					echo AmapressPaniers::getPanierContentHtml( $panier->ID, $dist->getLieuId() );
 					amapress_echo_panel_end();
