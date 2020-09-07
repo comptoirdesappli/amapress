@@ -417,9 +417,22 @@ function amapress_message_get_targets() {
 
 	$ret = array();
 	amapress_add_message_target( $ret, "post_type=amps_producteur|amapress_producteur_user", "Les producteurs", 'producteur' );
-	amapress_add_message_target( $ret, "user:role=responsable_amap", "Les responsables AMAP", 'resp-amap' );
+	amapress_add_message_target( $ret, "user:amapress_role=collectif", "Les membres du collectif AMAP", 'collectif' );
 	amapress_add_message_target( $ret, "user:amapress_role=referent_producteur", "Les referents producteurs", "referent-producteur" );
 	amapress_add_message_target( $ret, "post_type=amps_lieu|amapress_lieu_distribution_referent", "Les referents lieux de distribution", "referent-lieu" );
+
+	foreach (
+		get_categories( array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'taxonomy'   => AmapressUser::AMAP_ROLE,
+			'hide_empty' => false,
+		) ) as $role
+	) {
+		/** @var WP_Term $role */
+		amapress_add_message_target( $ret, "user:amapress_role=amap_role_{$role->slug}", 'Rôle "' . $role->name . '"', "referents" );
+	}
+
 	$res['Responsables'] = $ret;
 
 	$ret = array();
@@ -535,6 +548,7 @@ function amapress_message_get_targets() {
 	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens avec contrats", "with-contrats" );
 	//intermittants
 	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
+	amapress_add_message_target( $ret, "user:amapress_contrat=principal", "Les amapiens principaux", "principaux" );
 	//sans adhésion
 	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );
 	amapress_add_message_target( $ret, "never_logged", "Les amapiens jamais connectés", "never-logged" );
@@ -549,7 +563,7 @@ function amapress_message_get_targets() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		amapress_add_message_target( $ret, "user:amapress_role=amapien_group_{$role->slug}", 'Groupe amapiens "' . $role->name . '"', "referent-producteur" );
+		amapress_add_message_target( $ret, "user:amapress_role=amapien_group_{$role->slug}", 'Groupe amapiens "' . $role->name . '"', "amapiens" );
 	}
 
 
