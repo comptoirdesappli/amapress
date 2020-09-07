@@ -411,6 +411,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_editable_inscriptions'          => 'true',
 			'adhesion_shift_weeks'                => 0,
 			'before_close_hours'                  => 24,
+			'show_close_date'                     => false,
 			'show_max_deliv_dates'                => 3,
 			'max_coadherents'                     => 3,
 			'max_cofoyers'                        => 3,
@@ -433,6 +434,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$allow_adhesion_alone       = Amapress::toBool( $atts['allow_adhesion_alone'] );
 	$use_contrat_term           = Amapress::toBool( $atts['use_contrat_term'] );
 	$admin_mode                 = Amapress::toBool( $atts['admin_mode'] );
+	$show_close_date            = Amapress::toBool( $atts['show_close_date'] );
 	$show_max_deliv_dates       = intval( $atts['show_max_deliv_dates'] );
 	if ( $admin_mode && ! is_admin() ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
@@ -2569,6 +2571,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								implode( ', ', array_map( function ( $d ) {
 									return date_i18n( 'd/m/Y', $d );
 								}, $contrat->getListe_dates() ) )
+							);
+						}
+						if ( $show_close_date ) {
+							$deliveries_dates .= sprintf( ' - <strong>Clôture inscriptions %s</strong>',
+								date_i18n( 'd/m/Y', $contrat->getDate_cloture() )
 							);
 						}
 						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . $deliveries_dates . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
