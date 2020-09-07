@@ -538,6 +538,7 @@ function amapress_message_get_targets() {
 	//sans adhésion
 	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );
 	amapress_add_message_target( $ret, "never_logged", "Les amapiens jamais connectés", "never-logged" );
+	amapress_add_message_target( $ret, 'archivables', "Les amapiens archivables", 'user:amapress_role=archivable' );
 
 	foreach (
 		get_categories( array(
