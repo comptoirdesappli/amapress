@@ -298,7 +298,11 @@ function amapress_handle_send_message() {
 	$content     = $_REQUEST['amapress_msg_content'];
 	$content_sms = isset( $_REQUEST['amapress_msg_content_for_sms'] ) ? $_REQUEST['amapress_msg_content_for_sms'] : '';
 
-	amapress_send_message_and_record( $subject, $content, $content_sms, $opt );
+	$amapien   = AmapressUser::getBy( amapress_current_user_id() );
+	$headers   = [];
+	$headers[] = 'Reply-To: ' . implode( ',', $amapien->getAllEmails() );
+
+	amapress_send_message_and_record( $subject, $content, $content_sms, $opt, null, [], null, null, $headers );
 //    'target_name' => array(
 //            'target_type' => array(
 //            'target_ids' => array(
