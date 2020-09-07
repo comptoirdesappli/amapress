@@ -1684,11 +1684,18 @@ class AmapressAdhesion extends TitanEntity {
 				foreach ( $panier as $quant_id => $quant ) {
 					/** @var AmapressContrat_quantite $contrat_quant */
 					$contrat_quant = $quant_by_id[ $quant_id ];
-					$sum           += $contrat_quant->getPrix_unitaire() * $quant;
+					if ( empty( $contrat_quant ) ) {
+						continue;
+					}
+					$sum += $contrat_quant->getPrix_unitaire() * $quant;
 				}
 			}
 		} else {
 			foreach ( $this->getContrat_quantites( $date ) as $c ) {
+				if ( empty( $c ) ) {
+					continue;
+				}
+
 				$sum += $c->getPrice();
 			}
 		}
