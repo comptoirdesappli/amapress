@@ -164,7 +164,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'desc'       => 'Montant',
 				'csv_import' => false,
 			),
-			'pmt_type'  => array(
+			'pmt_type'     => array(
 				'name'           => amapress__( 'Moyen de règlement principal' ),
 				'type'           => 'select',
 				'options'        => array(
@@ -183,14 +183,20 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'placeholder' => 'Tous les type de paiement',
 				),
 			),
-			'lieu'      => array(
+			'intermittent' => array(
+				'name'    => amapress__( 'Intermittent?' ),
+				'type'    => 'checkbox',
+				'default' => false,
+				'desc'    => 'Indique une adhésion d\'un intermittent',
+			),
+			'lieu'         => array(
 				'name'       => amapress__( 'Lieu dist.' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'desc'       => 'Lieu de distribution souhaité',
 				'searchable' => true,
 			),
-			'lieu_type' => array(
+			'lieu_type'    => array(
 				'name'           => amapress__( 'Choix du lieu' ),
 				'type'           => 'select',
 				'options'        => array(

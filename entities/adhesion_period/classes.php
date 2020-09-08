@@ -74,12 +74,14 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, 'Bulletin d\'adhésion' );
 	}
 
-	public function getMontantReseau() {
-		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_reseau' );
+	public function getMontantReseau( $intermittent = false ) {
+		return $this->getCustomAsFloat(
+			$intermittent ? 'amapress_adhesion_period_mnt_reseau_inter' : 'amapress_adhesion_period_mnt_reseau' );
 	}
 
-	public function getMontantAmap() {
-		return $this->getCustomAsFloat( 'amapress_adhesion_period_mnt_amap' );
+	public function getMontantAmap( $intermittent = false ) {
+		return $this->getCustomAsFloat(
+			$intermittent ? 'amapress_adhesion_period_mnt_amap_inter' : 'amapress_adhesion_period_mnt_amap' );
 	}
 
 	public function getAllow_Cheque() {

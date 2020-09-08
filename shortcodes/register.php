@@ -752,6 +752,57 @@ function amapress_register_shortcodes() {
 			]
 		] );
 
+	amapress_register_shortcode( 'intermittent-adhesion-en-ligne', 'amapress_inter_self_adhesion',
+		[
+			'desc' => 'Permet les adhésions en ligne pour les intermittents (non connecté et nouveaux, sécurisée par une clé secrète) uniquement',
+			'args' => [
+				'key'                     => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé',
+				'use_steps_nums'          => '(booléen, true par défaut) : afficher les numéros d\'étapes',
+				'allow_new_mail'          => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
+				'agreement'               => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
+				'send_adhesion_confirm'   => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_tresoriers'         => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'edit_names'              => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'send_welcome'            => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
+				'shorturl'                => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+				'mob_phone_required'      => '(false par défaut) Téléphones (mobiles) requis',
+				'address_required'        => '(false par défaut) Adresse requise',
+				'notify_email'            => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
+				'show_adhesion_infos'     => '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin',
+				'allow_adhesion_message'  => '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion',
+				'paiements_info_required' => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
+				'allow_trombi_decline'    => '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope',
+				'track_no_renews'         => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email'   => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'email'                   => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
+				'check_honeypots'         => '(true par défaut) Détecter et bloquer les bots de spam pour une utilisation publique (key=public) de l\'assistant',
+			]
+		] );
+	amapress_register_shortcode( 'intermittent-adhesion-en-ligne-connecte', 'amapress_inter_logged_self_adhesion',
+		[
+			'desc' => 'Permet les adhésions en ligne des intermittents (connecté) uniquement',
+			'args' => [
+				'agreement'               => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
+				'use_steps_nums'          => '(booléen, true par défaut) : afficher les numéros d\'étapes',
+				'allow_new_mail'          => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
+				'send_adhesion_confirm'   => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
+				'send_tresoriers'         => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
+				'edit_names'              => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
+				'send_welcome'            => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
+				'shorturl'                => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
+				'mob_phone_required'      => '(false par défaut) Téléphones (mobiles) requis',
+				'address_required'        => '(false par défaut) Adresse requise',
+				'notify_email'            => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
+				'allow_adhesion_message'  => '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion',
+				'skip_coords'             => '(false par défaut) Passer l\'étape de saisie des coordonnées et des coadhérents',
+				'show_adhesion_infos'     => '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin',
+				'paiements_info_required' => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
+				'track_no_renews'         => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
+				'track_no_renews_email'   => '(email administrateir par défaut) Envoyer l\'email de notification de non renouvellement à cette adresse',
+				'allow_trombi_decline'    => '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope',
+				'email'                   => '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème',
+			]
+		] );
 	amapress_register_shortcode( 'intermittent-paniers', 'amapress_intermittent_paniers_shortcode',
 		[
 			'desc' => 'Paniers réservés par un intermittent',

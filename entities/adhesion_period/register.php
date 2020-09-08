@@ -72,7 +72,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => 'Contenu à afficher lors de l\'adhésion en ligne',
 			),
-			'word_model'   => array(
+			'word_model'       => array(
 				'name'            => amapress__( 'Bulletin personnalisé' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -85,21 +85,35 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'            => '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ) . '">Plus d\'info</a>)</p>
 <p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getBulletinGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>',
 			),
-			'mnt_reseau'   => array(
+			'mnt_reseau'       => array(
 				'name'     => amapress__( 'Montant adhésion au réseau' ),
 				'type'     => 'number',
 				'required' => true,
 				'group'    => 'Pré-inscription en ligne',
 				'desc'     => 'Montant adhésion au réseau',
 			),
-			'mnt_amap'     => array(
+			'mnt_amap'         => array(
 				'name'     => amapress__( 'Montant adhésion AMAP' ),
 				'type'     => 'number',
 				'required' => true,
 				'group'    => 'Pré-inscription en ligne',
 				'desc'     => 'Montant adhésion AMAP',
 			),
-			'allow_chq'    => array(
+			'mnt_reseau_inter' => array(
+				'name'     => amapress__( 'Intermittents - Montant adhésion au réseau' ),
+				'type'     => 'number',
+				'required' => true,
+				'group'    => 'Pré-inscription en ligne',
+				'desc'     => 'Montant adhésion au réseau pour les intermittents',
+			),
+			'mnt_amap_inter'   => array(
+				'name'     => amapress__( 'Intermittents - Montant adhésion AMAP' ),
+				'type'     => 'number',
+				'required' => true,
+				'group'    => 'Pré-inscription en ligne',
+				'desc'     => 'Montant adhésion AMAP pour les intermittents',
+			),
+			'allow_chq'        => array(
 				'name'        => amapress__( 'Chèque' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
@@ -108,7 +122,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en chèque',
 			),
-			'allow_cash'   => array(
+			'allow_cash'       => array(
 				'name'        => amapress__( 'Espèces' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',

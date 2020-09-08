@@ -77,6 +77,18 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_adhesion_paiement_pmt_type', 'chq' );
 	}
 
+	public function isForIntermittent() {
+		return $this->getCustom( 'amapress_adhesion_paiement_intermittent', 0 );
+	}
+
+	public function getAdhesionType() {
+		if ( $this->isForIntermittent() ) {
+			return 'Intermittent';
+		} else {
+			return 'Amapien';
+		}
+	}
+
 	public function getStatusDisplay() {
 		$this->ensure_init();
 		switch ( $this->getStatus() ) {
@@ -453,22 +465,28 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['paiement_date']         = [
+			$ret['paiement_date'] = [
 				'desc' => 'Date du paiement/adhésion à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate() );
 				}
 			];
-			$ret['montant_amap']          = [
-				'desc' => 'Montant versé à l\'AMAP',
+			$ret['type_adhesion'] = [
+				'desc' => 'Type d\'adhésion (Amapien ou intermittent)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return Amapress::formatPrice( $adh->getPeriod()->getMontantAmap() );
+					return Amapress::formatPrice( $adh->getAdhesionType() );
 				}
 			];
-			$ret['montant_reseau']        = [
+			$ret['montant_amap'] = [
+				'desc' => 'Montant versé à l\'AMAP',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return Amapress::formatPrice( $adh->getPeriod()->getMontantAmap( $adh->isForIntermittent() ) );
+				}
+			];
+			$ret['montant_reseau'] = [
 				'desc' => 'Montant versé au réseau de l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau() );
+					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau( $adh->isForIntermittent() ) );
 				}
 			];
 			$ret['tresoriers']            = [

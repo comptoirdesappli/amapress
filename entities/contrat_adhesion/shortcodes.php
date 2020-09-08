@@ -301,6 +301,40 @@ function amapress_logged_self_adhesion( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
+function amapress_inter_self_adhesion( $atts, $content = null, $tag ) {
+	$atts                         = wp_parse_args( $atts );
+	$atts['for_logged']           = 'false';
+	$atts['allow_inscriptions']   = 'false';
+	$atts['adhesion']             = 'true';
+	$atts['for_intermittent']     = 'true';
+	$atts['max_coadherents']      = 0;
+	$atts['max_cofoyers']         = 0;
+	$atts['show_adherents_infos'] = 'false';
+	$atts['allow_adhesion_lieu']  = 'false';
+	$atts['show_modify_coords']   = 'false';
+	$atts['allow_adhesion_alone'] = 'true';
+
+	return amapress_self_inscription( $atts, $content, $tag );
+}
+
+function amapress_inter_logged_self_adhesion( $atts, $content = null, $tag ) {
+	$atts                         = wp_parse_args( $atts );
+	$atts['for_logged']           = 'true';
+	$atts['check_honeypots']      = 'false';
+	$atts['allow_inscriptions']   = 'false';
+	$atts['adhesion']             = 'true';
+	$atts['for_intermittent']     = 'true';
+	$atts['max_coadherents']      = 0;
+	$atts['max_cofoyers']         = 0;
+	$atts['show_adherents_infos'] = 'false';
+	$atts['allow_adhesion_lieu']  = 'false';
+	$atts['show_modify_coords']   = 'false';
+	$atts['allow_adhesion_alone'] = 'true';
+	unset( $atts['key'] );
+
+	return amapress_self_inscription( $atts, $content, $tag );
+}
+
 function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
 	$atts                    = wp_parse_args( $atts );
 	$atts['for_logged']      = 'true';
@@ -354,7 +388,8 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 
 	$is_mes_contrats     = 'mes-contrats' == $tag;
 	$is_inscription_mode = 'inscription-en-ligne' == $tag || 'inscription-en-ligne-connecte' == $tag;
-	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag;
+	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag
+	                       || 'intermittent-adhesion-en-ligne' == $tag || 'intermittent-adhesion-en-ligne-connecte' == $tag;
 
 	$atts = shortcode_atts(
 		[
@@ -423,6 +458,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'email'                               => get_option( 'admin_email' ),
 			'use_quantite_tables'                 => 'false',
 			'allow_trombi_decline'                => 'true',
+			'for_intermittent'                    => 'false',
 		]
 		, $atts );
 
@@ -435,6 +471,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$use_contrat_term           = Amapress::toBool( $atts['use_contrat_term'] );
 	$admin_mode                 = Amapress::toBool( $atts['admin_mode'] );
 	$show_close_date            = Amapress::toBool( $atts['show_close_date'] );
+	$adhesion_intermittent      = Amapress::toBool( $atts['for_intermittent'] );
 	$show_max_deliv_dates       = intval( $atts['show_max_deliv_dates'] );
 	if ( $admin_mode && ! is_admin() ) {
 		wp_die( 'admin_mode ne peut pas être utilisé directement' );
@@ -890,13 +927,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		$welcome_message = wp_unslash(
-			Amapress::getOption( $is_adhesion_mode ? 'online_subscription_welcome_adh_message' : 'online_subscription_welcome_inscr_message' )
+			Amapress::getOption( $is_adhesion_mode ?
+				( $adhesion_intermittent ? 'online_subscription_welcome_adh_inter_message' : 'online_subscription_welcome_adh_message' ) :
+				'online_subscription_welcome_inscr_message' )
 		);
 		if ( empty( $welcome_message ) ) {
 			if ( $is_inscription_mode ) {
 				$welcome_type = ( $use_contrat_term ? 'd’inscription aux contrats producteurs' : 'de commande aux producteurs' );
 			} else {
-				$welcome_type = 'd’adhésion';
+				if ( $adhesion_intermittent ) {
+					$welcome_type = 'd’adhésion des intermittents';
+				} else {
+					$welcome_type = 'd’adhésion';
+				}
 			}
 			$welcome_message = sprintf( 'Bienvenue dans l’assistant %s de « %%%%nom_site%%%% »', $welcome_type );
 		}
@@ -906,12 +949,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
         <h4>
 			<?php
 			echo amapress_step_text( $step, $steps_nums, $steps_count );
-			echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_email_step_name' ) ) );
+			echo esc_html( wp_unslash( Amapress::getOption( $adhesion_intermittent ? 'online_subscription_inter_email_step_name' : 'online_subscription_email_step_name' ) ) );
 			?>
         </h4>
         <form method="post" action="<?php echo esc_attr( add_query_arg( 'step', 'coords' ) ) ?>" id="inscr_email"
               class="amapress_validate">
-			<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_email_step_message' ), null ) ); ?>
+			<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
+				$adhesion_intermittent ? 'online_subscription_inter_email_step_message' : 'online_subscription_email_step_message' ), null ) ); ?>
             <label for="email" style="display: block">Pour démarrer
                 votre <?php echo( $is_adhesion_mode ? 'adhésion' : 'inscription' ); ?> pour la saison
 				<?php
@@ -1194,11 +1238,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		?>
         <h4>
 			<?php
-			$coords_step_title = esc_html( wp_unslash( Amapress::getOption( 'online_subscription_coords_step_name' ) ) );
+			$coords_step_title = esc_html( wp_unslash( Amapress::getOption(
+				$adhesion_intermittent ? 'online_subscription_inter_coords_step_name' : 'online_subscription_coords_step_name' ) ) );
 			echo amapress_step_text( $step, $steps_nums, $steps_count ) . $coords_step_title;
 			?>
         </h4>
-        <p><?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_coords_step_message' ), null ) ); ?></p>
+        <p><?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
+				$adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
         <p><?php echo $adherents_infos; ?></p>
 		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
@@ -1269,9 +1315,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	            <?php } ?>
             </table>
             <div>
-		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-	        <?php if ( $max_cofoyers >= 1 ) { ?>
+			<?php if ( $max_cofoyers >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2">Membre du foyer 1 / Conjoint
@@ -1736,7 +1782,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
         <h4>
 			<?php
 			echo amapress_step_text( $step, $steps_nums, $steps_count );
-			echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_name' ) ) );
+			echo esc_html( wp_unslash( Amapress::getOption(
+				$adhesion_intermittent ? 'online_subscription_inter_agreement_step_name' : 'online_subscription_agreement_step_name' ) ) );
 			?>
         </h4>
         <form method="post" id="agreement" class="amapress_validate"
@@ -1747,12 +1794,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
             <div class="amap-agreement">
-				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_agreement' ), null ) ); ?>
+				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
+					$adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ), null ) ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
                                                      class="required" value="1"
-                                                     data-msg="Veuillez cocher la case ci-dessous"/> <?php echo esc_html( wp_unslash( Amapress::getOption( 'online_subscription_agreement_step_checkbox' ) ) ); ?>
+                                                     data-msg="Veuillez cocher la case ci-dessous"/> <?php echo esc_html( wp_unslash( Amapress::getOption(
+						$adhesion_intermittent ? 'online_subscription_inter_agreement_step_checkbox' : 'online_subscription_agreement_step_checkbox' ) ) ); ?>
                 </label>
             </p>
             <p>
@@ -1780,7 +1829,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			return ( sprintf( 'Aucune période d\'adhésion n\'est configurée au %s', date_i18n( 'd/m/Y', $adh_period_date ) ) );
 		}
 
-		$step_name = esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_step_name' ) ) );
+		$step_name = esc_html( wp_unslash( Amapress::getOption(
+			$adhesion_intermittent ? 'online_subscription_inter_adh_step_name' : 'online_subscription_adh_step_name' ) ) );
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . '</h4>';
 		echo $adh_period->getOnlineDescription();
 
@@ -1821,10 +1871,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		foreach ( $taxes as $tax ) {
 			$tax_amount = 0;
 			if ( $tax->term_id == $amap_term ) {
-				$tax_amount = $adh_period->getMontantAmap();
+				$tax_amount = $adh_period->getMontantAmap( $adhesion_intermittent );
 			}
 			if ( $tax->term_id == $reseau_amap_term ) {
-				$tax_amount = $adh_period->getMontantReseau();
+				$tax_amount = $adh_period->getMontantReseau( $adhesion_intermittent );
 			}
 			if ( ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) && abs( $tax_amount ) < 0.001 ) {
 				$ret .= '<input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />';
@@ -1905,6 +1955,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_repartition', $amounts );
 		update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_amount', $total_amount );
+		if ( $adhesion_intermittent ) {
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_intermittent', 1 );
+		} else {
+			delete_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_intermittent' );
+		}
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_banque'] ) ) {
 			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_banque', sanitize_text_field( $_REQUEST['amapress_adhesion_paiement_banque'] ) );
 		}
@@ -1938,6 +1993,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$adh_paiement = AmapressAdhesion_paiement::getBy( $adh_paiement->ID, true );
 		$amapien      = AmapressUser::getBy( $user_id );
+		if ( $adhesion_intermittent ) {
+			if ( ! $amapien->isIntermittent() ) {
+				$amapien->inscriptionIntermittence();
+			}
+		}
 		$mail_subject = Amapress::getOption( 'online_adhesion_confirm-mail-subject' );
 		$mail_content = Amapress::getOption( 'online_adhesion_confirm-mail-content' );
 
@@ -1980,10 +2040,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			);
 		}
 
-		$step_name = esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_valid_step_name' ) ) );
+		$step_name = esc_html( wp_unslash( Amapress::getOption(
+			$adhesion_intermittent ? 'online_subscription_inter_adh_valid_step_name' : 'online_subscription_adh_valid_step_name' ) ) );
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . '</h4>';
 
-		$online_subscription_greating_adhesion = wp_unslash( Amapress::getOption( 'online_subscription_greating_adhesion' ) );
+		$online_subscription_greating_adhesion = wp_unslash( Amapress::getOption(
+			$adhesion_intermittent ? 'online_subscription_inter_greating_adhesion' : 'online_subscription_greating_adhesion' ) );
 
 		if ( $adh_paiement->getPeriod()->getWordModelId() ) {
 			$print_bulletin                        = Amapress::makeButtonLink(
@@ -2124,7 +2186,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						     '</strong></p>';
 						$allow_inscriptions = false;
 					} else {
-						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption( 'online_subscription_req_adhesion' ) ), null );
+						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption(
+							$adhesion_intermittent ? 'online_subscription_inter_req_adhesion' : 'online_subscription_req_adhesion' ) ), null );
 						echo '<p><form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="' . ( $skip_coords ? ( $activate_agreement ? 'agreement' : 'adhesion' ) : ( $for_logged ? 'coords_logged' : 'coords' ) ) . '" />
@@ -2303,7 +2366,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '</p>';
 			}
 			if ( $amapien->isPrincipalAdherent() && Amapress::toBool( $atts['show_modify_coords'] ) ) {
-				$coords_step_title = wp_unslash( Amapress::getOption( 'online_subscription_coords_step_name' ) );
+				$coords_step_title = wp_unslash( Amapress::getOption(
+					$adhesion_intermittent ? 'online_subscription_inter_coords_step_name' : 'online_subscription_coords_step_name'
+				) );
 				echo '<p>';
 				echo Amapress::makeButtonLink( add_query_arg( [
 					'step' => amapress_is_user_logged_in() ? 'coords_logged' : 'coords',
