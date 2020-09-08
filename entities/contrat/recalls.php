@@ -1064,7 +1064,7 @@ function amapress_contrat_open_recall_options() {
 		array(
 			'id'                  => 'contrat-open-recall-1',
 			'name'                => 'Rappel 1',
-			'desc'                => 'Contrats à renouveler',
+			'desc'                => 'Contrats ouverts à l\'inscription',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
@@ -1075,7 +1075,7 @@ function amapress_contrat_open_recall_options() {
 		array(
 			'id'                  => 'contrat-open-recall-2',
 			'name'                => 'Rappel 2',
-			'desc'                => 'Contrats à renouveler',
+			'desc'                => 'Contrats ouverts à l\'inscription',
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1088,7 +1088,7 @@ function amapress_contrat_open_recall_options() {
 		array(
 			'id'                  => 'contrat-open-recall-3',
 			'name'                => 'Rappel 3',
-			'desc'                => 'Contrats à renouveler',
+			'desc'                => 'Contrats ouverts à l\'inscription',
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1168,7 +1168,7 @@ function amapress_contrat_close_recall_options() {
 		array(
 			'id'                  => 'contrat-close-recall-1',
 			'name'                => 'Rappel 1',
-			'desc'                => 'Contrats à renouveler',
+			'desc'                => 'Contrats bientôt fermés à l\'inscription',
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
@@ -1179,7 +1179,7 @@ function amapress_contrat_close_recall_options() {
 		array(
 			'id'                  => 'contrat-close-recall-2',
 			'name'                => 'Rappel 2',
-			'desc'                => 'Contrats à renouveler',
+			'desc'                => 'Contrats bientôt fermés à l\'inscription',
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1192,7 +1192,7 @@ function amapress_contrat_close_recall_options() {
 		array(
 			'id'                  => 'contrat-close-recall-3',
 			'name'                => 'Rappel 3',
-			'desc'                => 'Contrats à renouveler',
+			'desc'                => 'Contrats bientôt fermés à l\'inscription',
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
