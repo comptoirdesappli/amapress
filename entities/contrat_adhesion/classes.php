@@ -1683,7 +1683,7 @@ class AmapressAdhesion extends TitanEntity {
 				$panier = $paniers[ $date ];
 				foreach ( $panier as $quant_id => $quant ) {
 					/** @var AmapressContrat_quantite $contrat_quant */
-					$contrat_quant = $quant_by_id[ $quant_id ];
+					$contrat_quant = isset( $quant_by_id[ $quant_id ] ) ? $quant_by_id[ $quant_id ] : null;
 					if ( empty( $contrat_quant ) ) {
 						continue;
 					}
