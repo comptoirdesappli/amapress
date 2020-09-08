@@ -4337,10 +4337,16 @@ class Amapress {
 		                . $info['filename']
 		                . '.pdf';
 		try {
-			$pdf_handle  = fopen( $pdf_filename, 'w+' );
+			$pdf_handle = fopen( $pdf_filename, 'w+' );
+			if ( ! $pdf_handle ) {
+				throw new Exception( sprintf( 'Cannot open %s for writing, please check rights', $pdf_filename ) );
+			}
 			$fileContent = file_get_contents( $filename );
-			$client      = new GuzzleHttp\Client();
-			$resp        = $client->post( $convertws_url, [
+			if ( ! $fileContent ) {
+				throw new Exception( sprintf( 'Cannot get content of %s', $filename ) );
+			}
+			$client = new GuzzleHttp\Client();
+			$resp   = $client->post( $convertws_url, [
 				'auth'      => [
 					$convertws_user,
 					$convertws_pass
@@ -4356,7 +4362,7 @@ class Amapress {
 			] );
 
 			if ( 200 == $resp->getStatusCode() ) {
-				fclose( $pdf_handle );
+				@fclose( $pdf_handle );
 
 				return $pdf_filename;
 			} else {
