@@ -2443,7 +2443,8 @@ function amapress_echo_and_check_amapress_state_page() {
 				'online_contrats_end_step_edit_message',
 				'online_final_step_message',
 				'allow_partial_exchange',
-				'intermit_self_inscr'
+				'intermit_self_inscr',
+				'intermit_adhesion_req'
 			];
 			$generated_value     = [];
 			foreach ( $options_to_generate as $k ) {

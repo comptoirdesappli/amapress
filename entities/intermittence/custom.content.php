@@ -43,10 +43,26 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 		return '';
 	}
 
-	$atts = shortcode_atts( array(
-		'contrat'        => null,
-		'allow_amapiens' => true,
+	$atts                    = shortcode_atts( array(
+		'contrat'                 => null,
+		'allow_amapiens'          => true,
+		'check_adhesion'          => Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ),
+		'check_adhesion_received' => false,
 	), $atts );
+	$check_adhesion          = Amapress::toBool( $atts['check_adhesion'] );
+	$check_adhesion_received = Amapress::toBool( $atts['check_adhesion_received'] );
+	if ( $check_adhesion ) {
+		$adh_period = AmapressAdhesionPeriod::getCurrent();
+		if ( empty( $adh_period ) ) {
+			return ( sprintf( 'Aucune période d\'adhésion n\'est configurée au %s', date_i18n( 'd/m/Y' ) ) );
+		}
+
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( amapress_current_user_id(), null, false );
+		if ( empty( $adh_paiement ) || ( $check_adhesion_received && $adh_paiement->isNotReceived() ) ) {
+			return wp_unslash( Amapress::getOption( 'online_subscription_inter_req_adhesion' ) );
+		}
+	}
+
 	if ( ! Amapress::toBool( $atts['allow_amapiens'] ) ) {
 		$amapien = AmapressUser::getBy( amapress_current_user_id() );
 		if ( $amapien && ! $amapien->isIntermittent() ) {

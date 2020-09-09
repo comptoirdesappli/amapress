@@ -4243,6 +4243,13 @@ class Amapress {
 		], 'amp_inscr_distrib_href' );
 	}
 
+	public static function get_intermittent_adhesion_page_href() {
+		return self::get_page_with_shortcode_href( [
+			'intermittent-adhesion-en-ligne',
+			'intermittent-adhesion-en-ligne-connecte'
+		], 'amp_inscr_distrib_href' );
+	}
+
 	public static function get_mes_contrats_page_href() {
 		return self::get_page_with_shortcode_href( 'mes-contrats', 'amp_mes_contrats_href' );
 	}

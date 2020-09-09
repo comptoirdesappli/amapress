@@ -142,6 +142,10 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 		wp_die( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif' );
 	}
 
+	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) && ! amapress_can_access_admin() ) {
+		wp_die( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'assistant d\'adhésion Intermittents' );
+	}
+
 	header( 'Content-Type: text/html; charset=UTF-8' );
 	if ( ! isset( $_REQUEST['email'] ) ) {
 		die( 'Pas d\'email spécifié' );
@@ -189,6 +193,10 @@ add_action( 'admin_post_inscription_intermittent', 'amapress_admin_action_inscri
 function amapress_admin_action_inscription_intermittent() {
 	if ( ! Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) && ! amapress_can_access_admin() ) {
 		wp_die( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif' );
+	}
+
+	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) && ! amapress_can_access_admin() ) {
+		wp_die( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'assistant d\'adhésion Intermittents' );
 	}
 
 	header( 'Content-Type: text/html; charset=UTF-8' );

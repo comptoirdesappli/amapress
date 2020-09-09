@@ -3651,6 +3651,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							'options'  => array(),
 							'tabs'     => array(
 								'Configuration de l\'espace intermittents'             => array(
+									'id'         => 'amapress_intermit_conf_tab',
 									'desc'       => '',
 									'capability' => 'manage_options',
 									'options'    => array(
@@ -3665,6 +3666,13 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Autoriser les amapiens à inscrire des intermittents',
 											'type'    => 'checkbox',
 											'default' => true,
+										),
+										array(
+											'id'      => 'intermit_adhesion_req',
+											'name'    => 'Adhésion obligatoire pour les intermittents',
+											'type'    => 'checkbox',
+											'desc'    => 'Les intermittents doivent passer par un assistant d\'adhésion (shortcode [intermittent-adhesion-en-ligne] ou [intermittent-adhesion-en-ligne-connecte])',
+											'default' => false,
 										),
 										array(
 											'id'      => 'allow_partial_exchange',

@@ -476,8 +476,11 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Paniers disponibles sur la liste des intermittents',
 			'args' => [
-				'contrat'        => 'Permet de filtrer les contrats pour lesquels les paneirs à échanger sont affichés',
-				'allow_amapiens' => '(Par défaut “true”) Autoriser les amapiens à réserver des paniers',
+				'contrat'                 => 'Permet de filtrer les contrats pour lesquels les paneirs à échanger sont affichés',
+				'allow_amapiens'          => '(Par défaut “true”) Autoriser les amapiens à réserver des paniers',
+				'check_adhesion'          => '(Par défaut ' . ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ? 'true' : 'false' )
+				                             . ', configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_intermit_conf_opt_page&tab=amapress_intermit_conf_tab' ), 'Tableau de bord>Espace intermittents>Configuration, onglet Configuration de l\'espace intermittents', true, true ) . ') Autoriser la réservation de paniers uniquement si l\'intermittent a une adhésion à l\'AMAP',
+				'check_adhesion_received' => '(Par défaut false) Autoriser la réservation de paniers uniquement si l\'adhésion est validée',
 			]
 		] );
 	amapress_register_shortcode( 'les-paniers-intermittents-count', 'amapress_all_paniers_intermittents_count_shortcode',

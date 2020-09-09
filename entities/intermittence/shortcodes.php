@@ -49,6 +49,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
+	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
+		$href = Amapress::get_intermittent_adhesion_page_href();
+		$link = ! empty( $href ) ? Amapress::makeLink( $href, 'Assistant d\'adhésion Intermittents' ) : 'Non configuré';
+		wp_die( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'' . $link );
+	}
+
 	$current_post = get_post();
 
 	$admin_post_url = admin_url( 'admin-post.php' );
@@ -114,6 +120,10 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
 					$ret .= '';
 				}
 				$ret .= do_shortcode( '[intermittents-desinscription]' );
+			} elseif ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
+				$href = Amapress::get_intermittent_adhesion_page_href();
+				$link = ! empty( $href ) ? Amapress::makeLink( $href, 'Assistant d\'adhésion Intermittents' ) : 'Non configuré';
+				$ret  .= '<p>Les inscriptions à l\'Espace intermittents doivent se faire, par l\'intermittent lui-même, via l\'' . $link . '</p>';
 			} else if ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) ) {
 				$my_email = wp_get_current_user()->user_email;
 				$ret      .= "<p class='intermittence inscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=inscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('Confirmez-vous votre inscription ?')\">Devenir intermittent</a></p>";
@@ -121,7 +131,11 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
 			break;
 		case 'other':
 		case 'other_user':
-			if ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) || amapress_can_access_admin() ) {
+			if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
+				$href = Amapress::get_intermittent_adhesion_page_href();
+				$link = ! empty( $href ) ? Amapress::makeLink( $href, 'Assistant d\'adhésion Intermittents' ) : 'Non configuré';
+				$ret  .= '<p>Les inscriptions à l\'Espace intermittents doivent se faire, par l\'intermittent lui-même, via l\'' . $link . '</p>';
+			} elseif ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) || amapress_can_access_admin() ) {
 				if ( 'ok' == $inscription_intermittent ) {
 					$ret .= '<div class="alert alert-success">Inscription dans l\'espace intermittents prise en compte</div>';
 				} else if ( 'already' == $inscription_intermittent ) {
