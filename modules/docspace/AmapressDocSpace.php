@@ -97,7 +97,7 @@ class AmapressDocSpace {
 			$title = esc_html( $atts['title'] );
 			$ret   .= "<$tag class='amps-doc-space-title $sanitized_name'>$title</$tag>";
 		}
-		$ret .= "<div id='amps-file-list-$sanitized_name''></div>";
+		$ret .= "<div id='amps-file-list-$sanitized_name'></div>";
 		if ( $this->hasCurrentUserUploadRight() ) {
 			$ret .= <<<ENDFORM
 <div id="amps-dz-$sanitized_name"><form action="$url" class="dropzone needsclick dz-clickable" id="amps-dz-form-$sanitized_name">
@@ -118,7 +118,7 @@ ENDFORM;
 	    jQuery.get('$get_list_url', function(data) {
 	        jQuery('#amps-file-list-$sanitized_name').html(data);
 	        sorttable.makeSortable(jQuery('#amps-file-list-$sanitized_name table').get(0));
-            jQuery('.docspace-remove').on('click', function() {
+            jQuery('#amps-file-list-$sanitized_name .docspace-remove').on('click', function() {
                 var name = jQuery(this).data('name');
                 if (!confirm('Etes-vous sûr de vouloir supprimer ' + name + ' ?'))
                     return;
@@ -151,7 +151,7 @@ ENDFORM;
                 });
             });
         }
-	    var clip = new ClipboardJS('.clip-file-copy');
+	    var clip = new ClipboardJS('#amps-file-list-$sanitized_name .clip-file-copy');
 	    clip.on('success', function(e) {
 	        alert('Lien copié');
         });
