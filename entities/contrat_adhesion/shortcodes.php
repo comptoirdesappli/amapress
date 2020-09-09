@@ -3244,15 +3244,16 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			echo '<style type="text/css">.quant-var-recopier{text-shadow: none !important; text-decoration: none !important;}.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
 
 			$js_options = array(
-				'bSort'        => false,
-				'paging'       => false,
-				'searching'    => true,
-				'bAutoWidth'   => true,
-				'responsive'   => false,
-				'init_as_html' => true,
-				'scrollX'      => true,
-				'scrollY'      => intval( $atts['paniers_modulables_editor_height'] ),
-				'fixedColumns' => array( 'leftColumns' => 2 ),
+				'bSort'          => false,
+				'paging'         => false,
+				'searching'      => true,
+				'bAutoWidth'     => true,
+				'responsive'     => false,
+				'init_as_html'   => true,
+				'scrollCollapse' => true,
+				'scrollX'        => true,
+				'scrollY'        => $atts['paniers_modulables_editor_height'],
+				'fixedColumns'   => array( 'leftColumns' => 2 ),
 			);
 			if ( $has_groups ) {
 				$js_options['raw_js_options'] = 'rowGroup: {
