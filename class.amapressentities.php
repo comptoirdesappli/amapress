@@ -4560,55 +4560,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 								'menu_icon'  => 'dashicons-groups',
 							),
 							'tabs'     => array(
-								'Rôles dans l\'Amap'             => array(
-									'id'      => 'amapress_edit_roles_collectif',
-									'desc'    => '',
-									'options' => array(
-										array(
-											'id'     => 'amap_role_editor',
-											'bare'   => true,
-											'type'   => 'custom',
-											'custom' => function ( $option ) {
-												return amapress_get_amap_roles_editor();
-											},
-											'save'   => function ( $option ) {
-												amapress_save_amap_role_editor();
-											},
-										),
-										array(
-											'type'      => 'save',
-											'use_reset' => false,
-										),
-										array(
-											'id'      => 'amap_role_add',
-											'type'    => 'action-buttons',
-											'name'    => 'Rôles supplémentaires',
-											'buttons' => array(
-												array(
-													'text'   => 'Ajouter un rôle',
-													'href'   => admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
-													'target' => '_blank',
-												),
-											),
-										),
-
-									)
-								),
-								'Référents producteurs'          => array(
-									'id'      => 'amapress_edit_ref_prods',
-									'desc'    => '',
-									'options' => array(
-										array(
-											'id'     => 'amap_referents_view',
-											'name'   => '',
-											'type'   => 'custom',
-											'custom' => function ( $option ) {
-												return amapress_get_referent_prods_grid();
-											}
-										)
-									),
-								),
-								'Roles Amapress'                 => array(
+								'Roles Amapress'                                   => array(
 									'id'      => 'amapress_edit_wp_roles',
 									'desc'    => '',
 									'options' => array(
@@ -4663,34 +4615,64 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									),
 								),
-								'Historique'                     => array(
-									'id'      => 'amapress_collectif_history',
+								'Référents producteurs'                            => array(
+									'id'      => 'amapress_edit_ref_prods',
 									'desc'    => '',
 									'options' => array(
 										array(
-											'id'     => 'amapress_collectif_history_view',
+											'id'     => 'amap_referents_view',
 											'name'   => '',
 											'type'   => 'custom',
 											'custom' => function ( $option ) {
-												$content  = '';
-												$log_file = Amapress::getRolesLogFile();
-												if ( file_exists( $log_file ) ) {
-													$content = file_get_contents( $log_file );
-												}
-
-												return '<pre>' . $content . '</pre>';
+												return amapress_get_referent_prods_grid();
 											}
 										)
 									),
 								),
-								'Rôles spécifiques dans l\'Amap' => array(
+								'Coordinateurs Amap'                               => array(
+									'id'      => 'amapress_edit_roles_collectif',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'amap_role_editor',
+											'bare'   => true,
+											'type'   => 'custom',
+											'custom' => function ( $option ) {
+												return amapress_get_amap_roles_editor();
+											},
+											'save'   => function ( $option ) {
+												amapress_save_amap_role_editor();
+											},
+										),
+										array(
+											'type'      => 'save',
+											'use_reset' => false,
+										),
+										array(
+											'id'      => 'amap_role_add',
+											'type'    => 'action-buttons',
+											'name'    => 'Rôles supplémentaires',
+											'buttons' => array(
+												array(
+													'text'   => 'Ajouter un rôle',
+													'href'   => admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
+													'target' => '_blank',
+												),
+											),
+										),
+
+									)
+								),
+								'Responsables des réponses aux mails automatiques' => array(
 									'id'         => 'amp_amap_roles_config',
 									'desc'       => '',
 									'capability' => 'manage_options',
 									'options'    => array(
 										array(
 											'type' => 'note',
-											'desc' => 'Etiquettes de rôles Amap particulières. Permet, par ex, d\'affecter les Reply To des emails automatiques aux personnes qui gèrent les visites, les distributions, les intermittents',
+											'desc' => 'Le fonctionnement d\'Amapress repose sur l\'envoi d\'emails automatiques.<br/>
+Il est nécessaire de rediriger les réponsent d\'amapiens à ces mails vers des Coordinateurs Amap.<br/>
+Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu déroulant.',
 										),
 										array(
 											'id'       => 'resp-distrib-gardien-amap-role',
@@ -4726,6 +4708,26 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type' => 'save',
 										),
 									)
+								),
+								'Historique'                                       => array(
+									'id'      => 'amapress_collectif_history',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'     => 'amapress_collectif_history_view',
+											'name'   => '',
+											'type'   => 'custom',
+											'custom' => function ( $option ) {
+												$content  = '';
+												$log_file = Amapress::getRolesLogFile();
+												if ( file_exists( $log_file ) ) {
+													$content = file_get_contents( $log_file );
+												}
+
+												return '<pre>' . $content . '</pre>';
+											}
+										)
+									),
 								),
 							),
 						),
