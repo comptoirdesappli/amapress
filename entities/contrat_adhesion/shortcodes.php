@@ -1876,7 +1876,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( $tax->term_id == $reseau_amap_term ) {
 				$tax_amount = $adh_period->getMontantReseau( $adhesion_intermittent );
 			}
-			if ( ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) && abs( $tax_amount ) < 0.001 ) {
+			$tax_amount_free = $tax_amount < 0;
+			$tax_amount      = $tax_amount < 0 ? 0 : $tax_amount;
+			if ( ! $tax_amount_free && ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) && abs( $tax_amount ) < 0.001 ) {
 				$ret .= '<input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />';
 			} else {
 				$ret .= '<tr>';
@@ -1884,7 +1886,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <label for="amapress_pmt_amount-' . $tax->term_id . '">' . esc_html( $tax->name ) . '</label>
 ' . ( ! empty( $tax->description ) ? '<p style="font-style: italic; font-weight: normal">' . $tax->description . '</p>' : '' ) . '
 </th>';
-				if ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) {
+				if ( ! $tax_amount_free && ( $tax->term_id == $amap_term || $tax->term_id == $reseau_amap_term ) ) {
 					$ret .= '<td style="min-width: 8em"><input type="hidden" id="amapress_pmt_amount-' . $tax->term_id . '" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="amapress_pmt_cat_amount" value="' . $tax_amount . '" />' . $tax_amount . '&nbsp;€</td>';
 				} else {
 					$ret .= '<td style="min-width: 8em"><input type="number" id="amapress_pmt_amount-' . $tax->term_id . '" style="width: 80%;display:inline-block" name="amapress_pmt_amounts[' . $tax->term_id . ']" class="price required amapress_pmt_cat_amount" value="' . $tax_amount . '" />&nbsp;€</td>';
