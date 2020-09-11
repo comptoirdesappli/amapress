@@ -4332,6 +4332,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'id'         => 'docspace_resps_folders',
 											'name'       => 'Sous dossiers - Responsables',
 											'type'       => 'text',
+											'classes'    => 'docspaceSubfolders',
 											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
 Retrouvez le shortcode associé avec le filtre docspace-responsables.
 ' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
@@ -4342,6 +4343,7 @@ Retrouvez le shortcode associé avec le filtre docspace-responsables.
 											'id'         => 'docspace_amapiens_folders',
 											'name'       => 'Sous dossiers - Amapiens',
 											'type'       => 'text',
+											'classes'    => 'docspaceSubfolders',
 											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
 Retrouvez le shortcode associé avec le filtre docspace-amapiens.
 ' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
@@ -4352,6 +4354,7 @@ Retrouvez le shortcode associé avec le filtre docspace-amapiens.
 											'id'         => 'docspace_public_folders',
 											'name'       => 'Sous dossiers - Public',
 											'type'       => 'text',
+											'classes'    => 'docspaceSubfolders',
 											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
 Retrouvez le shortcode associé avec le filtre docspace-public.
 ' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>

@@ -69,6 +69,14 @@ function amapress_post_validation() {
                 var content = tinymce.get(element.id).getContent({format: 'text'});
                 return jQuery.trim(content) != '';
             }, "Doit être rempli");
+            jQuery.validator.addMethod(
+                "docspaceSubfolders",
+                function (value, element) {
+                    var re = new RegExp(/^(([a-z0-9]+)(\s*,\s*([a-z0-9]+))*)?$/);
+                    return this.optional(element) || re.test(value);
+                },
+                "Les sous dossiers doivent avoir la forme xxx,yyy,... et ne doivent être composé que de minuscules ou chiffres"
+            );
             jQuery.validator.addMethod('positiveNumber',
                 function (value) {
                     return Number(value) > 0;
