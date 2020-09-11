@@ -58,7 +58,9 @@ class Amapress_JS_Error_Log {
 }
 
 if ( 0 == strcasecmp( 'On', ini_get( 'log_errors' ) ) ) {
-	new Amapress_JS_Error_Log();
+	if ( ! defined( 'AMAPRESS_DISABLE_JS_ERROR_LOG' ) ) {
+		new Amapress_JS_Error_Log();
+	}
 }
 
 
