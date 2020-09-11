@@ -1091,10 +1091,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 
 			$adh_paiement = AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false );
-			if ( $check_adhesion_received && ! empty( $adh_paiement ) && $adh_paiement->isNotReceived() ) {
-				ob_clean();
+			if ( ! empty( $adh_paiement ) ) {
+				if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
+					ob_clean();
 
-				return $additional_css . wp_unslash( Amapress::getOption( 'online_inscr_adhesion_required_message' ) );
+					return $additional_css . wp_unslash( Amapress::getOption( 'online_inscr_adhesion_required_message' ) );
+				}
+				if ( $is_adhesion_mode ) {
+					ob_clean();
+
+					return $additional_css . '<p>Vous avez déjà une adhésion !</p>';
+				}
 			}
 		}
 
