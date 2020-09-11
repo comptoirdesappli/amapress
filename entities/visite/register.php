@@ -14,7 +14,7 @@ function amapress_register_entities_visite( $entities ) {
 		'show_in_menu'            => false,
 		'show_in_nav_menu'        => false,
 		'editor'                  => false,
-		'comments'                => true,
+		'comments'                => ! defined( 'AMAPRESS_DISABLE_VISITE_COMMENTS' ),
 		'public_comments'         => false,
 		'approve_logged_comments' => true,
 		'title'                   => false,

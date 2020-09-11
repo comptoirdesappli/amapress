@@ -12,7 +12,7 @@ function amapress_register_entities_amap_event( $entities ) {
 		'public'                   => true,
 		'thumb'                    => true,
 		'editor'                   => true,
-		'comments'                 => true,
+		'comments'                 => ! defined( 'AMAPRESS_DISABLE_AMAP_EVENT_COMMENTS' ),
 		'public_comments'          => false,
 		'approve_logged_comments'  => true,
 		'logged_or_public'         => true,

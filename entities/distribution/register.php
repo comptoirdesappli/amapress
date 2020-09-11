@@ -13,7 +13,7 @@ function amapress_register_entities_distribution( $entities ) {
 //                'logged_or_public' => true,
 		'show_in_menu'             => false,
 		'show_in_nav_menu'         => false,
-		'comments'                 => true,
+		'comments'                 => ! defined( 'AMAPRESS_DISABLE_DISTRIB_COMMENTS' ),
 		'public_comments'          => false,
 		'approve_logged_comments'  => true,
 		'editor'                   => false,
