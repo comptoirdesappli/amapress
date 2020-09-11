@@ -1144,14 +1144,6 @@ function amapress_register_admin_bar_menu_items( $items ) {
 	);
 
 	$items[] = array(
-		'id'         => 'amapress_forum',
-		'title'      => '<span class="ab-icon amps-forum dashicons-format-chat"></span><span class="ab-label">Forum des Amap</span>',
-		'capability' => 'read',
-		'href'       => 'https://forum.amapress.fr',
-		'target'     => '_blank',
-	);
-
-	$items[] = array(
 		'id'        => 'amapress_help',
 		'title'     => '<span class="ab-icon amps-aide dashicons-sos"></span><span class="ab-label">Aide</span>',
 		'condition' => function () {
@@ -1159,6 +1151,14 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		},
 		'href'      => admin_url( 'admin.php?page=amapress_help_page&tab=wiki' ),
 		'target'    => '_blank',
+	);
+
+	$items[] = array(
+		'id'         => 'amapress_forum',
+		'title'      => '<span class="ab-icon amps-forum dashicons-format-chat"></span><span class="ab-label">Forum des Amap</span>',
+		'capability' => 'read',
+		'href'       => 'https://forum.amapress.fr',
+		'target'     => '_blank',
 	);
 
 	return $items;
