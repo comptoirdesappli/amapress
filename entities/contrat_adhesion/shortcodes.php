@@ -2688,7 +2688,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 
-		if ( ! $is_mes_contrats ) {
+		if ( ! $is_mes_contrats && ! $adhesion_intermittent ) {
 			$online_contrats_inscription_distrib_msg = wp_unslash( Amapress::getOption( 'online_contrats_inscription_distrib_msg' ) );
 			if ( ! empty( $online_contrats_inscription_distrib_msg ) ) {
 				$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
@@ -4102,7 +4102,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 				}
 			}
 
-			if ( ! $is_mes_contrats ) {
+			if ( ! $is_mes_contrats && ! $adhesion_intermittent ) {
 				$online_contrats_inscription_distrib_msg = wp_unslash( Amapress::getOption( 'online_contrats_inscription_distrib_msg' ) );
 				if ( ! empty( $online_contrats_inscription_distrib_msg ) ) {
 					$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
