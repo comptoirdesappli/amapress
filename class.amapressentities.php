@@ -4332,21 +4332,30 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'id'         => 'docspace_resps_folders',
 											'name'       => 'Sous dossiers - Responsables',
 											'type'       => 'text',
-											'desc'       => 'Sous dossiers (en minuscule et sans espaces) de l\'espace documents "Responsables". Vous retrouverez la liste des shortcodes associés <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">ici</a>.',
+											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
+Retrouvez le shortcode associé avec le filtre docspace-responsables.
+' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
+' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/espaces_documents' ),
 											'capability' => 'manage_options',
 										),
 										array(
 											'id'         => 'docspace_amapiens_folders',
 											'name'       => 'Sous dossiers - Amapiens',
 											'type'       => 'text',
-											'desc'       => 'Sous dossiers (en minuscule et sans espaces) de l\'espace documents "Amapiens". Vous retrouverez la liste des shortcodes associés <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">ici</a>.',
+											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
+Retrouvez le shortcode associé avec le filtre docspace-amapiens.
+' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
+' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/espaces_documents' ),
 											'capability' => 'manage_options',
 										),
 										array(
 											'id'         => 'docspace_public_folders',
 											'name'       => 'Sous dossiers - Public',
 											'type'       => 'text',
-											'desc'       => 'Sous dossiers (en minuscule et sans espaces) de l\'espace documents "Public". Vous retrouverez la liste des shortcodes associés <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">ici</a>.',
+											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
+Retrouvez le shortcode associé avec le filtre docspace-public.
+' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
+' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/espaces_documents' ),
 											'capability' => 'manage_options',
 										),
 										array(
