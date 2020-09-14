@@ -1848,7 +1848,7 @@ class AmapressAdhesion extends TitanEntity {
 		$amount = $this->getTotalAmount();
 		if ( $this->getContrat_instance()->getPayByMonth() ) {
 			$cheques_options = [];
-			if ( in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
+			if ( ! $this->getContrat_instance()->getPayByMonthOnly() && in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
 				$cheques_options[] = sprintf( "1 %s de %0.2f €",
 					'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque',
 					$amount );

@@ -1545,7 +1545,7 @@ jQuery(function($) {
 //						),
 
 			// 6/6 - reglements
-			'paiements'             => array(
+			'paiements'       => array(
 				'name'           => amapress__( 'Nombre de chèques' ),
 				'type'           => 'multicheck',
 				'desc'           => 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques/prélèvements (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)',
@@ -1601,7 +1601,7 @@ jQuery(function($) {
 					return false;
 				}
 			),
-			'pay_month'             => array(
+			'pay_month'       => array(
 				'name'        => amapress__( 'Paiement mensuel' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1611,7 +1611,17 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Activer la répartition mensuelle de la remise des règlements au producteur',
 			),
-			'allow_deliv_pay'       => array(
+			'pay_month_only'  => array(
+				'name'        => amapress__( 'Paiement mensuel uniquement' ),
+				'type'        => 'checkbox',
+				'group'       => '6/6 - Règlements',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'N\'autoriser que le paiement mensuel au producteur (pas de paiement total)',
+			),
+			'allow_deliv_pay' => array(
 				'name'        => amapress__( 'A la livraison' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',
@@ -1621,7 +1631,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour régler les commandes dont le prix (lié au poids) est connu à la livraison',
 			),
-			'allow_cash'            => array(
+			'allow_cash'      => array(
 				'name'        => amapress__( 'Espèces' ),
 				'type'        => 'checkbox',
 				'group'       => '6/6 - Règlements',

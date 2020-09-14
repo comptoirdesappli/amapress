@@ -292,6 +292,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_pay_month', 0 );
 	}
 
+	public function getPayByMonthOnly() {
+		return $this->getCustom( 'amapress_contrat_instance_pay_month_only', 0 );
+	}
+
 	public function getAllow_Transfer() {
 		return $this->getCustom( 'amapress_contrat_instance_allow_bktrfr', 0 );
 	}
@@ -1784,7 +1788,7 @@ class AmapressContrat_instance extends TitanEntity {
 			$amount                        = $quant->getPrix_unitaire() * $remaining_distrib_sum;
 			if ( $this->getPayByMonth() ) {
 				$by_months = $this->getDatesByMonth();
-				if ( in_array( 1, $this->getPossiblePaiements() ) ) {
+				if ( ! $this->getPayByMonthOnly() && in_array( 1, $this->getPossiblePaiements() ) ) {
 					$paiements[] = sprintf( "1 chèque de %0.2f €", $amount );
 				}
 				if ( in_array( count( $by_months ), $this->getPossiblePaiements() ) ) {
@@ -1806,7 +1810,7 @@ class AmapressContrat_instance extends TitanEntity {
 			if ( $this->getAllow_Prelevement() ) {
 				if ( $this->getPayByMonth() ) {
 					$by_months = $this->getDatesByMonth();
-					if ( in_array( 1, $this->getPossiblePaiements() ) ) {
+					if ( ! $this->getPayByMonthOnly() && in_array( 1, $this->getPossiblePaiements() ) ) {
 						$paiements[] = sprintf( "1 prélèvement de %0.2f €", $amount );
 					}
 					if ( in_array( count( $by_months ), $this->getPossiblePaiements() ) ) {

@@ -1302,39 +1302,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label
-                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-                            : </label></th>
-                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
-                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-                    </td>
-                </tr>
+	            <tr>
+		            <th style="text-align: left; width: auto"><label
+				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+				            : </label></th>
+		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
+		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+		            </td>
+	            </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-                    <tr>
-                        <th style="text-align: left; width: auto"></th>
-                        <td>
-                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-                            </label>
-                        </td>
-                    </tr>
+		            <tr>
+			            <th style="text-align: left; width: auto"></th>
+			            <td>
+				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+				            </label>
+			            </td>
+		            </tr>
 	            <?php } ?>
             </table>
-            <div>
+	        <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-            </div>
+	        </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-                <table style="min-width: 50%">
-                    <tr>
-                        <th colspan="2">Membre du foyer 1 / Conjoint
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-                                : </label>
-                        </th>
-                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+		        <table style="min-width: 50%">
+			        <tr>
+				        <th colspan="2">Membre du foyer 1 / Conjoint
+				        </th>
+			        </tr>
+			        <tr>
+				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+						        : </label>
+				        </th>
+				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
@@ -3570,10 +3570,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( $total > 0 ) {
 				$possible_cheques = $contrat->getPossiblePaiements();
 				if ( $contrat->getPayByMonth() ) {
-					$max_cheques      = count( array_filter( $by_month_totals, function ( $v ) {
+					$max_cheques = count( array_filter( $by_month_totals, function ( $v ) {
 						return $v > 0;
 					} ) );
-					$possible_cheques = [ 1, $max_cheques ];
+					if ( $contrat->getPayByMonthOnly() || 1 == $max_cheques ) {
+						$possible_cheques = [ $max_cheques ];
+					} else {
+						$possible_cheques = [ 1, $max_cheques ];
+					}
 				}
 				foreach ( $possible_cheques as $nb_cheque ) {
 					if ( $total / $nb_cheque < $min_cheque_amount ) {
@@ -3642,10 +3646,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( $total > 0 ) {
 					$possible_cheques = $contrat->getPossiblePaiements();
 					if ( $contrat->getPayByMonth() ) {
-						$max_cheques      = count( array_filter( $by_month_totals, function ( $v ) {
+						$max_cheques = count( array_filter( $by_month_totals, function ( $v ) {
 							return $v > 0;
 						} ) );
-						$possible_cheques = [ 1, $max_cheques ];
+						if ( $contrat->getPayByMonthOnly() || 1 == $max_cheques ) {
+							$possible_cheques = [ $max_cheques ];
+						} else {
+							$possible_cheques = [ 1, $max_cheques ];
+						}
 					}
 					foreach ( $possible_cheques as $nb_cheque ) {
 						if ( $total / $nb_cheque < $min_cheque_amount ) {
