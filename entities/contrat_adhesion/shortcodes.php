@@ -1293,15 +1293,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <th style="text-align: left; width: auto"><label for="telm">Téléphone
                             mobile<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? '*' : '' ) ?> : </label>
                     </th>
-                    <td><input style="width: 100%" type="text" id="telm" name="telm"
-                               class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
-                               value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
+	                <td><input style="width: 100%" type="text" id="telm" name="telm"
+	                           class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+	                           value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
                 </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label for="telf">Téléphone fixe : </label></th>
-                    <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
-                               value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
-                </tr>
+	            <tr>
+		            <th style="text-align: left; width: auto"><label for="telf">Téléphone fixe : </label></th>
+		            <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
+		                       value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
+	            </tr>
 	            <tr>
 		            <th style="text-align: left; width: auto"><label
 				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
@@ -1335,16 +1335,16 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						        : </label>
 				        </th>
 				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
-                                                                                                   type="email"
-                                                                                                   id="cofoy1_email"
-                                                                                                   name="cofoy1_email"
-                                                                                                   class="email <?php echo( ! empty( $cofoy1_email ) ? 'required' : '' ); ?>"
-                                                                                                   value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
-                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+				                                                                                   type="email"
+				                                                                                   id="cofoy1_email"
+				                                                                                   name="cofoy1_email"
+				                                                                                   class="email <?php echo( ! empty( $cofoy1_email ) ? 'required' : '' ); ?>"
+				                                                                                   value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
+				        </td>
+			        </tr>
+			        <tr>
+				        <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
+				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy1_last_name"
                                                                                                    name="cofoy1_last_name"
@@ -4671,7 +4671,11 @@ function amapress_get_details_all_deliveries(
  * @param int $user_id
  * @param bool $ignore_renouv_delta
  */
-function amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta ) {
+function amapress_get_details_all_paiements(
+	$user_id, $ignore_renouv_delta,
+	$show_dates_encaissement = false,
+	$show_dates_livraison = false
+) {
 	Amapress::setFilterForReferent( false );
 	$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 	Amapress::setFilterForReferent( true );
@@ -4707,7 +4711,25 @@ function amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta ) {
 			'sort' => 'info',
 		)
 	);
-	$columns[]   = array(
+	if ( $show_dates_encaissement ) {
+		$columns[] = array(
+			'title' => 'Dates encaissement',
+			'data'  => array(
+				'_'    => 'date_enc',
+				'sort' => 'date_enc',
+			)
+		);
+	}
+	if ( $show_dates_livraison ) {
+		$columns[] = array(
+			'title' => 'Dates livraison',
+			'data'  => array(
+				'_'    => 'date_liv',
+				'sort' => 'date_liv',
+			)
+		);
+	}
+	$columns[] = array(
 		'title' => 'Statut',
 		'data'  => array(
 			'_'    => 'status',
@@ -4740,6 +4762,14 @@ function amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta ) {
 		$info             = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
 		$info             .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
 		$row['info']      = $info;
+		$row['date_enc']  = implode( ', ', array_map( function ( $d ) {
+			return date_i18n( 'd/m/Y', $d );
+		}, $adh->getContrat_instance()->getPaiements_Liste_dates() ) );
+		$row['date_liv']  = implode( ', ', array_map( function ( $d ) {
+			return date_i18n( 'd/m/Y', $d );
+		}, array_filter( $adh->getContrat_instance()->getListe_dates(), function ( $d ) {
+			return Amapress::start_of_day( $d ) >= Amapress::start_of_day( amapress_time() );
+		} ) ) );
 		$row['total_d']   = Amapress::formatPrice( $adh->getTotalAmount(), true );
 		$row['total']     = $adh->getTotalAmount();
 		$row['status']    = implode( ' ; ', $paiements_status );

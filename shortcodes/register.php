@@ -957,21 +957,28 @@ function amapress_register_shortcodes() {
 			]
 		] );
 	amapress_register_shortcode( 'amapien-details-paiements', function ( $atts, $content = null ) {
-		$atts                = shortcode_atts(
+		$atts    = shortcode_atts(
 			array(
-				'user_id'             => null,
-				'ignore_renouv_delta' => true,
+				'user_id'                 => null,
+				'ignore_renouv_delta'     => true,
+				'show_dates_encaissement' => false,
+				'show_dates_livraisons'   => false,
 			), $atts
 		);
-		$user_id             = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : amapress_current_user_id();
-		$ignore_renouv_delta = Amapress::toBool( $atts['ignore_renouv_delta'] );
+		$user_id = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : amapress_current_user_id();
 
-		return amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta );
+		return amapress_get_details_all_paiements( $user_id,
+			Amapress::toBool( $atts['ignore_renouv_delta'] ),
+			Amapress::toBool( $atts['show_dates_encaissement'] ),
+			Amapress::toBool( $atts['show_dates_livraisons'] )
+		);
 	},
 		[
 			'desc' => 'Afficher le détails des sommes dues par l\'amapien',
 			'args' => [
-				'ignore_renouv_delta' => '(Par défaut true) Ignorer les contrats qui sont dans leur période de renouvellement',
+				'ignore_renouv_delta'     => '(Par défaut true) Ignorer les contrats qui sont dans leur période de renouvellement',
+				'show_dates_encaissement' => '(Par défaut false) Afficher les dates d\'encaissement',
+				'show_dates_livraisons'   => '(Par défaut false) Afficher les dates de livraison',
 			]
 		] );
 	amapress_register_shortcode( 'calendrier-contrats', function ( $atts, $content = null ) {
