@@ -311,6 +311,15 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	public static function getForUser( $user_id, $date = null, $create = true ) {
 		$adhs = AmapressAdhesion_paiement::getAllActiveByUserId( $date );
 		if ( empty( $adhs[ $user_id ] ) ) {
+			$user_ids = AmapressContrats::get_related_users( $user_id,
+				true, null, null, true, false );
+			foreach ( $user_ids as $rel_user_id ) {
+				if ( ! empty( $adhs[ $rel_user_id ] ) ) {
+					$adhs[ $user_id ] = $adhs[ $rel_user_id ];
+				}
+			}
+		}
+		if ( empty( $adhs[ $user_id ] ) ) {
 			if ( ! $create ) {
 				return null;
 			}
@@ -459,7 +468,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin_annee']        = [
+			$ret['date_fin_annee'] = [
 				'desc' => 'Année de fin de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
@@ -489,7 +498,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau( $adh->isForIntermittent() ) );
 				}
 			];
-			$ret['tresoriers']            = [
+			$ret['tresoriers'] = [
 				'desc' => 'Nom des référents de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return implode( ', ', array_unique( array_map(
