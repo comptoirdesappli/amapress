@@ -1557,6 +1557,13 @@ jQuery(function($) {
 				'csv_required'   => true,
 				'show_column'    => true,
 				'col_def_hidden' => true,
+				'csv_validator'  => function ( $value ) {
+					if ( intval( $value ) < 1 || intval( $value ) > 12 ) {
+						return new WP_Error( 'cannot_parse', "Valeur '$value' non valide : doit être entre 1 et 12" );
+					}
+
+					return [ 'amapress_contrat_instance_paiements' => intval( $value ) ];
+				},
 				'options'        => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$contrat = AmapressContrat_instance::getBy( $option->getPostID(), true );
