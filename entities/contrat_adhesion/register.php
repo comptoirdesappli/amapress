@@ -387,7 +387,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					}
 					$adh = AmapressAdhesion::getBy( $post_id );
 
-					return esc_html( $adh->getContrat_quantites_AsString() );
+					return $adh->getContrat_quantites_AsString();
 				},
 				'custom_multi'      => function ( $option, $post_id ) {
 					$ret = [];
