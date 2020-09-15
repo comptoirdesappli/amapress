@@ -77,6 +77,12 @@ function amapress_import_users_get_field_name( $field_name, $colname ) {
 	}
 
 	if ( ! empty( $_REQUEST['amapress_ignore_unknown_columns'] ) ) {
+		global $amapress_csv_import_errors;
+		if ( empty( $amapress_csv_import_errors ) ) {
+			$amapress_csv_import_errors = [];
+		}
+		$amapress_csv_import_errors[1] = new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );
+
 		return null;
 	}
 
@@ -246,6 +252,12 @@ function amapress_import_posts_get_field_name( $field_name, $post_type, $colname
 	}
 
 	if ( ! empty( $_REQUEST['amapress_ignore_unknown_columns'] ) ) {
+		global $amapress_csv_import_errors;
+		if ( empty( $amapress_csv_import_errors ) ) {
+			$amapress_csv_import_errors = [];
+		}
+		$amapress_csv_import_errors[1] = new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );
+
 		return null;
 	}
 

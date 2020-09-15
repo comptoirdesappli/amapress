@@ -89,34 +89,34 @@ class Amapress_Import_Posts_CSV {
 						wp_get_referer() ) );
 				} // Some posts imported?
                 elseif ( $results['errors'] ) {
-	                wp_redirect( add_query_arg(
-		                [
-			                'import'                                            => 'errors',
-			                'imported'                                          => $results['imported'],
-			                'total'                                             => $results['total'],
-			                'amapress_ignore_unknown_columns'                   =>
-				                isset( $_REQUEST['amapress_ignore_unknown_columns'] ) ?
-					                $_REQUEST['amapress_ignore_unknown_columns'] :
-					                0,
-			                'amapress_import_adhesion_default_date_debut'       =>
-				                isset( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) ?
-					                $_REQUEST['amapress_import_adhesion_default_date_debut'] :
-					                amapress_time(),
-			                'amapress_import_adhesion_default_contrat_instance' =>
-				                isset( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] ) ?
-					                $_REQUEST['amapress_import_adhesion_default_contrat_instance'] :
-					                '',
-			                'amapress_import_adhesion_default_lieu'             =>
-				                isset( $_REQUEST['amapress_import_adhesion_default_lieu'] ) ?
-					                $_REQUEST['amapress_import_adhesion_default_lieu'] :
-					                '',
-			                'amapress_import_produit_default_producteur'        =>
-				                isset( $_REQUEST['amapress_import_produit_default_producteur'] ) ?
-					                $_REQUEST['amapress_import_produit_default_producteur'] :
-					                '',
-		                ],
-		                wp_get_referer() ) );
-                } // All posts imported? :D
+					wp_redirect( add_query_arg(
+						[
+							'import'                                            => 'errors',
+							'imported'                                          => $results['imported'],
+							'total'                                             => $results['total'],
+							'amapress_ignore_unknown_columns'                   =>
+								isset( $_REQUEST['amapress_ignore_unknown_columns'] ) ?
+									$_REQUEST['amapress_ignore_unknown_columns'] :
+									0,
+							'amapress_import_adhesion_default_date_debut'       =>
+								isset( $_REQUEST['amapress_import_adhesion_default_date_debut'] ) ?
+									$_REQUEST['amapress_import_adhesion_default_date_debut'] :
+									amapress_time(),
+							'amapress_import_adhesion_default_contrat_instance' =>
+								isset( $_REQUEST['amapress_import_adhesion_default_contrat_instance'] ) ?
+									$_REQUEST['amapress_import_adhesion_default_contrat_instance'] :
+									'',
+							'amapress_import_adhesion_default_lieu'             =>
+								isset( $_REQUEST['amapress_import_adhesion_default_lieu'] ) ?
+									$_REQUEST['amapress_import_adhesion_default_lieu'] :
+									'',
+							'amapress_import_produit_default_producteur'        =>
+								isset( $_REQUEST['amapress_import_produit_default_producteur'] ) ?
+									$_REQUEST['amapress_import_produit_default_producteur'] :
+									'',
+						],
+						wp_get_referer() ) );
+				} // All posts imported? :D
 				else {
 					wp_redirect( add_query_arg( 'import', 'success', wp_get_referer() ) );
 				}
@@ -827,6 +827,17 @@ class Amapress_Import_Posts_CSV {
 		// One more thing to do after all imports?
 		do_action( "amapress_posts_import", $post_ids, $errors );
 		do_action( "amapress_{$post_type}_posts_import", $post_ids, $errors );
+
+		global $amapress_csv_import_errors;
+		if ( ! empty( $amapress_csv_import_errors ) ) {
+			foreach ( $amapress_csv_import_errors as $k => $v ) {
+				if ( ! empty( $errors[ $k ] ) ) {
+					$errors[ $k ] = array_merge( $errors[ $k ], $v );
+				} else {
+					$errors[ $k ] = $v;
+				}
+			}
+		}
 
 		foreach ( $errors as $k => $v ) {
 			if ( is_array( $v ) && count( $v ) == 0 ) {
