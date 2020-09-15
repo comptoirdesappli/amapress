@@ -289,7 +289,8 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getPayByMonth() {
-		return $this->getCustom( 'amapress_contrat_instance_pay_month', 0 );
+		return $this->getCustom( 'amapress_contrat_instance_pay_month', 0 )
+		       || $this->getPayByMonthOnly();
 	}
 
 	public function getPayByMonthOnly() {
