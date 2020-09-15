@@ -1560,7 +1560,7 @@ jQuery(function($) {
 				'options'        => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$contrat = AmapressContrat_instance::getBy( $option->getPostID(), true );
-					$reps    = $contrat->getCustomRepartitions();
+					$reps    = $contrat ? $contrat->getCustomRepartitions() : [];
 
 					$options     = [
 						'1' => '1 chèque/prélèvement',
