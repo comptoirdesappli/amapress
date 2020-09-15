@@ -994,3 +994,13 @@ add_filter( 'amapress_import_contrat_quantite_check_resolved_post_data_before_up
 
 		return $postdata;
 	}, 10, 7 );
+
+add_action( 'amapress_contrat_instance_posts_import', function ( $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+		if ( $contrat_instance ) {
+			AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
+			AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+		}
+	}
+} );
