@@ -265,6 +265,7 @@ class Amapress {
 		$id        = - 1;
 		$post_type = amapress_unsimplify_post_type( $post_type );
 		if ( is_string( $name ) ) {
+			$name   = preg_replace( '/\u2019/', '\'', $name );
 			$object = get_page_by_path( $name, OBJECT, $post_type );
 			if ( $object ) {
 				return $object->ID;
