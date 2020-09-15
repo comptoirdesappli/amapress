@@ -1808,6 +1808,45 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			} else {
 				$where .= " AND 0 = 1";
 			}
+		} else if ( $amapress_contrat == 'principal_contrat' ) {
+			$adhs               = AmapressContrats::get_active_adhesions();
+			$principal_user_ids = array();
+			$user_ids           = array();
+			foreach (
+				amapress_get_col_cached(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			foreach ( $adhs as $adh ) {
+				if ( $adh->getAdherentId() ) {
+					$principal_user_ids[] = $adh->getAdherentId();
+				}
+				if ( $adh->getAdherent2Id() ) {
+					$user_ids[] = $adh->getAdherent2Id();
+				}
+				if ( $adh->getAdherent3Id() ) {
+					$user_ids[] = $adh->getAdherent3Id();
+				}
+				if ( $adh->getAdherent4Id() ) {
+					$user_ids[] = $adh->getAdherent4Id();
+				}
+			}
+
+			if ( ! empty( $user_ids ) || ! empty( $principal_user_ids ) ) {
+				$user_id_sql = amapress_prepare_in_sql( $user_ids );
+				if ( ! empty( $user_id_sql ) ) {
+					$where .= " AND $wpdb->users.ID NOT IN ($user_id_sql)";
+				}
+				$principal_user_ids_sql = amapress_prepare_in_sql( $principal_user_ids );
+				if ( ! empty( $principal_user_ids ) ) {
+					$where .= " AND $wpdb->users.ID IN ($principal_user_ids_sql)";
+				}
+			} else {
+				$where .= " AND 0 = 1";
+			}
 		} else if ( $amapress_contrat == 'with_coadherent' ) {
 			$adhs     = AmapressContrats::get_active_adhesions();
 			$user_ids = array();

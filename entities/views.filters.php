@@ -503,6 +503,11 @@ function amapress_user_views( $ret ) {
 			'Amapiens Principaux',
 			true );
 		amapress_add_view_button(
+			$ret, 'principal_contrat',
+			"amapress_contrat=principal_contrat$query_add",
+			'Amapiens Principaux (contrat)',
+			true );
+		amapress_add_view_button(
 			$ret, 'collectif',
 			"amapress_role=collectif$query_add",
 			'Membres du collectif',

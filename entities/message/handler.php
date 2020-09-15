@@ -549,6 +549,7 @@ function amapress_message_get_targets() {
 	//intermittants
 	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
 	amapress_add_message_target( $ret, "user:amapress_contrat=principal", "Les amapiens principaux", "principaux" );
+	amapress_add_message_target( $ret, "user:amapress_contrat=principal_contrat", "Les amapiens principaux (avec contrat)", "principaux" );
 	//sans adhésion
 	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );
 	amapress_add_message_target( $ret, "never_logged", "Les amapiens jamais connectés", "never-logged" );
