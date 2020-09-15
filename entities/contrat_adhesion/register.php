@@ -517,15 +517,26 @@ jQuery(function($) {
 				),
 			),
 			'paiements'         => array(
-				'name'        => amapress__( 'Nombre de paiements' ),
-				'type'        => 'custom',
-				'group'       => '3/ Paiements',
-				'required'    => true,
-				'desc'        => 'Nombre de paiements. <b>Lorsque vous changer la valeur de ce champs, il est nécessaire d\'enregistrer l\'adhésion</b>',
-				'custom'      => 'amapress_paiements_count_editor',
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-				'csv'         => false,
+				'name'           => amapress__( 'Nombre de paiements' ),
+				'type'           => 'custom',
+				'group'          => '3/ Paiements',
+				'required'       => true,
+				'desc'           => 'Nombre de paiements. <b>Lorsque vous changer la valeur de ce champs, il est nécessaire d\'enregistrer l\'adhésion</b>',
+				'custom'         => 'amapress_paiements_count_editor',
+				'show_on'        => 'edit-only',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'csv_import'     => false,
+				'custom_column'  => function ( $option, $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					echo $adh->getPaiements();
+				},
+				'custom_export'  => function ( $option, $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+
+					echo $adh->getPaiements();
+				},
 //                'csv_required' => true,
 			),
 			'paiements_editor'  => array(
@@ -746,14 +757,14 @@ jQuery(function($) {
 				},
 			),
 			'date_fin'          => array(
-				'name'          => amapress__( 'Date de fin' ),
-				'type'          => 'date',
-				'group'         => '5/ Fin de contrat avant terme',
-				'desc'          => 'Date à laquelle se termine le contrat',
-				'show_column'   => false,
-				'show_on'       => 'edit-only',
-				'csv'           => false,
-				'before_option' =>
+				'name'           => amapress__( 'Date de fin' ),
+				'type'           => 'date',
+				'group'          => '5/ Fin de contrat avant terme',
+				'desc'           => 'Date à laquelle se termine le contrat',
+				'col_def_hidden' => true,
+				'show_column'    => true,
+				'show_on'        => 'edit-only',
+				'before_option'  =>
 					function ( $option ) {
 						/** @var TitanFrameworkOption $option */
 						if ( TitanFrameworkOption::isOnEditScreen() ) {
@@ -780,16 +791,15 @@ jQuery(function($) {
 				'desc'        => 'Prendre en compte la date de fin pour recalculer le montant de l\'inscription',
 				'show_column' => false,
 				'show_on'     => 'edit-only',
-				'csv'         => false,
 			),
 			'fin_raison'        => array(
-				'name'        => amapress__( 'Motif' ),
-				'type'        => 'textarea',
-				'group'       => '5/ Fin de contrat avant terme',
-				'desc'        => 'Motif de départ (Déménagement, insatisfaction, ...)',
-				'show_column' => false,
-				'show_on'     => 'edit-only',
-				'csv'         => false,
+				'name'           => amapress__( 'Motif' ),
+				'type'           => 'textarea',
+				'group'          => '5/ Fin de contrat avant terme',
+				'desc'           => 'Motif de départ (Déménagement, insatisfaction, ...)',
+				'col_def_hidden' => true,
+				'show_column'    => true,
+				'show_on'        => 'edit-only',
 			),
 		),
 	);
