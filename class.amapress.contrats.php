@@ -885,14 +885,16 @@ class AmapressContrats {
 			}
 			if ( $contrat_quantite_id ) {
 				$meta_query[] = array(
-					'relation' => 'OR',
 					array(
-						'key'     => 'amapress_adhesion_contrat_quantite',
-						'value'   => $contrat_quantite_id,
-						'compare' => '=',
-						'type'    => 'NUMERIC',
-					),
-					amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite_id ),
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_contrat_quantite',
+							'value'   => $contrat_quantite_id,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+						amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite_id ),
+					)
 				);
 			}
 			$meta_query[] = array(
@@ -1022,14 +1024,16 @@ class AmapressContrats {
 			);
 			if ( ! empty( $contrat_quantite ) ) {
 				$query['meta_query'][] = array(
-					'relation' => 'OR',
 					array(
-						'key'     => 'amapress_adhesion_contrat_quantite',
-						'value'   => $contrat_quantite,
-						'compare' => '=',
-						'type'    => 'NUMERIC',
-					),
-					amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite ),
+						'relation' => 'OR',
+						array(
+							'key'     => 'amapress_adhesion_contrat_quantite',
+							'value'   => $contrat_quantite,
+							'compare' => '=',
+							'type'    => 'NUMERIC',
+						),
+						amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite ),
+					)
 				);
 			}
 			if ( ! empty( $lieu_id ) ) {

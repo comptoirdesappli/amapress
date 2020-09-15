@@ -795,11 +795,15 @@ function amapress_filter_posts( WP_Query $query ) {
 			) );
 		} else if ( $pt == 'amap_event' || $pt == 'visite' || $pt == 'assemblee' ) {
 			amapress_add_meta_query( $query, array(
-				amapress_prepare_like_in_array( "amapress_{$pt}_participants", $amapress_user ),
+				array(
+					amapress_prepare_like_in_array( "amapress_{$pt}_participants", $amapress_user ),
+				)
 			) );
 		} else if ( $pt == 'distribution' ) {
 			amapress_add_meta_query( $query, array(
-				amapress_prepare_like_in_array( "amapress_{$pt}_responsables", $amapress_user ),
+				array(
+					amapress_prepare_like_in_array( "amapress_{$pt}_responsables", $amapress_user ),
+				)
 			) );
 //        } else if ($pt == 'adhesion_intermittence') {
 //            amapress_add_meta_query($query, array(
@@ -871,7 +875,9 @@ function amapress_filter_posts( WP_Query $query ) {
 		} else if ( $pt == 'contrat_instance' ) {
 			amapress_add_meta_query( $query,
 				array(
-					amapress_prepare_like_in_array( "amapress_{$pt}_lieux", $amapress_lieu ),
+					array(
+						amapress_prepare_like_in_array( "amapress_{$pt}_lieux", $amapress_lieu ),
+					)
 				)
 			);
 		} else if ( $pt == 'contrat_paiement' ) {

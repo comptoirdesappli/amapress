@@ -343,14 +343,16 @@ class AmapressPaniers {
 			'post_type'      => 'amps_produit',
 			'posts_per_page' => - 1,
 			'meta_query'     => array(
-				'relation' => 'OR',
 				array(
-					'key'     => 'amapress_produit_producteur',
-					'value'   => $producteur,
-					'compare' => '=',
-					'type'    => 'NUMERIC',
-				),
-				amapress_prepare_like_in_array( 'amapress_produit_producteur', $producteur )
+					'relation' => 'OR',
+					array(
+						'key'     => 'amapress_produit_producteur',
+						'value'   => $producteur,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
+					amapress_prepare_like_in_array( 'amapress_produit_producteur', $producteur )
+				)
 			),
 			'order'          => 'ASC',
 			'orderby'        => 'title'
@@ -377,12 +379,14 @@ class AmapressPaniers {
 					'post_type'      => 'amps_adhesion',
 					'posts_per_page' => - 1,
 					'meta_query'     => array(
-						'relation' => 'OR',
 						array(
-							'key'   => 'amapress_adhesion_contrat_quantite',
-							'value' => $abo->ID,
-						),
-						amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $abo->ID ),
+							'relation' => 'OR',
+							array(
+								'key'   => 'amapress_adhesion_contrat_quantite',
+								'value' => $abo->ID,
+							),
+							amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $abo->ID ),
+						)
 					),
 				) ) );
 			}
@@ -490,14 +494,16 @@ class AmapressPaniers {
 			'post_type'      => 'amps_produit',
 			'posts_per_page' => - 1,
 			'meta_query'     => array(
-				'relation' => 'OR',
 				array(
-					'key'     => 'amapress_produit_producteur',
-					'value'   => $producteur,
-					'compare' => '=',
-					'type'    => 'NUMERIC',
-				),
-				amapress_prepare_like_in_array( 'amapress_produit_producteur', $producteur )
+					'relation' => 'OR',
+					array(
+						'key'     => 'amapress_produit_producteur',
+						'value'   => $producteur,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
+					amapress_prepare_like_in_array( 'amapress_produit_producteur', $producteur )
+				)
 			),
 			'order'          => 'ASC',
 			'orderby'        => 'title'
