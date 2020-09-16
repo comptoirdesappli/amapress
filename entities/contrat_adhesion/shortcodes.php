@@ -1293,58 +1293,58 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <th style="text-align: left; width: auto"><label for="telm">Téléphone
                             mobile<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? '*' : '' ) ?> : </label>
                     </th>
-	                <td><input style="width: 100%" type="text" id="telm" name="telm"
-	                           class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
-	                           value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
+                    <td><input style="width: 100%" type="text" id="telm" name="telm"
+                               class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                               value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
                 </tr>
-	            <tr>
-		            <th style="text-align: left; width: auto"><label for="telf">Téléphone fixe : </label></th>
-		            <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
-		                       value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
-	            </tr>
-	            <tr>
-		            <th style="text-align: left; width: auto"><label
-				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-				            : </label></th>
-		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
-		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-		            </td>
-	            </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label for="telf">Téléphone fixe : </label></th>
+                    <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
+                               value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
+                </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label
+                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+                            : </label></th>
+                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
+                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+                    </td>
+                </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-		            <tr>
-			            <th style="text-align: left; width: auto"></th>
-			            <td>
-				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-				            </label>
-			            </td>
-		            </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"></th>
+                        <td>
+                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                            </label>
+                        </td>
+                    </tr>
 	            <?php } ?>
             </table>
-	        <div>
+            <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-	        </div>
+            </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-		        <table style="min-width: 50%">
-			        <tr>
-				        <th colspan="2">Membre du foyer 1 / Conjoint
-				        </th>
-			        </tr>
-			        <tr>
-				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-						        : </label>
-				        </th>
-				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
-				                                                                                   type="email"
-				                                                                                   id="cofoy1_email"
-				                                                                                   name="cofoy1_email"
-				                                                                                   class="email <?php echo( ! empty( $cofoy1_email ) ? 'required' : '' ); ?>"
-				                                                                                   value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
-				        </td>
-			        </tr>
-			        <tr>
-				        <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
-				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 1 / Conjoint
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                                                                                                   type="email"
+                                                                                                   id="cofoy1_email"
+                                                                                                   name="cofoy1_email"
+                                                                                                   class="email <?php echo( ! empty( $cofoy1_email ) ? 'required' : '' ); ?>"
+                                                                                                   value="<?php echo esc_attr( $cofoy1_email ) ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy1_last_name"
                                                                                                    name="cofoy1_last_name"
@@ -2932,12 +2932,18 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
 
+		$user_ids = AmapressContrats::get_related_users( $user_id, true );
+
 		$by_prod    = isset( $_GET['by_prod'] );
 		$contrat_id = null;
 		if ( isset( $_GET['contrat_id'] ) ) {
 			$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
-			if ( $adh->getAdherentId() != $user_id && $adh->getAdherent2Id() != $user_id && $adh->getAdherent3Id() != $user_id ) {
-				wp_die( $invalid_access_message ); //phpcs:ignore
+			if ( in_array( $adh->getAdherentId(), $user_ids )
+			     && in_array( $adh->getAdherent2Id(), $user_ids )
+			     && in_array( $adh->getAdherent3Id(), $user_ids )
+			     && in_array( $adh->getAdherent4Id(), $user_ids )
+			) {
+				wp_die( 'Ce contrat n\'est pas à vous !' ); //phpcs:ignore
 			}
 			$contrat_id = $adh->getContrat_instanceId();
 		}
@@ -2957,10 +2963,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
+		$user_ids = AmapressContrats::get_related_users( $user_id, true );
 
 		$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
-		if ( $adh->getAdherentId() != $user_id && $adh->getAdherent2Id() != $user_id && $adh->getAdherent3Id() != $user_id ) {
-			wp_die( $invalid_access_message ); //phpcs:ignore
+		if ( in_array( $adh->getAdherentId(), $user_ids )
+		     && in_array( $adh->getAdherent2Id(), $user_ids )
+		     && in_array( $adh->getAdherent3Id(), $user_ids )
+		     && in_array( $adh->getAdherent4Id(), $user_ids )
+		) {
+			wp_die( 'Ce contrat n\'est pas à vous !' ); //phpcs:ignore
 		}
 		if ( ! empty( $_GET['cancel_inscr_id'] ) ) {
 			if ( intval( $_GET['cancel_inscr_id'] ) != $adh->ID ) {
