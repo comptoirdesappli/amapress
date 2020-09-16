@@ -265,14 +265,30 @@ class Amapress {
 		$id        = - 1;
 		$post_type = amapress_unsimplify_post_type( $post_type );
 		if ( is_string( $name ) ) {
-			$name   = preg_replace( '/\x{2019}/u', '\'', $name );
-			$object = get_page_by_path( $name, OBJECT, $post_type );
+			$orig_name = $name;
+			$object    = get_page_by_path( $name, OBJECT, $post_type );
 			if ( $object ) {
 				return $object->ID;
 			}
 			$object = get_page_by_title( $name, OBJECT, $post_type );
 			if ( $object ) {
 				return $object->ID;
+			} else {
+				$name = preg_replace( '/\x{2019}/u', '\'', $name );
+				if ( $orig_name != $name ) {
+					$object = get_page_by_title( $name, OBJECT, $post_type );
+					if ( $object ) {
+						return $object->ID;
+					} else {
+						$name = wptexturize( $name );
+						if ( $orig_name != $name ) {
+							$object = get_page_by_title( $name, OBJECT, $post_type );
+							if ( $object ) {
+								return $object->ID;
+							}
+						}
+					}
+				}
 			}
 		}
 		if ( is_a( $name, 'WP_Post' ) ) {
