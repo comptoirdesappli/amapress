@@ -1858,10 +1858,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					continue;
 				}
 
-				$ret .= '<label for="adh-lieu-' . $lieu->ID . '"><input name="amapress_adhesion_lieu" value="' . $lieu->ID . '" type="radio" id="adh-lieu-' . $lieu->ID . '" /> ' . esc_html( $lieu->getTitle() ) . '</label><br/>';
+				$ret .= '<label for="adh-lieu-' . $lieu->ID . '"><input class="required" name="amapress_adhesion_lieu" value="' . $lieu->ID . '" type="radio" id="adh-lieu-' . $lieu->ID . '" /> ' . esc_html( $lieu->getTitle() ) . '</label><br/>';
 			}
-			$ret .= '<label for="adh-lieu-any"><input name="amapress_adhesion_lieu" value="any" type="radio" id="adh-lieu-any" /> N\'importe lequel</label><br/>';
-			$ret .= '<label for="adh-lieu-none"><input name="amapress_adhesion_lieu" value="none" type="radio" id="adh-lieu-none" /> Aucun</label>';
+			$ret .= '<label for="adh-lieu-any"><input class="required" name="amapress_adhesion_lieu" value="any" type="radio" id="adh-lieu-any" /> N\'importe lequel</label><br/>';
+			$ret .= '<label for="adh-lieu-none"><input class="required" name="amapress_adhesion_lieu" value="none" type="radio" id="adh-lieu-none" /> Aucun</label>';
 			$ret .= '</div>';
 		}
 		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
