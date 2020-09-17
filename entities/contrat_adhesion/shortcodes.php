@@ -1302,39 +1302,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label
-                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-                            : </label></th>
-                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
-                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-                    </td>
-                </tr>
+	            <tr>
+		            <th style="text-align: left; width: auto"><label
+				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+				            : </label></th>
+		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
+		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+		            </td>
+	            </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-                    <tr>
-                        <th style="text-align: left; width: auto"></th>
-                        <td>
-                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-                            </label>
-                        </td>
-                    </tr>
+		            <tr>
+			            <th style="text-align: left; width: auto"></th>
+			            <td>
+				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+				            </label>
+			            </td>
+		            </tr>
 	            <?php } ?>
             </table>
-            <div>
+	        <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-            </div>
+	        </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-                <table style="min-width: 50%">
-                    <tr>
-                        <th colspan="2">Membre du foyer 1 / Conjoint
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-                                : </label>
-                        </th>
-                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+		        <table style="min-width: 50%">
+			        <tr>
+				        <th colspan="2">Membre du foyer 1 / Conjoint
+				        </th>
+			        </tr>
+			        <tr>
+				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+						        : </label>
+				        </th>
+				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
@@ -1864,6 +1864,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$ret .= '<label for="adh-lieu-none"><input class="required" name="amapress_adhesion_lieu" value="none" type="radio" id="adh-lieu-none" /> Aucun</label>';
 			$ret .= '</div>';
 		}
+		for ( $custom_check_ix = 1; $custom_check_ix < 4; $custom_check_ix ++ ) {
+			$custom_check = $adh_period->getCustomCheck( $custom_check_ix );
+			if ( ! empty( $custom_check ) ) {
+				$ret .= '<label for="adh-custom-' . $custom_check_ix . '">
+<input name="amapress_adhesion_custom_check' . $custom_check_ix . '" value="1" type="checkbox" id="adh-custom-' . $custom_check_ix . '" /> ' .
+				        strip_tags( wp_unslash( $custom_check ), '<em><i><strong><b><br><a>' ) . '</label>';
+			}
+		}
 		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
 			$ret .= '<div>';
 			$ret .= '<label for="adh-message" style="display: block">Message personnel :</label><br/>
@@ -1985,6 +1993,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		if ( isset( $_REQUEST['amapress_adhesion_message'] ) ) {
 			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_message', sanitize_textarea_field( $_REQUEST['amapress_adhesion_message'] ) );
+		}
+
+		for ( $custom_check_ix = 1; $custom_check_ix < 4; $custom_check_ix ++ ) {
+			if ( isset( $_REQUEST[ 'amapress_adhesion_custom_check' . $custom_check_ix ] ) ) {
+				update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_custom_check' . $custom_check_ix, 1 );
+			} else {
+				delete_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_custom_check' . $custom_check_ix, );
+			}
 		}
 
 		if ( isset( $_REQUEST['amapress_adhesion_lieu'] ) ) {

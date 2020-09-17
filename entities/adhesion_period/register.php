@@ -6,6 +6,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_filter( 'amapress_register_entities', 'amapress_register_entities_adhesion_period' );
 function amapress_register_entities_adhesion_period( $entities ) {
+	if ( ! defined( 'AMAPRESS_ADHESION_PERIOD_CHECK1' ) ) {
+		define( 'AMAPRESS_ADHESION_PERIOD_CHECK1', 'Checkbox 1' );
+	}
+	if ( ! defined( 'AMAPRESS_ADHESION_PERIOD_CHECK2' ) ) {
+		define( 'AMAPRESS_ADHESION_PERIOD_CHECK2', 'Checkbox 2' );
+	}
+	if ( ! defined( 'AMAPRESS_ADHESION_PERIOD_CHECK3' ) ) {
+		define( 'AMAPRESS_ADHESION_PERIOD_CHECK3', 'Checkbox 3' );
+	}
+
 	$entities['adhesion_period'] = array(
 		'internal_name'    => 'amps_adh_per',
 		'singular'         => amapress__( 'Période Adhésion' ),
@@ -50,7 +60,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 //            'exp_csv' => true,
 		),
 		'fields'           => array(
-			'date_debut'  => array(
+			'date_debut'     => array(
 				'name'         => amapress__( 'Date de début' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -58,7 +68,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => 'Date à laquelle démarre la période',
 				'csv_required' => true,
 			),
-			'date_fin'    => array(
+			'date_fin'       => array(
 				'name'         => amapress__( 'Date de fin' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -66,13 +76,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => 'Date à laquelle finit la période',
 				'csv_required' => true,
 			),
-			'online_desc' => array(
+			'online_desc'    => array(
 				'name'  => amapress__( 'Contenu bulletin' ),
 				'type'  => 'editor',
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => 'Contenu à afficher lors de l\'adhésion en ligne',
 			),
-			'word_model'       => array(
+			'word_model'     => array(
 				'name'            => amapress__( 'Bulletin personnalisé' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -85,7 +95,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'            => '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ) . '">Plus d\'info</a>)</p>
 <p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getBulletinGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>',
 			),
-			'mnt_reseau'       => array(
+			'mnt_reseau'     => array(
 				'name'     => amapress__( 'Montant adhésion au réseau' ),
 				'type'     => 'number',
 				'required' => true,
@@ -109,7 +119,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'    => 'Pré-inscription en ligne',
 				'desc'     => 'Montant adhésion au réseau pour les intermittents (indiquer -1 pour autoriser un montant libre)',
 			),
-			'mnt_amap_inter'   => array(
+			'mnt_amap_inter' => array(
 				'name'     => amapress__( 'Intermittents - Montant adhésion AMAP' ),
 				'type'     => 'number',
 				'required' => true,
@@ -117,7 +127,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'    => 'Pré-inscription en ligne',
 				'desc'     => 'Montant adhésion AMAP pour les intermittents (indiquer -1 pour autoriser un montant libre)',
 			),
-			'allow_chq'        => array(
+			'allow_chq'      => array(
 				'name'        => amapress__( 'Chèque' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
@@ -126,7 +136,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en chèque',
 			),
-			'allow_cash'       => array(
+			'allow_cash'     => array(
 				'name'        => amapress__( 'Espèces' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
@@ -167,6 +177,30 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'default'     => true,
 				'show_column' => false,
 				'desc'        => 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant d\'adhésion en ligne',
+			),
+			'custom_check1'  => array(
+				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK1,
+				'type'           => 'editor',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => 'Questions personnalisées',
+				'desc'           => 'Intitulé de la checkbox personnalisée ' . AMAPRESS_ADHESION_PERIOD_CHECK1,
+			),
+			'custom_check2'  => array(
+				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK2,
+				'type'           => 'editor',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => 'Questions personnalisées',
+				'desc'           => 'Intitulé de la checkbox personnalisée ' . AMAPRESS_ADHESION_PERIOD_CHECK2,
+			),
+			'custom_check3'  => array(
+				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK3,
+				'type'           => 'editor',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => 'Questions personnalisées',
+				'desc'           => 'Intitulé de la checkbox personnalisée ' . AMAPRESS_ADHESION_PERIOD_CHECK3,
 			),
 		),
 	);

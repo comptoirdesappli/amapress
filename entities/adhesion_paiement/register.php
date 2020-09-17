@@ -189,14 +189,14 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'default' => false,
 				'desc'    => 'Indique une adhésion d\'un intermittent',
 			),
-			'lieu'         => array(
+			'lieu'          => array(
 				'name'       => amapress__( 'Lieu dist.' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'desc'       => 'Lieu de distribution souhaité',
 				'searchable' => true,
 			),
-			'lieu_type'    => array(
+			'lieu_type'     => array(
 				'name'           => amapress__( 'Choix du lieu' ),
 				'type'           => 'select',
 				'options'        => array(
@@ -209,11 +209,32 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'message'   => array(
+			'message'       => array(
 				'name'           => amapress__( 'Message' ),
 				'type'           => 'textarea',
 				'desc'           => 'Message à l\'AMAP lors de l\'inscription en ligne',
 				'col_def_hidden' => true,
+			),
+			'custom_check1' => array(
+				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK1,
+				'type'           => 'checkbox',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => 'Questions personnalisées',
+			),
+			'custom_check2' => array(
+				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK2,
+				'type'           => 'checkbox',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => 'Questions personnalisées',
+			),
+			'custom_check3' => array(
+				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK3,
+				'type'           => 'checkbox',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => 'Questions personnalisées',
 			),
 		),
 		'bulk_actions'     => array(
