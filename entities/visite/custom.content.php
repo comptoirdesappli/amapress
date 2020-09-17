@@ -137,6 +137,13 @@ function amapress_get_custom_content_visite( $content ) {
 
 	echo $inscr_another;
 
+	if ( ! empty( $visite->getSlotsConf() ) ) {
+		echo '<h5>Table des inscrits</h5>';
+		echo $visite->getInscritsTable( true, amapress_can_access_admin() );
+		echo '<h5>Table des horaires</h5>';
+		echo $visite->getSlotsTable();
+	}
+
 	amapress_echo_panel_end();
 
 	$content = ob_get_clean();

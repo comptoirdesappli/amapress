@@ -30,10 +30,10 @@ function amapress_register_entities_visite( $entities ) {
 			'_dyn_'   => 'amapress_visite_views',
 			'exp_csv' => true,
 		),
-		'edit_header'        => function ( $post ) {
+		'edit_header'             => function ( $post ) {
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
-		'fields'           => array(
+		'fields'                  => array(
 //			'photo'        => array(
 //				'name'  => amapress__( 'Photo' ),
 //				'type'  => 'upload',
@@ -89,7 +89,7 @@ function amapress_register_entities_visite( $entities ) {
 				'csv_required' => true,
 				'group'        => '2/ Horaires',
 			),
-			'slots_conf'           => array(
+			'slots_conf'   => array(
 				'name'  => amapress__( 'Créneau(x)' ),
 				'type'  => 'text',
 				'desc'  => function ( $option ) {

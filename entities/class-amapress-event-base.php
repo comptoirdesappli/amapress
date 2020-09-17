@@ -402,10 +402,11 @@ class Amapress_EventBase extends TitanEntity {
 			'no_script'    => true,
 			'bSort'        => false,
 		);
-		$tbl_style  = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+		$id         = 'event-inscrits-' . $this->ID . '-' . uniqid();
+		$tbl_style  = "<style>#$id table, #$id th, #$id td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>";
 
 		return $tbl_style . amapress_get_datatable(
-				'event-inscrits-' . $this->ID . '-' . uniqid(),
+				$id,
 				$columns, $data,
 				$dt_options );
 	}
@@ -440,10 +441,11 @@ class Amapress_EventBase extends TitanEntity {
 			'no_script'    => true,
 			'bSort'        => false,
 		);
-		$tbl_style  = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+		$id         = 'slots-' . $this->ID . '-' . uniqid();
+		$tbl_style  = "<style>#$id table, #$id th, #$id td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>";
 
 		return $tbl_style . amapress_get_datatable(
-				'slots-' . $this->ID . '-' . uniqid(),
+				$id,
 				$columns, $data,
 				$dt_options );
 	}
