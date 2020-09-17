@@ -1051,3 +1051,19 @@ table.docspace_list tr.dir td:first-of-type a {
 ::placeholder {
     font-style: italic;
 }
+
+#quant-commandes td.date-odd {
+    background-color: #ccc;
+}
+
+#quant-commandes td.date-even {
+    background-color: #fff;
+}
+
+#quant-commandes td.odd {
+    background-color: #ccc;
+}
+
+#quant-commandes td.even {
+    background-color: #fff;
+}

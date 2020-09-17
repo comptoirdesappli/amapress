@@ -127,6 +127,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 			if ( ! empty( $col['width'] ) ) {
 				$attr .= ' width="' . $col['width'] . '"';
 			}
+			if ( ! empty( $col['className'] ) ) {
+				$attr .= ' class="' . $col['className'] . '"';
+			}
 			$table_content .= "<th$attr>" . $title . '</th>';
 		}
 		$table_content .= '</tr></thead>';
@@ -154,6 +157,9 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 				$attr = '';
 				if ( ! empty( $col['width'] ) ) {
 					$attr .= ' width="' . $col['width'] . '"';
+				}
+				if ( ! empty( $col['className'] ) ) {
+					$attr .= ' class="' . $col['className'] . '"';
 				}
 				if ( $data_v != $data_sort_v ) {
 					$table_content .= '<td' . $attr . ' style="' . $style . '" data-sort="' . esc_attr( $data_sort_v ) . '">' . $data_v . '</td>';

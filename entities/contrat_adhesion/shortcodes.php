@@ -3164,10 +3164,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'data'  => 'prix_unitaire',
 				),
 			);
+			$date_ix = 0;
 			foreach ( $dates as $date ) {
 				$columns[] = array(
-					'title' => date_i18n( 'd/m/y', $date ),
-					'data'  => 'd-' . $date,
+					'title'     => date_i18n( 'd/m/y', $date ),
+					'data'      => 'd-' . $date,
+					'className' => ( $date_ix ++ % 2 == 0 ) ? 'date-even' : 'date-odd',
 				);
 			}
 
