@@ -1919,7 +1919,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$ret .= '</p>';
 		if ( $adh_period->getAllowAmapienInputPaiementsDetails() ) {
-			$ret .= '<p><label for="amapress_adhesion_paiement_numero">Numéro de chèque/virement :</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
+			$ret .= '<p><label for="amapress_adhesion_paiement_numero">' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_num_label' ) ) ) . '</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
 			$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
 		}
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
@@ -3760,7 +3760,7 @@ jQuery(function($) {
 </script>';
 				echo '<table id="cheques-details"><thead>
 <th>Date encaissement</th>
-<th>Numéro chèque</th>
+<th>' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_pay_num_label' ) ) ) . '</th>
 <th>Banque</th>
 <th>Emetteur</th>
 <th>Montant</th>

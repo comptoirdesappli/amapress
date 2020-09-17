@@ -2376,6 +2376,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], null, [], false ),
 										),
 										array(
+											'id'      => 'online_subscription_pay_num_label',
+											'name'    => 'Saisie numéros de chèques',
+											'type'    => 'text',
+											'desc'    => 'Intitulé des champs de saisie des numéros de chèques',
+											'default' => 'Numéro chèque',
+										),
+										array(
 											'type' => 'save',
 										),
 										array(
@@ -2969,6 +2976,13 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'Nom de l\'étape',
 											'type'    => 'text',
 											'default' => 'Adhésion (obligatoire)',
+										),
+										array(
+											'id'      => 'online_subscription_adh_num_label',
+											'name'    => 'Saisie numéros de chèques',
+											'type'    => 'text',
+											'desc'    => 'Intitulé du champs de saisie du numéro de chèque/virement',
+											'default' => 'Numéro de chèque/virement :',
 										),
 										array(
 											'id'      => 'online_subscription_adh_valid_step_name',
