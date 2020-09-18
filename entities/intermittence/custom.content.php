@@ -48,9 +48,14 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 		'allow_amapiens'          => true,
 		'check_adhesion'          => Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ),
 		'check_adhesion_received' => false,
+		'enabled_for_resp'        => false,
 	), $atts );
 	$check_adhesion          = Amapress::toBool( $atts['check_adhesion'] );
 	$check_adhesion_received = Amapress::toBool( $atts['check_adhesion_received'] );
+	if ( ! Amapress::toBool( $atts['enabled_for_resp'] ) && amapress_is_admin_or_responsable() ) {
+		$check_adhesion          = false;
+		$check_adhesion_received = false;
+	}
 	if ( $check_adhesion ) {
 		$adh_period = AmapressAdhesionPeriod::getCurrent();
 		if ( empty( $adh_period ) ) {
