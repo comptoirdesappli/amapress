@@ -483,7 +483,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$ret['type_adhesion'] = [
 				'desc' => 'Type d\'adhésion (Amapien ou intermittent)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
-					return Amapress::formatPrice( $adh->getAdhesionType() );
+					return $adh->getAdhesionType();
 				}
 			];
 			$ret['montant_amap'] = [
