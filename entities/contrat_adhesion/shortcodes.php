@@ -1999,7 +1999,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( isset( $_REQUEST[ 'amapress_adhesion_custom_check' . $custom_check_ix ] ) ) {
 				update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_custom_check' . $custom_check_ix, 1 );
 			} else {
-				delete_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_custom_check' . $custom_check_ix, );
+				delete_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_custom_check' . $custom_check_ix );
 			}
 		}
 
