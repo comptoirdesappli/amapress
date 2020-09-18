@@ -224,17 +224,17 @@ class Amapress_EventBase extends TitanEntity {
 							} else {
 								$dt_start = $dt_end;
 							}
-							$inter_end     = $dt_start->getTimestamp();
-							$key           = strval( $inter_start );
+							$inter_end = $dt_start->getTimestamp();
+							$key       = strval( $inter_start );
+							if ( isset( $res[ $key ] ) ) {
+								$key = strval( $inter_start ) . '-' . strval( $inter_end );
+							}
 							$current_usage = 0;
 							foreach ( $active_slots as $s ) {
 								$current_usage += ( $s == $key ? 1 : 0 );
 							}
 							$display_hours = date_i18n( 'H:i', $inter_start ) . '-' . date_i18n( 'H:i', $inter_end );
-							if ( isset( $res[ $key ] ) ) {
-								$key = strval( $inter_start ) . '-' . strval( $inter_end );
-							}
-							$res[ $key ] = [
+							$res[ $key ]   = [
 								'display'  => sprintf( ! empty( $name ) ? ( $anon ? '%1$s' : '%1$s (%2$s)' ) : '%2$s',
 									$name, $display_hours ),
 								'date'     => $inter_start,
