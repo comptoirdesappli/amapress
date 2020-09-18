@@ -3793,7 +3793,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Message adhésion requise',
 											'type'    => 'editor',
 											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_req_adhesion-placeholders', [], null, [], false ),
-											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
+											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir réserver des paniers disponibles, vous devez adhérer à notre Association.</strong></p>',
 										),
 										array(
 											'id'      => 'online_subscription_inter_adh_step_name',
