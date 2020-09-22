@@ -898,7 +898,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			return 'Cette incription n\'est pas éditable';
 		}
-		if ( empty( $_REQUEST['user_id'] ) || $edit_inscription->getAdherentId() != intval( $_REQUEST['user_id'] ) ) {
+		$user_id  = ! empty( $_REQUEST['user_id'] ) ? intval( $_REQUEST['user_id'] ) : 0;
+		$user_ids = $user_id ? AmapressContrats::get_related_users( $user_id, true,
+			null, null, true, false ) : [];
+		if ( ! in_array( $edit_inscription->getAdherentId(), $user_ids ) ) {
 			ob_clean();
 
 			return 'Cette incription n\'est pas à vous';
@@ -1302,39 +1305,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-	            <tr>
-		            <th style="text-align: left; width: auto"><label
-				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-				            : </label></th>
-		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
-		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-		            </td>
-	            </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label
+                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+                            : </label></th>
+                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
+                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+                    </td>
+                </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-		            <tr>
-			            <th style="text-align: left; width: auto"></th>
-			            <td>
-				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-				            </label>
-			            </td>
-		            </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"></th>
+                        <td>
+                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                            </label>
+                        </td>
+                    </tr>
 	            <?php } ?>
             </table>
-	        <div>
+            <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-	        </div>
+            </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-		        <table style="min-width: 50%">
-			        <tr>
-				        <th colspan="2">Membre du foyer 1 / Conjoint
-				        </th>
-			        </tr>
-			        <tr>
-				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-						        : </label>
-				        </th>
-				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 1 / Conjoint
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
