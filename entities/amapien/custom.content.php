@@ -41,6 +41,9 @@ function amapress_edit_user_info_shortcode( $atts ) {
 	<?php
 	$user_id = amapress_current_user_id();
 	$user    = AmapressUser::getBy( $user_id );
+	if ( ! $user->isPrincipalAdherent() ) {
+		$max_cofoyers = 0;
+	}
 
 	if ( $show_adherents_infos ) {
 		echo '<p>' . $user->getAdherentInfo( false, true, $max_cofoyers > 0 ) . '</p>';
