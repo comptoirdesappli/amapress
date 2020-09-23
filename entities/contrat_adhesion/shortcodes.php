@@ -1316,39 +1316,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label
-                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-                            : </label></th>
-                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
-                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-                    </td>
-                </tr>
+	            <tr>
+		            <th style="text-align: left; width: auto"><label
+				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+				            : </label></th>
+		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
+		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+		            </td>
+	            </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-                    <tr>
-                        <th style="text-align: left; width: auto"></th>
-                        <td>
-                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-                            </label>
-                        </td>
-                    </tr>
+		            <tr>
+			            <th style="text-align: left; width: auto"></th>
+			            <td>
+				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+				            </label>
+			            </td>
+		            </tr>
 	            <?php } ?>
             </table>
-            <div>
+	        <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-            </div>
+	        </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-                <table style="min-width: 50%">
-                    <tr>
-                        <th colspan="2">Membre du foyer 1 / Conjoint
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-                                : </label>
-                        </th>
-                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+		        <table style="min-width: 50%">
+			        <tr>
+				        <th colspan="2">Membre du foyer 1 / Conjoint
+				        </th>
+			        </tr>
+			        <tr>
+				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+						        : </label>
+				        </th>
+				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
@@ -3807,13 +3807,20 @@ jQuery(function($) {
 				Amapress::setFilterForReferent( true );
 				$req = ( $paiements_info_required ? 'required' : '' );
 				for ( $i = 1; $i <= 12; $i ++ ) {
-					$edit_paiement   = $edit_all_paiements && isset( $edit_all_paiements[ $i - 1 ] ) ? $edit_all_paiements[ $i - 1 ] : null;
+					$edit_paiement       = $edit_all_paiements && isset( $edit_all_paiements[ $i - 1 ] ) ? $edit_all_paiements[ $i - 1 ] : null;
+					$paiements_raw_dates = $contrat->getPaiements_Liste_dates();
+					if ( ! $admin_mode ) {
+						$paiements_raw_dates = array_filter( $paiements_raw_dates,
+							function ( $d ) {
+								return $d > Amapress::start_of_week( amapress_time() );
+							} );
+					}
 					$paiements_dates = array_map(
 						function ( $d ) use ( $edit_paiement ) {
 							$selected = selected( $edit_paiement && Amapress::start_of_day( $edit_paiement->getDate() ) == Amapress::start_of_day( $d ), true, false );
 
 							return '<option ' . $selected . ' value="' . esc_attr( $d ) . '">' . esc_html( date_i18n( 'd/m/Y', $d ) ) . '</option>';
-						}, $contrat->getPaiements_Liste_dates()
+						}, $paiements_raw_dates
 					);
 					if ( ! $edit_inscription ) {
 						if ( isset( $paiements_dates[ $i - 1 ] ) ) {
