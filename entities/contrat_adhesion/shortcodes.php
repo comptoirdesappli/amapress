@@ -2623,11 +2623,16 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					return ! empty( $dates );
 				} );
 			} else {
-				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $contrat ) use ( $atts ) {
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $contrat ) use ( $atts, $adh_paiement ) {
 					/** @var AmapressContrat_instance $contrat */
 					$before_close_hours = 0;
 					if ( 0 == $before_close_hours ) {
 						$before_close_hours = intval( $atts['before_close_hours'] );
+					}
+					if ( ! empty( $adh_paiement ) && ! empty( $adh_paiement->getLieuId() ) ) {
+						if ( ! in_array( $adh_paiement->getLieuId(), $contrat->getLieuxIds() ) ) {
+							return false;
+						}
 					}
 					$dates                = array_values( $contrat->getListe_dates() );
 					$dates_before_cloture = array_filter( $dates, function ( $d ) use ( $contrat ) {
