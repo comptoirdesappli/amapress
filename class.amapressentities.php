@@ -2250,6 +2250,15 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => 'Configuration de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
 										array(
+											'id'       => 'online_subscription_start_saison_message',
+											'name'     => 'Label email',
+											'type'     => 'text',
+											'default'  => '',
+											'sanitize' => false,
+											'desc'     => 'Label du champ email (non connecté) (shortcode [inscription-en-ligne]), par défaut, "Pour démarrer votre inscription pour la saison xxx, veuillez renseigner votre adresse mail :"'
+											              . AmapressAdhesionPeriod::getPlaceholdersHelp(),
+										),
+										array(
 											'id'      => 'online_subscription_welcome_inscr_message',
 											'name'    => 'Message de bienvenue',
 											'type'    => 'text',
@@ -2848,6 +2857,15 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 									'id'      => 'config_online_adhesions_messages',
 									'desc'    => 'Configuration de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Aller à la configuration de l\'inscription' ),
 									'options' => array(
+										array(
+											'id'       => 'online_subscription_start_saison_adh_message',
+											'name'     => 'Label email',
+											'type'     => 'text',
+											'default'  => '',
+											'sanitize' => false,
+											'desc'     => 'Label du champ email (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Pour démarrer votre adhésion pour la saison xxx, veuillez renseigner votre adresse mail :"'
+											              . AmapressAdhesionPeriod::getPlaceholdersHelp(),
+										),
 										array(
 											'id'      => 'online_subscription_welcome_adh_message',
 											'name'    => 'Message de bienvenue',
@@ -3714,6 +3732,15 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'id'      => 'config_online_inter_adhesions_messages',
 									'desc'    => 'Configuration de l\'assistant d\'adhésion en ligne (intermittent-adhesion-en-ligne-connecte/intermittent-adhesion-en-ligne).',
 									'options' => array(
+										array(
+											'id'       => 'online_subscription_start_saison_inter_message',
+											'name'     => 'Label email',
+											'type'     => 'text',
+											'default'  => '',
+											'sanitize' => false,
+											'desc'     => 'Label du champ email (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Pour démarrer votre adhésion pour la saison xxx, veuillez renseigner votre adresse mail :"'
+											              . AmapressAdhesionPeriod::getPlaceholdersHelp(),
+										),
 										array(
 											'id'      => 'online_subscription_welcome_adh_inter_message',
 											'name'    => 'Message de bienvenue',

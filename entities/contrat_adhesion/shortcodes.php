@@ -944,9 +944,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$welcome_type = 'd’adhésion';
 				}
 			}
-			$welcome_message = sprintf( 'Bienvenue dans l’assistant %s de « %%%%nom_site%%%% »', $welcome_type );
+			$welcome_message = sprintf( 'Bienvenue dans l’assistant %s « %%%%nom_site%%%% »', $welcome_type );
 		}
 		$welcome_message = amapress_replace_mail_placeholders( $welcome_message, null );
+
+		$saison_start_message = wp_unslash(
+			Amapress::getOption( $is_adhesion_mode ?
+				( $adhesion_intermittent ? 'online_subscription_start_saison_inter_message' : 'online_subscription_start_saison_adh_message' ) :
+				'online_subscription_start_saison_message' )
+		);
+		if ( empty( $saison_start_message ) ) {
+			$saison_start_message = sprintf( 'Pour démarrer votre %s pour la saison %s, veuillez renseigner votre adresse mail :',
+				$is_adhesion_mode ? 'adhésion' : 'inscription',
+				$saison );
+		}
+		$saison_start_message = amapress_replace_mail_placeholders( $saison_start_message, null, $adh_period );
+
 		?>
         <h2><?php echo $welcome_message; ?></h2>
         <h4>
@@ -959,13 +972,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
               class="amapress_validate">
 			<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
 				$adhesion_intermittent ? 'online_subscription_inter_email_step_message' : 'online_subscription_email_step_message' ), null ) ); ?>
-            <label for="email" style="display: block">Pour démarrer
-                votre <?php echo( $is_adhesion_mode ? 'adhésion' : 'inscription' ); ?> pour la saison
-				<?php
-				echo $saison;
-				?>
-                , veuillez renseigner votre
-                adresse mail :</label>
+            <label for="email" style="display: block"><?php echo $saison_start_message ?></label>
             <input id="email" name="email" type="text" class="email required" placeholder="email"/>
 			<?php
 			if ( $track_no_renews ) {

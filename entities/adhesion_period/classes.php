@@ -281,6 +281,131 @@ class AmapressAdhesionPeriod extends TitanEntity {
 			)
 		);
 	}
+
+	private static $properties = null;
+
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret                         = [];
+			$ret['nom']                  = [
+				'desc' => 'Nom de la période d\'adhésion (par ex, saison 15)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getName() );
+				}
+			];
+			$ret['date_debut']           = [
+				'desc' => 'Date début de la période d\'adhésion (par ex, 01/09/2018)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['date_fin']             = [
+				'desc' => 'Date fin de période d\'adhésion (par ex, 31/08/2019)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['date_debut_annee']     = [
+				'desc' => 'Année de début de période d\'adhésion',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return date_i18n( 'Y', $adh->getDate_debut() );
+				}
+			];
+			$ret['date_fin_annee']       = [
+				'desc' => 'Année de fin de période d\'adhésion',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return date_i18n( 'Y', $adh->getDate_fin() );
+				}
+			];
+			$ret['montant_amap']         = [
+				'desc' => 'Montant versé à l\'AMAP (Amapiens)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return Amapress::formatPrice( $adh->getMontantAmap( false ) );
+				}
+			];
+			$ret['montant_reseau']       = [
+				'desc' => 'Montant versé au réseau de l\'AMAP (Amapiens)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return Amapress::formatPrice( $adh->getMontantReseau( false ) );
+				}
+			];
+			$ret['inter_montant_amap']   = [
+				'desc' => 'Montant versé à l\'AMAP (Intermittents)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return Amapress::formatPrice( $adh->getMontantAmap( true ) );
+				}
+			];
+			$ret['inter_montant_reseau'] = [
+				'desc' => 'Montant versé au réseau de l\'AMAP (Intermittents)',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return Amapress::formatPrice( $adh->getMontantReseau( true ) );
+				}
+			];
+			$ret['tresoriers']           = [
+				'desc' => 'Nom des référents de l\'adhésion',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return implode( ', ', array_unique( array_map(
+						function ( $ref_id ) {
+							$ref = AmapressUser::getBy( $ref_id );
+							if ( empty( $ref ) ) {
+								return '';
+							}
+
+							return $ref->getDisplayName();
+						},
+						get_users( "role=tresorier" )
+					) ) );
+				}
+			];
+			$ret['tresoriers_emails']    = [
+				'desc' => 'Nom des trésoriers avec emails',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return implode( ', ', array_unique( array_map(
+						function ( $ref_id ) {
+							$ref = AmapressUser::getBy( $ref_id );
+							if ( empty( $ref ) ) {
+								return '';
+							}
+
+							return $ref->getDisplayName() . '(' . $ref->getEmail() . ')';
+						},
+						get_users( "role=tresorier" )
+					) ) );
+				}
+			];
+			$ret['paiements_mention']    = [
+				'desc' => 'Mention pour les paiements',
+				'func' => function ( AmapressAdhesionPeriod $adh ) {
+					return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getPaymentInfo() ) ) );
+				}
+			];
+			self::$properties            = $ret;
+		}
+
+		return self::$properties;
+	}
+
+	public static function getPlaceholders() {
+		$ret = [];
+
+		foreach ( amapress_replace_mail_placeholders_help( '', false, false ) as $k => $v ) {
+			$ret[ $k ] = $v;
+		}
+		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
+			$ret[ $prop_name ] = $prop_desc;
+		}
+
+		return $ret;
+	}
+
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_word = false, $show_toggler = true ) {
+		$ret = self::getPlaceholders();
+
+		return Amapress::getPlaceholdersHelpTable( 'adhesion-period-placeholders', $ret,
+			null, $additional_helps, false,
+			$for_word ? '${' : '%%', $for_word ? '}' : '%%',
+			$show_toggler );
+	}
 }
 
 
