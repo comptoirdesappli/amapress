@@ -60,7 +60,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 //            'exp_csv' => true,
 		),
 		'fields'           => array(
-			'date_debut'     => array(
+			'date_debut'  => array(
 				'name'         => amapress__( 'Date de début' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -68,7 +68,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => 'Date à laquelle démarre la période',
 				'csv_required' => true,
 			),
-			'date_fin'       => array(
+			'date_fin'    => array(
 				'name'         => amapress__( 'Date de fin' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -76,13 +76,19 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => 'Date à laquelle finit la période',
 				'csv_required' => true,
 			),
-			'online_desc'    => array(
+			'name'        => array(
+				'name'  => amapress__( 'Nom de la période' ),
+				'type'  => 'text',
+				'group' => 'Pré-inscription en ligne',
+				'desc'  => '(Facultatif) Nom de la saison (par exemple, saison 15)',
+			),
+			'online_desc' => array(
 				'name'  => amapress__( 'Contenu bulletin' ),
 				'type'  => 'editor',
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => 'Contenu à afficher lors de l\'adhésion en ligne',
 			),
-			'word_model'     => array(
+			'word_model'  => array(
 				'name'            => amapress__( 'Bulletin personnalisé' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -95,7 +101,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'            => '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ) . '">Plus d\'info</a>)</p>
 <p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getBulletinGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>',
 			),
-			'mnt_reseau'     => array(
+			'mnt_reseau'  => array(
 				'name'     => amapress__( 'Montant adhésion au réseau' ),
 				'type'     => 'number',
 				'required' => true,

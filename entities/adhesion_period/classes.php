@@ -47,6 +47,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return $this->getCustom( 'amapress_adhesion_period_date_fin' );
 	}
 
+	public function getName() {
+		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_name' ) );
+	}
+
 	public function getOnlineDescription() {
 		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_online_desc' ) );
 	}

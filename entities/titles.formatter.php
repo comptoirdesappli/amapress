@@ -228,7 +228,10 @@ function amapress_adhesion_period_title_formatter( $post_title, WP_Post $post ) 
 		return $post->post_title;
 	}
 
-	return sprintf( 'Période adhésions - %s > %s',
+	$name = $pmt->getName();
+
+	return sprintf( 'Période adhésions%s - %s > %s',
+		! empty( $name ) ? ' - ' . $name : '',
 		date_i18n( 'd/m/Y', $pmt->getDate_debut() ),
 		date_i18n( 'd/m/Y', $pmt->getDate_fin() )
 	);

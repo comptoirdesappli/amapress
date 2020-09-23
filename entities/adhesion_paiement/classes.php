@@ -449,26 +449,32 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                          = [];
-			$ret['date_debut']            = [
+			$ret                     = [];
+			$ret['nom']              = [
+				'desc' => 'Nom de la période d\'adhésion (par ex, saison 15)',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getPeriod()->getName() );
+				}
+			];
+			$ret['date_debut']       = [
 				'desc' => 'Date début de la période d\'adhésion (par ex, 01/09/2018)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin']              = [
+			$ret['date_fin']         = [
 				'desc' => 'Date fin de période d\'adhésion (par ex, 31/08/2019)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['date_debut_annee']      = [
+			$ret['date_debut_annee'] = [
 				'desc' => 'Année de début de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin_annee'] = [
+			$ret['date_fin_annee']   = [
 				'desc' => 'Année de fin de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
