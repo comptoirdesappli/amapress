@@ -43,6 +43,42 @@ class AmapressDistribution extends Amapress_EventBase {
 		parent::__construct( $post_id );
 	}
 
+	/** @return AmapressDistribution[] */
+	public static function getAll() {
+		return array_map(
+			function ( $p ) {
+				return AmapressDistribution::getBy( $p );
+			},
+			get_posts(
+				array(
+					'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+				)
+			)
+		);
+	}
+
+	public static function cleanOrphans() {
+		global $wpdb;
+
+		$dists = self::getAll();
+		$count = 0;
+		$wpdb->query( 'START TRANSACTION' );
+		foreach ( $dists as $dist ) {
+			if ( empty( $dist->getContratIds() ) ) {
+				wp_delete_post( $dist->ID, true );
+				$count ++;
+			}
+		}
+		$wpdb->query( 'COMMIT' );
+
+		if ( $count ) {
+			return "$count distributions orphelines nettoyées";
+		} else {
+			return "Aucun distribution orpheline";
+		}
+	}
+
 	public function getDefaultSortValue() {
 		return $this->getDate();
 	}

@@ -1987,7 +1987,8 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 		if ( 'orphans' == $_REQUEST['clean'] ) {
 			$clean_messages = implode( '<br />', [
 				AmapressAmapien_paiement::cleanOrphans(),
-				AmapressContrat_quantite::cleanOrphans()
+				AmapressContrat_quantite::cleanOrphans(),
+				AmapressDistribution::cleanOrphans(),
 			] );
 		}
 	}
