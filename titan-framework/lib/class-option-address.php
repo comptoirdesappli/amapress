@@ -27,6 +27,10 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			return null;
 		}
 
+		if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
+			return null;
+		}
+
 		$string = preg_replace( '/\s+/', " ", trim( $string ) );
 		$string = preg_replace( '/(?:\s+-\s+|,\s*)?(\d\s*\d\s*\d\s*\d\s*\d|2\s*[AB]\s*\d\s*\d\s*\d)\s+([^,]+)(?:,\s*\1\s+\2)+/i', ', $1 $2', $string );
 
