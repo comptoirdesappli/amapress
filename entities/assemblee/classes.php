@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class AmapressAssemblee_generale extends Amapress_EventBase {
+class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress_Event_Lieu {
 	const INTERNAL_POST_TYPE = 'amps_assemblee';
 	const POST_TYPE = 'assemblee_generale';
 
@@ -165,14 +165,13 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 			$resps    = $this->getParticipantsIds();
 			$date     = $this->getStartDateAndHour();
 			$date_end = $this->getEndDateAndHour();
-			$asm_lieu = $this->getLieu();
 			if ( in_array( $user_id, $resps ) ) {
 				$ret[] = new Amapress_EventEntry( array(
 					'ev_id'    => "asm-{$this->ID}-resp",
 					'date'     => $date,
 					'date_end' => $date_end,
 					'class'    => "agenda-assemblee agenda-inscrit-assemblee",
-					'lieu'     => $asm_lieu,
+					'lieu'     => $this,
 					'type'     => 'assemblee_generale',
 					'category' => 'Assemblées générales',
 					'priority' => 70,
@@ -189,7 +188,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase {
 					'class'    => "agenda-assemblee agenda-inscription-assemblee",
 					'type'     => 'assemblee_generale',
 					'category' => 'Assemblées générales',
-					'lieu'     => $asm_lieu,
+					'lieu'     => $this,
 					'priority' => 70,
 					'label'    => 'Assemblée',
 					'icon'     => 'fa fa-university',
