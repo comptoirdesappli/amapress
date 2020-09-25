@@ -394,6 +394,10 @@ function amapress_adhesion_views() {
 		$ret, 'pmt_prl',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=prl",
 		'Prélèvement' );
+	amapress_add_view_button(
+		$ret, 'pmt_stp',
+		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=stp",
+		'Paiement en ligne (Stripe)' );
 	//    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",
@@ -632,6 +636,11 @@ function amapress_paiements_views() {
 		$ret, 'pmt_vir',
 		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=vir",
 		'Virement' );
+
+	amapress_add_view_button(
+		$ret, 'pmt_stp',
+		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=stp",
+		'Paiement en ligne (Stripe)' );
 //	amapress_add_view_button(
 //		$ret, 'pmt_dlv',
 //		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=dlv",

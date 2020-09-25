@@ -1679,14 +1679,23 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par prélèvement',
 			),
-			'stripe_key'        => array(
-				'name'        => amapress__( 'Clé Stripe' ),
-				'type'        => 'checkbox',
+			'stripe_public_key' => array(
+				'name'        => amapress__( 'Clé Stripe (Publique)' ),
+				'type'        => 'text',
 				'group'       => '6/6 - Règlements',
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'default'     => '',
 				'show_column' => false,
-				'desc'        => 'Clé des paiement en ligne via Stripe pour ce contrat/producteur. Remplir ce champs active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien le paiement en ligne',
+				'desc'        => 'Clé publique des paiement en ligne via Stripe pour ce contrat/producteur. Remplir ce champs active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien le paiement en ligne',
+			),
+			'stripe_secret_key' => array(
+				'name'        => amapress__( 'Clé Stripe (secrète)' ),
+				'type'        => 'text',
+				'group'       => '6/6 - Règlements',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'default'     => '',
+				'show_column' => false,
+				'desc'        => 'Clé secrète des paiement en ligne via Stripe pour ce contrat/producteur.',
 			),
 			'manage_paiements'  => array(
 				'name'        => amapress__( 'Répartition des règlements' ),

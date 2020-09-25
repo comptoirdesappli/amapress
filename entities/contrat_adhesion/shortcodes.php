@@ -1316,39 +1316,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-	            <tr>
-		            <th style="text-align: left; width: auto"><label
-				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-				            : </label></th>
-		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
-		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-		            </td>
-	            </tr>
+                <tr>
+                    <th style="text-align: left; width: auto"><label
+                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+                            : </label></th>
+                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
+                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+                    </td>
+                </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-		            <tr>
-			            <th style="text-align: left; width: auto"></th>
-			            <td>
-				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-				            </label>
-			            </td>
-		            </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"></th>
+                        <td>
+                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                            </label>
+                        </td>
+                    </tr>
 	            <?php } ?>
             </table>
-	        <div>
+            <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-	        </div>
+            </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-		        <table style="min-width: 50%">
-			        <tr>
-				        <th colspan="2">Membre du foyer 1 / Conjoint
-				        </th>
-			        </tr>
-			        <tr>
-				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-						        : </label>
-				        </th>
-				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+                <table style="min-width: 50%">
+                    <tr>
+                        <th colspan="2">Membre du foyer 1 / Conjoint
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+                                : </label>
+                        </th>
+                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
@@ -2497,12 +2497,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						}
 						$coadherents_info = '<br /><strong>Co-adhérents</strong> : ' . $coadherents_info;
 						$edit_contrat     = '';
+						if ( 'stp' == $adh->getMainPaiementType() && AmapressAdhesion::TO_CONFIRM == $adh->getStatus() ) {
+							$edit_contrat .= '<br/><form method="get" action="' . esc_attr( get_permalink() ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="stripe" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="inscr_id" value="' . $adh->ID . '" />
+<input type="submit" value="Payer en ligne" class="btn btn-danger btn-assist-inscr"
+ 	title="' . esc_attr( 'Payer en ligne et valider l\'inscription. ' . ( $adh->canSelfEdit() ? 'Une fois payée, l\'inscription ne sera plus modifiable.' : '' ) ) . '"/>
+</form>';
+						}
 						if ( $adh->canSelfEdit() ) {
 							$inscription_url = add_query_arg( [
 								'step'       => 'inscr_contrat_date_lieu',
 								'contrat_id' => $adh->getContrat_instanceId()
 							] );
-							$edit_contrat    = '<br/>
+							$edit_contrat    .= '<br/>
 <form style="display: inline-block; margin-left: 5px" method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
@@ -2940,6 +2950,147 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
+	} else if ( 'stripe_callback' == $step ) {
+		if ( empty( $_REQUEST['user_id'] ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+		if ( $for_logged && $user_id != amapress_current_user_id() ) {
+			wp_die( $invalid_access_message );  //phpcs:ignore
+		}
+
+		if ( empty( $_REQUEST['inscr_id'] ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+
+		$inscr_id = intval( $_GET['inscr_id'] );
+		if ( empty( $_REQUEST['hash'] ) || amapress_sha_secret( "{$user_id}:{$inscr_id}" ) != $_REQUEST['hash'] ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+
+		$user_ids = AmapressContrats::get_related_users( $user_id, true );
+
+		$adh = AmapressAdhesion::getBy( $inscr_id );
+		if ( empty( $adh ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+		if ( in_array( $adh->getAdherentId(), $user_ids )
+		     && in_array( $adh->getAdherent2Id(), $user_ids )
+		     && in_array( $adh->getAdherent3Id(), $user_ids )
+		     && in_array( $adh->getAdherent4Id(), $user_ids )
+		) {
+			wp_die( 'Ce contrat n\'est pas à vous !' ); //phpcs:ignore
+		}
+
+		$is_success = isset( $_REQUEST['success'] );
+
+		if ( $is_success ) {
+			$adh->setStatus( AmapressAdhesion::CONFIRMED );
+			$adh->preparePaiements( [
+				1 => [
+					'num'      => '',
+					'date'     => amapress_time(),
+					'banque'   => 'Stripe',
+					'emetteur' => '',
+				]
+			], true, AmapressAdhesion_paiement::RECEIVED, false );
+		}
+
+		$message = wp_unslash( $is_success ?
+			Amapress::getOption( 'online_subscription_stripe_success' ) :
+			Amapress::getOption( 'online_subscription_stripe_cancel' ) );
+		$message = str_replace( '%%contrats_step_link%%', Amapress::makeButtonLink( $contrats_step_url, 'Poursuivre' ), $message );
+		$message = str_replace( '%%contrats_step_href%%', $contrats_step_url, $message );
+
+
+		$print_contrat = Amapress::makeButtonLink(
+			add_query_arg( [
+				'inscr_assistant' => 'generate_contrat',
+				'inscr_id'        => $adh->ID,
+				'inscr_key'       => amapress_sha_secret( $key )
+			] ),
+			$contrat_print_button_text, true, true, 'btn btn-default'
+		);
+		$message       = str_replace( '%%print_button%%', $print_contrat, $message );
+
+		$message = amapress_replace_mail_placeholders( $message, AmapressUser::getBy( $user_id ), $adh );
+
+		echo $message; //phpcs:ignore
+	} else if ( 'stripe' == $step ) {
+		if ( $for_logged && amapress_is_user_logged_in() ) {
+			$user_id = wp_get_current_user()->ID;
+		} else {
+			if ( empty( $_REQUEST['user_id'] ) ) {
+				wp_die( $invalid_access_message ); //phpcs:ignore
+			}
+			$user_id = intval( $_REQUEST['user_id'] );
+		}
+
+		if ( empty( $_REQUEST['inscr_id'] ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+
+		$user_ids = AmapressContrats::get_related_users( $user_id, true );
+
+		$inscr_id = null;
+		$adh      = AmapressAdhesion::getBy( intval( $_GET['inscr_id'] ) );
+		if ( empty( $adh ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+		if ( in_array( $adh->getAdherentId(), $user_ids )
+		     && in_array( $adh->getAdherent2Id(), $user_ids )
+		     && in_array( $adh->getAdherent3Id(), $user_ids )
+		     && in_array( $adh->getAdherent4Id(), $user_ids )
+		) {
+			wp_die( 'Ce contrat n\'est pas à vous !' ); //phpcs:ignore
+		}
+		$inscr_id = $adh->ID;
+
+		$callback_url = add_query_arg(
+			[
+				'step'     => 'stripe_callback',
+				'user_id'  => $user_id,
+				'inscr_id' => $inscr_id,
+				'hash'     => amapress_sha_secret( "{$user_id}:{$inscr_id}" ),
+			], get_permalink()
+		);
+
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
+
+		\Stripe\Stripe::setApiKey( $adh->getContrat_instance()->getStripeSecretKey() );
+
+		try {
+			$session = \Stripe\Checkout\Session::create( [
+				'payment_method_types' => [ 'card' ],
+				'client_reference_id'  => $adh->getAdminEditLink(),
+				'customer_email'       => $adh->getAdherent()->getEmail(),
+				'line_items'           => [
+					[
+						'name'        => $adh->getTitle(),
+						'description' => $adh->getContrat_instance()->getTitle(),
+						'amount'      => (int) ( $adh->getTotalAmount() * 100 ),
+						'currency'    => 'eur',
+						'quantity'    => 1,
+					]
+				],
+				'success_url'          => add_query_arg( 'success', 'T', $callback_url ),
+				'cancel_url'           => add_query_arg( 'cancel', 'T', $callback_url ),
+			] );
+
+
+			echo '<script src="https://js.stripe.com/v3/"></script>
+  <script>
+  const stripe = Stripe(\'' . $adh->getContrat_instance()->getStripePublicKey() . '\');
+  stripe.redirectToCheckout({
+    sessionId: \'' . $session->id . '\'
+  }).then((result) => {
+    console.log(result.error.message);
+  });
+  </script>';
+			echo '<p>Réglement en ligne en cours...</p>';
+		} catch ( \Stripe\Exception\ApiErrorException $ex ) {
+			echo '<p class="error" style="color:red">' . esc_html( $ex->getMessage() ) . '</p>';
+		}
 	} else if ( 'details_all_paiements' == $step ) {
 		if ( ! $show_due_amounts ) {
 			wp_die( $invalid_access_message ); //phpcs:ignore
@@ -4031,7 +4182,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		$inscription = AmapressAdhesion::getBy( $new_id, true );
 		Amapress::setFilterForReferent( true );
 		if ( $inscription->getContrat_instance()->getManage_Cheques() ) {
-			$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? (array) $_REQUEST['pmt'] : [] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			if ( 'stp' != $inscription->getMainPaiementType() ) {
+				$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? (array) $_REQUEST['pmt'] : [] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			}
 		}
 
 		if ( ! $admin_mode || isset( $_REQUEST['inscr_confirm_mail'] ) ) {
@@ -4089,6 +4242,22 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			}
 			$online_contrats_end_step_message      = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_message );
 			$online_contrats_end_step_edit_message = str_replace( '%%print_button%%', $print_contrat, $online_contrats_end_step_edit_message );
+			if ( 'stp' == $inscription->getMainPaiementType() && AmapressAdhesion::TO_CONFIRM == $inscription->getStatus() ) {
+				$online_subscription_contrat_end_stripe = wp_unslash( Amapress::getOption( 'online_subscription_contrat_end_stripe' ) );
+				$online_subscription_contrat_end_stripe = amapress_replace_mail_placeholders(
+					$online_subscription_contrat_end_stripe,
+					$inscription->getAdherent(), $inscription
+				);
+
+				echo $online_subscription_contrat_end_stripe;
+				echo '<form method="get" action="' . esc_attr( get_permalink() ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="stripe" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="inscr_id" value="' . $inscription->ID . '" />
+<input type="submit" value="Payer en ligne et valider l\'inscription" class="btn btn-danger btn-assist-inscr" />
+</form>';
+			}
 			if ( $inscription->canSelfEdit() ) {
 				$inscription_url = add_query_arg( [
 					'step'       => 'inscr_contrat_date_lieu',

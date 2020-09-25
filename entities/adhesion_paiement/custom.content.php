@@ -286,6 +286,9 @@ add_action( 'admin_footer', function () {
 //}
 function amapress_paiements_count_editor( $post_id ) {
 	$adhesion = AmapressAdhesion::getBy( $post_id );
+	if ( 'stp' == $adhesion->getMainPaiementType() ) {
+		return $adhesion->getPaiements();
+	}
 	//$min_cheques = count( $adhesion->getAllPaiements() );
 	$ret = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
 	$ret .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">Préparer la saisie des chèques</button></div>';
@@ -328,6 +331,18 @@ function amapress_paiements_count_editor( $post_id ) {
 
 function amapress_paiements_editor( $post_id ) {
 	$adhesion = AmapressAdhesion::getBy( $post_id );
+	if ( 'stp' == $adhesion->getMainPaiementType() ) {
+		$ret = '';
+		foreach ( $adhesion->getAllPaiements() as $paiement ) {
+			$ret .= sprintf( '<p>Paiement en ligne (Stripe) de %s de %s reçu le %s</p>',
+				$paiement->getEmetteur(),
+				Amapress::formatPrice( $paiement->getAmount(), true ),
+				date_i18n( 'd/m/Y H:i', $paiement->getDate() )
+			);
+		}
+
+		return $ret;
+	}
 	if ( $adhesion->getContrat_instance() == null || 'draft' == $adhesion->getPost()->post_status ) {
 		echo '<p style="color:red">Les chèques/règlements ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée</p>';
 

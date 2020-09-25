@@ -2482,6 +2482,45 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Paiements en ligne (Stripe)',
+										),
+										array(
+											'id'      => 'online_subscription_contrat_end_stripe',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => wpautop( "Pour confirmer votre inscription, veuillez procéder au paiement en ligne. La modification de l\'inscription ne sera plus possible ensuite." ),
+											'desc'    => 'Message au sujet des paiements en ligne à l\'étape de validation de l\'inscription<br/>' . AmapressAdhesion::getPlaceholdersHelp(),
+										),
+										array(
+											'id'      => 'online_subscription_stripe_success',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => wpautop( "Merci pour votre réglement.\nVotre inscription %%post:title%% est confirmée.\n%%print_button%%\n\n%%contrats_step_link%%" ),
+											'desc'    => 'Message de confirmation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
+													[
+														'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
+														'contrats_step_href' => 'Url de l\'étape Mes contrats',
+														'print_button'       => 'Bouton Imprimer/Télécharger le contrat',
+													]
+												),
+										),
+										array(
+											'id'      => 'online_subscription_stripe_cancel',
+											'name'    => 'Message',
+											'type'    => 'editor',
+											'default' => wpautop( "Vous avez annulé le règlement en ligne.\nVotre inscription %%post:title%% n'est pas encore confirmée.\n\n%%contrats_step_link%%" ),
+											'desc'    => 'Message d\'annulation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
+													[
+														'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
+														'contrats_step_href' => 'Url de l\'étape Mes contrats',
+													]
+												),
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'CSS Personnalisé',
 										),
 										array(

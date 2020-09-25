@@ -85,7 +85,10 @@ function amapress_register_entities_adhesion( $entities ) {
 				'label'     => 'Confirmer inscription',
 				'confirm'   => true,
 				'condition' => function ( $adh_id ) {
-					return AmapressAdhesion::TO_CONFIRM == AmapressAdhesion::getBy( $adh_id )->getStatus();
+					$adh = AmapressAdhesion::getBy( $adh_id );
+
+					return AmapressAdhesion::TO_CONFIRM == $adh->getStatus()
+					       && 'stp' != $adh->getMainPaiementType();
 				},
 			],
 			'add_compl'            => [
