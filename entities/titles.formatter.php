@@ -72,18 +72,14 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 
 add_filter( 'amapress_assemblee_generale_title_formatter', 'amapress_assemblee_generale_title_formatter', 10, 2 );
 function amapress_assemblee_generale_title_formatter( $post_title, WP_Post $post ) {
-	$post_id = $post->ID;
-
-	$date = get_post_meta( $post_id, 'amapress_assemblee_generale_date', true );
-	$lieu = get_post( get_post_meta( $post_id, 'amapress_assemblee_generale_lieu', true ) );
-
-	if ( ! $lieu ) {
+	$ag = AmapressAssemblee_generale::getBy( $post, true );
+	if ( ! $ag ) {
 		return $post_title;
 	}
 
 	return sprintf( 'Assemblée générale du %s à %s',
-		date_i18n( 'l j F Y', intval( $date ) ),
-		$lieu->post_title );
+		date_i18n( 'l j F Y', $ag->getDate() ),
+		$ag->getLieuTitle() );
 }
 
 add_filter( 'amapress_adhesion_request_title_formatter', 'amapress_adhesion_request_title_formatter', 10, 2 );
