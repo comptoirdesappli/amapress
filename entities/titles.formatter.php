@@ -6,25 +6,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_filter( 'amapress_visite_title_formatter', 'amapress_visite_title_formatter', 10, 2 );
 function amapress_visite_title_formatter( $post_title, WP_Post $post ) {
-	$post_id = $post->ID;
-
-	$date       = get_post_meta( $post_id, 'amapress_visite_date', true );
-	$producteur = get_post( get_post_meta( $post_id, 'amapress_visite_producteur', true ) );
-
-	if ( ! $producteur ) {
+	$visite = AmapressVisite::getBy( $post, true );
+	if ( ! $visite || ! $visite->getProducteur() ) {
 		return $post_title;
 	}
 
 	return sprintf( 'Visite du %s chez %s',
-		date_i18n( 'l j F Y', intval( $date ) ),
-		$producteur->post_title );
+		date_i18n( 'l j F Y', $visite->getDate() ),
+		$visite->getProducteur()->getTitle() );
 }
 
 add_filter( 'amapress_mailinglist_title_formatter', 'amapress_mailinglist_title_formatter', 10, 2 );
 function amapress_mailinglist_title_formatter( $post_title, WP_Post $post ) {
-	$post_id = $post->ID;
-
-	return get_post_meta( $post_id, 'amapress_mailinglist_name', true );
+	return get_post_meta( $post->ID, 'amapress_mailinglist_name', true );
 }
 
 add_filter( 'amapress_mailing_group_title_formatter', 'amapress_mailing_group_title_formatter', 10, 2 );
@@ -84,14 +78,13 @@ function amapress_assemblee_generale_title_formatter( $post_title, WP_Post $post
 
 add_filter( 'amapress_adhesion_request_title_formatter', 'amapress_adhesion_request_title_formatter', 10, 2 );
 function amapress_adhesion_request_title_formatter( $post_title, WP_Post $post ) {
-	$post_id = $post->ID;
-
-	$first_name = get_post_meta( $post_id, 'amapress_adhesion_request_first_name', true );
-	$last_name  = get_post_meta( $post_id, 'amapress_adhesion_request_last_name', true );
-	$email      = get_post_meta( $post_id, 'amapress_adhesion_request_email', true );
+	$adh_req = AmapressAdhesionRequest::getBy( $post, true );
+	if ( ! $adh_req ) {
+		return $post_title;
+	}
 
 	return sprintf( 'Demande de préinscription de %s %s (%s)',
-		$first_name, $last_name, $email );
+		$adh_req->getFirstName(), $adh_req->getLastName(), $adh_req->getEmail() );
 }
 
 add_action( 'amapress_update_title_contrat_instance', 'amapress_update_title_contrat_instance' );
