@@ -147,6 +147,7 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/amap_event/recalls.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/intermittence/recalls.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/contrat/recalls.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/contrat_adhesion/recalls.php' );
+require_once( AMAPRESS__PLUGIN_DIR . 'entities/assemblee/recalls.php' );
 
 
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/produit/pager.views.php' );

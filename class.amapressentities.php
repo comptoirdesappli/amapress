@@ -1597,6 +1597,16 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_amap_event_available_recall_options(),
 								),
+								'Emails - Assemblée générale AMAP - Inscription - Rappel'          => array(
+									'id'      => 'amp_tab_recall_ag_inscr',
+									'desc'    => '',
+									'options' => amapress_assemblee_generale_inscription_recall_options(),
+								),
+								'Emails - Assemblée générale AMAP - Inscription possible - Rappel' => array(
+									'id'      => 'amp_tab_recall_ag_avail',
+									'desc'    => '',
+									'options' => amapress_assemblee_generale_available_recall_options(),
+								),
 							),
 						),
 						array(
