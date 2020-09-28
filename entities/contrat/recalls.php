@@ -31,7 +31,7 @@ function amapress_get_contrats_cron( $type ) {
 				if ( $contrat->canSelfSubscribe() ) {
 					$ret[] = [
 						'id'    => $contrat->getID(),
-						'time'  => $contrat->getDate_ouverture(),
+						'time'  => $contrat->getDate_cloture(),
 						'type'  => $type,
 						'title' => 'Clôture inscriptions (' .
 						           date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) .
