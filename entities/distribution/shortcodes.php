@@ -411,11 +411,15 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	Amapress::get_producteurs();
 
 	$lieux_contrats_resps = [];
+	$lieux_resps_contrats = [];
 	for ( $i = 1; $i <= 10; $i ++ ) {
 		$global_resp_contrats = Amapress::getOption( "resp_role_$i-contrats" );
 		foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
 			if ( ! isset( $lieux_contrats_resps[ $lieu_id ] ) ) {
 				$lieux_contrats_resps[ $lieu_id ] = [];
+			}
+			if ( ! isset( $lieux_resps_contrats[ $lieu_id ] ) ) {
+				$lieux_resps_contrats[ $lieu_id ] = [];
 			}
 			$local_resp_contrats = Amapress::getOption( "resp_role_{$lieu_id}_$i-contrats" );
 			if ( empty( $local_resp_contrats ) ) {
@@ -424,6 +428,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			if ( ! empty( $local_resp_contrats ) ) {
 				foreach ( Amapress::get_array( $local_resp_contrats ) as $local_resp_contrat_id ) {
 					$lieux_contrats_resps[ $lieu_id ][ $local_resp_contrat_id ] = $i;
+					$lieux_resps_contrats[ $lieu_id ][ $i ]                     = $local_resp_contrat_id;
 				}
 			}
 		}
@@ -881,7 +886,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$resp_idx     = ! $has_role_names ? 0 : $i;
 					if ( null == $resp ) {
 						$is_contrat_resp_col = null;
-						foreach ( $lieux_contrats_resps[ $lieu_id ] as $contrat_id => $ix ) {
+						foreach ( $lieux_resps_contrats[ $lieu_id ] as $ix => $contrat_id ) {
 							if ( $resp_idx == $ix ) {
 								$is_contrat_resp_col = in_array( $contrat_id, $dist->getContratModelIds() );
 							}
