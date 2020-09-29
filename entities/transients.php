@@ -15,6 +15,10 @@ function amapress_clean_transients( $post_id ) {
 
 	if ( 'page' == $post_type ) {
 		delete_transient( 'amp_inscr_distrib_href' );
+		foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
+			delete_transient( 'amp_inscr_distrib_href' . $lieu_id );
+		}
+		delete_transient( 'amp_inter_adh_href' );
 		delete_transient( 'amp_preinscr_href' );
 		delete_transient( 'amp_inscrlog_href' );
 		delete_transient( 'amp_collectif_href' );

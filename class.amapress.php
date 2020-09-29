@@ -4223,7 +4223,8 @@ class Amapress {
 	}
 
 	public static function get_page_with_shortcode_href(
-		$shortcodes, $transient_name
+		$shortcodes, $transient_name,
+		$other_filter_regex = ''
 	) {
 		if ( $transient_name ) {
 			$href = get_transient( $transient_name );
@@ -4236,10 +4237,20 @@ class Amapress {
 				foreach ( get_pages() as $page ) {
 					if ( false !== strpos( $page->post_content, '[' . $shortcode . ' ' )
 					     || false !== strpos( $page->post_content, '[' . $shortcode . ']' ) ) {
+						if ( ! empty( $other_filter_regex ) ) {
+							if ( preg_match( '/\[' . $shortcode . '[^\]]*\]/', $page->post_content, $matches ) ) {
+								if ( ! preg_match( $other_filter_regex, $matches[0] ) ) {
+									continue;
+								}
+							}
+						}
 						$href = get_permalink( $page->ID );
 						break;
 					}
 				}
+			}
+			if ( ! empty( $other_filter_regex ) && empty( $href ) ) {
+				return self::get_page_with_shortcode_href( $shortcodes, $transient_name );
 			}
 			if ( $transient_name ) {
 				set_transient( $transient_name, $href );
@@ -4253,18 +4264,29 @@ class Amapress {
 		return self::get_page_with_shortcode_href( 'amapiens-role-list', 'amp_collectif_href' );
 	}
 
-	public static function get_inscription_distrib_page_href() {
+	/**
+	 * @param null|AmapressLieu_distribution $lieu
+	 *
+	 * @return false|mixed|string|null
+	 */
+	public static function get_inscription_distrib_page_href( $lieu = null ) {
+		$filter = '';
+		if ( $lieu ) {
+			$filter = '/lieu="?' . $lieu->ID . '"?|lieu="?' . $lieu->getSlug() . '"?/';
+		}
+
 		return self::get_page_with_shortcode_href( [
 			'inscription-distrib',
 			'anon-inscription-distrib'
-		], 'amp_inscr_distrib_href' );
+		], 'amp_inscr_distrib_href' . ( $lieu ? $lieu->ID : '' ),
+			$filter );
 	}
 
 	public static function get_intermittent_adhesion_page_href() {
 		return self::get_page_with_shortcode_href( [
 			'intermittent-adhesion-en-ligne',
 			'intermittent-adhesion-en-ligne-connecte'
-		], 'amp_inscr_distrib_href' );
+		], 'amp_inter_adh_href' );
 	}
 
 	public static function get_mes_contrats_page_href() {

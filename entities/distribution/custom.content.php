@@ -66,7 +66,7 @@ function amapress_get_custom_content_distribution( $content ) {
 			}
 			echo '<p class="dist-miss-resp">' . esc_html( sprintf( $missing_format, $needed_responsables - count( $resp_ids ) ) ) . '</p>';
 			$need_responsables = true;
-			$href              = Amapress::get_inscription_distrib_page_href();
+			$href              = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 			if ( ! empty( $href ) ) {
 				if ( $is_resp_amap ) {
 					echo '<p>Les inscriptions aux distributions des amapiens se gèrent <a href="' . esc_attr( $href ) . '" target="_blank">ici</a></p>';
@@ -243,7 +243,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				) );
 
 			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
-				$inscription_href = Amapress::get_inscription_distrib_page_href();
+				$inscription_href = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 				if ( ! empty( $inscription_href ) ) {
 					echo '<p>' . Amapress::makeButtonLink(
 							$inscription_href, 'Se proposer comme gardien de panier',

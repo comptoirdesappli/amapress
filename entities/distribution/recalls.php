@@ -477,7 +477,7 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 
 	$subject = Amapress::getOption( 'distribution-miss-resps-recall-mail-subject' );
 	$content = Amapress::getOption( 'distribution-miss-resps-recall-mail-content' );
-	$url     = Amapress::get_inscription_distrib_page_href();
+	$url     = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 	if ( ! empty( $url ) ) {
 		$inscription_link = Amapress::makeLink( $url, 'S\'inscrire comme responsable de distribution' );
 	} else {
@@ -524,7 +524,7 @@ add_action( 'amapress_recall_slots_inscr_distrib', function ( $args ) {
 
 	$subject = Amapress::getOption( 'distribution-slot-inscr-recall-mail-subject' );
 	$content = Amapress::getOption( 'distribution-slot-inscr-recall-mail-content' );
-	$url     = Amapress::get_inscription_distrib_page_href();
+	$url     = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 	if ( ! empty( $url ) ) {
 		$inscription_link = Amapress::makeLink( $url, 'S\'inscrire à un créneau de distribution' );
 	} else {
