@@ -1197,15 +1197,19 @@ function amapress_get_contrat_column_quantite(
 		'mode'           => 'xlsx',
 	] );
 
+
 	$data_by_date = array_group_by( $data['data'], function ( $row ) {
-		return $row['date'];
+		return $row['date_sort'];
 	} );
 
-	foreach ( $data_by_date as $date => $date_data ) {
-		$out_data    = [];
-		$out_columns = [];
-		$quants      = [];
-		$quants_ids  = [];
+	foreach ( $data_by_date as $date_iso => $date_data ) {
+		$date_i       = strtotime( $date_iso );
+		$date         = date_i18n( 'd/m/Y', $date_i );
+		$date_display = date_i18n( 'l d F Y', $date_i );
+		$out_data     = [];
+		$out_columns  = [];
+		$quants       = [];
+		$quants_ids   = [];
 
 		foreach ( $date_data as $row ) {
 			$quants_ids[] = $row['quant_id'];
@@ -1217,6 +1221,18 @@ function amapress_get_contrat_column_quantite(
 			}
 		}
 
+		$out_columns[] = array(
+			'title' => 'Adhérent',
+			'data'  => 'adherent',
+		);
+		$out_columns[] = array(
+			'title' => 'Téléphone',
+			'data'  => 'adherent_tel'
+		);
+		$out_columns[] = array(
+			'title' => 'Emargement',
+			'data'  => 'emargement'
+		);
 		foreach ( $quants as $k => $v ) {
 			$out_columns[] = array(
 				'title' => $v,
@@ -1227,14 +1243,6 @@ function amapress_get_contrat_column_quantite(
 			'title' => 'Montant total',
 			'data'  => 'total',
 		);
-		$out_columns[] = array(
-			'title' => 'Adhérent',
-			'data'  => 'adherent',
-		);
-		$out_columns[] = array(
-			'title' => 'Téléphone',
-			'data'  => 'adherent_tel'
-		);
 
 		foreach (
 			array_group_by( array_values( $date_data ), function ( $row ) {
@@ -1243,8 +1251,9 @@ function amapress_get_contrat_column_quantite(
 		) {
 			if ( empty( $out_data[ $adherent ] ) ) {
 				$out_data[ $adherent ] = [
-					'total'    => 0,
-					'adherent' => $adherent,
+					'total'      => 0,
+					'adherent'   => $adherent,
+					'emargement' => '',
 				];
 			}
 
@@ -1265,7 +1274,9 @@ function amapress_get_contrat_column_quantite(
 			}
 		}
 
+		unset( $data_by_date[ $date_iso ] );
 		$data_by_date[ $date ] = [
+			'display' => $date_display,
 			'data'    => array_values( $out_data ),
 			'columns' => $out_columns
 		];
@@ -1306,7 +1317,38 @@ function amapress_get_contrat_column_quantite(
 			$objPHPExcel->createSheet();
 		}
 		$objPHPExcel->setActiveSheetIndex( $ix )->fromArray( $csv_data );
-		$objPHPExcel->getActiveSheet()->setTitle( str_replace( '/', '-', $date ) );
+		$sheet = $objPHPExcel->getActiveSheet();
+		$style = array(
+			'alignment' => array(
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+			)
+		);
+		$sheet->getColumnDimensionByColumn( 0 )->setAutoSize( true );
+		$sheet->getColumnDimensionByColumn( 1 )->setAutoSize( true );
+		$sheet->getColumnDimensionByColumn( 2 )->setAutoSize( true );
+		$sheet->getColumnDimensionByColumn( count( $out_columns ) - 1 )->setAutoSize( true );
+		$sheet->getDefaultStyle()->applyFromArray( $style )->getAlignment()
+		      ->setWrapText( true );
+		$sheet->getStyleByColumnAndRow(
+			0, 1,
+			count( $out_columns ) - 1,
+			$sheet->getHighestRow()
+		)->getBorders()->getAllBorders()->setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
+		for ( $i = 2; $i <= $sheet->getHighestRow(); $i ++ ) {
+			if ( $i % 2 == 0 ) {
+				$sheet->getStyleByColumnAndRow( 0, $i, count( $out_columns ) - 1, $i )->applyFromArray(
+					array(
+						'fill' => array(
+							'type'  => \PHPExcel_Style_Fill::FILL_SOLID,
+							'color' => array( 'argb' => 'FFF3F3F3' )
+						),
+					)
+				);
+			}
+		}
+		$sheet->insertNewRowBefore()->mergeCellsByColumnAndRow( 0, 1, count( $out_columns ) - 1, 1 );
+		$sheet->setCellValueByColumnAndRow( 0, 1, $data['display'] );
+		$sheet->setTitle( str_replace( '/', '-', $date ) );
 		$ix += 1;
 	}
 	$objPHPExcel->setActiveSheetIndex( 0 );
