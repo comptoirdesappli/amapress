@@ -442,10 +442,10 @@ function amapress_distribution_responsable_roles_options() {
 			'post_type'    => AmapressContrat::INTERNAL_POST_TYPE,
 			'desc'         => 'Activer ce rôle uniquement lors de la distribution de certains contrats',
 		);
+		$ret[] = array(
+			'type' => 'save',
+		);
 	}
-	$ret[] = array(
-		'type' => 'save',
-	);
 
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
@@ -477,10 +477,10 @@ function amapress_distribution_responsable_roles_options() {
 					'post_type'    => AmapressContrat::INTERNAL_POST_TYPE,
 					'desc'         => 'Activer ce rôle uniquement lors de la distribution de certains contrats',
 				);
+				$ret[] = array(
+					'type' => 'save',
+				);
 			}
-			$ret[] = array(
-				'type' => 'save',
-			);
 		}
 	}
 
