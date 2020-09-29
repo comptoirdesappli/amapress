@@ -643,7 +643,7 @@ function amapress_save_paiements_editor( $adhesion_id ) {
 		$refresh       = ( $_REQUEST['amapress_paiements'] == 'reset' );
 
 		foreach ( array_diff( $paiements_ids, array_keys( $_POST['amapress_paiements_details'] ) ) as $qid ) {
-			wp_delete_post( $qid );
+			wp_delete_post( $qid, true );
 		}
 		if ( isset( $_POST['amapress_adhesion_paiements'] ) &&
 		     $_POST['amapress_adhesion_paiements'] < count( $_POST['amapress_paiements_details'] ) ) {

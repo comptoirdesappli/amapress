@@ -2993,7 +2993,7 @@ GROUP BY $wpdb->posts.ID" );
 
 		$wpdb->query( 'START TRANSACTION' );
 		foreach ( $orphans as $post_id ) {
-			wp_delete_post( $post_id );
+			wp_delete_post( $post_id, true );
 		}
 		$wpdb->query( 'COMMIT' );
 

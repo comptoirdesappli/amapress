@@ -3014,7 +3014,7 @@ add_action( 'delete_post', function ( $post_id ) {
 			]
 		);
 		foreach ( $paiements_ids as $id ) {
-			wp_delete_post( $id );
+			wp_delete_post( $id, true );
 		}
 	}
 }, 1000 );

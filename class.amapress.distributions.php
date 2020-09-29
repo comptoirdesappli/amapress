@@ -405,11 +405,11 @@ class AmapressDistributions {
 						if ( ! empty( $reports ) ) {
 							$add_to_unassociate = false;
 						} else if ( ! $eval ) {
-							wp_delete_post( $dist_id );
+							wp_delete_post( $dist_id, true );
 						}
 					}
 					if ( ! $eval && $already_exists ) {
-						wp_delete_post( $dist_id );
+						wp_delete_post( $dist_id, true );
 					}
 				}
 				if ( $add_to_unassociate ) {

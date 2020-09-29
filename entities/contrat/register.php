@@ -2598,7 +2598,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 		}, $quants );
 
 		foreach ( array_diff( $quants_ids, array_keys( $_POST['amapress_quant_data'] ) ) as $qid ) {
-			wp_delete_post( $qid );
+			wp_delete_post( $qid, true );
 		}
 		foreach ( $_POST['amapress_quant_data'] as $quant_id => $quant_data ) {
 			$my_post = array(
@@ -2866,7 +2866,7 @@ add_action( 'delete_post', function ( $post_id ) {
 			]
 		);
 		foreach ( $quants_ids as $id ) {
-			wp_delete_post( $id );
+			wp_delete_post( $id, true );
 		}
 	}
 }, 1000 );

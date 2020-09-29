@@ -98,7 +98,7 @@ class AmapressPaniers {
 							'date'  => Amapress::start_of_day( $panier->getDate() )
 						);
 						if ( ! $eval ) {
-							wp_delete_post( $panier->ID );
+							wp_delete_post( $panier->ID, true );
 						}
 					}
 				}
@@ -127,7 +127,7 @@ class AmapressPaniers {
 							'date'  => Amapress::start_of_day( $panier->getDate() )
 						);
 						if ( ! $eval ) {
-							wp_delete_post( $panier_post->ID );
+							wp_delete_post( $panier_post->ID, true );
 						}
 						continue;
 					}
@@ -138,7 +138,7 @@ class AmapressPaniers {
 								'date'  => Amapress::start_of_day( $panier->getDate() )
 							);
 							if ( ! $eval ) {
-								wp_delete_post( $panier_post->ID );
+								wp_delete_post( $panier_post->ID, true );
 							}
 							continue;
 						}
