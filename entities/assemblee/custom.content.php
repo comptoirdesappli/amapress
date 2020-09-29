@@ -38,7 +38,12 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 	} else if ( $can_unsubscribe ) {
 		$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-event="' . $assemblee_generale->ID . '">Me désinscrire</button>';
 	}
-	echo $inscription;
+	if ( ! empty( $inscription ) ) {
+		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-ag amap-panel-ag-inscr' );
+		echo $inscription;
+		echo $inscr_another;
+		amapress_echo_panel_end();
+	}
 
 	amapress_echo_panel_start( 'Horaires' );
 	echo '<p>' .
@@ -141,9 +146,10 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 				'if_empty' => 'Pas de participant'
 			] );
 		} else { ?>
-            <p>Aucun participants</p>
+			<p>Aucun participants</p>
 		<?php }
 
+		echo $inscription;
 		echo $inscr_another;
 
 		amapress_echo_panel_end();

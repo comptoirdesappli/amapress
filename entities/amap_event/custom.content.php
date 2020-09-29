@@ -41,7 +41,12 @@ function amapress_get_custom_content_amap_event( $content ) {
 	} else if ( $can_unsubscribe ) {
 		$inscription .= '<button type="button" class="btn btn-default event-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-event="' . $amap_event->ID . '">Me désinscrire</button>';
 	}
-	echo $inscription;
+	if ( ! empty( $inscription ) ) {
+		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-event amap-panel-event-inscr' );
+		echo $inscription;
+		echo $inscr_another;
+		amapress_echo_panel_end();
+	}
 
 	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-event amap-panel-event-hours' );
 	if ( $amap_event->hasDateFin() ) {
@@ -157,6 +162,7 @@ function amapress_get_custom_content_amap_event( $content ) {
             <p>Aucun participants</p>
 		<?php }
 
+		echo $inscription;
 		echo $inscr_another;
 
 		amapress_echo_panel_end();

@@ -55,6 +55,7 @@ function amapress_get_custom_content_visite( $content ) {
 	amapress_echo_panel_start( 'Inscription complète et partielle', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
 	echo $inscription;
 	echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
+	echo $inscr_another;
 	amapress_echo_panel_end();
 
 	amapress_echo_panel_start( 'Au programme', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-programme' );
@@ -132,9 +133,10 @@ function amapress_get_custom_content_visite( $content ) {
 			'if_empty' => 'Pas de participants'
 		] );
 	} else { ?>
-        <p>Aucun participants</p>
+		<p>Aucun participants</p>
 	<?php }
 
+	echo $inscription;
 	echo $inscr_another;
 
 	if ( ! empty( $visite->getSlotsConf() ) ) {
