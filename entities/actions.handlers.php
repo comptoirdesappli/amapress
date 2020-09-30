@@ -304,6 +304,10 @@ function amapress_mail_current_user_inscr(
 		$mail_type = $event_type;
 	}
 
+	if ( defined( 'AMAPRESS_DISABLE_INSCRIPTIONS_MAILS' ) && AMAPRESS_DISABLE_INSCRIPTIONS_MAILS ) {
+		return;
+	}
+
 	$subject = Amapress::getOption( "inscr-$mail_type-mail-subject" );
 	if ( empty( $subject ) || empty( trim( $subject ) ) ) {
 		$subject = Amapress::getOption( 'inscr-event-mail-subject' );
@@ -340,6 +344,10 @@ function amapress_mail_current_user_desinscr(
 ) {
 	if ( empty( $mail_type ) ) {
 		$mail_type = $event_type;
+	}
+
+	if ( defined( 'AMAPRESS_DISABLE_INSCRIPTIONS_MAILS' ) && AMAPRESS_DISABLE_INSCRIPTIONS_MAILS ) {
+		return;
 	}
 
 	$subject = Amapress::getOption( "desinscr-$mail_type-mail-subject" );

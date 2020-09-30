@@ -946,7 +946,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		update_user_meta( $this->ID, 'amapress_user_intermittent', 1 );
 		update_user_meta( $this->ID, 'amapress_user_intermittent_date', $this->custom['amapress_user_intermittent_date'] );
 
-		if ( $send_mail ) {
+		if ( $send_mail && ( ! defined( 'AMAPRESS_DISABLE_INSCRIPTIONS_MAILS' ) || ! AMAPRESS_DISABLE_INSCRIPTIONS_MAILS ) ) {
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-mail-subject' ),
 				Amapress::getOption( 'intermittence-mail-content' ),
@@ -973,11 +973,13 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 
 		if ( delete_user_meta( $this->ID, 'amapress_user_intermittent' ) ) {
-			amapress_mail_to_current_user(
-				Amapress::getOption( 'intermittence-desincr-mail-subject' ),
-				Amapress::getOption( 'intermittence-desincr-mail-content' ),
-				$this->ID, null, [], null, null,
-				AmapressIntermittence_panier::getResponsableIntermittentsReplyto( null ) );
+			if ( ! defined( 'AMAPRESS_DISABLE_DESINSCRIPTIONS_MAILS' ) || ! AMAPRESS_DISABLE_DESINSCRIPTIONS_MAILS ) {
+				amapress_mail_to_current_user(
+					Amapress::getOption( 'intermittence-desincr-mail-subject' ),
+					Amapress::getOption( 'intermittence-desincr-mail-content' ),
+					$this->ID, null, [], null, null,
+					AmapressIntermittence_panier::getResponsableIntermittentsReplyto( null ) );
+			}
 		}
 	}
 
