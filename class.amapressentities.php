@@ -1372,6 +1372,62 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
+								'Nettoyage'                                     => array(
+									'id'      => 'amp_tab_distrib_cleaner',
+									'desc'    => '',
+									'options' => [
+										array(
+											'id'     => 'distrib-cleaner',
+											'bare'   => true,
+											'type'   => 'custom',
+											'custom' => function () {
+												if ( isset( $_GET['dist_action'] ) ) {
+													$res = '';
+													switch ( $_GET['dist_action'] ) {
+														case 'clean':
+															$res = AmapressDistribution::cleanOrphans();
+															break;
+														case 'update_titles':
+															amapress_update_all_posts(
+																[
+																	AmapressDistribution::POST_TYPE,
+																	AmapressPanier::POST_TYPE,
+																	AmapressAssemblee_generale::POST_TYPE,
+																	AmapressAdhesion::POST_TYPE,
+																]
+															);
+															$res = 'Titres et urls mis à jour';
+															break;
+														case 'regenerate':
+															foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
+																AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
+																AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+															}
+															$res = 'Distributions et paniers mis à jour';
+															break;
+													}
+													if ( ! empty( $res ) ) {
+														echo amapress_get_admin_notice( $res, 'success', true );
+													}
+												}
+
+												$base_url = remove_query_arg( 'dist_action' );
+												echo '<p>' . Amapress::makeButtonLink(
+														add_query_arg( 'dist_action', 'clean', $base_url ),
+														'Nettoyer les distributions sans contrat'
+													) . '</p>';
+												echo '<p>' . Amapress::makeButtonLink(
+														add_query_arg( 'dist_action', 'update_titles', $base_url ),
+														'Mettre à jour les titres et urls des distributions et paniers'
+													) . '</p>';
+												echo '<p>' . Amapress::makeButtonLink(
+														add_query_arg( 'dist_action', 'regenerate', $base_url ),
+														'Forcer la mise à jour des distributions et paniers'
+													) . '</p>';
+											},
+										),
+									],
+								),
 							),
 						),
 						array(
