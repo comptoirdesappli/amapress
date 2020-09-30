@@ -2998,7 +2998,7 @@ GROUP BY $wpdb->posts.ID" );
 		$wpdb->query( 'COMMIT' );
 
 		$count = count( $orphans );
-		if ( $count ) {
+		if ( $count > 0 ) {
 			return "$count quantités orphelines nettoyées";
 		} else {
 			return "Aucun quantité orpheline";

@@ -72,7 +72,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 		$wpdb->query( 'COMMIT' );
 
-		if ( $count ) {
+		if ( $count > 0 ) {
 			return "$count distributions orphelines nettoyées";
 		} else {
 			return "Aucun distribution orpheline";
