@@ -119,23 +119,29 @@ function amapress_update_title_contrat_instance( WP_Post $post ) {
 	}
 }
 
-add_action( 'amapress_update_title_lieu_distribution', 'amapress_update_title_lieu_distribution', 10, 2 );
-function amapress_update_title_lieu_distribution( WP_Post $post ) {
-	//clean cache
-	AmapressLieu_distribution::getBy( $post, true );
-	amapress_update_all_posts(
-		[
-			AmapressDistribution::POST_TYPE,
-			AmapressAssemblee_generale::POST_TYPE,
-			AmapressAdhesion::POST_TYPE,
-		]
-	);
-}
-
 add_filter( 'amapress_contrat_title_formatter', 'amapress_contrat_title_formatter', 10, 2 );
 function amapress_contrat_title_formatter( $post_title, WP_Post $post ) {
 	//clear post cache...
 	$contrat = AmapressContrat::getBy( $post, true );
+
+	global $amapress_pre_post_titles;
+	if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $contrat->getTitle() ) {
+		$posts = get_posts( [
+			'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
+			'posts_per_page' => - 1,
+			'meta_query'     => [
+				[
+					'key'     => 'amapress_contrat_instance_model',
+					'value'   => $post->ID,
+					'compare' => '='
+				]
+			]
+		] );
+
+		foreach ( $posts as $p ) {
+			amapress_compute_post_slug_and_title( $p );
+		}
+	}
 
 	return $contrat->getTitle();
 }
@@ -144,6 +150,17 @@ add_filter( 'amapress_lieu_distribution_title_formatter', 'amapress_lieu_distrib
 function amapress_lieu_distribution_title_formatter( $post_title, WP_Post $post ) {
 	//clear post cache...
 	$lieu = AmapressLieu_distribution::getBy( $post, true );
+
+	global $amapress_pre_post_titles;
+	if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $lieu->getTitle() ) {
+		amapress_update_all_posts(
+			[
+				AmapressDistribution::POST_TYPE,
+				AmapressAssemblee_generale::POST_TYPE,
+				AmapressAdhesion::POST_TYPE,
+			]
+		);
+	}
 
 	return $lieu->getTitle();
 }
@@ -290,26 +307,6 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 	}
 }
 
-add_action( 'amapress_update_title_contrat', 'amapress_update_title_contrat' );
-function amapress_update_title_contrat( WP_Post $post ) {
-	AmapressContrat::getBy( $post, true );
-	$posts = get_posts( [
-		'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
-		'posts_per_page' => - 1,
-		'meta_query'     => [
-			[
-				'key'     => 'amapress_contrat_instance_model',
-				'value'   => $post->ID,
-				'compare' => '='
-			]
-		]
-	] );
-
-	foreach ( $posts as $p ) {
-		amapress_compute_post_slug_and_title( $p );
-	}
-}
-
 add_action( 'edit_form_after_title', 'amapress_edit_post_title_handler' );
 function amapress_edit_post_title_handler( WP_Post $post ) {
 	if ( ! post_type_supports( $post->post_type, 'title' ) && ! empty( $post->post_title ) ) {
@@ -375,3 +372,16 @@ add_filter( 'redirect_post_location', function ( $location ) {
 
 	return $location;
 } );
+
+add_action( 'pre_post_update', function ( $post_id, $post_data ) {
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	global $amapress_pre_post_titles;
+	if ( empty( $amapress_pre_post_titles ) ) {
+		$amapress_pre_post_titles = [];
+	}
+
+	$amapress_pre_post_titles[ $post_id ] = get_post( $post_id )->post_title;
+}, 10, 2 );
