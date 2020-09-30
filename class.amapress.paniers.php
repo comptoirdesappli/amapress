@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @author Guillaume
  */
 class AmapressPaniers {
-	public static function generate_paniers( $contrat_id, $from_now = true, $eval = false ) {
+	public static function generate_paniers( $contrat_id, $eval = false ) {
 		$key = 'amps_gen_pan_' . $contrat_id;
 		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
 		if ( ! empty( $res ) ) {
@@ -27,9 +27,9 @@ class AmapressPaniers {
 				continue;
 			}
 
-			$now = Amapress::start_of_day( $contrat->getDate_debut() );
 			Amapress::setFilterForReferent( false );
-			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null,
+				$contrat->getDate_debut() );
 			Amapress::setFilterForReferent( true );
 
 			$res[ $contrat->ID ] = array();
@@ -41,9 +41,6 @@ class AmapressPaniers {
 			}
 
 			foreach ( $liste_dates as $date ) {
-				if ( $from_now && $date < $now ) {
-					continue;
-				}
 				$paniers = [];
 				if ( ! defined( 'AMAPRESS_TEST' ) ) {
 					$paniers = get_posts( array(
@@ -112,7 +109,7 @@ class AmapressPaniers {
 							'relation' => 'AND',
 							array(
 								'key'     => 'amapress_panier_date',
-								'value'   => Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ),
+								'value'   => Amapress::add_a_month( Amapress::start_of_day( $contrat->getDate_debut() ), - 12 ),
 								'compare' => '>=',
 								'type'    => 'NUMERIC',
 							),

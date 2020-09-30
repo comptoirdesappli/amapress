@@ -1400,8 +1400,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 															break;
 														case 'regenerate':
 															foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
-																AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
-																AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+																AmapressDistributions::generate_distributions( $contrat_instance->ID, false );
+																AmapressPaniers::generate_paniers( $contrat_instance->ID, false );
 															}
 															$res = 'Distributions et paniers mis à jour';
 															break;

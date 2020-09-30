@@ -308,8 +308,8 @@ class AmapDemoBase {
 			self::commitTransaction();
 
 			foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
-				AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
-				AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+				AmapressDistributions::generate_distributions( $contrat_instance->ID, false );
+				AmapressPaniers::generate_paniers( $contrat_instance->ID, false );
 			}
 
 		} catch ( Exception $exception ) {

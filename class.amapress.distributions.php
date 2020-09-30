@@ -237,18 +237,14 @@ class AmapressDistributions {
 	}
 
 	public static function generate_distributions(
-		$contrat_id, $from_now = true, $eval = false
+		$contrat_id, $eval = false
 	) {
 		$key = 'amps_gen_dist_' . $contrat_id;
 		$res = ! $eval ? [] : maybe_unserialize( get_option( $key ) );
 		if ( ! empty( $res ) ) {
-//foreach ($res[$contrat_id]['unassociate'] as $a) {
-//	amapress_dump(date_i18n('d/m/Y', $a['date']));
-//}
 			return $res;
 		}
 
-//		$is_ref   = count( AmapressContrats::getReferentProducteursAndLieux() ) > 0;
 		$res      = array();
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		/** @var AmapressContrat_instance $contrat */
@@ -257,9 +253,9 @@ class AmapressDistributions {
 				continue;
 			}
 
-			$now = Amapress::start_of_day( $contrat->getDate_debut() );
 			Amapress::setFilterForReferent( false );
-			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null, Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() ) );
+			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null,
+				$contrat->getDate_debut() );
 			Amapress::setFilterForReferent( true );
 
 			$res[ $contrat->ID ] = array( 'missing' => array(), 'associate' => array(), 'unassociate' => array() );
@@ -276,9 +272,6 @@ class AmapressDistributions {
 			}
 
 			foreach ( $liste_dates as $date ) {
-				if ( $from_now && $date < $now ) {
-					continue;
-				}
 				foreach ( $lieux as $lieu ) {
 					$start     = Amapress::start_of_day( $date );
 					$stop      = Amapress::end_of_day( $date );
@@ -338,8 +331,7 @@ class AmapressDistributions {
 				}
 			}
 
-			$start = Amapress::start_of_day( $from_now ? $now : $contrat->getDate_debut() );
-			//$stop      = Amapress::end_of_day( $contrat->getDate_fin() );
+			$start     = Amapress::add_a_month( Amapress::start_of_day( $contrat->getDate_debut() ), - 12 );
 			$cache_key = "amapress_generate_distribs2_$start";
 			$distribs  = wp_cache_get( $cache_key );
 			if ( false == $distribs ) {

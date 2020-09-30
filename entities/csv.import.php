@@ -1011,8 +1011,8 @@ add_action( 'amapress_contrat_instance_posts_import', function ( $post_ids ) {
 	foreach ( $post_ids as $post_id ) {
 		$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 		if ( $contrat_instance ) {
-			AmapressDistributions::generate_distributions( $contrat_instance->ID, false, false );
-			AmapressPaniers::generate_paniers( $contrat_instance->ID, false, false );
+			AmapressDistributions::generate_distributions( $contrat_instance->ID, false );
+			AmapressPaniers::generate_paniers( $contrat_instance->ID, false );
 		}
 	}
 } );

@@ -854,8 +854,8 @@ Récemment installé à Milly-la-Forêt',
 		if ( $create_distrib_and_paniers ) {
 			echo 'Generating Distributions and paniers';
 			foreach ( AmapressContrats::get_active_contrat_instances_ids() as $contrat_instances_id ) {
-				AmapressDistributions::generate_distributions( $contrat_instances_id, false );
-				AmapressPaniers::generate_paniers( $contrat_instances_id, false );
+				AmapressDistributions::generate_distributions( $contrat_instances_id );
+				AmapressPaniers::generate_paniers( $contrat_instances_id );
 			}
 		}
 
