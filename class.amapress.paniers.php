@@ -27,9 +27,11 @@ class AmapressPaniers {
 				continue;
 			}
 
+			$relative_date = Amapress::add_a_month( Amapress::start_of_day( $contrat->getDate_debut() ), - 12 );
+
 			Amapress::setFilterForReferent( false );
 			$all_contrat_ids = AmapressContrats::get_active_contrat_instances_ids( null,
-				$contrat->getDate_debut() );
+				$relative_date );
 			Amapress::setFilterForReferent( true );
 
 			$res[ $contrat->ID ] = array();
@@ -109,7 +111,7 @@ class AmapressPaniers {
 							'relation' => 'AND',
 							array(
 								'key'     => 'amapress_panier_date',
-								'value'   => Amapress::add_a_month( Amapress::start_of_day( $contrat->getDate_debut() ), - 12 ),
+								'value'   => $relative_date,
 								'compare' => '>=',
 								'type'    => 'NUMERIC',
 							),
