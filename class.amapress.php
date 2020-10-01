@@ -541,20 +541,19 @@ class Amapress {
 	}
 
 	public static function start_of_day( $date ) {
-		return mktime( 0, 0, 0, date( 'n', $date ), date( 'j', $date ), date( 'Y', $date ) );
+		return strtotime( 'today', $date );
 	}
 
 	public static function hour_of_day( $date, $hour, $minute = 0 ) {
-		return mktime( $hour, $minute, 0, date( 'n', $date ), date( 'j', $date ), date( 'Y', $date ) );
+		$date = self::start_of_day( $date );
+
+		return $date + $hour * 3600 + $minute * 60;
 	}
 
 	public static function end_of_day( $date ) {
-//        if (!is_int($date)) {
-//            var_dump($date);
-//            debug_print_backtrace();
-//            die();
-//        }
-		return mktime( 23, 59, 59, date( 'n', $date ), date( 'j', $date ), date( 'Y', $date ) );
+		$date = self::start_of_day( $date );
+
+		return $date + 86399;
 	}
 
 	public static function add_days( $date, $days ) {
