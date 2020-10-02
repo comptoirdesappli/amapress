@@ -1916,7 +1916,7 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 	);
 
 	$state['37_plugins_add']   = array();
-	$state['37_plugins_add'][] = amapress_check_plugin_install( 'tinymce-advanced', 'TinyMCE Advanced',
+	$state['37_plugins_add'][] = amapress_check_plugin_install( 'tinymce-advanced', 'Advanced Editor Tools (previously TinyMCE Advanced)',
 		'<strong>Recommandé</strong> : Enrichi l\'éditeur de texte intégré de Wordpress afin de faciliter la création de contenu sur le site',
 		'warning' );
 	$state['37_plugins_add'][] = amapress_check_plugin_install( 'block-options', 'Block Options/Gutenberg Page Building Toolkit – EditorsKit',
