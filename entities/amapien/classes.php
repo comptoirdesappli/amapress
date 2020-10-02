@@ -1145,31 +1145,36 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 	public function getAdherentType() {
 		if ( empty( $this->adh_type ) ) {
-			$users_ids                  = AmapressContrats::get_related_users( $this->ID, true );
-			$others_linked_users_count  = 0;
-			$this_linked_users_count    = 0;
-			$this_linked_cofoyers_count = 0;
+			$users_ids                    = AmapressContrats::get_related_users( $this->ID, true );
+			$others_linked_users_count    = 0;
+			$others_linked_cofoyers_count = 0;
+			$this_linked_users_count      = 0;
+			$this_linked_cofoyers_count   = 0;
 			foreach ( $users_ids as $user_id ) {
 				$user         = AmapressUser::getBy( $user_id );
 				$linked_users = $user->getAllDirectlyLinkedCoUsers( true, true );
 				if ( $user->ID == $this->ID ) {
-					$this_linked_users_count    += ( ! empty( $linked_users ) ? 1 : 0 );
-					$this_linked_cofoyers_count += ( ! empty( $user->getAllDirectlyLinkedCoUsers( false, true ) ) ? 1 : 0 );
+					$this_linked_users_count    += count( $linked_users );
+					$this_linked_cofoyers_count += count( $user->getAllDirectlyLinkedCoUsers( false, true ) );
 				} else {
-					$others_linked_users_count += ( ! empty( $linked_users ) ? 1 : 0 );
+					$others_linked_users_count    += count( $linked_users );
+					$others_linked_cofoyers_count += ( in_array( $this->ID,
+						array_map( function ( $u ) {
+							return $u->ID;
+						}, $user->getAllDirectlyLinkedCoUsers( false, true ) ) ) ? 1 : 0 );
 				}
 			}
 
 			if ( 0 == $this_linked_users_count && 0 == $others_linked_users_count ) {
 				$this->adh_type = 'alone';
-			} else if ( 0 <= $this_linked_users_count && 0 == $others_linked_users_count ) {
+			} else if ( 0 < $this_linked_users_count && 0 == $others_linked_users_count ) {
 				if ( $this_linked_users_count > $this_linked_cofoyers_count ) {
 					$this->adh_type = 'main';
 				} else {
 					$this->adh_type = 'mainf';
 				}
-			} else if ( 0 == $this_linked_users_count && 0 <= $others_linked_users_count ) {
-				if ( 0 < $this_linked_cofoyers_count ) {
+			} else if ( 0 == $this_linked_users_count && 0 < $others_linked_users_count ) {
+				if ( 0 < $others_linked_cofoyers_count ) {
 					$this->adh_type = 'cof';
 				} else {
 					$this->adh_type = 'co';
@@ -1184,7 +1189,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				}
 				$adh_user_ids = array_unique( $adh_user_ids );
 				if ( 1 == count( $adh_user_ids ) ) {
-					$this->adh_type = in_array( $this->ID, $adh_user_ids ) ? 'main' : 'co';
+					$this->adh_type = in_array( $this->ID, $adh_user_ids ) ?
+						'main' : ( 0 < $others_linked_cofoyers_count ? 'cof' : 'co' );
 				} else {
 					$this->adh_type = 'mix';
 				}
