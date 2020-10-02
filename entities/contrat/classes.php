@@ -676,13 +676,17 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_ended', 0 );
 	}
 
-	public function getListe_dates() {
-		$liste_dates = $this->getCustomAsDateArray( 'amapress_contrat_instance_liste_dates' );
-		$liste_dates = array_filter( $liste_dates, function ( $d ) {
-			return Amapress::start_of_day( $this->getDate_debut() ) <= $d && $d <= Amapress::end_of_day( $this->getDate_fin() );
-		} );
+	private $liste_dates = null;
 
-		return $liste_dates;
+	public function getListe_dates() {
+		if ( null === $this->liste_dates ) {
+			$this->liste_dates = array_filter( $this->getCustomAsDateArray( 'amapress_contrat_instance_liste_dates' ),
+				function ( $d ) {
+					return Amapress::start_of_day( $this->getDate_debut() ) <= $d && $d <= Amapress::end_of_day( $this->getDate_fin() );
+				} );
+		}
+
+		return $this->liste_dates;
 	}
 
 	public function getRattrapage() {
@@ -1116,7 +1120,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'j F Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['date_debut_complete']              = [
+		$ret['date_debut_complete'] = [
 			'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'l j F Y', $adh->getDate_debut() );
