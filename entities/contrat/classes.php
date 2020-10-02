@@ -1122,7 +1122,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'l j F Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['lieux']                            = [
+		$ret['lieux'] = [
 			'desc' => 'Lieux de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return implode( ' ou ', array_map( function ( AmapressLieu_distribution $l ) {
@@ -2964,17 +2964,20 @@ class AmapressContrat_quantite extends TitanEntity {
 		return $this->getCustomAsDateArray( 'amapress_contrat_quantite_liste_dates' );
 	}
 
+	private $quantite_liste_dates = null;
+
 	public function isInDistributionDates( $dist_date ) {
-		$quantite_liste_dates = $this->getSpecificDistributionDates();
-		if ( empty( $quantite_liste_dates ) ) {
+		if ( null === $this->quantite_liste_dates ) {
+			$this->quantite_liste_dates = array_map( function ( $d ) {
+				return Amapress::start_of_day( $d );
+			}, $this->getSpecificDistributionDates() );
+		}
+
+		if ( empty( $this->quantite_liste_dates ) ) {
 			return true;
 		}
 
-		$quantite_liste_dates = array_map( function ( $d ) {
-			return Amapress::start_of_day( $d );
-		}, $quantite_liste_dates );
-
-		return in_array( Amapress::start_of_day( $dist_date ), $quantite_liste_dates );
+		return in_array( Amapress::start_of_day( $dist_date ), $this->quantite_liste_dates );
 	}
 
 	public static function cleanOrphans() {
