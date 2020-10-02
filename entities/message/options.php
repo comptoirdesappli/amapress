@@ -379,51 +379,56 @@ function amapress_replace_mail_placeholders_help(
 	$include_sender = true,
 	$include_target = true
 ) {
-	$ret                              = [];
-	$ret["nom_site"]                  = 'Nom de l\'AMAP';
-	$ret["site_name"]                 = 'Nom de l\'AMAP';
-	$ret["expiration_reset_pass"]     = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
-	$ret['lien_inscription_distrib']  = 'Lien vers la page d\'inscription comme responsable de distribution';
-	$ret['lien_inscription_contrats'] = 'Lien vers la page d\'inscription aux contrats (ou Mes contrats à défaut)';
-	$ret['lien_mes_contrats']         = 'Lien vers la page Mes contrats';
-	$ret['lien_carte_amapiens']       = 'Lien vers la page Carte des amapiens';
-	$ret["url"]                       = 'Url du site de l\'AMAP';
-	$ret["site_url"]                  = 'Url du site de l\'AMAP';
-	$ret["description"]               = 'Description du site de l\'AMAP';
-	$ret["site_description"]          = 'Description du site de l\'AMAP';
-	$ret["site:admin_email"]          = 'Email de l\'admin du site'; //subopt
+	$key = "amapress_replace_mail_placeholders_help_{$post_type_desc}_{$include_sender}_{$include_target}";
+	$ret = wp_cache_get( $key );
+	if ( false === $ret ) {
+		$ret                              = [];
+		$ret["nom_site"]                  = 'Nom de l\'AMAP';
+		$ret["site_name"]                 = 'Nom de l\'AMAP';
+		$ret["expiration_reset_pass"]     = 'Durée d\'expiration (en jours) du lien de Récupération de mot de passe';
+		$ret['lien_inscription_distrib']  = 'Lien vers la page d\'inscription comme responsable de distribution';
+		$ret['lien_inscription_contrats'] = 'Lien vers la page d\'inscription aux contrats (ou Mes contrats à défaut)';
+		$ret['lien_mes_contrats']         = 'Lien vers la page Mes contrats';
+		$ret['lien_carte_amapiens']       = 'Lien vers la page Carte des amapiens';
+		$ret["url"]                       = 'Url du site de l\'AMAP';
+		$ret["site_url"]                  = 'Url du site de l\'AMAP';
+		$ret["description"]               = 'Description du site de l\'AMAP';
+		$ret["site_description"]          = 'Description du site de l\'AMAP';
+		$ret["site:admin_email"]          = 'Email de l\'admin du site'; //subopt
 //	$ret["site:language"]               = 'Langue du site'; //subopt
-	$ret["site:rss_url"]       = 'Lien RSS du site'; //subopt
-	$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
-	$ret['site_icon_url']      = 'Url du logo du site de l\'AMAP';
-	$ret['site_icon_url_link'] = 'Lien du logo du site de l\'AMAP';
-	if ( $include_sender ) {
-		foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
-			$ret["me:$k"] = 'Expéditeur: ' . $v; //subopt
+		$ret["site:rss_url"]       = 'Lien RSS du site'; //subopt
+		$ret["site:rss2_url"]      = 'Lien RSS2 du site'; //subopt
+		$ret['site_icon_url']      = 'Url du logo du site de l\'AMAP';
+		$ret['site_icon_url_link'] = 'Lien du logo du site de l\'AMAP';
+		if ( $include_sender ) {
+			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+				$ret["me:$k"] = 'Expéditeur: ' . $v; //subopt
+			}
 		}
-	}
-	if ( $include_target ) {
-		foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
-			$ret["dest:$k"] = 'Destinataire: ' . $v; //subopt
+		if ( $include_target ) {
+			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+				$ret["dest:$k"] = 'Destinataire: ' . $v; //subopt
+			}
 		}
-	}
-	$ret["login_url"]      = 'Url de login du site de l\'AMAP';
-	$ret["login_url_link"] = 'Lien vers la page login du site de l\'AMAP';
-	if ( $include_sender ) {
-		$ret["password_url"]      = 'Lien de la page de Récupération de mot de passe';
-		$ret["password_url_raw"]  = 'Url de la page de Récupération de mot de passe';
-		$ret["registration_text"] = 'Texte de l\'email de récupération de mot de passe';
-	}
-	$ret["now"] = 'Date courante';
-	if ( ! empty( $post_type_desc ) ) {
-		$ret['post:id']         = 'ID ' . $post_type_desc;
-		$ret['post:title']      = 'Titre ' . $post_type_desc;
-		$ret['post:titre']      = 'Titre ' . $post_type_desc;
-		$ret['post:link']       = 'Lien vers la page info ' . $post_type_desc;
-		$ret['post:lien']       = 'Lien vers la page info ' . $post_type_desc;
-		$ret['post:title-link'] = 'Lien avec titre vers la page info ' . $post_type_desc;
-		$ret['post:titre-lien'] = 'Lien avec titre vers la page info ' . $post_type_desc;
-		$ret['post:href']       = 'Url de la page info ' . $post_type_desc;
+		$ret["login_url"]      = 'Url de login du site de l\'AMAP';
+		$ret["login_url_link"] = 'Lien vers la page login du site de l\'AMAP';
+		if ( $include_sender ) {
+			$ret["password_url"]      = 'Lien de la page de Récupération de mot de passe';
+			$ret["password_url_raw"]  = 'Url de la page de Récupération de mot de passe';
+			$ret["registration_text"] = 'Texte de l\'email de récupération de mot de passe';
+		}
+		$ret["now"] = 'Date courante';
+		if ( ! empty( $post_type_desc ) ) {
+			$ret['post:id']         = 'ID ' . $post_type_desc;
+			$ret['post:title']      = 'Titre ' . $post_type_desc;
+			$ret['post:titre']      = 'Titre ' . $post_type_desc;
+			$ret['post:link']       = 'Lien vers la page info ' . $post_type_desc;
+			$ret['post:lien']       = 'Lien vers la page info ' . $post_type_desc;
+			$ret['post:title-link'] = 'Lien avec titre vers la page info ' . $post_type_desc;
+			$ret['post:titre-lien'] = 'Lien avec titre vers la page info ' . $post_type_desc;
+			$ret['post:href']       = 'Url de la page info ' . $post_type_desc;
+		}
+		wp_cache_set( $key, $ret );
 	}
 
 	return $ret;
