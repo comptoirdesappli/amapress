@@ -705,21 +705,27 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getDateFactor( $dist_date, $quantite_id = null ) {
-		$date_factor = 1;
-		if ( $dist_date && $quantite_id ) {
-			$quantite = AmapressContrat_quantite::getBy( $quantite_id );
-			if ( $quantite ) {
-				if ( ! $quantite->isInDistributionDates( $dist_date ) ) {
-					return 0;
+		$key         = "AmapressCI_getDateFactor_{$dist_date}_{$quantite_id}";
+		$date_factor = wp_cache_get( $key );
+		if ( false === $date_factor ) {
+			$date_factor = 1;
+			if ( $dist_date && $quantite_id ) {
+				$quantite = AmapressContrat_quantite::getBy( $quantite_id );
+				if ( $quantite ) {
+					if ( ! $quantite->isInDistributionDates( $dist_date ) ) {
+						return 0;
+					}
 				}
 			}
-		}
-		$rattrapage = $this->getRattrapage();
-		foreach ( $rattrapage as $r ) {
-			if ( Amapress::start_of_day( intval( $r['date'] ) ) == Amapress::start_of_day( $dist_date ) ) {
-				$date_factor = floatval( $r['quantite'] );
-				break;
+			$rattrapage = $this->getRattrapage();
+			foreach ( $rattrapage as $r ) {
+				if ( Amapress::start_of_day( intval( $r['date'] ) ) == Amapress::start_of_day( $dist_date ) ) {
+					$date_factor = floatval( $r['quantite'] );
+					break;
+				}
 			}
+
+			wp_cache_set( $key, $date_factor );
 		}
 
 		return $date_factor;
@@ -1116,7 +1122,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'l j F Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['date_fin_complete']                = [
+		$ret['date_fin_complete'] = [
 			'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'l j F Y', $adh->getDate_fin() );
