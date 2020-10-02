@@ -139,20 +139,26 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 	/** @return int[] */
 	public function getReferentsIds( $lieu_id = null, $for_lieu_only = false ) {
-		return array_filter( $for_lieu_only ? [
-			$this->getReferentId( $lieu_id, $for_lieu_only ),
-			$this->getReferent2Id( $lieu_id, $for_lieu_only ),
-			$this->getReferent3Id( $lieu_id, $for_lieu_only )
-		] : [
-			$this->getReferentId( $lieu_id ),
-			$this->getReferent2Id( $lieu_id ),
-			$this->getReferent3Id( $lieu_id ),
-			$this->getReferentId( null ),
-			$this->getReferent2Id( null ),
-			$this->getReferent3Id( null )
-		], function ( $i ) {
-			return ! empty( $i );
-		} );
+		$key = "AmapressProd_getReferentsIds_{$lieu_id}_{$for_lieu_only}";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = array_filter( $for_lieu_only ? [
+				$this->getReferentId( $lieu_id, $for_lieu_only ),
+				$this->getReferent2Id( $lieu_id, $for_lieu_only ),
+				$this->getReferent3Id( $lieu_id, $for_lieu_only )
+			] : [
+				$this->getReferentId( $lieu_id ),
+				$this->getReferent2Id( $lieu_id ),
+				$this->getReferent3Id( $lieu_id ),
+				$this->getReferentId( null ),
+				$this->getReferent2Id( null ),
+				$this->getReferent3Id( null )
+			], function ( $i ) {
+				return ! empty( $i );
+			} );
+		}
+
+		return $res;
 	}
 
 	private $referent_ids = [ 1 => [], 2 => [], 3 => [] ];
