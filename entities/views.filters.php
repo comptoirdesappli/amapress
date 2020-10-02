@@ -223,7 +223,7 @@ function amapress_adhesion_paiement_views() {
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_pmt_type=vir",
 		'Virement' );
 	amapress_add_view_button(
-		$ret, 'pmt_vir',
+		$ret, 'pmt_mon',
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_pmt_type=mon",
 		'Monnaie locale' );
 
