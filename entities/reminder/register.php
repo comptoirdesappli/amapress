@@ -102,8 +102,10 @@ function amapress_register_entities_reminder( $entities ) {
 				'name'        => amapress__( 'Contenu' ),
 				'type'        => 'editor',
 				'group'       => '2/ Message envoyé',
-				'desc'        => Amapress::getPlaceholdersHelpTable( 'reminder-placeholders',
-					[], '' ),
+				'desc'        => function ( $option ) {
+					return Amapress::getPlaceholdersHelpTable( 'reminder-placeholders',
+						[], '' );
+				},
 				'required'    => true,
 				'show_column' => false,
 			),

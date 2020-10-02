@@ -755,46 +755,50 @@ function amapress_contrat_quantites_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
-				             'producteur_contrats'                              => 'Contrats du producteur',
-				             'producteur_nom'                                   => 'Nom du producteur',
-				             'producteur_pseudo'                                => 'Pseudo du producteur',
-				             'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
-				             'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
-				             'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
-				             'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
-				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
-				             'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
-				             'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
-				             'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
-				             'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
-				             'producteur_contact'                               => 'Coordonnées du producteur',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
+					       'producteur_contrats'                              => 'Contrats du producteur',
+					       'producteur_nom'                                   => 'Nom du producteur',
+					       'producteur_pseudo'                                => 'Pseudo du producteur',
+					       'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
+					       'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
+					       'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
+					       'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
+					       'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
+					       'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
+					       'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
+					       'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
+					       'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
+					       'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
+					       'producteur_contact'                               => 'Coordonnées du producteur',
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'      => 'distribution-quantites-modulable-recall-mail-content',
 			'name'    => 'Contenu de l\'email - Paniers modulables',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\nDétails par amapien:\n%%producteur_paniers_quantites_amapiens%%\n\n%%nom_site%%" ),
-			'desc'    => 'Spécifique aux paniers modulables. Si vide, le contenu du mail général sera utlisé.<br/> Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
-				             'producteur_contrats'                              => 'Contrats du producteur',
-				             'producteur_nom'                                   => 'Nom du producteur',
-				             'producteur_pseudo'                                => 'Pseudo du producteur',
-				             'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
-				             'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
-				             'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
-				             'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
-				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
-				             'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
-				             'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
-				             'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
-				             'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
-				             'producteur_contact'                               => 'Coordonnées du producteur',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Spécifique aux paniers modulables. Si vide, le contenu du mail général sera utlisé.<br/> Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
+					       'producteur_contrats'                              => 'Contrats du producteur',
+					       'producteur_nom'                                   => 'Nom du producteur',
+					       'producteur_pseudo'                                => 'Pseudo du producteur',
+					       'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
+					       'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
+					       'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
+					       'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
+					       'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
+					       'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
+					       'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
+					       'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
+					       'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
+					       'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
+					       'producteur_contact'                               => 'Coordonnées du producteur',
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'   => 'distribution-quantites-recall-price-mod',
@@ -913,15 +917,17 @@ function amapress_contrat_paiements_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-paiements-placeholders', [
-				             'prochaine_date_remise_cheques' => 'Prochaine date de remise des chèques',
-				             'producteur_contrats'           => 'Contrats du producteur',
-				             'producteur_nom'                => 'Nom du producteur',
-				             'producteur_pseudo'             => 'Pseudo du producteur',
-				             'contrat_nom'                   => 'Nom du contrat',
-				             'lien_contrats_paiements'       => 'Lien vers la liste des chèques à remettre au producteur',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-paiements-placeholders', [
+					       'prochaine_date_remise_cheques' => 'Prochaine date de remise des chèques',
+					       'producteur_contrats'           => 'Contrats du producteur',
+					       'producteur_nom'                => 'Nom du producteur',
+					       'producteur_pseudo'             => 'Pseudo du producteur',
+					       'contrat_nom'                   => 'Nom du contrat',
+					       'lien_contrats_paiements'       => 'Lien vers la liste des chèques à remettre au producteur',
+				       ], null, [], 'recall' );
+			},
 
 		),
 		array(
@@ -1016,14 +1022,16 @@ function amapress_contrat_renew_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nLes contrats suivants sont à renouveler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouveler:\n%%contrats_near_end%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-renew-placeholders', [
-				             'contrats_to_renew'      => 'Contrats à renouveler',
-				             'contrats_near_end'      => 'Contrats proches de la fin',
-				             'nb_contrats'            => 'Nombre de contrats à renouveler ou proches de la fin',
-				             'nb_renew_contrats'      => 'Nombre de contrats à renouveler',
-				             'nb_near_renew_contrats' => 'Nombre de contrats proches de la fin',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-renew-placeholders', [
+					       'contrats_to_renew'      => 'Contrats à renouveler',
+					       'contrats_near_end'      => 'Contrats proches de la fin',
+					       'nb_contrats'            => 'Nombre de contrats à renouveler ou proches de la fin',
+					       'nb_renew_contrats'      => 'Nombre de contrats à renouveler',
+					       'nb_near_renew_contrats' => 'Nombre de contrats proches de la fin',
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'           => 'contrat-renew-recall-cc',
@@ -1121,13 +1129,15 @@ function amapress_contrat_open_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions sont ouvertes %%ouvre_date%%\n et fermeront %%ferme_date%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-open-placeholders', [
-				             'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
-				             'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
-				             'ferme_jours' => 'Clôture en jours: "dans X jours"',
-				             'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-open-placeholders', [
+					       'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
+					       'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
+					       'ferme_jours' => 'Clôture en jours: "dans X jours"',
+					       'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'           => 'contrat-open-recall-cc',
@@ -1225,13 +1235,15 @@ function amapress_contrat_close_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions ferment %%ferme_jours%%, %%ferme_date%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-close-placeholders', [
-				             'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
-				             'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
-				             'ferme_jours' => 'Clôture en jours: "dans X jours"',
-				             'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-close-placeholders', [
+					       'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
+					       'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
+					       'ferme_jours' => 'Clôture en jours: "dans X jours"',
+					       'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'           => 'contrat-close-recall-cc',
@@ -1321,21 +1333,23 @@ function amapress_contrat_recap_cloture_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint et ci-après le récapitulatif des inscriptions pour %%post:titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'liste-recap-placeholders', [
-				             'producteur_contrats'                              => 'Contrats du producteur',
-				             'producteur_nom'                                   => 'Nom du producteur',
-				             'producteur_pseudo'                                => 'Pseudo du producteur',
-				             'lien_contrats_quantites'                          => 'Lien vers le récapitulatif des inscriptions',
-				             'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-				             'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
-				             'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
-				             'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
-				             'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
-				             'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
-				             'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
-				             'producteur_contact'                               => 'Coordonnées du producteur',
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'liste-recap-placeholders', [
+					       'producteur_contrats'                              => 'Contrats du producteur',
+					       'producteur_nom'                                   => 'Nom du producteur',
+					       'producteur_pseudo'                                => 'Pseudo du producteur',
+					       'lien_contrats_quantites'                          => 'Lien vers le récapitulatif des inscriptions',
+					       'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
+					       'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
+					       'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
+					       'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
+					       'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
+					       'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
+					       'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
+					       'producteur_contact'                               => 'Coordonnées du producteur',
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'      => 'contrat-recap-cloture-xlsx',

@@ -351,7 +351,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'name'    => 'Contenu de l\'email',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nVotre email pour la liste %%liste_nom%% a été transmis au(x) modérateur(s)\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+									'desc'    => function ( $option ) {
+										return AmapressMailingGroup::getPlaceholdersHelp();
+									},
 								),
 								array(
 									'name' => 'Email de notification d\'un email à modérer aux modérateurs',
@@ -369,7 +371,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'name'    => 'Contenu de l\'email',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nUn nouvel email pour la liste %%liste_nom%% est arrivé de %%sender%%.\n\n%%msg_summary%%\n\nPour voir les messages en attente, cliquez ici : %%msg_waiting_link%%\n\nPour accepter sa diffusion (il sera distribué), cliquez ici : %%msg_distrib_link%%\n\nPour refuser sa diffusion avec notification (il sera effacé avec notification à l'émetteur), cliquez ici : %%msg_reject_notif_link%%\n\nPour refuser sa diffusion sans notification (il sera effacé sans notification), cliquez ici : %%msg_reject_silent_link%%\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+									'desc'    => function ( $option ) {
+										return AmapressMailingGroup::getPlaceholdersHelp();
+									},
 								),
 								array(
 									'name' => 'Email de notification du rejet d\'un email à l\'émetteur',
@@ -387,7 +391,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'name'    => 'Contenu de l\'email',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nVotre email pour la liste %%liste_nom%% a été rejeté par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre email : %%msg_subject%%)\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+									'desc'    => function ( $option ) {
+										return AmapressMailingGroup::getPlaceholdersHelp();
+									},
 								),
 								array(
 									'name' => 'Email de notification de distribution d\'un email à l\'émetteur',
@@ -405,7 +411,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'name'    => 'Contenu de l\'email',
 									'type'    => 'editor',
 									'default' => wpautop( "Bonjour,\n\nVotre email pour la liste %%liste_nom%% a été accepté et distribué par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre email : %%msg_subject%%)\n\n%%nom_site%%" ),
-									'desc'    => AmapressMailingGroup::getPlaceholdersHelp(),
+									'desc'    => function ( $option ) {
+										return AmapressMailingGroup::getPlaceholdersHelp();
+									},
 								),
 								array(
 									'type' => 'save',
@@ -839,11 +847,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'resp_role'          => 'Nom du rôle de responsable choisi',
-													'resp_role_desc'     => 'Description du rôle de responsable choisi',
-													'resp_role_contrats' => 'Contrats associés au rôle de responsable choisi',
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'resp_role'          => 'Nom du rôle de responsable choisi',
+														'resp_role_desc'     => 'Description du rôle de responsable choisi',
+														'resp_role_contrats' => 'Contrats associés au rôle de responsable choisi',
+													], false );
+												},
 										),
 										array(
 											'id'           => 'inscr-distrib-mail-cc',
@@ -875,7 +885,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'id'           => 'desinscr-distrib-mail-cc',
@@ -1169,13 +1181,15 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\n%%gardien%% (%%gardien_contact%% / %%gardien_comment%%) gardera vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
-													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
-													'gardien'          => 'Nom du gardien de panier choisi',
-													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
-													'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
+														'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
+														'gardien'          => 'Nom du gardien de panier choisi',
+														'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+														'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
+													], false );
+												},
 										),
 										array(
 											'name' => 'Email au gardien de panier (affectation)',
@@ -1194,13 +1208,15 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\n%%amapien%% (%%amapien_contact%%) vous a attribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
-													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
-													'gardien'          => 'Nom du gardien de panier choisi',
-													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
-													'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
+														'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
+														'gardien'          => 'Nom du gardien de panier choisi',
+														'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+														'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
+													], false );
+												},
 										),
 										array(
 											'name' => 'Email au gardien de panier (désaffectation)',
@@ -1219,13 +1235,15 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\n%%amapien%% vous a désattribué la garde de ses paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
-													'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
-													'gardien'          => 'Nom du gardien de panier choisi',
-													'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
-													'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'amapien'          => 'Nom de l\'amapien demandeur de garde de son panier',
+														'amapien_contacts' => 'Coordonnées de l\'amapien demandeur de garde de son panier',
+														'gardien'          => 'Nom du gardien de panier choisi',
+														'gardien_contact'  => 'Coordonnées du gardien de panier choisi',
+														'gardien_comment'  => 'Message/commentaire du gardien de panier choisi',
+													], false );
+												},
 										),
 										array(
 											'name' => 'Email au gardien de panier (inscription)',
@@ -1244,7 +1262,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre inscription en tant que gardien de panier de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'name' => 'Email au gardien de panier (désinscription)',
@@ -1263,7 +1283,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre désinscription en tant que gardien de panier de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -1305,10 +1327,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVous avez choisi le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'creneau'            => 'Créneau choisi',
-													'creneau_date_heure' => 'Date et heure du créneau choisi'
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'creneau'            => 'Créneau choisi',
+														'creneau_date_heure' => 'Date et heure du créneau choisi'
+													], false );
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien affecté à un créneau',
@@ -1334,11 +1358,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nUn responsable '%%responsable%%' vous a affecté le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressDistribution::getPlaceholdersHelp( [
-													'creneau'            => 'Créneau choisi',
-													'creneau_date_heure' => 'Date et heure du créneau choisi',
-													'responsable'        => 'Nom et coordonnées du responsable ayant fait l\'affectation du créneau'
-												], false ),
+												function ( $option ) {
+													return AmapressDistribution::getPlaceholdersHelp( [
+														'creneau'            => 'Créneau choisi',
+														'creneau_date_heure' => 'Date et heure du créneau choisi',
+														'responsable'        => 'Nom et coordonnées du responsable ayant fait l\'affectation du créneau'
+													], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -1578,7 +1604,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre inscription à %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -1601,7 +1629,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre désinscription de %%post:titre%% (%%post:lien%%) a bien été prise en compte\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -1624,9 +1654,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nUn nouveau commentaire a été ajouté à %%post:titre%% (%%post:lien%%):\n%%commentaire%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'commentaire' => 'Contenu du commentaire'
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'commentaire' => 'Contenu du commentaire'
+													], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -1728,10 +1760,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVous êtes inscrit pour %%creneau%% à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
-												Amapress_EventBase::getPlaceholdersHelp( [
-													'creneau'            => 'Créneau choisi',
-													'creneau_date_heure' => 'Date et heure du créneau choisi'
-												], false ),
+												function ( $option ) {
+													return Amapress_EventBase::getPlaceholdersHelp( [
+														'creneau'            => 'Créneau choisi',
+														'creneau_date_heure' => 'Date et heure du créneau choisi'
+													], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -2321,8 +2355,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'     => 'text',
 											'default'  => '',
 											'sanitize' => false,
-											'desc'     => 'Label du champ email (non connecté) (shortcode [inscription-en-ligne]), par défaut, "Pour démarrer votre inscription pour la saison xxx, veuillez renseigner votre adresse mail :"'
-											              . AmapressAdhesionPeriod::getPlaceholdersHelp(),
+											'desc'     => function ( $option ) {
+												return 'Label du champ email (non connecté) (shortcode [inscription-en-ligne]), par défaut, "Pour démarrer votre inscription pour la saison xxx, veuillez renseigner votre adresse mail :"'
+												       . AmapressAdhesionPeriod::getPlaceholdersHelp();
+											},
 										),
 										array(
 											'id'      => 'online_subscription_welcome_inscr_message',
@@ -2375,16 +2411,20 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => '',
-											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>' .
-											             Amapress::getPlaceholdersHelpTable( 'online_contrats_step_message-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>' .
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_inscr_adhesion_required_message',
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( 'Votre adhésion doit être validée avant que vous puissiez vous inscrire aux contrats.' ),
-											'desc'    => 'Message supplémentaire à l\'étape 4/8 - Les contrats <strong>si une adhésion validée ou antérieure est nécessaire pour pouvoir s\'inscrire aux contrats</strong><br/>' .
-											             Amapress::getPlaceholdersHelpTable( 'online_inscr_adhesion_required_message-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return 'Message supplémentaire à l\'étape 4/8 - Les contrats <strong>si une adhésion validée ou antérieure est nécessaire pour pouvoir s\'inscrire aux contrats</strong><br/>' .
+												       Amapress::getPlaceholdersHelpTable( 'online_inscr_adhesion_required_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_inscr_closed_message',
@@ -2410,7 +2450,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'   => 'online_subscription_date_lieu_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_date_lieu_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_date_lieu_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2429,7 +2471,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'   => 'online_subscription_panier_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_panier_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_panier_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2448,7 +2492,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'   => 'online_subscription_pay_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_subscription_pay_num_label',
@@ -2475,57 +2521,69 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Message de confirmation',
 											'type'    => 'editor',
 											'default' => wpautop( 'Votre pré-inscription a bien été prise en compte.' ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_msg-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_msg-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_contrats_end_continue_msg',
 											'name'    => 'Message de confirmation',
 											'type'    => 'editor',
 											'default' => wpautop( 'Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (%%remaining_contrats%%)' ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_contrats_end_continue_msg-placeholders', [
-												'remaining_contrats'      => 'Contrat disponibles à l\'inscription',
-												'remaining_contrats_list' => 'Contrat disponibles à l\'inscription (en liste)'
-											], null, [], false ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_continue_msg-placeholders', [
+													'remaining_contrats'      => 'Contrat disponibles à l\'inscription',
+													'remaining_contrats_list' => 'Contrat disponibles à l\'inscription (en liste)'
+												], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_contrats_end_confirm_mail_msg',
 											'name'    => 'Message au sujet de l\'email de confirmation',
 											'type'    => 'editor',
 											'default' => wpautop( 'Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)' ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_mail_msg-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_mail_msg-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_contrats_end_step_message',
 											'name'    => 'Inscription terminée',
 											'type'    => 'editor',
 											'default' => wpautop( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les chèques/règlements correspondants lors de la prochaine distribution\n%%print_button%%" ),
-											'desc'    => 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>' .
-											             Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_message-placeholders', [
-												             'print_button' => 'Bouton Imprimer/Télécharger le contrat'
-											             ], null, [], false ),
+											'desc'    => function ( $option ) {
+												return 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>' .
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_message-placeholders', [
+													       'print_button' => 'Bouton Imprimer/Télécharger le contrat'
+												       ], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_contrats_end_step_edit_message',
 											'name'    => 'Inscription terminée - Possibilité édition/annulation',
 											'type'    => 'editor',
 											'default' => wpautop( "Veuillez vérifier le contrat : %%print_button%%\nSi vous constatez une erreur, vous pouvez modifier votre inscription : %%modify_button%%\nVous pouvez également l'annuler : %%cancel_button%%" ),
-											'desc'    => 'Instruction pour l\'édition ou l\'annulation à la fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Les placeholders %%print_button%%, %%modify_button%%, %%cancel_button%% permettent d\'afficher respectivement le bouton Imprimer/Télécharger, Modifier et Annuler l\inscription<br/>' .
-											             Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_edit_message-placeholders', [
-												             'print_button'  => 'Bouton Imprimer/Télécharger le contrat',
-												             'modify_button' => 'Bouton Modifier l\'inscription',
-												             'cancel_button' => 'Bouton Annuler l\'inscription'
-											             ], null, [], false ),
+											'desc'    => function ( $option ) {
+												return 'Instruction pour l\'édition ou l\'annulation à la fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Les placeholders %%print_button%%, %%modify_button%%, %%cancel_button%% permettent d\'afficher respectivement le bouton Imprimer/Télécharger, Modifier et Annuler l\inscription<br/>' .
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_edit_message-placeholders', [
+													       'print_button'  => 'Bouton Imprimer/Télécharger le contrat',
+													       'modify_button' => 'Bouton Modifier l\'inscription',
+													       'cancel_button' => 'Bouton Annuler l\'inscription'
+												       ], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_contrats_inscription_distrib_msg',
 											'name'    => 'Message inscription aux distributions',
 											'type'    => 'editor',
 											'default' => '',
-											'desc'    => 'Message au sujet des inscriptions nécessaires en tant que responsable de distribution<br/>' .
-											             Amapress::getPlaceholdersHelpTable( 'online_contrats_inscription_distrib_msg-placeholders', [
-												             'nb_inscriptions'    => 'Nombre d\'inscription comme responsable de distribution sur la période à venir',
-												             'dates_inscriptions' => 'Dates d\'inscription comme responsable de distribution sur la période à venir'
-											             ], null, [], false ),
+											'desc'    => function ( $option ) {
+												return 'Message au sujet des inscriptions nécessaires en tant que responsable de distribution<br/>' .
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_inscription_distrib_msg-placeholders', [
+													       'nb_inscriptions'    => 'Nombre d\'inscription comme responsable de distribution sur la période à venir',
+													       'dates_inscriptions' => 'Dates d\'inscription comme responsable de distribution sur la période à venir'
+												       ], null, [], false );
+											},
 										),
 										array(
 											'id'      => 'online_final_step_name',
@@ -2555,32 +2613,38 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( "Pour confirmer votre inscription, veuillez procéder au paiement en ligne. La modification de l\'inscription ne sera plus possible ensuite." ),
-											'desc'    => 'Message au sujet des paiements en ligne à l\'étape de validation de l\'inscription<br/>' . AmapressAdhesion::getPlaceholdersHelp(),
+											'desc'    => function ( $option ) {
+												return 'Message au sujet des paiements en ligne à l\'étape de validation de l\'inscription<br/>' . AmapressAdhesion::getPlaceholdersHelp();
+											},
 										),
 										array(
 											'id'      => 'online_subscription_stripe_success',
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( "Merci pour votre réglement.\nVotre inscription %%post:title%% est confirmée.\n%%print_button%%\n\n%%contrats_step_link%%" ),
-											'desc'    => 'Message de confirmation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
-													[
-														'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
-														'contrats_step_href' => 'Url de l\'étape Mes contrats',
-														'print_button'       => 'Bouton Imprimer/Télécharger le contrat',
-													]
-												),
+											'desc'    => function ( $option ) {
+												return 'Message de confirmation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
+														[
+															'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
+															'contrats_step_href' => 'Url de l\'étape Mes contrats',
+															'print_button'       => 'Bouton Imprimer/Télécharger le contrat',
+														]
+													);
+											},
 										),
 										array(
 											'id'      => 'online_subscription_stripe_cancel',
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( "Vous avez annulé le règlement en ligne.\nVotre inscription %%post:title%% n'est pas encore confirmée.\n\n%%contrats_step_link%%" ),
-											'desc'    => 'Message d\'annulation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
-													[
-														'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
-														'contrats_step_href' => 'Url de l\'étape Mes contrats',
-													]
-												),
+											'desc'    => function ( $option ) {
+												return 'Message d\'annulation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
+														[
+															'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
+															'contrats_step_href' => 'Url de l\'étape Mes contrats',
+														]
+													);
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2628,8 +2692,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 									\n[avec_contrat]Merci d'imprimer le contrat joint à cet email et le remettre aux référents (%%referents%%) avec %%option_paiements%% à la première distribution[/avec_contrat]
 									[sans_contrat]Merci de contacter les référents (%%referents%%) avec %%option_paiements%% à la première distribution pour signer votre contrat[/sans_contrat]
 									\n\n%%nom_site%%" ),
-											'desc'    => 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => function ( $option ) {
+												return 'Les syntaxes [avec_contrat]xxx[/avec_contrat] et [sans_contrat]xxx[/sans_contrat] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion::getPlaceholdersHelp( [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2654,8 +2720,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
 												"\nMessage de l'amapien: %%message%%" .
 												"\n%%nom_site%%" ),
-											'desc'    => 'Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => function ( $option ) {
+												return 'Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion::getPlaceholdersHelp( [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2680,8 +2748,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
 												"\nMessage de l'amapien: %%message%%" .
 												"\n%%nom_site%%" ),
-											'desc'    => 'Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => function ( $option ) {
+												return 'Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion::getPlaceholdersHelp( [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2706,8 +2776,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 												"\n-> du %%date_debut_complete%% au %%date_fin_complete%%\n-> pour %%nb_distributions%% distributions\n-> quantités : %%quantites%%\n-> pour un montant de %%total%%€\n" .
 												"\nMessage de l'amapien: %%message%%" .
 												"\n%%nom_site%%" ),
-											'desc'    => 'Les placeholders suivants sont disponibles (hormis %%inscription_admin_link%% car l\'inscription est supprimée suite à l\'envoi de ce mail):' .
-											             AmapressAdhesion::getPlaceholdersHelp( [], false ),
+											'desc'    => function ( $option ) {
+												return 'Les placeholders suivants sont disponibles (hormis %%inscription_admin_link%% car l\'inscription est supprimée suite à l\'envoi de ce mail):' .
+												       AmapressAdhesion::getPlaceholdersHelp( [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -2968,8 +3040,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'type'     => 'text',
 											'default'  => '',
 											'sanitize' => false,
-											'desc'     => 'Label du champ email (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Pour démarrer votre adhésion pour la saison xxx, veuillez renseigner votre adresse mail :"'
-											              . AmapressAdhesionPeriod::getPlaceholdersHelp(),
+											'desc'     => function ( $option ) {
+												return 'Label du champ email (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Pour démarrer votre adhésion pour la saison xxx, veuillez renseigner votre adresse mail :"'
+												       . AmapressAdhesionPeriod::getPlaceholdersHelp();
+											},
 										),
 										array(
 											'id'      => 'online_subscription_welcome_adh_message',
@@ -2992,7 +3066,9 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'   => 'online_subscription_email_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_email_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_email_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3011,7 +3087,9 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'   => 'online_subscription_coords_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_coords_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_coords_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3036,7 +3114,9 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'   => 'online_subscription_agreement',
 											'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_agreement-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_agreement-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3091,7 +3171,9 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'      => 'online_subscription_req_adhesion',
 											'name'    => 'Message adhésion requise',
 											'type'    => 'editor',
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_subscription_req_adhesion-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_req_adhesion-placeholders', [], null, [], false );
+											},
 											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
 										),
 										array(
@@ -3117,9 +3199,11 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'      => 'online_subscription_greating_adhesion',
 											'name'    => 'Contenu du message de validation',
 											'type'    => 'editor',
-											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
-													'print_button' => 'Bouton Imprimer le bulletin'
-												], 'de l\'amapien', [], false ),
+											'desc'    => function ( $option ) {
+												return 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
+														'print_button' => 'Bouton Imprimer le bulletin'
+													], 'de l\'amapien', [], false );
+											},
 											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%" ),
 										),
 										array(
@@ -3134,8 +3218,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'Message',
 											'type'    => 'editor',
 											'default' => wpautop( 'Les co-adhérents qui ne font pas partie du même foyer doivent régler la cotisation de l’adhésion à l\'AMAP par foyer' ),
-											'desc'    => 'Message au sujet des adhésions des co-adhérents<br/>' .
-											             Amapress::getPlaceholdersHelpTable( 'online_adhesion_coadh_message-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return 'Message au sujet des adhésions des co-adhérents<br/>' .
+												       Amapress::getPlaceholdersHelpTable( 'online_adhesion_coadh_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3166,8 +3252,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 [avec_bulletin]Merci d'imprimer le bulletin joint à cet email et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
 [sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
 \n\n%%nom_site%%" ),
-											'desc'    => 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
-											             AmapressAdhesion_paiement::getPlaceholdersHelp( [], false ),
+											'desc'    => function ( $option ) {
+												return 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3415,7 +3503,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Email - Inscriptions'                      => array(
+								'Email - Inscriptions'                                  => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3430,14 +3518,16 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre demande d'adhésion à l'espace intermittents (%%post:lien_intermittence%%) a bien été enregistrée\n\n%%nom_site%%" ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'intermit-inscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'intermit-inscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+											},
 										),
 										array(
 											'type' => 'save',
 										),
 									)
 								),
-								'Email - Désinscriptions'                   => array(
+								'Email - Désinscriptions'                               => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3452,14 +3542,16 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVotre demande de désincription de l'espace intermittents a bien été enregistrée\n\n%%nom_site%%" ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'intermit-desinscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'intermit-desinscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+											},
 										),
 										array(
 											'type' => 'save',
 										),
 									)
 								),
-								'Email - Panier disponible'                 => array(
+								'Email - Panier disponible'                             => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3479,7 +3571,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n\nVous recevez cet email en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nUn panier (%%post:panier-desc%%) est proposé à la distribution de %%post:distribution-link%%\n\nSi vous souhaitez le réserver, rendez-vous sur le site de l'AMAP %%nom_site%%, sur la page %%post:liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : %%admin_email_link%%.\n\nSi vous avez des questions plus générale sur l'AMAP %%nom_site%%, vous pouvez écrire à %%admin_email_link%%.\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp(),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp();
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien proposant son panier',
@@ -3498,18 +3592,20 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVotre %%post:panier-desc-date%% a été mis sur la liste des paniers à échanger\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
 										),
 									)
 								),
-								'Email - Paniers disponibles - Rappels'     => array(
+								'Email - Paniers disponibles - Rappels'                 => array(
 									'desc'    => '',
 									'options' => amapress_intermittence_dispo_recall_options(),
 								),
-								'Email - Panier reprise - demande'          => array(
+								'Email - Panier reprise - demande'                      => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3529,7 +3625,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% (%%post:repreneur-coords%%) pour votre panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien repreneur',
@@ -3548,18 +3646,20 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVotre demande pour le panier (%%post:panier-desc%%) à la distribution %%post:distribution%% a été envoyée à %%adherent-coords%%.\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
 										),
 									)
 								),
-								'Email - Panier reprise - demande - Rappel' => array(
+								'Email - Panier reprise - demande - Rappel'             => array(
 									'desc'    => '',
 									'options' => amapress_intermittence_validation_recall_options(),
 								),
-								'Email - Panier reprise - validation'       => array(
+								'Email - Panier reprise - validation'                   => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3579,7 +3679,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc%%) sera repris par %%post:repreneur%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien repreneur',
@@ -3598,14 +3700,16 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a accepté la reprise de (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
 										),
 									)
 								),
-								'Email - Panier reprise - rejet'            => array(
+								'Email - Panier reprise - rejet'                        => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3625,14 +3729,16 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n%%post:adherent-nom%% (%%post:adherent-coords%%) a refusé la reprise de (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
 										),
 									)
 								),
-								'Email - Panier annulation - adherent'      => array(
+								'Email - Panier annulation - adherent'                  => array(
 									'desc'    => '',
 									'options' => array(
 										array(
@@ -3652,7 +3758,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc-date%%) a été retiré de l'espace intermittents\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien repreneur',
@@ -3671,7 +3779,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n%%post:adherent%% (%%post:adherent-coords%%) a annulé la reprise de son panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -3698,7 +3808,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\n%%post:repreneur%% (%%post:repreneur-coords%%) a annulé la reprise de votre panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien repreneur',
@@ -3717,7 +3829,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVous avez annulé la reprise du panier (%%post:panier-desc%%) de %%post:adherent%% (%%post:adherent-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -3744,9 +3858,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nVotre panier (%%post:panier-desc%%) a été attribué par un responsable de l\'AMAP '%%responsable%%' à %%post:repreneur-nom%% (%%post:repreneur-coords%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [
-													'responsable' => 'Nom et coordonnées du responsable ayant fait l\'affectation du panier'
-												], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [
+														'responsable' => 'Nom et coordonnées du responsable ayant fait l\'affectation du panier'
+													], false );
+												},
 										),
 										array(
 											'name' => 'Email à l\'amapien repreneur',
@@ -3765,9 +3881,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour,\nUn responsable de l\'AMAP '%%responsable%%' vous a attribué la reprise du panier de %%post:adherent-nom%% (%%post:adherent-coords%%) : (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressIntermittence_panier::getPlaceholdersHelp( [
-													'responsable' => 'Nom et coordonnées du responsable ayant fait l\'affectation du panier'
-												], false ),
+												function ( $option ) {
+													return AmapressIntermittence_panier::getPlaceholdersHelp( [
+														'responsable' => 'Nom et coordonnées du responsable ayant fait l\'affectation du panier'
+													], false );
+												},
 										),
 										array(
 											'type' => 'save',
@@ -3843,8 +3961,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'     => 'text',
 											'default'  => '',
 											'sanitize' => false,
-											'desc'     => 'Label du champ email (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Pour démarrer votre adhésion pour la saison xxx, veuillez renseigner votre adresse mail :"'
-											              . AmapressAdhesionPeriod::getPlaceholdersHelp(),
+											'desc'     => function ( $option ) {
+												return 'Label du champ email (non connecté) (shortcode [adhesion-en-ligne]), par défaut, "Pour démarrer votre adhésion pour la saison xxx, veuillez renseigner votre adresse mail :"'
+												       . AmapressAdhesionPeriod::getPlaceholdersHelp();
+											},
 										),
 										array(
 											'id'      => 'online_subscription_welcome_adh_inter_message',
@@ -3867,7 +3987,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'   => 'online_subscription_inter_email_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_email_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_email_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3886,7 +4008,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'   => 'online_subscription_inter_coords_step_message',
 											'name' => 'Message supplémentaire',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_coords_step_message-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_coords_step_message-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3911,7 +4035,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'   => 'online_subscription_inter_agreement',
 											'name' => 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS',
 											'type' => 'editor',
-											'desc' => Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_agreement-placeholders', [], null, [], false ),
+											'desc' => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_agreement-placeholders', [], null, [], false );
+											},
 										),
 										array(
 											'type' => 'save',
@@ -3924,7 +4050,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'online_subscription_inter_req_adhesion',
 											'name'    => 'Message adhésion requise',
 											'type'    => 'editor',
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_req_adhesion-placeholders', [], null, [], false ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_req_adhesion-placeholders', [], null, [], false );
+											},
 											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir réserver des paniers disponibles, vous devez adhérer à notre Association.</strong></p>',
 										),
 										array(
@@ -3943,9 +4071,11 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'id'      => 'online_subscription_inter_greating_adhesion',
 											'name'    => 'Contenu du message de validation',
 											'type'    => 'editor',
-											'desc'    => 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
-													'print_button' => 'Bouton Imprimer le bulletin'
-												], 'de l\'amapien', [], false ),
+											'desc'    => function ( $option ) {
+												return 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
+														'print_button' => 'Bouton Imprimer le bulletin'
+													], 'de l\'amapien', [], false );
+											},
 											'default' => wpautop( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%" ),
 										),
 										array(
@@ -4181,7 +4311,9 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'name'    => 'Contenu de l\'email d\'enregistrement',
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. (Vous pouvez également utiliser votre email : %%dest:mail%%)\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+											},
 //                                            'capability' => 'manage_amapress',
 										),
 										array(
@@ -4196,7 +4328,9 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'name'    => 'Contenu de l\'email de récupération de mot de passe',
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour %%dest%%\n\nQuelqu'un a demandé la récupération de votre mot de passe. Si ce n'est pas vous, veuillez ignorer cet email et votre mot de passe restera inchangé.\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour changer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%" ),
-											'desc'    => Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+											},
 										),
 										array(
 											'id'      => 'welcome-mail-expiration',
@@ -4228,7 +4362,9 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type'    => 'editor',
 											'default' => wpautop( "Bonjour %%prenom%% %%nom%%,\nVotre demande d\'adhésion a bien été prise en compte. Voici la procédure à suivre:[[à compléter]]\n\n%%nom_site%%" ),
 											'desc'    =>
-												AmapressAdhesionRequest::getPlaceholdersHelp(),
+												function ( $option ) {
+													return AmapressAdhesionRequest::getPlaceholdersHelp();
+												},
 										),
 										array(
 											'type' => 'save',

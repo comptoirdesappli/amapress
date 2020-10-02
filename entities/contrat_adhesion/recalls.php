@@ -106,12 +106,14 @@ function amapress_inscriptions_to_validate_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nLes %%nb_inscriptions%% inscriptions suivantes restent à valider (%%lien_inscriptions%%):\n%%inscriptions%%\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' .
-			             Amapress::getPlaceholdersHelpTable( 'inscr-validate-placeholders', [
-				             'nb_inscriptions'   => 'Nombre d\'inscriptions à valider',
-				             'inscriptions'      => 'Liste des inscriptions à valider',
-				             'lien_inscriptions' => 'Lien vers la liste des inscriptions à valider'
-			             ], null, [], 'recall' ),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' .
+				       Amapress::getPlaceholdersHelpTable( 'inscr-validate-placeholders', [
+					       'nb_inscriptions'   => 'Nombre d\'inscriptions à valider',
+					       'inscriptions'      => 'Liste des inscriptions à valider',
+					       'lien_inscriptions' => 'Lien vers la liste des inscriptions à valider'
+				       ], null, [], 'recall' );
+			},
 		),
 		array(
 			'id'           => 'inscriptions-validate-recall-cc',

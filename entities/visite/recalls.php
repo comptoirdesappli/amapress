@@ -82,7 +82,9 @@ function amapress_visite_inscription_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp(),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp();
+			},
 		),
 		array(
 			'id'           => 'visite-inscription-recall-cc',
@@ -160,7 +162,9 @@ function amapress_visite_available_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nUne visite a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp(),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp();
+			},
 		),
 		array(
 			'id'           => 'visite-available-recall-cc',

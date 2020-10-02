@@ -828,7 +828,9 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, suivant vos inscriptions, vous aurez : %%post:liste_contrats%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc',
@@ -869,14 +871,16 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\n[creneau]Vous avez choisi (ou on vous a affecté) le créneau horaire <strong>%%creneau_horaire%%</strong> pour récupérer vos paniers[/creneau]\n\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, les responsables seront: %%post:liste-resp-phone%%\n\nA cette distribution, vous aurez :\n\n%%livraison_details%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				'La syntaxe [creneau]xxx[/creneau] permet de cibler le texte le texte affiché lorsque des créneaux horaires de récupération de paniers sont en place pour la distribution concernée.<br />Les placeholders suivants sont disponibles:' .
-				AmapressDistribution::getPlaceholdersHelp(
-					[
-						'creneau_horaire'        => 'Créneau horaire choisi ou affecté',
-						'livraison_details'      => 'Tableau détaillant les paniers livrés (sans montants) à cette distribution pour un amapien donné',
-						'livraison_details_prix' => 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné'
-					]
-				),
+				function ( $option ) {
+					return 'La syntaxe [creneau]xxx[/creneau] permet de cibler le texte le texte affiché lorsque des créneaux horaires de récupération de paniers sont en place pour la distribution concernée.<br />Les placeholders suivants sont disponibles:' .
+					       AmapressDistribution::getPlaceholdersHelp(
+						       [
+							       'creneau_horaire'        => 'Créneau horaire choisi ou affecté',
+							       'livraison_details'      => 'Tableau détaillant les paniers livrés (sans montants) à cette distribution pour un amapien donné',
+							       'livraison_details_prix' => 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné'
+						       ]
+					       );
+				},
 		),
 		array(
 			'type' => 'save',
@@ -933,14 +937,16 @@ function amapress_distribution_missing_responsables_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, il manque %%nb_resp_manquants%% responsable(s) de distribution sur les %%nb_resp_requis%% requis.\n%%lien_inscription%%\nPensez à vous inscrire ! Merci\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(
-					[
-						'nb_resp_manquants' => 'Nombre de responsables de distribution manquants à la distribution',
-						'nb_resp_inscrits'  => 'Nombre de responsables inscrits à la distribution',
-						'nb_resp_requis'    => 'Nombre de responsables requis à la distribution',
-						'lien_inscription'  => 'Lien "S\'inscrire comme responsable de distribution" vers la page d\'inscription aux distributions',
-					]
-				),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp(
+						[
+							'nb_resp_manquants' => 'Nombre de responsables de distribution manquants à la distribution',
+							'nb_resp_inscrits'  => 'Nombre de responsables inscrits à la distribution',
+							'nb_resp_requis'    => 'Nombre de responsables requis à la distribution',
+							'lien_inscription'  => 'Lien "S\'inscrire comme responsable de distribution" vers la page d\'inscription aux distributions',
+						]
+					);
+				},
 		),
 		array(
 			'id'           => 'distribution-miss-resps-recall-cc',
@@ -1016,11 +1022,13 @@ function amapress_distribution_slots_inscr_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous n'êtes pas encore inscrits aux créneaux de distribution pour la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%.\n%%lien_inscription%%\nPensez à vous inscrire ! Merci\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(
-					[
-						'lien_inscription' => 'Lien "S\'inscrire à un créneau de distribution" vers la page d\'inscription aux distributions',
-					]
-				),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp(
+						[
+							'lien_inscription' => 'Lien "S\'inscrire à un créneau de distribution" vers la page d\'inscription aux distributions',
+						]
+					);
+				},
 		),
 		array(
 			'id'           => 'distribution-slot-inscr-recall-cc',
@@ -1096,7 +1104,9 @@ function amapress_distribution_verify_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour le collectif,\nPouvez-vous vérifier les infos suivantes de %%lien_distrib_titre_admin%% (vous pouvez modifier les infos depuis le lien précédent):\n-> que cette distribution est bien à %%post:lieu%%\n-> que les contrats suivants seront distribués : %%post:liste-paniers-lien%%\n-> que les responsables %%post:resp-inscrits%%/%%post:resp-requis%% sont : %%post:liste-resp-email-phone%%\n-> que la liste d'émargement ci-jointe est correcte\n\nMerci\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'id'      => 'distribution-verify-recall-send-refs',
@@ -1199,7 +1209,9 @@ function amapress_distribution_responsable_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu et des contrats:\n\n%%lieu_instructions%%\n%%paniers_instructions_distribution%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'id'           => 'distribution-resp-recall-cc',
@@ -1282,7 +1294,9 @@ function amapress_distribution_responsable_recall2_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous êtes inscrit responsable à %%lien_distrib_titre%%\n\nVous trouverez ci-joint les instructions du lieu et des contrats:\n\n%%lieu_instructions%%\n%%paniers_instructions_distribution%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'id'           => 'distribution-resp-recall-2-cc',
@@ -1362,9 +1376,11 @@ function amapress_distribution_gardiens_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous vous êtes inscrit comme gardiens de paniers à %%lien_distrib_titre%%\n\nVous devrez récupérer les paniers des amapiens suivants:\n%%garde_paniers_details%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(
-					[ 'garde_paniers_details' => 'Détails des paniers à garder par amapien' ]
-				),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp(
+						[ 'garde_paniers_details' => 'Détails des paniers à garder par amapien' ]
+					);
+				},
 		),
 		array(
 			'name' => 'Email à l\'amapien faisant garder son panier',
@@ -1383,13 +1399,15 @@ function amapress_distribution_gardiens_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVotre panier sera gardé par %%gardien%% (%%gardien_contact%% / %%gardien_message%%) à %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(
-					[
-						'gardien'         => 'Nom du gardien de panier choisi',
-						'gardien_contact' => 'Coordonnées du gardien de panier choisi',
-						'gardien_comment' => 'Message/commentaire du gardien de panier choisi',
-					]
-				),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp(
+						[
+							'gardien'         => 'Nom du gardien de panier choisi',
+							'gardien_contact' => 'Coordonnées du gardien de panier choisi',
+							'gardien_comment' => 'Message/commentaire du gardien de panier choisi',
+						]
+					);
+				},
 		),
 		array(
 			'type' => 'save',
@@ -1453,7 +1471,9 @@ function amapress_distribution_emargement_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste d'émargement de cette distribution et ci-dessous les instructions du lieu:\n\n%%lieu_instructions%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'id'           => 'distribution-emargement-recall-to',
@@ -1588,7 +1608,9 @@ function amapress_distribution_changes_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement de lieu pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'name' => 'En cas de changement de d\'horaire',
@@ -1607,7 +1629,9 @@ function amapress_distribution_changes_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nChangement d'horaire pour %%lien_distrib_titre%%\n\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'name' => 'En cas de modification de livraison',
@@ -1626,7 +1650,9 @@ function amapress_distribution_changes_recall_options() {
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nLa %%lien_distrib_titre%% comprendra les modifications suivantes :\n%%paniers_modifies%%\n%%nom_site%%" ),
 			'desc'    =>
-				AmapressDistribution::getPlaceholdersHelp(),
+				function ( $option ) {
+					return AmapressDistribution::getPlaceholdersHelp();
+				},
 		),
 		array(
 			'name' => 'En cas d\'abscence de distribution',
@@ -1644,9 +1670,11 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : Pas de distribution le %%date%%\n%%nom_site%%" ),
-			'desc'    => AmapressDistribution::getPlaceholdersHelp( [
-				'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
-			] ),
+			'desc'    => function ( $option ) {
+				return AmapressDistribution::getPlaceholdersHelp( [
+					'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
+				] );
+			},
 		),
 		array(
 			'name' => 'En cas de changement de jour de distribution',
@@ -1664,9 +1692,11 @@ function amapress_distribution_changes_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nPour rappel : LLa distribution cette semaine aura lieu le %%jour_date_dist%%\n%%nom_site%%" ),
-			'desc'    => AmapressDistribution::getPlaceholdersHelp( [
-				'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
-			] ),
+			'desc'    => function ( $option ) {
+				return AmapressDistribution::getPlaceholdersHelp( [
+					'date' => 'Date de distribution habituelle (par ex, 22/09/2018)'
+				] );
+			},
 		),
 		array(
 			'name' => 'En copie',

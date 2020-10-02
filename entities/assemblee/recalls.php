@@ -80,7 +80,9 @@ function amapress_assemblee_generale_inscription_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressAssemblee_generale::getPlaceholdersHelp(),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' . AmapressAssemblee_generale::getPlaceholdersHelp();
+			},
 		),
 		array(
 			'id'           => 'assemblee-inscription-recall-cc',
@@ -148,7 +150,9 @@ function amapress_assemblee_generale_available_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nUne assemblée générale de l\'AMAP a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressAssemblee_generale::getPlaceholdersHelp(),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' . AmapressAssemblee_generale::getPlaceholdersHelp();
+			},
 		),
 		array(
 			'id'           => 'assemblee-available-recall-cc',

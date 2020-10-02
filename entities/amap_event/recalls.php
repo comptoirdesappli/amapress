@@ -85,7 +85,9 @@ function amapress_amap_event_inscription_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressAmap_event::getPlaceholdersHelp(),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' . AmapressAmap_event::getPlaceholdersHelp();
+			},
 		),
 		array(
 			'id'           => 'amap-event-inscription-recall-cc',
@@ -153,7 +155,9 @@ function amapress_amap_event_available_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nUn évènement AMAP a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%" ),
-			'desc'    => 'Les placeholders suivants sont disponibles:' . AmapressAmap_event::getPlaceholdersHelp(),
+			'desc'    => function ( $option ) {
+				return 'Les placeholders suivants sont disponibles:' . AmapressAmap_event::getPlaceholdersHelp();
+			},
 		),
 		array(
 			'id'           => 'amap-event-available-recall-cc',

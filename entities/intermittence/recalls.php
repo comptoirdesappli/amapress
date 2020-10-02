@@ -175,9 +175,11 @@ function amapress_intermittence_dispo_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\n\nVous recevez ce mail en tant qu'amapien ou intermittent de l'AMAP %%nom_site%%.\n\nIl reste encore %%nb-paniers-intermittents%% panier(s) proposés à la distribution de %%post:title-link%%\n\nSi vous souhaitez en réserver, rendez-vous sur le site %%nom_site%%, sur la page %%lien-liste-paniers%%\n\nPour vous désinscrire de la liste des intermittents : %%lien_desinscription_intermittent%%\n\nEn cas de problème ou de questions sur le fonctionnement des intermittents, veuillez contacter : [[à remplir]].\n\nSi vous avez des questions plus générale sur %%nom_site%%, vous pouvez écrire à [[à remplir]].\n\n%%nom_site%%" ),
-			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
+			'desc'    => function ( $option ) {
+				return AmapressIntermittence_panier::getPlaceholdersHelp( [
 
-			] ),
+				] );
+			},
 		),
 		array(
 			'id'           => 'intermittence-recall-dispo-cc',
@@ -230,9 +232,11 @@ function amapress_intermittence_validation_recall_options() {
 			'name'    => 'Contenu de l\'email',
 			'type'    => 'editor',
 			'default' => wpautop( "Bonjour,\nUne demande a été faite par %%post:repreneur%% le %%attente_depuis%% pour votre panier (%%post:panier-desc%%) à la distribution %%post:distribution%%\n\nVeuillez valider ou rejeter cette demande dans %%post:mes-echanges%%\n\n%%nom_site%%" ),
-			'desc'    => AmapressIntermittence_panier::getPlaceholdersHelp( [
-				'attente_depuis' => 'Date de demande de reprise du panier (par ex, 22/09/2018)'
-			] ),
+			'desc'    => function ( $option ) {
+				return AmapressIntermittence_panier::getPlaceholdersHelp( [
+					'attente_depuis' => 'Date de demande de reprise du panier (par ex, 22/09/2018)'
+				] );
+			},
 		),
 		array(
 			'id'           => 'intermittence-recall-validation-bcc',
