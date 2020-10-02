@@ -245,16 +245,16 @@ function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, 
 	if ( 0 === error_reporting() ) {
 		return false;
 	}
-	$message = $errstr . ' in ' . $errfile . ' on line ' . $errline .
-	           ', backtrace: ' . amapress_debug_backtrace_summary( null, 1 ) .
-	           ', url: ' . $_SERVER['REQUEST_URI'] .
-	           ', user: ' . get_current_user_id();
 
-	if ( strpos( $message, 'Load_Resend_Welcome_Email' ) !== false ) {
+	if ( strpos( $errstr, 'Load_Resend_Welcome_Email' ) !== false ) {
 		return true;
 	}
 
 	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
+		$message = $errstr . ' in ' . $errfile . ' on line ' . $errline .
+		           ', backtrace: ' . amapress_debug_backtrace_summary( null, 1 ) .
+		           ', url: ' . $_SERVER['REQUEST_URI'] .
+		           ', user: ' . get_current_user_id();
 		error_log( $message );
 	}
 
