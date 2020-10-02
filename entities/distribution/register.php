@@ -192,24 +192,24 @@ function amapress_register_entities_distribution( $entities ) {
 						$users_in_slots = count( $dist->getUserIdsWithAnySlot() );
 						if ( $users_in_slots > 0 ) {
 							$ret .= sprintf(
-								'<p><strong style="color: red">Attention : %d amapien(s) sont déjà inscrits. Modifier la configuration peut impacter l\'affectation de leurs créneaux</strong></p>',
+								'<p><strong style="color: red">%d inscriptions(s) en cours. Modifier la configuration risque d’impacter ces réservations.</strong></p>',
 								$users_in_slots
 							);
 						}
 					}
 
-					$ret .= 'Configurer un créneau de la forme : <em>Heure Début-Heure Fin</em>[<em>Durée créneau en minutes;Nombre de personnes maximum</em>]
-<br/>Exemple : 18h00-20h00[10min;2p] ou [5min;3p] (<em>pour prendre en compte les horaires de la distribution</em>)
-<br/>Il est également possible de créer des créneau nommé/fictif (doubles parenthèses pour ne pas afficher les horaires) par exemple : [5min;5p]|23h-23h30((je suis absent))<br/>';
+					$ret .= 'Configurer un créneau horaire de la forme : <em>Heure Début-Heure Fin[Durée du créneau en minutes;Nombre de personnes maximum]</em><br/>';
 					if ( $dist ) {
-						$ret .= sprintf( 'Créneau(x) horaire(s) actuels (<strong>distribution de %s à %s</strong>) : %s',
+						$ret .= sprintf( 'Horaires de distribution configurés sur le site : %s à %s',
 								date_i18n( 'H:i', $dist->getStartDateAndHour() ),
-								date_i18n( 'H:i', $dist->getEndDateAndHour() ),
+								date_i18n( 'H:i', $dist->getEndDateAndHour() )
+						        ) . '<br/>';
+						$ret .= sprintf( 'Plages des créneaux configurés : %s',
 								$dist->getSlotsDescription()
 						        ) . '<br/>';
 					}
 
-					$ret .= Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
+					$ret .= 'Paramétrages et documentation complète : ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution#creneaux_horaires', 'Créneaux horaires' );
 
 					return $ret;
 				},

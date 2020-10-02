@@ -961,7 +961,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Liste émargement'                       => array(
+								'Liste émargement'                        => array(
 									'id'      => 'amp_emargement_options_tab',
 									'desc'    => '',
 									'options' => array(
@@ -1035,7 +1035,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Inscription distribution'               => array(
+								'Inscription distribution'                => array(
 									'id'      => 'amp_inscr_distrib_options_tab',
 									'desc'    => '',
 									'options' => array(
@@ -1136,19 +1136,19 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Roles des Responsables de distribution' => array(
+								'Tâches des Responsables de distribution' => array(
 									'id'      => 'amp_tab_role_resp_distrib',
 									'desc'    => '',
 									'options' => amapress_distribution_responsable_roles_options(),
 								),
-								'Gardiens de paniers'                    => array(
+								'Garde de paniers'                        => array(
 									'id'      => 'amp_tab_gardiens_paniers_distrib',
 									'desc'    => '',
 									'options' => [
 										array(
 											'id'   => 'enable-gardiens-paniers',
 											'name' => 'Activer',
-											'desc' => 'Activer le système de gardiens de paniers',
+											'desc' => 'Activer le système de garde de paniers',
 											'type' => 'checkbox',
 										),
 										array(
@@ -1161,8 +1161,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'      => 'gardiens-paniers-message',
 											'name'    => 'Information',
 											'type'    => 'textarea',
-											'default' => 'La garde de panier se fait sur la base du volontariat. Si vous ne trouvez pas de gardiens, veuillez écrire à [à compléter]',
-											'desc'    => 'Message au sujet des gardiens de paniers à afficher sur la page de chaque distribution pour informer sur la procédure de garde de paniers.',
+											'default' => 'La garde de panier se fait sur la base du volontariat. Si vous ne trouvez pas de gardien, veuillez écrire à [à compléter]',
+											'desc'    => 'Complétez la procédure spécifique pour votre Amap : le message s\'affichera sur chaque page de distribution',
 										),
 										array(
 											'name' => 'Email à l\'amapien faisant garder son panier',
@@ -1292,7 +1292,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
-								'Créneaux de distributions'              => array(
+								'Créneaux de distribution'                => array(
 									'id'      => 'amp_tab_distrib_slots',
 									'desc'    => '',
 									'options' => [
@@ -1708,7 +1708,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								'Inscription visites'    => array(
+								'Inscription visites'           => array(
 									'id'      => 'amp_inscr_visite_options_tab',
 									'desc'    => '',
 									'options' => array(
@@ -1739,7 +1739,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									),
 								),
-								'Créneaux de visites'    => array(
+								'Créneaux de visite à la ferme' => array(
 									'id'      => 'amp_tab_visite_slots',
 									'desc'    => '',
 									'options' => [
@@ -1772,7 +1772,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									],
 								),
-								'Inscription évènements' => array(
+								'Inscription évènements'        => array(
 									'id'      => 'amp_inscr_event_options_tab',
 									'desc'    => '',
 									'options' => array(
@@ -1803,7 +1803,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									),
 								),
-								'Inscription assemblées' => array(
+								'Inscription assemblées'        => array(
 									'id'      => 'amp_inscr_ag_options_tab',
 									'desc'    => '',
 									'options' => array(
