@@ -87,34 +87,41 @@ class AmapressContrat extends TitanEntity {
 			return [];
 		}
 
-		if ( ! $for_contrat_only ) {
-			$prod_refs = $this->getProducteur()->getReferentsIds( $lieu_id, $for_lieu_only );
-			if ( ! $for_lieu_only ) {
-				$prod_refs = array_merge( $prod_refs, $this->getProducteur()->getReferentsIds( null, $for_lieu_only ) );
+		$key = "AmapressContrat_getReferentsIds_{$lieu_id}_{$for_lieu_only}_{$for_contrat_only}";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			if ( ! $for_contrat_only ) {
+				$prod_refs = $this->getProducteur()->getReferentsIds( $lieu_id, $for_lieu_only );
+				if ( ! $for_lieu_only ) {
+					$prod_refs = array_merge( $prod_refs, $this->getProducteur()->getReferentsIds( null, $for_lieu_only ) );
+				}
+			} else {
+				$prod_refs = [];
 			}
-		} else {
-			$prod_refs = [];
+
+			$contrat_refs = $for_lieu_only ? [
+				$this->getReferentId( $lieu_id, $for_lieu_only ),
+				$this->getReferent2Id( $lieu_id, $for_lieu_only ),
+				$this->getReferent3Id( $lieu_id, $for_lieu_only )
+			] : [
+				$this->getReferentId( $lieu_id ),
+				$this->getReferent2Id( $lieu_id ),
+				$this->getReferent3Id( $lieu_id ),
+				$this->getReferentId( null ),
+				$this->getReferent2Id( null ),
+				$this->getReferent3Id( null ),
+			];
+
+			$res = array_unique(
+				array_merge( $prod_refs,
+					array_filter( $contrat_refs, function ( $i ) {
+						return ! empty( $i );
+					} )
+				)
+			);
 		}
 
-		$contrat_refs = $for_lieu_only ? [
-			$this->getReferentId( $lieu_id, $for_lieu_only ),
-			$this->getReferent2Id( $lieu_id, $for_lieu_only ),
-			$this->getReferent3Id( $lieu_id, $for_lieu_only )
-		] : [
-			$this->getReferentId( $lieu_id ),
-			$this->getReferent2Id( $lieu_id ),
-			$this->getReferent3Id( $lieu_id ),
-			$this->getReferentId( null ),
-			$this->getReferent2Id( null ),
-			$this->getReferent3Id( null ),
-		];
-
-		return array_unique(
-			array_merge( $prod_refs,
-				array_filter( $contrat_refs, function ( $i ) {
-					return ! empty( $i );
-				} )
-			) );
+		return $res;
 	}
 
 	/** @return AmapressUser */
