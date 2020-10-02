@@ -1115,13 +1115,13 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 			}
 		];
-		$ret['date_debut_lettre']                = [
+		$ret['date_debut_lettre'] = [
 			'desc' => 'Date début du contrat (par ex, 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'j F Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['date_fin_lettre']                  = [
+		$ret['date_fin_lettre'] = [
 			'desc' => 'Date fin du contrat (par ex, 22 septembre 2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'j F Y', $adh->getDate_fin() );
@@ -2766,22 +2766,32 @@ class AmapressContrat_quantite extends TitanEntity {
 		}
 	}
 
+	private $group_name = null;
+
 	public function getGroupName() {
-		$has_group = preg_match( '/^\s*\[([^\]]+)\]/', $this->getTitle(), $matches );
-		if ( $has_group && isset( $matches[1] ) ) {
-			return $matches[1];
+		if ( null === $this->group_name ) {
+			$this->group_name = '';
+			$has_group        = preg_match( '/^\s*\[([^\]]+)\]/', $this->getTitle(), $matches );
+			if ( $has_group && isset( $matches[1] ) ) {
+				$this->group_name = $matches[1];
+			}
 		}
 
-		return '';
+		return $this->group_name;
 	}
 
+	private $title_wo_group_name = null;
+
 	public function getTitleWithoutGroup() {
-		$has_group = preg_match( '/^\s*\[[^\]]+\](.+)/', $this->getTitle(), $matches );
-		if ( $has_group && isset( $matches[1] ) ) {
-			return $matches[1];
+		if ( null === $this->title_wo_group_name ) {
+			$this->title_wo_group_name = $this->getTitle();
+			$has_group                 = preg_match( '/^\s*\[[^\]]+\](.+)/', $this->getTitle(), $matches );
+			if ( $has_group && isset( $matches[1] ) ) {
+				$this->title_wo_group_name = $matches[1];
+			}
 		}
 
-		return $this->getTitle();
+		return $this->title_wo_group_name;
 	}
 
 	public function getGroupMultiple() {
