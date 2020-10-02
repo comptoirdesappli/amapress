@@ -1163,7 +1163,11 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			if ( 0 == $this_linked_users_count && 0 == $others_linked_users_count ) {
 				$this->adh_type = 'alone';
 			} else if ( 0 <= $this_linked_users_count && 0 == $others_linked_users_count ) {
-				$this->adh_type = 'main';
+				if ( $this_linked_users_count > $this_linked_cofoyers_count ) {
+					$this->adh_type = 'main';
+				} else {
+					$this->adh_type = 'mainf';
+				}
 			} else if ( 0 == $this_linked_users_count && 0 <= $others_linked_users_count ) {
 				if ( 0 < $this_linked_cofoyers_count ) {
 					$this->adh_type = 'cof';
@@ -1196,6 +1200,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				return 'Adhérent principal (sans co-adhérent)';
 			case 'main':
 				return 'Adhérent principal (avec co-adhérent)';
+			case 'mainf':
+				return 'Adhérent principal (avec membres du foyers)';
 			case 'cof':
 				return 'Foyer';
 			case 'co':
@@ -1210,7 +1216,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	public function isPrincipalAdherent() {
 		$adh_type = $this->getAdherentType();
 
-		return 'alone' == $adh_type || 'main' == $adh_type;
+		return 'alone' == $adh_type || 'main' == $adh_type || 'mainf' == $adh_type;
 	}
 
 	public function isCoAdherent() {
