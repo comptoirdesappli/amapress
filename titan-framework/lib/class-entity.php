@@ -233,9 +233,13 @@ class TitanEntity {
 		if ( empty( $s ) ) {
 			return 0;
 		}
-		$d = DateTime::createFromFormat( 'd#m#Y', trim( $s ) );
+		$s = trim( $s );
+		if ( is_numeric( $s ) ) {
+			return Amapress::start_of_day( intval( $s ) );
+		}
+		$d = DateTime::createFromFormat( 'd#m#Y', $s );
 		if ( empty( $d ) ) {
-			$d = DateTime::createFromFormat( 'U', trim( $s ) );
+			$d = DateTime::createFromFormat( 'U', $s );
 		}
 		if ( empty( $d ) ) {
 			return 0;
