@@ -2434,6 +2434,28 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'desc'    => 'Message supplémentaire lorsque les inscriptions en ligne sont closes (toutes les étapes)',
 										),
 										array(
+											'id'       => 'online_subscription_contrat_avail_format',
+											'name'     => 'Label contrat disponible',
+											'type'     => 'text',
+											'default'  => '',
+											'sanitize' => false,
+											'desc'     => function ( $option ) {
+												return 'Label des contrats disponibles. Par défaut, "nom du contrat - mois début ~ mois fin"'
+												       . AmapressContrat_instance::getPlaceholdersHelp();
+											},
+										),
+										array(
+											'id'       => 'online_subscription_inscription_format',
+											'name'     => 'Label inscription',
+											'type'     => 'text',
+											'default'  => '',
+											'sanitize' => false,
+											'desc'     => function ( $option ) {
+												return 'Label des inscriptions des amapiens (par ex, dans [mes-contrats]). Par défaut, "amapien - nom du contrat - mois début ~ mois fin - date début > date fin (lieu) (numéro)"'
+												       . AmapressContrat_instance::getPlaceholdersHelp();
+											},
+										),
+										array(
 											'type' => 'save',
 										),
 										array(

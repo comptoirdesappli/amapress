@@ -1316,39 +1316,39 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
-                <tr>
-                    <th style="text-align: left; width: auto"><label
-                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
-                            : </label></th>
-                    <td><textarea style="width: 100%" rows="4" id="address" name="address"
-                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
-                    </td>
-                </tr>
+	            <tr>
+		            <th style="text-align: left; width: auto"><label
+				            for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+				            : </label></th>
+		            <td><textarea style="width: 100%" rows="4" id="address" name="address"
+		                          class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+		            </td>
+	            </tr>
 	            <?php if ( $allow_trombi_decline ) { ?>
-                    <tr>
-                        <th style="text-align: left; width: auto"></th>
-                        <td>
-                            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
-                            </label>
-                        </td>
-                    </tr>
+		            <tr>
+			            <th style="text-align: left; width: auto"></th>
+			            <td>
+				            <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
+				                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+				            </label>
+			            </td>
+		            </tr>
 	            <?php } ?>
             </table>
-            <div>
+	        <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
-            </div>
+	        </div>
 	        <?php if ( $max_cofoyers >= 1 ) { ?>
-                <table style="min-width: 50%">
-                    <tr>
-                        <th colspan="2">Membre du foyer 1 / Conjoint
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-                                : </label>
-                        </th>
-                        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
+		        <table style="min-width: 50%">
+			        <tr>
+				        <th colspan="2">Membre du foyer 1 / Conjoint
+				        </th>
+			        </tr>
+			        <tr>
+				        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
+						        : </label>
+				        </th>
+				        <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
                                                                                                    id="cofoy1_email"
                                                                                                    name="cofoy1_email"
@@ -2442,6 +2442,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				echo '<ul style="list-style-type: disc">';
 				foreach ( ( $admin_mode || $show_current_inscriptions || $show_only_subscribable_inscriptions ? $adhs : $editable_adhs ) as $adh ) {
+					$inscription_title = wp_unslash( Amapress::getOption( 'online_subscription_inscription_format' ) );
+					if ( empty( $inscription_title ) ) {
+						$inscription_title = esc_html( $adh->getTitle() );
+					} else {
+						$inscription_title = amapress_replace_mail_placeholders(
+							$inscription_title, $amapien, $adh
+						);
+					}
 					$print_contrat = '';
 					if ( ! empty( $adh->getContrat_instance()->getContratModelDocFileName() ) ) {
 						$print_contrat = Amapress::makeButtonLink(
@@ -2461,7 +2469,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 					}
 					if ( $admin_mode ) {
-						echo '<li style="margin-left: 35px">' . esc_html( $adh->getTitle() ) .
+						echo '<li style="margin-left: 35px">' . $inscription_title .
 						     ( current_user_can( 'edit_post', $adh->ID ) ?
 							     ' (' . Amapress::makeLink( $adh->getAdminEditLink(), 'Editer', true, true ) . ')<br/>' . $print_contrat . '</li>' : '' );
 					} else {
@@ -2530,7 +2538,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="submit" value="Annuler" class="btn btn-default btn-assist-inscr" />
 </form>';
 						}
-						echo '<li style="margin-left: 35px"><strong>' . esc_html( $adh->getTitle() ) . '</strong>' . $coadherents_info . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
+						echo '<li style="margin-left: 35px"><strong>' . $inscription_title . '</strong>' . $coadherents_info . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
 					}
 				}
 				echo '</ul>';
@@ -2673,15 +2681,23 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						'step'       => 'inscr_contrat_date_lieu',
 						'contrat_id' => $contrat->ID
 					] );
+					$contrat_title   = wp_unslash( Amapress::getOption( 'online_subscription_contrat_avail_format' ) );
+					if ( empty( $contrat_title ) ) {
+						$contrat_title = esc_html( $contrat->getTitle() );
+					} else {
+						$contrat_title = amapress_replace_mail_placeholders(
+							$contrat_title, $amapien, $contrat
+						);
+					}
 					if ( $admin_mode ) {
 						if ( $contrat->isFull() ) {
 							if ( $contrat->hasEquivalentQuant() ) {
-								echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ', contrat <strong>COMPLET (' . $contrat->getAdherentsEquivalentQuantites() . ' parts)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum de parts et/ou nb maximum de parts par panier)</li>';
+								echo '<li style="margin-left: 35px">' . $contrat_title . ', contrat <strong>COMPLET (' . $contrat->getAdherentsEquivalentQuantites() . ' parts)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum de parts et/ou nb maximum de parts par panier)</li>';
 							} else {
-								echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ', contrat <strong>COMPLET (' . $contrat->getAdherentsCount() . ' amapiens)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum d\'amapiens/parts et/ou nb maximum d\'amapiens/parts par panier)</li>';
+								echo '<li style="margin-left: 35px">' . $contrat_title . ', contrat <strong>COMPLET (' . $contrat->getAdherentsCount() . ' amapiens)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum d\'amapiens/parts et/ou nb maximum d\'amapiens/parts par panier)</li>';
 							}
 						} else {
-							echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
+							echo '<li style="margin-left: 35px">' . $contrat_title . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
 						}
 					} else {
 						$deliveries_dates = '';
@@ -2697,7 +2713,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								date_i18n( 'd/m/Y', $contrat->getDate_cloture() )
 							);
 						}
-						echo '<li style="margin-left: 35px">' . esc_html( $contrat->getTitle() ) . $deliveries_dates . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
+						echo '<li style="margin-left: 35px">' . $contrat_title . $deliveries_dates . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
 <br/>
 <form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
