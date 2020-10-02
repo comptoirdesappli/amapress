@@ -449,62 +449,62 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret                     = [];
-			$ret['nom']              = [
+			$ret                          = [];
+			$ret['nom']                   = [
 				'desc' => 'Nom de la période d\'adhésion (par ex, saison 15)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getName() );
 				}
 			];
-			$ret['date_debut']       = [
+			$ret['date_debut']            = [
 				'desc' => 'Date début de la période d\'adhésion (par ex, 01/09/2018)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin']         = [
+			$ret['date_fin']              = [
 				'desc' => 'Date fin de période d\'adhésion (par ex, 31/08/2019)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['date_debut_annee'] = [
+			$ret['date_debut_annee']      = [
 				'desc' => 'Année de début de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_debut() );
 				}
 			];
-			$ret['date_fin_annee']   = [
+			$ret['date_fin_annee']        = [
 				'desc' => 'Année de fin de période d\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'Y', $adh->getPeriod()->getDate_fin() );
 				}
 			];
-			$ret['paiement_date'] = [
+			$ret['paiement_date']         = [
 				'desc' => 'Date du paiement/adhésion à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate() );
 				}
 			];
-			$ret['type_adhesion'] = [
+			$ret['type_adhesion']         = [
 				'desc' => 'Type d\'adhésion (Amapien ou intermittent)',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getAdhesionType();
 				}
 			];
-			$ret['montant_amap'] = [
+			$ret['montant_amap']          = [
 				'desc' => 'Montant versé à l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantAmap( $adh->isForIntermittent() ) );
 				}
 			];
-			$ret['montant_reseau'] = [
+			$ret['montant_reseau']        = [
 				'desc' => 'Montant versé au réseau de l\'AMAP',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getPeriod()->getMontantReseau( $adh->isForIntermittent() ) );
 				}
 			];
-			$ret['tresoriers'] = [
+			$ret['tresoriers']            = [
 				'desc' => 'Nom des référents de l\'adhésion',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -854,6 +854,38 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public function getMessage() {
 		return $this->getCustom( 'amapress_adhesion_paiement_message' );
+	}
+
+	public function setHelloAsso( $amount, $url, $set_received = true ) {
+		$this->setCustom( 'amapress_adhesion_paiement_hla_url', $url );
+		$this->setCustom( 'amapress_adhesion_paiement_amount', $amount );
+		$this->setCustom( 'amapress_adhesion_paiement_hla_amount', $amount );
+		$this->setCustom( 'amapress_adhesion_paiement_pmt_type', 'hla' );
+		if ( $set_received ) {
+			$this->setStatus( self::RECEIVED );
+		}
+
+		$rep       = [];
+		$amap_term = Amapress::getOption( 'adhesion_amap_term' );
+		if ( $amap_term ) {
+			$rep[ $amap_term ] = $this->getPeriod()->getMontantAmap();
+		}
+		$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+		if ( $reseau_amap_term ) {
+			$rep[ $reseau_amap_term ] = $this->getPeriod()->getMontantReseau();
+		}
+		wp_set_post_terms( $this->ID,
+			array_keys( $rep ),
+			'amps_paiement_category' );
+		$this->setCustom( 'amapress_adhesion_paiement_repartition', $rep );
+	}
+
+	public function getHelloAssoUrl() {
+		return $this->getCustom( 'amapress_adhesion_paiement_hla_url' );
+	}
+
+	public function getHelloAssoAmount() {
+		return $this->getCustomAsFloat( 'amapress_adhesion_paiement_hla_amount' );
 	}
 }
 

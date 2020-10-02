@@ -3284,6 +3284,78 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 									),
 								),
+								'Intégration HelloAsso'                  => array(
+									'id'         => 'amp_helloasso_config',
+									'desc'       => '',
+									'capability' => 'manage_options',
+									'options'    => array(
+										array(
+											'type' => 'note',
+											'desc' => 'Pour intégrer HelloAsso à Amapress, connectez vous au backoffice HelloAsso, et définissez l\'url dans Mon Compte&gt;Intégration/API, section Notifications, Mon URL de callback avec la valeur : <code>' .
+											          admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) )
+											          . '</code>',
+										),
+										array(
+											'id'      => 'helloasso-auto-confirm',
+											'name'    => 'Adhésion confirmée',
+											'type'    => 'checkbox',
+											'desc'    => 'Confirmer les adhésions HelloAsso automatiquement',
+											'default' => true,
+										),
+										array(
+											'id'      => 'helloasso-send-confirm',
+											'name'    => 'Envoyer confirmation d\'adhésion',
+											'type'    => 'checkbox',
+											'desc'    => 'Envoyer les confirmations d\'adhésions aux amapiens',
+											'default' => false,
+										),
+										array(
+											'id'      => 'helloasso-notif-tresoriers',
+											'name'    => 'Nofications trésoriers',
+											'type'    => 'checkbox',
+											'desc'    => 'Envoyer les notifications d\'adhésions aux trésoriers',
+											'default' => false,
+										),
+										array(
+											'id'   => 'helloasso-notif-others',
+											'name' => 'Nofications autres',
+											'type' => 'text',
+											'desc' => 'Emails des personnes à notifier en supplément',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Confirmation d\'adhésion via HelloAsso',
+										),
+										array(
+											'id'       => 'online_hla_adhesion_confirm-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Confirmation de votre adhésion à %%nom_site%%',
+										),
+										array(
+											'id'      => 'online_hla_adhesion_confirm-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
+Nous vous confirmons votre adhésion à %%nom_site%%\n
+[avec_bulletin]Merci d'imprimer le bulletin joint à cet email et le remettre aux trésoriers (%%tresoriers%%) avec votre chèque de %%montant%% à la première distribution[/avec_bulletin]
+[sans_bulletin]Merci de contacter les trésoriers (%%tresoriers%%) avec votre chèque de %%total%% à la première distribution pour signer votre bulletin[/sans_bulletin]
+\n\n%%nom_site%%" ),
+											'desc'    => function ( $option ) {
+												return 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
+											},
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+
 							),
 						),
 					),
