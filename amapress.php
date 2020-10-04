@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.96.35
+ * Version:             0.96.40
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -52,7 +52,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 110 );
-define( 'AMAPRESS_VERSION', '0.96.35' );
+define( 'AMAPRESS_VERSION', '0.96.40' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -2096,4 +2096,24 @@ add_action( 'comment_post', function ( $comment_id ) {
 			$event->sendNewCommentMailToMembers( $comment_id );
 			break;
 	}
+} );
+
+
+add_filter( 'new_user_approve_approve_user_message_default', function ( $message ) {
+	return wp_unslash( Amapress::getOption( 'nua_default_approve_user_message' ) );
+} );
+add_filter( 'new_user_approve_deny_user_message_default', function ( $message ) {
+	return wp_unslash( Amapress::getOption( 'nua_default_deny_user_message' ) );
+} );
+add_filter( 'new_user_approve_pending_message_default', function ( $message ) {
+	return wp_unslash( Amapress::getOption( 'nua_default_registration_complete_message' ) );
+} );
+add_filter( 'new_user_approve_welcome_message_default', function ( $message ) {
+	return wp_unslash( Amapress::getOption( 'nua_default_welcome_message' ) );
+} );
+add_filter( 'new_user_approve_notification_message_default', function ( $message ) {
+	return wp_unslash( Amapress::getOption( 'nua_default_notification_message' ) );
+} );
+add_filter( 'new_user_approve_registration_message_default', function ( $message ) {
+	return wp_unslash( Amapress::getOption( 'nua_default_registration_message' ) );
 } );

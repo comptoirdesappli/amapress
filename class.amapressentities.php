@@ -4916,6 +4916,73 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 								),
 							),
 						),
+						array(
+							'subpage'  => true,
+							'id'       => 'amapress_nua_config',
+							'type'     => 'panel',
+							'settings' => array(
+								'name'       => 'New User Approve',
+								'capability' => 'manage_options',
+							),
+							'tabs'     => array(
+								'Messages' => array(
+									'id'         => 'amp_nua_messages',
+									'desc'       => '',
+									'capability' => 'manage_options',
+									'options'    => array(
+										array(
+											'id'      => 'nua_default_welcome_message',
+											'name'    => 'Page de connexion',
+											'default' => 'Bienvenue sur le site {sitename}. Ce site est accessible aux utilisateurs approuvés. Pour être approuvé, vous devez d\'abord vous inscrire.',
+											'type'    => 'textarea',
+										),
+										array(
+											'id'      => 'nua_default_registration_message',
+											'name'    => 'Page d\'inscription',
+											'default' => 'Après l\'inscription, votre demande sera envoyée à l\'administrateur pour approbation. Vous recevrez alors un courriel avec les informations supplémentaires.',
+											'type'    => 'textarea',
+										),
+										array(
+											'id'      => 'nua_default_registration_complete_message',
+											'name'    => 'Message après inscription',
+											'default' => 'Un courriel a été envoyé à l\'administrateur du site. Il va vérifier les informations que vous avez transmises et approuver ou refuser votre demande d\'inscription. Vous allez recevoir un courriel avec les instructions sur ce que vous devrez faire ensuite. Merci de votre patience.',
+											'type'    => 'textarea',
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
+								'Emails'   => array(
+									'id'         => 'amp_nua_emails',
+									'desc'       => '',
+									'capability' => 'manage_options',
+									'options'    => array(
+										array(
+											'id'      => 'nua_default_approve_user_message',
+											'name'    => 'Message d\'approbation',
+											'default' => "Votre inscription a été acceptée pour accéder au site {sitename}\r\n{username}\r\n{login_url}\r\nPour définir votre mot de passe, allez à l'adresse suivante :\r\n{reset_password_url}",
+											'type'    => 'textarea',
+										),
+										array(
+											'id'      => 'nua_default_deny_user_message',
+											'name'    => 'Message de refus',
+											'default' => 'Désolé, votre inscription pour accéder au site « {sitename} » a été refusée.',
+											'type'    => 'textarea',
+										),
+										array(
+											'id'      => 'nua_default_notification_message',
+											'name'    => 'Message de notification à l\'admin',
+											'default' => "{username} ({user_email}) a demandé l'approbation d'un compte sur {sitename}\n{site_url}\nPour approuver ou refuser cet utilisateur, aller sur le site {sitename}\n{admin_approve_url}",
+											'type'    => 'textarea',
+										),
+										array(
+											'type' => 'save',
+										),
+									)
+								),
+							),
+						),
 					),
 				),
 				array(
