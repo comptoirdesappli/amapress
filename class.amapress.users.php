@@ -606,6 +606,9 @@ jQuery(function($) {
 		} else if ( is_array( $type ) ) {
 			$types = $type;
 		}
+		if ( ! amapress_is_user_logged_in() ) {
+			$types[] = 'no-role';
+		}
 
 		if ( empty( $custom_link ) && amapress_can_access_admin() ) {
 			$custom_link = admin_url( 'user-edit.php?user_id=' . $user->ID );
