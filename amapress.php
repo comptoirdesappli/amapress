@@ -2122,3 +2122,16 @@ if ( defined( 'AMAPRESS_DEMO_MODE' ) || defined( 'AMAPRESS_DISABLE_AUTOUPDATE_NO
 	add_filter( 'auto_plugin_update_send_email', '__return_false' );
 	add_filter( 'auto_theme_update_send_email', '__return_false' );
 }
+
+add_filter( 'cron_schedules', function ( $new_schedules ) {
+	$schedules['weekly']  = array(
+		'interval' => 604800,
+		'display'  => __( 'Once Weekly' )
+	);
+	$schedules['monthly'] = array(
+		'interval' => 2635200,
+		'display'  => __( 'Once a month' )
+	);
+
+	return $new_schedules;
+} );
