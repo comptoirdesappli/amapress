@@ -2117,3 +2117,8 @@ add_filter( 'new_user_approve_notification_message_default', function ( $message
 add_filter( 'new_user_approve_registration_message_default', function ( $message ) {
 	return wp_unslash( Amapress::getOption( 'nua_default_registration_message' ) );
 } );
+
+if ( defined( 'AMAPRESS_DEMO_MODE' ) || defined( 'AMAPRESS_DISABLE_AUTOUPDATE_NOTIFICATIONS' ) ) {
+	add_filter( 'auto_plugin_update_send_email', '__return_false' );
+	add_filter( 'auto_theme_update_send_email', '__return_false' );
+}
