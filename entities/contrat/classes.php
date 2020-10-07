@@ -1139,6 +1139,42 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'l j F Y', $adh->getDate_fin() );
 			}
 		];
+		$ret['date_ouverture'] = [
+			'desc' => 'Date d\'ouverture du contrat (par ex, 22/09/2018)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return date_i18n( 'd/m/Y', $adh->getDate_ouverture() );
+			}
+		];
+		$ret['date_cloture'] = [
+			'desc' => 'Date de clôture du contrat (par ex, 22/09/2018)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return date_i18n( 'd/m/Y', $adh->getDate_cloture() );
+			}
+		];
+		$ret['date_ouverture_lettre'] = [
+			'desc' => 'Date d\'ouverture du contrat (par ex, 22 septembre 2018)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return date_i18n( 'j F Y', $adh->getDate_ouverture() );
+			}
+		];
+		$ret['date_cloture_lettre'] = [
+			'desc' => 'Date de clôture du contrat (par ex, 22 septembre 2018)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return date_i18n( 'j F Y', $adh->getDate_cloture() );
+			}
+		];
+		$ret['date_ouverture_complete'] = [
+			'desc' => 'Date d\'ouverture du contrat (par ex, jeudi 22 septembre 2018)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return date_i18n( 'l j F Y', $adh->getDate_ouverture() );
+			}
+		];
+		$ret['date_cloture_complete'] = [
+			'desc' => 'Date de clôture du contrat (par ex, jeudi 22 septembre 2018)',
+			'func' => function ( AmapressContrat_instance $adh ) {
+				return date_i18n( 'l j F Y', $adh->getDate_cloture() );
+			}
+		];
 		$ret['lieux'] = [
 			'desc' => 'Lieux de distribution',
 			'func' => function ( AmapressContrat_instance $adh ) {

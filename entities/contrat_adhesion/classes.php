@@ -213,19 +213,55 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'l j F Y', $adh->getDate_debut() );
 				}
 			];
-			$ret['date_fin_complete']                = [
+			$ret['date_fin_complete'] = [
 				'desc' => 'Date fin du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j F Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['mention_speciale']                 = [
+			$ret['date_ouverture'] = [
+				'desc' => 'Date d\'ouverture du contrat (par ex, 22/09/2018)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_ouverture() );
+				}
+			];
+			$ret['date_cloture'] = [
+				'desc' => 'Date de clôture du contrat (par ex, 22/09/2018)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_cloture() );
+				}
+			];
+			$ret['date_ouverture_lettre'] = [
+				'desc' => 'Date d\'ouverture du contrat (par ex, 22 septembre 2018)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'j F Y', $adh->getContrat_instance()->getDate_ouverture() );
+				}
+			];
+			$ret['date_cloture_lettre'] = [
+				'desc' => 'Date de clôture du contrat (par ex, 22 septembre 2018)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'j F Y', $adh->getContrat_instance()->getDate_cloture() );
+				}
+			];
+			$ret['date_ouverture_complete'] = [
+				'desc' => 'Date d\'ouverture du contrat (par ex, jeudi 22 septembre 2018)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'l j F Y', $adh->getContrat_instance()->getDate_ouverture() );
+				}
+			];
+			$ret['date_cloture_complete'] = [
+				'desc' => 'Date de clôture du contrat (par ex, jeudi 22 septembre 2018)',
+				'func' => function ( AmapressAdhesion $adh ) {
+					return date_i18n( 'l j F Y', $adh->getContrat_instance()->getDate_cloture() );
+				}
+			];
+			$ret['mention_speciale'] = [
 				'desc' => 'Champ Mention spéciale du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getSpecialMention();
 				}
 			];
-			$ret['tous_referents']                   = [
+			$ret['tous_referents'] = [
 				'desc' => 'Nom des référents du contrat',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
