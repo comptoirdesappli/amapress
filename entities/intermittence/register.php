@@ -13,20 +13,20 @@ function amapress_register_entities_intermittence( $entities ) {
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
-		'title'           => false,
-		'editor'          => false,
-		'slug'            => 'intermittences_paniers',
-		'title_format'    => 'amapress_intermittence_panier_title_formatter',
-		'slug_format'     => 'from_title',
-		'menu_icon'       => 'fa-menu fa-shopping-basket',
-		'default_orderby' => 'amapress_intermittence_panier_date',
-		'default_order'   => 'ASC',
-		'views'           => array(
+		'title'            => false,
+		'editor'           => false,
+		'slug'             => 'intermittences_paniers',
+		'title_format'     => 'amapress_intermittence_panier_title_formatter',
+		'slug_format'      => 'from_title',
+		'menu_icon'        => 'fa-menu fa-shopping-basket',
+		'default_orderby'  => 'amapress_intermittence_panier_date',
+		'default_order'    => 'ASC',
+		'views'            => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_intermittence_panier_views',
 			'exp_csv' => true,
 		),
-		'row_actions'     => array(
+		'row_actions'      => array(
 			'validate_repreneur' => array(
 				'label'     => 'Valider le repreneur',
 				'condition' => function ( $post_id ) {
@@ -47,7 +47,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'confirm'   => true,
 			]
 		),
-		'fields'          => array(
+		'fields'           => array(
 			'date'               => array(
 				'name'       => amapress__( 'Date' ),
 				'type'       => 'date',
@@ -191,3 +191,27 @@ function amapress_row_action_intermittence_panier_switch_adherent( $post_id ) {
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
+
+add_action( 'init', function () {
+	if ( ! wp_next_scheduled( 'amapress_clean_inter_paniers' ) ) {
+		wp_schedule_event( time(), 'monthly', 'amapress_clean_inter_paniers' );
+	}
+} );
+
+add_action( 'amapress_clean_inter_paniers', function () {
+	$delay_months = intval( Amapress::getOption( 'delete_inter_paniers_months' ) );
+	if ( $delay_months > 0 ) {
+		$start_date = Amapress::start_of_month( Amapress::add_a_month( amapress_time(), - ( 120 + $delay_months ) ) );
+		$end_date   = Amapress::end_of_month( Amapress::add_a_month( amapress_time(), - $delay_months ) );
+		$paniers    = AmapressIntermittence_panier::get_paniers_intermittents(
+			$start_date, $end_date
+		);
+		AmapressIntermittence_panier::getStats( $start_date, $end_date );
+		global $wpdb;
+		$wpdb->query( 'START TRANSACTION' );
+		foreach ( $paniers as $panier ) {
+			wp_delete_post( $panier->ID, true );
+		}
+		$wpdb->query( 'COMMIT' );
+	}
+} );

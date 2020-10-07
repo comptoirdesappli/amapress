@@ -78,7 +78,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		foreach ( $this->getContrat_instances() as $contrat_instance ) {
 			$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $this->getAdherent()->ID, $contrat_instance->ID );
 			/** @var AmapressAdhesion $adhesion */
-			$adhesion    = array_shift( $adhesions );
+			$adhesion = array_shift( $adhesions );
 			if ( ! $adhesion ) {
 				continue;
 			}
@@ -540,7 +540,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'mes-echanges'     => [
+				'mes-echanges'                     => [
 					'desc' => 'Lien vers la page "Mes paniers échangés"',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -554,13 +554,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'mes-paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'date'             => [
+				'date'                             => [
 					'desc' => 'Date de distribution de ce panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return date_i18n( 'd/m/Y', $panier->getDate() );
 					}
 				],
-				'panier'           => [
+				'panier'                           => [
 					'desc' => 'Panier(s) distribué(s) à cette distribution (titre des paniers)',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -570,7 +570,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getPaniersTitles( true, false );
 					}
 				],
-				'panier-desc'             => [
+				'panier-desc'                      => [
 					'desc' => 'Panier(s) distribué(s) à cette distribution (avec contenu des paniers)',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -580,7 +580,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getPaniersTitles( false, true );
 					}
 				],
-				'panier-desc-date'        => [
+				'panier-desc-date'                 => [
 					'desc' => 'Panier(s) distribué(s) à cette distribution (avec contenu des paniers et date)',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
@@ -590,7 +590,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getPaniersTitles( true, true );
 					}
 				],
-				'adherent-pseudo'         => [
+				'adherent-pseudo'                  => [
 					'desc' => 'Pseudo de l\'adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -600,7 +600,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getAdherent()->getUser()->display_name;
 					}
 				],
-				'adherent-nom'            => [
+				'adherent-nom'                     => [
 					'desc' => 'Nom de l\'adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -610,7 +610,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getAdherent()->getDisplayName();
 					}
 				],
-				'adherent'                => [
+				'adherent'                         => [
 					'desc' => 'Adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -625,7 +625,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						);
 					}
 				],
-				'adherent-coords'         => [
+				'adherent-coords'                  => [
 					'desc' => 'Coordonnées adhérent proposant son panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
@@ -635,19 +635,19 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $panier->getAdherent()->getContacts();
 					}
 				],
-				'adherent-message'        => [
+				'adherent-message'                 => [
 					'desc' => 'Message de mise à disposition du panier de la part de l\'adhérent',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return $panier->getAdherentMessage();
 					}
 				],
-				'adherent-cancel-message' => [
+				'adherent-cancel-message'          => [
 					'desc' => 'Message d\'annulation de la part de l\'adhérent',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return $panier->getAdherentCancelMessage();
 					}
 				],
-				'repreneur-pseudo'        => [
+				'repreneur-pseudo'                 => [
 					'desc' => 'Pseudo du repreneur du panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
@@ -663,7 +663,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $user->getUser()->display_name;
 					}
 				],
-				'repreneur-nom'           => [
+				'repreneur-nom'                    => [
 					'desc' => 'Nom du repreneur du panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
@@ -679,7 +679,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						return $user->getDisplayName();
 					}
 				],
-				'repreneur'               => [
+				'repreneur'                        => [
 					'desc' => 'Repreneur du panier',
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
@@ -936,5 +936,148 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		}
 
 		return 'Reply-To: ' . implode( ',', $emails );
+	}
+
+	public static function getStats(
+		$start_date, $end_date
+	) {
+		$ret = [];
+
+		$start_date  = Amapress::start_of_month( $start_date );
+		$end_date    = Amapress::end_of_month( $end_date );
+		$take_months = [];
+		$start_month = $start_date;
+		while ( $start_month <= $end_date ) {
+			$take_months[] = date_i18n( 'm/Y', $start_month );
+			$start_month   = Amapress::add_a_month( $start_month );
+		}
+
+		$user_names       = [];
+		$user_sort_names  = [];
+		$user_lieux       = [];
+		$user_takens      = [];
+		$user_exchangeds  = [];
+		$month_sort       = [];
+		$month_takens     = [];
+		$month_exchangeds = [];
+
+
+		$stored = get_option( 'amapress_inter_stats' );
+		if ( ! empty( $stored ) ) {
+			$month_sort       = array_merge( $stored['month_sort'] );
+			$month_takens     = array_merge( $stored['month_takens'] );
+			$month_exchangeds = array_merge( $stored['month_exchangeds'] );
+		}
+		$paniers = self::get_paniers_intermittents( $start_date, $end_date, 'ASC' );
+		foreach ( $paniers as $panier ) {
+			$month = date_i18n( 'm/Y', $panier->getDate() );
+			unset( $month_sort[ $month ] );
+			unset( $month_takens[ $month ] );
+			unset( $month_exchangeds[ $month ] );
+		}
+		foreach ( $month_sort as $month => $cnt ) {
+			if ( ! in_array( $month, $take_months ) ) {
+				unset( $month_sort[ $month ] );
+			}
+		}
+		foreach ( $month_takens as $month => $cnt ) {
+			if ( ! in_array( $month, $take_months ) ) {
+				unset( $month_takens[ $month ] );
+			}
+		}
+		foreach ( $month_exchangeds as $month => $cnt ) {
+			if ( ! in_array( $month, $take_months ) ) {
+				unset( $month_exchangeds[ $month ] );
+			}
+		}
+
+		foreach ( $paniers as $panier ) {
+			foreach ( [ $panier->getAdherent(), $panier->getRepreneur() ] as $r ) {
+				if ( empty( $r ) ) {
+					continue;
+				}
+				$month = date_i18n( 'm/Y', $panier->getDate() );
+				if ( ! isset( $month_takens[ $month ] ) ) {
+					$month_takens[ $month ] = 0;
+				}
+				if ( ! isset( $month_exchangeds[ $month ] ) ) {
+					$month_exchangeds[ $month ] = 0;
+				}
+				if ( ! isset( $month_sort[ $month ] ) ) {
+					$month_sort[ $month ] = date_i18n( 'Y-m', $panier->getDate() );
+				}
+				if ( $r->ID == $panier->getAdherentId() ) {
+					$month_exchangeds[ $month ] += 1;
+				} else if ( $r->ID == $panier->getRepreneurId() ) {
+					$month_takens[ $month ] += 1;
+				}
+
+				$rid = strval( $r->ID );
+				if ( ! isset( $user_takens[ $rid ] ) ) {
+					$user_takens[ $rid ] = [];
+				}
+				if ( ! isset( $user_exchangeds[ $rid ] ) ) {
+					$user_exchangeds[ $rid ] = [];
+				}
+				if ( $r->ID == $panier->getAdherentId() ) {
+					$user_exchangeds[ $rid ][] = Amapress::makeLink( $panier->getAdminEditLink(), date_i18n( 'd/m/Y', $panier->getDate() ) );
+				} else if ( $r->ID == $panier->getRepreneurId() ) {
+					$user_takens[ $rid ][] = Amapress::makeLink( $panier->getAdminEditLink(), date_i18n( 'd/m/Y', $panier->getDate() ) );
+				}
+				if ( ! isset( $user_names[ $rid ] ) ) {
+					$user_names[ $rid ] = Amapress::makeLink( $r->getEditLink(), $r->getDisplayName() . '(' . $r->getUser()->user_email . ')' );
+				}
+				if ( ! isset( $user_sort_names[ $rid ] ) ) {
+					$user_sort_names[ $rid ] = $r->getSortableDisplayName();
+				}
+				if ( ! isset( $user_lieux[ $rid ] ) ) {
+					$user_lieux[ $rid ] = $panier->getLieu()->getLieuTitle();
+				}
+			}
+		}
+
+		if ( ! empty( $stored ) ) {
+			foreach ( $month_sort as $month => $cnt ) {
+				$stored['month_sort'][ $month ] = $cnt;
+			}
+			foreach ( $month_takens as $month => $cnt ) {
+				$stored['month_takens'][ $month ] = $cnt;
+			}
+			foreach ( $month_exchangeds as $month => $cnt ) {
+				$stored['month_exchangeds'][ $month ] = $cnt;
+			}
+		} else {
+			$stored['month_sort']       = $month_sort;
+			$stored['month_takens']     = $month_takens;
+			$stored['month_exchangeds'] = $month_exchangeds;
+		}
+		update_option( 'amapress_inter_stats', $stored );
+
+		$lines = [];
+		foreach ( $user_names as $user_id => $user_name ) {
+			$lines[] = array(
+				'user'            => $user_name,
+				'sort_user'       => $user_sort_names[ $user_id ],
+				'lieu'            => $user_lieux[ $user_id ],
+				'exchanged_dates' => implode( ', ', $user_exchangeds[ $user_id ] ),
+				'exchanged_nb'    => count( $user_exchangeds[ $user_id ] ),
+				'taken_dates'     => implode( ', ', $user_takens[ $user_id ] ),
+				'taken_nb'        => count( $user_takens[ $user_id ] ),
+			);
+		}
+		$ret['users'] = $lines;
+
+		$lines = [];
+		foreach ( $month_takens as $month => $cnt ) {
+			$lines[] = [
+				'month'        => Amapress::makeLink( admin_url( 'edit.php?post_type=amps_inter_panier&amapress_date=' . $month_sort[ $month ] ), $month, true, true ),
+				'sort_month'   => $month_sort[ $month ],
+				'exchanged_nb' => $month_exchangeds[ $month ],
+				'taken_nb'     => $month_takens[ $month ],
+			];
+		}
+		$ret['months'] = $lines;
+
+		return $ret;
 	}
 }

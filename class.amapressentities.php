@@ -3450,78 +3450,17 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'title' => 'Repris',
 											'data'  => 'taken_nb',
 										);
-										$columns[]        = array(
+										$columns[] = array(
 											'title' => 'Dates reprise',
 											'data'  => 'taken_dates',
 										);
-										$user_names       = [];
-										$user_sort_names  = [];
-										$user_lieux       = [];
-										$user_takens      = [];
-										$user_exchangeds  = [];
-										$month_sort       = [];
-										$month_takens     = [];
-										$month_exchangeds = [];
-										$start_date       = DateTime::createFromFormat( 'd/m/Y', $start_date_fmt )->getTimestamp();
-										$end_date         = DateTime::createFromFormat( 'd/m/Y', $end_date_fmt )->getTimestamp();
-										foreach ( AmapressIntermittence_panier::get_paniers_intermittents( $start_date, $end_date, 'ASC' ) as $panier ) {
-											foreach ( [ $panier->getAdherent(), $panier->getRepreneur() ] as $r ) {
-												if ( empty( $r ) ) {
-													continue;
-												}
-												$month = date_i18n( 'm/Y', $panier->getDate() );
-												if ( ! isset( $month_takens[ $month ] ) ) {
-													$month_takens[ $month ] = 0;
-												}
-												if ( ! isset( $month_exchangeds[ $month ] ) ) {
-													$month_exchangeds[ $month ] = 0;
-												}
-												if ( ! isset( $month_sort[ $month ] ) ) {
-													$month_sort[ $month ] = date_i18n( 'Y-m', $panier->getDate() );
-												}
-												if ( $r->ID == $panier->getAdherentId() ) {
-													$month_exchangeds[ $month ] += 1;
-												} else if ( $r->ID == $panier->getRepreneurId() ) {
-													$month_takens[ $month ] += 1;
-												}
+										$start_date = DateTime::createFromFormat( 'd/m/Y', $start_date_fmt )->getTimestamp();
+										$end_date = DateTime::createFromFormat( 'd/m/Y', $end_date_fmt )->getTimestamp();
 
-												$rid = strval( $r->ID );
-												if ( ! isset( $user_takens[ $rid ] ) ) {
-													$user_takens[ $rid ] = [];
-												}
-												if ( ! isset( $user_exchangeds[ $rid ] ) ) {
-													$user_exchangeds[ $rid ] = [];
-												}
-												if ( $r->ID == $panier->getAdherentId() ) {
-													$user_exchangeds[ $rid ][] = Amapress::makeLink( $panier->getAdminEditLink(), date_i18n( 'd/m/Y', $panier->getDate() ) );
-												} else if ( $r->ID == $panier->getRepreneurId() ) {
-													$user_takens[ $rid ][] = Amapress::makeLink( $panier->getAdminEditLink(), date_i18n( 'd/m/Y', $panier->getDate() ) );
-												}
-												if ( ! isset( $user_names[ $rid ] ) ) {
-													$user_names[ $rid ] = Amapress::makeLink( $r->getEditLink(), $r->getDisplayName() . '(' . $r->getUser()->user_email . ')' );
-												}
-												if ( ! isset( $user_sort_names[ $rid ] ) ) {
-													$user_sort_names[ $rid ] = $r->getSortableDisplayName();
-												}
-												if ( ! isset( $user_lieux[ $rid ] ) ) {
-													$user_lieux[ $rid ] = $panier->getLieu()->getLieuTitle();
-												}
-											}
-										}
-										$lines = [];
-										foreach ( $user_names as $user_id => $user_name ) {
-											$lines[] = array(
-												'user'            => $user_name,
-												'sort_user'       => $user_sort_names[ $user_id ],
-												'lieu'            => $user_lieux[ $user_id ],
-												'exchanged_dates' => implode( ', ', $user_exchangeds[ $user_id ] ),
-												'exchanged_nb'    => count( $user_exchangeds[ $user_id ] ),
-												'taken_dates'     => implode( ', ', $user_takens[ $user_id ] ),
-												'taken_nb'        => count( $user_takens[ $user_id ] ),
-											);
-										}
+										$stats = AmapressIntermittence_panier::getStats( $start_date, $end_date );
+
 										amapress_echo_datatable( 'amp_intermit_stats_table',
-											$columns, $lines,
+											$columns, $stats['users'],
 											array(
 												'paging'       => false,
 												'searching'    => true,
@@ -3554,17 +3493,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 												'data'  => 'taken_nb',
 											)
 										];
-										$lines   = [];
-										foreach ( $month_takens as $month => $cnt ) {
-											$lines[] = [
-												'month'        => Amapress::makeLink( admin_url( 'edit.php?post_type=amps_inter_panier&amapress_date=' . $month_sort[ $month ] ), $month, true, true ),
-												'sort_month'   => $month_sort[ $month ],
-												'exchanged_nb' => $month_exchangeds[ $month ],
-												'taken_nb'     => $month_takens[ $month ],
-											];
-										}
+
 										amapress_echo_datatable( 'amp_intermit_month_stats_table',
-											$columns, $lines,
+											$columns, $stats['months'],
 											array(
 												'paging'       => false,
 												'searching'    => true,
@@ -4039,6 +3970,15 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'default' => 24,
 											'slider'  => false,
 											'unit'    => 'heure(s)'
+										),
+										array(
+											'id'      => 'delete_inter_paniers_months',
+											'name'    => 'Délai de purge',
+											'type'    => 'number',
+											'unit'    => 'mois',
+											'default' => 18,
+											'min'     => 6,
+											'desc'    => 'Délai en mois de purge des échanges de paniers',
 										),
 										array(
 											'type' => 'save',
