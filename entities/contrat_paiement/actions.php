@@ -34,3 +34,26 @@ function amapress_row_action_contrat_paiement_unmark_rcv( $post_id ) {
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
+
+add_filter( 'amapress_bulk_action_amp_cnt_pmt_send_notrcv_recall', 'amapress_bulk_action_amp_cnt_pmt_send_notrcv_recall', 10, 2 );
+function amapress_bulk_action_amp_cnt_pmt_send_notrcv_recall( $sendback, $post_ids ) {
+	$cnt = 0;
+	foreach ( $post_ids as $post_id ) {
+		$adh = AmapressAmapien_paiement::getBy( $post_id, true );
+		if ( $adh->sendAwaitingRecall() ) {
+			$cnt ++;
+		}
+	}
+
+	return amapress_add_bulk_count( $sendback, $cnt );
+}
+
+add_action( 'amapress_row_action_contrat_paiement_send_notrcv_recall', 'amapress_row_action_contrat_paiement_send_notrcv_recall' );
+function amapress_row_action_contrat_paiement_send_notrcv_recall( $post_id ) {
+	$adh = AmapressAmapien_paiement::getBy( $post_id, true );
+	if ( $adh ) {
+		$adh->sendAwaitingRecall();
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
+}

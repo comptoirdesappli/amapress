@@ -221,27 +221,42 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //            ),
 		),
 		'row_actions'      => array(
-			'mark_rcv'   => [
+			'mark_rcv'           => [
 				'label'     => 'Marquer reçu',
 				'condition' => function ( $adh_id ) {
 					return AmapressAmapien_paiement::NOT_RECEIVED == AmapressAmapien_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
-			'unmark_rcv' => [
+			'unmark_rcv'         => [
 				'label'     => 'Marquer Non reçu',
+				'condition' => function ( $adh_id ) {
+					return AmapressAmapien_paiement::NOT_RECEIVED != AmapressAmapien_paiement::getBy( $adh_id )->getStatus();
+				},
+			],
+			'send_notrcv_recall' => [
+				'label'     => 'Envoyer rappel',
 				'condition' => function ( $adh_id ) {
 					return AmapressAmapien_paiement::NOT_RECEIVED == AmapressAmapien_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
 		),
 		'bulk_actions'     => array(
-			'amp_cnt_pmt_mark_recv' => array(
+			'amp_cnt_pmt_mark_recv'          => array(
 				'label'    => 'Marquer reçu',
 				'messages' => array(
 					'<0' => 'Une erreur s\'est produit pendant l\'opération',
 					'0'  => 'Une erreur s\'est produit pendant l\'opération',
 					'1'  => 'Un règlement a été marqué comme reçu avec succès',
 					'>1' => '%s règlements ont été marqués comme reçus avec succès',
+				),
+			),
+			'amp_cnt_pmt_send_notrcv_recall' => array(
+				'label'    => 'Envoyer rappel',
+				'messages' => array(
+					'<0' => 'Une erreur s\'est produit pendant l\'opération',
+					'0'  => 'Une erreur s\'est produit pendant l\'opération',
+					'1'  => 'Un rappel de règlement en attente a été envoyé avec succès',
+					'>1' => '%s rappels de règlement en attente ont été envoyés avec succès',
 				),
 			),
 		),

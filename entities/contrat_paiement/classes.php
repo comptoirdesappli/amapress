@@ -327,5 +327,109 @@ GROUP BY $wpdb->posts.ID" );
 
 		return self::$paiement_cache;
 	}
+
+	private static $properties = null;
+
+	public static function getProperties() {
+		if ( null == self::$properties ) {
+			$ret = [];
+			foreach ( AmapressAdhesion::getProperties() as $name => $conf ) {
+				$func         = $conf['func'];
+				$ret[ $name ] = [
+					'desc' => $conf['desc'],
+					'func' => function ( AmapressAmapien_paiement $adh ) use ( $func ) {
+						return call_user_func( $func, $adh->getAdhesion() );
+					}
+				];
+			}
+
+			$ret['paiement_type']     = [
+				'desc' => 'Type de paiement (Chèque, espèces, virement...)',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return $adh->getTypeFormatted();
+				}
+			];
+			$ret['paiement_numero']   = [
+				'desc' => 'Numéro du chèque',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return $adh->getNumero();
+				}
+			];
+			$ret['paiement_emetteur'] = [
+				'desc' => 'Nom de l\'adhérent émetteur',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return $adh->getEmetteur();
+				}
+			];
+			$ret['paiement_banque']   = [
+				'desc' => 'Banque du chèque',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return $adh->getBanque();
+				}
+			];
+			$ret['paiement_montant']  = [
+				'desc' => 'Montant du paiement',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return Amapress::formatPrice( $adh->getAmount() );
+				}
+			];
+			$ret['paiement_date']     = [
+				'desc' => 'Date d\'encaissement du paiement',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return date_i18n( 'd/m/Y', $adh->getDate() );
+				}
+			];
+			$ret['paiement_status']   = [
+				'desc' => 'Etat du paiement',
+				'func' => function ( AmapressAmapien_paiement $adh ) {
+					return $adh->getStatusDisplay();
+				}
+			];
+
+			self::$properties = $ret;
+		}
+
+		return self::$properties;
+	}
+
+	public static function getPlaceholders() {
+		$ret = [];
+
+		foreach ( amapress_replace_mail_placeholders_help( '', false, false ) as $k => $v ) {
+			$ret[ $k ] = $v;
+		}
+		foreach ( Amapress::getPlaceholdersHelpForProperties( self::getProperties() ) as $prop_name => $prop_desc ) {
+			$ret[ $prop_name ] = $prop_desc;
+		}
+
+		return $ret;
+	}
+
+	public static function getPlaceholdersHelp( $additional_helps = [], $for_contrat = false, $show_toggler = true ) {
+		$ret = self::getPlaceholders();
+
+		return Amapress::getPlaceholdersHelpTable( 'contrat-pmt-placeholders', $ret,
+			'du règlement', $additional_helps, false,
+			$for_contrat ? '${' : '%%', $for_contrat ? '}' : '%%',
+			$show_toggler );
+	}
+
+	public function sendAwaitingRecall() {
+		if ( self::NOT_RECEIVED != $this->getStatus() ) {
+			return false;
+		}
+		amapress_mail_to_current_user(
+			Amapress::getOption( 'paiement-awaiting-mail-subject' ),
+			Amapress::getOption( 'paiement-awaiting-mail-content' ),
+			$this->getAdhesion()->getAdherentId(),
+			$this, [],
+			amapress_get_recall_cc_from_option( 'paiement-awaiting-cc' ),
+			null, [
+			'Reply-To: ' . implode( ',', $this->getAdhesion()->getContrat_instance()->getAllReferentsEmails(
+				$this->getAdhesion()->getLieuId() ) )
+		] );
+
+		return true;
+	}
 }
 

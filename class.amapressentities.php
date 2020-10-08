@@ -2275,6 +2275,41 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => '',
 									'options' => amapress_contrat_paiements_recall_options(),
 								),
+								'Emails - Envoi rappel remise règlements'              => array(
+									'id'      => 'amp_tab_recall_awaiting_cheques',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'       => 'paiement-awaiting-mail-subject',
+											'name'     => 'Sujet de l\'email',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Règlement à remettre pour %%contrat_titre_complet%%',
+										),
+										array(
+											'id'      => 'paiement-awaiting-mail-content',
+											'name'    => 'Contenu de l\'email',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\nUn règlement en %%paiement_type%% d'un montant de %%paiement_montant%%€  est en attente de réception depuis le %%paiement_date%% pour le contrat %%contrat_titre_complet%%. Merci de le remettre au plus vite à  %%tous_referents_contacts%%\n\n%%nom_site%%" ),
+											'desc'    =>
+												function ( $option ) {
+													return AmapressAmapien_paiement::getPlaceholdersHelp();
+												},
+										),
+										array(
+											'id'           => 'paiement-awaiting-cc',
+											'name'         => amapress__( 'Cc' ),
+											'type'         => 'select-users',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+											'desc'         => 'Emails en copie',
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
 							),
 						),
 						array(
