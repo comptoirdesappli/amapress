@@ -454,6 +454,12 @@ function amapress_filter_posts( WP_Query $query ) {
 			$arr = array( 'relation' => 'OR' );
 			foreach ( $amapress_recette_produits as $prod ) {
 				$arr[] = amapress_prepare_like_in_array( "amapress_{$pt}_produits", $prod );
+				$arr[] = array(
+					'key'     => "amapress_{$pt}_produits",
+					'value'   => $prod,
+					'compare' => '=',
+					'type'    => 'NUMERIC'
+				);
 			}
 			amapress_add_meta_query( $query, array(
 				array(
