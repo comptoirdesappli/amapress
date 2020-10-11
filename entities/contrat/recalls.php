@@ -523,7 +523,8 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 			break;
 		case 'all':
 			$user_ids = get_users( [
-				'fields' => 'ids'
+				'amapress_role' => 'active',
+				'fields'        => 'ids'
 			] );
 			break;
 	}
@@ -1113,7 +1114,7 @@ function amapress_contrat_open_recall_options() {
 			'options' => [
 				'with-contrat' => 'Amapiens avec contrat',
 				'same-lieu'    => 'Amapiens des lieux de distributions de ce contrat',
-				'all'          => 'Tous les amapiens',
+				'all'          => 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)',
 			],
 			'default' => 'all',
 		),
@@ -1219,7 +1220,7 @@ function amapress_contrat_close_recall_options() {
 			'options' => [
 				'with-contrat' => 'Amapiens avec contrat',
 				'same-lieu'    => 'Amapiens des lieux de distributions de ce contrat',
-				'all'          => 'Tous les amapiens',
+				'all'          => 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)',
 			],
 			'default' => 'all',
 		),

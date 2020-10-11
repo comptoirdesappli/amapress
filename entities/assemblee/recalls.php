@@ -103,7 +103,7 @@ add_action( 'amapress_recall_assemblee_generale_available', function ( $args ) {
 	$assemblee_generale = new AmapressAssemblee_generale( $args['id'] );
 	$participants       = $assemblee_generale->getParticipantsIds();
 
-	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_contrat=active&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat", "ag" );
+	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_role=active&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat", "ag" );
 	amapress_send_message(
 		Amapress::getOption( 'assemblee-available-recall-mail-subject' ),
 		Amapress::getOption( 'assemblee-available-recall-mail-content' ),

@@ -108,7 +108,7 @@ add_action( 'amapress_recall_amap_event_available', function ( $args ) {
 	$amap_event   = new AmapressAmap_event( $args['id'] );
 	$participants = $amap_event->getParticipantsIds();
 
-	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_contrat=active&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat", "visite" );
+	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_role=active&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat", "visite" );
 	amapress_send_message(
 		Amapress::getOption( 'amap-event-available-recall-mail-subject' ),
 		Amapress::getOption( 'amap-event-available-recall-mail-content' ),
