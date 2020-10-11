@@ -1065,6 +1065,18 @@ function amapress_register_shortcodes() {
 				case 'responsable_amap':
 					$show = $show || amapress_can_access_admin();
 					break;
+				case 'no_adhesion':
+					$adh  = AmapressAdhesion_paiement::getForUser( amapress_current_user_id() );
+					$show = $show || ( null == $adh );
+					break;
+				case 'adhesion':
+					$adh  = AmapressAdhesion_paiement::getForUser( amapress_current_user_id() );
+					$show = $show || ( null != $adh );
+					break;
+				case 'adhesion_nok':
+					$adh  = AmapressAdhesion_paiement::getForUser( amapress_current_user_id() );
+					$show = $show || ( $adh && $adh->isNotReceived() );
+					break;
 				default:
 					if ( strpos( $role, 'contrat_' ) === 0 ) {
 						$contrat_id = Amapress::resolve_post_id( substr( $role, 8 ), AmapressContrat::INTERNAL_POST_TYPE );
@@ -1078,9 +1090,9 @@ function amapress_register_shortcodes() {
 		return $show ? $content : '';
 	},
 		[
-			'desc' => 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution)',
+			'desc' => 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution, adhésion non réglée, adhésion, sans adhésion)',
 			'args' => [
-				'role' => '(Par défaut "logged") Afficher le contenu de ce shortcode uniquement si l\'amapien est dans un des rôles suivants : logged, not_logged, intermittent, no_contrat, responsable_distrib (est responsable de distribution cette semaine), responsable_amap (peut accéder au Tableau de Bord), contrat_xxx (a un contrat xxx)'
+				'role' => '(Par défaut "logged") Afficher le contenu de ce shortcode uniquement si l\'amapien est dans un des rôles suivants : logged, not_logged, intermittent, no_contrat, no_adhesion, adhesion, adhesion_nok, responsable_distrib (est responsable de distribution cette semaine), responsable_amap (peut accéder au Tableau de Bord), contrat_xxx (a un contrat xxx)'
 			]
 		] );
 
