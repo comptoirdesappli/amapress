@@ -1677,6 +1677,7 @@ jQuery(function($) {
 				'required'    => true,
 				'default'     => false,
 				'show_column' => false,
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par prélèvement',
 			),
 			'stripe_public_key' => array(
