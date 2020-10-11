@@ -1665,6 +1665,15 @@ add_action( 'pre_user_query', function ( WP_User_Query $uqi ) {
 			);
 			$user_id_sql = amapress_prepare_in_sql( $user_ids );
 			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
+		} else if ( 'active' == $amapress_role ) {
+			$user_ids    = array_merge(
+				get_users_cached( wp_parse_args( 'amapress_contrat=active&fields=id' ) ),
+				get_users_cached( wp_parse_args( 'amapress_contrat=intermittent&fields=id' ) ),
+				get_users_cached( wp_parse_args( 'amapress_role=collectif_no_prod&fields=id' ) ),
+				get_users_cached( wp_parse_args( 'amapress_adhesion=all&fields=id' ) )
+			);
+			$user_id_sql = amapress_prepare_in_sql( $user_ids );
+			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
 		} else if ( 'archivable' == $amapress_role ) {
 			$user_ids    = array_merge(
 				get_users_cached( wp_parse_args( 'amapress_contrat=active&fields=id' ) ),
