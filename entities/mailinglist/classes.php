@@ -174,7 +174,7 @@ class Amapress_MailingSystems {
 
 }
 
-class Amapress_MailingSystem {
+abstract class Amapress_MailingSystem {
 	function __construct() {
 		$this->mailinglists = null;
 	}
@@ -229,7 +229,7 @@ class Amapress_MailingSystem {
 	}
 }
 
-class Amapress_MailingList {
+abstract class Amapress_MailingList {
 	/** @var  array $info */
 	protected $info;
 	private $system;
@@ -260,6 +260,7 @@ class Amapress_MailingList {
 				'messages'          => null,
 				'moderators'        => array(),
 				'moderators_emails' => array(),
+				'moderators_found'  => false,
 				'moderation'        => 'none',
 				'moderations'       => array( 'none' => 'Aucune' ),
 			)
@@ -339,6 +340,11 @@ class Amapress_MailingList {
 	}
 
 	/** @return string */
+	public function getModeratorsLink() {
+
+	}
+
+	/** @return string */
 	public function getMembersLink() {
 
 	}
@@ -392,6 +398,10 @@ class Amapress_MailingList {
 
 	public function getModeratorsEmails() {
 		return $this->info['moderators_emails'];
+	}
+
+	public function handleModerators() {
+		return $this->info['moderators_found'];
 	}
 
 	public function getModerationModeName() {
@@ -486,5 +496,457 @@ class Amapress_MailingList_Mail {
 
 	public function getContent() {
 		return $this->info['content'];
+	}
+}
+
+abstract class Amapress_Sympa_MailingList extends Amapress_MailingList {
+	/** @return  Amapress_Sympa_MailSystem */
+	public function getSystem() {
+		return parent::getSystem();
+	}
+
+	function __construct( $name, $info, Amapress_Sympa_MailSystem $system ) {
+		parent::__construct( $name, $info, $system );
+	}
+
+	public function getConfigurationLink() {
+		return $this->getSystem()->getMailingListBaseUrl() . "edit_list_request/{$this->getName()}";
+	}
+
+	public function getMembersLink() {
+		return $this->getSystem()->getMailingListBaseUrl() . "review/{$this->getName()}";
+	}
+
+	public function getModeratorsLink() {
+		return $this->getSystem()->getMailingListBaseUrl() . "review/{$this->getName()}/editor";
+	}
+
+	public function getBouncesLink() {
+		return $this->getSystem()->getMailingListBaseUrl() . "reviewbouncing/{$this->getName()}";
+	}
+
+
+	public function getModerationLink() {
+		return $this->getSystem()->getMailingListBaseUrl() . "modindex/{$this->getName()}";
+	}
+
+	public function setModerationMode( $value ) {
+		parent::setModerationMode( $value );
+
+		$this->getSystem()->setModeration( $value, $this->getName() );
+	}
+
+	public function setReplyTo( $value ) {
+		parent::setReplyTo( $value );
+
+		$this->getSystem()->setReplyTo( $value, $this->getName() );
+	}
+
+	public function setModerators( $value ) {
+		$this->getSystem()->setModerators( $value, $this->getModeratorsEmails(), $this->getName() );
+		parent::setModerators( $value );
+	}
+
+	public function getModerationControl() {
+
+	}
+
+	public function distributeMail( $msg_id ) {
+		return $this->getSystem()->distributeMail( $this->getName(), $msg_id );
+	}
+
+	public function rejectMailQuiet( $msg_id ) {
+		return $this->getSystem()->rejectMailQuiet( $this->getName(), $msg_id );
+	}
+
+	public function rejectMail( $msg_id ) {
+		return $this->getSystem()->rejectMail( $this->getName(), $msg_id );
+	}
+
+	/** @return Amapress_MailingList_Mail[] */
+	public function getMailWaitingModeration() {
+		if ( ! isset( $this->info['messages'] ) ) {
+			if ( $this->getMailWaitingModerationCount() > 0 ) {
+				$this->info['messages'] = $this->getSystem()->getMailWaitingModeration( $this->getName() );
+			} else {
+				$this->info['messages'] = array();
+			}
+		}
+
+		return $this->info['messages'];
+	}
+
+	public function getFullName() {
+		return $this->getSystem()->getFullName( $this->getName() );
+	}
+
+	public function getId() {
+		return $this->getSystem()->getId( $this->getName() );
+	}
+}
+
+abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
+	public function handleMessagesModeration() {
+		return true;
+	}
+
+	public static function parseSelect( $html_content, $select_name, &$options ) {
+		preg_match( '%\<select\s+name\="' . $select_name . '".+?\<\/select\>%s', $html_content, $m );
+		$options_matches = array();
+		preg_match_all( '%\<option\s+value\="(?<value>[^"]+)"(?<selected>\s+selected\="selected")?[^\>]*\>(?<text>[^\<]+)\<\/option\>%s', $m[0], $options_matches, PREG_SET_ORDER );
+		$options  = array();
+		$selected = null;
+		foreach ( $options_matches as $opt ) {
+			if ( ! empty( $opt['selected'] ) ) {
+				$selected = html_entity_decode( $opt['value'] );
+			}
+			$options[ html_entity_decode( $opt['value'] ) ] = html_entity_decode( $opt['text'] );
+		}
+
+		return $selected;
+	}
+
+	/** @var  \GuzzleHttp\Client $client */
+	protected static $client;
+	protected $mailinglist_domain;
+	protected $protocol;
+	protected $system_id;
+	protected $is_connected = false;
+	protected $manage_waiting = false;
+
+	public function getMailingListBaseUrl() {
+		return "{$this->protocol}://{$this->mailinglist_domain}/wws/";
+	}
+
+	public function getCreationLink() {
+		return $this->getMailingListBaseUrl() . 'create_list_request';
+	}
+
+	public function getFullName( $name ) {
+		return "$name@{$this->mailinglist_domain}";
+	}
+
+	public function getId( $name ) {
+		return "{$this->system_id}:{$this->getFullName($name)}";
+	}
+
+	protected function fetchMails() {
+		if ( $this->error_message !== false ) {
+			return array();
+		}
+
+		$ret = array();
+
+		$resp = self::$client->get( '/wws/lists' );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body  = $resp->getBody();
+			$lists = array();
+			preg_match_all( '%\<li\s+class\="listenum"\>.+?\<\/li\>%s', $body, $lists, PREG_SET_ORDER );
+			foreach ( $lists as $list ) {
+				if ( preg_match( '/href\="\/wws\/admin\/(?<name>[^"]+)"/', $list[0], $m ) ) {
+					$ret[] = $this->getMailingList( $m['name'] );
+				}
+				if ( preg_match( '/href\="\/wws\/+info\/(?<name>[^"]+)"/', $list[0], $m ) ) {
+					$ret[] = $this->getMailingList( $m['name'] );
+				}
+			}
+		}
+
+		return $ret;
+	}
+
+	function __construct( $mailinglist_domain, $login, $pass, $protocol, $system_id, $manage_waiting ) {
+		parent::__construct();
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
+
+		$this->mailinglist_domain = $mailinglist_domain;
+		$this->protocol           = $protocol;
+		$this->system_id          = $system_id;
+		$this->manage_waiting     = $manage_waiting;
+
+		$this->ensureConnected( $login, $pass );
+	}
+
+	public function isConnected() {
+		return $this->is_connected;
+	}
+
+	protected function ensureConnected( $login, $pass ) {
+		if ( self::$client == null ) {
+			$cookies = new \GuzzleHttp\Cookie\CookieJar();
+			//$jar->add
+			self::$client = new \GuzzleHttp\Client(
+				array(
+					'base_uri' => "{$this->protocol}://{$this->mailinglist_domain}",
+					'cookies'  => $cookies,
+				) );
+			$form_params  = array(
+				'action'       => 'login',
+				'action_login' => 'Login',
+				'email'        => $login,
+				'passwd'       => $pass,
+			);
+
+			$resp = self::$client->get( '/wws' );
+			$body = $resp->getBody();
+			if ( preg_match( '/type="hidden" name="csrftoken" value="(?<csrftoken>[^"]+)"/', $body, $m ) ) {
+				$form_params = array_merge( $form_params,
+					array(
+						'csrftoken'       => $m['csrftoken'],
+						'previous_action' => 'home',
+						'previous_list'   => '',
+						'only_passwd'     => '',
+						'referer'         => '',
+						'failure_referer' => '',
+						'list'            => '',
+						'nomenu'          => '',
+						'submit'          => 'submit',
+					) );
+			}
+
+			$resp               = self::$client->post( '/wws',
+				[
+					'form_params' => $form_params
+				]
+			);
+			$this->is_connected = false;
+			if ( 200 == $resp->getStatusCode() ) {
+				$this->error_message = false;
+				$body                = $resp->getBody();
+				if ( preg_match( '/type="hidden" name="action" value="logout"/', $body, $m ) ) {
+					$this->is_connected = true;
+				}
+			} else {
+				$this->error_message = $resp->getReasonPhrase();
+			}
+		}
+	}
+
+	public function setSqlDataSource( $sql_query, $list_name ) {
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" );
+		$body = $resp->getBody();
+		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
+
+		$post_data = array(
+			'serial'                                           => $m['serial'],
+			'single_param.user_data_source'                    => 'include2',
+			'single_param.include_sql_query.0.name'            => DB_USER,
+			'single_param.include_sql_query.0.db_type'         => 'mysql',
+			'single_param.include_sql_query.0.host'            => DB_HOST,
+			'single_param.include_sql_query.0.db_name'         => DB_NAME,
+			'single_param.include_sql_query.0.db_host'         => '',
+			'single_param.include_sql_query.0.db_user'         => '',
+			'single_param.include_sql_query.0.db_passwd'       => '',
+			'single_param.include_sql_query.0.db_port'         => '',
+			'single_param.include_sql_query.0.connect_options' => '',
+			'single_param.include_sql_query.0.db_env'          => '',
+			'single_param.include_sql_query.0.user'            => DB_USER,
+			'single_param.include_sql_query.0.passwd'          => DB_PASSWORD,
+			'single_param.include_sql_query.0.sql_query'       => preg_replace( '/\s/', ' ', $sql_query ),
+			'list'                                             => $list_name,
+			'group'                                            => 'data_source',
+			'action'                                           => 'edit_list',
+			'action_edit_list'                                 => 'Mise à jour',
+		);
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
+
+		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+	}
+
+	public function setRemoteUrl( $list_name, $remote_url ) {
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" );
+		$body = $resp->getBody();
+		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
+
+//        var_dump($sql_query);
+		$post_data = array(
+			'serial'                                  => $m['serial'],
+			'single_param.include_remote_file.0.name' => 'Amapress',
+			'single_param.include_remote_file.0.url'  => $remote_url,
+			'list'                                    => $list_name,
+			'group'                                   => 'data_source',
+			'action'                                  => 'edit_list',
+			'action_edit_list'                        => 'Mise à jour',
+		);
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
+
+		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+	}
+
+	public function setModeration( $moderation, $list_name ) {
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" );
+		$body = $resp->getBody();
+		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
+
+		$post_data = array(
+			'serial'                 => $m['serial'],
+			'single_param.send.name' => $moderation,
+			'list'                   => $list_name,
+			'group'                  => 'sending',
+			'action'                 => 'edit_list',
+			'action_edit_list'       => 'Mise à jour',
+		);
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
+
+		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+	}
+
+	public function setReplyTo( $reply_to, $list_name ) {
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" );
+		$body = $resp->getBody();
+		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
+
+		$post_data = array(
+			'serial'                             => $m['serial'],
+			'single_param.reply_to_header.value' => $reply_to,
+			'list'                               => $list_name,
+			'group'                              => 'sending',
+			'action'                             => 'edit_list',
+			'action_edit_list'                   => 'Mise à jour',
+		);
+		$resp      = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body      = $resp->getBody();
+
+		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+	}
+
+	public function setModerators( $new_moderators, $old_moderators_emails, $list_name ) {
+		$resp = self::$client->get( "/wws/edit_list_request/$list_name/description" );
+		$body = $resp->getBody();
+		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
+
+		$post_data = array(
+			'serial'           => $m['serial'],
+			'list'             => $list_name,
+			'group'            => 'description',
+			'action'           => 'edit_list',
+			'action_edit_list' => 'Mise à jour',
+		);
+
+		$j = 0;
+		for ( $i = 0; $i < count( $new_moderators ); $i ++ ) {
+			$mail = amapress_get_user_by_id_or_archived( $new_moderators[ $i ] );
+			if ( $mail ) {
+				$amapien = AmapressUser::getBy( $mail );
+				foreach ( $amapien->getAllEmails() as $email ) {
+					$post_data["single_param.owner.$j.email"]     = $email;
+					$post_data["single_param.owner.$j.gecos"]     = '';
+					$post_data["single_param.owner.$j.info"]      = '';
+					$post_data["single_param.owner.$j.profile"]   = 'privileged';
+					$post_data["single_param.owner.$j.reception"] = 'mail';
+					$j ++;
+				}
+			}
+		}
+		while ( $j < count( $old_moderators_emails ) ) {
+			$post_data["single_param.owner.$j.email"]     = '';
+			$post_data["single_param.owner.$j.gecos"]     = '';
+			$post_data["single_param.owner.$j.info"]      = '';
+			$post_data["single_param.owner.$j.profile"]   = 'privileged';
+			$post_data["single_param.owner.$j.reception"] = 'mail';
+			$j ++;
+		}
+
+//        var_dump($sql_query);
+
+		$resp = self::$client->post( '/wws', [
+			'form_params' => $post_data
+		] );
+		$body = $resp->getBody();
+
+		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+	}
+
+	public function distributeMail( $list_name, $msg_id ) {
+		$resp = self::$client->post( '/wws', [
+			'form_params' => array(
+				'list'              => $list_name,
+				'id'                => $msg_id,
+				'action_distribute' => 'Distribuer',
+			)
+		] );
+
+		return 200 == $resp->getStatusCode();
+	}
+
+	public function rejectMailQuiet( $list_name, $msg_id ) {
+		$resp = self::$client->post( '/wws', [
+			'form_params' =>
+				array(
+					'list'                => $list_name,
+					'id'                  => $msg_id,
+					'action_reject.quiet' => 'Rejeter sans prévenir l\'auteur',
+				)
+		] );
+
+		return 200 == $resp->getStatusCode();
+	}
+
+	public function rejectMail( $list_name, $msg_id ) {
+		$resp = self::$client->post( '/wws', [
+			'form_params' =>
+				array(
+					'list'          => $list_name,
+					'id'            => $msg_id,
+					'action_reject' => 'Rejeter',
+				)
+		] );
+
+		return 200 == $resp->getStatusCode();
+	}
+
+	/** @return Amapress_MailingList_Mail[] */
+	public function getMailWaitingModeration( $name ) {
+		if ( ! $this->manage_waiting ) {
+			return [];
+		}
+
+		$resp = self::$client->get( "/wws/modindex/$name" );
+		if ( 200 == $resp->getStatusCode() ) {
+			$body = $resp->getBody();
+
+			$message_matches = array();
+			preg_match_all( '%href\="\/wws\/viewmod\/' . $name . '\/(?<msg_id>[^"]+)"%s', $body, $message_matches, PREG_SET_ORDER );
+
+			$messages = array();
+			foreach ( $message_matches as $msg ) {
+				$msg_id = $msg['msg_id'];
+				$resp   = self::$client->get( "/wws/viewmod/$name/$msg_id" );
+				if ( 200 == $resp->getStatusCode() ) {
+					$body = $resp->getBody();
+
+					$headers_matches = array();
+					preg_match_all( '%\<li\>\<strong>(?<id>[^\<]+)\<\/strong\>:\s*(?<content>[^\<]+)\<\/li\>%s', $body, $headers_matches, PREG_SET_ORDER );
+
+					$headers = array();
+					foreach ( $headers_matches as $h ) {
+						$headers[ $h['id'] ] = $h['content'];
+					}
+
+					preg_match( '/\<\!--X-Body-of-Message--\>(?<body>.+?)\<\!--X-Body-of-Message-End--\>/s', $body, $content );
+					$messages[] = new Amapress_MailingList_Mail( $msg_id,
+						array(
+							'id'      => $msg_id,
+							'headers' => $headers,
+							'content' => html_entity_decode( $content['body'] ),
+						) );
+				}
+			}
+
+			return $messages;
+		}
+
+		return array();
 	}
 }

@@ -72,18 +72,32 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'multiple'     => true,
 				'tags'         => true,
 				'desc'         => 'Choisir un ou plusieurs modérateurs en charge de valider les mails avant diffusion.',
-				'readonly'     => 'amapress_has_mailinglist_moderators_queries',
+				'readonly'     => function ( TitanFrameworkOption $option ) {
+					return amapress_has_mailinglist_moderators_queries( $option )
+					       || amapress_mailinglist_should_moderators_readonly( $option );
+				},
+				'after_option' => function ( TitanFrameworkOption $option ) {
+					if ( amapress_mailinglist_should_moderators_readonly( $option ) ) {
+						$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
+
+						echo '<p style="color:red;font-weight: bold">La gestion des modérateurs se fait manuellement dans ' .
+						     Amapress::makeLink( $ml->getMailingList()->getModeratorsLink(),
+							     'Gestion des modérateurs', true, true )
+						     . '</p>';
+					}
+				},
 				'custom_get'   => 'amapress_get_mailinglist_moderators',
 				'custom_save'  => 'amapress_set_mailinglist_moderators',
 				'show_on'      => 'edit-only',
 //                'show_column' => false,
 			),
 			'moderators_queries'     => array(
-				'group'   => 'Modérateurs',
-				'name'    => amapress__( 'Groupes inclus dans les modérateurs' ),
-				'type'    => 'multicheck',
-				'desc'    => 'Cocher le ou les groupes à intégrer.',
-				'options' => 'amapress_get_mailinglist_moderators_queries',
+				'group'    => 'Modérateurs',
+				'name'     => amapress__( 'Groupes inclus dans les modérateurs' ),
+				'type'     => 'multicheck',
+				'desc'     => 'Cocher le ou les groupes à intégrer.',
+				'options'  => 'amapress_get_mailinglist_moderators_queries',
+				'readonly' => 'amapress_mailinglist_should_moderators_readonly',
 //                'required' => true,
 			),
 			'moderators_other_users' => array(
@@ -93,6 +107,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
+				'readonly'     => 'amapress_mailinglist_should_moderators_readonly',
 //                'desc' => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
 			),
 			'waiting'                => array(
@@ -308,6 +323,12 @@ function amapress_get_mailinglist_queries() {
 	}
 
 	return amapress_user_queries_link_wrap( $ret );
+}
+
+function amapress_mailinglist_should_moderators_readonly( TitanFrameworkOption $option ) {
+	$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
+
+	return ! $ml->getMailingList()->handleModerators();
 }
 
 function amapress_has_mailinglist_moderators_queries( TitanFrameworkOption $option ) {
