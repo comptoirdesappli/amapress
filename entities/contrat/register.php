@@ -1698,6 +1698,17 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Clé secrète des paiement en ligne via Stripe pour ce contrat/producteur.',
 			),
+			'stripe_min_amount' => array(
+				'name'           => amapress__( 'Montant min. Stripe' ),
+				'type'           => 'number',
+				'group'          => '6/6 - Règlements',
+				'required'       => true,
+				'show_column'    => true,
+				'default'        => 0,
+				'col_def_hidden' => true,
+				'readonly'       => 'amapress_is_contrat_instance_readonly',
+				'desc'           => 'Montant minimum requis pour activer le paiement en ligne Stripe',
+			),
 			'manage_paiements'  => array(
 				'name'        => amapress__( 'Répartition des règlements' ),
 				'type'        => 'checkbox',

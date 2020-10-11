@@ -303,6 +303,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_stripe_secret_key', '' );
 	}
 
+	public function getStripeMinAmount() {
+		return $this->getCustomAsFloat( 'amapress_contrat_instance_stripe_min_amount', 0 );
+	}
+
 	public function getAllow_Stripe() {
 		return ! empty( $this->getStripePublicKey() ) && ! empty( $this->getStripeSecretKey() );
 	}
