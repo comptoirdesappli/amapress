@@ -548,8 +548,9 @@ function amapress_message_get_targets() {
 	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens avec contrats", "with-contrats" );
 	//intermittants
 	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
-	amapress_add_message_target( $ret, "user:amapress_contrat=principal", "Les amapiens principaux", "principaux" );
+	amapress_add_message_target( $ret, "user:amapress_contrat=principal&amapress_role=active", "Les amapiens principaux", "principaux" );
 	amapress_add_message_target( $ret, "user:amapress_contrat=principal_contrat", "Les amapiens principaux (avec contrat)", "principaux" );
+	amapress_add_message_target( $ret, "user:amapress_role=active", "Tous les amapiens (adhésions/contrats/collectif sauf producteurs)", "principaux" );
 	//sans adhésion
 	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );
 	amapress_add_message_target( $ret, "never_logged", "Les amapiens jamais connectés", "never-logged" );
