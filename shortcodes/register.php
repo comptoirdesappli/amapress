@@ -65,6 +65,7 @@ function amapress_register_shortcodes() {
 		'Tableau de bord>Distributions>Configuration, onglet Inscription distribution'
 	);
 
+
 	amapress_register_shortcode( 'years-since', function ( $atts ) {
 		$atts = shortcode_atts(
 			[ 'year' => '' ],
@@ -78,6 +79,21 @@ function amapress_register_shortcodes() {
 			'desc' => 'Affiche le nombre d\'années écoulée depuis une autre année',
 			'args' => [
 				'year' => 'Année de départ du décompte d\'années'
+			]
+		] );
+	amapress_register_shortcode( 'amapien-connecte-infos', function ( $atts, $content ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			return '';
+		}
+
+		return amapress_replace_mail_placeholders( $content,
+			AmapressUser::getBy( amapress_current_user_id() ) );
+	},
+		[
+			'desc' => 'Rempli les informations de l\'amapien connecté (dans le texte avec placeholders placé dans le shortcode)',
+			'args' => [
+				'contenu' => Amapress::makeLink( admin_url( 'admin.php?page=amapress_help_page&tab=amapien_placeholders' ),
+					'Placeholders dispnibles', true, true ),
 			]
 		] );
 	amapress_register_shortcode( 'amapress-panel', function ( $atts, $content ) {

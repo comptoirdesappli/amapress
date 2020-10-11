@@ -5752,6 +5752,28 @@ Par exemple :</p>
 								)
 							)
 						),
+						'Placeholders - amapien'                        => array(
+							'id'         => 'amapien_placeholders',
+							'desc'       => '',
+							'capability' => 'edit_pages',
+							'options'    => array(
+								array(
+									'id'     => 'amapien_placeholders_cust',
+									'name'   => 'amapien',
+									'type'   => 'custom',
+									'custom' => function () {
+										return Amapress::getPlaceholdersHelpTable(
+											'amapien-placeholders',
+											Amapress::getPlaceholdersHelpForProperties(
+												AmapressUser::getProperties()
+											),
+											'de l\'amapien', [], false,
+											'%%', '%%', false
+										);
+									}
+								)
+							)
+						),
 					),
 					'options'  => [
 					],

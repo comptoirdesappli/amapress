@@ -991,7 +991,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 
 	public static function getProperties() {
 		if ( null == self::$properties ) {
-			$ret = [
+			$ret                     = [
 				'lien_intermittence'               => [
 					'desc' => 'Lien vers la page des paniers intermittents disponibles',
 					'func' => function ( AmapressUser $amapien ) {
@@ -1014,6 +1014,96 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 						return Amapress::makeLink( amapress_intermittence_desinscription_link() );//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
 					}
 				],
+			];
+			$ret['full_name']        = [
+				'desc' => 'Prénom Nom',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getDisplayName();
+				}
+			];
+			$ret['adherent_type']    = [
+				'desc' => 'Type d\'adhérent (Principal, Co-adhérent...)',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getAdherentTypeDisplay();
+				}
+			];
+			$ret['pseudo']           = [
+				'desc' => 'Pseudo',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getUser()->nickname;
+				}
+			];
+			$ret['nom_public']       = [
+				'desc' => 'Nom public',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getUser()->display_name;
+				}
+			];
+			$ret['nom']              = [
+				'desc' => 'Nom',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getUser()->last_name;
+				}
+			];
+			$ret['prenom']           = [
+				'desc' => 'Prénom',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getUser()->first_name;
+				}
+			];
+			$ret['adresse']          = [
+				'desc' => 'Adresse',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getFormattedAdresse();
+				}
+			];
+			$ret['code_postal']      = [
+				'desc' => 'Code postal',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getCode_postal();
+				}
+			];
+			$ret['ville']            = [
+				'desc' => 'Ville',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getVille();
+				}
+			];
+			$ret['rue']              = [
+				'desc' => 'Rue (adresse)',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getAdresse();
+				}
+			];
+			$ret['tel']              = [
+				'desc' => 'Téléphone',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getTelephone();
+				}
+			];
+			$ret['email']            = [
+				'desc' => 'Email',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getEmail();
+				}
+			];
+			$ret['coadhesion_infos'] = [
+				'desc' => 'Infos sur les coadhésions',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getAdherentInfo();
+				}
+			];
+			$ret['contacts']         = [
+				'desc' => 'Moyens de contacts',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getContacts();
+				}
+			];
+			$ret['roles']            = [
+				'desc' => 'Rôles',
+				'func' => function ( AmapressUser $amapien ) {
+					return $amapien->getAmapRolesString();
+				}
 			];
 
 			self::$properties = $ret;
