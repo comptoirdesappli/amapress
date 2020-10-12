@@ -1301,17 +1301,17 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'number',
 											'step'    => 1,
 											'default' => 24,
-											'name'    => 'Fermer l\'inscription aux créneaux de distributions X heures avant la distribution',
+											'name'    => 'Délais de clôture des inscriptions aux créneaux de distribution<br/><em>X</em> heures avant la distribution',
 										),
 										array(
-											'name' => 'Email à l\'amapien choisissant un créneau',
+											'name' => 'Mail automatique de confirmation de réservation par l\'amapien',
 											'type' => 'heading',
 										),
 										array(
 											'id'      => 'inscr-distribution-slot-send',
-											'name'    => 'Envoyer',
+											'name'    => 'Activer',
 											'type'    => 'checkbox',
-											'desc'    => 'Envoyer l\'email ci-dessous',
+											'desc'    => 'Envoyer un email de confirmation de réservation de créneau à l\'amapien',
 											'default' => true,
 										),
 										array(
@@ -1319,13 +1319,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'     => 'Sujet de l\'email',
 											'sanitize' => false,
 											'type'     => 'text',
-											'default'  => 'Choix du créneau %%creneau%% à %%post:title%%',
+											'default'  => 'Réservation du créneau %%creneau%% à %%post:title%%',
 										),
 										array(
 											'id'      => 'inscr-distribution-slot-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n\nVous avez choisi le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n\nVous avez choisi le créneau %%creneau%% pour récupérer vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												function ( $option ) {
 													return Amapress_EventBase::getPlaceholdersHelp( [
@@ -1335,14 +1335,14 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												},
 										),
 										array(
-											'name' => 'Email à l\'amapien affecté à un créneau',
+											'name' => 'Mail automatique de confirmation de réservation par un référent',
 											'type' => 'heading',
 										),
 										array(
 											'id'      => 'inscr-distribution-admin-slot-send',
-											'name'    => 'Envoyer',
+											'name'    => 'Activer',
 											'type'    => 'checkbox',
-											'desc'    => 'Envoyer l\'email ci-dessous',
+											'desc'    => 'Envoyer un email de confirmation de réservation de créneau à l\'amapien',
 											'default' => true,
 										),
 										array(
@@ -1350,13 +1350,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'     => 'Sujet de l\'email',
 											'sanitize' => false,
 											'type'     => 'text',
-											'default'  => 'Affectation du créneau %%creneau%% à %%post:title%%',
+											'default'  => 'Attribution du créneau %%creneau%% à %%post:title%%',
 										),
 										array(
 											'id'      => 'inscr-distribution-admin-slot-mail-content',
 											'name'    => 'Contenu de l\'email',
 											'type'    => 'editor',
-											'default' => wpautop( "Bonjour,\n\nUn responsable '%%responsable%%' vous a affecté le créneau %%creneau%% pour la récupération de vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+											'default' => wpautop( "Bonjour,\n\nUn responsable '%%responsable%%' vous a attribué le créneau %%creneau%% pour récupérer vos paniers à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
 											'desc'    =>
 												function ( $option ) {
 													return AmapressDistribution::getPlaceholdersHelp( [
@@ -2586,7 +2586,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'      => 'online_contrats_end_continue_msg',
 											'name'    => 'Message de confirmation',
 											'type'    => 'editor',
-											'default' => wpautop( 'Vous pouvez également découvrir et éventuellement adhérer aux contrats suivants (%%remaining_contrats%%)' ),
+											'default' => wpautop( 'Vous pouvez également découvrir et éventuellement adhérer aux contrats : (%%remaining_contrats%%)' ),
 											'desc'    => function ( $option ) {
 												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_continue_msg-placeholders', [
 													'remaining_contrats'      => 'Contrat disponibles à l\'inscription',
@@ -2607,7 +2607,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'id'      => 'online_contrats_end_step_message',
 											'name'    => 'Inscription terminée',
 											'type'    => 'editor',
-											'default' => wpautop( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les chèques/règlements correspondants lors de la prochaine distribution\n%%print_button%%" ),
+											'default' => wpautop( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les règlements correspondants lors de la prochaine distribution\n%%print_button%%" ),
 											'desc'    => function ( $option ) {
 												return 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>' .
 												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_message-placeholders', [
