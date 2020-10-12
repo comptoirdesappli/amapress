@@ -142,7 +142,7 @@ function amapress_replace_mail_user_placeholders_help() {
  * @return string
  */
 function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $post = null ) {
-	$res = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
+	$res = preg_replace_callback( '/\%\%(?<opt>[\w\d_\.-]+)(?:\:(?<subopt>[\w\d_\.-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
 		function ( $m ) use ( $user, $post ) {
 			/** @var TitanEntity $post */
 			$opt    = isset( $m['opt'] ) ? $m['opt'] : '';
