@@ -2103,9 +2103,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		if ( ! $is_adhesion_mode ) {
 			if ( ! $use_contrat_term ) {
-				echo '<p>Vous pouvez maintenant passer commandes :<br/>';
+				echo '<p>Vous pouvez maintenant passer commandes<br/>';
 			} else {
-				echo '<p>Vous pouvez maintenant vous inscrire aux contrats disponibles :<br/>';
+				echo '<p>Vous pouvez maintenant vous inscrire aux contrats disponibles<br/>';
 			}
 			echo '<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
@@ -3751,9 +3751,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			if ( count( $chosen_quants ) == 1 && ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . esc_html( $chosen_quants[0] ) . '” de la commande ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
+					echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . ( $chosen_quants[0] ) . '” de la commande ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				} else {
-					echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . esc_html( $chosen_quants[0] ) . '” du contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
+					echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . ( $chosen_quants[0] ) . '” du contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				}
 			} else {
 				if ( ! $admin_mode ) {
@@ -3778,9 +3778,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		if ( $contrat->getManage_Cheques() ) {
 			if ( ! $admin_mode ) {
-				echo '<p style="margin-bottom: 0">Vous pouvez régler cette somme en :</p>';
+				echo '<p style="margin-bottom: 0">Propositions de règlement :</p>';
 			} else {
-				echo '<p style="margin-bottom: 0">Règlement :</p>';
+				echo '<p style="margin-bottom: 0">Propositions de règlement :</p>';
 			}
 		}
 		$serial_quants = esc_attr( serialize( $serial_quants ) );
