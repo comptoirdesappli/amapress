@@ -440,7 +440,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$ret = self::getPlaceholders();
 
 		return Amapress::getPlaceholdersHelpTable( 'adhesion-placeholders', $ret,
-			'de l\'adhésion', $additional_helps, ! $for_word,
+			'de l\'adhésion', $additional_helps, false,
 			$for_word ? '${' : '%%', $for_word ? '}' : '%%',
 			$show_toggler );
 	}
