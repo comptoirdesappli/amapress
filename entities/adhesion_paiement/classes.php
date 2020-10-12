@@ -736,6 +736,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
+			$ret['montant_helloasso'] = [
+				'desc' => 'Total de l\'adhésion (HelloAsso)',
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return Amapress::formatPrice( $adh->getHelloAssoAmount() );
+				}
+			];
 			$ret['paiement_numero']   = [
 				'desc' => 'Numéro du chèque',
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
@@ -765,6 +771,9 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					}
 					if ( 'mon' == $adh->getMainPaiementType() ) {
 						return 'En monnaie locale';
+					}
+					if ( 'hla' == $adh->getMainPaiementType() ) {
+						return 'Via HelloAsso';
 					}
 
 					return 'Par chèque';
