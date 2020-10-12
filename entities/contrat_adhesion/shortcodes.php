@@ -450,6 +450,8 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_max_deliv_dates'                => 3,
 			'max_coadherents'                     => 3,
 			'max_cofoyers'                        => 3,
+			'include_contrat_subnames'            => '',
+			'exclude_contrat_subnames'            => '',
 			'use_contrat_term'                    => 'true',
 			'show_adhesion_infos'                 => 'true',
 			'allow_adhesion_alone'                => $is_adhesion_mode ? 'true' : 'false',
@@ -707,6 +709,38 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$user_id = null;
 		if ( isset( $_REQUEST['user_id'] ) ) {
 			$user_id = intval( $_REQUEST['user_id'] );
+		}
+		if ( ! empty( $atts['include_contrat_subnames'] ) ) {
+			$include_contrat_subnames = explode( ',', $atts['include_contrat_subnames'] );
+			$subscribable_contrats    = array_filter( $subscribable_contrats, function ( $c ) use ( $include_contrat_subnames ) {
+				/** @var AmapressContrat_instance $c */
+				$include = false;
+				foreach ( $include_contrat_subnames as $include_contrat_subname ) {
+					if ( ! empty( $c->getSubName() )
+					     && 0 === strcasecmp( $include_contrat_subname, $c->getSubName() ) ) {
+						$include = true;
+						break;
+					}
+				}
+
+				return $include;
+			} );
+		}
+		if ( ! empty( $atts['exclude_contrat_subnames'] ) ) {
+			$exclude_contrat_subnames = explode( ',', $atts['exclude_contrat_subnames'] );
+			$subscribable_contrats    = array_filter( $subscribable_contrats, function ( $c ) use ( $exclude_contrat_subnames ) {
+				/** @var AmapressContrat_instance $c */
+				$include = true;
+				foreach ( $exclude_contrat_subnames as $exclude_contrat_subname ) {
+					if ( ! empty( $c->getSubName() )
+					     && 0 === strcasecmp( $exclude_contrat_subname, $c->getSubName() ) ) {
+						$include = false;
+						break;
+					}
+				}
+
+				return $include;
+			} );
 		}
 		$subscribable_contrats         = array_filter( $subscribable_contrats, function ( $c ) use ( $user_id ) {
 			/** @var AmapressContrat_instance $c */
