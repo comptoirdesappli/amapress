@@ -342,6 +342,21 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 								return '';
 							}
 							break;
+						case 'title-edit-link':
+						case 'titre-edit-lien':
+							if ( $post != null ) {
+								return Amapress::makeLink( $post->getAdminEditLink(), $post->getTitle() );
+							} else {
+								return '';
+							}
+							break;
+						case 'edit-href':
+							if ( $post != null ) {
+								return $post->getAdminEditLink();
+							} else {
+								return '';
+							}
+							break;
 						case 'href':
 							if ( $post != null ) {
 								return $post->getPermalink();
@@ -419,14 +434,17 @@ function amapress_replace_mail_placeholders_help(
 		}
 		$ret["now"] = 'Date courante';
 		if ( ! empty( $post_type_desc ) ) {
-			$ret['post:id']         = 'ID ' . $post_type_desc;
-			$ret['post:title']      = 'Titre ' . $post_type_desc;
-			$ret['post:titre']      = 'Titre ' . $post_type_desc;
-			$ret['post:link']       = 'Lien vers la page info ' . $post_type_desc;
-			$ret['post:lien']       = 'Lien vers la page info ' . $post_type_desc;
-			$ret['post:title-link'] = 'Lien avec titre vers la page info ' . $post_type_desc;
-			$ret['post:titre-lien'] = 'Lien avec titre vers la page info ' . $post_type_desc;
-			$ret['post:href']       = 'Url de la page info ' . $post_type_desc;
+			$ret['post:id']              = 'ID ' . $post_type_desc;
+			$ret['post:title']           = 'Titre ' . $post_type_desc;
+			$ret['post:titre']           = 'Titre ' . $post_type_desc;
+			$ret['post:link']            = 'Lien vers la page info ' . $post_type_desc;
+			$ret['post:lien']            = 'Lien vers la page info ' . $post_type_desc;
+			$ret['post:title-edit-link'] = 'Lien avec titre vers la page d\'édition ' . $post_type_desc;
+			$ret['post:titre-edit-lien'] = 'Lien avec titre vers la page d\'édition ' . $post_type_desc;
+			$ret['post:title-link']      = 'Lien avec titre vers la page info ' . $post_type_desc;
+			$ret['post:titre-lien']      = 'Lien avec titre vers la page info ' . $post_type_desc;
+			$ret['post:href']            = 'Url de la page info ' . $post_type_desc;
+			$ret['post:edit-href']       = 'Url de la page d\'édition ' . $post_type_desc;
 		}
 		wp_cache_set( $key, $ret );
 	}
