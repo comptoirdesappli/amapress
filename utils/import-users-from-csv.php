@@ -391,12 +391,12 @@ class Amapress_Import_Users_CSV {
 		$defaults              = array(
 			'password_nag'          => false,
 			'new_user_notification' => false,
-			'users_update'          => false
+			'users_update'          => true
 		);
 		$args                  = wp_parse_args( $args, $defaults );
 		$password_nag          = $args['password_nag'];
 		$new_user_notification = $args['new_user_notification'];
-		$users_update          = true; //$args['users_update'];
+		$users_update          = $args['users_update'];
 
 		// User data fields list used to differentiate with user meta
 		$userdata_fields = array(
