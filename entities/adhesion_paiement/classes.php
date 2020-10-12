@@ -900,5 +900,64 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	public function getHelloAssoAmount() {
 		return $this->getCustomAsFloat( 'amapress_adhesion_paiement_hla_amount' );
 	}
+
+	public function sendConfirmationsAndNotifications(
+		$send_adherent_confirm,
+		$send_tresoriers_notif,
+		$notify_email = '',
+		$throw_invalid_bulletin = false
+	) {
+		$tresoriers = [];
+		foreach ( get_users( "role=tresorier" ) as $tresorier ) {
+			$user_obj   = AmapressUser::getBy( $tresorier );
+			$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
+		}
+
+		if ( $send_adherent_confirm ) {
+			if ( $this->isHelloAsso() ) {
+				$mail_subject = Amapress::getOption( 'online_hla_adhesion_confirm-mail-subject' );
+				$mail_content = Amapress::getOption( 'online_hla_adhesion_confirm-mail-content' );
+			} else {
+				$mail_subject = Amapress::getOption( 'online_adhesion_confirm-mail-subject' );
+				$mail_content = Amapress::getOption( 'online_adhesion_confirm-mail-content' );
+			}
+			$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $this->getUser(), $this );
+			$mail_content = amapress_replace_mail_placeholders( $mail_content, $this->getUser(), $this );
+
+			$attachments = [];
+			try {
+				$doc_file = $this->generateBulletinDoc( false );
+			} catch ( Exception $ex ) {
+				if ( $throw_invalid_bulletin ) {
+					wp_die( 'Impossible de générer le bulletin d\'adhésion. Merci de réessayer en appuyant sur F5' );
+				}
+			}
+			if ( ! empty( $doc_file ) ) {
+				$attachments[] = $doc_file;
+				$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );
+				$mail_content  = preg_replace( '/\[\/?avec_bulletin\]/', '', $mail_content );
+			} else {
+				$mail_content = preg_replace( '/\[avec_bulletin\].+?\[\/avec_bulletin\]/', '', $mail_content );
+				$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
+			}
+
+			amapress_wp_mail( $this->getUser()->getAllEmails(), $mail_subject, $mail_content, [
+				'Reply-To: ' . implode( ',', $tresoriers )
+			], $attachments );
+		}
+
+		if ( $send_tresoriers_notif ) {
+			$mail_subject = Amapress::getOption( 'online_adhesion_notif-mail-subject' );
+			$mail_content = Amapress::getOption( 'online_adhesion_notif-mail-content' );
+			$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $this->getUser(), $this );
+			$mail_content = amapress_replace_mail_placeholders( $mail_content, $this->getUser(), $this );
+			amapress_wp_mail(
+				$tresoriers,
+				$mail_subject,
+				$mail_content,
+				'', [], $notify_email
+			);
+		}
+	}
 }
 

@@ -2037,47 +2037,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$amapien->inscriptionIntermittence();
 			}
 		}
-		$mail_subject = Amapress::getOption( 'online_adhesion_confirm-mail-subject' );
-		$mail_content = Amapress::getOption( 'online_adhesion_confirm-mail-content' );
 
-		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $adh_paiement );
-		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $adh_paiement );
-
-		$tresoriers = [];
-		foreach ( get_users( "role=tresorier" ) as $tresorier ) {
-			$user_obj   = AmapressUser::getBy( $tresorier );
-			$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
-		}
-
-		$attachments = [];
-		try {
-			$doc_file = $adh_paiement->generateBulletinDoc( false );
-		} catch ( Exception $ex ) {
-			wp_die( 'Impossible de générer le bulletin d\'adhésion. Merci de réessayer en appuyant sur F5' );
-		}
-		if ( ! empty( $doc_file ) ) {
-			$attachments[] = $doc_file;
-			$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );
-			$mail_content  = preg_replace( '/\[\/?avec_bulletin\]/', '', $mail_content );
-		} else {
-			$mail_content = preg_replace( '/\[avec_bulletin\].+?\[\/avec_bulletin\]/', '', $mail_content );
-			$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
-		}
-
-		if ( Amapress::toBool( $atts['send_adhesion_confirm'] ) ) {
-			amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
-				'Reply-To: ' . implode( ',', $tresoriers )
-			], $attachments );
-		}
-
-		if ( Amapress::toBool( $atts['send_tresoriers'] ) ) {
-			amapress_wp_mail(
-				$tresoriers,
-				'Nouvelle adhésion ' . $amapien->getDisplayName(),
-				wpautop( "Bonjour,\nUne nouvelle adhésion est en attente : " . Amapress::makeLink( $adh_paiement->getAdminEditLink(), $amapien->getDisplayName() ) . "\n\n" . get_bloginfo( 'name' ) ),
-				'', [], $notify_email
-			);
-		}
+		$adh_paiement->sendConfirmationsAndNotifications(
+			Amapress::toBool( $atts['send_adhesion_confirm'] ),
+			Amapress::toBool( $atts['send_tresoriers'] ),
+			$notify_email,
+			true
+		);
 
 		$step_name = esc_html( wp_unslash( Amapress::getOption(
 			$adhesion_intermittent ? 'online_subscription_inter_adh_valid_step_name' : 'online_subscription_adh_valid_step_name' ) ) );

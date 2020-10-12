@@ -3291,7 +3291,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 									'options' => array(
 										array(
 											'type' => 'heading',
-											'name' => 'Confirmation - Pré-inscription en ligne',
+											'name' => 'Confirmation à l\'Adhérent',
 										),
 										array(
 											'id'       => 'online_adhesion_confirm-mail-subject',
@@ -3311,6 +3311,34 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 \n\n%%nom_site%%" ),
 											'desc'    => function ( $option ) {
 												return 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
+											},
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => 'Notification au trésorier',
+										),
+										array(
+											'id'       => 'online_adhesion_notif-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Nouvelle adhésion de %%adherent%% (%%option_paiements%%)',
+										),
+										array(
+											'id'      => 'online_adhesion_notif-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour,\n\n
+Une nouvelle adhésion de %%adherent%% (%%adherent.email%%) est arrivée : %%post:titre-edit-lien%%\n
+Date de début : %%paiement_date%%\n
+Montant : %%total%% %%option_paiements%%\n
+\n\n%%nom_site%%" ),
+											'desc'    => function ( $option ) {
+												return 'Les placeholders suivants sont disponibles:' .
 												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
 											},
 										),
