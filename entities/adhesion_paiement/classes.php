@@ -861,6 +861,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $this->getCustomAsInt( 'amapress_adhesion_paiement_lieu' );
 	}
 
+	public function isHelloAsso() {
+		return 'hla' == $this->getMainPaiementType();
+	}
+	
 	public function getMessage() {
 		return $this->getCustom( 'amapress_adhesion_paiement_message' );
 	}

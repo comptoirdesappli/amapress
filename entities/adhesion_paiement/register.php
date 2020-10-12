@@ -85,6 +85,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'type'         => 'select-users',
 				'required'     => true,
 				'desc'         => 'Sélectionner un amapien. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'group'        => '1/ Adhérent',
 				'import_key'   => true,
 				'csv_required' => true,
 				'autocomplete' => true,
@@ -95,6 +96,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'csv_export'           => true,
 				'show_column'          => true,
 				'show_on'              => 'edit-only',
+				'group'                => '1/ Adhérent',
 				'use_custom_as_column' => true,
 				'col_def_hidden'       => true,
 				'name'                 => amapress__( 'Email' ),
@@ -115,6 +117,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'type'              => 'select-posts',
 				'post_type'         => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
 				'desc'              => 'Période adhésion',
+				'group'             => '2/ Adhésion',
 				'import_key'        => true,
 				'required'          => true,
 				'autoselect_single' => true,
@@ -130,6 +133,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'required'     => true,
 				'desc'         => 'Date d\'émission',
 				'csv_required' => true,
+				'group'        => '2/ Adhésion',
 			),
 //            'date_emission' => array(
 //                'name' => amapress__('Date d\'émission'),
@@ -142,6 +146,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 			'status'         => array(
 				'name'         => amapress__( 'Statut' ),
 				'type'         => 'select',
+				'group'        => '2/ Adhésion',
 				'options'      => array(
 					'not_received' => 'Non reçu',
 					'received'     => 'Reçu',
@@ -155,56 +160,12 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'desc'         => 'Sélectionner l’option qui convient : Reçu à l’Amap, non reçu à l’Amap, Remis',
 				'csv_required' => true,
 			),
-			'hla_url'        => array(
-				'name'           => amapress__( 'Lien HelloAsso' ),
-				'type'           => 'custom',
-				'show_column'    => true,
-				'col_def_hidden' => true,
-				'custom'         => function ( $post_id ) {
-					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
-
-					return Amapress::makeLink( $adh_pmt->getHelloAssoUrl(), 'Voir dans le backoffice HelloAsso' );
-				},
-			),
-			'hla_amount'     => array(
-				'name'           => amapress__( 'Montant HelloAsso' ),
-				'type'           => 'custom',
-				'show_column'    => true,
-				'col_def_hidden' => true,
-				'custom'         => function ( $post_id ) {
-					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
-
-					return Amapress::formatPrice( $adh_pmt->getHelloAssoAmount(), true );
-				},
-			),
-			'numero'         => array(
-				'name'       => amapress__( 'Numéro du chèque' ),
-				'type'       => 'text',
-				'required'   => true,
-				'desc'       => 'Numéro du chèque ou "Esp." pour un règlement en espèces ou "Vir." pour un virement ou "Mon." pour un règlement en monnaie locale',
-				'searchable' => true,
-			),
-			'banque'         => array(
-				'name'       => amapress__( 'Banque' ),
-				'type'       => 'text',
-				'desc'       => 'Banque émettrice',
-				'searchable' => true,
-			),
-			'categ_editor'   => array(
-				'name'       => amapress__( 'Répartitions' ),
-				'type'       => 'custom',
-				'column'     => 'amapress_get_adhesion_paiements_summary',
-				'custom'     => 'amapress_get_adhesion_paiements_categories',
-				'save'       => 'amapress_save_adhesion_paiements_categories',
-				'csv_import' => false,
-				'csv_export' => true,
-			),
-			'amount'         => array(
-				'name'       => amapress__( 'Montant' ),
-				'type'       => 'readonly',
-				'unit'       => '€',
-				'desc'       => 'Montant',
-				'csv_import' => false,
+			'intermittent'   => array(
+				'name'    => amapress__( 'Intermittent?' ),
+				'type'    => 'checkbox',
+				'default' => false,
+				'group'   => '2/ Adhésion',
+				'desc'    => 'Indique une adhésion d\'un intermittent',
 			),
 			'pmt_type'       => array(
 				'name'           => amapress__( 'Moyen de règlement principal' ),
@@ -219,6 +180,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'default'        => 'chq',
 				'required'       => true,
 				'desc'           => 'Moyen de règlement principal : chèques ou espèces ou virement',
+				'group'          => '3/ Règlement',
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'top_filter'     => array(
@@ -226,22 +188,107 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'placeholder' => 'Tous les type de paiement',
 				),
 			),
-			'intermittent'   => array(
-				'name'    => amapress__( 'Intermittent?' ),
-				'type'    => 'checkbox',
-				'default' => false,
-				'desc'    => 'Indique une adhésion d\'un intermittent',
+			'numero'         => array(
+				'name'       => amapress__( 'Numéro du règlement' ),
+				'type'       => 'text',
+				'desc'       => 'Numéro du chèque ou "Esp." pour un règlement en espèces ou "Vir." pour un virement ou "Mon." pour un règlement en monnaie locale ou HelloAsso',
+				'group'      => '3/ Règlement',
+				'searchable' => true,
+			),
+			'banque'         => array(
+				'name'       => amapress__( 'Banque' ),
+				'type'       => 'text',
+				'desc'       => 'Banque émettrice',
+				'group'      => '3/ Règlement',
+				'searchable' => true,
+			),
+			'categ_editor'   => array(
+				'name'       => amapress__( 'Répartitions' ),
+				'type'       => 'custom',
+				'column'     => 'amapress_get_adhesion_paiements_summary',
+				'custom'     => 'amapress_get_adhesion_paiements_categories',
+				'save'       => 'amapress_save_adhesion_paiements_categories',
+				'csv_import' => false,
+				'csv_export' => true,
+				'group'      => '3/ Règlement',
+			),
+			'amount'         => array(
+				'name'       => amapress__( 'Montant' ),
+				'type'       => 'readonly',
+				'unit'       => '€',
+				'desc'       => 'Montant',
+				'csv_import' => false,
+				'group'      => '3/ Règlement',
+			),
+			'hla_url'        => array(
+				'name'           => amapress__( 'Lien HelloAsso' ),
+				'type'           => 'custom',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => '4/ HelloAsso',
+				'custom'         => function ( $post_id ) {
+					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
+					if ( ! $adh_pmt->isHelloAsso() ) {
+						return 'NA';
+					}
+
+					return Amapress::makeLink( $adh_pmt->getHelloAssoUrl(), 'Voir dans le backoffice HelloAsso', true, true );
+				},
+				'column'         => function ( $post_id ) {
+					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
+					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
+					if ( ! $adh_pmt->isHelloAsso() ) {
+						return '';
+					}
+
+					return Amapress::makeLink( $adh_pmt->getHelloAssoUrl(), 'Voir', true, true );
+				},
+				'export'         => function ( $post_id ) {
+					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
+					if ( ! $adh_pmt->isHelloAsso() ) {
+						return '';
+					}
+
+					return $adh_pmt->getHelloAssoUrl();
+				},
+			),
+			'hla_amount'     => array(
+				'name'           => amapress__( 'Montant HelloAsso' ),
+				'type'           => 'custom',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'group'          => '4/ HelloAsso',
+				'custom'         => function ( $post_id ) {
+					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
+					if ( ! $adh_pmt->isHelloAsso() ) {
+						return 'NA';
+					}
+
+					return Amapress::formatPrice( $adh_pmt->getHelloAssoAmount(), true );
+				},
+				'column'         => function ( $post_id ) {
+					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
+					if ( ! $adh_pmt->isHelloAsso() ) {
+						return '';
+					}
+
+					return Amapress::formatPrice( $adh_pmt->getHelloAssoAmount(), false );
+				},
 			),
 			'lieu'           => array(
-				'name'       => amapress__( 'Lieu dist.' ),
-				'type'       => 'select-posts',
-				'post_type'  => 'amps_lieu',
-				'desc'       => 'Lieu de distribution souhaité',
-				'searchable' => true,
+				'name'           => amapress__( 'Lieu dist.' ),
+				'type'           => 'select-posts',
+				'post_type'      => 'amps_lieu',
+				'group'          => '5/ Informations',
+				'desc'           => 'Lieu de distribution souhaité',
+				'searchable'     => true,
+				'show_column'    => true,
+				'col_def_hidden' => true,
 			),
 			'lieu_type'      => array(
 				'name'           => amapress__( 'Choix du lieu' ),
 				'type'           => 'select',
+				'group'          => '5/ Informations',
 				'options'        => array(
 					'none' => 'Aucun',
 					'any'  => 'N\'importe lequel',
@@ -255,6 +302,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 			'message'        => array(
 				'name'           => amapress__( 'Message' ),
 				'type'           => 'textarea',
+				'group'          => '4/ Informations',
 				'desc'           => 'Message à l\'AMAP lors de l\'inscription en ligne',
 				'col_def_hidden' => true,
 			),
@@ -263,21 +311,21 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'type'           => 'checkbox',
 				'show_column'    => true,
 				'col_def_hidden' => true,
-				'group'          => 'Questions personnalisées',
+				'group'          => '5/ Informations',
 			),
 			'custom_check2'  => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK2,
 				'type'           => 'checkbox',
 				'show_column'    => true,
 				'col_def_hidden' => true,
-				'group'          => 'Questions personnalisées',
+				'group'          => '5/ Informations',
 			),
 			'custom_check3'  => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK3,
 				'type'           => 'checkbox',
 				'show_column'    => true,
 				'col_def_hidden' => true,
-				'group'          => 'Questions personnalisées',
+				'group'          => '5/ Informations',
 			),
 		),
 		'bulk_actions'     => array(
