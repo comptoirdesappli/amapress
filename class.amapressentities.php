@@ -3390,6 +3390,43 @@ Montant : %%total%% %%option_paiements%%\n
 										),
 										array(
 											'type' => 'heading',
+											'name' => 'Noms des champs additionels HelloAsso',
+										),
+										array(
+											'id'      => 'helloasso-email-field-name',
+											'name'    => 'Champs Email',
+											'type'    => 'text',
+											'default' => 'Email',
+										),
+										array(
+											'id'      => 'helloasso-phone-field-name',
+											'name'    => 'Champs Téléphone',
+											'type'    => 'text',
+											'default' => 'Numéro de téléphone',
+										),
+										array(
+											'id'      => 'helloasso-address-field-name',
+											'name'    => 'Champs Adresse',
+											'type'    => 'text',
+											'default' => 'Adresse',
+										),
+										array(
+											'id'      => 'helloasso-zipcode-field-name',
+											'name'    => 'Champs Code postal',
+											'type'    => 'text',
+											'default' => 'Code Postal',
+										),
+										array(
+											'id'      => 'helloasso-city-field-name',
+											'name'    => 'Champs Ville',
+											'type'    => 'text',
+											'default' => 'Ville',
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => 'Confirmation d\'adhésion via HelloAsso',
 										),
 										array(

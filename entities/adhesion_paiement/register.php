@@ -589,65 +589,66 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
 		if ( $adh_period ) {
-			$user_id = amapress_create_user_if_not_exists(
-				$payer->email,
-				$payer->firstName,
-				$payer->lastName,
-				sprintf( '%s, %s %s', $payer->address, $payer->zipCode, $payer->city )
-			);
+			$default_email     = $payer->email;
+			$default_firstName = $payer->firstName;
+			$default_lastName  = $payer->lastName;
+			$default_address   = $payer->address;
+			$default_zipCode   = $payer->zipCode;
+			$default_city      = $payer->city;
+			$default_phone     = '';
+			if ( isset( $order->items ) && is_array( $order->items ) ) {
+				foreach ( $order->items as $item ) {
+					if ( 'Membership' == $item->type ) {
+						if ( isset( $item->user ) ) {
+							$default_firstName = $item->user->firstName;
+							$default_lastName  = $item->user->lastName;
+						}
+						if ( isset( $item->customFields ) && is_array( $item->customFields ) ) {
+							foreach ( $item->customFields as $custom_field ) {
+								if ( 0 === strcasecmp( Amapress::getOption( 'helloasso-email-field-name' ), $custom_field->name ) ) {
+									$default_email = $custom_field->answer;
+								} elseif ( 0 === strcasecmp( Amapress::getOption( 'helloasso-phone-field-name' ), $custom_field->name ) ) {
+									$default_phone = $custom_field->answer;
+								} elseif ( 0 === strcasecmp( Amapress::getOption( 'helloasso-address-field-name' ), $custom_field->name ) ) {
+									$default_address = $custom_field->answer;
+								} elseif ( 0 === strcasecmp( Amapress::getOption( 'helloasso-zipcode-field-name' ), $custom_field->name ) ) {
+									$default_zipCode = $custom_field->answer;
+								} elseif ( 0 === strcasecmp( Amapress::getOption( 'helloasso-city-field-name' ), $custom_field->name ) ) {
+									$default_city = $custom_field->answer;
+								}
+							}
+						}
 
-			$formSlug         = $order->formSlug;
-			$organizationSlug = $order->organizationSlug;
-			$pmt              = AmapressAdhesion_paiement::getForUser( $user_id, $date, true );
-			$pmt->setHelloAsso(
-				$total / 100.0,
-				"https://www.helloasso.com/associations/{$organizationSlug}/adhesions/{$formSlug}/administration",
-				Amapress::toBool( Amapress::getOption( 'helloasso-auto-confirm' ) )
-			);
+						$user_id = amapress_create_user_if_not_exists(
+							$default_email,
+							$default_firstName,
+							$default_lastName,
+							sprintf( '%s, %s %s', $default_address, $default_zipCode, $default_city ),
+							$default_phone
+						);
 
-			$adh_paiement = $pmt;
-			$amapien      = $pmt->getUser();
+						delete_user_meta( $user_id, 'pw_user_status' );
+						delete_transient( 'new_user_approve_user_statuses' );
 
-			$mail_subject = Amapress::getOption( 'online_hla_adhesion_confirm-mail-subject' );
-			$mail_content = Amapress::getOption( 'online_hla_adhesion_confirm-mail-content' );
+						$formSlug         = $order->formSlug;
+						$organizationSlug = $order->organizationSlug;
+						$numero           = $order->id;
+						$pmt              = AmapressAdhesion_paiement::getForUser( $user_id, $date, true );
+						$pmt->setHelloAsso(
+							$total / 100.0,
+							"https://www.helloasso.com/associations/{$organizationSlug}/adhesions/{$formSlug}/administration",
+							$numero,
+							Amapress::toBool( Amapress::getOption( 'helloasso-auto-confirm' ) )
+						);
 
-			$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $adh_paiement );
-			$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $adh_paiement );
-
-			$tresoriers = [];
-			foreach ( get_users( "role=tresorier" ) as $tresorier ) {
-				$user_obj   = AmapressUser::getBy( $tresorier );
-				$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
-			}
-
-			$attachments = [];
-			try {
-				$doc_file = $adh_paiement->generateBulletinDoc( false );
-			} catch ( Exception $exception ) {
-			}
-			if ( ! empty( $doc_file ) ) {
-				$attachments[] = $doc_file;
-				$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );
-				$mail_content  = preg_replace( '/\[\/?avec_bulletin\]/', '', $mail_content );
-			} else {
-				$mail_content = preg_replace( '/\[avec_bulletin\].+?\[\/avec_bulletin\]/', '', $mail_content );
-				$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
-			}
-
-			if ( Amapress::toBool( Amapress::getOption( 'helloasso-send-confirm' ) ) ) {
-				amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
-					'Reply-To: ' . implode( ',', $tresoriers )
-				], $attachments );
-			}
-
-			$notify_email = Amapress::getOption( 'helloasso-notif-others' );
-			if ( Amapress::toBool( Amapress::getOption( 'helloasso-notif-tresoriers' ) ) ) {
-				amapress_wp_mail(
-					$tresoriers,
-					'Nouvelle adhésion HelloAsso ' . $amapien->getDisplayName(),
-					wpautop( "Bonjour,\nUne nouvelle adhésion HelloAsso est arrivée : " . Amapress::makeLink( $adh_paiement->getAdminEditLink(), $amapien->getDisplayName() ) . "\n\n" . get_bloginfo( 'name' ) ),
-					'', [], $notify_email
-				);
+						$pmt->sendConfirmationsAndNotifications(
+							Amapress::toBool( Amapress::getOption( 'helloasso-send-confirm' ) ),
+							Amapress::toBool( Amapress::getOption( 'helloasso-notif-tresoriers' ) ),
+							Amapress::getOption( 'helloasso-notif-others' ),
+							false
+						);
+					}
+				}
 			}
 		}
 	}
