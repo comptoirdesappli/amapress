@@ -2885,6 +2885,10 @@ class AmapressContrat_quantite extends TitanEntity {
 				return 'le litre';
 			case 'unit':
 				return 'l\'unité';
+			case 'cm':
+				return 'le centimètre';
+			case 'm':
+				return 'le mètre';
 			default:
 				return $this->getPriceUnit();
 		}
@@ -2947,6 +2951,18 @@ class AmapressContrat_quantite extends TitanEntity {
 				return sprintf( '%d', (int) ( $value * 1000.0 ) ) . 'ml';
 			} else {
 				return round( $value, 2 ) . 'L';
+			}
+		} else if ( $this->getPriceUnit() == 'm' ) {
+			if ( $value < 1 ) {
+				return sprintf( '%d', (int) ( $value * 100.0 ) ) . 'cm';
+			} else {
+				return round( $value, 2 ) . 'm';
+			}
+		} else if ( $this->getPriceUnit() == 'cm' ) {
+			if ( $value < 1 ) {
+				return sprintf( '%d', (int) ( $value * 10.0 ) ) . 'mm';
+			} else {
+				return round( $value, 2 ) . 'cm';
 			}
 		} else {
 			if ( abs( $value - 0.25 ) < 0.001 ) {

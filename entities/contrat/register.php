@@ -1999,6 +1999,8 @@ jQuery(function($) {
 					'unit' => 'A l\'unité',
 					'kg'   => 'Au kg',
 					'l'    => 'Au litre',
+					'cm'   => 'Au centimètre',
+					'm'    => 'Au mètre',
 				),
 			),
 			'quantite_config'  => array(
@@ -2417,6 +2419,8 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">pièce</option>';
 		echo '<option ' . selected( 'kg', $unit, false ) . ' value="kg">kg</option>';
 		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">L</option>';
+		echo '<option ' . selected( 'cm', $unit, false ) . ' value="cm">cm</option>';
+		echo '<option ' . selected( 'm', $unit, false ) . ' value="m">m</option>';
 		echo '</select></td>';
 		echo "<td><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' />
 <br/>Grp. Multiple:<input type='number' class='required number' name='amapress_quant_data[$id][grp_mult]' min='0' step='1' placeholder='Multiple' value='$grp_mult' /></td>";
