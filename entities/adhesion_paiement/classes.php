@@ -870,9 +870,9 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 
-	public function setHelloAsso( $amount, $url, $numero, $set_received = true ) {
+	public function setHelloAsso( $amount, $url, $numero, $date, $set_received = true ) {
 		$this->setCustom( 'amapress_adhesion_paiement_hla_url', $url );
-		$this->setCustom( 'amapress_adhesion_paiement_date', amapress_time() );
+		$this->setCustom( 'amapress_adhesion_paiement_date', $date );
 		$this->setCustom( 'amapress_adhesion_paiement_amount', $amount );
 		$this->setCustom( 'amapress_adhesion_paiement_numero', $numero );
 		$this->setCustom( 'amapress_adhesion_paiement_hla_amount', $amount );

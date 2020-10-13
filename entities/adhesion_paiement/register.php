@@ -633,11 +633,16 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 						$formSlug         = $order->formSlug;
 						$organizationSlug = $order->organizationSlug;
 						$numero           = $order->id;
-						$pmt              = AmapressAdhesion_paiement::getForUser( $user_id, $date, true );
+						$order_date       = strtotime( $order->date );
+						if ( empty( $order_date ) ) {
+							$order_date = amapress_time();
+						}
+						$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $date, true );
 						$pmt->setHelloAsso(
 							$total / 100.0,
 							"https://www.helloasso.com/associations/{$organizationSlug}/adhesions/{$formSlug}/administration",
 							$numero,
+							$order_date,
 							Amapress::toBool( Amapress::getOption( 'helloasso-auto-confirm' ) )
 						);
 
