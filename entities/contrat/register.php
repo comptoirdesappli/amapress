@@ -1346,7 +1346,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'          => array(
+			'date_cloture'   => array(
 				'name'           => amapress__( 'Clôture' ),
 				'type'           => 'date',
 				'group'          => '5/6 - Pré-inscription en ligne',
@@ -1386,7 +1386,7 @@ jQuery(function($) {
 //						}
 //					},
 			),
-			'pmt_user_input'        => array(
+			'pmt_user_input' => array(
 				'name'        => amapress__( 'Libellé règlements' ),
 				'type'        => 'checkbox',
 				'group'       => '5/6 - Pré-inscription en ligne',
@@ -1395,7 +1395,16 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant de pré-inscription en ligne',
 			),
-			'word_model'            => array(
+			'pmt_user_dates' => array(
+				'name'        => amapress__( 'Dates règlements' ),
+				'type'        => 'checkbox',
+				'group'       => '5/6 - Pré-inscription en ligne',
+				'required'    => true,
+				'default'     => false,
+				'show_column' => false,
+				'desc'        => 'Permettre aux amapiens de choisir les dates d\'encaissemnt des chèques dans l’assistant de pré-inscription en ligne',
+			),
+			'word_model'     => array(
 				'name'            => amapress__( 'Contrat personnalisé' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -1413,7 +1422,7 @@ jQuery(function($) {
 
 
 			//Statut
-			'is_principal'          => array(
+			'is_principal'   => array(
 				'name'        => amapress__( 'Contrat principal' ),
 				'type'        => 'checkbox',
 				'show_column' => false,

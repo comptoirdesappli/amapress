@@ -3985,7 +3985,27 @@ jQuery(function($) {
 				Amapress::setFilterForReferent( false );
 				$edit_all_paiements = $edit_inscription ? $edit_inscription->getAllPaiements() : null;
 				Amapress::setFilterForReferent( true );
-				$req = ( $paiements_info_required ? 'required' : '' );
+				$req                        = ( $paiements_info_required ? 'required' : '' );
+				$pay_by_month_months        = [];
+				$pay_by_month_encaiss_dates = [];
+				if ( $contrat->getPayByMonth() ) {
+					$pay_dates = $contrat->getPaiements_Liste_dates();
+					sort( $pay_dates );
+					foreach ( $by_month_totals as $month => $month_amount ) {
+						$pay_by_month_months[] = $month;
+						$found                 = false;
+						foreach ( $pay_dates as $pay_date ) {
+							if ( date_i18n( 'M', $pay_date ) == $month ) {
+								$pay_by_month_encaiss_dates[] = $pay_date;
+								$found                        = true;
+								break;
+							}
+						}
+						if ( ! $found ) {
+							$pay_by_month_encaiss_dates[] = $pay_dates[0];
+						}
+					}
+				}
 				for ( $i = 1; $i <= 12; $i ++ ) {
 					$edit_paiement       = $edit_all_paiements && isset( $edit_all_paiements[ $i - 1 ] ) ? $edit_all_paiements[ $i - 1 ] : null;
 					$paiements_raw_dates = $contrat->getPaiements_Liste_dates();
@@ -3994,6 +4014,9 @@ jQuery(function($) {
 							function ( $d ) {
 								return $d > Amapress::start_of_week( amapress_time() );
 							} );
+					}
+					if ( $contrat->getPayByMonth() ) {
+						$paiements_raw_dates = array_merge( $pay_by_month_encaiss_dates );
 					}
 					$paiements_dates = array_map(
 						function ( $d ) use ( $edit_paiement ) {
@@ -4012,10 +4035,29 @@ jQuery(function($) {
 					$paiement_banque   = esc_attr( $edit_paiement ? $edit_paiement->getBanque() : '' );
 					$paiement_emetteur = esc_attr( $edit_paiement ? $edit_paiement->getEmetteur() : $emetteur );
 					$paiements_dates   = implode( '', $paiements_dates );
-					echo "<tr style='display: none'>
-<td><select id='pmt-$i-date' name='pmt[$i][date]' class='$req'>
+					$select            = "<select id='pmt-$i-date' name='pmt[$i][date]' class='$req'>
 $paiements_dates
-</select></td>
+</select>";
+					if ( $contrat->getPayByMonth() ) {
+						if ( isset( $pay_by_month_encaiss_dates[ $i - 1 ] ) ) {
+							$dt     = $pay_by_month_encaiss_dates[ $i - 1 ];
+							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
+							          date_i18n( 'd/m/Y', $dt );
+						}
+						if ( isset( $pay_by_month_months[ $i - 1 ] ) ) {
+							$select .= '<br/>pour ' . $pay_by_month_months[ $i - 1 ];
+						}
+					} elseif ( ! $contrat->getAllowAmapienInputPaiementsDates() ) {
+						if ( $edit_paiement ) {
+							$dt     = $edit_paiement->getDate();
+							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
+							          date_i18n( 'd/m/Y', $dt );
+						} else {
+							$select = '';
+						}
+					}
+					echo "<tr style='display: none'>
+<td>$select</td>
 <td><input type='text' id='pmt-$i-num' name='pmt[$i][num]' class='$req' value='$paiement_num' /></td>
 <td><input type='text' id='pmt-$i-banque' name='pmt[$i][banque]' class='$req' value='$paiement_banque' /></td>
 <td><input type='text' id='pmt-$i-emetteur' name='pmt[$i][emetteur]' class='$req' value='$paiement_emetteur' /></td>

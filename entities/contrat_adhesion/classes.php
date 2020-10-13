@@ -207,7 +207,7 @@ class AmapressAdhesion extends TitanEntity {
 					return date_i18n( 'j F Y', $adh->getDate_fin() );
 				}
 			];
-			$ret['date_debut_complete']              = [
+			$ret['date_debut_complete'] = [
 				'desc' => 'Date début du contrat (par ex, jeudi 22 septembre 2018)',
 				'func' => function ( AmapressAdhesion $adh ) {
 					return date_i18n( 'l j F Y', $adh->getDate_debut() );
@@ -2575,6 +2575,24 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				$new_paiement_date[] = ( isset( $dates_by_cheque_count[ $def_date ] ) ? $dates_by_cheque_count[ $def_date ++ ] : 0 );
 			}
 		}
+		if ( $contrat_instance->getPayByMonth() ) {
+			$new_paiement_date = [];
+			$pay_dates         = $contrat_instance->getPaiements_Liste_dates();
+			sort( $pay_dates );
+			foreach ( $this->getTotalAmountByMonth() as $month => $month_amount ) {
+				$found = false;
+				foreach ( $pay_dates as $pay_date ) {
+					if ( date_i18n( 'M', $pay_date ) == $month ) {
+						$new_paiement_date[] = $pay_date;
+						$found               = true;
+						break;
+					}
+				}
+				if ( ! $found ) {
+					$new_paiement_date[] = $pay_dates[0];
+				}
+			}
+		}
 		sort( $new_paiement_date );
 
 		$nb_paiements = count( $contrat_paiements );
@@ -2620,7 +2638,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			}
 			$amount      = array_shift( $amounts );
 			$status      = $paiement ? $paiement->getStatus() : $default_status;
-			$paiement_dt = $paiement ? $paiement->getDate() : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
+			$paiement_dt = $paiement && ! $contrat_instance->getPayByMonth() ?
+				$paiement->getDate() :
+				( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
 
 			if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ] ) ) {
 				if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ]['num'] ) ) {
