@@ -714,7 +714,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 
 	$users               = get_users( array( 'role' => 'responsable_amap' ) );
 	$state['10_users'][] = amapress_get_check_state(
-		count( $users ) == 0 ? 'error' : 'success',
+		count( $users ) == 0 ? 'warning' : 'success',
 		'Compte Responsable AMAP',
 		'Créer les comptes des Responsables de l\'AMAP',
 		admin_url( 'user-new.php?role=responsable_amap' ),
@@ -740,7 +740,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 	);
 	$users               = get_users( 'amapress_role=referent_producteur' );
 	$state['10_users'][] = amapress_get_check_state(
-		count( $users ) == 0 ? 'error' : 'success',
+		count( $users ) == 0 ? 'warning' : 'success',
 		'Compte Référent Producteur',
 		'Créer les comptes des Référents Producteurs',
 		admin_url( 'user-new.php?role=referent' ),
