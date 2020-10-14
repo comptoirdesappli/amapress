@@ -981,7 +981,7 @@ class AmapressPaniers {
 		} else {
 			return amapress_get_datatable( 'liste-emargement-contrat-variable-' . $table_id, $columns, $quantites,
 				array(
-					'paging'    => false,
+					'paging'    => true,
 					'searching' => false,
 					"language"  => array( 'emptyTable' => $options['empty_desc'] )
 				),
@@ -1010,6 +1010,8 @@ class AmapressPaniers {
 			return 'Sélectionner le contrat associé';
 		}
 		$quantites = AmapressContrats::get_contrat_quantites( $pani->getContrat_instanceId() );
+
+		ob_start();
 
 		$produits_in_panier = array();
 		if ( $pani->getContrat_instance()->isPanierVariable() ) {
@@ -1071,8 +1073,6 @@ class AmapressPaniers {
 //					);
 //				}
 //			}
-
-			ob_start();
 
 			$user_quantites     = null;
 			$user_quantites_ids = null;

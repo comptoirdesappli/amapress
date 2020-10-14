@@ -1294,10 +1294,9 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 			$content .= '</ul>';
 			break;
 		case 'next-distrib-deliv-paniers':
-			ob_start();
 			foreach ( $next_distribs as $dist ) {
 				/** @var AmapressDistribution $dist */
-				amapress_echo_panel_start_no_esc( Amapress::makeLink( $dist->getPermalink(), $dist->getTitle(), true, true ) );
+				$content .= amapress_get_panel_start_no_esc( Amapress::makeLink( $dist->getPermalink(), $dist->getTitle(), true, true ) );
 
 				foreach ( $dist->getContrats() as $contrat_instance ) {
 					$panier = AmapressPaniers::getPanierForDist( $dist->getDate(), $contrat_instance->ID );
@@ -1311,14 +1310,13 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 						$icon = '<img src="' . esc_attr( $icon ) . '" class="dist-panier-contrat-img" alt="' . esc_attr( $contrat_model->getTitle() ) . '" />';
 					}
 
-					amapress_echo_panel_start_no_esc( Amapress::makeLink( $contrat_model->getPermalink(), $contrat_instance->getModelTitleWithSubName(), true, true ), $icon,
+					$content .= amapress_get_panel_start_no_esc( Amapress::makeLink( $contrat_model->getPermalink(), $contrat_instance->getModelTitleWithSubName(), true, true ), $icon,
 						'amap-panel-dist amap-panel-dist-' . $dist->getLieuId() . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
-					echo AmapressPaniers::getPanierContentHtml( $panier->ID, $dist->getLieuId() );
-					amapress_echo_panel_end();
+					$content .= AmapressPaniers::getPanierContentHtml( $panier->ID, $dist->getLieuId() );
+					$content .= amapress_get_panel_end();
 				}
-				amapress_echo_panel_end();
+				$content .= amapress_get_panel_end();
 			}
-			$content = ob_end_clean();
 			break;
 	}
 
