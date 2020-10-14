@@ -3128,9 +3128,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		echo amapress_get_details_all_paiements( $user_id, $ignore_renouv_delta );
 	} else if ( 'details_all_delivs' == $step ) {
-		if ( ! $show_delivery_details ) {
-			wp_die( $invalid_access_message ); //phpcs:ignore
-		}
+//		if ( ! $show_delivery_details ) {
+//			wp_die( $invalid_access_message ); //phpcs:ignore
+//		}
 		if ( $for_logged && amapress_is_user_logged_in() ) {
 			$user_id = wp_get_current_user()->ID;
 		} else {
