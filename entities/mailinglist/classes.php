@@ -227,6 +227,14 @@ abstract class Amapress_MailingSystem {
 	public function handleMessagesModeration() {
 		return false;
 	}
+
+	public function getSystemId() {
+		return '';
+	}
+
+	public function getSystemName() {
+		return '';
+	}
 }
 
 abstract class Amapress_MailingList {

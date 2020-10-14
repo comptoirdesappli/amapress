@@ -736,6 +736,28 @@ add_action( 'init', function () {
 	}
 } );
 
+add_action( 'tf_custom_admin_amapress_action_test_mailinglist_access', function () {
+	$systems = Amapress_MailingSystems::getSystems();
+	if ( empty( $systems ) ) {
+		echo '<p style="color: orange">Pas de système de liste de diffusion configuré !</p>';
+		die();
+	} else {
+		$status    = [];
+		$connected = true;
+		foreach ( $systems as $system ) {
+			$status[] = sprintf( '%s(%s): %S',
+				$system->getSystemName(),
+				$system->getSystemId(),
+				$system->isConnected() ? 'OK' : $system->getErrorMessage() );
+			if ( ! $system->isConnected() ) {
+				$connected = false;
+			}
+		}
+		echo '<p style="color:' . ( $connected ? 'green' : 'red' ) . '">' . explode( '<br/>', $status ) . '</p>';
+		die();
+	}
+} );
+
 function amapress_mailinglists_autosync( $force = false ) {
 	$messages = array();
 	foreach ( Amapress_MailingListConfiguration::getAll() as $conf ) {

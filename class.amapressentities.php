@@ -576,6 +576,17 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'type' => 'save',
 										),
+										array(
+											'name'    => 'Tester',
+											'type'    => 'action-buttons',
+											'buttons' => [
+												[
+													'class'  => 'button button-primary',
+													'text'   => 'Tester la connexion',
+													'action' => 'test_mailinglist_access',
+												]
+											]
+										),
 									)
 								),
 								'Sync by Url (ie. Sud Ouest) - Sympa' => array(
@@ -617,6 +628,17 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'type' => 'save',
+										),
+										array(
+											'name'    => 'Tester',
+											'type'    => 'action-buttons',
+											'buttons' => [
+												[
+													'class'  => 'button button-primary',
+													'text'   => 'Tester la connexion',
+													'action' => 'test_mailinglist_access',
+												]
+											]
 										),
 									)
 								),

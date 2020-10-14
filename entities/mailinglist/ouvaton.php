@@ -100,6 +100,13 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 }
 
 class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
+	public function getSystemId() {
+		return 'ouvaton';
+	}
+
+	public function getSystemName() {
+		return 'Ouvaton';
+	}
 
 	public function getMailingList( $name ) {
 		$list_info = array();

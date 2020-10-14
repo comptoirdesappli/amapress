@@ -86,6 +86,13 @@ class Amapress_SudOuest_MailingList extends Amapress_Sympa_MailingList {
 }
 
 class Amapress_SudOuest_MailSystem extends Amapress_Sympa_MailSystem {
+	public function getSystemId() {
+		return 'sud-ouest';
+	}
+
+	public function getSystemName() {
+		return 'SudOuest2.org';
+	}
 
 	public function getMailingList( $name ) {
 		$list_info = array();
@@ -138,7 +145,7 @@ class Amapress_SudOuest_MailSystem extends Amapress_Sympa_MailSystem {
 
 	function __construct( $mailinglist_domain, $login, $pass ) {
 		parent::__construct( $mailinglist_domain, $login, $pass,
-			'https', 'sud-ouest',
+			'https', $this->getId(),
 			Amapress::toBool( Amapress::getOption( 'sud-ouest_manage_waiting' ) ) );
 	}
 }
