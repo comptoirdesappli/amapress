@@ -2612,13 +2612,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				} );
 			}
 			if ( ! $admin_mode && Amapress::toBool( $atts['filter_multi_contrat'] ) ) {
-				$adhs_contrat_ids           = array_map( function ( $a ) {
+				$adhs_model_ids             = array_map( function ( $a ) {
 					/** @var AmapressAdhesion $a */
 					return $a->getContrat_instance()->getModelId();
-				}, $adhs );
-				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $adhs_contrat_ids ) {
+				}, array_filter(
+					$adhs,
+					function ( $a ) use ( $subscribable_contrats_ids ) {
+						/** @var AmapressAdhesion $a */
+						return in_array( $a->getContrat_instanceId(), $subscribable_contrats_ids );
+					}
+				) );
+				$user_subscribable_contrats = array_filter( $user_subscribable_contrats, function ( $c ) use ( $adhs_model_ids ) {
 					/** @var AmapressContrat_instance $c */
-					return ! in_array( $c->getModelId(), $adhs_contrat_ids );
+					return ! in_array( $c->getModelId(), $adhs_model_ids );
 				} );
 			}
 			if ( $admin_mode ) {
