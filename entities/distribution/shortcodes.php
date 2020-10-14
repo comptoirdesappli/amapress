@@ -1226,6 +1226,7 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 	} else {
 		$next_distribs = array_slice( AmapressDistribution::get_next_distributions(), 0, intval( $atts['distrib'] ) );
 	}
+	/** @var AmapressDistribution $next_distrib */
 	$next_distrib = ! empty( $next_distribs ) ? $next_distribs[0] : null;
 
 	switch ( $tag ) {
@@ -1236,7 +1237,7 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 			break;
 		case 'next-distrib-link';
 			if ( $next_distrib ) {
-				return Amapress::makeLink( $next_distrib->getPermalink(), $content, false );
+				return Amapress::makeLink( $next_distrib->getTitle(), $content, false );
 			}
 			break;
 		case 'next-distrib-date';
