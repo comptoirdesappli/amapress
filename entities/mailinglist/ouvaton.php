@@ -147,8 +147,11 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 			$list_info['data_source']  = self::parseSelect( $body, 'single_param.user_data_source', $source_modes );
 			$list_info['data_sources'] = $source_modes;
 
-			preg_match( '/id\="single_param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m );
-			$list_info['query'] = html_entity_decode( $m['mode'] );
+			if ( preg_match( '/id\="single_param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m ) ) {
+				$list_info['query'] = html_entity_decode( $m['mode'] );
+			} elseif ( preg_match( '/id\="param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m ) ) {
+				$list_info['query'] = html_entity_decode( $m['mode'] );
+			}
 		}
 
 		return new Amapress_Ouvaton_MailingList( $name, $list_info, $this );
