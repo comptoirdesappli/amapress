@@ -1689,9 +1689,9 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		'taxonomy'   => 'amps_paiement_category',
 		'hide_empty' => false,
 	) );
-	$amap_term_id               = Amapress::getOption( 'adhesion_amap_term' );
+	$amap_term_id               = intval( Amapress::getOption( 'adhesion_amap_term' ) );
 	$amap_term                  = null;
-	$reseau_amap_term_id        = Amapress::getOption( 'adhesion_reseau_amap_term' );
+	$reseau_amap_term_id        = intval( Amapress::getOption( 'adhesion_reseau_amap_term' ) );
 	$reseau_amap_term           = null;
 	foreach ( $type_paiements as $term ) {
 		if ( $term->term_id == $amap_term_id ) {

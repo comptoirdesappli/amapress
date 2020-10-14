@@ -437,11 +437,11 @@ function amapress_post_adhesion_paiement_import( $post_id, $postdata, $postmeta 
 		$period = AmapressAdhesionPeriod::getBy( $postmeta['amapress_adhesion_paiement_period'] );
 		if ( $period ) {
 			$rep       = [];
-			$amap_term = Amapress::getOption( 'adhesion_amap_term' );
+			$amap_term = intval( Amapress::getOption( 'adhesion_amap_term' ) );
 			if ( $amap_term ) {
 				$rep[ $amap_term ] = $period->getMontantAmap();
 			}
-			$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+			$reseau_amap_term = intval( Amapress::getOption( 'adhesion_reseau_amap_term' ) );
 			if ( $reseau_amap_term ) {
 				$rep[ $reseau_amap_term ] = $period->getMontantReseau();
 			}

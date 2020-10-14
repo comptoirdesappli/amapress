@@ -1928,8 +1928,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		//allow_adhesion_lieu
 		//allow_adhesion_message
-		$amap_term        = Amapress::getOption( 'adhesion_amap_term' );
-		$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+		$amap_term        = intval( Amapress::getOption( 'adhesion_amap_term' ) );
+		$reseau_amap_term = intval( Amapress::getOption( 'adhesion_reseau_amap_term' ) );
 		$ret              .= '<table style="max-width: 70%">';
 		foreach ( $taxes as $tax ) {
 			$tax_amount = 0;

@@ -1620,7 +1620,7 @@ class Amapress {
 					'adhesion_reseau_amap_term' => 'Adhésion Réseau AMAP',
 				) as $k => $v
 			) {
-				$adhesion_term = Amapress::getOption( $k );
+				$adhesion_term = intval( Amapress::getOption( $k ) );
 				if ( empty( $adhesion_term ) ) { // || ! term_exists( $adhesion_term, 'amps_paiement_category' ) ) {
 					if ( ! term_exists( $v, 'amps_paiement_category' ) ) {
 						Amapress::setOption( $k, wp_insert_term( $v, 'amps_paiement_category' ) );

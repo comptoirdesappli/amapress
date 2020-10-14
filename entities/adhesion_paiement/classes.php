@@ -882,11 +882,11 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		}
 
 		$rep       = [];
-		$amap_term = Amapress::getOption( 'adhesion_amap_term' );
+		$amap_term = intval( Amapress::getOption( 'adhesion_amap_term' ) );
 		if ( $amap_term ) {
 			$rep[ $amap_term ] = $this->getPeriod()->getMontantAmap();
 		}
-		$reseau_amap_term = Amapress::getOption( 'adhesion_reseau_amap_term' );
+		$reseau_amap_term = intval( Amapress::getOption( 'adhesion_reseau_amap_term' ) );
 		if ( $reseau_amap_term ) {
 			$rep[ $reseau_amap_term ] = $this->getPeriod()->getMontantReseau();
 		}
