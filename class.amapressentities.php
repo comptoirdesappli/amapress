@@ -3548,36 +3548,36 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 
 										echo '<h4>Echanges de paniers du ' . $start_date_fmt . ' au ' . $end_date_fmt . '</h4>';
 
-										$columns          = [];
-										$columns[]        = array(
+										$columns    = [];
+										$columns[]  = array(
 											'title' => 'Amapien',
 											'data'  => array(
 												'_'    => 'user',
 												'sort' => 'sort_user',
 											),
 										);
-										$columns[]        = array(
+										$columns[]  = array(
 											'title' => 'Lieu',
 											'data'  => 'lieu',
 										);
-										$columns[]        = array(
+										$columns[]  = array(
 											'title' => 'Proposés',
 											'data'  => 'exchanged_nb',
 										);
-										$columns[]        = array(
+										$columns[]  = array(
 											'title' => 'Dates échange',
 											'data'  => 'exchanged_dates',
 										);
-										$columns[]        = array(
+										$columns[]  = array(
 											'title' => 'Repris',
 											'data'  => 'taken_nb',
 										);
-										$columns[] = array(
+										$columns[]  = array(
 											'title' => 'Dates reprise',
 											'data'  => 'taken_dates',
 										);
 										$start_date = DateTime::createFromFormat( 'd/m/Y', $start_date_fmt )->getTimestamp();
-										$end_date = DateTime::createFromFormat( 'd/m/Y', $end_date_fmt )->getTimestamp();
+										$end_date   = DateTime::createFromFormat( 'd/m/Y', $end_date_fmt )->getTimestamp();
 
 										$stats = AmapressIntermittence_panier::getStats( $start_date, $end_date );
 
@@ -5752,8 +5752,8 @@ Par exemple :</p>
 <li><code>[amapiens-role-list show_tel=false show_lieu=false]</code> : permet d\'afficher le tableau des membres du collectif</li>
 </ul>
 <p>Amapress expose les shortcodes suivants :</p>';
-										$ret .= '<table class="placeholders-help display">';
-										$ret .= '<thead><tr><th>Shortcode</th><th>Description</th></tr></thead>';
+										$ret .= '<table class="display compact" id="shortcodes-desc-table">';
+										$ret .= '<thead><tr><th>Shortcode</th><th data-sortable="false">Shortcode &gt; Paramètres</th></tr></thead>';
 										$ret .= '<tbody>';
 										global $all_amapress_shortcodes_descs;
 										ksort( $all_amapress_shortcodes_descs );
@@ -5761,18 +5761,63 @@ Par exemple :</p>
 											if ( empty( $desc['desc'] ) ) {
 												continue;
 											}
-											$args = '';
+											ksort( $desc['args'] );
 											if ( ! empty( $desc['args'] ) ) {
-												$args = '<ul><li>' . implode( '</li><li>',
-														array_map( function ( $kk, $vv ) {
-															return '<strong>' . esc_html( $kk ) . '</strong>: ' . ( strip_tags( $vv ) != $vv ? $vv : esc_html( $vv ) );
-														}, array_keys( $desc['args'] ), array_values( $desc['args'] ) ) ) . '</li></ul>';
+												foreach ( $desc['args'] as $kk => $vv ) {
+													$ret .= '<tr><td><strong>' .
+													        esc_html( $k ) . '</strong><br/><em>' .
+													        esc_html( $desc['desc'] ) . '</em></td><td style="padding-left: 1em">' .
+													        '<strong>' . esc_html( $kk ) . '</strong>: ' . ( wp_strip_all_tags( $vv ) != $vv ? $vv : esc_html( $vv ) ) .
+													        '</td></tr>';
+												}
+											} else {
+												$ret .= '<tr><td><strong>' .
+												        esc_html( $k ) . '</strong><br/><em>' .
+												        esc_html( $desc['desc'] ) . '</em></td><td style="padding-left: 1em"></td></tr>';
 											}
-											$ret .= '<tr><td>' . esc_html( $k ) . '</td><td>' . esc_html( $desc['desc'] ) . $args . '</td></tr>';
 										}
 
 										$ret .= '</tbody>';
 										$ret .= '</table>';
+										$ret .= '<style type="text/css">#shortcodes-desc-table .group { background-color: #3c3c3c; color: #f0f0f0 !important; }</style>';
+										$ret .= '<script type="text/javascript">
+jQuery(document).ready(function($) {
+    var groupColumn = 0;
+    var table = $(\'#shortcodes-desc-table\').DataTable({
+        "columnDefs": [
+            { "visible": false, "targets": groupColumn }
+        ],
+        "order": [[ groupColumn, \'asc\' ]],
+        "displayLength": 25,
+        "drawCallback": function ( settings ) {
+            var api = this.api();
+            var rows = api.rows( {page:\'current\'} ).nodes();
+            var last=null;
+ 
+            api.column(groupColumn, {page:\'current\'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        \'<tr class="group"><td>Shortcode - \'+group+\'</td></tr>\'
+                    );
+ 
+                    last = group;
+                }
+            } );
+        }
+    } );
+ 
+    // Order by the grouping
+    $(\'#shortcodes-desc-table tbody\').on( \'click\', \'tr.group\', function () {
+        var currentOrder = table.order()[0];
+        if ( currentOrder[0] === groupColumn && currentOrder[1] === \'asc\' ) {
+            table.order( [ groupColumn, \'desc\' ] ).draw();
+        }
+        else {
+            table.order( [ groupColumn, \'asc\' ] ).draw();
+        }
+    } );
+} );
+</script>';
 
 										return $ret;
 									}
