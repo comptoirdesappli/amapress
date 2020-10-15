@@ -3094,12 +3094,26 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'customer_email'       => $adh->getAdherent()->getEmail(),
 				'line_items'           => [
 					[
-						'name'        => $adh->getTitle(),
-						'description' => $adh->getContrat_instance()->getTitle(),
+						'name'        => get_bloginfo( 'name' ) . ' - ' . $adh->getContrat_instance()->getTitle(),
+						'description' => $adh->getTitle(),
 						'amount'      => (int) ( $adh->getTotalAmount() * 100 ),
 						'currency'    => 'eur',
 						'quantity'    => 1,
 					]
+				],
+				'payment_intent_data'  => [
+					'description' => get_bloginfo( 'name' ) . ' - ' . $adh->getContrat_instance()->getTitle(),
+					'metadata'    => [
+						'inscription_url' => $adh->getAdminEditLink(),
+						'quantites_url'   => admin_url( 'admin.php?page=contrats_quantites_next_distrib&tab=contrat-quant-tab-' . $adh->getContrat_instanceId() . '&with_adherent=T&with_prices=T' ),
+						'contrat'         => $adh->getContrat_instance()->getTitle(),
+						'amap'            => get_bloginfo( 'name' ),
+					],
+				],
+				'metadata'             => [
+					'inscriptions_url' => $adh->getAdminEditLink(),
+					'contrat'          => $adh->getContrat_instance()->getTitle(),
+					'amap'             => get_bloginfo( 'name' ),
 				],
 				'success_url'          => add_query_arg( 'success', 'T', $callback_url ),
 				'cancel_url'           => add_query_arg( 'cancel', 'T', $callback_url ),
