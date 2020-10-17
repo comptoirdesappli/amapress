@@ -63,6 +63,21 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					return add_query_arg( 'amapress_date', date( 'Y-m-d', @intval( $value ) ) );
 				}
 			),
+			'date_month'    => array(
+				'name'           => amapress__( 'Mois/Année' ),
+				'type'           => 'custom',
+				'hidden'         => true,
+				'col_def_hidden' => true,
+				'show_column'    => true,
+				'column'         => function ( $post_id ) {
+					$paiement = AmapressAmapien_paiement::getBy( $post_id );
+					if ( ! $paiement || ! $paiement->getAdhesion() ) {
+						return '';
+					}
+
+					return date_i18n( 'm/Y', $paiement->getDate() );
+				},
+			),
 			'date_emission' => array(
 				'name'         => amapress__( 'Date d\'émission' ),
 				'type'         => 'date',
