@@ -3949,7 +3949,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 				}
 			}
-			if ( $contrat->getAllowAmapienInputPaiementsDetails() && $total > 0 ) {
+			if ( ( $admin_mode || $contrat->getAllowAmapienInputPaiementsDetails() ) && $total > 0 ) {
 				$amapien  = AmapressUser::getBy( $user_id );
 				$emetteur = esc_attr( $amapien->getDisplayName() );
 				echo '<script type="application/javascript">
@@ -4067,7 +4067,7 @@ $paiements_dates
 						if ( isset( $pay_by_month_months[ $i - 1 ] ) ) {
 							$select .= '<br/>pour ' . $pay_by_month_months[ $i - 1 ];
 						}
-					} elseif ( ! $contrat->getAllowAmapienInputPaiementsDates() ) {
+					} elseif ( ! $admin_mode && ! $contrat->getAllowAmapienInputPaiementsDates() ) {
 						if ( $edit_paiement ) {
 							$dt     = $edit_paiement->getDate();
 							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
