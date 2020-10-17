@@ -4072,6 +4072,10 @@ $paiements_dates
 							$dt     = $edit_paiement->getDate();
 							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
 							          date_i18n( 'd/m/Y', $dt );
+						} elseif ( isset( $paiements_raw_dates[ $i - 1 ] ) ) {
+							$dt     = $paiements_raw_dates[ $i - 1 ];
+							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
+							          date_i18n( 'd/m/Y', $dt );
 						} else {
 							$select = '';
 						}
