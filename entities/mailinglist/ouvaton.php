@@ -166,7 +166,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 
 	function __construct( $mailinglist_domain, $login, $pass ) {
 		parent::__construct( $mailinglist_domain, $login, $pass,
-			'http', 'ouvaton',
+			'http', $this->getSystemId(),
 			Amapress::toBool( Amapress::getOption( 'ouvaton_manage_waiting' ) ) );
 	}
 }
