@@ -8,6 +8,7 @@ class AmapressUserTaxonomy {
 	 */
 	public function __construct() {
 		add_action( 'registered_taxonomy', array( $this, 'registered_taxonomy' ), 10, 3 );
+		add_filter( 'register_taxonomy_args', array( $this, 'fix_count_callback' ), 10, 3 );
 	}
 
 	/**
@@ -33,6 +34,17 @@ class AmapressUserTaxonomy {
 		}
 	}
 
+	public function fix_count_callback( $args, $taxonomy, $object_type ) {
+		if ( ( is_string( $object_type ) && ( 'user' === $object_type ) )
+		     || ( is_array( $object_type ) && in_array( 'user', $object_type, true ) ) ) {
+			if ( empty( $args['update_count_callback'] ) ) {
+				$args['update_count_callback'] = array( $this, 'update_count' );
+			}
+		}
+
+		return $args;
+	}
+
 	/**
 	 * This is our way into manipulating registered taxonomies
 	 * It's fired at the end of the register_taxonomy function
@@ -42,36 +54,22 @@ class AmapressUserTaxonomy {
 	 * @param Array $args - The user supplied + default arguments for registering the taxonomy
 	 */
 	function registered_taxonomy( $taxonomy, $object, $args ) {
-		global $wp_taxonomies;
-
-		// Only modify user taxonomies, everything else can stay as is
-		if ( $object != 'user' ) {
-			return;
+		if ( ( is_string( $object ) && ( 'user' === $object ) )
+		     || ( is_array( $object ) && in_array( 'user', $object, true ) ) ) {
+			// Register any hooks/filters that rely on knowing the taxonomy now
+			add_filter( "manage_edit-{$taxonomy}_columns", array( $this, 'set_user_column' ) );
+			add_action( "manage_{$taxonomy}_custom_column", array( $this, 'set_user_column_values' ), 10, 3 );
 		}
-
-		// We're given an array, but expected to work with an object later on
-		$args = (object) $args;
-
-		// Register any hooks/filters that rely on knowing the taxonomy now
-		add_filter( "manage_edit-{$taxonomy}_columns", array( $this, 'set_user_column' ) );
-		add_action( "manage_{$taxonomy}_custom_column", array( $this, 'set_user_column_values' ), 10, 3 );
-
-		// Set the callback to update the count if not already set
-		if ( empty( $args->update_count_callback ) ) {
-			$args->update_count_callback = array( $this, 'update_count' );
-		}
-
-		// We're finished, make sure we save out changes
-		$wp_taxonomies[ $taxonomy ] = $args;
 	}
 
 	/**
 	 * We need to manually update the number of users for a taxonomy term
 	 *
-	 * @see    _update_post_term_count()
-	 *
 	 * @param Array $terms - List of Term taxonomy IDs
 	 * @param Object $taxonomy - Current taxonomy object of terms
+	 *
+	 * @see    _update_post_term_count()
+	 *
 	 */
 	public function update_count( $terms, $taxonomy ) {
 		global $wpdb;
