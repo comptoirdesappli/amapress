@@ -86,10 +86,10 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'show_column'  => false,
 			),
 			'contrat'       => array(
-				'name'   => amapress__( 'Contrat' ),
-				'type'   => 'custom',
-				'hidden' => true,
-				'column' => function ( $post_id ) {
+				'name'       => amapress__( 'Contrat' ),
+				'type'       => 'custom',
+				'hidden'     => true,
+				'column'     => function ( $post_id ) {
 					$paiement = AmapressAmapien_paiement::getBy( $post_id );
 					if ( ! $paiement || ! $paiement->getAdhesion() ) {
 						return '';
@@ -99,21 +99,22 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 						$paiement->getAdhesion()->getContrat_instance()->getAdminEditLink(),
 						$paiement->getAdhesion()->getContrat_instance()->getTitle() );
 				},
-//				'top_filter'   => array(
-//					'name'           => 'amapress_contrat_inst',
-//					'placeholder'    => 'Tous les contrats',
-//					'custom_options' => function($args) {
-//						$ret = [];
-//						$contrats = AmapressContrats::get_active_contrat_instances();
-//						usort($contrats, function($a, $b) {
-//							return strcmp($a->getTitle(), $b->getTitle());
-//						});
-//						foreach ($contrats as $contrat) {
-//							$ret[strval($contrat->ID)] = $contrat->getTitle();
-//						}
-//						return $ret;
-//					}
-//				),
+				'top_filter' => array(
+					'name'           => 'amapress_contrat_inst',
+					'placeholder'    => 'Tous les contrats',
+					'custom_options' => function ( $args ) {
+						$ret      = [];
+						$contrats = AmapressContrats::get_active_contrat_instances();
+						usort( $contrats, function ( $a, $b ) {
+							return strcmp( $a->getTitle(), $b->getTitle() );
+						} );
+						foreach ( $contrats as $contrat ) {
+							$ret[ strval( $contrat->ID ) ] = $contrat->getTitle();
+						}
+
+						return $ret;
+					}
+				),
 			),
 			'lieu'          => array(
 				'name'       => amapress__( 'Lieu' ),
