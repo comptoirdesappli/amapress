@@ -1110,7 +1110,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <p><a href="' . $start_step_url . '">Changer d’email</a></p>';
 		}
 
-		if ( ! $for_logged && 'public' == $key && $user ) {
+		if ( ! Amapress::toBool( $atts['allow_existing_mail_for_public'] ) && ! $for_logged && 'public' == $key && $user ) {
 			ob_clean();
 
 			return $additional_css . '<p style="font-weight: bold">Les ' . ( $is_adhesion_mode ? 'adhésions' : 'inscriptions' ) . ' avec une adresse email existante ne sont pas autorisées.</p>
