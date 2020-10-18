@@ -73,7 +73,18 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 				'status'  => 'info'
 			];
 		}
+
 		try {
+			$zipClass = new ZipArchive();
+			if ( ! $zipClass->open( $model_file ) ) {
+				throw new Exception( 'Fichier non DOCX ou corrompu' );
+			}
+			$is_invalid = @empty( $zipClass->count() );
+			@$zipClass->close();
+			if ( $is_invalid ) {
+				throw new Exception( 'Fichier non DOCX ou corrompu' );
+			}
+
 			$unknowns = Phptemplate_withnewline::getUnknownPlaceholders( $model_file, $placeholders );
 			if ( ! empty( $unknowns ) ) {
 				return [
