@@ -295,3 +295,8 @@
 .wp-sweep-admin-php .sweep-all {
     display: none;
 }
+
+.ph-check-error {
+    font-weight: bold;
+    color: red;
+}

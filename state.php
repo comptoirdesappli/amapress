@@ -1675,13 +1675,19 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_convertws_config' )
 	);
 
-	$adh_period                 = AmapressAdhesionPeriod::getCurrent( $first_online_date );
+	$adh_period  = AmapressAdhesionPeriod::getCurrent( $first_online_date );
+	$status      = $adh_period ? $adh_period->getModelDocStatus() : true;
+	$status_text = '';
+	if ( true !== $status ) {
+		$status_text = ' (<span class="ph-check-' . $status['status'] . '">' . esc_html( $status['message'] ) . '</span>)';
+	}
 	$state['26_online_inscr'][] = amapress_get_check_state(
-		empty( $adh_period ) ? 'error' : ( ! defined( 'AMAPRESS_DEMO_MODE' ) && ! $adh_period->getWordModelId() ? 'warning' : 'success' ),
+		empty( $adh_period ) ? 'error' : ( ! defined( 'AMAPRESS_DEMO_MODE' ) && ! $adh_period->getWordModelId() ? 'warning' :
+			! empty( $status_text ) ? 'error' : 'success' ),
 		'Période d\'adhésion',
 		'Créer une période d\'adhésion au ' . date_i18n( 'd/m/Y', $first_online_date ) . ' pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word',
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
-		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . '</a>' : 'Aucune période d\'adhésion' )
+		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . $status_text . '</a>' : 'Aucune période d\'adhésion' )
 	);
 	$type_paiements             = get_categories( array(
 		'orderby'    => 'name',
@@ -1739,8 +1745,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		isset( $needed_shortcodes['inscription-en-ligne'] ) ? admin_url( 'post-new.php?post_type=page' ) : admin_url( 'post.php?post=' . $found_shortcodes['inscription-en-ligne']->ID . '&action=edit' ),
 		'Par exemple : [inscription-en-ligne key=' . uniqid() . uniqid() . ' email=contact@' . Amapress::getSiteDomainName( true ) . ']'
 	);
-	$assistant_inscr_conf_url = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
-	$assistant_adh_conf_url = admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' );
+	$assistant_inscr_conf_url   = admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' );
+	$assistant_adh_conf_url     = admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' );
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		'info',
 		'Réglage de l\'étape "Réglement AMAP" et autres réglages de l\'assistant adhésion/inscription en ligne',
