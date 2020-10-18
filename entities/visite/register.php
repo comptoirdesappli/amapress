@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_visite' );
 function amapress_register_entities_visite( $entities ) {
 	$entities['visite'] = array(
-		'singular'                => amapress__( 'Visite à la ferme' ),
-		'plural'                  => amapress__( 'Visites à la ferme' ),
+		'singular'                => __( 'Visite à la ferme', 'amapress' ),
+		'plural'                  => __( 'Visites à la ferme', 'amapress' ),
 		'public'                  => true,
 		'logged_or_public'        => true,
 		'show_in_menu'            => false,
@@ -21,7 +21,7 @@ function amapress_register_entities_visite( $entities ) {
 		'thumb'                   => true,
 		'title_format'            => 'amapress_visite_title_formatter',
 		'slug_format'             => 'from_title',
-		'slug'                    => amapress__( 'visites' ),
+		'slug'                    => __( 'visites', 'amapress' ),
 		'redirect_archive'        => 'amapress_redirect_agenda',
 		'menu_icon'               => 'flaticon-sprout',
 		'show_admin_bar_new'      => true,
@@ -35,13 +35,13 @@ function amapress_register_entities_visite( $entities ) {
 		},
 		'fields'                  => array(
 //			'photo'        => array(
-//				'name'  => amapress__( 'Photo' ),
+//				'name'  => __( 'Photo', 'amapress' ),
 //				'type'  => 'upload',
 //				'group' => 'Information',
 //				'desc'  => 'Photo',
 //			),
 			'status'       => array(
-				'name'     => amapress__( 'Statut' ),
+				'name'     => __( 'Statut', 'amapress' ),
 				'type'     => 'select',
 				'group'    => '1/ Informations',
 				'options'  => array(
@@ -53,14 +53,14 @@ function amapress_register_entities_visite( $entities ) {
 				'required' => true,
 			),
 			'au_programme' => array(
-				'name'       => amapress__( 'Au programme' ),
+				'name'       => __( 'Au programme', 'amapress' ),
 				'type'       => 'editor',
 				'desc'       => 'Au programme',
 				'searchable' => true,
 				'group'      => '1/ Informations',
 			),
 			'date'         => array(
-				'name'         => amapress__( 'Date de visite' ),
+				'name'         => __( 'Date de visite', 'amapress' ),
 				'type'         => 'date',
 				'time'         => false,
 				'required'     => true,
@@ -70,7 +70,7 @@ function amapress_register_entities_visite( $entities ) {
 				'group'        => '2/ Horaires',
 			),
 			'heure_debut'  => array(
-				'name'         => amapress__( 'Heure début' ),
+				'name'         => __( 'Heure début', 'amapress' ),
 				'type'         => 'date',
 				'date'         => false,
 				'time'         => true,
@@ -80,7 +80,7 @@ function amapress_register_entities_visite( $entities ) {
 				'group'        => '2/ Horaires',
 			),
 			'heure_fin'    => array(
-				'name'         => amapress__( 'Heure fin' ),
+				'name'         => __( 'Heure fin', 'amapress' ),
 				'type'         => 'date',
 				'date'         => false,
 				'time'         => true,
@@ -90,7 +90,7 @@ function amapress_register_entities_visite( $entities ) {
 				'group'        => '2/ Horaires',
 			),
 			'slots_conf'   => array(
-				'name'  => amapress__( 'Créneau(x)' ),
+				'name'  => __( 'Créneau(x)', 'amapress' ),
 				'type'  => 'text',
 				'desc'  => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
@@ -119,7 +119,7 @@ function amapress_register_entities_visite( $entities ) {
 				'group' => '2/ Horaires',
 			),
 			'producteur'           => array(
-				'name'              => amapress__( 'Producteur' ),
+				'name'              => __( 'Producteur', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_producteur',
 				'required'          => true,
@@ -137,7 +137,7 @@ function amapress_register_entities_visite( $entities ) {
 				'group'             => '3/ Emplacement',
 			),
 			'lieu_externe_nom'     => array(
-				'name'           => amapress__( 'Lieu ext.' ),
+				'name'           => __( 'Lieu ext.', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => 'Lieu externe',
 				'group'          => '3/ Emplacement',
@@ -145,7 +145,7 @@ function amapress_register_entities_visite( $entities ) {
 				'col_def_hidden' => true,
 			),
 			'lieu_externe_adresse' => array(
-				'name'           => amapress__( 'Adresse ext.' ),
+				'name'           => __( 'Adresse ext.', 'amapress' ),
 				'type'           => 'address',
 				'use_as_field'   => true,
 				'use_enter_gps'  => true,
@@ -155,7 +155,7 @@ function amapress_register_entities_visite( $entities ) {
 				'col_def_hidden' => true,
 			),
 			'lieu_externe_acces'   => array(
-				'name'        => amapress__( 'Accès' ),
+				'name'        => __( 'Accès', 'amapress' ),
 				'type'        => 'editor',
 				'required'    => false,
 				'desc'        => 'Accès',
@@ -164,7 +164,7 @@ function amapress_register_entities_visite( $entities ) {
 				'show_column' => false,
 			),
 			'participants'         => array(
-				'name'         => amapress__( 'Participants' ),
+				'name'         => __( 'Participants', 'amapress' ),
 				'type'         => 'select-users',
 				'readonly'     => true,
 				'autocomplete' => true,

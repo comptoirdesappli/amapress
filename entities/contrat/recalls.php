@@ -822,7 +822,7 @@ function amapress_contrat_quantites_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -831,7 +831,7 @@ function amapress_contrat_quantites_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -933,7 +933,7 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'           => 'contrats-liste-paiements-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -942,7 +942,7 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'           => 'contrats-liste-paiements-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1036,7 +1036,7 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-renew-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1045,7 +1045,7 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-renew-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1142,7 +1142,7 @@ function amapress_contrat_open_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-open-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1151,7 +1151,7 @@ function amapress_contrat_open_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-open-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1248,7 +1248,7 @@ function amapress_contrat_close_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-close-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1257,7 +1257,7 @@ function amapress_contrat_close_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-close-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1371,7 +1371,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-recap-cloture-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1380,7 +1380,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 		),
 		array(
 			'id'           => 'contrat-recap-cloture-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,

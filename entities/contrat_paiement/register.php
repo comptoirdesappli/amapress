@@ -8,8 +8,8 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_contrat_pa
 function amapress_register_entities_contrat_paiement( $entities ) {
 	$entities['contrat_paiement'] = array(
 		'internal_name'    => 'amps_cont_pmt',
-		'singular'         => amapress__( 'Chèque/Règlement Inscription Contrat' ),
-		'plural'           => amapress__( 'Chèques/Règlement Inscription Contrat' ),
+		'singular'         => __( 'Chèque/Règlement Inscription Contrat', 'amapress' ),
+		'plural'           => __( 'Chèques/Règlement Inscription Contrat', 'amapress' ),
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
@@ -41,7 +41,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'csv_required' => true,
 //            ),
 			'date'          => array(
-				'name'         => amapress__( 'Date de remise' ),
+				'name'         => __( 'Date de remise', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
 				'desc'         => 'Date de remise du règlement au producteur',
@@ -64,7 +64,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				}
 			),
 			'date_month'    => array(
-				'name'           => amapress__( 'Mois/Année' ),
+				'name'           => __( 'Mois/Année', 'amapress' ),
 				'type'           => 'custom',
 				'hidden'         => true,
 				'col_def_hidden' => true,
@@ -79,7 +79,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				},
 			),
 			'date_emission' => array(
-				'name'         => amapress__( 'Date d\'émission' ),
+				'name'         => __( 'Date d\'émission', 'amapress' ),
 				'type'         => 'date',
 				'required'     => false,
 				'desc'         => 'Date d\'émission',
@@ -88,7 +88,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'searchable'   => true,
 			),
 			'adhesion'      => array(
-				'name'         => amapress__( 'Inscription' ),
+				'name'         => __( 'Inscription', 'amapress' ),
 				'type'         => 'select-posts',
 				'post_type'    => 'amps_adhesion',
 				'required'     => true,
@@ -101,7 +101,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'show_column'  => false,
 			),
 			'contrat'       => array(
-				'name'       => amapress__( 'Contrat' ),
+				'name'       => __( 'Contrat', 'amapress' ),
 				'type'       => 'custom',
 				'hidden'     => true,
 				'column'     => function ( $post_id ) {
@@ -132,7 +132,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				),
 			),
 			'lieu'          => array(
-				'name'       => amapress__( 'Lieu' ),
+				'name'       => __( 'Lieu', 'amapress' ),
 				'type'       => 'custom',
 				'hidden'     => true,
 				'column'     => function ( $post_id ) {
@@ -162,7 +162,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				),
 			),
 			'status'        => array(
-				'name'         => amapress__( 'Statut' ),
+				'name'         => __( 'Statut', 'amapress' ),
 				'type'         => 'select',
 				'options'      => array(
 					'not_received' => 'Non reçu',
@@ -178,7 +178,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				),
 			),
 			'type'          => array(
-				'name'       => amapress__( 'Type' ),
+				'name'       => __( 'Type', 'amapress' ),
 				'type'       => 'select',
 				'options'    => array(
 					'chq' => 'Chèque',
@@ -198,7 +198,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				),
 			),
 			'amount'        => array(
-				'name'         => amapress__( 'Montant' ),
+				'name'         => __( 'Montant', 'amapress' ),
 				'type'         => 'float',
 				'unit'         => '€',
 				'required'     => true,
@@ -206,7 +206,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'csv_required' => true,
 			),
 			'numero'        => array(
-				'name'         => amapress__( 'Numéro du chèque' ),
+				'name'         => __( 'Numéro du chèque', 'amapress' ),
 				'type'         => 'text',
 				'required'     => false,
 				'desc'         => 'Numéro du chèque ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale',
@@ -215,13 +215,13 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'searchable'   => true,
 			),
 			'banque'        => array(
-				'name'       => amapress__( 'Banque' ),
+				'name'       => __( 'Banque', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => 'Banque émettrice ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale',
 				'searchable' => true,
 			),
 			'emetteur'      => array(
-				'name'       => amapress__( 'Emetteur' ),
+				'name'       => __( 'Emetteur', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
 				'desc'       => 'Emetteur du règlement. Pour les chèques, renseigner obligatoirement le nom de l’émetteur qui figure sur le chèque (peut être différent du nom de l’amapien détenteur du contrat)',

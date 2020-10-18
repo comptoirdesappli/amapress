@@ -314,10 +314,6 @@ if ( ! defined( 'AMAPRESS_CSV_DELIMITER' ) ) {
 register_activation_hook( __FILE__, array( 'Amapress', 'plugin_activation' ) );
 register_deactivation_hook( __FILE__, array( 'Amapress', 'plugin_deactivation' ) );
 
-function amapress__( $s ) {
-	return __( $s, 'amapress' );
-}
-
 if ( ! defined( 'FREE_PAGES_PERSO' ) ) {
 	require_once( AMAPRESS__PLUGIN_DIR . 'utils/install-github-updater.php' );
 }

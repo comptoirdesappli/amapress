@@ -8,8 +8,8 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_reminder' 
 function amapress_register_entities_reminder( $entities ) {
 	$entities['reminder'] = array(
 		'internal_name'    => 'amps_rmd',
-		'singular'         => amapress__( 'Rappel libre' ),
-		'plural'           => amapress__( 'Rappels libres' ),
+		'singular'         => __( 'Rappel libre', 'amapress' ),
+		'plural'           => __( 'Rappels libres', 'amapress' ),
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
@@ -26,7 +26,7 @@ function amapress_register_entities_reminder( $entities ) {
 		),
 		'fields'           => array(
 			'start_date'  => array(
-				'name'     => amapress__( 'Premier rappel' ),
+				'name'     => __( 'Premier rappel', 'amapress' ),
 				'type'     => 'date',
 				'required' => true,
 				'group'    => '1/ Planification',
@@ -34,13 +34,13 @@ function amapress_register_entities_reminder( $entities ) {
 				'time'     => true,
 			),
 			'end_date'    => array(
-				'name'  => amapress__( 'Date de fin' ),
+				'name'  => __( 'Date de fin', 'amapress' ),
 				'type'  => 'date',
 				'group' => '1/ Planification',
 				'desc'  => 'Date à laquelle finit le rappel',
 			),
 			'interval'    => array(
-				'name'     => amapress__( 'Périodicité' ),
+				'name'     => __( 'Périodicité', 'amapress' ),
 				'type'     => 'select',
 				'required' => true,
 				'group'    => '1/ Planification',
@@ -55,7 +55,7 @@ function amapress_register_entities_reminder( $entities ) {
 				)
 			),
 			'other_days'  => array(
-				'name'         => amapress__( 'Rappels supplémentaires' ),
+				'name'         => __( 'Rappels supplémentaires', 'amapress' ),
 				'type'         => 'select',
 				'group'        => '1/ Planification',
 				'options'      => array(
@@ -91,7 +91,7 @@ function amapress_register_entities_reminder( $entities ) {
 				'tags'         => true,
 			),
 			'subject'     => array(
-				'name'        => amapress__( 'Objet' ),
+				'name'        => __( 'Objet', 'amapress' ),
 				'type'        => 'text',
 				'group'       => '2/ Message envoyé',
 				'desc'        => 'Objet du mail envoyé',
@@ -99,7 +99,7 @@ function amapress_register_entities_reminder( $entities ) {
 				'show_column' => false,
 			),
 			'content'     => array(
-				'name'        => amapress__( 'Contenu' ),
+				'name'        => __( 'Contenu', 'amapress' ),
 				'type'        => 'editor',
 				'group'       => '2/ Message envoyé',
 				'desc'        => function ( $option ) {
@@ -111,7 +111,7 @@ function amapress_register_entities_reminder( $entities ) {
 			),
 			'queries'     => array(
 				'group'       => '3/ Destinataires',
-				'name'        => amapress__( 'Groupes' ),
+				'name'        => __( 'Groupes', 'amapress' ),
 				'type'        => 'multicheck',
 				'desc'        => 'Cocher le ou les groupes à inclure.',
 				'options'     => 'amapress_get_mailinglist_queries',
@@ -119,7 +119,7 @@ function amapress_register_entities_reminder( $entities ) {
 			),
 			'other_users' => array(
 				'group'        => '3/ Destinataires',
-				'name'         => amapress__( 'Amapiens' ),
+				'name'         => __( 'Amapiens', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,

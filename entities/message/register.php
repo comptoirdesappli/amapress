@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_message' );
 function amapress_register_entities_message( $entities ) {
 	$entities['message'] = array(
-		'singular'         => amapress__( 'Message' ),
-		'plural'           => amapress__( 'Messages' ),
+		'singular'         => __( 'Message', 'amapress' ),
+		'plural'           => __( 'Messages', 'amapress' ),
 		'public'           => 'adminonly',
 		'special_options'  => array(),
 		'show_in_menu'     => false,
@@ -17,17 +17,17 @@ function amapress_register_entities_message( $entities ) {
 		'logged_or_public' => true,
 		'fields'           => array(
 			'target_name'     => array(
-				'name' => amapress__( 'Destinataire' ),
+				'name' => __( 'Destinataire', 'amapress' ),
 				'type' => 'readonly',
 				'desc' => 'Destinataire',
 			),
 			'query_string'    => array(
-				'name'        => amapress__( 'Accès liste destinataires' ),
+				'name'        => __( 'Accès liste destinataires', 'amapress' ),
 				'type'        => 'readonly',
 				'show_column' => false,
 			),
 			'user_ids'        => array(
-				'name'         => amapress__( 'Destinataires' ),
+				'name'         => __( 'Destinataires', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
@@ -35,12 +35,12 @@ function amapress_register_entities_message( $entities ) {
 				'readonly'     => true,
 			),
 			'target_type'     => array(
-				'name'        => amapress__( 'Type de destinataire' ),
+				'name'        => __( 'Type de destinataire', 'amapress' ),
 				'type'        => 'readonly',
 				'show_column' => false,
 			),
 			'associated_date' => array(
-				'name' => amapress__( 'Date associée' ),
+				'name' => __( 'Date associée', 'amapress' ),
 				'type' => 'readonly',
 			),
 			'content_for_sms' => array(

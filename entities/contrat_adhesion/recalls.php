@@ -117,7 +117,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 		),
 		array(
 			'id'           => 'inscriptions-validate-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -126,7 +126,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 		),
 		array(
 			'id'           => 'inscriptions-validate-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,

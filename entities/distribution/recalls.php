@@ -834,7 +834,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -843,7 +843,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-amapiens-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -950,7 +950,7 @@ function amapress_distribution_missing_responsables_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-miss-resps-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -959,7 +959,7 @@ function amapress_distribution_missing_responsables_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-miss-resps-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1032,7 +1032,7 @@ function amapress_distribution_slots_inscr_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-slot-inscr-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1041,7 +1041,7 @@ function amapress_distribution_slots_inscr_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-slot-inscr-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1110,13 +1110,13 @@ function amapress_distribution_verify_recall_options() {
 		),
 		array(
 			'id'      => 'distribution-verify-recall-send-refs',
-			'name'    => amapress__( 'Envoyer aux référents' ),
+			'name'    => __( 'Envoyer aux référents', 'amapress' ),
 			'type'    => 'checkbox',
 			'default' => true,
 		),
 		array(
 			'id'           => 'distribution-verify-recall-to',
-			'name'         => amapress__( 'Destinataire(s)' ),
+			'name'         => __( 'Destinataire(s)', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1126,7 +1126,7 @@ function amapress_distribution_verify_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-verify-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1215,7 +1215,7 @@ function amapress_distribution_responsable_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-resp-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1224,7 +1224,7 @@ function amapress_distribution_responsable_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-resp-recall-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1300,7 +1300,7 @@ function amapress_distribution_responsable_recall2_options() {
 		),
 		array(
 			'id'           => 'distribution-resp-recall-2-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1309,7 +1309,7 @@ function amapress_distribution_responsable_recall2_options() {
 		),
 		array(
 			'id'           => 'distribution-resp-recall-2-cc-groups',
-			'name'         => amapress__( 'Groupes Cc' ),
+			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1477,7 +1477,7 @@ function amapress_distribution_emargement_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-emargement-recall-to',
-			'name'         => amapress__( 'Destinataire(s)' ),
+			'name'         => __( 'Destinataire(s)', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
 			'autocomplete' => true,
@@ -1487,7 +1487,7 @@ function amapress_distribution_emargement_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-emargement-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -1704,7 +1704,7 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'           => 'distribution-changes-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,

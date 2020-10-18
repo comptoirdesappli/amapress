@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_distribution' );
 function amapress_register_entities_distribution( $entities ) {
 	$entities['distribution'] = array(
-		'singular'                 => amapress__( 'Distribution hebdomadaire' ),
-		'plural'                   => amapress__( 'Distributions hebdomadaires' ),
+		'singular'                 => __( 'Distribution hebdomadaire', 'amapress' ),
+		'plural'                   => __( 'Distributions hebdomadaires', 'amapress' ),
 		'public'                   => true,
 //                'logged_or_public' => true,
 		'show_in_menu'             => false,
@@ -20,7 +20,7 @@ function amapress_register_entities_distribution( $entities ) {
 		'title'                    => false,
 		'title_format'             => 'amapress_distribution_title_formatter',
 		'slug_format'              => 'from_title',
-		'slug'                     => amapress__( 'distributions' ),
+		'slug'                     => __( 'distributions', 'amapress' ),
 		'redirect_archive'         => 'amapress_redirect_agenda',
 		'menu_icon'                => 'dashicons-store',
 		'other_def_hidden_columns' => array( 'amps_lo', 'comments' ),
@@ -100,7 +100,7 @@ function amapress_register_entities_distribution( $entities ) {
 		'default_order'            => 'ASC',
 		'fields'                   => array(
 			'date' => array(
-				'name'       => amapress__( 'Date de distribution' ),
+				'name'       => __( 'Date de distribution', 'amapress' ),
 				'type'       => 'date',
 				'time'       => false,
 				'top_filter' => array(
@@ -116,7 +116,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'required'   => true,
 			),
 			'lieu' => array(
-				'name'       => amapress__( 'Lieu de distribution' ),
+				'name'       => __( 'Lieu de distribution', 'amapress' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'group'      => 'Infos',
@@ -135,7 +135,7 @@ function amapress_register_entities_distribution( $entities ) {
 			),
 
 			'lieu_substitution' => array(
-				'name'       => amapress__( 'Lieu de substitution' ),
+				'name'       => __( 'Lieu de substitution', 'amapress' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
 				'group'      => '1/ Partage',
@@ -146,7 +146,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'searchable' => true,
 			),
 			'heure_debut_spec'  => array(
-				'name'  => amapress__( 'Heure début' ),
+				'name'  => __( 'Heure début', 'amapress' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
@@ -154,7 +154,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'group' => '1/ Partage',
 			),
 			'heure_fin_spec'    => array(
-				'name'  => amapress__( 'Heure fin' ),
+				'name'  => __( 'Heure fin', 'amapress' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
@@ -162,7 +162,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'group' => '1/ Partage',
 			),
 			'contrats'          => array(
-				'name'       => amapress__( 'Contrats' ),
+				'name'       => __( 'Contrats', 'amapress' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_contrat_inst',
 				'group'      => '1/ Partage',
@@ -178,7 +178,7 @@ function amapress_register_entities_distribution( $entities ) {
 //                'searchable' => true,
 			),
 			'slots_conf'        => array(
-				'name'  => amapress__( 'Créneau(x)' ),
+				'name'  => __( 'Créneau(x)', 'amapress' ),
 				'type'  => 'text',
 				'desc'  => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
@@ -216,7 +216,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'group' => '1/ Partage',
 			),
 			'paniers'           => array(
-				'name'              => amapress__( 'Panier(s)' ),
+				'name'              => __( 'Panier(s)', 'amapress' ),
 				'group'             => '1/ Partage',
 				'desc'              => 'Panier(s) livré(s) à cette date',
 				'show_column'       => false,
@@ -268,7 +268,7 @@ function amapress_register_entities_distribution( $entities ) {
 			),
 
 			'nb_resp_supp' => array(
-				'name'        => amapress__( 'Nombre' ),
+				'name'        => __( 'Nombre', 'amapress' ),
 				'type'        => 'number',
 				'required'    => true,
 				'desc'        => function ( $option ) {
@@ -320,7 +320,7 @@ function amapress_register_entities_distribution( $entities ) {
 				'show_column' => false,
 			),
 			'responsables' => array(
-				'name'         => amapress__( 'Responsables' ),
+				'name'         => __( 'Responsables', 'amapress' ),
 				'group'        => '2/ Responsables',
 				'type'         => 'select-users',
 				'autocomplete' => true,
@@ -360,7 +360,7 @@ function amapress_register_entities_distribution( $entities ) {
 			),
 
 			'gardiens' => array(
-				'name'         => amapress__( 'Gardien de panier(s)' ),
+				'name'         => __( 'Gardien de panier(s)', 'amapress' ),
 				'group'        => '2/ Responsables',
 				'type'         => 'select-users',
 				'autocomplete' => true,
@@ -371,7 +371,7 @@ function amapress_register_entities_distribution( $entities ) {
 			),
 
 			'info' => array(
-				'name'  => amapress__( 'Informations spécifiques' ),
+				'name'  => __( 'Informations spécifiques', 'amapress' ),
 				'type'  => 'editor',
 				'group' => '3/ Informations',
 				'desc'  => 'Informations complémentaires',
@@ -422,13 +422,13 @@ function amapress_distribution_responsable_roles_options() {
 	for ( $i = 1; $i <= 10; $i ++ ) {
 		$ret[] = array(
 			'id'   => "resp_role_$i-name",
-			'name' => amapress__( "Nom du rôle $i" ),
+			'name' => "Nom du rôle $i",
 			'type' => 'text',
 			'desc' => 'Nom du rôle de responsable de distribution',
 		);
 		$ret[] = array(
 			'id'   => "resp_role_$i-desc",
-			'name' => amapress__( "Description du rôle $i" ),
+			'name' => "Description du rôle $i",
 			'type' => 'editor',
 			'desc' => 'Description du rôle de responsable de distribution',
 		);
@@ -457,13 +457,13 @@ function amapress_distribution_responsable_roles_options() {
 			for ( $i = 1; $i <= 10; $i ++ ) {
 				$ret[] = array(
 					'id'   => "resp_role_{$lieu_id}_$i-name",
-					'name' => amapress__( "Nom du rôle $i" ),
+					'name' => "Nom du rôle $i",
 					'type' => 'text',
 					'desc' => 'Nom du rôle de responsable de distribution',
 				);
 				$ret[] = array(
 					'id'   => "resp_role_{$lieu_id}_$i-desc",
-					'name' => amapress__( "Description du rôle $i" ),
+					'name' => "Description du rôle $i",
 					'type' => 'editor',
 					'desc' => 'Description du rôle de responsable de distribution',
 				);

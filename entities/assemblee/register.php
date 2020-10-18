@@ -8,8 +8,8 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_assemblee'
 function amapress_register_entities_assemblee( $entities ) {
 	$entities['assemblee_generale'] = array(
 		'internal_name'           => 'amps_assemblee',
-		'singular'                => amapress__( 'Assemblée générale' ),
-		'plural'                  => amapress__( 'Assemblées générales' ),
+		'singular'                => __( 'Assemblée générale', 'amapress' ),
+		'plural'                  => __( 'Assemblées générales', 'amapress' ),
 		'public'                  => true,
 		'logged_or_public'        => true,
 		'show_in_menu'            => false,
@@ -22,7 +22,7 @@ function amapress_register_entities_assemblee( $entities ) {
 		'thumb'                   => true,
 		'title_format'            => 'amapress_assemblee_title_formatter',
 		'slug_format'             => 'from_title',
-		'slug'                    => amapress__( 'assemblees' ),
+		'slug'                    => __( 'assemblees', 'amapress' ),
 		'redirect_archive'        => 'amapress_redirect_agenda',
 		'menu_icon'               => 'fa-menu fa-university',
 		'default_orderby'         => 'amapress_assemblee_generale_date',
@@ -49,14 +49,14 @@ function amapress_register_entities_assemblee( $entities ) {
 		},
 		'fields'           => array(
 			'ordre_du_jour' => array(
-				'name'       => amapress__( 'Ordre du jour' ),
+				'name'       => __( 'Ordre du jour', 'amapress' ),
 				'type'       => 'editor',
 				'desc'       => 'Ordre du jour',
 				'searchable' => true,
 				'group'      => '1/ Ordre du jour',
 			),
 			'date'          => array(
-				'name'       => amapress__( 'Date' ),
+				'name'       => __( 'Date', 'amapress' ),
 				'type'       => 'date',
 				'time'       => false,
 				'required'   => true,
@@ -69,7 +69,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				),
 			),
 			'heure_debut'   => array(
-				'name'     => amapress__( 'Heure début' ),
+				'name'     => __( 'Heure début', 'amapress' ),
 				'type'     => 'date',
 				'date'     => false,
 				'time'     => true,
@@ -78,7 +78,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				'group'    => '2/ Horaires',
 			),
 			'heure_fin'     => array(
-				'name'     => amapress__( 'Heure fin' ),
+				'name'     => __( 'Heure fin', 'amapress' ),
 				'type'     => 'date',
 				'date'     => false,
 				'time'     => true,
@@ -87,7 +87,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				'group'    => '2/ Horaires',
 			),
 			'type'          => array(
-				'name'        => amapress__( 'Emplacement' ),
+				'name'        => __( 'Emplacement', 'amapress' ),
 				'type'        => 'select',
 				'options'     => array(
 					'lieu'         => 'Lieu de distribution',
@@ -99,7 +99,7 @@ function amapress_register_entities_assemblee( $entities ) {
 					'_default_'    => 'lieu',
 					'lieu'         => array(
 						'lieu' => array(
-							'name'              => amapress__( 'Lieu dist.' ),
+							'name'              => __( 'Lieu dist.', 'amapress' ),
 							'type'              => 'select-posts',
 							'post_type'         => 'amps_lieu',
 							'desc'              => 'Lieu',
@@ -111,7 +111,7 @@ function amapress_register_entities_assemblee( $entities ) {
 					),
 					'lieu_externe' => array(
 						'lieu_externe_nom'           => array(
-							'name'           => amapress__( 'Lieu ext.' ),
+							'name'           => __( 'Lieu ext.', 'amapress' ),
 							'type'           => 'text',
 							'desc'           => 'Lieu externe',
 							'group'          => '3/ Emplacement',
@@ -120,7 +120,7 @@ function amapress_register_entities_assemblee( $entities ) {
 							'col_def_hidden' => true,
 						),
 						'lieu_externe_adresse'       => array(
-							'name'           => amapress__( 'Adresse ext.' ),
+							'name'           => __( 'Adresse ext.', 'amapress' ),
 							'type'           => 'address',
 							'use_as_field'   => true,
 							'use_enter_gps'  => true,
@@ -131,7 +131,7 @@ function amapress_register_entities_assemblee( $entities ) {
 							'col_def_hidden' => true,
 						),
 						'lieu_externe_acces'         => array(
-							'name'        => amapress__( 'Accès' ),
+							'name'        => __( 'Accès', 'amapress' ),
 							'type'        => 'editor',
 							'required'    => false,
 							'desc'        => 'Accès',
@@ -140,7 +140,7 @@ function amapress_register_entities_assemblee( $entities ) {
 							'show_column' => false,
 						),
 						'lieu_externe_adresse_acces' => array(
-							'name'        => amapress__( 'Adresse d\'accès' ),
+							'name'        => __( 'Adresse d\'accès', 'amapress' ),
 							'type'        => 'address',
 							'desc'        => 'Adresse d\'accès',
 							'group'       => '3/ Emplacement',
@@ -151,7 +151,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				)
 			),
 			'participants'  => array(
-				'name'         => amapress__( 'Participants' ),
+				'name'         => __( 'Participants', 'amapress' ),
 				'type'         => 'select-users',
 				'readonly'     => true,
 				'autocomplete' => true,

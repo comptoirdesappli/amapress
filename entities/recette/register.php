@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_recette' );
 function amapress_register_entities_recette( $entities ) {
 	$entities['recette'] = array(
-		'singular'                => amapress__( 'Recette' ),
-		'plural'                  => amapress__( 'Recettes' ),
+		'singular'                => __( 'Recette', 'amapress' ),
+		'plural'                  => __( 'Recettes', 'amapress' ),
 		'public'                   => true,
 		'editor'                   => true,
 		'special_options'          => array(),
@@ -26,7 +26,7 @@ function amapress_register_entities_recette( $entities ) {
 		'show_admin_bar_new'       => true,
 		'fields'                   => array(
 			'produits'      => array(
-				'name'         => amapress__( 'Produits associés' ),
+				'name'         => __( 'Produits associés', 'amapress' ),
 				'type'         => 'select-posts',
 				'autocomplete' => true,
 				'multiple'     => true,

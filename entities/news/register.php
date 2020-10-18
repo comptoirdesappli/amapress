@@ -7,12 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 //add_filter( 'amapress_register_entities', 'amapress_register_entities_news' );
 //function amapress_register_entities_news( $entities ) {
 //	$entities['news'] = array(
-//		'singular'         => amapress__( 'News' ),
-//		'plural'           => amapress__( 'News' ),
+//		'singular'         => __( 'News', 'amapress' ),
+//		'plural'           => __( 'News', 'amapress' ),
 //		'public'           => true,
 //		'logged_or_public' => true,
 //		'show_in_menu'     => false,
-//		'slug'             => amapress__( 'news' ),
+//		'slug'             => __( 'news', 'amapress' ),
 //		'menu_icon'        => 'flaticon-summer',
 //		'views'            => array(),
 //		'fields'           => array(),

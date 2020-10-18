@@ -86,7 +86,7 @@ function amapress_assemblee_generale_inscription_recall_options() {
 		),
 		array(
 			'id'           => 'assemblee-inscription-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -156,7 +156,7 @@ function amapress_assemblee_generale_available_recall_options() {
 		),
 		array(
 			'id'           => 'assemblee-available-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,

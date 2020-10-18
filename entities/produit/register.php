@@ -6,12 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_produit' );
 function amapress_register_entities_produit( $entities ) {
 	$entities['produit']           = array(
-		'singular'                => amapress__( 'Produit' ),
-		'plural'                  => amapress__( 'Produits' ),
+		'singular'                => __( 'Produit', 'amapress' ),
+		'plural'                  => __( 'Produits', 'amapress' ),
 		'public'                  => true,
 		'thumb'                    => true,
 		'editor'                   => true,
-		'slug'                     => amapress__( 'produits' ),
+		'slug'                     => __( 'produits', 'amapress' ),
 		'show_in_menu'             => false,
 		'comments'                 => true,
 		'public_comments'          => true,
@@ -37,7 +37,7 @@ function amapress_register_entities_produit( $entities ) {
 		),
 		'fields'                   => array(
 			'producteur'    => array(
-				'name'              => amapress__( 'Producteur(s)' ),
+				'name'              => __( 'Producteur(s)', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_producteur',
 				'group'             => 'Producteur(s)',
@@ -60,24 +60,24 @@ function amapress_register_entities_produit( $entities ) {
 	);
 //	$entities['user_produit_like'] = array(
 //		'internal_name' => 'amps_user_plike',
-//		'singular'      => amapress__( 'user_produit_like' ),
-//		'plural'        => amapress__( 'user_produit_like' ),
+//		'singular'      => __( 'user_produit_like', 'amapress' ),
+//		'plural'        => __( 'user_produit_like', 'amapress' ),
 //		'public'        => false,
 //		'fields'        => array(
 //			'user'    => array(
-//				'name'     => amapress__( 'Utilisateur' ),
+//				'name'     => __( 'Utilisateur', 'amapress' ),
 //				'type'     => 'select-users',
 //				'required' => true,
 //				'desc'     => 'Utilisateur',
 //			),
 //			'produit' => array(
-//				'name'     => amapress__( 'Utilisateur' ),
+//				'name'     => __( 'Utilisateur', 'amapress' ),
 //				'type'     => 'select-users',
 //				'required' => true,
 //				'desc'     => 'Utilisateur',
 //			),
 //			'like'    => array(
-//				'name'     => amapress__( 'Like' ),
+//				'name'     => __( 'Like', 'amapress' ),
 //				'type'     => 'number',
 //				'required' => true,
 //				'desc'     => 'Like',

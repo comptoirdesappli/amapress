@@ -2591,7 +2591,7 @@ class Amapress {
 			$fields             = AmapressEntities::getFilteredFields( $name );
 			if ( isset( $_GET['generate_test'] ) ) {
 				$fields['generate_test'] = array(
-					'name'   => amapress__( 'Dev - Creation test code' ),
+					'name'   => __( 'Dev - Creation test code', 'amapress' ),
 					'type'   => 'custom',
 					'desc'   => '===',
 					'custom' => function ( $id ) use ( $name ) {
@@ -2656,7 +2656,7 @@ class Amapress {
 			array(
 				'id'          => 'amps_rd',
 				'bare_id'     => true,
-				'name'        => amapress__( 'Rediriger non connectés vers' ),
+				'name'        => __( 'Rediriger non connectés vers', 'amapress' ),
 				'type'        => 'select-pages',
 				'desc'        => 'Par défaut : les internautes non connectés sont redirigés vers la page de connexion<br/>'
 				                 . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/protection' ),

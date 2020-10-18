@@ -9,8 +9,8 @@ add_filter( 'amapress_register_entities', 'amapress_register_entities_adhesion_r
 function amapress_register_entities_adhesion_request( $entities ) {
 	$entities['adhesion_request'] = array(
 		'internal_name'      => 'amps_adh_req',
-		'singular'           => amapress__( 'Demande d\'adhésion' ),
-		'plural'             => amapress__( 'Demandes d\'adhésion' ),
+		'singular'           => __( 'Demande d\'adhésion', 'amapress' ),
+		'plural'             => __( 'Demandes d\'adhésion', 'amapress' ),
 		'public'             => 'adminonly',
 		'show_in_menu'       => false,
 		'show_in_nav_menu'   => false,
@@ -46,7 +46,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 		'show_date_column'   => true,
 		'fields'             => array(
 			'email'             => array(
-				'name'       => amapress__( 'Email' ),
+				'name'       => __( 'Email', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
 				'desc'       => 'Email',
@@ -54,21 +54,21 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'searchable' => true,
 			),
 			'first_name'        => array(
-				'name'       => amapress__( 'Prénom' ),
+				'name'       => __( 'Prénom', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
 				'desc'       => 'Prénom',
 				'searchable' => true,
 			),
 			'last_name'         => array(
-				'name'       => amapress__( 'Nom' ),
+				'name'       => __( 'Nom', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
 				'desc'       => 'Nom',
 				'searchable' => true,
 			),
 			'amapien'           => array(
-				'name'                 => amapress__( 'Amapien' ),
+				'name'                 => __( 'Amapien', 'amapress' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
 				'show_on'              => 'edit-only',
@@ -84,7 +84,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'use_custom_as_column' => true,
 			),
 			'reply_type'        => array(
-				'name'        => amapress__( 'Réponse type' ),
+				'name'        => __( 'Réponse type', 'amapress' ),
 				'type'        => 'custom',
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -95,7 +95,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				},
 			),
 			'reply_cnt'         => array(
-				'name'                 => amapress__( 'Réponses' ),
+				'name'                 => __( 'Réponses', 'amapress' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
 				'show_on'              => 'edit-only',
@@ -111,37 +111,37 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'use_custom_as_column' => true,
 			),
 			'date'              => array(
-				'name'     => amapress__( 'Date demande' ),
+				'name'     => __( 'Date demande', 'amapress' ),
 				'type'     => 'date',
 				'time'     => true,
 				'required' => true,
 				'desc'     => 'Date de la demande',
 			),
 			'adresse'           => array(
-				'name'       => amapress__( 'Adresse' ),
+				'name'       => __( 'Adresse', 'amapress' ),
 				'type'       => 'textarea',
 				'desc'       => 'Nom',
 				'searchable' => true,
 			),
 			'adresse_localized' => array(
-				'name'               => amapress__( 'Localisé' ),
+				'name'               => __( 'Localisé', 'amapress' ),
 				'type'               => 'address',
 				'field_name_prefix'  => 'amapress_adhesion_request',
 				'use_as_field'       => false,
 				'address_field_name' => 'amapress_adhesion_request_adresse',
 			),
 			'telephone'         => array(
-				'name'       => amapress__( 'Téléphone' ),
+				'name'       => __( 'Téléphone', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
 			'other_info'        => array(
-				'name' => amapress__( 'Autres informations' ),
+				'name' => __( 'Autres informations', 'amapress' ),
 				'type' => 'editor',
 			),
 			'lieux'             => array(
-				'name'              => amapress__( 'Lieux de distribution' ),
+				'name'              => __( 'Lieux de distribution', 'amapress' ),
 				'type'              => 'multicheck-posts',
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 				'desc'              => 'Lieux de distribution',
@@ -154,24 +154,24 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				),
 			),
 			'contrats'          => array(
-				'name'      => amapress__( 'Contrats' ),
+				'name'      => __( 'Contrats', 'amapress' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat::INTERNAL_POST_TYPE,
 				'desc'      => 'Contrats',
 			),
 			'contrat_intances'  => array(
-				'name'      => amapress__( 'Contrats spécifiques' ),
+				'name'      => __( 'Contrats spécifiques', 'amapress' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'desc'      => 'Contrats',
 			),
 			'intermittent'      => array(
-				'name' => amapress__( 'Intermittent' ),
+				'name' => __( 'Intermittent', 'amapress' ),
 				'type' => 'checkbox',
 				'desc' => 'Le contact souhaite devenir intermittent',
 			),
 			'status'            => array(
-				'name'       => amapress__( 'Statut' ),
+				'name'       => __( 'Statut', 'amapress' ),
 				'type'       => 'select',
 				'group'      => '1/ Informations',
 				'options'    => array(

@@ -18,8 +18,8 @@ function amapress_register_entities_adhesion_period( $entities ) {
 
 	$entities['adhesion_period'] = array(
 		'internal_name'    => 'amps_adh_per',
-		'singular'         => amapress__( 'Période Adhésion' ),
-		'plural'           => amapress__( 'Périodes Adhésion' ),
+		'singular'         => __( 'Période Adhésion', 'amapress' ),
+		'plural'           => __( 'Périodes Adhésion', 'amapress' ),
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
@@ -61,7 +61,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 		),
 		'fields'           => array(
 			'date_debut'  => array(
-				'name'         => amapress__( 'Date de début' ),
+				'name'         => __( 'Date de début', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
 				'group'        => '1/ Informations',
@@ -69,7 +69,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'csv_required' => true,
 			),
 			'date_fin'    => array(
-				'name'         => amapress__( 'Date de fin' ),
+				'name'         => __( 'Date de fin', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
 				'group'        => '1/ Informations',
@@ -77,19 +77,19 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'csv_required' => true,
 			),
 			'name'        => array(
-				'name'  => amapress__( 'Nom de la période' ),
+				'name'  => __( 'Nom de la période', 'amapress' ),
 				'type'  => 'text',
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => '(Facultatif) Nom de la saison (par exemple, saison 15)',
 			),
 			'online_desc' => array(
-				'name'  => amapress__( 'Contenu bulletin' ),
+				'name'  => __( 'Contenu bulletin', 'amapress' ),
 				'type'  => 'editor',
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => 'Contenu à afficher lors de l\'adhésion en ligne',
 			),
 			'word_model'  => array(
-				'name'            => amapress__( 'Bulletin personnalisé' ),
+				'name'            => __( 'Bulletin personnalisé', 'amapress' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
 				'show_column'     => false,
@@ -102,7 +102,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 <p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getBulletinGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>',
 			),
 			'mnt_reseau'  => array(
-				'name'     => amapress__( 'Montant adhésion au réseau' ),
+				'name'     => __( 'Montant adhésion au réseau', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
 				'min'      => - 1,
@@ -110,7 +110,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'     => 'Montant adhésion au réseau (indiquer -1 pour autoriser un montant libre)',
 			),
 			'mnt_amap'         => array(
-				'name'     => amapress__( 'Montant adhésion AMAP' ),
+				'name'     => __( 'Montant adhésion AMAP', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
 				'min'      => - 1,
@@ -118,7 +118,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'     => 'Montant adhésion AMAP (indiquer -1 pour autoriser un montant libre)',
 			),
 			'mnt_reseau_inter' => array(
-				'name'     => amapress__( 'Intermittents - Montant adhésion au réseau' ),
+				'name'     => __( 'Intermittents - Montant adhésion au réseau', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
 				'min'      => - 1,
@@ -126,7 +126,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'     => 'Montant adhésion au réseau pour les intermittents (indiquer -1 pour autoriser un montant libre)',
 			),
 			'mnt_amap_inter' => array(
-				'name'     => amapress__( 'Intermittents - Montant adhésion AMAP' ),
+				'name'     => __( 'Intermittents - Montant adhésion AMAP', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
 				'min'      => - 1,
@@ -134,7 +134,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'     => 'Montant adhésion AMAP pour les intermittents (indiquer -1 pour autoriser un montant libre)',
 			),
 			'allow_chq'      => array(
-				'name'        => amapress__( 'Chèque' ),
+				'name'        => __( 'Chèque', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
 				'required'    => true,
@@ -143,7 +143,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en chèque',
 			),
 			'allow_cash'     => array(
-				'name'        => amapress__( 'Espèces' ),
+				'name'        => __( 'Espèces', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
 				'required'    => true,
@@ -152,7 +152,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en espèce',
 			),
 			'allow_bktrfr'   => array(
-				'name'        => amapress__( 'Virement' ),
+				'name'        => __( 'Virement', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
 				'required'    => true,
@@ -161,7 +161,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par virement',
 			),
 			'allow_locmon'   => array(
-				'name'        => amapress__( 'Monnaie locale' ),
+				'name'        => __( 'Monnaie locale', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
 				'required'    => true,
@@ -170,13 +170,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'        => 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en monnaie locale',
 			),
 			'pmt_info'       => array(
-				'name'  => amapress__( 'Info règlements' ),
+				'name'  => __( 'Info règlements', 'amapress' ),
 				'type'  => 'editor',
 				'group' => 'Pré-inscription en ligne',
 				'desc'  => 'Informations relatives aux règlements (ordres des chèques, virement) à afficher lors de l\'adhésion en ligne',
 			),
 			'pmt_user_input' => array(
-				'name'        => amapress__( 'Libellé règlements' ),
+				'name'        => __( 'Libellé règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => 'Règlements',
 				'required'    => true,

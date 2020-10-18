@@ -91,7 +91,7 @@ function amapress_amap_event_inscription_recall_options() {
 		),
 		array(
 			'id'           => 'amap-event-inscription-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -161,7 +161,7 @@ function amapress_amap_event_available_recall_options() {
 		),
 		array(
 			'id'           => 'amap-event-available-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,

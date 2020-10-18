@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_intermittence' );
 function amapress_register_entities_intermittence( $entities ) {
 	$entities['intermittence_panier'] = array(
-		'singular'         => amapress__( 'Panier intermittent' ),
-		'plural'           => amapress__( 'Paniers intermittents' ),
+		'singular'         => __( 'Panier intermittent', 'amapress' ),
+		'plural'           => __( 'Paniers intermittents', 'amapress' ),
 		'internal_name'    => 'amps_inter_panier',
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
@@ -49,7 +49,7 @@ function amapress_register_entities_intermittence( $entities ) {
 		),
 		'fields'           => array(
 			'date'               => array(
-				'name'       => amapress__( 'Date' ),
+				'name'       => __( 'Date', 'amapress' ),
 				'type'       => 'date',
 				'readonly'   => true,
 				'desc'       => 'Date ',
@@ -60,7 +60,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				),
 			),
 			'panier'             => array(
-				'name'        => amapress__( 'Panier(s)' ),
+				'name'        => __( 'Panier(s)', 'amapress' ),
 				'type'        => 'multicheck-posts',
 				'post_type'   => AmapressPanier::INTERNAL_POST_TYPE,
 				'readonly'    => true,
@@ -68,14 +68,14 @@ function amapress_register_entities_intermittence( $entities ) {
 				'show_column' => false,
 			),
 			'contrat_instance'   => array(
-				'name'      => amapress__( 'Contrat(s)' ),
+				'name'      => __( 'Contrat(s)', 'amapress' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'readonly'  => true,
 				'desc'      => 'Contrat(s)',
 			),
 			'lieu'               => array(
-				'name'              => amapress__( 'Lieu' ),
+				'name'              => __( 'Lieu', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 				'readonly'          => true,
@@ -88,7 +88,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				),
 			),
 			'repreneur'          => array(
-				'name'        => amapress__( 'Repreneur' ),
+				'name'        => __( 'Repreneur', 'amapress' ),
 				'type'        => 'select-users',
 				'desc'        => 'Repreneur',
 				'searchable'  => true,
@@ -96,14 +96,14 @@ function amapress_register_entities_intermittence( $entities ) {
 				'show_column' => false,
 			),
 			'adherent'           => array(
-				'name'       => amapress__( 'Adherent' ),
+				'name'       => __( 'Adherent', 'amapress' ),
 				'type'       => 'select-users',
 				'readonly'   => true,
 				'desc'       => 'Adherent',
 				'searchable' => true,
 			),
 			'status'             => array(
-				'name'       => amapress__( 'Statut' ),
+				'name'       => __( 'Statut', 'amapress' ),
 				'type'       => 'select',
 				'top_filter' => array(
 					'name'        => 'amapress_status',
@@ -121,7 +121,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'readonly'   => true,
 			),
 			'waiters'            => array(
-				'name'                 => amapress__( 'Repreneur' ),
+				'name'                 => __( 'Repreneur', 'amapress' ),
 				'type'                 => 'custom',
 				'use_custom_as_column' => true,
 				'custom'               => function ( $post_id ) {
@@ -146,13 +146,13 @@ function amapress_register_entities_intermittence( $entities ) {
 				}
 			),
 			'adh_message'        => array(
-				'name'       => amapress__( 'Message au repreneur' ),
+				'name'       => __( 'Message au repreneur', 'amapress' ),
 				'type'       => 'readonly',
 				'desc'       => 'Message',
 				'searchable' => true,
 			),
 			'adh_cancel_message' => array(
-				'name'       => amapress__( 'Message d\'annulation' ),
+				'name'       => __( 'Message d\'annulation', 'amapress' ),
 				'type'       => 'readonly',
 				'desc'       => 'Message',
 				'searchable' => true,

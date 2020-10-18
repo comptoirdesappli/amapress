@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_panier' );
 function amapress_register_entities_panier( $entities ) {
 	$entities['panier'] = array(
-		'singular'                 => amapress__( 'Panier' ),
-		'plural'                   => amapress__( 'Paniers' ),
+		'singular'                 => __( 'Panier', 'amapress' ),
+		'plural'                   => __( 'Paniers', 'amapress' ),
 		'public'                   => true,
 		'logged_or_public'         => true,
 		'show_in_menu'             => false,
@@ -17,7 +17,7 @@ function amapress_register_entities_panier( $entities ) {
 		'title'                    => false,
 		'title_format'             => 'amapress_panier_title_formatter',
 		'slug_format'              => 'from_title',
-		'slug'                     => amapress__( 'paniers' ),
+		'slug'                     => __( 'paniers', 'amapress' ),
 		'redirect_archive'         => 'amapress_redirect_agenda',
 		'menu_icon'                => 'fa-menu fa-shopping-basket',
 		'show_admin_bar_new'       => false,
@@ -35,7 +35,7 @@ function amapress_register_entities_panier( $entities ) {
 		'other_def_hidden_columns' => array( 'amps_lo', 'comments' ),
 		'fields'                   => array(
 			'date'              => array(
-				'name'       => amapress__( 'Livraison du panier' ),
+				'name'       => __( 'Livraison du panier', 'amapress' ),
 				'type'       => 'date',
 				'readonly'   => true,
 				'desc'       => 'Date de distribution',
@@ -47,7 +47,7 @@ function amapress_register_entities_panier( $entities ) {
 				),
 			),
 			'contrat_instance'  => array(
-				'name'       => amapress__( 'Contrat' ),
+				'name'       => __( 'Contrat', 'amapress' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_contrat_inst',
 				'readonly'   => true,
@@ -62,7 +62,7 @@ function amapress_register_entities_panier( $entities ) {
 				),
 			),
 			'paniers'           => array(
-				'name'              => amapress__( 'Distribution(s)' ),
+				'name'              => __( 'Distribution(s)', 'amapress' ),
 				'group'             => '1/ Informations',
 				'show_column'       => false,
 				'include_columns'   => array(
@@ -80,7 +80,7 @@ function amapress_register_entities_panier( $entities ) {
 				}
 			),
 			'produits_selected' => array(
-				'name'           => amapress__( 'Produits associés' ),
+				'name'           => __( 'Produits associés', 'amapress' ),
 				'type'           => 'select-posts',
 				'post_type'      => AmapressProduit::INTERNAL_POST_TYPE,
 				'desc'           => 'Produits associés aux paniers',
@@ -91,14 +91,14 @@ function amapress_register_entities_panier( $entities ) {
 				'col_def_hidden' => true,
 			),
 //			'produits'         => array(
-//				'name'   => amapress__( 'Panier' ),
+//				'name'   => __( 'Panier', 'amapress' ),
 //				'type'   => 'custom',
 //				'custom' => array( 'AmapressPaniers', "panierTable" ),
 //				'save'   => array( 'AmapressPaniers', 'savePanierTable' ),
 //				'desc'   => 'Produits',
 //			),
 			'status'            => array(
-				'name'          => amapress__( 'Statut' ),
+				'name'          => __( 'Statut', 'amapress' ),
 				'type'          => 'select',
 				'options'       => array(
 					''          => 'Date prévue',
@@ -127,7 +127,7 @@ jQuery(function($) {
 </script>',
 			),
 			'date_subst'        => array(
-				'name'    => amapress__( 'Nouvelle date' ),
+				'name'    => __( 'Nouvelle date', 'amapress' ),
 				'type'    => 'select',
 				'cache'   => false,
 				'options' => function ( $option ) {
@@ -172,7 +172,7 @@ function amapress_panier_fields( $fields ) {
 			     && ( $panier->getContrat_instance()->hasPanier_CustomContent() ) ) {
 				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
 					$fields[ 'contenu_' . $quantite->ID ] = array(
-						'name'  => amapress__( 'Contenu pour ' . $quantite->getTitle() ),
+						'name'  => 'Contenu pour ' . $quantite->getTitle(),
 						'type'  => 'editor',
 						'group' => '2/ Contenu',
 					);

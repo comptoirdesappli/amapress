@@ -88,7 +88,7 @@ function amapress_visite_inscription_recall_options() {
 		),
 		array(
 			'id'           => 'visite-inscription-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -168,7 +168,7 @@ function amapress_visite_available_recall_options() {
 		),
 		array(
 			'id'           => 'visite-available-recall-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,

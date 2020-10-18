@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_adhesion' );
 function amapress_register_entities_adhesion( $entities ) {
 	$entities['adhesion'] = array(
-		'singular'         => amapress__( 'Inscription Contrat' ),
-		'plural'           => amapress__( 'Inscriptions Contrat' ),
+		'singular'         => __( 'Inscription Contrat', 'amapress' ),
+		'plural'           => __( 'Inscriptions Contrat', 'amapress' ),
 		'public'           => 'adminonly',
 		'show_in_menu'     => false,
 		'show_in_nav_menu' => false,
@@ -202,7 +202,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv_export'    => true,
 				'hidden'        => true,
 				'group'         => '1/ Informations',
-				'name'          => amapress__( 'Adhérent' ),
+				'name'          => __( 'Adhérent', 'amapress' ),
 				'join_meta_key' => 'amapress_adhesion_adherent',
 				'join_on'       => 'user',
 				'sort_column'   => 'display_name',
@@ -225,7 +225,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 			),
 			'adherent'          => array(
-				'name'         => amapress__( 'Adhérent' ),
+				'name'         => __( 'Adhérent', 'amapress' ),
 				'type'         => 'select-users',
 				'required'     => true,
 				'group'        => '1/ Informations',
@@ -244,7 +244,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv_export'    => true,
 				'hidden'        => true,
 				'group'         => '1/ Informations',
-				'name'          => amapress__( 'Nom' ),
+				'name'          => __( 'Nom', 'amapress' ),
 				'type'          => 'custom',
 				'join_meta_key' => 'amapress_adhesion_adherent',
 				'sort_column'   => 'last_name',
@@ -263,7 +263,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv_export'    => true,
 				'hidden'        => true,
 				'group'         => '1/ Informations',
-				'name'          => amapress__( 'Email' ),
+				'name'          => __( 'Email', 'amapress' ),
 				'type'          => 'custom',
 				'join_meta_key' => 'amapress_adhesion_adherent',
 				'join_on'       => 'user',
@@ -282,7 +282,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'csv_export' => true,
 				'hidden'     => true,
 				'group'      => '1/ Informations',
-				'name'       => amapress__( 'Adresse' ),
+				'name'       => __( 'Adresse', 'amapress' ),
 				'type'       => 'custom',
 				'column'     => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
@@ -294,7 +294,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 			),
 			'status'            => array(
-				'name'     => amapress__( 'Statut' ),
+				'name'     => __( 'Statut', 'amapress' ),
 				'type'     => 'select',
 				'group'    => 'Infos',
 				'options'  => array(
@@ -314,7 +314,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				//				'desc'     => 'Statut',
 			),
 			'quantites_editor'  => array(
-				'name'         => amapress__( 'Contrat et Quantité(s)' ),
+				'name'         => __( 'Contrat et Quantité(s)', 'amapress' ),
 				'type'         => 'custom',
 				'show_column'  => false,
 				'custom'       => 'amapress_adhesion_contrat_quantite_editor',
@@ -339,7 +339,7 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'show_on' => 'edit',
 			),
 			'contrat_instance'  => array(
-				'name'              => amapress__( 'Contrat' ),
+				'name'              => __( 'Contrat', 'amapress' ),
 				'type'              => 'select-posts',
 //                'readonly' => 'edit',
 				'hidden'            => true,
@@ -376,7 +376,7 @@ function amapress_register_entities_adhesion( $entities ) {
 
 			),
 			'contrat_quantite'  => array(
-				'name'              => amapress__( 'Quantité' ),
+				'name'              => __( 'Quantité', 'amapress' ),
 				'type'              => 'custom',
 				'readonly'          => true,
 				'hidden'            => true,
@@ -459,7 +459,7 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'csv_required' => true,
 			),
 			'date_debut'        => array(
-				'name'          => amapress__( 'Date de début' ),
+				'name'          => __( 'Date de début', 'amapress' ),
 				'type'          => 'date',
 				'required'      => true,
 				'group'         => '2/ Contrat',
@@ -497,7 +497,7 @@ jQuery(function($) {
 					},
 			),
 			'pmt_type'          => array(
-				'name'           => amapress__( 'Moyen de règlement principal' ),
+				'name'           => __( 'Moyen de règlement principal', 'amapress' ),
 				'type'           => 'select',
 				'group'          => '3/ Paiements',
 				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
@@ -521,7 +521,7 @@ jQuery(function($) {
 				),
 			),
 			'paiements'         => array(
-				'name'           => amapress__( 'Nombre de paiements' ),
+				'name'           => __( 'Nombre de paiements', 'amapress' ),
 				'type'           => 'custom',
 				'group'          => '3/ Paiements',
 				'required'       => true,
@@ -544,7 +544,7 @@ jQuery(function($) {
 //                'csv_required' => true,
 			),
 			'paiements_editor'  => array(
-				'name'        => amapress__( 'Details des paiements' ),
+				'name'        => __( 'Details des paiements', 'amapress' ),
 				'type'        => 'custom',
 				'show_column' => false,
 				'custom'      => 'amapress_paiements_editor',
@@ -555,7 +555,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 			),
 			'lieu'              => array(
-				'name'              => amapress__( 'Lieu' ),
+				'name'              => __( 'Lieu', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_lieu',
 				'required'          => true,
@@ -583,7 +583,7 @@ jQuery(function($) {
 				}
 			),
 			'related'           => array(
-				'name'           => amapress__( 'Inscription liée' ),
+				'name'           => __( 'Inscription liée', 'amapress' ),
 				'type'           => 'select',
 				'options'        => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
@@ -641,7 +641,7 @@ jQuery(function($) {
 				'csv_import'     => false,
 			),
 			'message'           => array(
-				'name'           => amapress__( 'Message' ),
+				'name'           => __( 'Message', 'amapress' ),
 				'type'           => 'textarea',
 				'readonly'       => true,
 				'group'          => '2/ Contrat',
@@ -651,7 +651,7 @@ jQuery(function($) {
 //				'csv'         => false,
 			),
 			'all-coadherents'   => array(
-				'name'            => amapress__( 'Co-adhérents' ),
+				'name'            => __( 'Co-adhérents', 'amapress' ),
 				'group'           => '4/ Coadhérents',
 				'show_column'     => false,
 				'include_columns' => array(
@@ -669,7 +669,7 @@ jQuery(function($) {
 				},
 			),
 			'adherent2'         => array(
-				'name'          => amapress__( 'Co-Adhérent 1' ),
+				'name'          => __( 'Co-Adhérent 1', 'amapress' ),
 				'type'          => 'select-users',
 				'required'      => false,
 				'desc'          => 'Sélectionner un Co-Adhérent 1 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
@@ -699,7 +699,7 @@ jQuery(function($) {
 				},
 			),
 			'adherent3'         => array(
-				'name'           => amapress__( 'Co-Adhérent 2' ),
+				'name'           => __( 'Co-Adhérent 2', 'amapress' ),
 				'type'           => 'select-users',
 				'required'       => false,
 				'desc'           => 'Sélectionner un Co-Adhérent 2 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
@@ -730,7 +730,7 @@ jQuery(function($) {
 				},
 			),
 			'adherent4'         => array(
-				'name'           => amapress__( 'Co-Adhérent 3' ),
+				'name'           => __( 'Co-Adhérent 3', 'amapress' ),
 				'type'           => 'select-users',
 				'required'       => false,
 				'desc'           => 'Sélectionner un Co-Adhérent 3 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
@@ -761,7 +761,7 @@ jQuery(function($) {
 				},
 			),
 			'date_fin'          => array(
-				'name'           => amapress__( 'Date de fin' ),
+				'name'           => __( 'Date de fin', 'amapress' ),
 				'type'           => 'date',
 				'group'          => '5/ Fin de contrat avant terme',
 				'desc'           => 'Date à laquelle se termine le contrat',
@@ -788,7 +788,7 @@ jQuery(function($) {
 					},
 			),
 			'pmt_fin'           => array(
-				'name'        => amapress__( 'Date fin des paiements' ),
+				'name'        => __( 'Date fin des paiements', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => 0,
 				'group'       => '5/ Fin de contrat avant terme',
@@ -797,7 +797,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 			),
 			'fin_raison'        => array(
-				'name'           => amapress__( 'Motif' ),
+				'name'           => __( 'Motif', 'amapress' ),
 				'type'           => 'textarea',
 				'group'          => '5/ Fin de contrat avant terme',
 				'desc'           => 'Motif de départ (Déménagement, insatisfaction, ...)',

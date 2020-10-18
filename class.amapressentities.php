@@ -179,7 +179,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								} );
 								foreach ( $mls as $ml ) {
 									$ml_id                                                = $ml->ID;
-									$tabs[ $ml->getName() . amapress__( ' - Archives' ) ] = array(
+									$tabs[ $ml->getName() . __( ' - Archives', 'amapress' ) ] = array(
 										'id'      => 'mailgrp-archives-tab-' . $ml_id,
 										'desc'    => '',
 										'options' => array(
@@ -295,7 +295,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								} );
 								foreach ( $mls as $ml ) {
 									$ml_id                                            = $ml->ID;
-									$tabs[ $ml->getName() . amapress__( ' - Logs' ) ] = array(
+									$tabs[ $ml->getName() . __( ' - Logs', 'amapress' ) ] = array(
 										'id'      => 'mailgrp-maillog-tab-' . $ml_id,
 										'desc'    => '',
 										'options' => array(
@@ -531,7 +531,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'           => 'mailing_other_users',
-											'name'         => amapress__( 'Utilisateurs inclus dans toutes les listes' ),
+											'name'         => __( 'Utilisateurs inclus dans toutes les listes', 'amapress' ),
 											'type'         => 'select-users',
 											'autocomplete' => true,
 											'multiple'     => true,
@@ -879,7 +879,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'           => 'inscr-distrib-mail-cc',
-											'name'         => amapress__( 'Cc' ),
+											'name'         => __( 'Cc', 'amapress' ),
 											'type'         => 'select-users',
 											'autocomplete' => true,
 											'multiple'     => true,
@@ -913,7 +913,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'           => 'desinscr-distrib-mail-cc',
-											'name'         => amapress__( 'Cc' ),
+											'name'         => __( 'Cc', 'amapress' ),
 											'type'         => 'select-users',
 											'autocomplete' => true,
 											'multiple'     => true,
@@ -2218,7 +2218,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(
 								array(
-									'name'   => amapress__( 'Statistiques financières' ),
+									'name'   => __( 'Statistiques financières', 'amapress' ),
 									'bare'   => 'true',
 									'type'   => 'custom',
 									'custom' => 'amapress_producteurs_finances_custom'
@@ -2320,7 +2320,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'           => 'paiement-awaiting-cc',
-											'name'         => amapress__( 'Cc' ),
+											'name'         => __( 'Cc', 'amapress' ),
 											'type'         => 'select-users',
 											'autocomplete' => true,
 											'multiple'     => true,
@@ -2895,7 +2895,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'id'              => 'default_word_model',
-											'name'            => amapress__( 'Contrat personnalisé par défaut' ),
+											'name'            => __( 'Contrat personnalisé par défaut', 'amapress' ),
 											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 											'type'            => 'upload',
 											'show_column'     => false,
@@ -2907,7 +2907,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'id'              => 'default_word_paper_model',
-											'name'            => amapress__( 'Contrat vierge par défaut' ),
+											'name'            => __( 'Contrat vierge par défaut', 'amapress' ),
 											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 											'type'            => 'upload',
 											'show_column'     => false,
@@ -2923,7 +2923,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'id'              => 'default_word_modulable_model',
-											'name'            => amapress__( 'Contrat personnalisé "paniers modulables" par défaut' ),
+											'name'            => __( 'Contrat personnalisé "paniers modulables" par défaut', 'amapress' ),
 											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 											'type'            => 'upload',
 											'show_column'     => false,
@@ -2935,7 +2935,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'id'              => 'default_word_modulable_paper_model',
-											'name'            => amapress__( 'Contrat vierge "paniers modulables" par défaut' ),
+											'name'            => __( 'Contrat vierge "paniers modulables" par défaut', 'amapress' ),
 											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 											'type'            => 'upload',
 											'show_column'     => false,
@@ -2951,7 +2951,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'id'              => 'default_word_modulable_group_model',
-											'name'            => amapress__( 'Contrat personnalisé "paniers modulables avec groupes" par défaut' ),
+											'name'            => __( 'Contrat personnalisé "paniers modulables avec groupes" par défaut', 'amapress' ),
 											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 											'type'            => 'upload',
 											'show_column'     => false,
@@ -2963,7 +2963,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'id'              => 'default_word_modulable_group_paper_model',
-											'name'            => amapress__( 'Contrat vierge "paniers modulables avec groupe" par défaut' ),
+											'name'            => __( 'Contrat vierge "paniers modulables avec groupe" par défaut', 'amapress' ),
 											'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 											'type'            => 'upload',
 											'show_column'     => false,
@@ -4381,7 +4381,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'options' => array(
 										array(
 											'id'         => 'auth_expiration',
-											'name'       => amapress__( 'Expiration de session courte' ),
+											'name'       => __( 'Expiration de session courte', 'amapress' ),
 											'desc'       => 'Délai d\'expiration des sessions (par défaut)',
 											'type'       => 'number',
 											'default'    => 30,
@@ -4393,7 +4393,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'         => 'auth_expiration_remember',
-											'name'       => amapress__( 'Expiration de session longue' ),
+											'name'       => __( 'Expiration de session longue', 'amapress' ),
 											'desc'       => 'Délai d\'expiration des sessions (Se souvenir de moi, coché)',
 											'type'       => 'number',
 											'default'    => 90,
@@ -4557,7 +4557,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 										array(
 											'id'           => 'admin-notify-cc',
-											'name'         => amapress__( 'Cc' ),
+											'name'         => __( 'Cc', 'amapress' ),
 											'type'         => 'select-users',
 											'autocomplete' => true,
 											'multiple'     => true,
@@ -4850,7 +4850,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 									'desc'    => '',
 									'options' => array(
 										'allow_show_email'            => array(
-											'name'    => amapress__( 'Autoriser les emails à être affichés' ),
+											'name'    => __( 'Autoriser les emails à être affichés', 'amapress' ),
 											'type'    => 'select',
 											'desc'    => 'Autorisation à être affiché aux autres amapiens',
 											'default' => 'false',
@@ -4860,7 +4860,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 											),
 										),
 										'allow_show_adresse'          => array(
-											'name'    => amapress__( 'Autoriser les adresses à être affichés' ),
+											'name'    => __( 'Autoriser les adresses à être affichés', 'amapress' ),
 											'type'    => 'select',
 											'desc'    => 'Autorisation à être affiché aux autres amapiens',
 											'default' => 'false',
@@ -4870,7 +4870,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 											),
 										),
 										'allow_show_tel_fixe'         => array(
-											'name'    => amapress__( 'Autoriser les téléphones fixes à être affichés' ),
+											'name'    => __( 'Autoriser les téléphones fixes à être affichés', 'amapress' ),
 											'type'    => 'select',
 											'desc'    => 'Autorisation à être affiché aux autres amapiens',
 											'default' => 'false',
@@ -4880,7 +4880,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 											),
 										),
 										'allow_show_tel_mobile'       => array(
-											'name'    => amapress__( 'Autoriser les téléphones mobiles à être affichés' ),
+											'name'    => __( 'Autoriser les téléphones mobiles à être affichés', 'amapress' ),
 											'type'    => 'select',
 											'desc'    => 'Autorisation à être affiché aux autres amapiens',
 											'default' => 'false',
@@ -4890,7 +4890,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 											),
 										),
 										'allow_show_resp_distrib_tel' => array(
-											'name'    => amapress__( 'Autoriser les téléphones mobiles des reponsables de distributions à être affichés' ),
+											'name'    => __( 'Autoriser les téléphones mobiles des reponsables de distributions à être affichés', 'amapress' ),
 											'type'    => 'select',
 											'desc'    => 'Autorisation à être affiché aux autres amapiens la semaine où ils sont responsables',
 											'default' => 'false',
@@ -5339,7 +5339,7 @@ Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonct
 //								),
 								array(
 									'id'   => 'import_adhesion_default_date_debut',
-									'name' => amapress__( 'Date de début par défaut' ),
+									'name' => __( 'Date de début par défaut', 'amapress' ),
 									'type' => 'date',
 									'desc' => 'Date de début',
 //                                    'default' => function($option) {
@@ -5348,7 +5348,7 @@ Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonct
 								),
 								array(
 									'id'                => 'import_adhesion_default_contrat_instance',
-									'name'              => amapress__( 'Contrat par défaut' ),
+									'name'              => __( 'Contrat par défaut', 'amapress' ),
 									'type'              => 'select',
 									'post_type'         => 'amps_contrat_inst',
 									'autoselect_single' => true,
@@ -5371,7 +5371,7 @@ Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonct
 								),
 								array(
 									'id'                => 'import_adhesion_default_lieu',
-									'name'              => amapress__( 'Lieu par défaut' ),
+									'name'              => __( 'Lieu par défaut', 'amapress' ),
 									'type'              => 'select-posts',
 									'post_type'         => 'amps_lieu',
 									'autoselect_single' => true,
@@ -5412,7 +5412,7 @@ Cette page permet d\'importer les configurations de paniers pour vos contrats
 //                                ),
 								array(
 									'id'                => 'import_contrat_quantite_default_contrat_instance',
-									'name'              => amapress__( 'Contrat par défaut' ),
+									'name'              => __( 'Contrat par défaut', 'amapress' ),
 									'type'              => 'select-posts',
 									'post_type'         => 'amps_contrat_inst',
 									'autoselect_single' => true,
@@ -5421,21 +5421,21 @@ Cette page permet d\'importer les configurations de paniers pour vos contrats
 								array(
 									'id'         => 'ignore_contrat_quantites_unknown_columns',
 									'input_name' => 'amapress_ignore_unknown_columns',
-									'name'       => amapress__( 'Ignorer les colonnes inconnues' ),
+									'name'       => __( 'Ignorer les colonnes inconnues', 'amapress' ),
 									'type'       => 'checkbox',
 									'desc'       => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
 								),
 								array(
 									'id'         => 'contrat_quantite_override_contrat_with_inscriptions',
 									'input_name' => 'amapress_override_contrat_with_inscriptions',
-									'name'       => amapress__( 'Mise à jour avec inscriptions en cours' ),
+									'name'       => __( 'Mise à jour avec inscriptions en cours', 'amapress' ),
 									'type'       => 'checkbox',
 									'desc'       => 'Autoriser la mise à jour de contrats avec inscriptions actives<br/><strong style="color:red">Attention : modifier les configurations de paniers d\'un contrat peut modifier ou annuler ses inscriptions en cours</strong>',
 								),
 								array(
 									'id'         => 'override_all_contrat_quantites',
 									'input_name' => 'amapress_override_all_contrat_quantites',
-									'name'       => amapress__( 'Réimporter toutes les configurations de paniers' ),
+									'name'       => __( 'Réimporter toutes les configurations de paniers', 'amapress' ),
 									'type'       => 'checkbox',
 									'desc'       => 'Réimporter toutes les configurations de paniers des contrats présents dans l\'excel (permet de conserver l\'ordre)<br/><strong style="color:red">Attention : cette option n\'est pas pas possible pour les contrats ayant déjà des inscriptions. Pour ces contrats, Vous devez mettre à jour les configurations de paniers directement dans la configuration du contrat.</strong>',
 								),
@@ -5531,14 +5531,14 @@ Cette page permet d\'importer les contrats
 								array(
 									'id'         => 'ignore_contrats_unknown_columns',
 									'input_name' => 'amapress_ignore_unknown_columns',
-									'name'       => amapress__( 'Ignorer les colonnes inconnues' ),
+									'name'       => __( 'Ignorer les colonnes inconnues', 'amapress' ),
 									'type'       => 'checkbox',
 									'desc'       => 'Ignorer les colonnes dont l\'entête ne correspond pas à un champ existant',
 								),
 								array(
 									'id'         => 'contrat_override_contrat_with_inscriptions',
 									'input_name' => 'amapress_override_contrat_with_inscriptions',
-									'name'       => amapress__( 'Mise à jour avec inscriptions en cours' ),
+									'name'       => __( 'Mise à jour avec inscriptions en cours', 'amapress' ),
 									'type'       => 'checkbox',
 									'desc'       => 'Autoriser la mise à jour de contrats avec inscriptions actives<br/><strong style="color:red">Attention : modifier les configurations de paniers d\'un contrat peut modifier ou annuler ses inscriptions en cours</strong>',
 								),
@@ -5572,7 +5572,7 @@ Cette page permet d\'importer les adhésions à l\'AMAP (<strong>sans la répart
 								),
 								array(
 									'id'                => 'import_adhesion_paiement_default_period',
-									'name'              => amapress__( 'Période d\'adhésion par défaut' ),
+									'name'              => __( 'Période d\'adhésion par défaut', 'amapress' ),
 									'type'              => 'select-posts',
 									'post_type'         => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
 									'autoselect_single' => true,
@@ -5609,7 +5609,7 @@ Cette page permet la création des produits des producteurs
 								),
 								array(
 									'id'                => 'import_produit_default_producteur',
-									'name'              => amapress__( 'Producteur par défaut' ),
+									'name'              => __( 'Producteur par défaut', 'amapress' ),
 									'type'              => 'select-posts',
 									'post_type'         => AmapressProducteur::INTERNAL_POST_TYPE,
 									'autoselect_single' => true,

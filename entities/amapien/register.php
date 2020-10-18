@@ -38,11 +38,11 @@ function amapress_register_entities_amapien( $entities ) {
 //            ),
 			'head_amapress4'    => array(
 				'id'   => 'fonctions_sect',
-				'name' => amapress__( 'Fonctions' ),
+				'name' => __( 'Fonctions', 'amapress' ),
 				'type' => 'heading',
 			),
 			'all_roles'         => array(
-				'name'        => amapress__( 'Fonctions actuelles' ),
+				'name'        => __( 'Fonctions actuelles', 'amapress' ),
 				'show_column' => false,
 				'type'        => 'custom',
 				'csv_import'  => false,
@@ -68,7 +68,7 @@ function amapress_register_entities_amapien( $entities ) {
 			),
 			'role_desc'         => array(
 				'type'        => 'custom',
-				'name'        => amapress__( 'Rôle sur le site' ),
+				'name'        => __( 'Rôle sur le site', 'amapress' ),
 				'show_column' => false,
 				'csv_import'  => false,
 				'custom'      => function ( $user_id ) {
@@ -90,7 +90,7 @@ function amapress_register_entities_amapien( $entities ) {
 				}
 			),
 			'amap_roles'        => array(
-				'name'        => amapress__( 'Membre du collectif - Rôle dans l’Amap' ),
+				'name'        => __( 'Membre du collectif - Rôle dans l’Amap', 'amapress' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
 				'desc'        => '
@@ -102,7 +102,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'searchable' => true,
 			),
 			'adh_type'          => array(
-				'name'          => amapress__( 'Type' ),
+				'name'          => __( 'Type', 'amapress' ),
 				'type'          => 'custom',
 				'show_column'   => true,
 				'csv_import'    => false,
@@ -119,7 +119,7 @@ function amapress_register_entities_amapien( $entities ) {
 				}
 			),
 			'amapien_groups'    => array(
-				'name'        => amapress__( 'Groupes d\'amapien' ),
+				'name'        => __( 'Groupes d\'amapien', 'amapress' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAPIEN_GROUP,
 				'desc'        => '
@@ -129,7 +129,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'searchable' => true,
 			),
 			'diffusion'         => array(
-				'name'        => amapress__( 'Diffusion' ),
+				'name'        => __( 'Diffusion', 'amapress' ),
 				'type'        => 'custom',
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -158,7 +158,7 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 			),
 			'intermittent'      => array(
-				'name'              => amapress__( 'Intermittent' ),
+				'name'              => __( 'Intermittent', 'amapress' ),
 				'type'              => 'custom',
 				'show_on'           => 'edit-only',
 				'custom_csv_sample' => function ( $option, $arg ) {
@@ -203,7 +203,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column'       => false,
 			),
 			'no_renew'          => array(
-				'name'           => amapress__( 'Non renouvellement' ),
+				'name'           => __( 'Non renouvellement', 'amapress' ),
 				'type'           => 'checkbox',
 				'desc'           => 'L\'amapien n\'a pas renouvelé',
 				'show_on'        => 'edit-only',
@@ -212,7 +212,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'col_def_hidden' => true,
 			),
 			'no_renew_reason' => array(
-				'name'           => amapress__( 'Motif' ),
+				'name'           => __( 'Motif', 'amapress' ),
 				'type'           => 'text',
 				'default'        => '',
 				'show_on'        => 'edit-only',
@@ -221,7 +221,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'col_def_hidden' => true,
 			),
 			'last_login'      => array(
-				'name'                 => amapress__( 'Dernière connexion' ),
+				'name'                 => __( 'Dernière connexion', 'amapress' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
 				'show_on'              => 'edit-only',
@@ -239,7 +239,7 @@ function amapress_register_entities_amapien( $entities ) {
 				}
 			),
 			'create_date'     => array(
-				'name'                 => amapress__( 'Date création' ),
+				'name'                 => __( 'Date création', 'amapress' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
 				'show_on'              => 'edit-only',
@@ -258,11 +258,11 @@ function amapress_register_entities_amapien( $entities ) {
 			),
 			'head_amapress0'  => array(
 				'id'   => 'amapress_sect',
-				'name' => amapress__( 'Amapress' ),
+				'name' => __( 'Amapress', 'amapress' ),
 				'type' => 'heading',
 			),
 			'avatar'          => array(
-				'name'            => amapress__( 'Avatar' ),
+				'name'            => __( 'Avatar', 'amapress' ),
 				'selector-title'  => 'Sélectionnez/téléversez votre photo',
 				'selector-button' => 'Utiliser cette photo',
 				'type'            => 'upload',
@@ -272,11 +272,11 @@ function amapress_register_entities_amapien( $entities ) {
 			),
 			'head_amapress'   => array(
 				'id'   => 'address_sect',
-				'name' => amapress__( 'Adresses' ),
+				'name' => __( 'Adresses', 'amapress' ),
 				'type' => 'heading',
 			),
 			'adresse'           => array(
-				'name'          => amapress__( 'Adresse' ),
+				'name'          => __( 'Adresse', 'amapress' ),
 				'type'          => 'textarea',
 				'desc'          => 'Adresse',
 				'searchable'    => true,
@@ -287,7 +287,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'required' => true,
 			),
 			'code_postal'       => array(
-				'name'           => amapress__( 'Code postal' ),
+				'name'           => __( 'Code postal', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => 'Code postal',
 				'searchable'     => true,
@@ -295,7 +295,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'required' => true,
 			),
 			'ville'             => array(
-				'name'           => amapress__( 'Ville' ),
+				'name'           => __( 'Ville', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => 'Ville',
 				'searchable'     => true,
@@ -303,7 +303,7 @@ function amapress_register_entities_amapien( $entities ) {
 //                'required' => true,
 			),
 			'adresse_localized' => array(
-				'name'                   => amapress__( 'Localisé' ),
+				'name'                   => __( 'Localisé', 'amapress' ),
 				'type'                   => 'address',
 				'use_as_field'           => false,
 				'use_enter_gps'          => true,
@@ -316,7 +316,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_on'                => 'edit-only',
 			),
 			'hidaddr'           => array(
-				'name'           => amapress__( 'Trombinoscope' ),
+				'name'           => __( 'Trombinoscope', 'amapress' ),
 				'type'           => 'checkbox',
 				'desc'           => 'Ne pas apparaître sur le trombinoscope',
 				'csv_import'     => false,
@@ -325,23 +325,23 @@ function amapress_register_entities_amapien( $entities ) {
 			),
 			'head_amapress2'    => array(
 				'id'   => 'phones_sect',
-				'name' => amapress__( 'Téléphones' ),
+				'name' => __( 'Téléphones', 'amapress' ),
 				'type' => 'heading',
 			),
 			'telephone'         => array(
-				'name'       => amapress__( 'Téléphone' ),
+				'name'       => __( 'Téléphone', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone',
 				'searchable' => true,
 			),
 			'telephone2'        => array(
-				'name'       => amapress__( 'Téléphone 2' ),
+				'name'       => __( 'Téléphone 2', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => 'Téléphone 2',
 				'searchable' => true,
 			),
 			'telephone3'        => array(
-				'name'           => amapress__( 'Téléphone 3' ),
+				'name'           => __( 'Téléphone 3', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => 'Téléphone 3',
 				'searchable'     => true,
@@ -350,7 +350,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'col_def_hidden' => true,
 			),
 			'telephone4'     => array(
-				'name'           => amapress__( 'Téléphone 4' ),
+				'name'           => __( 'Téléphone 4', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => 'Téléphone 4',
 				'searchable'     => true,
@@ -359,7 +359,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'col_def_hidden' => true,
 			),
 			'moyen'          => array(
-				'name'           => amapress__( 'Moyen préféré' ),
+				'name'           => __( 'Moyen préféré', 'amapress' ),
 				'type'           => 'select',
 				'show_column'    => true,
 				'col_def_hidden' => true,
@@ -371,12 +371,12 @@ function amapress_register_entities_amapien( $entities ) {
 			),
 			'head_amapress6' => array(
 				'id'      => 'contrats_sect',
-				'name'    => amapress__( 'Contrats' ),
+				'name'    => __( 'Contrats', 'amapress' ),
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
 			'adhesions'      => array(
-				'name'                     => amapress__( 'Adhésions' ),
+				'name'                     => __( 'Adhésions', 'amapress' ),
 				'show_column'              => true,
 				'col_def_hidden'           => true,
 				'related_posts_count_func' => function ( $user_id ) {
@@ -402,7 +402,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'query'                    => 'post_type=amps_adh_pmt&amapress_user=%%id%%&orderby=title&order=asc',
 			),
 			'contrats'       => array(
-				'name'                     => amapress__( 'Contrats' ),
+				'name'                     => __( 'Contrats', 'amapress' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
 					$adhesions = AmapressAdhesion::getAllActiveByUserId();
@@ -428,7 +428,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%&orderby=title&order=asc',
 			),
 			'contrats-past'  => array(
-				'name'              => amapress__( 'Contrats passés' ),
+				'name'              => __( 'Contrats passés', 'amapress' ),
 				'show_column'       => false,
 				'include_columns'   => array(
 					'title',
@@ -448,11 +448,11 @@ function amapress_register_entities_amapien( $entities ) {
 
 			'head_amapress3'     => array(
 				'id'   => 'coadh_sect',
-				'name' => amapress__( 'Co-paniers' ),
+				'name' => __( 'Co-paniers', 'amapress' ),
 				'type' => 'heading',
 			),
 			'co-foyer-1'         => array(
-				'name'         => amapress__( 'Membre du foyer 1' ),
+				'name'         => __( 'Membre du foyer 1', 'amapress' ),
 				'type'         => 'select-users',
 				'desc'         => 'Membre du foyer 1',
 				'autocomplete' => true,
@@ -461,7 +461,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'        => 'ASC',
 			),
 			'co-foyer-2'         => array(
-				'name'           => amapress__( 'Membre du foyer 2' ),
+				'name'           => __( 'Membre du foyer 2', 'amapress' ),
 				'type'           => 'select-users',
 				'desc'           => 'Membre du foyer 2',
 				'show_column'    => true,
@@ -473,7 +473,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'          => 'ASC',
 			),
 			'co-foyer-3'         => array(
-				'name'           => amapress__( 'Membre du foyer 3' ),
+				'name'           => __( 'Membre du foyer 3', 'amapress' ),
 				'type'           => 'select-users',
 				'desc'           => 'Membre du foyer 3',
 				'show_column'    => true,
@@ -485,7 +485,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'          => 'ASC',
 			),
 			'co-adherent-1'      => array(
-				'name'         => amapress__( 'Co-adhérent 1' ),
+				'name'         => __( 'Co-adhérent 1', 'amapress' ),
 				'type'         => 'select-users',
 				'desc'         => 'Co-adhérent 1',
 				'autocomplete' => true,
@@ -494,7 +494,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'        => 'ASC',
 			),
 			'co-adherent-2'      => array(
-				'name'           => amapress__( 'Co-adhérent 2' ),
+				'name'           => __( 'Co-adhérent 2', 'amapress' ),
 				'type'           => 'select-users',
 				'desc'           => 'Co-adhérent 2',
 				'show_column'    => true,
@@ -506,7 +506,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'          => 'ASC',
 			),
 			'co-adherent-3'      => array(
-				'name'           => amapress__( 'Co-adhérent 3' ),
+				'name'           => __( 'Co-adhérent 3', 'amapress' ),
 				'type'           => 'select-users',
 				'desc'           => 'Co-adhérent 3',
 				'show_column'    => true,
@@ -518,7 +518,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'order'          => 'ASC',
 			),
 			'co-adherents'       => array(
-				'name'           => amapress__( 'Co-adhérent(s) - sans email' ),
+				'name'           => __( 'Co-adhérent(s) - sans email', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => 'Co-adhérent(s) - sans email - nom(s)',
 				'searchable'     => true,
@@ -532,7 +532,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column' => false,
 			),
 			'all-coadherents'    => array(
-				'name'            => amapress__( 'Co-adhérents' ),
+				'name'            => __( 'Co-adhérents', 'amapress' ),
 				'show_column'     => false,
 				'include_columns' => array(
 					'name',
@@ -553,12 +553,12 @@ function amapress_register_entities_amapien( $entities ) {
 
 			'head_amapress5'     => array(
 				'id'   => 'emarg_sect',
-				'name' => amapress__( 'Liste Emargement' ),
+				'name' => __( 'Liste Emargement', 'amapress' ),
 //				'icon' => 'dashicons-clipboard',
 				'type' => 'heading',
 			),
 			'comment_emargement' => array(
-				'name'        => amapress__( 'Commentaire pour la liste émargement' ),
+				'name'        => __( 'Commentaire pour la liste émargement', 'amapress' ),
 				'type'        => 'textarea',
 				'desc'        => 'Commentaire pour la liste émargement',
 				'show_column' => false,

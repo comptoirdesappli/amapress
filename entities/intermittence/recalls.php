@@ -183,7 +183,7 @@ function amapress_intermittence_dispo_recall_options() {
 		),
 		array(
 			'id'           => 'intermittence-recall-dispo-cc',
-			'name'         => amapress__( 'Cc' ),
+			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,
@@ -240,7 +240,7 @@ function amapress_intermittence_validation_recall_options() {
 		),
 		array(
 			'id'           => 'intermittence-recall-validation-bcc',
-			'name'         => amapress__( 'Bcc' ),
+			'name'         => __( 'Bcc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
 			'multiple'     => true,

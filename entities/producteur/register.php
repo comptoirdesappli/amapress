@@ -15,12 +15,12 @@ function amapress_is_referents_fields_readonly( $post_id = null ) {
 add_filter( 'amapress_register_entities', 'amapress_register_entities_producteur' );
 function amapress_register_entities_producteur( $entities ) {
 	$entities['producteur'] = array(
-		'singular'                 => amapress__( 'Producteur' ),
-		'plural'                   => amapress__( 'Producteurs' ),
+		'singular'                 => __( 'Producteur', 'amapress' ),
+		'plural'                   => __( 'Producteurs', 'amapress' ),
 		'public'                   => true,
 		'editor'                   => true,
 		'thumb'                    => true,
-		'slug'                     => amapress__( 'producteurs' ),
+		'slug'                     => __( 'producteurs', 'amapress' ),
 		'menu_icon'                => 'flaticon-tractor',
 		'show_in_menu'             => false,
 		'quick_edit'               => false,
@@ -72,14 +72,14 @@ function amapress_register_entities_producteur( $entities ) {
 		},
 		'fields'                   => array(
 			'nom_exploitation'     => array(
-				'name'       => amapress__( 'Nom de l\'exploitation' ),
+				'name'       => __( 'Nom de l\'exploitation', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => 'Nom de la ferme',
 				'group'      => '1/ Emplacement',
 				'searchable' => true,
 			),
 			'adresse_exploitation' => array(
-				'name'          => amapress__( 'Adresse de la ferme' ),
+				'name'          => __( 'Adresse de la ferme', 'amapress' ),
 				'type'          => 'address',
 				'use_as_field'  => true,
 				'use_enter_gps' => true,
@@ -88,14 +88,14 @@ function amapress_register_entities_producteur( $entities ) {
 				'searchable'    => true,
 			),
 			'acces'                => array(
-				'name'       => amapress__( 'Accès' ),
+				'name'       => __( 'Accès', 'amapress' ),
 				'type'       => 'editor',
 				'group'      => '1/ Emplacement',
 				'desc'       => 'Accès',
 				'searchable' => true,
 			),
 			'user'                 => array(
-				'name'       => amapress__( 'Compte utilisateur du producteur' ),
+				'name'       => __( 'Compte utilisateur du producteur', 'amapress' ),
 				'type'       => 'select-users',
 				'role'       => 'producteur',
 				'group'      => 'Infos',
@@ -115,7 +115,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'searchable' => true,
 			),
 			'referent'             => array(
-				'name'         => amapress__( 'Référent' ),
+				'name'         => __( 'Référent', 'amapress' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
@@ -127,7 +127,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'order'        => 'ASC',
 			),
 			'referent2'            => array(
-				'name'         => amapress__( 'Référent 2' ),
+				'name'         => __( 'Référent 2', 'amapress' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
@@ -139,7 +139,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'order'        => 'ASC',
 			),
 			'referent3'            => array(
-				'name'         => amapress__( 'Référent 3' ),
+				'name'         => __( 'Référent 3', 'amapress' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
@@ -151,7 +151,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'order'        => 'ASC',
 			),
 			'presentations'        => array(
-				'name'            => amapress__( 'Productions' ),
+				'name'            => __( 'Productions', 'amapress' ),
 				'show_column'     => true,
 				'group'           => '3/ Présentations et contrats',
 				'include_columns' => array(
@@ -161,7 +161,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'query'           => 'post_type=amps_contrat&amapress_producteur=%%id%%',
 			),
 			'contrats'             => array(
-				'name'               => amapress__( 'Contrats' ),
+				'name'               => __( 'Contrats', 'amapress' ),
 				'show_column'        => true,
 				'show_column_values' => true,
 				'group'              => '3/ Présentations et contrats',
@@ -187,7 +187,7 @@ function amapress_producteur_fields( $fields ) {
 	if ( count( $lieux ) > 1 || isset( $_GET['all_lieux'] ) ) {
 		foreach ( $lieux as $lieu ) {
 			$fields[ 'referent_' . $lieu->ID ] = array(
-				'name'         => amapress__( 'Référent ' . $lieu->getShortName() ),
+				'name'         => sprintf( __( 'Référent %s', 'amapress' ), $lieu->getShortName() ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
 				'group'        => '2/ Référents',
