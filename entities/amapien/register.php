@@ -211,7 +211,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'default'        => 0,
 				'col_def_hidden' => true,
 			),
-			'no_renew_reason'   => array(
+			'no_renew_reason' => array(
 				'name'           => amapress__( 'Motif' ),
 				'type'           => 'text',
 				'default'        => '',
@@ -220,7 +220,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'           => 'Motif de non renouvellement',
 				'col_def_hidden' => true,
 			),
-			'last_login'        => array(
+			'last_login'      => array(
 				'name'                 => amapress__( 'Dernière connexion' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
@@ -238,12 +238,30 @@ function amapress_register_entities_amapien( $entities ) {
 					return date_i18n( 'd/m/Y H:i:s', intval( $last_login ) );
 				}
 			),
-			'head_amapress0'    => array(
+			'create_date'     => array(
+				'name'                 => amapress__( 'Date création' ),
+				'type'                 => 'custom',
+				'show_column'          => true,
+				'show_on'              => 'edit-only',
+				'csv'                  => false,
+				'use_custom_as_column' => true,
+				'col_def_hidden'       => true,
+				'custom'               => function ( $user_id ) {
+					$amapien       = AmapressUser::getBy( $user_id );
+					$creation_date = strtotime( $amapien->getUser()->user_registered );
+					if ( empty( $creation_date ) ) {
+						return '';
+					}
+
+					return date_i18n( 'd/m/Y H:i:s', intval( $creation_date ) );
+				}
+			),
+			'head_amapress0'  => array(
 				'id'   => 'amapress_sect',
 				'name' => amapress__( 'Amapress' ),
 				'type' => 'heading',
 			),
-			'avatar'            => array(
+			'avatar'          => array(
 				'name'            => amapress__( 'Avatar' ),
 				'selector-title'  => 'Sélectionnez/téléversez votre photo',
 				'selector-button' => 'Utiliser cette photo',
@@ -252,7 +270,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'            => 'Avatar',
 				'show_column'     => false,
 			),
-			'head_amapress'     => array(
+			'head_amapress'   => array(
 				'id'   => 'address_sect',
 				'name' => amapress__( 'Adresses' ),
 				'type' => 'heading',
