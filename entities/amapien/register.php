@@ -349,7 +349,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'telephone4'        => array(
+			'telephone4'     => array(
 				'name'           => amapress__( 'Téléphone 4' ),
 				'type'           => 'text',
 				'desc'           => 'Téléphone 4',
@@ -358,7 +358,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'moyen'             => array(
+			'moyen'          => array(
 				'name'           => amapress__( 'Moyen préféré' ),
 				'type'           => 'select',
 				'show_column'    => true,
@@ -369,13 +369,39 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'desc'           => 'Moyen de communication préféré',
 			),
-			'head_amapress6'    => array(
+			'head_amapress6' => array(
 				'id'      => 'contrats_sect',
 				'name'    => amapress__( 'Contrats' ),
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
-			'contrats'          => array(
+			'adhesions'      => array(
+				'name'                     => amapress__( 'Adhésions' ),
+				'show_column'              => true,
+				'col_def_hidden'           => true,
+				'related_posts_count_func' => function ( $user_id ) {
+					$adhesions = AmapressAdhesion_paiement::getAllActiveByUserId();
+					if ( isset( $adhesions[ $user_id ] ) ) {
+						return count( $adhesions[ $user_id ] );
+					}
+
+					return 0;
+				},
+				'include_columns'          => array(
+					'title',
+					'amapress_adhesion_paiement_period',
+					'amapress_adhesion_paiement_date',
+					'amapress_adhesion_paiement_amount',
+				),
+				'datatable_options'        => array(
+					'paging' => false,
+					'bSort'  => false,
+					'info'   => false,
+				),
+				'type'                     => 'related-posts',
+				'query'                    => 'post_type=amps_adh_pmt&amapress_user=%%id%%&orderby=title&order=asc',
+			),
+			'contrats'       => array(
 				'name'                     => amapress__( 'Contrats' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
@@ -401,7 +427,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'contrats-past'     => array(
+			'contrats-past'  => array(
 				'name'              => amapress__( 'Contrats passés' ),
 				'show_column'       => false,
 				'include_columns'   => array(
