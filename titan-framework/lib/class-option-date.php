@@ -55,7 +55,11 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 	}
 
 	public function getSQLOrderBy( $order, $type ) {
-		return ( 'user' == $type ? 'ORDER BY' : '' ) . ' CAST(amp_pm.meta_value as SIGNED) ' . ( strpos( $order, ' DESC' ) === false ? 'ASC' : 'DESC' );
+		global $wpdb;
+
+		return ( 'user' == $type ? 'ORDER BY' : '' ) .
+		       ' CAST(amp_pm.meta_value as SIGNED) ' . ( strpos( $order, ' DESC' ) === false ? 'ASC' : 'DESC' ) .
+		       ", $wpdb->posts.post_title ASC";
 	}
 
 	public function getSamplesForCSV( $arg = null ) {
