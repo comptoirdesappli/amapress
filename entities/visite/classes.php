@@ -171,11 +171,13 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 		$participants = $this->getParticipantIds();
 
 		if ( ( $key = array_search( $user_id, $participants ) ) !== false ) {
+			$events = $this->get_related_events( $user_id );
 			unset( $participants[ $key ] );
 			$this->setCustom( 'amapress_visite_participants', $participants );
 
 			if ( $send_mail ) {
-				amapress_mail_current_user_desinscr( $this, $user_id, 'visite' );
+				amapress_mail_current_user_desinscr( $this, $user_id, 'visite',
+					null, null, null, $events );
 			}
 
 			return 'ok';
@@ -237,33 +239,35 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 				$current_user_slot = $this->getSlotInfoForUser( amapress_current_user_id() );
 				if ( $current_user_slot ) {
 					$ret[] = new Amapress_EventEntry( array(
-						'ev_id'    => "visite-{$this->ID}-resp",
-						'date'     => $current_user_slot['date'],
-						'date_end' => $current_user_slot['date_end'],
-						'class'    => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
-						'type'     => 'visite',
-						'category' => 'Visites',
-						'priority' => 90,
-						'lieu'     => $this,
-						'label'    => 'Visite ' . $producteur->getTitle(),
-						'icon'     => 'flaticon-sprout',
-						'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
-						'href'     => $this->getPermalink()
+						'ev_id'       => "visite-{$this->ID}-resp",
+						'date'        => $current_user_slot['date'],
+						'date_end'    => $current_user_slot['date_end'],
+						'class'       => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
+						'type'        => 'visite',
+						'category'    => 'Visites',
+						'priority'    => 90,
+						'inscr_types' => [ 'visite', 'visite-slot', 'visite-admin-slot' ],
+						'lieu'        => $this,
+						'label'       => 'Visite ' . $producteur->getTitle(),
+						'icon'        => 'flaticon-sprout',
+						'alt'         => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
+						'href'        => $this->getPermalink()
 					) );
 				} else {
 					$ret[] = new Amapress_EventEntry( array(
-						'ev_id'    => "visite-{$this->ID}-resp",
-						'date'     => $date,
-						'date_end' => $date_end,
-						'class'    => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
-						'type'     => 'visite',
-						'category' => 'Visites',
-						'priority' => 90,
-						'lieu'     => $this,
-						'label'    => 'Visite ' . $producteur->getTitle(),
-						'icon'     => 'flaticon-sprout',
-						'alt'      => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
-						'href'     => $this->getPermalink()
+						'ev_id'       => "visite-{$this->ID}-resp",
+						'date'        => $date,
+						'date_end'    => $date_end,
+						'class'       => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
+						'type'        => 'visite',
+						'category'    => 'Visites',
+						'priority'    => 90,
+						'inscr_types' => [ 'visite', 'visite-slot', 'visite-admin-slot' ],
+						'lieu'        => $this,
+						'label'       => 'Visite ' . $producteur->getTitle(),
+						'icon'        => 'flaticon-sprout',
+						'alt'         => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
+						'href'        => $this->getPermalink()
 					) );
 				}
 			} else {

@@ -15,19 +15,20 @@ class Amapress_EventEntry {
 		$this->args = wp_parse_args(
 			$args,
 			array(
-				'id'       => null,
-				'ev_id'    => null,
-				'date'     => null,
-				'date_end' => null,
-				'class'    => null,
-				'type'     => null,
-				'category' => null,
-				'lieu'     => null,
-				'label'    => null,
-				'icon'     => null,
-				'priority' => 0,
-				'alt'      => null,
-				'href'     => null
+				'id'          => null,
+				'ev_id'       => null,
+				'date'        => null,
+				'date_end'    => null,
+				'class'       => null,
+				'type'        => null,
+				'category'    => null,
+				'lieu'        => null,
+				'label'       => null,
+				'icon'        => null,
+				'priority'    => 0,
+				'alt'         => null,
+				'href'        => null,
+				'inscr_types' => [],
 			)
 		);
 	}
@@ -85,6 +86,9 @@ class Amapress_EventEntry {
 		return $this->args['href'];
 	}
 
+	public function getIncriptionsTypes() {
+		return $this->args['inscr_types'];
+	}
 }
 
 

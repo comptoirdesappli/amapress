@@ -311,19 +311,21 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 
 		$this->setAsk( array() );
 
+		$attachments = $this->getIntermittenceICal( $this->getAdherentId() );
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-adherent-mail-content' ),
 			$this->getAdherentId(),
-			$this, [], null, null, [
+			$this, $attachments, null, null, [
 			'Reply-To: ' . implode( ',', $repreneur->getAllEmails() )
 		] );
 
+		$attachments = $this->getIntermittenceICal( $repreneur->ID );
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-repris-validation-repreneur-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-repris-validation-repreneur-mail-content' ),
 			$repreneur->ID,
-			$this, [], null, null, [
+			$this, $attachments, null, null, [
 			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
 		] );
 
@@ -401,30 +403,33 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		$this->setAdherentCancelMessage( $message );
 		$this->setAsk( array() );
 
+		$attachments = $this->getIntermittenceICal( $user_id, true );
 		amapress_mail_to_current_user(
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-content' ),
 			$user_id,
-			$this, [], null, null, $this->getRepreneur() ? [
+			$this, $attachments, null, null, $this->getRepreneur() ? [
 			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
 		] : [] );
 
 
 		if ( $this->getRepreneur() ) {
+			$attachments = $this->getIntermittenceICal( $this->getRepreneurId(), true );
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
 				$this->getRepreneurId(),
-				$this, [], null, null, [
+				$this, $attachments, null, null, [
 				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
 			] );
 		} else {
 			foreach ( $this->getAsk() as $ask ) {
+				$attachments = $this->getIntermittenceICal( $ask['user'], true );
 				amapress_mail_to_current_user(
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
 					$ask['user'],
-					$this, [], null, null, [
+					$this, $attachments, null, null, [
 					'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
 				] );
 			}
@@ -485,17 +490,19 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			return 'unknown';
 		}
 
+		$attachments = $this->getIntermittenceICal( $this->getAdherentId(), true );
 		amapress_wp_mail( implode( ',', $this->getAdherent()->getAllEmails() ), $adherent_subject, $adherent_message,
 			$repreneur ? [
 				'Reply-To: ' . implode( ',', $repreneur->getAllEmails() )
-			] : [], [], null, null );
+			] : [], $attachments, null, null );
 
 		if ( $repreneur ) {
+			$attachments = $this->getIntermittenceICal( $repreneur->ID, true );
 			amapress_wp_mail(
 				implode( ',', $repreneur->getAllEmails() ),
 				$repreneur_subject, $repreneur_message, [
 				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
-			], [], null, null );
+			], $attachments, null, null );
 		}
 
 		return 'ok';
@@ -882,18 +889,19 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 				}
 			} else if ( $this->getRepreneurId() == $user_id ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "intermittence-{$this->ID}-recup",
-					'date'     => $date,
-					'date_end' => $date_end,
-					'class'    => "agenda-inter agenda-inter-panier-recup",
-					'type'     => 'inter-recup',
-					'category' => 'Paniers à récupérer',
-					'priority' => 15,
-					'lieu'     => $this->getRealLieu(),
-					'label'    => 'Récupérer panier ' . $this->getPaniersTitles( false ),
-					'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
-					'alt'      => 'Panier ' . $this->getPaniersTitles( true, true ) . ' de ' . $this->getAdherent()->getDisplayName() . ' à récupérer',
-					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
+					'ev_id'       => "intermittence-{$this->ID}-recup",
+					'date'        => $date,
+					'date_end'    => $date_end,
+					'class'       => "agenda-inter agenda-inter-panier-recup",
+					'type'        => 'inter-recup',
+					'category'    => 'Paniers à récupérer',
+					'priority'    => 15,
+					'inscr_types' => [ 'intermittence' ],
+					'lieu'        => $this->getRealLieu(),
+					'label'       => 'Récupérer panier ' . $this->getPaniersTitles( false ),
+					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
+					'alt'         => 'Panier ' . $this->getPaniersTitles( true, true ) . ' de ' . $this->getAdherent()->getDisplayName() . ' à récupérer',
+					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			} else {
 				if ( $this->getStatus() == 'to_exchange' ) {
@@ -1079,5 +1087,21 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		$ret['months'] = $lines;
 
 		return $ret;
+	}
+
+	public function getIntermittenceICal( $user_id, $is_cancel = false ) {
+		$attachments = [];
+		$event       = null;
+		foreach ( $this->get_related_events( $user_id ) as $ev ) {
+			/** @var Amapress_EventEntry $ev */
+			if ( in_array( 'intermittence', $ev->getIncriptionsTypes() ) ) {
+				$event = $ev;
+			}
+		}
+		if ( $event ) {
+			$attachments[] = Amapress::createICalForEventsAsMailAttachment( $event, $is_cancel );
+		}
+
+		return $attachments;
 	}
 }

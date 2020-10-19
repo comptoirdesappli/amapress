@@ -167,18 +167,19 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 			$date_end = $this->getEndDateAndHour();
 			if ( in_array( $user_id, $resps ) ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "asm-{$this->ID}-resp",
-					'date'     => $date,
-					'date_end' => $date_end,
-					'class'    => "agenda-assemblee agenda-inscrit-assemblee",
-					'lieu'     => $this,
-					'type'     => 'assemblee_generale',
-					'category' => 'Assemblées générales',
-					'priority' => 70,
-					'label'    => 'Assemblée',
-					'icon'     => 'fa fa-university',
-					'alt'      => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
-					'href'     => $this->getPermalink()
+					'ev_id'       => "asm-{$this->ID}-resp",
+					'date'        => $date,
+					'date_end'    => $date_end,
+					'class'       => "agenda-assemblee agenda-inscrit-assemblee",
+					'lieu'        => $this,
+					'type'        => 'assemblee_generale',
+					'category'    => 'Assemblées générales',
+					'priority'    => 70,
+					'inscr_types' => [ 'assemblee_generale' ],
+					'label'       => 'Assemblée',
+					'icon'        => 'fa fa-university',
+					'alt'         => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
+					'href'        => $this->getPermalink()
 				) );
 			} else {
 				$ret[] = new Amapress_EventEntry( array(
@@ -217,7 +218,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 			$participants[] = $user_id;
 			$this->setCustom( 'amapress_assemblee_generale_participants', $participants );
 
-			amapress_mail_current_user_inscr( $this, $user_id, 'assemble' );
+			amapress_mail_current_user_inscr( $this, $user_id, 'assemblee_generale' );
 
 			return 'ok';
 		}
@@ -234,10 +235,12 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 
 		$participants = $this->getParticipantsIds();
 		if ( ( $key = array_search( $user_id, $participants ) ) !== false ) {
+			$events = $this->get_related_events( $user_id );
 			unset( $participants[ $key ] );
 			$this->setCustom( 'amapress_assemblee_generale_participants', $participants );
 
-			amapress_mail_current_user_desinscr( $this, $user_id, 'assemblee_generale' );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'assemblee_generale',
+				null, null, null, $events );
 
 			return 'ok';
 		} else {

@@ -242,12 +242,14 @@ class AmapressDistribution extends Amapress_EventBase {
 			if ( ! empty( $this->getGardiensPaniersAmapiensIds( $user_id ) ) ) {
 				return 'has_gardes';
 			}
+			$events = $this->get_related_events( $user_id );
 			unset( $gardiens[ $key ] );
 
 			$this->deleteCustom( "amapress_distribution_gardien_{$user_id}_comment" );
 			$this->setCustom( 'amapress_distribution_gardiens', $gardiens );
 
-			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib-gardien' );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib-gardien',
+				null, null, null, $events );
 
 			return 'ok';
 		} else {
@@ -349,6 +351,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				return 'not_inscr';
 			} else {
 				$gardien_id = $gardiens["u{$user_id}"];
+				$events     = $this->get_related_events( $gardien_id );
 				unset( $gardiens["u{$user_id}"] );
 				$this->setCustom( 'amapress_distribution_pan_garde', $gardiens );
 
@@ -362,7 +365,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$content = str_replace( '%%gardien_comment%%', $this->getGardienComment( $gardien->ID ), $content );
 
 						return $content;
-					}, 'distrib-gardieneur', $amapien->getEmail()
+					}, 'distrib-gardieneur', $amapien->getEmail(), $events
 				);
 //				amapress_mail_current_user_desinscr( $this, $gardien_id, 'distrib-gardien',
 //					function ( $content, $user_id, $post ) use ( $amapien, $gardien ) {
@@ -789,10 +792,12 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 
 		if ( $found ) {
+			$events = $this->get_related_events( $user_id );
 			$this->setCustom( 'amapress_distribution_responsables', $responsables );
 			$this->deleteCustom( 'amapress_distribution_resp_' . $user_id );
 
-			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib' );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib',
+				null, null, null, $events );
 
 			return 'ok';
 		} else {
@@ -1058,52 +1063,55 @@ class AmapressDistribution extends Amapress_EventBase {
 			$resps           = $this->getResponsablesIds();
 			if ( in_array( $user_id, $resps ) ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "dist-{$this->ID}-resp",
-					'date'     => $dist_date_start,
-					'date_end' => $dist_date_end,
-					'class'    => 'agenda-distrib agenda-resp-distrib',
-					'category' => 'Responsable de distribution',
-					'lieu'     => $lieu,
-					'type'     => 'resp-distribution',
-					'priority' => 45,
-					'label'    => 'Responsable de distribution',
-					'icon'     => 'dashicons dashicons-universal-access-alt',
-					'alt'      => 'Vous êtes responsable de distribution à ' . $lieu->getShortName(),
-					'href'     => $this->getPermalink()
+					'ev_id'       => "dist-{$this->ID}-resp",
+					'date'        => $dist_date_start,
+					'date_end'    => $dist_date_end,
+					'class'       => 'agenda-distrib agenda-resp-distrib',
+					'category'    => 'Responsable de distribution',
+					'lieu'        => $lieu,
+					'type'        => 'resp-distribution',
+					'priority'    => 45,
+					'inscr_types' => [ 'distrib' ],
+					'label'       => 'Responsable de distribution',
+					'icon'        => 'dashicons dashicons-universal-access-alt',
+					'alt'         => 'Vous êtes responsable de distribution à ' . $lieu->getShortName(),
+					'href'        => $this->getPermalink()
 				) );
 			}
 			$current_user_slot = $this->getSlotInfoForUser( amapress_current_user_id() );
 			if ( $current_user_slot ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "dist-{$this->ID}-creneau",
-					'date'     => $current_user_slot['date'],
-					'date_end' => $current_user_slot['date_end'],
-					'class'    => 'agenda-distrib agenda-creneau-panier',
-					'category' => 'Créneau de récupération',
-					'lieu'     => $lieu,
-					'type'     => 'creneau-panier',
-					'priority' => 45,
-					'label'    => 'Créneau de récupération',
-					'icon'     => 'dashicons dashicons-clock',
-					'alt'      => 'Créneau pour récupérer vos paniers : ' . $current_user_slot['display'],
-					'href'     => $this->getPermalink()
+					'ev_id'       => "dist-{$this->ID}-creneau",
+					'date'        => $current_user_slot['date'],
+					'date_end'    => $current_user_slot['date_end'],
+					'class'       => 'agenda-distrib agenda-creneau-panier',
+					'category'    => 'Créneau de récupération',
+					'lieu'        => $lieu,
+					'type'        => 'creneau-panier',
+					'priority'    => 45,
+					'inscr_types' => [ 'distrib-slot', 'distrib-admin-slot' ],
+					'label'       => 'Créneau de récupération',
+					'icon'        => 'dashicons dashicons-clock',
+					'alt'         => 'Créneau pour récupérer vos paniers : ' . $current_user_slot['display'],
+					'href'        => $this->getPermalink()
 				) );
 			}
 			$gardiens = $this->getGardiensIds( true );
 			if ( in_array( $user_id, $gardiens ) ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "dist-{$this->ID}-gardien",
-					'date'     => $dist_date_start,
-					'date_end' => $dist_date_end,
-					'class'    => 'agenda-distrib agenda-gardien-panier',
-					'category' => 'Gardien de panier',
-					'lieu'     => $lieu,
-					'type'     => 'gardien-panier',
-					'priority' => 45,
-					'label'    => 'Gardien de panier',
-					'icon'     => 'dashicons dashicons-portfolio',
-					'alt'      => 'Vous êtes gardien de panier à ' . $lieu->getShortName(),
-					'href'     => $this->getPermalink()
+					'ev_id'       => "dist-{$this->ID}-gardien",
+					'date'        => $dist_date_start,
+					'date_end'    => $dist_date_end,
+					'class'       => 'agenda-distrib agenda-gardien-panier',
+					'category'    => 'Gardien de panier',
+					'lieu'        => $lieu,
+					'type'        => 'gardien-panier',
+					'priority'    => 45,
+					'inscr_types' => [ 'distrib-gardien' ],
+					'label'       => 'Gardien de panier',
+					'icon'        => 'dashicons dashicons-portfolio',
+					'alt'         => 'Vous êtes gardien de panier à ' . $lieu->getShortName(),
+					'href'        => $this->getPermalink()
 				) );
 			}
 			$contrats = $this->getContratIds();
@@ -1183,35 +1191,37 @@ class AmapressDistribution extends Amapress_EventBase {
 			}
 			if ( $status_count['me_exchanged'] > 0 ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "intermittence-{$this->ID}-exchanged",
-					'date'     => $date,
-					'date_end' => $date_end,
-					'class'    => "agenda-inter agenda-inter-exchanged",
-					'type'     => 'intermittence',
-					'category' => 'Paniers échangé',
-					'priority' => 5,
-					'lieu'     => $this->getRealLieu(),
-					'label'    => '<span class="badge">' . $status_count['me_exchanged'] . '</span> échangé(s)',
-					'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_exchanged.jpg',
-					'alt'      => $status_count['me_exchanged'] . ' échangé(s)',
-					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
+					'ev_id'       => "intermittence-{$this->ID}-exchanged",
+					'date'        => $date,
+					'date_end'    => $date_end,
+					'class'       => "agenda-inter agenda-inter-exchanged",
+					'type'        => 'intermittence',
+					'category'    => 'Paniers échangé',
+					'priority'    => 5,
+					'inscr_types' => [ 'intermittence' ],
+					'lieu'        => $this->getRealLieu(),
+					'label'       => '<span class="badge">' . $status_count['me_exchanged'] . '</span> échangé(s)',
+					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_exchanged.jpg',
+					'alt'         => $status_count['me_exchanged'] . ' échangé(s)',
+					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			}
 
 			if ( $status_count['me_recup'] > 0 ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "intermittence-{$this->ID}-recup",
-					'date'     => $date,
-					'date_end' => $date_end,
-					'class'    => "agenda-inter agenda-inter-panier-recup",
-					'type'     => 'inter-recup',
-					'category' => 'Paniers à récupérer',
-					'priority' => 15,
-					'lieu'     => $this->getRealLieu(),
-					'label'    => '<span class="badge">' . $status_count['me_recup'] . '</span> à récupérer',
-					'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
-					'alt'      => $status_count['me_recup'] . ' à récupérer',
-					'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
+					'ev_id'       => "intermittence-{$this->ID}-recup",
+					'date'        => $date,
+					'date_end'    => $date_end,
+					'class'       => "agenda-inter agenda-inter-panier-recup",
+					'type'        => 'inter-recup',
+					'category'    => 'Paniers à récupérer',
+					'priority'    => 15,
+					'inscr_types' => [ 'intermittence' ],
+					'lieu'        => $this->getRealLieu(),
+					'label'       => '<span class="badge">' . $status_count['me_recup'] . '</span> à récupérer',
+					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
+					'alt'         => $status_count['me_recup'] . ' à récupérer',
+					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			}
 			if ( $status_count['other_to_exchange'] > 0 ) {

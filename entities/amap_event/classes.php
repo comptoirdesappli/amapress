@@ -247,10 +247,12 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 
 		$participants = $this->getParticipantsIds();
 		if ( ( $key = array_search( $user_id, $participants ) ) !== false ) {
+			$events = $this->get_related_events( $user_id );
 			unset( $participants[ $key ] );
 			$this->setCustom( 'amapress_amap_event_participants', $participants );
 
-			amapress_mail_current_user_desinscr( $this, $user_id, 'amap_event' );
+			amapress_mail_current_user_desinscr( $this, $user_id, 'amap_event',
+				null, null, null, $events );
 
 			return 'ok';
 		} else {
@@ -305,18 +307,19 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 			$date_end = $this->getEndDateAndHour();
 			if ( in_array( $user_id, $resps ) ) {
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "ev-{$this->ID}-resp",
-					'date'     => $date,
-					'date_end' => $date_end,
-					'class'    => "agenda-amap-event agenda-inscrit-amap-event $class_names",
-					'type'     => 'amap_event',
-					'category' => 'Évènements' . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
-					'lieu'     => $this,
-					'priority' => 60,
-					'label'    => $this->getTitle(),
-					'icon'     => $icon,
-					'alt'      => 'Vous êtes inscript pour ' . $this->getTitle() . ' le ' . date_i18n( 'd/m/Y', $date ),
-					'href'     => $this->getPermalink()
+					'ev_id'       => "ev-{$this->ID}-resp",
+					'date'        => $date,
+					'date_end'    => $date_end,
+					'class'       => "agenda-amap-event agenda-inscrit-amap-event $class_names",
+					'type'        => 'amap_event',
+					'category'    => 'Évènements' . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
+					'lieu'        => $this,
+					'priority'    => 60,
+					'inscr_types' => [ 'amap_event' ],
+					'label'       => $this->getTitle(),
+					'icon'        => $icon,
+					'alt'         => 'Vous êtes inscript pour ' . $this->getTitle() . ' le ' . date_i18n( 'd/m/Y', $date ),
+					'href'        => $this->getPermalink()
 				) );
 			} else {
 				$ret[] = new Amapress_EventEntry( array(

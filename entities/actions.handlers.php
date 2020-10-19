@@ -335,12 +335,27 @@ function amapress_mail_current_user_inscr(
 		$content = call_user_func( $replace_callback, $content, $user_id, $post );
 	}
 
-	amapress_mail_to_current_user( $subject, $content, $user_id, $post, [], $cc, null, $headers );
+	$attachments = [];
+	if ( is_a( $post, 'Amapress_EventBase' ) ) {
+		/** @var Amapress_EventBase $post */
+		$event = null;
+		foreach ( $post->get_related_events( $user_id ) as $ev ) {
+			/** @var Amapress_EventEntry $ev */
+			if ( in_array( $mail_type, $ev->getIncriptionsTypes() ) ) {
+				$event = $ev;
+			}
+		}
+		if ( $event ) {
+			$attachments[] = Amapress::createICalForEventsAsMailAttachment( $event, false );
+		}
+	}
+	amapress_mail_to_current_user( $subject, $content, $user_id, $post, $attachments, $cc, null, $headers );
 }
 
 function amapress_mail_current_user_desinscr(
 	TitanEntity $post, $user_id = null, $event_type = 'event',
-	$replace_callback = null, $mail_type = null, $reply_to = null
+	$replace_callback = null, $mail_type = null, $reply_to = null,
+	$previous_events = []
 ) {
 	if ( empty( $mail_type ) ) {
 		$mail_type = $event_type;
@@ -377,8 +392,22 @@ function amapress_mail_current_user_desinscr(
 		$content = call_user_func( $replace_callback, $content, $user_id, $post );
 	}
 
+	$attachments = [];
+	if ( is_a( $post, 'Amapress_EventBase' ) ) {
+		/** @var Amapress_EventBase $post */
+		$event = null;
+		foreach ( array_merge( $previous_events, $post->get_related_events( $user_id ) ) as $ev ) {
+			/** @var Amapress_EventEntry $ev */
+			if ( in_array( $mail_type, $ev->getIncriptionsTypes() ) ) {
+				$event = $ev;
+			}
+		}
+		if ( $event ) {
+			$attachments[] = Amapress::createICalForEventsAsMailAttachment( $event, true );
+		}
+	}
 	amapress_mail_to_current_user( $subject, $content,
-		$user_id, $post, [],
+		$user_id, $post, $attachments,
 		amapress_get_recall_cc_from_option( "desinscr-$mail_type-mail-cc" ),
 		null, $headers );
 }

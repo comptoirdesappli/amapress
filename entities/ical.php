@@ -146,9 +146,6 @@ class Amapress_Agenda_ICAL_Export {
 			}
 		}
 
-		//Collect output
-		ob_start();
-
 		// File header
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Disposition: inline; filename=' . $filename );
@@ -157,12 +154,28 @@ class Amapress_Agenda_ICAL_Export {
 		header( 'Pragma: no-cache' ); // HTTP 1.0
 		header( 'Expires: 0' ); // Proxies
 
+		echo self::getICALFromEvents( $events );
+		exit();
+	}
+
+	public static function getICALFromEvents( $events, $calendar_title = '', $is_cancel = false ) {
+		if ( empty( $calendar_title ) ) {
+			$calendar_title = get_bloginfo( 'name' ) . ' - Agenda';
+		}
+
+		//Collect output
+		ob_start();
+
 		echo "BEGIN:VCALENDAR\n";
 		echo "VERSION:2.0\n";
 		echo "PRODID:-//Amapress//NONSGML Events//FR\n";
 		echo "CALSCALE:GREGORIAN\n";
-		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', get_bloginfo( 'name' ) ) . " - Agenda\n";
+		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', $calendar_title ) . "\n";
 		echo "X-WR-TIMEZONE:" . self::ical_split( 'X-WR-TIMEZONE:', self::getTimezoneString() ) . "\n";
+		if ( $is_cancel ) {
+			echo "METHOD:CANCEL\n";
+			echo "STATUS:CANCELLED\n";
+		}
 
 		date_default_timezone_set( "UTC" );
 		foreach ( $events as $event ) {
@@ -206,12 +219,8 @@ class Amapress_Agenda_ICAL_Export {
 		echo "END:VCALENDAR\n";
 
 		//Collect output and echo
-		$eventsical = ob_get_contents();
-		ob_end_clean();
-		echo $eventsical;
-		exit();
+		return ob_get_clean();
 	}
-
 } // end class
 
 add_action( 'init', 'Amapress_Agenda_ICAL_Export::load' );

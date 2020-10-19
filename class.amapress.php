@@ -3799,6 +3799,17 @@ class Amapress {
 		return self::createPdfFromHtml( $html, $pdf_name, 'S', $orientation, $format );
 	}
 
+	public static function createICalForEventsAsMailAttachment(
+		Amapress_EventEntry $event, $is_cancel
+	) {
+		$ical     = Amapress_Agenda_ICAL_Export::getICALFromEvents( [ $event ], '', $is_cancel );
+		$filename = self::getAttachmentDir() . '/' . $event->getType() . '-' . uniqid() . '.ics';
+
+		file_put_contents( $filename, $ical );
+
+		return $filename;
+	}
+
 	public static function createPdfFromHtmlAsMailAttachment(
 		$html, $pdf_name = null, $orientation = 'P', $format = 'A4'
 	) {
