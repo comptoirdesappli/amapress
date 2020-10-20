@@ -461,6 +461,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'use_quantite_tables'                 => 'false',
 			'allow_trombi_decline'                => 'true',
 			'for_intermittent'                    => 'false',
+			'allow_existing_mail_for_public'      => 'false',
 		]
 		, $atts );
 
