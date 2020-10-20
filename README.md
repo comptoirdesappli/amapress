@@ -29,7 +29,7 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 * Site: [https://amapress.fr](https://amapress.fr)
 * **Contact**: [contact@amapress.fr](mailto:contact@amapress.fr)
 
-##Contruit avec/Remerciements
+## Contruit avec/Remerciements
 * [TCPdf](https://tcpdf.org/) - Open Source PHP class for generating PDF documents : utilisé pour produire des PDF à partir de html (liste d'émargement principalement)
 * [Guzzle](https://github.com/guzzle/guzzle) -  : utilisé pour l'accès à l'interface des listes de diffusions Sympa
 * [PHPExcel](https://github.com/PHPOffice/PHPExcel) -  : utilisé pour les imports/exports en XLSX
