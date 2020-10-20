@@ -447,6 +447,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_fin' );
 	}
 
+	public function getMaxContratMonths() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_max_months', - 1 );
+	}
+
 	public function getSampleQuantiteCSV() {
 		$quants             = AmapressContrats::get_contrat_quantites( $this->ID );
 		$has_distinct_value = ( count( $quants ) == count( array_unique( array_map( function ( $q ) {
@@ -1117,7 +1121,7 @@ class AmapressContrat_instance extends TitanEntity {
 				return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 			}
 		];
-		$ret['date_fin']                         = [
+		$ret['date_fin'] = [
 			'desc' => 'Date fin du contrat (par ex, 22/09/2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'd/m/Y', $adh->getDate_fin() );
@@ -1925,7 +1929,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$dates      = $this->getListe_dates();
 		$start_date = Amapress::start_of_day( $date );
 
-		return array_filter( $dates, function ( $d ) use ( $start_date, $quantite_id ) {
+		$dates = array_filter( $dates, function ( $d ) use ( $start_date, $quantite_id ) {
 			$factor = $this->getDateFactor( $d, $quantite_id );
 			if ( abs( $factor ) < 0.001 ) {
 				return false;
@@ -1933,6 +1937,17 @@ class AmapressContrat_instance extends TitanEntity {
 
 			return Amapress::start_of_day( $d ) >= $start_date;
 		} );
+
+		$max_contrat_months = $this->getMaxContratMonths();
+		$end_date           = $max_contrat_months > 0 ? Amapress::add_a_month( $start_date, $max_contrat_months ) : null;
+		if ( $end_date ) {
+			$end_date = Amapress::end_of_day( $end_date );
+			$dates    = array_filter( $dates, function ( $d ) use ( $end_date ) {
+				return Amapress::start_of_day( $d ) <= $end_date;
+			} );
+		}
+
+		return $dates;
 	}
 
 	public static function getPlaceholders( $context ) {
@@ -2094,7 +2109,11 @@ class AmapressContrat_instance extends TitanEntity {
 		$lines_count         = 0;
 		$details_lines_count = 0;
 		if ( $this->isPanierVariable() ) {
-			foreach ( $this->getRemainingDates( $date_first_distrib ) as $date ) {
+			$dates = $this->getRemainingDates( $date_first_distrib );
+			if ( $check_only && empty( $dates ) ) {
+				$dates = [ amapress_time() ];
+			}
+			foreach ( $dates as $date ) {
 				$placeholders["quantite_date#$i"]                    = date_i18n( 'd/m/Y', $date );
 				$placeholders["quantite_total#$i"]                   = str_repeat( chr( 160 ), 4 );
 				$placeholders["quantite_description#$i"]             = $this->getContrat_quantites_AsString( $date, true );
@@ -2485,10 +2504,18 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getRemainingDatesWithFactors( $start_date, $quantite_id = null, $return_array = false ) {
-		$dates = $this->getListe_dates();
-		$dates = array_filter( $dates, function ( $d ) use ( $start_date ) {
+		$dates              = $this->getListe_dates();
+		$dates              = array_filter( $dates, function ( $d ) use ( $start_date ) {
 			return $d >= $start_date;
 		} );
+		$max_contrat_months = $this->getMaxContratMonths();
+		$end_date           = $max_contrat_months > 0 ? Amapress::add_a_month( $start_date, $max_contrat_months ) : null;
+		if ( $end_date ) {
+			$end_date = Amapress::end_of_day( $end_date );
+			$dates    = array_filter( $dates, function ( $d ) use ( $end_date ) {
+				return Amapress::start_of_day( $d ) <= $end_date;
+			} );
+		}
 		if ( $return_array ) {
 			$ret = [];
 			foreach ( $dates as $d ) {

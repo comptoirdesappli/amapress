@@ -639,7 +639,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_fin'              => array(
+			'date_fin'   => array(
 				'name'          => __( 'Fin', 'amapress' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -671,7 +671,19 @@ jQuery(function($) {
 						}
 					},
 			),
-			'model_name'            => array(
+			'max_months' => array(
+				'name'           => __( 'Nombre de mois maximum', 'amapress' ),
+				'type'           => 'number',
+				'group'          => '2/6 - Paramètres généraux',
+				'required'       => true,
+				'desc'           => 'Nombre maximum de mois du contrat (contrats glissants)',
+				'min'            => 0,
+				'max'            => 12,
+				'default'        => 0,
+				'show_column'    => true,
+				'col_def_hidden' => true,
+			),
+			'model_name' => array(
 				'name'        => __( 'Nom générique', 'amapress' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -687,7 +699,7 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'                  => array(
+			'name'       => array(
 				'name'           => __( 'Nom complémentaire', 'amapress' ),
 				'group'          => '2/6 - Paramètres généraux',
 				'type'           => 'text',

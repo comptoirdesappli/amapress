@@ -2859,6 +2859,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
 				$first_date_dist = $contrat->getRealDateForDistribution( $first_contrat_date );
 				$last_date_dist  = $contrat->getDate_fin();
+				if ( $contrat->getMaxContratMonths() > 0 ) {
+					$last_date_dist = Amapress::add_a_month( $contrat->getDate_debut(), $contrat->getMaxContratMonths() );
+				}
 				if ( 1 == count( $contrat->getListe_dates() ) ) {
 					echo '<p>Je m’inscris pour la distribution ponctuelle du ' . date_i18n( 'l d F Y', $first_date_dist ) . '</p>';
 				} else {
@@ -3304,10 +3307,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			'lieu_id'    => $lieu_id
 		] );
 
-		$dates      = $contrat->getListe_dates();
-		$dates      = array_filter( $dates, function ( $d ) use ( $start_date ) {
-			return $d >= $start_date;
-		} );
+		$dates      = $contrat->getRemainingDates( $start_date );
 		$rattrapage = $contrat->getFormattedRattrapages( $dates );
 
 		$step_name = wp_unslash( Amapress::getOption( 'online_subscription_panier_step_name' ) );
@@ -3730,10 +3730,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			$factors = isset( $_REQUEST['factors'] ) ? (array) $_REQUEST['factors'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-			$dates = $contrat->getListe_dates();
-			$dates = array_filter( $dates, function ( $d ) use ( $start_date ) {
-				return $d >= $start_date;
-			} );
+			$dates = $contrat->getRemainingDates( $start_date );
 
 			$total         = 0;
 			$chosen_quants = [];
@@ -4248,6 +4245,11 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 		}
 		if ( ! empty( $quantite_variables ) ) {
 			$meta['amapress_adhesion_panier_variables'] = $quantite_variables;
+		}
+		if ( $contrat->getMaxContratMonths() > 0 ) {
+			$end_date                           = Amapress::add_a_month( $start_date, $contrat->getMaxContratMonths() );
+			$meta['amapress_adhesion_date_fin'] = $end_date;
+			$meta['amapress_adhesion_pmt_fin']  = 1;
 		}
 		$my_post = array(
 			'post_title'   => 'Inscription',
