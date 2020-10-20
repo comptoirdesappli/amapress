@@ -28,19 +28,28 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 //            'items_list' => 'xxx',
 		),
 		'row_actions'      => array(
-			'mark_rcv'               => [
+			'mark_rcv'       => [
 				'label'     => 'Marquer reçu',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion_paiement::NOT_RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
-			'unmark_rcv'             => [
+			'mark_rcv_valid' => [
+				'label'     => 'Marquer reçu et envoi adhésion validée',
+				'condition' => function ( $adh_id ) {
+					return AmapressAdhesion_paiement::NOT_RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
+				},
+			],
+			'send_valid'     => [
+				'label' => 'Envoi adhésion validée',
+			],
+			'unmark_rcv'     => [
 				'label'     => 'Marquer Non reçu',
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion_paiement::RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
-			'approve_user'           => [
+			'approve_user'   => [
 				'label'     => 'Approuver amapien',
 				'condition' => function ( $adh_id ) {
 					$adh = AmapressAdhesion_paiement::getBy( $adh_id );

@@ -34,3 +34,24 @@ function amapress_row_action_adhesion_paiement_unmark_rcv( $post_id ) {
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
+
+add_action( 'amapress_row_action_adhesion_paiement_mark_rcv_valid', 'amapress_row_action_adhesion_paiement_mark_rcv_valid' );
+function amapress_row_action_adhesion_paiement_mark_rcv_valid( $post_id ) {
+	$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+	if ( $adh ) {
+		$adh->setStatus( AmapressAdhesion_paiement::RECEIVED );
+		$adh->sendValidation();
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_adhesion_paiement_send_valid', 'amapress_row_action_adhesion_paiement_send_valid' );
+function amapress_row_action_adhesion_paiement_send_valid( $post_id ) {
+	$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+	if ( $adh ) {
+		$adh->sendValidation();
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
+}

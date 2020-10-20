@@ -962,5 +962,22 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			);
 		}
 	}
+
+	public function sendValidation() {
+		$tresoriers = [];
+		foreach ( get_users( "role=tresorier" ) as $tresorier ) {
+			$user_obj   = AmapressUser::getBy( $tresorier );
+			$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
+		}
+
+		$mail_subject = Amapress::getOption( 'online_adhesion_valid-mail-subject' );
+		$mail_content = Amapress::getOption( 'online_adhesion_valid-mail-content' );
+		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $this->getUser(), $this );
+		$mail_content = amapress_replace_mail_placeholders( $mail_content, $this->getUser(), $this );
+
+		amapress_wp_mail( $this->getUser()->getAllEmails(), $mail_subject, $mail_content, [
+			'Reply-To: ' . implode( ',', $tresoriers )
+		] );
+	}
 }
 

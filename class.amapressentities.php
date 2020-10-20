@@ -3367,6 +3367,33 @@ Montant : %%total%% %%option_paiements%%\n
 										array(
 											'type' => 'save',
 										),
+										array(
+											'type' => 'heading',
+											'name' => 'Validation de l\'adhésion à l\'Adhérent',
+										),
+										array(
+											'id'       => 'online_adhesion_valid-mail-subject',
+											'name'     => 'Objet',
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Validation de votre adhésion à %%nom_site%%',
+										),
+										array(
+											'id'      => 'online_adhesion_valid-mail-content',
+											'name'    => 'Contenu',
+											'type'    => 'editor',
+											'default' => wpautop( "Bonjour %%user:nom_complet%%,\n\n
+Votre adhésion à %%nom_site%% vient d'être validée\n
+Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrats.\n
+\n\n%%nom_site%%" ),
+											'desc'    => function ( $option ) {
+												return 'Les placeholders suivants sont disponibles:' .
+												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
+											},
+										),
+										array(
+											'type' => 'save',
+										),
 									),
 								),
 								'Intégration HelloAsso'                  => array(
