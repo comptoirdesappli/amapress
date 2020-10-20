@@ -158,7 +158,7 @@ class Amapress_Agenda_ICAL_Export {
 		exit();
 	}
 
-	public static function getICALFromEvents( $events, $calendar_title = '', $is_cancel = false ) {
+	public static function getICALFromEvents( $events, $calendar_title = '', $type = null ) {
 		if ( empty( $calendar_title ) ) {
 			$calendar_title = get_bloginfo( 'name' ) . ' - Agenda';
 		}
@@ -172,9 +172,12 @@ class Amapress_Agenda_ICAL_Export {
 		echo "CALSCALE:GREGORIAN\n";
 		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', $calendar_title ) . "\n";
 		echo "X-WR-TIMEZONE:" . self::ical_split( 'X-WR-TIMEZONE:', self::getTimezoneString() ) . "\n";
-		if ( $is_cancel ) {
+		if ( 'cancel' == $type ) {
 			echo "METHOD:CANCEL\n";
 			echo "STATUS:CANCELLED\n";
+		} elseif ( 'request' == $type ) {
+			echo "METHOD:REQUEST\n";
+			echo "STATUS:CONFIRMED\n";
 		}
 
 		date_default_timezone_set( "UTC" );
@@ -211,7 +214,11 @@ class Amapress_Agenda_ICAL_Export {
 				echo "RRULE:" . $reoccurrence_rule . "\n";
 			}
 			echo "LOCATION:" . self::ical_split( 'LOCATION:', $location ) . "\n";
-			echo "ORGANIZER:" . self::ical_split( 'ORGANIZER:', $organiser ) . "\n";
+			$site_email = $new = Amapress::getOption( 'email_from_mail' );
+			if ( empty( $site_email ) ) {
+				$site_email = amapress_get_default_wordpress_from_email();
+			}
+			echo "ORGANIZER;" . self::ical_split( 'ORGANIZER;', "CN=$organiser:MAILTO:$site_email" ) . "\n";
 			echo "URL:" . self::ical_split( 'URL:', $url ) . "\n";
 			echo "DESCRIPTION:" . self::ical_split( 'DESCRIPTION:', $desc ) . "\n";
 			echo "END:VEVENT\n";

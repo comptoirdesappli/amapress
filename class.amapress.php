@@ -3802,7 +3802,8 @@ class Amapress {
 	public static function createICalForEventsAsMailAttachment(
 		Amapress_EventEntry $event, $is_cancel
 	) {
-		$ical     = Amapress_Agenda_ICAL_Export::getICALFromEvents( [ $event ], '', $is_cancel );
+		$ical     = Amapress_Agenda_ICAL_Export::getICALFromEvents( [ $event ], '',
+			$is_cancel ? 'cancel' : 'request' );
 		$filename = self::getAttachmentDir() . '/' . $event->getType() . '-' . uniqid() . '.ics';
 
 		file_put_contents( $filename, $ical );
