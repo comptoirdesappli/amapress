@@ -1310,7 +1310,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-			<?php if ( $is_mes_contrats ) { ?>
+			<?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
 			<?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
@@ -1359,7 +1359,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                   class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
                     </td>
                 </tr>
-	            <?php if ( $allow_trombi_decline ) { ?>
+				<?php if ( $allow_trombi_decline ) { ?>
                     <tr>
                         <th style="text-align: left; width: auto"></th>
                         <td>
@@ -1368,12 +1368,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             </label>
                         </td>
                     </tr>
-	            <?php } ?>
+				<?php } ?>
             </table>
             <div>
-		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-	        <?php if ( $max_cofoyers >= 1 ) { ?>
+			<?php if ( $max_cofoyers >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2">Membre du foyer 1 / Conjoint
