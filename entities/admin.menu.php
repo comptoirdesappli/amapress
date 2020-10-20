@@ -192,8 +192,8 @@ function amapress_admin_bar_menu_entities( WP_Admin_Bar $admin_bar ) {
 	}
 }
 
-add_action( 'admin_bar_menu', 'amapress_admin_bar_new_entities', 900, 1 );
-function amapress_admin_bar_new_entities( WP_Admin_Bar $admin_bar ) {
+add_action( 'admin_bar_menu', 'amapress_admin_bar_new_entities_and_sitename', 900, 1 );
+function amapress_admin_bar_new_entities_and_sitename( WP_Admin_Bar $admin_bar ) {
 	$create_new_items = [];
 	foreach ( AmapressEntities::getPostTypes() as $name => $conf ) {
 		if ( isset( $conf['show_admin_bar_new'] )
@@ -213,6 +213,58 @@ function amapress_admin_bar_new_entities( WP_Admin_Bar $admin_bar ) {
 		}
 	}
 	amapress_admin_bar_add_items( $create_new_items, $admin_bar, 'new-content' );
+
+	$site_name_items   = [];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-gest-adhs',
+		'icon'       => 'dashicons-none flaticon-pen',
+		'title'      => 'Gestion Adhésions',
+		'capability' => 'edit_adhesion_paiement',
+		'href'       => admin_url( 'admin.php?page=amapress_gestion_adhesions_page' ),
+	];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-gest-inscrs',
+		'icon'       => 'dashicons-none flaticon-pen',
+		'title'      => 'Gestion Contrats',
+		'capability' => 'edit_contrat',
+		'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page' ),
+	];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-gest-distribs',
+		'icon'       => 'dashicons-before dashicons-store',
+		'title'      => 'Distributions',
+		'capability' => 'edit_distribution',
+		'href'       => admin_url( 'admin.php?page=mapress_gestion_distrib_page' ),
+	];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-gest-events',
+		'icon'       => 'dashicons-none flaticon-interface-2',
+		'title'      => 'Évènements',
+		'capability' => 'manage_events',
+		'href'       => admin_url( 'admin.php?page=amapress_gestion_events_page' ),
+	];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-articles',
+		'icon'       => 'dashicons-admin-post',
+		'capability' => 'edit_posts',
+		'title'      => 'Articles',
+		'href'       => admin_url( 'edit.php' ),
+	];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-pages',
+		'icon'       => 'dashicons-admin-page',
+		'capability' => 'edit_pages',
+		'title'      => 'Pages',
+		'href'       => admin_url( 'edit.php?post_type=page' ),
+	];
+	$site_name_items[] = [
+		'id'         => 'amps_admm-users',
+		'icon'       => 'dashicons-admin-users',
+		'capability' => 'edit_users',
+		'title'      => 'Utilisateurs',
+		'href'       => admin_url( 'users.php' ),
+	];
+	amapress_admin_bar_add_items( $site_name_items, $admin_bar, 'site-name' );
 }
 
 function amapress_admin_bar_add_items( $items, WP_Admin_Bar $admin_bar, $parent ) {
