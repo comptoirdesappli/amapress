@@ -620,6 +620,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	protected $protocol;
 	protected $system_id;
 	protected $is_connected = false;
+	protected $csrftoken = null;
 	protected $manage_waiting = false;
 
 	public function getMailingListBaseUrl() {
@@ -638,6 +639,10 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 		return "{$this->system_id}:{$this->getFullName($name)}";
 	}
 
+	public function getListsUri() {
+		return 'lists';
+	}
+
 	protected function fetchMails() {
 		if ( $this->error_message !== false ) {
 			return array();
@@ -645,17 +650,23 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 
 		$ret = array();
 
-		$resp = self::$client->get( '/wws/lists' );
+		$resp = self::$client->get( $this->getListsUri() );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body  = $resp->getBody();
 			$lists = array();
 			preg_match_all( '%\<li\s+class\="listenum"\>.+?\<\/li\>%s', $body, $lists, PREG_SET_ORDER );
 			foreach ( $lists as $list ) {
-				if ( preg_match( '/href\="\/wws\/admin\/(?<name>[^"]+)"/', $list[0], $m ) ) {
+				if ( preg_match( '/href\="\/(?:sympa|wws)\/admin\/(?<name>[^"]+)"/', $list[0], $m ) ) {
 					$ret[] = $this->getMailingList( $m['name'] );
 				}
-				if ( preg_match( '/href\="\/wws\/+info\/(?<name>[^"]+)"/', $list[0], $m ) ) {
+				if ( preg_match( '/href\="\/(?:sympa|wws)\/+info\/(?<name>[^"]+)"/', $list[0], $m ) ) {
 					$ret[] = $this->getMailingList( $m['name'] );
+				}
+			}
+			if ( empty( $ret ) ) {
+				preg_match_all( '/href\="\/(?:sympa)\/review\/(?<name>[^"]+)"/', $body, $lists, PREG_SET_ORDER );
+				foreach ( $lists as $list ) {
+					$ret[] = $this->getMailingList( $list['name'] );
 				}
 			}
 		}
@@ -679,13 +690,17 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 		return $this->is_connected;
 	}
 
+	public function getCSRFToken() {
+		return $this->csrftoken;
+	}
+
 	protected function ensureConnected( $login, $pass ) {
 		if ( self::$client == null ) {
 			$cookies = new \GuzzleHttp\Cookie\CookieJar();
 			//$jar->add
 			self::$client = new \GuzzleHttp\Client(
 				array(
-					'base_uri' => "{$this->protocol}://{$this->mailinglist_domain}",
+					'base_uri' => $this->getMailingListBaseUrl(),
 					'cookies'  => $cookies,
 				) );
 			$form_params  = array(
@@ -695,12 +710,13 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 				'passwd'       => $pass,
 			);
 
-			$resp = self::$client->get( '/wws' );
+			$resp = self::$client->get( '' );
 			$body = $resp->getBody();
 			if ( preg_match( '/type="hidden" name="csrftoken" value="(?<csrftoken>[^"]+)"/', $body, $m ) ) {
-				$form_params = array_merge( $form_params,
+				$this->csrftoken = $m['csrftoken'];
+				$form_params     = array_merge( $form_params,
 					array(
-						'csrftoken'       => $m['csrftoken'],
+						'csrftoken'       => $this->getCSRFToken(),
 						'previous_action' => 'home',
 						'previous_list'   => '',
 						'only_passwd'     => '',
@@ -712,7 +728,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 					) );
 			}
 
-			$resp               = self::$client->post( '/wws',
+			$resp               = self::$client->post( '',
 				[
 					'form_params' => $form_params
 				]
@@ -731,7 +747,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function setSqlDataSource( $sql_query, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" );
+		$resp = self::$client->get( "edit_list_request/$list_name/data_source" );
 		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
@@ -756,7 +772,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'action'                                           => 'edit_list',
 			'action_edit_list'                                 => 'Mise à jour',
 		);
-		$resp      = self::$client->post( '/wws', [
+		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
@@ -765,7 +781,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function setRemoteUrl( $list_name, $remote_url ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/data_source" );
+		$resp = self::$client->get( "edit_list_request/$list_name/data_source" );
 		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
@@ -779,7 +795,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'action'                                  => 'edit_list',
 			'action_edit_list'                        => 'Mise à jour',
 		);
-		$resp      = self::$client->post( '/wws', [
+		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
@@ -788,7 +804,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function setModeration( $moderation, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" );
+		$resp = self::$client->get( "edit_list_request/$list_name/sending" );
 		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
@@ -800,7 +816,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'action'                 => 'edit_list',
 			'action_edit_list'       => 'Mise à jour',
 		);
-		$resp      = self::$client->post( '/wws', [
+		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
@@ -809,7 +825,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function setReplyTo( $reply_to, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/sending" );
+		$resp = self::$client->get( "edit_list_request/$list_name/sending" );
 		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
@@ -821,7 +837,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'action'                             => 'edit_list',
 			'action_edit_list'                   => 'Mise à jour',
 		);
-		$resp      = self::$client->post( '/wws', [
+		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
@@ -830,7 +846,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function setModerators( $new_moderators, $old_moderators_emails, $list_name ) {
-		$resp = self::$client->get( "/wws/edit_list_request/$list_name/description" );
+		$resp = self::$client->get( "edit_list_request/$list_name/description" );
 		$body = $resp->getBody();
 		preg_match( '/type="hidden" name="serial" value="(?<serial>\d+)"/', $body, $m );
 
@@ -868,7 +884,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 
 //        var_dump($sql_query);
 
-		$resp = self::$client->post( '/wws', [
+		$resp = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body = $resp->getBody();
@@ -877,7 +893,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function distributeMail( $list_name, $msg_id ) {
-		$resp = self::$client->post( '/wws', [
+		$resp = self::$client->post( '', [
 			'form_params' => array(
 				'list'              => $list_name,
 				'id'                => $msg_id,
@@ -889,7 +905,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function rejectMailQuiet( $list_name, $msg_id ) {
-		$resp = self::$client->post( '/wws', [
+		$resp = self::$client->post( '', [
 			'form_params' =>
 				array(
 					'list'                => $list_name,
@@ -902,7 +918,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public function rejectMail( $list_name, $msg_id ) {
-		$resp = self::$client->post( '/wws', [
+		$resp = self::$client->post( '', [
 			'form_params' =>
 				array(
 					'list'          => $list_name,
@@ -920,17 +936,17 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			return [];
 		}
 
-		$resp = self::$client->get( "/wws/modindex/$name" );
+		$resp = self::$client->get( "modindex/$name" );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();
 
 			$message_matches = array();
-			preg_match_all( '%href\="\/wws\/viewmod\/' . $name . '\/(?<msg_id>[^"]+)"%s', $body, $message_matches, PREG_SET_ORDER );
+			preg_match_all( '%href\="\/(?:sympa|wws)\/viewmod\/' . $name . '\/(?<msg_id>[^"]+)"%s', $body, $message_matches, PREG_SET_ORDER );
 
 			$messages = array();
 			foreach ( $message_matches as $msg ) {
 				$msg_id = $msg['msg_id'];
-				$resp   = self::$client->get( "/wws/viewmod/$name/$msg_id" );
+				$resp   = self::$client->get( "viewmod/$name/$msg_id" );
 				if ( 200 == $resp->getStatusCode() ) {
 					$body = $resp->getBody();
 

@@ -110,7 +110,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 
 	public function getMailingList( $name ) {
 		$list_info = array();
-		$resp      = self::$client->get( "/wws/edit_list_request/$name/description" );
+		$resp      = self::$client->get( "edit_list_request/$name/description" );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();
 			preg_match( '/id\="single_param.subject.name"\s+value="(?<desc>[^"]+)"/', $body, $m );
@@ -136,7 +136,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 			$list_info['moderators']        = array_unique( $list_info['moderators'] );
 			$list_info['moderators_emails'] = array_unique( $list_info['moderators_emails'] );
 		}
-		$resp = self::$client->get( "/wws/edit_list_request/$name/sending" );
+		$resp = self::$client->get( "edit_list_request/$name/sending" );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body                          = $resp->getBody();
 			$reply_to_options              = array();
@@ -146,7 +146,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 			$list_info['moderation']       = self::parseSelect( $body, 'single_param.send.name', $moderations );
 			$list_info['moderations']      = $moderations;
 		}
-		$resp = self::$client->get( "/wws/edit_list_request/$name/data_source" );
+		$resp = self::$client->get( "edit_list_request/$name/data_source" );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();
 

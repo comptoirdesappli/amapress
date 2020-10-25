@@ -642,6 +642,47 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
+								'Framalistes - Sympa'                 => array(
+									'id'      => 'amapress_mailinglist_sync_frama_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'id'           => 'framalistes_admin_user',
+											'name'         => 'Email de l\'admin',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => '',
+										),
+										array(
+											'id'           => 'framalistes_admin_pass',
+											'name'         => 'Mot de passe',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'is_password'  => true,
+											'default'      => '',
+										),
+										array(
+											'id'      => 'framalistes_manage_waiting',
+											'name'    => 'Gérer la modération des emails dans Amapress',
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'name'    => 'Tester',
+											'type'    => 'action-buttons',
+											'buttons' => [
+												[
+													'class'  => 'button button-primary',
+													'text'   => 'Tester la connexion',
+													'action' => 'test_mailinglist_access',
+												]
+											]
+										),
+									)
+								),
 							),
 						),
 					),
