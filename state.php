@@ -806,8 +806,8 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$state['10_users'][] = amapress_get_check_state(
 			$only_admins ? 'success' : 'warning',
 			'Membres du collectif sans rôle descriptif',
-			'<a target="_blank" href="' . admin_url( 'users.php?page=amapress_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice. (<em>Les administrateurs n\'ont pas forcement besoin de rôle descriptif</em>)',
-			admin_url( 'users.php?page=amapress_collectif' ),
+			'<a target="_blank" href="' . admin_url( 'users.php?page=amapress_collectif&tab=amapress_edit_roles_collectif' ) . '">Associer</a> des rôles descriptifs aux utilisateurs ayant accès au backoffice. (<em>Les administrateurs n\'ont pas forcement besoin de rôle descriptif</em>)',
+			admin_url( 'users.php?page=amapress_collectif&tab=amapress_edit_roles_collectif' ),
 			implode( ', ', $members_no_desc )
 		);
 	}
@@ -824,7 +824,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="' . adm
 		$state['10_users'][] = amapress_get_check_state(
 			'info',
 			'Membres du collectif sans contrat',
-			'<a target="_blank" href="' . admin_url( 'users.php?page=amapress_collectif' ) . '">Vérifier</a> les utilisateurs membres du collectif qui n\'ont pas de contrats',
+			'<a target="_blank" href="' . admin_url( 'users.php?page=amapress_collectif&tab=amapress_edit_roles_collectif' ) . '">Vérifier</a> les utilisateurs membres du collectif qui n\'ont pas de contrats',
 			admin_url( 'users.php?amapress_contrat=no&amapress_role=collectif_no_prod' ),
 			implode( ', ', $members_no_contrats )
 		);
