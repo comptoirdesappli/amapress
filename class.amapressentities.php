@@ -567,12 +567,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'is_password'  => true,
 											'default'      => '',
 										),
-										array(
-											'id'      => 'ouvaton_manage_waiting',
-											'name'    => 'Gérer la modération des emails dans Amapress',
-											'type'    => 'checkbox',
-											'default' => false,
-										),
+//										array(
+//											'id'      => 'ouvaton_manage_waiting',
+//											'name'    => 'Gérer la modération des emails dans Amapress',
+//											'type'    => 'checkbox',
+//											'default' => false,
+//										),
 										array(
 											'type' => 'save',
 										),
@@ -620,12 +620,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'text',
 											'default' => uniqid(),
 										),
-										array(
-											'id'      => 'sud-ouest_manage_waiting',
-											'name'    => 'Gérer la modération des emails dans Amapress',
-											'type'    => 'checkbox',
-											'default' => false,
-										),
+//										array(
+//											'id'      => 'sud-ouest_manage_waiting',
+//											'name'    => 'Gérer la modération des emails dans Amapress',
+//											'type'    => 'checkbox',
+//											'default' => false,
+//										),
 										array(
 											'type' => 'save',
 										),
@@ -661,12 +661,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'is_password'  => true,
 											'default'      => '',
 										),
-										array(
-											'id'      => 'framalistes_manage_waiting',
-											'name'    => 'Gérer la modération des emails dans Amapress',
-											'type'    => 'checkbox',
-											'default' => false,
-										),
+//										array(
+//											'id'      => 'framalistes_manage_waiting',
+//											'name'    => 'Gérer la modération des emails dans Amapress',
+//											'type'    => 'checkbox',
+//											'default' => false,
+//										),
 										array(
 											'type' => 'save',
 										),

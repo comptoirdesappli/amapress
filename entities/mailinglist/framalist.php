@@ -181,7 +181,7 @@ class Amapress_Framalist_MailSystem extends Amapress_Sympa_MailSystem {
 	function __construct( $mailinglist_domain, $login, $pass ) {
 		parent::__construct( $mailinglist_domain, $login, $pass,
 			'https', $this->getSystemId(),
-			Amapress::toBool( Amapress::getOption( 'framalistes_manage_waiting' ) ) );
+			false ); //Amapress::toBool( Amapress::getOption( 'framalistes_manage_waiting' ) ) );
 	}
 
 	public function getMailingListBaseUrl() {
