@@ -327,6 +327,9 @@ function amapress_get_mailinglist_queries() {
 
 function amapress_mailinglist_should_moderators_readonly( TitanFrameworkOption $option ) {
 	$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
+	if ( null == $ml->getMailingList() ) {
+		return true;
+	}
 
 	return ! $ml->getMailingList()->handleModerators();
 }
@@ -745,7 +748,7 @@ add_action( 'tf_custom_admin_amapress_action_test_mailinglist_access', function 
 		$status    = [];
 		$connected = true;
 		foreach ( $systems as $system ) {
-			$status[] = sprintf( '%s(%s): %S',
+			$status[] = sprintf( '%s(%s): %s',
 				$system->getSystemName(),
 				$system->getSystemId(),
 				$system->isConnected() ? 'OK' : $system->getErrorMessage() );
@@ -753,7 +756,7 @@ add_action( 'tf_custom_admin_amapress_action_test_mailinglist_access', function 
 				$connected = false;
 			}
 		}
-		echo '<p style="color:' . ( $connected ? 'green' : 'red' ) . '">' . explode( '<br/>', $status ) . '</p>';
+		echo '<p style="color:' . ( $connected ? 'green' : 'red' ) . '">' . implode( '<br/>', $status ) . '</p>';
 		die();
 	}
 } );
