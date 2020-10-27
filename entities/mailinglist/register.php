@@ -53,16 +53,29 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'type'  => 'text',
 			),
 			'moderation'             => array(
-				'group'       => 'Modération',
-				'name'        => __( 'Modération', 'amapress' ),
-				'type'        => 'select',
-				'cache'       => false,
-				'desc'        => 'Choisir le type de modération – option proposée par votre gestionnaire de liste (Sympa, Mailchimp, …).',
-				'options'     => 'amapress_get_mailinglist_moderation_options',
-				'column'      => 'amapress_get_mailinglist_moderation_column',
-				'custom_get'  => 'amapress_get_mailinglist_moderation',
-				'custom_save' => 'amapress_set_mailinglist_moderation',
-				'show_on'     => 'edit-only',
+				'group'        => 'Modération',
+				'name'         => __( 'Modération', 'amapress' ),
+				'type'         => 'select',
+				'cache'        => false,
+				'desc'         => 'Choisir le type de modération – option proposée par votre gestionnaire de liste (Sympa, Mailchimp, …).',
+				'options'      => 'amapress_get_mailinglist_moderation_options',
+				'column'       => 'amapress_get_mailinglist_moderation_column',
+				'custom_get'   => 'amapress_get_mailinglist_moderation',
+				'custom_save'  => 'amapress_set_mailinglist_moderation',
+				'show_on'      => 'edit-only',
+				'readonly'     => function ( TitanFrameworkOption $option ) {
+					return amapress_mailinglist_should_moderation_readonly( $option );
+				},
+				'after_option' => function ( TitanFrameworkOption $option ) {
+					if ( amapress_mailinglist_should_moderators_readonly( $option ) ) {
+						$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
+
+						echo '<p style="color:red;font-weight: bold">La gestion de la modération se fait manuellement dans ' .
+						     Amapress::makeLink( $ml->getMailingList()->getConfigurationLink(),
+							     'Configuraton de la mailinglist', true, true )
+						     . '</p>';
+					}
+				},
 			),
 			'moderators'             => array(
 				'group'        => 'Modérateurs',
@@ -332,6 +345,15 @@ function amapress_mailinglist_should_moderators_readonly( TitanFrameworkOption $
 	}
 
 	return ! $ml->getMailingList()->handleModerators();
+}
+
+function amapress_mailinglist_should_moderation_readonly( TitanFrameworkOption $option ) {
+	$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
+	if ( null == $ml->getMailingList() ) {
+		return true;
+	}
+
+	return ! $ml->getMailingList()->handleModerationSetting();
 }
 
 function amapress_has_mailinglist_moderators_queries( TitanFrameworkOption $option ) {

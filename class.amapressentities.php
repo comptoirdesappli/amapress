@@ -178,7 +178,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
 								} );
 								foreach ( $mls as $ml ) {
-									$ml_id                                                = $ml->ID;
+									$ml_id                                                    = $ml->ID;
 									$tabs[ $ml->getName() . __( ' - Archives', 'amapress' ) ] = array(
 										'id'      => 'mailgrp-archives-tab-' . $ml_id,
 										'desc'    => '',
@@ -294,7 +294,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									return strcmp( $a->getSimpleName(), $b->getSimpleName() );
 								} );
 								foreach ( $mls as $ml ) {
-									$ml_id                                            = $ml->ID;
+									$ml_id                                                = $ml->ID;
 									$tabs[ $ml->getName() . __( ' - Logs', 'amapress' ) ] = array(
 										'id'      => 'mailgrp-maillog-tab-' . $ml_id,
 										'desc'    => '',
@@ -642,7 +642,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'Framalistes - Sympa'                 => array(
+								'Framalistes - Sympa' => array(
 									'id'      => 'amapress_mailinglist_sync_frama_tab',
 									'desc'    => '',
 									'options' => array(
@@ -667,6 +667,64 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 //											'type'    => 'checkbox',
 //											'default' => false,
 //										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'name'    => 'Tester',
+											'type'    => 'action-buttons',
+											'buttons' => [
+												[
+													'class'  => 'button button-primary',
+													'text'   => 'Tester la connexion',
+													'action' => 'test_mailinglist_access',
+												]
+											]
+										),
+									)
+								),
+								'OVH - Mailinglist'   => array(
+									'id'      => 'amapress_mailinglist_sync_ovh_tab',
+									'desc'    => '',
+									'options' => array(
+										array(
+											'type' => 'note',
+											'desc' => 'Générer des clés pour l\'API avec une durée Illimitée depuis ' . Amapress::makeLink( 'https://api.ovh.com/createToken/index.cgi?GET=/*&PUT=/*&POST=/*&DELETE=/*' )
+										),
+										array(
+											'id'      => 'ovh_mailing_domain',
+											'name'    => 'Domaine de la liste de diffusion',
+											'type'    => 'text',
+											'default' => '',
+										),
+										array(
+											'id'           => 'ovh_application_key',
+											'name'         => 'Application Key',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => '',
+										),
+										array(
+											'id'           => 'ovh_application_secret',
+											'name'         => 'Application Secret',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => '',
+										),
+										array(
+											'id'           => 'ovh_consumer_key',
+											'name'         => 'Consumer Key',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => '',
+										),
+										array(
+											'id'           => 'ovh_endpoint',
+											'name'         => 'OVH Endpoint',
+											'type'         => 'text',
+											'autocomplete' => false,
+											'default'      => 'ovh-eu',
+										),
 										array(
 											'type' => 'save',
 										),

@@ -412,6 +412,10 @@ abstract class Amapress_MailingList {
 		return $this->info['moderators_found'];
 	}
 
+	public function handleModerationSetting() {
+		return true;
+	}
+
 	public function getModerationModeName() {
 		$modes = $this->getModerationModes();
 

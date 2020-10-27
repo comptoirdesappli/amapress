@@ -1,20 +1,20 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "5109ae54a387c8d1adab65a26f49b28e",
-    "packages": [
-        {
-            "name": "athari/yalinqo",
-            "version": "v2.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Athari/YaLinqo.git",
-                "reference": "d973f13b906a9d006b4d76b1542f7e6083f7bfc3"
-            },
-            "dist": {
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "0021f73083adca508c24a31f2378ac07",
+  "packages": [
+    {
+      "name": "athari/yalinqo",
+      "version": "v2.4.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/Athari/YaLinqo.git",
+        "reference": "d973f13b906a9d006b4d76b1542f7e6083f7bfc3"
+      },
+      "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/Athari/YaLinqo/zipball/d973f13b906a9d006b4d76b1542f7e6083f7bfc3",
                 "reference": "d973f13b906a9d006b4d76b1542f7e6083f7bfc3",
@@ -338,26 +338,61 @@
             "description": "PSR-7 message implementation that also provides common utility methods",
             "keywords": [
                 "http",
-                "message",
-                "request",
-                "response",
-                "stream",
-                "uri",
-                "url"
+              "message",
+              "request",
+              "response",
+              "stream",
+              "uri",
+              "url"
             ],
-            "time": "2017-03-20T17:10:46+00:00"
+          "time": "2017-03-20T17:10:46+00:00"
         },
-        {
-            "name": "pclzip/pclzip",
-            "version": "2.8.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ivanlanin/pclzip.git",
-                "reference": "19dd1de9d3f5fc4d7d70175b4c344dee329f45fd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ivanlanin/pclzip/zipball/19dd1de9d3f5fc4d7d70175b4c344dee329f45fd",
+    {
+      "name": "ovh/ovh",
+      "version": "v2.0.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/ovh/php-ovh.git",
+        "reference": "25a97501a150dff8a7848c372b5826395aab4df2"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/ovh/php-ovh/zipball/25a97501a150dff8a7848c372b5826395aab4df2",
+        "reference": "25a97501a150dff8a7848c372b5826395aab4df2",
+        "shasum": ""
+      },
+      "require": {
+        "guzzlehttp/guzzle": "^6.0"
+      },
+      "require-dev": {
+        "phpdocumentor/phpdocumentor": "2.*",
+        "phpunit/phpunit": "4.*",
+        "squizlabs/php_codesniffer": "1.*"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "Ovh\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "BSD-3-Clause"
+      ],
+      "description": "Wrapper for OVH APIs",
+      "time": "2016-02-10T13:16:38+00:00"
+    },
+    {
+      "name": "pclzip/pclzip",
+      "version": "2.8.2",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/ivanlanin/pclzip.git",
+        "reference": "19dd1de9d3f5fc4d7d70175b4c344dee329f45fd"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/ivanlanin/pclzip/zipball/19dd1de9d3f5fc4d7d70175b4c344dee329f45fd",
                 "reference": "19dd1de9d3f5fc4d7d70175b4c344dee329f45fd",
                 "shasum": ""
             },

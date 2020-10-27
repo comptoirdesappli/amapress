@@ -353,6 +353,43 @@
         ]
     },
     {
+        "name": "ovh/ovh",
+        "version": "v2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ovh/php-ovh.git",
+            "reference": "25a97501a150dff8a7848c372b5826395aab4df2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ovh/php-ovh/zipball/25a97501a150dff8a7848c372b5826395aab4df2",
+            "reference": "25a97501a150dff8a7848c372b5826395aab4df2",
+            "shasum": ""
+        },
+        "require": {
+            "guzzlehttp/guzzle": "^6.0"
+        },
+        "require-dev": {
+            "phpdocumentor/phpdocumentor": "2.*",
+            "phpunit/phpunit": "4.*",
+            "squizlabs/php_codesniffer": "1.*"
+        },
+        "time": "2016-02-10T13:16:38+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Ovh\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Wrapper for OVH APIs"
+    },
+    {
         "name": "pclzip/pclzip",
         "version": "2.8.2",
         "version_normalized": "2.8.2.0",
