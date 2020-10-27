@@ -639,7 +639,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_fin'   => array(
+			'date_fin'              => array(
 				'name'          => __( 'Fin', 'amapress' ),
 				'type'          => 'date',
 				'group'         => '2/6 - Paramètres généraux',
@@ -671,19 +671,21 @@ jQuery(function($) {
 						}
 					},
 			),
-			'max_months' => array(
-				'name'           => __( 'Nombre de mois maximum', 'amapress' ),
+			'max_months'            => array(
+				'name'           => __( 'Contrat glissant', 'amapress' ),
 				'type'           => 'number',
 				'group'          => '2/6 - Paramètres généraux',
 				'required'       => true,
-				'desc'           => 'Nombre maximum de mois du contrat (contrats glissants)',
+				'desc'           => 'Indiquer une durée en mois pour activer l\'option ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/slide', 'Contrat glissant' ),
 				'min'            => 0,
 				'max'            => 12,
 				'default'        => 0,
+				'slider'         => false,
+				'unit'           => 'mois',
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'model_name' => array(
+			'model_name'            => array(
 				'name'        => __( 'Nom générique', 'amapress' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -699,7 +701,7 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'       => array(
+			'name'                  => array(
 				'name'           => __( 'Nom complémentaire', 'amapress' ),
 				'group'          => '2/6 - Paramètres généraux',
 				'type'           => 'text',
