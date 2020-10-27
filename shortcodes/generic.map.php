@@ -51,7 +51,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 	$icons['red']       = 'https://maps.google.com/mapfiles/ms/micons/red-dot.png';
 	$icons['lieu']      = 'https://maps.google.com/mapfiles/ms/micons/convienancestore.png';
 	$icons['man']       = 'https://maps.google.com/mapfiles/ms/micons/man.png';
-	$icons['tree']      = 'https://maps.google.com/mapfiles/ms/micons/tree.png';
+	$icons['tree'] = 'https://maps.google.com/mapfiles/ms/micons/tree.png';
 
 	$ref_lat = 0;
 	$ref_lng = 0;
@@ -61,8 +61,9 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 			$ref_lng = $lieu->getAdresseLongitude();
 		}
 	}
-
-	$coords     = [];
+	$coords     = [
+		[ $ref_lat, $ref_lng ]
+	];
 	$js_markers = '';
 	foreach ( $markers as $marker ) {
 		if ( empty( $marker['latitude'] ) || empty( $marker['longitude'] ) ) {
