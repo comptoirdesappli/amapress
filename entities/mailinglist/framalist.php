@@ -142,7 +142,11 @@ class Amapress_Framalist_MailSystem extends Amapress_Sympa_MailSystem {
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();
 			preg_match( '/id\="single_param.subject.name"\s+value="(?<desc>[^"]+)"/', $body, $m );
-			$list_info['desc'] = ( $m['desc'] );
+			if ( ! empty( $m['desc'] ) ) {
+				$list_info['desc'] = ( $m['desc'] );
+			} else {
+				$list_info['desc'] = '';
+			}
 			preg_match( '/Emails?\s*\((?<waiting>\d+)\)/', $body, $m );
 			$list_info['waiting'] = isset( $m['waiting'] ) ? intval( $m['waiting'] ) : 0;
 			preg_match( '/Abonnés\s*:\s*(?:\<span\>)?(?<members_count>\d+)/', $body, $m );
