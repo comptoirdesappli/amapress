@@ -1132,12 +1132,12 @@ function amapress_contrat_open_recall_options() {
 			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions sont ouvertes %%ouvre_date%%\n et fermeront %%ferme_date%%\n\n%%nom_site%%" ),
 			'desc'    => function ( $option ) {
 				return 'Les placeholders suivants sont disponibles:' .
-				       Amapress::getPlaceholdersHelpTable( 'liste-open-placeholders', [
+				       AmapressContrat_instance::getPlaceholdersHelp( [
 					       'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
 					       'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
 					       'ferme_jours' => 'Clôture en jours: "dans X jours"',
 					       'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
-				       ], null, [], 'recall' );
+				       ], null );
 			},
 		),
 		array(
