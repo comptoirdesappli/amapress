@@ -30,7 +30,8 @@ function amapress_posts_export_exclude_data( $exclude_data, $post_type ) {
 		'post_modified',
 		'post_modified_gmt',
 		'comment_count',
-		'menu_order'
+		'menu_order',
+		'thumb-preview'
 	), $exclude_data );
 
 	foreach ( AmapressEntities::getFilteredFields( $post_type ) as $field => $options ) {
