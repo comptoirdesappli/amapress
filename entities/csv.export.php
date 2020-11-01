@@ -44,7 +44,7 @@ function amapress_posts_export_exclude_data( $exclude_data, $post_type ) {
 
 add_filter( 'amapress_posts_get_field_display_name', 'amapress_posts_get_field_display_name', 10, 2 );
 function amapress_posts_get_field_display_name( $field_name, $post_type ) {
-	$kvs = amapress_get_wp_posts_labels();
+	$kvs = amapress_get_wp_posts_labels( $post_type );
 	if ( isset( $kvs[ $field_name ] ) ) {
 		return $kvs[ $field_name ];
 	}
@@ -75,11 +75,23 @@ function amapress_posts_get_field_display_name( $field_name, $post_type ) {
 
 add_filter( 'amapress_posts_export_fields', 'amapress_posts_export_fields', 10, 2 );
 function amapress_posts_export_fields( $fields, $name ) {
-	$name = amapress_unsimplify_post_type( $name );
-	$cols = apply_filters( "manage_edit-{$name}_columns", array(
-		'ID'         => 'ID',
-		'post_title' => __( 'Name' ),
-	) );
+	$name     = amapress_unsimplify_post_type( $name );
+	$def_cols = array(
+		'ID'           => 'ID',
+		'post_title'   => __( 'Name' ),
+		'post_excerpt' => __( 'Excerpt' ),
+		'post_content' => __( 'Content' ),
+	);
+	if ( ! post_type_supports( $name, 'title' ) ) {
+		unset( $def_cols['post_title'] );
+	}
+	if ( ! post_type_supports( $name, 'excerpt' ) ) {
+		unset( $def_cols['post_excerpt'] );
+	}
+	if ( ! post_type_supports( $name, 'editor' ) ) {
+		unset( $def_cols['post_content'] );
+	}
+	$cols = apply_filters( "manage_edit-{$name}_columns", $def_cols );
 
 	return array_keys( $cols );
 }

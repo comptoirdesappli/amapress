@@ -31,27 +31,34 @@ function amapress_get_wp_users_labels() {
 	);
 }
 
-function amapress_get_wp_posts_labels() {
-	return array(
+function amapress_get_wp_posts_labels( $post_type ) {
+	$post_type = amapress_unsimplify_post_type( $post_type );
+	$ret       = array(
 		'ID'            => 'ID',
 		'post_author'   => 'Auteur de l\'article',
 		'post_name'     => 'Slug',
 		'post_type'     => 'Type d\'article',
 		'post_title'    => 'Titre',
 		'post_date'     => 'Date de publication',
-//        'post_date_gmt' => '',
 		'post_content'  => 'Contenu',
 		'post_excerpt'  => 'Résumé de l\'article',
 		'post_status'   => 'Statut de l\'article',
-//        'comment_status' => '',
-//        'ping_status' => '',
-//        'post_password' => '',
-//        'post_parent' => '',
 		'post_modified' => 'Date de dernière modification',
-//        'post_modified_gmt' => '',
-//        'comment_count' => '',
-//        'menu_order'
 	);
+	if ( ! post_type_supports( $post_type, 'title' ) ) {
+		unset( $ret['post_title'] );
+	}
+	if ( ! post_type_supports( $post_type, 'excerpt' ) ) {
+		unset( $ret['post_excerpt'] );
+	}
+	if ( ! post_type_supports( $post_type, 'editor' ) ) {
+		unset( $ret['post_content'] );
+	}
+	if ( ! post_type_supports( $post_type, 'author' ) ) {
+		unset( $ret['post_author'] );
+	}
+
+	return $ret;
 }
 
 //add_filter('amapress_import_adhesion_intermittence_meta', 'amapress_import_adhesion_intermittence_meta');
@@ -217,7 +224,7 @@ function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_k
 
 add_filter( 'amapress_import_posts_get_field_name', 'amapress_import_posts_get_field_name', 10, 3 );
 function amapress_import_posts_get_field_name( $field_name, $post_type, $colname ) {
-	$kvs = amapress_get_wp_posts_labels();
+	$kvs = amapress_get_wp_posts_labels( $post_type );
 	$kvs = array_combine( array_values( $kvs ), array_keys( $kvs ) );
 	if ( isset( $kvs[ $field_name ] ) ) {
 		return $kvs[ $field_name ];
