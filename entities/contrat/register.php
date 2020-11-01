@@ -1571,23 +1571,31 @@ jQuery(function($) {
 
 			// 6/6 - reglements
 			'paiements'             => array(
-				'name'           => __( 'Nombre de chèques', 'amapress' ),
-				'type'           => 'multicheck',
-				'desc'           => 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques/prélèvements (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)',
-				'group'          => '6/6 - Règlements',
-				'readonly'       => 'amapress_is_contrat_instance_readonly',
-				'required'       => true,
-				'csv_required'   => true,
-				'show_column'    => true,
-				'col_def_hidden' => true,
-				'csv_validator'  => function ( $value ) {
+				'name'              => __( 'Nombre de chèques', 'amapress' ),
+				'type'              => 'multicheck',
+				'desc'              => 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques/prélèvements (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)',
+				'group'             => '6/6 - Règlements',
+				'readonly'          => 'amapress_is_contrat_instance_readonly',
+				'required'          => true,
+				'csv_required'      => true,
+				'show_column'       => true,
+				'col_def_hidden'    => true,
+				'custom_csv_sample' => function ( $option, $arg ) {
+					$ret = [];
+					for ( $i = 1; $i <= 12; $i ++ ) {
+						$ret[] = $i;
+					}
+
+					return $ret;
+				},
+				'csv_validator'     => function ( $value ) {
 					if ( intval( $value ) < 1 || intval( $value ) > 12 ) {
 						return new WP_Error( 'cannot_parse', "Valeur '$value' non valide : doit être entre 1 et 12" );
 					}
 
 					return [ 'amapress_contrat_instance_paiements' => intval( $value ) ];
 				},
-				'options'        => function ( $option ) {
+				'options'           => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$contrat = AmapressContrat_instance::getBy( $option->getPostID(), true );
 					$reps    = $contrat ? $contrat->getCustomRepartitions() : [];
@@ -1616,7 +1624,7 @@ jQuery(function($) {
 
 					return $options;
 				},
-				'custom_save'    => function ( $post_id ) {
+				'custom_save'       => function ( $post_id ) {
 					if ( isset( $_POST['amapress_pmt_repartitions'] ) ) {
 						$amapress_pmt_repartitions = $_POST['amapress_pmt_repartitions'];
 						foreach ( $amapress_pmt_repartitions as $i => $r ) {
