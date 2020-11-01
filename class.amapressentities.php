@@ -3486,7 +3486,7 @@ Votre adhésion à %%nom_site%% vient d'être validée\n
 Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrats.\n
 \n\n%%nom_site%%" ),
 											'desc'    => function ( $option ) {
-												return 'Les placeholders suivants sont disponibles:' .
+												return 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:' .
 												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
 											},
 										),

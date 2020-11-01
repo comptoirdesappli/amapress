@@ -972,12 +972,28 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 		$mail_subject = Amapress::getOption( 'online_adhesion_valid-mail-subject' );
 		$mail_content = Amapress::getOption( 'online_adhesion_valid-mail-content' );
+
+		$attachments = [];
+		try {
+			$doc_file = $this->generateBulletinDoc( false );
+		} catch ( Exception $ex ) {
+			$doc_file = '';
+		}
+		if ( ! empty( $doc_file ) ) {
+			$attachments[] = $doc_file;
+			$mail_content  = preg_replace( '/\[sans_bulletin\].+?\[\/sans_bulletin\]/', '', $mail_content );
+			$mail_content  = preg_replace( '/\[\/?avec_bulletin\]/', '', $mail_content );
+		} else {
+			$mail_content = preg_replace( '/\[avec_bulletin\].+?\[\/avec_bulletin\]/', '', $mail_content );
+			$mail_content = preg_replace( '/\[\/?sans_bulletin\]/', '', $mail_content );
+		}
+
 		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $this->getUser(), $this );
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, $this->getUser(), $this );
 
 		amapress_wp_mail( $this->getUser()->getAllEmails(), $mail_subject, $mail_content, [
 			'Reply-To: ' . implode( ',', $tresoriers )
-		] );
+		], $attachments );
 	}
 }
 
