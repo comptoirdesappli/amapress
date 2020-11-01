@@ -1,3 +1,381 @@
+# 0.96.100 (2020-11-01)
+* **Créneaux:** assouplissement de la syntaxe avec autorisation d'espaces
+* **Import/Export CSV:** 
+    - gestion des colonnes Titre, Contenu, Auteur, Résumé suivant le support par le type de post
+    - suppression colonne Image
+    - modèle contrat, valeurs d'exemple pour nombre de chèques de 1 à 12 en chiffres
+* **Rappels:** Contrats ouverts ou bientôt ouverts, documentation placeholders disponibles (contrat)
+* **Adhésion:** envoi manuel du bulletin, bulletin PDF attaché
+* **Finances:** possiblité d'affichage des montants par adhérents avec groupage par date de livraison/mois/trimestre et filtrage par contrat
+
+# 0.96.90 (2020-10-27)
+* **Mailing List:** 
+	- suppression de la gestion de la modération
+	- intégration OVH Mailinglist
+	- intégration Framaliste.org
+
+# 0.96.82 (2020-10-20)
+* **Adhésions/Inscriptions en ligne:** option sans clé/public, paramètre allow_existing_mail_for_public pour autoriser les emails correspondant à des comptes existants lors du processus d'adhésion
+* **ICal:** meilleure gestion cancel/request individuel pour les inscriptions/désinscriptions + organisateur
+* **Mes contrats:** prise en compte allow_adhesion
+* **Adhésions:** 
+    - mail de validation (pour indiquer instructions d'inscriptions aux contrats)
+    - action Marquer reçu et envoi adhésion validée
+    - action Envoi adhésion validée
+* **Contrats:** gestion des contrats glissants (maximum nombre de mois) en forçant une date de fin et le calcul des règlements en conséquence
+* **Menu Wordpress/Site:** accès aux sections principales du backoffice
+
+# 0.96.80(2020-10-19)
+* check DOCX/placeholders, check DOCX valide (et vrai zip/docx)
+* **Etat Amapress:** check période d'adhésion, bulletin DOCX
+* **Utilisateurs:** 
+    - colonne Adhésions (cachée par défaut)
+    - colonne Date de création (cachée par défaut) et non triable (contrainte format interne de stockage WP)
+* ajout d'un ICal pour les inscriptions/désinscriptions Responsable Distributions, visites, évènements, AG...
+
+# 0.96.70 (2020-10-17)
+* Compatibilité User Taxonomy WP 5.5
+* **Assistant inscriptions:** 
+    - mode choix automatique des dates d'encaissement
+    - mode admin, autoriser la saisie directe des règlements
+* **Règlements:** 
+    - colonne Mois/Année
+    - filtre par contrat en dropdown pour activer le sous filtrage par date (par ex)
+
+# 0.96.65 (2020-10-15)
+* **Inscription en ligne:** filter_multi_contrat, ne prendre que les contrats que l'amapien a et qui sont souscrivables
+* **Mailinglist:** 
+    - mise à jour de la prise en charge Ouvaton
+    - test de connexion
+* **Mes contrats:** détails de livraisons pour les paniers modulables
+* **Paiement en ligne:** amélioration affichage dans le backoffice Stripe (description, métadonnées, liens)
+* **Aide Shortcodes:** amélioration interface de recherche
+
+# 0.96.60 (2020-10-13)
+* **Adhésion paiement:** 
+    - informations HelloAsso en colonnes et en export
+    - notification au trésorier personnalisable
+    - placeholder HelloAsso
+    - affichage colonne email adhérent
+* **Import CSV utilisateur:** prise en compte de Mettre à jour l'utilisateur quand son nom ou son email existent
+* **Intégration mailinglist:** indication de la manière de gérer les modérateurs manuellement
+* **Messages:** destinataires Principaux actifs et tous les amapiens actifs
+* **Rappels** évènements, AG + ouverture/cloture de contrat à tous les amapiens actifs
+* **Utilisateurs:** filtre "amapien actif" (avec contrat ou avec adhésion ou intermittent ou collectif)
+* **HelloAsso:**
+    - gestion adhérent avec champs additionels (Adresse, Téléphone et Email adhérent)
+    - gestion de la date de l'adhésion
+* **Contrats:** gestion unité "mètre" et "centimètre"
+* placeholders post:edit-href, post:title-edit-link, post:titre-edit-lien
+* **Inscriptions en ligne:** 
+    - amélioration affichage dates d'encaissement pour paiement au mois
+    - option pour autoriser l'amapien à saisir ses dates
+    - paramètres include_contrat_subnames/exclude_contrat_subnames pour inclure/exclure des contrats par Nom complémentaire
+* **Shortcodes:** 
+    - display-if, mode adhesion (reçue ou non), no_adhesion (pas d'adhésion en cours), adhesion_nok (non reçue)
+    - shortcode amapien-connecte-infos, Rempli les informations de l'amapien connecté (dans le texte avec placeholders placé dans le shortcode) + gestion getProperties sur AmapressUser
+* **Paiement en ligne:** montant minimal d'activation du paiement en ligne
+
+# 0.96.45 (2020-10-08)
+* amélioration affichage thumbnail recettes
+* désactivation notification de màj auto plugin/theme si mode démo ou AMAPRESS_DISABLE_AUTOUPDATE_NOTIFICATIONS
+* **Inscriptions:** possibilité d'envoyer un rappel de règlement non reçu
+* **Intermittents:** purge des échanges de paniers plus de vieux de x mois (18 par défaut)
+
+# 0.96.42 (2020-10-07)
+* **Contrat/Inscription:** placeholders date_ouverture/date_cloture (et variantes)
+
+# 0.96.40 (2020-10-04)
+* configuration des messages de **New User Approve** (en mode texte) dans Réglages>New User Approve
+
+# 0.96.30 (2020-10-02)
+* gestion type adhérent Amapien principal (avec membres du foyers)
+* **Inscription en ligne:** possibilité de modifier les labels des contrats disponibles et des inscriptions en cours
+* intégration adhésion via **HelloAsso**
+
+# 0.96.15 (2020-09-30)
+* **Inscription distribution:** filtrage par contrat, gestion multilieux
+* generation distrib et paniers si changement de plage de date du contrat
+* mise à jour des distributions, contrats...quand mise à jour des lieu de distributions et présentations
+* **Excel Quantités en colonnes:** améliorations look (bordures, titres, alternances, centrage...)
+* désactivation des notifications d'association/désassociation de coadhérents/cofoyers via constante AMAPRESS_DISABLE_COADH_ASSO_MAILS/AMAPRESS_DISABLE_COADH_DEASSO_MAILS
+* désactivation des notifications d'inscription/désinscription (intermittent, évènement, distribution...) via constante AMAPRESS_DISABLE_INSCRIPTIONS_MAILS/AMAPRESS_DISABLE_DESINSCRIPTIONS_MAILS
+* outils de nettoyage et régénération des distributions et paniers (en cas de changement permanent de lieu par ex)
+
+# 0.96.10 (2020-09-29)
+* amélioration interface inscription, AG, Evenement, Visite
+* gestion de liens vers pages d'inscriptions aux distributions séparées pour chaque lieux
+* recall clotûre contrat
+
+# 0.96.5 (2020-09-28)
+* AG titre par défaut
+
+# 0.96.0 (2020-09-25)
+* **Contrats:** paiement en ligne via **Stripe**
+
+# 0.95.245 (2020-09-23)
+* **Assistant d'inscription:** 
+    - autoriser les membres du foyer à éditer les inscriptions de l'adhérent principal
+    - ne pas autoriser la saisie de membre du foyer pour les co adhérents
+    - filtrage des dates de paiement
+    - filtrage lieu choisi dans l'adhésion (si choisi)
+* **Assistants Inscriptions/Adhésions en ligne:** possibilité de modification du texte "Pour démarrer votre adhésion/inscription pour la saison xxx, veuillez renseigner votre adresse mail :" de l'étape 1 (non connecté)
+* **Nettoyage:** distributions orphelines
+* **Période d'adhésion:** champs nom
+
+# 0.95.240 (2020-09-18)
+* blocage de réservation des paniers, désactivé par défaut pour admin et responsable AMAP
+* placeholder ${type_adhesion}
+
+# 0.95.235 (2020-09-17)
+* **Assistant adhésion:** 
+    - si actif, lieu d'adhésion requis
+    - possibilité de checkbox de questions supplémentaires
+* **Assistant adhésion/inscription:** possibilité de personnalisation du label des champs de saisie du/des numéros de chèques/virement
+* **Mes contrats:** détails contrat et détails livraisons, accessible par les membres du foyer
+* parsing des adresses sur deux lignes (et à virgule)
+* **Visites:** affichage des tableaux d'inscriptions avec créneaux
+* **Inscription paniers modulables:** colonnes (dates) alternées
+
+# 0.95.225 (2020-09-16)
+* **import CSV:** 
+    - amélioration import contrat
+    - affichage colonnes ignorées
+    - gestion écart de texte typographique (guillemets)
+
+# 0.95.220 (2020-09-15)
+* **Contrats:** affichage répartition au mois
+* **Inscriptions:** 
+    - colonne date fin, motif, nb paiement affichable et exportables
+    - colonne quantités, affichée en html
+* filtrage Amapiens Principaux avec et sans contrat
+
+# 0.95.210 (2020-09-14)
+* **Adhésion:** membre du foyer, prendre l'adhésion de l'adhérent principal
+* **Contrats:** paiement au mois uniquement (pas de paiement total)
+* **Shortcodes:** amapien-details-paiements, possibilité d'afficher les dates d'encaissement (show_dates_encaissement) et les dates de livraison (show_dates_livraisons)
+
+# 0.95.200 (2020-09-11)
+* **Assistant adhésion:** possibilité de saisir un montant adhésion réseau/AMAP libre (-1 dans la configuraton des montants de la période d'adhésion)
+* **Commentaires:** possibilité de désactiver les commentaires par constante AMAPRESS_DISABLE_xxx_COMMENTS
+* AMAPRESS_DISABLE_JS_ERROR_LOG
+
+# 0.95.190 (2020-09-09)
+* Assistant d'Adhésion Intermittent
+* **Espace intermittents:** option pour forcer l'adhésion préalable à l'AMAP avant de pouvoir réserver un panier disponible
+* **Assistant d'inscription:** 
+    - paniers_modulables_editor_height, possibilité de mettre autre que px (par ex, vh)
+
+# 0.95.180 (2020-09-07)
+* **Inscription en ligne:** paramètre show_close_date pour afficher la date de clôture des inscriptions
+* **Messagerie:** 
+    - comptes archivables
+    - membres du collectif, amapiens principaux, rôles dans le collectif
+    - par défaut, Reply-To à l'utilisateur connecté
+
+# 0.95.175 (2020-09-05)
+* **Adhésions:** archivage
+
+# 0.95.170 (2020-09-04)
+* ClipboardJS compatibilité
+* **Archivage utilisateurs:** entrée de menu, explication et titre de vue Utilisateurs archivables
+* **Inscriptions en ligne:** paramètre show_max_deliv_dates pour afficher les dates de livraison des contrats ouverts à l'inscription
+* **Rappels:** quantités à la prochaine distribution, possibilité d'attacher des excels des quantités à livrer (lignes ou colonnes)
+
+# 0.95.165 (2020-09-03)
+* wp-color-picker-alpha, 5.5 compatibility in Customizer
+
+# 0.95.160 (2020-09-02)
+* **Récapitulatif des livraisons:** 
+    - gestion d'un excel avec les produits en colonnes et onglet par date (Quantité à la prochaine distribution, archivage)
+    - placeholder %%producteur_paniers_quantites_columns%% pour les rappels
+
+# 0.95.150 (2020-09-01)
+* **Messagerie:** ne pas activer le filtrage Référents pour les catégories de destinataires
+* **Inscription en ligne:** notifications séparées aux référents pour nouvelles inscriptions, modifications ou annulations
+
+# 0.95.140 (2020-08-31)
+* **Vue Référents Producteurs:** afficher tous les référents même si pas de contrat actif
+
+# 0.95.135 (2020-08-29)
+* **Assistant d'inscription:** lieu souhaité, option N'importe lequel et Aucun
+* **Utilisateurs:** filtre Comptes Archivables
+
+# 0.95.130 (2020-08-28)
+* **Assistant d'inscription:** 
+    - paramètre allow_trombi_decline pour cacher la case à cocher "ne pas apparaitre sur le trombinoscope"
+* **Mes infos:** 
+    - paramètre address_required pour rendre l'adresse requise
+    - paramètre allow_trombi_decline pour cacher la case à cocher "ne pas apparaitre sur le trombinoscope"
+
+# 0.95.125 (2020-08-25)
+* Assistant d'Inscription d'Amapiens Externes (anon-extern-amapien-inscription)
+* **Assistant d'inscription:** 
+    - ajout d'un Message inscription aux distributions avant la finalisation des inscriptions
+    - étape finalisation, option %%remaining_contrats_list%% pour afficher les contrats en liste ul/li (au lieu de liste à virgule)
+
+# 0.95.120 (2020-08-24)
+* option Libellé règlements active par défaut
+* type adhérent, gestion co-adhérent avec contrat(s) propre(s) et autres cas de co-adhérents
+* **Assistant adhésion:** 
+    - période d'adhésion, option pour désactiver la saisie des numéros de chèques
+* **Inscription en ligne:** 
+    - documentation, option allow_new_mail pour ne pas autoriser les emails non associés à un compte existant
+    - option show_only_subscribable_inscriptions pour n'afficher que les inscriptions à venir
+
+# 0.95.115 (2020-08-22)
+* **Mes infos/Assistant inscription/adhésion:** ne pas lier des membres du foyer/co adhérents déjà liés (depuis l'amapien principal ou autre)
+
+# 0.95.110 (2020-08-20)
+* **Adhésion en ligne connecté:** gestion track_no_renews
+* **Mes infos:** paramètre show_adherents_infos pour afficher les informations de l'adhérent (co adhérents, membres du foyer)
+
+# 0.95.105 (2020-08-19)
+* **Rappels:** distributions, second rappel distinct aux responsables de distribution (par exemple pour leur annoncer à l'avance sans la liste d'émargement)
+* **Utilisateurs:** filtre Non renouvellement
+* **Utilisateurs:** séparation Filtre Co-adhérents, Amapien avec co-adhérents, Amapiens principaux
+
+# 0.95.101 (2020-08-19)
+* **Assistant inscription/adhésion en ligne:** check_adhesion_received bloquant dès l'étape coordonnées
+
+# 0.95.100 (2020-08-18)
+* **File de message/PHPMailer:** compatibilité WP 5.5 avec les changements intégration de PHPMailer
+* **Distributions:** inscription/désinscription, possibilité de mettre des users en CC
+
+# 0.95.90 (2020-08-15)
+* **Etat Amapress:** check rôles spécifiques rsponsables des gardiens de distribution
+* possibilité de règlements contrats par prélèvement
+
+# 0.95.85 (2020-08-13)
+* **Proposer son panier:** amélioration interface
+* compatibilité color picker alpha avec Wordpress 5.5
+* option **Fichier template du thème** pour affecter un fichier PHP spécifiques
+    - aux affichages Amapress (Producteurs/Productions/Produits...) (par défaut singular.php)
+    - aux affichages Archives Amapress (Producteurs/Productions/Produits...) (par défaut singular.php)
+
+# 0.95.80 (2020-08-07)
+* **Période d'adhésion:** 
+    - prendre la période d'adhésion en cours (par rapport à now et pas le min des dates de contrats actifs) ou la suivante à défaut
+    - affichage aucune période avec la date recherchée
+* ajustement des droits Référents et Producteur et Trésorier
+* **Réglements Adhésions et Contrats** filtre Non reçu sans condition de date "active"
+* **Adhésion en ligne:** possibilité de personnalisation du message de bienvenue
+
+# 0.95.75 (2020-08-05)
+* **Adhésion en ligne connecté:** documentation skip_coords
+* **Configuration Assistant Inscription/Adhésion** lien pour aller de la section inscription à la section adhésion et inversement
+* possibilité de définir une répartition des chèques non linéaire en % pour les règlements en plusieurs fois
+
+# 0.95.73 (2020-08-02)
+* compatibilité autofill-event.js uniquement sur les formulaires avec validation (bug widget sélecteur de catégories)
+
+# 0.95.72 (2020-07-31)
+* **Inscription/Adhésion en ligne:** séparation de la configuration entre Gestion Adhésions et Gestion Contrats
+* **Quota contrats:** affichage contrats complets
+
+# 0.95.70 (2020-07-31)
+* documentation arguments allow_adhesion_lieu/allow_adhesion_message, inscription-en-ligne/adhesion-en-ligne
+* **Inscription en ligne connectée:** gestion skip_coords si adhésion nécessaire
+* placeholders .pseudo (adherent/coadherent/producteur) => nickname (pseudo) + .nom_public => displayname (nom à afficher publiquement)
+* placeholders producteur.rue/.code_postal/.ville
+* **Contrats:** 
+    - option gestion du Max adhérents en part de récolte (Facteur quantités, par ex, 0.5, 1)
+    - affichage du nombre de parts dans la vue Gestion Contrats/Edition
+    - placeholders nb_inscriptions, nb_parts, max_parts, dispo_parts
+* **Distributions:** instruction de distribution par production pour ajouter à la liste d'émargement et/ou au rappel aux responsables de distribution (%%paniers_instructions_distribution%%)
+
+# 0.95.65 (2020-07-29)
+* **Règlement adhésions:** row action "Approuver amapien"
+* **Adhésion en ligne:** arguments allow_adhesion_message (message à l'AMAP lors de l'adhésion) et allow_adhesion_lieu (lieu de distribution souhaité)
+
+# 0.95.60 (2020-07-27)
+* affichage contrats, afficher S'inscrire/Inscrit suivant amapien connecté
+* **Inscription/Adhésion en ligne:** 
+    - bloquer les inscriptions si check_adhesion_received
+    - mode admin, proposer tous les contrats même si pas ouvert aux inscriptions en ligne
+    - paramètre use_steps_nums pour ne pas afficher les numéros d'étapes
+    - possibilité de personnalisation des noms des étapes et messages personnalisés
+    - gestion de la numérotation des étapes dans les différents cas (adhesion, inscription, adhesion+inscription, agreement...)
+* check placeholders dans les modèles DOCX
+* **Adhésion en ligne:** étape 1, affichage des dates de la période d'adhésion et non de celles des contrats ouverts
+* **Contrats:** row action pour ouvrir/fermer les inscriptions en ligne
+* **Demandes d'adhésions:** champs Date de demande (remplie automatiquement si formulaire)
+* **Imports CSV:** import adhésion AMAP (avec les montants par défaut et sans l'import de la répartition)
+* **Période d'adhésion:** check du modèle DOCX de bulletin par rapport aux placeholders disponibles
+
+# 0.95.55 (2020-07-23)
+* **Rappels:** affichage de la date d'envoi en heure locale
+* **Gardiens de paniers:** option pour permettre pour une amapien d'affecter directement son gardien de panier
+* **Groupes Amapiens:** possibilité de tagger les amapiens dans des groupes sans qu'ils soient membres du collectif, par exemple, Donateur, Membre d'une autre AMAP pour l'organisation de visite à la ferme en commun, Ancien producteur...
+
+# 0.95.45 (2020-07-21)
+* %%contenu_paniers%% (ne pas lister les paniers non renseignés) + %%liste_contrats%% avec nom complémentaire + personnalisés dans le rappels des livraisons par amapien
+* présentation contrat/production/producteur, lien "s'inscrire" contextuel vers page inscription-en-ligne connecté ou non
+* refactoring droit et limitation de la configuration à Admin et responsable Amap
+* référent producteur non affecté n'a de droit sur aucun contrat
+* titre des post (articles, lieu distribution, producteur, production...) requis si éditable
+* **Distributions:** 
+    - affichage du nombre de personnes inscrites plusieurs fois
+    - bug création distribution exceptionelle (lieu requis, info nb responsable, info créneaux)
+    - si pas de contrat associé à la distribution alors afficher "distribution annulée ou reportée" et ne pas afficher les responsables + ne pas envoyer les rappels + ne pas proposer l'inscription
+* **Inscriptions distributions:** ne pas lister les lieux sans responsables requis
+* ajout de placeholders pseudo (display name/nom d'affichage) pour adherent, producteur...
+* remettre les droits Amapress par défaut
+* **Adhésions en ligne:** nouveaux shortcodes adhesion-en-ligne et adhesion-en-ligne-connecte
+* **Assemblée générale:** gestion lieu externe et inscription/désinscription
+
+# 0.95.35 (2020-07-17)
+* **Visite:** lieu externe facultatif
+* **Evènements:** envoi d'un mail aux inscrits quand un nouveau commentaire est ajouté
+* **Responsables de distribution:** 
+    - possibilité d'inscription multiple
+    - affichage inscription multiple et déinscription uniquement sur l'inscription principale (qui désinscrit tout)
+
+# 0.95.32 (2020-07-12)
+* **Inscription en ligne:** paramètre show_adhesion_infos pour ne pas afficher la validité de l'adhésion
+
+# 0.95.30 (2020-07-11)
+* **Espaces documents:** documentation des paramètres title et title_tag
+* **Shortcodes:** 
+    - gestion non connectée de next-distrib-deliv ([#20](https://github.com/comptoirdesappli/amapress/issues/20))
+    - next-distrib-deliv-paniers pour afficher les paniers aux prochaines distributions ([#20](https://github.com/comptoirdesappli/amapress/issues/20))
+
+# 0.95.26 (2020-07-08)
+* **multisite, superadmin** check role avec current_user_can (renvoie toujours true), ne renvoyer true que si le rôle demandé est administrator
+
+# 0.95.25 (2020-07-08)
+* **Inscription en ligne:** 
+    - affichage des options de paiement dans l'Étape 7/8 : Règlement et dans le détails des inscriptions
+    - options pour désactiver le paiement de l'adhésion en chèque
+
+# 0.95.20 (2020-07-07)
+* **Adhésion:** gestion type de paiement (espèce, virement, monnaie locale), infos complémentaire de règlement + placeholders + filtrage
+* **Distribution:** affichage variante de contrat
+* **Inscription en ligne:** 
+    - gestion accès public sans clé (chiffrage de la clé fixe "public" avec les SALT Wordpress)
+    - gestion choix du moyen de paiement pour les adhésion (virement, chèque, espèces, monnaie locale)
+    - sécurisation accès public par honeypots
+    - message supplémentaire configurable lorsque les inscriptions en ligne sont closes
+    - mode allow_adhesion_alone pour autoriser les adhésions même si aucun contrat n'est ouvert à l'inscription en ligne
+
+# 0.95.10 (2020-06-29)
+* **Assistant inscription:** documentation check_adhesion_received et check_adhesion_received_or_previous sur [inscription-en-ligne] et [inscription-en-ligne-connecte]
+* **Demande d'adhésion:** 
+    - affichage de la réponse type prérempli dans l'éditeur de demande d'adhésion
+    - possibilité de création du compte utilisateur + possibilité d'envoi d'un mail de réponse "automatique"/prérempli
+* **Widgets:** widget Amapress Catégories (recettes, produits, évènements)
+
+# 0.95.5 (2020-06-28)
+* amélioration doc placeholder dans les contrats DOCX (tableaux de quantités simple et paniers modulables)
+* check placeholders inconnus dans les tableaux des contrats DOCX
+* check placeholders inconnus en tant qu'erreur
+* **Mes contrats:** 
+    - ne pas afficher "aucun contrat principal" sur [mes-contrats]
+    - ne pas appliquer le CSS additionel
+
+# 0.95.1 (2020-06-26)
+* **Créneaux:** option pour ne pas envoyer la confirmation (amapien et admin)
+
 # 0.95.0 (2020-06-19)
 
 * mettre l'url du webservice Amapress à sa valeur par défaut https://convert.amapress.fr 
