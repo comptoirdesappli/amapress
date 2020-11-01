@@ -2141,25 +2141,38 @@ function amapress_get_contrat_quantite_datatable(
 }
 
 function amapress_producteurs_finances_custom() {
-	return amapress_get_producteurs_finances_datatable( null, [
-		'group_date_by' => isset( $_GET['date_by'] ) ? $_GET['date_by'] : 'none',
-		'group_by'      => isset( $_GET['by'] ) ? $_GET['by'] : 'date',
-	] );
+	return amapress_get_producteurs_finances_datatable( null,
+		isset( $_GET['contrat_id'] ) ? [ intval( $_GET['contrat_id'] ) ] : null,
+		[
+			'group_date_by'        => isset( $_GET['date_by'] ) ? $_GET['date_by'] : 'none',
+			'group_by'             => isset( $_GET['by'] ) ? $_GET['by'] : 'date',
+			'show_adherents'       => isset( $_GET['show_adherents'] ),
+			'show_adherents_count' => ! isset( $_GET['show_adherents'] )
+		] );
 }
 
 function amapress_get_producteurs_finances_datatable(
 	$date = null,
+	$contrat_instance_ids = null,
 	$options = array()
 ) {
-	$contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date );
+	if ( ! empty( $contrat_instance_ids ) ) {
+		$contrat_instances = array_map( function ( $id ) {
+			return AmapressContrat_instance::getBy( $id );
+		}, $contrat_instance_ids );
+	} else {
+		$contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date );
+	}
 
 	$options = wp_parse_args(
 		$options,
 		array(
-			'show_adherents' => true,
-			'group_by'       => 'date',
-			'group_date_by'  => 'none',
-			'no_script'      => false,
+			'show_adherents'       => false,
+			'show_adherents_count' => true,
+			'show_empty_lines'     => false,
+			'group_by'             => 'date',
+			'group_date_by'        => 'none',
+			'no_script'            => false,
 		)
 	);
 
@@ -2167,7 +2180,9 @@ function amapress_get_producteurs_finances_datatable(
 	if ( empty( $group_date_by ) ) {
 		$group_date_by = 'none';
 	}
-	$show_adherents = $options['show_adherents'];
+	$show_adherents_count = $options['show_adherents_count'];
+	$show_adherents       = $options['show_adherents'];
+	$show_empty_lines     = $options['show_empty_lines'];
 
 	$columns = [
 		array(
@@ -2177,21 +2192,37 @@ function amapress_get_producteurs_finances_datatable(
 				'sort' => 'date_sort',
 			)
 		),
-		array(
-			'title' => 'Producteur',
-			'data'  => array(
-				'_'    => 'prod',
-				'sort' => 'prod',
-			)
-		)
 	];
 
-	if ( $show_adherents ) {
+	$columns[] = array(
+		'title' => 'Producteur',
+		'data'  => array(
+			'_'    => 'prod',
+			'sort' => 'prod',
+		)
+	);
+
+	if ( $show_adherents_count ) {
 		$columns[] = array(
 			'title' => 'Adhérents',
 			'data'  => array(
 				'_'    => "all_adhs",
 				'sort' => "all_adhs",
+			)
+		);
+	} elseif ( $show_adherents ) {
+		$columns[] = array(
+			'title' => 'Adhérent',
+			'data'  => array(
+				'_'    => "adherent",
+				'sort' => "adherent",
+			)
+		);
+		$columns[] = array(
+			'title' => 'Lieu',
+			'data'  => array(
+				'_'    => "lieu",
+				'sort' => "lieu",
 			)
 		);
 	}
@@ -2204,51 +2235,121 @@ function amapress_get_producteurs_finances_datatable(
 	);
 
 	$data = [];
-	foreach ( $contrat_instances as $contrat_instance ) {
-		$stats = $contrat_instance->getInscriptionsStats()['lines'];
-		foreach ( $stats as $date_stat ) {
-			$real_date = intval( $date_stat['date_int'] );
-			$row       = array();
+	if ( $show_adherents ) {
+		foreach ( $contrat_instances as $contrat_instance ) {
+			$inscriptions = AmapressContrats::get_all_adhesions( $contrat_instance->getID() );
 
-			$row['prod'] = $contrat_instance->getModel()->getTitle()
-			               . '<br />'
-			               . '<em>' . $contrat_instance->getModel()->getProducteur()->getTitle() . '</em>';
+			foreach ( $contrat_instance->getListe_dates() as $date ) {
+				$date_inscriptions = array_filter( $inscriptions,
+					function ( $inscription ) use ( $date ) {
+						/** @var AmapressAdhesion $inscription */
+						return Amapress::start_of_day( $inscription->getDate_debut() ) <= Amapress::start_of_day( $date )
+						       && Amapress::end_of_day( $date ) <= Amapress::end_of_day( $inscription->getDate_fin() );
+					} );
+				/** @var AmapressAdhesion $inscription */
+				foreach ( $date_inscriptions as $inscription ) {
+					$row = array();
 
-			$row['price_d'] = Amapress::formatPrice( $date_stat['lieu_all_p'], true );
-			$row['price']   = $date_stat['lieu_all_p'];
+					$row['prod'] = $contrat_instance->getModel()->getTitle()
+					               . '<br />'
+					               . '<em>' . $contrat_instance->getModel()->getProducteur()->getTitle() . '</em>';
 
-			$row['all_adhs'] = $date_stat['lieu_all_inscriptions'];
+					$row['lieu']     = $inscription->getLieu()->getShortName();
+					$row['adherent'] = sprintf( '%s<br/>(%s)',
+						$inscription->getAdherent()->getSortableDisplayName(), $inscription->getAdherent()->getEmail() );
 
-			if ( 'quarter' == $group_date_by ) {
-				$quarter          = ceil( intval( date( 'n', $real_date ) ) / 3 );
-				$row['date']      = "T$quarter";
-				$row['date_sort'] = "T$quarter";
-			} elseif ( 'month' == $group_date_by ) {
-				$row['date']      = date_i18n( 'm/Y', $real_date );
-				$row['date_sort'] = date( 'Y-m', $real_date );
-			} else {
-				$row['date']      = date_i18n( 'd/m/Y', $real_date );
-				$row['date_sort'] = date( 'Y-m-d', $real_date );
-			}
-			$key = $row['date_sort'] . $row['prod'];
-			if ( isset( $data[ $key ] ) ) {
-				foreach ( $row as $k => $v ) {
-					if ( 'prod' == $k || 'date' == $k || 'date_sort' == $k ) {
+					$total_amount = 0;
+					foreach ( $inscription->getContrat_quantites( $date ) as $q ) {
+						$total_amount += $q->getPrice();
+					}
+
+					if ( $total_amount < 0.001 && ! $show_empty_lines ) {
 						continue;
 					}
-					if ( 'all_adhs' == $k ) {
-						$data[ $key ][ $k ] = $v > $data[ $key ][ $k ] ? $v : $data[ $key ][ $k ];
-						continue;
-					}
-					if ( is_string( $v ) ) {
-						$data[ $key ][ $k ] .= $v;
+
+					$row['price_d'] = Amapress::formatPrice( $total_amount, true );
+					$row['price']   = $total_amount;
+
+					if ( 'quarter' == $group_date_by ) {
+						$quarter          = ceil( intval( date( 'n', $date ) ) / 3 );
+						$row['date']      = "T$quarter";
+						$row['date_sort'] = "T$quarter";
+					} elseif ( 'month' == $group_date_by ) {
+						$row['date']      = date_i18n( 'm/Y', $date );
+						$row['date_sort'] = date( 'Y-m', $date );
 					} else {
-						$data[ $key ][ $k ] += $v;
+						$row['date']      = date_i18n( 'd/m/Y', $date );
+						$row['date_sort'] = date( 'Y-m-d', $date );
+					}
+					$key = $row['date_sort'] . $row['prod'] . $row['adherent'] . $row['lieu'];
+					if ( isset( $data[ $key ] ) ) {
+						foreach ( $row as $k => $v ) {
+							if ( 'prod' == $k || 'adherent' == $k || 'lieu' == $k || 'date' == $k || 'date_sort' == $k ) {
+								continue;
+							}
+							if ( is_string( $v ) ) {
+								$data[ $key ][ $k ] .= $v;
+							} else {
+								$data[ $key ][ $k ] += $v;
+							}
+						}
+						$data[ $key ]['price_d'] = Amapress::formatPrice( $data[ $key ]['price'], true );
+					} else {
+						$data[ $key ] = $row;
 					}
 				}
-				$data[ $key ]['price_d'] = Amapress::formatPrice( $data[ $key ]['price'], true );
-			} else {
-				$data[ $key ] = $row;
+			}
+		}
+	} else {
+		foreach ( $contrat_instances as $contrat_instance ) {
+			$stats = $contrat_instance->getInscriptionsStats()['lines'];
+			foreach ( $stats as $date_stat ) {
+				$real_date = intval( $date_stat['date_int'] );
+				$row       = array();
+
+				$row['prod'] = $contrat_instance->getModel()->getTitle()
+				               . '<br />'
+				               . '<em>' . $contrat_instance->getModel()->getProducteur()->getTitle() . '</em>';
+
+				$row['lieu']     = '';
+				$row['adherent'] = '';
+
+				$row['price_d'] = Amapress::formatPrice( $date_stat['lieu_all_p'], true );
+				$row['price']   = $date_stat['lieu_all_p'];
+
+				$row['all_adhs'] = $date_stat['lieu_all_inscriptions'];
+
+				if ( 'quarter' == $group_date_by ) {
+					$quarter          = ceil( intval( date( 'n', $real_date ) ) / 3 );
+					$row['date']      = "T$quarter";
+					$row['date_sort'] = "T$quarter";
+				} elseif ( 'month' == $group_date_by ) {
+					$row['date']      = date_i18n( 'm/Y', $real_date );
+					$row['date_sort'] = date( 'Y-m', $real_date );
+				} else {
+					$row['date']      = date_i18n( 'd/m/Y', $real_date );
+					$row['date_sort'] = date( 'Y-m-d', $real_date );
+				}
+				$key = $row['date_sort'] . $row['prod'];
+				if ( isset( $data[ $key ] ) ) {
+					foreach ( $row as $k => $v ) {
+						if ( 'prod' == $k || 'date' == $k || 'date_sort' == $k ) {
+							continue;
+						}
+						if ( 'all_adhs' == $k ) {
+							$data[ $key ][ $k ] = $v > $data[ $key ][ $k ] ? $v : $data[ $key ][ $k ];
+							continue;
+						}
+						if ( is_string( $v ) ) {
+							$data[ $key ][ $k ] .= $v;
+						} else {
+							$data[ $key ][ $k ] += $v;
+						}
+					}
+					$data[ $key ]['price_d'] = Amapress::formatPrice( $data[ $key ]['price'], true );
+				} else {
+					$data[ $key ] = $row;
+				}
 			}
 		}
 	}
@@ -2260,6 +2361,12 @@ function amapress_get_producteurs_finances_datatable(
 			if ( 0 == $ret ) {
 				$ret = strcmp( $a['prod'], $b['prod'] );
 			}
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['lieu'], $b['lieu'] );
+			}
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['adherent'], $b['adherent'] );
+			}
 
 			return $ret;
 		} );
@@ -2268,6 +2375,27 @@ function amapress_get_producteurs_finances_datatable(
 			$ret = strcmp( $a['prod'], $b['prod'] );
 			if ( 0 == $ret ) {
 				$ret = strcmp( $a['date_sort'], $b['date_sort'] );
+			}
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['lieu'], $b['lieu'] );
+			}
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['adherent'], $b['adherent'] );
+			}
+
+			return $ret;
+		} );
+	} elseif ( 'adh' == $group_by ) {
+		usort( $data, function ( $a, $b ) {
+			$ret = strcmp( $a['adherent'], $b['adherent'] );
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['date_sort'], $b['date_sort'] );
+			}
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['lieu'], $b['lieu'] );
+			}
+			if ( 0 == $ret ) {
+				$ret = strcmp( $a['prod'], $b['prod'] );
 			}
 
 			return $ret;
@@ -2303,17 +2431,65 @@ function amapress_get_producteurs_finances_datatable(
 			],
 		) );
 
+	$contrat_instances_ids = array_map( function ( $c ) {
+		return $c->ID;
+	}, $contrat_instances );
+	$all_contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date );
+	usort( $all_contrat_instances, function ( $a, $b ) {
+		/** @var AmapressContrat_instance $a */
+		/** @var AmapressContrat_instance $b */
+		if ( $a->getDate_debut() == $b->getDate_debut() ) {
+			return strcmp( $a->getTitle(), $b->getTitle() );
+		} else {
+			return $a->getDate_debut() < $b->getDate_debut() ? - 1 : 1;
+		}
+	} );
 	$filters = '<p>' .
-	           Amapress::makeLink( add_query_arg( 'date_by', 'date' ), 'Afficher par date' ) .
-	           ' | ' .
-	           Amapress::makeLink( add_query_arg( 'date_by', 'month' ), 'Afficher par mois' ) .
-	           ' | ' .
-	           Amapress::makeLink( add_query_arg( 'date_by', 'quarter' ), 'Afficher par trimestre' ) .
-	           '</p><hr/>';
+	           implode( ' | ',
+		           array_map( function ( $contrat ) use ( $contrat_instances_ids ) {
+			           /** @var AmapressContrat_instance $contrat */
+			           return Amapress::wrapIf(
+				           Amapress::makeLink( add_query_arg( 'contrat_id', $contrat->ID ), $contrat->getTitle() ),
+				           in_array( $contrat->ID, $contrat_instances_ids ) );
+		           }, $all_contrat_instances )
+	           )
+	           . '</p><hr/>';
+
 	$filters .= '<p>' .
-	            Amapress::makeLink( add_query_arg( 'by', 'date' ), 'Grouper par date' ) .
+	            ( $show_adherents ?
+		            Amapress::makeLink( remove_query_arg( 'show_adherents' ),
+			            'Masquer les adhérents' ) :
+		            Amapress::makeLink( add_query_arg( 'show_adherents', 'T' ),
+			            'Afficher les adhérents' ) ) .
+	            '</p><hr/>';
+	$filters .= '<p>' .
+	            Amapress::wrapIf(
+		            Amapress::makeLink( add_query_arg( 'date_by', 'date' ),
+			            'Afficher par date' ),
+		            'date' == $group_date_by ) .
 	            ' | ' .
-	            Amapress::makeLink( add_query_arg( 'by', 'prod' ), 'Grouper par producteur' ) .
+	            Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'date_by', 'month' ),
+		            'Afficher par mois' ),
+		            'month' == $group_date_by ) .
+	            ' | ' .
+	            Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'date_by', 'quarter' ),
+		            'Afficher par trimestre' ),
+		            'quarter' == $group_date_by ) .
+	            '</p><hr/>';
+	$filters .= '<p>' .
+	            Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'date' ),
+		            'Grouper par date' ),
+		            'date' == $group_by ) .
+	            ' | ' .
+	            Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'prod' ),
+		            'Grouper par producteur' ),
+		            'prod' == $group_by ) .
+	            ( $show_adherents ?
+		            ' | ' .
+		            Amapress::wrapIf( Amapress::makeLink( add_query_arg( 'by', 'adh' ),
+			            'Grouper par adhérent' ),
+			            'adh' == $group_by )
+		            : '' ) .
 	            '</p><hr/>';
 
 	return '<div class="contrat-instances-finances-recap">' .
