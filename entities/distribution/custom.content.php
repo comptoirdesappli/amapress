@@ -242,7 +242,7 @@ function amapress_get_custom_content_distribution( $content ) {
 					'init_as_html' => 'true'
 				) );
 
-			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
+			if ( ! in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
 				$inscription_href = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 				if ( ! empty( $inscription_href ) ) {
 					echo '<p>' . Amapress::makeButtonLink(
