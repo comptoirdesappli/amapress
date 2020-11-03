@@ -714,7 +714,18 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					$ret                   .= "<td style='$css_width' class='resp-col incr-list-resp incr-missing'>";
 					$can_change_slot       = $is_user_part_of && amapress_time() < ( $dist->getStartDateAndHour()
 					                                                                 - Amapress::getOption( 'inscr-distribution-slot-close' ) * HOUR_IN_SECONDS );
+					$user_related_ids      = AmapressContrats::get_related_users(
+						$user_id
+					);
 					$slot_for_current_user = $dist->getSlotInfoForUser( $user_id );
+					if ( ! $slot_for_current_user ) {
+						foreach ( $user_related_ids as $user_related_id ) {
+							if ( $slot_for_current_user ) {
+								break;
+							}
+							$slot_for_current_user = $dist->getSlotInfoForUser( $user_related_id );
+						}
+					}
 					if ( $slot_for_current_user ) {
 						$ret .= esc_html( $slot_for_current_user['display'] );
 						if ( $can_change_slot ) {
