@@ -2557,7 +2557,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 			$c    = esc_attr( $quant->getCode() );
 			$pr   = esc_attr( $quant->getPrix_unitaire() );
 			$qc   = esc_attr( $quant->getQuantiteConfig() );
-			$desc = esc_textarea( stripslashes( $quant->getDescription() ) );
+			$desc = esc_textarea( $quant->getDescription() );
 
 			amapress_quantite_editor_line( $contrat_instance, $id, $tit, $c, $desc, $pr, $quant->getPriceUnit(),
 				$qc, $q, implode( ',', $quant->getProduitsIds() ), get_post_thumbnail_id( $quant->ID ),
@@ -2651,13 +2651,12 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 			$my_post = array(
 				'post_title'   => $quant_data['title'],
 				'post_type'    => AmapressContrat_quantite::INTERNAL_POST_TYPE,
-				'post_content' => '',
+				'post_content' => $quant_data['desc'],
 				'post_status'  => 'publish',
 				'meta_input'   => array(
 					'amapress_contrat_quantite_contrat_instance' => $contrat_instance_id,
 					'amapress_contrat_quantite_prix_unitaire'    => $quant_data['price'],
 					'amapress_contrat_quantite_code'             => ! empty( $quant_data['code'] ) ? $quant_data['code'] : $quant_data['title'],
-					'amapress_contrat_quantite_description'      => $quant_data['desc'],
 					'amapress_contrat_quantite_quantite_config'  => isset( $quant_data['quant_conf'] ) ? $quant_data['quant_conf'] : null,
 					'amapress_contrat_quantite_grp_mult'         => isset( $quant_data['grp_mult'] ) ? $quant_data['grp_mult'] : null,
 					'amapress_contrat_quantite_unit'             => isset( $quant_data['unit'] ) ? $quant_data['unit'] : null,
@@ -2672,8 +2671,7 @@ function amapress_save_contrat_quantite_editor( $contrat_instance_id ) {
 				wp_insert_post( $my_post );
 			} else {
 				$my_post['ID'] = $quant_id;
-//                $my_post['post_status'] = 'publish';
-				$r = wp_update_post( $my_post );
+				wp_update_post( $my_post );
 			}
 		}
 		unset( $_POST['amapress_quant_data'] );

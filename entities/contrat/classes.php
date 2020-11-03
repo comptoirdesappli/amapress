@@ -1115,7 +1115,7 @@ class AmapressContrat_instance extends TitanEntity {
 				) ) );
 			}
 		];
-		$ret['date_debut']                       = [
+		$ret['date_debut'] = [
 			'desc' => 'Date début du contrat (par ex, 22/09/2018)',
 			'func' => function ( AmapressContrat_instance $adh ) {
 				return date_i18n( 'd/m/Y', $adh->getDate_debut() );
@@ -2887,7 +2887,12 @@ class AmapressContrat_quantite extends TitanEntity {
 	}
 
 	public function getDescription() {
-		return $this->getCustom( 'amapress_contrat_quantite_description' );
+		$cnt = $this->getContent();
+		if ( empty( $cnt ) ) {
+			$cnt = $this->getCustom( 'amapress_contrat_quantite_description' );
+		}
+
+		return stripslashes( $cnt );
 	}
 
 	public function getMaxAdherents() {
