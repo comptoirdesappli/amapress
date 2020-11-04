@@ -11,9 +11,6 @@ filter:
     - "*/ace-min-noconflict/*"
     - 'vendor/*'
     - '*/*.min.js'
-    - 'titan-framework/*'
-    - 'utils/phpqrcode.php'
-    - 'utils/srdb.class.php'
     - 'js/fullcalendar/*'
     - 'js/jquery-validate/*'
     - 'js/dev/*'
@@ -30,3 +27,6 @@ filter:
   dependency_paths:
     - wordpress/
     - vendor/
+    - titan-framework/
+    - 'utils/phpqrcode.php'
+    - 'utils/srdb.class.php'
