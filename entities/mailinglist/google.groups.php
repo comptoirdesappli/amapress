@@ -116,7 +116,7 @@ class Amapress_GoogleGroups_MailSystem extends Amapress_MailingSystem {
 		$client->setDeveloperKey( $this->key );
 
 		$groups = new Google_Service_Directory_Groups( $client );
-		var_dump( $groups->getGroups() );
+		//var_dump( $groups->getGroups() );
 		//die();
 	}
 

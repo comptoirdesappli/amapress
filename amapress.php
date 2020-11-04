@@ -153,7 +153,8 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 
 function amapress_dump( $v ) {
 	echo '<pre>';
-	var_dump( $v );
+	/** @scrutinizer ignore-call */
+	var_dump( $v ); //phpcs:ignore
 	echo '</pre>';
 }
 
@@ -191,11 +192,7 @@ function amapress_output_admin_notices() {
 
 
 function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pretty = true ) {
-	if ( version_compare( PHP_VERSION, '5.2.5', '>=' ) ) {
-		$trace = debug_backtrace( false );
-	} else {
-		$trace = debug_backtrace();
-	}
+	$trace = debug_backtrace(); //phpcs:ignore
 
 	$caller      = array();
 	$check_class = ! is_null( $ignore_class );
