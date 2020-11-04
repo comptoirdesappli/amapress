@@ -10,7 +10,23 @@ filter:
     - 'tests/*'
     - "*/ace-min-noconflict/*"
     - 'vendor/*'
-    - '*.min.js'
+    - '*/*.min.js'
+    - 'titan-framework/*'
+    - 'utils/phpqrcode.php'
+    - 'utils/srdb.class.php'
+    - 'js/fullcalendar/*'
+    - 'js/jquery-validate/*'
+    - 'js/dev/*'
+    - 'js/min/*'
+    - 'js/locale/*'
+    - 'js/localization/*'
+    - 'js/select2/*'
+    - 'js/slick/*'
+    - 'js/autofill-event.js'
+    - 'js/leaflet.js'
+    - 'js/responsive-tabs.js'
+    - 'js/sorttable.js'
+    - 'js/feedback.js'
   dependency_paths:
     - wordpress/
     - vendor/
