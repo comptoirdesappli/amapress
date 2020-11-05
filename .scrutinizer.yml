@@ -24,6 +24,7 @@ filter:
     - 'js/responsive-tabs.js'
     - 'js/sorttable.js'
     - 'js/feedback.js'
+    - 'js/dt.rowgroup.print.js'
   dependency_paths:
     - wordpress/
     - vendor/
