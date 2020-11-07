@@ -180,9 +180,9 @@ function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 
 	$modif = '';
 	if ( 'delayed' == $panier->getStatus() ) {
-		$modif = ' reporté au ' . date_i18n( 'd/m/Y', $panier->getDateSubst() );
+		$modif = sprintf( __( ' reporté au %s', 'amapress' ), date_i18n( 'd/m/Y', $panier->getDateSubst() ) );
 	} else if ( 'cancelled' == $panier->getStatus() ) {
-		$modif = ' annulé';
+		$modif = __( ' annulé', 'amapress' );
 	}
 
 	return sprintf( 'Panier de %s%s du %s%s',
@@ -322,7 +322,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 			if ( $post_type->public ) {
 				?>
                 <div class="inside">
-                    <strong>Permalien&nbsp;:</strong>
+                    <strong><?php _e( 'Permalien&nbsp;:', 'amapress' ) ?></strong>
                     <span id="sample-permalink"><a href="<?php echo esc_attr( get_permalink( $post ) ) ?>"
                                                    target="_blank"><?php echo esc_html( get_permalink( $post ) ) ?></a></span>
                 </div>
@@ -336,7 +336,12 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	/** @var WP_Post $post */
 	$author = get_user_by( 'ID', $post->post_author );
 	if ( $author ) {
-		echo '<p>Créé par ' . esc_html( $author->display_name ) . ' à ' . date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ) . ' ; Dernière modification le ' . date_i18n( 'd/m/Y H:i', @strtotime( $post->post_modified ) ) . '</p>';
+		echo '<p>';
+		echo esc_html( sprintf( 'Créé par %s à %s ; Dernière modification le %s',
+			$author->display_name,
+			date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ),
+			date_i18n( 'd/m/Y H:i', @strtotime( $post->post_modified ) ) ) );
+		echo '</p>';
 	}
 
 	echo '<script type="text/javascript">jQuery(function($) { $("#title").addClass("required"); })</script>';
@@ -353,7 +358,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_url( $amp_back_to_list ) . '" />';
 		$title = 'Retourner à la page précédente';
 		if ( false !== strpos( $amp_back_to_list, 'edit.php' ) ) {
-			$title = 'Revenir aux ' . get_post_type_object( $post->post_type )->label;
+			$title = sprintf( 'Revenir aux %s', get_post_type_object( $post->post_type )->label );
 		}
 		echo '<p><span class="dashicons dashicons-arrow-left-alt"></span> <a href="' . $amp_back_to_list . '">' . esc_html( $title ) . '</a></p>';
 	}

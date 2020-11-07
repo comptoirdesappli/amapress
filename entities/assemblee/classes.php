@@ -178,7 +178,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 					'inscr_types' => [ 'assemblee_generale' ],
 					'label'       => 'Assemblée',
 					'icon'        => 'fa fa-university',
-					'alt'         => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
+					'alt'         => sprintf( 'Vous êtes inscript pour l\'assemblée générale du %s', date_i18n( 'd/m/Y', $date ) ),
 					'href'        => $this->getPermalink()
 				) );
 			} else {

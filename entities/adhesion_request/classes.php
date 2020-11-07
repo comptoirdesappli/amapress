@@ -207,8 +207,7 @@ class AmapressAdhesionRequest extends TitanEntity {
 		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, null, $this );
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, null, $this );
 
-		return sprintf(
-			'<p>A envoyer à %s</p><p><strong>Sujet: %s</strong></p><br/>%s',
+		return sprintf( __( '<p>A envoyer à %s</p><p><strong>Sujet: %s</strong></p><br/>%s', 'amapress' ),
 			$this->getEmail(), $mail_subject, $mail_content
 		);
 	}

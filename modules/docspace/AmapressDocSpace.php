@@ -99,19 +99,17 @@ class AmapressDocSpace {
 		}
 		$ret .= "<div id='amps-file-list-$sanitized_name'></div>";
 		if ( $this->hasCurrentUserUploadRight() ) {
-			$ret .= <<<ENDFORM
-<div id="amps-dz-$sanitized_name"><form action="$url" class="dropzone needsclick dz-clickable" id="amps-dz-form-$sanitized_name">
-	$nonce_files
-	<div class="dz-message needsclick">
-		Déposez des fichiers ici ou cliquez pour téléverser.<br>
-		<span class="note needsclick">(Les fichiers seront téléversés dans l'espace $space_name)</span>
+			$ret .= '<div id="amps-dz-' . $sanitized_name . '"><form action="' . $url . "\" class=\"dropzone needsclick dz-clickable\" id=\"amps-dz-form-" . $sanitized_name . '">
+	' . $nonce_files . '	<div class="dz-message needsclick">
+		' . 'Déposez des fichiers ici ou cliquez pour téléverser.' . '<br>
+		<span class="note needsclick">' . sprintf( '(Les fichiers seront téléversés dans l\'espace %s)', $space_name ) . '</span>
   	</div>
-	<input type='hidden' name='action' value='amp_upload_docspace_$this->name'>
-	<label for="amp_override"><input type="checkbox" id="amp_override" name="amp_override" /> Ecraser les fichiers existants</label>
-</form></div>
-ENDFORM;
+	<input type=\'hidden\' name=\'action\' value=\'amp_upload_docspace_' . $this->name . '\'>
+	<label for="amp_override"><input type="checkbox" id="amp_override" name="amp_override" /> ' . 'Ecraser les fichiers existants' . '</label>
+</form></div>';
 		}
-		$ret .= <<<ENDFORM
+		$delete_confirm = esc_js( __( 'Etes-vous sûr de vouloir supprimer ', 'amapress' ) );
+		$ret            .= <<<ENDFORM
 <script type="text/javascript">
     //<![CDATA[
 	function updateList$sanitized_name() {
@@ -120,7 +118,7 @@ ENDFORM;
 	        sorttable.makeSortable(jQuery('#amps-file-list-$sanitized_name table').get(0));
             jQuery('#amps-file-list-$sanitized_name .docspace-remove').on('click', function() {
                 var name = jQuery(this).data('name');
-                if (!confirm('Etes-vous sûr de vouloir supprimer ' + name + ' ?'))
+                if (!confirm('$delete_confirm' + name + ' ?'))
                     return;
                 
                 jQuery.get('$remove_file_url&name=' + name, function(data) {
@@ -214,10 +212,10 @@ ENDFORM;
         <table class="docspace_list sortable" style="table-layout: auto">
             <thead>
             <tr>
-                <th>Nom du fichier</th>
-                <th>Type</th>
-                <th>Taille</th>
-                <th>Date de dernière modification</th>
+                <th><?php _e( 'Nom du fichier', 'amapress' ) ?></th>
+                <th><?php _e( 'Type', 'amapress' ) ?></th>
+                <th><?php _e( 'Taille', 'amapress' ) ?></th>
+                <th><?php _e( 'Date de dernière modification', 'amapress' ) ?></th>
                 <th></th>
             </tr>
             </thead>
@@ -385,7 +383,7 @@ ENDFORM;
 					// Output
 					echo( "
 		<tr class='$class'>
-			<td><a href='$download_href'$favicon class='name'>$name</a>&nbsp;|&nbsp;<span class='clip-file-copy' role='button' style='cursor: pointer' title='Copier le lien' data-clipboard-text='{$download_href}'><i class=\"fa fa-copy\"></i></span></td>
+			<td><a href='$download_href'$favicon class='name'>$name</a>&nbsp;|&nbsp;<span class='clip-file-copy' role='button' style='cursor: pointer' title='" . 'Copier le lien' . "' data-clipboard-text='{$download_href}'><i class=\"fa fa-copy\"></i></span></td>
 			<td>$extn</td>
 			<td sorttable_customkey='$sizekey'>$size</td>
 			<td sorttable_customkey='$timekey'>$modtime</td>

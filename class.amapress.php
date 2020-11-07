@@ -1804,20 +1804,20 @@ class Amapress {
 
 	public static function get_post_labels( $singular, $plural, $custom_labels = array() ) {
 		return wp_parse_args( $custom_labels, array(
-			'name'               => __( $plural, 'amapress' ),
-			'singular_name'      => __( $singular, 'amapress' ),
-			'menu_name'          => __( $plural, 'amapress' ),
-			'name_admin_bar'     => __( $singular, 'amapress' ),
+			'name'               => $plural,
+			'singular_name'      => $singular,
+			'menu_name'          => $plural,
+			'name_admin_bar'     => $singular,
 			'add_new'            => __( 'Ajouter', 'amapress' ),
-			'add_new_item'       => __( 'Ajouter ' . $singular, 'amapress' ),
-			'new_item'           => __( 'Nouveau ' . $singular, 'amapress' ),
-			'edit_item'          => __( 'Éditer - ' . $singular, 'amapress' ),
-			'view_item'          => __( 'Voir ' . $singular, 'amapress' ),
-			'all_items'          => __( 'Tous les ' . $plural, 'amapress' ),
-			'search_items'       => __( 'Rechercher de ' . $plural, 'amapress' ),
-			'parent_item_colon'  => __( $singular . ' parent : ', 'amapress' ),
-			'not_found'          => __( 'Pas de ' . $singular . ' trouvé.', 'amapress' ),
-			'not_found_in_trash' => __( 'Pas de ' . $singular . ' trouvé dans la corbeille.', 'amapress' )
+			'add_new_item'       => sprintf( __( 'Ajouter %s', 'amapress' ), $singular ),
+			'new_item'           => sprintf( __( 'Nouveau %s', 'amapress' ), $singular ),
+			'edit_item'          => sprintf( __( 'Éditer - %s', 'amapress' ), $singular ),
+			'view_item'          => sprintf( __( 'Voir %s', 'amapress' ), $singular ),
+			'all_items'          => sprintf( __( 'Tous les %s', 'amapress' ), $plural ),
+			'search_items'       => sprintf( __( 'Rechercher de %s', 'amapress' ), $plural ),
+			'parent_item_colon'  => sprintf( __( '%s parent : ', 'amapress' ), $singular ),
+			'not_found'          => sprintf( __( 'Pas de %s trouvé.', 'amapress' ), $singular ),
+			'not_found_in_trash' => sprintf( __( 'Pas de %s trouvé dans la corbeille.', 'amapress' ), $singular )
 		) );
 	}
 
@@ -2980,9 +2980,9 @@ class Amapress {
 		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
 		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
 
-		echo '<p>Paniers :</p>';
+		echo '<p>' . 'Paniers :' . '</p>';
 		if ( count( $week_paniers ) == 0 ) {
-			echo '<i>Pas de panier ce mois-ci</i>';
+			echo '<i>' . 'Pas de panier ce mois-ci' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paniers as $panier ) {
@@ -2998,9 +2998,9 @@ class Amapress {
 			echo '</ul>';
 		}
 
-		echo '<p>Distributions :</p>';
+		echo '<p>' . 'Distributions :' . '</p>';
 		if ( count( $week_dists ) == 0 ) {
-			echo '<i>Pas de distribution ce mois-ci</i>';
+			echo '<i>' . 'Pas de distribution ce mois-ci' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_dists as $dist ) {
@@ -3008,38 +3008,38 @@ class Amapress {
 				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>Pas de responsables</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de responsables' . "</strong></li>";
 				} else if ( $req > count( $resps ) ) {
 					$miss = $req - count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>$miss responsable(s) manquants</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( '%d responsable(s) manquants', $miss ) . "</strong></li>";
 				} else {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - Complet</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . 'Complet' . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>Visites à la ferme :</p>';
+		echo '<p>' . 'Visites à la ferme :' . '</p>';
 		if ( count( $week_visites ) == 0 ) {
-			echo '<i>Pas de visite à la ferme ce mois-ci</i>';
+			echo '<i>' . 'Pas de visite à la ferme ce mois-ci' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_visites as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>Pas de participants</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de participants' . "</strong></li>";
 				} else {
 					$cnt = count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - $cnt participant(s)</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( '%d participant(s)', $cnt ) . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>Chèques à encaisser :</p>';
+		echo '<p>' . 'Chèques à encaisser :' . '</p>';
 		if ( count( $week_paiements ) == 0 ) {
-			echo '<i>Pas de chèque à encaisser ce mois-ci</i>';
+			echo '<i>' . 'Pas de chèque à encaisser ce mois-ci' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paiements as $dist ) {
@@ -3058,9 +3058,9 @@ class Amapress {
 		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
 		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
 
-		echo '<p>Paniers :</p>';
+		echo '<p>' . 'Paniers :' . '</p>';
 		if ( count( $week_paniers ) == 0 ) {
-			echo '<i>Pas de panier cette semaine</i>';
+			echo '<i>' . 'Pas de panier cette semaine' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paniers as $panier ) {
@@ -3076,9 +3076,9 @@ class Amapress {
 			echo '</ul>';
 		}
 
-		echo '<p>Distributions :</p>';
+		echo '<p>' . 'Distributions :' . '</p>';
 		if ( count( $week_dists ) == 0 ) {
-			echo '<i>Pas de distribution cette semaine</i>';
+			echo '<i>' . 'Pas de distribution cette semaine' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_dists as $dist ) {
@@ -3086,38 +3086,38 @@ class Amapress {
 				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>Pas de responsables</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de responsables' . "</strong></li>";
 				} else if ( $req > count( $resps ) ) {
 					$miss = $req - count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>$miss responsable(s) manquants</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( '%d responsable(s) manquants', $miss ) . "</strong></li>";
 				} else {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - Complet</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . 'Complet' . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>Visites à la ferme :</p>';
+		echo '<p>' . 'Visites à la ferme :' . '</p>';
 		if ( count( $week_visites ) == 0 ) {
-			echo '<i>Pas de visite à la ferme cette semaine</i>';
+			echo '<i>' . 'Pas de visite à la ferme cette semaine' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_visites as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>Pas de participants</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de participants' . "</strong></li>";
 				} else {
 					$cnt = count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - $cnt participant(s)</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( '%d participant(s)', $cnt ) . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>Chèques à encaisser :</p>';
+		echo '<p>' . 'Chèques à encaisser :' . '</p>';
 		if ( count( $week_paiements ) == 0 ) {
-			echo '<i>Pas de chèque à encaisser cette semaine</i>';
+			echo '<i>' . 'Pas de chèque à encaisser cette semaine' . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paiements as $dist ) {
@@ -3143,13 +3143,13 @@ class Amapress {
 		$cnt_contrats_tocheck = count( $contrats_tocheck );
 		if ( $cnt_contrats_tocheck > 0 ) {
 			$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
-			echo "<p style='color:red'><a href='$adm'>($cnt_contrats_tocheck)</a> contrats à vérifier</p>";
+			echo sprintf( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> contrats à vérifier</p>', $adm, $cnt_contrats_tocheck );
 		}
 
 		//contrats
 		$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
 		$cnt = count( $contrats );
-		echo "<p><a href='$adm'>($cnt)</a> contrats actifs</p>";
+		echo sprintf( '<p><a href=\'%s\'>(%s)</a> contrats actifs</p>', $adm, $cnt );
 
 		//lieux distrib
 		$lieux = get_posts(
@@ -3160,7 +3160,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_lieu' );
 		$cnt   = count( $lieux );
-		echo "<p><a href='$adm'>($cnt)</a> lieu(x) de distribution</p>";
+		echo sprintf( '<p><a href=\'%s\'>(%s)</a> lieu(x) de distribution</p>', $adm, $cnt );
 
 		$posts = get_posts(
 			array(
@@ -3170,7 +3170,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_producteur' );
 		$cnt   = count( $posts );
-		echo "<p><a href='$adm'>($cnt)</a> producteurs</p>";
+		echo sprintf( '<p><a href=\'%s\'>(%s)</a> producteurs</p>', $adm, $cnt );
 
 		$posts = get_posts(
 			array(
@@ -3180,7 +3180,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_produit' );
 		$cnt   = count( $posts );
-		echo "<p><a href='$adm'>($cnt)</a> produits</p>";
+		echo sprintf( '<p><a href=\'%s\'>(%s)</a> produits</p>', $adm, $cnt );
 	}
 
 	static function amapress_paiements_dashboard_widget_function() {
@@ -3200,7 +3200,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_adhesion' );
 		$cnt   = count( $ads );
-		echo "<p><a href='$adm'>($cnt)</a> adhésions :</p>";
+		echo sprintf( '<p><a href=\'%s\'>(%s)</a> adhésions :</p>', $adm, $cnt );
 		echo '<ul>';
 		foreach ( $lieux as $lieu ) {
 			$ads_lieu = get_posts(
@@ -3218,7 +3218,7 @@ class Amapress {
 			);
 			$adm      = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_lieu&meta_value=' . $lieu->ID );
 			$cnt      = count( $ads_lieu );
-			echo "<li>{$lieu->post_title}: <a href='$adm'>($cnt)</a> adhésions</li>";
+			echo sprintf( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', $lieu->post_title, $adm, $cnt );
 		}
 		echo '</ul>';
 		echo '<ul>';
@@ -3238,7 +3238,7 @@ class Amapress {
 			);
 			$adm         = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_contrat_instance&meta_value=' . $contrat->ID );
 			$cnt         = count( $ads_contrat );
-			echo "<li>{$contrat->getTitle()}: <a href='$adm'>($cnt)</a> adhésions</li>";
+			echo sprintf( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', $contrat->getTitle(), $adm, $cnt );
 		}
 		echo '</ul>';
 
@@ -3259,7 +3259,7 @@ class Amapress {
 		$cnt            = count( $ads_to_confirm );
 		if ( $cnt > 0 ) {
 			$adm = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_status&meta_value=to_confirm' );
-			echo "<p style='color:red'><a href='$adm'>($cnt)</a> adhésions à confirmer</p>";
+			echo sprintf( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> adhésions à confirmer</p>', $adm, $cnt );
 		}
 	}
 
@@ -3399,7 +3399,7 @@ class Amapress {
 			$item->post_parent      = 0;
 			$item->menu_item_parent = 0;
 			$item->type             = 'amapress-custom-latest';
-			$item->title            = 'Derniers ' . $post_conf['plural'];
+			$item->title            = sprintf( 'Derniers %s', $post_conf['plural'] );
 			$item->type_label       = __( 'Récents', 'amapress' );
 			$item->url              = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
 			$item->target           = '';
@@ -3476,12 +3476,12 @@ class Amapress {
 			$items2[] = $item;
 		}
 
-		$walker  = new Walker_Nav_Menu_Checklist( array() );
-		$walker2 = new Walker_Nav_Menu_Checklist( array() );
+		$walker                     = new Walker_Nav_Menu_Checklist( array() );
+		$walker2                    = new Walker_Nav_Menu_Checklist( array() );
 
 		?>
         <div id="amapress" class="posttypediv">
-            <h4>Types</h4>
+            <h4><?php _e( 'Types', 'amapress' ) ?></h4>
 
             <div id="tabs-panel-amapress" class="tabs-panel tabs-panel-active">
                 <ul id="amapress-checklist" class="categorychecklist form-no-clear">
@@ -3491,7 +3491,7 @@ class Amapress {
                 </ul>
             </div>
             <!-- /.tabs-panel -->
-            <h4>Liens</h4>
+            <h4><?php _e( 'Liens', 'amapress' ) ?></h4>
 
             <div id="tabs-panel-amapress-links" class="tabs-panel tabs-panel-active">
                 <ul id="amapress-checklist-links" class="categorychecklist form-no-clear">
@@ -3673,7 +3673,7 @@ class Amapress {
 	) {
 		$contrats = AmapressContrats::get_contrats( $producteur_id, true, true );
 		if ( empty( $contrats ) ) {
-			return '<p class="">Aucun contrat n\'est configuré</p>';
+			return '<p class="">' . 'Aucun contrat n\'est configuré' . '</p>';
 		}
 		$ret                 = '<ul class="contrat-list">';
 		$active_contrats_ids = array_map( function ( $a ) {
@@ -3693,10 +3693,10 @@ class Amapress {
 			$btn_url = trailingslashit( get_post_permalink( $contrat->ID ) );
 			$url     = amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', 'default_contrat.jpg' );
 			$ret     .= '<li>
-                <div class="contrat-img"><img src="' . $url . '" alt="Photo de ' . esc_attr( $contrat->getTitle() ) . '"  /></div>
+                <div class="contrat-img"><img src="' . $url . '" alt="' . esc_attr( $contrat->getTitle() ) . '"  /></div>
                 <div class="contrat-desc">
                     <div>
-                    <div class="contrat-link">' . $contrat->getTitle() . '</div>
+                    <div class="contrat-link">' . esc_html( $contrat->getTitle() ) . '</div>
                     <div><a href="' . $btn_url . '" class="btn btn-default btn-abonnement">' . esc_html( $lbl ) . '</a></div>
                     </div>
                 </div>
@@ -3711,7 +3711,7 @@ class Amapress {
 	public static function get_know_more(
 		$url
 	) {
-		return '<p class="know-more"><a href="' . $url . '"><i class="fa fa-star-o"></i>&#xA0;En savoir plus</a></p>';
+		return '<p class="know-more"><a href="' . $url . '"><i class="fa fa-star-o"></i>&#xA0;' . 'En savoir plus' . '</a></p>';
 	}
 
 //    public static function amapress_produit_cell($produit, $add_class)
@@ -4001,9 +4001,11 @@ class Amapress {
 		$id  .= $id_counter;
 		$ret = '';
 		if ( $show_toggler ) {
-			$ret .= '<p>Consulter les <a href="#" id="show_' . $id . '">marqueurs de substitution</a> disponibles (%%xxx%%)</p>';
+			$ret .= '<p>' .
+			        sprintf( __( 'Consulter les <a href="#" id="show_%s">marqueurs de substitution</a> disponibles (%%%%xxx%%%%)', 'amapress' ),
+				        $id ) . '</p>';
 		}
-		$ret .= '<div id="' . $id . '-container"><table id="' . $id . '" class="placeholders-help display"><thead><tr><th>Placeholder</th><th>Description</th></tr></thead><tbody>' .
+		$ret .= '<div id="' . $id . '-container"><table id="' . $id . '" class="placeholders-help display"><thead><tr><th>' . 'Placeholder' . '</th><th>' . 'Description' . '</th></tr></thead><tbody>' .
 		        implode( '', array_map( function ( $pn, $p ) use ( $marker_start, $marker_end ) {
 			        return '<tr><td>' . $marker_start . esc_html( $pn ) . $marker_end . '</td><td>' . esc_html( $p ) . '</td></tr>';
 		        }, array_keys( $final ), array_values( $final ) ) )
@@ -4498,8 +4500,8 @@ class Amapress {
 
 		if ( $tld ) {
 			//get the TLD and domain
-			$domainparts = explode( ".", $domain );
-			$domain      = $domainparts[ count( $domainparts ) - 2 ] . "." . $domainparts[ count( $domainparts ) - 1 ];
+			$domainparts = explode( '.', $domain );
+			$domain      = $domainparts[ count( $domainparts ) - 2 ] . '.' . $domainparts[ count( $domainparts ) - 1 ];
 		}
 
 		return $domain;

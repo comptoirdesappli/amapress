@@ -290,8 +290,8 @@ function amapress_paiements_count_editor( $post_id ) {
 		return $adhesion->getPaiements();
 	}
 	//$min_cheques = count( $adhesion->getAllPaiements() );
-	$ret = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" id="amapress_adhesion_paiements" type="number" value="' . $adhesion->getPaiements() . '" min="0" max="1000" step="1" aria-required="true">';
-	$ret .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">Préparer la saisie des chèques</button></div>';
+	$ret = '<div><input class="small-text required" name="amapress_adhesion_paiements" placeholder="" id="amapress_adhesion_paiements" type="number" value="' . esc_attr( $adhesion->getPaiements() ) . '" min="0" max="1000" step="1" aria-required="true">';
+	$ret .= '&nbsp;&nbsp;<button id="amapress_paiements_save" class="button button-primary">' . 'Préparer la saisie des chèques' . '</button></div>';
 	$ret .= '<script type="text/javascript">
         //<![CDATA[        
         jQuery(function ($) {
@@ -315,14 +315,14 @@ function amapress_paiements_count_editor( $post_id ) {
 		$remaining_dates = $adhesion->getRemainingDates();
 		$amount          = $adhesion->getTotalAmount();
 		$cheques_options = $adhesion->getPossibleChequeOptions();
-		$ret             .= '<div><strong>Montant :</strong> ' . sprintf( '%.2f€', $amount ) . '</div>
-				 <div><strong>Livraisons (' . count( $remaining_dates ) . ' dates / ' . $adhesion->getRemainingDatesWithFactors() . ' distributions)</strong> : ' . $adhesion->getProperty( 'dates_distribution_par_mois' ) . '</div>
-                 <div><strong>Chèques prévus :</strong> ' . implode( ', ', $cheques_options ) . '</div>';
+		$ret             .= '<div>' . sprintf( '<strong>Montant :</strong> %s</div>
+				 <div><strong>Livraisons (%s dates / %s distributions)</strong> : %s</div>
+                 <div><strong>Chèques prévus :</strong> %s', sprintf( '%.2f€', $amount ), count( $remaining_dates ), $adhesion->getRemainingDatesWithFactors(), $adhesion->getProperty( 'dates_distribution_par_mois' ), implode( ', ', $cheques_options ) ) . '</div>';
 		if ( $adhesion->getContrat_instance()->getAllow_Cash() ) {
-			$ret .= '<div><strong>Règlement en espèces autorisé</strong></div>';
+			$ret .= '<div><strong>' . 'Règlement en espèces autorisé' . '</strong></div>';
 		}
 		if ( $adhesion->getContrat_instance()->getAllow_Transfer() ) {
-			$ret .= '<div><strong>Règlement par virement autorisé</strong></div>';
+			$ret .= '<div><strong>' . 'Règlement par virement autorisé' . '</strong></div>';
 		}
 	}
 
@@ -334,17 +334,17 @@ function amapress_paiements_editor( $post_id ) {
 	if ( 'stp' == $adhesion->getMainPaiementType() ) {
 		$ret = '';
 		foreach ( $adhesion->getAllPaiements() as $paiement ) {
-			$ret .= sprintf( '<p>Paiement en ligne (Stripe) de %s de %s reçu le %s</p>',
-				$paiement->getEmetteur(),
-				Amapress::formatPrice( $paiement->getAmount(), true ),
-				date_i18n( 'd/m/Y H:i', $paiement->getDate() )
-			);
+			$ret .= '<p>' . sprintf( 'Paiement en ligne (Stripe) de %s de %s reçu le %s',
+					$paiement->getEmetteur(),
+					Amapress::formatPrice( $paiement->getAmount(), true ),
+					date_i18n( 'd/m/Y H:i', $paiement->getDate() )
+				) . '</p>';
 		}
 
 		return $ret;
 	}
 	if ( $adhesion->getContrat_instance() == null || 'draft' == $adhesion->getPost()->post_status ) {
-		echo '<p style="color:red">Les chèques/règlements ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée</p>';
+		echo '<p style="color:red">' . 'Les chèques/règlements ne peuvent être renseignés qu\'une fois l\'adhésion au contrat enregistrée' . '</p>';
 
 		return;
 	}
@@ -475,7 +475,7 @@ function amapress_paiements_editor( $post_id ) {
 	            jQuery(".paiement-type select").each(change_paiement_fields).change(change_paiement_fields);
         });
         function amapress_del_paiement(e) {
-            if (!confirm("Voulez-vous vraiment supprimer cette quantité ?")) return;
+            if (!confirm("' . esc_js( __( 'Voulez-vous vraiment supprimer cette quantité ?', 'amapress' ) ) . '")) return;
             jQuery(e).closest("tr").remove();
         };
         //]]>
@@ -483,9 +483,9 @@ function amapress_paiements_editor( $post_id ) {
 
 	echo '<input id="amapress_paiements" name="amapress_paiements" type="hidden" value="">';
 
-	echo '<p><strong>Astuces</strong> : Pour supprimer un ou plusieurs chèques, cliquer sur le bouton <span class="dashicons dashicons-dismiss"></span> de la ligne du chèque à supprimer puis cliquer sur Enregistrer.</p>';
-	echo '<p><strong>Astuces</strong> : Faites un clic droit dans le champs <em>Numéro de chèque</em> pour recopier et incrémenter le numéro dans les cases en dessous</p>';
-	echo '<p><strong>Astuces</strong> : Faites un clic droit dans les champs <em>Adhérent</em> ou <em>Banque</em> pour recopier la valeur dans les cases en dessous</p>';
+	echo '<p>' . __( '<strong>Astuces</strong> : Pour supprimer un ou plusieurs chèques, cliquer sur le bouton <span class="dashicons dashicons-dismiss"></span> de la ligne du chèque à supprimer puis cliquer sur Enregistrer.', 'amapress' ) . '</p>';
+	echo '<p>' . __( '<strong>Astuces</strong> : Faites un clic droit dans le champs <em>Numéro de chèque</em> pour recopier et incrémenter le numéro dans les cases en dessous', 'amapress' ) . '</p>';
+	echo '<p>' . __( '<strong>Astuces</strong> : Faites un clic droit dans les champs <em>Adhérent</em> ou <em>Banque</em> pour recopier la valeur dans les cases en dessous', 'amapress' ) . '</p>';
 
 	$all_related_adhesions_ids = AmapressAdhesion::getAllRelatedAdhesions();
 	$related_adhesions_ids     = ! empty( $all_related_adhesions_ids[ $post_id ] ) ? $all_related_adhesions_ids[ $post_id ] : [];
@@ -519,11 +519,9 @@ function amapress_paiements_editor( $post_id ) {
 			$related_adhesion = AmapressAdhesion::getBy( $related_adhesion_id );
 			if ( $related_adhesion ) {
 //				$amount -= $related_adhesion->getTotalAmount();
-				$reports              .= '<p>Report montant des règlements de "' .
-				                         Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ) . '" (' .
-				                         sprintf( '%.02f €', $related_adhesion->getTotalAmount() ) . ') = ' .
-				                         sprintf( '%.02f €', $amount ) .
-				                         '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
+				$reports              .= '<p>';
+				$reports              .= sprintf( 'Report montant des règlements de "%s" (%s) = %s', Amapress::makeLink( $related_adhesion->getAdminEditLink(), $related_adhesion->getTitle() ), sprintf( '%.02f €', $related_adhesion->getTotalAmount() ), sprintf( '%.02f €', $amount ) );
+				$reports              .= '<input class="paiement-report-val" name="paiement-report-val-' . $related_adhesion->ID . '" type="hidden" value="' . $amount . '"></p>';
 				$total_reports_amount += ( $amount - $related_adhesion->getTotalAmount() );
 			}
 		}
@@ -533,14 +531,14 @@ function amapress_paiements_editor( $post_id ) {
 	echo '<table class="adhesion_paiement_table" id="adhesion_paiement_table" style="table-layout: auto; width: 100%;">';
 	echo '<tr><th colspan="7">' . $reports . '</th></tr>';
 	echo "<tr>
-<th>Type</th>
-<th>Numéro de chèque</th>
-<th>Adhérent</th>
-<th>Banque</th>
-<th>Montant<br/><button id='amapress_paiement_reset'>Recalculer</button>
+<th>" . 'Type' . "</th>
+<th>" . 'Numéro de chèque' . "</th>
+<th>" . 'Adhérent' . "</th>
+<th>" . 'Banque' . "</th>
+<th>" . 'Montant' . "<br/><button id='amapress_paiement_reset'>" . 'Recalculer' . "</button>
 </th>
-<th>Date</th>
-<th>Statut</th>
+<th>" . 'Date' . "</th>
+<th>" . 'Statut' . "</th>
 <th></th>
 </tr>";
 
@@ -571,12 +569,12 @@ function amapress_paiements_editor( $post_id ) {
 		$status      = esc_attr( $paiement ? $paiement->getStatus() : 'not_received' );
 		$paiement_dt = $paiement ? Amapress::start_of_day( $paiement->getDate() ) : ( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
 
-		$status_options = '<option value="not_received" ' . selected( $status, 'not_received', false ) . '>Non reçu</option>
-<option value="received" ' . selected( $status, 'received', false ) . '>Reçu</option>
-<option value="bank" ' . selected( $status, 'bank', false ) . '>Encaissé</option>';
+		$status_options = '<option value="not_received" ' . selected( $status, 'not_received', false ) . '>' . 'Non reçu' . '</option>
+<option value="received" ' . selected( $status, 'received', false ) . '>' . 'Reçu' . '</option>
+<option value="bank" ' . selected( $status, 'bank', false ) . '>' . 'Encaissé' . '</option>';
 
 		$date_options = '';
-		$date_option  = ' <span class="paiement-date">Date</span> ';
+		$date_option  = ' <span class="paiement-date">' . 'Date' . '</span> ';
 		foreach ( $all_quants as $quant ) {
 			if ( $quant == '_all' ) {
 				$quant = 'Tous';
@@ -608,13 +606,13 @@ function amapress_paiements_editor( $post_id ) {
 
 		echo "<tr>
 <td class='paiement-type'><select name='amapress_paiements_details[$id][type]' style='width: 50px'>
-<option value='chq' " . selected( $pmt_type, 'chq', false ) . ">Chèque</option>
-<option value='esp' " . selected( $pmt_type, 'esp', false ) . ">Espèces</option>
-<option value='stp' " . selected( $pmt_type, 'stp', false ) . ">Paiement en ligne (Stripe)</option>
-<option value='vir' " . selected( $pmt_type, 'vir', false ) . ">Virement</option>
-<option value='mon' " . selected( $pmt_type, 'mon', false ) . ">Monnaie locale</option>
-<option value='dlv' " . selected( $pmt_type, 'dlv', false ) . ">A la livraison</option>
-<option value='prl' " . selected( $pmt_type, 'prl', false ) . ">Prélèvement</option>
+<option value='chq' " . selected( $pmt_type, 'chq', false ) . ">" . 'Chèque' . "</option>
+<option value='esp' " . selected( $pmt_type, 'esp', false ) . ">" . 'Espèces' . "</option>
+<option value='stp' " . selected( $pmt_type, 'stp', false ) . ">" . 'Paiement en ligne (Stripe)' . "</option>
+<option value='vir' " . selected( $pmt_type, 'vir', false ) . ">" . 'Virement' . "</option>
+<option value='mon' " . selected( $pmt_type, 'mon', false ) . ">" . 'Monnaie locale' . "</option>
+<option value='dlv' " . selected( $pmt_type, 'dlv', false ) . ">" . 'A la livraison' . "</option>
+<option value='prl' " . selected( $pmt_type, 'prl', false ) . ">" . 'Prélèvement' . "</option>
 </select></td>
 <td class='paiement-numero'><input class='recopy-context-menu' style=\"width: 100%\"  name='amapress_paiements_details[$id][numero]' placeholder='' maxlength='1000' type='text' value='$numero' /></td>
 <td class='paiement-adherent'><input class='recopy-context-menu adherent_select' style=\"width: 100%\" name='amapress_paiements_details[$id][adherent]' placeholder='' maxlength='1000' type='text' value='$adherent' /></td>

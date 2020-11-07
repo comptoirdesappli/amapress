@@ -173,15 +173,15 @@ function amapress_cf7_tag_generator_amapress_field( $contact_form, $args = '' ) 
                         <input type="hidden" name="name" class="tg-name oneline"
                                id="<?php echo esc_attr( $args['content'] . '-name' ); ?>" value="prenom"/>
                         <select onchange="<?php echo esc_attr( 'javascript:jQuery(\'#' . $args['content'] . '-name\').val(jQuery(this).val()).trigger(\'change\');' ); ?>">
-                            <option value="prenom">Prénom</option>
-                            <option value="nom">Nom</option>
-                            <option value="email">Email</option>
-                            <option value="adresse">Adresse</option>
-                            <option value="telephone">Téléphone</option>
-                            <option value="lieux">Lieux de distribution</option>
-                            <option value="contrats">Contrats</option>
-                            <option value="intermittent">Intermittent</option>
-                            <option value="message">Message</option>
+                            <option value="prenom"><?php _e( 'Prénom', 'amapress' ) ?></option>
+                            <option value="nom"><?php _e( 'Nom', 'amapress' ) ?></option>
+                            <option value="email"><?php _e( 'Email', 'amapress' ) ?></option>
+                            <option value="adresse"><?php _e( 'Adresse', 'amapress' ) ?></option>
+                            <option value="telephone"><?php _e( 'Téléphone', 'amapress' ) ?></option>
+                            <option value="lieux"><?php _e( 'Lieux de distribution', 'amapress' ) ?></option>
+                            <option value="contrats"><?php _e( 'Contrats', 'amapress' ) ?></option>
+                            <option value="intermittent"><?php _e( 'Intermittent', 'amapress' ) ?></option>
+                            <option value="message"><?php _e( 'Message', 'amapress' ) ?></option>
                         </select>
                     </td>
                 </tr>

@@ -433,7 +433,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					} else {
 						$ret = [];
 						foreach ( AmapressContrats::get_active_contrat_instances() as $c ) {
-							$ret[]        = '**Pour le contrat <' . $c->getTitle() . '>**';
+							$ret[]        = sprintf( '**Pour le contrat <%s>**', $c->getTitle() );
 							$contrat_ret  = $c->getSampleQuantiteCSV();
 							$filtered_ret = [];
 							foreach ( $contrat_ret as $r ) {
@@ -672,7 +672,7 @@ jQuery(function($) {
 				'name'          => __( 'Co-Adhérent 1', 'amapress' ),
 				'type'          => 'select-users',
 				'required'      => false,
-				'desc'          => 'Sélectionner un Co-Adhérent 1 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'desc'          => sprintf( 'Sélectionner un Co-Adhérent 1 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', admin_url( 'user-new.php' ) ),
 				'group'         => '4/ Coadhérents',
 				'readonly'      => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete'  => true,
@@ -702,7 +702,7 @@ jQuery(function($) {
 				'name'           => __( 'Co-Adhérent 2', 'amapress' ),
 				'type'           => 'select-users',
 				'required'       => false,
-				'desc'           => 'Sélectionner un Co-Adhérent 2 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'desc'           => sprintf( 'Sélectionner un Co-Adhérent 2 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', admin_url( 'user-new.php' ) ),
 				'group'          => '4/ Coadhérents',
 				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete'   => true,
@@ -733,7 +733,7 @@ jQuery(function($) {
 				'name'           => __( 'Co-Adhérent 3', 'amapress' ),
 				'type'           => 'select-users',
 				'required'       => false,
-				'desc'           => 'Sélectionner un Co-Adhérent 3 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'desc'           => sprintf( 'Sélectionner un Co-Adhérent 3 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', admin_url( 'user-new.php' ) ),
 				'group'          => '4/ Coadhérents',
 				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete'   => true,
@@ -1020,7 +1020,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 		}
 	}
 	if ( ! $had_contrat ) {
-		$ret .= '<p class="adhesion-date-error">La date de début (' . esc_html( date_i18n( 'd/m/Y', $date_debut ) ) . ') est en dehors des dates du contrat associé</p>';
+		$ret .= '<p class="adhesion-date-error">' . sprintf( 'La date de début (%s) est en dehors des dates du contrat associé', esc_html( date_i18n( 'd/m/Y', $date_debut ) ) ) . '</p>';
 	}
 
 //	$ret .= '</fieldset>';
@@ -1366,8 +1366,8 @@ function amapress_get_contrat_quantite_xlsx(
 	$group_by       = 'date';
 	$show_adherents = false;
 	$group_by_group = false;
-	$by_date        = 'par-date';
-	$by_date_title  = 'par date';
+	$by_date        = __( 'par-date', 'amapress' );
+	$by_date_title  = __( 'par date', 'amapress' );
 	if ( 'first' != $date ) {
 		$by_date       = date_i18n( 'Y-m-d', $date );
 		$by_date_title = date_i18n( 'd-m-Y', $date );
@@ -1378,36 +1378,36 @@ function amapress_get_contrat_quantite_xlsx(
 			break;
 		case 'adherents_group_date':
 			$show_adherents  = true;
-			$type_title_file = 'avec-adherents-' . $by_date . '-groupe';
-			$type_title      = 'Avec adherents ' . $by_date_title . '-groupe';
+			$type_title_file = sprintf( 'avec-adherents-%s-groupe', $by_date );
+			$type_title      = sprintf( 'Avec adherents %s-groupe', $by_date_title );
 			$group_by_group  = true;
 			break;
 		case 'adherents_date':
 			$show_adherents  = true;
-			$type_title_file = 'avec-adherents-' . $by_date;
-			$type_title      = 'Avec adherents ' . $by_date_title;
+			$type_title_file = sprintf( 'avec-adherents-%s', $by_date );
+			$type_title      = sprintf( 'Avec adherents %s', $by_date_title );
 			break;
 		case 'adherents_month':
 			$group_by        = 'month';
 			$show_adherents  = true;
-			$type_title_file = 'avec-adherents-par-mois';
-			$type_title      = 'Avec adhérents par mois';
+			$type_title_file = __( 'avec-adherents-par-mois', 'amapress' );
+			$type_title      = __( 'Avec adhérents par mois', 'amapress' );
 			break;
 		case 'adherents_quarter':
 			$group_by        = 'quarter';
 			$show_adherents  = true;
-			$type_title_file = 'avec-adherents-par-trimestre';
-			$type_title      = 'Avec adhérents par trimestre';
+			$type_title_file = __( 'avec-adherents-par-trimestre', 'amapress' );
+			$type_title      = __( 'Avec adhérents par trimestre', 'amapress' );
 			break;
 		case 'month':
 			$group_by        = 'month';
-			$type_title_file = 'par-mois';
-			$type_title      = 'Par mois';
+			$type_title_file = __( 'par-mois', 'amapress' );
+			$type_title      = __( 'Par mois', 'amapress' );
 			break;
 		case 'quarter':
 			$group_by        = 'quarter';
-			$type_title_file = 'par-trimestre';
-			$type_title      = 'Par trimestre';
+			$type_title_file = __( 'par-trimestre', 'amapress' );
+			$type_title      = __( 'Par trimestre', 'amapress' );
 			break;
 		case 'group_date':
 			$type_title_file = $by_date;
@@ -1953,10 +1953,10 @@ function amapress_get_contrat_quantite_datatable(
 	$print_title = '';
 	if ( $show_all_dates ) {
 		if ( $date_is_first ) {
-			$next_distrib_text .= '<h4>Informations pour le contrat ' . $contrat_instance->getTitle() . '</h4>';
+			$next_distrib_text .= '<h4>' . 'Informations pour le contrat ' . $contrat_instance->getTitle() . '</h4>';
 			$print_title       = 'Récapitulatif pour le contrat ' . $contrat_instance->getTitle();
 		} else {
-			$next_distrib_text .= '<h4>Informations pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+			$next_distrib_text .= '<h4>' . 'Informations pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
 			$print_title       = 'Récapitulatif pour les prochaines distributions à partir du ' . date_i18n( 'd/m/Y', $date ) . ' pour le contrat ' . $contrat_instance->getTitle();
 		}
 		if ( ! $date_is_current && ! $for_placeholder ) {
@@ -1966,13 +1966,13 @@ function amapress_get_contrat_quantite_datatable(
 		}
 	} else {
 		if ( $dist ) {
-			$next_distrib_text .= '<h4>Informations pour la prochaine distribution du ' . date_i18n( 'd/m/Y', $dist->getDate() ) .
+			$next_distrib_text .= '<h4>' . 'Informations pour la prochaine distribution du ' . date_i18n( 'd/m/Y', $dist->getDate() ) .
 			                      ' (' . Amapress::makeLink( $dist->getPermalink(), 'Voir la distribution', true, true )
 			                      . ')</h4>';
-			$print_title       = 'Récapitulatif pour la prochaine distribution (' . date_i18n( 'd/m/Y', $dist->getDate() ) . ') pour le contrat ' . $contrat_instance->getTitle();
+			$print_title       = sprintf( 'Récapitulatif pour la prochaine distribution (%s) pour le contrat %s', date_i18n( 'd/m/Y', $dist->getDate() ), $contrat_instance->getTitle() );
 		} else {
-			$next_distrib_text .= '<h4>Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
-			$print_title       = 'Récapitulatif pour la prochaine distribution pour le contrat ' . $contrat_instance->getTitle();
+			$next_distrib_text .= '<h4>' . 'Informations pour la prochaine distribution à partir du ' . date_i18n( 'd/m/Y', $date ) . '</h4>';
+			$print_title       = sprintf( 'Récapitulatif pour la prochaine distribution pour le contrat %s', $contrat_instance->getTitle() );
 		}
 		if ( ! $for_placeholder ) {
 			if ( ! $date_is_current ) {
@@ -1991,13 +1991,13 @@ function amapress_get_contrat_quantite_datatable(
 			                      $root_url . ( $show_all_dates ? '&all' : '' ) . '&date=' . date( 'Y-m-d', $dist->getDate() ),
 			                      (
 			                      Amapress::start_of_week( amapress_time() ) < $dist->getDate() && $dist->getDate() < Amapress::end_of_week( amapress_time() ) ?
-				                      '<strong>Cette semaine</strong> - ' :
+				                      '<strong>' . 'Cette semaine' . '</strong> - ' :
 				                      (
 				                      Amapress::start_of_week( Amapress::add_a_week( amapress_time() ) ) < $dist->getDate() && $dist->getDate() < Amapress::end_of_week( Amapress::add_a_week( amapress_time() ) ) ?
-					                      '<strong>Semaine prochaine</strong> - ' :
+					                      '<strong>' . 'Semaine prochaine' . '</strong> - ' :
 					                      ''
 				                      ) ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ), false )
-			                      : '<strong>non planifiée</strong>' );
+			                      : '<strong>' . __( 'non planifiée', 'amapress' ) . '</strong>' );
 
 		$factor = $dist ? $contrat_instance->getDateFactorDisplay( $dist->getDate() ) : null;
 		if ( ! empty( $factor ) ) {
@@ -2005,7 +2005,7 @@ function amapress_get_contrat_quantite_datatable(
 		}
 		$next_distrib_text .= '</p>';
 		if ( $next_next_dist ) {
-			$next_distrib_text .= '<p>Distribution suivante : ' .
+			$next_distrib_text .= '<p>' . 'Distribution suivante : ' .
 			                      Amapress::makeLink( $root_url . ( $show_all_dates ? '&all' : '' ) . '&date=' . date( 'Y-m-d', $next_next_dist->getDate() ),
 				                      $next_next_dist->getTitle() ) . '</p>';
 		}
@@ -2015,7 +2015,7 @@ function amapress_get_contrat_quantite_datatable(
 		}
 
 		if ( ! empty( $next_next_distribs ) ) {
-			$next_distrib_text .= '<p>Distributions suivantes : ' . implode( ', ', array_map(
+			$next_distrib_text .= '<p>' . 'Distributions suivantes : ' . implode( ', ', array_map(
 					function ( $d ) use ( $contrat_instance_id, $root_url, $show_all_dates ) {
 						/** @var AmapressDistribution $d */
 						return Amapress::makeLink( $root_url . ( $show_all_dates ? '&all' : '' ) . '&date=' . date( 'Y-m-d', $d->getDate() ),
@@ -2031,7 +2031,7 @@ function amapress_get_contrat_quantite_datatable(
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
 		if ( ! empty( $contrat_instance->getModel() ) && ! empty( $contrat_instance->getModel()->getProducteur() ) && ! empty( $contrat_instance->getModel()->getProducteur()->getUser() ) ) {
-			$contact_producteur = '<div><h5>Contact producteur:</h5>' .
+			$contact_producteur = '<div><h5>' . 'Contact producteur:' . '</h5>' .
 			                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
 				                      array(
 					                      'show_avatar' => 'false',
@@ -2094,19 +2094,19 @@ function amapress_get_contrat_quantite_datatable(
 		if ( ! $show_all_dates && ( 'text' == $options['mode'] || 'both' == $options['mode'] ) ) {
 			if ( count( $lieux ) > 1 ) {
 				foreach ( $lieux as $lieu ) {
-					$output        .= '<p>A ' . esc_html( $lieu->getShortName() ) . ' : ';
+					$output        .= '<p>' . __( 'À ', 'amapress' ) . esc_html( $lieu->getShortName() ) . ' : ';
 					$output_quants = [];
 					foreach ( $data as $row ) {
 						if ( ! empty( $row["lieu_{$lieu->ID}_txt"] ) ) {
 							$output_quants[] = esc_html( $row["lieu_{$lieu->ID}_txt"] );
 						}
 					}
-					$output .= '(' . $row["lieu_{$lieu->ID}_adhs"] . ' adhérent(s)) ; ';
+					$output .= sprintf( '(%d adhérent(s)) ; ', $row["lieu_{$lieu->ID}_adhs"] );
 					$output .= implode( ', ', $output_quants );
 					$output .= '</p>';
 				}
 			}
-			$output        .= '<p>En tout : ';
+			$output        .= '<p' . 'En tout : ';
 			$output_quants = [];
 			$last_row      = null;
 			foreach ( empty( $sum_data ) ? $data : $sum_data as $row ) {
@@ -2115,28 +2115,26 @@ function amapress_get_contrat_quantite_datatable(
 				}
 				$last_row = $row;
 			}
-			$output .= '(' . (
-				$show_adherents ?
-					count( array_unique( array_map( function ( $d ) {
-						return $d['adherent'];
-					}, $data ) ) )
-					: $last_row["all_adhs"]
-				) . ' adhérent(s)) ; ';
+			$output .= sprintf( '(%s adhérent(s)) ; ', $show_adherents ?
+				count( array_unique( array_map( function ( $d ) {
+					return $d['adherent'];
+				}, $data ) ) )
+				: $last_row["all_adhs"] );
 			$output .= implode( ', ', $output_quants );
 			$output .= '</p>';
 
 		}
 		if ( $show_price ) {
-			$output .= '<p><strong>Total: ' . Amapress::formatPrice( $overall_total_price, true ) . '</strong></p>';
+			$output .= '<p><strong>' . 'Total: ' . Amapress::formatPrice( $overall_total_price, true ) . '</strong></p>';
 		}
 	} else {
-		$output .= '<p style="text-align: center"><strong>Pas de distribution plannifiée à partir de cette date !</strong></p>';
+		$output .= '<p style="text-align: center"><strong>' . 'Pas de distribution plannifiée à partir de cette date !' . '</strong></p>';
 	}
 
 	return '<div class="contrat-instance-recap contrat-instance-' . $contrat_instance_id . '">' .
 	       $next_distrib_text .
 	       $contact_producteur .
-	       '<p><em>Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . ( ! $show_all_dates && $date != $real_date ? ' (panier déplacé du ' . date_i18n( 'd/m/Y', $real_date ) . ')' : '' ) . '</em></p>' .
+	       '<p><em>' . 'Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . ( ! $show_all_dates && $date != $real_date ? __( ' (panier déplacé du ', 'amapress' ) . date_i18n( 'd/m/Y', $real_date ) . ')' : '' ) . '</em></p>' .
 	       $output . '</div>';
 }
 
@@ -2493,7 +2491,7 @@ function amapress_get_producteurs_finances_datatable(
 	            '</p><hr/>';
 
 	return '<div class="contrat-instances-finances-recap">' .
-	       '<p><em>Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . '</em></p>' .
+	       '<p><em>' . 'Information à jour en date du ' . date_i18n( 'd/m/Y', $date ) . '</em></p>' .
 	       $filters .
 	       $output . '</div>';
 }
@@ -2527,8 +2525,8 @@ function amapress_get_paiement_table_by_dates(
 	$lien_export_pdf = '';
 	if ( ! $for_pdf ) {
 		$lien_export_pdf = '<p>';
-		$lien_export_pdf .= '<a class="button button-primary" href="' . esc_attr( admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) ) . '">Exporter en PDF</a>';
-		$lien_export_pdf .= '<a class="button button-primary" href="' . esc_attr( admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) ) . '">Exporter en Excel</a>';
+		$lien_export_pdf .= '<a class="button button-primary" href="' . esc_attr( admin_url( 'admin-post.php?action=paiement_table_pdf&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) ) . '">' . 'Exporter en PDF' . '</a>';
+		$lien_export_pdf .= '<a class="button button-primary" href="' . esc_attr( admin_url( 'admin-post.php?action=paiement_table_xlsx&lieu=' . $lieu_id . '&contrat=' . $contrat_instance_id ) ) . '">' . 'Exporter en Excel' . '</a>';
 		$lien_export_pdf .= '</p>';
 	}
 
@@ -2759,12 +2757,12 @@ function amapress_get_paiement_table_by_dates(
 
 	$next_distrib_text = '';
 	if ( $options['show_next_distrib'] ) {
-		$next_distrib_text = '<p>Prochaine distribution: ' . ( $dist ? ( $dist && Amapress::end_of_week( amapress_time() ) > $dist->getDate() ? '<strong>Cette semaine</strong> - ' : '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : '<strong>non planifiée</strong>' ) . '</p>';
+		$next_distrib_text = '<p>' . 'Prochaine distribution: ' . ( $dist ? ( $dist && Amapress::end_of_week( amapress_time() ) > $dist->getDate() ? '<strong>' . 'Cette semaine' . '</strong> - ' : '' ) . date_i18n( 'd/m/Y H:i', $dist->getStartDateAndHour() ) : '<strong>' . __( 'non planifiée', 'amapress' ) . '</strong>' ) . '</p>';
 	}
 	$contact_producteur = '';
 	if ( $options['show_contact_producteur'] ) {
 		if ( ! empty( $contrat_instance->getModel() ) && ! empty( $contrat_instance->getModel()->getProducteur() ) && ! empty( $contrat_instance->getModel()->getProducteur()->getUser() ) ) {
-			$contact_producteur = '<div><h5>Contact producteur:</h5>' .
+			$contact_producteur = '<div><h5>' . 'Contact producteur:' . '</h5>' .
 			                      $contrat_instance->getModel()->getProducteur()->getUser()->getDisplay(
 				                      array(
 					                      'show_avatar' => 'false',
@@ -2900,7 +2898,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			usort( $adhs, function ( $a, $b ) {
 				return strcmp( $a->getTitle(), $b->getTitle() );
 			} );
-			echo '<p><strong>Ses contrats/commandes :</strong></p>';
+			echo '<p><strong>' . 'Ses contrats/commandes :' . '</strong></p>';
 			echo '<ul style="list-style-type: circle">';
 			foreach ( $adhs as $adh ) {
 				$renew_url = '';
@@ -2912,25 +2910,25 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 				}
 				echo '<li style="margin-left: 35px">';
 				$lnk = current_user_can( 'edit_post', $adh->ID ) ?
-					'<a target="_blank" href="' . esc_attr( $adh->getAdminEditLink() ) . '" >Voir</a>&nbsp;:&nbsp;' : '';
+					'<a target="_blank" href="' . esc_attr( $adh->getAdminEditLink() ) . '" >' . 'Voir' . '</a>&nbsp;:&nbsp;' : '';
 				echo $lnk . esc_html( $adh->getTitle() );
 				if ( ! empty( $renew_url ) ) {
-					echo '<br/><a target="_blank" href="' . $renew_url . '" class="button button-secondary">renouveler</a>';
+					echo '<br/><a target="_blank" href="' . $renew_url . '" class="button button-secondary">' . __( 'renouveler', 'amapress' ) . '</a>';
 				}
 				echo '</li>';
 			}
 			if ( empty( $adhs ) ) {
-				echo '<li>Aucun contrat</li>';
+				echo '<li>' . 'Aucun contrat' . '</li>';
 			}
 			echo '</ul>';
 
 			$add_url = add_query_arg( 'assistant', true );
-			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Inscription avec l\'assistant</a></p>';
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">' . 'Inscription avec l\'assistant' . '</a></p>';
 			echo '<br />';
 
 			$add_url = admin_url( 'post-new.php?post_type=amps_adhesion&amapress_adhesion_adherent=' . $user->ID );
-			echo '<h4>Configuration avancée</h4>';
-			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">Inscription classique</a></p>';
+			echo '<h4>' . 'Configuration avancée' . '</h4>';
+			echo '<p><a target="_blank" href="' . $add_url . '" class="button button-secondary">' . 'Inscription classique' . '</a></p>';
 		}
 	} else {
 		echo '<h4>1/ Choisir un utilisateur ou le créer</h4>';
@@ -2946,42 +2944,42 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 					/** @var AmapressAdhesion $a */
 					return $a->getAdherentId() == $user->ID;
 				} );
-			$options[ $user->ID ] = $user->display_name . '[' . $user->user_email . '] (' . $user_adhs . ' contrat(s))';
+			$options[ $user->ID ] = sprintf( '%s[%s] (%s contrat(s))', $user->display_name, $user->user_email, $user_adhs );
 		}
 
 		echo '<form method="post" id="existing_user">';
 		echo '<input type="hidden" name="action" value="existing_user" />';
 		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
-		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete" data-placeholder="Sélectionner un utilisateur">';
+		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete" data-placeholder="' . esc_attr__( 'Sélectionner un utilisateur', 'amapress' ) . '">';
 		tf_parse_select_options( $options, isset( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : null );
 		echo '</select><br />';
-		echo '<input type="submit" class="button button-primary" value="Choisir" />';
+		echo '<input type="submit" class="button button-primary" value="' . esc_attr__( 'Choisir', 'amapress' ) . '" />';
 		echo '</form>';
 
-		echo '<p><strong>OU</strong></p>';
+		echo '<p><strong>' . 'OU' . '</strong></p>';
 
 		echo '<form method="post" id="new_user">';
 		echo '<input type="hidden" name="action" value="new_user" />';
 		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
 		echo '<table style="min-width: 50%">';
 		echo '<tr>';
-		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email: </label></th>
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">' . 'Email: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="email" name="email" class="required email emailDoesNotExists" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="last_name">Nom: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="last_name">' . 'Nom: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="first_name">Prénom: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="first_name">' . 'Prénom: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="tel">Téléphone: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="tel">' . 'Téléphone: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="tel" name="tel" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="address">' . 'Adresse: ' . '</label></th>
 <td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
 		echo '</tr>';
 		echo '</table>';
-		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Créer l\'amapien" />';
+		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="' . esc_attr__( 'Créer l\'amapien', 'amapress' ) . '" />';
 		echo '</form>';
 	}
 	echo '<hr />';
@@ -2989,7 +2987,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 			'user_id',
 			'step',
 			'assistant'
-		] ) . '" class="button button-primary">Choisir un autre amapien</a></p>';
+		] ) . '" class="button button-primary">' . 'Choisir un autre amapien' . '</a></p>';
 	echo '<script type="text/javascript">jQuery(function($) {
     $("#user_id").select2({
         allowClear: true,
@@ -3033,7 +3031,7 @@ add_action( 'tf_custom_admin_amapress_action_new_user_distrib', function () {
 } );
 function amapress_create_user_for_distribution( $post_id, TitanFrameworkOption $option ) {
 	if ( isset( $_REQUEST['user_id'] ) ) {
-		echo '<h4>Utilisateur créé:</h4>';
+		echo '<h4>' . 'Utilisateur créé:' . '</h4>';
 
 		$user = AmapressUser::getBy( $_REQUEST['user_id'] );
 
@@ -3041,29 +3039,29 @@ function amapress_create_user_for_distribution( $post_id, TitanFrameworkOption $
 		echo $user->getDisplay();
 		echo '<hr />';
 	} else {
-		echo '<h4>Entrer les informations sur la personne hors AMAP</h4>';
+		echo '<h4>' . 'Entrer les informations sur la personne hors AMAP' . '</h4>';
 		echo '<form method="post" id="new_user_distrib">';
 		echo '<input type="hidden" name="action" value="new_user_distrib" />';
 		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
 		echo '<table style="min-width: 50%">';
 		echo '<tr>';
-		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email: </label></th>
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">' . 'Email: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="email" name="email" class="email emailDoesNotExists" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="last_name">Nom: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="last_name">' . 'Nom: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="first_name">Prénom: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="first_name">' . 'Prénom: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="tel">Téléphone: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="tel">' . 'Téléphone: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="tel" name="tel" class="" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="address">' . 'Adresse: ' . '</label></th>
 <td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
 		echo '</tr>';
 		echo '</table>';
-		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="Créer la personne" />';
+		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="' . esc_attr__( 'Créer la personne', 'amapress' ) . '" />';
 		echo '</form>';
 		echo '<script type="text/javascript">jQuery(function($) {
     $("form#new_user_distrib").validate({
@@ -3080,7 +3078,7 @@ function amapress_create_user_for_distribution( $post_id, TitanFrameworkOption $
 </style>';
 	}
 	echo '<hr />';
-	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Ajouter une autre personne</a></p>';
+	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">' . 'Ajouter une autre personne' . '</a></p>';
 }
 
 add_action( 'tf_custom_admin_amapress_action_new_coadherent', function () {
@@ -3135,7 +3133,7 @@ function amapress_create_coadhesion_assistant( $post_id, TitanFrameworkOption $o
 			$options[ $user->ID ] = $user->display_name . '[' . $user->user_email . '] (' . $user_adhs . ' contrat(s))';
 		}
 
-		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete required" data-placeholder="Sélectionner un utilisateur">';
+		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete required" data-placeholder="' . esc_attr__( 'Sélectionner un utilisateur', 'amapress' ) . '">';
 		tf_parse_select_options( $options, isset( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : null );
 		echo '</select><br />';
 
@@ -3144,34 +3142,34 @@ function amapress_create_coadhesion_assistant( $post_id, TitanFrameworkOption $o
 		wp_nonce_field( 'amapress_gestion_amapiens_page', TF . '_nonce' );
 		echo '<table style="min-width: 50%">';
 		echo '<tr>';
-		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">Email: </label></th>
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">' . 'Email: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="email" name="email" class="required email" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="last_name">Nom: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="last_name">' . 'Nom: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="first_name">Prénom: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="first_name">' . 'Prénom: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="tel">Téléphone: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="tel">' . 'Téléphone: ' . '</label></th>
 <td><input style="width: 100%" type="text" id="tel" name="tel" class="required" />';
 		echo '</tr><tr>';
-		echo '<th style="text-align: left; width: auto"><label for="address">Adresse: </label></th>
+		echo '<th style="text-align: left; width: auto"><label for="address">' . 'Adresse: ' . '</label></th>
 <td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
 		echo '</tr>';
 		echo '<tr>
-	<th style="text-align: left; width: auto">Type: </th>
+	<th style="text-align: left; width: auto">' . 'Type: ' . '</th>
 	<td>
-		<label for="type-co"><input id="type-co" name="type" value="co" type="radio" checked="checked" /> Co-adhérent</label>
-		<label for="type-cof"><input id="type-cof" name="type" value="cof" type="radio" /> Membre du foyer</label>
+		<label for="type-co"><input id="type-co" name="type" value="co" type="radio" checked="checked" /> ' . 'Co-adhérent' . '</label>
+		<label for="type-cof"><input id="type-cof" name="type" value="cof" type="radio" /> ' . 'Membre du foyer' . '</label>
 	</td>
 </tr>';
 		echo '</table>';
-		echo '<input style="min-width: 50%; margin-top: 0.5em" type="submit" class="button button-primary" value="Ajouter le coadhérent" />';
+		echo '<input style="min-width: 50%; margin-top: 0.5em" type="submit" class="button button-primary" value="' . esc_attr__( 'Ajouter le coadhérent', 'amapress' ) . '" />';
 		echo '</form>';
 	}
 	echo '<hr />';
-	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">Associer un autre amapien</a></p>';
+	echo '<p><a href="' . remove_query_arg( 'user_id' ) . '" class="button button-primary">' . 'Associer un autre amapien' . '</a></p>';
 	echo '<script type="text/javascript">jQuery(function($) {
     $("#user_id").select2({
         allowClear: true,

@@ -218,7 +218,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 
 		$days_input          = $value['days'];
 		$hours_minutes_input = $value['hours'] . ':' . $value['minutes'];
-		$pos_input           = $value['pos'] == 'before' ? 'avant' : 'après';
+		$pos_input           = 'before' == $value['pos'] ? __( 'avant', 'amapress' ) : __( 'après', 'amapress' );
 		$days_names          = [
 			'Monday'    => 'Lundi',
 			'Tuesday'   => 'Mardi',
@@ -232,13 +232,13 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 
 		$cnt = '';
 		if ( 'days' == $scheduler_type ) {
-			$cnt = 'Programmer ' . $days_input . ' jours ' . $pos_input . ' à ' . $hours_minutes_input;
+			$cnt = sprintf( 'Programmer %s jours %s à %s', $days_input, $pos_input, $hours_minutes_input );
 		} else if ( 'hours' == $scheduler_type ) {
-			$cnt = 'Programmer ' . $hours_minutes_input . ' ' . $pos_input;
+			$cnt = sprintf( 'Programmer %s %s', $hours_minutes_input, $pos_input );
 		} else if ( 'the_day' == $scheduler_type ) {
-			$cnt = 'Programmer le jour même à ' . $hours_minutes_input;
+			$cnt = sprintf( 'Programmer le jour même à %s', $hours_minutes_input );
 		} else if ( 'some_day' == $scheduler_type ) {
-			$cnt = '<Programmer le ' . $weekday_input . ' d\'' . $pos_input . ' à ' . $hours_minutes_input;
+			$cnt = sprintf( 'Programmer le %s d\'%s à %s', $weekday_input, $pos_input, $hours_minutes_input );
 		}
 
 		return $cnt;
@@ -256,16 +256,16 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 		                       tf_parse_select_options(
 			                       ( ! $this->settings['show_after'] ?
 				                       [
-					                       'before' => 'avant',
+					                       'before' => __( 'avant', 'amapress' ),
 				                       ]
 				                       : ( ! $this->settings['show_before'] ?
 					                       [
-						                       'after' => 'après',
+						                       'after' => __( 'après', 'amapress' ),
 					                       ]
 					                       :
 					                       [
-						                       'before' => 'avant',
-						                       'after'  => 'après',
+						                       'before' => __( 'avant', 'amapress' ),
+						                       'after'  => __( 'après', 'amapress' ),
 					                       ] ) ), [ $value['pos'] ], false ) .
 		                       '</select>';
 		$weekday_input       = '<select id="' . $this->getID() . '-pos" style="width: 5em;min-width: 5em" name="' . $this->getID() . '-pos" class="required" ' . disabled( ! $value['enabled'], true, false ) . '>' .
@@ -280,15 +280,16 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 		                       ], [ $value['weekday'] ], false ) .
 		                       '</select>';
 
-		$cnt = '<span><input id="' . $this->getID() . '-enabled" name="' . $this->getID() . '-enabled" type="checkbox" ' . checked( $value['enabled'], true, false ) . ' /></span>';
+		$cnt          = '<span><input id="' . $this->getID() . '-enabled" name="' . $this->getID() . '-enabled" type="checkbox" ' . checked( $value['enabled'], true, false ) . ' /></span>';
+		$span_enabler = sprintf( '<span id="%s-enabler">', $this->getID() );
 		if ( 'days' == $this->settings['scheduler_type'] ) {
-			$cnt .= '<span id="' . $this->getID() . '-enabler">Programmer ' . $days_input . ' jours ' . $pos_input . ' à ' . $hours_minutes_input;
-		} else if ( 'hours' == $this->settings['scheduler_type'] ) {
-			$cnt .= '<span id="' . $this->getID() . '-enabler">Programmer ' . $hours_minutes_input . ' ' . $pos_input . '</span>';
-		} else if ( 'the_day' == $this->settings['scheduler_type'] ) {
-			$cnt .= '<span id="' . $this->getID() . '-enabler">Programmer le jour même à ' . $hours_minutes_input . '</span>';
-		} else if ( 'some_day' == $this->settings['scheduler_type'] ) {
-			$cnt .= '<span id="' . $this->getID() . '-enabler">Programmer le ' . $weekday_input . ' d\'' . $pos_input . ' à ' . $hours_minutes_input . '</span>';
+			$cnt .= $span_enabler . sprintf( 'Programmer %s jours %s à %s', $days_input, $pos_input, $hours_minutes_input ) . '</span>';
+		} elseif ( 'hours' == $this->settings['scheduler_type'] ) {
+			$cnt .= $span_enabler . sprintf( 'Programmer %s %s', $hours_minutes_input, $pos_input ) . '</span>';
+		} elseif ( 'the_day' == $this->settings['scheduler_type'] ) {
+			$cnt .= $span_enabler . sprintf( 'Programmer le jour même à %s', $hours_minutes_input ) . '</span>';
+		} elseif ( 'some_day' == $this->settings['scheduler_type'] ) {
+			$cnt .= $span_enabler . sprintf( 'Programmer le %s d\'%s à %s', $weekday_input, $pos_input, $hours_minutes_input ) . '</span>';
 		}
 
 		$cnt .= '<script type="text/javascript">
@@ -334,29 +335,29 @@ jQuery(function($) {
 		$links = '';
 		if ( ! empty( $hooks ) ) {
 			if ( $this->settings['show_resend_links'] ) {
-				$links .= '<p>Liens de renvoi: ' . implode( ', ', array_map(
+				$links .= '<p>' . 'Liens de renvoi: ' . implode( ', ', array_map(
 						function ( $hook ) use ( $value ) {
 							$hook['action'] = 'tf_event_scheduler_resend';
 							$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );
 							$title          = esc_html( $hook['title'] );
 							$sent_on        = ! empty( $value['enabled'] ) ? self::adjustTimezone( self::getEventDateTime( $hook['time'], $value ), false ) : 0;
 							if ( $sent_on ) {
-								$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y H:i', $sent_on );
+								$sent_on = __( 'envoyé le ', 'amapress' ) . date_i18n( 'd/m/Y H:i', $sent_on );
 							} else {
-								$sent_on = 'non programmé';
+								$sent_on = __( 'non programmé', 'amapress' );
 							}
 
 							return "<a href='$href' target='_blank'>$title ($sent_on)</a>";
 						}, $hooks ) ) . '</p>';
 			} elseif ( ! empty( $value['enabled'] ) ) {
-				$links .= '<p>Envois: ' . implode( ', ', array_map(
+				$links .= '<p>' . 'Envois: ' . implode( ', ', array_map(
 						function ( $hook ) use ( $value ) {
 							$title   = esc_html( $hook['title'] );
 							$sent_on = ! empty( $value['enabled'] ) ? self::adjustTimezone( self::getEventDateTime( $hook['time'], $value ), false ) : 0;
 							if ( $sent_on ) {
-								$sent_on = 'envoyé le ' . date_i18n( 'd/m/Y H:i', $sent_on );
+								$sent_on = __( 'envoyé le ', 'amapress' ) . date_i18n( 'd/m/Y H:i', $sent_on );
 							} else {
-								$sent_on = 'non programmé';
+								$sent_on = __( 'non programmé', 'amapress' );
 							}
 
 							return esc_html( "$title ($sent_on)" );
@@ -365,7 +366,7 @@ jQuery(function($) {
 		}
 
 		if ( $this->settings['show_test_links'] && ! empty( $hooks ) ) {
-			$links .= '<p>Liens de test: ' . implode( ', ', array_map(
+			$links .= '<p>' . 'Liens de test: ' . implode( ', ', array_map(
 					function ( $hook ) use ( $value ) {
 						$hook['action'] = 'tf_event_scheduler_test';
 						$href           = esc_attr( add_query_arg( $hook, admin_url( 'admin-post.php' ) ) );

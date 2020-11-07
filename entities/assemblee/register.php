@@ -162,7 +162,7 @@ function amapress_register_entities_assemblee( $entities ) {
 				'after_option' => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$visite = new AmapressAssemblee_generale( $option->getPostID() );
-					echo '<p>Les inscriptions se gèrent <a href="' . esc_attr( $visite->getPermalink() ) . '" target="_blank">ici</a> pour cette AG</p>';
+					echo '<p>' . sprintf( 'Les inscriptions se gèrent <a href="%s" target="_blank">ici</a> pour cette AG', esc_attr( $visite->getPermalink() ) ) . '</p>';
 				},
 			),
 		),

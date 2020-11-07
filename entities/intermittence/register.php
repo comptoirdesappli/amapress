@@ -139,7 +139,7 @@ function amapress_register_entities_intermittence( $entities ) {
 						if ( empty( $user ) ) {
 							continue;
 						}
-						$askers[] = Amapress::makeLink( $user->getEditLink(), $user->getDisplayName() . '(' . $user->getUser()->user_email . ')', true, true ) . ' attente depuis ' . date_i18n( 'd/m/Y', $user_info['date'] );
+						$askers[] = Amapress::makeLink( $user->getEditLink(), $user->getDisplayName() . '(' . $user->getUser()->user_email . ')', true, true ) . __( ' attente depuis ', 'amapress' ) . date_i18n( 'd/m/Y', $user_info['date'] );
 					}
 
 					return implode( ', ', $askers );

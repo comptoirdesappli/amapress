@@ -470,7 +470,7 @@ class AmapressContrat_instance extends TitanEntity {
 			if ( $has_distinct_value ) {
 				$contrat_ret[] = strval( $q->getQuantite() );
 				if ( $this->isQuantiteVariable() ) {
-					$contrat_ret[] = 'Multiple de ' . $q->getQuantite();
+					$contrat_ret[] = sprintf( 'Multiple de %s', $q->getQuantite() );
 				}
 			}
 			if ( $this->isQuantiteVariable() ) {
@@ -481,8 +481,8 @@ class AmapressContrat_instance extends TitanEntity {
 			}
 		}
 		if ( $this->isQuantiteMultiple() && count( $quants ) > 1 ) {
-			$contrat_ret[] = 'Par ex: X ' . $quants[0]->getCode() . ', Y ' . $quants[1]->getCode();
-			$contrat_ret[] = 'Par ex: X x ' . $quants[0]->getCode() . ', Y x ' . $quants[1]->getCode();
+			$contrat_ret[] = 'Par ex: ' . 'X ' . $quants[0]->getCode() . ', Y ' . $quants[1]->getCode();
+			$contrat_ret[] = 'Par ex: ' . 'X x ' . $quants[0]->getCode() . ', Y x ' . $quants[1]->getCode();
 		}
 
 		return $contrat_ret;
@@ -908,7 +908,7 @@ class AmapressContrat_instance extends TitanEntity {
 
 		$site_email = Amapress::getOption( 'email_from_mail' );
 
-		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $mails ) ) . '&subject=Contrat ' . $this->getTitle();
+		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $mails ) ) . '&subject=' . 'Contrat ' . $this->getTitle();
 	}
 
 	public function getContratDocFileName( $date_first_distrib ) {
@@ -916,7 +916,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-				'contrat-papier-' . $this->getTitle() . '-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . $ext );
+				__( 'contrat-papier-', 'amapress' ) . $this->getTitle() . '-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . $ext );
 	}
 
 	public function getFormattedRattrapages( $dates = null ) {
@@ -933,15 +933,15 @@ class AmapressContrat_instance extends TitanEntity {
 			} else if ( abs( $the_factor - 1.5 ) < 0.001 ) {
 				$un5_rattrapage[] = date_i18n( 'd/m/Y', $d );
 			} else if ( abs( $the_factor - 1 ) > 0.001 ) {
-				$rattrapage[] = $the_factor . ' distribution le ' . date_i18n( 'd/m/Y', $d );
+				$rattrapage[] = sprintf( '%d distribution le %s', $the_factor, date_i18n( 'd/m/Y', $d ) );
 			}
 		}
 
 		if ( ! empty( $double_rattrapage ) ) {
-			$rattrapage[] = 'double distribution ' . _n( 'le', 'les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
+			$rattrapage[] = _n( 'double distribution le', 'double distribution les', count( $double_rattrapage ) ) . ' ' . implode( ', ', $double_rattrapage );
 		}
 		if ( ! empty( $un5_rattrapage ) ) {
-			$rattrapage[] = '1.5 distribution ' . _n( 'le', 'les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
+			$rattrapage[] = _n( '1.5 distribution le', '1.5 distribution les', count( $un5_rattrapage ) ) . ' ' . implode( ', ', $un5_rattrapage );
 		}
 
 		return $rattrapage;
@@ -955,7 +955,7 @@ class AmapressContrat_instance extends TitanEntity {
 
 		$grouped_dates_array = [];
 		foreach ( $grouped_dates as $k => $v ) {
-			$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+			$grouped_dates_array[] = $k . ' : ' . _n( 'le ', 'les ', count( $v ) ) . implode( ', ', array_map(
 					function ( $d ) {
 						return date_i18n( 'd', $d );
 					}, $v
@@ -2697,15 +2697,15 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		//compute inscriptions stats
-		echo '<p>Stockage des statistiques</p>';
+		echo '<p>' . 'Stockage des statistiques' . '</p>';
 		$this->getInscriptionsStats();
 
 		$archives_infos = [];
 		//extract inscriptions xlsx
-		echo '<p>Stockage de l\'excel des inscriptions</p>';
+		echo '<p>' . 'Stockage de l\'excel des inscriptions' . '</p>';
 		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( 'post_type=amps_adhesion&amapress_contrat_inst=' . $this->ID,
-			null, 'Contrat ' . $this->getTitle() . ' - Inscriptions' );
-		$filename    = 'contrat-' . $this->ID . '-inscriptions.xlsx';
+			null, sprintf( 'Contrat %s - Inscriptions', $this->getTitle() ) );
+		$filename    = sprintf( __( 'contrat-%s-inscriptions.xlsx', 'amapress' ), $this->ID );
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 		$archives_infos['file_inscriptions'] = $filename;
@@ -2724,7 +2724,7 @@ class AmapressContrat_instance extends TitanEntity {
 			$archives_infos['file_adherents_columns'] = $xl['filename'];
 		}
 		//extract paiements xlsx
-		echo '<p>Stockage des excel des règlements</p>';
+		echo '<p>' . 'Stockage des excel des règlements' . '</p>';
 		foreach ( ( count( $this->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $this->getLieuxIds() ) : $this->getLieuxIds() ) as $lieu_id ) {
 			$lieu        = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
 			$html        = amapress_get_paiement_table_by_dates(
@@ -2736,8 +2736,8 @@ class AmapressContrat_instance extends TitanEntity {
 					'for_pdf'                 => true,
 				) );
 			$objPHPExcel = AMapress::createXLSXFromHtml( $html,
-				'Contrat ' . $this->getTitle() . ' - Règlements - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) );
-			$filename    = 'contrat-' . $this->ID . '-reglements-' . ( 0 == $lieu_id ? 'tous' : strtolower( sanitize_file_name( $lieu->getLieuTitle() ) ) ) . '.xlsx';
+				sprintf( 'Contrat %s - Règlements - %s', $this->getTitle(), 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) );
+			$filename    = sprintf( 'contrat-%s-reglements-%s.xlsx', $this->ID, 0 == $lieu_id ? 'tous' : strtolower( sanitize_file_name( $lieu->getLieuTitle() ) ) );
 			$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 			$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 			$archives_infos["file_cheques_$lieu_id"] = $filename;
@@ -2746,10 +2746,10 @@ class AmapressContrat_instance extends TitanEntity {
 		$inscriptions                         = AmapressContrats::get_all_adhesions( $this->getID() );
 		$archives_infos['count_inscriptions'] = count( $inscriptions );
 
-		echo '<p>Stockage des infos du contrat pour archive</p>';
+		echo '<p>' . 'Stockage des infos du contrat pour archive' . '</p>';
 		$this->setCustom( 'amapress_contrat_instance_archives_infos', $archives_infos );
 
-		echo '<p>Archivage des inscriptions et règlements</p>';
+		echo '<p>' . 'Archivage des inscriptions et règlements' . '</p>';
 		global $wpdb;
 		//start transaction
 		$wpdb->query( 'START TRANSACTION' );

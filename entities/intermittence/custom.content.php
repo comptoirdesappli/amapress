@@ -16,9 +16,9 @@ function amapress_get_paniers_intermittents_exchange_table( $adhs ) {
 //				$state = '<div class=""><p>Informations</p><textarea id="' . $id . '"></textarea></div>';
 				//data-message="val:#' . $id . '"
 				$state = '<button type="button" class="btn btn-default amapress-ajax-button reprendre-panier" 
-				data-action="reprendre_panier" data-confirm="Etes-vous sûr de vouloir reprendre ce panier ?" data-panier="' . implode( ',', array_map( function ( $a ) {
+				data-action="reprendre_panier" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir reprendre ce panier ?', 'amapress' ) . '" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
-					}, $adh ) ) . '">Je suis interessé</button>';
+					}, $adh ) ) . '">' . 'Je suis interessé' . '</button>';
 			}
 
 			return $state;
@@ -71,7 +71,7 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 	if ( ! Amapress::toBool( $atts['allow_amapiens'] ) ) {
 		$amapien = AmapressUser::getBy( amapress_current_user_id() );
 		if ( $amapien && ! $amapien->isIntermittent() ) {
-			return '<p><strong>La réservation de paniers n\'est pas ouverte aux amapiens non intermittents.</strong></p>';
+			return '<p><strong>' . 'La réservation de paniers n\'est pas ouverte aux amapiens non intermittents.' . '</strong></p>';
 		}
 	}
 	$query = array(
@@ -249,7 +249,7 @@ function amapress_get_paniers_intermittents_table(
 				}
 				$askers[] = $user->getDisplay( $show_options );
 			}
-			$repreneur .= '<strong>Non validé</strong><br/>' . implode( '', $askers );
+			$repreneur .= '<strong>' . 'Non validé' . '</strong><br/>' . implode( '', $askers );
 		}
 		$paniers   = array();
 		$quantites = array();
@@ -288,7 +288,7 @@ function amapress_get_paniers_intermittents_table(
 			//"<a href='mailto:{$ad->getAdherent()->getUser()->user_email}'>" . $ad->getAdherent()->getDisplayName() . '</a> (' . $ad->getAdherent()->getTelephone() . ')',
 			'repreneur'    => $repreneur,
 			'message'      => $ad->getMessage(),
-			'date_display' => date_i18n( 'd/m/Y', $date ) . '<br/><span style="font-size: 0.7em; color: #2b2b2b">depuis ' . date_i18n( 'd/m/Y', get_post_time( 'U', false, $ad->getPost() ) ) . '</span>',
+			'date_display' => date_i18n( 'd/m/Y', $date ) . '<br/><span style="font-size: 0.7em; color: #2b2b2b">' . __( 'depuis ', 'amapress' ) . date_i18n( 'd/m/Y', get_post_time( 'U', false, $ad->getPost() ) ) . '</span>',
 			'date_value'   => $date,
 			'state'        => $state,
 		);
@@ -339,11 +339,11 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 				$id    = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
 				$state = '<strong>' . $state . '</strong>';
 				if ( $ad->getDate() >= Amapress::end_of_day( amapress_time() ) ) {
-					$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">Motif d\'annulation</label><textarea id="' . $id . '"></textarea><br/>';
+					$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">' . 'Motif d\'annulation' . '</label><textarea id="' . $id . '"></textarea><br/>';
 					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
-				data-message="val:#' . $id . '" data-confirm="Etes-vous sûr d\'annuler votre proposition?" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
+				data-message="val:#' . $id . '" data-confirm="' . esc_attr__( 'Etes-vous sûr d\'annuler votre proposition?', 'amapress' ) . '" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">Annuler échange</button></div>';
+						}, $adh ) ) . '">' . 'Annuler échange' . '</button></div>';
 				}
 				foreach ( $ad->getAsk() as $ask ) {
 					$user = AmapressUser::getBy( $ask['user'] );
@@ -356,12 +356,12 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 						'show_tel'   => 'force',
 						'show_email' => 'force',
 					) );
-					$state .= '<div><button type="button" class="btn btn-default amapress-ajax-button validate-echange" data-user="' . $user->ID . '" data-confirm="Etes-vous sûr de vouloir valider la reprise de votre panier ?" data-action="validate_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
+					$state .= '<div><button type="button" class="btn btn-default amapress-ajax-button validate-echange" data-user="' . $user->ID . '" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir valider la reprise de votre panier ?', 'amapress' ) . '" data-action="validate_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">Valider échange (' . $user->getDisplayName() . ')</button><br/>';
-					$state .= '<button type="button" class="btn btn-default amapress-ajax-button reject-echange" data-user="' . $user->ID . '" data-confirm="Etes-vous sûr de vouloir valider la propositio, ?" data-action="reject_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
+						}, $adh ) ) . '">' . 'Valider échange' . ' (' . $user->getDisplayName() . ')</button><br/>';
+					$state .= '<button type="button" class="btn btn-default amapress-ajax-button reject-echange" data-user="' . $user->ID . '" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir valider la propositio ?', 'amapress' ) . '" data-action="reject_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">Rejet échange (' . $user->getDisplayName() . ')</button></div>';
+						}, $adh ) ) . '">' . 'Rejet échange' . ' (' . $user->getDisplayName() . ')</button></div>';
 					$state .= '</div>';
 				}
 				if ( $ad->getRepreneurId() ) {
@@ -418,11 +418,11 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 			if ( 'exch_valid_wait' == $status || 'exchanged' == $status ) {
 				/** @var AmapressIntermittence_panier $ad */
 				$ad    = $adh[0];
-				$state = '<div class="amapress-ajax-parent"><span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>En attente de validation</strong>' : 'A récupérer' ) . '</span>';
+				$state = '<div class="amapress-ajax-parent"><span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>' . 'En attente de validation' . '</strong>' : 'A récupérer' ) . '</span>';
 				if ( $ad->getDate() >= Amapress::end_of_day( amapress_time() ) ) {
-					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="Etes-vous sûr de vouloir annuler l\'échange ?" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
+					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir annuler l\'échange ?', 'amapress' ) . '" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">Annuler échange</button></div>';
+						}, $adh ) ) . '">' . 'Annuler échange' . '</button></div>';
 				}
 			}
 

@@ -419,10 +419,10 @@ class AmapressDistribution extends Amapress_EventBase {
 		if ( $bcc ) {
 			$site_email = Amapress::getOption( 'email_from_mail' );
 
-			return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
+			return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=' . 'Distribution du ' .
 			       date_i18n( 'D j F Y' );
 		} else {
-			return 'mailto:' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=Distribution du ' .
+			return 'mailto:' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=' . 'Distribution du ' .
 			       date_i18n( 'D j F Y' );
 		}
 	}
@@ -469,7 +469,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		$site_email = Amapress::getOption( 'email_from_mail' );
 
-		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', array_unique( $mails ) ) ) . '&subject=Distribution du ' .
+		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', array_unique( $mails ) ) ) . '&subject=' . 'Distribution du ' .
 		       date_i18n( 'D j F Y' );
 	}
 
@@ -1043,7 +1043,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority' => 30,
 					'lieu'     => $lieu,
 					'label'    => $contrat->getModelTitle(),
-					'alt'      => 'Distribution de ' . $contrat->getModelTitle() . ' à ' . $lieu->getShortName(),
+					'alt'      => sprintf( 'Distribution de %s à %s', $contrat->getModelTitle(), $lieu->getShortName() ),
 					'class'    => "agenda-distrib agenda-contrat-{$contrat->getModel()->ID}",
 					'icon'     => Amapress::coalesce_icons( amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat->getModel()->ID}_icon" ), amapress_get_avatar_url( $contrat->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 					'href'     => $this->getPermalink()
@@ -1110,7 +1110,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'inscr_types' => [ 'distrib-gardien' ],
 					'label'       => 'Gardien de panier',
 					'icon'        => 'dashicons dashicons-portfolio',
-					'alt'         => 'Vous êtes gardien de panier à ' . $lieu->getShortName(),
+					'alt'         => sprintf( 'Vous êtes gardien de panier à %s', $lieu->getShortName() ),
 					'href'        => $this->getPermalink()
 				) );
 			}
@@ -1135,7 +1135,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						'lieu'     => $lieu,
 						'label'    => $adhesion->getContrat_instance()->getModelTitle(),
 						'icon'     => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$adhesion->getContrat_instance()->getModel()->ID}_icon" ), amapress_get_avatar_url( $adhesion->getContrat_instance()->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
-						'alt'      => 'Distribution de ' . $adhesion->getContrat_instance()->getModelTitle() . ' à ' . $lieu->getShortName(),
+						'alt'      => sprintf( 'Distribution de %s à %s', $adhesion->getContrat_instance()->getModelTitle(), $lieu->getShortName() ),
 						'href'     => $this->getPermalink()
 					) );
 				}
@@ -1200,9 +1200,9 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority'    => 5,
 					'inscr_types' => [ 'intermittence' ],
 					'lieu'        => $this->getRealLieu(),
-					'label'       => '<span class="badge">' . $status_count['me_exchanged'] . '</span> échangé(s)',
+					'label'       => '<span class="badge">' . $status_count['me_exchanged'] . '</span>' . __( ' échangé(s)', 'amapress' ),
 					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_exchanged.jpg',
-					'alt'         => $status_count['me_exchanged'] . ' échangé(s)',
+					'alt'         => $status_count['me_exchanged'] . __( ' échangé(s)', 'amapress' ),
 					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			}
@@ -1218,9 +1218,9 @@ class AmapressDistribution extends Amapress_EventBase {
 					'priority'    => 15,
 					'inscr_types' => [ 'intermittence' ],
 					'lieu'        => $this->getRealLieu(),
-					'label'       => '<span class="badge">' . $status_count['me_recup'] . '</span> à récupérer',
+					'label'       => '<span class="badge">' . $status_count['me_recup'] . '</span>' . __( ' à récupérer', 'amapress' ),
 					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
-					'alt'         => $status_count['me_recup'] . ' à récupérer',
+					'alt'         => $status_count['me_recup'] . __( ' à récupérer', 'amapress' ),
 					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			}
@@ -1237,9 +1237,9 @@ class AmapressDistribution extends Amapress_EventBase {
 					'category' => 'Paniers dispo',
 					'priority' => 10,
 					'lieu'     => $this->getRealLieu(),
-					'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span> à échanger',
+					'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span>' . __( ' à échanger', 'amapress' ),
 					'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_avail.jpg',
-					'alt'      => $status_count['other_to_exchange'] . ' à échanger',
+					'alt'      => $status_count['other_to_exchange'] . __( ' à échanger', 'amapress' ),
 					'href'     => $paniers_url
 				) );
 //				}

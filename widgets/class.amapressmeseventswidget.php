@@ -64,7 +64,7 @@ class Amapress_Next_Events_Widget extends WP_Widget {
             <input class="checkbox" type="checkbox" <?php checked( $logged_only, true ); ?>
                    id="<?php echo $this->get_field_id( 'logged_only' ); ?>"
                    name="<?php echo $this->get_field_name( 'logged_only' ); ?>"/>
-            <label for="<?php echo $this->get_field_id( 'logged_only' ); ?>">Utilisateurs connectés seulement ?</label>
+            <label for="<?php echo $this->get_field_id( 'logged_only' ); ?>"><?php _e( 'Utilisateurs connectés seulement ?', 'amapress' ) ?></label>
         </p>
 		<?php
 	}

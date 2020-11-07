@@ -258,7 +258,7 @@ function amapress_render_adhesion_list() {
 	global $adhesions_table;
 	$adhesions_table->prepare_items();
 
-	echo '</pre><div class="wrap"><h2>Adhésions</h2>';
+	echo '</pre><div class="wrap"><h2>' . 'Adhésions' . '</h2>';
 	if ( current_user_can( 'create_users' ) ) { ?>
         <a href="<?php echo admin_url( 'user-new.php' ); ?>"
            class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>

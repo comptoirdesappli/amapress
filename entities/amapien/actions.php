@@ -407,7 +407,7 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 	}
 
 	if ( ! $is_ok ) {
-		echo '<p class="error">Non autorisé</p>';
+		echo '<p class="error">' . 'Non autorisé' . '</p>';
 		die();
 	}
 
@@ -419,15 +419,15 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 
 	$user = get_user_by( 'email', $user_email );
 	if ( $user ) {
-		echo '<p class="error">L\'adresse email ' . $user_email . ' est déjà utilisée.</p>';
+		echo '<p class="error">' . sprintf( 'L\'adresse email %s est déjà utilisée.', $user_email ) . '</p>';
 		die();
 	}
 
 	$user_id = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 	wp_set_object_terms( $user_id, $group_id, AmapressUser::AMAPIEN_GROUP );
-	echo sprintf(
-		'<p class="success">Vous êtes désormais inscrit sur le site %s en tant qu\'utilisateur %s. Vous allez recevoir un mail de bienvenue avec les instructions dans votre boîte mail.</p>',
-		esc_html( get_bloginfo( 'name' ) ),
-		esc_html( $term->name )
-	);
+	echo '<p class="success">' . sprintf(
+			'Vous êtes désormais inscrit sur le site %s en tant qu\'utilisateur %s. Vous allez recevoir un mail de bienvenue avec les instructions dans votre boîte mail.',
+			esc_html( get_bloginfo( 'name' ) ),
+			esc_html( $term->name )
+		) . '</p>';
 }

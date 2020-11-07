@@ -53,7 +53,7 @@ function amapress_register_entities_producteur( $entities ) {
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				$producteur = AmapressProducteur::getBy( $post );
 				if ( empty( $producteur->getUser() ) ) {
-					echo '<div class="notice notice-error"><p>Producteur invalide : pas d\'utilisateur associé</p></div>';
+					echo '<div class="notice notice-error"><p>' . 'Producteur invalide : pas d\'utilisateur associé' . '</p></div>';
 				}
 				if ( ! $producteur->isAdresseExploitationLocalized() ) {
 					amapress_add_admin_notice( 'Adresse du producteur non localisée', 'warning', false );
@@ -62,13 +62,13 @@ function amapress_register_entities_producteur( $entities ) {
 					/** @var AmapressContrat $contrat */
 					return empty( $contrat->getAllReferentsIds() );
 				} ) ) {
-					echo '<div class="notice notice-error"><p>Producteur sans référent</p></div>';
+					echo '<div class="notice notice-error"><p>' . 'Producteur sans référent' . '</p></div>';
 				}
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
-			echo '<h2>Présentation du producteur <em>(Biographie, historique de la ferme...)</em></h2>';
+			echo '<h2>' . 'Présentation du producteur <em>(Biographie, historique de la ferme...)</em>' . '</h2>';
 		},
 		'fields'                   => array(
 			'nom_exploitation'     => array(
@@ -111,7 +111,7 @@ function amapress_register_entities_producteur( $entities ) {
 					return false;
 				},
 				'required'   => true,
-				'desc'       => 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="' . admin_url( 'user-new.php' ) . '" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs',
+				'desc'       => sprintf( 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', admin_url( 'user-new.php' ) ),
 				'searchable' => true,
 			),
 			'referent'             => array(
@@ -194,7 +194,7 @@ function amapress_producteur_fields( $fields ) {
 				'searchable'   => true,
 				'autocomplete' => true,
 				'readonly'     => 'amapress_is_referents_fields_readonly',
-				'desc'         => 'Référent producteur spécifique à ' . $lieu->getTitle(),
+				'desc'         => sprintf( 'Référent producteur spécifique à %s', $lieu->getTitle() ),
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			);

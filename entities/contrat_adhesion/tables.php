@@ -38,7 +38,7 @@ function amapress_render_contrat_paiements_list() {
 	global $contrat_paiements_table;
 	$contrat_paiements_table->prepare_items();
 
-	echo '</pre><div class="wrap"><h2>État des règlements de l’ensemble des amapiens';
+	echo '</pre><div class="wrap"><h2>' . 'État des règlements de l’ensemble des amapiens';
 	echo '</h2>';
 
 	$contrat_paiements_table->views();

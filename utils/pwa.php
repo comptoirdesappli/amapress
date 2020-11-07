@@ -128,15 +128,18 @@ add_action( 'wp_footer', function () {
                 class="ad2hs-prompt"><?php echo esc_html( wp_unslash( Amapress::getOption( 'pwa_android_btn_text' ) ) ); ?></button>
         <div class="ios-prompt">
             <span style="color: rgb(187, 187, 187); float: right; margin-top: -14px; margin-right: -11px;">&times;</span>
-            <img src="<?php echo AMAPRESS__PLUGIN_URL . '/images/add2home.svg' ?>"
+            <img src="<?php echo esc_attr( AMAPRESS__PLUGIN_URL . '/images/add2home.svg' ) ?>"
                  style="float: left; height: 80px; width: auto; margin-top: -8px; margin-right: 1rem;"
-                 alt="Ajouter à l'écran d'accueil"/>
-            <p style="margin-top: -3px; line-height: 1.3rem;">Pour installer cette application sur votre iPhone/iPad
-                appuyez sur <img
-                        src="<?php echo AMAPRESS__PLUGIN_URL . '/images/share.svg' ?>"
-                        style="display: inline-block; margin-top: 4px; margin-bottom: -4px; height: 20px; width: auto;"
-                        alt="Partager"/>
-                puis sur Ajouter à l'écran d'accueil.</p>
+                 alt="<?php echo esc_attr__( 'Ajouter à l\'écran d\'accueil', 'amapress' ) ?>"/>
+            <p style="margin-top: -3px; line-height: 1.3rem;">
+				<?php
+				echo sprintf( 'Pour installer cette application sur votre iPhone/iPad appuyez sur %s puis sur Ajouter à l\'écran d\'accueil.',
+					'<img
+                            src="' . AMAPRESS__PLUGIN_URL . '/images/share.svg' . '"
+                            style="display: inline-block; margin-top: 4px; margin-bottom: -4px; height: 20px; width: auto;"
+                            alt="' . __( 'Partager', 'amapress' ) . '"/>'
+				) ?>
+            </p>
         </div>
 
         <script type="text/javascript">

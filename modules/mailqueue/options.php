@@ -43,7 +43,7 @@ function amapress_mailing_queue_menu_options() {
 						'id'      => 'avoid_send_wp_from',
 						'name'    => 'Envoi au site',
 						'type'    => 'checkbox',
-						'desc'    => 'Eviter d\'envoyer les emails avec destinataires en Cc/Bcc à l\'adresse email du site (' . amapress_mail_from( amapress_get_default_wordpress_from_email() ) . ')',
+						'desc'    => sprintf( 'Eviter d\'envoyer les emails avec destinataires en Cc/Bcc à l\'adresse email du site (%s)', amapress_mail_from( amapress_get_default_wordpress_from_email() ) ),
 						'default' => true,
 					),
 					//
@@ -68,7 +68,7 @@ function amapress_mailing_queue_menu_options() {
 								admin_url( 'admin.php' )
 							);
 
-							return '<p>Cliquez <a href="' . $url . '" target="_blank">ici</a> pour tester la configuration emails sortants actuelle</p>';
+							return '<p>' . sprintf( 'Cliquez <a href="%s" target="_blank">ici</a> pour tester la configuration emails sortants actuelle', $url ) . '</p>';
 						}
 					),
 					array(
@@ -136,7 +136,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				)
 			),
-			'Emails sortants en attente <span class="badge">' .
+			'Emails sortants en attente' . ' <span class="badge">' .
 			amapress_mailing_queue_waiting_mail_list_count() . '</span>' => array(
 				'id'      => 'amapress_mailqueue_waiting_mails',
 				'desc'    => '',
@@ -149,7 +149,7 @@ function amapress_mailing_queue_menu_options() {
 					),
 				),
 			),
-			'Emails sortants en erreur <span class="badge">' .
+			'Emails sortants en erreur' . ' <span class="badge">' .
 			amapress_mailing_queue_errored_mail_list_count() . '</span>' => array(
 				'id'      => 'amapress_mailqueue_errored_mails',
 				'desc'    => '',
@@ -212,7 +212,7 @@ function amapress_mailing_queue_errored_mail_list( $mlgrp_id = '' ) {
 		),
 		admin_url( 'admin.php' )
 	);
-	$ret  = '<p><a class="button button-secondary" href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la nouvelle tentative d\\\'envoi des emails en erreur ?\')">Renvoyer tous les emails en erreur</a></p>';
+	$ret  = '<p><a class="button button-secondary" href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la nouvelle tentative d\'envoi des emails en erreur ?', 'amapress' ) ) . '\')">' . 'Renvoyer tous les emails en erreur' . '</a></p>';
 	$ret  .= amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
 
 	return $ret;
@@ -292,7 +292,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			),
 			admin_url( 'admin.php' )
 		);
-		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression de cet email ?\')">Supprimer</a>';
+		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la suppression de cet email ?', 'amapress' ) ) . '\')">' . 'Supprimer' . '</a>';
 
 		if ( isset( $email['message'] ) && is_array( $email['message'] ) && isset( $email['message']['ml_grp_msg_id'] ) ) {
 			$href            = add_query_arg(
@@ -305,7 +305,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 				),
 				admin_url( 'admin.php' )
 			);
-			$link_delete_msg .= '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la suppression ?\')">Supprimer pour tous les destinataires</a>';
+			$link_delete_msg .= '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la suppression ?', 'amapress' ) ) . '\')">' . 'Supprimer pour tous les destinataires' . '</a>';
 		}
 
 		$href           = add_query_arg(
@@ -316,7 +316,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			),
 			admin_url( 'admin.php' )
 		);
-		$link_retry_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'Confirmez-vous la nouvelle tentative d\\\'envoi de cet email ?\')">Renvoyer</a>';
+		$link_retry_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la nouvelle tentative d\'envoi de cet email ?', 'amapress' ) ) . '\')">' . 'Renvoyer' . '</a>';
 
 		$msg    = wpautop( $msg );
 		$data[] = array(
@@ -420,11 +420,11 @@ function amapress_test_mail_config() {
 			admin_url( 'admin.php' )
 		);
 		echo '<form action="' . $url . '" method="post">
-	<label for="target">Envoyer le mail de test à :</label>
+	<label for="target">' . 'Envoyer le mail de test à :' . '</label>
 	<br/>
 	<input type="email" id="target" name="target" value="' . $default_email . '" />
 	<br/>
-	<input type="submit" value="Envoyer" />
+	<input type="submit" value="' . esc_attr__( 'Envoyer', 'amapress' ) . '" />
 </form>';
 		die;
 	}
@@ -437,13 +437,13 @@ function amapress_test_mail_config() {
 	require_once( AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php' );
 	$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $email,
 		'Test configuration email',
-		'<p>Ceci est un test de la configuration email</p>',
+		'<p>' . 'Ceci est un test de la configuration email' . '</p>',
 		'Content-Type: text/html; charset=UTF-8' );
 
 	if ( empty( $errors ) ) {
-		echo '<p>L\'email de test vous a été envoyé avec succès</p>';
+		echo '<p>' . 'L\'email de test vous a été envoyé avec succès' . '</p>';
 	} else {
-		echo '<p>Des erreurs se sont produites pendant l\'envoi de l\'email de test (Le transcript SMTP se trouve au dessus) :</p>';
+		echo '<p>' . 'Des erreurs se sont produites pendant l\'envoi de l\'email de test (Le transcript SMTP se trouve au dessus) :' . '</p>';
 		echo implode( '<br/>', $errors );
 	}
 }

@@ -52,7 +52,7 @@ function amapress_where_to_find_us_shortcode( $attr ) {
 
 	$lieux = Amapress::get_lieux();
 	if ( empty( $lieux ) ) {
-		return '<p class="">Aucun lieux configuré</p>';
+		return '<p class="">' . 'Aucun lieux configuré' . '</p>';
 	}
 	$markers = array();
 	foreach ( $lieux as $lieu ) {

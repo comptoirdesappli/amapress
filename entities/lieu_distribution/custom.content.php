@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_get_custom_archive_content_lieu_distribution', 'amapress_get_custom_archive_content_lieu_distribution' );
 function amapress_get_custom_archive_content_lieu_distribution( $content ) {
 	$lieu    = AmapressLieu_distribution::getBy( get_the_ID() );
-	$content = '<p class="lieu-adresse">Adresse : ' . $lieu->getFormattedAdresseHtml() . '</p>' . $content;
+	$content = '<p class="lieu-adresse">' . 'Adresse : ' . $lieu->getFormattedAdresseHtml() . '</p>' . $content;
 
 	return $content;
 }
@@ -22,7 +22,7 @@ function amapress_get_custom_content_lieu_distribution( $content ) {
 
 	$addr_entry = '';
 	if ( ! $lieu->isAdresseAccesLocalized() ) {
-		$addr_entry = '<div class="lieu-adresse-acces"><h3>Adresse d\'accès</h3>' .
+		$addr_entry = '<div class="lieu-adresse-acces"><h3>' . 'Adresse d\'accès' . '</h3>' .
 		              '<p>' .
 		              esc_html( $lieu->getAdresseAcces() ) .
 		              '</p>' .
@@ -58,7 +58,7 @@ function amapress_get_custom_content_lieu_distribution( $content ) {
 		amapress_echo_panel_start( 'Référent', null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-referent' );
 		$ref = $lieu->getReferent();
 		if ( ! $ref ) {
-			echo '<p class="error">Pas de référent</p>';
+			echo '<p class="error">' . 'Pas de référent' . '</p>';
 		} else {
 			echo $ref->getDisplay();
 		}

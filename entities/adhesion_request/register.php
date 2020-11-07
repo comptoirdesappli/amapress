@@ -254,6 +254,6 @@ function amapress_row_action_adhesion_request_send_reply_manual( $post_id ) {
 add_action( 'admin_head', function () {
 	$screen = get_current_screen();
 	if ( $screen && ( 'edit-amps_adh_req' == $screen->id || 'amps_adh_req' == $screen->id ) ) {
-		amapress_add_admin_notice( 'Accéder à la configuration du <a href="' . esc_attr( admin_url( 'options-general.php?page=amapress_site_options_page&tab=adh_req_reply_mail' ) ) . '" target="_blank">mail de réponse type</a>', 'notice', false, false );
+		amapress_add_admin_notice( sprintf( 'Accéder à la configuration du <a href="%s" target="_blank">mail de réponse type</a>', esc_attr( admin_url( 'options-general.php?page=amapress_site_options_page&tab=adh_req_reply_mail' ) ) ), 'notice', false, false );
 	}
 } );

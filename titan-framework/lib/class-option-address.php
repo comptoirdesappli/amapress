@@ -212,9 +212,9 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$lng        = call_user_func( $get_fn, $postID, "{$id}_long", true );
 			$coords_gps = "lat.=$lat;lng.=$lng";
 			if ( 'google' != self::$geoprovider ) {
-				echo '<p class="' . $id . ' localized-address">Localisé <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng . '">Voir sur Open Street Map</a></p>';
+				echo '<p class="' . $id . ' localized-address">' . 'Localisé ' . '<a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng . '">' . 'Voir sur Open Street Map' . '</a></p>';
 			} else {
-				echo '<p class="' . $id . ' localized-address">Localisé <a target="_blank" href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">Voir sur Google Maps</a></p>';
+				echo '<p class="' . $id . ' localized-address">' . 'Localisé ' . '<a target="_blank" href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">' . 'Voir sur Google Maps' . '</a></p>';
 			}
 		} else {
 			$loc_err = call_user_func( $get_fn, $postID, "{$id}_loc_err", true );
@@ -222,7 +222,9 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 				$loc_err = " ($loc_err)";
 			}
 			if ( 'google' == self::$geoprovider && empty( self::$google_map_api_key ) ) {
-				echo "<p class='$id unlocalized-address'><strong>Pas de clé Google API configurée</strong> - Adresse non localisée$loc_err</p>";
+				echo "<p class='$id unlocalized-address'>";
+				echo __( '<strong>Pas de clé Google API configurée</strong> - Adresse non localisée', 'amapress' );
+				echo "$loc_err</p>";
 			} else {
 				if ( $this->settings['use_as_field'] ) {
 					$full_address = $this->getValue( $postID );
@@ -240,13 +242,13 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 					if ( ! empty( $full_address ) ) {
 						$help = '<br/><a target="_blank" href="' . esc_url(
 								'https://www.openstreetmap.org/search?query=' . $full_address
-							) . '">Rechercher l\'adresse sur OpenStreetMap</a> afin d\'en trouver la bonne forme (par exemple, sans précision du batiment, étage, ...)';
+							) . '">' . 'Rechercher l\'adresse sur OpenStreetMap</a> afin d\'en trouver la bonne forme (par exemple, sans précision du batiment, étage, ...)';
 					}
 				}
 				if ( ! empty( $full_address ) ) {
-					echo "<p class='$id unlocalized-address'>Adresse non localisée$loc_err$help</p>";
+					echo '<p class=\'' . $id . ' unlocalized-address\'>' . 'Adresse non localisée' . $loc_err . $help . '</p>';
 				} else {
-					echo "<p class='$id'>Pas d'adresse</p>";
+					echo '<p class=\'' . $id . '\'>' . 'Pas d\'adresse' . '</p>';
 				}
 			}
 		}
@@ -256,8 +258,8 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			if ( empty( $cusgeo ) ) {
 				$cusgeo = [ 0, 0 ];
 			}
-			echo "<p>Coordonnées GPS actuelles: $coords_gps<br/>
-Saisie manuelle: lat.=<input name='$id-custom-lat' type='number' min='-180' max='180' value='{$cusgeo[0]}' step='any' /> ; lng.=<input name='$id-custom-lng' type='number' min='-180' max='180' value='{$cusgeo[1]}' step='any' /> </p>";
+			echo '<p>' . __( 'Coordonnées GPS actuelles: ', 'amapress' ) . $coords_gps . '<br/>
+' . __( 'Saisie manuelle:', 'amapress' ) . ' ' . __( 'lat.=', 'amapress' ) . '<input name=\'' . $id . "-custom-lat' type='number' min='-180' max='180' value='" . $cusgeo[0] . '\' step=\'any\' /> ; ' . __( 'lng.=', 'amapress' ) . '<input name=\'' . $id . "-custom-lng' type='number' min='-180' max='180' value='" . $cusgeo[1] . "' step='any' /> </p>";
 		}
 	}
 

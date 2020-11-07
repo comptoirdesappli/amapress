@@ -196,8 +196,8 @@ function amapress_register_shortcodes() {
 				'show_title'          => '(Par défaut “true”) Afficher les noms des lieux',
 				'past_weeks'          => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
 				'lieu'                => 'Filtre de lieu',
-				'scroll_y'            => '(Configurable dans ' . $inscr_distrib_conf_link . ') Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions',
-				'font_size'           => '(Configurable dans ' . $inscr_distrib_conf_link . ') Taille relative du texte dans la vue en % ou em',
+				'scroll_y'            => sprintf( '(Configurable dans %s) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions', $inscr_distrib_conf_link ),
+				'font_size'           => sprintf( '(Configurable dans %s) Taille relative du texte dans la vue en %% ou em', $inscr_distrib_conf_link ),
 				'show_no_contrat'     => '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien',
 				'show_contrats_desc'  => '(Par défaut “true”) Afficher la liste des contrats pour chaque date ; si entier, limite le nombre de lignes affichées à ce nombre',
 				'show_contrats_count' => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
@@ -231,7 +231,7 @@ function amapress_register_shortcodes() {
 			'desc' => 'Liste statique des inscrits des responsables aux distributions',
 			'args' => [
 				'show_title' => '(Par défaut “true”) Afficher les noms des lieux',
-				'max_dates'  => '(Configurable dans ' . $inscr_distrib_conf_link . ') Nombre maximum de distributions à venir à afficher',
+				'max_dates'  => sprintf( '(Configurable dans %s) Nombre maximum de distributions à venir à afficher', $inscr_distrib_conf_link ),
 				'lieu'       => 'Filtre de lieu',
 			]
 		] );
@@ -250,18 +250,18 @@ function amapress_register_shortcodes() {
 				'show_roles'                => '(Par défaut “false”) Afficher les rôles des membres du collectif',
 				'show_title'                => '(Par défaut “true”) Afficher les noms des lieux',
 				'past_weeks'                => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
-				'max_dates'                 => '(Configurable dans ' . $inscr_distrib_conf_link . ') Nombre maximum de distributions à venir à afficher',
+				'max_dates'                 => sprintf( '(Configurable dans %s) Nombre maximum de distributions à venir à afficher', $inscr_distrib_conf_link ),
 				'lieu'                      => 'Filtre de lieu',
-				'column_date_width'         => '(Configurable dans ' . $inscr_distrib_conf_link . ') Largeur de la colonne Dates/Produits',
-				'fixed_column_width'        => '(Configurable dans ' . $inscr_distrib_conf_link . ') : fixe la largeur des colonnes Responsables ; en em ou px pour forcer une largeur fixe ; % pour répartir la largeur de colonnes sur la largeur du tableau',
-				'scroll_y'                  => '(Configurable dans ' . $inscr_distrib_conf_link . ') Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions',
-				'font_size'                 => '(Configurable dans ' . $inscr_distrib_conf_link . ') Taille relative du texte dans la vue en % ou em ou rem',
+				'column_date_width'         => sprintf( '(Configurable dans %s) Largeur de la colonne Dates/Produits', $inscr_distrib_conf_link ),
+				'fixed_column_width'        => sprintf( '(Configurable dans %s) : fixe la largeur des colonnes Responsables ; en em ou px pour forcer une largeur fixe ; %% pour répartir la largeur de colonnes sur la largeur du tableau', $inscr_distrib_conf_link ),
+				'scroll_y'                  => sprintf( '(Configurable dans %s) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions', $inscr_distrib_conf_link ),
+				'font_size'                 => sprintf( '(Configurable dans %s) Taille relative du texte dans la vue en %% ou em ou rem', $inscr_distrib_conf_link ),
 				'show_no_contrat'           => '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien',
 				'show_contrats_desc'        => '(Par défaut “true”) Afficher la liste des contrats pour chaque date ; si entier, limite le nombre de lignes affichées à ce nombre',
 				'show_contrats_count'       => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
 				'inscr_all_distrib'         => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage'    => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
-				'prefer_inscr_button_first' => '(Configurable dans ' . $inscr_distrib_conf_link . ') Placer les boutons d\'inscription en premier et les inscrits ensuite. False inverse.',
+				'prefer_inscr_button_first' => sprintf( '(Configurable dans %s) Placer les boutons d\'inscription en premier et les inscrits ensuite. False inverse.', $inscr_distrib_conf_link ),
 				'allow_gardiens'            => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
 				'allow_gardiens_comments'   => '(Par défaut, true si actif) Autoriser les gardiens de paniers à mettre un commentaire avec leur inscription',
 				'allow_slots'               => '(Par défault true) Autoriser le choix de créneaux',
@@ -285,18 +285,18 @@ function amapress_register_shortcodes() {
 				'show_roles'                => '(Par défaut “false”) Afficher les rôles des membres du collectif',
 				'show_title'                => '(Par défaut “true”) Afficher les noms des lieux',
 				'past_weeks'                => '(Par défaut “5”) Nombre de semaines d’historique des distributions',
-				'max_dates'                 => '(Configurable dans ' . $inscr_distrib_conf_link . ') Nombre maximum de distributions à venir à afficher',
+				'max_dates'                 => sprintf( '(Configurable dans %s) Nombre maximum de distributions à venir à afficher', $inscr_distrib_conf_link ),
 				'lieu'                      => 'Filtre de lieu',
-				'column_date_width'         => '(Configurable dans ' . $inscr_distrib_conf_link . ') Largeur de la colonne Dates/Produits',
-				'fixed_column_width'        => '(Configurable dans ' . $inscr_distrib_conf_link . ') : fixe la largeur des colonnes Responsables ; en em ou px pour forcer une largeur fixe ; % pour répartir la largeur de colonnes sur la largeur du tableau',
-				'scroll_y'                  => '(Configurable dans ' . $inscr_distrib_conf_link . ') Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions',
-				'font_size'                 => '(Configurable dans ' . $inscr_distrib_conf_link . ') Taille relative du texte dans la vue en % ou em ou rem',
+				'column_date_width'         => sprintf( '(Configurable dans %s) Largeur de la colonne Dates/Produits', $inscr_distrib_conf_link ),
+				'fixed_column_width'        => sprintf( '(Configurable dans %s) : fixe la largeur des colonnes Responsables ; en em ou px pour forcer une largeur fixe ; %% pour répartir la largeur de colonnes sur la largeur du tableau', $inscr_distrib_conf_link ),
+				'scroll_y'                  => sprintf( '(Configurable dans %s) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions', $inscr_distrib_conf_link ),
+				'font_size'                 => sprintf( '(Configurable dans %s) Taille relative du texte dans la vue en %% ou em ou rem', $inscr_distrib_conf_link ),
 				'show_no_contrat'           => '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien',
 				'show_contrats_desc'        => '(Par défaut “true”) Afficher la liste des contrats pour chaque date ; si entier, limite le nombre de lignes affichées à ce nombre',
 				'show_contrats_count'       => '(Par défaut “false”) Afficher le nombre de contrats pour chaque date',
 				'inscr_all_distrib'         => '(Par défaut “false”) Autoriser tous les amapiens à s’inscrire même sur les lieux pour lesquels ils n’ont pas de contrat',
 				'allow_resp_dist_manage'    => '(Par défaut “false”) Autoriser les responsables de distributions à gérer les inscriptions le temps de la semaine où ils sont inscrits',
-				'prefer_inscr_button_first' => '(Configurable dans ' . $inscr_distrib_conf_link . ') Placer les boutons d\'inscription en premier et les inscrits ensuite. False inverse.',
+				'prefer_inscr_button_first' => sprintf( '(Configurable dans %s) Placer les boutons d\'inscription en premier et les inscrits ensuite. False inverse.', $inscr_distrib_conf_link ),
 				'allow_gardiens'            => '(Par défaut, true si actif) Autoriser l\'inscription des gardiens de paniers',
 				'allow_gardiens_comments'   => '(Par défaut, true si actif) Autoriser les gardiens de paniers à mettre un commentaire avec leur inscription',
 				'allow_slots'               => '(Par défault true) Autoriser le choix de créneaux',
@@ -359,7 +359,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Inscription sans connexion à la liste des intermittents',
 			'args' => [
-				'key'      => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'inscription à la liste des intermittents',
+				'key'      => sprintf( '(Par exemple : %s%s) Clé de sécurisation de l\'accès à l\'inscription à la liste des intermittents', uniqid(), uniqid() ),
 				'shorturl' => 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne',
 			]
 		] );
@@ -516,8 +516,8 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'ignore_renouv_delta'                 => '(booléen, true par défaut) : ignorer la marge de renouvellement des contrats terminés',
 				'allow_inscriptions'                  => '(booléen, true par défaut) : autorise l\'inscription aux contrats',
-				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
-				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
+				'check_adhesion_received'             => sprintf( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats', $contrats_conf_link ),
+				'check_adhesion_received_or_previous' => sprintf( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats', $contrats_conf_link ),
 				'allow_adhesion'                      => '(booléen, true par défaut) : autorise l\'adhésion à l\'AMAP',
 				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
 				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
@@ -557,7 +557,7 @@ function amapress_register_shortcodes() {
 				'show_modify_coords'                  => '(true par défaut) Afficher un bouton pour modifier les coordonnées, co-adhérents et membres du foyer',
 				'use_contrat_term'                    => '(true par défaut) Utiliser le terme Contrat si true et Commande si false',
 				'only_contrats'                       => 'Filtrage des contrats affichés (par ID). Permet, par exemple, de faire une page dédiée aux paniers modulables et commandes' .
-				                                         '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+				                                         '<br/>' . 'Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
 						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
@@ -567,15 +567,15 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les inscriptions en ligne (amapien non connecté et nouveaux, sécurisée par une clé secrète)',
 			'args' => [
-				'key'                                 => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé',
+				'key'                                 => sprintf( '(Par exemple : %s%s) Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé', uniqid(), uniqid() ),
 				'use_steps_nums'                      => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'allow_new_mail'                      => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
 				'allow_existing_mail_for_public'      => '(booléen, false par défaut): autoriser l\'inscription avec des emails de comptes amapiens existants (pour la version sans clé/public)',
 				'filter_multi_contrat'                => '(booléen, false par défaut) : en cas de variante de contrat Semaine A/B/AB, ne pas autoriser un amapien à s\'inscrire à plusieurs variantes',
 				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
-				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
-				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
-				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
+				'check_principal'                     => sprintf( '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans %s', Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ) ),
+				'check_adhesion_received'             => sprintf( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats', $contrats_conf_link ),
+				'check_adhesion_received_or_previous' => sprintf( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats', $contrats_conf_link ),
 				'adhesion'                            => '(booléen, true par défaut) : afficher une étape Adhésion à l\'AMAP',
 				'allow_inscription_all_dates'         => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
 				'send_adhesion_confirm'               => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
@@ -585,7 +585,7 @@ function amapress_register_shortcodes() {
 				'edit_names'                          => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
 				'send_welcome'                        => '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens',
 				'only_contrats'                       => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) avec une autre clé' .
-				                                         '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+				                                         '<br/>' . 'Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
 						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
@@ -642,10 +642,10 @@ function amapress_register_shortcodes() {
 				'use_steps_nums'                      => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'allow_new_mail'                      => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
 				'allow_existing_mail_for_public'      => '(booléen, false par défaut): autoriser l\'inscription avec des emails de comptes amapiens existants (pour la version sans clé/public)',
-				'agreement'                           => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
+				'agreement'                           => sprintf( '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans %s)', Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) ),
 				'check_principal'                     => '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats' ),
-				'check_adhesion_received'             => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats',
-				'check_adhesion_received_or_previous' => '(Configurable dans ' . $contrats_conf_link . ') : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats',
+				'check_adhesion_received'             => sprintf( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats', $contrats_conf_link ),
+				'check_adhesion_received_or_previous' => sprintf( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats', $contrats_conf_link ),
 				'adhesion'                            => '(booléen, false par défaut) : afficher une étape Adhésion à l\'AMAP',
 				'allow_inscription_all_dates'         => '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat',
 				'send_adhesion_confirm'               => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
@@ -654,7 +654,7 @@ function amapress_register_shortcodes() {
 				'send_tresoriers'                     => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'edit_names'                          => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
 				'only_contrats'                       => 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) ou commande(s)' .
-				                                         '<br/>Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
+				                                         '<br/>' . 'Valeurs possibles: ' . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
 						return sprintf( '%d (%s)', $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
@@ -707,7 +707,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les adhésions en ligne (amapien non connecté et nouveaux, sécurisée par une clé secrète) uniquement (pas d\'inscription aux contrats)',
 			'args' => [
-				'key'                            => '(Par exemple : ' . uniqid() . uniqid() . ') Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé',
+				'key'                            => sprintf( '(Par exemple : %s%s) Clé de sécurisation de l\'accès à l\'Assistant de Préinscription en ligne. Utilisez key=public pour permettre un accès sans clé', uniqid(), uniqid() ),
 				'use_steps_nums'                 => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'allow_new_mail'                 => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
 				'allow_existing_mail_for_public' => '(booléen, false par défaut): autoriser l\'inscription avec des emails de comptes amapiens existants (pour la version sans clé/public)',
@@ -746,7 +746,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => 'Permet les adhésions en ligne (amapien connecté) uniquement (pas d\'inscription aux contrats)',
 			'args' => [
-				'agreement'                      => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
+				'agreement'                      => sprintf( '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans %s)', Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) ),
 				'use_steps_nums'                 => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'allow_new_mail'                 => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
 				'allow_existing_mail_for_public' => '(booléen, false par défaut): autoriser l\'inscription avec des emails de comptes amapiens existants (pour la version sans clé/public)',
@@ -789,7 +789,7 @@ function amapress_register_shortcodes() {
 				'use_steps_nums'                 => '(booléen, true par défaut) : afficher les numéros d\'étapes',
 				'allow_new_mail'                 => '(booléen, true par défaut): autoriser l\'inscription avec des emails inconnus/non associés à des comptes amapiens existants',
 				'allow_existing_mail_for_public' => '(booléen, false par défaut): autoriser l\'inscription avec des emails de comptes amapiens existants (pour la version sans clé/public)',
-				'agreement'                      => '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) . ')',
+				'agreement'                      => sprintf( '(booléen, true par défaut) : afficher une étape de réglement intérieur de l\'AMAP (configurable dans %s)', Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_messages' ), 'Tableau de bord > Gestion Adhésions > onglet Assistant - Adhésion en ligne' ) ),
 				'send_adhesion_confirm'          => '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP',
 				'send_tresoriers'                => '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers',
 				'edit_names'                     => '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription',
@@ -799,7 +799,7 @@ function amapress_register_shortcodes() {
 				'address_required'               => '(false par défaut) Adresse requise',
 				'notify_email'                   => '(vide par défaut) Envoyer les emails de notification (Changement co-adhérents, Non renouvellement, Adhésion, Inscription) en copie à cette/ces adresse(s)',
 				'show_adhesion_infos'            => '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin',
-				'allow_adhesion_message'  => '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion',
+				'allow_adhesion_message'         => '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion',
 				'paiements_info_required' => '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)',
 				'allow_trombi_decline'    => '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope',
 				'track_no_renews'         => '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1',
@@ -1167,10 +1167,10 @@ function amapress_register_shortcodes() {
 			if ( ! $next_distrib ) {
 				return '';
 			}
-			$ret = '<div class="resp-distrib-this-week"><p>Vous êtes responsable de distribution '
+			$ret = '<div class="resp-distrib-this-week"><p>' . 'Vous êtes responsable de distribution '
 			       . ( Amapress::toBool( $atts['distribution_link'] ) ?
-					Amapress::makeLink( $next_distrib->getPermalink(), 'cette semaine' ) :
-					'cette semaine' ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
+					Amapress::makeLink( $next_distrib->getPermalink(), __( 'cette semaine', 'amapress' ) ) :
+					__( 'cette semaine', 'amapress' ) ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
 			if ( Amapress::toBool( $atts['emargement_link'] ) ) {
 				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), 'Liste d\'émargement' );
 			}
@@ -1181,10 +1181,10 @@ function amapress_register_shortcodes() {
 				return '';
 			}
 
-			$ret = '<div class="resp-distrib-this-week"><p>Vous êtes responsable de distribution '
+			$ret = '<div class="resp-distrib-this-week"><p>' . 'Vous êtes responsable de distribution '
 			       . ( Amapress::toBool( $atts['distribution_link'] ) ?
-					Amapress::makeLink( $next_distrib->getPermalink(), 'la semaine prochaine' ) :
-					'la semaine prochaine' ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
+					Amapress::makeLink( $next_distrib->getPermalink(), __( 'la semaine prochaine', 'amapress' ) ) :
+					__( 'la semaine prochaine', 'amapress' ) ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
 			if ( Amapress::toBool( $atts['emargement_link'] ) ) {
 				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), 'Liste d\'émargement' );
 			}
@@ -1415,7 +1415,7 @@ function amapress_register_shortcodes() {
 		sort( $entries );
 
 		if ( empty( $entries ) ) {
-			echo '<p>Aucune mailing list et aucun Emails groupés configuré</p>';
+			echo '<p>' . 'Aucune mailing list et aucun Emails groupés configuré' . '</p>';
 		} else {
 			echo '<ul class="sh-listes-diffusions" style="margin-left: 1.5em;list-style: disc">';
 			echo implode( '', $entries );

@@ -95,21 +95,21 @@ class AmapressContrats {
 		$res     = false;
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( ! $contrat ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Supprimé</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . 'Supprimé' . '</span></' . $tag . '></' . $tag . '>';
 		}
 		if ( $contrat->isArchived() ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>Archivé</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>' . 'Archivé' . '</span></' . $tag . '></' . $tag . '>';
 		}
 
 		$tt = self::get_contrat_status( $contrat_id, $res );
 		if ( $res === true ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">Mettre à jour distributions et paniers</button></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">' . 'Mettre à jour distributions et paniers' . '</button></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'no' ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Pas de dates</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . 'Pas de dates' . '</span></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'draft' ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: orange;"><span>Brouillon</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: orange;"><span>' . 'Brouillon' . '</span></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'trash' ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>Corbeille</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . 'Corbeille' . '</span></' . $tag . '></' . $tag . '>';
 		} else {
 			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>OK</span></' . $tag . '></' . $tag . '>';
 		}

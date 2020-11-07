@@ -85,7 +85,7 @@ function amapress_get_custom_content_producteur( $content ) {
 	echo Amapress::get_contrats_list( $producteur->ID );
 	amapress_echo_panel_end();
 
-	echo '<h3>Produits</h3>';
+	echo '<h3>' . 'Produits' . '</h3>';
 	echo amapress_produits_shortcode(
 		[ 'producteur' => $producteur->ID ]
 	);
@@ -104,7 +104,7 @@ function amapress_get_custom_archive_content_producteur( $content ) {
 //	echo wpautop( $producteur->getPresentation() );
 	echo $content;
 
-	echo '<h3>Contrats</h3>';
+	echo '<h3>' . 'Contrats' . '</h3>';
 	echo Amapress::get_contrats_list( $producteur->ID );
 
 	$content = ob_get_contents();

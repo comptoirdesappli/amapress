@@ -520,7 +520,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 		}
 	} else if ( $for_logged ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			return '<div class="alert alert-danger">Accès interdit</div>';
+			return '<div class="alert alert-danger">' . 'Accès interdit' . '</div>';
 		}
 		if ( ! isset( $_REQUEST['step'] ) ) {
 			if ( $is_mes_contrats || $skip_coords || $is_adhesion_mode ) {
@@ -535,40 +535,40 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			if ( 'public' != $key ) {
 				if ( empty( $_REQUEST['key'] ) ) {
 					$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
-					$ret .= '<div class="alert alert-info">Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : 
-<pre>' . $url . '</pre>
-Pour y accéder cliquez <a href="' . $url . '">ici</a>.<br />
+					$ret .= '<div class="alert alert-info">' . sprintf( 'Pour donner accès à cet assistant aux nouveaux amapiens, veuillez leur envoyer le lien suivant : 
+<pre>%s</pre>
+Pour y accéder cliquez <a href="%s">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
-' . ( ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '' ) . '
+%s
 Vous pouvez également utiliser l\'un des QRCode suivants : 
-<div>' . amapress_print_qrcode( $url ) . amapress_print_qrcode( $url, 3 ) . amapress_print_qrcode( $url, 2 ) . '</div><br/>
+<div>%s%s%s</div><br/>
 <strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet de créer des comptes sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site avec des comptes de SPAM.</strong><br />
-Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' ) . '">ici</a> et retrouver toutes les options de ce shortcode dans l\'<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) . '">Aide</a>.</div>';
+Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="_blank" href="%s">ici</a> et retrouver toutes les options de ce shortcode dans l\'<a target="_blank" href="%s">Aide</a>.', $url, $url, ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ), admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' ), admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ) ) . '</div>';
 					$ret .= amapress_get_panel_end();
 				} else {
-					$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">Afficher les instructions d\'accès à cet assistant.</a></div>';
+					$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . 'Afficher les instructions d\'accès à cet assistant.' . '</a></div>';
 				}
 			}
 		}
 		$request_key = ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : 'public';
 		if ( empty( $key ) || $request_key != $key ) {
 			if ( empty( $key ) && amapress_can_access_admin() ) {
-				$ret .= '<div style="color:red">L\'argument key (par ex, key="' . uniqid() . uniqid() . '") doit être défini sur le shortcode [inscription-en-ligne] de cette page : par exemple "[inscription-en-ligne key='
-				        . uniqid() . uniqid() . ']". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.
-<br/>Pour une utilisation publique, utilisez key=public</div>';
+				$sample_key = uniqid() . uniqid();
+				$ret        .= '<div style="color:red">' . sprintf( 'L\'argument key (par ex, key="%s") doit être défini sur le shortcode [inscription-en-ligne] de cette page : par exemple "[inscription-en-ligne key=%s]". L\'accès à cette page ne peut se faire que de manière non connectée avec cette clé par la amapiens pour s\'inscrire.
+<br/>Pour une utilisation publique, utilisez key=public', $sample_key, $sample_key ) . '</div>';
 			} elseif ( ! empty( $key ) && empty( $_REQUEST['key'] ) && amapress_is_user_logged_in() ) {
 				$url              = esc_attr( add_query_arg( 'key', $key, get_permalink() ) );
 				$mes_contrat_href = esc_attr( Amapress::get_mes_contrats_page_href() );
-				$ret              .= "<p>Pour accéder à l'assistant d'inscription, cliquez <a href='$url'>ici</a></p>";
+				$ret              .= '<p>' . sprintf( 'Pour accéder à l\'assistant d\'inscription, cliquez <a href=\'%s\'>ici</a>', $url ) . '</p>';
 				if ( ! empty( $mes_contrat_href ) ) {
 					if ( ! $use_contrat_term ) {
-						$ret .= "<p>Pour accéder à vos commandes, cliquez <a href='$mes_contrat_href'>ici</a></p>";
+						$ret .= '<p>' . sprintf( 'Pour accéder à vos commandes, cliquez <a href=\'%s\'>ici</a>', $mes_contrat_href ) . '</p>';
 					} else {
-						$ret .= "<p>Pour accéder à vos contrats, cliquez <a href='$mes_contrat_href'>ici</a></p>";
+						$ret .= '<p>' . sprintf( 'Pour accéder à vos contrats, cliquez <a href=\'%s\'>ici</a>', $mes_contrat_href ) . '</p>';
 					}
 				}
 			} else {
-				$ret .= '<div class="alert alert-danger">Vous êtes dans un espace sécurisé. Accès interdit</div>';
+				$ret .= '<div class="alert alert-danger">' . 'Vous êtes dans un espace sécurisé. Accès interdit' . '</div>';
 			}
 
 			$ret .= $content;
@@ -802,9 +802,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
 			if ( ! $use_contrat_term ) {
-				return '<p>Les commandes en ligne sont closes.</p>' . $closed_message;
+				return '<p>' . 'Les commandes en ligne sont closes.' . '</p>' . $closed_message;
 			} else {
-				return '<p>Les inscriptions en ligne sont closes.</p>' . $closed_message;
+				return '<p>' . 'Les inscriptions en ligne sont closes.' . '</p>' . $closed_message;
 			}
 		}
 	}
@@ -840,18 +840,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				ob_clean();
 
 				if ( ! $use_contrat_term ) {
-					return $additional_css . '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à cette commande. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Commandes</a></p>';
+					$ret = '<p>' . sprintf( '%s a déjà une inscription à cette commande. Veuillez retourner à la page <a href="%s">Commandes</a>', esc_html( $amapien->getDisplayName() ), $contrats_step_url ) . '</p>';
 				} else {
-					return $additional_css . '<p>' . esc_html( $amapien->getDisplayName() ) . ' déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
+					$ret = '<p>' . sprintf( '%s a déjà une inscription à ce contrat. Veuillez retourner à la page <a href="%s">Contrats</a>', esc_html( $amapien->getDisplayName() ), $contrats_step_url ) . '</p>';
 				}
+
+				return $additional_css . $ret;
 			} else {
 				ob_clean();
 
 				if ( ! $use_contrat_term ) {
-					return $additional_css . '<p>Vous avez déjà passé cette commande. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Commandes</a></p>';
+					$ret = '<p>' . sprintf( 'Vous avez déjà passé cette commande. Veuillez retourner à la page <a href="%s">Commandes</a>', $contrats_step_url ) . '</p>';
 				} else {
-					return $additional_css . '<p>Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="' . $contrats_step_url . '">Contrats</a></p>';
+					$ret = '<p>' . sprintf( 'Vous avez déjà une inscription à ce contrat. Veuillez retourner à la page <a href="%s">Contrats</a>', $contrats_step_url ) . '</p>';
 				}
+
+				return $additional_css . $ret;
 			}
 		}
 
@@ -891,9 +895,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
 				if ( ! $use_contrat_term ) {
-					return '<p>Les commandes en ligne sont closes.</p>' . $closed_message;
+					return '<p>' . 'Les commandes en ligne sont closes.' . '</p>' . $closed_message;
 				} else {
-					return '<p>Les inscriptions en ligne sont closes.</p>' . $closed_message;
+					return '<p>' . 'Les inscriptions en ligne sont closes.' . '</p>' . $closed_message;
 				}
 			}
 		}
@@ -917,9 +921,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			] ) );
 	}
 
-	$invalid_access_message = '<p>Accès invalide : veuillez repartir de la <a href="' . esc_attr( $start_step_url ) . '">première étape</a></p>';
+	$invalid_access_message = '<p>' . sprintf( 'Accès invalide : veuillez repartir de la <a href="%s">première étape</a>', esc_attr( $start_step_url ) ) . '</p>';
 
-	$edit_inscription = null;
+	$edit_inscription                                        = null;
 	if ( ! empty( $_REQUEST['edit_inscr_id'] ) ) {
 		Amapress::setFilterForReferent( false );
 		$edit_inscription = AmapressAdhesion::getBy( intval( $_REQUEST['edit_inscr_id'] ) );
@@ -1015,9 +1019,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 <div class="amap-preinscr-norenew">
                     <label for="no_renew"><input type="checkbox" id="no_renew" name="no_renew"/> Je ne souhaite pas
                         renouveler.</label>
-                    <label for="no_renew_reason">Motif (facultatif):</label>
+                    <label for="no_renew_reason"><?php _e( 'Motif (facultatif):', 'amapress' ) ?></label>
                     <textarea id="no_renew_reason" name="no_renew_reason"
-                              disabled="disabled" placeholder="Motif (facultatif)"></textarea>
+                              disabled="disabled"
+                              placeholder="<?php echo esc_attr__( 'Motif (facultatif)', 'amapress' ) ?>"></textarea>
                     <script type="text/javascript">
                         jQuery(function ($) {
                             var $no_renew = $('#no_renew');
@@ -1036,18 +1041,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$honey_2_id = uniqid( 'amps-lastname' );
 			?>
             <span id="<?php echo $honey_1_id; ?>">
-                <label for="amps-firstname">Laisser vide</label>
+                <label for="amps-firstname"><?php _e( 'Laisser vide', 'amapress' ); ?></label>
                 <input type="text" value="" name="amps-firstname"
                        id="amps-firstname"
                        size="40" tabindex="-1" autocomplete="off"/>
             </span>
             <span id="<?php echo $honey_2_id; ?>" style="display:none !important; visibility:hidden !important;">
-                <label for="amps-lastname">Laisser vide</label>
+                <label for="amps-lastname"><?php _e( 'Laisser vide', 'amapress' ); ?></label>
                 <input type="text" value="" name="amps-lastname"
                        id="amps-lastname"
                        size="40" tabindex="-1" autocomplete="off"/>
             </span>
-            <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
+            <input type="submit" value="<?php _e( 'Valider', 'amapress' ); ?>"
+                   class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
 
@@ -1089,9 +1095,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$edit_link = Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() );
 					amapress_wp_mail(
 						$track_no_renews_email,
-						'Adhésion/Préinscription - Non renouvellement - ' . $amapien->getDisplayName(),
+						sprintf( 'Adhésion/Préinscription - Non renouvellement - %s', $amapien->getDisplayName() ),
 						amapress_replace_mail_placeholders(
-							wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien ),
+							wpautop( sprintf( "Bonjour,\n\nL\'amapien %s ne souhaite pas renouveler. Motif:%s\n\n%%%%site_name%%%%", $edit_link, $reason ) ), $amapien ),
 						'', [], $notify_email
 					);
 				}
@@ -1106,24 +1112,24 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( ! Amapress::toBool( $atts['allow_new_mail'] ) && ! $user ) {
 			ob_clean();
 
-			return $additional_css . '<p style="font-weight: bold">Les ' . ( $is_adhesion_mode ? 'adhésions' : 'inscriptions' ) . ' avec une nouvelle adresse email ne sont pas autorisées.</p>
-<p>Si vous êtes déjà membre, vous avez certainement utilisé une adresse email différente.</p>
-<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+			return $additional_css . '<p style="font-weight: bold">' . ( $is_adhesion_mode ? 'Les adhésions' : 'Les inscriptions' ) . __( ' avec une nouvelle adresse email ne sont pas autorisées.', 'amapress' ) . '</p>
+<p>' . 'Si vous êtes déjà membre, vous avez certainement utilisé une adresse email différente.' . '</p>
+<p><a href="' . $start_step_url . '">' . 'Changer d’email' . '</a></p>';
 		}
 
 		if ( ! Amapress::toBool( $atts['allow_existing_mail_for_public'] ) && ! $for_logged && 'public' == $key && $user ) {
 			ob_clean();
 
-			return $additional_css . '<p style="font-weight: bold">Les ' . ( $is_adhesion_mode ? 'adhésions' : 'inscriptions' ) . ' avec une adresse email existante ne sont pas autorisées.</p>
-<p>Si vous êtes déjà membre, veuillez vous connecter.</p>
-<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+			return $additional_css . '<p style="font-weight: bold">' . ( $is_adhesion_mode ? 'Les adhésions' : 'Les inscriptions' ) . __( ' avec une adresse email existante ne sont pas autorisées.', 'amapress' ) . '</p>
+<p>' . 'Si vous êtes déjà membre, veuillez vous connecter.' . '</p>
+<p><a href="' . $start_step_url . '">' . 'Changer d’email' . '</a></p>';
 		}
 
 		if ( $user && ! Amapress::toBool( $atts['allow_coadherents_access'] ) ) {
 			$amapien = AmapressUser::getBy( $user );
 			if ( $amapien->isCoAdherent() ) {
-				return $additional_css . '<p style="font-weight: bold">Les ' . ( $is_adhesion_mode ? 'adhésions' : 'inscriptions' ) . ' ne sont pas autorisées pour les co-adhérents.</p>
-<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+				return $additional_css . '<p style="font-weight: bold">' . ( $is_adhesion_mode ? 'Les adhésions' : 'Les inscriptions' ) . __( ' ne sont pas autorisées pour les co-adhérents.', 'amapress' ) . '</p>
+<p><a href="' . $start_step_url . '">' . 'Changer d’email' . '</a></p>';
 			}
 		}
 
@@ -1145,7 +1151,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( $is_adhesion_mode ) {
 					ob_clean();
 
-					return $additional_css . '<p>Vous avez déjà une adhésion !</p>';
+					return $additional_css . '<p>' . 'Vous avez déjà une adhésion !' . '</p>';
 				}
 			}
 		}
@@ -1193,8 +1199,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$cofoy3_address        = '';
 
 		$user_message   = 'Vous êtes nouveau, complétez vos coordonnées :';
-		$member_message = '<p>Si vous êtes déjà membre, vous avez certainement utilisé une adresse email différente.</p>
-<p><a href="' . $start_step_url . '">Changer d’email</a></p>';
+		$member_message = '<p>' . 'Si vous êtes déjà membre, vous avez certainement utilisé une adresse email différente.' . '</p>
+<p><a href="' . $start_step_url . '">' . 'Changer d’email' . '</a></p>';
 
 		$edit_names               = Amapress::toBool( $atts['edit_names'] ) || empty( $user );
 		$adherents_infos          = '';
@@ -1310,65 +1316,70 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-			<?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
+	        <?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
-			<?php } elseif ( $activate_agreement ) { ?>
+	        <?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+	        <?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-			<?php } ?>
+	        <?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="email">Email : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="email"><?php _e( 'Email : ', 'amapress' ) ?></label>
                     </th>
                     <td><span style="width: 100%"><?php echo esc_html( $email ) ?></span></td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="last_name">Nom* : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="last_name"><?php _e( 'Nom* : ', 'amapress' ) ?></label></th>
                     <td><input style="width: 100%" type="text" id="last_name" name="last_name"
                                class="required single_name"
                                value="<?php echo esc_attr( $user_last_name ) ?>" <?php disabled( ! $edit_names ) ?>/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="first_name">Prénom* : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="first_name"><?php _e( 'Prénom* : ', 'amapress' ) ?></label></th>
                     <td><input style="width: 100%" type="text" id="first_name" name="first_name"
                                class="required single_name"
                                value="<?php echo esc_attr( $user_firt_name ) ?>" <?php disabled( ! $edit_names ) ?>/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="telm">Téléphone
-                            mobile<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? '*' : '' ) ?> : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="telm"><?php _e( 'Téléphone mobile', 'amapress' ) ?><?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? '*' : '' ) ?>
+                            : </label>
                     </th>
                     <td><input style="width: 100%" type="text" id="telm" name="telm"
                                class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
                                value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="telf">Téléphone fixe : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="telf"><?php _e( 'Téléphone fixe : ', 'amapress' ) ?></label></th>
                     <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label
-                                for="address">Adresse<?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
+                                for="address"><?php _e( 'Adresse', 'amapress' ) ?><?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
                             : </label></th>
                     <td><textarea style="width: 100%" rows="4" id="address" name="address"
                                   class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
                     </td>
                 </tr>
-				<?php if ( $allow_trombi_decline ) { ?>
+		        <?php if ( $allow_trombi_decline ) { ?>
                     <tr>
                         <th style="text-align: left; width: auto"></th>
                         <td>
                             <label for="hidaddr"><input type="checkbox" name="hidaddr" <?php checked( $hidaddr ); ?>
-                                                        id="hidaddr"/> Ne pas apparaître sur le trombinoscope
+                                                        id="hidaddr"/> <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?>
                             </label>
                         </td>
                     </tr>
-				<?php } ?>
+		        <?php } ?>
             </table>
             <div>
 				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
@@ -1376,12 +1387,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_cofoyers >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Membre du foyer 1 / Conjoint
+                        <th colspan="2"><?php _e( 'Membre du foyer 1 / Conjoint', 'amapress' ) ?>
                         </th>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-                                : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy1_email"><?php _e( 'Son email : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
@@ -1392,7 +1403,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy1_last_name"><?php _e( 'Son nom : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy1_last_name"
@@ -1403,7 +1415,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_first_name">Son prénom : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy1_first_name"><?php _e( 'Son prénom : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
@@ -1415,7 +1428,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_tels">Téléphone(s) : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy1_tels"><?php _e( 'Téléphone(s) : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy1_tels"
@@ -1427,7 +1441,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     </tr>
 					<?php if ( $show_cofoys_address ) { ?>
                         <tr>
-                            <th style="text-align: left; width: auto"><label for="cofoy1_address">Adresse : </label>
+                            <th style="text-align: left; width: auto"><label
+                                        for="cofoy1_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                           rows="4"
@@ -1453,12 +1468,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_cofoyers >= 2 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Membre du foyer 2
+                        <th colspan="2"><?php _e( 'Membre du foyer 2', 'amapress' ) ?>
                         </th>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy2_email">Son email
-                                : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy2_email"><?php _e( 'Son email : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
@@ -1469,7 +1484,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy2_last_name">Son nom : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy2_last_name"><?php _e( 'Son nom : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy2_last_name"
@@ -1480,7 +1496,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy2_first_name">Son prénom : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy2_first_name"><?php _e( 'Son prénom : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
@@ -1492,7 +1509,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy2_tels">Téléphone(s) : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy2_tels"><?php _e( 'Téléphone(s) : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy2_tels"
@@ -1502,7 +1520,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     </tr>
 					<?php if ( $show_cofoys_address ) { ?>
                         <tr>
-                            <th style="text-align: left; width: auto"><label for="cofoy2_address">Adresse : </label>
+                            <th style="text-align: left; width: auto"><label
+                                        for="cofoy2_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                           rows="4"
@@ -1528,11 +1547,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_cofoyers >= 3 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Membre du foyer 3</th>
+                        <th colspan="2"><?php _e( 'Membre du foyer 3', 'amapress' ) ?></th>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy3_email">Son email
-                                : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy3_email"><?php _e( 'Son email : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                    type="email"
@@ -1543,7 +1562,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy3_last_name">Son nom : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy3_last_name"><?php _e( 'Son nom : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy3_last_name"
@@ -1554,7 +1574,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy3_first_name">Son prénom : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy3_first_name"><?php _e( 'Son prénom : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
@@ -1566,7 +1587,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy3_tels">Téléphone(s) : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy3_tels"><?php _e( 'Téléphone(s) : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                    type="text"
                                                                                                    id="cofoy3_tels"
@@ -1576,7 +1598,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     </tr>
 					<?php if ( $show_cofoys_address ) { ?>
                         <tr>
-                            <th style="text-align: left; width: auto"><label for="cofoy3_address">Adresse : </label>
+                            <th style="text-align: left; width: auto"><label
+                                        for="cofoy3_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                           rows="4"
@@ -1603,11 +1626,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_coadhs >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 1 <em>(Partage du contrat et de son règlement)</em></th>
+                        <th colspan="2"><?php _e( 'Co adhérent 1 <em>(Partage du contrat et de son règlement)</em>', 'amapress' ) ?></th>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh1_email">Son email
-                                : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh1_email"><?php _e( 'Son email : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="email"
                                                                                   id="coadh1_email" name="coadh1_email"
@@ -1616,7 +1639,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh1_last_name">Son nom : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh1_last_name"><?php _e( 'Son nom : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh1_last_name"
                                                                                   name="coadh1_last_name"
@@ -1626,7 +1650,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh1_first_name">Son prénom : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh1_first_name"><?php _e( 'Son prénom : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh1_first_name"
@@ -1637,7 +1662,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh1_tels">Téléphone(s) : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh1_tels"><?php _e( 'Téléphone(s) : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh1_tels" name="coadh1_tels"
                                                                                   class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
@@ -1647,7 +1673,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     </tr>
 					<?php if ( $show_coadherents_address ) { ?>
                         <tr>
-                            <th style="text-align: left; width: auto"><label for="coadh1_address">Adresse : </label>
+                            <th style="text-align: left; width: auto"><label
+                                        for="coadh1_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh1_address" name="coadh1_address"
                                           class=""><?php echo esc_textarea( $coadh1_address ); ?></textarea></td>
@@ -1669,11 +1696,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_coadhs >= 2 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 2 <em>(Partage du contrat et de son règlement)</em></th>
+                        <th colspan="2"><?php _e( 'Co adhérent 2 <em>(Partage du contrat et de son règlement)</em>', 'amapress' ) ?></th>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh2_email">Son email
-                                : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh2_email"><?php _e( 'Son email : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="email"
                                                                                   id="coadh2_email" name="coadh2_email"
@@ -1682,7 +1709,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh2_last_name">Son nom : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh2_last_name"><?php _e( 'Son nom : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh2_last_name"
                                                                                   name="coadh2_last_name"
@@ -1692,7 +1720,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh2_first_name">Son prénom : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh2_first_name"><?php _e( 'Son prénom : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh2_first_name"
@@ -1703,7 +1732,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh2_tels">Téléphone(s) : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh2_tels"><?php _e( 'Téléphone(s) : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh2_tels" name="coadh2_tels"
                                                                                   class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
@@ -1713,7 +1743,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     </tr>
 					<?php if ( $show_coadherents_address ) { ?>
                         <tr>
-                            <th style="text-align: left; width: auto"><label for="coadh2_address">Adresse : </label>
+                            <th style="text-align: left; width: auto"><label
+                                        for="coadh2_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh2_address" name="coadh2_address"
                                           class=""><?php echo esc_textarea( $coadh2_address ); ?></textarea></td>
@@ -1735,11 +1766,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php if ( $max_coadhs >= 3 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
-                        <th colspan="2">Co adhérent 3 <em>(Partage du contrat et de son règlement)</em></th>
+                        <th colspan="2"><?php _e( 'Co adhérent 3 <em>(Partage du contrat et de son règlement)</em>', 'amapress' ) ?></th>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh3_email">Son email
-                                : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh3_email"><?php _e( 'Son email : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="email"
                                                                                   id="coadh3_email" name="coadh3_email"
@@ -1748,7 +1779,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh3_last_name">Son nom : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh3_last_name"><?php _e( 'Son nom : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh3_last_name"
                                                                                   name="coadh3_last_name"
@@ -1758,7 +1790,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh3_first_name">Son prénom : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh3_first_name"><?php _e( 'Son prénom : ', 'amapress' ) ?></label>
                         </th>
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh3_first_name"
@@ -1769,7 +1802,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="coadh3_tels">Téléphone(s) : </label></th>
+                        <th style="text-align: left; width: auto"><label
+                                    for="coadh3_tels"><?php _e( 'Téléphone(s) : ', 'amapress' ) ?></label></th>
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh3_tels" name="coadh3_tels"
                                                                                   class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required_if_not_empty' : '' ) ?>"
@@ -1779,7 +1813,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     </tr>
 					<?php if ( $show_coadherents_address ) { ?>
                         <tr>
-                            <th style="text-align: left; width: auto"><label for="coadh3_address">Adresse : </label>
+                            <th style="text-align: left; width: auto"><label
+                                        for="coadh3_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh3_address" name="coadh3_address"
                                           class=""><?php echo esc_textarea( $coadh3_address ); ?></textarea></td>
@@ -1819,7 +1854,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 			?>
-            <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
+            <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr"
+                   value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"/>
         </form>
 		<?php
 	} else if ( 'agreement' == $step ) {
@@ -1846,22 +1882,23 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_agreement' ) ) ?>">
             <input type="hidden" name="inscr_assistant" value="validate_agreement"/>
             <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
-			<?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-			<?php } ?>
+	        <?php } ?>
             <div class="amap-agreement">
-				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-					$adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ), null ) ); ?>
+		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
+			        $adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ), null ) ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
                                                      class="required" value="1"
-                                                     data-msg="Veuillez cocher la case ci-dessous"/> <?php echo esc_html( wp_unslash( Amapress::getOption(
-						$adhesion_intermittent ? 'online_subscription_inter_agreement_step_checkbox' : 'online_subscription_agreement_step_checkbox' ) ) ); ?>
+                                                     data-msg="<?php echo esc_attr__( 'Veuillez cocher la case ci-dessous', 'amapress' ) ?>"/> <?php echo esc_html( wp_unslash( Amapress::getOption(
+				        $adhesion_intermittent ? 'online_subscription_inter_agreement_step_checkbox' : 'online_subscription_agreement_step_checkbox' ) ) ); ?>
                 </label>
             </p>
             <p>
-                <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr" value="Valider"/>
+                <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr"
+                       value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"/>
             </p>
         </form>
 		<?php
@@ -1875,7 +1912,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( $adh_paiement ) {
 			ob_clean();
 
-			return ( $additional_css . '<p>Vous avez déjà une adhésion. Vous pouvez aller vers l\'étape <a href="' . $contrats_step_url . '">Contrats</a></p>' );
+			return $additional_css . '<p>' . sprintf( 'Vous avez déjà une adhésion. Vous pouvez aller vers l\'étape <a href="%s">Contrats</a>', $contrats_step_url ) . '</p>';
 		}
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
@@ -1901,7 +1938,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$ret   .= '<input type="hidden" name="user_id" value="' . esc_attr( $user_id ) . '"/>';
 		if ( Amapress::toBool( $atts['allow_adhesion_lieu'] ) ) {
 			$ret .= '<div>';
-			$ret .= '<p>Lieu de distribution souhaité :</p>';
+			$ret .= '<p>' . 'Lieu de distribution souhaité :' . '</p>';
 			foreach ( Amapress::get_lieux() as $lieu ) {
 				if ( ! $lieu->isPrincipal() ) {
 					continue;
@@ -1909,8 +1946,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				$ret .= '<label for="adh-lieu-' . $lieu->ID . '"><input class="required" name="amapress_adhesion_lieu" value="' . $lieu->ID . '" type="radio" id="adh-lieu-' . $lieu->ID . '" /> ' . esc_html( $lieu->getTitle() ) . '</label><br/>';
 			}
-			$ret .= '<label for="adh-lieu-any"><input class="required" name="amapress_adhesion_lieu" value="any" type="radio" id="adh-lieu-any" /> N\'importe lequel</label><br/>';
-			$ret .= '<label for="adh-lieu-none"><input class="required" name="amapress_adhesion_lieu" value="none" type="radio" id="adh-lieu-none" /> Aucun</label>';
+			$ret .= '<label for="adh-lieu-any"><input class="required" name="amapress_adhesion_lieu" value="any" type="radio" id="adh-lieu-any" /> ' . 'N\'importe lequel' . '</label><br/>';
+			$ret .= '<label for="adh-lieu-none"><input class="required" name="amapress_adhesion_lieu" value="none" type="radio" id="adh-lieu-none" /> ' . 'Aucun' . '</label>';
 			$ret .= '</div>';
 		}
 		for ( $custom_check_ix = 1; $custom_check_ix < 4; $custom_check_ix ++ ) {
@@ -1923,7 +1960,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
 			$ret .= '<div>';
-			$ret .= '<label for="adh-message" style="display: block">Message personnel :</label><br/>
+			$ret .= '<label for="adh-message" style="display: block">' . 'Message personnel :' . '</label><br/>
 <textarea id="adh-message" name="amapress_adhesion_message"></textarea>';
 			$ret .= '</div>';
 		}
@@ -1959,27 +1996,27 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 		$ret .= '</table>';
-		$ret .= '<p>Montant total : <span id="amapress_adhesion_paiement_amount"></span> €</p>';
+		$ret .= '<p>' . 'Montant total :' . ' <span id="amapress_adhesion_paiement_amount"></span> €</p>';
 		$ret .= $adh_period->getPaymentInfo();
 		$ret .= '<p>';
 		if ( $adh_period->getAllow_Cheque() ) {
-			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="chq" checked="checked" /> Chèque</label>';
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="chq" checked="checked" /> ' . 'Chèque' . '</label>';
 		}
 		if ( $adh_period->getAllow_Transfer() ) {
-			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="vir"/> Virement</label>';
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="vir"/> ' . 'Virement' . '</label>';
 		}
 		if ( $adh_period->getAllow_Cash() ) {
-			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="esp" /> Espèces</label>';
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="esp" /> ' . 'Espèces' . '</label>';
 		}
 		if ( $adh_period->getAllow_LocalMoney() ) {
-			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="mon" /> Monnaie locale</label>';
+			$ret .= '<label><input type="radio" name="amapress_adhesion_paiement_pmt_type" value="mon" /> ' . 'Monnaie locale' . '</label>';
 		}
 		$ret .= '</p>';
 		if ( $adh_period->getAllowAmapienInputPaiementsDetails() ) {
 			$ret .= '<p><label for="amapress_adhesion_paiement_numero">' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_num_label' ) ) ) . '</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
-			$ret .= '<p><label for="amapress_adhesion_paiement_banque">Banque :</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
+			$ret .= '<p><label for="amapress_adhesion_paiement_banque">' . 'Banque :' . '</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
 		}
-		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="Valider"/>';
+		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="' . esc_attr__( 'Valider', 'amapress' ) . '"/>';
 		$ret .= '</form>';
 
 		echo $ret;
@@ -2104,15 +2141,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		if ( ! $is_adhesion_mode ) {
 			if ( ! $use_contrat_term ) {
-				echo '<p>Vous pouvez maintenant passer commandes<br/>';
+				echo '<p>' . 'Vous pouvez maintenant passer commandes' . '<br/>';
 			} else {
-				echo '<p>Vous pouvez maintenant vous inscrire aux contrats disponibles<br/>';
+				echo '<p>' . 'Vous pouvez maintenant vous inscrire aux contrats disponibles' . '<br/>';
 			}
 			echo '<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
 </form></p>';
 		}
 	} else if ( 'norenew' == $step ) {
@@ -2140,9 +2177,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$edit_link = Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName() );
 				amapress_wp_mail(
 					$track_no_renews_email,
-					'Adhésion/Préinscription - Non renouvellement - ' . $amapien->getDisplayName(),
+					sprintf( 'Adhésion/Préinscription - Non renouvellement - %s', $amapien->getDisplayName() ),
 					amapress_replace_mail_placeholders(
-						wpautop( "Bonjour,\n\nL\'amapien $edit_link ne souhaite pas renouveler. Motif:$reason\n\n%%site_name%%" ), $amapien ),
+						wpautop( sprintf( "Bonjour,\n\nL\'amapien %s ne souhaite pas renouveler. Motif:%s\n\n%%%%site_name%%%%", $edit_link, $reason ) ), $amapien ),
 					'', [], $notify_email
 				);
 			}
@@ -2200,9 +2237,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		} else {
 			if ( ! $use_contrat_term ) {
-				echo '<h4>Les commandes de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
+				echo '<h4>';
+				echo sprintf( 'Les commandes de %s', esc_html( $amapien->getDisplayName() ) );
+				echo '</h4>';
 			} else {
-				echo '<h4>Les contrats de ' . esc_html( $amapien->getDisplayName() ) . '</h4>';
+				echo '<h4>';
+				echo sprintf( 'Les contrats de %s', esc_html( $amapien->getDisplayName() ) );
+				echo '</h4>';
 			}
 		}
 		$adh_paiement = null;
@@ -2219,8 +2260,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				if ( empty( $adh_paiement ) ) {
 					if ( ! $activate_adhesion ) {
-						echo '<p><strong>Vous n\'avez pas d\'adhésion sur la ' .
-						     esc_html( sprintf( 'Période - %s > %s',
+						echo '<p><strong>' .
+						     esc_html( sprintf( 'Vous n\'avez pas d\'adhésion sur la Période - %s > %s',
 							     date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
 							     date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) ) ) .
 						     '</strong></p>';
@@ -2232,7 +2273,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="' . ( $skip_coords ? ( $activate_agreement ? 'agreement' : 'adhesion' ) : ( $for_logged ? 'coords_logged' : 'coords' ) ) . '" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Adhérer" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Adhérer', 'amapress' ) . '" />
 </form></p>';
 						if ( $track_no_renews ) {
 							?>
@@ -2242,15 +2283,16 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								      'message'
 							      ] ) ) ) ?>">
                                 <div class="amap-preinscr-norenew">
-                                    <h4>Non renouvellement</h4>
+                                    <h4><?php _e( 'Non renouvellement', 'amapress' ) ?></h4>
 									<?php if ( $amapien->getNoRenew() ) {
-										echo '<p>Votre non renouvellement a été pris en compte !</p>';
+										echo '<p>' . 'Votre non renouvellement a été pris en compte !' . '</p>';
 									} ?>
                                     <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
-                                    <label for="no_renew_reason">Motif (facultatif):</label>
+                                    <label for="no_renew_reason"><?php _e( 'Motif (facultatif):', 'amapress' ) ?></label>
                                     <textarea id="no_renew_reason" name="no_renew_reason"
-                                              placeholder="Motif (facultatif)"><?php echo esc_textarea( $amapien->getNoRenewReason() ); ?></textarea>
-                                    <input type="submit" name="no_renew" value="Je ne souhaite pas renouveler."/>
+                                              placeholder="<?php echo esc_attr__( 'Motif (facultatif)', 'amapress' ) ?>"><?php echo esc_textarea( $amapien->getNoRenewReason() ); ?></textarea>
+                                    <input type="submit" name="no_renew"
+                                           value="<?php echo esc_attr__( 'Je ne souhaite pas renouveler.', 'amapress' ) ?>"/>
                                 </div>
                             </form>
 							<?php
@@ -2278,12 +2320,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 					if ( Amapress::toBool( $atts['show_adhesion_infos'] ) ) {
 						if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
-							echo sprintf( '<p>Votre adhésion sera valable du %s au %s<br />%s</p>',
-								date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
-								date_i18n( 'd/m/Y', $adh_period->getDate_fin() ),
-								$print_bulletin );
+							echo '<p>' . sprintf( 'Votre adhésion sera valable du %s au %s',
+									date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
+									date_i18n( 'd/m/Y', $adh_period->getDate_fin() )
+								) . '<br />' . $print_bulletin . '</p>';
 						} else {
-							echo '<p>Votre adhésion est valable jusqu\'au ' . date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) . '.<br />
+							echo '<p>';
+							echo sprintf( 'Votre adhésion est valable jusqu\'au %s', date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) );
+							echo '.<br />
 ' . $print_bulletin . '</p>';
 						}
 					}
@@ -2329,18 +2373,18 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$display_remaining_contrats = false;
 			if ( ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p><strong>Les commandes doivent être faites par l\'adhérent principal.</strong></p>';
+					echo '<p><strong>' . 'Les commandes doivent être faites par l\'adhérent principal.' . '</strong></p>';
 				} else {
-					echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+					echo '<p><strong>' . 'L\'inscription aux contrats doit être faite par l\'adhérent principal.' . '</strong></p>';
 				}
 				$display_remaining_contrats = false;
 			} else {
 				if ( count( $principal_contrats ) == 1 ) {
 					?>
-                    <p>Pour accéder à tous nos contrats en ligne,
-                        vous devez d’abord vous inscrire au contrat
-                        “<strong><?php echo esc_html( $principal_contrats[0]->getTitle() ); ?></strong>”
-                        (<?php echo $principal_contrats[0]->getModel()->linkToPermalinkBlank( 'plus d\'infos' ); ?>)
+                    <p><?php echo sprintf( __( 'Pour accéder à tous nos contrats en ligne,
+                        vous devez d’abord vous inscrire au contrat “<strong>%s</strong>” (%s)', 'amapress' ),
+							esc_html( $principal_contrats[0]->getTitle() ),
+							$principal_contrats[0]->getModel()->linkToPermalinkBlank( __( 'plus d\'infos', 'amapress' ) ) ); ?>
                     </p>
                     <p><?php
 						$inscription_url = add_query_arg( [
@@ -2352,15 +2396,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrats[0]->ID . '"/>
-<input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
+<input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Confirmer', 'amapress' ) . '"/>
 </form>';
 						?>
                     </p>
 					<?php
 				} else {
 					?>
-                    <p>Pour accéder à tous nos contrats en ligne, vous devez d’abord vous
-                        inscrire à l’un des contrats suivants :</p>
+                    <p><?php _e( 'Pour accéder à tous nos contrats en ligne, vous devez d’abord vous
+                        inscrire à l’un des contrats suivants :', 'amapress' ) ?></p>
 					<?php
 					foreach ( $principal_contrats as $principal_contrat ) {
 						?>
@@ -2378,7 +2422,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrat->ID . '"/>
-<input type="submit" class="btn btn-default btn-assist-inscr" value="Confirmer"/>
+<input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Confirmer', 'amapress' ) . '"/>
 </form>';
 							?>
                         </p>
@@ -2423,22 +2467,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( ! $admin_mode ) {
 					if ( $show_current_inscriptions || $show_only_subscribable_inscriptions ) {
 						if ( ! $use_contrat_term ) {
-							echo '<p>Vos commandes :</p>';
+							echo '<p>' . 'Vos commandes :' . '</p>';
 						} else {
-							echo '<p>Vos contrats :</p>';
+							echo '<p>' . 'Vos contrats :' . '</p>';
 						}
 					} else {
 						if ( ! $use_contrat_term ) {
-							echo '<p>Vos commandes éditables :</p>';
+							echo '<p>' . 'Vos commandes éditables :' . '</p>';
 						} else {
-							echo '<p>Vos contrats éditables :</p>';
+							echo '<p>' . 'Vos contrats éditables :' . '</p>';
 						}
 					}
 				} else {
 					if ( ! $use_contrat_term ) {
-						echo '<p>Ses commandes :</p>';
+						echo '<p>' . 'Ses commandes :' . '</p>';
 					} else {
-						echo '<p>Ses contrats :</p>';
+						echo '<p>' . 'Ses contrats :' . '</p>';
 					}
 				}
 				echo '<ul style="list-style-type: disc">';
@@ -2476,19 +2520,20 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					} else {
 						$rattrapage = $adh->getProperty( 'dates_rattrapages' );
 						if ( ! Amapress::toBool( $atts['show_details_button'] ) ) {
-							$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
-									'Vous avez composé votre panier "' . $adh->getContrat_instance()->getModelTitle() . '" (' . Amapress::makeLink( add_query_arg( [
+							if ( $adh->getContrat_instance()->isPanierVariable() ) {
+								$contrat_info = sprintf( 'Vous avez composé votre panier "%s" (%s) pour %s distribution(s) pour un montant total de %s € (%s)<br/>%s dates distributions : %s%s',
+									$adh->getContrat_instance()->getModelTitle(), Amapress::makeLink( add_query_arg( [
 										'step'       => 'details',
 										'contrat_id' => $adh->ID
-									] ), 'Détails', true, true ) . ') pour ' :
-									'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour ' )
-							                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' € (' . $adh->getProperty( 'option_paiements' ) . ')'
-							                . '<br/>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
-							                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+									] ), 'Détails', true, true ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'option_paiements' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+							} else {
+								$contrat_info = sprintf( 'Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s € (%s)<br/>%s dates distributions : %s%s',
+									$adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'option_paiements' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+							}
 						} else {
 							$contrat_info = '';
 							if ( ! $adh->getContrat_instance()->isPanierVariable() ) {
-								$contrat_info .= 'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '. ';
+								$contrat_info .= sprintf( 'Vous avez choisi le(s) panier(s) "%s". ', $adh->getProperty( 'quantites' ) );
 							}
 							$contrat_info .= Amapress::makeButtonLink( add_query_arg( [
 								'step'       => 'details',
@@ -2498,13 +2543,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 						if ( Amapress::toBool( $atts['contact_referents'] ) ) {
 							$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
-							$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' );
+							$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( sprintf( 'Mon inscription %s', $adh->getTitle() ) ), 'Contacter les référents' );
 						}
 						$coadherents_info = $adh->getAdherent()->getCoAdherentsList( true, false, false, $adh->getContrat_instanceId() );
 						if ( empty( $coadherents_info ) ) {
-							$coadherents_info = 'aucun';
+							$coadherents_info = __( 'aucun', 'amapress' );
 						}
-						$coadherents_info = '<br /><strong>Co-adhérents</strong> : ' . $coadherents_info;
+						$coadherents_info = '<br /><strong>' . 'Co-adhérents' . '</strong> : ' . $coadherents_info;
 						$edit_contrat     = '';
 						if ( 'stp' == $adh->getMainPaiementType() && AmapressAdhesion::TO_CONFIRM == $adh->getStatus() ) {
 							$edit_contrat .= '<br/><form method="get" action="' . esc_attr( get_permalink() ) . '">
@@ -2512,7 +2557,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="stripe" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="Payer en ligne" class="btn btn-danger btn-assist-inscr"
+<input type="submit" value="' . esc_attr__( 'Payer en ligne', 'amapress' ) . '" class="btn btn-danger btn-assist-inscr"
  	title="' . esc_attr( 'Payer en ligne et valider l\'inscription. ' . ( $adh->canSelfEdit() ? 'Une fois payée, l\'inscription ne sera plus modifiable.' : '' ) ) . '"/>
 </form>';
 						}
@@ -2528,7 +2573,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $adh->getContrat_instanceId() . '" />
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
 							$edit_contrat    .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
@@ -2536,7 +2581,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $adh->ID . '" />
 <input type="hidden" name="cancel_inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="Annuler" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
 						}
 						echo '<li style="margin-left: 35px"><strong>' . $inscription_title . '</strong>' . $coadherents_info . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
@@ -2547,24 +2592,24 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( $allow_inscriptions ) {
 				if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
 					if ( ! $use_contrat_term ) {
-						echo '<p><strong>Les commandes doivent être passées par l\'adhérent principal.</strong></p>';
+						echo '<p><strong>' . 'Les commandes doivent être passées par l\'adhérent principal.' . '</strong></p>';
 					} else {
-						echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+						echo '<p><strong>' . 'L\'inscription aux contrats doit être faite par l\'adhérent principal.' . '</strong></p>';
 					}
 					$display_remaining_contrats = false;
 				} else {
 					if ( ! empty( $user_subscribable_contrats ) ) {
 						if ( ! $admin_mode ) {
 							if ( ! $use_contrat_term ) {
-								echo '<p>Quelle commande souhaitez vous passer ?</p>';
+								echo '<p>' . 'Quelle commande souhaitez vous passer ?' . '</p>';
 							} else {
-								echo '<p>A quel contrat souhaitez-vous vous inscrire ?</p>';
+								echo '<p>' . 'A quel contrat souhaitez-vous vous inscrire ?' . '</p>';
 							}
 						} else {
 							if ( ! $use_contrat_term ) {
-								echo '<p>Quelle commande souhaitez vous passer pour cet amapien ?</p>';
+								echo '<p>' . 'Quelle commande souhaitez vous passer pour cet amapien ?' . '</p>';
 							} else {
-								echo '<p>A quel contrat souhaitez-vous vous inscrire cet amapien ?</p>';
+								echo '<p>' . 'A quel contrat souhaitez-vous vous inscrire cet amapien ?' . '</p>';
 							}
 						}
 					}
@@ -2573,28 +2618,28 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			if ( ! $admin_mode && ! $allow_coadherents_inscription && $amapien->isCoAdherent() && $allow_inscriptions ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p><strong>Les commandes doivent être passées par l\'adhérent principal.</strong></p>';
+					echo '<p><strong>' . 'Les commandes doivent être passées par l\'adhérent principal.' . '</strong></p>';
 				} else {
-					echo '<p><strong>L\'inscription aux contrats doit être faite par l\'adhérent principal.</strong></p>';
+					echo '<p><strong>' . 'L\'inscription aux contrats doit être faite par l\'adhérent principal.' . '</strong></p>';
 				}
 				$display_remaining_contrats = false;
 			} else {
 				if ( ! $admin_mode ) {
 					if ( ! $use_contrat_term ) {
-						echo '<p>Vous n\'avez pas encore de passé de commandes</p>';
+						echo '<p>' . 'Vous n\'avez pas encore de passé de commandes' . '</p>';
 					} elseif ( $allow_inscriptions ) {
-						echo '<p>Vous n\'avez pas encore de contrats</p>';
+						echo '<p>' . 'Vous n\'avez pas encore de contrats' . '</p>';
 					}
 					if ( $allow_inscriptions ) {
 						if ( ! $use_contrat_term ) {
-							echo '<p>Vous pouvez vous passer les commandes ci-dessous :</p>';
+							echo '<p>' . 'Vous pouvez vous passer les commandes ci-dessous :' . '</p>';
 						} else {
-							echo '<p>Vous pouvez vous inscrire aux contrats ci-dessous :</p>';
+							echo '<p>' . 'Vous pouvez vous inscrire aux contrats ci-dessous :' . '</p>';
 						}
 					}
 				} else {
-					echo '<p>Il/Elle n\'a pas encore de contrats</p>';
-					echo '<p>Vous pouvez l\'inscrire aux autres contrats ci-dessous :</p>';
+					echo '<p>' . 'Il/Elle n\'a pas encore de contrats' . '</p>';
+					echo '<p>' . 'Vous pouvez l\'inscrire aux autres contrats ci-dessous :' . '</p>';
 				}
 			}
 		}
@@ -2677,9 +2722,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p>Commandes disponibles :</p>';
+					echo '<p>' . 'Commandes disponibles :' . '</p>';
 				} else {
-					echo '<p>Contrats disponibles :</p>';
+					echo '<p>' . 'Contrats disponibles :' . '</p>';
 				}
 				echo '<ul style="list-style-type: disc">';
 				foreach ( $user_subscribable_contrats as $contrat ) {
@@ -2699,12 +2744,18 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					if ( $admin_mode ) {
 						if ( $contrat->isFull() ) {
 							if ( $contrat->hasEquivalentQuant() ) {
-								echo '<li style="margin-left: 35px">' . $contrat_title . ', contrat <strong>COMPLET (' . $contrat->getAdherentsEquivalentQuantites() . ' parts)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum de parts et/ou nb maximum de parts par panier)</li>';
+								echo '<li style="margin-left: 35px">';
+								echo sprintf( '%s, contrat <strong>COMPLET (%s parts)</strong> :<br/>%s (nb maximum de parts et/ou nb maximum de parts par panier)', $contrat_title, $contrat->getAdherentsEquivalentQuantites(), Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) );
+								echo '</li>';
 							} else {
-								echo '<li style="margin-left: 35px">' . $contrat_title . ', contrat <strong>COMPLET (' . $contrat->getAdherentsCount() . ' amapiens)</strong> :<br/>' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) . ' (nb maximum d\'amapiens/parts et/ou nb maximum d\'amapiens/parts par panier)</li>';
+								echo '<li style="margin-left: 35px">';
+								echo sprintf( '%s, contrat <strong>COMPLET (%s amapiens)</strong> :<br/>%s (nb maximum d\'amapiens/parts et/ou nb maximum d\'amapiens/parts par panier)', $contrat_title, $contrat->getAdherentsCount(), Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer ses quota', true, true ) );
+								echo '</li>';
 							}
 						} else {
-							echo '<li style="margin-left: 35px">' . $contrat_title . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">Ajouter une inscription</a></li>';
+							echo '<li style="margin-left: 35px">';
+							echo $contrat_title . ' (' . Amapress::makeLink( $contrat->getAdminEditLink(), 'Editer', true, true ) . ') : <br/><a class="button button-secondary" href="' . esc_attr( $inscription_url ) . '">' . 'Ajouter une inscription' . '</a>';
+							echo '</li>';
 						}
 					} else {
 						$deliveries_dates = '';
@@ -2720,14 +2771,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								date_i18n( 'd/m/Y', $contrat->getDate_cloture() )
 							);
 						}
-						echo '<li style="margin-left: 35px">' . $contrat_title . $deliveries_dates . ' (' . $contrat->getModel()->linkToPermalinkBlank( 'plus d\'infos' ) . ') : 
+						echo '<li style="margin-left: 35px">' . $contrat_title . $deliveries_dates . ' (' . $contrat->getModel()->linkToPermalinkBlank( __( 'plus d\'infos', 'amapress' ) ) . ') : 
 <br/>
 <form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $contrat->ID . '" />
-<input type="submit" value="M\'inscrire" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'M\'inscrire', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form></li>';
 					}
 				}
@@ -2737,28 +2788,29 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					if ( empty( $subscribable_contrats ) ) {
 						$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
 						if ( ! $use_contrat_term ) {
-							echo '<p>Les commandes sont closes.</p>' . $closed_message;
+							echo '<p>' . 'Les commandes sont closes.' . '</p>' . $closed_message;
 						} else {
-							echo '<p>Les inscriptions en ligne sont closes.</p>' . $closed_message;
+							echo '<p>' . 'Les inscriptions en ligne sont closes.' . '</p>' . $closed_message;
 						}
 					} else {
 						$mes_contrat_href = esc_attr( Amapress::get_mes_contrats_page_href() );
 						if ( ! $use_contrat_term ) {
-							echo '<p>Vous êtes déjà passé toutes les commandes disponibles.';
+							echo '<p>';
+							echo 'Vous êtes déjà passé toutes les commandes disponibles.';
 							if ( ! empty( $mes_contrat_href ) ) {
-								echo "<br />Pour accéder à vos commandes, cliquez <a href='$mes_contrat_href'>ici</a>";
+								echo '<br />' . 'Pour accéder à vos commandes, cliquez ' . '<a href=\'$mes_contrat_href\'>' . __( 'ici', 'amapress' ) . '</a>';
 							}
 							echo '</p>';
 						} else {
-							echo '<p>Vous êtes déjà inscrit à tous les contrats.';
+							echo '<p>' . 'Vous êtes déjà inscrit à tous les contrats.';
 							if ( ! empty( $mes_contrat_href ) ) {
-								echo "<br />Pour accéder à vos contrats, cliquez <a href='$mes_contrat_href'>ici</a>";
+								echo '<br />' . 'Pour accéder à vos contrats, cliquez ' . '<a href=\'$mes_contrat_href\'>' . __( 'ici', 'amapress' ) . '</a>';
 							}
 							echo '</p>';
 						}
 					}
 				} else {
-					echo '<p>Il/Elle est inscrit à tous les contrats que vous gérez.</p>';
+					echo '<p>' . 'Il/Elle est inscrit à tous les contrats que vous gérez.' . '</p>';
 				}
 			}
 		}
@@ -2780,12 +2832,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		if ( ! $admin_mode && $has_principal_contrat && ! $is_mes_contrats && ! $for_logged ) {
-			echo '<p>J\'ai fini :<br/>
+			echo '<p>' . 'J\'ai fini :' . '<br/>
 <form method="get" action="' . esc_attr( $the_end_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="the_end" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input type="submit" value="Terminer" class="btn btn-default btn-assist-end" />
+<input type="submit" value="' . esc_attr__( 'Terminer', 'amapress' ) . '" class="btn btn-default btn-assist-end" />
 </form></p>';
 		}
 	} else if ( 'inscr_contrat_date_lieu' == $step ) {
@@ -2803,7 +2855,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( empty( $lieux ) ) {
 			ob_clean();
 
-			return ( $additional_css . '<p><strong>Attention</strong> : le contrat ' . Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) . ' n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.</p>' );
+			return $additional_css . '<p>' . ( sprintf( '<strong>Attention</strong> : le contrat %s n\'a aucun lieu de livraison associé. Veuillez corriger ce contrat avant de poursuivre.', Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle() ) ) ) . '</p>';
 		}
 		$step_name = wp_unslash( Amapress::getOption( 'online_subscription_date_lieu_step_name' ) );
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . ' - ' . esc_html( $contrat->getTitle() ) . '</h4>';
@@ -2849,12 +2901,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$is_started       = $first_avail_date != $first_contrat_date;
 			if ( ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p>Les commandes en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je prends contact pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
+					echo '<p>' . sprintf( 'Les commandes en ligne sont ouvertes du “%s” au “%s”, hors de cette période, je prends contact pour préciser ma demande : “<a href="mailto:%s">%s</a>”', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ), date_i18n( 'd/m/Y', $contrat->getDate_cloture() ), esc_attr( $atts['email'] ), esc_html( $atts['email'] ) ) . '</p>';
 				} else {
-					echo '<p>Les inscriptions en ligne sont ouvertes du “' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '” au “' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '”, hors de cette période, je prends contact pour préciser ma demande : “<a href="mailto:' . esc_attr( $atts['email'] ) . '">' . esc_html( $atts['email'] ) . '</a>”</p>';
+					echo '<p>' . sprintf( 'Les inscriptions en ligne sont ouvertes du “%s” au “%s”, hors de cette période, je prends contact pour préciser ma demande : “<a href="mailto:%s">%s</a>”', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ), date_i18n( 'd/m/Y', $contrat->getDate_cloture() ), esc_attr( $atts['email'] ), esc_html( $atts['email'] ) ) . '</p>';
 				}
 			}
-			echo '<p><strong>Date</strong></p>';
+			echo '<p><strong>' . 'Date' . '</strong></p>';
 			if ( ! $is_started && ! $admin_mode ) {
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
 				$first_date_dist = $contrat->getRealDateForDistribution( $first_contrat_date );
@@ -2863,15 +2915,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$last_date_dist = Amapress::add_a_month( $contrat->getDate_debut(), $contrat->getMaxContratMonths() );
 				}
 				if ( 1 == count( $contrat->getListe_dates() ) ) {
-					echo '<p>Je m’inscris pour la distribution ponctuelle du ' . date_i18n( 'l d F Y', $first_date_dist ) . '</p>';
+					echo '<p>' . sprintf( 'Je m’inscris pour la distribution ponctuelle du %s', date_i18n( 'l d F Y', $first_date_dist ) ) . '</p>';
 				} else {
 					if ( ! $use_contrat_term ) {
-						echo '<p>Je passe commande pour la période du ' . date_i18n( 'l d F Y', $first_date_dist ) . ' au ' . date_i18n( 'l d F Y', $last_date_dist ) . '
- (' . count( $contrat->getListe_dates() ) . ' dates de distributions)</p>';
+						echo '<p>' . sprintf( 'Je passe commande pour la période du %s au %s (%s dates de distributions)', date_i18n( 'l d F Y', $first_date_dist ), date_i18n( 'l d F Y', $last_date_dist ), count( $contrat->getListe_dates() ) ) . '</p>';
 
 					} else {
-						echo '<p>Je m’inscris pour la période complète : du ' . date_i18n( 'l d F Y', $first_date_dist ) . ' au ' . date_i18n( 'l d F Y', $last_date_dist ) . '
- (' . count( $contrat->getListe_dates() ) . ' dates de distributions)</p>';
+						echo '<p>' . sprintf( 'Je m’inscris pour la période complète : du %s au %s (%s dates de distributions)', date_i18n( 'l d F Y', $first_date_dist ), date_i18n( 'l d F Y', $last_date_dist ), count( $contrat->getListe_dates() ) ) . '</p>';
 					}
 				}
 			} else {
@@ -2912,12 +2962,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				<?php
 			}
 
-			echo '<p><strong>Lieu</strong></p>';
+			echo '<p><strong>' . 'Lieu' . '</strong></p>';
 			if ( count( $lieux ) > 1 ) {
 				if ( ! $admin_mode ) {
-					echo '<p style="margin-bottom: 0">Je récupérerai mon panier à :</p>';
+					echo '<p style="margin-bottom: 0">' . 'Je récupérerai mon panier à :' . '</p>';
 				} else {
-					echo '<p style="margin-bottom: 0">Veuillez chosir son lieu de distribution :</p>';
+					echo '<p style="margin-bottom: 0">' . 'Veuillez chosir son lieu de distribution :' . '</p>';
 				}
 				foreach ( $lieux as $lieu ) {
 					$lieu_id    = $lieu->ID;
@@ -2927,12 +2977,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			} else {
 				$lieu_title = $lieux[0]->linkToPermalinkBlank( esc_html( $lieux[0]->getLieuTitle() ) ) . ' (' . esc_html( $lieux[0]->getFormattedAdresse() ) . ')';
-				echo '<p>Je récupérerai mon panier à ' . $lieu_title . '</p>';
+				echo '<p>' . sprintf( 'Je récupérerai mon panier à %s', $lieu_title ) . '</p>';
 				echo '<input name="lieu_id" value="' . $lieux[0]->ID . '" type="hidden" />';
 			}
 
 			if ( Amapress::hasPartialCoAdhesion() ) {
-				echo '<p><strong>Co-adhérents</strong></p>';
+				echo '<p><strong>' . 'Co-adhérents' . '</strong></p>';
 
 				if ( $for_logged && amapress_is_user_logged_in() ) {
 					$user_id = wp_get_current_user()->ID;
@@ -2945,7 +2995,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$amapien = AmapressUser::getBy( $user_id );
 				$coadhs  = $amapien->getAllDirectlyLinkedCoUsers( true, false );
 				if ( empty( $coadhs ) ) {
-					echo '<p>Vous n\'avez aucun co-adhérent déclaré</p>';
+					echo '<p>' . 'Vous n\'avez aucun co-adhérent déclaré' . '</p>';
 				} else {
 					if ( $edit_inscription ) {
 						$inscr_coadhs = [
@@ -2973,7 +3023,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			//			}
 			?>
             <br/>
-            <input type="submit" value="Valider" class="btn btn-default btn-assist-inscr"/>
+            <input type="submit" value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"
+                   class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
 	} else if ( 'stripe_callback' == $step ) {
@@ -3133,7 +3184,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
     console.log(result.error.message);
   });
   </script>';
-			echo '<p>Réglement en ligne en cours...</p>';
+			echo '<p>' . 'Réglement en ligne en cours...' . '</p>';
 		} catch ( \Stripe\Exception\ApiErrorException $ex ) {
 			echo '<p class="error" style="color:red">' . esc_html( $ex->getMessage() ) . '</p>';
 		}
@@ -3221,9 +3272,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					wp_die( $invalid_access_message ); //phpcs:ignore
 				}
 				if ( ! $use_contrat_term ) {
-					echo '<p>Votre commande ' . esc_html( $adh->getTitle() ) . ' a été annulée avec succès.</p>';
+					echo '<p>' . sprintf( 'Votre commande %s a été annulée avec succès.', esc_html( $adh->getTitle() ) ) . '</p>';
 				} else {
-					echo '<p>Votre inscription ' . esc_html( $adh->getTitle() ) . ' a été annulée avec succès.</p>';
+					echo '<p>' . sprintf( 'Votre inscription %s a été annulée avec succès.', esc_html( $adh->getTitle() ) ) . '</p>';
 				}
 				if ( ! $use_contrat_term ) {
 					echo '<p>' . Amapress::makeLink( $contrats_step_url, 'Retourner à la liste des commandes' ) . '</p>';
@@ -3234,9 +3285,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				return ob_get_clean();
 			} else {
 				if ( ! $use_contrat_term ) {
-					echo '<p>Vous avez demandé l\'annulation de la commande suivante :<br/>';
+					echo '<p>' . 'Vous avez demandé l\'annulation de la commande suivante :' . '<br/>';
 				} else {
-					echo '<p>Vous avez demandé l\'annulation de l\'inscription suivante :<br/>';
+					echo '<p>' . 'Vous avez demandé l\'annulation de l\'inscription suivante :' . '<br/>';
 				}
 				echo Amapress::makeLink( add_query_arg( 'confirm', 'T' ), 'Confirmer l\'annulation' ) . '<br/>
 ' . Amapress::makeLink( $contrats_step_url, 'Retourner à la liste des contrats' ) . '</p>';
@@ -3260,20 +3311,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			] ), 'Livraisons', true, true, 'btn btn-default' );
 
 		}
-		$rattrapage   = $adh->getProperty( 'dates_rattrapages' );
-		$contrat_info = ( $adh->getContrat_instance()->isPanierVariable() ?
-				'Vous avez composé votre panier "' . $adh->getContrat_instance()->getModelTitle() . '" pour ' :
-				'Vous avez choisi le(s) panier(s) "' . $adh->getProperty( 'quantites' ) . '" pour ' )
-		                . $adh->getProperty( 'nb_distributions' ) . ' distribution(s) pour un montant total de ' . $adh->getProperty( 'total' ) . ' €'
-		                . '<h3>Distributions</h3><p>' . $adh->getProperty( 'nb_dates' ) . ' dates distributions : ' . $adh->getProperty( 'dates_distribution_par_mois' )
-		                . ( ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' ) . '</p>';
-		$contrat_info .= '<h3>Lieu</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
-		$contrat_info .= '<h3>Détails</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
-		$contrat_info .= '<h3>Options de paiements</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p><p>Ordre: ' . $adh->getProperty( 'paiements_ordre' ) . '</p>';
+		$rattrapage = $adh->getProperty( 'dates_rattrapages' );
+		if ( $adh->getContrat_instance()->isPanierVariable() )
+			$contrat_info = sprintf( '<p>Vous avez composé votre panier "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions : %s%s</p>', $adh->getContrat_instance()->getModelTitle(), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+		else
+			$contrat_info = sprintf( '<p>Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions : %s%s</p>', $adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+
+		$contrat_info .= '<h3>' . 'Lieu' . '</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
+		$contrat_info .= '<h3>' . 'Détails' . '</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
+		$contrat_info .= '<h3>' . 'Options de paiements' . '</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p><p>' . 'Ordre: ' . $adh->getProperty( 'paiements_ordre' ) . '</p>';
 		$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
-		$contrat_info .= '<h3>Référents</h3>';
+		$contrat_info .= '<h3>' . 'Référents' . '</h3>';
 		$contrat_info .= '<p>' . $adh->getProperty( 'referents' ) . '</p>';
-		$contrat_info .= '<p>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( 'Mon inscription ' . $adh->getTitle() ), 'Contacter les référents' ) . '</p>';
+		$contrat_info .= '<p>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( sprintf( 'Mon inscription %s', $adh->getTitle() ) ), 'Contacter les référents' ) . '</p>';
 		echo '<h4>' . esc_html( $adh->getTitle() ) . '</h4><p>' . $contrat_info . '</p>';
 	} else if ( 'inscr_contrat_engage' == $step ) {
 		if ( empty( $_REQUEST['contrat_id'] ) ) {
@@ -3342,15 +3392,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 //		echo $contrat->getOnlineContrat();
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
 			if ( ! $use_contrat_term ) {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">Cette commande comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') :</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( 'Cette commande comporte “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) :', $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
 			} else {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">Ce contrat comporte “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') :</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( 'Ce contrat comporte “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) :', $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
 			}
 		} else {
 			if ( ! $use_contrat_term ) {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') avant la fin de cette commande :</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( 'Il reste “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) avant la fin de cette commande :', $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
 			} else {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">Il reste “<strong>' . $dates_factors . '</strong>” distributions (étalées sur “<strong>' . count( $dates ) . '</strong>” dates' . $rattrapage_renvoi . ') avant la fin de ce contrat :</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( 'Il reste “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) avant la fin de ce contrat :', $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
 			}
 		}
 		echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
@@ -3363,21 +3413,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		foreach ( $dates as $d ) {
 			$real_date = $contrat->getRealDateForDistribution( $d );
 			if ( Amapress::start_of_day( $real_date ) != Amapress::start_of_day( $d ) ) {
-				$reports[] = 'livraison du ' . date_i18n( 'd/m/Y', $d ) . ' reportée au ' . date_i18n( 'd/m/Y', $real_date );
+				$reports[] = sprintf( 'livraison du %s reportée au %s', date_i18n( 'd/m/Y', $d ), date_i18n( 'd/m/Y', $real_date ) );
 			}
 		}
 		if ( ! empty( $reports ) ) {
-			echo '<p>Report(s) de livraison : ' . implode( ', ', $reports ) . '</p>';
+			echo '<p>' . 'Report(s) de livraison : ' . implode( ', ', $reports ) . '</p>';
 		}
 
 		if ( ! empty( $rattrapage ) ) {
-			echo '<p><a id="dist_rattrapages">*</a>Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
+			echo '<p><a id="dist_rattrapages">*</a>' . 'Distribution(s) de rattrapage : ' . implode( ', ', $rattrapage ) . '</p>';
 		}
 
 		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {
-			echo '<p>Composez votre panier :</p>';
+			echo '<p>' . 'Composez votre panier :' . '</p>';
 		} else {
-			echo '<p>Choisissez la quantité ou la taille de votre panier :</p>';
+			echo '<p>' . 'Choisissez la quantité ou la taille de votre panier :' . '</p>';
 		}
 		$multiple_rules = [];
 		$quants_full    = [];
@@ -3440,9 +3490,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							: null,
 						false );
 					$ed .= '</select>';
-					$ed .= '<a title="Recopier la même quantité sur les dates suivantes" href="#" class="quant-var-recopier">&gt;</a>';
+					$ed .= '<a title="' . esc_attr__( 'Recopier la même quantité sur les dates suivantes', 'amapress' ) . '" href="#" class="quant-var-recopier">&gt;</a>';
 					if ( ! $quant->isInDistributionDates( $date ) ) {
-						$ed = '<span class="contrat_panier_vars-na">NA</span>';
+						$ed = '<span class="contrat_panier_vars-na">' . 'NA' . '</span>';
 					}
 					$row[ 'd-' . $date ] = $ed;
 				}
@@ -3484,7 +3534,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 return false;
             },
             function(params, element) {
-                return "La quantité pour ' . esc_js( $grp_conf['display'] ) . ' doit être multiple de ' . $grp_conf['multiple'] . '. Actuellement: " + $(element).data("mlcnt") + "<br/>";
+                return "' . sprintf( 'La quantité pour %s doit être multiple de %s. Actuellement: ', esc_js( $grp_conf['display'] ), $grp_conf['multiple'] ) . '" + $(element).data("mlcnt") + "<br/>";
             }
         );
     });
@@ -3577,23 +3627,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 					$grouped_dates_array = [];
 					foreach ( $grouped_dates as $k => $v ) {
-						$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+						$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? __( 'les ', 'amapress' ) : __( 'le ', 'amapress' ) ) . implode( ', ', array_map(
 								function ( $d ) {
 									return date_i18n( 'd', $d );
 								}, $v
 							) );
 					}
-					echo '<p style="font-style: italic; font-size: 0.8em; padding-left: 15pt; padding-top: 0; margin-top: 0">Dates spécifiques : ' . implode( ' ; ', $grouped_dates_array ) . '</p>';
+					echo '<p style="font-style: italic; font-size: 0.8em; padding-left: 15pt; padding-top: 0; margin-top: 0">' . 'Dates spécifiques : ' . implode( ' ; ', $grouped_dates_array ) . '</p>';
 				}
 			}
 		}
-		echo '<p style="margin-top: 1em;">Total: <span id="total">0</span>€</p>';
-		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="Valider" /></p>';
+		echo '<p style="margin-top: 1em;">' . 'Total: ' . '<span id="total">0</span>€</p>';
+		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Valider', 'amapress' ) . '" /></p>';
 		echo '</form>';
 
 		if ( $admin_mode && ! empty( $quants_full ) ) {
-			echo '<p>Les paniers "' . implode( ',', $quants_full ) . '" sont <strong>COMPLETS</strong> et n\'apparaissent donc pas ci-dessus. Pour augmenter les quotas, ' .
-			     Amapress::makeLink( $contrat->getAdminEditLink(), 'éditez le contrat ' . $contrat->getTitle(), true, true ) . '</p>';
+			echo '<p>' . sprintf( 'Les paniers "%s" sont <strong>COMPLETS</strong> et n\'apparaissent donc pas ci-dessus. Pour augmenter les quotas, %s', implode( ',', $quants_full ), Amapress::makeLink( $contrat->getAdminEditLink(), sprintf( __( 'éditez le contrat %s', 'amapress' ), $contrat->getTitle() ), true, true ) ) . '</p>';
 		}
 
 	} else if ( 'inscr_contrat_paiements' == $step ) {
@@ -3684,13 +3733,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			if ( ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p style="margin-bottom: 0">Vous allez vous passer commande de ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' avec les options suivantes:</p>';
+					echo '<p style="margin-bottom: 0">' . sprintf( 'Vous allez vous passer commande de %s pour un montant %s avec les options suivantes:', esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				} else {
-					echo '<p style="margin-bottom: 0">Vous allez vous inscrire au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' avec les options suivantes:</p>';
+					echo '<p style="margin-bottom: 0">' . sprintf( 'Vous allez vous inscrire au contrat %s pour un montant %s avec les options suivantes:', esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				}
 			} else {
 				$amapien = AmapressUser::getBy( $user_id );
-				echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' avec les options suivantes:</p>';
+				echo '<p style="margin-bottom: 0">' . sprintf( 'Vous allez inscrire %s au contrat %s pour un montant %s avec les options suivantes:', esc_html( $amapien->getDisplayName() ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 			}
 			if ( Amapress::toBool( $atts['use_quantite_tables'] ) ) {
 				amapress_echo_datatable( 'quants-recap', $columns, $data,
@@ -3769,20 +3818,20 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			if ( count( $chosen_quants ) == 1 && ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . ( $chosen_quants[0] ) . '” de la commande ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
+					echo '<p style="margin-bottom: 0">' . sprintf( 'Vous avez choisi l\'option “%s” de la commande %s pour un montant %s', $chosen_quants[0], esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				} else {
-					echo '<p style="margin-bottom: 0">Vous avez choisi l\'option “' . ( $chosen_quants[0] ) . '” du contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
+					echo '<p style="margin-bottom: 0">' . sprintf( 'Vous avez choisi l\'option “%s” du contrat %s pour un montant %s', $chosen_quants[0], esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				}
 			} else {
 				if ( ! $admin_mode ) {
 					if ( ! $use_contrat_term ) {
-						echo '<p style="margin-bottom: 0">Vous avez choisi les options suivantes de la commande ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' :</p>';
+						echo '<p style="margin-bottom: 0">' . sprintf( 'Vous avez choisi les options suivantes de la commande %s pour un montant %s :=', esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 					} else {
-						echo '<p style="margin-bottom: 0">Vous avez choisi les options suivantes du contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' :</p>';
+						echo '<p style="margin-bottom: 0">' . sprintf( 'Vous avez choisi les options suivantes du contrat %s pour un montant %s :=', esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 					}
 				} else {
 					$amapien = AmapressUser::getBy( $user_id );
-					echo '<p style="margin-bottom: 0">Vous allez inscrire ' . esc_html( $amapien->getDisplayName() ) . ' au contrat ' . esc_html( $contrat->getTitle() ) . ' pour un montant ' . ( $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . ' avec les options suivantes:</p>';
+					echo '<p style="margin-bottom: 0">' . sprintf( 'Vous allez inscrire %s au contrat %s pour un montant %s avec les options suivantes:', esc_html( $amapien->getDisplayName() ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				}
 				echo '<ul style="list-style-type: disc">';
 				foreach ( $chosen_quants as $q ) {
@@ -3796,9 +3845,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		if ( $contrat->getManage_Cheques() ) {
 			if ( ! $admin_mode ) {
-				echo '<p style="margin-bottom: 0">Propositions de règlement :</p>';
+				echo '<p style="margin-bottom: 0">' . 'Propositions de règlement :' . '</p>';
 			} else {
-				echo '<p style="margin-bottom: 0">Propositions de règlement :</p>';
+				echo '<p style="margin-bottom: 0">' . 'Propositions de règlement :' . '</p>';
 			}
 		}
 		$serial_quants = esc_attr( serialize( $serial_quants ) );
@@ -3827,13 +3876,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					if ( $contrat->getPayByMonth() ) {
 						if ( 1 === $nb_cheque ) {
 							$cheques   = Amapress::formatPrice( $total, true );
-							$chq_label = sprintf( "1 chèque de %0.2f €", $total );
+							$chq_label = sprintf( __( '1 chèque de %0.2f €', 'amapress' ), $total );
 						} else {
 							$cheques   = implode( '|', array_map( function ( $month_amount ) {
 								return Amapress::formatPrice( $month_amount, true );
 							}, $by_month_totals ) );
-							$chq_label = implode( ' ; ', array_map( function ( $month, $month_amount ) {
-								return sprintf( "%s: 1 chèque de %0.2f €",
+							$chq_label                       = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+								return sprintf( __( '%s: 1 chèque de %0.2f €', 'amapress' ),
 									$month,
 									$month_amount );
 							}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
@@ -3844,8 +3893,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						$cheques   = implode( '|', array_map( function ( $amount ) {
 							return Amapress::formatPrice( $amount, true );
 						}, $amounts ) );
-						$chq_label = implode( ' ; ', array_map( function ( $amount ) {
-							return sprintf( "1 chèque de %0.2f €",
+						$chq_label                           = implode( ' ; ', array_map( function ( $amount ) {
+							return sprintf( __( '1 chèque de %0.2f €', 'amapress' ),
 								$amount );
 						}, $amounts ) );
 
@@ -3857,36 +3906,36 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
 						$chq_label          = '';
 						if ( $cheque_main_amount != $last_cheque ) {
-							$chq_label = "$nb_cheque chèque(s) : ";
+							$chq_label = sprintf( __( '%s chèque(s) : ', 'amapress' ), $nb_cheque );
 						}
 						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 					}
 				}
 			} else {
-				echo '<p><strong>Paiement à la livraison</strong></p>';
+				echo '<p><strong>' . 'Paiement à la livraison' . '</strong></p>';
 			}
 			if ( $contrat->getAllow_Delivery_Pay() || abs( $total ) < 0.001 ) {
 				$checked = checked( $edit_inscription && 'dlv' == $edit_inscription->getMainPaiementType(), true, false );
-				echo "<label for='cheques-dlv' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-dlv' $checked value='-3' class='input-nb-cheques required' />Paiement à la livraison</label><br/>";
+				echo "<label for='cheques-dlv' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-dlv' $checked value='-3' class='input-nb-cheques required' />" . 'Paiement à la livraison' . "</label><br/>";
 			}
 			if ( $contrat->getAllow_Cash() ) {
 				$checked = checked( $edit_inscription && 'esp' == $edit_inscription->getMainPaiementType(), true, false );
-				echo "<label for='cheques-esp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-esp' $checked value='-1' class='input-nb-cheques required' />En espèces</label><br/>";
+				echo "<label for='cheques-esp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-esp' $checked value='-1' class='input-nb-cheques required' />" . 'En espèces' . "</label><br/>";
 			}
 			if ( $total > 0 && $contrat->getAllow_Stripe() ) {
 				$min_stripe_amount = $contrat->getStripeMinAmount();
 				if ( $total > $min_stripe_amount ) {
 					$checked = checked( $edit_inscription && 'stp' == $edit_inscription->getMainPaiementType(), true, false );
-					echo "<label for='cheques-stp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-stp' $checked value='-5' class='input-nb-cheques required' />Paiement en ligne</label><br/>";
+					echo "<label for='cheques-stp' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-stp' $checked value='-5' class='input-nb-cheques required' />" . 'Paiement en ligne' . "</label><br/>";
 				}
 			}
 			if ( $contrat->getAllow_Transfer() ) {
 				$checked = checked( $edit_inscription && 'vir' == $edit_inscription->getMainPaiementType(), true, false );
-				echo "<label for='cheques-vir' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-vir' $checked value='-2' class='input-nb-cheques required' />Par virement</label><br/>";
+				echo "<label for='cheques-vir' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-vir' $checked value='-2' class='input-nb-cheques required' />" . 'Par virement' . "</label><br/>";
 			}
 			if ( $contrat->getAllow_LocalMoney() ) {
 				$checked = checked( $edit_inscription && 'mon' == $edit_inscription->getMainPaiementType(), true, false );
-				echo "<label for='cheques-mon' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-mon' $checked value='-4' class='input-nb-cheques required' />En monnaie locale</label><br/>";
+				echo "<label for='cheques-mon' style='font-weight: normal'><input type='radio' name='cheques' id='cheques-mon' $checked value='-4' class='input-nb-cheques required' />" . 'En monnaie locale' . "</label><br/>";
 			}
 			if ( $contrat->getAllow_Prelevement() ) {
 				if ( $total > 0 ) {
@@ -3916,8 +3965,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								$cheques   = implode( '|', array_map( function ( $month_amount ) {
 									return Amapress::formatPrice( $month_amount, true );
 								}, $by_month_totals ) );
-								$chq_label = implode( ' ; ', array_map( function ( $month, $month_amount ) {
-									return sprintf( "%s: 1 prélèvement de %0.2f €",
+								$chq_label                   = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+									return sprintf( __( '%s: 1 prélèvement de %0.2f €', 'amapress' ),
 										$month,
 										$month_amount );
 								}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
@@ -3928,19 +3977,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$cheques   = implode( '|', array_map( function ( $amount ) {
 								return Amapress::formatPrice( $amount, true );
 							}, $amounts ) );
-							$chq_label = implode( ' ; ', array_map( function ( $amount ) {
-								return sprintf( "1 prélèvement de %0.2f €",
+							$chq_label                       = implode( ' ; ', array_map( function ( $amount ) {
+								return sprintf( __( '1 prélèvement de %0.2f €', 'amapress' ),
 									$amount );
 							}, $amounts ) );
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label</label><br/>";
 						} else {
-							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total, 'prélèvement' );
+							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total, __( 'prélèvement', 'amapress' ) );
 							$option             = esc_html( $cheques['desc'] );
 							$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
 							$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
 							$chq_label          = '';
 							if ( $cheque_main_amount != $last_cheque ) {
-								$chq_label = "$nb_cheque prélèvement(s) : ";
+								$chq_label = sprintf( '%s prélèvement(s) : ', $nb_cheque );
 							}
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 						}
@@ -3994,11 +4043,11 @@ jQuery(function($) {
 });
 </script>';
 				echo '<table id="cheques-details"><thead>
-<th>Date encaissement</th>
+<th>' . 'Date encaissement' . '</th>
 <th>' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_pay_num_label' ) ) ) . '</th>
-<th>Banque</th>
-<th>Emetteur</th>
-<th>Montant</th>
+<th>' . 'Banque' . '</th>
+<th>' . 'Emetteur' . '</th>
+<th>' . 'Montant' . '</th>
 </thead><tbody>';
 				Amapress::setFilterForReferent( false );
 				$edit_all_paiements = $edit_inscription ? $edit_inscription->getAllPaiements() : null;
@@ -4091,21 +4140,21 @@ $paiements_dates
 		} else {
 			echo "<input type='hidden' name='cheques' value='0'/>";
 		}
-		echo '<p>Information pour le réglement :<br/>';
+		echo '<p>' . 'Information pour le réglement :' . '<br/>';
 		echo 'Ordre: ' . wp_unslash( $contrat->getPaiementsOrdre() );
 		echo '<br />' . wp_unslash( $contrat->getPaiementsMention() );
 		echo '</p>';
 		echo '<br />';
 		if ( ! empty( $pay_at_deliv ) ) {
-			echo '<p><strong>Produits payables à la livraison</strong> : ' . esc_html( implode( ', ', $pay_at_deliv ) ) . '</p>';
+			echo '<p><strong>' . 'Produits payables à la livraison' . '</strong> : ' . esc_html( implode( ', ', $pay_at_deliv ) ) . '</p>';
 			echo '<br />';
 		}
 		if ( ! $admin_mode ) {
-			echo '<label for="inscr_message">Message pour le référent :</label><textarea id="inscr_message" name="message">' . ( $edit_inscription ? esc_textarea( $edit_inscription->getMessage() ) : '' ) . '</textarea>';
+			echo '<label for="inscr_message">' . 'Message pour le référent :' . '</label><textarea id="inscr_message" name="message">' . ( $edit_inscription ? esc_textarea( $edit_inscription->getMessage() ) : '' ) . '</textarea>';
 		} else {
-			echo '<p><input type="checkbox" checked="checked" id="inscr_confirm_mail" name="inscr_confirm_mail" /><label for="inscr_confirm_mail"> Confirmer par email à l\'adhérent</label></p>';
+			echo '<p><input type="checkbox" checked="checked" id="inscr_confirm_mail" name="inscr_confirm_mail" /><label for="inscr_confirm_mail"> ' . 'Confirmer par email à l\'adhérent' . '</label></p>';
 		}
-		echo '<input type="submit" value="Valider" class="btn btn-default btn-assist-inscr" />';
+		echo '<input type="submit" value="' . esc_attr__( 'Valider', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />';
 		echo '</form>';
 	} else if ( 'inscr_contrat_create' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
@@ -4188,18 +4237,18 @@ $paiements_dates
 				$contrat_edit_link      = Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle(), true, true );
 				$contrats_step_url_attr = esc_attr( $contrats_step_url );
 				$mailto_refs            = esc_attr( "mailto:$referents_mails" );
-				wp_die( "<p>Désolé, ce contrat/commande ou l'un des paniers que vous avez choisi est complet<br/>
-<a href='{$contrats_step_url_attr}'>Retour aux contrats/commandes</a><br/>
-Pour augmenter les quota du contrat ou de ses paniers, cliquez sur le lien suivant : $contrat_edit_link<br/>
-LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'inscription en cours.
-</p>" );
+				wp_die( sprintf( '<p>Désolé, ce contrat/commande ou l\'un des paniers que vous avez choisi est complet<br/>
+<a href=\'%s\'>Retour aux contrats/commandes</a><br/>
+Pour augmenter les quota du contrat ou de ses paniers, cliquez sur le lien suivant : %s<br/>
+LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\'inscription en cours.
+</p>', $contrats_step_url_attr, $contrat_edit_link ) );
 			} else {
 				$contrats_step_url_attr = esc_attr( $contrats_step_url );
 				$mailto_refs            = esc_attr( "mailto:$referents_mails" );
-				wp_die( "<p>Désolé, ce contrat/commande ou l'un des paniers que vous avez choisi est complet<br/>
-<a href='{$contrats_step_url_attr}'>Retour aux contrats/commandes</a><br/>
-<a href='$mailto_refs'>Contacter les référents</a>
-</p>" );
+				wp_die( sprintf( '<p>Désolé, ce contrat/commande ou l\'un des paniers que vous avez choisi est complet<br/>
+<a href=\'%s\'>Retour aux contrats/commandes</a><br/>
+<a href=\'%s\'>Contacter les référents</a>
+</p>', $contrats_step_url_attr, $mailto_refs ) );
 			}
 		}
 
@@ -4349,7 +4398,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 <input type="hidden" name="step" value="stripe" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="inscr_id" value="' . $inscription->ID . '" />
-<input type="submit" value="Payer en ligne et valider l\'inscription" class="btn btn-danger btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Payer en ligne et valider l\'inscription', 'amapress' ) . '" class="btn btn-danger btn-assist-inscr" />
 </form>';
 			}
 			if ( $inscription->canSelfEdit() ) {
@@ -4357,21 +4406,21 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					'step'       => 'inscr_contrat_date_lieu',
 					'contrat_id' => $inscription->getContrat_instanceId()
 				] );
-				$modify_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
+				$modify_button                               = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $inscription->getContrat_instanceId() . '" />
 <input type="hidden" name="edit_inscr_id" value="' . $inscription->ID . '" />
-<input type="submit" value="Modifier" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
-				$cancel_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
+				$cancel_button                               = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="details" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $inscription->ID . '" />
 <input type="hidden" name="cancel_inscr_id" value="' . $inscription->ID . '" />
-<input type="submit" value="Annuler" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
 				if ( strpos( $online_contrats_end_step_edit_message, '%%modify_button%%' ) !== false ) {
 					$online_contrats_end_step_edit_message = str_replace( '%%modify_button%%', $modify_button, $online_contrats_end_step_edit_message );
@@ -4391,15 +4440,15 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 
 			if ( $is_mes_contrats ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p>Retourner à la liste de mes commandes :<br/>';
+					echo '<p>' . 'Retourner à la liste de mes commandes :' . '<br/>';
 				} else {
-					echo '<p>Retourner à la liste de mes contrats :<br/>';
+					echo '<p>' . 'Retourner à la liste de mes contrats :' . '<br/>';
 				}
 				echo '<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
 </form></p>';
 			} else {
 				if ( ! empty( $user_subscribable_contrats ) ) {
@@ -4423,21 +4472,21 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
 </form></p>';
 				} else {
 					if ( ! $use_contrat_term ) {
-						echo '<p>Vous avez déjà passé toutes les commandes disponibles.</p>';
-						echo '<p>Retourner à la liste de mes commandes :<br/>';
+						echo '<p>' . 'Vous avez déjà passé toutes les commandes disponibles.' . '</p>';
+						echo '<p>' . 'Retourner à la liste de mes commandes :' . '<br/>';
 					} else {
-						echo '<p>Vous êtes déjà inscrit à tous les contrats.</p>';
-						echo '<p>Retourner à la liste de mes contrats :<br/>';
+						echo '<p>' . 'Vous êtes déjà inscrit à tous les contrats.' . '</p>';
+						echo '<p>' . 'Retourner à la liste de mes contrats :' . '<br/>';
 					}
 					echo '<form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Poursuivre" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
 </form></p>';
 				}
 			}
@@ -4448,7 +4497,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 					$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions( $user_id, null, $min_contrat_date );
 					$online_contrats_inscription_distrib_msg = str_replace( '%%nb_inscriptions%%', count( $dist_inscriptions ), $online_contrats_inscription_distrib_msg );
 					$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%',
-						empty( $dist_inscriptions ) ? 'aucune' : implode( ', ', array_map(
+						empty( $dist_inscriptions ) ? __( 'aucune', 'amapress' ) : implode( ', ', array_map(
 							function ( $d ) {
 								/** @var AmapressDistribution $d */
 								return date_i18n( 'd/m/Y', $d->getDate() );
@@ -4459,17 +4508,17 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l'
 			}
 
 			if ( ! $admin_mode && ! $is_mes_contrats ) {
-				echo '<p>J\'ai fini :<br/>
+				echo '<p>' . 'J\'ai fini :' . '<br/>
 <form method="get" action="' . esc_attr( $contrats_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="the_end" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="Terminer" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Terminer', 'amapress' ) . '" />
 </form></p>';
 			}
 		} else {
-			echo '<div class="alert alert-success">L\'inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
-			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >Retourner à la liste de ses contrats/commandes</a></p>';
+			echo '<div class="alert alert-success">' . 'L\'inscription a bien été prise en compte : ' . Amapress::makeLink( $inscription->getAdminEditLink(), 'Editer l\'inscription', true, true ) . '</div>';
+			echo '<p><a href="' . esc_attr( $contrats_step_url ) . '" >' . 'Retourner à la liste de ses contrats/commandes' . '</a></p>';
 		}
 
 	} else if ( 'the_end' == $step ) {

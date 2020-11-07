@@ -306,7 +306,7 @@ class Amapress_Import_Users_CSV {
 					echo '<div class="error"><p><strong>' . sprintf( __( 'Aucun utilisateur n\'a pu être importé%s.', 'amapress' ), $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'errors':
-					echo '<div class="error"><p><strong>' . sprintf( __( "$imports utilisateur(s) ont été importés et $remain autre(s) pas%s.", 'amapress' ), $error_log_msg ) . '</strong></p></div>';
+					echo '<div class="error"><p><strong>' . sprintf( __( '%d utilisateur(s) ont été importés et %d autre(s) pas%s.', 'amapress' ), $imports, $remain, $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'success':
 					echo '<div class="updated"><p><strong>' . __( 'Les utilisateurs ont été importés avec succès.', 'amapress' ) . '</strong></p></div>';

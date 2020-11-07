@@ -179,13 +179,13 @@ class Amapress_Import_Posts_CSV {
 					echo '<div class="error"><p><strong>' . __( 'Ne peut pas extraire les données du fichier uploadé ou aucun fichier n\'a été uploadé.', 'amapress' ) . '</strong></p></div>';
 					break;
 				case 'fail':
-					echo '<div class="error"><p><strong>' . sprintf( __( "Aucun $post_type n'a pu être importé%s.", 'amapress' ), $error_log_msg ) . '</strong></p></div>';
+					echo '<div class="error"><p><strong>' . sprintf( __( 'Aucun %s n\'a pu être importé%s.', 'amapress' ), $post_type, $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'errors':
-					echo '<div class="error"><p><strong>' . sprintf( __( "$imports $post_type(s) ont été importés et $remain autres pas%s.", 'amapress' ), $error_log_msg ) . '</strong></p></div>';
+					echo '<div class="error"><p><strong>' . sprintf( __( '%d %s(s) ont été importés et %d autres pas%s.', 'amapress' ), $imports, $post_type, $remain, $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'success':
-					echo '<div class="updated"><p><strong>' . __( "Les $post_type ont été importés avec succès.", 'amapress' ) . '</strong></p></div>';
+					echo '<div class="updated"><p><strong>' . sprintf( __( 'Les %s ont été importés avec succès.', 'amapress' ), $post_type ) . '</strong></p></div>';
 					break;
 				default:
 					break;

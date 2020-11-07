@@ -751,7 +751,7 @@ function amapress_add_view_export_csv( $name = null, $is_user = false ) {
 		$url = AmapressExport_Posts::get_export_url( $name );
 	}
 
-	return "<a href='$url'>Exporter <span class='dashicons dashicons-external'></span></a>";
+	return "<a href='$url'>" . 'Exporter' . " <span class='dashicons dashicons-external'></span></a>";
 }
 
 function amapress_generate_view_button( $query, $title, $user = false, $show_zero = false ) {

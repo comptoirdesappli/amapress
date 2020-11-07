@@ -81,7 +81,7 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 				return '';
 			}
 
-			return "<a href='tel:$phone'>Téléphone</a>";
+			return "<a href='tel:$phone'>" . 'Téléphone' . "</a>";
 		case "locto":
 			$fmt = empty( $fmt ) ? 'Voir sur la carte' : $fmt;
 			if ( ! $user->isAdresse_localized() ) {

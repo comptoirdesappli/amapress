@@ -31,7 +31,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 					if ( $ml->isExternalSmtp() ) {
 						$res = $ml->testSMTP();
 						if ( true !== $res ) {
-							echo amapress_get_admin_notice( 'Erreur de configuration, connexion au SMTP ' . $ml->getSmtpHost() . ' impossible : ' . $res, 'error', false );
+							echo amapress_get_admin_notice( sprintf( 'Erreur de configuration, connexion au SMTP %s impossible : %s', $ml->getSmtpHost(), $res ), 'error', false );
 						} else {
 							echo amapress_get_admin_notice( 'Configuration SMTP OK', 'success', false );
 						}
@@ -720,7 +720,7 @@ add_action( 'init', function () {
 					$signature = get_bloginfo( 'name' );
 					$subject   = "[{$mlgrp->getSimpleName()}] $waiting_count mail(s) sont en attente de modération";
 					$url       = admin_url( 'admin.php?page=mailinggroup_moderation&tab=mailgrp-moderate-tab-' . $mlgrp->ID );
-					$message   = "Bonjour,\n$waiting_count mail(s) sont en attente de modération pour {$mlgrp->getName()}.\n<a href='$url'>Voir les mails en attente</a>\n$signature";
+					$message   = sprintf( "Bonjour,\n%s mail(s) sont en attente de modération pour %s.\n<a href='%s'>Voir les mails en attente</a>\n%s", $waiting_count, $mlgrp->getName(), $url, $signature );
 					amapress_wp_mail( $mlgrp->getModeratorsEmails(), $subject, $message );
 				}
 			}

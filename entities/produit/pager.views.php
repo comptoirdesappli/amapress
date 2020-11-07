@@ -30,7 +30,7 @@ function amapress_gallery_render_produit_panier_cell( $produit, $add_class = nul
 	$url        = amapress_get_avatar_url( $produit_id, null, 'produit-thumb', 'default_produit.jpg' );
 	$prod       = get_post( $produit_id );
 	$prod_photo = '';
-	$prod_photo = '<img src="' . $url . '" alt="Photo de ' . esc_attr( $prod->post_title ) . '" />';
+	$prod_photo = '<img src="' . $url . '" alt="' . esc_attr( $prod->post_title ) . '" />';
 
 	return '<div class="thumbnail">
                         ' . $prod_photo . '
@@ -66,7 +66,7 @@ function amapress_simple_produit_cell( $produit, $add_class = '' ) {
 	$produit_id = $produit->ID;
 	$url        = amapress_get_avatar_url( $produit_id, null, 'produit-thumb', 'default_produit.jpg' );
 	$prod       = get_post( $produit_id );
-	$prod_photo = '<img src="' . $url . '" alt="Photo de ' . esc_attr( $prod->post_title ) . '" />';
+	$prod_photo = '<img src="' . $url . '" alt="' . esc_attr( $prod->post_title ) . '" />';
 
 	return '<div class="thumbnail">
                         ' . $prod_photo . '

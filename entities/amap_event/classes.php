@@ -298,7 +298,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 				'priority' => 60,
 				'label'    => $this->getTitle(),
 				'icon'     => $icon,
-				'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
+				'alt'      => sprintf( 'Un(e) %s est prévu(e) le %s', $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
 				'href'     => $this->getPermalink()
 			) );
 		} else {
@@ -318,7 +318,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'inscr_types' => [ 'amap_event' ],
 					'label'       => $this->getTitle(),
 					'icon'        => $icon,
-					'alt'         => 'Vous êtes inscript pour ' . $this->getTitle() . ' le ' . date_i18n( 'd/m/Y', $date ),
+					'alt'         => sprintf( 'Vous êtes inscript pour %s le %s', $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
 					'href'        => $this->getPermalink()
 				) );
 			} else {
@@ -333,7 +333,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'priority' => 60,
 					'label'    => $this->getTitle(),
 					'icon'     => $icon,
-					'alt'      => 'Un(e) ' . $this->getTitle() . ' est prévu(e) le ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => sprintf( 'Un(e) %s est prévu(e) le %s', $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
 					'href'     => $this->getPermalink()
 				) );
 			}

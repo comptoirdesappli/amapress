@@ -248,10 +248,10 @@ function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, 
 	}
 
 	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
-		$message = $errstr . ' in ' . $errfile . ' on line ' . $errline .
-		           ', backtrace: ' . amapress_debug_backtrace_summary( null, 1 ) .
-		           ', url: ' . $_SERVER['REQUEST_URI'] .
-		           ', user: ' . get_current_user_id();
+		$message = sprintf( '%s in %s on line %s, backtrace: %s, url: %s, user: %s',
+			$errstr, $errfile, $errline,
+			amapress_debug_backtrace_summary( null, 1 ),
+			$_SERVER['REQUEST_URI'], get_current_user_id() );
 		error_log( $message );
 	}
 
@@ -1419,7 +1419,7 @@ function amapress_feedback_footer() {
 		'sendLabel'      => 'Envoyer',
 		'closeLabel'     => 'Fermer',
 		'messageSuccess' => 'Feedback envoyé avec succès',
-		'messageError'   => "Une erreur s'est produite pendant l'envoi",
+		'messageError'   => 'Une erreur s\'est produite pendant l\'envoi',
 	];
 	echo '<script type="text/javascript">
             jQuery(document).ready(function($) {
@@ -1563,7 +1563,7 @@ add_action( 'admin_init', function () {
 				return $ml->isExternalSmtp();
 			} );
 			if ( ! empty( $mlgrps ) ) {
-				amapress_add_admin_notice( 'Des <a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_mlgrp' ) . '">Emails groupés</a> sont configurés avec un SMTP externe et utilisent le Cron par défaut de WordPress. Vous devriez configurer un <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page#amapress_gestion_mailinggroup_page_cron' ) . '">Cron externe</a>.',
+				amapress_add_admin_notice( sprintf( 'Des <a target="_blank" href="%s">Emails groupés</a> sont configurés avec un SMTP externe et utilisent le Cron par défaut de WordPress. Vous devriez configurer un <a target="_blank" href="%s">Cron externe</a>.', admin_url( 'edit.php?post_type=amps_mlgrp' ), admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page#amapress_gestion_mailinggroup_page_cron' ) ),
 					'warning', false, false );
 			}
 		}
@@ -1577,7 +1577,8 @@ add_action( 'admin_init', function () {
 		}
 		foreach ( get_plugin_updates() as $plugin_file => $plugin_data ) {
 			if ( false !== strpos( $plugin_file, 'amapress' ) ) {
-				amapress_add_admin_notice( 'Une nouvelle version d\'Amapress est disponible : ' . Amapress::makeLink( admin_url( 'update-core.php' ), $plugin_data->update->new_version ),
+				amapress_add_admin_notice( sprintf( "Une nouvelle version d'Amapress est disponible : %s",
+					Amapress::makeLink( admin_url( 'update-core.php' ), $plugin_data->update->new_version ) ),
 					'warning', false, false );
 			}
 		}
@@ -1812,9 +1813,9 @@ add_action( 'admin_post_tf_event_scheduler_resend', function () {
 	$hook_name = $_REQUEST['hook_name'];
 	$args      = json_decode( wp_unslash( $_REQUEST['args'] ), true );
 	$args      = $args[0];
-	echo '<p>Rappel lancé pour ' . $args['title'] . '</p>';
+	echo '<p>' . sprintf( 'Rappel lancé pour %s', $args['title'] ) . '</p>';
 	do_action( $hook_name, $args );
-	echo '<p>Rappel terminé</p>';
+	echo '<p>' . 'Rappel terminé' . '</p>';
 	//echo '<p>Mail de rappel renvoyé avec succès !</p>';
 	die();
 } );
@@ -1827,9 +1828,13 @@ add_action( 'admin_post_tf_event_scheduler_test', function () {
 	$args                  = json_decode( wp_unslash( $_REQUEST['args'] ), true );
 	$args                  = $args[0];
 	$args['is_test']       = true;
-	echo '<p>Rappel lancé pour ' . $args['title'] . '</p>';
+	echo '<p>';
+	echo sprintf( 'Rappel lancé pour %s', $args['title'] );
+	echo '</p>';
 	do_action( $hook_name, $args );
-	echo '<p>Rappel terminé</p>';
+	echo '<p>';
+	echo 'Rappel terminé';
+	echo '</p>';
 	die();
 } );
 

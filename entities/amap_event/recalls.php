@@ -25,7 +25,7 @@ add_action( 'amapress_recall_amap_event_inscription', function ( $args ) {
 		'', $participants_users, $amap_event, array(),
 		amapress_get_recall_cc_from_option( 'amap-event-inscription-recall-cc' ),
 		null, AmapressAmap_event::getResponsableAmapEventsReplyto() );
-	echo '<p>Email de rappel d\'inscription à un évenement envoyé</p>';
+	echo '<p>' . 'Email de rappel d\'inscription à un évenement envoyé' . '</p>';
 } );
 
 /** @return array */
@@ -108,14 +108,14 @@ add_action( 'amapress_recall_amap_event_available', function ( $args ) {
 	$amap_event   = new AmapressAmap_event( $args['id'] );
 	$participants = $amap_event->getParticipantsIds();
 
-	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_role=active&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat", "visite" );
+	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_role=active&exclude=' . implode( ',', $participants ), 'Amapiens ayant un contrat', "visite" );
 	amapress_send_message(
 		Amapress::getOption( 'amap-event-available-recall-mail-subject' ),
 		Amapress::getOption( 'amap-event-available-recall-mail-content' ),
 		'', $non_participants_users, $amap_event, array(),
 		amapress_get_recall_cc_from_option( 'amap-event-available-recall-cc' ),
 		null, AmapressAmap_event::getResponsableAmapEventsReplyto() );
-	echo '<p>Email de rappel de tenue d\'un évenement envoyé</p>';
+	echo '<p>' . 'Email de rappel de tenue d\'un évenement envoyé' . '</p>';
 
 } );
 

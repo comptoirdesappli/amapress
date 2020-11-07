@@ -28,23 +28,23 @@ function amapress_get_custom_content_visite( $content ) {
 		}
 		$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-visite="' . $visite->ID . '">Inscrire</button>
+<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . 'Inscrire' . '</button>
 </form>';
 	}
 	$inscription = '';
 	if ( ! $is_resp ) {
 		if ( $can_subscribe ) {
 			if ( empty( $visite->getSlotsConf() ) ) {
-				$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-visite="' . $visite->ID . '">M\'inscrire</button>';
+				$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . 'M\'inscrire' . '</button>';
 			}
 		} else {
-			$inscription .= '<span class="visite-inscr-closed">Inscriptions closes</span>';
+			$inscription .= '<span class="visite-inscr-closed">' . 'Inscriptions closes' . '</span>';
 		}
 	} else {
 		if ( $slot_for_current_user ) {
-			$inscription .= '<span>Vous êtes inscrit pour : ' . $slot_for_current_user['display'] . '</span>';
+			$inscription .= '<span>' . 'Vous êtes inscrit pour : ' . $slot_for_current_user['display'] . '</span>';
 		} else if ( $can_unsubscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-visite="' . $visite->ID . '">Me désinscrire</button>';
+			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . 'Me désinscrire' . '</button>';
 		}
 	}
 
@@ -116,10 +116,7 @@ function amapress_get_custom_content_visite( $content ) {
 	amapress_display_messages_for_post( 'visite-messages', $visite->ID );
 
 	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-hours' );
-	echo '<p>' .
-	     ' de ' . date_i18n( 'H:i', $visite->getStartDateAndHour() ) .
-	     ' à ' . date_i18n( 'H:i', $visite->getEndDateAndHour() ) .
-	     '</p>';
+	echo sprintf( '<p>de %s à %s</p>', date_i18n( 'H:i', $visite->getStartDateAndHour() ), date_i18n( 'H:i', $visite->getEndDateAndHour() ) );
 	amapress_echo_panel_end();
 
 	$responsables = array_map( function ( $u ) {
@@ -133,16 +130,16 @@ function amapress_get_custom_content_visite( $content ) {
 			'if_empty' => 'Pas de participants'
 		] );
 	} else { ?>
-		<p>Aucun participants</p>
+        <p><?php _e( 'Aucun participants', 'amapress' ) ?></p>
 	<?php }
 
 	echo $inscription;
 	echo $inscr_another;
 
 	if ( ! empty( $visite->getSlotsConf() ) ) {
-		echo '<h5>Table des inscrits</h5>';
+		echo '<h5>' . 'Table des inscrits' . '</h5>';
 		echo $visite->getInscritsTable( true, amapress_can_access_admin() );
-		echo '<h5>Table des horaires</h5>';
+		echo '<h5>' . 'Table des horaires' . '</h5>';
 		echo $visite->getSlotsTable();
 	}
 

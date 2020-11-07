@@ -25,18 +25,18 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 	if ( amapress_can_access_admin() && $can_subscribe ) {
 		$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-event="' . $assemblee_generale->ID . '">Inscrire</button>
+<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . 'Inscrire' . '</button>
 </form>';
 	}
 	$inscription = '';
 	if ( ! $is_resp ) {
 		if ( $can_subscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-event="' . $assemblee_generale->ID . '">M\'inscrire</button>';
+			$inscription .= '<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . 'M\'inscrire' . '</button>';
 		} else {
-			$inscription .= '<span class="assemblee-inscr-closed">Inscriptions closes</span>';
+			$inscription .= '<span class="assemblee-inscr-closed">' . 'Inscriptions closes' . '</span>';
 		}
 	} else if ( $can_unsubscribe ) {
-		$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-event="' . $assemblee_generale->ID . '">Me désinscrire</button>';
+		$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . 'Me désinscrire' . '</button>';
 	}
 	if ( ! empty( $inscription ) ) {
 		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-ag amap-panel-ag-inscr' );
@@ -46,10 +46,7 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 	}
 
 	amapress_echo_panel_start( 'Horaires' );
-	echo '<p>' .
-	     ' de ' . date_i18n( 'H:i', $assemblee_generale->getStartDateAndHour() ) .
-	     ' à ' . date_i18n( 'H:i', $assemblee_generale->getEndDateAndHour() ) .
-	     '</p>';
+	echo sprintf( '<p>de %s à %s</p>', date_i18n( 'H:i', $assemblee_generale->getStartDateAndHour() ), date_i18n( 'H:i', $assemblee_generale->getEndDateAndHour() ) );
 	amapress_echo_panel_end();
 
 	amapress_echo_panel_start( 'Ordre du jour' );
@@ -63,7 +60,7 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 			$addr_entry    = '';
 			$address_acces = $assemblee_generale->getLieu()->getAdresseAcces();
 			if ( ! empty( $address_acces ) ) {
-				$addr_entry = '<h3>Adresse d\'accès</h3><p>' .
+				$addr_entry = '<h3>' . 'Adresse d\'accès' . '</h3><p>' .
 				              $address_acces .
 				              '</p>';
 			}
@@ -83,14 +80,14 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 			amapress_echo_panel_end();
 		} else {
 			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-assemblee amap-panel-assemblee-address' );
-			echo '<p>Lieu non défini</p>';
+			echo '<p>' . 'Lieu non défini' . '</p>';
 			amapress_echo_panel_end();
 		}
 	} else {
 		$addr_entry    = '';
 		$address_acces = $assemblee_generale->getLieu_externe_adresse();
 		if ( ! empty( $address_acces ) ) {
-			$addr_entry = '<h3>Adresse d\'accès</h3><p>' .
+			$addr_entry = '<h3>' . 'Adresse d\'accès' . '</h3><p>' .
 			              $address_acces .
 			              '</p>';
 		}
@@ -146,7 +143,7 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 				'if_empty' => 'Pas de participant'
 			] );
 		} else { ?>
-			<p>Aucun participants</p>
+            <p><?php _e( 'Aucun participants', 'amapress' ) ?></p>
 		<?php }
 
 		echo $inscription;

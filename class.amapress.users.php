@@ -517,7 +517,7 @@ class AmapressUsers {
 			/** @var AmapressDistribution $context */
 			$multi = $context->getMultiResponsableInscriptionCount( $usr->ID );
 			if ( $multi > 1 ) {
-				$custom_footer = sprintf( '<p>(%d personnes)</p>', $multi );
+				$custom_footer = '<p>' . sprintf( '(%d personnes)', $multi ) . '</p>';
 			}
 		}
 		self::echoUser( $usr, array( 'telephone', 'mail' ), null, null, $custom_footer );
@@ -651,26 +651,26 @@ jQuery(function($) {
 		$is_full = in_array( 'full', $types );
 		if ( in_array( 'telephone', $types ) || $is_full ) {
 			if ( ! empty( $amapien->getTelTo( true ) ) ) {
-				echo '<p class="user-phone">Mob. : ' . $amapien->getTelTo( true ) . '</p>';
+				echo '<p class="user-phone">' . 'Mob. : ' . $amapien->getTelTo( true ) . '</p>';
 			}
 			if ( ! empty( $amapien->getTelTo( false ) ) ) {
-				echo '<p class="user-phone2">Fix. : ' . $amapien->getTelTo( false ) . '</p>';
+				echo '<p class="user-phone2">' . 'Fix. : ' . $amapien->getTelTo( false ) . '</p>';
 			}
 		}
 		if ( in_array( 'mail', $types ) || $is_full ) {
 			if ( $user->user_email ) {
-				echo '<p class="user-mail">Email : <a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
+				echo '<p class="user-mail">' . 'Email : ' . '<a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a></p>';
 			}
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_adresse', true ) &&
 		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse', $types ) || $is_full )
 		) {
-			echo '<p>Adresse : <pre>' . get_user_meta( $user->ID, 'amapress_user_adresse', true ) . '\n' . get_user_meta( $user->ID, 'amapress_user_code_postal', true ) . ' ' . get_user_meta( $user->ID, 'amapress_user_ville', true ) . '</pre></p>';
+			echo '<p>' . 'Adresse : ' . '<pre>' . get_user_meta( $user->ID, 'amapress_user_adresse', true ) . '\n' . get_user_meta( $user->ID, 'amapress_user_code_postal', true ) . ' ' . get_user_meta( $user->ID, 'amapress_user_ville', true ) . '</pre></p>';
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_location_type', true ) &&
 		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-link', $types ) || $is_full )
 		) {
-			echo '<a href="https://maps.google.com/maps?q=' . get_post_meta( $user->ID, 'amapress_user_lat', true ) . ',' . get_post_meta( $user->ID, 'amapress_user_long', true ) . '">Voir sur Google Maps</a>';
+			echo '<a href="https://maps.google.com/maps?q=' . get_post_meta( $user->ID, 'amapress_user_lat', true ) . ',' . get_post_meta( $user->ID, 'amapress_user_long', true ) . '">' . 'Voir sur Google Maps' . '</a>';
 		}
 		if ( get_post_meta( $user->ID, 'amapress_user_location_type', true ) &&
 		     ( amapress_current_user_can( 'responsable_amap' ) || amapress_current_user_can( 'administrator' ) || in_array( 'adresse-loc-map', $types ) || $is_full )
@@ -798,7 +798,7 @@ jQuery(function($) {
 			$cnt = $atts['count'];
 		}
 		echo '<table>';
-		echo '<tr><th>Amapien</th><th>Distance</th></tr>';
+		echo '<tr><th>' . 'Amapien' . '</th><th>' . 'Distance' . '</th></tr>';
 		for ( $i = 0; $i < $cnt; $i ++ ) {
 			/** @var AmapressUser $user */
 			$user = $users_dists[ $i ]['user'];

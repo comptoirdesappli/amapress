@@ -69,7 +69,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	/** @return string */
 	public function getPaniersTitles( $show_date = true, $show_desc = false ) {
 		return ( count( $this->getPanierIds() ) > 1 ? 'Paniers' : 'Panier' )
-		       . ' de ' . ( $show_desc ? $this->getPaniersDescription() : $this->getContratTitles() )
+		       . __( ' de ', 'amapress' ) . ( $show_desc ? $this->getPaniersDescription() : $this->getContratTitles() )
 		       . ( $show_date ? ' du ' . date_i18n( 'd/m/Y', $this->getDate() ) : '' );
 	}
 
@@ -866,9 +866,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'category' => 'Paniers à échanger',
 						'priority' => 10,
 						'lieu'     => $this->getRealLieu(),
-						'label'    => 'A échanger ' . $this->getPaniersTitles( false ),
+						'label'    => __( 'A échanger ', 'amapress' ) . $this->getPaniersTitles( false ),
 						'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_mytoexchange.jpg',
-						'alt'      => 'Votre panier ' . $this->getPaniersTitles( true, true ) . ' reste à échanger',
+						'alt'      => sprintf( 'Votre panier %s reste à échanger', $this->getPaniersTitles( true, true ) ),
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
 				} else {
@@ -883,7 +883,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'lieu'     => $this->getRealLieu(),
 						'label'    => 'Echange ' . $this->getPaniersTitles( false ),
 						'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_exchanged.jpg',
-						'alt'      => 'Votre panier ' . $this->getPaniersTitles( true, true ) . ' a été échanger',
+						'alt'      => sprintf( 'Votre panier %s a été échanger', $this->getPaniersTitles( true, true ) ),
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
 				}
@@ -900,7 +900,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					'lieu'        => $this->getRealLieu(),
 					'label'       => 'Récupérer panier ' . $this->getPaniersTitles( false ),
 					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
-					'alt'         => 'Panier ' . $this->getPaniersTitles( true, true ) . ' de ' . $this->getAdherent()->getDisplayName() . ' à récupérer',
+					'alt'         => sprintf( 'Panier %s de %s à récupérer', $this->getPaniersTitles( true, true ), $this->getAdherent()->getDisplayName() ),
 					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			} else {
@@ -917,9 +917,9 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 							'category' => 'Paniers dispo',
 							'priority' => 10,
 							'lieu'     => $this->getRealLieu(),
-							'label'    => 'A échanger ' . $this->getPaniersTitles( false ),
+							'label'    => __( 'A échanger ', 'amapress' ) . $this->getPaniersTitles( false ),
 							'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_avail.jpg',
-							'alt'      => 'Panier ' . $this->getPaniersTitles( true, true ) . ' à échanger',
+							'alt'      => sprintf( 'Panier %s à échanger', $this->getPaniersTitles( true, true ) ),
 							'href'     => $paniers_url
 						) );
 					}

@@ -916,7 +916,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
-				'inscription-' . $this->getContrat_instance()->getModelTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
+				__( 'inscription-', 'amapress' ) . $this->getContrat_instance()->getModelTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
 	}
 
 	public static function getPlaceholders() {
@@ -1384,7 +1384,7 @@ class AmapressAdhesion extends TitanEntity {
 
 		$grouped_dates_array = [];
 		foreach ( $grouped_dates as $k => $v ) {
-			$grouped_dates_array[] = $k . ' : ' . ( count( $v ) > 1 ? 'les ' : 'le ' ) . implode( ', ', array_map(
+			$grouped_dates_array[] = $k . ' : ' . _n( 'le ', 'les ', count( $v ) ) . implode( ', ', array_map(
 					function ( $d ) {
 						return date_i18n( 'd', $d );
 					}, $v

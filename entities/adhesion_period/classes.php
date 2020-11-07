@@ -219,20 +219,20 @@ class AmapressAdhesionPeriod extends TitanEntity {
 
 		$archives_infos = [];
 		//extract inscriptions xlsx
-		echo '<p>Stockage de l\'excel des adhésions</p>';
+		echo '<p>' . 'Stockage de l\'excel des adhésions' . '</p>';
 		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( 'post_type=amps_adh_pmt&amapress_adhesion_period=' . $this->ID,
-			null, $this->getTitle() . ' - Adhésions' );
+			null, sprintf( '%s - Adhésions', $this->getTitle() ) );
 		$filename    = 'periode-' . $this->ID . '-adhesions.xlsx';
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 		$archives_infos['file_adhesions'] = $filename;
 
 		//extract paiements xlsx
-		echo '<p>Stockage des excel des règlements</p>';
+		echo '<p>' . 'Stockage des excel des règlements' . '</p>';
 		$_GET['page']     = 'adhesion_paiements';
 		$_GET['adh_date'] = Amapress::add_days( $this->getDate_debut(), 1 );
 		$objPHPExcel      = AmapressExport_Users::generate_phpexcel_sheet( 'amapress_adhesion=all',
-			null, $this->getTitle() . ' - Réglements' );
+			null, sprintf( '%s - Réglements', $this->getTitle() ) );
 		$filename         = 'periode-' . $this->ID . '-paiements.xlsx';
 		$objWriter        = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
@@ -241,10 +241,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		$adhesions                         = get_posts( 'post_type=amps_adh_pmt&amapress_adhesion_period=' . $this->ID );
 		$archives_infos['count_adhesions'] = count( $adhesions );
 
-		echo '<p>Stockage des infos du contrat pour archive</p>';
+		echo '<p>' . 'Stockage des infos du contrat pour archive' . '</p>';
 		$this->setCustom( 'amapress_adhesion_period_archives_infos', $archives_infos );
 
-		echo '<p>Archivage des adhésions et règlements</p>';
+		echo '<p>' . 'Archivage des adhésions et règlements' . '</p>';
 		global $wpdb;
 		//start transaction
 		$wpdb->query( 'START TRANSACTION' );

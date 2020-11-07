@@ -264,7 +264,7 @@ class AmapressSMTPMailingQueueOriginal {
 
 		if ( empty( $to ) ) {
 			$to      = [ get_option( 'admin_email' ) ];
-			$subject = '[Email sans destinataire]' . $subject;
+			$subject = __( '[Email sans destinataire]', 'amapress' ) . $subject;
 		}
 
 		$avoid_emails = [];

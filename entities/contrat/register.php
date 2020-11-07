@@ -62,16 +62,16 @@ function amapress_register_entities_contrat( $entities ) {
 			$contrat = AmapressContrat::getBy( $post );
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getProducteur() ) ) {
-					echo '<div class="notice notice-error"><p>Production invalide : pas de producteur associée</p></div>';
+					echo '<div class="notice notice-error"><p>' . 'Production invalide : pas de producteur associée' . '</p></div>';
 				}
 			}
 			if ( empty( $contrat->getAllReferentsIds() ) ) {
-				echo '<div class="notice notice-error"><p>Production sans référent</p></div>';
+				echo '<div class="notice notice-error"><p>' . 'Production sans référent' . '</p></div>';
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
-			echo '<h2>Présentation de la production <em>(Légumes, Champignons, Pains...)</em></h2>';
+			echo '<h2>' . 'Présentation de la production <em>(Légumes, Champignons, Pains...)</em>' . '</h2>';
 		},
 		'fields'                   => array(
 //			'amapress_icon_id' => array(
@@ -210,7 +210,7 @@ function amapress_register_entities_contrat( $entities ) {
 			$contrat = AmapressContrat_instance::getBy( $post );
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getModel() ) ) {
-					echo '<div class="notice notice-error"><p>Modèle de contrat invalide : pas de production associée</p></div>';
+					echo '<div class="notice notice-error"><p>' . 'Modèle de contrat invalide : pas de production associée' . '</p></div>';
 				} else {
 					$result = $contrat->getContratModelDocStatus();
 					if ( true !== $result ) {
@@ -239,10 +239,10 @@ function amapress_register_entities_contrat( $entities ) {
 					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 				}
 
-				echo '<h4>EDITER</h4>';
+				echo '<h4>' . 'EDITER' . '</h4>';
 
 				if ( $contrat->isArchived() ) {
-					echo '<p style="color: red">Contrat archivé. Pas de modification possible.</p>';
+					echo '<p style="color: red">' . 'Contrat archivé. Pas de modification possible.' . '</p>';
 				}
 
 				$adhs = AmapressContrats::get_active_adhesions( $post->ID );
@@ -259,49 +259,49 @@ function amapress_register_entities_contrat( $entities ) {
 							'Edition avancée', ''
 						);
 
-						echo '<p>Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. 
-<span class="description">(Par ex : si vous changez le nombre de dates de distribution, le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat modulable seront perdues.)</span></p>';
+						echo '<p>' . sprintf( 'Modifier ce contrat peut impacter les %s inscriptions associées. 
+<span class="description">(Par ex : si vous changez le nombre de dates de distribution, le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat modulable seront perdues.)</span>', count( $adhs ) ) . '</p>';
 //				echo '<p>Ce contrat a déjà des inscriptions. Modifier ce contrat peut impacter les ' . count( $adhs ) . ' inscriptions associées. Par exemple si vous changez le nombre de dates de distribution le montant de l\'inscription sera adapté et les quantités saisies dans le cas d\'un contrat avec quantités variables peuvent être perdues.</p>';
 //				if ( ! isset( $_REQUEST['adv'] ) ) {
 ////					echo '<p>Si vous voulez malgrès tout éditer le contrat, utiliser le lien suivant : <a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition.</a></p>';
 //					echo '<p><a href="' . esc_attr( add_query_arg( 'adv', 'true' ) ) . '">Confirmer l\'édition</a></p>';
 //				}
 
-						echo '<p><a href="' . amapress_get_row_action_href( 'clone', $post->ID ) . '">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span></p>';
+						echo '<p>' . sprintf( '<a href="%s">Dupliquer</a> : Créer un nouveau contrat - Durée et période identiques <span class="description">(Par ex : Semaine A - Semaine B)</span>', amapress_get_row_action_href( 'clone', $post->ID ) ) . '</p>';
 					}
 				}
 
-				echo '<h4>CONSULTER</h4>';
+				echo '<h4>' . 'CONSULTER' . '</h4>';
 				if ( count( $adhs ) > 0 ) {
-					echo '<p><a target="_blank" href="' . admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID ) . '">La liste des ' . count( $adhs ) . ' adhérent(s) inscrits à ce contrat</a></p>';
+					echo '<p>' . sprintf( '<a target="_blank" href="%s">La liste des %s adhérent(s) inscrits à ce contrat</a>', admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID ), count( $adhs ) ) . '</p>';
 				}
-				echo '<p><a target="_blank" href="' . admin_url( 'admin.php?amp_stats_contrat=' . $post->ID . '&page=contrats_quantites_stats' ) . '">Les statistiques annuelles</a></p>';
+				echo '<p>' . sprintf( '<a target="_blank" href="%s">Les statistiques annuelles</a>', admin_url( 'admin.php?amp_stats_contrat=' . $post->ID . '&page=contrats_quantites_stats' ) ) . '</p>';
 
 				if ( ! $contrat->isArchived() ) {
-					echo '<h4>EXPORTER FICHIERS</h4>';
+					echo '<h4>' . 'EXPORTER FICHIERS' . '</h4>';
 					echo '<p>';
-					echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">Adhérents (XLSX)</a>,';
-					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">Chèques/règlements (XLSX)</a>,';
-					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">Chèques/règlements (PDF)</a>';
-					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=group_date&contrat=' . $post->ID ) . '">Livraisons par dates (XLSX)</a>,';
-					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_date&contrat=' . $post->ID ) . '">Livraisons par adhérents (XLSX)</a>,';
-					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_columns&contrat=' . $post->ID ) . '">Livraisons par adhérents et quantités en colonnes (XLSX)</a>,';
+					echo '<a href="' . AmapressExport_Posts::get_export_url( null, admin_url( 'edit.php?post_type=amps_adhesion&amapress_contrat_inst=' . $post->ID . '&amapress_export=csv' ) ) . '">' . 'Adhérents (XLSX)' . '</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_xlsx&contrat=' . $post->ID ) . '">' . 'Chèques/règlements (XLSX)' . '</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=paiement_table_pdf&contrat=' . $post->ID ) . '">' . 'Chèques/règlements (PDF)' . '</a>';
+					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=group_date&contrat=' . $post->ID ) . '">' . 'Livraisons par dates (XLSX)' . '</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_date&contrat=' . $post->ID ) . '">' . 'Livraisons par adhérents (XLSX)' . '</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=delivery_table_xlsx&type=adherents_columns&contrat=' . $post->ID ) . '">' . 'Livraisons par adhérents et quantités en colonnes (XLSX)' . '</a>,';
 					echo '</p>';
 				} else {
-					echo '<h4>TELECHARGER ARCHIVES</h4>';
+					echo '<h4>' . 'TELECHARGER ARCHIVES' . '</h4>';
 					echo '<p>';
-					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&contrat=' . $post->ID ) . '">Adhérents (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&contrat=' . $post->ID ) . '">' . 'Adhérents (XLSX)' . '</a>,';
 					foreach ( ( count( $contrat->getLieuxIds() ) > 1 ? array_merge( [ 0 ], $contrat->getLieuxIds() ) : $contrat->getLieuxIds() ) as $lieu_id ) {
 						$lieu = ( 0 == $lieu_id ? null : AmapressLieu_distribution::getBy( $lieu_id ) );
-						echo '<a href="' . admin_url( 'admin-post.php?action=archives_cheques&lieu=' . $lieu_id . '&contrat=' . $post->ID ) . '">Chèques/règlements - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) . ' (XLSX)</a>,';
+						echo '<a href="' . admin_url( 'admin-post.php?action=archives_cheques&lieu=' . $lieu_id . '&contrat=' . $post->ID ) . '">' . 'Chèques/règlements - ' . ( 0 == $lieu_id ? 'Tous les lieux' : $lieu->getTitle() ) . ' (XLSX)</a>,';
 					}
-					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=group_date&contrat=' . $post->ID ) . '">Livraisons par dates (XLSX)</a>,';
-					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=adherents_date&contrat=' . $post->ID ) . '">Livraisons par adhérents (XLSX)</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=group_date&contrat=' . $post->ID ) . '">' . 'Livraisons par dates (XLSX)' . '</a>,';
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=adherents_date&contrat=' . $post->ID ) . '">' . 'Livraisons par adhérents (XLSX)' . '</a>,';
 					echo '</p>';
 				}
 			}
 
-			echo '<h4>ACCÈS RAPIDE</h4>';
+			echo '<h4>' . 'ACCÈS RAPIDE' . '</h4>';
 
 			if ( $contrat->isArchived() ) {
 				echo '<style type="text/css">
@@ -493,13 +493,13 @@ function amapress_register_entities_contrat( $entities ) {
 				'custom'      => function ( $post_id ) {
 					$ret = '';
 					if ( amapress_can_renew_contrat_instance( $post_id ) ) {
-						$ret .= '<p><a href="' . amapress_get_row_action_href( 'renew', $post_id ) . '">Prolongation</a> : Dates continues - Durée identique <span class="description">(Par ex : contrats trimestriels)</span></p>';
+						$ret .= '<p>' . sprintf( '<a href="%s">Prolongation</a> : Dates continues - Durée identique <span class="description">(Par ex : contrats trimestriels)</span>', amapress_get_row_action_href( 'renew', $post_id ) ) . '</p>';
 					}
 					if ( amapress_can_renew_same_period_contrat_instance( $post_id ) ) {
-						$ret .= '<p><a href="' . amapress_get_row_action_href( 'renew_same_period', $post_id ) . '">Cyclique</a> : Même période - Année suivante <span class="description">(Par ex : contrats annuels)</span></p>';
+						$ret .= '<p>' . sprintf( '<a href="%s">Cyclique</a> : Même période - Année suivante <span class="description">(Par ex : contrats annuels)</span>', amapress_get_row_action_href( 'renew_same_period', $post_id ) ) . '</p>';
 					}
 					if ( empty( $ret ) ) {
-						$ret .= '<p>Contrat déjà renouvellé</p>';
+						$ret .= '<p>' . 'Contrat déjà renouvellé' . '</p>';
 					}
 
 					return $ret;
@@ -676,7 +676,7 @@ jQuery(function($) {
 				'type'           => 'number',
 				'group'          => '2/6 - Paramètres généraux',
 				'required'       => true,
-				'desc'           => 'Indiquer une durée en mois pour activer l\'option ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/slide', 'Contrat glissant' ),
+				'desc'           => sprintf( 'Indiquer une durée en mois pour activer l\'option %s', Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/slide', 'Contrat glissant' ) ),
 				'min'            => 0,
 				'max'            => 12,
 				'default'        => 0,
@@ -758,7 +758,7 @@ jQuery(function($) {
 				'type'        => 'editor',
 				'show_column' => false,
 				'group'       => '2/6 - Paramètres généraux',
-				'desc'        => 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%xxx%%" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) . '">Plus d\'info</a>)',
+				'desc'        => sprintf( 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%%%xxx%%%%" <a target="_blank" href="%s">Plus d\'info</a>)', admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) ),
 			),
 			'special_mention'       => array(
 				'name'        => __( 'Mention', 'amapress' ),
@@ -896,7 +896,7 @@ jQuery(function($) {
 							if ( $is_readonly ) {
 							} else {
 								$val_id = $option->getID() . '-validate';
-								echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">Cocher cette case pour modifier les dates lors du renouvellement du contrat.</label></p>';
+								echo '<p><input type="checkbox" id="' . $val_id . '" ' . checked( ! $is_readonly, true, false ) . ' /><label for="' . $val_id . '">' . 'Cocher cette case pour modifier les dates lors du renouvellement du contrat.' . '</label></p>';
 								echo '<script type="text/javascript">
 //<![CDATA[
 jQuery(function($) {
@@ -915,7 +915,7 @@ jQuery(function($) {
 			'les-paniers'           => array(
 				'name'              => __( 'Report livraison', 'amapress' ),
 				'group'             => '3/6 - Distributions',
-				'table_header_text' => '<p>Pour annuler ou reporter une distribution déjà planifiée, sélectionner le panier correspondant dans la liste ci-dessous</p>',
+				'table_header_text' => '<p>' . 'Pour annuler ou reporter une distribution déjà planifiée, sélectionner le panier correspondant dans la liste ci-dessous' . '</p>',
 				'desc'              => 'Dates de livraison des paniers de ce contrat',
 				'csv_import'        => false,
 				'show_column'       => false,
@@ -1061,41 +1061,42 @@ jQuery(function($) {
 //		];
 					ob_start();
 					?>
-                    <p>Choisissez le type d’option(s) proposée(s) dans le contrat d’origine concernant la composition
-                        des paniers.</p>
+                    <p><?php _e( 'Choisissez le type d’option(s) proposée(s) dans le contrat d’origine concernant la composition des paniers.', 'amapress' ) ?></p>
                     <p><input type="radio" class="required" <?php checked( 'quant_fix', $type ) ?>
                               name="amapress_quantite_type" id="amp_quant_fix" value="quant_fix"/><label
-                                for="amp_quant_fix"><strong>Choix unique - quantité déterminée</strong> : L’adhérent
-                            choisit une seule
-                            option pour toute la durée du contrat. </label><br/><span class="description">(Par ex : “Légumes - Panier/Demi-panier” , “Champignons - Petit/Moyen/Grand”, “Fruits - Petit/Moyen/Grand”, “Jus - 1L/3L/6L”, “Oeuf - 6/12”...)</span>
+                                for="amp_quant_fix"><strong><?php _e( 'Choix unique - quantité déterminée', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
+							<?php _e( 'L’adhérent choisit une seule option pour toute la durée du contrat.', 'amapress' ) ?>
+                        </label>
+                        <br/><span
+                                class="description"><?php _e( '(Par ex : “Légumes - Panier/Demi-panier” , “Champignons - Petit/Moyen/Grand”, “Fruits - Petit/Moyen/Grand”, “Jus - 1L/3L/6L”, “Oeuf - 6/12”...)', 'amapress' ) ?></span>
                     </p>
                     <p><input type="radio" class="required" <?php checked( 'quant_fix_multi', $type ) ?>
                               name="amapress_quantite_type" id="amp_quant_fix_multi" value="quant_fix_multi"/><label
-                                for="amp_quant_fix_multi"><strong>Choix multiple - quantités déterminées</strong> :
-                            L’adhérent peut choisir différents
-                            produits associés à différentes tailles de panier pour toute la durée du contrat
+                                for="amp_quant_fix_multi"><strong><?php _e( 'Choix multiple - quantités déterminées', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
+							<?php _e( 'L’adhérent peut choisir différents produits associés à différentes tailles de panier pour toute la durée du contrat', 'amapress' ) ?>
                         </label><br/><span
-                                class="description">(Par ex :  “Champignons - Gros fan de champis 1 kg <strong>et</strong>  petit fan de pleurotes 250g <strong>et</strong>  Petit fan de shiitake 250g…”)</span>
+                                class="description"><?php _e( '(Par ex :  “Champignons - Gros fan de champis 1 kg <strong>et</strong>  petit fan de pleurotes 250g <strong>et</strong>  Petit fan de shiitake 250g…”)', 'amapress' ) ?></span>
                     </p>
                     <p><input type="radio" class="required" <?php checked( 'quant_var', $type ) ?>
                               name="amapress_quantite_type" id="amp_quant_var" value="quant_var"/><label
-                                for="amp_quant_var"><strong>Choix unique - quantité libre</strong> : L’adhérent choisit
-                            la “Quantité” d’un
-                            produit pour toute durée du contrat
+                                for="amp_quant_var"><strong><?php _e( 'Choix unique - quantité libre', 'amapress' ) ?></strong>
+                            : L’adhérent choisit la “Quantité” d’un produit pour toute durée du contrat
                         </label><br/><span
-                                class="description">(Par ex : “Quantité  x Poulets”, “Quantité x 6 oeufs”...)</span></p>
+                                class="description"><?php _e( '(Par ex : “Quantité  x Poulets”, “Quantité x 6 oeufs”...)', 'amapress' ) ?></span>
+                    </p>
                     <p><input type="radio" class="required" <?php checked( 'quant_var_multi', $type ) ?>
                               name="amapress_quantite_type" id="amp_quant_var_multi" value="quant_var_multi"/><label
-                                for="amp_quant_var_multi"><strong>Choix multiple - quantités libres</strong> :
-                            L’adhérent peut choisir différents
-                            produits et différentes Quantités pour toute la durée du contrat </label><br/><span
-                                class="description">(Par ex : “Oeufs - Quantité 6 et 12 oeufs”, “Fromage - Quantité Petit Panier Option 1 et Quantité Grand panier et Quantité Panier Faisselle...”, “Volailles - Quantité Petit poulet/ Quantité Moyen Poulet, Quantité Gros Poulet”...)</span>
+                                for="amp_quant_var_multi"><strong><?php _e( 'Choix multiple - quantités libres', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
+							<?php _e( 'L’adhérent peut choisir différents produits et différentes Quantités pour toute la durée du contrat', 'amapress' ) ?>
+                        </label><br/><span
+                                class="description"><?php _e( '(Par ex : “Oeufs - Quantité 6 et 12 oeufs”, “Fromage - Quantité Petit Panier Option 1 et Quantité Grand panier et Quantité Panier Faisselle...”, “Volailles - Quantité Petit poulet/ Quantité Moyen Poulet, Quantité Gros Poulet”...)', 'amapress' ) ?></span>
                     <p><input type="radio" class="required" <?php checked( 'panier_var', $type ) ?>
                               name="amapress_quantite_type" id="amp_panier_var" value="panier_var"/><label
-                                for="amp_panier_var"><strong>Paniers modulables</strong> : L’adhérent compose à l’avance
-                            un panier spécifique
-                            pour chaque distribution </label><br/><span
-                                class="description">(Par ex : “Brie”, “Epicerie”...)</span></p>
+                                for="amp_panier_var"><strong><?php _e( 'Paniers modulables', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
+							<?php _e( 'L’adhérent compose à l’avance un panier spécifique pour chaque distribution', 'amapress' ) ?>
+                        </label><br/><span
+                                class="description"><?php _e( '(Par ex : “Brie”, “Epicerie”...)', 'amapress' ) ?></span>
+                    </p>
 					<?php
 					return ob_get_clean();
 				},
@@ -1237,10 +1238,10 @@ jQuery(function($) {
 					}
 
 					ob_start();
-					echo '<p style="padding: 20px 10px 20px 0;"><strong>Quantités de rattrapage</strong></p>';
-					echo '<p class="description">Options pour les Amap dont les quantités de rattrapage sont annoncées en début de contrat</p>';
+					echo '<p style="padding: 20px 10px 20px 0;"><strong>' . 'Quantités de rattrapage' . '</strong></p>';
+					echo '<p class="description">' . 'ptions pour les Amap dont les quantités de rattrapage sont annoncées en début de contrat' . '</p>';
 					echo '<table id="quant_rattrapage" style="width: 100%; border: 1pt solid black">
-<thead><tr><th style="padding-left: 20px">Sélectionner une date</th><th style="padding-left: 20px">Indiquer la quantité</th></tr></thead>
+<thead><tr><th style="padding-left: 20px">' . 'Sélectionner une date' . '</th><th style="padding-left: 20px">' . 'Indiquer la quantité' . '</th></tr></thead>
 <tbody>';
 					$i = 0;
 					foreach ( $rattrapage as $r ) {
@@ -1428,10 +1429,9 @@ jQuery(function($) {
 				'selector-button' => 'Utiliser ce modèle',
 				'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
 				'group'           => '5/6 - Pré-inscription en ligne',
-				'desc'            => '
-<p><strong>Vous pouvez configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . ' et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
-<p>Sinon, configurez un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)</p>
-<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) . '">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>',
+				'desc'            => sprintf( '<p><strong>Vous pouvez configurer %s et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
+<p>Sinon, configurez un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
+<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>', Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) ),
 			),
 
 
@@ -1476,51 +1476,51 @@ jQuery(function($) {
 					$ret     = [];
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat->isPanierVariable() ) {
-						$ret[] = 'Paniers modulables';
+						$ret[] = __( 'Paniers modulables', 'amapress' );
 					} else {
-						$ret[] = 'Contrat récurrent';
+						$ret[] = __( 'Contrat récurrent', 'amapress' );
 					}
 					if ( $contrat->isPrincipal() ) {
-						$ret[] = 'principal';
+						$ret[] = __( 'principal', 'amapress' );
 					}
 					if ( $contrat->canSelfEdit() ) {
-						$ret[] = 'éditable';
+						$ret[] = __( 'éditable', 'amapress' );
 					} else {
-						$ret[] = 'non éditable';
+						$ret[] = __( 'non éditable', 'amapress' );
 					}
 					if ( ! empty( $contrat->getPossiblePaiements() ) ) {
-						$ret[] = implode( ';', $contrat->getPossiblePaiements() ) . ' chèque(s)';
+						$ret[] = sprintf( __( '%s chèque(s)', 'amapress' ), implode( ';', $contrat->getPossiblePaiements() ) );
 					}
 					if ( $contrat->getPayByMonthOnly() ) {
-						$ret[] = 'répartition au mois uniquement';
+						$ret[] = __( 'répartition au mois uniquement', 'amapress' );
 					} elseif ( $contrat->getPayByMonth() ) {
-						$ret[] = 'répartition au mois';
+						$ret[] = __( 'répartition au mois', 'amapress' );
 					}
 					if ( $contrat->getAllow_Transfer() ) {
-						$ret[] = 'virement';
+						$ret[] = __( 'virement', 'amapress' );
 					}
 					if ( $contrat->getAllow_Cash() ) {
-						$ret[] = 'espèces';
+						$ret[] = __( 'espèces', 'amapress' );
 					}
 					if ( $contrat->getAllow_LocalMoney() ) {
-						$ret[] = 'monnaie locale';
+						$ret[] = __( 'monnaie locale', 'amapress' );
 					}
 					if ( $contrat->getAllow_Prelevement() ) {
 						if ( ! empty( $contrat->getPossiblePaiements() ) ) {
-							$ret[] = implode( ';', $contrat->getPossiblePaiements() ) . ' prélèvement(s)';
+							$ret[] = sprintf( __( '%s prélèvement(s)', 'amapress' ), implode( ';', $contrat->getPossiblePaiements() ) );
 						}
 					}
 					if ( $contrat->getAllow_Delivery_Pay() ) {
-						$ret[] = 'à la livraison';
+						$ret[] = __( 'à la livraison', 'amapress' );
 					}
 					if ( $contrat
 					     && $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
 					) {
-						$ret[] = '<span style="color:orange">ouvrira le ' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) . '</span>';
+						$ret[] = sprintf( '<span style="color:orange">ouvrira le %s</span>', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
 					} elseif ( $contrat
 					           && $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
 					) {
-						$ret[] = '<span style="color:orange">clos depuis ' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) . '</span>';
+						$ret[] = sprintf( '<span style="color:orange">clos depuis %s</span>', date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
 					} elseif ( $contrat
 					           && ! $contrat->canSelfSubscribe()
 					) {
@@ -1857,10 +1857,10 @@ jQuery(function($) {
 								}
 							}
 							if ( $contrat_instance->getAllow_Cash() ) {
-								$options .= '<li>En espèces</li>';
+								$options .= '<li>' . 'En espèces' . '</li>';
 							}
 							if ( $contrat_instance->getAllow_Transfer() ) {
-								$options .= '<li>Par virement</li>';
+								$options .= '<li>' . 'Par virement' . '</li>';
 							}
 
 							$row[ 'quant_' . $quant->ID ] = "<p>{$remaining_dates_factors} x {$price}€ = {$total}€</p><ul>{$options}</ul>";
@@ -1869,7 +1869,7 @@ jQuery(function($) {
 						$data[] = $row;
 					}
 
-					$ret = '<p>Consulter notre <a href="#" id="show_options_cheques">proposition de répartition</a> du montant des versements pour vos contrats</p>';
+					$ret = '<p>' . 'Consulter notre <a href="#" id="show_options_cheques">proposition de répartition</a> du montant des versements pour vos contrats' . '</p>';
 					$ret .= amapress_get_datatable( 'options_cheques', $columns, $data,
 						array(
 							'paging'    => false,
@@ -2096,7 +2096,7 @@ function amapress_contrat_fields( $fields ) {
 				'readonly'     => 'amapress_is_referents_fields_readonly',
 				'searchable'   => true,
 				'autocomplete' => true,
-				'desc'         => 'Référent producteur pour ' . $lieu->getTitle() . ' et spécifique pour cette production et son/ses contrat(s)',
+				'desc'         => sprintf( 'Référent producteur pour %s et spécifique pour cette production et son/ses contrat(s)', $lieu->getTitle() ),
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			);
@@ -2436,25 +2436,25 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 		}
 	}
 	echo '<tr style="vertical-align: top">';
-	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='Intitulé' value='$title' />";
-	echo "<br/><em title='Abbréviation ou code pour affichage sur la liste d&apos;émargement'>Code liste émargement</em>:<input style='width: 100%' type='text' class='' name='amapress_quant_data[$id][code]' placeholder='Code' value='$code' /></td>";
-	echo "<td><textarea style='width: 100%; height: 100%' rows='3' class='' name='amapress_quant_data[$id][desc]' placeholder='Description'>{$description}</textarea></td>";
-	echo "<td><input style='width: 5em' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='Prix unitaire' value='$price' /></td>";
-	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='Facteur quantité' value='$quantite' /></td>";
+	echo "<td><input style='width: 100%' type='text' class='required' name='amapress_quant_data[$id][title]' placeholder='" . "Intitulé" . "' value='$title' />";
+	echo "<br/><em title='" . "Abbréviation ou code pour affichage sur la liste d&apos;émargement" . "'>" . "Code liste émargement" . "</em>:<input style='width: 100%' type='text' class='' name='amapress_quant_data[$id][code]' placeholder='" . "Code" . "' value='$code' /></td>";
+	echo "<td><textarea style='width: 100%; height: 100%' rows='3' class='' name='amapress_quant_data[$id][desc]' placeholder='" . "Description" . "'>{$description}</textarea></td>";
+	echo "<td><input style='width: 5em' type='number' class='required number' name='amapress_quant_data[$id][price]' min='0' step='0.01' placeholder='" . "Prix unitaire" . "' value='$price' /></td>";
+	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][quant]' min='0' step='0.01' placeholder='" . "Facteur quantité" . "' value='$quantite' /></td>";
 	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
 		if ( empty( $unit ) ) {
 			$unit = 'unit';
 		}
 		echo "<td><select style='width: 100%' class='required' name='amapress_quant_data[$id][unit]'>";
-		echo '<option value="">--Unité de prix--</option>';
-		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">pièce</option>';
+		echo '<option value="">' . __( '--Unité de prix--', 'amapress' ) . '</option>';
+		echo '<option ' . selected( 'unit', $unit, false ) . ' value="unit">' . __( 'pièce', 'amapress' ) . '</option>';
 		echo '<option ' . selected( 'kg', $unit, false ) . ' value="kg">kg</option>';
 		echo '<option ' . selected( 'l', $unit, false ) . ' value="l">L</option>';
 		echo '<option ' . selected( 'cm', $unit, false ) . ' value="cm">cm</option>';
 		echo '<option ' . selected( 'm', $unit, false ) . ' value="m">m</option>';
 		echo '</select></td>';
-		echo "<td><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='Config' value='$quantite_conf' />
-<br/>Grp. Multiple:<input type='number' class='required number' name='amapress_quant_data[$id][grp_mult]' min='0' step='1' placeholder='Multiple' value='$grp_mult' /></td>";
+		echo "<td><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='" . "Config" . "' value='$quantite_conf' />
+<br/>" . "Grp. Multiple:" . "<input type='number' class='required number' name='amapress_quant_data[$id][grp_mult]' min='0' step='1' placeholder='" . "Multiple" . "' value='$grp_mult' /></td>";
 	}
 	$all_liste_dates_options = [];
 	foreach ( $contrat_instance->getListe_dates() as $d ) {
@@ -2470,19 +2470,19 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
     <td><select style='width: 5em' id="<?php echo "amapress_quant_data[$id][liste_dates]" ?>"
                 name="<?php echo "amapress_quant_data[$id][liste_dates][]"; ?>"
                 class="quant-dates" multiple="multiple"
-                data-placeholder="Dates spé.">
+                data-placeholder="<?php echo esc_attr__( 'Dates spé.', 'amapress' ) ?>">
 			<?php
 			tf_parse_select_options( $all_liste_dates_options, $liste_dates_options );
 			?>
         </select>
     </td>
 	<?php
-	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][max_adhs]' min='0' step='1' placeholder='Adhérents' value='$max_adhs' /></td>";
+	echo "<td><input style='width: 100%' type='number' class='required number' name='amapress_quant_data[$id][max_adhs]' min='0' step='1' placeholder='" . esc_attr__( 'Adhérents', 'amapress' ) . "' value='$max_adhs' /></td>";
 	?>
     <td><select style='width: 5em' id="<?php echo "amapress_quant_data[$id][produits]" ?>"
                 name="<?php echo "amapress_quant_data[$id][produits][]"; ?>"
                 class="quant-produit" multiple="multiple"
-                data-placeholder="Produits associés">
+                data-placeholder="<?php echo esc_attr__( 'Produits associés', 'amapress' ) ?>">
 			<?php
 			tf_parse_select_options( $contrat_produits, $produits );
 			?>
@@ -2514,36 +2514,39 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	?>
-    <p style="padding: 20px 10px 20px 0;"><strong>Configuration des paniers (Taille/Quantités)</strong></p>
-    <p>Créer un panier à partir d’un modèle Excel <a
+    <p style="padding: 20px 10px 20px 0;">
+        <strong><?php _e( 'Configuration des paniers (Taille/Quantités)', 'amapress' ) ?></strong></p>
+    <p><?php _e( 'Créer un panier à partir d’un modèle Excel', 'amapress' ) ?> <a
                 href="<?php echo admin_url( 'admin.php?page=amapress_import_page&tab=import_quant_paniers&amapress_import_contrat_quantite_default_contrat_instance=' . $contrat_instance->ID ); ?>"
-                target="_blank" class="button button-secondary">Import CSV</a></p>
+                target="_blank" class="button button-secondary"><?php _e( 'Import CSV', 'amapress' ) ?></a></p>
     <p style="padding-bottom: 20px"><span class="btn add-model dashicons dashicons-plus-alt"
-                                          onclick="amapress_add_quant(this)"></span> Ajouter une quantité</p>
+                                          onclick="amapress_add_quant(this)"></span> <?php _e( 'Ajouter une quantité', 'amapress' ) ?>
+    </p>
     <input type="hidden" name="amapress_quant_data_contrat_instance_id"
            value="<?php echo $contrat_instance_id; ?>"/>
     <table id="quant_editor_table" class="table" style="width: 100%; border: 1pt solid black">
         <thead>
         <tr>
-            <th style="padding-left: 10px">Intitulé*</th>
-            <th title="Description">Desc.</th>
-            <th style="width: 50px">Prix*</th>
+            <th style="padding-left: 10px"><?php _e( 'Intitulé', 'amapress' ) ?>*</th>
+            <th title="<?php echo esc_attr__( 'Description', 'amapress' ) ?>"><?php _e( 'Desc.', 'amapress' ) ?></th>
+            <th style="width: 50px"><?php _e( 'Prix', 'amapress' ) ?>*</th>
             <th style="width: 50px"
-                title="Facteur quantité: par ex, 0.5 pour demi panier et 1 pour panier. 0 si non utile pour le contrat">
-                Fact. quant.<span class="dashicons dashicons-editor-help"></span>
+                title="<?php echo esc_attr__( 'Facteur quantité: par ex, 0.5 pour demi panier et 1 pour panier. 0 si non utile pour le contrat', 'amapress' ) ?>">
+				<?php _e( 'Fact. quant.', 'amapress' ) ?><span class="dashicons dashicons-editor-help"></span>
             </th>
 			<?php if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) { ?>
-                <th style="width: 60px">Unité*</th>
+                <th style="width: 60px"><?php _e( 'Unité', 'amapress' ) ?>*</th>
                 <th style="width: 70px"
-                    title="Options de quantités possibles, par ex : 1-3;5;10 pour autoriser 1,2,3,5,10">Quantités config<span
+                    title="<?php echo esc_attr__( 'Options de quantités possibles, par ex : 1-3;5;10 pour autoriser 1,2,3,5,10', 'amapress' ) ?>"><?php _e( 'Quantités config', 'amapress' ) ?>
+                    <span
                             class="dashicons dashicons-editor-help"></span>
                 </th>
 			<?php } ?>
-            <th title="Dates spécifiques de distribution du type de panier"
-            >Dates spec.<span class="dashicons dashicons-editor-help"></span>
+            <th title="<?php echo esc_attr__( 'Dates spécifiques de distribution du type de panier', 'amapress' ) ?>"
+            ><?php _e( 'Dates spec.', 'amapress' ) ?><span class="dashicons dashicons-editor-help"></span>
             </th>
-            <th style="width: 50px">Max Adhs.</th>
-            <th>Produits</th>
+            <th style="width: 50px"><?php _e( 'Max Adhs.', 'amapress' ) ?></th>
+            <th><?php _e( 'Produits', 'amapress' ) ?></th>
             <!--            <th style="width: 30px">Photo</th>-->
             <th style="width: 30px"></th>
         </tr>
@@ -2567,16 +2570,16 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         </tbody>
     </table>
     <p class="description"><a
-                href="https://wiki.amapress.fr/contrats/exemple_paniers" target="_blank">* Consulter les instructions
-            spécifiques et exemples</a></p>
-    <p class="description">Pour les produits <strong>payables au poids à la livraison</strong>, indiquez un prix
-        unitaire de <strong>0</strong>.</p>
-    <p class="description">La colonne <strong>Fact. quant.</strong> permet d'indiquer la quantité totale à fournir au
-        producteur :
-        <br/>- par exemple, pour un contrat légumes, 0.5 pour un demi panier, 1 pour un panier, 2 pour un double ; 3
-        demi paniers + 2 paniers = 3.5 équivalent panier (3 * 0.5 + 2 * 1)
-        <br/>- par exemple pour un contrat oeufs, 6 pour une boîte de 6, etc..
-        <br/><strong>Pour tous les autres producteurs, vous pouvez laisser cette colonne à 0</strong>
+                href="https://wiki.amapress.fr/contrats/exemple_paniers" target="_blank">* <?php _e( 'Consulter les instructions
+            spécifiques et exemples', 'amapress' ) ?></a></p>
+    <p class="description"><?php _e( 'Pour les produits <strong>payables au poids à la livraison</strong>, indiquez un prix
+        unitaire de <strong>0</strong>.', 'amapress' ) ?></p>
+    <p class="description"><?php _e( 'La colonne <strong>Fact. quant.</strong> permet d\'indiquer la quantité totale à fournir au
+        producteur :', 'amapress' ) ?>
+        <br/><?php _e( '- par exemple, pour un contrat légumes, 0.5 pour un demi panier, 1 pour un panier, 2 pour un double ; 3
+        demi paniers + 2 paniers = 3.5 équivalent panier (3 * 0.5 + 2 * 1)', 'amapress' ) ?>
+        <br/><?php _e( '- par exemple pour un contrat oeufs, 6 pour une boîte de 6, etc..', 'amapress' ) ?>
+        <br/><strong><?php _e( 'Pour tous les autres producteurs, vous pouvez laisser cette colonne à 0', 'amapress' ) ?></strong>
     </p>
 	<?php
 	$contents = ob_get_clean();
@@ -2595,7 +2598,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
     function amapress_quant_load_tags() {
         jQuery('.quant-dates').select2MultiCheckboxes({
             templateSelection: function(selected, total) {
-              return selected.length + \" sur \" + total;
+              return selected.length + \"" . __( ' sur ', 'amapress' ) . "\" + total;
             }
           });
         jQuery('.quant-produit').select2({
@@ -2621,7 +2624,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
         amapress_quant_load_tags();
     };
     function amapress_del_quant(e) {
-        if (!confirm('Voulez-vous vraiment supprimer cette quantité ?')) return;
+        if (!confirm('" . esc_js( __( 'Voulez-vous vraiment supprimer cette quantité ?', 'amapress' ) ) . "')) return;
         jQuery(e).closest('tr').remove();
     };
     //]]>
@@ -2977,21 +2980,23 @@ add_action( 'admin_post_archive_contrat', function () {
 	}
 
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
-		echo '<p>Etes-vous sûr de vouloir archiver le contrat ' . esc_html( $contrat->getTitle() ) . ' ? 
+		echo '<p>';
+		echo sprintf( 'Etes-vous sûr de vouloir archiver le contrat %s ? 
 <br />
-<a href = "' . add_query_arg( 'confirm', 'yes' ) . '"> Confirmer l\'archivage</a>';
+<a href = "%s"> Confirmer l\'archivage</a>', esc_html( $contrat->getTitle() ), add_query_arg( 'confirm', 'yes' ) );
+		echo '</p>';
 		die();
 	}
 
 	if ( 'yes' != $_REQUEST['confirm'] ) {
-		wp_die( 'Archivage du contrat ' . esc_html( $contrat->getTitle() ) . ' abandonné.' );
+		wp_die( sprintf( 'Archivage du contrat %s abandonné.', esc_html( $contrat->getTitle() ) ) );
 	}
 
 	$contrat->archive();
 
-	echo '<p style="color: green">Archivage effectué</p>';
+	echo '<p style="color: green">' . 'Archivage effectué' . '</p>';
 
-	echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=contrats_archives' ) ) . '">Retour à la liste des contrats archivables</a></p>';
+	echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=contrats_archives' ) ) . '">' . 'Retour à la liste des contrats archivables' . '</a></p>';
 	die();
 } );
 

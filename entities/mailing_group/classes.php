@@ -506,10 +506,8 @@ class AmapressMailingGroup extends TitanEntity {
 							}
 
 							amapress_wp_mail( get_option( 'admin_email' ),
-								'Message non remis à un ou plusieurs destinataires sur la liste ' . $this->getName(),
-								wpautop( "Bonjour,\n\n Un message n'a pas pu être remis à un ou plusieurs destinataires pour la liste " . $this->getName()
-								         . ":\n------\nDestinataires: $undelivered\n------\nSujet: $subject\n" . $phpmailer->html2text( $content ) . "\n------\n\n" .
-								         get_bloginfo( 'name' ) ),
+								sprintf( 'Message non remis à un ou plusieurs destinataires sur la liste %s', $this->getName() ),
+								wpautop( sprintf( "Bonjour,\n\n Un message n'a pas pu être remis à un ou plusieurs destinataires pour la liste %s:\n------\nDestinataires: %s\n------\nSujet: %s\n%s\n------\n\n%s", $this->getName(), $undelivered, $subject, $phpmailer->html2text( $content ), get_bloginfo( 'name' ) ) ),
 								'', [
 									[
 										'name'   => 'email.eml',

@@ -258,7 +258,7 @@ GROUP BY $wpdb->posts.ID" );
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
 					'icon'     => 'flaticon-business',
-					'alt'      => 'Vous allez être encaissé ' . ( 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'mon' == $this->getType() ? ' du paiement en monnaie locale ' : ( 'dlv' == $this->getType() ? ' à la livraison' : ( 'prl' == $this->getType() ? ' du prélèvement' : ( 'stp' == $this->getType() ? ' du paiement en ligne' : '' ) ) ) ) ) ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => sprintf( 'Vous allez être encaissé %s d\'un montant de %s€ à la date du %s', 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'mon' == $this->getType() ? ' du paiement en monnaie locale ' : ( 'dlv' == $this->getType() ? ' à la livraison' : ( 'prl' == $this->getType() ? ' du prélèvement' : ( 'stp' == $this->getType() ? ' du paiement en ligne' : '' ) ) ) ) ) ), $price, date_i18n( 'd/m/Y', $date ) ),
 					'href'     => '/mes-adhesions'
 				) );
 			}

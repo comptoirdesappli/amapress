@@ -56,9 +56,9 @@ function amapress_get_custom_content_contrat_details( $content, $subview ) {
 		echo "    <input type='hidden' name='contrat_instance_id' value='{$contrat_instance->ID}' />";
 //            amapress_echo_panel_start('');
 		echo "    <div class='$cls'>$contrat</div>";
-		echo "    <label for='inscr_message'>Message</label>";
+		echo '    <label for=\'inscr_message\'>' . 'Message' . '</label>';
 		echo "    <textarea id='inscr_message' name='message'></textarea>";
-		echo "    <input type='submit' value='Soumettre la demande d&apos;inscription' />";
+		echo '    <input type=\'submit\' value=\'' . 'Soumettre la demande d&apos;inscription' . '\' />';
 		echo "</form>";
 		$content = ob_get_contents();
 		ob_clean();
@@ -104,7 +104,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$content .= '<div class="contrat-pres-prod">' . wpautop( get_the_content() ) . '</div>';
 	if ( amapress_can_access_admin() ) {
 		if ( $edit_contrat_url = get_edit_post_link( get_the_ID() ) ) {
-			$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier cette présentation</a></div>';
+			$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">' . 'Modifier cette présentation' . '</a></div>';
 		}
 	}
 	$content .= Amapress::get_know_more( get_permalink( $prod_id ) );
@@ -116,7 +116,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$content .= amapress_get_panel_end();
 
 	foreach ( AmapressContrats::get_active_contrat_instances_by_contrat( $contrat_id ) as $c ) {
-		$content .= amapress_get_panel_start( 'Contrat - ' . esc_html( $c->getTitle() ) );
+		$content .= amapress_get_panel_start( sprintf( 'Contrat - %s', esc_html( $c->getTitle() ) ) );
 		$content .= wpautop( $c->getContratInfo() );
 
 		if ( $c->getDate_ouverture() < amapress_time() && amapress_time() < $c->getDate_cloture() ) {
@@ -145,7 +145,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 		}
 		if ( amapress_can_access_admin() ) {
 			if ( $edit_contrat_url = get_edit_post_link( $c->ID ) ) {
-				$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">Modifier ce contrat</a></div>';
+				$content .= '<div><a href="' . esc_url( $edit_contrat_url ) . '" class="post-edit-link">' . 'Modifier ce contrat' . '</a></div>';
 			}
 		}
 		$content .= amapress_get_panel_end();

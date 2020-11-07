@@ -21,9 +21,7 @@ function amapress_get_contrats_cron( $type ) {
 						'id'    => $contrat->getID(),
 						'time'  => $contrat->getDate_ouverture(),
 						'type'  => $type,
-						'title' => 'Ouverture inscriptions (' .
-						           date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) .
-						           ') - ' . $contrat->getTitle()
+						'title' => sprintf( 'Ouverture inscriptions (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ), $contrat->getTitle() )
 					];
 				}
 				break;
@@ -33,9 +31,7 @@ function amapress_get_contrats_cron( $type ) {
 						'id'    => $contrat->getID(),
 						'time'  => $contrat->getDate_cloture(),
 						'type'  => $type,
-						'title' => 'Clôture inscriptions (' .
-						           date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) .
-						           ') - ' . $contrat->getTitle()
+						'title' => sprintf( 'Clôture inscriptions (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_cloture() ), $contrat->getTitle() )
 					];
 				}
 				break;
@@ -44,9 +40,7 @@ function amapress_get_contrats_cron( $type ) {
 					'id'    => $contrat->getID(),
 					'time'  => $contrat->getDate_debut(),
 					'type'  => $type,
-					'title' => 'Début (' .
-					           date_i18n( 'd/m/Y', $contrat->getDate_debut() ) .
-					           ') - ' . $contrat->getTitle()
+					'title' => sprintf( 'Début (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_debut() ), $contrat->getTitle() )
 				];
 				break;
 			case 'end':
@@ -54,9 +48,7 @@ function amapress_get_contrats_cron( $type ) {
 					'id'    => $contrat->getID(),
 					'time'  => $contrat->getDate_fin(),
 					'type'  => $type,
-					'title' => 'Fin (' .
-					           date_i18n( 'd/m/Y', $contrat->getDate_fin() ) .
-					           ') - ' . $contrat->getTitle()
+					'title' => sprintf( 'Fin (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_fin() ), $contrat->getTitle() )
 				];
 				break;
 		}
@@ -70,7 +62,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 
 	if ( null == $dist ) {
-		echo '<p>Distribution introuvable</p>';
+		echo '<p>' . 'Distribution introuvable' . '</p>';
 
 		return;
 	}
@@ -109,7 +101,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 		foreach ( $contrats as $contrat ) {
 			$replacements = [];
 
-			$replacements['producteur_contact'] = '<div><h5>Contact producteur:</h5>' .
+			$replacements['producteur_contact'] = '<div><h5>' . 'Contact producteur:' . '</h5>' .
 			                                      ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
 				                                      array(
 					                                      'show_avatar' => 'false',
@@ -254,13 +246,13 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$content,
 				'', $target_users, $dist, $attachments,
 				amapress_get_recall_cc_from_option( 'distribution-quantites-recall-cc' ) );
-			echo '<p>Email de rappel des quantités aux producteurs envoyé : ' . esc_html( $producteur->getTitle() ) . '</p>';
+			echo '<p>' . sprintf( 'Email de rappel des quantités aux producteurs envoyé : %s', esc_html( $producteur->getTitle() ) ) . '</p>';
 			$sent_mails = true;
 		}
 	}
 
 	if ( ! $sent_mails ) {
-		echo '<p>Pas de quantités à rappeler à cette distribution</p>';
+		echo '<p>' . 'Pas de quantités à rappeler à cette distribution' . '</p>';
 	}
 
 } );
@@ -268,7 +260,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>Distribution introuvable</p>';
+		echo '<p>' . 'Distribution introuvable' . '</p>';
 
 		return;
 	}
@@ -367,12 +359,12 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 			$content,
 			'', $target_users, $dist, $attachments,
 			amapress_get_recall_cc_from_option( 'contrats-liste-paiements-recall-cc' ) );
-		echo '<p>Email de rappel de la liste des règlements envoyé</p>';
+		echo '<p>' . 'Email de rappel de la liste des règlements envoyé' . '</p>';
 		$sent_mails = true;
 	}
 
 	if ( ! $sent_mails ) {
-		echo '<p>Pas de liste de règlements à rappeler à cette distribution</p>';
+		echo '<p>' . 'Pas de liste de règlements à rappeler à cette distribution' . '</p>';
 	}
 
 	//%%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%
@@ -382,7 +374,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>Distribution intouvable</p>';
+		echo '<p>' . 'Distribution intouvable' . '</p>';
 
 		return;
 	}
@@ -411,7 +403,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$renewable_contrats = array_merge( $near_renew, $to_renew );
 
 	if ( empty( $near_renew ) && empty( $to_renew ) ) {
-		echo '<p>Pas de contrat à renouveler</p>';
+		echo '<p>' . 'Pas de contrat à renouveler' . '</p>';
 
 		return;
 	}
@@ -462,28 +454,28 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 		$content,
 		'', $target_users, $dist, array(),
 		amapress_get_recall_cc_from_option( 'contrat-renew-recall-cc' ) );
-	echo '<p>Email de rappel de contrat à renouveler envoyé</p>';
+	echo '<p>' . 'Email de rappel de contrat à renouveler envoyé' . '</p>';
 
 } );
 
 add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	$contrat = AmapressContrat_instance::getBy( $args['id'] );
 	if ( null == $contrat ) {
-		echo '<p>Contrat intouvable</p>';
+		echo '<p>' . 'Contrat intouvable' . '</p>';
 
 		return;
 	}
 
 	$today = Amapress::start_of_day( amapress_time() );
 	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) < $today ) {
-		echo '<p>Contrat clos</p>';
+		echo '<p>' . 'Contrat clos' . '</p>';
 
 		return;
 	}
 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrat-' . $args['type'] . '-recall-excl-producteurs' ) );
 	if ( in_array( $contrat->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
-		echo '<p>Producteur exclu</p>';
+		echo '<p>' . 'Producteur exclu' . '</p>';
 
 		return;
 	}
@@ -491,16 +483,16 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	$replacements = [];
 
 	if ( Amapress::start_of_day( $contrat->getDate_ouverture() ) < $today ) {
-		$replacements['ouvre_jours'] = 'depuis ' . round( ( amapress_time() - $contrat->getDate_ouverture() ) / ( 24 * HOUR_IN_SECONDS ) ) . ' jour(s)';
-		$replacements['ouvre_date']  = 'depuis le ' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() );
+		$replacements['ouvre_jours'] = sprintf( 'depuis %s jour(s)', round( ( amapress_time() - $contrat->getDate_ouverture() ) / ( 24 * HOUR_IN_SECONDS ) ) );
+		$replacements['ouvre_date']  = sprintf( 'depuis le %s', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
 	} else {
-		$replacements['ouvre_jours'] = 'dans ' . round( ( $contrat->getDate_ouverture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) . ' jour(s)';
-		$replacements['ouvre_date']  = 'le ' . date_i18n( 'd/m/Y', $contrat->getDate_ouverture() );
+		$replacements['ouvre_jours'] = sprintf( 'dans %s jour(s)', round( ( $contrat->getDate_ouverture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) );
+		$replacements['ouvre_date']  = sprintf( 'le %s', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
 	}
 
 	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) > $today ) {
-		$replacements['ferme_jours'] = 'dans ' . round( ( $contrat->getDate_cloture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) . ' jour(s)';
-		$replacements['ferme_date']  = 'le ' . date_i18n( 'd/m/Y', $contrat->getDate_cloture() );
+		$replacements['ferme_jours'] = sprintf( 'dans %s jour(s)', round( ( $contrat->getDate_cloture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) );
+		$replacements['ferme_date']  = sprintf( 'le %s', date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
 	}
 
 	$headers = 'Reply-To: ' . implode( ',', $contrat->getAllReferentsEmails() );
@@ -549,14 +541,14 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 		amapress_get_recall_cc_from_option( 'contrat-' . $args['type'] . '-recall-cc' ),
 		null, $headers
 	);
-	echo '<p>Email de rappel envoyé</p>';
+	echo '<p>' . 'Email de rappel envoyé' . '</p>';
 } );
 
 add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	$contrat_instance = AmapressContrat_instance::getBy( $args['id'] );
 
 	if ( null == $contrat_instance ) {
-		echo '<p>Contrat introuvable</p>';
+		echo '<p>' . 'Contrat introuvable' . '</p>';
 
 		return;
 	}
@@ -582,7 +574,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	$send_to_producteur = in_array( $producteur_id, $send_to_producteurs );
 
 	$replacements                                         = [];
-	$replacements['producteur_contact']                   = '<div><h5>Contact producteur:</h5>' .
+	$replacements['producteur_contact']                   = '<div><h5>' . 'Contact producteur:' . '</h5>' .
 	                                                        ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
 		                                                        array(
 			                                                        'show_avatar' => 'false',
@@ -705,7 +697,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 		$content,
 		'', $target_users, $contrat_instance, $attachments,
 		amapress_get_recall_cc_from_option( 'contrat-recap-cloture-recall-cc' ) );
-	echo '<p>Email de rappel récapitulatif des inscriptions envoyé : ' . esc_html( $producteur->getTitle() ) . '</p>';
+	echo '<p>' . sprintf( 'Email de rappel récapitulatif des inscriptions envoyé : %s', esc_html( $producteur->getTitle() ) ) . '</p>';
 } );
 
 function amapress_contrat_quantites_recall_options() {

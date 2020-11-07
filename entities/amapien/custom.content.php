@@ -109,19 +109,21 @@ function amapress_edit_user_info_shortcode( $atts ) {
     <form role="form" action="" id="user_profile" method="POST" enctype="multipart/form-data" class="amapress_validate">
 		<?php wp_nonce_field( 'user_profile_nonce', 'user_profile_nonce_field' ); ?>
         <div class="form-group">
-            <label for="first_name">Prénom</label>
-            <input type="text" class="form-control required" id="first_name" name="first_name" placeholder="Prénom"
+            <label for="first_name"><?php _e( 'Prénom', 'amapress' ) ?></label>
+            <input type="text" class="form-control required" id="first_name" name="first_name"
+                   placeholder="<?php echo esc_attr__( 'Prénom', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getUser()->first_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
-            <label for="last_name">Nom</label>
-            <input type="text" class="form-control required" id="last_name" name="last_name" placeholder="Nom"
+            <label for="last_name"><?php _e( 'Nom', 'amapress' ) ?></label>
+            <input type="text" class="form-control required" id="last_name" name="last_name"
+                   placeholder="<?php echo esc_attr__( 'Nom', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getUser()->last_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
-            <label for="last_name">Nom d'affichage</label>
+            <label for="last_name"><?php _e( 'Nom d\'affichage', 'amapress' ) ?></label>
             <input type="text" class="form-control required" id="display_name" name="display_name"
-                   placeholder="Nom d'affichage"
+                   placeholder="<?php echo esc_attr__( 'Nom d\'affichage', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getUser()->display_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
@@ -136,43 +138,47 @@ function amapress_edit_user_info_shortcode( $atts ) {
                    value="<?php esc_attr_e( implode( '/', $user->getPhoneNumbers( false ) ) ); ?>"/>
         </div>
         <div class="form-group">
-            <label for="email">Adresse email</label>
-            <input type="email" class="form-control email required" id="email" name="email" placeholder="Email"
+            <label for="email"><?php _e( 'Adresse email', 'amapress' ) ?></label>
+            <input type="email" class="form-control email required" id="email" name="email"
+                   placeholder="<?php echo esc_attr__( 'Email', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getEmail() ); ?>">
         </div>
         <div class="form-group">
-            <label for="email">Adresse email 2</label>
-            <input type="email" class="form-control email" id="email2" name="email2" placeholder="Email 2"
+            <label for="email"><?php _e( 'Adresse email 2', 'amapress' ) ?></label>
+            <input type="email" class="form-control email" id="email2" name="email2"
+                   placeholder="<?php echo esc_attr__( 'Email 2', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getEmail( 2 ) ); ?>">
         </div>
         <div class="form-group">
-            <label for="email">Adresse email 3</label>
-            <input type="email" class="form-control email" id="email3" name="email3" placeholder="Email 3"
+            <label for="email"><?php _e( 'Adresse email 3', 'amapress' ) ?></label>
+            <input type="email" class="form-control email" id="email3" name="email3"
+                   placeholder="<?php echo esc_attr__( 'Email 3', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getEmail( 3 ) ); ?>">
         </div>
-	    <div class="form-group">
-		    <label for="email">Adresse email 4</label>
-		    <input type="email" class="form-control email" id="email4" name="email4" placeholder="Email 4"
-		           value="<?php esc_attr_e( $user->getEmail( 4 ) ); ?>">
-	    </div>
-	    <div class="form-group">
-		    <label for="amapress_user_adresse">
-			    <?php _e( 'Adresse', 'amapress' ) ?><br/>
-		    </label>
-		    <textarea class="form-control <?php echo $address_required ? 'required' : ''; ?>"
-		              name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
-		              cols="40"
-		              placeholder="Adresse"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
-	    </div>
-	    <div class="form-group">
-		    <label for="amapress_user_code_postal">
-			    <?php _e( 'Code postal', 'amapress' ) ?><br/>
-		    </label>
-		    <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
-		           name="amapress_user_code_postal" id="amapress_user_code_postal"
-		           value="<?php esc_attr_e( wp_unslash( $user->getCode_postal() ) ); ?>"
-		           size="5"/>
-	    </div>
+        <div class="form-group">
+            <label for="email"><?php _e( 'Adresse email 4', 'amapress' ) ?></label>
+            <input type="email" class="form-control email" id="email4" name="email4"
+                   placeholder="<?php echo esc_attr__( 'Email 4', 'amapress' ) ?>"
+                   value="<?php esc_attr_e( $user->getEmail( 4 ) ); ?>">
+        </div>
+        <div class="form-group">
+            <label for="amapress_user_adresse">
+				<?php _e( 'Adresse', 'amapress' ) ?><br/>
+            </label>
+            <textarea class="form-control <?php echo $address_required ? 'required' : ''; ?>"
+                      name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
+                      cols="40"
+                      placeholder="<?php echo esc_attr__( 'Adresse', 'amapress' ) ?>"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="amapress_user_code_postal">
+				<?php _e( 'Code postal', 'amapress' ) ?><br/>
+            </label>
+            <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
+                   name="amapress_user_code_postal" id="amapress_user_code_postal"
+                   value="<?php esc_attr_e( wp_unslash( $user->getCode_postal() ) ); ?>"
+                   size="5"/>
+        </div>
 	    <div class="form-group">
 		    <label for="amapress_user_ville">
 			    <?php _e( 'Ville', 'amapress' ) ?><br/>
@@ -225,12 +231,12 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		<?php if ( $max_cofoyers >= 1 ) { ?>
             <table style="min-width: 50%">
                 <tr>
-                    <th colspan="2">Membre du foyer 1 / Conjoint
+                    <th colspan="2"><?php _e( 'Membre du foyer 1 / Conjoint', 'amapress' ) ?>
                     </th>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy1_email">Son email
-                            : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy1_email"><?php _e( 'Son email :', 'amapress' ) ?> </label>
                     </th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?>
                                 style="width: 100%" type="email"
@@ -240,7 +246,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy1_last_name">Son nom : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy1_last_name"><?php _e( 'Son nom :', 'amapress' ) ?> </label></th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                type="text"
                                                                                                id="cofoy1_last_name"
@@ -251,7 +258,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy1_first_name">Son prénom : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy1_first_name"><?php _e( 'Son prénom :', 'amapress' ) ?> </label>
                     </th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                type="text"
@@ -263,7 +271,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy1_tels">Téléphone(s) : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy1_tels"><?php _e( 'Téléphone(s) :', 'amapress' ) ?> </label></th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                type="text"
                                                                                                id="cofoy1_tels"
@@ -275,7 +284,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                 </tr>
 				<?php if ( $show_cofoyers_address ) { ?>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy1_address">Adresse : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy1_address"><?php _e( 'Adresse :', 'amapress' ) ?> </label>
                         </th>
                         <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy1_email ) ); ?> style="width: 100%"
                                                                                                       rows="4"
@@ -290,8 +300,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                         <th style="text-align: left; width: auto"></th>
                         <td>
                             <label for="cofoy1_remove"><input type="checkbox" name="cofoy1_remove"
-                                                              id="cofoy1_remove"/> Je ne partage plus de panier
-                                avec <?php echo esc_html( "$cofoy1_user_firt_name $cofoy1_user_last_name" ) ?>
+                                                              id="cofoy1_remove"/>
+								<?php echo esc_html( sprintf( 'Je ne partage plus de panier avec %s %s', $cofoy1_user_firt_name, $cofoy1_user_last_name ) ) ?>
                             </label>
                         </td>
                     </tr>
@@ -301,12 +311,12 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		<?php if ( $max_cofoyers >= 2 ) { ?>
             <table style="min-width: 50%">
                 <tr>
-                    <th colspan="2">Membre du foyer 2
+                    <th colspan="2"><?php _e( 'Membre du foyer 2', 'amapress' ) ?>
                     </th>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy2_email">Son email
-                            : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy2_email"><?php _e( 'Son email :', 'amapress' ) ?> </label>
                     </th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                type="email"
@@ -317,7 +327,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy2_last_name">Son nom : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy2_last_name"><?php _e( 'Son nom :', 'amapress' ) ?> </label></th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                type="text"
                                                                                                id="cofoy2_last_name"
@@ -328,7 +339,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy2_first_name">Son prénom : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy2_first_name"><?php _e( 'Son prénom :', 'amapress' ) ?> </label>
                     </th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                type="text"
@@ -340,7 +352,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy2_tels">Téléphone(s) : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy2_tels"><?php _e( 'Téléphone(s) :', 'amapress' ) ?> </label></th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                type="text"
                                                                                                id="cofoy2_tels"
@@ -350,7 +363,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                 </tr>
 				<?php if ( $show_cofoyers_address ) { ?>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy2_address">Adresse : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy2_address"><?php _e( 'Adresse :', 'amapress' ) ?> </label>
                         </th>
                         <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy2_email ) ); ?> style="width: 100%"
                                                                                                       rows="4"
@@ -376,11 +390,11 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		<?php if ( $max_cofoyers >= 3 ) { ?>
             <table style="min-width: 50%">
                 <tr>
-                    <th colspan="2">Membre du foyer 3</th>
+                    <th colspan="2"><?php _e( 'Membre du foyer 3', 'amapress' ) ?></th>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy3_email">Son email
-                            : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy3_email"><?php _e( 'Son email :', 'amapress' ) ?> </label>
                     </th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                type="email"
@@ -391,7 +405,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy3_last_name">Son nom : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy3_last_name"><?php _e( 'Son nom :', 'amapress' ) ?> </label></th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                type="text"
                                                                                                id="cofoy3_last_name"
@@ -402,7 +417,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy3_first_name">Son prénom : </label>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy3_first_name"><?php _e( 'Son prénom :', 'amapress' ) ?> </label>
                     </th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                type="text"
@@ -414,7 +430,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     </td>
                 </tr>
                 <tr>
-                    <th style="text-align: left; width: auto"><label for="cofoy3_tels">Téléphone(s) : </label></th>
+                    <th style="text-align: left; width: auto"><label
+                                for="cofoy3_tels"><?php _e( 'Téléphone(s) :', 'amapress' ) ?> </label></th>
                     <td><input <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                type="text"
                                                                                                id="cofoy3_tels"
@@ -424,7 +441,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                 </tr>
 				<?php if ( $show_cofoyers_address ) { ?>
                     <tr>
-                        <th style="text-align: left; width: auto"><label for="cofoy3_address">Adresse : </label>
+                        <th style="text-align: left; width: auto"><label
+                                    for="cofoy3_address"><?php _e( 'Adresse :', 'amapress' ) ?> </label>
                         </th>
                         <td><textarea <?php disabled( ! $edit_names && ! empty( $cofoy3_email ) ); ?> style="width: 100%"
                                                                                                       rows="4"
@@ -448,7 +466,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
             </table>
 		<?php } ?>
 
-        <button type="submit" class="btn btn-default">Enregistrer</button>
+        <button type="submit" class="btn btn-default"><?php _e( 'Enregistrer', 'amapress' ) ?></button>
     </form>
 	<?php
 	return ob_get_clean();

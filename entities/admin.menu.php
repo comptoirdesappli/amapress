@@ -154,7 +154,7 @@ jQuery(function($) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_search_user_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<input id="amapress_search_user_text" style="display: inline" type="text" placeholder="Amapien ?" class=\'amapress_search_user form-control\' />
+			'title'  => '<input id="amapress_search_user_text" style="display: inline" type="text" placeholder="' . esc_attr__( 'Amapien ?', 'amapress' ) . '" class=\'amapress_search_user form-control\' />
 <span role="button" id="amapress_search_user_btn" style="display: inline" class="amapress_search_user dashicons-before dashicons-search"></span>' . $style . $script,
 			'href'   => '#',
 		) );
@@ -164,7 +164,7 @@ jQuery(function($) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_publish_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<button class=\'amapress_publish button button-primary\' style="display: none">Enregistrer</button>',
+			'title'  => '<button class=\'amapress_publish button button-primary\' style="display: none">' . 'Enregistrer' . '</button>',
 			'href'   => '#',
 		) );
 	}
@@ -173,7 +173,7 @@ jQuery(function($) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_update_user_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<button class=\'amapress_update_user button button-primary\'>Enregistrer</button>',
+			'title'  => '<button class=\'amapress_update_user button button-primary\'>' . 'Enregistrer' . '</button>',
 			'href'   => '#',
 		) );
 	}

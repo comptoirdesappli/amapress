@@ -172,7 +172,7 @@ function amapress_panier_fields( $fields ) {
 			     && ( $panier->getContrat_instance()->hasPanier_CustomContent() ) ) {
 				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
 					$fields[ 'contenu_' . $quantite->ID ] = array(
-						'name'  => 'Contenu pour ' . $quantite->getTitle(),
+						'name'  => sprintf( 'Contenu pour %s', $quantite->getTitle() ),
 						'type'  => 'editor',
 						'group' => '2/ Contenu',
 					);

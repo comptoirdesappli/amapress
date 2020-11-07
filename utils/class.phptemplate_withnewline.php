@@ -88,15 +88,15 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 			$unknowns = Phptemplate_withnewline::getUnknownPlaceholders( $model_file, $placeholders );
 			if ( ! empty( $unknowns ) ) {
 				return [
-					'message' => $model_title . ': placeholders DOCX inconnus : ' . implode( ', ', array_map( function ( $p ) {
-							return '${' . $p . '}';
-						}, $unknowns ) ) . ' ; causes possibles: mauvais type de modèle ou erreur de frappe',
+					'message' => sprintf( '%s: placeholders DOCX inconnus : %s ; causes possibles: mauvais type de modèle ou erreur de frappe', $model_title, implode( ', ', array_map( function ( $p ) {
+						return '${' . $p . '}';
+					}, $unknowns ) ) ),
 					'status'  => 'error'
 				];
 			}
 		} catch ( Exception $ex ) {
 			return [
-				'message' => $model_title . ': modèle DOCX invalide: ' . $ex->getMessage(),
+				'message' => sprintf( '%s: modèle DOCX invalide: %s', $model_title, $ex->getMessage() ),
 				'status'  => 'error'
 			];
 		}

@@ -41,10 +41,10 @@ function amapress_register_entities_adhesion_period( $entities ) {
 			}
 
 			if ( $period->isArchived() ) {
-				echo '<h4>TELECHARGER ARCHIVES</h4>';
+				echo '<h4>' . 'TELECHARGER ARCHIVES' . '</h4>';
 				echo '<p>';
-				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&period=' . $post->ID ) . '">Adhésions (XLSX)</a>, ';
-				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&type=paiements&period=' . $post->ID ) . '">Adhésions (Répartition) (XLSX)</a>,';
+				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&period=' . $post->ID ) . '">' . 'Adhésions (XLSX)' . '</a>, ';
+				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&type=paiements&period=' . $post->ID ) . '">' . 'Adhésions (Répartition) (XLSX)' . '</a>,';
 				echo '</p>';
 			}
 		},
@@ -98,8 +98,8 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'selector-title'  => 'Sélectionnez/téléversez un modèle de bulletin DOCX',
 				'selector-button' => 'Utiliser ce modèle',
 				'group'           => 'Pré-inscription en ligne',
-				'desc'            => '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ) . '">Plus d\'info</a>)</p>
-<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( Amapress::getBulletinGenericUrl() ) . '">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>',
+				'desc'            => sprintf( '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
+<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>', admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ), esc_attr( Amapress::getBulletinGenericUrl() ) ),
 			),
 			'mnt_reseau'  => array(
 				'name'     => __( 'Montant adhésion au réseau', 'amapress' ),
@@ -198,7 +198,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'group'          => 'Questions personnalisées',
-				'desc'           => 'Intitulé de la checkbox personnalisée ' . AMAPRESS_ADHESION_PERIOD_CHECK2,
+				'desc'           => sprintf( 'Intitulé de la checkbox personnalisée %s', AMAPRESS_ADHESION_PERIOD_CHECK2 ),
 			),
 			'custom_check3'  => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK3,
@@ -206,7 +206,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'group'          => 'Questions personnalisées',
-				'desc'           => 'Intitulé de la checkbox personnalisée ' . AMAPRESS_ADHESION_PERIOD_CHECK3,
+				'desc'           => sprintf( 'Intitulé de la checkbox personnalisée %s', AMAPRESS_ADHESION_PERIOD_CHECK3 ),
 			),
 		),
 	);
@@ -282,20 +282,20 @@ add_action( 'admin_post_archive_adh_period', function () {
 	}
 
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
-		echo '<p>Etes-vous sûr de vouloir archiver ' . esc_html( $adh_period->getTitle() ) . ' ? 
+		echo sprintf( '<p>Etes-vous sûr de vouloir archiver %s ? 
 <br />
-<a href = "' . add_query_arg( 'confirm', 'yes' ) . '"> Confirmer l\'archivage</a>';
+<a href="%s">Confirmer l\'archivage</a>', esc_html( $adh_period->getTitle() ), add_query_arg( 'confirm', 'yes' ) );
 		die();
 	}
 
 	if ( 'yes' != $_REQUEST['confirm'] ) {
-		wp_die( 'Archivage de ' . esc_html( $adh_period->getTitle() ) . ' abandonné.' );
+		wp_die( sprintf( 'Archivage de %s abandonné.', esc_html( $adh_period->getTitle() ) ) );
 	}
 
 	$adh_period->archive();
 
-	echo '<p style="color: green">Archivage effectué</p>';
+	echo '<p style="color: green">' . 'Archivage effectué' . '</p>';
 
-	echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=adh_period_archives' ) ) . '">Retour à la liste des périodes d\'adhésion archivables</a></p>';
+	echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=adh_period_archives' ) ) . '">' . 'Retour à la liste des périodes d\'adhésion archivables' . '</a></p>';
 	die();
 } );

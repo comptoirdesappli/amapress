@@ -80,7 +80,7 @@ class AmapressEntities {
 					$contrats_model_buttons[] = array(
 						'type'   => 'action',
 						'class'  => 'button button-primary button-import-model',
-						'text'   => 'Télécharger le modèle "' . $contrat_instance->getTitle() . '"',
+						'text'   => sprintf( 'Télécharger le modèle "%s"', $contrat_instance->getTitle() ),
 						'action' => 'generate_model_' . AmapressAdhesion::POST_TYPE . '_contrat_' . $contrat_instance->ID,
 					);
 				}
@@ -814,14 +814,14 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										ob_start();
 										TitanFrameworkOptionDate::createCalendarScript();
 
-										echo '<p>Obtenir des statistisque pour la période suivante :</p>';
-										echo '<label class="tf-date" for="amp_stats_start_date">Début: <input id="amp_stats_start_date" class="input-date date required " name="amp_stats_start_date" type="text" value="' . $start_date_fmt . '" /></label>';
-										echo '<label class="tf-date" for="amp_stats_end_date">Fin: <input id="amp_stats_end_date" class="input-date date required " name="amp_stats_end_date" type="text" value="' . $end_date_fmt . '" /></label>';
-										echo '<input type="submit" class="button button-primary" value="Voir les statistiques" />';
+										echo '<p>' . __( 'Obtenir des statistisque pour la période suivante :', 'amapress' ) . '</p>';
+										echo '<label class="tf-date" for="amp_stats_start_date">' . esc_html__( 'Début:', 'amapress' ) . ' <input id="amp_stats_start_date" class="input-date date required " name="amp_stats_start_date" type="text" value="' . $start_date_fmt . '" /></label>';
+										echo '<label class="tf-date" for="amp_stats_end_date">' . esc_html__( 'Fin:', 'amapress' ) . ' <input id="amp_stats_end_date" class="input-date date required " name="amp_stats_end_date" type="text" value="' . $end_date_fmt . '" /></label>';
+										echo '<input type="submit" class="button button-primary" value="' . esc_attr__( 'Voir les statistiques', 'amapress' ) . '" />';
 										echo '<hr />';
 
 
-										echo '<h4>Inscriptions aux distributions du ' . $start_date_fmt . ' au ' . $end_date_fmt . '</h4>';
+										echo '<h4>' . sprintf( 'Inscriptions aux distributions du %s au %s', $start_date_fmt, $end_date_fmt ) . '</h4>';
 
 										$columns         = [];
 										$columns[]       = array(
@@ -2214,17 +2214,19 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										}
 
 										ob_start();
-										echo '<label for="amp_stats_contrat">Obtenir des statistisque pour le contrat suivant :</label>';
+										echo '<label for="amp_stats_contrat">' . __( 'Obtenir des statistisque pour le contrat suivant :', 'amapress' ) . '</label>';
 										echo '<select id="amp_stats_contrat" name="amp_stats_contrat">';
 										tf_parse_select_options( $options, isset( $_REQUEST['amp_stats_contrat'] ) ? [ $_REQUEST['amp_stats_contrat'] ] : null );
 										echo '</select>';
-										echo '<input type="submit" class="button button-primary" value="Voir les statistiques" />';
+										echo '<input type="submit" class="button button-primary" value="' . esc_attr__( 'Voir les statistiques', 'amapress' ) . '" />';
 										echo '<hr />';
 
 										if ( ! empty( $_REQUEST['amp_stats_contrat'] ) ) {
 											$contrat_instance = AmapressContrat_instance::getBy( intval( $_REQUEST['amp_stats_contrat'] ) );
 											if ( ! empty( $contrat_instance ) ) {
-												echo '<h4>Inscriptions au contrat "' . esc_html( $contrat_instance->getTitle() ) . '"</h4>';
+												echo '<h4>';
+												echo sprintf( 'Inscriptions au contrat "%s"', esc_html( $contrat_instance->getTitle() ) );
+												echo '</h4>';
 											}
 
 											$stats = $contrat_instance->getInscriptionsStats();
@@ -2484,7 +2486,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'type' => 'note',
-											'desc' => 'Le renouvellement des contrats se fait dans ' . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ), 'Tableau de bord>Gestion Contrats> Edition' )
+											'desc' => sprintf( 'Le renouvellement des contrats se fait dans %s', Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ), 'Tableau de bord>Gestion Contrats> Edition' ) )
 										),
 										array(
 											'id'      => 'archive_months',
@@ -2560,7 +2562,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'    => 'Nom de l\'étape',
 											'type'    => 'text',
 											'default' => '',
-											'desc'    => '<strong>Nom de remplacement</strong> de l\'étape 4/8 - Les contrats ; par défaut, "Les contrats" ou "Les commandes" suivant l\'argument use_contrat_term',
+											'desc'    => __( '<strong>Nom de remplacement</strong> de l\'étape 4/8 - Les contrats ; par défaut, "Les contrats" ou "Les commandes" suivant l\'argument use_contrat_term', 'amapress' ),
 										),
 										array(
 											'id'      => 'online_contrats_step_message',
@@ -2792,7 +2794,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'type'    => 'editor',
 											'default' => wpautop( "Pour confirmer votre inscription, veuillez procéder au paiement en ligne. La modification de l\'inscription ne sera plus possible ensuite." ),
 											'desc'    => function ( $option ) {
-												return 'Message au sujet des paiements en ligne à l\'étape de validation de l\'inscription<br/>' . AmapressAdhesion::getPlaceholdersHelp();
+												return 'Message au sujet des paiements en ligne à l\'étape de validation de l\'inscription' . '<br/>' . AmapressAdhesion::getPlaceholdersHelp();
 											},
 										),
 										array(
@@ -2801,7 +2803,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'type'    => 'editor',
 											'default' => wpautop( "Merci pour votre réglement.\nVotre inscription %%post:title%% est confirmée.\n%%print_button%%\n\n%%contrats_step_link%%" ),
 											'desc'    => function ( $option ) {
-												return 'Message de confirmation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
+												return 'Message de confirmation de paiement en ligne' . '<br/>' . AmapressAdhesion::getPlaceholdersHelp(
 														[
 															'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
 															'contrats_step_href' => 'Url de l\'étape Mes contrats',
@@ -2816,7 +2818,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'type'    => 'editor',
 											'default' => wpautop( "Vous avez annulé le règlement en ligne.\nVotre inscription %%post:title%% n'est pas encore confirmée.\n\n%%contrats_step_link%%" ),
 											'desc'    => function ( $option ) {
-												return 'Message d\'annulation de paiement en ligne<br/>' . AmapressAdhesion::getPlaceholdersHelp(
+												return 'Message d\'annulation de paiement en ligne' . '<br/>' . AmapressAdhesion::getPlaceholdersHelp(
 														[
 															'contrats_step_link' => 'Lien vers l\'étape Mes contrats',
 															'contrats_step_href' => 'Url de l\'étape Mes contrats',
@@ -2845,7 +2847,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 								),
 								'Assistant - Inscription en ligne - Emails' => array(
 									'id'      => 'config_online_inscriptions_mails',
-									'desc'    => 'Configuration des emails de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_mails' ), 'Aller à la configuration de l\'adhésion' ),
+									'desc'    => 'Configuration des emails de l\'assistant d\'inscription en ligne (inscription-en-ligne-connecte/inscription-en-ligne).' . '<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=config_online_adhesions_mails' ), 'Aller à la configuration de l\'adhésion' ),
 									'options' => [
 										array(
 											'type' => 'heading',
@@ -3002,7 +3004,8 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'show_title'      => true,
 											'selector-button' => 'Utiliser ce modèle',
 											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
-											'desc'            => 'Configurer un modèle de contrat (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+											'desc'            => sprintf( 'Configurer un modèle de contrat (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)',
+												admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) ),
 										),
 										array(
 											'id'              => 'default_word_paper_model',
@@ -3030,7 +3033,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'show_title'      => true,
 											'selector-button' => 'Utiliser ce modèle',
 											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
-											'desc'            => 'Configurer un modèle de contrat "paniers modulables" (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+											'desc'            => sprintf( 'Configurer un modèle de contrat "paniers modulables" (par défaut pour tous les contrats sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)', admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) ),
 										),
 										array(
 											'id'              => 'default_word_modulable_paper_model',
@@ -3058,7 +3061,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'show_title'      => true,
 											'selector-button' => 'Utiliser ce modèle',
 											'selector-title'  => 'Sélectionnez/téléversez un modèle de contrat papier DOCX',
-											'desc'            => 'Configurer un modèle de contrat "paniers modulables avec groupes" (par défaut pour tous les contrats avec groupes sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) . '">Plus d\'info</a>)',
+											'desc'            => sprintf( 'Configurer un modèle de contrat "paniers modulables avec groupes" (par défaut pour tous les contrats avec groupes sans modèle spécifique) à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)', admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ) ),
 										),
 										array(
 											'id'              => 'default_word_modulable_group_paper_model',
@@ -3210,7 +3213,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 								),
 								'Assistant - Adhésion en ligne - Etapes' => array(
 									'id'      => 'config_online_adhesions_messages',
-									'desc'    => 'Configuration de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Aller à la configuration de l\'inscription' ),
+									'desc'    => 'Configuration de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).' . '<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_messages' ), 'Aller à la configuration de l\'inscription' ),
 									'options' => array(
 										array(
 											'id'       => 'online_subscription_start_saison_adh_message',
@@ -3335,7 +3338,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'id'      => 'online_norenew_message',
 											'name'    => 'Message',
 											'type'    => 'editor',
-											'default' => '<p>Merci pour votre participation à %%site_name%% et bonne continuation.</p>',
+											'default' => '<p>' . __( 'Merci pour votre participation à %%site_name%% et bonne continuation.', 'amapress' ) . '</p>',
 											'desc'    => 'Message aux amapiens qui ne renouvelent pas',
 										),
 										array(
@@ -3352,7 +3355,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'desc'    => function ( $option ) {
 												return Amapress::getPlaceholdersHelpTable( 'online_subscription_req_adhesion-placeholders', [], null, [], false );
 											},
-											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.</strong></p>',
+											'default' => '<p><strong>' . 'Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.' . '</strong></p>',
 										),
 										array(
 											'id'      => 'online_subscription_adh_step_name',
@@ -3378,7 +3381,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => 'Contenu du message de validation',
 											'type'    => 'editor',
 											'desc'    => function ( $option ) {
-												return 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
+												return 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin' . '<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
 														'print_button' => 'Bouton Imprimer le bulletin'
 													], 'de l\'amapien', [], false );
 											},
@@ -3408,7 +3411,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 								),
 								'Assistant - Adhésion en ligne - Emails' => array(
 									'id'      => 'config_online_adhesions_mails',
-									'desc'    => 'Configuration des emails de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' ), 'Aller à la configuration de l\'inscription' ),
+									'desc'    => 'Configuration des emails de l\'assistant d\'adhésion en ligne (adhesion-en-ligne-connecte/adhesion-en-ligne).' . '<br/>' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_online_inscriptions_mails' ), 'Aller à la configuration de l\'inscription' ),
 									'options' => array(
 										array(
 											'type' => 'heading',
@@ -3502,9 +3505,8 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 									'options'    => array(
 										array(
 											'type' => 'note',
-											'desc' => 'Pour intégrer HelloAsso à Amapress, connectez vous au backoffice HelloAsso, et définissez l\'url dans Mon Compte&gt;Intégration/API, section Notifications, Mon URL de callback avec la valeur : <code>' .
-											          admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) )
-											          . '</code>',
+											'desc' => sprintf( 'Pour intégrer HelloAsso à Amapress, connectez vous au backoffice HelloAsso, et définissez l\'url dans Mon Compte&gt;Intégration/API, section Notifications, Mon URL de callback avec la valeur : <code>%s</code>',
+												admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) ) ),
 										),
 										array(
 											'id'      => 'helloasso-auto-confirm',
@@ -3665,14 +3667,16 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										ob_start();
 										TitanFrameworkOptionDate::createCalendarScript();
 
-										echo '<p>Obtenir des statistisque pour la période suivante :</p>';
-										echo '<label class="tf-date" for="amp_stats_start_date">Début: <input id="amp_stats_start_date" class="input-date date required " name="amp_stats_start_date" type="text" value="' . $start_date_fmt . '" /></label>';
-										echo '<label class="tf-date" for="amp_stats_end_date">Fin: <input id="amp_stats_end_date" class="input-date date required " name="amp_stats_end_date" type="text" value="' . $end_date_fmt . '" /></label>';
-										echo '<input type="submit" class="button button-primary" value="Voir les statistiques" />';
+										echo '<p>' . esc_html__( 'Obtenir des statistisque pour la période suivante :', 'amapress' ) . '</p>';
+										echo '<label class="tf-date" for="amp_stats_start_date">' . 'Début:' . ' <input id="amp_stats_start_date" class="input-date date required " name="amp_stats_start_date" type="text" value="' . $start_date_fmt . '" /></label>';
+										echo '<label class="tf-date" for="amp_stats_end_date">' . 'Fin:' . ' <input id="amp_stats_end_date" class="input-date date required " name="amp_stats_end_date" type="text" value="' . $end_date_fmt . '" /></label>';
+										echo '<input type="submit" class="button button-primary" value="' . esc_attr__( 'Voir les statistiques', 'amapress' ) . '" />';
 										echo '<hr />';
 
 
-										echo '<h4>Echanges de paniers du ' . $start_date_fmt . ' au ' . $end_date_fmt . '</h4>';
+										echo '<h4>';
+										echo sprintf( 'Echanges de paniers du %s au %s', $start_date_fmt, $end_date_fmt );
+										echo '</h4>';
 
 										$columns    = [];
 										$columns[]  = array(
@@ -4335,7 +4339,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'desc'    => function ( $option ) {
 												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_req_adhesion-placeholders', [], null, [], false );
 											},
-											'default' => '<p><strong>Pour vous engager dans l’AMAP et pouvoir réserver des paniers disponibles, vous devez adhérer à notre Association.</strong></p>',
+											'default' => '<p><strong>' . __( 'Pour vous engager dans l’AMAP et pouvoir réserver des paniers disponibles, vous devez adhérer à notre Association.', 'amapress' ) . '</strong></p>',
 										),
 										array(
 											'id'      => 'online_subscription_inter_adh_step_name',
@@ -4547,7 +4551,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 										array(
 											'type' => 'note',
-											'desc' => 'Le réglage du délai d\'expiration du lien de réinitialisation de mot de passe se fait dans ' . Amapress::makeLink( admin_url( 'options-general.php?page=amapress_site_options_page&tab=welcome_mail' ), 'Tableau de bord>Réglages>Site, onglet Email de bienvenue' ),
+											'desc' => sprintf( 'Le réglage du délai d\'expiration du lien de réinitialisation de mot de passe se fait dans %s', Amapress::makeLink( admin_url( 'options-general.php?page=amapress_site_options_page&tab=welcome_mail' ), 'Tableau de bord>Réglages>Site, onglet Email de bienvenue' ) ),
 										),
 										array(
 											'type' => 'save',
@@ -4897,8 +4901,8 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'name'       => 'Sous dossiers - Responsables',
 											'type'       => 'text',
 											'classes'    => 'docspaceSubfolders',
-											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
-Retrouvez le shortcode associé avec le filtre docspace-responsables.
+											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers.' .
+											                '<br/>' . 'Retrouvez le shortcode associé avec le filtre docspace-responsables.' . '
 ' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
 ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/espaces_documents' ),
 											'capability' => 'manage_options',
@@ -4919,9 +4923,9 @@ Retrouvez le shortcode associé avec le filtre docspace-amapiens.
 											'name'       => 'Sous dossiers - Public',
 											'type'       => 'text',
 											'classes'    => 'docspaceSubfolders',
-											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers. <br/>
-Retrouvez le shortcode associé avec le filtre docspace-public.
-' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
+											'desc'       => 'Indiquez le nom du sous-dossier en minuscule et sans espace. Séparez par des virgules pour créer plusieurs sous dossiers.' .
+											                ' <br/>' . 'Retrouvez le shortcode associé avec le filtre docspace-public.' .
+											                Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ), 'Aide-Shortcode' ) . '  <br/>
 ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/espaces_documents' ),
 											'capability' => 'manage_options',
 										),
@@ -5048,7 +5052,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 											'type'      => 'select-posts',
 											'edit_link' => false,
 											'post_type' => Amapress::WPCF7_POST_TYPE,
-											'desc'      => 'Sélectionner une formulaire de contact dans la liste ci-dessus. Vous les éditer depuis la <a href="' . admin_url( 'admin.php?page=wpcf7' ) . '">page suivante</a>. Ce formulaire sera automatiquement ajouté aux infos de contact ci-dessous.',
+											'desc'      => sprintf( 'Sélectionner une formulaire de contact dans la liste ci-dessus. Vous les éditer depuis la <a href="%s">page suivante</a>. Ce formulaire sera automatiquement ajouté aux infos de contact ci-dessous.', admin_url( 'admin.php?page=wpcf7' ) ),
 										),
 //                                array(
 //                                    'type' => 'save',
@@ -5058,8 +5062,9 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 											'name'         => 'Information de contact pour les contrats',
 											'type'         => 'editor',
 											'capability'   => 'edit_contrat_instances',
-											'default'      => '<p><strong>NOUS RENCONTRER</strong><br />Si vous souhaitez nous rencontrer, vous pouvez nous rendre visite lors d’une distribution :<br /> – [[à compléter contact distribution]]</p>
-<p><strong>NOUS CONTACTER</strong><br /> Et pour nous contacter, vous pouvez nous envoyer un email à :<br /> [[à définir avec l\'adresse de contact]]<br /> <a href="mailto:' . get_option( 'admin_email' ) . '">' . get_option( 'admin_email' ) . '</a></p>',
+											'default'      => '<p>' . sprintf( '<strong>NOUS RENCONTRER</strong><br />Si vous souhaitez nous rencontrer, vous pouvez nous rendre visite lors d’une distribution :<br /> – [[à compléter contact distribution]]</p>
+<p><strong>NOUS CONTACTER</strong><br /> Et pour nous contacter, vous pouvez nous envoyer un email à :<br /> [[à définir avec l\'adresse de contact]]<br /> <a href="mailto:%s">%s</a>',
+													get_option( 'admin_email' ), get_option( 'admin_email' ) ) . '</p>',
 											'after_option' => function ( $options ) {
 												$links = [];
 												foreach ( AmapressContrats::get_contrats() as $contrat ) {
@@ -5077,7 +5082,7 @@ Retrouvez le shortcode associé avec le filtre docspace-public.
 													);
 												}
 
-												echo '<p>Ce texte peut s\'afficher dans : ' . implode( ', ', $links ) . '</p>';
+												echo '<p>' . 'Ce texte peut s\'afficher dans : ' . implode( ', ', $links ) . '</p>';
 											},
 										),
 										array(
@@ -5406,11 +5411,10 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet la création des comptes utilisateur et de leurs coordonnées : amapien, co-adhérents. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_utilisateurs', 'Aide', true, true ) .
-									          '<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+									'desc' => sprintf( 'Cette page permet la création des comptes utilisateur et de leurs coordonnées : amapien, co-adhérents. %s<br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
 <br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
+										Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_utilisateurs', 'Aide', true, true ) ),
 								),
 								array(
 									'type'      => 'save',
@@ -5435,11 +5439,9 @@ Cette page permet la création des comptes utilisateur et de leurs coordonnées 
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonction du choix de leurs paniers. ' . Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_inscriptions', 'Aide', true, true ) .
-									          '<br/>Utilisez le bouton <strong>Télécharger le modèle multi contrat</strong> (import avec contrats en colonnes) ou les boutons <strong>Télécharger le modèle "<em>Nom du contrat</em>"</strong> (import avec les configurations de paniers en colonnes) pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
+									'desc' => sprintf( 'Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonction du choix de leurs paniers. %s<br/>Utilisez le bouton <strong>Télécharger le modèle multi contrat</strong> (import avec contrats en colonnes) ou les boutons <strong>Télécharger le modèle "<em>Nom du contrat</em>"</strong> (import avec les configurations de paniers en colonnes) pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
-<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)', Amapress::makeLink( 'https://wiki.amapress.fr/admin/import#import_inscriptions', 'Aide', true, true ) ),
 								),
 								array(
 									'name'    => 'Modèle multi contrat',
@@ -5520,12 +5522,11 @@ Cette page permet d\'inscrire les utilisateurs aux contrats producteurs en fonct
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet d\'importer les configurations de paniers pour vos contrats
+									'desc' => __( 'Cette page permet d\'importer les configurations de paniers pour vos contrats
 <br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
 <br/>La colonne "Titre" correspond au nom du produit et la colonne "Contenu" à sa description.
-<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)', 'amapress' ),
 								),
 								array(
 									'type'      => 'save',
@@ -5582,12 +5583,11 @@ Cette page permet d\'importer les configurations de paniers pour vos contrats
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet d\'importer les producteurs
+									'desc' => __( 'Cette page permet d\'importer les producteurs
 <br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
 <br/>La colonne "Titre" correspond au nom du producteur ou de sa ferme et la colonne "Contenu" à son historique. Les utilisateurs correspondant doivent être créés au préalable
-<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)', 'amapress' ),
 
 								),
 								array(
@@ -5612,12 +5612,12 @@ Cette page permet d\'importer les producteurs
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet d\'importer les productions des producteurs
+									'desc' => __( 'Cette page permet d\'importer les productions des producteurs
 <br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
 <br/>La colonne "Titre" correspond au nom de la production (par ex, <i>Légumes, Champignons</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable
 <br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)'
+										, 'amapress' )
 								),
 								array(
 									'type'      => 'save',
@@ -5641,12 +5641,12 @@ Cette page permet d\'importer les productions des producteurs
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet d\'importer les contrats
+									'desc' => __( 'Cette page permet d\'importer les contrats
 <br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
 <br/>Les producteurs et productions correspondant doivent être créés au préalable
 <br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)'
+										, 'amapress' )
 								),
 								array(
 									'type'      => 'save',
@@ -5684,11 +5684,11 @@ Cette page permet d\'importer les contrats
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet d\'importer les adhésions à l\'AMAP (<strong>sans la répartition des montants/avec les valeurs de montants par défaut</strong>)
+									'desc' => __( 'Cette page permet d\'importer les adhésions à l\'AMAP (<strong>sans la répartition des montants/avec les valeurs de montants par défaut</strong>)
 <br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
 <br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)'
+										, 'amapress' )
 								),
 								array(
 									'type'      => 'save',
@@ -5720,12 +5720,11 @@ Cette page permet d\'importer les adhésions à l\'AMAP (<strong>sans la répart
 							'options'    => array(
 								array(
 									'type' => 'note',
-									'desc' => '
-Cette page permet la création des produits des producteurs
+									'desc' => __( 'Cette page permet la création des produits des producteurs
 <br/>Utilisez le bouton <strong>Télécharger le modèle</strong> pour récupérer un XLSX contenant le modèle d\'import avec toutes les colonnes utilisables et leurs descritions en commentaires 
 <br/>La colonne "Titre" correspond au nom du produit (par ex, <i>Radis ronds, Batavia</i>) et la colonne "Contenu" à sa présentation. Les producteurs correspondant doivent être créés au préalable
 <br/>Les colonnes en italique sont facultatives et peuvent être supprimées
-<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)',
+<br/>(Note : sous <em>LibreOffice</em>, les commentaires seront visibles par défaut, utilisez le menu <em>Affichage/Commentaires</em> pour les masquer et les retrouver uniquement au survol du titre de chaque colonne)', 'amapress' )
 								),
 								array(
 									'type'      => 'save',
@@ -5840,9 +5839,9 @@ Cette page permet la création des produits des producteurs
 								array(
 									'type' => 'note',
 									'bare' => true,
-									'desc' => '<p>Consultez la ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) . '</p>' .
-									          '<p>Accédez au ' . Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) . ' si vous ne trouvez pas la réponse à votre question</p>' .
-									          '<h5>Un espace dédié pour chaque rôle Amap</h5><p><ul><li>' .
+									'desc' => '<p>' . sprintf( 'Consultez la %s', Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) ) . '</p>' .
+									          '<p>' . sprintf( 'Accédez au %s si vous ne trouvez pas la réponse à votre question', Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) ) . '</p>' .
+									          '<h5>' . 'Un espace dédié pour chaque rôle Amap' . '</h5><p><ul><li>' .
 									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/accueil', 'Accueil de l’Administrateur, du Responsable Amap' ) .
 									          '</li><li>' .
 									          Amapress::makeWikiLink( 'https://wiki.amapress.fr/amapien/accueil', 'Accueil de l’Amapien' ) .
@@ -5879,7 +5878,7 @@ Par exemple :</p>
 </ul>
 <p>Amapress expose les shortcodes suivants :</p>';
 										$ret .= '<table class="display compact" id="shortcodes-desc-table">';
-										$ret .= '<thead><tr><th>Shortcode</th><th data-sortable="false">Shortcode &gt; Paramètres</th></tr></thead>';
+										$ret .= '<thead><tr><th>' . 'Shortcode' . '</th><th data-sortable="false">' . 'Shortcode &gt; Paramètres' . '</th></tr></thead>';
 										$ret .= '<tbody>';
 										global $all_amapress_shortcodes_descs;
 										ksort( $all_amapress_shortcodes_descs );
@@ -6052,7 +6051,7 @@ jQuery(document).ready(function($) {
 							'bare'   => true,
 							'type'   => 'custom',
 							'custom' => function ( $option ) {
-								echo '<p>Vous pouvez également envoyer un mail via les listes suivantes:</p>';
+								echo '<p>' . 'Vous pouvez également envoyer un mail via les listes suivantes:' . '</p>';
 								echo do_shortcode( '[listes-diffusions]' );
 							}
 						),
@@ -6063,7 +6062,7 @@ jQuery(document).ready(function($) {
 							'options'      => 'amapress_message_get_targets',
 							'required'     => true,
 							'after_option' => function ( $option ) {
-								echo '<p>Sera envoyé à : <span id="amapress_msg_target_members"></span></p>';
+								echo '<p>' . 'Sera envoyé à : ' . '<span id="amapress_msg_target_members"></span></p>';
 								echo '<script type="text/javascript">
 jQuery(function($) {
     var on_change = function() {
@@ -6099,7 +6098,8 @@ jQuery(function($) {
 							'type'     => 'text',
 							'required' => true,
 							'default'  => '[AMAP] ',
-							'desc'     => 'Pensez à préfixer le sujet de votre mail avec un motif du type [AMAP] ou [' . get_bloginfo( 'name' ) . '] pour être mieux identifié par les destinataires'
+							'desc'     => sprintf( 'Pensez à préfixer le sujet de votre mail avec un motif du type [AMAP] ou [%s] pour être mieux identifié par les destinataires',
+								get_bloginfo( 'name' ) )
 						),
 						array(
 							'id'       => 'msg_content',

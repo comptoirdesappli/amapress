@@ -21,7 +21,7 @@ function amapress_get_custom_content_produit( $content ) {
 		}
 	}
 
-	echo '<h3>Recettes</h3>';
+	echo '<h3>' . 'Recettes' . '</h3>';
 	echo get_amapress_recettes_gallery(
 		[
 			'produits' => $prod->ID,

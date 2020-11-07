@@ -368,21 +368,21 @@ function amapress_customizer_init() {
 			'type' => 'heading',
 		) );
 		$section->createOption( array(
-			'name'    => __( 'Couleur du texte de ' . $lieu->getTitle(), 'amapress' ),
+			'name'    => sprintf( __( 'Couleur du texte de %s', 'amapress' ), $lieu->getTitle() ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_fg',
 			'type'    => 'color',
 			'default' => '',
 			'css'     => '.evt-lieu.evt-lieu-' . $lieu->ID . ' .evt-lieu-cnt, .evt-lieu.evt-lieu-' . $lieu->ID . ' .evt-lieu-cnt * { color: value }',
 		) );
 		$section->createOption( array(
-			'name'    => __( 'Couleur de fond de ' . $lieu->getTitle(), 'amapress' ),
+			'name'    => sprintf( __( 'Couleur de fond de %s', 'amapress' ), $lieu->getTitle() ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_bg',
 			'type'    => 'color',
 			'default' => '',
 			'css'     => '.evt-lieu.evt-lieu-' . $lieu->ID . ' .evt-lieu-cnt { background-color: value }',
 		) );
 		$section->createOption( array(
-			'name'    => __( 'Couleur de bordure de ' . $lieu->getTitle(), 'amapress' ),
+			'name'    => sprintf( __( 'Couleur de bordure de %s', 'amapress' ), $lieu->getTitle() ),
 			'id'      => 'agenda_lieux_' . $lieu->ID . '_col_brd',
 			'type'    => 'color',
 			'default' => '',

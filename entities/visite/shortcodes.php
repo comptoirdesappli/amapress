@@ -42,11 +42,11 @@ function amapress_inscription_visite_shortcode( $atts ) {
 	$ret .= '<table class="table display responsive nowrap visite-inscr-list">';
 	$ret .= '<thead>';
 	$ret .= '<tr>';
-	$ret .= '<th>Date</th>';
+	$ret .= '<th>' . 'Date' . '</th>';
 	if ( $has_slots ) {
-		$ret .= '<th>Créneaux</th>';
+		$ret .= '<th>' . 'Créneaux' . '</th>';
 	}
-	$ret .= '<th>Participants</th>';
+	$ret .= '<th>' . 'Participants' . '</th>';
 	$ret .= '</tr>';
 	$ret .= '</thead>';
 
@@ -76,12 +76,12 @@ function amapress_inscription_visite_shortcode( $atts ) {
 			}
 			$inscr_another = '<div><form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir inscrire cet amapien ?" data-visite="' . $event->ID . '">Inscrire</button>
+<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-visite="' . $event->ID . '">' . 'Inscrire' . '</button>
 </form></div>';
 		}
 
 		$ret     .= '<td>';
-		$ret     .= '<p>' . Amapress::makeLink( $event->getPermalink(), sprintf( '%d participant(s)', count( $resps ) ), true, true ) . '</p>';
+		$ret     .= '<p>' . Amapress::makeLink( $event->getPermalink(), sprintf( __( '%d participant(s)', 'amapress' ), count( $resps ) ), true, true ) . '</p>';
 		$is_resp = in_array( amapress_current_user_id(), $event->getParticipantIds() );
 //		foreach ( $resps as $resp ) {
 //			$is_resp       = $is_resp || $resp->ID == ;
@@ -98,12 +98,12 @@ function amapress_inscription_visite_shortcode( $atts ) {
 		if ( ! $has_slots ) {
 			if ( ! $is_resp ) {
 				if ( $can_subscribe ) {
-					$ret .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="Etes-vous sûr de vouloir vous inscrire ?" data-visite="' . $event->ID . '">M\'inscrire</button>';
+					$ret .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-visite="' . $event->ID . '">' . 'M\'inscrire' . '</button>';
 				} else {
-					$ret .= '<span class="visite-inscr-closed">Inscriptions closes</span>';
+					$ret .= '<span class="visite-inscr-closed">' . 'Inscriptions closes' . '</span>';
 				}
 			} else {
-				$ret .= '<br/><button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="Etes-vous sûr de vouloir vous désinscrire ?" data-visite="' . $event->ID . '">Me désinscrire</button>';
+				$ret .= '<br/><button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-visite="' . $event->ID . '">' . 'Me désinscrire' . '</button>';
 			}
 		}
 		$ret .= $inscr_another;
@@ -132,8 +132,8 @@ function amapress_get_event_slot_html( $event, $type, $user_id, $can_unsubscribe
 		$ret .= esc_html( $slot_for_current_user['display'] ) . '<br/>';
 		if ( $can_unsubscribe ) {
 			$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="' . $type . '_desinscrire_slot" data-confirm="Etes-vous sûr vous désinscrire de ce créneau ?"
-					data-' . $type . '="' . $event->ID . '" data-slot="' . strval( $slot_for_current_user['date'] ) . '">Me désinscrire</button>';
+					data-action="' . $type . '_desinscrire_slot" data-confirm="' . esc_attr__( 'Etes-vous sûr vous désinscrire de ce créneau ?', 'amapress' ) . '"
+					data-' . $type . '="' . $event->ID . '" data-slot="' . strval( $slot_for_current_user['date'] ) . '">' . 'Me désinscrire' . '</button>';
 		}
 	} else {
 		if ( $can_subscribe ) {
@@ -152,8 +152,8 @@ function amapress_get_event_slot_html( $event, $type, $user_id, $can_unsubscribe
 				$affect_slot    .= tf_parse_select_options( $dist_slots_options, null, false );
 				$affect_slot    .= '</select>';
 				$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
-					data-action="' . $type . '_inscrire_slot" data-confirm="Etes-vous sûr de vous inscrire à ce créneau ?"
-					data-' . $type . '="' . $event->ID . '" data-slot="val:#' . $affect_slot_id . '">M\'inscrire</button>';
+					data-action="' . $type . '_inscrire_slot" data-confirm="' . esc_attr__( 'Etes-vous sûr de vous inscrire à ce créneau ?', 'amapress' ) . '"
+					data-' . $type . '="' . $event->ID . '" data-slot="val:#' . $affect_slot_id . '">' . 'M\'inscrire' . '</button>';
 				$ret            .= $affect_slot;
 			}
 		}
@@ -168,17 +168,17 @@ add_action( 'wp_ajax_desinscrire_visite_action', function () {
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = ( amapress_current_user_id() == $user_id );
 	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) ) {
-		echo '<p class="error">Non autorisé</p>';
+		echo '<p class="error">' . 'Non autorisé' . '</p>';
 		die();
 	}
 
 	$event = new AmapressVisite( $event_id );
 	switch ( $event->desinscrireParticipant( $user_id ) ) {
 		case 'not_inscr':
-			echo '<p class="error">Non inscrit</p>';
+			echo '<p class="error">' . 'Non inscrit' . '</p>';
 			break;
 		case true:
-			echo '<p class="success">Désinscription a bien été prise en compte</p>';
+			echo '<p class="success">' . 'Désinscription a bien été prise en compte' . '</p>';
 			break;
 	}
 	die();
@@ -188,17 +188,17 @@ add_action( 'wp_ajax_inscrire_visite_action', function () {
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = ( amapress_current_user_id() == $user_id );
 	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) ) {
-		echo '<p class="error">Non autorisé</p>';
+		echo '<p class="error">' . 'Non autorisé' . '</p>';
 		die();
 	}
 
 	$event = new AmapressVisite( $event_id );
 	switch ( $event->inscrireParticipant( $user_id ) ) {
 		case 'already_in_list':
-			echo '<p class="error">Déjà inscrit</p>';
+			echo '<p class="error">' . 'Déjà inscrit' . '</p>';
 			break;
 		case 'ok':
-			echo '<p class="success">Inscription a bien été prise en compte</p>';
+			echo '<p class="success">' . 'Inscription a bien été prise en compte' . '</p>';
 			break;
 	}
 	die();

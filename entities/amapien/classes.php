@@ -747,7 +747,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 							$notify_email,
 							'Préinscription - Association co-adhérent - ' . $this->getDisplayName(),
 							amapress_replace_mail_placeholders(
-								wpautop( "Bonjour,\n\nL\'amapien $this_edit_link s\'est associé à un co-adhérent $coadh_edit_link\n\n%%site_name%%" ), $this )
+								wpautop( sprintf( "Bonjour,\n\nL\'amapien %s s\'est associé à un co-adhérent %s\n\n%%%%site_name%%%%", $this_edit_link, $coadh_edit_link ) ), $this )
 						);
 					}
 				}
@@ -861,13 +861,13 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			'' );
 		$show_tel_fix    = amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_fixe'], 'tel_fixe', $this );
 		$ret             .= ( $show_tel_fix ?
-			$this->wrapIfNotEmpty( '<div class="user-tel-fixe">Fix: ', $this->getTelTo( false ), '</div>' ) :
+			$this->wrapIfNotEmpty( '<div class="user-tel-fixe">' . 'Fix: ', $this->getTelTo( false ), '</div>' ) :
 			'' );
 		$show_tel_mobile = amapress_check_info_visibility( $args['show_tel'], 'tel', $this ) || amapress_check_info_visibility( $args['show_tel_mobile'], 'tel_mobile', $this );
 		$show_sms        = amapress_check_info_visibility( $args['show_sms'], 'tel', $this );
 		$ret             .= ( $show_tel_mobile || $show_sms ?
 			$this->wrapIfNotEmpty(
-				'<div class="user-tel-mobile">Mob: ', $this->getTelTo( true, $show_sms ), '</div>' ) :
+				'<div class="user-tel-mobile">' . 'Mob: ', $this->getTelTo( true, $show_sms ), '</div>' ) :
 			'' );
 //		$ret   .= ( $show_sms ?
 //			$this->wrapIfNotEmpty(
@@ -1170,8 +1170,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		}
 
 		return $mailto .
-		       ( ! empty( $telto ) ? ' / Par téléphone : ' . $telto : '' ) .
-		       ( ! empty( $smsto ) ? ' / Par SMS : ' . $smsto : '' );
+		       ( ! empty( $telto ) ? __( ' / Par téléphone : ', 'amapress' ) . $telto : '' ) .
+		       ( ! empty( $smsto ) ? __( ' / Par SMS : ', 'amapress' ) . $smsto : '' );
 	}
 
 	public static function getEmailsForAmapRole( $role_id, $lieu_id = null ) {

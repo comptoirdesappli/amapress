@@ -349,7 +349,7 @@ function amapress_get_collectif_target_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ 'amps_amap_role_category=' . $role->slug ] = 'Rôle "' . $role->name . '"';
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( 'Rôle "%s"', $role->name );
 	}
 
 	foreach (
@@ -361,7 +361,7 @@ function amapress_get_collectif_target_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = 'Groupe amapiens "' . $role->name . '"';
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( 'Groupe amapiens "%s"', $role->name );
 	}
 
 	return amapress_user_queries_link_wrap( $ret );
@@ -430,7 +430,7 @@ function amapress_message_get_targets() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		amapress_add_message_target( $ret, "user:amapress_role=amap_role_{$role->slug}", 'Rôle "' . $role->name . '"', "referents" );
+		amapress_add_message_target( $ret, "user:amapress_role=amap_role_{$role->slug}", sprintf( 'Rôle "%s"', $role->name ), "referents" );
 	}
 
 	$res['Responsables'] = $ret;

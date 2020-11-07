@@ -36,7 +36,7 @@ function amapress_render_adhesion_list() {
 	global $adhesions_table;
 	$adhesions_table->prepare_items();
 
-	echo '</pre><div class="wrap"><h2>Règlements Adhésions';
+	echo '</pre><div class="wrap"><h2>' . 'Règlements Adhésions';
 	if ( current_user_can( 'publish_adhesion_paiement' ) ) { ?>
         <a href="<?php echo admin_url( 'post-new.php?post_type=amps_adh_pmt' ); ?>"
            class="page-title-action"><?php echo esc_html( 'Ajouter' ); ?></a>

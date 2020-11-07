@@ -248,9 +248,9 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 						'priority'    => 90,
 						'inscr_types' => [ 'visite', 'visite-slot', 'visite-admin-slot' ],
 						'lieu'        => $this,
-						'label'       => 'Visite ' . $producteur->getTitle(),
+						'label'       => sprintf( 'Visite %s', $producteur->getTitle() ),
 						'icon'        => 'flaticon-sprout',
-						'alt'         => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
+						'alt'         => sprintf( 'Vous êtes inscript pour la visite à la ferme du %s', date_i18n( 'd/m/Y', $date ) ),
 						'href'        => $this->getPermalink()
 					) );
 				} else {
@@ -264,9 +264,9 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 						'priority'    => 90,
 						'inscr_types' => [ 'visite', 'visite-slot', 'visite-admin-slot' ],
 						'lieu'        => $this,
-						'label'       => 'Visite ' . $producteur->getTitle(),
+						'label'       => sprintf( 'Visite %s', $producteur->getTitle() ),
 						'icon'        => 'flaticon-sprout',
-						'alt'         => 'Vous êtes inscript pour la visite à la ferme du ' . date_i18n( 'd/m/Y', $date ),
+						'alt'         => sprintf( 'Vous êtes inscript pour la visite à la ferme du %s', date_i18n( 'd/m/Y', $date ) ),
 						'href'        => $this->getPermalink()
 					) );
 				}
@@ -280,9 +280,9 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 					'category' => 'Visites',
 					'priority' => 95,
 					'lieu'     => $this,
-					'label'    => 'Visite ' . $producteur->getTitle(),
+					'label'    => sprintf( 'Visite %s', $producteur->getTitle() ),
 					'icon'     => 'flaticon-sprout',
-					'alt'      => 'Une visite est prévue à la ferme le ' . date_i18n( 'd/m/Y', $date ),
+					'alt'      => sprintf( 'Une visite est prévue à la ferme le %s', date_i18n( 'd/m/Y', $date ) ),
 					'href'     => $this->getPermalink()
 				) );
 			}

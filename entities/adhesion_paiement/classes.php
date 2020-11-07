@@ -218,7 +218,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'lieu'     => $adh->getLieu(),
 				'priority' => 0,
 				'icon'     => 'flaticon-business',
-				'alt'      => 'Vous allez être encaissé ' . ( 'Esp.' == $num ? 'des espèces remises ' : ( 'Vir.' == $num ? 'du virement ' : ( 'Mon.' == $num ? 'du paiement en monnaie locale ' : 'du chèque numéro ' . $num ) ) ) . ' d\'un montante de ' . $price . '€ à la date du ' . date_i18n( 'd/m/Y', $date ),
+				'alt'      => sprintf( 'Vous allez être encaissé %s d\'un montante de %d€ à la date du %s', 'Esp.' == $num ? 'des espèces remises ' : ( 'Vir.' == $num ? 'du virement ' : ( 'Mon.' == $num ? 'du paiement en monnaie locale ' : 'du chèque numéro ' . $num ) ), $price, date_i18n( 'd/m/Y', $date ) ),
 				'href'     => '/mes-adhesions'
 			) );
 		}
@@ -718,7 +718,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			foreach ( $taxes as $tax ) {
 				$tax_id                             = $tax->term_id;
 				$ret[ 'montant_cat_' . $tax->slug ] = [
-					'desc' => 'Montant relatif à ' . $tax->name,
+					'desc' => sprintf( 'Montant relatif à %s', $tax->name ),
 					'func' => function ( AmapressAdhesion_paiement $adh ) use ( $tax_id ) {
 						return Amapress::formatPrice( $adh->getAmount( $tax_id ) );
 					}

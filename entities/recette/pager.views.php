@@ -9,7 +9,7 @@ add_filter( 'amapress_gallery_render_simple_recette_cell', 'amapress_simple_rece
 function amapress_simple_recette_cell( $recette, $add_class = '' ) {
 	$recette_id = $recette->ID;
 	$url        = amapress_get_avatar_url( $recette_id, null, 'produit-thumb', 'default_recette.jpg' );
-	$prod_photo = '<img src="' . $url . '" alt="Photo de ' . esc_attr( $recette->post_title ) . '" />';
+	$prod_photo = '<img src="' . $url . '" alt="' . esc_attr( $recette->post_title ) . '" />';
 
 	$tags = get_the_term_list(
 		$recette_id, AmapressRecette::CATEGORY,

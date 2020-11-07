@@ -418,7 +418,7 @@ class AmapressPaniers {
 			printf( '<th class="panier-lieu-col-head">%s (%.1f)</th>', $lieu->post_title, $adhesion_lieu_counts[ $lieu->ID ] );
 		}
 
-		echo( '<th class="panier-total-col">Total</th>' );
+		echo( '<th class="panier-total-col">' . 'Total' . '</th>' );
 		echo '</tr>';
 
 		//if ($total_quant == 0) $total_quant = 1.0;
@@ -1034,7 +1034,7 @@ class AmapressPaniers {
 						);
 					}
 				}
-				echo '<h4>Les produits de cette livraison</h4>';
+				echo '<h4>' . 'Les produits de cette livraison' . '</h4>';
 				echo self::getPanierQuantiteTable( 'all-' . $pani->getContrat_instanceId() . '-' . $pani->ID, $produits_objects );
 			} else {
 				$produits_objects = array();
@@ -1045,7 +1045,7 @@ class AmapressPaniers {
 						'quantite' => $contrat_quantite->getPriceUnitDisplay(),
 					);
 				}
-				echo '<h4>Les produits disponibles pour ce contrat</h4>';
+				echo '<h4>' . 'Les produits disponibles pour ce contrat' . '</h4>';
 				echo self::getPanierQuantiteTable( 'public-' . $pani->getContrat_instanceId() . '-' . $pani->ID, $produits_objects );
 			}
 		} else {
@@ -1145,7 +1145,7 @@ class AmapressPaniers {
 //                    $arr = isset($produits_objects[$quantite->ID]) ? $produits_objects[$quantite->ID] : null;
 //                    if (!$arr) $arr = array();
 				if ( ! empty( $produits ) ) {
-					echo '<h4>Produits associés</h4>';
+					echo '<h4>' . 'Produits associés' . '</h4>';
 					echo amapress_generic_gallery(
 						array_map(
 							function ( $p ) {
@@ -1181,11 +1181,11 @@ class AmapressPaniers {
 
 		$produits_in_panier = implode( ',', array_unique( $produits_in_panier ) );
 		if ( ! empty( $produits_in_panier ) ) {
-			echo '<h3>' . amapress_get_font_icon( 'fa-fa' ) . ' Recettes associées</h3>';
+			echo '<h3>' . amapress_get_font_icon( 'fa-fa' ) . ' ' . 'Recettes associées' . '</h3>';
 			$recette_edit_link = ( amapress_current_user_can( 'publish_recette' ) ?
 				amapress_get_button( 'Publier une nouvelle recette', admin_url( "post-new.php?post_type=amps_recette" ), 'fa-fa' ) :
 				amapress_is_user_logged_in() && ! empty( Amapress::getOption( 'publier-recette-page' ) ) ? amapress_get_button( 'Proposer une nouvelle recette', get_post_permalink( Amapress::getOption( 'publier-recette-page' ) ), 'fa-fa' ) : '' );
-			$recette_empty     = '<span class="recette-empty">Pas de recettes pour les produits présents dans le panier</span> ' . $recette_edit_link;
+			$recette_empty     = '<span class="recette-empty">' . 'Pas de recettes pour les produits présents dans le panier' . '</span> ' . $recette_edit_link;
 			$no_recettes       = urlencode( $recette_empty );
 			echo get_amapress_recettes_gallery(
 				[

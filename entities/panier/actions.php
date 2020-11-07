@@ -28,7 +28,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$user_id = isset( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	if ( $user_id != amapress_current_user_id() ) {
 		if ( ! amapress_can_access_admin() ) {
-			echo '<p class="error">Accès interdit</p>';
+			echo '<p class="error">' . 'Accès interdit' . '</p>';
 			die();
 		}
 	}
@@ -88,29 +88,39 @@ add_action( 'wp_ajax_echanger_panier', function () {
 
 	if ( $user_id == amapress_current_user_id() ) {
 		if ( $cnt == 0 ) {
-			echo '<p class="error">Vous n\'avez pas de panier à cette distribution</p>';
+			echo '<p class="error">' . 'Vous n\'avez pas de panier à cette distribution' . '</p>';
 		} else if ( $cnt > 1 ) {
-			echo '<p class="success">Vos paniers ont été inscrits sur la liste des paniers à échanger</p>';
+			echo '<p class="success">' . 'Vos paniers ont été inscrits sur la liste des paniers à échanger' . '</p>';
 		} else {
-			echo '<p class="success">Votre panier a été inscrit sur la liste des paniers à échanger</p>';
+			echo '<p class="success">' . 'Votre panier a été inscrit sur la liste des paniers à échanger' . '</p>';
 		}
 	} else {
 		$user = AmapressUser::getBy( $user_id );
 		if ( $cnt == 0 ) {
-			echo '<p class="error">' . $user->getDisplayName() . ' n\'a pas de panier à cette distribution</p>';
+			echo '<p class="error">';
+			echo sprintf( __( '%s n\'a pas de panier à cette distribution', 'amapress' ), $user->getDisplayName() );
+			echo '</p>';
 		} else if ( $cnt > 1 ) {
 			if ( $target_id ) {
 				$target = AmapressUser::getBy( $target_id );
-				echo '<p class="success">Les paniers de ' . esc_html( $user->getDisplayName() ) . ' ont été attribués à ' . esc_html( $target->getDisplayName() ) . '</p>';
+				echo '<p class="success">';
+				echo sprintf( 'Les paniers de %s ont été attribués à %s', esc_html( $user->getDisplayName() ), esc_html( $target->getDisplayName() ) );
+				echo '</p>';
 			} else {
-				echo '<p class="success">Les paniers de ' . esc_html( $user->getDisplayName() ) . ' ont été inscrits sur la liste des paniers à échanger</p>';
+				echo '<p class="success">';
+				echo sprintf( 'Les paniers de %s ont été inscrits sur la liste des paniers à échanger', esc_html( $user->getDisplayName() ) );
+				echo '</p>';
 			}
 		} else {
 			if ( $target_id ) {
 				$target = AmapressUser::getBy( $target_id );
-				echo '<p class="success">Le panier de ' . esc_html( $user->getDisplayName() ) . ' a été attribué à ' . esc_html( $target->getDisplayName() ) . '</p>';
+				echo '<p class="success">';
+				echo sprintf( 'Le panier de %s a été attribué à %s', esc_html( $user->getDisplayName() ), esc_html( $target->getDisplayName() ) );
+				echo '</p>';
 			} else {
-				echo '<p class="success">Le panier de ' . esc_html( $user->getDisplayName() ) . ' a été inscrit sur la liste des paniers à échanger</p>';
+				echo '<p class="success">';
+				echo sprintf( 'Le panier de %s a été inscrit sur la liste des paniers à échanger', esc_html( $user->getDisplayName() ) );
+				echo '</p>';
 			}
 		}
 	}

@@ -451,7 +451,7 @@ function amapress_distribution_responsable_roles_options() {
 		foreach ( $lieux as $lieu ) {
 			$ret[]   = array(
 				'type' => 'heading',
-				'name' => 'Rôles des responsables de distribution - pour ' . $lieu->getTitle(),
+				'name' => sprintf( 'Rôles des responsables de distribution - pour %s', $lieu->getTitle() ),
 			);
 			$lieu_id = $lieu->ID;
 			for ( $i = 1; $i <= 10; $i ++ ) {
@@ -516,7 +516,7 @@ function amapress_distribution_hours_setter() {
 		$lieux_options[ strval( $lieu->ID ) ] = $lieu->getTitle();
 	}
 	?>
-    <h4>Cet outil permet de définir les horaires alternatifs des distributions.</h4>
+    <h4><?php _e( 'Cet outil permet de définir les horaires alternatifs des distributions.', 'amapress' ) ?></h4>
 
 	<?php
 
@@ -554,35 +554,45 @@ function amapress_distribution_hours_setter() {
 	}
 
 	?>
-    <label for="start_date" class="tf-date">Date de début :<input type="text" id="start_date" name="start_date"
-                                                                  class="input-date date required"
-                                                                  value="<?php echo esc_attr( $start_date ); ?>"/></label>
+    <label for="start_date" class="tf-date"><?php _e( 'Date de début :', 'amapress' ) ?><input type="text"
+                                                                                               id="start_date"
+                                                                                               name="start_date"
+                                                                                               class="input-date date required"
+                                                                                               value="<?php echo esc_attr( $start_date ); ?>"/></label>
     <br/>
-    <label for="end_date" class="tf-date">Date de fin :<input type="text" id="end_date" name="end_date"
-                                                              class="input-date date required"
-                                                              value="<?php echo esc_attr( $end_date ); ?>"/></label>
+    <label for="end_date" class="tf-date"><?php _e( 'Date de fin :', 'amapress' ) ?><input type="text" id="end_date"
+                                                                                           name="end_date"
+                                                                                           class="input-date date required"
+                                                                                           value="<?php echo esc_attr( $end_date ); ?>"/></label>
     <br/>
-    <label for="lieu">Lieu:</label><select id="lieu"
-                                           name="lieu"
-                                           class="required"><?php tf_parse_select_options( $lieux_options, $lieu_id ); ?></select>
+    <label for="lieu"><?php _e( 'Lieu:', 'amapress' ) ?></label><select id="lieu"
+                                                                        name="lieu"
+                                                                        class="required"><?php tf_parse_select_options( $lieux_options, $lieu_id ); ?></select>
     <br/>
-    <label for="incr_date">Prendre une distribution toute les </label><input type="text" id="incr_date" name="incr_date"
-                                                                             class="number required"
-                                                                             value="<?php echo esc_attr( $incr_date ); ?>"/> dates
+    <label for="incr_date"><?php _e( 'Prendre une distribution toute les ', 'amapress' ) ?></label><input type="text"
+                                                                                                          id="incr_date"
+                                                                                                          name="incr_date"
+                                                                                                          class="number required"
+                                                                                                          value="<?php echo esc_attr( $incr_date ); ?>"/><?php _e( ' dates', 'amapress' ) ?>
     <br/>
-    <input type="submit" class="button button-primary" name="select_dists" value="Afficher les distributions"/>
+    <input type="submit" class="button button-primary" name="select_dists"
+           value="<?php echo esc_attr__( 'Afficher les distributions', 'amapress' ) ?>"/>
     <br/>
-    <label for="start_hour" class="tf-date">Heure de début : <input type="text" id="start_hour"
-                                                                    name="start_hour"
-                                                                    class="input-date time"
-                                                                    value="<?php echo esc_attr( $start_hour ); ?>"/></label>
+    <label for="start_hour" class="tf-date"><?php _e( 'Heure de début : ', 'amapress' ) ?><input type="text"
+                                                                                                 id="start_hour"
+                                                                                                 name="start_hour"
+                                                                                                 class="input-date time"
+                                                                                                 value="<?php echo esc_attr( $start_hour ); ?>"/></label>
     <br/>
-    <label for="end_hour" class="tf-date">Heure de fin : <input type="text" id="end_hour" name="end_hour"
-                                                                class="input-date time"
-                                                                value="<?php echo esc_attr( $end_hour ); ?>"/></label>
+    <label for="end_hour" class="tf-date"><?php _e( 'Heure de fin : ', 'amapress' ) ?><input type="text" id="end_hour"
+                                                                                             name="end_hour"
+                                                                                             class="input-date time"
+                                                                                             value="<?php echo esc_attr( $end_hour ); ?>"/></label>
     <br/>
-    <input type="submit" class="button button-primary" name="set_hours" value="Définir"/>
-    <input type="submit" class="button button-secondary" name="reset_hours" value="Effacer"/>
+    <input type="submit" class="button button-primary" name="set_hours"
+           value="<?php echo esc_attr__( 'Définir', 'amapress' ) ?>"/>
+    <input type="submit" class="button button-secondary" name="reset_hours"
+           value="<?php echo esc_attr__( 'Effacer', 'amapress' ) ?>"/>
 	<?php
 
 	$distributions        = AmapressDistribution::get_distributions( TitanEntity::to_date( $start_date ), TitanEntity::to_date( $end_date ), 'ASC' );

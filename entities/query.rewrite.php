@@ -43,10 +43,10 @@ function amapress_add_rewrite_rules() {
 		'mes-paniers-intermittents-page',
 		'Mes paniers échangés',
 		'mes-paniers-echanges',
-		true, '<h2>Les paniers&nbsp;que j\'ai proposé</h2>
+		true, __( '<h2>Les paniers&nbsp;que j\'ai proposé</h2>
 [amapien-paniers-intermittents]
 <h2>Les paniers&nbsp;que j\'ai réservé</h2>
-[intermittent-paniers]' );
+[intermittent-paniers]', 'amapress' ) );
 }
 
 function amapress_add_page_if_not_exists( $option_name, $title, $slug, $protected = false, $content = '' ) {

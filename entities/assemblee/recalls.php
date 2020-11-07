@@ -19,7 +19,7 @@ add_action( 'amapress_recall_assemblee_generale_inscription', function ( $args )
 		'', $participants_users, $assemblee_generale, array(),
 		amapress_get_recall_cc_from_option( 'assemblee-inscription-recall-cc' ),
 		null, AmapressAmap_event::getResponsableAmapEventsReplyto() );
-	echo '<p>Email de rappel d\'inscription à une AG envoyé</p>';
+	echo '<p>' . 'Email de rappel d\'inscription à une AG envoyé' . '</p>';
 } );
 
 /** @return array */
@@ -110,7 +110,7 @@ add_action( 'amapress_recall_assemblee_generale_available', function ( $args ) {
 		'', $non_participants_users, $assemblee_generale, array(),
 		amapress_get_recall_cc_from_option( 'assemblee-available-recall-cc' ),
 		null, AmapressAmap_event::getResponsableAmapEventsReplyto() );
-	echo '<p>Email de rappel de tenue d\'un évenement envoyé</p>';
+	echo '<p>' . 'Email de rappel de tenue d\'un évenement envoyé' . '</p>';
 
 } );
 

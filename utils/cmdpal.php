@@ -172,7 +172,7 @@ function amapress_command_palette_state_items( $items ) {
 						'title'       => wp_strip_all_tags( $check['name'] ),
 						'url'         => $url,
 						'description' => '',
-						'category'    => 'Etat d\'Amapress/' . $labels[ $categ ],
+						'category'    => __( 'Etat d\'Amapress/', 'amapress' ) . $labels[ $categ ],
 					];
 				}
 			}
