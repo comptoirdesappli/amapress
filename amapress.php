@@ -1332,6 +1332,12 @@ add_filter( 'password_reset_expiration', function ( $expiration ) {
 
 //TODO : dont know why amps_adhesion does not publish...
 add_action( 'save_post', function () {
+	global $amapress_import_demo;
+
+	if ( $amapress_import_demo ) {
+		return;
+	}
+
 	if ( isset( $_POST['post_type'] ) && $_POST['post_type'] == 'amps_adhesion' && isset( $_POST['post_ID'] ) ) {
 		wp_publish_post( $_POST['post_ID'] );
 	}

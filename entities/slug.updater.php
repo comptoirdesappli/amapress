@@ -29,6 +29,11 @@ function amapress_set_slugs_and_titles_on_save( $post_id, WP_Post $post = null )
 		return;
 	}
 
+	global $amapress_import_demo;
+	if ( $amapress_import_demo ) {
+		return;
+	}
+
 	//If calling wp_update_post, unhook this function so it doesn't loop infinitely
 	remove_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12 );
 
@@ -41,7 +46,6 @@ function amapress_set_slugs_and_titles_on_save( $post_id, WP_Post $post = null )
 	// re-hook this function
 	add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
 }
-
 add_action( 'wp_insert_post', 'amapress_set_slugs_and_titles_on_save', 12, 2 );
 
 /**

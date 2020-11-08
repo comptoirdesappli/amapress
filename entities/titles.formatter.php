@@ -125,21 +125,24 @@ function amapress_contrat_title_formatter( $post_title, WP_Post $post ) {
 	$contrat = AmapressContrat::getBy( $post, true );
 
 	global $amapress_pre_post_titles;
-	if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $contrat->getTitle() ) {
-		$posts = get_posts( [
-			'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
-			'posts_per_page' => - 1,
-			'meta_query'     => [
-				[
-					'key'     => 'amapress_contrat_instance_model',
-					'value'   => $post->ID,
-					'compare' => '='
+	global $amapress_import_demo;
+	if ( ! $amapress_import_demo ) {
+		if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $contrat->getTitle() ) {
+			$posts = get_posts( [
+				'post_type'      => AmapressContrat_instance::INTERNAL_POST_TYPE,
+				'posts_per_page' => - 1,
+				'meta_query'     => [
+					[
+						'key'     => 'amapress_contrat_instance_model',
+						'value'   => $post->ID,
+						'compare' => '='
+					]
 				]
-			]
-		] );
+			] );
 
-		foreach ( $posts as $p ) {
-			amapress_compute_post_slug_and_title( $p );
+			foreach ( $posts as $p ) {
+				amapress_compute_post_slug_and_title( $p );
+			}
 		}
 	}
 
@@ -152,14 +155,17 @@ function amapress_lieu_distribution_title_formatter( $post_title, WP_Post $post 
 	$lieu = AmapressLieu_distribution::getBy( $post, true );
 
 	global $amapress_pre_post_titles;
-	if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $lieu->getTitle() ) {
-		amapress_update_all_posts(
-			[
-				AmapressDistribution::POST_TYPE,
-				AmapressAssemblee_generale::POST_TYPE,
-				AmapressAdhesion::POST_TYPE,
-			]
-		);
+	global $amapress_import_demo;
+	if ( ! $amapress_import_demo ) {
+		if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $lieu->getTitle() ) {
+			amapress_update_all_posts(
+				[
+					AmapressDistribution::POST_TYPE,
+					AmapressAssemblee_generale::POST_TYPE,
+					AmapressAdhesion::POST_TYPE,
+				]
+			);
+		}
 	}
 
 	return $lieu->getTitle();
@@ -380,6 +386,11 @@ add_filter( 'redirect_post_location', function ( $location ) {
 
 add_action( 'pre_post_update', function ( $post_id, $post_data ) {
 	if ( ! is_admin() ) {
+		return;
+	}
+
+	global $amapress_import_demo;
+	if ( $amapress_import_demo ) {
 		return;
 	}
 

@@ -7,6 +7,12 @@
  */
 
 function amapress_clean_transients( $post_id ) {
+	global $amapress_import_demo;
+
+	if ( $amapress_import_demo ) {
+		return;
+	}
+
 	$post_type = get_post_type( $post_id );
 
 	if ( AmapressLieu_distribution::INTERNAL_POST_TYPE == $post_type ) {

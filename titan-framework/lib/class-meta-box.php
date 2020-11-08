@@ -552,11 +552,16 @@ class TitanFrameworkMetaBox {
 		<?php
 	}
 
+	public static $allow_save_options = true;
+
 //    private $ids = array();
-	public
-	function saveOptions(
+	public function saveOptions(
 		$postID, $post = null
 	) {
+		if ( ! self::$allow_save_options ) {
+			return;
+		}
+
 		$postTypes = array();
 
 //		if ($option->getID() == 'amapress_adhesion_adherent')

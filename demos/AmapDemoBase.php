@@ -143,12 +143,13 @@ class AmapDemoBase {
 		$cnt = 0;
 		foreach (
 			get_posts( [
+				'fields'         => 'ids',
 				'post_type'      => $post_types,
 				'post_status'    => 'all',
 				'posts_per_page' => - 1,
-			] ) as $post
+			] ) as $post_id
 		) {
-			wp_delete_post( $post->ID, true );
+			wp_delete_post( $post_id, true );
 			$cnt += 1;
 		}
 		echo "<p>Deleted $cnt posts</p>";
@@ -286,7 +287,6 @@ class AmapDemoBase {
 
 			$this->onCreateAmap( Amapress::start_of_day( Amapress::add_a_week( amapress_time(), $shift_weeks ) ) );
 
-
 			echo "<p>Updating all post titles and slug</p>";
 			amapress_update_all_posts();
 
@@ -312,6 +312,7 @@ class AmapDemoBase {
 				AmapressPaniers::generate_paniers( $contrat_instance->ID, false );
 			}
 
+			amapress_clean_state_transient();
 		} catch ( Exception $exception ) {
 			self::abortTransaction();
 		}

@@ -149,9 +149,14 @@ add_action( 'amps_reminder', function ( $id ) {
 		'', $target_users );
 } );
 
-add_action( 'save_post', function () {
+add_action( 'save_post', function ( $post_id, $post ) {
+	/** @var WP_Post $post */
+	if ( AmapressReminder::INTERNAL_POST_TYPE != $post->post_type ) {
+		return;
+	}
+
 	do_action( 'amps_refresh_reminders' );
-}, 999 );
+}, 999, 2 );
 
 add_action( 'amps_refresh_reminders', function () {
 	foreach ( AmapressReminder::getAll() as $reminder ) {
