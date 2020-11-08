@@ -212,6 +212,10 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 			//référent lieu
 			foreach ( $lieu_ids as $lieu_id ) {
 				$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+				if ( ! $lieu ) {
+					continue;
+				}
+
 				if ( ! $lieu->getReferentId() ) {
 					continue;
 				}
