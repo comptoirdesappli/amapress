@@ -433,9 +433,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'options'  => array(
 								array(
 									'id'      => 'mailgroup_interval',
-									'name'    => 'Interval',
+									'name'    => 'Intervalle',
 									'type'    => 'number',
-									'desc'    => 'Interval d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
+									'desc'    => 'Intervalle d\'exécution du fetcher des Emails groupés. Nécessite un appel cron externe régulier pour ne pas dépendre du traffic sur le site.',
 									'default' => '300',
 								),
 								array(

@@ -27,16 +27,16 @@ function amapress_mailing_queue_menu_options() {
 					),
 					array(
 						'id'      => 'mail_queue_limit',
-						'name'    => 'Emails par interval',
+						'name'    => 'Emails par intervalle',
 						'type'    => 'number',
-						'desc'    => 'Nombre d\'emails envoyés à chaque interval d\'exécution de la file d\'envoi des emails sortants',
+						'desc'    => 'Nombre d\'emails envoyés à chaque intervalle d\'exécution de la file d\'envoi des emails sortants',
 						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT,
 					),
 					array(
 						'id'      => 'mail_queue_interval',
-						'name'    => 'Interval',
+						'name'    => 'Intervalle',
 						'type'    => 'number',
-						'desc'    => 'Interval d\'exécution de la file d\'envoi des emails sortants',
+						'desc'    => 'Intervalle d\'exécution de la file d\'envoi des emails sortants',
 						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL,
 					),
 					array(
