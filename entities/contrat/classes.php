@@ -580,7 +580,6 @@ class AmapressContrat_instance extends TitanEntity {
 		if ( $user_id ) {
 			$contrats_conditions = $this->canSelfContratsCondition();
 			if ( ! empty( $contrats_conditions ) ) {
-				amapress_dump( $contrats_conditions );
 				$start_date = amapress_time();
 				foreach ( $contrats_conditions as $contrat ) {
 					if ( $contrat->getDate_debut() < $start_date ) {
