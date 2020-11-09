@@ -46,7 +46,7 @@ class TitanFrameworkOptionSelectPosts extends TitanFrameworkOptionSelect {
 	public function getArchived( $id ) {
 		$post = get_post( $id );
 		if ( ! $post ) {
-			return "Archivé $id";
+			return sprintf( __( "Archivé %s", 'amapress' ), $id );
 		}
 
 		return apply_filters( "tf_select_posts_title", $post->post_title, $post, $this );

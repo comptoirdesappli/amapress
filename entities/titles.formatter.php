@@ -11,7 +11,7 @@ function amapress_visite_title_formatter( $post_title, WP_Post $post ) {
 		return $post_title;
 	}
 
-	return sprintf( 'Visite du %s chez %s',
+	return sprintf( __( 'Visite du %s chez %s', 'amapress' ),
 		date_i18n( 'l j F Y', $visite->getDate() ),
 		$visite->getProducteur()->getTitle() );
 }
@@ -41,7 +41,7 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 			return $post_title;
 		}
 
-		$ret = sprintf( 'Distribution du %s exceptionnellement à %s',
+		$ret = sprintf( __( 'Distribution du %s exceptionnellement à %s', 'amapress' ),
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	} else {
@@ -50,13 +50,13 @@ function amapress_distribution_title_formatter( $post_title, WP_Post $post ) {
 			return $post_title;
 		}
 
-		$ret = sprintf( 'Distribution du %s à %s',
+		$ret = sprintf( __( 'Distribution du %s à %s', 'amapress' ),
 			date_i18n( 'd/m/Y', intval( $date ) ),
 			$lieu->post_title );
 	}
 
 	if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
-		$ret .= sprintf( ' (%s à %s)',
+		$ret .= sprintf( __( ' (%s à %s)', 'amapress' ),
 			date_i18n( 'H:i', $dist->getStartDateAndHour() ),
 			date_i18n( 'H:i', $dist->getEndDateAndHour() ) );
 	}
@@ -71,7 +71,7 @@ function amapress_assemblee_generale_title_formatter( $post_title, WP_Post $post
 		return $post_title;
 	}
 
-	return sprintf( 'Assemblée générale du %s à %s',
+	return sprintf( __( 'Assemblée générale du %s à %s', 'amapress' ),
 		date_i18n( 'l j F Y', $ag->getDate() ),
 		$ag->getLieuTitle() );
 }
@@ -83,7 +83,7 @@ function amapress_adhesion_request_title_formatter( $post_title, WP_Post $post )
 		return $post_title;
 	}
 
-	return sprintf( 'Demande de préinscription de %s %s (%s)',
+	return sprintf( __( 'Demande de préinscription de %s %s (%s)', 'amapress' ),
 		$adh_req->getFirstName(), $adh_req->getLastName(), $adh_req->getEmail() );
 }
 
@@ -191,7 +191,7 @@ function amapress_panier_title_formatter( $post_title, WP_Post $post ) {
 		$modif = __( ' annulé', 'amapress' );
 	}
 
-	return sprintf( 'Panier de %s%s du %s%s',
+	return sprintf( __( 'Panier de %s%s du %s%s', 'amapress' ),
 		$panier->getContrat_instance()->getModelTitle(),
 		! empty( $panier->getContrat_instance()->getSubName() ) ? ' - ' . $panier->getContrat_instance()->getSubName() : '',
 		date_i18n( 'd/m/Y', intval( $panier->getDate() ) ),
@@ -210,7 +210,7 @@ function amapress_adhesion_title_formatter( $post_title, WP_Post $post ) {
 		return $post->post_title;
 	}
 
-	return sprintf( '%s - %s - %s > %s (%s) (%d)',
+	return sprintf( __( '%s - %s - %s > %s (%s) (%d)', 'amapress' ),
 		( $adh->hasBeforeEndDate_fin() ? ( $adh->hasPaiementDateFin() ? '[partiel]' : '[arrêté] ' ) : ( $adh->hasDate_fin() ? '[clotûré] ' : '' ) ) . $adh->getAdherent()->getSortableDisplayName(),
 		$adh->getContrat_instance()->getTitle(),
 		date_i18n( 'd/m/Y', intval( $adh->getDate_debut() ) ),
@@ -226,7 +226,7 @@ function amapress_contrat_paiement_title_formatter( $post_title, WP_Post $post )
 		return $post->post_title;
 	}
 
-	return sprintf( '%s - %s - %s - %.02f',
+	return sprintf( __( '%s - %s - %s - %.02f', 'amapress' ),
 		$pmt->getAdhesion()->getAdherent()->getSortableDisplayName(),
 		date_i18n( 'd/m/Y', $pmt->getDate() ),
 		$pmt->getNumero(),
@@ -242,7 +242,7 @@ function amapress_adhesion_period_title_formatter( $post_title, WP_Post $post ) 
 
 	$name = $pmt->getName();
 
-	return sprintf( 'Période adhésions%s - %s > %s',
+	return sprintf( __( 'Période adhésions%s - %s > %s', 'amapress' ),
 		! empty( $name ) ? ' - ' . $name : '',
 		date_i18n( 'd/m/Y', $pmt->getDate_debut() ),
 		date_i18n( 'd/m/Y', $pmt->getDate_fin() )
@@ -257,7 +257,7 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 		return $post->post_title;
 	}
 
-	return sprintf( '%s - %s - %s - %.02f',
+	return sprintf( __( '%s - %s - %s - %.02f', 'amapress' ),
 		$pmt->getUser()->getSortableDisplayName(),
 		date_i18n( 'd/m/Y', $pmt->getDate() ),
 		$pmt->getNumero(),
@@ -269,7 +269,7 @@ function amapress_adhesion_paiement_title_formatter( $post_title, WP_Post $post 
 //    $adh = AmapressAdhesion::getBy_intermittence($post->ID);
 //    if (!$adh->getUser()) return $post->post_title;
 //
-//    return sprintf('%s - %s',
+//    return sprintf( __('%s - %s', 'amapress'),
 //        $adh->getUser()->getDisplayName(),
 //        date_i18n('d/m/Y', intval($adh->getDate_debut())));
 //}
@@ -280,7 +280,7 @@ function amapress_intermittence_panier_title_formatter( $post_title, WP_Post $po
 		return $post->post_title;
 	}
 
-	return sprintf( '%s - %s',
+	return sprintf( __( '%s - %s', 'amapress' ),
 		$adh->getPaniersTitles(),
 		$adh->getAdherent()->getDisplayName() );
 }
@@ -300,12 +300,12 @@ function amapress_contrat_instance_title_formatter( $post_title, WP_Post $post )
 	$start_month = date_i18n( 'm/Y', intval( $adh->getDate_debut() ) );
 	$end_month   = date_i18n( 'm/Y', intval( $adh->getDate_fin() ) );
 	if ( $start_month == $end_month ) {
-		return sprintf( '%s%s - %s',
+		return sprintf( __( '%s%s - %s', 'amapress' ),
 			$adh->getModelTitle(),
 			$subname,
 			$start_month );
 	} else {
-		return sprintf( '%s%s - %s ~ %s',
+		return sprintf( __( '%s%s - %s ~ %s', 'amapress' ),
 			$adh->getModelTitle(),
 			$subname,
 			$start_month,
@@ -343,7 +343,7 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 	$author = get_user_by( 'ID', $post->post_author );
 	if ( $author ) {
 		echo '<p>';
-		echo esc_html( sprintf( 'Créé par %s à %s ; Dernière modification le %s',
+		echo esc_html( sprintf( __( 'Créé par %s à %s ; Dernière modification le %s', 'amapress' ),
 			$author->display_name,
 			date_i18n( 'd/m/Y H:i', strtotime( $post->post_date ) ),
 			date_i18n( 'd/m/Y H:i', @strtotime( $post->post_modified ) ) ) );
@@ -362,9 +362,9 @@ function amapress_edit_post_title_handler( WP_Post $post ) {
 
 	if ( ! empty( $amp_back_to_list ) ) {
 		echo '<input type="hidden" name="amp_back_to_list" value="' . esc_url( $amp_back_to_list ) . '" />';
-		$title = 'Retourner à la page précédente';
+		$title = __( 'Retourner à la page précédente', 'amapress' );
 		if ( false !== strpos( $amp_back_to_list, 'edit.php' ) ) {
-			$title = sprintf( 'Revenir aux %s', get_post_type_object( $post->post_type )->label );
+			$title = sprintf( __( 'Revenir aux %s', 'amapress' ), get_post_type_object( $post->post_type )->label );
 		}
 		echo '<p><span class="dashicons dashicons-arrow-left-alt"></span> <a href="' . $amp_back_to_list . '">' . esc_html( $title ) . '</a></p>';
 	}

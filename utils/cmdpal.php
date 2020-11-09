@@ -195,7 +195,7 @@ function amapress_command_palette_pages_items( $items ) {
 				'title'       => $page->post_title,
 				'url'         => admin_url( 'post.php?post=' . $page->ID . '&action=edit' ),
 				'description' => '',
-				'category'    => 'Pages',
+				'category'    => __( 'Pages', 'amapress' ),
 			];
 		}
 	}
@@ -217,7 +217,7 @@ function amapress_command_palette_shortcodes_items( $items ) {
 			'title'       => $k,
 			'url'         => admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ),
 			'description' => $desc['desc'],
-			'category'    => 'Shortcodes',
+			'category'    => __( 'Shortcodes', 'amapress' ),
 		];
 	}
 
@@ -229,13 +229,13 @@ add_filter( 'command_palette_items', function ( $items ) {
 	$items = array_merge(
 		[
 			[
-				'type'        => 'Documentation',
+				'type'        => __( 'Documentation', 'amapress' ),
 				'id'          => 'sh' . uniqid(),
 				'capability'  => 'read',
-				'title'       => 'Documentation Amapress',
+				'title'       => __( 'Documentation Amapress', 'amapress' ),
 				'url'         => 'https://wiki.amapress.fr/accueil',
 				'description' => '',
-				'category'    => 'Documentation',
+				'category'    => __( 'Documentation', 'amapress' ),
 			]
 		], $items
 	);

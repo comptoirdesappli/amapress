@@ -124,7 +124,7 @@ jQuery(function($) {
               function search_user() {
                 var val = $(\'#amapress_search_user_text\').val();
                 if (val == null || val == \'\') {
-                    alert("Champs de recherche vide");
+                    alert("' . esc_js( __( 'Champs de recherche vide', 'amapress' ) ) . '");
                     return;
                 }
                 window.location.href = \'' . admin_url( '/users.php' ) . '?s=\' + encodeURIComponent(val);
@@ -164,7 +164,7 @@ jQuery(function($) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_publish_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<button class=\'amapress_publish button button-primary\' style="display: none">' . 'Enregistrer' . '</button>',
+			'title'  => '<button class=\'amapress_publish button button-primary\' style="display: none">' . __( 'Enregistrer', 'amapress' ) . '</button>',
 			'href'   => '#',
 		) );
 	}
@@ -173,7 +173,7 @@ jQuery(function($) {
 		$admin_bar->add_menu( array(
 			'id'     => 'amapress_update_user_admin_bar',
 			'parent' => 'top-secondary',
-			'title'  => '<button class=\'amapress_update_user button button-primary\'>' . 'Enregistrer' . '</button>',
+			'title'  => '<button class=\'amapress_update_user button button-primary\'>' . __( 'Enregistrer', 'amapress' ) . '</button>',
 			'href'   => '#',
 		) );
 	}
@@ -218,28 +218,28 @@ function amapress_admin_bar_new_entities_and_sitename( WP_Admin_Bar $admin_bar )
 	$site_name_items[] = [
 		'id'         => 'amps_admm-gest-adhs',
 		'icon'       => 'dashicons-none flaticon-pen',
-		'title'      => 'Gestion Adhésions',
+		'title'      => __( 'Gestion Adhésions', 'amapress' ),
 		'capability' => 'edit_adhesion_paiement',
 		'href'       => admin_url( 'admin.php?page=amapress_gestion_adhesions_page' ),
 	];
 	$site_name_items[] = [
 		'id'         => 'amps_admm-gest-inscrs',
 		'icon'       => 'dashicons-none flaticon-pen',
-		'title'      => 'Gestion Contrats',
+		'title'      => __( 'Gestion Contrats', 'amapress' ),
 		'capability' => 'edit_contrat',
 		'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page' ),
 	];
 	$site_name_items[] = [
 		'id'         => 'amps_admm-gest-distribs',
 		'icon'       => 'dashicons-before dashicons-store',
-		'title'      => 'Distributions',
+		'title'      => __( 'Distributions', 'amapress' ),
 		'capability' => 'edit_distribution',
 		'href'       => admin_url( 'admin.php?page=mapress_gestion_distrib_page' ),
 	];
 	$site_name_items[] = [
 		'id'         => 'amps_admm-gest-events',
 		'icon'       => 'dashicons-none flaticon-interface-2',
-		'title'      => 'Évènements',
+		'title'      => __( 'Évènements', 'amapress' ),
 		'capability' => 'manage_events',
 		'href'       => admin_url( 'admin.php?page=amapress_gestion_events_page' ),
 	];
@@ -247,21 +247,21 @@ function amapress_admin_bar_new_entities_and_sitename( WP_Admin_Bar $admin_bar )
 		'id'         => 'amps_admm-articles',
 		'icon'       => 'dashicons-admin-post',
 		'capability' => 'edit_posts',
-		'title'      => 'Articles',
+		'title'      => __( 'Articles', 'amapress' ),
 		'href'       => admin_url( 'edit.php' ),
 	];
 	$site_name_items[] = [
 		'id'         => 'amps_admm-pages',
 		'icon'       => 'dashicons-admin-page',
 		'capability' => 'edit_pages',
-		'title'      => 'Pages',
+		'title'      => __( 'Pages', 'amapress' ),
 		'href'       => admin_url( 'edit.php?post_type=page' ),
 	];
 	$site_name_items[] = [
 		'id'         => 'amps_admm-users',
 		'icon'       => 'dashicons-admin-users',
 		'capability' => 'edit_users',
-		'title'      => 'Utilisateurs',
+		'title'      => __( 'Utilisateurs', 'amapress' ),
 		'href'       => admin_url( 'users.php' ),
 	];
 	amapress_admin_bar_add_items( $site_name_items, $admin_bar, 'site-name' );

@@ -32,8 +32,8 @@ function amapress_register_entities_recette( $entities ) {
 				'multiple'     => true,
 				'tags'         => true,
 				'post_type'    => 'amps_produit',
-				'group'        => 'Produits',
-				'desc'         => 'Produits associés',
+				'group'        => __( 'Produits', 'amapress' ),
+				'desc'         => __( 'Produits associés', 'amapress' ),
 			),
 		),
 	);

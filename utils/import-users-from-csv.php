@@ -105,7 +105,7 @@ class Amapress_Import_Users_CSV {
 			];
 			if ( in_array( $field, $taxonomies_names ) ) {
 				$headers[ $key ]      = $taxonomies_names[ $field ];
-				$headers_desc[ $key ] = 'Saisir une ou plusieurs des étiquettes suivantes séparées par des virgules';
+				$headers_desc[ $key ] = __( 'Saisir une ou plusieurs des étiquettes suivantes séparées par des virgules', 'amapress' );
 				$options[ $key ]      = $taxonomies_values[ $field ];
 			} else {
 				$header = apply_filters( "amapress_users_get_field_display_name", $field );
@@ -132,7 +132,7 @@ class Amapress_Import_Users_CSV {
 					}
 					$options[ $key ] = $roles;
 					if ( empty( $desc ) ) {
-						$desc = 'Choisir un rôle pour l\'utilisateur';
+						$desc = __( 'Choisir un rôle pour l\'utilisateur', 'amapress' );
 					}
 				} else {
 					$options[ $key ] = array();
@@ -335,7 +335,7 @@ class Amapress_Import_Users_CSV {
                         </legend>
                         <label for="new_user_notification">
                             <input id="new_user_notification" name="new_user_notification" type="checkbox" value="1"/>
-							<?php _e( 'Envoyer aux nouveaux utilisateurs', 'amapress' ) ?>
+					        <?php _e( 'Envoyer aux nouveaux utilisateurs', 'amapress' ) ?>
                         </label>
                     </fieldset>
                 </td>
@@ -348,7 +348,7 @@ class Amapress_Import_Users_CSV {
                             <span><?php _e( 'Changement de mot de passe', 'amapress' ); ?></span></legend>
                         <label for="password_nag">
                             <input id="password_nag" name="password_nag" type="checkbox" value="1"/>
-							<?php _e( 'Afficher l\'interface de changement de mot de passe au premier login', 'amapress' ) ?>
+					        <?php _e( 'Afficher l\'interface de changement de mot de passe au premier login', 'amapress' ) ?>
                         </label>
                     </fieldset>
                 </td>
@@ -361,7 +361,7 @@ class Amapress_Import_Users_CSV {
                             <span><?php _e( 'Mise à jour des utilisateurs', 'amapress' ); ?></span></legend>
                         <label for="users_update">
                             <input id="users_update" name="users_update" type="checkbox" value="1" checked="checked"/>
-							<?php _e( 'Mettre à jour l\'utilisateur quand son nom ou son email existent', 'amapress' ); ?>
+					        <?php _e( 'Mettre à jour l\'utilisateur quand son nom ou son email existent', 'amapress' ); ?>
                         </label>
                     </fieldset>
                 </td>
@@ -485,7 +485,7 @@ class Amapress_Import_Users_CSV {
 						if ( is_wp_error( $header_name ) ) {
 							$errors[ $rkey ][] = $header_name;
 						} else {
-							$errors[ $rkey ][] = new WP_Error( 'required_header_missing', "Il manque une colonne $header_name." );
+							$errors[ $rkey ][] = new WP_Error( 'required_header_missing', sprintf( __( "Il manque une colonne %s.", 'amapress' ), $header_name ) );
 						}
 					}
 					if ( $had_errors ) {
@@ -510,7 +510,7 @@ class Amapress_Import_Users_CSV {
 					}
 
 					if ( in_array( $column_name, $required_headers ) && empty( $column ) ) {
-						$column = new WP_Error( 'required_value_missing', "Colonne $col_name : valeur requise pour la colonne {$headers[$ckey]}." );
+						$column = new WP_Error( 'required_value_missing', sprintf( __( "Colonne %s : valeur requise pour la colonne %s.", 'amapress' ), $col_name, $headers[ $ckey ] ) );
 					}
 
 					if ( in_array( $column_name, $userdata_fields ) ) {
@@ -579,8 +579,8 @@ class Amapress_Import_Users_CSV {
 						$user  = get_user_by( 'login', $login );
 						if ( $user ) {
 							$user_link         = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $login, true, true );
-							$search_link       = Amapress::makeLink( admin_url( 'users.php?s=' . $userdata['last_name'] ), 'Rechercher ' . $userdata['last_name'], true, true );
-							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', "User with login '$user_link' already exists with email {$user->user_email}. $search_link" );
+							$search_link       = Amapress::makeLink( admin_url( 'users.php?s=' . $userdata['last_name'] ), __( 'Rechercher ', 'amapress' ) . $userdata['last_name'], true, true );
+							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', sprintf( __( 'Un utilisateur avec le login \'%s\' existe déjà avec l\'email %s.', 'amapress' ), $user_link, $user->user_email ) . $search_link );
 							continue;
 						}
 					}
@@ -608,9 +608,9 @@ class Amapress_Import_Users_CSV {
 
 				if ( empty( $userdata['user_login'] ) ) {
 					if ( ! empty( $userdata['first_name'] ) and ! empty( $userdata['last_name'] ) ) {
-						$userdata['user_login'] = sprintf( '%s.%s', strtolower( $userdata['first_name'] ), strtolower( $userdata['last_name'] ) );
+						$userdata['user_login'] = sprintf( __( '%s.%s', 'amapress' ), strtolower( $userdata['first_name'] ), strtolower( $userdata['last_name'] ) );
 //                    } else if (!empty($userdata['last_name'])) {
-//                        $userdata['user_login'] = sprintf('%s.%s', strtolower($userdata['first_name']), strtolower($userdata['last_name']));
+//                        $userdata['user_login'] = sprintf( __('%s.%s', 'amapress'), strtolower($userdata['first_name']), strtolower($userdata['last_name']));
 					} else if ( ! empty( $userdata['user_email'] ) ) {
 						$userdata['user_login'] = $userdata['user_email'];
 					}

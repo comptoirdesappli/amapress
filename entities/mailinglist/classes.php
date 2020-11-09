@@ -270,7 +270,7 @@ abstract class Amapress_MailingList {
 				'moderators_emails' => array(),
 				'moderators_found'  => false,
 				'moderation'        => 'none',
-				'moderations'       => array( 'none' => 'Aucune' ),
+				'moderations'       => array( 'none' => __( 'Aucune', 'amapress' ) ),
 			)
 		);
 	}
@@ -709,7 +709,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 				) );
 			$form_params  = array(
 				'action'       => 'login',
-				'action_login' => 'Login',
+				'action_login' => __( 'Login', 'amapress' ),
 				'email'        => $login,
 				'passwd'       => $pass,
 			);
@@ -774,14 +774,14 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'list'                                             => $list_name,
 			'group'                                            => 'data_source',
 			'action'                                           => 'edit_list',
-			'action_edit_list'                                 => 'Mise à jour',
+			'action_edit_list'                                 => __( 'Mise à jour', 'amapress' ),
 		);
 		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
 
-		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+		return strpos( $body, __( 'La configuration de la liste a été mise à jour', 'amapress' ) ) !== false;
 	}
 
 	public function setRemoteUrl( $list_name, $remote_url ) {
@@ -804,7 +804,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 		] );
 		$body      = $resp->getBody();
 
-		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+		return strpos( $body, __( 'La configuration de la liste a été mise à jour', 'amapress' ) ) !== false;
 	}
 
 	public function setModeration( $moderation, $list_name ) {
@@ -818,14 +818,14 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'list'                   => $list_name,
 			'group'                  => 'sending',
 			'action'                 => 'edit_list',
-			'action_edit_list'       => 'Mise à jour',
+			'action_edit_list'       => __( 'Mise à jour', 'amapress' ),
 		);
 		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
 
-		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+		return strpos( $body, __( 'La configuration de la liste a été mise à jour', 'amapress' ) ) !== false;
 	}
 
 	public function setReplyTo( $reply_to, $list_name ) {
@@ -839,14 +839,14 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'list'                               => $list_name,
 			'group'                              => 'sending',
 			'action'                             => 'edit_list',
-			'action_edit_list'                   => 'Mise à jour',
+			'action_edit_list'                   => __( 'Mise à jour', 'amapress' ),
 		);
 		$resp      = self::$client->post( '', [
 			'form_params' => $post_data
 		] );
 		$body      = $resp->getBody();
 
-		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+		return strpos( $body, __( 'La configuration de la liste a été mise à jour', 'amapress' ) ) !== false;
 	}
 
 	public function setModerators( $new_moderators, $old_moderators_emails, $list_name ) {
@@ -859,7 +859,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'list'             => $list_name,
 			'group'            => 'description',
 			'action'           => 'edit_list',
-			'action_edit_list' => 'Mise à jour',
+			'action_edit_list' => __( 'Mise à jour', 'amapress' ),
 		);
 
 		$j = 0;
@@ -893,7 +893,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 		] );
 		$body = $resp->getBody();
 
-		return strpos( $body, 'La configuration de la liste a été mise à jour' ) !== false;
+		return strpos( $body, __( 'La configuration de la liste a été mise à jour', 'amapress' ) ) !== false;
 	}
 
 	public function distributeMail( $list_name, $msg_id ) {
@@ -901,7 +901,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 			'form_params' => array(
 				'list'              => $list_name,
 				'id'                => $msg_id,
-				'action_distribute' => 'Distribuer',
+				'action_distribute' => __( 'Distribuer', 'amapress' ),
 			)
 		] );
 
@@ -914,7 +914,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 				array(
 					'list'                => $list_name,
 					'id'                  => $msg_id,
-					'action_reject.quiet' => 'Rejeter sans prévenir l\'auteur',
+					'action_reject.quiet' => __( 'Rejeter sans prévenir l\'auteur', 'amapress' ),
 				)
 		] );
 
@@ -927,7 +927,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 				array(
 					'list'          => $list_name,
 					'id'            => $msg_id,
-					'action_reject' => 'Rejeter',
+					'action_reject' => __( 'Rejeter', 'amapress' ),
 				)
 		] );
 

@@ -31,13 +31,13 @@ function amapress_customizer_init() {
 		'name'    => __( 'Titre "utilisateur connecté" de la colonne Agenda', 'amapress' ),
 		'id'      => 'front_agenda_title',
 		'type'    => 'text',
-		'default' => 'Cette semaine dans mon panier...',
+		'default' => __( 'Cette semaine dans mon panier...', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Titre "public" de la colonne Agenda', 'amapress' ),
 		'id'      => 'front_agenda_public_title',
 		'type'    => 'text',
-		'default' => 'Agenda',
+		'default' => __( 'Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Nombre max de date - Adhérents', 'amapress' ),
@@ -61,7 +61,7 @@ function amapress_customizer_init() {
 		'name'    => __( 'Titre de la colonne Produits', 'amapress' ),
 		'id'      => 'front_produits_title',
 		'type'    => 'text',
-		'default' => 'Les produits de l\'Amap...',
+		'default' => __( 'Les produits de l\'Amap...', 'amapress' ),
 	) );
 
 	$contrat_options = array();
@@ -81,13 +81,13 @@ function amapress_customizer_init() {
 		'name'    => __( 'Texte du bouton si non Adhérent', 'amapress' ),
 		'id'      => 'front_produits_button_text_if_not_adherent',
 		'type'    => 'text',
-		'default' => 'Découvrir',
+		'default' => __( 'Découvrir', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Texte du bouton si Adhérent', 'amapress' ),
 		'id'      => 'front_produits_button_text_if_adherent',
 		'type'    => 'text',
-		'default' => 'Adhérent',
+		'default' => __( 'Adhérent', 'amapress' ),
 	) );
 
 	$section->createOption( array(
@@ -126,7 +126,7 @@ function amapress_customizer_init() {
 		'name'    => __( 'Titre de la colonne Carte', 'amapress' ),
 		'id'      => 'front_map_title',
 		'type'    => 'text',
-		'default' => 'Où nous trouver ?',
+		'default' => __( 'Où nous trouver ?', 'amapress' ),
 	) );
 
 	$section = $titan->createCustomizer( array(
@@ -170,7 +170,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Pastilles de dates', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les pastilles de dates du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events)', 'amapress' ),
@@ -231,14 +231,14 @@ function amapress_customizer_init() {
 	) );
 	foreach (
 		array(
-			'distribution'       => 'Distribution',
-			'resp-distribution'  => 'Responsable distribution',
-			'inter-recup'        => 'Récupération panier intermittent',
-			'intermittence'      => 'Panier intermittent disponible',
-			'visite'             => 'Visite',
-			'amap_event'         => 'Evènement',
-			'assemblee_generale' => 'Assemblée générale',
-			'user-paiement'      => 'Encaissement de chèque',
+			'distribution'       => __( 'Distribution', 'amapress' ),
+			'resp-distribution'  => __( 'Responsable distribution', 'amapress' ),
+			'inter-recup'        => __( 'Récupération panier intermittent', 'amapress' ),
+			'intermittence'      => __( 'Panier intermittent disponible', 'amapress' ),
+			'visite'             => __( 'Visite', 'amapress' ),
+			'amap_event'         => __( 'Evènement', 'amapress' ),
+			'assemblee_generale' => __( 'Assemblée générale', 'amapress' ),
+			'user-paiement'      => __( 'Encaissement de chèque', 'amapress' ),
 		) as $type => $name
 	) {
 		$section->createOption( array(
@@ -271,7 +271,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Lieux et producteurs', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des lieux de distribution/fermes des évènements/visites du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events)', 'amapress' ),
@@ -360,7 +360,7 @@ function amapress_customizer_init() {
 	foreach ( $lieux as $lieu ) {
 //		$section = $titan->createCustomizer( array(
 //			'name'  => __( $lieu->getTitle(), 'amapress' ),
-//			'panel' => 'Amapress Agenda',
+//			'panel' => __('Amapress Agenda', 'amapress'),
 //		) );
 		$section->createOption( array(
 			'name' => __( $lieu->getTitle(), 'amapress' ),
@@ -392,12 +392,12 @@ function amapress_customizer_init() {
 
 //    $section = $titan->createCustomizer(array(
 //        'name' => __('Général', 'amapress'),
-//        'panel' => 'Amapress Agenda',
+//        'panel' => __('Amapress Agenda', 'amapress'),
 //    ));
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Distributions', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
@@ -432,7 +432,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Assemblées', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
@@ -492,7 +492,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Encaissements', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
@@ -528,7 +528,7 @@ function amapress_customizer_init() {
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Visites à la ferme', 'amapress' ),
 		'id'    => 'amps_visite_section',
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
@@ -616,7 +616,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Evènements', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
@@ -718,7 +718,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Intermittents', 'amapress' ),
-		'panel' => 'Amapress Agenda',
+		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'desc' => __( 'Options de couleurs pour les liens des types d\'évènements (à droite de la date et heure) du calendrier graphique (shortcodes front_default_grid, front_next_events, next_events) et pour le calendrier standard (shortcodes amapress-amapien-agenda-viewer, amapress-public-agenda-viewer)', 'amapress' ),
@@ -764,7 +764,7 @@ function amapress_customizer_init() {
 //		$id      = $contrat->ID; //get_post_meta($contrat->ID, 'amapress_contrat_instance_model', true);
 //		$section = $titan->createCustomizer( array(
 //			'name'  => __( 'Contrat ' . $tit, 'amapress' ),
-//			'panel' => 'Amapress Agenda',
+//			'panel' => __('Amapress Agenda', 'amapress'),
 //		) );
 //		$section->createOption( array(
 //			'name'    => __( "Icône du contrat $tit", 'amapress' ),
@@ -797,7 +797,7 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Post-It', 'amapress' ),
-		'panel' => 'Amapress Presentation',
+		'panel' => __( 'Amapress Presentation', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Couleur d\'entête', 'amapress' ),
@@ -831,31 +831,31 @@ function amapress_customizer_init() {
 
 	$section = $titan->createCustomizer( array(
 		'name'  => __( 'Encadrés', 'amapress' ),
-		'panel' => 'Amapress Presentation',
+		'panel' => __( 'Amapress Presentation', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Présentation de la production', 'amapress' ),
 		'id'      => 'pres_producteur_title',
 		'type'    => 'text',
-		'default' => 'Présentation de la production',
+		'default' => __( 'Présentation de la production', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Présentation du contrat', 'amapress' ),
 		'id'      => 'pres_contrat_title',
 		'type'    => 'text',
-		'default' => 'Présentation du contrat',
+		'default' => __( 'Présentation du contrat', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Présentation des produits', 'amapress' ),
 		'id'      => 'pres_produits_title',
 		'type'    => 'text',
-		'default' => 'Ses produits',
+		'default' => __( 'Ses produits', 'amapress' ),
 	) );
 	$section->createOption( array(
 		'name'    => __( 'Producteur', 'amapress' ),
 		'id'      => 'producteur_title',
 		'type'    => 'text',
-		'default' => 'Producteur',
+		'default' => __( 'Producteur', 'amapress' ),
 	) );
 
 }

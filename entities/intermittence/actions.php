@@ -56,7 +56,7 @@ function amapress_create_user_if_not_exists(
 		$user->set_role( 'amapien' );
 
 		// Email the user
-//        wp_mail( $email_address, 'Welcome!', 'Your Password: ' . $password );
+//        wp_mail( $email_address, __('Welcome!', 'amapress'), __('Your Password: ', 'amapress') . $password );
 		if ( 'none' !== $notify ) {
 			wp_new_user_notification( $user_id, null, $notify );
 		}
@@ -139,16 +139,16 @@ function amapress_create_user_if_not_exists(
 add_action( 'admin_post_nopriv_inscription_intermittent', 'amapress_admin_action_nopriv_inscription_intermittent' );
 function amapress_admin_action_nopriv_inscription_intermittent() {
 	if ( ! Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) && ! amapress_can_access_admin() ) {
-		wp_die( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif' );
+		wp_die( __( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif', 'amapress' ) );
 	}
 
 	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) && ! amapress_can_access_admin() ) {
-		wp_die( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'assistant d\'adhésion Intermittents' );
+		wp_die( __( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'assistant d\'adhésion Intermittents', 'amapress' ) );
 	}
 
 	header( 'Content-Type: text/html; charset=UTF-8' );
 	if ( ! isset( $_REQUEST['email'] ) ) {
-		die( 'Pas d\'email spécifié' );
+		die( __( 'Pas d\'email spécifié', 'amapress' ) );
 	}
 
 	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
@@ -164,7 +164,7 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 	}
 
 	if ( ! $is_ok ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
@@ -177,7 +177,7 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 	$user = get_user_by( 'email', $user_email );
 	if ( $user ) {
 		echo '<p class="error">';
-		echo sprintf( 'L\'adresse email %s est déjà utilisée.', $user_email );
+		echo sprintf( __( 'L\'adresse email %s est déjà utilisée.', 'amapress' ), $user_email );
 		echo '</p>';
 		die();
 	}
@@ -185,25 +185,25 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 	$user_id = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 	$user    = AmapressUser::getBy( $user_id );
 	if ( false === $user->inscriptionIntermittence() ) {
-		echo 'Vous êtes déjà inscrit sur la liste des intermittents';
+		echo __( 'Vous êtes déjà inscrit sur la liste des intermittents', 'amapress' );
 	} else {
-		echo 'Vous êtes inscrit sur la liste des intermittents';
+		echo __( 'Vous êtes inscrit sur la liste des intermittents', 'amapress' );
 	}
 }
 
 add_action( 'admin_post_inscription_intermittent', 'amapress_admin_action_inscription_intermittent' );
 function amapress_admin_action_inscription_intermittent() {
 	if ( ! Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) && ! amapress_can_access_admin() ) {
-		wp_die( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif' );
+		wp_die( __( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif', 'amapress' ) );
 	}
 
 	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) && ! amapress_can_access_admin() ) {
-		wp_die( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'assistant d\'adhésion Intermittents' );
+		wp_die( __( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'assistant d\'adhésion Intermittents', 'amapress' ) );
 	}
 
 	header( 'Content-Type: text/html; charset=UTF-8' );
 	if ( ! isset( $_REQUEST['email'] ) ) {
-		die( 'Pas d\'email spécifié' );
+		die( __( 'Pas d\'email spécifié', 'amapress' ) );
 	}
 
 	$user_firt_name = isset( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '';
@@ -216,12 +216,12 @@ function amapress_admin_action_inscription_intermittent() {
 
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
 		if ( $is_me ) {
-			echo 'Etes-vous sûr de vouloir vous inscrire en tant qu\'intermittent ?';
+			echo __( 'Etes-vous sûr de vouloir vous inscrire en tant qu\'intermittent ?', 'amapress' );
 		} else {
-			echo sprintf( 'Etes-vous sûr de vouloir inscrire %s en tant qu\'intermittent ?', $user_email );
+			echo sprintf( __( 'Etes-vous sûr de vouloir inscrire %s en tant qu\'intermittent ?', 'amapress' ), $user_email );
 		}
 		echo '<br/>
-<a href="' . add_query_arg( 'confirm', 'yes' ) . '">' . 'Confirmer l\'inscription' . '</a>';
+<a href="' . add_query_arg( 'confirm', 'yes' ) . '">' . __( 'Confirmer l\'inscription', 'amapress' ) . '</a>';
 	} else {
 		$return_to_sender = isset( $_REQUEST['return_sender'] );
 		$user_id          = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
@@ -231,19 +231,20 @@ function amapress_admin_action_inscription_intermittent() {
 				wp_redirect_and_exit( add_query_arg( $_SERVER['HTTP_REFERER'], 'inscription_intermittent', 'already' ) );
 			} else {
 				if ( $is_me ) {
-					echo 'Vous êtes déjà inscrit sur la liste des intermittents';
+					echo __( 'Vous êtes déjà inscrit sur la liste des intermittents', 'amapress' );
 				} else {
-					echo sprintf( '%s  est déjà inscrit sur la liste des intermittents', $user_email );
+					echo sprintf( __( '%s  est déjà inscrit sur la liste des intermittents', 'amapress' ), $user_email );
 				}
 			}
 		} else {
 			if ( $return_to_sender ) {
 				wp_redirect_and_exit( add_query_arg( 'inscription_intermittent', 'ok', $_SERVER['HTTP_REFERER'] ) );
 			} else {
-				if ( $is_me )
-					echo 'Vous êtes inscrit sur la liste des intermittents';
-				else
-					echo sprintf( '%s a été inscrit sur la liste des intermittents', $user_email);
+				if ( $is_me ) {
+					echo __( 'Vous êtes inscrit sur la liste des intermittents', 'amapress' );
+				} else {
+					echo sprintf( __( '%s a été inscrit sur la liste des intermittents', 'amapress' ), $user_email );
+				}
 			}
 		}
 	}
@@ -256,14 +257,14 @@ function amapress_admin_action_nopriv_desinscription_intermittent() {
 		$nonce = $_GET['desinter_nonce'];
 		header( 'Content-Type: text/html; charset=UTF-8' );
 		if ( get_transient( 'amps_desinscr_inter_' . $nonce ) != $nonce ) {
-			wp_die( 'Ce lien de désinscription de la liste des intermittents est périmé.' );
+			wp_die( __( 'Ce lien de désinscription de la liste des intermittents est périmé.', 'amapress' ) );
 		}
 		if ( ! empty( $_REQUEST['email'] ) ) {
 			amapress_admin_action_desinscription_intermittent();
 		} else {
 			echo '<form method="post" action="' . amapress_intermittence_desinscription_link() . '">
-	<p>' . 'Veuillez entrer votre email pour vous désinscrire de la liste des intermittents.' . '</p>
-	<label for="email">' . 'Email :' . '</label>
+	<p>' . __( 'Veuillez entrer votre email pour vous désinscrire de la liste des intermittents.', 'amapress' ) . '</p>
+	<label for="email">' . __( 'Email :', 'amapress' ) . '</label>
 	<input type="text" name="email" />
 	<input type="submit" value="' . esc_attr__( 'Désinscrire', 'amapress' ) . '" />
 </form>';
@@ -283,7 +284,7 @@ function amapress_admin_action_desinscription_intermittent() {
 	header( 'Content-Type: text/html; charset=UTF-8' );
 
 	if ( ! isset( $_REQUEST['email'] ) ) {
-		die( 'Pas d\'email spécifié' );
+		die( __( 'Pas d\'email spécifié', 'amapress' ) );
 	}
 
 	$user_email = sanitize_email( $_REQUEST['email'] );
@@ -296,22 +297,22 @@ function amapress_admin_action_desinscription_intermittent() {
 
 	$user = get_user_by( 'email', $user_email );
 	if ( ! $user ) {
-		die( 'Utilisateur inconnu' );
+		die( __( 'Utilisateur inconnu', 'amapress' ) );
 	}
 	$amapien = AmapressUser::getBy( $user );
 
 	if ( ! $amapien->isIntermittent() ) {
 		if ( $is_me )
-			die( 'Vous n\'êtes pas inscrit sur la liste des intermittents' );
+			die( __( 'Vous n\'êtes pas inscrit sur la liste des intermittents', 'amapress' ) );
 		else
-			die( sprintf( '%s n\'est pas inscrit sur la liste des intermittents', $user_email));
+			die( sprintf( __( '%s n\'est pas inscrit sur la liste des intermittents', 'amapress' ), $user_email));
 	}
 
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
 		if ( $is_me ) {
-			echo 'Etes-vous sûr de vouloir vous désinscrire en tant qu\'intermittent ?';
+			echo __( 'Etes-vous sûr de vouloir vous désinscrire en tant qu\'intermittent ?', 'amapress' );
 		} else {
-			echo sprintf( 'Etes-vous sûr de vouloir désinscrire %s en tant qu\'intermittent ?', $user_email );
+			echo sprintf( __( 'Etes-vous sûr de vouloir désinscrire %s en tant qu\'intermittent ?', 'amapress' ), $user_email );
 		}
 
 		echo '<br/>
@@ -319,21 +320,21 @@ function amapress_admin_action_desinscription_intermittent() {
 				[
 					'confirm' => 'yes',
 					'email'   => $user_email,
-				] ) . '">' . 'Confirmer la désinscription' . '</a>';
+				] ) . '">' . __( 'Confirmer la désinscription', 'amapress' ) . '</a>';
 	} else {
 		$amapien->desinscriptionIntermittence();
 
 		if ( $is_me )
-			echo 'Vous êtes désinscrit de la liste des intermittents';
+			echo __( 'Vous êtes désinscrit de la liste des intermittents', 'amapress' );
 		else
-			echo sprintf( '%s a été désinscrit de la liste des intermittents', $user_email);
+			echo sprintf( __( '%s a été désinscrit de la liste des intermittents', 'amapress' ), $user_email);
 	}
 }
 
 //add_action('amapress_do_query_action_intermittence_inscription','amapress_do_query_action_intermittence_inscription');
 //function amapress_do_query_action_intermittence_inscription() {
 //    if (!amapress_is_user_logged_in())
-//        wp_die('Vous devez avoir un compte pour effectuer cette opération.');
+//        wp_die(__('Vous devez avoir un compte pour effectuer cette opération.', 'amapress'));
 //
 //    $optionsPage = Amapress::resolve_post_id(Amapress::getOption('mes-infos-page'), 'page');
 //    $base_url = trailingslashit(get_page_link($optionsPage));
@@ -381,10 +382,10 @@ add_action( 'wp_ajax_reprendre_panier', function () {
 
 	switch ( $result ) {
 		case 'ok':
-			echo '<p class="success">' . 'Demande de reprise de panier enregistrée' . '</p>';
+			echo '<p class="success">' . __( 'Demande de reprise de panier enregistrée', 'amapress' ) . '</p>';
 			break;
 		case 'already':
-			echo '<p class="error">' . 'Panier déjà échangé' . '</p>';
+			echo '<p class="error">' . __( 'Panier déjà échangé', 'amapress' ) . '</p>';
 			break;
 	}
 
@@ -405,10 +406,10 @@ add_action( 'wp_ajax_annuler_adherent', function () {
 
 	switch ( $result ) {
 		case 'ok':
-			echo '<p class="success">' . 'Annulation de l\'échange de panier enregistrée' . '</p>';
+			echo '<p class="success">' . __( 'Annulation de l\'échange de panier enregistrée', 'amapress' ) . '</p>';
 			break;
 		case 'already':
-			echo '<p class="error">' . 'Echange de panier déjà annulé' . '</p>';
+			echo '<p class="error">' . __( 'Echange de panier déjà annulé', 'amapress' ) . '</p>';
 			break;
 	}
 
@@ -428,10 +429,10 @@ add_action( 'wp_ajax_annuler_repreneur', function () {
 
 	switch ( $result ) {
 		case 'ok':
-			echo '<p class="success">' . 'Annulation de l\'échange de panier enregistrée' . '</p>';
+			echo '<p class="success">' . __( 'Annulation de l\'échange de panier enregistrée', 'amapress' ) . '</p>';
 			break;
 		case 'already':
-			echo '<p class="error">' . 'Echange de panier déjà annulé' . '</p>';
+			echo '<p class="error">' . __( 'Echange de panier déjà annulé', 'amapress' ) . '</p>';
 			break;
 	}
 
@@ -452,10 +453,10 @@ add_action( 'wp_ajax_validate_reprise', function () {
 
 	switch ( $result ) {
 		case 'ok':
-			echo '<p class="success">' . 'Reprise du panier enregistrée' . '</p>';
+			echo '<p class="success">' . __( 'Reprise du panier enregistrée', 'amapress' ) . '</p>';
 			break;
 		default:
-			echo '<p class="error">' . 'Opération impossible. ' . $result . '</p>';
+			echo '<p class="error">' . __( 'Opération impossible. ', 'amapress' ) . $result . '</p>';
 			break;
 	}
 
@@ -476,10 +477,10 @@ add_action( 'wp_ajax_reject_reprise', function () {
 
 	switch ( $result ) {
 		case 'ok':
-			echo '<p class="success">' . 'Demande de reprise rejettée' . '</p>';
+			echo '<p class="success">' . __( 'Demande de reprise rejettée', 'amapress' ) . '</p>';
 			break;
 		default:
-			echo '<p class="error">' . 'Opération impossible' . '</p>';
+			echo '<p class="error">' . __( 'Opération impossible', 'amapress' ) . '</p>';
 			break;
 	}
 

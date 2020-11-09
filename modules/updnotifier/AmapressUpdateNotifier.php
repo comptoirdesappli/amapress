@@ -64,7 +64,7 @@ class AmapressUpdateNotifier {
 				foreach ( $plugins_need_update as $key => $data ) { // loop through the plugins that need updating
 					$plugin_info = get_plugin_data( WP_PLUGIN_DIR . "/" . $key ); // get local plugin info
 					$info        = plugins_api( 'plugin_information', array( 'slug' => $data->slug ) ); // get repository plugin info
-					$message     .= "\n" . sprintf( __( "Extension: %s n'est pas à jour. Merci de mettre à jour de la version %s à la version %s", "amapress" ), $plugin_info['Name'], $plugin_info['Version'], $data->new_version ) . "\n";
+					$message     .= "\n" . sprintf( __( "Extension: %s n'est pas à jour. Merci de mettre à jour de la version %s à la version %s", "amapress" ), $plugin_info[ __( 'Name', 'amapress' ) ], $plugin_info[ __( 'Version', 'amapress' ) ], $data->new_version ) . "\n";
 					$message     .= "\t" . sprintf( __( "Détails: %s", "amapress" ), $data->url ) . "\n";
 					//$message     .= "\t" . sprintf( __( "Changelog: %s%s", "amapress" ), $data->url, "changelog/" ) . "\n";
 					if ( isset( $info->tested ) && version_compare( $info->tested, $wp_version, '>=' ) ) {
@@ -106,7 +106,7 @@ class AmapressUpdateNotifier {
 			if ( count( $themes_need_update ) >= 1 ) { // any themes need updating after all the filtering gone on above?
 				foreach ( $themes_need_update as $key => $data ) { // loop through the themes that need updating
 					$theme_info                            = wp_get_theme( $key ); // get theme info
-					$message                               .= "\n" . sprintf( __( "Thème: %s n'est pas à jour. Merci de faire la mise à jour de la version %s à la version %s", "amapress" ), $theme_info['Name'], $theme_info['Version'], $data['new_version'] ) . "\n";
+					$message                               .= "\n" . sprintf( __( "Thème: %s n'est pas à jour. Merci de faire la mise à jour de la version %s à la version %s", "amapress" ), $theme_info[ __( 'Name', 'amapress' ) ], $theme_info[ __( 'Version', 'amapress' ) ], $data['new_version'] ) . "\n";
 					$settings['notified']['theme'][ $key ] = $data['new_version']; // set theme version we are notifying about
 				}
 

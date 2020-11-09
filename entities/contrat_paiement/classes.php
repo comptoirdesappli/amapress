@@ -73,11 +73,11 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 		switch ( $this->getStatus() ) {
 
 			case 'not_received':
-				return 'Non reçu';
+				return __( 'Non reçu', 'amapress' );
 			case 'received':
-				return 'Reçu';
+				return __( 'Reçu', 'amapress' );
 			case 'bank':
-				return 'Encaissé';
+				return __( 'Encaissé', 'amapress' );
 			default:
 				return $this->getStatus();
 		}
@@ -107,19 +107,19 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	public function getTypeFormatted() {
 		switch ( $this->getType() ) {
 			case 'chq':
-				return 'Chèque';
+				return __( 'Chèque', 'amapress' );
 			case 'esp':
-				return 'Espèces';
+				return __( 'Espèces', 'amapress' );
 			case 'stp':
-				return 'Paiement en ligne (Stripe)';
+				return __( 'Paiement en ligne (Stripe)', 'amapress' );
 			case 'vir':
-				return 'Virement';
+				return __( 'Virement', 'amapress' );
 			case 'mon':
-				return 'Monnaie locale';
+				return __( 'Monnaie locale', 'amapress' );
 			case 'dlv':
 				return 'A la livraison';
 			case 'prl':
-				return 'Prélèvement';
+				return __( 'Prélèvement', 'amapress' );
 		}
 	}
 
@@ -154,9 +154,9 @@ GROUP BY $wpdb->posts.ID" );
 
 		$count = count( $orphans );
 		if ( $count > 0 ) {
-			return "$count règlements orphelins nettoyés";
+			return sprintf( __( '%s règlements orphelins nettoyés', 'amapress' ), $count );
 		} else {
-			return "Aucun règlement orphelin";
+			return __( 'Aucun règlement orphelin', 'amapress' );
 		}
 //		$orphans = get_posts(
 //			[
@@ -252,13 +252,13 @@ GROUP BY $wpdb->posts.ID" );
 					'date'     => $date,
 					'date_end' => $date,
 					'type'     => 'user-paiement contrat-paiement',
-					'category' => 'Encaissements',
-					'label'    => "Encaissement {$price}€",
+					'category' => __( 'Encaissements', 'amapress' ),
+					'label'    => sprintf( __( 'Encaissement %s€', 'amapress' ), $price ),
 					'class'    => "agenda-user-paiement",
 					'priority' => 0,
 					'lieu'     => $adh->getLieu(),
 					'icon'     => 'flaticon-business',
-					'alt'      => sprintf( 'Vous allez être encaissé %s d\'un montant de %s€ à la date du %s', 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'mon' == $this->getType() ? ' du paiement en monnaie locale ' : ( 'dlv' == $this->getType() ? ' à la livraison' : ( 'prl' == $this->getType() ? ' du prélèvement' : ( 'stp' == $this->getType() ? ' du paiement en ligne' : '' ) ) ) ) ) ), $price, date_i18n( 'd/m/Y', $date ) ),
+					'alt'      => sprintf( __( 'Vous allez être encaissé %s d\'un montant de %s€ à la date du %s', 'amapress' ), 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'mon' == $this->getType() ? ' du paiement en monnaie locale ' : ( 'dlv' == $this->getType() ? ' à la livraison' : ( 'prl' == $this->getType() ? ' du prélèvement' : ( 'stp' == $this->getType() ? ' du paiement en ligne' : '' ) ) ) ) ) ), $price, date_i18n( 'd/m/Y', $date ) ),
 					'href'     => '/mes-adhesions'
 				) );
 			}
@@ -344,43 +344,43 @@ GROUP BY $wpdb->posts.ID" );
 			}
 
 			$ret['paiement_type']     = [
-				'desc' => 'Type de paiement (Chèque, espèces, virement...)',
+				'desc' => __( 'Type de paiement (Chèque, espèces, virement...)', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return $adh->getTypeFormatted();
 				}
 			];
 			$ret['paiement_numero']   = [
-				'desc' => 'Numéro du chèque',
+				'desc' => __( 'Numéro du chèque', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return $adh->getNumero();
 				}
 			];
 			$ret['paiement_emetteur'] = [
-				'desc' => 'Nom de l\'adhérent émetteur',
+				'desc' => __( 'Nom de l\'adhérent émetteur', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return $adh->getEmetteur();
 				}
 			];
 			$ret['paiement_banque']   = [
-				'desc' => 'Banque du chèque',
+				'desc' => __( 'Banque du chèque', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return $adh->getBanque();
 				}
 			];
 			$ret['paiement_montant']  = [
-				'desc' => 'Montant du paiement',
+				'desc' => __( 'Montant du paiement', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return Amapress::formatPrice( $adh->getAmount() );
 				}
 			];
 			$ret['paiement_date']     = [
-				'desc' => 'Date d\'encaissement du paiement',
+				'desc' => __( 'Date d\'encaissement du paiement', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate() );
 				}
 			];
 			$ret['paiement_status']   = [
-				'desc' => 'Etat du paiement',
+				'desc' => __( 'Etat du paiement', 'amapress' ),
 				'func' => function ( AmapressAmapien_paiement $adh ) {
 					return $adh->getStatusDisplay();
 				}

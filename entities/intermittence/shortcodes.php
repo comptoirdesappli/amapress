@@ -18,31 +18,31 @@ function amapress_intermittence_anon_inscription_shortcode( $atts, $content = nu
 		$url        = add_query_arg( 'key', $key, get_permalink() );
 		if ( empty( $_REQUEST['key'] ) ) {
 			if ( empty( $key ) ) {
-				$ret .= amapress_get_panel_start( 'Configuration' );
-				$ret .= '<div style="color:red">' . sprintf( 'Ajoutez la clé suivante à votre shortcode : %s<br/>De la forme : [%s key=%s]', $sample_key, $tag, $sample_key ) . '</div>';
+				$ret .= amapress_get_panel_start( __( 'Configuration', 'amapress' ) );
+				$ret .= '<div style="color:red">' . sprintf( __( 'Ajoutez la clé suivante à votre shortcode : %s<br/>De la forme : [%s key=%s]', 'amapress' ), $sample_key, $tag, $sample_key ) . '</div>';
 			} else {
-				$ret .= '<div class="alert alert-info">' . sprintf( 'Pour donner accès à cette page d\'inscription à la liste des intermittents, veuillez envoyer aux nouveaux intermittents le lien suivant : 
+				$ret .= '<div class="alert alert-info">' . sprintf( __( 'Pour donner accès à cette page d\'inscription à la liste des intermittents, veuillez envoyer aux nouveaux intermittents le lien suivant : 
 <pre>%s</pre>
 Pour y accéder cliquez <a href="%s">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
 %s
 Vous pouvez également utiliser l\'un des QRCode suivants : 
 <div>%s%s%s</div><br/>
-<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription à la liste des intermittents sans être connecté sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong>', $url, $url, ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ) ) . '</div>';
+<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription à la liste des intermittents sans être connecté sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong>', 'amapress' ), $url, $url, ! empty( $atts['shorturl'] ) ? __( 'Lien court sauvegardé : <code>', 'amapress' ) . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ) ) . '</div>';
 				$ret .= amapress_get_panel_end();
 			}
 		} else {
-			$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . 'Afficher les instructions d\'accès à cette page.' . '</a></div>';
+			$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . __( 'Afficher les instructions d\'accès à cette page.', 'amapress' ) . '</a></div>';
 		}
 	}
 	if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 		if ( empty( $key ) && amapress_can_access_admin() ) {
-			$ret .= 'Une fois le shortcode configuré : seuls les personnes dirigées depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.';
+			$ret .= __( 'Une fois le shortcode configuré : seuls les personnes dirigées depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.', 'amapress' );
 			$ret .= $content;
 
 			return $ret;
 		} elseif ( ! amapress_is_user_logged_in() ) {
-			$ret .= '<div class="alert alert-danger">' . 'Vous êtes dans un espace sécurisé. Accès interdit' . '</div>';
+			$ret .= '<div class="alert alert-danger">' . __( 'Vous êtes dans un espace sécurisé. Accès interdit', 'amapress' ) . '</div>';
 			$ret .= $content;
 
 			return $ret;
@@ -51,8 +51,8 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
 		$href = Amapress::get_intermittent_adhesion_page_href();
-		$link = ! empty( $href ) ? Amapress::makeLink( $href, 'Assistant d\'adhésion Intermittents' ) : 'Non configuré';
-		wp_die( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'' . $link );
+		$link = ! empty( $href ) ? Amapress::makeLink( $href, __( 'Assistant d\'adhésion Intermittents', 'amapress' ) ) : __( 'Non configuré', 'amapress' );
+		wp_die( __( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'', 'amapress' ) . $link );
 	}
 
 	$current_post = get_post();
@@ -63,29 +63,29 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
   <input type="hidden" name="key" value="' . esc_attr( $key ) . '" />
   <input type="hidden" name="post-id" value="' . esc_attr( $current_post ? $current_post->ID : 0 ) . '" />
   <div class="form-group">
-    <label for="email"><strong>*' . 'Email:' . '</strong></label>
+    <label for="email"><strong>*' . __( 'Email:', 'amapress' ) . '</strong></label>
     <input type="email" class="form-control required" id="email" name="email">
   </div>
   <div class="form-group">
-    <label for="first_name">' . 'Prénom:' . '</label>
+    <label for="first_name">' . __( 'Prénom:', 'amapress' ) . '</label>
     <input type="text" class="form-control required" id="first_name" name="first_name">
   </div>
   <div class="form-group">
-    <label for="last_name">' . 'Nom:' . '</label>
+    <label for="last_name">' . __( 'Nom:', 'amapress' ) . '</label>
     <input type="text" class="form-control required" id="last_name" name="last_name">
   </div>
   <div class="form-group">
-    <label for="phone"><em>' . 'Téléphone' . '</em>:</label>
+    <label for="phone"><em>' . __( 'Téléphone', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control" id="phone" name="phone">
   </div>
   <div class="form-group">
-    <label for="address"><em>' . 'Adresse' . '</em>:</label>
+    <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control" id="address" name="address">
   </div>
-  <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . 'S\'inscrire' . '</button>
+  <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'S\'inscrire', 'amapress' ) . '</button>
 </form>';
 	} else {
-		$ret .= '<p class="intermittence inscr-collectif">' . 'L\'inscription à l\'Espace intermittents est gérée par le collectif' . '</p>';
+		$ret .= '<p class="intermittence inscr-collectif">' . __( 'L\'inscription à l\'Espace intermittents est gérée par le collectif', 'amapress' ) . '</p>';
 	}
 
 	return $ret;
@@ -110,62 +110,62 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
 		case 'me':
 			if ( AmapressContrats::is_user_active_intermittent() ) {
 				if ( 'ok' == $inscription_intermittent ) {
-					$ret .= '<div class="alert alert-success">' . 'Votre inscription dans l\'espace intermittents a été prise en compte' . '</div>';
+					$ret .= '<div class="alert alert-success">' . __( 'Votre inscription dans l\'espace intermittents a été prise en compte', 'amapress' ) . '</div>';
 				} else if ( 'already' == $inscription_intermittent ) {
-					$ret .= '<div class="alert alert-success">' . 'Vous êtes déjà inscrit dans l\'espace intermittents' . '</div>';
+					$ret .= '<div class="alert alert-success">' . __( 'Vous êtes déjà inscrit dans l\'espace intermittents', 'amapress' ) . '</div>';
 				}
 				if ( $atts['show_info'] == 'yes' ) {
-					$ret .= "<p class='intermittence inscription already-in-list'>" . 'Vous êtes déjà inscrit dans l\'espace intermittents' . "</p>";
+					$ret .= "<p class='intermittence inscription already-in-list'>" . __( 'Vous êtes déjà inscrit dans l\'espace intermittents', 'amapress' ) . "</p>";
 				} else {
 					$ret .= '';
 				}
 				$ret .= do_shortcode( '[intermittents-desinscription]' );
 			} elseif ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
 				$href = Amapress::get_intermittent_adhesion_page_href();
-				$link = ! empty( $href ) ? Amapress::makeLink( $href, 'l\'Assistant d\'adhésion Intermittents' ) : 'Non configuré';
-				$ret  .= '<p>' . 'Les inscriptions à l\'Espace intermittents doivent se faire, par l\'intermittent lui-même, via' . $link . '</p>';
+				$link = ! empty( $href ) ? Amapress::makeLink( $href, __( 'l\'Assistant d\'adhésion Intermittents', 'amapress' ) ) : __( 'Non configuré', 'amapress' );
+				$ret  .= '<p>' . __( 'Les inscriptions à l\'Espace intermittents doivent se faire, par l\'intermittent lui-même, via', 'amapress' ) . $link . '</p>';
 			} else if ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) ) {
 				$my_email = wp_get_current_user()->user_email;
-				$ret      .= "<p class='intermittence inscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=inscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('" . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . "')\">" . 'Devenir intermittent' . "</a></p>";
+				$ret      .= "<p class='intermittence inscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=inscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('" . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . "')\">" . __( 'Devenir intermittent', 'amapress' ) . "</a></p>";
 			}
 			break;
 		case 'other':
 		case 'other_user':
 			if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
 				$href = Amapress::get_intermittent_adhesion_page_href();
-				$link = ! empty( $href ) ? Amapress::makeLink( $href, 'l\'Assistant d\'adhésion Intermittents' ) : 'Non configuré';
-				$ret  .= '<p>' . 'Les inscriptions à l\'Espace intermittents doivent se faire, par l\'intermittent lui-même, via ' . $link . '</p>';
+				$link = ! empty( $href ) ? Amapress::makeLink( $href, __( 'l\'Assistant d\'adhésion Intermittents', 'amapress' ) ) : __( 'Non configuré', 'amapress' );
+				$ret  .= '<p>' . __( 'Les inscriptions à l\'Espace intermittents doivent se faire, par l\'intermittent lui-même, via ', 'amapress' ) . $link . '</p>';
 			} elseif ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) || amapress_can_access_admin() ) {
 				if ( 'ok' == $inscription_intermittent ) {
-					$ret .= '<div class="alert alert-success">' . 'Inscription dans l\'espace intermittents prise en compte' . '</div>';
+					$ret .= '<div class="alert alert-success">' . __( 'Inscription dans l\'espace intermittents prise en compte', 'amapress' ) . '</div>';
 				} else if ( 'already' == $inscription_intermittent ) {
-					$ret .= '<div class="alert alert-success">' . 'Déjà inscrit dans l\'espace intermittents' . '</div>';
+					$ret .= '<div class="alert alert-success">' . __( 'Déjà inscrit dans l\'espace intermittents', 'amapress' ) . '</div>';
 				}
 				$ret .= '<form action="' . $admin_post_url . '?action=inscription_intermittent&return_sender&confirm=yes" method="post">
   <div class="form-group">
-    <label for="email"><strong>*' . 'Email:' . '</strong></label>
+    <label for="email"><strong>*' . __( 'Email:', 'amapress' ) . '</strong></label>
     <input type="email" class="form-control required" id="email" name="email">
   </div>
   <div class="form-group">
-    <label for="first_name">' . 'Prénom:' . '</label>
+    <label for="first_name">' . __( 'Prénom:', 'amapress' ) . '</label>
     <input type="text" class="form-control" id="first_name" name="first_name">
   </div>
   <div class="form-group">
-    <label for="last_name">' . 'Nom:' . '</label>
+    <label for="last_name">' . __( 'Nom:', 'amapress' ) . '</label>
     <input type="text" class="form-control" id="last_name" name="last_name">
   </div>
   <div class="form-group">
-    <label for="phone"><em>' . 'Téléphone' . '</em>:</label>
+    <label for="phone"><em>' . __( 'Téléphone', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control" id="phone" name="phone">
   </div>
   <div class="form-group">
-    <label for="address"><em>' . 'Adresse' . '</em>:</label>
+    <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control" id="address" name="address">
   </div>
-  <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . 'Inscrire' . '</button>
+  <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
 			} else {
-				$ret .= '<p class="intermittence inscr-collectif">' . 'L\'inscription à l\'Espace intermittents est gérée par le collectif' . '</p>';
+				$ret .= '<p class="intermittence inscr-collectif">' . __( 'L\'inscription à l\'Espace intermittents est gérée par le collectif', 'amapress' ) . '</p>';
 			}
 			break;
 
@@ -181,22 +181,22 @@ function amapress_intermittence_desinscription_shortcode( $atts ) {
 		)
 		, $atts );
 
-	//onclick="return confirm('Confirmez-vous votre inscription ?')"
+	//onclick="return confirm(__('Confirmez-vous votre inscription ?', 'amapress'))"
 	$admin_post_url = admin_url( 'admin-post.php' );
 	switch ( $atts['view'] ) {
 		case 'me':
 			if ( ! AmapressContrats::is_user_active_intermittent() ) {
-				return "<p class='intermittence desinscription not-in-list'>" . 'Vous n\'êtes pas sur la liste des intermittents' . "</p>";
+				return "<p class='intermittence desinscription not-in-list'>" . __( 'Vous n\'êtes pas sur la liste des intermittents', 'amapress' ) . "</p>";
 			} else {
 				$my_email = wp_get_current_user()->user_email;
 
-				return "<p class='intermittence desinscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=desinscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('" . esc_js( __( 'Confirmez-vous votre désinscription ?', 'amapress' ) ) . "')\">" . 'Se désinscrire' . "</a></p>";
+				return "<p class='intermittence desinscription in-list'><a class='btn btn-default' target='_blank' href='$admin_post_url?action=desinscription_intermittent&confirm=true&email=$my_email' onclick=\"return confirm('" . esc_js( __( 'Confirmez-vous votre désinscription ?', 'amapress' ) ) . "')\">" . __( 'Se désinscrire', 'amapress' ) . "</a></p>";
 				//admin-post.php?action=inscription_intermittent&confirm=true&email=
 			}
 			break;
 		case 'other':
 		case 'other_user':
-			return '<p class="not-implemented">' . 'Pas encore implémenté' . '</p>';
+			return '<p class="not-implemented">' . __( 'Pas encore implémenté', 'amapress' ) . '</p>';
 			break;
 
 	}
@@ -302,7 +302,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		}
 		if ( ! $for_other_users ) {
 			$ret .= '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
-					'Passer en mode Admin' ) . '</p>';
+					__( 'Passer en mode Admin', 'amapress' ) ) . '</p>';
 		}
 	}
 
@@ -310,7 +310,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		if ( ! empty( $_REQUEST['user_id'] ) ) {
 			$user_id = intval( $_REQUEST['user_id'] );
 			$ret     .= '<p>' . Amapress::makeButtonLink( remove_query_arg( 'user_id', add_query_arg( 'admin_mode', 'T' ) ),
-					'Choisir un autre amapien' ) . '</p>';
+					__( 'Choisir un autre amapien', 'amapress' ) ) . '</p>';
 			$amapien = AmapressUser::getBy( $user_id );
 			if ( $amapien ) {
 				$ret .= '<h3>' . __( 'Paniers de ', 'amapress' ) . esc_html( $amapien->getDisplayName() ) . '</h3>';
@@ -319,12 +319,12 @@ function amapress_echanger_panier_shortcode( $atts ) {
 			$users = array( '' => '--Sélectionner un amapien--' );
 			/** @var WP_User $user */
 			foreach ( get_users( 'amapress_contrat=active' ) as $user ) {
-				$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+				$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 			}
 			$user_select = '<form class="echanger-panier-other-user">
 <select name="user_id" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
 <input type="hidden" name="admin_mode" value="T" />
-<button type="submit" class="btn btn-default panier-echanger-other-button">' . 'Afficher l\'échange de paniers' . '</button>
+<button type="submit" class="btn btn-default panier-echanger-other-button">' . __( 'Afficher l\'échange de paniers', 'amapress' ) . '</button>
 </form>';
 			$ret         .= $user_select;
 		}
@@ -354,7 +354,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 	$ret .= '<table class="table echange-paniers-list" width="100%">';
 	$ret .= '<thead>';
 	$ret .= '<tr>';
-	$ret .= '<th width="30%">' . 'Date' . '</th>';
+	$ret .= '<th width="30%">' . __( 'Date', 'amapress' ) . '</th>';
 	$ret .= '<th></th>';
 	$ret .= '</tr>';
 	$ret .= '</thead>';
@@ -381,9 +381,9 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		}
 		sort( $contrat_names );
 		if ( $user_id != amapress_current_user_id() ) {
-			$ceder_title = count( $contrat_names ) > 1 ? sprintf( 'Céder ses %s paniers', count( $contrat_names ) ) : 'Céder son panier';
+			$ceder_title = count( $contrat_names ) > 1 ? sprintf( __( 'Céder ses %s paniers', 'amapress' ), count( $contrat_names ) ) : __( 'Céder son panier', 'amapress' );
 		} else {
-			$ceder_title = count( $contrat_names ) > 1 ? sprintf( 'Céder mes %s paniers', count( $contrat_names ) ) : 'Céder mon panier';
+			$ceder_title = count( $contrat_names ) > 1 ? sprintf( __( 'Céder mes %s paniers', 'amapress' ), count( $contrat_names ) ) : __( 'Céder mon panier', 'amapress' );
 		}
 		$contrat_names = implode( ', ', $contrat_names );
 		$ret           .= '<th scope="row" style="width: 30%">';
@@ -398,7 +398,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 		if ( $user_id == amapress_current_user_id() ) {
 			$manage_my_exchanges_href = Amapress::get_page_with_shortcode_href( 'amapien-paniers-intermittents', 'amps_manage_paniers_inter' );
 			if ( ! empty( $manage_my_exchanges_href ) ) {
-				$manage_my_exchanges_link = '<p><a href="' . esc_attr( $manage_my_exchanges_href ) . '">' . 'Gérer l\'échange' . '</a></p>';
+				$manage_my_exchanges_link = '<p><a href="' . esc_attr( $manage_my_exchanges_href ) . '">' . __( 'Gérer l\'échange', 'amapress' ) . '</a></p>';
 			}
 		}
 
@@ -408,7 +408,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 			/** @var WP_User $user */
 			foreach ( get_users() as $user ) {
 				if ( $user->ID != $user_id ) {
-					$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+					$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 				}
 			}
 		}
@@ -435,7 +435,7 @@ function amapress_echanger_panier_shortcode( $atts ) {
 				case 'exchangeable':
 					if ( $can_subscribe ) {
 						$id  = "info_{$dist->ID}";
-						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">' . 'Informations' . '</h4>';
+						$ret .= '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">' . __( 'Informations', 'amapress' ) . '</h4>';
 						$ret .= '<textarea id="' . $id . '" style="box-sizing: border-box"></textarea><br/>';
 						$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button echange-panier" 
 						data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir céder ce panier ?', 'amapress' ) . '" data-action="echanger_panier" 
@@ -471,19 +471,19 @@ function amapress_echanger_panier_shortcode( $atts ) {
 					}
 					break;
 				case AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT:
-					$ret .= '<span class="repreneur-waiting">' . 'Repreneur(s) en attente de validation' . '</span>';
+					$ret .= '<span class="repreneur-waiting">' . __( 'Repreneur(s) en attente de validation', 'amapress' ) . '</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'to_exchange':
-					$ret .= '<span class="panier-to-exchange">' . 'Panier(s) en attente de repreneur' . '</span>';
+					$ret .= '<span class="panier-to-exchange">' . __( 'Panier(s) en attente de repreneur', 'amapress' ) . '</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'exchanged':
-					$ret .= '<span class="panier-exchanged">' . 'Panier(s) cédé(s)' . '</span>';
+					$ret .= '<span class="panier-exchanged">' . __( 'Panier(s) cédé(s)', 'amapress' ) . '</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
 				case 'closed':
-					$ret .= '<span class="echange-done">' . 'Cession effectuée' . '</span>';
+					$ret .= '<span class="echange-done">' . __( 'Cession effectuée', 'amapress' ) . '</span>';
 					$ret .= $manage_my_exchanges_link;
 					break;
 			}

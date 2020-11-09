@@ -27,7 +27,7 @@ function amapress_generic_gallery(
 	$selector_search = $selector . '-search';
 
 	if ( $options['searchbox'] && ! empty( $options ) ) {
-		$output .= "<div><label for='$selector_search'>" . 'Rechercher: ' . "</label><input type='text' data-gallery='$selector' id='$selector_search' class='iso-gallery-search' /></div>";
+		$output .= "<div><label for='$selector_search'>" . __( 'Rechercher: ', 'amapress' ) . "</label><input type='text' data-gallery='$selector' id='$selector_search' class='iso-gallery-search' /></div>";
 	}
 
 	$gallery_div = "<div id='$selector' class='iso-gallery'><div class='iso-gallery-sizer'></div>";

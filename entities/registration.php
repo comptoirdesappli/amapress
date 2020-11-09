@@ -13,7 +13,7 @@ function amapress_register_form_edit() {
 	$amapress_user_telephone = ( ! empty( $_POST['amapress_user_telephone'] ) ) ? trim( $_POST['amapress_user_telephone'] ) : ''; ?>
     <p>
         <label for="amapress_user_telephone">
-			<?php _e( 'Téléphone', 'amapress' ) ?><br/>
+	        <?php _e( 'Téléphone', 'amapress' ) ?><br/>
             <input type="text" name="amapress_user_telephone" id="amapress_user_telephone" class="input"
                    value="<?php echo esc_attr( wp_unslash( $amapress_user_telephone ) ); ?>" size="10"/>
         </label>

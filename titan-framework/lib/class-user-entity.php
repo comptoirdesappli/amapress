@@ -55,9 +55,9 @@ class TitanUserEntity {
 				$user               = new WP_User();
 				$user->ID           = $user_id;
 				$user->user_email   = "archived$user_id@nomail.org";
-				$user->first_name   = "Archived";
+				$user->first_name   = __( "Archivé", 'amapress' );
 				$user->last_name    = $user_id;
-				$user->display_name = "Archived $user_id";
+				$user->display_name = sprintf( __( "Archivé %s", 'amapress' ), $user_id );
 				$user->user_login   = "archived$user_id";
 				$this->user         = $user;
 			}

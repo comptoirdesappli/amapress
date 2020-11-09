@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'amapress_recall_inscriptions_validate', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>' . 'Distribution introuvable' . '</p>';
+		echo '<p>' . __( 'Distribution introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -29,7 +29,7 @@ add_action( 'amapress_recall_inscriptions_validate', function ( $args ) {
 	] ) );
 
 	if ( empty( $adhesions ) ) {
-		echo '<p>' . 'Pas d\'inscriptions à valider' . '</p>';
+		echo '<p>' . __( 'Pas d\'inscriptions à valider', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -65,7 +65,7 @@ add_action( 'amapress_recall_inscriptions_validate', function ( $args ) {
 			'', [],
 			amapress_get_recall_cc_from_option( 'inscriptions-validate-recall-cc' )
 		);
-		echo '<p>' . 'Email d\'inscriptions à valider envoyé' . '</p>';
+		echo '<p>' . __( 'Email d\'inscriptions à valider envoyé', 'amapress' ) . '</p>';
 	}
 } );
 
@@ -73,8 +73,8 @@ function amapress_inscriptions_to_validate_recall_options() {
 	return array(
 		array(
 			'id'         => 'inscriptions-validate-recall-1',
-			'name'       => 'Rappel 1',
-			'desc'       => 'Inscriptions à valider',
+			'name'       => __( 'Rappel 1', 'amapress' ),
+			'desc'       => __( 'Inscriptions à valider', 'amapress' ),
 			'type'       => 'event-scheduler',
 			'show_after' => true,
 			'hook_name'  => 'amapress_recall_inscriptions_validate',
@@ -85,8 +85,8 @@ function amapress_inscriptions_to_validate_recall_options() {
 		),
 		array(
 			'id'                  => 'inscriptions-validate-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Inscriptions à valider',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Inscriptions à valider', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -98,22 +98,22 @@ function amapress_inscriptions_to_validate_recall_options() {
 		),
 		array(
 			'id'       => 'inscriptions-validate-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => '%%nb_inscriptions%% inscriptions restent à valider',
 		),
 		array(
 			'id'      => 'inscriptions-validate-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nLes %%nb_inscriptions%% inscriptions suivantes restent à valider (%%lien_inscriptions%%):\n%%inscriptions%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nLes %%nb_inscriptions%% inscriptions suivantes restent à valider (%%lien_inscriptions%%):\n%%inscriptions%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'inscr-validate-placeholders', [
-					       'nb_inscriptions'   => 'Nombre d\'inscriptions à valider',
-					       'inscriptions'      => 'Liste des inscriptions à valider',
-					       'lien_inscriptions' => 'Lien vers la liste des inscriptions à valider'
+					       'nb_inscriptions'   => __( 'Nombre d\'inscriptions à valider', 'amapress' ),
+					       'inscriptions'      => __( 'Liste des inscriptions à valider', 'amapress' ),
+					       'lien_inscriptions' => __( 'Lien vers la liste des inscriptions à valider', 'amapress' )
 				       ], null, [], 'recall' );
 			},
 		),
@@ -124,7 +124,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'inscriptions-validate-recall-cc-groups',
@@ -134,7 +134,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'type' => 'save',

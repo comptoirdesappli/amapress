@@ -21,7 +21,7 @@ function amapress_get_contrats_cron( $type ) {
 						'id'    => $contrat->getID(),
 						'time'  => $contrat->getDate_ouverture(),
 						'type'  => $type,
-						'title' => sprintf( 'Ouverture inscriptions (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ), $contrat->getTitle() )
+						'title' => sprintf( __( 'Ouverture inscriptions (%s) - %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ), $contrat->getTitle() )
 					];
 				}
 				break;
@@ -31,7 +31,7 @@ function amapress_get_contrats_cron( $type ) {
 						'id'    => $contrat->getID(),
 						'time'  => $contrat->getDate_cloture(),
 						'type'  => $type,
-						'title' => sprintf( 'Clôture inscriptions (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_cloture() ), $contrat->getTitle() )
+						'title' => sprintf( __( 'Clôture inscriptions (%s) - %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_cloture() ), $contrat->getTitle() )
 					];
 				}
 				break;
@@ -40,7 +40,7 @@ function amapress_get_contrats_cron( $type ) {
 					'id'    => $contrat->getID(),
 					'time'  => $contrat->getDate_debut(),
 					'type'  => $type,
-					'title' => sprintf( 'Début (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_debut() ), $contrat->getTitle() )
+					'title' => sprintf( __( 'Début (%s) - %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_debut() ), $contrat->getTitle() )
 				];
 				break;
 			case 'end':
@@ -48,7 +48,7 @@ function amapress_get_contrats_cron( $type ) {
 					'id'    => $contrat->getID(),
 					'time'  => $contrat->getDate_fin(),
 					'type'  => $type,
-					'title' => sprintf( 'Fin (%s) - %s', date_i18n( 'd/m/Y', $contrat->getDate_fin() ), $contrat->getTitle() )
+					'title' => sprintf( __( 'Fin (%s) - %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_fin() ), $contrat->getTitle() )
 				];
 				break;
 		}
@@ -62,7 +62,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 
 	if ( null == $dist ) {
-		echo '<p>' . 'Distribution introuvable' . '</p>';
+		echo '<p>' . __( 'Distribution introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -101,7 +101,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 		foreach ( $contrats as $contrat ) {
 			$replacements = [];
 
-			$replacements['producteur_contact'] = '<div><h5>' . 'Contact producteur:' . '</h5>' .
+			$replacements['producteur_contact'] = '<div><h5>' . __( 'Contact producteur:', 'amapress' ) . '</h5>' .
 			                                      ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
 				                                      array(
 					                                      'show_avatar' => 'false',
@@ -200,16 +200,16 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 			$send_title = [];
 			if ( $send_to_producteur ) {
-				$send_title[] = 'Producteur';
+				$send_title[] = __( 'Producteur', 'amapress' );
 				if ( $send_referents ) {
-					$send_title[] = 'Référents';
+					$send_title[] = __( 'Référents', 'amapress' );
 					$referent_ids = $contrat->getAllReferentsIds();
 				} else {
 					$referent_ids = [];
 				}
 				$referent_ids[] = $producteur->getUserId();
 			} else {
-				$send_title[] = 'Référents';
+				$send_title[] = __( 'Référents', 'amapress' );
 				$referent_ids = $contrat->getAllReferentsIds();
 			}
 
@@ -246,13 +246,13 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$content,
 				'', $target_users, $dist, $attachments,
 				amapress_get_recall_cc_from_option( 'distribution-quantites-recall-cc' ) );
-			echo '<p>' . sprintf( 'Email de rappel des quantités aux producteurs envoyé : %s', esc_html( $producteur->getTitle() ) ) . '</p>';
+			echo '<p>' . sprintf( __( 'Email de rappel des quantités aux producteurs envoyé : %s', 'amapress' ), esc_html( $producteur->getTitle() ) ) . '</p>';
 			$sent_mails = true;
 		}
 	}
 
 	if ( ! $sent_mails ) {
-		echo '<p>' . 'Pas de quantités à rappeler à cette distribution' . '</p>';
+		echo '<p>' . __( 'Pas de quantités à rappeler à cette distribution', 'amapress' ) . '</p>';
 	}
 
 } );
@@ -260,7 +260,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>' . 'Distribution introuvable' . '</p>';
+		echo '<p>' . __( 'Distribution introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -296,7 +296,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 		if ( $date_remise ) {
 			$replacements['prochaine_date_remise_cheques'] = date_i18n( 'd/m/Y', $date_remise );
 		} else {
-			$replacements['prochaine_date_remise_cheques'] = 'Aucune';
+			$replacements['prochaine_date_remise_cheques'] = __( 'Aucune', 'amapress' );
 		}
 
 		$attachments = [];
@@ -323,11 +323,11 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 				$date               = date_i18n( 'd-m-Y' );
 				$filename_cheques   = strtolower( sanitize_file_name( "reglements-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
 				$filename_adherents = strtolower( sanitize_file_name( "adherents-{$contrat_instance->getModelTitle()}-{$lieu->getShortName()}-au-$date" ) );
-				$title_cheques      = "Règlements - {$contrat_instance->getModelTitle()} - {$lieu->getShortName()}";
+				$title_cheques      = sprintf( __( 'Règlements - %s - %s', 'amapress' ), $contrat_instance->getModelTitle(), $lieu->getShortName() );
 				if ( strlen( $title_cheques ) > 27 ) {
 					$title_cheques = substr( $title_cheques, 0, 27 ) . '...';
 				}
-				$title_adherents = "Adhérents - {$contrat_instance->getModelTitle()} - {$lieu->getShortName()}";
+				$title_adherents = sprintf( __( 'Adhérents - %s - %s', 'amapress' ), $contrat_instance->getModelTitle(), $lieu->getShortName() );
 				if ( strlen( $title_adherents ) > 27 ) {
 					$title_adherents = substr( $title_adherents, 0, 27 ) . '...';
 				}
@@ -347,7 +347,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 			}, AmapressContrats::getReferentsForContratInstance( $contrat->ID )
 		);
 
-		$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), "Référents " . $producteur->getTitle(), 'referents' );
+		$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), sprintf( __( 'Référents %s', 'amapress' ), $producteur->getTitle() ), 'referents' );
 		$subject      = Amapress::getOption( 'contrats-liste-paiements-recall-mail-subject' );
 		$content      = Amapress::getOption( 'contrats-liste-paiements-recall-mail-content' );
 		foreach ( $replacements as $k => $v ) {
@@ -359,12 +359,12 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 			$content,
 			'', $target_users, $dist, $attachments,
 			amapress_get_recall_cc_from_option( 'contrats-liste-paiements-recall-cc' ) );
-		echo '<p>' . 'Email de rappel de la liste des règlements envoyé' . '</p>';
+		echo '<p>' . __( 'Email de rappel de la liste des règlements envoyé', 'amapress' ) . '</p>';
 		$sent_mails = true;
 	}
 
 	if ( ! $sent_mails ) {
-		echo '<p>' . 'Pas de liste de règlements à rappeler à cette distribution' . '</p>';
+		echo '<p>' . __( 'Pas de liste de règlements à rappeler à cette distribution', 'amapress' ) . '</p>';
 	}
 
 	//%%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%
@@ -374,7 +374,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>' . 'Distribution intouvable' . '</p>';
+		echo '<p>' . __( 'Distribution intouvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -403,7 +403,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$renewable_contrats = array_merge( $near_renew, $to_renew );
 
 	if ( empty( $near_renew ) && empty( $to_renew ) ) {
-		echo '<p>' . 'Pas de contrat à renouveler' . '</p>';
+		echo '<p>' . __( 'Pas de contrat à renouveler', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -415,7 +415,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$replacements['nb_near_renew_contrats'] = count( $near_renew );
 	$replacements['contrats_to_renew']      = implode( '<br/>', array_map( function ( $c ) use ( $dist ) {
 		/** @var AmapressContrat_instance $c */
-		return sprintf( '-> Le contrat "%s" est expiré depuis le %s (depuis %d jours)',
+		return sprintf( __( '-> Le contrat "%s" est expiré depuis le %s (depuis %d jours)', 'amapress' ),
 			Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle() ),
 			date_i18n( 'd/m/Y', $c->getDate_fin() ),
 			floor( abs( $dist->getDate() - $c->getDate_fin() ) / 3600 / 24 )
@@ -426,7 +426,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	}
 	$replacements['contrats_near_end'] = implode( '<br/>', array_map( function ( $c ) use ( $dist ) {
 		/** @var AmapressContrat_instance $c */
-		return sprintf( '-> Le contrat "%s" expire le %s (dans %d jours)',
+		return sprintf( __( '-> Le contrat "%s" expire le %s (dans %d jours)', 'amapress' ),
 			Amapress::makeLink( $c->getAdminEditLink(), $c->getTitle() ),
 			date_i18n( 'd/m/Y', $c->getDate_fin() ),
 			floor( abs( $dist->getDate() - $c->getDate_fin() ) / 3600 / 24 )
@@ -442,7 +442,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	}
 	$referent_ids = array_unique( $referent_ids );
 
-	$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), 'Référents', 'referents' );
+	$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ), __( 'Référents', 'amapress' ), 'referents' );
 	$subject      = Amapress::getOption( 'contrat-renew-recall-mail-subject' );
 	$content      = Amapress::getOption( 'contrat-renew-recall-mail-content' );
 	foreach ( $replacements as $k => $v ) {
@@ -454,28 +454,28 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 		$content,
 		'', $target_users, $dist, array(),
 		amapress_get_recall_cc_from_option( 'contrat-renew-recall-cc' ) );
-	echo '<p>' . 'Email de rappel de contrat à renouveler envoyé' . '</p>';
+	echo '<p>' . __( 'Email de rappel de contrat à renouveler envoyé', 'amapress' ) . '</p>';
 
 } );
 
 add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	$contrat = AmapressContrat_instance::getBy( $args['id'] );
 	if ( null == $contrat ) {
-		echo '<p>' . 'Contrat intouvable' . '</p>';
+		echo '<p>' . __( 'Contrat intouvable', 'amapress' ) . '</p>';
 
 		return;
 	}
 
 	$today = Amapress::start_of_day( amapress_time() );
 	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) < $today ) {
-		echo '<p>' . 'Contrat clos' . '</p>';
+		echo '<p>' . __( 'Contrat clos', 'amapress' ) . '</p>';
 
 		return;
 	}
 
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrat-' . $args['type'] . '-recall-excl-producteurs' ) );
 	if ( in_array( $contrat->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
-		echo '<p>' . 'Producteur exclu' . '</p>';
+		echo '<p>' . __( 'Producteur exclu', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -483,16 +483,16 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	$replacements = [];
 
 	if ( Amapress::start_of_day( $contrat->getDate_ouverture() ) < $today ) {
-		$replacements['ouvre_jours'] = sprintf( 'depuis %s jour(s)', round( ( amapress_time() - $contrat->getDate_ouverture() ) / ( 24 * HOUR_IN_SECONDS ) ) );
-		$replacements['ouvre_date']  = sprintf( 'depuis le %s', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
+		$replacements['ouvre_jours'] = sprintf( __( 'depuis %s jour(s)', 'amapress' ), round( ( amapress_time() - $contrat->getDate_ouverture() ) / ( 24 * HOUR_IN_SECONDS ) ) );
+		$replacements['ouvre_date']  = sprintf( __( 'depuis le %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
 	} else {
-		$replacements['ouvre_jours'] = sprintf( 'dans %s jour(s)', round( ( $contrat->getDate_ouverture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) );
-		$replacements['ouvre_date']  = sprintf( 'le %s', date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
+		$replacements['ouvre_jours'] = sprintf( __( 'dans %s jour(s)', 'amapress' ), round( ( $contrat->getDate_ouverture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) );
+		$replacements['ouvre_date']  = sprintf( __( 'le %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
 	}
 
 	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) > $today ) {
-		$replacements['ferme_jours'] = sprintf( 'dans %s jour(s)', round( ( $contrat->getDate_cloture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) );
-		$replacements['ferme_date']  = sprintf( 'le %s', date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
+		$replacements['ferme_jours'] = sprintf( __( 'dans %s jour(s)', 'amapress' ), round( ( $contrat->getDate_cloture() - amapress_time() ) / ( 24 * HOUR_IN_SECONDS ) ) );
+		$replacements['ferme_date']  = sprintf( __( 'le %s', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
 	}
 
 	$headers = 'Reply-To: ' . implode( ',', $contrat->getAllReferentsEmails() );
@@ -527,7 +527,7 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	if ( ! empty( $user_with_this_contrat ) ) {
 		$user_ids = array_diff( $user_ids, $user_with_this_contrat );
 	}
-	$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $user_ids ), 'Amapiens', 'amapiens' );
+	$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $user_ids ), __( 'Amapiens', 'amapress' ), 'amapiens' );
 	$subject      = Amapress::getOption( 'contrat-' . $args['type'] . '-recall-mail-subject' );
 	$content      = Amapress::getOption( 'contrat-' . $args['type'] . '-recall-mail-content' );
 	foreach ( $replacements as $k => $v ) {
@@ -541,14 +541,14 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 		amapress_get_recall_cc_from_option( 'contrat-' . $args['type'] . '-recall-cc' ),
 		null, $headers
 	);
-	echo '<p>' . 'Email de rappel envoyé' . '</p>';
+	echo '<p>' . __( 'Email de rappel envoyé', 'amapress' ) . '</p>';
 } );
 
 add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	$contrat_instance = AmapressContrat_instance::getBy( $args['id'] );
 
 	if ( null == $contrat_instance ) {
-		echo '<p>' . 'Contrat introuvable' . '</p>';
+		echo '<p>' . __( 'Contrat introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -574,7 +574,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	$send_to_producteur = in_array( $producteur_id, $send_to_producteurs );
 
 	$replacements                                         = [];
-	$replacements['producteur_contact']                   = '<div><h5>' . 'Contact producteur:' . '</h5>' .
+	$replacements['producteur_contact']                   = '<div><h5>' . __( 'Contact producteur:', 'amapress' ) . '</h5>' .
 	                                                        ( $producteur->getUser() ? $producteur->getUser()->getDisplay(
 		                                                        array(
 			                                                        'show_avatar' => 'false',
@@ -658,16 +658,16 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 
 	$send_title = [];
 	if ( $send_to_producteur ) {
-		$send_title[] = 'Producteur';
+		$send_title[] = __( 'Producteur', 'amapress' );
 		if ( $send_referents ) {
-			$send_title[] = 'Référents';
+			$send_title[] = __( 'Référents', 'amapress' );
 			$referent_ids = $contrat_instance->getAllReferentsIds();
 		} else {
 			$referent_ids = [];
 		}
 		$referent_ids[] = $producteur->getUserId();
 	} else {
-		$send_title[] = 'Référents';
+		$send_title[] = __( 'Référents', 'amapress' );
 		$referent_ids = $contrat_instance->getAllReferentsIds();
 	}
 
@@ -697,15 +697,15 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 		$content,
 		'', $target_users, $contrat_instance, $attachments,
 		amapress_get_recall_cc_from_option( 'contrat-recap-cloture-recall-cc' ) );
-	echo '<p>' . sprintf( 'Email de rappel récapitulatif des inscriptions envoyé : %s', esc_html( $producteur->getTitle() ) ) . '</p>';
+	echo '<p>' . sprintf( __( 'Email de rappel récapitulatif des inscriptions envoyé : %s', 'amapress' ), esc_html( $producteur->getTitle() ) ) . '</p>';
 } );
 
 function amapress_contrat_quantites_recall_options() {
 	return array(
 		array(
 			'id'                  => 'distribution-quantites-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Quantités à livrer',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Quantités à livrer', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_quantites',
 			'hook_args_generator' => function ( $option ) {
@@ -714,8 +714,8 @@ function amapress_contrat_quantites_recall_options() {
 		),
 		array(
 			'id'                  => 'distribution-quantites-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Quantités à livrer',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Quantités à livrer', 'amapress' ),
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
@@ -726,8 +726,8 @@ function amapress_contrat_quantites_recall_options() {
 		),
 		array(
 			'id'                  => 'distribution-quantites-recall-3',
-			'name'                => 'Rappel 3',
-			'desc'                => 'Quantités à livrer',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Quantités à livrer', 'amapress' ),
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
@@ -738,77 +738,77 @@ function amapress_contrat_quantites_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-quantites-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
-			'default'  => 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%',
+			'default'  => __( 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%', 'amapress' ),
 		),
 		array(
 			'id'      => 'distribution-quantites-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
-					       'producteur_contrats'                              => 'Contrats du producteur',
-					       'producteur_nom'                                   => 'Nom du producteur',
-					       'producteur_pseudo'                                => 'Pseudo du producteur',
-					       'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
-					       'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
-					       'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
-					       'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
-					       'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-					       'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
-					       'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
-					       'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
-					       'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
-					       'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
-					       'producteur_contact'                               => 'Coordonnées du producteur',
+					       'producteur_contrats'                              => __( 'Contrats du producteur', 'amapress' ),
+					       'producteur_nom'                                   => __( 'Nom du producteur', 'amapress' ),
+					       'producteur_pseudo'                                => __( 'Pseudo du producteur', 'amapress' ),
+					       'lien_contrats_quantites'                          => __( 'Lien vers les quantités à la prochaine distribution', 'amapress' ),
+					       'producteur_paniers_quantites_text'                => __( 'Quantités à la prochaine distribution (en texte)', 'amapress' ),
+					       'producteur_paniers_quantites_text_prix'           => __( 'Quantités à la prochaine distribution (en texte avec montants)', 'amapress' ),
+					       'producteur_paniers_quantites_columns'             => __( 'Quantités à la prochaine distribution avec Produits en colonnes', 'amapress' ),
+					       'producteur_paniers_quantites'                     => __( 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)', 'amapress' ),
+					       'producteur_paniers_quantites_prix'                => __( 'Quantités à la prochaine distribution (en tableau avec montants)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens'            => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens_prix'       => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)', 'amapress' ),
+					       'producteur_paniers_quantites_prix_group'          => __( 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens_prix_group' => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)', 'amapress' ),
+					       'producteur_contact'                               => __( 'Coordonnées du producteur', 'amapress' ),
 				       ], null, [], 'recall' );
 			},
 		),
 		array(
 			'id'      => 'distribution-quantites-modulable-recall-mail-content',
-			'name'    => 'Contenu de l\'email - Paniers modulables',
+			'name'    => __( 'Contenu de l\'email - Paniers modulables', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\nDétails par amapien:\n%%producteur_paniers_quantites_amapiens%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\nDétails par amapien:\n%%producteur_paniers_quantites_amapiens%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Spécifique aux paniers modulables. Si vide, le contenu du mail général sera utlisé.<br/> Les placeholders suivants sont disponibles:' .
+				return __( 'Spécifique aux paniers modulables. Si vide, le contenu du mail général sera utlisé.<br/> Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'liste-quants-placeholders', [
-					       'producteur_contrats'                              => 'Contrats du producteur',
-					       'producteur_nom'                                   => 'Nom du producteur',
-					       'producteur_pseudo'                                => 'Pseudo du producteur',
-					       'lien_contrats_quantites'                          => 'Lien vers les quantités à la prochaine distribution',
-					       'producteur_paniers_quantites_text'                => 'Quantités à la prochaine distribution (en texte)',
-					       'producteur_paniers_quantites_text_prix'           => 'Quantités à la prochaine distribution (en texte avec montants)',
-					       'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
-					       'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-					       'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
-					       'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
-					       'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
-					       'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
-					       'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
-					       'producteur_contact'                               => 'Coordonnées du producteur',
+					       'producteur_contrats'                              => __( 'Contrats du producteur', 'amapress' ),
+					       'producteur_nom'                                   => __( 'Nom du producteur', 'amapress' ),
+					       'producteur_pseudo'                                => __( 'Pseudo du producteur', 'amapress' ),
+					       'lien_contrats_quantites'                          => __( 'Lien vers les quantités à la prochaine distribution', 'amapress' ),
+					       'producteur_paniers_quantites_text'                => __( 'Quantités à la prochaine distribution (en texte)', 'amapress' ),
+					       'producteur_paniers_quantites_text_prix'           => __( 'Quantités à la prochaine distribution (en texte avec montants)', 'amapress' ),
+					       'producteur_paniers_quantites_columns'             => __( 'Quantités à la prochaine distribution avec Produits en colonnes', 'amapress' ),
+					       'producteur_paniers_quantites'                     => __( 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)', 'amapress' ),
+					       'producteur_paniers_quantites_prix'                => __( 'Quantités à la prochaine distribution (en tableau avec montants)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens'            => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens_prix'       => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)', 'amapress' ),
+					       'producteur_paniers_quantites_prix_group'          => __( 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens_prix_group' => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)', 'amapress' ),
+					       'producteur_contact'                               => __( 'Coordonnées du producteur', 'amapress' ),
 				       ], null, [], 'recall' );
 			},
 		),
 		array(
 			'id'   => 'distribution-quantites-recall-price-mod',
-			'name' => 'Montants paniers modulables',
-			'desc' => 'Afficher les montants pour les paniers modulables',
+			'name' => __( 'Montants paniers modulables', 'amapress' ),
+			'desc' => __( 'Afficher les montants pour les paniers modulables', 'amapress' ),
 			'type' => 'checkbox',
 		),
 		array(
 			'id'      => 'distribution-quantites-recall-xlsx',
-			'name'    => 'Attacher les excels suivants',
+			'name'    => __( 'Attacher les excels suivants', 'amapress' ),
 			'type'    => 'multi-check',
 			'options' => [
-				'date'                 => 'Récapitulatif par produit',
-				'group_date'           => 'Récapitulatif par groupe produits',
-				'adherents_date'       => 'Récapitulatif par adherent par produit',
-				'adherents_group_date' => 'Récapitulatif par adherent par groupe produits',
-				'adherents_columns'    => 'Récapitulatif par adherent par groupe produits en colonnes',
+				'date'                 => __( 'Récapitulatif par produit', 'amapress' ),
+				'group_date'           => __( 'Récapitulatif par groupe produits', 'amapress' ),
+				'adherents_date'       => __( 'Récapitulatif par adherent par produit', 'amapress' ),
+				'adherents_group_date' => __( 'Récapitulatif par adherent par groupe produits', 'amapress' ),
+				'adherents_columns'    => __( 'Récapitulatif par adherent par groupe produits en colonnes', 'amapress' ),
 			],
 			'default' => 'all',
 		),
@@ -819,7 +819,7 @@ function amapress_contrat_quantites_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'distribution-quantites-recall-cc-groups',
@@ -829,30 +829,30 @@ function amapress_contrat_quantites_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'id'      => 'distribution-quantites-recall-send-referents',
-			'name'    => 'Envoi aux référents',
+			'name'    => __( 'Envoi aux référents', 'amapress' ),
 			'type'    => 'checkbox',
-			'desc'    => 'Envoyer les quantités à livrer aux référents',
+			'desc'    => __( 'Envoyer les quantités à livrer aux référents', 'amapress' ),
 			'default' => 1,
 		),
 		array(
 			'id'        => 'distribution-quantites-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs exclus',
+			'name'      => __( 'Producteurs exclus', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
 		array(
 			'id'        => 'distribution-quantites-recall-send-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Envoi Producteurs',
+			'name'      => __( 'Envoi Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Envoyer les rappels au producteur (par défaut uniquement aux référents) pour les producteurs suivants :',
+			'desc'      => __( 'Envoyer les rappels au producteur (par défaut uniquement aux référents) pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
@@ -866,8 +866,8 @@ function amapress_contrat_paiements_recall_options() {
 	return array(
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Liste des règlements',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Liste des règlements', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrats_paiements_producteur',
 			'hook_args_generator' => function ( $option ) {
@@ -876,8 +876,8 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Liste des règlements',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Liste des règlements', 'amapress' ),
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
@@ -888,8 +888,8 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'                  => 'contrats-liste-paiements-recall-3',
-			'name'                => 'Rappel 3',
-			'desc'                => 'Liste des règlements',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Liste des règlements', 'amapress' ),
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
@@ -900,25 +900,25 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'       => 'contrats-liste-paiements-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Chèques au producteur] Liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%',
 		),
 		array(
 			'id'      => 'contrats-liste-paiements-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint la liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nVous trouverez ci-joint la liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'liste-paiements-placeholders', [
-					       'prochaine_date_remise_cheques' => 'Prochaine date de remise des chèques',
-					       'producteur_contrats'           => 'Contrats du producteur',
-					       'producteur_nom'                => 'Nom du producteur',
-					       'producteur_pseudo'             => 'Pseudo du producteur',
-					       'contrat_nom'                   => 'Nom du contrat',
-					       'lien_contrats_paiements'       => 'Lien vers la liste des chèques à remettre au producteur',
+					       'prochaine_date_remise_cheques' => __( 'Prochaine date de remise des chèques', 'amapress' ),
+					       'producteur_contrats'           => __( 'Contrats du producteur', 'amapress' ),
+					       'producteur_nom'                => __( 'Nom du producteur', 'amapress' ),
+					       'producteur_pseudo'             => __( 'Pseudo du producteur', 'amapress' ),
+					       'contrat_nom'                   => __( 'Nom du contrat', 'amapress' ),
+					       'lien_contrats_paiements'       => __( 'Lien vers la liste des chèques à remettre au producteur', 'amapress' ),
 				       ], null, [], 'recall' );
 			},
 
@@ -930,7 +930,7 @@ function amapress_contrat_paiements_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'contrats-liste-paiements-recall-cc-groups',
@@ -940,14 +940,14 @@ function amapress_contrat_paiements_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'id'        => 'contrats-liste-paiements-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs',
+			'name'      => __( 'Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
@@ -961,8 +961,8 @@ function amapress_contrat_renew_recall_options() {
 	return array(
 		array(
 			'id'                  => 'contrat-renew-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Contrats à renouveler',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Contrats à renouveler', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_renew',
 			'show_after'          => true,
@@ -972,8 +972,8 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-renew-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Contrats à renouveler',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Contrats à renouveler', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -985,8 +985,8 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-renew-recall-3',
-			'name'                => 'Rappel 3',
-			'desc'                => 'Contrats à renouveler',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Contrats à renouveler', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -998,31 +998,31 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'      => 'contrat-renew-recall-expire-days',
-			'name'    => 'Délai d\'expiration',
+			'name'    => __( 'Délai d\'expiration', 'amapress' ),
 			'type'    => 'number',
-			'desc'    => 'Prévenir x jours avant la fin d\'un contrat',
+			'desc'    => __( 'Prévenir x jours avant la fin d\'un contrat', 'amapress' ),
 			'default' => 45,
 		),
 		array(
 			'id'       => 'contrat-renew-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => '%%nb_contrats%% contrats à renouveler',
 		),
 		array(
 			'id'      => 'contrat-renew-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nLes contrats suivants sont à renouveler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouveler:\n%%contrats_near_end%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nLes contrats suivants sont à renouveler:\n%%contrats_to_renew%%\n\nLes contrats suivants seront bientôt à renouveler:\n%%contrats_near_end%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'liste-renew-placeholders', [
-					       'contrats_to_renew'      => 'Contrats à renouveler',
-					       'contrats_near_end'      => 'Contrats proches de la fin',
-					       'nb_contrats'            => 'Nombre de contrats à renouveler ou proches de la fin',
-					       'nb_renew_contrats'      => 'Nombre de contrats à renouveler',
-					       'nb_near_renew_contrats' => 'Nombre de contrats proches de la fin',
+					       'contrats_to_renew'      => __( 'Contrats à renouveler', 'amapress' ),
+					       'contrats_near_end'      => __( 'Contrats proches de la fin', 'amapress' ),
+					       'nb_contrats'            => __( 'Nombre de contrats à renouveler ou proches de la fin', 'amapress' ),
+					       'nb_renew_contrats'      => __( 'Nombre de contrats à renouveler', 'amapress' ),
+					       'nb_near_renew_contrats' => __( 'Nombre de contrats proches de la fin', 'amapress' ),
 				       ], null, [], 'recall' );
 			},
 		),
@@ -1033,7 +1033,7 @@ function amapress_contrat_renew_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'contrat-renew-recall-cc-groups',
@@ -1043,14 +1043,14 @@ function amapress_contrat_renew_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'id'        => 'contrat-renew-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs',
+			'name'      => __( 'Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
@@ -1064,8 +1064,8 @@ function amapress_contrat_open_recall_options() {
 	return array(
 		array(
 			'id'                  => 'contrat-open-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Contrats ouverts à l\'inscription',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Contrats ouverts à l\'inscription', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
@@ -1075,8 +1075,8 @@ function amapress_contrat_open_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-open-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Contrats ouverts à l\'inscription',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Contrats ouverts à l\'inscription', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1088,8 +1088,8 @@ function amapress_contrat_open_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-open-recall-3',
-			'name'                => 'Rappel 3',
-			'desc'                => 'Contrats ouverts à l\'inscription',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Contrats ouverts à l\'inscription', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1101,34 +1101,34 @@ function amapress_contrat_open_recall_options() {
 		),
 		array(
 			'id'      => 'contrat-open-recall-targets',
-			'name'    => 'Destinataires',
+			'name'    => __( 'Destinataires', 'amapress' ),
 			'type'    => 'radio',
 			'options' => [
-				'with-contrat' => 'Amapiens avec contrat',
-				'same-lieu'    => 'Amapiens des lieux de distributions de ce contrat',
-				'all'          => 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)',
+				'with-contrat' => __( 'Amapiens avec contrat', 'amapress' ),
+				'same-lieu'    => __( 'Amapiens des lieux de distributions de ce contrat', 'amapress' ),
+				'all'          => __( 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)', 'amapress' ),
 			],
 			'default' => 'all',
 		),
 		array(
 			'id'       => 'contrat-open-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
-			'default'  => 'Inscriptions %%contrat_type_complet%% - ouverture préinscription %%ouvre_date%%',
+			'default'  => __( 'Inscriptions %%contrat_type_complet%% - ouverture préinscription %%ouvre_date%%', 'amapress' ),
 		),
 		array(
 			'id'      => 'contrat-open-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions sont ouvertes %%ouvre_date%%\n et fermeront %%ferme_date%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions sont ouvertes %%ouvre_date%%\n et fermeront %%ferme_date%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       AmapressContrat_instance::getPlaceholdersHelp( [
-					       'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
-					       'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
-					       'ferme_jours' => 'Clôture en jours: "dans X jours"',
-					       'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
+					       'ouvre_jours' => __( 'Ouverture en jours: "depuis/dans X jours"', 'amapress' ),
+					       'ouvre_date'  => __( 'Ouverture date : "depuis le/le JJ/MM/AAAA"', 'amapress' ),
+					       'ferme_jours' => __( 'Clôture en jours: "dans X jours"', 'amapress' ),
+					       'ferme_date'  => __( 'Clôture date : "le JJ/MM/AAAA"', 'amapress' ),
 				       ], null );
 			},
 		),
@@ -1139,7 +1139,7 @@ function amapress_contrat_open_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'contrat-open-recall-cc-groups',
@@ -1149,14 +1149,14 @@ function amapress_contrat_open_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'id'        => 'contrat-open-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs',
+			'name'      => __( 'Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
@@ -1170,8 +1170,8 @@ function amapress_contrat_close_recall_options() {
 	return array(
 		array(
 			'id'                  => 'contrat-close-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Contrats bientôt fermés à l\'inscription',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Contrats bientôt fermés à l\'inscription', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_contrat_openclose',
 			'show_after'          => true,
@@ -1181,8 +1181,8 @@ function amapress_contrat_close_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-close-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Contrats bientôt fermés à l\'inscription',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Contrats bientôt fermés à l\'inscription', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1194,8 +1194,8 @@ function amapress_contrat_close_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-close-recall-3',
-			'name'                => 'Rappel 3',
-			'desc'                => 'Contrats bientôt fermés à l\'inscription',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Contrats bientôt fermés à l\'inscription', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1207,34 +1207,34 @@ function amapress_contrat_close_recall_options() {
 		),
 		array(
 			'id'      => 'contrat-close-recall-targets',
-			'name'    => 'Destinataires',
+			'name'    => __( 'Destinataires', 'amapress' ),
 			'type'    => 'radio',
 			'options' => [
-				'with-contrat' => 'Amapiens avec contrat',
-				'same-lieu'    => 'Amapiens des lieux de distributions de ce contrat',
-				'all'          => 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)',
+				'with-contrat' => __( 'Amapiens avec contrat', 'amapress' ),
+				'same-lieu'    => __( 'Amapiens des lieux de distributions de ce contrat', 'amapress' ),
+				'all'          => __( 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)', 'amapress' ),
 			],
 			'default' => 'all',
 		),
 		array(
 			'id'       => 'contrat-close-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
-			'default'  => 'Inscriptions %%contrat_type_complet%% - clôture %%ferme_date%%',
+			'default'  => __( 'Inscriptions %%contrat_type_complet%% - clôture %%ferme_date%%', 'amapress' ),
 		),
 		array(
 			'id'      => 'contrat-close-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions ferment %%ferme_jours%%, %%ferme_date%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nPour le contrat %%contrat_titre_complet%% les inscriptions ferment %%ferme_jours%%, %%ferme_date%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'liste-close-placeholders', [
-					       'ouvre_jours' => 'Ouverture en jours: "depuis/dans X jours"',
-					       'ouvre_date'  => 'Ouverture date : "depuis le/le JJ/MM/AAAA"',
-					       'ferme_jours' => 'Clôture en jours: "dans X jours"',
-					       'ferme_date'  => 'Clôture date : "le JJ/MM/AAAA"',
+					       'ouvre_jours' => __( 'Ouverture en jours: "depuis/dans X jours"', 'amapress' ),
+					       'ouvre_date'  => __( 'Ouverture date : "depuis le/le JJ/MM/AAAA"', 'amapress' ),
+					       'ferme_jours' => __( 'Clôture en jours: "dans X jours"', 'amapress' ),
+					       'ferme_date'  => __( 'Clôture date : "le JJ/MM/AAAA"', 'amapress' ),
 				       ], null, [], 'recall' );
 			},
 		),
@@ -1245,7 +1245,7 @@ function amapress_contrat_close_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'contrat-close-recall-cc-groups',
@@ -1255,14 +1255,14 @@ function amapress_contrat_close_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'id'        => 'contrat-close-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs',
+			'name'      => __( 'Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
@@ -1276,8 +1276,8 @@ function amapress_contrat_recap_cloture_recall_options() {
 	return array(
 		array(
 			'id'                  => 'contrat-recap-cloture-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Récapitulatif des inscriptions à la clotûre',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Récapitulatif des inscriptions à la clotûre', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_before'         => false,
 			'show_after'          => true,
@@ -1288,8 +1288,8 @@ function amapress_contrat_recap_cloture_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-recap-cloture-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Récapitulatif des inscriptions à la clotûre',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Récapitulatif des inscriptions à la clotûre', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1302,8 +1302,8 @@ function amapress_contrat_recap_cloture_recall_options() {
 		),
 		array(
 			'id'                  => 'contrat-recap-cloture-recall-3',
-			'name'                => 'Rappel 3',
-			'desc'                => 'Récapitulatif des inscriptions à la clotûre',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Récapitulatif des inscriptions à la clotûre', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -1316,48 +1316,48 @@ function amapress_contrat_recap_cloture_recall_options() {
 		),
 		array(
 			'id'       => 'contrat-recap-cloture-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
-			'default'  => 'Récapitulatif des inscriptions pour %%post:titre%%',
+			'default'  => __( 'Récapitulatif des inscriptions pour %%post:titre%%', 'amapress' ),
 		),
 		array(
 			'id'      => 'contrat-recap-cloture-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\nVous trouverez ci-joint et ci-après le récapitulatif des inscriptions pour %%post:titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\nVous trouverez ci-joint et ci-après le récapitulatif des inscriptions pour %%post:titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' .
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
 				       Amapress::getPlaceholdersHelpTable( 'liste-recap-placeholders', [
-					       'producteur_contrats'                              => 'Contrats du producteur',
-					       'producteur_nom'                                   => 'Nom du producteur',
-					       'producteur_pseudo'                                => 'Pseudo du producteur',
-					       'lien_contrats_quantites'                          => 'Lien vers le récapitulatif des inscriptions',
-					       'producteur_paniers_quantites'                     => 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)',
-					       'producteur_paniers_quantites_columns'             => 'Quantités à la prochaine distribution avec Produits en colonnes',
-					       'producteur_paniers_quantites_prix'                => 'Quantités à la prochaine distribution (en tableau avec montants)',
-					       'producteur_paniers_quantites_amapiens'            => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)',
-					       'producteur_paniers_quantites_amapiens_prix'       => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)',
-					       'producteur_paniers_quantites_prix_group'          => 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)',
-					       'producteur_paniers_quantites_amapiens_prix_group' => 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)',
-					       'producteur_contact'                               => 'Coordonnées du producteur',
+					       'producteur_contrats'                              => __( 'Contrats du producteur', 'amapress' ),
+					       'producteur_nom'                                   => __( 'Nom du producteur', 'amapress' ),
+					       'producteur_pseudo'                                => __( 'Pseudo du producteur', 'amapress' ),
+					       'lien_contrats_quantites'                          => __( 'Lien vers le récapitulatif des inscriptions', 'amapress' ),
+					       'producteur_paniers_quantites'                     => __( 'Quantités à la prochaine distribution (en tableau avec/sans montants suivant l\'option Montants pour les paniers modulables)', 'amapress' ),
+					       'producteur_paniers_quantites_columns'             => __( 'Quantités à la prochaine distribution avec Produits en colonnes', 'amapress' ),
+					       'producteur_paniers_quantites_prix'                => __( 'Quantités à la prochaine distribution (en tableau avec montants)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens'            => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens_prix'       => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants)', 'amapress' ),
+					       'producteur_paniers_quantites_prix_group'          => __( 'Quantités à la prochaine distribution (en tableau avec montants et produits groupés)', 'amapress' ),
+					       'producteur_paniers_quantites_amapiens_prix_group' => __( 'Quantités à la prochaine distribution (en tableau avec le détails par amapien et les montants et les produits groupés)', 'amapress' ),
+					       'producteur_contact'                               => __( 'Coordonnées du producteur', 'amapress' ),
 				       ], null, [], 'recall' );
 			},
 		),
 		array(
 			'id'      => 'contrat-recap-cloture-xlsx',
-			'name'    => 'Attacher les excels suivants',
+			'name'    => __( 'Attacher les excels suivants', 'amapress' ),
 			'type'    => 'multi-check',
 			'options' => [
-				'date'                 => 'Récapitulatif par date',
-				'month'                => 'Récapitulatif par mois',
-				'quarter'              => 'Récapitulatif par trimestre',
-				'group_date'           => 'Récapitulatif par date par groupe produits',
-				'adherents_date'       => 'Récapitulatif par adherent par date',
-				'adherents_month'      => 'Récapitulatif par adherent par mois',
-				'adherents_quarter'    => 'Récapitulatif par adherent par trimestre',
-				'adherents_group_date' => 'Récapitulatif par adherent par date par groupe produits',
-				'adherents_columns'    => 'Récapitulatif par adherent par date par groupe produits en colonnes',
+				'date'                 => __( 'Récapitulatif par date', 'amapress' ),
+				'month'                => __( 'Récapitulatif par mois', 'amapress' ),
+				'quarter'              => __( 'Récapitulatif par trimestre', 'amapress' ),
+				'group_date'           => __( 'Récapitulatif par date par groupe produits', 'amapress' ),
+				'adherents_date'       => __( 'Récapitulatif par adherent par date', 'amapress' ),
+				'adherents_month'      => __( 'Récapitulatif par adherent par mois', 'amapress' ),
+				'adherents_quarter'    => __( 'Récapitulatif par adherent par trimestre', 'amapress' ),
+				'adherents_group_date' => __( 'Récapitulatif par adherent par date par groupe produits', 'amapress' ),
+				'adherents_columns'    => __( 'Récapitulatif par adherent par date par groupe produits en colonnes', 'amapress' ),
 			],
 			'default' => 'all',
 		),
@@ -1368,7 +1368,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'id'           => 'contrat-recap-cloture-recall-cc-groups',
@@ -1378,30 +1378,30 @@ function amapress_contrat_recap_cloture_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Groupe(s) en copie',
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'id'      => 'contrat-recap-cloture-recall-send-referents',
-			'name'    => 'Envoi aux référents',
+			'name'    => __( 'Envoi aux référents', 'amapress' ),
 			'type'    => 'checkbox',
-			'desc'    => 'Envoyer les quantités à livrer aux référents',
+			'desc'    => __( 'Envoyer les quantités à livrer aux référents', 'amapress' ),
 			'default' => 1,
 		),
 		array(
 			'id'        => 'contrat-recap-cloture-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Producteurs exclus',
+			'name'      => __( 'Producteurs exclus', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Désactiver les rappels pour les producteurs suivants :',
+			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),
 		array(
 			'id'        => 'contrat-recap-cloture-recall-send-producteurs',
 			'type'      => 'multicheck-posts',
-			'name'      => 'Envoi Producteurs',
+			'name'      => __( 'Envoi Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
-			'desc'      => 'Envoyer les rappels au producteur (par défaut uniquement aux référents) pour les producteurs suivants :',
+			'desc'      => __( 'Envoyer les rappels au producteur (par défaut uniquement aux référents) pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
 		),

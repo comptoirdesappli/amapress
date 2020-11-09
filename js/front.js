@@ -50,7 +50,7 @@ function amapress_handle_front_end_ajax_button_click(e) {
     // We can also pass the url value separately from ajaxurl for front end AJAX implementations
     jQuery.post(amapress.ajax_url, data, function (response) {
         if (response === "error") {
-            alert("Erreur");
+            alert("Error");
             $this.prop("disabled", false);
             return;
         }

@@ -109,9 +109,9 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 			case 'to_confirm':
 				return 'A confirmer';
 			case 'confirmed':
-				return 'Confirmée';
+				return __( 'Confirmée', 'amapress' );
 			case 'cancelled':
-				return 'Annulée';
+				return __( 'Annulée', 'amapress' );
 			default:
 				return $this->getStatus();
 		}
@@ -137,11 +137,11 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 
 	public function inscrireParticipant( $user_id, $send_mail = true ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$participants = $this->getParticipantIds();
@@ -161,11 +161,11 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 
 	public function desinscrireParticipant( $user_id, $send_mail = true ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$participants = $this->getParticipantIds();
@@ -244,13 +244,13 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 						'date_end'    => $current_user_slot['date_end'],
 						'class'       => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
 						'type'        => 'visite',
-						'category'    => 'Visites',
+						'category'    => __( 'Visites', 'amapress' ),
 						'priority'    => 90,
 						'inscr_types' => [ 'visite', 'visite-slot', 'visite-admin-slot' ],
 						'lieu'        => $this,
-						'label'       => sprintf( 'Visite %s', $producteur->getTitle() ),
+						'label'       => sprintf( __( 'Visite %s', 'amapress' ), $producteur->getTitle() ),
 						'icon'        => 'flaticon-sprout',
-						'alt'         => sprintf( 'Vous êtes inscript pour la visite à la ferme du %s', date_i18n( 'd/m/Y', $date ) ),
+						'alt'         => sprintf( __( 'Vous êtes inscript pour la visite à la ferme du %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) ),
 						'href'        => $this->getPermalink()
 					) );
 				} else {
@@ -260,13 +260,13 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 						'date_end'    => $date_end,
 						'class'       => "agenda-visite agenda-inscrit-visite visit_prod_" . $producteur->ID,
 						'type'        => 'visite',
-						'category'    => 'Visites',
+						'category'    => __( 'Visites', 'amapress' ),
 						'priority'    => 90,
 						'inscr_types' => [ 'visite', 'visite-slot', 'visite-admin-slot' ],
 						'lieu'        => $this,
-						'label'       => sprintf( 'Visite %s', $producteur->getTitle() ),
+						'label'       => sprintf( __( 'Visite %s', 'amapress' ), $producteur->getTitle() ),
 						'icon'        => 'flaticon-sprout',
-						'alt'         => sprintf( 'Vous êtes inscript pour la visite à la ferme du %s', date_i18n( 'd/m/Y', $date ) ),
+						'alt'         => sprintf( __( 'Vous êtes inscript pour la visite à la ferme du %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) ),
 						'href'        => $this->getPermalink()
 					) );
 				}
@@ -277,12 +277,12 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 					'date_end' => $date_end,
 					'class'    => "agenda-visite agenda-inscription-visite visit_prod_" . $producteur->ID,
 					'type'     => 'visite',
-					'category' => 'Visites',
+					'category' => __( 'Visites', 'amapress' ),
 					'priority' => 95,
 					'lieu'     => $this,
-					'label'    => sprintf( 'Visite %s', $producteur->getTitle() ),
+					'label'    => sprintf( __( 'Visite %s', 'amapress' ), $producteur->getTitle() ),
 					'icon'     => 'flaticon-sprout',
-					'alt'      => sprintf( 'Une visite est prévue à la ferme le %s', date_i18n( 'd/m/Y', $date ) ),
+					'alt'      => sprintf( __( 'Une visite est prévue à la ferme le %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) ),
 					'href'     => $this->getPermalink()
 				) );
 			}

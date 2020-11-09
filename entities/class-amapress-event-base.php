@@ -82,82 +82,82 @@ class Amapress_EventBase extends TitanEntity {
 	public static function getProperties() {
 		return [
 			'evenement'                      => [
-				'desc' => 'Nom de l\'évènement',
+				'desc' => __( 'Nom de l\'évènement', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return esc_html( $ev->getTitle() );
 				}
 			],
 			'lien-evenement'                 => [
-				'desc' => 'Lien vers la présentation de l\'évènement',
+				'desc' => __( 'Lien vers la présentation de l\'évènement', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return Amapress::makeLink( $ev->getPermalink() );
 				}
 			],
 			'lien-evenement-ical'            => [
-				'desc' => 'Lien ical de l\'évènement',
+				'desc' => __( 'Lien ical de l\'évènement', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return add_query_arg( 'events_id', $ev->ID, Amapress_Agenda_ICAL_Export::get_link_href() );
 				}
 			],
 			'lieu-info'                      => [
-				'desc' => 'Information sur le lieu',
+				'desc' => __( 'Information sur le lieu', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getLieuInformation();
 				}
 			],
 			'horaires-evenement'             => [
-				'desc' => 'Date et horaires évènement',
+				'desc' => __( 'Date et horaires évènement', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
-					return sprintf( '%s de %s à %s',
+					return sprintf( __( '%s de %s à %s', 'amapress' ),
 						date_i18n( 'D j F Y', $ev->getStartDateAndHour() ),
 						date_i18n( 'H:i', $ev->getStartDateAndHour() ),
 						date_i18n( 'H:i', $ev->getEndDateAndHour() ) );
 				}
 			],
 			'amapiens-inscrits-liste'        => [
-				'desc' => 'Amapiens inscrits (en liste à virgules)',
+				'desc' => __( 'Amapiens inscrits (en liste à virgules)', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getInscritsList( true );
 				}
 			],
 			'amapiens-creneaux-liste'        => [
-				'desc' => 'Amapiens inscrits (ordre des créneaux)',
+				'desc' => __( 'Amapiens inscrits (ordre des créneaux)', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getInscritsList( false );
 				}
 			],
 			'amapiens-creneaux-table'        => [
-				'desc' => 'Amapiens inscrits (ordre des créneaux)',
+				'desc' => __( 'Amapiens inscrits (ordre des créneaux)', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getInscritsTable( false );
 				}
 			],
 			'amapiens-creneaux-table-coords' => [
-				'desc' => 'Amapiens inscrits (ordre des créneaux) avec coordonnées',
+				'desc' => __( 'Amapiens inscrits (ordre des créneaux) avec coordonnées', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getInscritsTable( false, true );
 				}
 			],
 			'amapiens-inscrits-table'        => [
-				'desc' => 'Amapiens inscrits (ordre alphabétique)',
+				'desc' => __( 'Amapiens inscrits (ordre alphabétique)', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getInscritsTable( false );
 				}
 			],
 			'amapiens-inscrits-table-coords' => [
-				'desc' => 'Amapiens inscrits (ordre alphabétique) avec coordonnées',
+				'desc' => __( 'Amapiens inscrits (ordre alphabétique) avec coordonnées', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getInscritsTable( false, true );
 				}
 			],
 			'creneaux-table'                 => [
-				'desc' => 'Créneaux choisis par les amapiens',
+				'desc' => __( 'Créneaux choisis par les amapiens', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return $ev->getSlotsTable();
 				}
 			],
 			'creneaux-liste'                 => [
-				'desc' => 'Créneaux choisis par les amapiens',
+				'desc' => __( 'Créneaux choisis par les amapiens', 'amapress' ),
 				'func' => function ( Amapress_EventBase $ev ) {
 					return implode( ', ', array_map( function ( $s ) {
 						return $s['display'];
@@ -172,7 +172,7 @@ class Amapress_EventBase extends TitanEntity {
 		if ( empty( $slots ) ) {
 			return 'pas de créneaux horaires configurés';
 		} else {
-			return sprintf( '%d créneau(x) ; %s',
+			return sprintf( __( '%d créneau(x) ; %s', 'amapress' ),
 				count( $slots ),
 				implode( ', ', array_map( function ( $s ) {
 					return $s['display'];
@@ -354,7 +354,7 @@ class Amapress_EventBase extends TitanEntity {
 			$amapien   = $member['user'];
 			$slot_info = $member['slot'];
 			if ( $slot_info ) {
-				return sprintf( '%s (%s)',
+				return sprintf( __( '%s (%s)', 'amapress' ),
 					$amapien->getDisplayName(),
 					$slot_info['display'] );
 			} else {
@@ -366,17 +366,17 @@ class Amapress_EventBase extends TitanEntity {
 	public function getInscritsTable( $order_by_slot = true, $inc_coords = false ) {
 		$columns   = [];
 		$columns[] = array(
-			'title' => 'Amapien',
+			'title' => __( 'Amapien', 'amapress' ),
 			'data'  => 'amapien'
 		);
 		if ( $inc_coords ) {
 			$columns[] = array(
-				'title' => 'Coordonnées',
+				'title' => __( 'Coordonnées', 'amapress' ),
 				'data'  => 'coords'
 			);
 		}
 		$columns[] = array(
-			'title' => 'Inscription',
+			'title' => __( 'Inscription', 'amapress' ),
 			'data'  => 'slot'
 		);
 		$data      = [];
@@ -415,15 +415,15 @@ class Amapress_EventBase extends TitanEntity {
 	public function getSlotsTable() {
 		$columns = [
 			array(
-				'title' => 'Créneau',
+				'title' => __( 'Créneau', 'amapress' ),
 				'data'  => 'slot'
 			),
 			array(
-				'title' => 'Inscrits',
+				'title' => __( 'Inscrits', 'amapress' ),
 				'data'  => 'current'
 			),
 			array(
-				'title' => 'Maximum',
+				'title' => __( 'Maximum', 'amapress' ),
 				'data'  => 'max'
 			),
 		];
@@ -453,7 +453,7 @@ class Amapress_EventBase extends TitanEntity {
 
 	public function manageSlot( $user_id, $slot, $set = true ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( empty( $user_id ) ) {
@@ -462,17 +462,17 @@ class Amapress_EventBase extends TitanEntity {
 
 		if ( ! amapress_can_access_admin() ) {
 			if ( ! $this->isMemberOf( $user_id ) ) {
-				wp_die( 'Vous n\'en faites pas partie.' );
+				wp_die( __( 'Vous n\'en faites pas partie.', 'amapress' ) );
 			}
 			if ( Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-				wp_die( 'Clos et passé' );
+				wp_die( __( 'Clos et passé', 'amapress' ) );
 			}
 		}
 
 		$slot      = strval( $slot );
 		$all_slots = $this->getSlotsConf();
 		if ( ! isset( $all_slots[ $slot ] ) ) {
-			wp_die( 'Créneau non déclaré' );
+			wp_die( __( 'Créneau non déclaré', 'amapress' ) );
 		}
 
 		$requested_slot = $all_slots[ $slot ];
@@ -519,7 +519,7 @@ class Amapress_EventBase extends TitanEntity {
 					}
 				} else {
 					$responsable      = AmapressUser::getBy( amapress_current_user_id() );
-					$responsable_html = sprintf( '%s (%s)',
+					$responsable_html = sprintf( __( '%s (%s)', 'amapress' ),
 						Amapress::makeLink( 'mailto:' . $responsable->getEmail(), $responsable->getDisplayName() ),
 						$responsable->getContacts() );
 
@@ -592,10 +592,10 @@ class Amapress_EventBase extends TitanEntity {
 		if ( empty( $member_ids ) ) {
 			return;
 		}
-		$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $member_ids ), 'Amapiens', 'amapiens' );
+		$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $member_ids ), __( 'Amapiens', 'amapress' ), 'amapiens' );
 		$subject      = Amapress::getOption( 'comment-event-mail-subject' );
 		$content      = Amapress::getOption( 'comment-event-mail-content' );
-		$commentaire  = sprintf( '%s: %s', $author, $comment->comment_content );
+		$commentaire  = sprintf( __( '%s: %s', 'amapress' ), $author, $comment->comment_content );
 		$subject      = str_replace( "%%commentaire%%", $commentaire, $subject );
 		$content      = str_replace( "%%commentaire%%", $commentaire, $content );
 		amapress_send_message(

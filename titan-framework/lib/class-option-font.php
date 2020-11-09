@@ -218,7 +218,7 @@ class TitanFrameworkOptionFont extends TitanFrameworkOption {
 			$variants[] = '400';
 			$variants   = array_unique( $variants );
 
-			$fontUrl = sprintf( '//fonts.googleapis.com/css?family=%s:%s&subset=%s',
+			$fontUrl = sprintf( __( '//fonts.googleapis.com/css?family=%s:%s&subset=%s', 'amapress' ),
 				str_replace( ' ', '+', $fontName ),
 				implode( ',', $variants ),
 				implode( ',', $subsets )

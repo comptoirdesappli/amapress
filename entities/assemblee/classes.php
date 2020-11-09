@@ -173,12 +173,12 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 					'class'       => "agenda-assemblee agenda-inscrit-assemblee",
 					'lieu'        => $this,
 					'type'        => 'assemblee_generale',
-					'category'    => 'Assemblées générales',
+					'category'    => __( 'Assemblées générales', 'amapress' ),
 					'priority'    => 70,
 					'inscr_types' => [ 'assemblee_generale' ],
-					'label'       => 'Assemblée',
+					'label'       => __( 'Assemblée', 'amapress' ),
 					'icon'        => 'fa fa-university',
-					'alt'         => sprintf( 'Vous êtes inscript pour l\'assemblée générale du %s', date_i18n( 'd/m/Y', $date ) ),
+					'alt'         => sprintf( __( 'Vous êtes inscript pour l\'assemblée générale du %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) ),
 					'href'        => $this->getPermalink()
 				) );
 			} else {
@@ -188,12 +188,12 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 					'date_end' => $date_end,
 					'class'    => "agenda-assemblee agenda-inscription-assemblee",
 					'type'     => 'assemblee_generale',
-					'category' => 'Assemblées générales',
+					'category' => __( 'Assemblées générales', 'amapress' ),
 					'lieu'     => $this,
 					'priority' => 70,
-					'label'    => 'Assemblée',
+					'label'    => __( 'Assemblée', 'amapress' ),
 					'icon'     => 'fa fa-university',
-					'content'  => 'Vous êtes inscript pour l\'assemblée générale du ' . date_i18n( 'd/m/Y', $date ),
+					'content'  => __( 'Vous êtes inscript pour l\'assemblée générale du ', 'amapress' ) . date_i18n( 'd/m/Y', $date ),
 					'href'     => $this->getPermalink()
 				) );
 			}
@@ -204,11 +204,11 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 
 	public function inscrireParticipant( $user_id ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$participants = $this->getParticipantsIds();
@@ -226,11 +226,11 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 
 	public function desinscrireParticipant( $user_id ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$participants = $this->getParticipantsIds();

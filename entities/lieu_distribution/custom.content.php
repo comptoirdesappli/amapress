@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'amapress_get_custom_archive_content_lieu_distribution', 'amapress_get_custom_archive_content_lieu_distribution' );
 function amapress_get_custom_archive_content_lieu_distribution( $content ) {
 	$lieu    = AmapressLieu_distribution::getBy( get_the_ID() );
-	$content = '<p class="lieu-adresse">' . 'Adresse : ' . $lieu->getFormattedAdresseHtml() . '</p>' . $content;
+	$content = '<p class="lieu-adresse">' . __( 'Adresse : ', 'amapress' ) . $lieu->getFormattedAdresseHtml() . '</p>' . $content;
 
 	return $content;
 }
@@ -22,20 +22,20 @@ function amapress_get_custom_content_lieu_distribution( $content ) {
 
 	$addr_entry = '';
 	if ( ! $lieu->isAdresseAccesLocalized() ) {
-		$addr_entry = '<div class="lieu-adresse-acces"><h3>' . 'Adresse d\'accès' . '</h3>' .
+		$addr_entry = '<div class="lieu-adresse-acces"><h3>' . __( 'Adresse d\'accès', 'amapress' ) . '</h3>' .
 		              '<p>' .
 		              esc_html( $lieu->getAdresseAcces() ) .
 		              '</p>' .
 		              '</div>';
 	}
 
-	amapress_echo_panel_start( 'Adresse', 'fa-fa', 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-address' );
+	amapress_echo_panel_start( __( 'Adresse', 'amapress' ), 'fa-fa', 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-address' );
 	echo '<p class="lieu-adresse">' .
 	     $lieu->getFormattedAdresseHtml() .
 	     '</p>';
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Accès', null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-access' );
+	amapress_echo_panel_start( __( 'Accès', 'amapress' ), null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-access' );
 	echo $addr_entry;
 	echo '<p class="lieu-acces">' .
 	     $lieu->getAcces() .
@@ -47,7 +47,7 @@ function amapress_get_custom_content_lieu_distribution( $content ) {
 	}
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-hours' );
+	amapress_echo_panel_start( __( 'Horaires', 'amapress' ), null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-hours' );
 	echo '<p class="lieu-horaires">' .
 	     ' de ' . date_i18n( 'H:i', $lieu->getHeure_debut() ) .
 	     ' à ' . date_i18n( 'H:i', $lieu->getHeure_fin() ) .
@@ -55,17 +55,17 @@ function amapress_get_custom_content_lieu_distribution( $content ) {
 	amapress_echo_panel_end();
 
 	if ( amapress_is_user_logged_in() ) {
-		amapress_echo_panel_start( 'Référent', null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-referent' );
+		amapress_echo_panel_start( __( 'Référent', 'amapress' ), null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-referent' );
 		$ref = $lieu->getReferent();
 		if ( ! $ref ) {
-			echo '<p class="error">' . 'Pas de référent' . '</p>';
+			echo '<p class="error">' . __( 'Pas de référent', 'amapress' ) . '</p>';
 		} else {
 			echo $ref->getDisplay();
 		}
 //            AmapressUsers::echoUserById($ref, is_user_logged_in() ? 'full' : 'thumb');
 		amapress_echo_panel_end();
 
-		amapress_echo_panel_start( 'Contact externe', null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-extern' );
+		amapress_echo_panel_start( __( 'Contact externe', 'amapress' ), null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-extern' );
 		echo '<p class="lieu-contact-externe">' .
 		     $lieu->getContact_externe() .
 		     '</p>';
@@ -73,7 +73,7 @@ function amapress_get_custom_content_lieu_distribution( $content ) {
 	}
 
 	if ( amapress_can_access_admin() || AmapressDistributions::isCurrentUserResponsableThisWeek() ) {
-		amapress_echo_panel_start( 'Instructions du lieu', null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-instructions' );
+		amapress_echo_panel_start( __( 'Instructions du lieu', 'amapress' ), null, 'amap-panel-lieu amap-panel-lieu-' . $lieu->ID . ' amap-panel-lieu-instructions' );
 		echo '<p class="lieu-instructions">' .
 		     $lieu->getInstructions_privee() .
 		     '</p>';

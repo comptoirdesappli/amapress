@@ -13,7 +13,7 @@ function amapress_gdrive_shortcode( $atts, $content = null ) {
 
 amapress_register_shortcode( 'google-drive', 'amapress_gdrive_shortcode',
 	[
-		'desc' => 'Configure et affiche un google drive',
+		'desc' => __( 'Configure et affiche un google drive', 'amapress' ),
 		'args' => [
 		]
 	] );

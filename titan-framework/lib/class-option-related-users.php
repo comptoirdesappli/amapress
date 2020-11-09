@@ -11,20 +11,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
+	public $defaultSecondarySettings;
 
-	public $defaultSecondarySettings = array(
-		'query'                    => null,
-		'show_link'                => true,
-		'link_text'                => 'Voir les (%%count%%) utilisateurs',
-		'show_table'               => true,
-		'show_on'                  => 'edit-only',
-		'bare'                     => false,
-		'include_columns'          => array(),
-		'exclude_columns'          => array(),
-		'datatable_options'        => array(),
-		'column_options'           => array(),
-		'related_users_count_func' => null,
-	);
+	public function __construct( $settings, $owner ) {
+		$this->defaultSecondarySettings = array(
+			'query'                    => null,
+			'show_link'                => true,
+			'link_text'                => __( 'Voir les (%%count%%) utilisateurs', 'amapress' ),
+			'show_table'               => true,
+			'show_on'                  => 'edit-only',
+			'bare'                     => false,
+			'include_columns'          => array(),
+			'exclude_columns'          => array(),
+			'datatable_options'        => array(),
+			'column_options'           => array(),
+			'related_users_count_func' => null,
+		);
+		parent::__construct( $settings, $owner );
+	}
 
 	private function evalQuery( $postID = null ) {
 		$post_type = null;
@@ -219,8 +223,7 @@ class TitanFrameworkOptionRelatedUsers extends TitanFrameworkOption {
 			// Add a link to the user's author archive, if not empty.
 			$author_posts_url = get_author_posts_url( $user_object->ID );
 			if ( $author_posts_url ) {
-				$actions['view'] = sprintf(
-					'<a href="%s" aria-label="%s">%s</a>',
+				$actions['view'] = sprintf( __( '<a href="%s" aria-label="%s">%s</a>', 'amapress' ),
 					esc_url( $author_posts_url ),
 					/* translators: %s: author's display name */
 					esc_attr( sprintf( __( 'View posts by %s' ), $user_object->display_name ) ),

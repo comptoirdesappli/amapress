@@ -251,14 +251,12 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 
 		$class_html = '';
 		if ( ! empty( $class ) ) {
-			$class_html = sprintf(
-				' class="%s"',
+			$class_html = sprintf( __( ' class="%s"', 'amapress' ),
 				esc_attr( $class )
 			);
 		}
 
-		return sprintf(
-			'<a href="%s"%s>%s</a>',
+		return sprintf( __( '<a href="%s"%s>%s</a>', 'amapress' ),
 			esc_url( $url ),
 			$class_html,
 			$label
@@ -983,7 +981,7 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 			if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
 				$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
 			} else {
-				$h_time = mysql2date( __( 'Y/m/d' ), $m_time );
+				$h_time = mysql2date( 'Y/m/d', $m_time );
 			}
 		}
 
@@ -1228,15 +1226,13 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 		$title            = _draft_or_post_title();
 
 		if ( $can_edit_post && 'trash' != $post->post_status ) {
-			$actions['edit']                 = sprintf(
-				'<a href="%s" aria-label="%s">%s</a>',
+			$actions['edit']                 = sprintf( __( '<a href="%s" aria-label="%s">%s</a>', 'amapress' ),
 				$this->get_edit_post_link( $post->ID ),
 				/* translators: %s: post title */
 				esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;' ), $title ) ),
 				__( 'Edit' )
 			);
-			$actions['inline hide-if-no-js'] = sprintf(
-				'<a href="#" class="editinline" aria-label="%s">%s</a>',
+			$actions['inline hide-if-no-js'] = sprintf( __( '<a href="#" class="editinline" aria-label="%s">%s</a>', 'amapress' ),
 				/* translators: %s: post title */
 				esc_attr( sprintf( __( 'Quick edit &#8220;%s&#8221; inline' ), $title ) ),
 				__( 'Quick&nbsp;Edit' )
@@ -1245,16 +1241,14 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 
 		if ( current_user_can( 'delete_post', $post->ID ) ) {
 			if ( 'trash' === $post->post_status ) {
-				$actions['untrash'] = sprintf(
-					'<a href="%s" aria-label="%s">%s</a>',
+				$actions['untrash'] = sprintf( __( '<a href="%s" aria-label="%s">%s</a>', 'amapress' ),
 					wp_nonce_url( admin_url( sprintf( $post_type_object->_edit_link . '&amp;action=untrash', $post->ID ) ), 'untrash-post_' . $post->ID ),
 					/* translators: %s: post title */
 					esc_attr( sprintf( __( 'Restore &#8220;%s&#8221; from the Trash' ), $title ) ),
 					__( 'Restore' )
 				);
 			} elseif ( EMPTY_TRASH_DAYS ) {
-				$actions['trash'] = sprintf(
-					'<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
+				$actions['trash'] = sprintf( __( '<a href="%s" class="submitdelete" aria-label="%s">%s</a>', 'amapress' ),
 					get_delete_post_link( $post->ID ),
 					/* translators: %s: post title */
 					esc_attr( sprintf( __( 'Move &#8220;%s&#8221; to the Trash' ), $title ) ),
@@ -1262,8 +1256,7 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 				);
 			}
 			if ( 'trash' === $post->post_status || ! EMPTY_TRASH_DAYS ) {
-				$actions['delete'] = sprintf(
-					'<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
+				$actions['delete'] = sprintf( __( '<a href="%s" class="submitdelete" aria-label="%s">%s</a>', 'amapress' ),
 					get_delete_post_link( $post->ID, '', true ),
 					/* translators: %s: post title */
 					esc_attr( sprintf( __( 'Delete &#8220;%s&#8221; permanently' ), $title ) ),
@@ -1276,8 +1269,7 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 			if ( in_array( $post->post_status, array( 'pending', 'draft', 'future' ) ) ) {
 				if ( $can_edit_post ) {
 					$preview_link    = get_preview_post_link( $post );
-					$actions['view'] = sprintf(
-						'<a href="%s" rel="permalink" aria-label="%s">%s</a>',
+					$actions['view'] = sprintf( __( '<a href="%s" rel="permalink" aria-label="%s">%s</a>', 'amapress' ),
 						esc_url( $preview_link ),
 						/* translators: %s: post title */
 						esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;' ), $title ) ),
@@ -1285,8 +1277,7 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 					);
 				}
 			} elseif ( 'trash' != $post->post_status ) {
-				$actions['view'] = sprintf(
-					'<a href="%s" rel="permalink" aria-label="%s">%s</a>',
+				$actions['view'] = sprintf( __( '<a href="%s" rel="permalink" aria-label="%s">%s</a>', 'amapress' ),
 					get_permalink( $post->ID ),
 					/* translators: %s: post title */
 					esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $title ) ),
@@ -1302,12 +1293,13 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 			 *
 			 * The filter is evaluated only for hierarchical post types.
 			 *
+			 * @param array $actions An array of row action links. Defaults are
+			 *                         __('Edit', 'amapress'), __('Quick Edit', 'amapress'), __('Restore, ', 'amapress')Trash',
+			 *                         __('Delete Permanently', 'amapress'), __('Preview', 'amapress'), and __('View', 'amapress').
+			 * @param WP_Post $post The post object.
+			 *
 			 * @since 2.8.0
 			 *
-			 * @param array $actions An array of row action links. Defaults are
-			 *                         'Edit', 'Quick Edit', 'Restore, 'Trash',
-			 *                         'Delete Permanently', 'Preview', and 'View'.
-			 * @param WP_Post $post The post object.
 			 */
 			$actions = apply_filters( 'page_row_actions', $actions, $post );
 		} else {
@@ -1320,8 +1312,8 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 			 * @since 2.8.0
 			 *
 			 * @param array $actions An array of row action links. Defaults are
-			 *                         'Edit', 'Quick Edit', 'Restore, 'Trash',
-			 *                         'Delete Permanently', 'Preview', and 'View'.
+			 *                         __('Edit', 'amapress'), __('Quick Edit', 'amapress'), __('Restore, ', 'amapress')Trash',
+			 *                         __('Delete Permanently', 'amapress'), __('Preview', 'amapress'), and __('View', 'amapress').
 			 * @param WP_Post $post The post object.
 			 */
 			$actions = apply_filters( 'post_row_actions', $actions, $post );
@@ -1664,15 +1656,15 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
                                         <label class="inline-edit-status alignleft">
                                             <span class="title"><?php _e( 'Statut' ); ?></span>
                                             <select name="_status">
-												<?php if ( $bulk ) : ?>
+				                                <?php if ( $bulk ) : ?>
                                                     <option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option>
-												<?php endif; // $bulk ?>
-												<?php if ( $can_publish ) : // Contributors only get "Unpublished" and "Pending Review" ?>
+				                                <?php endif; // $bulk ?>
+				                                <?php if ( $can_publish ) : // Contributors only get "Unpublished" and "Pending Review" ?>
                                                     <option value="publish"><?php _e( 'Published' ); ?></option>
                                                     <option value="future"><?php _e( 'Scheduled' ); ?></option>
-													<?php if ( $bulk ) : ?>
+					                                <?php if ( $bulk ) : ?>
                                                         <option value="private"><?php _e( 'Private' ) ?></option>
-													<?php endif; // $bulk ?>
+					                                <?php endif; // $bulk ?>
 												<?php endif; ?>
                                                 <option value="pending"><?php _e( 'Pending Review' ); ?></option>
                                                 <option value="draft"><?php _e( 'Draft' ); ?></option>
@@ -1712,7 +1704,7 @@ class Amapress_Posts_List_Table extends Amapress_List_Table {
 
 										?>
                                         <label class="alignleft">
-                                            <span class="title"><?php _ex( 'Format', 'post format' ); ?></span>
+                                            <span class="title"><?php _ex( __( 'Format', 'amapress' ), 'post format' ); ?></span>
                                             <select name="post_format">
                                                 <option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option>
                                                 <option value="0"><?php echo get_post_format_string( 'standard' ); ?></option>

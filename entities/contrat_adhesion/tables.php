@@ -5,12 +5,12 @@ function amapress_contrat_paiements_list_options() {
 	global $contrat_paiements_table;
 	$option = 'per_page';
 	$args   = array(
-		'label'   => 'Nombre d’éléments par page :',
+		'label'   => __( 'Nombre d’éléments par page :', 'amapress' ),
 		'default' => 10,
 		'option'  => 'contrat_paiements_per_page'
 	);
 	add_screen_option( $option, $args );
-	$contrat_paiements_table = new Amapress_Users_List_Table( 'Contrat', 'Contrats', 'contrat_paiements_per_page' );
+	$contrat_paiements_table = new Amapress_Users_List_Table( __( 'Contrat', 'amapress' ), __( 'Contrats', 'amapress' ), 'contrat_paiements_per_page' );
 
 	add_filter( 'views_gestion-contrats_page_contrat_paiements', 'amapress_views_contrat_paiements_list' );
 }
@@ -28,7 +28,7 @@ function amapress_views_contrat_paiements_list( $views ) {
 	amapress_add_view_button(
 		$views, 'all',
 		"page=contrat_paiements&amapress_adhesion=all",
-		'Tous', true );
+		__( 'Tous', 'amapress' ), true );
 
 	return amapress_users_views_filter( $views );
 }
@@ -38,7 +38,7 @@ function amapress_render_contrat_paiements_list() {
 	global $contrat_paiements_table;
 	$contrat_paiements_table->prepare_items();
 
-	echo '</pre><div class="wrap"><h2>' . 'État des règlements de l’ensemble des amapiens';
+	echo '</pre><div class="wrap"><h2>' . __( 'État des règlements de l’ensemble des amapiens', 'amapress' );
 	echo '</h2>';
 
 	$contrat_paiements_table->views();

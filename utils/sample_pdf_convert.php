@@ -16,13 +16,13 @@ function amapress_test_convertpdf_ws() {
 	$convertws_pass = Amapress::getOption( 'convertws_pass' );
 
 	if ( empty( $convertws_url ) ) {
-		wp_die( 'L\'url du convertisseur n\'est pas définie.' );
+		wp_die( __( 'L\'url du convertisseur n\'est pas définie.', 'amapress' ) );
 	}
 	if ( empty( $convertws_user ) ) {
-		wp_die( 'Le nom d\'utilisateur du convertisseur n\'est pas défini.' );
+		wp_die( __( 'Le nom d\'utilisateur du convertisseur n\'est pas défini.', 'amapress' ) );
 	}
 	if ( empty( $convertws_pass ) ) {
-		wp_die( 'Le mot de passe du convertisseur n\'est pas défini.' );
+		wp_die( __( 'Le mot de passe du convertisseur n\'est pas défini.', 'amapress' ) );
 	}
 
 	$out_docx = trailingslashit( Amapress::getContratDir() ) . 'sample_pdf_convert.docx';

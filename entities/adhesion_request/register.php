@@ -30,15 +30,15 @@ function amapress_register_entities_adhesion_request( $entities ) {
 		),
 		'row_actions'        => array(
 			'create_user'       => [
-				'label'     => 'Créer compte utilisateur',
+				'label'     => __( 'Créer compte utilisateur', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					$adh = AmapressAdhesionRequest::getBy( $adh_id );
 
 					return ! empty( $adh ) && empty( $adh->getAmapienIfExists() );
 				},
 			],
-			'send_reply'        => 'Envoyer le mail de réponse type',
-			'send_reply_manual' => 'Réponse personnalisée envoyée',
+			'send_reply'        => __( 'Envoyer le mail de réponse type', 'amapress' ),
+			'send_reply_manual' => __( 'Réponse personnalisée envoyée', 'amapress' ),
 		),
 		'show_admin_bar_new' => true,
 		'default_orderby'    => 'post_date',
@@ -49,7 +49,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'name'       => __( 'Email', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
-				'desc'       => 'Email',
+				'desc'       => __( 'Email', 'amapress' ),
 				'is_email'   => true,
 				'searchable' => true,
 			),
@@ -57,14 +57,14 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'name'       => __( 'Prénom', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
-				'desc'       => 'Prénom',
+				'desc'       => __( 'Prénom', 'amapress' ),
 				'searchable' => true,
 			),
 			'last_name'         => array(
 				'name'       => __( 'Nom', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
-				'desc'       => 'Nom',
+				'desc'       => __( 'Nom', 'amapress' ),
 				'searchable' => true,
 			),
 			'amapien'           => array(
@@ -78,7 +78,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 					if ( $amapien ) {
 						return Amapress::makeLink( $amapien->getEditLink(), $amapien->getDisplayName(), true, true );
 					} else {
-						return 'Non existant';
+						return __( 'Non existant', 'amapress' );
 					}
 				},
 				'use_custom_as_column' => true,
@@ -103,9 +103,9 @@ function amapress_register_entities_adhesion_request( $entities ) {
 					$adh = AmapressAdhesionRequest::getBy( $adh_id );
 					$cnt = $adh->getSendReplyCount();
 					if ( $cnt > 0 ) {
-						return sprintf( 'Réponse envoyée (%d fois)', $cnt );
+						return sprintf( __( 'Réponse envoyée (%d fois)', 'amapress' ), $cnt );
 					} else {
-						return 'Réponse non envoyée';
+						return __( 'Réponse non envoyée', 'amapress' );
 					}
 				},
 				'use_custom_as_column' => true,
@@ -115,12 +115,12 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'type'     => 'date',
 				'time'     => true,
 				'required' => true,
-				'desc'     => 'Date de la demande',
+				'desc'     => __( 'Date de la demande', 'amapress' ),
 			),
 			'adresse'           => array(
 				'name'       => __( 'Adresse', 'amapress' ),
 				'type'       => 'textarea',
-				'desc'       => 'Nom',
+				'desc'       => __( 'Nom', 'amapress' ),
 				'searchable' => true,
 			),
 			'adresse_localized' => array(
@@ -133,7 +133,7 @@ function amapress_register_entities_adhesion_request( $entities ) {
 			'telephone'         => array(
 				'name'       => __( 'Téléphone', 'amapress' ),
 				'type'       => 'text',
-				'desc'       => 'Téléphone',
+				'desc'       => __( 'Téléphone', 'amapress' ),
 				'searchable' => true,
 			),
 			'other_info'        => array(
@@ -144,46 +144,46 @@ function amapress_register_entities_adhesion_request( $entities ) {
 				'name'              => __( 'Lieux de distribution', 'amapress' ),
 				'type'              => 'multicheck-posts',
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
-				'desc'              => 'Lieux de distribution',
+				'desc'              => __( 'Lieux de distribution', 'amapress' ),
 				'autoselect_single' => true,
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
-					'placeholder' => 'Tous les lieux',
+					'placeholder' => __( 'Tous les lieux', 'amapress' ),
 				),
 			),
 			'contrats'          => array(
 				'name'      => __( 'Contrats', 'amapress' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat::INTERNAL_POST_TYPE,
-				'desc'      => 'Contrats',
+				'desc'      => __( 'Contrats', 'amapress' ),
 			),
 			'contrat_intances'  => array(
 				'name'      => __( 'Contrats spécifiques', 'amapress' ),
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
-				'desc'      => 'Contrats',
+				'desc'      => __( 'Contrats', 'amapress' ),
 			),
 			'intermittent'      => array(
 				'name' => __( 'Intermittent', 'amapress' ),
 				'type' => 'checkbox',
-				'desc' => 'Le contact souhaite devenir intermittent',
+				'desc' => __( 'Le contact souhaite devenir intermittent', 'amapress' ),
 			),
 			'status'            => array(
 				'name'       => __( 'Statut', 'amapress' ),
 				'type'       => 'select',
-				'group'      => '1/ Informations',
+				'group'      => __( '1/ Informations', 'amapress' ),
 				'options'    => array(
-					'to_confirm' => 'A confirmer',
-					'confirmed'  => 'Confirmée',
-					'cancelled'  => 'Annulée',
+					'to_confirm' => __( 'A confirmer', 'amapress' ),
+					'confirmed'  => __( 'Confirmée', 'amapress' ),
+					'cancelled'  => __( 'Annulée', 'amapress' ),
 				),
 				'required'   => true,
-				'desc'       => 'Statut',
+				'desc'       => __( 'Statut', 'amapress' ),
 				'top_filter' => array(
 					'name'        => 'amapress_status',
-					'placeholder' => 'Toutes les statuts',
+					'placeholder' => __( 'Toutes les statuts', 'amapress' ),
 				),
 			),
 		),
@@ -254,6 +254,6 @@ function amapress_row_action_adhesion_request_send_reply_manual( $post_id ) {
 add_action( 'admin_head', function () {
 	$screen = get_current_screen();
 	if ( $screen && ( 'edit-amps_adh_req' == $screen->id || 'amps_adh_req' == $screen->id ) ) {
-		amapress_add_admin_notice( sprintf( 'Accéder à la configuration du <a href="%s" target="_blank">mail de réponse type</a>', esc_attr( admin_url( 'options-general.php?page=amapress_site_options_page&tab=adh_req_reply_mail' ) ) ), 'notice', false, false );
+		amapress_add_admin_notice( sprintf( __( 'Accéder à la configuration du <a href="%s" target="_blank">mail de réponse type</a>', 'amapress' ), esc_attr( admin_url( 'options-general.php?page=amapress_site_options_page&tab=adh_req_reply_mail' ) ) ), 'notice', false, false );
 	}
 } );

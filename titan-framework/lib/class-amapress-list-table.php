@@ -587,12 +587,13 @@ class Amapress_List_Table {
 		global $wpdb, $wp_locale;
 
 		/**
-		 * Filter whether to remove the 'Months' drop-down from the post list table.
-		 *
-		 * @since 4.2.0
+		 * Filter whether to remove the __('Months', 'amapress') drop-down from the post list table.
 		 *
 		 * @param bool $disable Whether to disable the drop-down. Default false.
 		 * @param string $post_type The post type.
+		 *
+		 * @since 4.2.0
+		 *
 		 */
 		if ( apply_filters( 'disable_months_dropdown', false, $post_type ) ) {
 			return;
@@ -614,7 +615,7 @@ class Amapress_List_Table {
 		", $post_type ) );
 
 		/**
-		 * Filter the 'Months' drop-down results.
+		 * Filter the __('Months', 'amapress') drop-down results.
 		 *
 		 * @since 3.7.0
 		 *
@@ -922,7 +923,7 @@ class Amapress_List_Table {
 
 	/**
 	 * Get a list of columns. The format is:
-	 * 'internal-name' => 'Title'
+	 * 'internal-name' => __('Title', 'amapress')
 	 *
 	 * @since 3.1.0
 	 * @access public

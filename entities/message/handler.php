@@ -249,7 +249,7 @@ function amapress_send_message(
 //				}
 //				$headers[] = "From: $from_dn <$from_email>";
 //				$headers[] = "Reply-to: $from_dn <$from_email>";
-//				$headers[] = 'Cc: ' . implode( ',', $emails );
+//				$headers[] = __('Cc: ', 'amapress') . implode( ',', $emails );
 //				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
 //				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
 //				amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
@@ -281,7 +281,7 @@ add_action( 'tf_custom_admin_amapress_action_send_message', 'amapress_handle_sen
 function amapress_handle_send_message() {
 	if ( ! amapress_is_user_logged_in()
 	     || ! amapress_current_user_can( 'publish_message' ) ) {
-		wp_die( 'Accès non autorisé' );
+		wp_die( __( 'Accès non autorisé', 'amapress' ) );
 	}
 
 
@@ -329,16 +329,16 @@ function amapress_prepare_message_target_bcc( $query_string, $title, $target_typ
 function amapress_get_collectif_target_queries() {
 	$ret = array();
 
-	$ret["amapress_role=referent_producteur"] = "Référents producteurs";
+	$ret["amapress_role=referent_producteur"] = __( 'Référents producteurs', 'amapress' );
 	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
-		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
+		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = sprintf( __( 'Référents producteurs - %s', 'amapress' ), $contrat->getTitle() );
 	}
 
-	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
-	$ret["amapress_role=collectif_no_prod"] = "Membres du collectif (sans les producteurs)";
-	$ret["amapress_role=collectif"]         = 'Membres du collectif (avec les producteurs)';
-	$ret["role=administrator"]              = "Administrateurs";
-	$ret["role=tresorier"]                  = "Trésoriers";
+	$ret["amapress_role=referent_lieu"]     = __( 'Référents lieux', 'amapress' );
+	$ret["amapress_role=collectif_no_prod"] = __( 'Membres du collectif (sans les producteurs)', 'amapress' );
+	$ret["amapress_role=collectif"]         = __( 'Membres du collectif (avec les producteurs)', 'amapress' );
+	$ret["role=administrator"]              = __( 'Administrateurs', 'amapress' );
+	$ret["role=tresorier"]                  = __( 'Trésoriers', 'amapress' );
 
 	foreach (
 		get_categories( array(
@@ -349,7 +349,7 @@ function amapress_get_collectif_target_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( 'Rôle "%s"', $role->name );
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( __( 'Rôle "%s"', 'amapress' ), $role->name );
 	}
 
 	foreach (
@@ -361,7 +361,7 @@ function amapress_get_collectif_target_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( 'Groupe amapiens "%s"', $role->name );
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( __( 'Groupe amapiens "%s"', 'amapress' ), $role->name );
 	}
 
 	return amapress_user_queries_link_wrap( $ret );
@@ -398,7 +398,7 @@ function amapress_add_message_target( &$arr, $query_string, $title, $target_type
 	$opt['members']             = implode( ', ', array_map(
 		function ( $u ) {
 			/** @var WP_User $u */
-			return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $u->ID ), sprintf( '%s (%s)', $u->display_name, $u->user_email ), true, true );
+			return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $u->ID ), sprintf( __( '%s (%s)', 'amapress' ), $u->display_name, $u->user_email ), true, true );
 		}, $members
 	) );
 	$arr[ json_encode( $opt ) ] = sprintf( _n( '%s (%d destinataires)', '%s (%d destinataires)', $count, 'amapress' ),
@@ -412,14 +412,14 @@ function amapress_message_get_targets() {
 	Amapress::setFilterForReferent( false );
 
 	$ret = array();
-	amapress_add_message_target( $ret, "user:me", "Moi - Test", 'me' );
-	$res['Test'] = $ret;
+	amapress_add_message_target( $ret, "user:me", __( 'Moi - Test', 'amapress' ), 'me' );
+	$res[ __( 'Test', 'amapress' ) ] = $ret;
 
 	$ret = array();
-	amapress_add_message_target( $ret, "post_type=amps_producteur|amapress_producteur_user", "Les producteurs", 'producteur' );
-	amapress_add_message_target( $ret, "user:amapress_role=collectif", "Les membres du collectif AMAP", 'collectif' );
-	amapress_add_message_target( $ret, "user:amapress_role=referent_producteur", "Les referents producteurs", "referent-producteur" );
-	amapress_add_message_target( $ret, "post_type=amps_lieu|amapress_lieu_distribution_referent", "Les referents lieux de distribution", "referent-lieu" );
+	amapress_add_message_target( $ret, "post_type=amps_producteur|amapress_producteur_user", __( "Les producteurs", 'amapress' ), 'producteur' );
+	amapress_add_message_target( $ret, "user:amapress_role=collectif", __( "Les membres du collectif AMAP", 'amapress' ), 'collectif' );
+	amapress_add_message_target( $ret, "user:amapress_role=referent_producteur", __( "Les referents producteurs", 'amapress' ), "referent-producteur" );
+	amapress_add_message_target( $ret, "post_type=amps_lieu|amapress_lieu_distribution_referent", __( "Les referents lieux de distribution", 'amapress' ), "referent-lieu" );
 
 	foreach (
 		get_categories( array(
@@ -430,16 +430,16 @@ function amapress_message_get_targets() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		amapress_add_message_target( $ret, "user:amapress_role=amap_role_{$role->slug}", sprintf( 'Rôle "%s"', $role->name ), "referents" );
+		amapress_add_message_target( $ret, "user:amapress_role=amap_role_{$role->slug}", sprintf( __( 'Rôle "%s"', 'amapress' ), $role->name ), "referents" );
 	}
 
-	$res['Responsables'] = $ret;
+	$res[ __( 'Responsables', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//amapiens incrits lieu
 	foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
 		$lieu = get_post( $lieu_id );
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens de {$lieu->post_title}", "lieu lieu-{$lieu->ID}" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", sprintf( __( 'Les amapiens de %s', 'amapress' ), $lieu->post_title ), "lieu lieu-{$lieu->ID}" );
 		//contrats
 		foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 			$lieux = Amapress::get_post_meta_array( $contrat->ID, 'amapress_contrat_instance_lieux' );
@@ -447,16 +447,16 @@ function amapress_message_get_targets() {
 				continue;
 			}
 			$contrat_id = $contrat->ID;
-			amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens \"{$contrat->getTitle()}\" de {$lieu->post_title}", "lieu lieu-{$lieu->ID} contrat contrat-{$contrat->ID}" );
+			amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_lieu=$lieu_id&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", sprintf( __( "Les amapiens \"%s\" de %s", 'amapress' ), $contrat->getTitle(), $lieu->post_title ), "lieu lieu-{$lieu->ID} contrat contrat-{$contrat->ID}" );
 		}
 	}
 
 	//amapiens contrats
 	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
 		$contrat_id = $contrat->ID;
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens \"{$contrat->getTitle()}\"", "contrat contrat-{$contrat->ID}" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_id&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", sprintf( __( 'Les amapiens "%s"', 'amapress' ), $contrat->getTitle() ), "contrat contrat-{$contrat->ID}" );
 	}
-	$res['Lieux et contrats'] = $ret;
+	$res[ __( 'Lieux et contrats', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//amapiens distributions
@@ -475,11 +475,11 @@ function amapress_message_get_targets() {
 		$contrat_ids = Amapress::get_post_meta_array( $dist_id, 'amapress_distribution_contrats' );
 		$contrat_ids = implode( ',', $contrat_ids );
 
-		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date", "Les amapiens inscrit à {$distrib->post_title}", "distribution" );
+		amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date", sprintf( __( "Les amapiens inscrit à %s", 'amapress' ), $distrib->post_title ), "distribution" );
 
 		$cnt[ $lieu_id ] -= 1;
 	}
-	$res['Distributions'] = $ret;
+	$res[ __( 'Distributions', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//responsables disributions
@@ -495,11 +495,11 @@ function amapress_message_get_targets() {
 			continue;
 		}
 
-		amapress_add_message_target( $ret, "amapress_post=$dist_id|amapress_distribution_responsables|amapress_post=$dist_id|amapress_distribution_date", "Les responsables de distribution inscrit à {$distrib->post_title}", "resp-distribution" );
+		amapress_add_message_target( $ret, "amapress_post=$dist_id|amapress_distribution_responsables|amapress_post=$dist_id|amapress_distribution_date", sprintf( __( "Les responsables de distribution inscrit à %s", 'amapress' ), $distrib->post_title ), "resp-distribution" );
 
 		$cnt[ $lieu_id ] -= 1;
 	}
-	$res['Responsables de distributions'] = $ret;
+	$res[ __( 'Responsables de distributions', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//visite à la ferme
@@ -509,11 +509,11 @@ function amapress_message_get_targets() {
 			continue;
 		}
 
-		amapress_add_message_target( $ret, "amapress_post={$visite->ID}|amapress_visite_participants|amapress_post={$visite->ID}|amapress_visite_date", "Les inscrits à {$visite->getTitle()}", "visite" );
+		amapress_add_message_target( $ret, "amapress_post={$visite->ID}|amapress_visite_participants|amapress_post={$visite->ID}|amapress_visite_date", sprintf( __( "Les inscrits à %s", 'amapress' ), $visite->getTitle() ), "visite" );
 
 		$cnt -= 1;
 	}
-	$res['Visites à la ferme'] = $ret;
+	$res[ __( 'Visites à la ferme', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//ag
@@ -523,11 +523,11 @@ function amapress_message_get_targets() {
 			continue;
 		}
 
-		amapress_add_message_target( $ret, "amapress_post={$ag->ID}|amapress_assemblee_generale_participants|amapress_post={$ag->ID}|amapress_assemblee_generale_date", "Les inscrits à {$ag->getTitle()}", "assemblee" );
+		amapress_add_message_target( $ret, "amapress_post={$ag->ID}|amapress_assemblee_generale_participants|amapress_post={$ag->ID}|amapress_assemblee_generale_date", sprintf( __( "Les inscrits à %s", 'amapress' ), $ag->getTitle() ), "assemblee" );
 
 		$cnt -= 1;
 	}
-	$res['Assemblées générales'] = $ret;
+	$res[ __( 'Assemblées générales', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//event
@@ -537,24 +537,24 @@ function amapress_message_get_targets() {
 			continue;
 		}
 
-		amapress_add_message_target( $ret, "amapress_post={$ev->ID}|amapress_amap_event_participants|amapress_post={$ev->ID}|amapress_amap_event_date", "Les inscrits à {$ev->getTitle()}", "event" );
+		amapress_add_message_target( $ret, "amapress_post={$ev->ID}|amapress_amap_event_participants|amapress_post={$ev->ID}|amapress_amap_event_date", sprintf( __( "Les inscrits à %s", 'amapress' ), $ev->getTitle() ), "event" );
 
 		$cnt -= 1;
 	}
-	$res['Evènements'] = $ret;
+	$res[ __( 'Evènements', 'amapress' ) ] = $ret;
 
 	$ret = array();
 	//avec adhésion
-	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", "Les amapiens avec contrats", "with-contrats" );
+	amapress_add_message_target( $ret, "post_type=amps_adhesion&amapress_date=active|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4", __( "Les amapiens avec contrats", 'amapress' ), "with-contrats" );
 	//intermittants
-	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
-	amapress_add_message_target( $ret, "user:amapress_contrat=principal&amapress_role=active", "Les amapiens principaux", "principaux" );
-	amapress_add_message_target( $ret, "user:amapress_contrat=principal_contrat", "Les amapiens principaux (avec contrat)", "principaux" );
-	amapress_add_message_target( $ret, "user:amapress_role=active", "Tous les amapiens (adhésions/contrats/collectif sauf producteurs)", "principaux" );
+	amapress_add_message_target( $ret, "user:amapress_contrat=intermittent", __( "Les intermittents", 'amapress' ), "intermittent" );
+	amapress_add_message_target( $ret, "user:amapress_contrat=principal&amapress_role=active", __( "Les amapiens principaux", 'amapress' ), "principaux" );
+	amapress_add_message_target( $ret, "user:amapress_contrat=principal_contrat", __( "Les amapiens principaux (avec contrat)", 'amapress' ), "principaux" );
+	amapress_add_message_target( $ret, "user:amapress_role=active", __( "Tous les amapiens (adhésions/contrats/collectif sauf producteurs)", 'amapress' ), "principaux" );
 	//sans adhésion
-	amapress_add_message_target( $ret, "no_adhesion", "Les amapiens sans contrat", "sans-adhesion" );
-	amapress_add_message_target( $ret, "never_logged", "Les amapiens jamais connectés", "never-logged" );
-	amapress_add_message_target( $ret, 'user:amapress_role=archivable', "Les amapiens archivables", 'archivables' );
+	amapress_add_message_target( $ret, "no_adhesion", __( "Les amapiens sans contrat", 'amapress' ), "sans-adhesion" );
+	amapress_add_message_target( $ret, "never_logged", __( "Les amapiens jamais connectés", 'amapress' ), "never-logged" );
+	amapress_add_message_target( $ret, 'user:amapress_role=archivable', __( "Les amapiens archivables", 'amapress' ), 'archivables' );
 
 	foreach (
 		get_categories( array(
@@ -565,15 +565,15 @@ function amapress_message_get_targets() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		amapress_add_message_target( $ret, "user:amapress_role=amapien_group_{$role->slug}", 'Groupe amapiens "' . $role->name . '"', "amapiens" );
+		amapress_add_message_target( $ret, "user:amapress_role=amapien_group_{$role->slug}", __( 'Groupe amapiens "', 'amapress' ) . $role->name . '"', "amapiens" );
 	}
 
 
-	$res['Amapiens'] = $ret;
+	$res[ __( 'Amapiens', 'amapress' ) ] = $ret;
 
 	$ret = array();
-	amapress_add_message_target( $ret, "user:amapress_adhesion=nok", "Les amapiens avec adhésion AMAP non réglée", 'adh-nok' );
-	$res['Trésorerie'] = $ret;
+	amapress_add_message_target( $ret, "user:amapress_adhesion=nok", __( "Les amapiens avec adhésion AMAP non réglée", 'amapress' ), 'adh-nok' );
+	$res[ __( 'Trésorerie', 'amapress' ) ] = $ret;
 
 	Amapress::setFilterForReferent( true );
 

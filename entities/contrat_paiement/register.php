@@ -23,8 +23,8 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 		'default_orderby'  => 'amapress_contrat_paiement_date',
 		'default_order'    => 'ASC',
 		'labels'           => array(
-			'add_new'      => 'Ajouter',
-			'add_new_item' => 'Saisie Chèque/Règlement Inscription Contrat',
+			'add_new'      => __( 'Ajouter', 'amapress' ),
+			'add_new_item' => __( 'Saisie Chèque/Règlement Inscription Contrat', 'amapress' ),
 		),
 		'views'            => array(
 			'remove'  => array( 'mine' ),
@@ -36,7 +36,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'name' => amapress__('Amapien'),
 //                'type' => 'select-users',
 //                'required' => true,
-//                'desc' => 'Amapien',
+//                'desc' => __('Amapien', 'amapress'),
 //                'import_key' => true,
 //                'csv_required' => true,
 //            ),
@@ -44,13 +44,13 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'name'         => __( 'Date de remise', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
-				'desc'         => 'Date de remise du règlement au producteur',
+				'desc'         => __( 'Date de remise du règlement au producteur', 'amapress' ),
 //                'import_key' => true,
 				'csv_required' => true,
 				'searchable'   => true,
 				'top_filter'   => array(
 					'name'           => 'amapress_date',
-					'placeholder'    => 'Toutes les dates',
+					'placeholder'    => __( 'Toutes les dates', 'amapress' ),
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
 				'column_link'  => function ( $option, $post_id ) {
@@ -82,7 +82,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'name'         => __( 'Date d\'émission', 'amapress' ),
 				'type'         => 'date',
 				'required'     => false,
-				'desc'         => 'Date d\'émission',
+				'desc'         => __( 'Date d\'émission', 'amapress' ),
 //                'import_key' => true,
 				'csv_required' => true,
 				'searchable'   => true,
@@ -92,7 +92,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'type'         => 'select-posts',
 				'post_type'    => 'amps_adhesion',
 				'required'     => true,
-				'desc'         => 'Sélectionner le contrat relatif au règlement',
+				'desc'         => __( 'Sélectionner le contrat relatif au règlement', 'amapress' ),
 				'import_key'   => true,
 				'csv_required' => true,
 				'autocomplete' => true,
@@ -116,7 +116,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				},
 				'top_filter' => array(
 					'name'           => 'amapress_contrat_inst',
-					'placeholder'    => 'Tous les contrats',
+					'placeholder'    => __( 'Tous les contrats', 'amapress' ),
 					'custom_options' => function ( $args ) {
 						$ret      = [];
 						$contrats = AmapressContrats::get_active_contrat_instances();
@@ -146,7 +146,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				},
 				'top_filter' => array(
 					'name'           => 'amapress_lieu',
-					'placeholder'    => 'Tous les lieux',
+					'placeholder'    => __( 'Tous les lieux', 'amapress' ),
 					'custom_options' => function ( $args ) {
 						$ret   = [];
 						$lieux = Amapress::get_lieux();
@@ -165,36 +165,36 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'name'         => __( 'Statut', 'amapress' ),
 				'type'         => 'select',
 				'options'      => array(
-					'not_received' => 'Non reçu',
-					'received'     => 'Reçu',
-					'bank'         => 'Remis',
+					'not_received' => __( 'Non reçu', 'amapress' ),
+					'received'     => __( 'Reçu', 'amapress' ),
+					'bank'         => __( 'Remis', 'amapress' ),
 				),
 				'required'     => true,
-				'desc'         => 'Sélectionner l’option qui convient : Reçu à l’Amap, non reçu à l’Amap, Remis au producteur',
+				'desc'         => __( 'Sélectionner l’option qui convient : Reçu à l’Amap, non reçu à l’Amap, Remis au producteur', 'amapress' ),
 				'csv_required' => true,
 				'top_filter'   => array(
 					'name'        => 'amapress_status',
-					'placeholder' => 'Tous les statut',
+					'placeholder' => __( 'Tous les statut', 'amapress' ),
 				),
 			),
 			'type'          => array(
 				'name'       => __( 'Type', 'amapress' ),
 				'type'       => 'select',
 				'options'    => array(
-					'chq' => 'Chèque',
-					'esp' => 'Espèces',
-					'stp' => 'Paiement en ligne (Stripe)',
-					'vir' => 'Virement',
-					'mon' => 'Monnaie locale',
-					'dlv' => 'A la livraison',
-					'prl' => 'Prélèvement',
+					'chq' => __( 'Chèque', 'amapress' ),
+					'esp' => __( 'Espèces', 'amapress' ),
+					'stp' => __( 'Paiement en ligne (Stripe)', 'amapress' ),
+					'vir' => __( 'Virement', 'amapress' ),
+					'mon' => __( 'Monnaie locale', 'amapress' ),
+					'dlv' => __( 'A la livraison', 'amapress' ),
+					'prl' => __( 'Prélèvement', 'amapress' ),
 				),
 				'default'    => 'chq',
 				'required'   => true,
-				'desc'       => 'Sélectionner le type de règlement',
+				'desc'       => __( 'Sélectionner le type de règlement', 'amapress' ),
 				'top_filter' => array(
 					'name'        => 'amapress_pmt_type',
-					'placeholder' => 'Tous les type',
+					'placeholder' => __( 'Tous les type', 'amapress' ),
 				),
 			),
 			'amount'        => array(
@@ -202,14 +202,14 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'type'         => 'float',
 				'unit'         => '€',
 				'required'     => true,
-				'desc'         => 'Montant du chèque/espèces/virement/prélèvement',
+				'desc'         => __( 'Montant du chèque/espèces/virement/prélèvement', 'amapress' ),
 				'csv_required' => true,
 			),
 			'numero'        => array(
 				'name'         => __( 'Numéro du chèque', 'amapress' ),
 				'type'         => 'text',
 				'required'     => false,
-				'desc'         => 'Numéro du chèque ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale',
+				'desc'         => __( 'Numéro du chèque ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale', 'amapress' ),
 				'import_key'   => true,
 				'csv_required' => true,
 				'searchable'   => true,
@@ -217,14 +217,14 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 			'banque'        => array(
 				'name'       => __( 'Banque', 'amapress' ),
 				'type'       => 'text',
-				'desc'       => 'Banque émettrice ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale',
+				'desc'       => __( 'Banque émettrice ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale', 'amapress' ),
 				'searchable' => true,
 			),
 			'emetteur'      => array(
 				'name'       => __( 'Emetteur', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
-				'desc'       => 'Emetteur du règlement. Pour les chèques, renseigner obligatoirement le nom de l’émetteur qui figure sur le chèque (peut être différent du nom de l’amapien détenteur du contrat)',
+				'desc'       => __( 'Emetteur du règlement. Pour les chèques, renseigner obligatoirement le nom de l’émetteur qui figure sur le chèque (peut être différent du nom de l’amapien détenteur du contrat)', 'amapress' ),
 				'searchable' => true,
 			),
 //            'categ_editor' => array(
@@ -233,24 +233,24 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'column' => null,
 //                'custom' => 'amapress_get_contrat_paiements_categories',
 //                'save' => 'amapress_save_contrat_paiements_categories',
-//                'desc' => 'Répartitions',
+//                'desc' => __('Répartitions', 'amapress'),
 //            ),
 		),
 		'row_actions'      => array(
 			'mark_rcv'           => [
-				'label'     => 'Marquer reçu',
+				'label'     => __( 'Marquer reçu', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					return AmapressAmapien_paiement::NOT_RECEIVED == AmapressAmapien_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
 			'unmark_rcv'         => [
-				'label'     => 'Marquer Non reçu',
+				'label'     => __( 'Marquer Non reçu', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					return AmapressAmapien_paiement::NOT_RECEIVED != AmapressAmapien_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
 			'send_notrcv_recall' => [
-				'label'     => 'Envoyer rappel',
+				'label'     => __( 'Envoyer rappel', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					return AmapressAmapien_paiement::NOT_RECEIVED == AmapressAmapien_paiement::getBy( $adh_id )->getStatus();
 				},
@@ -258,20 +258,20 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 		),
 		'bulk_actions'     => array(
 			'amp_cnt_pmt_mark_recv'          => array(
-				'label'    => 'Marquer reçu',
+				'label'    => __( 'Marquer reçu', 'amapress' ),
 				'messages' => array(
-					'<0' => 'Une erreur s\'est produit pendant l\'opération',
-					'0'  => 'Une erreur s\'est produit pendant l\'opération',
-					'1'  => 'Un règlement a été marqué comme reçu avec succès',
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => __( 'Un règlement a été marqué comme reçu avec succès', 'amapress' ),
 					'>1' => '%s règlements ont été marqués comme reçus avec succès',
 				),
 			),
 			'amp_cnt_pmt_send_notrcv_recall' => array(
-				'label'    => 'Envoyer rappel',
+				'label'    => __( 'Envoyer rappel', 'amapress' ),
 				'messages' => array(
-					'<0' => 'Une erreur s\'est produit pendant l\'opération',
-					'0'  => 'Une erreur s\'est produit pendant l\'opération',
-					'1'  => 'Un rappel de règlement en attente a été envoyé avec succès',
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => __( 'Un rappel de règlement en attente a été envoyé avec succès', 'amapress' ),
 					'>1' => '%s rappels de règlement en attente ont été envoyés avec succès',
 				),
 			),

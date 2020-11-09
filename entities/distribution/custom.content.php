@@ -22,7 +22,7 @@ function amapress_get_custom_content_distribution( $content ) {
 	} else {
 		$responsables = array();
 	}
-//    $responsables_names=array_map(array('AmapressUsers','to_displayname'),$responsables);
+//    $responsables_names=array_map(array(__('AmapressUsers', 'amapress'),'to_displayname'),$responsables);
 	$needed_responsables = AmapressDistributions::get_required_responsables( $dist_id );
 	$lieu_id             = get_post_meta( $dist_id, 'amapress_distribution_lieu', true );
 	$lieu_subst_id       = get_post_meta( $dist_id, 'amapress_distribution_lieu_substitution', true );
@@ -42,7 +42,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 	if ( amapress_is_user_logged_in() && ! empty( $dist->getContratIds() ) ) {
 		$can_subscribe = $dist->canSubscribe();
-		amapress_echo_panel_start( 'Responsables de distributions', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
+		amapress_echo_panel_start( __( 'Responsables de distributions', 'amapress' ), 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-resp-dist' );
 		if ( count( $resp_ids ) > 0 ) {
 			$render_func = 'user_cell';
 			if ( amapress_can_access_admin() ||
@@ -52,7 +52,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 			}
 			echo '<div>' . amapress_generic_gallery( $responsables, $render_func, [
-					'if_empty' => 'Pas de responsables'
+					'if_empty' => __( 'Pas de responsables', 'amapress' )
 				], $dist ) . '</div><br style="clear:both" />';
 		} else { ?>
             <p class="dist-no-resp"><?php _e( 'Aucun responsable', 'amapress' ) ?></p>
@@ -60,21 +60,21 @@ function amapress_get_custom_content_distribution( $content ) {
 		<?php
 		if ( count( $resp_ids ) < $needed_responsables ) {
 			if ( Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() ) ) {
-				$missing_format = 'Il manque encore %d responsable(s) de distributions.';
+				$missing_format = __( 'Il manque encore %d responsable(s) de distributions.', 'amapress' );
 			} else {
-				$missing_format = 'Il manquait %d responsable(s) de distributions.';
+				$missing_format = __( 'Il manquait %d responsable(s) de distributions.', 'amapress' );
 			}
 			echo '<p class="dist-miss-resp">' . esc_html( sprintf( $missing_format, $needed_responsables - count( $resp_ids ) ) ) . '</p>';
 			$need_responsables = true;
 			$href              = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 			if ( ! empty( $href ) ) {
 				if ( $is_resp_amap ) {
-					echo '<p>' . sprintf( 'Les inscriptions aux distributions des amapiens se gèrent <a href="%s" target="_blank">ici</a>', esc_attr( $href ) ) . '</p>';
+					echo '<p>' . sprintf( __( 'Les inscriptions aux distributions des amapiens se gèrent <a href="%s" target="_blank">ici</a>', 'amapress' ), esc_attr( $href ) ) . '</p>';
 				}
 				if ( $is_resp ) {
-					echo '<p>' . Amapress::makeLink( $href, 'Vous êtes responsable de distribution', true, true ) . '</p>';
+					echo '<p>' . Amapress::makeLink( $href, __( 'Vous êtes responsable de distribution', 'amapress' ), true, true ) . '</p>';
 				} else {
-					echo '<p>' . Amapress::makeButtonLink( $href, ! empty( $dist->getSlotsConf() ) ? 'Inscriptions et créneaux horaires' : 'Inscriptions', true, true ) . '</p>';
+					echo '<p>' . Amapress::makeButtonLink( $href, ! empty( $dist->getSlotsConf() ) ? __( 'Inscriptions et créneaux horaires', 'amapress' ) : __( 'Inscriptions', 'amapress' ), true, true ) . '</p>';
 				}
 
 			}
@@ -95,26 +95,26 @@ function amapress_get_custom_content_distribution( $content ) {
 	$btns = [];
 	if ( amapress_is_user_logged_in() ) {
 		if ( amapress_can_access_admin() || AmapressDistributions::isCurrentUserResponsableThisWeek() ) {
-			$btns[] = amapress_get_button( 'Liste d\'émargement',
+			$btns[] = amapress_get_button( __( 'Liste d\'émargement', 'amapress' ),
 				amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
 				true, null, 'btn-print-liste' );
 		}
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
-		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '#amapress_distribution_nb_resp_supp" class="btn btn-default">' . 'Ajouter des responsables supplémentaires' . '</a>';
-		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">' . 'Editer la distribution (infos, horaires, créneaux...)' . '</a>';
+		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '#amapress_distribution_nb_resp_supp" class="btn btn-default">' . __( 'Ajouter des responsables supplémentaires', 'amapress' ) . '</a>';
+		$btns[] = '<a href="' . esc_attr( $dist->getAdminEditLink() ) . '" class="btn btn-default">' . __( 'Editer la distribution (infos, horaires, créneaux...)', 'amapress' ) . '</a>';
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_contrat_instance' ) ) {
 		$btns[] = '<a href="' . esc_attr( admin_url( 'admin.php?page=contrats_quantites_next_distrib&date=' . date_i18n( 'Y-m-d', $dist->getDate() ) ) )
-		          . '" class="btn btn-default">' . 'Quantités au producteur' . '</a>';
+		          . '" class="btn btn-default">' . __( 'Quantités au producteur', 'amapress' ) . '</a>';
 	}
 	if ( $is_resp_amap || current_user_can( 'edit_distrib' ) ) {
 		$mailto = $dist->getMailtoResponsables();
 		if ( ! empty( $mailto ) ) {
-			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">' . 'Email aux responsables' . '</a>';
+			$btns[] = '<a href="' . $mailto . '" class="btn btn-default">' . __( 'Email aux responsables', 'amapress' ) . '</a>';
 		}
 
-		$btns[] = '<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_messages_page' ) . '" class="btn btn-default">' . 'Email aux amapiens' . '</a>';
+		$btns[] = '<a target="_blank" href="' . admin_url( 'admin.php?page=amapress_messages_page' ) . '" class="btn btn-default">' . __( 'Email aux amapiens', 'amapress' ) . '</a>';
 	}
 	?>
 
@@ -125,12 +125,12 @@ function amapress_get_custom_content_distribution( $content ) {
 		<?php
 
 		if ( empty( $dist->getContratIds() ) ) {
-			echo '<p class="dist-cancelled" style="font-weight: bold;color: #FF0000; text-align: center">' . 'Distribution annulée ou reportée' . '</p>';
+			echo '<p class="dist-cancelled" style="font-weight: bold;color: #FF0000; text-align: center">' . __( 'Distribution annulée ou reportée', 'amapress' ) . '</p>';
 		}
 
 		$current_user_slot = $dist->getSlotInfoForUser( amapress_current_user_id() );
 		if ( $current_user_slot ) {
-			echo '<p class="amapien-has-creneau" style="text-align: center;color: orange">' . 'Vous avez le créneau ' . esc_html( $current_user_slot['display'] ) . '</p>';
+			echo '<p class="amapien-has-creneau" style="text-align: center;color: orange">' . __( 'Vous avez le créneau ', 'amapress' ) . esc_html( $current_user_slot['display'] ) . '</p>';
 		}
 
 		if ( $need_responsables ) {
@@ -138,17 +138,17 @@ function amapress_get_custom_content_distribution( $content ) {
 		}
 
 		if ( amapress_is_user_logged_in() && Amapress::getOption( 'enable-gardiens-paniers' ) ) {
-			amapress_echo_panel_start_no_esc( '<a id="panel_gardiens_paniers"></a>' . 'Gardiens de paniers' );
+			amapress_echo_panel_start_no_esc( '<a id="panel_gardiens_paniers"></a>' . __( 'Gardiens de paniers', 'amapress' ) );
 			if ( empty( $user_contrats ) ) {
-				echo '<p><strong>' . 'Vous n\'avez pas de contrats à cette distribution' . '</strong></p>';
+				echo '<p><strong>' . __( 'Vous n\'avez pas de contrats à cette distribution', 'amapress' ) . '</strong></p>';
 			}
 			echo amapress_gardiens_paniers_map( $dist_id );
 			$amapiens_map_link = Amapress::get_page_with_shortcode_href( 'amapiens-map', 'amps_amapiens_map_href' );
 			if ( ! empty( $amapiens_map_link ) ) {
-				echo '<p>' . Amapress::makeLink( $amapiens_map_link, 'Voir la carte complète des amapiens', true, true ) . '</p>';
+				echo '<p>' . Amapress::makeLink( $amapiens_map_link, __( 'Voir la carte complète des amapiens', 'amapress' ), true, true ) . '</p>';
 			}
 			if ( in_array( amapress_current_user_id(), $dist->getGardiensIds( false ) ) ) {
-				echo '<p style="font-weight: bold; margin-top: 1em">' . 'Vous êtes inscrit Gardien de paniers' . '</p>';
+				echo '<p style="font-weight: bold; margin-top: 1em">' . __( 'Vous êtes inscrit Gardien de paniers', 'amapress' ) . '</p>';
 			}
 			$current_amapien = AmapressUser::getBy( amapress_current_user_id() );
 			$gardien_id      = $dist->getPanierGardienId( amapress_current_user_id() );
@@ -159,17 +159,17 @@ function amapress_get_custom_content_distribution( $content ) {
 				}
 				$gardien = AmapressUser::getBy( $gardien_id );
 				echo '<p style="font-weight: bold; margin-top: 1em">';
-				echo sprintf( 'Votre/vos panier(s) seront gardés par %s(%s)', $gardien->getDisplayName(), $gardien->getContacts( wp_is_mobile() ) );
+				echo sprintf( __( 'Votre/vos panier(s) seront gardés par %s(%s)', 'amapress' ), $gardien->getDisplayName(), $gardien->getContacts( wp_is_mobile() ) );
 				echo '<em>' . $gardien_comment . '</em></p>';
 
 			}
 			$gardien_amapien_ids = $dist->getGardiensPaniersAmapiensIds( amapress_current_user_id() );
 			if ( ! empty( $gardien_amapien_ids ) ) {
-				echo '<p>' . 'Vous gardez les paniers de : ' .
+				echo '<p>' . __( 'Vous gardez les paniers de : ', 'amapress' ) .
 				     implode( ', ', array_map( function ( $uid ) {
 					     $u = AmapressUser::getBy( $uid );
 
-					     return sprintf( '%s (%s)', $u->getDisplayName(), $u->getContacts( wp_is_mobile() ) );
+					     return sprintf( __( '%s (%s)', 'amapress' ), $u->getDisplayName(), $u->getContacts( wp_is_mobile() ) );
 				     }, $gardien_amapien_ids ) )
 				     . '</p>';
 			}
@@ -180,15 +180,15 @@ function amapress_get_custom_content_distribution( $content ) {
 					'data'  => 'link',
 				),
 				array(
-					'title' => 'Nom',
+					'title' => __( 'Nom', 'amapress' ),
 					'data'  => 'name'
 				),
 				array(
-					'title' => 'Contacts',
+					'title' => __( 'Contacts', 'amapress' ),
 					'data'  => 'contacts'
 				),
 				array(
-					'title' => 'Infos',
+					'title' => __( 'Infos', 'amapress' ),
 					'data'  => 'infos'
 				),
 			);
@@ -203,11 +203,11 @@ function amapress_get_custom_content_distribution( $content ) {
 					if ( empty( $gardien_id ) && $u->ID != amapress_current_user_id() ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_garde" data-confirm="' . esc_attr__( 'Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment lui confier la garde de votre panier ?', 'amapress' ) . '"
-					data-dist="' . $dist->ID . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">' . 'Confier la garde' . '</button>';
+					data-dist="' . $dist->ID . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">' . __( 'Confier la garde', 'amapress' ) . '</button>';
 					} elseif ( $u->ID == $gardien_id ) {
 						$link = '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="' . esc_attr__( 'Avez-vous pris contact avec ce gardien de paniers et souhaitez-vous vraiment lui retirer la garde de votre panier ?', 'amapress' ) . '"
-					data-dist="' . $dist->ID . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">' . 'Retirer la garde' . '</button>';
+					data-dist="' . $dist->ID . '" data-gardien="' . $u->ID . '" data-user="' . amapress_current_user_id() . '">' . __( 'Retirer la garde', 'amapress' ) . '</button>';
 					}
 				}
 
@@ -225,13 +225,13 @@ function amapress_get_custom_content_distribution( $content ) {
 							! $u->isAdresse_localized() ?
 								'amapien non localisé' :
 								( $current_amapien->isAdresse_localized() ?
-									sprintf( 'à %s (à vol d\'oiseau)',
+									sprintf( __( 'à %s (à vol d\'oiseau)', 'amapress' ),
 										AmapressUsers::distanceFormatMeter(
 											$current_amapien->getUserLatitude(),
 											$current_amapien->getUserLongitude(),
 											$u->getUserLatitude(),
 											$u->getUserLongitude() ) )
-									: 'Vous n\'êtes pas localisé'
+									: __( 'Vous n\'êtes pas localisé', 'amapress' )
 								) ) : '' )
 				);
 			}, $dist_gardiens );
@@ -248,7 +248,7 @@ function amapress_get_custom_content_distribution( $content ) {
 				$inscription_href = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 				if ( ! empty( $inscription_href ) ) {
 					echo '<p>' . Amapress::makeButtonLink(
-							$inscription_href, 'Se proposer comme gardien de panier',
+							$inscription_href, __( 'Se proposer comme gardien de panier', 'amapress' ),
 							true, true
 						) . '</p>';
 				}
@@ -259,20 +259,20 @@ function amapress_get_custom_content_distribution( $content ) {
 				amapress_precache_all_users();
 
 				if ( amapress_can_access_admin() ) {
-					amapress_echo_panel_start( 'Pour les responsables AMAP' );
+					amapress_echo_panel_start( __( 'Pour les responsables AMAP', 'amapress' ) );
 					$users = [ '' => '--Sélectionner un amapien--' ];
 
 					foreach ( $dist->getMainAdherentsIds( true ) as $user_id ) {
 						$user               = AmapressUser::getBy( $user_id );
-						$users[ $user->ID ] = sprintf( '%s (%s)', $user->getDisplayName(), $user->getEmail() );
+						$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->getDisplayName(), $user->getEmail() );
 					}
-					echo '<form><label for="other-amapien">' . 'Amapien demandeur' . '</label>';
+					echo '<form><label for="other-amapien">' . __( 'Amapien demandeur', 'amapress' ) . '</label>';
 					echo '<select name="other-amapien" id="other-amapien" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
-					echo '<br/><label for="other-gardien">' . 'Gardien' . '</label>';
+					echo '<br/><label for="other-gardien">' . __( 'Gardien', 'amapress' ) . '</label>';
 					echo '<select name="other-gardien" id="other-gardien" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
 					echo '<br/><button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_garde" data-confirm="' . esc_attr__( 'Etes-vous sûr ?', 'amapress' ) . '"
-					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">' . 'Confier la garde' . '</button></form>';
+					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">' . __( 'Confier la garde', 'amapress' ) . '</button></form>';
 					echo '<hr/>';
 
 					$columns = array(
@@ -281,11 +281,11 @@ function amapress_get_custom_content_distribution( $content ) {
 							'data'  => 'link',
 						),
 						array(
-							'title' => 'Gardien',
+							'title' => __( 'Gardien', 'amapress' ),
 							'data'  => 'gardien'
 						),
 						array(
-							'title' => 'Demandeur',
+							'title' => __( 'Demandeur', 'amapress' ),
 							'data'  => 'amapien'
 						),
 					);
@@ -309,9 +309,9 @@ function amapress_get_custom_content_distribution( $content ) {
 							$data[] = array(
 								'link'    => '<button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="desinscrire_garde" data-confirm="' . esc_attr__( 'Etes-vous sûr ?', 'amapress' ) . '"
-					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">' . 'Retirer la garde' . '</button>',
-								'gardien' => sprintf( '%s (%s)', $gardien->getDisplayName(), $gardien->getContacts( false ) ) . $gardien_comment,
-								'amapien' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getContacts( false ) ),
+					data-dist="' . $dist_id . '" data-gardien="' . $gardien->ID . '" data-user="' . $amapien->ID . '">' . __( 'Retirer la garde', 'amapress' ) . '</button>',
+								'gardien' => sprintf( __( '%s (%s)', 'amapress' ), $gardien->getDisplayName(), $gardien->getContacts( false ) ) . $gardien_comment,
+								'amapien' => sprintf( __( '%s (%s)', 'amapress' ), $amapien->getDisplayName(), $amapien->getContacts( false ) ),
 							);
 						}
 					}
@@ -326,18 +326,18 @@ function amapress_get_custom_content_distribution( $content ) {
 
 					amapress_echo_panel_end();
 				} elseif ( empty( $gardien_id ) && Amapress::toBool( Amapress::getOption( 'allow-affect-gardiens' ) ) ) {
-					amapress_echo_panel_start( 'Affecter la garde de mon panier' );
+					amapress_echo_panel_start( __( 'Affecter la garde de mon panier', 'amapress' ) );
 					$users = [ '' => '--Sélectionner un amapien--' ];
 
 					foreach ( $dist->getMainAdherentsIds( true ) as $user_id ) {
 						$user               = AmapressUser::getBy( $user_id );
-						$users[ $user->ID ] = sprintf( '%s (%s)', $user->getDisplayName(), $user->getEmail() );
+						$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->getDisplayName(), $user->getEmail() );
 					}
-					echo '<form><label for="other-gardien">' . 'Gardien' . '</label>';
+					echo '<form><label for="other-gardien">' . __( 'Gardien', 'amapress' ) . '</label>';
 					echo '<select name="other-gardien" id="other-gardien" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>';
 					echo '<br/><button type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="inscrire_garde" data-confirm="' . esc_attr__( 'Etes-vous sûr ?', 'amapress' ) . '"
-					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">' . 'Confier la garde' . '</button></form>';
+					data-dist="' . $dist_id . '" data-gardien="val:#other-gardien" data-user="val:#other-amapien">' . __( 'Confier la garde', 'amapress' ) . '</button></form>';
 					amapress_echo_panel_end();
 				}
 			}
@@ -349,21 +349,21 @@ function amapress_get_custom_content_distribution( $content ) {
 		if ( $is_resp || $is_resp_amap ) {
 			$add_text = '';
 			if ( ! $is_resp_amap ) {
-				$add_text = '<span class="resp-distribution">' . 'Vous êtes responsable de distribution' . '</span> - ';
+				$add_text = '<span class="resp-distribution">' . __( 'Vous êtes responsable de distribution', 'amapress' ) . '</span> - ';
 			}
 
-			$instructions .= amapress_get_panel_start_no_esc( $add_text . 'Instruction du lieu ',
+			$instructions .= amapress_get_panel_start_no_esc( $add_text . __( 'Instruction du lieu ', 'amapress' ),
 				'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ',
 				'instructions-lieu' );
 			if ( ! $is_resp_amap ) {
 				if ( $can_unsubscribe ) {
-					amapress_get_button( 'Se désinscrire', amapress_action_link( $dist_id, 'desinscrire' ), 'fa-fa', false, "Confirmez-vous votre désinscription ?" );
+					amapress_get_button( __( 'Se désinscrire', 'amapress' ), amapress_action_link( $dist_id, 'desinscrire' ), 'fa-fa', false, __( 'Confirmez-vous votre désinscription ?', 'amapress' ) );
 				}
 			}
 			$instructions .= $dist->getLieu()->getInstructions_privee();
 			if ( strpos( $dist->getLieu()->getInstructions_privee(), '[liste-emargement-button]' ) === false ) {
 				$instructions .= '<br/>';
-				$instructions .= amapress_get_button( 'Imprimer la liste d\'émargement',
+				$instructions .= amapress_get_button( __( 'Imprimer la liste d\'émargement', 'amapress' ),
 					amapress_action_link( $dist_id, 'liste-emargement' ), 'fa-fa',
 					true, null, 'btn-print-liste' );
 			}
@@ -371,7 +371,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 			$paniers_instructions_distribution = $dist->getProperty( 'paniers_instructions_distribution' );
 			if ( ! empty( $paniers_instructions_distribution ) ) {
-				$instructions .= amapress_get_panel_start_no_esc( $add_text . 'Instructions de distribution',
+				$instructions .= amapress_get_panel_start_no_esc( $add_text . __( 'Instructions de distribution', 'amapress' ),
 					'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ',
 					'instructions-dist' );
 				$instructions .= $paniers_instructions_distribution;
@@ -384,15 +384,15 @@ function amapress_get_custom_content_distribution( $content ) {
 		}
 
 		$lieu_id = $lieu->ID;
-		amapress_echo_panel_start( 'Lieu', 'fa-map-marker', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-lieu amap-panel-dist-lieu-' . $lieu_id );
+		amapress_echo_panel_start( __( 'Lieu', 'amapress' ), 'fa-map-marker', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-lieu amap-panel-dist-lieu-' . $lieu_id );
 
 		echo '<div class="dist-lieu-photo"><img src="' . amapress_get_avatar_url( $lieu_id, null, 'produit-thumb', 'default_lieu.jpg' ) . '" alt="" /></div>';
-		echo '<h3><a href="' . get_post_permalink( $lieu_id ) . '">' . ( $lieu_subst_id ? ' <strong>' . 'EXCEPTIONNELLEMENT à' . '</strong> ' : '' ) . $lieu->post_title . '</a></h3>' .
-		     '<p class="dist-lieu-adresse">' . 'Adresse : ' . get_post_meta( $lieu_id, 'amapress_lieu_distribution_adresse', true ) . '<br />' .
+		echo '<h3><a href="' . get_post_permalink( $lieu_id ) . '">' . ( $lieu_subst_id ? ' <strong>' . __( 'EXCEPTIONNELLEMENT à', 'amapress' ) . '</strong> ' : '' ) . $lieu->post_title . '</a></h3>' .
+		     '<p class="dist-lieu-adresse">' . __( 'Adresse : ', 'amapress' ) . get_post_meta( $lieu_id, 'amapress_lieu_distribution_adresse', true ) . '<br />' .
 		     get_post_meta( $lieu_id, 'amapress_lieu_distribution_code_postal', true ) . ' ' . get_post_meta( $lieu_id, 'amapress_lieu_distribution_ville', true ) .
 		     '</p>' .
 		     '<p class="dist-lieu-horaires">';
-		echo sprintf( 'de %s à %s', date_i18n( 'H:i', get_post_meta( $lieu_id, 'amapress_lieu_distribution_heure_debut', true ) ), date_i18n( 'H:i', get_post_meta( $lieu_id, 'amapress_lieu_distribution_heure_fin', true ) ) );
+		echo sprintf( __( 'de %s à %s', 'amapress' ), date_i18n( 'H:i', get_post_meta( $lieu_id, 'amapress_lieu_distribution_heure_debut', true ) ), date_i18n( 'H:i', get_post_meta( $lieu_id, 'amapress_lieu_distribution_heure_fin', true ) ) );
 		echo '</p>';
 		amapress_echo_panel_end();
 
@@ -400,7 +400,7 @@ function amapress_get_custom_content_distribution( $content ) {
 			$info_html = $dist->getInformations();
 			$info_text = trim( strip_tags( $info_html ) );
 			if ( ! empty( $info_text ) ) {
-				amapress_echo_panel_start( 'Informations spécifiques', 'fa-fa', 'amap-panel-dist amap-panel-dist-info' );
+				amapress_echo_panel_start( __( 'Informations spécifiques', 'amapress' ), 'fa-fa', 'amap-panel-dist amap-panel-dist-info' );
 				echo $info_html;
 				amapress_echo_panel_end();
 			}
@@ -416,17 +416,17 @@ function amapress_get_custom_content_distribution( $content ) {
 		$query['date']                = $dist->getDate();
 		$adhs                         = AmapressPaniers::getPanierIntermittents( $query );
 		if ( count( $adhs ) > 0 ) {
-			amapress_echo_panel_start( 'Panier(s) intermittent(s)', 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ' );
+			amapress_echo_panel_start( __( 'Panier(s) intermittent(s)', 'amapress' ), 'fa-fa', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ' );
 			echo amapress_get_paniers_intermittents_exchange_table( $adhs );
 			amapress_echo_panel_end();
 		}
 
-		//        amapress_echo_panel_start('Panier(s)', 'fa-shopping-basket', 'amap-panel-dist amap-panel-dist-'.$lieu_id.' ');
+		//        amapress_echo_panel_start(__('Panier(s)', 'amapress'), 'fa-shopping-basket', 'amap-panel-dist amap-panel-dist-'.$lieu_id.' ');
 
 		if ( amapress_is_user_logged_in() && Amapress::isIntermittenceEnabled() && ! empty( $user_contrats ) ) {
-			amapress_echo_panel_start( 'En cas d\'absence - Espace intermittents' );
+			amapress_echo_panel_start( __( 'En cas d\'absence - Espace intermittents', 'amapress' ) );
 			$paniers       = AmapressPaniers::getPaniersForDist( $dist->getDate() );
-			$ceder_title   = count( $user_contrats ) > 1 ? sprintf( 'Céder mes %s paniers', count( $user_contrats ) ) : 'Céder mon panier';
+			$ceder_title   = count( $user_contrats ) > 1 ? sprintf( __( 'Céder mes %s paniers', 'amapress' ), count( $user_contrats ) ) : __( 'Céder mon panier', 'amapress' );
 			$can_subscribe = Amapress::start_of_day( $dist->getDate() ) >= Amapress::start_of_day( amapress_time() );
 
 			$is_intermittent = 'exchangeable';
@@ -444,25 +444,25 @@ function amapress_get_custom_content_distribution( $content ) {
 				case 'exchangeable':
 					if ( $can_subscribe ) {
 						$id = "info_{$dist->ID}";
-						echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">' . 'Informations' . '</h4><textarea id="' . $id . '"></textarea><br/>';
+						echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">' . __( 'Informations', 'amapress' ) . '</h4><textarea id="' . $id . '"></textarea><br/>';
 						echo '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="echanger_panier" data-message="val:#' . $id . '" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir céder votre/vos paniers ?', 'amapress' ) . '"
 					data-dist="' . $dist->ID . '" data-user="' . amapress_current_user_id() . '">' . $ceder_title . '</button></div>';
 					} else {
-						echo '<span class="echange-closed">' . 'Cessions de paniers closes' . '</span>';
+						echo '<span class="echange-closed">' . __( 'Cessions de paniers closes', 'amapress' ) . '</span>';
 					}
 					break;
 				case 'to_exchange':
-					echo '<span class="panier-to-exchange">' . 'Panier(s) en attente de repreneur' . '</span>';
+					echo '<span class="panier-to-exchange">' . __( 'Panier(s) en attente de repreneur', 'amapress' ) . '</span>';
 					break;
 				case 'exchanged':
-					echo '<span class="panier-exchanged">' . 'Panier(s) cédé(s)' . '</span>';
+					echo '<span class="panier-exchanged">' . __( 'Panier(s) cédé(s)', 'amapress' ) . '</span>';
 					break;
 				case 'exch_valid_wait':
-					echo '<span class="panier-exchanged">' . 'Panier(s) en attente de validation de reprise' . '</span>';
+					echo '<span class="panier-exchanged">' . __( 'Panier(s) en attente de validation de reprise', 'amapress' ) . '</span>';
 					break;
 				case 'closed':
-					echo '<span class="echange-done">' . 'Cession effectuée' . '</span>';
+					echo '<span class="echange-done">' . __( 'Cession effectuée', 'amapress' ) . '</span>';
 					break;
 			}
 			if ( Amapress::getOption( 'allow_partial_exchange' ) && $can_subscribe && count( $user_contrats ) > 1 ) {
@@ -479,37 +479,37 @@ function amapress_get_custom_content_distribution( $content ) {
 					}
 
 					$panier_title       = $panier->getContrat_instance()->getModel()->getTitle();
-					$ceder_panier_title = sprintf( 'Céder mon panier "%s"', $panier_title );
+					$ceder_panier_title = sprintf( __( 'Céder mon panier "%s"', 'amapress' ), $panier_title );
 					switch ( $is_intermittent ) {
 						case 'exchangeable':
 							if ( $can_subscribe ) {
 								$id = "info_{$panier->ID}_{$dist->ID}";
-								echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">' . 'Informations' . '</h4><textarea id="' . $id . '"></textarea><br/>';
+								echo '<div class="echange-panier-info amapress-ajax-parent"><h4 class="echange-panier-info-title">' . __( 'Informations', 'amapress' ) . '</h4><textarea id="' . $id . '"></textarea><br/>';
 								echo '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="echanger_panier" data-message="val:#' . $id . '" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir céder votre/vos paniers ?', 'amapress' ) . '"
 					data-dist="' . $dist->ID . '" data-panier="' . $panier->ID . '" data-user="' . amapress_current_user_id() . '">' . $ceder_panier_title . '</button></div>';
 							} else {
-								echo '<span class="echange-closed">' . 'Cessions de paniers closes' . '</span>';
+								echo '<span class="echange-closed">' . __( 'Cessions de paniers closes', 'amapress' ) . '</span>';
 							}
 							break;
 						case 'to_exchange':
 							echo '<span class="panier-to-exchange">';
-							echo sprintf( 'Panier "%s" en attente de repreneur', $panier_title );
+							echo sprintf( __( 'Panier "%s" en attente de repreneur', 'amapress' ), $panier_title );
 							echo '</span>';
 							break;
 						case 'exchanged':
 							echo '<span class="panier-exchanged">';
-							echo sprintf( 'Panier "%s" cédé', $panier_title );
+							echo sprintf( __( 'Panier "%s" cédé', 'amapress' ), $panier_title );
 							echo '</span>';
 							break;
 						case 'exch_valid_wait':
 							echo '<span class="panier-exchanged">';
-							echo sprintf( 'Panier "%s" en attente de validation de reprise', $panier_title );
+							echo sprintf( __( 'Panier "%s" en attente de validation de reprise', 'amapress' ), $panier_title );
 							echo '</span>';
 							break;
 						case 'closed':
 							echo '<span class="echange-done">';
-							echo sprintf( 'Cession panier "%s" effectuée', $panier_title );
+							echo sprintf( __( 'Cession panier "%s" effectuée', 'amapress' ), $panier_title );
 							echo '</span>';
 							break;
 					}
@@ -544,7 +544,7 @@ function amapress_get_custom_content_distribution( $content ) {
 
 				$panier_btns = '';
 				if ( $is_resp_amap || current_user_can( 'edit_panier' ) ) {
-					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">' . 'Editer le contenu/Déplacer' . '</a>';
+					$panier_btns = '<a href="' . esc_attr( $panier->getAdminEditLink() ) . '" class="btn btn-default">' . __( 'Editer le contenu/Déplacer', 'amapress' ) . '</a>';
 				}
 				amapress_echo_panel_start_no_esc( Amapress::makeLink( $contrat_model->getPermalink(), $contrat_instance->getProperty( 'contrat_type_complet' ), true, true ) . $panier_btns, $icon,
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
@@ -555,8 +555,8 @@ function amapress_get_custom_content_distribution( $content ) {
 			}
 		}
 		if ( ! $has_contrats ) {
-			amapress_echo_panel_start( 'Panier(s)', 'fa-shopping-basket', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ' );
-			echo '<p class="no-paniers">' . 'Vous n\'avez pas de panier à cette distribution' . '</p>';
+			amapress_echo_panel_start( __( 'Panier(s)', 'amapress' ), 'fa-shopping-basket', 'amap-panel-dist amap-panel-dist-' . $lieu_id . ' ' );
+			echo '<p class="no-paniers">' . __( 'Vous n\'avez pas de panier à cette distribution', 'amapress' ) . '</p>';
 			amapress_echo_panel_end();
 		}
 

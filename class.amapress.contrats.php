@@ -61,11 +61,11 @@ class AmapressContrats {
 		if ( 'draft' == $post_status || 'auto-draft' == $post_status ) {
 			$need_generate = 'draft';
 
-			return 'Brouillon, pas encore disponible';
+			return __( 'Brouillon, pas encore disponible', 'amapress' );
 		} else if ( 'trash' == $post_status ) {
 			$need_generate = 'trash';
 
-			return 'Dans la corbeille, plus disponible';
+			return __( 'Dans la corbeille, plus disponible', 'amapress' );
 		}
 		$dists   = AmapressDistributions::generate_distributions( $contrat_id, true );
 		$paniers = AmapressPaniers::generate_paniers( $contrat_id, true );
@@ -74,7 +74,7 @@ class AmapressContrats {
 		if ( ! isset( $dists[ $contrat_id ] ) ) {
 			$need_generate = 'no';
 
-			return 'Pas de distributions';
+			return __( 'Pas de distributions', 'amapress' );
 		}
 
 		$need_generate = count( $dists[ $contrat_id ]['missing'] ) > 0
@@ -84,8 +84,8 @@ class AmapressContrats {
 		                 //|| count($commands[$contrat_id]['orphan']) > 0
 		                 || count( $paniers[ $contrat_id ] ) > 0;
 
-		return sprintf( "Distributions : %d manquantes ; %d à associer ; %d à déassocier\n
-                        Paniers : %d manquants",
+		return sprintf( __( "Distributions : %d manquantes ; %d à associer ; %d à déassocier\n
+                        Paniers : %d manquants", 'amapress' ),
 			count( $dists[ $contrat_id ]['missing'] ), count( $dists[ $contrat_id ]['associate'] ), count( $dists[ $contrat_id ]['unassociate'] ),
 			count( $paniers[ $contrat_id ] )
 		);
@@ -95,21 +95,21 @@ class AmapressContrats {
 		$res     = false;
 		$contrat = AmapressContrat_instance::getBy( $contrat_id );
 		if ( ! $contrat ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . 'Supprimé' . '</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . __( 'Supprimé', 'amapress' ) . '</span></' . $tag . '></' . $tag . '>';
 		}
 		if ( $contrat->isArchived() ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>' . 'Archivé' . '</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>' . __( 'Archivé', 'amapress' ) . '</span></' . $tag . '></' . $tag . '>';
 		}
 
 		$tt = self::get_contrat_status( $contrat_id, $res );
 		if ( $res === true ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">' . 'Mettre à jour distributions et paniers' . '</button></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status"><button class="contrat-status-button" title="' . esc_attr( $tt ) . '" data-contrat-instance="' . $contrat_id . '">' . __( 'Mettre à jour distributions et paniers', 'amapress' ) . '</button></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'no' ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . 'Pas de dates' . '</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . __( 'Pas de dates', 'amapress' ) . '</span></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'draft' ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: orange;"><span>' . 'Brouillon' . '</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: orange;"><span>' . __( 'Brouillon', 'amapress' ) . '</span></' . $tag . '></' . $tag . '>';
 		} else if ( $res === 'trash' ) {
-			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . 'Corbeille' . '</span></' . $tag . '></' . $tag . '>';
+			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: red;"><span>' . __( 'Corbeille', 'amapress' ) . '</span></' . $tag . '></' . $tag . '>';
 		} else {
 			return '<' . $tag . ' class="status"><' . $tag . ' class="contrat-status" style="color: green;"><span>OK</span></' . $tag . '></' . $tag . '>';
 		}

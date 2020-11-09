@@ -27,14 +27,14 @@ function amapress_register_entities_distribution( $entities ) {
 		'show_admin_bar_new'       => false,
 		'row_actions'              => array(
 			'emargement'             => [
-				'label'  => 'Liste émargement',
+				'label'  => __( 'Liste émargement', 'amapress' ),
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return AmapressDistribution::getBy( $dist_id )->getListeEmargementHref();
 				},
 			],
 			'quant_prod'             => [
-				'label'  => 'Quantités producteurs',
+				'label'  => __( 'Quantités producteurs', 'amapress' ),
 				'target' => '_blank',
 				'href'   => function ( $dist_id ) {
 					return add_query_arg( 'date',
@@ -43,7 +43,7 @@ function amapress_register_entities_distribution( $entities ) {
 				},
 			],
 			'mailto_resp'            => [
-				'label'     => 'Email aux responsables',
+				'label'     => __( 'Email aux responsables', 'amapress' ),
 				'target'    => '_blank',
 				'confirm'   => true,
 				'href'      => function ( $dist_id ) {
@@ -59,18 +59,18 @@ function amapress_register_entities_distribution( $entities ) {
 				'show_on'   => 'editor',
 			],
 			'mailto_amapiens'        => [
-				'label'   => 'Email aux amapiens',
+				'label'   => __( 'Email aux amapiens', 'amapress' ),
 				'target'  => '_blank',
 				'href'    => admin_url( 'admin.php?page=amapress_messages_page' ),
 				'show_on' => 'editor',
 			],
 			'resend_liste_to_resp'   => [
-				'label'   => 'Renvoyer la liste d\'émargement aux responsables',
+				'label'   => __( 'Renvoyer la liste d\'émargement aux responsables', 'amapress' ),
 				'show_on' => 'editor',
 				'confirm' => true,
 			],
 			'resend_liste_to_verify' => [
-				'label'   => 'Envoyer les infos de distribution à vérifier',
+				'label'   => __( 'Envoyer les infos de distribution à vérifier', 'amapress' ),
 				'show_on' => 'editor',
 				'confirm' => true,
 			],
@@ -78,21 +78,21 @@ function amapress_register_entities_distribution( $entities ) {
 		'edit_header'              => function ( $post ) {
 			if ( TitanFrameworkOption::isOnNewScreen() ) {
 				echo amapress_get_admin_notice(
-					'L\'ajout d\'une distribution ne doit se faire que si une distribution exceptionnelle a lieu en dehors des distributions plannifiées !',
+					__( 'L\'ajout d\'une distribution ne doit se faire que si une distribution exceptionnelle a lieu en dehors des distributions plannifiées !', 'amapress' ),
 					'warning', false
 				);
 			}
 		},
 		'labels'                   => array(
-			'add_new'      => 'Planifier une distribution exceptionnelle',
-			'add_new_item' => 'Nouvelle distribution exceptionnelle',
+			'add_new'      => __( 'Planifier une distribution exceptionnelle', 'amapress' ),
+			'add_new_item' => __( 'Nouvelle distribution exceptionnelle', 'amapress' ),
 		),
 		'views'                    => array(
 			'remove' => array( 'mine' ),
 			'_dyn_'  => 'amapress_distribution_views',
 		),
 		'groups'                   => array(
-			'Infos' => [
+			__( 'Infos', 'amapress' ) => [
 				'context' => 'side',
 			],
 		),
@@ -105,31 +105,31 @@ function amapress_register_entities_distribution( $entities ) {
 				'time'       => false,
 				'top_filter' => array(
 					'name'           => 'amapress_date',
-					'placeholder'    => 'Toutes les dates',
+					'placeholder'    => __( 'Toutes les dates', 'amapress' ),
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
-				'group'      => 'Infos',
+				'group'      => __( 'Infos', 'amapress' ),
 				'readonly'   => function ( $post_id ) {
 					return ! TitanFrameworkOption::isOnNewScreen();
 				},
-				'desc'       => 'Date de distribution',
+				'desc'       => __( 'Date de distribution', 'amapress' ),
 				'required'   => true,
 			),
 			'lieu' => array(
 				'name'       => __( 'Lieu de distribution', 'amapress' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
-				'group'      => 'Infos',
+				'group'      => __( 'Infos', 'amapress' ),
 				'orderby'    => 'post_title',
 				'order'      => 'ASC',
 				'top_filter' => array(
 					'name'        => 'amapress_lieu',
-					'placeholder' => 'Toutes les lieux',
+					'placeholder' => __( 'Toutes les lieux', 'amapress' ),
 				),
 				'readonly'   => function ( $post_id ) {
 					return ! TitanFrameworkOption::isOnNewScreen();
 				},
-				'desc'       => 'Lieu de distribution',
+				'desc'       => __( 'Lieu de distribution', 'amapress' ),
 				'searchable' => true,
 				'required'   => true,
 			),
@@ -138,8 +138,8 @@ function amapress_register_entities_distribution( $entities ) {
 				'name'       => __( 'Lieu de substitution', 'amapress' ),
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_lieu',
-				'group'      => '1/ Partage',
-				'desc'       => 'Lieu de substitution',
+				'group'      => __( '1/ Partage', 'amapress' ),
+				'desc'       => __( 'Lieu de substitution', 'amapress' ),
 				'hidden'     => function ( $option ) {
 					return count( Amapress::get_lieu_ids() ) <= 1;
 				},
@@ -150,30 +150,30 @@ function amapress_register_entities_distribution( $entities ) {
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
-				'desc'  => 'Heure de début exceptionnelle',
-				'group' => '1/ Partage',
+				'desc'  => __( 'Heure de début exceptionnelle', 'amapress' ),
+				'group' => __( '1/ Partage', 'amapress' ),
 			),
 			'heure_fin_spec'    => array(
 				'name'  => __( 'Heure fin', 'amapress' ),
 				'type'  => 'date',
 				'date'  => false,
 				'time'  => true,
-				'desc'  => 'Heure de fin exceptionnelle',
-				'group' => '1/ Partage',
+				'desc'  => __( 'Heure de fin exceptionnelle', 'amapress' ),
+				'group' => __( '1/ Partage', 'amapress' ),
 			),
 			'contrats'          => array(
 				'name'       => __( 'Contrats', 'amapress' ),
 				'type'       => 'multicheck-posts',
 				'post_type'  => 'amps_contrat_inst',
-				'group'      => '1/ Partage',
+				'group'      => __( '1/ Partage', 'amapress' ),
 				'readonly'   => true,
 				'hidden'     => true,
-				'desc'       => 'Contrats',
+				'desc'       => __( 'Contrats', 'amapress' ),
 				'orderby'    => 'post_title',
 				'order'      => 'ASC',
 				'top_filter' => array(
 					'name'        => 'amapress_contrat_inst',
-					'placeholder' => 'Tous les contrats'
+					'placeholder' => __( 'Tous les contrats', 'amapress' )
 				),
 //                'searchable' => true,
 			),
@@ -191,34 +191,33 @@ function amapress_register_entities_distribution( $entities ) {
 					if ( $dist ) {
 						$users_in_slots = count( $dist->getUserIdsWithAnySlot() );
 						if ( $users_in_slots > 0 ) {
-							$ret .= sprintf(
-								'<p><strong style="color: red">%d inscriptions(s) en cours. Modifier la configuration risque d’impacter ces réservations.</strong></p>',
+							$ret .= sprintf( __( '<p><strong style="color: red">%d inscriptions(s) en cours. Modifier la configuration risque d’impacter ces réservations.</strong></p>', 'amapress' ),
 								$users_in_slots
 							);
 						}
 					}
 
-					$ret .= 'Configurer un créneau horaire de la forme : <em>Heure Début-Heure Fin[Durée du créneau en minutes;Nombre de personnes maximum]</em><br/>';
+					$ret .= __( 'Configurer un créneau horaire de la forme : <em>Heure Début-Heure Fin[Durée du créneau en minutes;Nombre de personnes maximum]</em><br/>', 'amapress' );
 					if ( $dist ) {
-						$ret .= sprintf( 'Horaires de distribution configurés sur le site : %s à %s',
+						$ret .= sprintf( __( 'Horaires de distribution configurés sur le site : %s à %s', 'amapress' ),
 								date_i18n( 'H:i', $dist->getStartDateAndHour() ),
 								date_i18n( 'H:i', $dist->getEndDateAndHour() )
 						        ) . '<br/>';
-						$ret .= sprintf( 'Plages des créneaux configurés : %s',
+						$ret .= sprintf( __( 'Plages des créneaux configurés : %s', 'amapress' ),
 								$dist->getSlotsDescription()
 						        ) . '<br/>';
 					}
 
-					$ret .= 'Paramétrages et documentation complète : ' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution#creneaux_horaires', 'Créneaux horaires' );
+					$ret .= __( 'Paramétrages et documentation complète : ', 'amapress' ) . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution#creneaux_horaires', __( 'Créneaux horaires', 'amapress' ) );
 
 					return $ret;
 				},
-				'group' => '1/ Partage',
+				'group' => __( '1/ Partage', 'amapress' ),
 			),
 			'paniers'           => array(
 				'name'              => __( 'Panier(s)', 'amapress' ),
-				'group'             => '1/ Partage',
-				'desc'              => 'Panier(s) livré(s) à cette date',
+				'group'             => __( '1/ Partage', 'amapress' ),
+				'desc'              => __( 'Panier(s) livré(s) à cette date', 'amapress' ),
 				'show_column'       => false,
 //				'bare'              => true,
 				'include_columns'   => array(
@@ -278,17 +277,15 @@ function amapress_register_entities_distribution( $entities ) {
 						$dist = null;
 					}
 
-					$ret = 'Indiquer le nombre de responsable(s) de distribution <strong>supplémentaire(s)</strong>';
+					$ret = __( 'Indiquer le nombre de responsable(s) de distribution <strong>supplémentaire(s)</strong>', 'amapress' );
 					if ( $dist ) {
 						if ( $dist->getLieuSubstitutionId() ) {
-							$ret .= sprintf(
-								'<br/>Le nombre de responsables de distribution exceptionnellement à %s est de %d.',
+							$ret .= sprintf( __( '<br/>Le nombre de responsables de distribution exceptionnellement à %s est de %d.', 'amapress' ),
 								Amapress::makeLink( $dist->getLieuSubstitution()->getAdminEditLink(), $dist->getLieu()->getTitle() ),
 								$dist->getLieu()->getNb_responsables()
 							);
 						} else {
-							$ret .= sprintf(
-								'<br/>Le nombre de responsables de distribution à %s est de %d.',
+							$ret .= sprintf( __( '<br/>Le nombre de responsables de distribution à %s est de %d.', 'amapress' ),
 								Amapress::makeLink( $dist->getLieu()->getAdminEditLink(), $dist->getLieu()->getTitle() ),
 								$dist->getLieu()->getNb_responsables()
 							);
@@ -296,37 +293,35 @@ function amapress_register_entities_distribution( $entities ) {
 						$contrat_nb_responsables = [];
 						foreach ( $dist->getContrats() as $contrat ) {
 							if ( $contrat->getNb_responsables_Supplementaires() > 0 ) {
-								$contrat_nb_responsables[] = sprintf( '%s (%d)',
+								$contrat_nb_responsables[] = sprintf( __( '%s (%d)', 'amapress' ),
 									$contrat->getModelTitle(),
 									$contrat->getNb_responsables_Supplementaires() );
 							}
 						}
 						if ( ! empty( $contrat_nb_responsables ) ) {
-							$ret .= sprintf(
-								'<br/>Nombre de responsables pour les contrats spécifiques: %s.',
+							$ret .= sprintf( __( '<br/>Nombre de responsables pour les contrats spécifiques: %s.', 'amapress' ),
 								implode( ', ', $contrat_nb_responsables )
 							);
 						}
-						$ret .= sprintf(
-							'<br/>Nb. total: %d',
+						$ret .= sprintf( __( '<br/>Nb. total: %d', 'amapress' ),
 							AmapressDistributions::get_required_responsables( $dist->ID )
 						);
 					}
 
 					return $ret;
 				},
-				'group'       => '2/ Responsables',
+				'group'       => __( '2/ Responsables', 'amapress' ),
 				'default'     => 0,
 				'show_column' => false,
 			),
 			'responsables' => array(
 				'name'         => __( 'Responsables', 'amapress' ),
-				'group'        => '2/ Responsables',
+				'group'        => __( '2/ Responsables', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Naviguer pour ajouter des gardiens de panier et des responsables de distribution',
+				'desc'         => __( 'Naviguer pour ajouter des gardiens de panier et des responsables de distribution', 'amapress' ),
 //				'before_option' => function ( $o ) {
 //					if ( Amapress::hasRespDistribRoles() ) {
 //						echo '<p style="color: orange">Lorsqu\'il existe des rôles de responsables de distribution, l\'inscription ne peut se faire que depuis la page d\'inscription par dates.</p>';
@@ -361,20 +356,20 @@ function amapress_register_entities_distribution( $entities ) {
 
 			'gardiens' => array(
 				'name'         => __( 'Gardien de panier(s)', 'amapress' ),
-				'group'        => '2/ Responsables',
+				'group'        => __( '2/ Responsables', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Amapiens volontaires pour garder des paniers d’amapiens indisponibles',
+				'desc'         => __( 'Amapiens volontaires pour garder des paniers d’amapiens indisponibles', 'amapress' ),
 				'readonly'     => true,
 			),
 
 			'info' => array(
 				'name'  => __( 'Informations spécifiques', 'amapress' ),
 				'type'  => 'editor',
-				'group' => '3/ Informations',
-				'desc'  => 'Informations complémentaires',
+				'group' => __( '3/ Informations', 'amapress' ),
+				'desc'  => __( 'Informations complémentaires', 'amapress' ),
 			),
 		),
 	);
@@ -416,31 +411,31 @@ function amapress_distribution_responsable_roles_options() {
 	if ( count( $lieux ) > 1 ) {
 		$ret[] = array(
 			'type' => 'heading',
-			'name' => 'Rôles des responsables de distribution - pour tous les lieux',
+			'name' => __( 'Rôles des responsables de distribution - pour tous les lieux', 'amapress' ),
 		);
 	}
 	for ( $i = 1; $i <= 10; $i ++ ) {
 		$ret[] = array(
 			'id'   => "resp_role_$i-name",
-			'name' => "Nom du rôle $i",
+			'name' => sprintf( __( 'Nom du rôle %d', 'amapress' ), $i ),
 			'type' => 'text',
-			'desc' => 'Nom du rôle de responsable de distribution',
+			'desc' => __( 'Nom du rôle de responsable de distribution', 'amapress' ),
 		);
 		$ret[] = array(
 			'id'   => "resp_role_$i-desc",
-			'name' => "Description du rôle $i",
+			'name' => sprintf( __( 'Description du rôle %d', 'amapress' ), $i ),
 			'type' => 'editor',
-			'desc' => 'Description du rôle de responsable de distribution',
+			'desc' => __( 'Description du rôle de responsable de distribution', 'amapress' ),
 		);
 		$ret[] = array(
 			'id'           => "resp_role_$i-contrats",
-			'name'         => "Contrat(s) (rôle $i)",
+			'name'         => sprintf( __( "Contrat(s) (rôle %d)", 'amapress' ), $i ),
 			'type'         => 'select-posts',
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
 			'post_type'    => AmapressContrat::INTERNAL_POST_TYPE,
-			'desc'         => 'Activer ce rôle uniquement lors de la distribution de certains contrats',
+			'desc'         => __( 'Activer ce rôle uniquement lors de la distribution de certains contrats', 'amapress' ),
 		);
 		$ret[] = array(
 			'type' => 'save',
@@ -451,31 +446,31 @@ function amapress_distribution_responsable_roles_options() {
 		foreach ( $lieux as $lieu ) {
 			$ret[]   = array(
 				'type' => 'heading',
-				'name' => sprintf( 'Rôles des responsables de distribution - pour %s', $lieu->getTitle() ),
+				'name' => sprintf( __( 'Rôles des responsables de distribution - pour %s', 'amapress' ), $lieu->getTitle() ),
 			);
 			$lieu_id = $lieu->ID;
 			for ( $i = 1; $i <= 10; $i ++ ) {
 				$ret[] = array(
 					'id'   => "resp_role_{$lieu_id}_$i-name",
-					'name' => "Nom du rôle $i",
+					'name' => sprintf( __( 'Nom du rôle %d', 'amapress' ), $i ),
 					'type' => 'text',
-					'desc' => 'Nom du rôle de responsable de distribution',
+					'desc' => __( 'Nom du rôle de responsable de distribution', 'amapress' ),
 				);
 				$ret[] = array(
 					'id'   => "resp_role_{$lieu_id}_$i-desc",
-					'name' => "Description du rôle $i",
+					'name' => sprintf( __( 'Description du rôle %d', 'amapress' ), $i ),
 					'type' => 'editor',
-					'desc' => 'Description du rôle de responsable de distribution',
+					'desc' => __( 'Description du rôle de responsable de distribution', 'amapress' ),
 				);
 				$ret[] = array(
 					'id'           => "resp_role_{$lieu_id}_$i-contrats",
-					'name'         => "Contrat(s) (rôle $i)",
+					'name'         => sprintf( __( 'Contrat(s) (rôle %d)', 'amapress' ), $i ),
 					'type'         => 'select-posts',
 					'autocomplete' => true,
 					'multiple'     => true,
 					'tags'         => true,
 					'post_type'    => AmapressContrat::INTERNAL_POST_TYPE,
-					'desc'         => 'Activer ce rôle uniquement lors de la distribution de certains contrats',
+					'desc'         => __( 'Activer ce rôle uniquement lors de la distribution de certains contrats', 'amapress' ),
 				);
 				$ret[] = array(
 					'type' => 'save',
@@ -607,9 +602,9 @@ function amapress_distribution_hours_setter() {
 		$hours = ' (' . date_i18n( 'H:i', $d->getStartDateAndHour() ) . ' à ' . date_i18n( 'H:i', $d->getEndDateAndHour() ) . ')';
 		if ( ( $i % $incr_date ) == 0 ) {
 			$filter_distributions[] = $d;
-			echo '<li><input type="checkbox" class="checkbox" id="dist_' . $d->ID . '" name="dist[' . $d->ID . ']" value="' . $d->ID . '" ' . checked( isset( $_POST['dist'][ $d->ID ] ) || isset( $_POST['select_dists'] ), true, false ) . ' /><label for="dist_' . $d->ID . '">' . esc_html( $d->getTitle() ) . $hours . ' (' . Amapress::makeLink( $d->getAdminEditLink(), 'Voir', true, true ) . ')' . '</label></li>';
+			echo '<li><input type="checkbox" class="checkbox" id="dist_' . $d->ID . '" name="dist[' . $d->ID . ']" value="' . $d->ID . '" ' . checked( isset( $_POST['dist'][ $d->ID ] ) || isset( $_POST['select_dists'] ), true, false ) . ' /><label for="dist_' . $d->ID . '">' . esc_html( $d->getTitle() ) . $hours . ' (' . Amapress::makeLink( $d->getAdminEditLink(), __( 'Voir', 'amapress' ), true, true ) . ')' . '</label></li>';
 		} else {
-			echo '<li style="text-decoration: line-through">' . esc_html( $d->getTitle() ) . $hours . ' (' . Amapress::makeLink( $d->getAdminEditLink(), 'Voir', true, true ) . ')' . '</li>';
+			echo '<li style="text-decoration: line-through">' . esc_html( $d->getTitle() ) . $hours . ' (' . Amapress::makeLink( $d->getAdminEditLink(), __( 'Voir', 'amapress' ), true, true ) . ')' . '</li>';
 		}
 		$i += 1;
 	}

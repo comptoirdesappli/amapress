@@ -133,7 +133,7 @@ add_action( 'wp_footer', function () {
                  alt="<?php echo esc_attr__( 'Ajouter à l\'écran d\'accueil', 'amapress' ) ?>"/>
             <p style="margin-top: -3px; line-height: 1.3rem;">
 				<?php
-				echo sprintf( 'Pour installer cette application sur votre iPhone/iPad appuyez sur %s puis sur Ajouter à l\'écran d\'accueil.',
+				echo sprintf( __( 'Pour installer cette application sur votre iPhone/iPad appuyez sur %s puis sur Ajouter à l\'écran d\'accueil.', 'amapress' ),
 					'<img
                             src="' . AMAPRESS__PLUGIN_URL . '/images/share.svg' . '"
                             style="display: inline-block; margin-top: 4px; margin-bottom: -4px; height: 20px; width: auto;"

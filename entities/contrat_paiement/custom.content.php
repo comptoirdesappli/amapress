@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'manage_edit-amps_adhesion_columns', 'amapress_user_paiments_columns', 15 );
 //add_filter('manage_edit-amps_adhesion_sortable_columns', 'amapress_user_paiments_columns', 15);
 function amapress_user_paiments_columns( $columns ) {
-	$columns['amapress_total_amount']    = 'Montant';
-	$columns['amapress_received_amount'] = 'Reçu';
+	$columns['amapress_total_amount']    = __( 'Montant', 'amapress' );
+	$columns['amapress_received_amount'] = __( 'Reçu', 'amapress' );
 
 	return $columns;
 }
@@ -26,7 +26,7 @@ function amapress_user_paiments_column_export( $value, $colname, $post_id ) {
 	$all_adhesions = AmapressContrats::get_active_adhesions();
 	$adh           = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
 	if ( $colname == 'amapress_total_amount' ) {
-		return sprintf( '%.02f', $adh->getTotalAmount() );
+		return sprintf( __( '%.02f', 'amapress' ), $adh->getTotalAmount() );
 	}
 
 	if ( $colname != 'amapress_received_amount' ) {
@@ -67,7 +67,7 @@ function amapress_user_paiments_column_export( $value, $colname, $post_id ) {
 		}
 	}
 
-	$amount_fmt = sprintf( '%.02f', $amount );
+	$amount_fmt = sprintf( __( '%.02f', 'amapress' ), $amount );
 
 	return $amount_fmt;
 }
@@ -98,7 +98,7 @@ function amapress_user_paiments_column_display( $colname, $post_id ) {
 	$all_adhesions = AmapressContrats::get_active_adhesions();
 	$adh           = isset( $all_adhesions[ $post_id ] ) ? $all_adhesions[ $post_id ] : AmapressAdhesion::getBy( $post_id );
 	if ( 'amapress_total_amount' == $colname ) {
-		echo sprintf( '%.02f', $adh->getTotalAmount() );
+		echo sprintf( __( '%.02f', 'amapress' ), $adh->getTotalAmount() );
 
 		return;
 	}
@@ -180,7 +180,7 @@ function amapress_user_paiments_column_display( $colname, $post_id ) {
 		$status = array( 'icon' => 'dashicons-before dashicons-yes', 'status' => 'paiement-ok' );
 	}
 
-	$amount_fmt = sprintf( '%.02f', $amount );
+	$amount_fmt = sprintf( __( '%.02f', 'amapress' ), $amount );
 
 	echo "<a href='$href'><span class='{$status['status']}'><span class='{$status['icon']}'></span> $amount_fmt</span></a>";
 }

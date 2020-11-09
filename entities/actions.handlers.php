@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'admin_post_test_mail', function () {
 	$key = Amapress::getOption( 'test_mail_key' );
 	if ( empty( $_GET['key'] ) || $_GET['key'] != $key ) {
-		wp_die( 'Access denied' );
+		wp_die( __( 'Access denied', 'amapress' ) );
 	}
 
 	if ( ! defined( 'DOING_CRON' ) ) {
@@ -20,7 +20,7 @@ add_action( 'admin_post_test_mail', function () {
 
 function wp_redirect_and_exit( $location, $status = 302 ) {
 	if ( headers_sent() || ! wp_redirect( $location, $status ) ) {
-		die( 'Bad redirect usage' );
+		die( __( 'Bad redirect usage', 'amapress' ) );
 	}
 	exit;
 }
@@ -127,7 +127,7 @@ function amapress_handle_templates( $template ) {
 
 add_filter( 'get_the_archive_title', function ( $title ) {
 	if ( is_post_type_archive() ) {
-		$title = post_type_archive_title( 'Nos ', false );
+		$title = post_type_archive_title( __( 'Nos ', 'amapress' ), false );
 	}
 
 	return $title;

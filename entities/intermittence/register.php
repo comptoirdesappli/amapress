@@ -28,7 +28,7 @@ function amapress_register_entities_intermittence( $entities ) {
 		),
 		'row_actions'      => array(
 			'validate_repreneur' => array(
-				'label'     => 'Valider le repreneur',
+				'label'     => __( 'Valider le repreneur', 'amapress' ),
 				'condition' => function ( $post_id ) {
 					$panier = AmapressIntermittence_panier::getBy( $post_id );
 
@@ -40,7 +40,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'confirm'   => true,
 			),
 			'switch_adherent'    => [
-				'label'     => 'Changer pour Adhérent',
+				'label'     => __( 'Changer pour Adhérent', 'amapress' ),
 				'condition' => function ( $post_id ) {
 					return class_exists( 'user_switching' );
 				},
@@ -52,10 +52,10 @@ function amapress_register_entities_intermittence( $entities ) {
 				'name'       => __( 'Date', 'amapress' ),
 				'type'       => 'date',
 				'readonly'   => true,
-				'desc'       => 'Date ',
+				'desc'       => __( 'Date ', 'amapress' ),
 				'top_filter' => array(
 					'name'           => 'amapress_date',
-					'placeholder'    => 'Toutes les dates',
+					'placeholder'    => __( 'Toutes les dates', 'amapress' ),
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
 			),
@@ -64,7 +64,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'type'        => 'multicheck-posts',
 				'post_type'   => AmapressPanier::INTERNAL_POST_TYPE,
 				'readonly'    => true,
-				'desc'        => 'Panier(s)',
+				'desc'        => __( 'Panier(s)', 'amapress' ),
 				'show_column' => false,
 			),
 			'contrat_instance'   => array(
@@ -72,25 +72,25 @@ function amapress_register_entities_intermittence( $entities ) {
 				'type'      => 'multicheck-posts',
 				'post_type' => AmapressContrat_instance::INTERNAL_POST_TYPE,
 				'readonly'  => true,
-				'desc'      => 'Contrat(s)',
+				'desc'      => __( 'Contrat(s)', 'amapress' ),
 			),
 			'lieu'               => array(
 				'name'              => __( 'Lieu', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressLieu_distribution::INTERNAL_POST_TYPE,
 				'readonly'          => true,
-				'desc'              => 'Lieu',
+				'desc'              => __( 'Lieu', 'amapress' ),
 				'autoselect_single' => true,
 //				'searchable'        => true,
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
-					'placeholder' => 'Toutes les lieux',
+					'placeholder' => __( 'Toutes les lieux', 'amapress' ),
 				),
 			),
 			'repreneur'          => array(
 				'name'        => __( 'Repreneur', 'amapress' ),
 				'type'        => 'select-users',
-				'desc'        => 'Repreneur',
+				'desc'        => __( 'Repreneur', 'amapress' ),
 				'searchable'  => true,
 				'readonly'    => true,
 				'show_column' => false,
@@ -99,7 +99,7 @@ function amapress_register_entities_intermittence( $entities ) {
 				'name'       => __( 'Adherent', 'amapress' ),
 				'type'       => 'select-users',
 				'readonly'   => true,
-				'desc'       => 'Adherent',
+				'desc'       => __( 'Adherent', 'amapress' ),
 				'searchable' => true,
 			),
 			'status'             => array(
@@ -107,17 +107,17 @@ function amapress_register_entities_intermittence( $entities ) {
 				'type'       => 'select',
 				'top_filter' => array(
 					'name'        => 'amapress_status',
-					'placeholder' => 'Tous les états',
+					'placeholder' => __( 'Tous les états', 'amapress' ),
 				),
 				'options'    => array(
 					'to_exchange'     => 'A réserver',
-					'exch_valid_wait' => 'En attente de validation de l\'échange',
-					'exchanged'       => 'Réservé',
-					'closed'          => 'Cloturé',
-					'cancelled'       => 'Annulé',
+					'exch_valid_wait' => __( 'En attente de validation de l\'échange', 'amapress' ),
+					'exchanged'       => __( 'Réservé', 'amapress' ),
+					'closed'          => __( 'Cloturé', 'amapress' ),
+					'cancelled'       => __( 'Annulé', 'amapress' ),
 				),
 				'required'   => true,
-				'desc'       => 'Statut',
+				'desc'       => __( 'Statut', 'amapress' ),
 				'readonly'   => true,
 			),
 			'waiters'            => array(
@@ -148,13 +148,13 @@ function amapress_register_entities_intermittence( $entities ) {
 			'adh_message'        => array(
 				'name'       => __( 'Message au repreneur', 'amapress' ),
 				'type'       => 'readonly',
-				'desc'       => 'Message',
+				'desc'       => __( 'Message', 'amapress' ),
 				'searchable' => true,
 			),
 			'adh_cancel_message' => array(
 				'name'       => __( 'Message d\'annulation', 'amapress' ),
 				'type'       => 'readonly',
-				'desc'       => 'Message',
+				'desc'       => __( 'Message', 'amapress' ),
 				'searchable' => true,
 			),
 		),

@@ -7,27 +7,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 function amapress_get_wp_users_labels() {
 	return array(
 		'ID'              => 'ID',
-		'user_login'      => 'Identifiant',
-		'user_pass'       => 'Mot de passe',
-		'user_email'      => 'Email',
+		'user_login'      => __( 'Identifiant', 'amapress' ),
+		'user_pass'       => __( 'Mot de passe', 'amapress' ),
+		'user_email'      => __( 'Email', 'amapress' ),
 		'user_url'        => 'URL',
-		'user_nicename'   => 'Slug',
-		'display_name'    => 'Nom d\'affichage',
-		'user_registered' => 'Date de création',
-		'first_name'      => 'Prénom',
-		'last_name'       => 'Nom',
-		'nickname'        => 'Surnom',
-		'description'     => 'Description',
+		'user_nicename'   => __( 'Slug', 'amapress' ),
+		'display_name'    => __( 'Nom d\'affichage', 'amapress' ),
+		'user_registered' => __( 'Date de création', 'amapress' ),
+		'first_name'      => __( 'Prénom', 'amapress' ),
+		'last_name'       => __( 'Nom', 'amapress' ),
+		'nickname'        => __( 'Surnom', 'amapress' ),
+		'description'     => __( 'Description', 'amapress' ),
 //        'rich_editing' => '',
 //        'comment_shortcuts' => '',
 //        'admin_color' => '',
 //        'use_ssl' => 'SSL?',
 //        'show_admin_bar_front' => '',
-//        'show_admin_bar_admin' => 'Bar admin?',
-		'roles'           => 'Rôle sur le site',
-		'email2'          => 'Email 2',
-		'email3'          => 'Email 3',
-		'email4'          => 'Email 4',
+//        'show_admin_bar_admin' => __('Bar admin?', 'amapress'),
+		'roles'           => __( 'Rôle sur le site', 'amapress' ),
+		'email2'          => __( 'Email 2', 'amapress' ),
+		'email3'          => __( 'Email 3', 'amapress' ),
+		'email4'          => __( 'Email 4', 'amapress' ),
 	);
 }
 
@@ -35,15 +35,15 @@ function amapress_get_wp_posts_labels( $post_type ) {
 	$post_type = amapress_unsimplify_post_type( $post_type );
 	$ret       = array(
 		'ID'            => 'ID',
-		'post_author'   => 'Auteur de l\'article',
-		'post_name'     => 'Slug',
-		'post_type'     => 'Type d\'article',
-		'post_title'    => 'Titre',
-		'post_date'     => 'Date de publication',
-		'post_content'  => 'Contenu',
-		'post_excerpt'  => 'Résumé de l\'article',
-		'post_status'   => 'Statut de l\'article',
-		'post_modified' => 'Date de dernière modification',
+		'post_author'   => __( 'Auteur de l\'article', 'amapress' ),
+		'post_name'     => __( 'Slug', 'amapress' ),
+		'post_type'     => __( 'Type d\'article', 'amapress' ),
+		'post_title'    => __( 'Titre', 'amapress' ),
+		'post_date'     => __( 'Date de publication', 'amapress' ),
+		'post_content'  => __( 'Contenu', 'amapress' ),
+		'post_excerpt'  => __( 'Résumé de l\'article', 'amapress' ),
+		'post_status'   => __( 'Statut de l\'article', 'amapress' ),
+		'post_modified' => __( 'Date de dernière modification', 'amapress' ),
 	);
 	if ( ! post_type_supports( $post_type, 'title' ) ) {
 		unset( $ret['post_title'] );
@@ -88,12 +88,12 @@ function amapress_import_users_get_field_name( $field_name, $colname ) {
 		if ( empty( $amapress_csv_import_errors ) ) {
 			$amapress_csv_import_errors = [];
 		}
-		$amapress_csv_import_errors[1] = new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );
+		$amapress_csv_import_errors[1] = new WP_Error( 'unknown_header', sprintf( __( 'Colonne %s : un utilisateur ne contient pas de champs %s', 'amapress' ), $colname, $field_name ) );
 
 		return null;
 	}
 
-	return new WP_Error( 'unknown_header', "Colonne $colname : un utilisateur ne contient pas de champs $field_name" );
+	return new WP_Error( 'unknown_header', sprintf( __( 'Colonne %s : un utilisateur ne contient pas de champs %s', 'amapress' ), $colname, $field_name ) );
 }
 
 add_filter( 'amapress_import_user_data', 'amapress_import_user_data', 10, 2 );
@@ -134,7 +134,7 @@ function amapress_import_user_data( $userdata, $usermeta ) {
 			if ( $found ) {
 				$userdata[ $k ] = $v;
 			} else {
-				$userdata[ $k ] = new WP_Error( 'unknown_user_role', "Le rôle utilisateur '{$v}' n'existe pas" );
+				$userdata[ $k ] = new WP_Error( 'unknown_user_role', sprintf( __( 'Le rôle utilisateur \'%d\' n\'existe pas', 'amapress' ), $v ) );
 			}
 		}
 	}
@@ -206,7 +206,7 @@ function amapress_import_adhesion_apply_multi_to_posts_meta( $postmeta, $multi_k
 			$contrat_debut = date_i18n( 'd/m/Y', $contrat_instance->getDate_debut() );
 			$contrat_fin   = date_i18n( 'd/m/Y', $contrat_instance->getDate_fin() );
 
-			return new WP_Error( 'invalid_date', "La date de début $dt est en dehors des dates ($contrat_debut - $contrat_fin) du contrat '{$contrat_instance->getTitle()}'" );
+			return new WP_Error( 'invalid_date', sprintf( __( 'La date de début %s est en dehors des dates (%s - %s) du contrat \'%s\'', 'amapress' ), $dt, $contrat_debut, $contrat_fin, $contrat_instance->getTitle() ) );
 		}
 	}
 //	if ( $postmeta['amapress_adhesion_date_debut'] < $contrat_instance->getDate_debut()
@@ -238,10 +238,10 @@ function amapress_import_posts_get_field_name( $field_name, $post_type, $colname
 
 	//TODO place in right entity
 	if ( $post_type == AmapressAdhesion::POST_TYPE ) {
-		if ( $field_name == 'Contrat' ) {
+		if ( $field_name == __( 'Contrat', 'amapress' ) ) {
 			return 'amapress_adhesion_contrat_instance';
 		}
-		if ( $field_name == 'Quantité' ) {
+		if ( $field_name == __( 'Quantité', 'amapress' ) ) {
 			return 'amapress_adhesion_contrat_quantite';
 		}
 		$id = Amapress::resolve_post_id( $field_name, AmapressContrat_instance::POST_TYPE );
@@ -263,12 +263,12 @@ function amapress_import_posts_get_field_name( $field_name, $post_type, $colname
 		if ( empty( $amapress_csv_import_errors ) ) {
 			$amapress_csv_import_errors = [];
 		}
-		$amapress_csv_import_errors[1] = new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );
+		$amapress_csv_import_errors[1] = new WP_Error( 'unknown_header', sprintf( __( 'Colonne %s : un %s ne contient pas de champs %s', 'amapress' ), $colname, $post_type, $field_name ) );
 
 		return null;
 	}
 
-	return new WP_Error( 'unknown_header', "Colonne $colname : un $post_type ne contient pas de champs $field_name" );
+	return new WP_Error( 'unknown_header', sprintf( __( 'Colonne %s : un %s ne contient pas de champs %s', 'amapress' ), $colname, $post_type, $field_name ) );
 }
 
 add_filter( 'amapress_import_posts_data', 'amapress_import_posts_data', 10, 2 );
@@ -356,7 +356,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				} else if ( preg_match( '/^\d{1,2}-\d{1,2}-\d{2}$/', $value ) ) {
 					$ret_date = DateTime::createFromFormat( 'm-d-y', $value )->getTimestamp();
 				} else {
-					return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label'" );
+					return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' non valide pour \'%s\'', 'amapress' ), $value, $label ) );
 				}
 				if ( $has_time ) {
 					return $ret_date;
@@ -364,7 +364,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 					return Amapress::start_of_day( $ret_date );
 				}
 			} catch ( Exception $e ) {
-				return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label': {$e->getMessage()}" );
+				return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%d\' non valide pour \'%s\': %s', 'amapress' ), $value, $label, $e->getMessage() ) );
 			}
 		};
 	} else if ( $type == 'checkbox' ) {
@@ -384,7 +384,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 			try {
 				return floatval( trim( trim( $value, '€' ) ) );
 			} catch ( Exception $e ) {
-				return new WP_Error( 'cannot_parse', "Valeur '$value' non valide pour '$label': {$e->getMessage()}" );
+				return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' non valide pour \'%s\': %s', 'amapress' ), $value, $label, $e->getMessage() ) );
 			}
 		};
 	} else if ( $type == 'select' ) {
@@ -400,12 +400,12 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 					}, array_values( $settings['options'] ) ),
 					array_keys( $settings['options'] ) );
 				if ( ! array_key_exists( $v, $labels ) ) {
-					return new WP_Error( 'cannot_parse', "Valeur '$value' non trouvée pour '$label'" );
+					return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' non trouvée pour \'%s\'', 'amapress' ), $value, $label ) );
 				} else {
 					return $labels[ $v ];
 				}
 			} else if ( ! is_array( $settings['options'] ) ) {
-				return new WP_Error( 'cannot_parse', "Valeur '$value' non trouvée pour '$label'" );
+				return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' non trouvée pour \'%s\'', 'amapress' ), $value, $label ) );
 			}
 
 			return $v;
@@ -446,7 +446,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 					$post_type = amapress_unsimplify_post_type( $settings['post_type'] );
 					$pt        = amapress_simplify_post_type( $settings['post_type'] );
 					$url       = apply_filters( "amapress_get_edit_url_for_$pt", add_query_arg( 's', $v, admin_url( "edit.php?post_type=$post_type" ) ) );
-					$errors[]  = "Valeur '$v' non trouvée/non unique pour '$label' (Voir <$url>)";
+					$errors[]  = sprintf( __( 'Valeur \'%s\' non trouvée/non unique pour \'%s\' (Voir <%s>)', 'amapress' ), $v, $label, $url );
 				} else {
 					$res[] = $id;
 				}
@@ -502,7 +502,7 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				$id = Amapress::resolve_user_id( $v );
 				if ( $id <= 0 ) {
 					$url      = add_query_arg( 's', $v, admin_url( 'users.php' ) );
-					$errors[] = "Valeur '$v' non trouvée/non unique pour '$label' (Voir <$url>)";
+					$errors[] = sprintf( __( 'Valeur \'%s\' non trouvée/non unique pour \'%s\' (Voir <%s>)', 'amapress' ), $v, $label, $url );
 				} else {
 					$res[] = $id;
 				}
@@ -535,12 +535,12 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 						}, array_values( $settings['options'] ) ),
 						array_keys( $settings['options'] ) );
 					if ( ! array_key_exists( $v, $labels ) ) {
-						return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non trouvée pour '$label'" );
+						return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' dans \'%s\' non trouvée pour \'%s\'', 'amapress' ), $v, $value, $label ) );
 					} else {
 						return $labels[ $v ];
 					}
 				} else if ( ! is_array( $settings['options'] ) ) {
-					return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non trouvée pour '$label'" );
+					return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' dans \'%s\' non trouvée pour \'%s\'', 'amapress' ), $v, $value, $label ) );
 				}
 
 				return $v;
@@ -582,12 +582,12 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 					} else if ( preg_match( '/^\d{1,2}-\d{1,2}-\d{2}$/', $v ) ) {
 						$dt = DateTime::createFromFormat( 'm-d-y', $v )->getTimestamp();
 					} else {
-						return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non valide pour '$label'" );
+						return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%s\' dans \'%s\' non valide pour \'%s\'', 'amapress' ), $v, $value, $label ) );
 					}
 
 					return date_i18n( 'd/m/Y', $dt );
 				} catch ( Exception $e ) {
-					return new WP_Error( 'cannot_parse', "Valeur '$v' dans '$value' non valide pour '$label': {$e->getMessage()}" );
+					return new WP_Error( 'cannot_parse', sprintf( __( 'Valeur \'%d\' dans \'%s\' non valide pour \'%s\': %s', 'amapress' ), $v, $value, $label, $e->getMessage() ) );
 				}
 			}, explode( ',', $vs ) );
 			$errs = array_map( function ( WP_Error $err ) {
@@ -904,7 +904,7 @@ function amapress_import_resolve_post( $post, $post_type, $postdata, $postmeta )
 		}, $posts );
 		$url      = admin_url( 'edit.php?post_type=' . $pt . '&amapress_post=' . implode( ',', $post_ids ) );
 
-		return new WP_Error( "amapress_duplicate_$post_type", "Il existe déjà plusieurs $post_type avec les mêmes données. Voir <$url>" );
+		return new WP_Error( "amapress_duplicate_$post_type", sprintf( __( 'Il existe déjà plusieurs %s avec les mêmes données. Voir <%s>', 'amapress' ), $post_type, $url ) );
 	}
 
 //    var_dump($args);
@@ -959,12 +959,12 @@ add_filter( 'amapress_import_contrat_instance_check_resolved_post_data_before_up
 			$post_id = $postdata['ID'];
 			$contrat = AmapressContrat_instance::getBy( $post_id, true );
 			if ( $contrat->isArchived() ) {
-				return new WP_Error( 'contrat_archived', sprintf( 'Le contrat %s est archivé !', $contrat->getTitle() ) );
+				return new WP_Error( 'contrat_archived', sprintf( __( 'Le contrat %s est archivé !', 'amapress' ), $contrat->getTitle() ) );
 			}
 			if ( ! isset( $_REQUEST['amapress_override_contrat_with_inscriptions'] ) ) {
 				$adhs = AmapressContrats::get_active_adhesions( $post_id );
 				if ( ! empty( $adhs ) ) {
-					return new WP_Error( 'contrat_has_inscr', sprintf( 'Le contrat %s a des inscriptions : modifier ses paramètres peut modifier ou annuler ses inscriptions en cours.  <br/>Si vous êtes sûr, cocher la case "Autoriser la mise à jour de contrats avec inscriptions actives"', $contrat->getTitle() ) );
+					return new WP_Error( 'contrat_has_inscr', sprintf( __( 'Le contrat %s a des inscriptions : modifier ses paramètres peut modifier ou annuler ses inscriptions en cours.  <br/>Si vous êtes sûr, cocher la case "Autoriser la mise à jour de contrats avec inscriptions actives"', 'amapress' ), $contrat->getTitle() ) );
 				}
 			}
 
@@ -979,7 +979,7 @@ add_filter( 'amapress_import_contrat_quantite_check_resolved_post_data_before_up
 			$post_id = $postmeta['amapress_contrat_quantite_contrat_instance'];
 			$contrat = AmapressContrat_instance::getBy( $post_id, true );
 			if ( $contrat->isArchived() ) {
-				return new WP_Error( 'contrat_archived', sprintf( 'Le contrat %s est archivé !', $contrat->getTitle() ) );
+				return new WP_Error( 'contrat_archived', sprintf( __( 'Le contrat %s est archivé !', 'amapress' ), $contrat->getTitle() ) );
 			}
 			$amapress_override_all_contrat_quantites = isset( $_REQUEST['amapress_override_all_contrat_quantites'] );
 			if ( ! isset( $_REQUEST['amapress_override_contrat_with_inscriptions'] )
@@ -987,9 +987,9 @@ add_filter( 'amapress_import_contrat_quantite_check_resolved_post_data_before_up
 				$adhs = AmapressContrats::get_active_adhesions( $post_id );
 				if ( ! empty( $adhs ) ) {
 					if ( ! $amapress_override_all_contrat_quantites ) {
-						return new WP_Error( 'contrat_has_inscr', sprintf( 'Le contrat %s a des inscriptions : modifier ses configurations de paniers peut modifier ou annuler ses inscriptions en cours. <br/>Si vous êtes sûr, cocher la case "Autoriser la mise à jour de contrats avec inscriptions actives"', $contrat->getTitle() ) );
+						return new WP_Error( 'contrat_has_inscr', sprintf( __( 'Le contrat %s a des inscriptions : modifier ses configurations de paniers peut modifier ou annuler ses inscriptions en cours. <br/>Si vous êtes sûr, cocher la case "Autoriser la mise à jour de contrats avec inscriptions actives"', 'amapress' ), $contrat->getTitle() ) );
 					} else {
-						return new WP_Error( 'contrat_has_inscr', sprintf( 'Le contrat %s a des inscriptions : supprimer ses configurations de paniers avant de réimporter des nouvelles aurait pour conséquence d\'annuler ses inscriptions en cours. Vous devez mettre à jour les configurations de paniers dans %s', $contrat->getTitle(), Amapress::makeLink( $contrat->getAdminEditLink(), 'la configuration du contrat' ) ) );
+						return new WP_Error( 'contrat_has_inscr', sprintf( __( 'Le contrat %s a des inscriptions : supprimer ses configurations de paniers avant de réimporter des nouvelles aurait pour conséquence d\'annuler ses inscriptions en cours. Vous devez mettre à jour les configurations de paniers dans %s', 'amapress' ), $contrat->getTitle(), Amapress::makeLink( $contrat->getAdminEditLink(), 'la configuration du contrat' ) ) );
 					}
 				}
 			}

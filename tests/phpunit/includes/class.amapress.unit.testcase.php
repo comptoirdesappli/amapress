@@ -304,9 +304,9 @@ Récemment installé à Milly-la-Forêt',
 							$this->posts['34']
 						),
 						'amapress_contrat_instance_max_adherents'         => '100',
-						'amapress_contrat_instance_liste_dates'           => '28/09/2017, 26/10/2017, 30/11/2017, 21/12/2017, 25/01/2018, 22/02/2018, 29/03/2018, 26/04/2018, 31/05/2018, 28/06/2018, 26/07/2018, 30/08/2018',
+						'amapress_contrat_instance_liste_dates'           => __( '28/09/2017, 26/10/2017, 30/11/2017, 21/12/2017, 25/01/2018, 22/02/2018, 29/03/2018, 26/04/2018, 31/05/2018, 28/06/2018, 26/07/2018, 30/08/2018', 'amapress' ),
 						'amapress_contrat_instance_paiements'             => 'a:3:{i:0;s:1:""1"";i:1;s:1:""2"";i:2;s:1:""3"";}',
-						'amapress_contrat_instance_liste_dates_paiements' => '27/09/2017',
+						'amapress_contrat_instance_liste_dates_paiements' => __( '27/09/2017', 'amapress' ),
 					),
 			) );
 		$this->contrat_oeufs                           = $this->posts['6527'] = self::factory()->post->create(
@@ -348,9 +348,9 @@ Récemment installé à Milly-la-Forêt',
 						'amapress_contrat_instance_date_cloture'          => 1530144000,
 						'amapress_contrat_instance_lieux'                 => $this->posts['33'],
 						'amapress_contrat_instance_max_adherents'         => '100',
-						'amapress_contrat_instance_liste_dates'           => '28/09/2017, 26/10/2017, 30/11/2017, 21/12/2017, 25/01/2018, 22/02/2018, 29/03/2018, 26/04/2018, 31/05/2018, 28/06/2018, 26/07/2018',
+						'amapress_contrat_instance_liste_dates'           => __( '28/09/2017, 26/10/2017, 30/11/2017, 21/12/2017, 25/01/2018, 22/02/2018, 29/03/2018, 26/04/2018, 31/05/2018, 28/06/2018, 26/07/2018', 'amapress' ),
 						'amapress_contrat_instance_paiements'             => 'a:3:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";}',
-						'amapress_contrat_instance_liste_dates_paiements' => '28/09/2017, 30/11/2017, 25/01/2018',
+						'amapress_contrat_instance_liste_dates_paiements' => __( '28/09/2017, 30/11/2017, 25/01/2018', 'amapress' ),
 					),
 			) );
 		$this->contrat_quantite_oeuf_1                 = $this->posts['6531'] = self::factory()->post->create(
@@ -483,9 +483,9 @@ Récemment installé à Milly-la-Forêt',
 							$this->posts['34']
 						),
 						'amapress_contrat_instance_max_adherents'         => '100',
-						'amapress_contrat_instance_liste_dates'           => '21/09/2017, 19/10/2017, 23/11/2017, 21/12/2017, 11/01/2018, 08/02/2018, 15/03/2018, 12/04/2018, 17/05/2018',
+						'amapress_contrat_instance_liste_dates'           => __( '21/09/2017, 19/10/2017, 23/11/2017, 21/12/2017, 11/01/2018, 08/02/2018, 15/03/2018, 12/04/2018, 17/05/2018', 'amapress' ),
 						'amapress_contrat_instance_paiements'             => 'a:3:{i:0;s:1:""1"";i:1;s:1:""2"";i:2;s:1:""3"";}',
-						'amapress_contrat_instance_liste_dates_paiements' => '21/09/2017, 21/12/2017, 08/02/2018',
+						'amapress_contrat_instance_liste_dates_paiements' => __( '21/09/2017, 21/12/2017, 08/02/2018', 'amapress' ),
 					),
 			) );
 		$this->contrat_quantite_fruits_1               = $this->posts['6430'] = self::factory()->post->create(
@@ -605,9 +605,9 @@ Récemment installé à Milly-la-Forêt',
 						'amapress_contrat_instance_nb_visites'            => '1',
 						'amapress_contrat_instance_contrat'               => 'Engagements du bénéficiaire du panier ',
 //    'amapress_contrat_instance_is_principal' => '1',
-						'amapress_contrat_instance_liste_dates'           => '06/07/2017, 03/08/2017, 31/08/2017, 21/09/2017, 05/10/2017, 02/11/2017, 07/12/2017, 04/01/2018, 01/02/2018, 01/03/2018, 05/04/2018, 03/05/2018, 07/06/2018',
+						'amapress_contrat_instance_liste_dates'           => __( '06/07/2017, 03/08/2017, 31/08/2017, 21/09/2017, 05/10/2017, 02/11/2017, 07/12/2017, 04/01/2018, 01/02/2018, 01/03/2018, 05/04/2018, 03/05/2018, 07/06/2018', 'amapress' ),
 						'amapress_contrat_instance_paiements'             => 'a:2:{i:0;s:1:""1"";i:1;s:1:""2"";}',
-						'amapress_contrat_instance_liste_dates_paiements' => '14/09/2017, 05/10/2017, 02/11/2017, 07/12/2017, 04/01/2018, 01/02/2018, 01/03/2018, 05/04/2018, 03/05/2018, 07/06/2018',
+						'amapress_contrat_instance_liste_dates_paiements' => __( '14/09/2017, 05/10/2017, 02/11/2017, 07/12/2017, 04/01/2018, 01/02/2018, 01/03/2018, 05/04/2018, 03/05/2018, 07/06/2018', 'amapress' ),
 					),
 			) );
 		$this->contrat_quantite_champignons_1          = $this->posts['5323'] = self::factory()->post->create(
@@ -722,9 +722,9 @@ Récemment installé à Milly-la-Forêt',
 						'amapress_contrat_instance_nb_visites'            => '1',
 						'amapress_contrat_instance_contrat'               => 'c',
 						'amapress_contrat_instance_is_principal'          => '1',
-						'amapress_contrat_instance_liste_dates'           => '14/09/2017, 21/09/2017, 28/09/2017, 05/10/2017, 12/10/2017, 19/10/2017, 26/10/2017, 02/11/2017, 09/11/2017, 16/11/2017, 23/11/2017, 30/11/2017, 07/12/2017, 14/12/2017, 21/12/2017, 04/01/2018, 11/01/2018, 18/01/2018, 25/01/2018, 01/02/2018, 08/02/2018, 15/02/2018, 22/02/2018, 01/03/2018, 08/03/2018, 15/03/2018, 22/03/2018, 29/03/2018, 03/05/2018, 10/05/2018, 17/05/2018, 24/05/2018, 31/05/2018, 07/06/2018, 14/06/2018, 21/06/2018, 28/06/2018, 05/07/2018, 12/07/2018, 19/07/2018, 26/07/2018, 02/08/2018, 09/08/2018, 16/08/2018, 23/08/2018, 30/08/2018, 06/09/2018',
+						'amapress_contrat_instance_liste_dates'           => __( '14/09/2017, 21/09/2017, 28/09/2017, 05/10/2017, 12/10/2017, 19/10/2017, 26/10/2017, 02/11/2017, 09/11/2017, 16/11/2017, 23/11/2017, 30/11/2017, 07/12/2017, 14/12/2017, 21/12/2017, 04/01/2018, 11/01/2018, 18/01/2018, 25/01/2018, 01/02/2018, 08/02/2018, 15/02/2018, 22/02/2018, 01/03/2018, 08/03/2018, 15/03/2018, 22/03/2018, 29/03/2018, 03/05/2018, 10/05/2018, 17/05/2018, 24/05/2018, 31/05/2018, 07/06/2018, 14/06/2018, 21/06/2018, 28/06/2018, 05/07/2018, 12/07/2018, 19/07/2018, 26/07/2018, 02/08/2018, 09/08/2018, 16/08/2018, 23/08/2018, 30/08/2018, 06/09/2018', 'amapress' ),
 						'amapress_contrat_instance_paiements'             => 'a:5:{i:0;s:1:""1"";i:1;s:1:""2"";i:2;s:1:""3"";i:3;s:1:""5"";i:4;s:2:""10"";}',
-						'amapress_contrat_instance_liste_dates_paiements' => '05/10/2017, 02/11/2017, 07/12/2017, 04/01/2018, 01/02/2018, 01/03/2018, 29/03/2018, 03/05/2018, 07/06/2018, 05/07/2018, 02/08/2018, 06/09/2018',
+						'amapress_contrat_instance_liste_dates_paiements' => __( '05/10/2017, 02/11/2017, 07/12/2017, 04/01/2018, 01/02/2018, 01/03/2018, 29/03/2018, 03/05/2018, 07/06/2018, 05/07/2018, 02/08/2018, 06/09/2018', 'amapress' ),
 					),
 			) );
 		$this->contrat_quantite_legumes_1          = $this->posts['5132'] = self::factory()->post->create(
@@ -803,7 +803,7 @@ Récemment installé à Milly-la-Forêt',
 			array(
 				'post_date'         => '2017-08-31 20:44:04',
 				'post_date_gmt'     => '2017-08-31 18:44:04',
-				'post_title'        => '1/2 Panier',
+				'post_title'        => __( '1/2 Panier', 'amapress' ),
 				'post_status'       => 'publish',
 				'comment_status'    => 'closed',
 				'ping_status'       => 'closed',

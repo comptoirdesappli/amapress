@@ -30,10 +30,10 @@ class AmapressDocSpace {
 		add_action( "admin_post_nopriv_amp_docspace_download_$name", [ $this, 'handleDownload' ] );
 		amapress_register_shortcode( "docspace-$name", [ $this, 'echoDropZone' ],
 			[
-				'desc' => "Configure et affiche l'espace documents '$name'",
+				'desc' => sprintf( __( "Configure et affiche l'espace documents '%s'", 'amapress' ), $name ),
 				'args' => [
-					'title'     => 'Titre de cet espace documents',
-					'title_tag' => 'Balise utilisée pour le titre (par défaut h4)',
+					'title'     => __( 'Titre de cet espace documents', 'amapress' ),
+					'title_tag' => __( 'Balise utilisée pour le titre (par défaut h4)', 'amapress' ),
 				]
 			] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueueScripts' ] );
@@ -101,14 +101,17 @@ class AmapressDocSpace {
 		if ( $this->hasCurrentUserUploadRight() ) {
 			$ret .= '<div id="amps-dz-' . $sanitized_name . '"><form action="' . $url . "\" class=\"dropzone needsclick dz-clickable\" id=\"amps-dz-form-" . $sanitized_name . '">
 	' . $nonce_files . '	<div class="dz-message needsclick">
-		' . 'Déposez des fichiers ici ou cliquez pour téléverser.' . '<br>
-		<span class="note needsclick">' . sprintf( '(Les fichiers seront téléversés dans l\'espace %s)', $space_name ) . '</span>
+		' . __( 'Déposez des fichiers ici ou cliquez pour téléverser.', 'amapress' ) . '<br>
+		<span class="note needsclick">' . sprintf( __( '(Les fichiers seront téléversés dans l\'espace %s)', 'amapress' ), $space_name ) . '</span>
   	</div>
 	<input type=\'hidden\' name=\'action\' value=\'amp_upload_docspace_' . $this->name . '\'>
-	<label for="amp_override"><input type="checkbox" id="amp_override" name="amp_override" /> ' . 'Ecraser les fichiers existants' . '</label>
+	<label for="amp_override"><input type="checkbox" id="amp_override" name="amp_override" /> ' . __( 'Ecraser les fichiers existants', 'amapress' ) . '</label>
 </form></div>';
 		}
 		$delete_confirm = esc_js( __( 'Etes-vous sûr de vouloir supprimer ', 'amapress' ) );
+		$msg_error1     = esc_js( __( 'Une erreur s\'est produite pendant la suppression du fichier. Merci de rafraichir la page.', 'amapress' ) );
+		$msg_error2     = esc_js( __( 'Une erreur s\'est produite pendant la mise à jour de la liste des fichiers. Merci de rafraichir la page.', 'amapress' ) );
+		$msg_copied     = esc_js( __( 'Lien copié', 'amapress' ) );
 		$ret            .= <<<ENDFORM
 <script type="text/javascript">
     //<![CDATA[
@@ -124,11 +127,11 @@ class AmapressDocSpace {
                 jQuery.get('$remove_file_url&name=' + name, function(data) {
                     updateList$sanitized_name();
                 }).fail(function() {
-                    alert( "Une erreur s'est produite pendant la suppression du fichier. Merci de rafraichir la page." );
+                    alert( "$msg_error1" );
                   });
             });	        
 	    }).fail(function() {
-                    alert( "Une erreur s'est produite pendant la mise à jour de la liste des fichiers. Merci de rafraichir la page." );
+                    alert( "$msg_error2" );
                   });;
 	}
 	
@@ -151,7 +154,7 @@ class AmapressDocSpace {
         }
 	    var clip = new ClipboardJS('#amps-file-list-$sanitized_name .clip-file-copy');
 	    clip.on('success', function(e) {
-	        alert('Lien copié');
+	        alert('$msg_copied');
         });
     });
 	//]]>
@@ -185,7 +188,7 @@ ENDFORM;
 			if ( ! isset( $_POST['amp_override'] ) && file_exists( $uploadfile ) ) {
 				http_response_code( 403 );
 				header( 'Content-Type: application/json; charset=utf-8' );
-				echo json_encode( [ 'error' => sprintf( 'Le fichier %s existe déjà', $_FILES['file']['name'] ) ] );
+				echo json_encode( [ 'error' => sprintf( __( 'Le fichier %s existe déjà', 'amapress' ), $_FILES['file']['name'] ) ] );
 				die();
 			}
 			if ( move_uploaded_file( $_FILES['file']['tmp_name'], $uploadfile ) ) {
@@ -194,7 +197,7 @@ ENDFORM;
 			} else {
 				http_response_code( 401 );
 				header( 'Content-Type: application/json; charset=utf-8' );
-				echo json_encode( [ 'error' => 'Erreur inconnue' ] );
+				echo json_encode( [ 'error' => __( 'Erreur inconnue', 'amapress' ) ] );
 				die();
 			}
 			//$_FILES['file']['tmp_name'];
@@ -225,13 +228,13 @@ ENDFORM;
 			function pretty_filesize( $file ) {
 				$size = filesize( $file );
 				if ( $size < 1024 ) {
-					$size = $size . "o";
+					$size = $size . _x( 'o', 'filesize', 'amapress' );
 				} elseif ( ( $size < 1048576 ) && ( $size > 1023 ) ) {
-					$size = round( $size / 1024, 1 ) . "Ko";
+					$size = round( $size / 1024, 1 ) . _x( 'Ko', 'filesize', 'amapress' );
 				} elseif ( ( $size < 1073741824 ) && ( $size > 1048575 ) ) {
-					$size = round( $size / 1048576, 1 ) . "Mo";
+					$size = round( $size / 1048576, 1 ) . _x( 'Mo', 'filesize', 'amapress' );
 				} else {
-					$size = round( $size / 1073741824, 1 ) . "Go";
+					$size = round( $size / 1073741824, 1 ) . _x( 'Go', 'filesize', 'amapress' );
 				}
 
 				return $size;
@@ -270,13 +273,13 @@ ENDFORM;
 					$name = $dirArray[ $index ];
 
 					// Gets Date Modified
-					$modtime = date( "j M Y H:i", filemtime( $full_path ) );
-					$timekey = date( "YmdHis", filemtime( $full_path ) );
+					$modtime = date( 'j M Y H:i', filemtime( $full_path ) );
+					$timekey = date( 'YmdHis', filemtime( $full_path ) );
 
 					// Separates directories, and performs operations on those directories
 					if ( is_dir( $full_path ) ) {
-						$extn    = "&lt;Dossier&gt;";
-						$size    = "&lt;Dossier&gt;";
+						$extn    = __( '&lt;Dossier&gt;', 'amapress' );
+						$size    = __( '&lt;Dossier&gt;', 'amapress' );
 						$sizekey = "0";
 						$class   = "dir";
 					} // File-only operations
@@ -287,83 +290,83 @@ ENDFORM;
 						// Prettifies file type
 						switch ( $extn ) {
 							case "png":
-								$extn = "Image PNG";
+								$extn = __( "Image PNG", 'amapress' );
 								break;
 							case "jpg":
-								$extn = "Image JPEG";
+								$extn = __( "Image JPEG", 'amapress' );
 								break;
 							case "jpeg":
-								$extn = "Image JPEG";
+								$extn = __( "Image JPEG", 'amapress' );
 								break;
 							case "svg":
-								$extn = "Image SVG";
+								$extn = __( "Image SVG", 'amapress' );
 								break;
 							case "gif":
-								$extn = "Image GIF";
+								$extn = __( "Image GIF", 'amapress' );
 								break;
 							case "ico":
-								$extn = "Icône";
+								$extn = __( "Icône", 'amapress' );
 								break;
 
 							case "txt":
-								$extn = "Fichier texte";
+								$extn = __( "Fichier texte", 'amapress' );
 								break;
 							case "log":
-								$extn = "Fichier log";
+								$extn = __( "Fichier log", 'amapress' );
 								break;
 							case "htm":
-								$extn = "Fichier HTML";
+								$extn = __( "Fichier HTML", 'amapress' );
 								break;
 							case "html":
-								$extn = "Fichier HTML";
+								$extn = __( "Fichier HTML", 'amapress' );
 								break;
 							case "xhtml":
-								$extn = "Fichier HTML";
+								$extn = __( "Fichier HTML", 'amapress' );
 								break;
 							case "shtml":
-								$extn = "Fichier HTML";
+								$extn = __( "Fichier HTML", 'amapress' );
 								break;
 							case "php":
-								$extn = "PHP Script";
+								$extn = __( "PHP Script", 'amapress' );
 								break;
 							case "js":
-								$extn = "Javascript File";
+								$extn = __( "Javascript File", 'amapress' );
 								break;
 							case "css":
-								$extn = "Stylesheet";
+								$extn = __( "Stylesheet", 'amapress' );
 								break;
 
 							case "pdf":
-								$extn = "Document PDF";
+								$extn = __( "Document PDF", 'amapress' );
 								break;
 							case "xls":
-								$extn = "Feuille de calcul Excel";
+								$extn = __( "Feuille de calcul Excel", 'amapress' );
 								break;
 							case "xlsx":
-								$extn = "Feuille de calcul Excel";
+								$extn = __( "Feuille de calcul Excel", 'amapress' );
 								break;
 							case "ods":
-								$extn = "Feuille de calcul LibreOffice";
+								$extn = __( "Feuille de calcul LibreOffice", 'amapress' );
 								break;
 							case "doc":
-								$extn = "Fichier Word";
+								$extn = __( "Fichier Word", 'amapress' );
 								break;
 							case "docx":
-								$extn = "Fichier Word";
+								$extn = __( "Fichier Word", 'amapress' );
 								break;
 							case "odt":
-								$extn = "Document LibreOffice";
+								$extn = __( "Document LibreOffice", 'amapress' );
 								break;
 
 							case "zip":
-								$extn = "Archive ZIP";
+								$extn = __( "Archive ZIP", 'amapress' );
 								break;
 
 							default:
 								if ( $extn != "" ) {
-									$extn = "Fichier " . strtoupper( $extn );
+									$extn = sprintf( __( "Fichier %s", 'amapress' ), strtoupper( $extn ) );
 								} else {
-									$extn = "Inconnu";
+									$extn = __( "Inconnu", 'amapress' );
 								}
 								break;
 						}
@@ -383,7 +386,7 @@ ENDFORM;
 					// Output
 					echo( "
 		<tr class='$class'>
-			<td><a href='$download_href'$favicon class='name'>$name</a>&nbsp;|&nbsp;<span class='clip-file-copy' role='button' style='cursor: pointer' title='" . 'Copier le lien' . "' data-clipboard-text='{$download_href}'><i class=\"fa fa-copy\"></i></span></td>
+			<td><a href='$download_href'$favicon class='name'>$name</a>&nbsp;|&nbsp;<span class='clip-file-copy' role='button' style='cursor: pointer' title='" . __( 'Copier le lien', 'amapress' ) . "' data-clipboard-text='{$download_href}'><i class=\"fa fa-copy\"></i></span></td>
 			<td>$extn</td>
 			<td sorttable_customkey='$sizekey'>$size</td>
 			<td sorttable_customkey='$timekey'>$modtime</td>

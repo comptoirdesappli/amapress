@@ -19,37 +19,37 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 	$users = [ '' => '--Sélectionner un amapien--' ];
 	amapress_precache_all_users();
 	foreach ( get_users() as $user ) {
-		$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+		$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 	}
 	$inscr_another = '';
 	if ( amapress_can_access_admin() && $can_subscribe ) {
 		$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . 'Inscrire' . '</button>
+<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
 	}
 	$inscription = '';
 	if ( ! $is_resp ) {
 		if ( $can_subscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . 'M\'inscrire' . '</button>';
+			$inscription .= '<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
 		} else {
-			$inscription .= '<span class="assemblee-inscr-closed">' . 'Inscriptions closes' . '</span>';
+			$inscription .= '<span class="assemblee-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
 		}
 	} else if ( $can_unsubscribe ) {
-		$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . 'Me désinscrire' . '</button>';
+		$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
 	}
 	if ( ! empty( $inscription ) ) {
-		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-ag amap-panel-ag-inscr' );
+		amapress_echo_panel_start( __( 'Inscription', 'amapress' ), null, 'amap-panel-ag amap-panel-ag-inscr' );
 		echo $inscription;
 		echo $inscr_another;
 		amapress_echo_panel_end();
 	}
 
-	amapress_echo_panel_start( 'Horaires' );
-	echo sprintf( '<p>de %s à %s</p>', date_i18n( 'H:i', $assemblee_generale->getStartDateAndHour() ), date_i18n( 'H:i', $assemblee_generale->getEndDateAndHour() ) );
+	amapress_echo_panel_start( __( 'Horaires', 'amapress' ) );
+	echo sprintf( __( '<p>de %s à %s</p>', 'amapress' ), date_i18n( 'H:i', $assemblee_generale->getStartDateAndHour() ), date_i18n( 'H:i', $assemblee_generale->getEndDateAndHour() ) );
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Ordre du jour' );
+	amapress_echo_panel_start( __( 'Ordre du jour', 'amapress' ) );
 	echo $assemblee_generale->getOrdre_du_jour();
 	amapress_echo_panel_end();
 
@@ -60,18 +60,18 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 			$addr_entry    = '';
 			$address_acces = $assemblee_generale->getLieu()->getAdresseAcces();
 			if ( ! empty( $address_acces ) ) {
-				$addr_entry = '<h3>' . 'Adresse d\'accès' . '</h3><p>' .
+				$addr_entry = '<h3>' . __( 'Adresse d\'accès', 'amapress' ) . '</h3><p>' .
 				              $address_acces .
 				              '</p>';
 			}
 
-			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-assemblee amap-panel-assemblee-address' );
+			amapress_echo_panel_start( __( 'Adresse', 'amapress' ), null, 'amap-panel-assemblee amap-panel-assemblee-address' );
 			echo '<p>' .
 			     $assemblee_generale->getLieu()->getFormattedAdresseHtml() .
 			     '</p>';
 			amapress_echo_panel_end();
 
-			amapress_echo_panel_start( 'Accès', null, 'amap-panel-assemblee amap-panel-assemblee-access' );
+			amapress_echo_panel_start( __( 'Accès', 'amapress' ), null, 'amap-panel-assemblee amap-panel-assemblee-access' );
 			echo $addr_entry .
 			     '<p>' .
 			     $assemblee_generale->getLieu()->getAcces() .
@@ -79,20 +79,20 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 			     do_shortcode( "[lieu-map lieu={$assemblee_generale->getLieuId()} mode=map+streeview]" );
 			amapress_echo_panel_end();
 		} else {
-			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-assemblee amap-panel-assemblee-address' );
-			echo '<p>' . 'Lieu non défini' . '</p>';
+			amapress_echo_panel_start( __( 'Adresse', 'amapress' ), null, 'amap-panel-assemblee amap-panel-assemblee-address' );
+			echo '<p>' . __( 'Lieu non défini', 'amapress' ) . '</p>';
 			amapress_echo_panel_end();
 		}
 	} else {
 		$addr_entry    = '';
 		$address_acces = $assemblee_generale->getLieu_externe_adresse();
 		if ( ! empty( $address_acces ) ) {
-			$addr_entry = '<h3>' . 'Adresse d\'accès' . '</h3><p>' .
+			$addr_entry = '<h3>' . __( 'Adresse d\'accès', 'amapress' ) . '</h3><p>' .
 			              $address_acces .
 			              '</p>';
 		}
 
-		amapress_echo_panel_start( 'Adresse', null, 'amap-panel-assemblee amap-panel-assemblee-address' );
+		amapress_echo_panel_start( __( 'Adresse', 'amapress' ), null, 'amap-panel-assemblee amap-panel-assemblee-address' );
 		echo '<p>' .
 		     $assemblee_generale->getLieu_externe_nom() .
 		     '</p>';
@@ -101,7 +101,7 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 		     '</p>';
 		amapress_echo_panel_end();
 
-		amapress_echo_panel_start( 'Accès', null, 'amap-panel-assemblee amap-panel-assemblee-access' );
+		amapress_echo_panel_start( __( 'Accès', 'amapress' ), null, 'amap-panel-assemblee amap-panel-assemblee-access' );
 		echo $addr_entry .
 		     '<p>' .
 		     $assemblee_generale->getLieu_externe_acces() .
@@ -137,10 +137,10 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 			return $u->getUser();
 		}, $assemblee_generale->getParticipants() );
 
-		amapress_echo_panel_start( 'Participants', null, 'amap-panel-assemblee amap-panel-assemblee-amapiens' );
+		amapress_echo_panel_start( __( 'Participants', 'amapress' ), null, 'amap-panel-assemblee amap-panel-assemblee-amapiens' );
 		if ( count( $responsables ) > 0 ) {
 			echo amapress_generic_gallery( $responsables, 'user_cell', [
-				'if_empty' => 'Pas de participant'
+				'if_empty' => __( 'Pas de participant', 'amapress' )
 			] );
 		} else { ?>
             <p><?php _e( 'Aucun participants', 'amapress' ) ?></p>

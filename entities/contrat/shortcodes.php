@@ -93,7 +93,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 //	if ( ! $liste_dates ) {
 //		$liste_dates = Amapress::get_array( get_post_meta( $contrat->ID, 'amapress_contrat_instance_commande_liste_dates', true ) );
 //	}
-//	$liste_dates = array_map( array( 'AmapressDistributions', 'to_date' ), $liste_dates );
+//	$liste_dates = array_map( array( __('AmapressDistributions', 'amapress'), 'to_date' ), $liste_dates );
 //
 //	if ( $remain ) {
 //		if ( $adhesion ) {
@@ -159,7 +159,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 //				return date_i18n( 'F', $d );
 //			} );
 //			$dates_str = array_map( function ( $k, $v ) {
-//				return 'En ' . $k . ' : ' . implode( ', ', array_map( function ( $d ) {
+//				return __('En ', 'amapress') . $k . ' : ' . implode( ', ', array_map( function ( $d ) {
 //						return date_i18n( 'd', $d );
 //					}, $v ) );
 //			}, array_keys( $by_month ), array_values( $by_month ) );
@@ -252,7 +252,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 //			foreach ( $paiements as $p ) {
 //				$r .= '<li class="paiement ' . ( $p == $adhesion_paiements ? 'active' : '' ) . '">';
 //				$r .= amapress_get_radio( 'paiement_' . $quantite->ID, $p, $adhesion_paiements,
-//					sprintf( '%d ch�que%s de %01.2f�', $p, ( $p > 2 ? 's' : '' ), $total / $p ) );
+//					sprintf( __('%d ch�que%s de %01.2f�', 'amapress'), $p, ( $p > 2 ? 's' : '' ), $total / $p ) );
 //				$r .= '</li>';
 //			}
 //			$r .= '</ul>';

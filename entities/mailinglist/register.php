@@ -17,8 +17,8 @@ function amapress_register_entities_mailinglist( $entities ) {
 		'editor'           => false,
 		'title'            => false,
 		'labels'           => array(
-			'add_new'      => 'Configurer une liste de diffusion existante',
-			'add_new_item' => 'Configurer une liste de diffusion existante',
+			'add_new'      => __( 'Configurer une liste de diffusion existante', 'amapress' ),
+			'add_new_item' => __( 'Configurer une liste de diffusion existante', 'amapress' ),
 		),
 		'default_orderby'  => 'post_title',
 		'default_order'    => 'ASC',
@@ -28,7 +28,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 				amapress_add_view_button(
 					$ret, 'sync_all',
 					"post_type=amps_mailing&sync_all",
-					'Tout synchroniser' );
+					__( 'Tout synchroniser', 'amapress' ) );
 
 				return $ret;
 			}
@@ -40,24 +40,24 @@ function amapress_register_entities_mailinglist( $entities ) {
 		'menu_icon'        => 'dashicons-email-alt',
 		'fields'           => array(
 			'name'                   => array(
-				'group'    => 'Nom',
+				'group'    => __( 'Nom', 'amapress' ),
 				'name'     => __( 'Nom', 'amapress' ),
 				'type'     => 'select',
-				'desc'     => 'Choisir la liste de diffusion à configurer.',
+				'desc'     => __( 'Choisir la liste de diffusion à configurer.', 'amapress' ),
 				'options'  => 'amapress_get_mailinglists',
 				'required' => true,
 			),
 			'desc'                   => array(
-				'group' => 'Description',
+				'group' => __( 'Description', 'amapress' ),
 				'name'  => __( 'Description', 'amapress' ),
 				'type'  => 'text',
 			),
 			'moderation'             => array(
-				'group'        => 'Modération',
+				'group'        => __( 'Modération', 'amapress' ),
 				'name'         => __( 'Modération', 'amapress' ),
 				'type'         => 'select',
 				'cache'        => false,
-				'desc'         => 'Choisir le type de modération – option proposée par votre gestionnaire de liste (Sympa, Mailchimp, …).',
+				'desc'         => __( 'Choisir le type de modération – option proposée par votre gestionnaire de liste (Sympa, Mailchimp, …).', 'amapress' ),
 				'options'      => 'amapress_get_mailinglist_moderation_options',
 				'column'       => 'amapress_get_mailinglist_moderation_column',
 				'custom_get'   => 'amapress_get_mailinglist_moderation',
@@ -70,21 +70,21 @@ function amapress_register_entities_mailinglist( $entities ) {
 					if ( amapress_mailinglist_should_moderators_readonly( $option ) ) {
 						$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
 
-						echo '<p style="color:red;font-weight: bold">' . 'La gestion de la modération se fait manuellement dans ' .
+						echo '<p style="color:red;font-weight: bold">' . __( 'La gestion de la modération se fait manuellement dans ', 'amapress' ) .
 						     Amapress::makeLink( $ml->getMailingList()->getConfigurationLink(),
-							     'Configuraton de la mailinglist', true, true )
+							     __( 'Configuraton de la mailinglist', 'amapress' ), true, true )
 						     . '</p>';
 					}
 				},
 			),
 			'moderators'             => array(
-				'group'        => 'Modérateurs',
+				'group'        => __( 'Modérateurs', 'amapress' ),
 				'name'         => __( 'Modérateurs', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Choisir un ou plusieurs modérateurs en charge de valider les mails avant diffusion.',
+				'desc'         => __( 'Choisir un ou plusieurs modérateurs en charge de valider les mails avant diffusion.', 'amapress' ),
 				'readonly'     => function ( TitanFrameworkOption $option ) {
 					return amapress_has_mailinglist_moderators_queries( $option )
 					       || amapress_mailinglist_should_moderators_readonly( $option );
@@ -93,9 +93,9 @@ function amapress_register_entities_mailinglist( $entities ) {
 					if ( amapress_mailinglist_should_moderators_readonly( $option ) ) {
 						$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
 
-						echo '<p style="color:red;font-weight: bold">' . 'La gestion des modérateurs se fait manuellement dans ' .
+						echo '<p style="color:red;font-weight: bold">' . __( 'La gestion des modérateurs se fait manuellement dans ', 'amapress' ) .
 						     Amapress::makeLink( $ml->getMailingList()->getModeratorsLink(),
-							     'Gestion des modérateurs', true, true )
+							     __( 'Gestion des modérateurs', 'amapress' ), true, true )
 						     . '</p>';
 					}
 				},
@@ -105,61 +105,61 @@ function amapress_register_entities_mailinglist( $entities ) {
 //                'show_column' => false,
 			),
 			'moderators_queries'     => array(
-				'group'    => 'Modérateurs',
+				'group'    => __( 'Modérateurs', 'amapress' ),
 				'name'     => __( 'Groupes inclus dans les modérateurs', 'amapress' ),
 				'type'     => 'multicheck',
-				'desc'     => 'Cocher le ou les groupes à intégrer.',
+				'desc'     => __( 'Cocher le ou les groupes à intégrer.', 'amapress' ),
 				'options'  => 'amapress_get_mailinglist_moderators_queries',
 				'readonly' => 'amapress_mailinglist_should_moderators_readonly',
 //                'required' => true,
 			),
 			'moderators_other_users' => array(
-				'group'        => 'Modérateurs',
+				'group'        => __( 'Modérateurs', 'amapress' ),
 				'name'         => __( 'Modérateurs hors groupe', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
 				'readonly'     => 'amapress_mailinglist_should_moderators_readonly',
-//                'desc' => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
+//                'desc' => __('Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.', 'amapress'),
 			),
 			'waiting'                => array(
-				'group'   => 'Modération',
+				'group'   => __( 'Modération', 'amapress' ),
 				'name'    => __( 'Emails en attente modération', 'amapress' ),
 				'type'    => 'custom',
-				'desc'    => 'Liste du ou des emails à valider.',
+				'desc'    => __( 'Liste du ou des emails à valider.', 'amapress' ),
 				'column'  => 'amapress_get_mailinglist_waiting',
 				'custom'  => 'amapress_get_mailinglist_waiting_list',
 				'show_on' => 'edit-only',
 			),
 			'members_count'          => array(
-				'group'   => 'Membres',
+				'group'   => __( 'Membres', 'amapress' ),
 				'name'    => __( 'Membres', 'amapress' ),
 				'type'    => 'custom',
-				'desc'    => 'Liste des membres',
+				'desc'    => __( 'Liste des membres', 'amapress' ),
 				'column'  => 'amapress_get_mailinglist_members_count',
 				'custom'  => 'amapress_get_mailinglist_members_count',
 				'show_on' => 'edit-only',
 			),
 			'queries'                => array(
-				'group'    => 'Membres',
+				'group'    => __( 'Membres', 'amapress' ),
 				'name'     => __( 'Groupes inclus', 'amapress' ),
 				'type'     => 'multicheck',
-				'desc'     => 'Cocher le ou les groupes à intégrer.',
+				'desc'     => __( 'Cocher le ou les groupes à intégrer.', 'amapress' ),
 				'options'  => 'amapress_get_mailinglist_queries',
 				'required' => true,
 			),
 			'other_users'            => array(
-				'group'        => 'Membres',
+				'group'        => __( 'Membres', 'amapress' ),
 				'name'         => __( 'Amapiens hors groupe', 'amapress' ),
 				'type'         => 'select-users',
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.',
+				'desc'         => __( 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.', 'amapress' ),
 			),
 			'bounces'                => array(
-				'group'   => 'Membres',
+				'group'   => __( 'Membres', 'amapress' ),
 				'name'    => __( 'Taux d\'erreur', 'amapress' ),
 				'type'    => 'custom',
 				'desc'    => 'Taux d\erreur lors de l\'envoi d\{emails par la liste',
@@ -168,20 +168,20 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'show_on' => 'edit-only',
 			),
 			'reply_to'               => array(
-				'group'       => 'Membres',
+				'group'       => __( 'Membres', 'amapress' ),
 				'name'        => __( 'Reply to', 'amapress' ),
 				'type'        => 'select',
-				'desc'        => 'Choisir à qui répondent les destinataires de la liste',
+				'desc'        => __( 'Choisir à qui répondent les destinataires de la liste', 'amapress' ),
 				'options'     => 'amapress_get_mailinglist_reply_to_options',
 				'custom_get'  => 'amapress_get_mailinglist_reply_to',
 				'custom_save' => 'amapress_set_mailinglist_reply_to',
 				'show_on'     => 'edit-only',
 			),
 			'status'                 => array(
-				'group'   => 'Nom',
+				'group'   => __( 'Nom', 'amapress' ),
 				'name'    => __( 'Statut', 'amapress' ),
 				'type'    => 'custom',
-				'desc'    => 'Statut',
+				'desc'    => __( 'Statut', 'amapress' ),
 				'custom'  => 'amapress_get_mailinglist_status',
 				'column'  => 'amapress_get_mailinglist_status',
 				'show_on' => 'edit-only',
@@ -206,7 +206,7 @@ function amapress_mailinglist_user_mails( $display_name, WP_User $user, TitanFra
 	if ( isset( $option->owner->settings['post_type'] ) && in_array( Amapress_MailingListConfiguration::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) {
 		$amapien = AmapressUser::getBy( $user->ID );
 
-		return sprintf( '%s (%s)', $user->display_name, implode( ',', $amapien->getAllEmails() ) );
+		return sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, implode( ',', $amapien->getAllEmails() ) );
 	}
 
 	return $display_name;
@@ -236,35 +236,35 @@ function amapress_get_mailinglist_queries() {
 
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
-			$ret["amapress_lieu={$lieu->ID}"] = "Amapiens de {$lieu->getTitle()}";
+			$ret["amapress_lieu={$lieu->ID}"] = sprintf( __( "Amapiens de %s", 'amapress' ), $lieu->getTitle() );
 			foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
-				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}"] = "Amapiens  de {$lieu->getTitle()} - Contrat {$contrat->getTitle()}";
+				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}"] = sprintf( __( "Amapiens  de %s - Contrat %s", 'amapress' ), $lieu->getTitle(), $contrat->getTitle() );
 			}
 		}
 	}
 
 
-	$ret['all=T']                                    = 'Tous les utilisateurs enregistrés';
-	$ret["amapress_role=never_logged"]               = "Amapiens jamais connectés";
-	$ret["amapress_adhesion=ok"]                     = "Amapiens avec adhésion";
-	$ret["amapress_adhesion=nok"]                    = "Amapiens sans adhésion";
-	$ret["amapress_contrat=no&amapress_adhesion=ok"] = "Amapiens avec adhésion sans contrat";
-	$ret["amapress_contrat=no"]                      = "Amapiens sans contrat";
-	$ret["amapress_contrat=active"]                  = "Amapiens avec contrat";
-	$ret["amapress_contrat=coadherent"]              = "Co-adhérents";
-	$ret["amapress_contrat=with_coadherent"]         = "Amapiens avec co-adhérents";
+	$ret['all=T']                                    = __( 'Tous les utilisateurs enregistrés', 'amapress' );
+	$ret["amapress_role=never_logged"]               = __( "Amapiens jamais connectés", 'amapress' );
+	$ret["amapress_adhesion=ok"]                     = __( "Amapiens avec adhésion", 'amapress' );
+	$ret["amapress_adhesion=nok"]                    = __( "Amapiens sans adhésion", 'amapress' );
+	$ret["amapress_contrat=no&amapress_adhesion=ok"] = __( "Amapiens avec adhésion sans contrat", 'amapress' );
+	$ret["amapress_contrat=no"]                      = __( "Amapiens sans contrat", 'amapress' );
+	$ret["amapress_contrat=active"]                  = __( "Amapiens avec contrat", 'amapress' );
+	$ret["amapress_contrat=coadherent"]              = __( "Co-adhérents", 'amapress' );
+	$ret["amapress_contrat=with_coadherent"]         = __( "Amapiens avec co-adhérents", 'amapress' );
 
 
 	$sub_names = [];
 	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
-		$ret["amapress_contrat={$contrat->ID}"] = "Amapiens - Contrat {$contrat->getTitle()}";
+		$ret["amapress_contrat={$contrat->ID}"] = sprintf( __( "Amapiens - Contrat %s", 'amapress' ), $contrat->getTitle() );
 		$sub_contrats                           = AmapressContrats::get_active_contrat_instances_by_contrat( $contrat->ID );
 		foreach ( $sub_contrats as $contrat_instance ) {
 			if ( ! empty( $contrat_instance->getSubName() ) ) {
 				$sub_names[] = trim( $contrat_instance->getSubName() );
 				if ( count( $sub_contrats ) > 1 ) {
 					$ret[ "amapress_contrat={$contrat->ID}&amapress_subcontrat=" .
-					      urlencode( $contrat_instance->getSubName() ) ] = "Amapiens - Contrat {$contrat->getTitle()} - {$contrat_instance->getSubName()}";
+					      urlencode( $contrat_instance->getSubName() ) ] = sprintf( __( "Amapiens - Contrat %s - %s", 'amapress' ), $contrat->getTitle(), $contrat_instance->getSubName() );
 				}
 			}
 		}
@@ -272,7 +272,7 @@ function amapress_get_mailinglist_queries() {
 	if ( ! empty( $sub_names ) ) {
 		$sub_names = array_unique( $sub_names );
 		foreach ( $sub_names as $sub_name ) {
-			$ret[ 'amapress_contrat=active&amapress_subcontrat=' . urlencode( $sub_name ) ] = sprintf( 'Amapiens avec contrats - %s', $sub_name );
+			$ret[ 'amapress_contrat=active&amapress_subcontrat=' . urlencode( $sub_name ) ] = sprintf( __( 'Amapiens avec contrats - %s', 'amapress' ), $sub_name );
 		}
 	}
 
@@ -286,30 +286,30 @@ function amapress_get_mailinglist_queries() {
 //		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
 //	}
 
-	$ret["amapress_role=collectif_no_prod"]                         = "Membres du collectif (sans les producteurs)";
-	$ret["amapress_role=collectif"]                                 = 'Membres du collectif (avec les producteurs)';
-	$ret["amapress_role=collectif_no_prod&amapress_contrat=active"] = "Membres du collectif avec contrat(s) (sans les producteurs)";
+	$ret["amapress_role=collectif_no_prod"]                         = __( "Membres du collectif (sans les producteurs)", 'amapress' );
+	$ret["amapress_role=collectif"]                                 = __( 'Membres du collectif (avec les producteurs)', 'amapress' );
+	$ret["amapress_role=collectif_no_prod&amapress_contrat=active"] = __( "Membres du collectif avec contrat(s) (sans les producteurs)", 'amapress' );
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
-			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif_no_prod"]                         = "Membres du collectif (sans les producteurs) de {$lieu->getTitle()}";
-			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif"]                                 = "Membres du collectif (avec les producteurs) de {$lieu->getTitle()}";
-			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif_no_prod&amapress_contrat=active"] = "Membres du collectif avec contrat(s) (sans les producteurs) de {$lieu->getTitle()}";
+			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif_no_prod"]                         = sprintf( __( "Membres du collectif (sans les producteurs) de %s", 'amapress' ), $lieu->getTitle() );
+			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif"]                                 = sprintf( __( "Membres du collectif (avec les producteurs) de %s", 'amapress' ), $lieu->getTitle() );
+			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif_no_prod&amapress_contrat=active"] = sprintf( __( "Membres du collectif avec contrat(s) (sans les producteurs) de %s", 'amapress' ), $lieu->getTitle() );
 		}
 	}
 //    foreach (AmapressContrats::get_active_contrat_instances() as $contrat) {
 //        $ret["amapress_contrat={$contrat->ID}&amapress_role=access_admin"] = "Responsables AMAP - {$contrat->getModelTitle()}";
 //    }
 
-	$ret["amapress_contrat=intermittent"]     = "Intermittents";
-	$ret["amapress_role=referent_lieu"]       = "Référents lieux";
-	$ret["amapress_role=referent_producteur"] = "Référents Producteurs";
-	$ret["amapress_role=resp_distrib"]        = 'Prochains responsables de distributions';
-	$ret["role=producteur"]                   = "Producteurs";
-	$ret["role=administrator"]                = "Administrateurs Amap";
-	$ret["role=responsable_amap"]             = "Responsables Amap";
-	$ret["role=tresorier"]                    = "Trésoriers Amap";
-	$ret["role=redacteur_amap"]               = "Rédacteurs Amap";
-	$ret["role=coordinateur_amap"]            = "Coordinateurs Amap";
+	$ret["amapress_contrat=intermittent"]     = __( "Intermittents", 'amapress' );
+	$ret["amapress_role=referent_lieu"]       = __( "Référents lieux", 'amapress' );
+	$ret["amapress_role=referent_producteur"] = __( "Référents Producteurs", 'amapress' );
+	$ret["amapress_role=resp_distrib"]        = __( 'Prochains responsables de distributions', 'amapress' );
+	$ret["role=producteur"]                   = __( "Producteurs", 'amapress' );
+	$ret["role=administrator"]                = __( "Administrateurs Amap", 'amapress' );
+	$ret["role=responsable_amap"]             = __( "Responsables Amap", 'amapress' );
+	$ret["role=tresorier"]                    = __( "Trésoriers Amap", 'amapress' );
+	$ret["role=redacteur_amap"]               = __( "Rédacteurs Amap", 'amapress' );
+	$ret["role=coordinateur_amap"]            = __( "Coordinateurs Amap", 'amapress' );
 
 	foreach (
 		get_categories( array(
@@ -320,7 +320,7 @@ function amapress_get_mailinglist_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( 'Membres du collectif avec rôle "%s"', $role->name );
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( __( 'Membres du collectif avec rôle "%s"', 'amapress' ), $role->name );
 	}
 
 	foreach (
@@ -332,7 +332,7 @@ function amapress_get_mailinglist_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( 'Groupe amapiens "%s"', $role->name );
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( __( 'Groupe amapiens "%s"', 'amapress' ), $role->name );
 	}
 
 	return amapress_user_queries_link_wrap( $ret );
@@ -372,33 +372,33 @@ function amapress_get_mailinglist_moderators_queries() {
 			return $lieu->isPrincipal();
 		} );
 
-	$ret["amapress_role=referent_producteur"] = "Référents producteurs";
+	$ret["amapress_role=referent_producteur"] = __( "Référents producteurs", 'amapress' );
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
-			$ret["amapress_lieu={$lieu->ID}&amapress_role=referent_producteur"] = "Référents producteurs de {$lieu->getTitle()}";
+			$ret["amapress_lieu={$lieu->ID}&amapress_role=referent_producteur"] = sprintf( __( "Référents producteurs de %s", 'amapress' ), $lieu->getTitle() );
 			foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
-				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs  de {$lieu->getTitle()} - {$contrat->getTitle()}";
+				$ret["amapress_lieu={$lieu->ID}&amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = sprintf( __( "Référents producteurs  de %s - %s", 'amapress' ), $lieu->getTitle(), $contrat->getTitle() );
 			}
 		}
 	}
 	foreach ( AmapressContrats::get_contrats( null, false, false ) as $contrat ) {
-		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = "Référents producteurs - {$contrat->getTitle()}";
+		$ret["amapress_contrat={$contrat->ID}&amapress_role=referent_producteur"] = sprintf( __( "Référents producteurs - %s", 'amapress' ), $contrat->getTitle() );
 	}
 
-	$ret["amapress_role=collectif"] = 'Membres du collectif (avec les producteurs)';
+	$ret["amapress_role=collectif"] = __( 'Membres du collectif (avec les producteurs)', 'amapress' );
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
-			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif"] = "Membres du collectif (avec les producteurs) de {$lieu->getTitle()}";
+			$ret["amapress_lieu={$lieu->ID}&amapress_role=collectif"] = sprintf( __( "Membres du collectif (avec les producteurs) de %s", 'amapress' ), $lieu->getTitle() );
 		}
 	}
 //    foreach (AmapressContrats::get_active_contrat_instances() as $contrat) {
 //        $ret["amapress_contrat={$contrat->ID}&amapress_role=access_admin"] = "Responsables AMAP - {$contrat->getModelTitle()}";
 //    }
 
-	$ret["amapress_role=referent_lieu"]     = "Référents lieux";
-	$ret["amapress_role=amap_role_any"]     = "Amapiens avec rôles";
-	$ret["amapress_role=amapien_group_any"] = "Amapiens avec groupes";
-	$ret["role=administrator"]              = "Administrateurs";
+	$ret["amapress_role=referent_lieu"]     = __( "Référents lieux", 'amapress' );
+	$ret["amapress_role=amap_role_any"]     = __( "Amapiens avec rôles", 'amapress' );
+	$ret["amapress_role=amapien_group_any"] = __( "Amapiens avec groupes", 'amapress' );
+	$ret["role=administrator"]              = __( "Administrateurs", 'amapress' );
 
 	foreach (
 		get_categories( array(
@@ -409,7 +409,7 @@ function amapress_get_mailinglist_moderators_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( 'Membres du collectif avec rôle "%s"', $role->name );
+		$ret[ 'amps_amap_role_category=' . $role->slug ] = sprintf( __( 'Membres du collectif avec rôle "%s"', 'amapress' ), $role->name );
 	}
 
 	foreach (
@@ -421,7 +421,7 @@ function amapress_get_mailinglist_moderators_queries() {
 		) ) as $role
 	) {
 		/** @var WP_Term $role */
-		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( 'Groupe amapiens "%s"', $role->name );
+		$ret[ AmapressUser::AMAPIEN_GROUP . '=' . $role->slug ] = sprintf( __( 'Groupe amapiens "%s"', 'amapress' ), $role->name );
 	}
 
 //    $ret["amapress_role=resp_distrib"] = "Prochains responsables de distributions";
@@ -576,35 +576,35 @@ function amapress_get_mailinglist_waiting_list( $mailing_list_id ) {
 	if ( ! $ml_obj->getSystem()->handleMessagesModeration() ) {
 		$link = $ml_obj->getModerationLink();
 		if ( ! empty( $link ) ) {
-			return "<a href='$link' target='_blank'>" . 'Modérer les emails en attente' . "</a>";
+			return "<a href='$link' target='_blank'>" . __( 'Modérer les emails en attente', 'amapress' ) . "</a>";
 		} else {
-			return '<p>' . 'La modération des emails n\'est pas gérée pour ce système de listes de diffusion' . '</p>';
+			return '<p>' . __( 'La modération des emails n\'est pas gérée pour ce système de listes de diffusion', 'amapress' ) . '</p>';
 		}
 	} else {
 		$columns = array(
 			array(
-				'title' => 'Date',
+				'title' => __( 'Date', 'amapress' ),
 				'data'  => array(
 					'_'    => 'date',
 					'sort' => 'date',
 				)
 			),
 			array(
-				'title' => 'De',
+				'title' => __( 'De', 'amapress' ),
 				'data'  => array(
 					'_'    => 'from',
 					'sort' => 'from',
 				)
 			),
 			array(
-				'title' => 'Subject',
+				'title' => __( 'Subject', 'amapress' ),
 				'data'  => array(
 					'_'    => 'subject',
 					'sort' => 'subject',
 				)
 			),
 			array(
-				'title' => 'Contenu',
+				'title' => __( 'Contenu', 'amapress' ),
 				'data'  => array(
 					'_'    => 'content',
 					'sort' => 'content',
@@ -631,9 +631,9 @@ function amapress_get_mailinglist_waiting_list( $mailing_list_id ) {
 				'date'         => $m->getHeader( 'date' ),
 				'subject'      => $m->getHeader( 'subject' ),
 				'content'      => $m->getContent(),
-				'distribute'   => amapress_get_mail_action_form( 'Distribuer', 'amapress_mail_distribute', $ml->ID, $m->getId() ),
-				'reject_quiet' => amapress_get_mail_action_form( 'Rejetter sans prévenir', 'amapress_mail_reject_quiet', $ml->ID, $m->getId() ),
-				'reject'       => amapress_get_mail_action_form( 'Rejetter', 'amapress_mail_reject', $ml->ID, $m->getId() ),
+				'distribute'   => amapress_get_mail_action_form( __( 'Distribuer', 'amapress' ), 'amapress_mail_distribute', $ml->ID, $m->getId() ),
+				'reject_quiet' => amapress_get_mail_action_form( __( 'Rejetter sans prévenir', 'amapress' ), 'amapress_mail_reject_quiet', $ml->ID, $m->getId() ),
+				'reject'       => amapress_get_mail_action_form( __( 'Rejetter', 'amapress' ), 'amapress_mail_reject', $ml->ID, $m->getId() ),
 			);
 		}
 
@@ -730,21 +730,21 @@ function amapress_get_mailinglist_status( $mailing_list_id ) {
 	$ret = '';
 	switch ( $ml_obj->isSync( $ml ) ) {
 		case 'manual':
-			$ret .= '<div class="status"><div class="mailinglist-status" style="color: gray;">' . 'Synchro manuelle' . '</div>' .
-			        amapress_get_mail_action_form( 'Configurer et synchroniser', 'amapress_mailing_sync', $ml->ID, '' ) . '</div>';
+			$ret .= '<div class="status"><div class="mailinglist-status" style="color: gray;">' . __( 'Synchro manuelle', 'amapress' ) . '</div>' .
+			        amapress_get_mail_action_form( __( 'Configurer et synchroniser', 'amapress' ), 'amapress_mailing_sync', $ml->ID, '' ) . '</div>';
 			break;
 		case 'sync':
 			$ret .= '<div class="status"><div class="mailinglist-status" style="color: green;">OK</div></div>';
 			break;
 		case 'not_sync':
 			$ret .= '<div class="status"><div class="mailinglist-status" style="color: orange;">NOK</div>' .
-			        amapress_get_mail_action_form( 'Synchroniser', 'amapress_mailing_sync', $ml->ID, '' ) . '</div>';
+			        amapress_get_mail_action_form( __( 'Synchroniser', 'amapress' ), 'amapress_mailing_sync', $ml->ID, '' ) . '</div>';
 			break;
 		default:
-			$ret .= '<div class="status"><div class="mailinglist-status" style="color: orange;">' . 'Inconnu' . '</div></div>';
+			$ret .= '<div class="status"><div class="mailinglist-status" style="color: orange;">' . __( 'Inconnu', 'amapress' ) . '</div></div>';
 			break;
 	}
-	$ret .= '<div class="mailing-conf-link"><a href="' . $ml_obj->getConfigurationLink() . '">' . 'Voir la configuration complète' . '</a></div>';
+	$ret .= '<div class="mailing-conf-link"><a href="' . $ml_obj->getConfigurationLink() . '">' . __( 'Voir la configuration complète', 'amapress' ) . '</a></div>';
 
 	return $ret;
 //    $res = false;
@@ -770,7 +770,7 @@ add_action( 'tf_custom_admin_amapress_action_test_mailinglist_access', function 
 		$status    = [];
 		$connected = true;
 		foreach ( $systems as $system ) {
-			$status[] = sprintf( '%s(%s): %s',
+			$status[] = sprintf( __( '%s(%s): %s', 'amapress' ),
 				$system->getSystemName(),
 				$system->getSystemId(),
 				$system->isConnected() ? 'OK' : $system->getErrorMessage() );
@@ -796,17 +796,17 @@ function amapress_mailinglists_autosync( $force = false ) {
 			case 'not_sync':
 				$ml->syncMembers( $conf );
 				if ( 'sync' != $ml->isSync( $conf ) ) {
-					$messages[] = "La synchro de {$conf->getTitle()} a échouée. Voir {$conf->getAdminEditLink()}";
+					$messages[] = sprintf( __( 'La synchro de %s a échouée. Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
 				}
 				break;
 			case 'manual':
-				$messages[] = "La synchro de {$conf->getTitle()} doit être faite manuellement (ou n'est pas configurée). Voir {$conf->getAdminEditLink()}";
+				$messages[] = sprintf( __( 'La synchro de %s doit être faite manuellement (ou n\'est pas configurée). Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
 				break;
 		}
 	}
 	if ( ! empty( $messages ) ) {
 		$all_sync_link = Amapress::makeLink( admin_url( 'edit.php?post_type=amps_mailing&sync_all' ) );
-		amapress_mail_to_admin( 'Synchronisation des listes de diffusions',
+		amapress_mail_to_admin( __( 'Synchronisation des listes de diffusions', 'amapress' ),
 			"Les listes suivantes n'ont pas pu être synchronisées:\r\n" .
 			implode( "\r\n", $messages ) .
 			"\r\nPour lancer la synchronisation de toutes les listes manuellement, cliquer sur le lien suivant : {$all_sync_link}" );

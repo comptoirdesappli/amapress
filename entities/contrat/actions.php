@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'admin_post_paiement_table_pdf', function () {
 	if ( ! amapress_can_access_admin() ) {
-		wp_die( 'Accès interdit' );
+		wp_die( __( 'Accès interdit', 'amapress' ) );
 	}
 
 	$contrat_instance_id = intval( $_GET['contrat'] );
@@ -15,7 +15,7 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 		return;
 	}
 	if ( $contrat->isArchived() ) {
-		wp_die( "Action impossible pour un contrat archivé" );
+		wp_die( __( 'Action impossible pour un contrat archivé', 'amapress' ) );
 	}
 
 	$lieu_id = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
@@ -41,7 +41,7 @@ add_action( 'admin_post_paiement_table_pdf', function () {
 
 add_action( 'admin_post_paiement_table_xlsx', function () {
 	if ( ! amapress_can_access_admin() ) {
-		wp_die( 'Accès interdit' );
+		wp_die( __( 'Accès interdit', 'amapress' ) );
 	}
 
 	$contrat_instance_id = intval( $_GET['contrat'] );
@@ -50,7 +50,7 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 		return;
 	}
 	if ( $contrat->isArchived() ) {
-		wp_die( "Action impossible pour un contrat archivé" );
+		wp_die( __( 'Action impossible pour un contrat archivé', 'amapress' ) );
 	}
 
 	$lieu_id = isset( $_GET['lieu'] ) ? intval( $_GET['lieu'] ) : 0;
@@ -70,12 +70,12 @@ add_action( 'admin_post_paiement_table_xlsx', function () {
 		$lieu_name = $lieu->getShortName();
 	}
 	$date = date_i18n( 'd-m-Y' );
-	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "reglements-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.xlsx" ) ), "Règlements - {$contrat->getModelTitle()} - {$lieu_name}" );
+	Amapress::sendXLSXFromHtml( $html, strtolower( sanitize_file_name( "reglements-{$contrat->getModelTitle()}-{$lieu_name}-au-$date.xlsx" ) ), sprintf( __( 'Règlements - %s - %s', 'amapress' ), $contrat->getModelTitle(), $lieu_name ) );
 } );
 
 add_action( 'admin_post_delivery_table_xlsx', function () {
 	if ( ! amapress_can_access_admin() ) {
-		wp_die( 'Accès interdit' );
+		wp_die( __( 'Accès interdit', 'amapress' ) );
 	}
 
 	$contrat_instance_id = intval( $_GET['contrat'] );
@@ -99,7 +99,7 @@ add_action( 'admin_post_delivery_table_xlsx', function () {
 
 add_action( 'admin_post_archives_inscriptions', function () {
 	if ( ! amapress_can_access_admin() ) {
-		wp_die( 'Accès interdit' );
+		wp_die( __( 'Accès interdit', 'amapress' ) );
 	}
 
 	$contrat_instance_id = intval( $_GET['contrat'] );
@@ -119,13 +119,13 @@ add_action( 'admin_post_archives_inscriptions', function () {
 			Amapress::getArchivesDir() . '/' . $archives_infos["file_$type"],
 			$archives_infos["file_$type"] );
 	} else {
-		wp_die( 'Fichier introuvable' );
+		wp_die( __( 'Fichier introuvable', 'amapress' ) );
 	}
 } );
 
 add_action( 'admin_post_archives_cheques', function () {
 	if ( ! amapress_can_access_admin() ) {
-		wp_die( 'Accès interdit' );
+		wp_die( __( 'Accès interdit', 'amapress' ) );
 	}
 
 	$contrat_instance_id = intval( $_GET['contrat'] );

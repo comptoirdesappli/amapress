@@ -37,17 +37,17 @@ function amapress_register_entities_visite( $entities ) {
 //			'photo'        => array(
 //				'name'  => __( 'Photo', 'amapress' ),
 //				'type'  => 'upload',
-//				'group' => 'Information',
-//				'desc'  => 'Photo',
+//				'group' => __('Information', 'amapress'),
+//				'desc'  => __('Photo', 'amapress'),
 //			),
-			'status'       => array(
+			'status'               => array(
 				'name'     => __( 'Statut', 'amapress' ),
 				'type'     => 'select',
-				'group'    => '1/ Informations',
+				'group'    => __( '1/ Informations', 'amapress' ),
 				'options'  => array(
-					'to_confirm' => 'A confirmer',
-					'confirmed'  => 'Confirmée',
-					'cancelled'  => 'Annulée',
+					'to_confirm' => __( 'A confirmer', 'amapress' ),
+					'confirmed'  => __( 'Confirmée', 'amapress' ),
+					'cancelled'  => __( 'Annulée', 'amapress' ),
 				),
 				'default'  => 'confirmed',
 				'required' => true,
@@ -55,19 +55,19 @@ function amapress_register_entities_visite( $entities ) {
 			'au_programme' => array(
 				'name'       => __( 'Au programme', 'amapress' ),
 				'type'       => 'editor',
-				'desc'       => 'Au programme',
+				'desc'       => __( 'Au programme', 'amapress' ),
 				'searchable' => true,
-				'group'      => '1/ Informations',
+				'group'      => __( '1/ Informations', 'amapress' ),
 			),
 			'date'         => array(
 				'name'         => __( 'Date de visite', 'amapress' ),
 				'type'         => 'date',
 				'time'         => false,
 				'required'     => true,
-				'desc'         => 'Date de visite',
+				'desc'         => __( 'Date de visite', 'amapress' ),
 				'import_key'   => true,
 				'csv_required' => true,
-				'group'        => '2/ Horaires',
+				'group'        => __( '2/ Horaires', 'amapress' ),
 			),
 			'heure_debut'  => array(
 				'name'         => __( 'Heure début', 'amapress' ),
@@ -75,9 +75,9 @@ function amapress_register_entities_visite( $entities ) {
 				'date'         => false,
 				'time'         => true,
 				'required'     => true,
-				'desc'         => 'Heure début',
+				'desc'         => __( 'Heure début', 'amapress' ),
 				'csv_required' => true,
-				'group'        => '2/ Horaires',
+				'group'        => __( '2/ Horaires', 'amapress' ),
 			),
 			'heure_fin'    => array(
 				'name'         => __( 'Heure fin', 'amapress' ),
@@ -85,9 +85,9 @@ function amapress_register_entities_visite( $entities ) {
 				'date'         => false,
 				'time'         => true,
 				'required'     => true,
-				'desc'         => 'Heure fin',
+				'desc'         => __( 'Heure fin', 'amapress' ),
 				'csv_required' => true,
-				'group'        => '2/ Horaires',
+				'group'        => __( '2/ Horaires', 'amapress' ),
 			),
 			'slots_conf'   => array(
 				'name'  => __( 'Créneau(x)', 'amapress' ),
@@ -100,14 +100,14 @@ function amapress_register_entities_visite( $entities ) {
 					$users_in_slots = count( $visite->getUserIdsWithAnySlot() );
 					if ( $users_in_slots > 0 ) {
 						$ret .= '<p><strong style="color: red">' . sprintf(
-								'Attention : %d amapien(s) sont déjà inscrits. Modifier la configuration peut impacter l\'affectation de leurs créneaux',
+								__( 'Attention : %d amapien(s) sont déjà inscrits. Modifier la configuration peut impacter l\'affectation de leurs créneaux', 'amapress' ),
 								$users_in_slots
 							) . '</strong></p>';
 					}
 
-					$ret .= sprintf( 'Configurer un ou plusieurs créneau(x) séparés par des | et de la forme : <strong>Heure Début-Heure Fin(nom du créneau)</strong>
+					$ret .= sprintf( __( 'Configurer un ou plusieurs créneau(x) séparés par des | et de la forme : <strong>Heure Début-Heure Fin(nom du créneau)</strong>
 <br/>Exemple : 9h-12h(matin)|14h-17h(aprem)|9h-17h(journée)
-<br/>Créneau(x) horaire(s) actuels (<strong>visite de %s à %s</strong>) : %s',
+<br/>Créneau(x) horaire(s) actuels (<strong>visite de %s à %s</strong>) : %s', 'amapress' ),
 						date_i18n( 'H:i', $visite->getStartDateAndHour() ),
 						date_i18n( 'H:i', $visite->getEndDateAndHour() ),
 						$visite->getSlotsDescription()
@@ -116,14 +116,14 @@ function amapress_register_entities_visite( $entities ) {
 //					       Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/distribution' );
 					return $ret;
 				},
-				'group' => '2/ Horaires',
+				'group' => __( '2/ Horaires', 'amapress' ),
 			),
 			'producteur'           => array(
 				'name'              => __( 'Producteur', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => 'amps_producteur',
 				'required'          => true,
-				'desc'              => 'Producteur',
+				'desc'              => __( 'Producteur', 'amapress' ),
 				'import_key'        => true,
 				'csv_required'      => true,
 				'autoselect_single' => true,
@@ -131,16 +131,16 @@ function amapress_register_entities_visite( $entities ) {
 				'order'             => 'ASC',
 				'top_filter'        => array(
 					'name'        => 'amapress_producteur',
-					'placeholder' => 'Toutes les producteurs',
+					'placeholder' => __( 'Toutes les producteurs', 'amapress' ),
 				),
 				'searchable'        => true,
-				'group'             => '3/ Emplacement',
+				'group'             => __( '3/ Emplacement', 'amapress' ),
 			),
 			'lieu_externe_nom'     => array(
 				'name'           => __( 'Lieu ext.', 'amapress' ),
 				'type'           => 'text',
-				'desc'           => 'Lieu externe',
-				'group'          => '3/ Emplacement',
+				'desc'           => __( 'Lieu externe', 'amapress' ),
+				'group'          => __( '3/ Emplacement', 'amapress' ),
 				'searchable'     => true,
 				'col_def_hidden' => true,
 			),
@@ -149,8 +149,8 @@ function amapress_register_entities_visite( $entities ) {
 				'type'           => 'address',
 				'use_as_field'   => true,
 				'use_enter_gps'  => true,
-				'desc'           => 'Adresse',
-				'group'          => '3/ Emplacement',
+				'desc'           => __( 'Adresse', 'amapress' ),
+				'group'          => __( '3/ Emplacement', 'amapress' ),
 				'searchable'     => true,
 				'col_def_hidden' => true,
 			),
@@ -158,8 +158,8 @@ function amapress_register_entities_visite( $entities ) {
 				'name'        => __( 'Accès', 'amapress' ),
 				'type'        => 'editor',
 				'required'    => false,
-				'desc'        => 'Accès',
-				'group'       => '3/ Emplacement',
+				'desc'        => __( 'Accès', 'amapress' ),
+				'group'       => __( '3/ Emplacement', 'amapress' ),
 				'searchable'  => true,
 				'show_column' => false,
 			),
@@ -170,12 +170,12 @@ function amapress_register_entities_visite( $entities ) {
 				'autocomplete' => true,
 				'multiple'     => true,
 				'tags'         => true,
-				'desc'         => 'Participants',
-				'group'        => '4/ Participants',
+				'desc'         => __( 'Participants', 'amapress' ),
+				'group'        => __( '4/ Participants', 'amapress' ),
 				'after_option' => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$visite = new AmapressVisite( $option->getPostID() );
-					echo '<p>' . sprintf( 'Les inscriptions se gèrent <a href="%s" target="_blank">ici</a> pour cette visite', esc_attr( $visite->getPermalink() ) ) . '</p>';
+					echo '<p>' . sprintf( __( 'Les inscriptions se gèrent <a href="%s" target="_blank">ici</a> pour cette visite', 'amapress' ), esc_attr( $visite->getPermalink() ) ) . '</p>';
 				},
 			),
 		),

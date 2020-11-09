@@ -22,41 +22,41 @@ function amapress_get_custom_content_amap_event( $content ) {
 	$users = [ '' => '--Sélectionner un amapien--' ];
 	amapress_precache_all_users();
 	foreach ( get_users() as $user ) {
-		$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+		$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 	}
 	$inscr_another = '';
 	if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
 		$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-event="' . $amap_event->ID . '">' . 'Inscrire' . '</button>
+<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-event="' . $amap_event->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
 	}
 	$inscription = '';
 	if ( ! $is_resp ) {
 		if ( $can_subscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $amap_event->ID . '">' . 'M\'inscrire' . '</button>';
+			$inscription .= '<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $amap_event->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
 		} else {
-			$inscription .= '<span class="event-inscr-closed">' . 'Inscriptions closes' . '</span>';
+			$inscription .= '<span class="event-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
 		}
 	} else if ( $can_unsubscribe ) {
-		$inscription .= '<button type="button" class="btn btn-default event-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $amap_event->ID . '">' . 'Me désinscrire' . '</button>';
+		$inscription .= '<button type="button" class="btn btn-default event-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $amap_event->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
 	}
 	if ( ! empty( $inscription ) ) {
-		amapress_echo_panel_start( 'Inscription', null, 'amap-panel-event amap-panel-event-inscr' );
+		amapress_echo_panel_start( __( 'Inscription', 'amapress' ), null, 'amap-panel-event amap-panel-event-inscr' );
 		echo $inscription;
 		echo $inscr_another;
 		amapress_echo_panel_end();
 	}
 
-	amapress_echo_panel_start( 'Horaires', null, 'amap-panel-event amap-panel-event-hours' );
+	amapress_echo_panel_start( __( 'Horaires', 'amapress' ), null, 'amap-panel-event amap-panel-event-hours' );
 	if ( $amap_event->hasDateFin() ) {
-		echo '<p>' . sprintf( 'Du %s au %s', date_i18n( 'l d F Y H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'l d F Y H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
+		echo '<p>' . sprintf( __( 'Du %s au %s', 'amapress' ), date_i18n( 'l d F Y H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'l d F Y H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
 	} else {
-		echo '<p>' . sprintf( 'Le %s de %s à %s', date_i18n( 'l d F Y', $amap_event->getDate() ), date_i18n( 'H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
+		echo '<p>' . sprintf( __( 'Le %s de %s à %s', 'amapress' ), date_i18n( 'l d F Y', $amap_event->getDate() ), date_i18n( 'H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
 	}
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Description', null, 'amap-panel-event amap-panel-event-desc' );
+	amapress_echo_panel_start( __( 'Description', 'amapress' ), null, 'amap-panel-event amap-panel-event-desc' );
 	echo $content;
 	amapress_echo_panel_end();
 
@@ -67,18 +67,18 @@ function amapress_get_custom_content_amap_event( $content ) {
 			$addr_entry    = '';
 			$address_acces = $amap_event->getLieu()->getAdresseAcces();
 			if ( ! empty( $address_acces ) ) {
-				$addr_entry = '<h3>' . 'Adresse d\'accès' . '</h3><p>' .
+				$addr_entry = '<h3>' . __( 'Adresse d\'accès', 'amapress' ) . '</h3><p>' .
 				              $address_acces .
 				              '</p>';
 			}
 
-			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-event amap-panel-event-address' );
+			amapress_echo_panel_start( __( 'Adresse', 'amapress' ), null, 'amap-panel-event amap-panel-event-address' );
 			echo '<p>' .
 			     $amap_event->getLieu()->getFormattedAdresseHtml() .
 			     '</p>';
 			amapress_echo_panel_end();
 
-			amapress_echo_panel_start( 'Accès', null, 'amap-panel-event amap-panel-event-access' );
+			amapress_echo_panel_start( __( 'Accès', 'amapress' ), null, 'amap-panel-event amap-panel-event-access' );
 			echo $addr_entry .
 			     '<p>' .
 			     $amap_event->getLieu()->getAcces() .
@@ -86,20 +86,20 @@ function amapress_get_custom_content_amap_event( $content ) {
 			     do_shortcode( "[lieu-map lieu={$amap_event->getLieuId()} mode=map+streeview]" );
 			amapress_echo_panel_end();
 		} else {
-			amapress_echo_panel_start( 'Adresse', null, 'amap-panel-event amap-panel-event-address' );
-			echo '<p>' . 'Lieu non défini' . '</p>';
+			amapress_echo_panel_start( __( 'Adresse', 'amapress' ), null, 'amap-panel-event amap-panel-event-address' );
+			echo '<p>' . __( 'Lieu non défini', 'amapress' ) . '</p>';
 			amapress_echo_panel_end();
 		}
 	} else {
 		$addr_entry    = '';
 		$address_acces = $amap_event->getLieu_externe_adresse();
 		if ( ! empty( $address_acces ) ) {
-			$addr_entry = '<h3>' . 'Adresse d\'accès' . '</h3><p>' .
+			$addr_entry = '<h3>' . __( 'Adresse d\'accès', 'amapress' ) . '</h3><p>' .
 			              $address_acces .
 			              '</p>';
 		}
 
-		amapress_echo_panel_start( 'Adresse', null, 'amap-panel-event amap-panel-event-address' );
+		amapress_echo_panel_start( __( 'Adresse', 'amapress' ), null, 'amap-panel-event amap-panel-event-address' );
 		echo '<p>' .
 		     $amap_event->getLieu_externe_nom() .
 		     '</p>';
@@ -108,7 +108,7 @@ function amapress_get_custom_content_amap_event( $content ) {
 		     '</p>';
 		amapress_echo_panel_end();
 
-		amapress_echo_panel_start( 'Accès', null, 'amap-panel-event amap-panel-event-access' );
+		amapress_echo_panel_start( __( 'Accès', 'amapress' ), null, 'amap-panel-event amap-panel-event-access' );
 		echo $addr_entry .
 		     '<p>' .
 		     $amap_event->getLieu_externe_acces() .
@@ -146,10 +146,10 @@ function amapress_get_custom_content_amap_event( $content ) {
 
 		amapress_display_messages_for_post( 'amap-event-messages', $amap_event->ID );
 
-		amapress_echo_panel_start( 'Participants', null, 'amap-panel-event amap-panel-event-amapiens' );
+		amapress_echo_panel_start( __( 'Participants', 'amapress' ), null, 'amap-panel-event amap-panel-event-amapiens' );
 		if ( count( $responsables ) > 0 ) {
 			echo amapress_generic_gallery( $responsables, 'user_cell', [
-				'if_empty' => 'Pas de participant'
+				'if_empty' => __( 'Pas de participant', 'amapress' )
 			] );
 		} else { ?>
             <p><?php _e( 'Aucun participants', 'amapress' ) ?></p>
@@ -175,7 +175,7 @@ function amapress_get_custom_archive_content_amap_event( $content ) {
 
 	ob_start();
 
-	$addr = 'Lieu non défini';
+	$addr = __( 'Lieu non défini', 'amapress' );
 	if ( $amap_event->getType() == 'lieu' ) {
 		if ( $amap_event->getLieu() ) {
 			$addr = $amap_event->getLieu()->getFormattedAdresseHtml();
@@ -185,9 +185,9 @@ function amapress_get_custom_archive_content_amap_event( $content ) {
 	}
 
 	if ( $amap_event->hasDateFin() ) {
-		echo '<p>' . sprintf( 'Du %s au %s', date_i18n( 'l d F Y H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'l d F Y H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
+		echo '<p>' . sprintf( __( 'Du %s au %s', 'amapress' ), date_i18n( 'l d F Y H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'l d F Y H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
 	} else {
-		echo '<p>' . sprintf( 'Le %s de %s à %s', date_i18n( 'l d F Y', $amap_event->getDate() ), date_i18n( 'H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
+		echo '<p>' . sprintf( __( 'Le %s de %s à %s', 'amapress' ), date_i18n( 'l d F Y', $amap_event->getDate() ), date_i18n( 'H:i', $amap_event->getStartDateAndHour() ), date_i18n( 'H:i', $amap_event->getEndDateAndHour() ) ) . '</p>';
 	}
 
 	echo $content;

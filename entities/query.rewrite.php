@@ -16,7 +16,7 @@ function amapress_add_rewrite_rules() {
 	add_rewrite_tag( '%amapress_contrat_inst%', '([^&]+)' );
 	add_rewrite_tag( '%amapress_post%', '([^&]+)' );
 
-	amapress_add_page_if_not_exists( 'mes-infos-page', 'Mes infos', 'mes-infos', false, '[amapien-edit-infos]' );
+	amapress_add_page_if_not_exists( 'mes-infos-page', __( 'Mes infos', 'amapress' ), 'mes-infos', false, '[amapien-edit-infos]' );
 
 	$rewrite_root = '^';
 	if ( ( defined( 'AMAPRESS_LIMITED_HTACCESS' ) && AMAPRESS_LIMITED_HTACCESS ) || ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) ) {
@@ -36,12 +36,12 @@ function amapress_add_rewrite_rules() {
 	add_rewrite_rule( $rewrite_root . 'shouldredirect/?', 'index.php?amp_action=shouldredirect', 'top' );
 
 	amapress_add_page_if_not_exists( 'paniers-intermittents-page',
-		'Intermittent - Réserver un panier',
+		__( 'Intermittent - Réserver un panier', 'amapress' ),
 		'intermittent-reserver-un-panier',
 		true, '[les-paniers-intermittents]' );
 	amapress_add_page_if_not_exists(
 		'mes-paniers-intermittents-page',
-		'Mes paniers échangés',
+		__( 'Mes paniers échangés', 'amapress' ),
 		'mes-paniers-echanges',
 		true, __( '<h2>Les paniers&nbsp;que j\'ai proposé</h2>
 [amapien-paniers-intermittents]

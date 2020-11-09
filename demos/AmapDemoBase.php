@@ -292,8 +292,8 @@ class AmapDemoBase {
 
 			foreach (
 				array(
-					'adhesion_amap_term'        => 'Adhésion AMAP',
-					'adhesion_reseau_amap_term' => 'Adhésion Réseau AMAP',
+					'adhesion_amap_term'        => __( 'Adhésion AMAP', 'amapress' ),
+					'adhesion_reseau_amap_term' => __( 'Adhésion Réseau AMAP', 'amapress' ),
 				) as $k => $v
 			) {
 				if ( ! term_exists( $v, 'amps_paiement_category' ) ) {

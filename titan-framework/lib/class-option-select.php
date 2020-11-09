@@ -383,7 +383,7 @@ jQuery(function($) {
 				$val  = array_shift( $val );
 				$href = $this->getEditLink( $val );
 				if ( ! empty( $href ) && ( ! isset( $this->settings['edit_link'] ) || false != $this->settings['edit_link'] ) ) {
-					$label = isset( $options[ $val ] ) ? "Editer {$options[$val]}" : 'Editer';
+					$label = isset( $options[ $val ] ) ? sprintf( __( 'Editer %s', 'amapress' ), $options[ $val ] ) : __( 'Editer', 'amapress' );
 					echo $this->wrapEditLink( $val, $label );
 				}
 			}
@@ -521,7 +521,7 @@ function tf_parse_select_options( $options, $val = array(), $echo = true ) {
 		if ( is_array( $label ) ) {
 			$ret .= '<optgroup label="' . $value . '">';
 			foreach ( $label as $subValue => $subLabel ) {
-				$ret .= sprintf( '<option value="%s" %s %s>%s</option>',
+				$ret .= sprintf( __( '<option value="%s" %s %s>%s</option>', 'amapress' ),
 					esc_attr( $subValue ),
 					in_array( $subValue, $val ) ? 'selected="selected"' : '',
 					disabled( stripos( $subValue, '!' ), 0, false ),
@@ -531,7 +531,7 @@ function tf_parse_select_options( $options, $val = array(), $echo = true ) {
 			$ret .= '</optgroup>';
 		} // this is for normal list of options
 		else {
-			$ret .= sprintf( '<option value="%s" %s %s>%s</option>',
+			$ret .= sprintf( __( '<option value="%s" %s %s>%s</option>', 'amapress' ),
 				esc_attr( $value ),
 				in_array( $value, $val ) ? 'selected="selected"' : '',
 				disabled( stripos( $value, '!' ), 0, false ),

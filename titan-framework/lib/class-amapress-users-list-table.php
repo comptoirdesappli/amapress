@@ -425,12 +425,13 @@ class Amapress_Users_List_Table extends Amapress_List_Table {
 			/**
 			 * Filter the action links displayed under each user in the Users list table.
 			 *
-			 * @since 2.8.0
-			 *
 			 * @param array   $actions     An array of action links to be displayed.
-			 *                             Default 'Edit', 'Delete' for single site, and
-			 *                             'Edit', 'Remove' for Multisite.
+			 *                             Default __('Edit', 'amapress'), __('Delete', 'amapress') for single site, and
+			 *                             __('Edit', 'amapress'), __('Remove', 'amapress') for Multisite.
 			 * @param WP_User $user_object WP_User object for the currently-listed user.
+			 *
+			 *@since 2.8.0
+			 *
 			 */
 			$actions = apply_filters( 'user_row_actions', $actions, $user_object );
 

@@ -68,7 +68,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 
 	/** @return string */
 	public function getPaniersTitles( $show_date = true, $show_desc = false ) {
-		return ( count( $this->getPanierIds() ) > 1 ? 'Paniers' : 'Panier' )
+		return ( count( $this->getPanierIds() ) > 1 ? __( 'Paniers', 'amapress' ) : __( 'Panier', 'amapress' ) )
 		       . __( ' de ', 'amapress' ) . ( $show_desc ? $this->getPaniersDescription() : $this->getContratTitles() )
 		       . ( $show_date ? ' du ' . date_i18n( 'd/m/Y', $this->getDate() ) : '' );
 	}
@@ -179,13 +179,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			case 'to_exchange':
 				return 'A réserver';
 			case 'exch_valid_wait':
-				return 'En attente de validation de l\'échange';
+				return __( 'En attente de validation de l\'échange', 'amapress' );
 			case 'exchanged':
-				return 'Réservé';
+				return __( 'Réservé', 'amapress' );
 			case 'closed':
-				return 'Terminé';
+				return __( 'Terminé', 'amapress' );
 			case 'cancelled':
-				return 'Annulé';
+				return __( 'Annulé', 'amapress' );
 			default:
 				return $this->getStatus();
 		}
@@ -520,7 +520,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
 				'lien-liste-paniers'               => [
-					'desc' => 'Lien vers la page "Paniers disponibles"',
+					'desc' => __( 'Lien vers la page "Paniers disponibles"', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -534,7 +534,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'liste-paniers'                    => [
-					'desc' => 'Lien vers la page "Paniers disponibles"',
+					'desc' => __( 'Lien vers la page "Paniers disponibles"', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -548,7 +548,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'mes-echanges'                     => [
-					'desc' => 'Lien vers la page "Mes paniers échangés"',
+					'desc' => __( 'Lien vers la page "Mes paniers échangés"', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -562,13 +562,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'date'                             => [
-					'desc' => 'Date de distribution de ce panier',
+					'desc' => __( 'Date de distribution de ce panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return date_i18n( 'd/m/Y', $panier->getDate() );
 					}
 				],
 				'panier'                           => [
-					'desc' => 'Panier(s) distribué(s) à cette distribution (titre des paniers)',
+					'desc' => __( 'Panier(s) distribué(s) à cette distribution (titre des paniers)', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -578,7 +578,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'panier-desc'                      => [
-					'desc' => 'Panier(s) distribué(s) à cette distribution (avec contenu des paniers)',
+					'desc' => __( 'Panier(s) distribué(s) à cette distribution (avec contenu des paniers)', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -588,7 +588,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'panier-desc-date'                 => [
-					'desc' => 'Panier(s) distribué(s) à cette distribution (avec contenu des paniers et date)',
+					'desc' => __( 'Panier(s) distribué(s) à cette distribution (avec contenu des paniers et date)', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -598,7 +598,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'adherent-pseudo'                  => [
-					'desc' => 'Pseudo de l\'adhérent proposant son panier',
+					'desc' => __( 'Pseudo de l\'adhérent proposant son panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
 							return '';
@@ -608,7 +608,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'adherent-nom'                     => [
-					'desc' => 'Nom de l\'adhérent proposant son panier',
+					'desc' => __( 'Nom de l\'adhérent proposant son panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
 							return '';
@@ -618,7 +618,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'adherent'                         => [
-					'desc' => 'Adhérent proposant son panier',
+					'desc' => __( 'Adhérent proposant son panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
 							return '';
@@ -633,7 +633,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'adherent-coords'                  => [
-					'desc' => 'Coordonnées adhérent proposant son panier',
+					'desc' => __( 'Coordonnées adhérent proposant son panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->getAdherent() == null ) {
 							return '';
@@ -643,19 +643,19 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'adherent-message'                 => [
-					'desc' => 'Message de mise à disposition du panier de la part de l\'adhérent',
+					'desc' => __( 'Message de mise à disposition du panier de la part de l\'adhérent', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return $panier->getAdherentMessage();
 					}
 				],
 				'adherent-cancel-message'          => [
-					'desc' => 'Message d\'annulation de la part de l\'adhérent',
+					'desc' => __( 'Message d\'annulation de la part de l\'adhérent', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return $panier->getAdherentCancelMessage();
 					}
 				],
 				'repreneur-pseudo'                 => [
-					'desc' => 'Pseudo du repreneur du panier',
+					'desc' => __( 'Pseudo du repreneur du panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
 							$user = AmapressUser::getBy( $panier->last_ask_id );
@@ -671,7 +671,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'repreneur-nom'                    => [
-					'desc' => 'Nom du repreneur du panier',
+					'desc' => __( 'Nom du repreneur du panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
 							$user = AmapressUser::getBy( $panier->last_ask_id );
@@ -687,7 +687,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'repreneur'                        => [
-					'desc' => 'Repreneur du panier',
+					'desc' => __( 'Repreneur du panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
 							$user = AmapressUser::getBy( $panier->last_ask_id );
@@ -707,7 +707,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'repreneur-coords'                 => [
-					'desc' => 'Coordonnées du repreneur du panier',
+					'desc' => __( 'Coordonnées du repreneur du panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( $panier->last_ask_id ) {
 							$user = AmapressUser::getBy( $panier->last_ask_id );
@@ -722,7 +722,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'contrat'                          => [
-					'desc' => 'Panier(s) distribué(s) à cette distribution (nom des contrats)',
+					'desc' => __( 'Panier(s) distribué(s) à cette distribution (nom des contrats)', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -732,7 +732,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'distribution'                     => [
-					'desc' => 'Titre de la distribution auquel appartient ce panier',
+					'desc' => __( 'Titre de la distribution auquel appartient ce panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -746,7 +746,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'distribution-href'                => [
-					'desc' => 'Url de la distribution auquel appartient ce panier',
+					'desc' => __( 'Url de la distribution auquel appartient ce panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -760,7 +760,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'distribution-link'                => [
-					'desc' => 'Lien html vers la distribution auquel appartient ce panier',
+					'desc' => __( 'Lien html vers la distribution auquel appartient ce panier', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						if ( ! $panier->hasPaniers() ) {
 							return '';
@@ -774,7 +774,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					}
 				],
 				'lien_desinscription_intermittent' => [
-					'desc' => 'Lien vers la page de désinscription de la liste des intermittents',
+					'desc' => __( 'Lien vers la page de désinscription de la liste des intermittents', 'amapress' ),
 					'func' => function ( AmapressIntermittence_panier $panier ) {
 						return Amapress::makeLink( amapress_intermittence_desinscription_link() );
 					}
@@ -863,12 +863,12 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'date_end' => $date_end,
 						'class'    => "agenda-inter agenda-inter-my-to-exchange",
 						'type'     => 'intermittence',
-						'category' => 'Paniers à échanger',
+						'category' => __( 'Paniers à échanger', 'amapress' ),
 						'priority' => 10,
 						'lieu'     => $this->getRealLieu(),
 						'label'    => __( 'A échanger ', 'amapress' ) . $this->getPaniersTitles( false ),
 						'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_mytoexchange.jpg',
-						'alt'      => sprintf( 'Votre panier %s reste à échanger', $this->getPaniersTitles( true, true ) ),
+						'alt'      => sprintf( __( 'Votre panier %s reste à échanger', 'amapress' ), $this->getPaniersTitles( true, true ) ),
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
 				} else {
@@ -878,12 +878,12 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 						'date_end' => $date_end,
 						'class'    => "agenda-inter agenda-inter-exchanged",
 						'type'     => 'intermittence',
-						'category' => 'Paniers échangé',
+						'category' => __( 'Paniers échangé', 'amapress' ),
 						'priority' => 5,
 						'lieu'     => $this->getRealLieu(),
-						'label'    => 'Echange ' . $this->getPaniersTitles( false ),
+						'label'    => __( 'Echange ', 'amapress' ) . $this->getPaniersTitles( false ),
 						'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_exchanged.jpg',
-						'alt'      => sprintf( 'Votre panier %s a été échanger', $this->getPaniersTitles( true, true ) ),
+						'alt'      => sprintf( __( 'Votre panier %s a été échanger', 'amapress' ), $this->getPaniersTitles( true, true ) ),
 						'href'     => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 					) );
 				}
@@ -894,13 +894,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 					'date_end'    => $date_end,
 					'class'       => "agenda-inter agenda-inter-panier-recup",
 					'type'        => 'inter-recup',
-					'category'    => 'Paniers à récupérer',
+					'category'    => __( 'Paniers à récupérer', 'amapress' ),
 					'priority'    => 15,
 					'inscr_types' => [ 'intermittence' ],
 					'lieu'        => $this->getRealLieu(),
-					'label'       => 'Récupérer panier ' . $this->getPaniersTitles( false ),
+					'label'       => __( 'Récupérer panier ', 'amapress' ) . $this->getPaniersTitles( false ),
 					'icon'        => AMAPRESS__PLUGIN_URL . 'images/panier_torecup.jpg',
-					'alt'         => sprintf( 'Panier %s de %s à récupérer', $this->getPaniersTitles( true, true ), $this->getAdherent()->getDisplayName() ),
+					'alt'         => sprintf( __( 'Panier %s de %s à récupérer', 'amapress' ), $this->getPaniersTitles( true, true ), $this->getAdherent()->getDisplayName() ),
 					'href'        => Amapress::getPageLink( 'mes-paniers-intermittents-page' )
 				) );
 			} else {
@@ -914,12 +914,12 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 							'date_end' => $date_end,
 							'class'    => "agenda-inter agenda-inter-to-exchange",
 							'type'     => 'intermittence',
-							'category' => 'Paniers dispo',
+							'category' => __( 'Paniers dispo', 'amapress' ),
 							'priority' => 10,
 							'lieu'     => $this->getRealLieu(),
 							'label'    => __( 'A échanger ', 'amapress' ) . $this->getPaniersTitles( false ),
 							'icon'     => AMAPRESS__PLUGIN_URL . 'images/panier_avail.jpg',
-							'alt'      => sprintf( 'Panier %s à échanger', $this->getPaniersTitles( true, true ) ),
+							'alt'      => sprintf( __( 'Panier %s à échanger', 'amapress' ), $this->getPaniersTitles( true, true ) ),
 							'href'     => $paniers_url
 						) );
 					}

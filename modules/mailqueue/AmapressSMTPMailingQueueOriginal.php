@@ -255,7 +255,7 @@ class AmapressSMTPMailingQueueOriginal {
 		} else {
 			$phpmailer->From     = $from_email;
 			$phpmailer->FromName = $from_name;
-//			$phpmailer->AddCustomHeader( sprintf( 'Sender: %s <%s>', apply_filters( 'wp_mail_from_name', $from_name ), apply_filters( 'wp_mail_from', $from_email ) ) );
+//			$phpmailer->AddCustomHeader( sprintf( __('Sender: %s <%s>', 'amapress'), apply_filters( 'wp_mail_from_name', $from_name ), apply_filters( 'wp_mail_from', $from_email ) ) );
 		}
 		// Set destination addresses
 		if ( ! is_array( $to ) ) {
@@ -417,7 +417,7 @@ class AmapressSMTPMailingQueueOriginal {
 		// Set custom headers
 		if ( ! empty( $headers ) ) {
 			foreach ( (array) $headers as $name => $content ) {
-				$phpmailer->AddCustomHeader( sprintf( '%1$s: %2$s', $name, $content ) );
+				$phpmailer->AddCustomHeader( sprintf( __( '%1$s: %2$s', 'amapress' ), $name, $content ) );
 			}
 
 			if ( false !== stripos( $content_type, 'multipart' ) && ! empty( $boundary ) ) {

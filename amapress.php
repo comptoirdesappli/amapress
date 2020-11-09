@@ -132,7 +132,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	global $amapress_send_mail_to;
 	if ( ! empty( $amapress_send_mail_to ) && ! amapress_is_demo_email_address( $amapress_send_mail_to ) ) {
 		$h       = esc_html( var_export( $headers, true ) );
-		$message = "Mail redirigé vers $amapress_send_mail_to pour test\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
+		$message = sprintf( __( "Mail redirigé vers %s pour test\nOriginal To : %s\nOriginal Headers: %s\n\n%s", 'amapress' ), $amapress_send_mail_to, $to, $h, $message );
 		$to      = $amapress_send_mail_to;
 		$headers = array_filter( $headers, function ( $h ) {
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
@@ -140,7 +140,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 	} elseif ( isset( $_GET['test_mail'] ) || Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 		$h            = esc_html( var_export( $headers, true ) );
 		$test_mode_to = Amapress::getOption( 'test_mail_target' );
-		$message      = "Site en mode de test mail : tous les emails sortants sont redirigés vers $test_mode_to\nOriginal To : $to\nOriginal Headers: $h\n\n" . $message;
+		$message      = sprintf( __( "Site en mode de test mail : tous les emails sortants sont redirigés vers %s\nOriginal To : %s\nOriginal Headers: %s\n\n%s", 'amapress' ), $test_mode_to, $to, $h, $message );
 		$to           = $test_mode_to;
 		$headers      = array_filter( $headers, function ( $h ) {
 			return strpos( $h, 'Cc:' ) === false && strpos( $h, 'Bcc:' ) === false;
@@ -178,7 +178,7 @@ function amapress_add_admin_notice( $message, $type, $is_dismissible, $escape = 
 function amapress_get_admin_notice( $message, $type, $is_dismissible, $escape = true ) {
 	$class = $is_dismissible ? "notice-$type is-dismissible" : "notice-$type";
 
-	return sprintf( '<div class="notice %1$s"><p>%2$s</p></div>', esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
+	return sprintf( __( '<div class="notice %1$s"><p>%2$s</p></div>', 'amapress' ), esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
 }
 
 add_action( 'admin_notices', 'amapress_output_admin_notices' );
@@ -248,7 +248,7 @@ function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, 
 	}
 
 	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
-		$message = sprintf( '%s in %s on line %s, backtrace: %s, url: %s, user: %s',
+		$message = sprintf( __( '%s in %s on line %s, backtrace: %s, url: %s, user: %s', 'amapress' ),
 			$errstr, $errfile, $errline,
 			amapress_debug_backtrace_summary( null, 1 ),
 			$_SERVER['REQUEST_URI'], get_current_user_id() );
@@ -614,7 +614,7 @@ function amapress_global_init() {
 			$message = AmapressUpdateNotifier::getUpdateMessage( 2 );
 			if ( ! empty( $message ) ) {
 				amapress_wp_mail( get_option( 'admin_email' ),
-					'Mises à jour requises',
+					__( 'Mises à jour requises', 'amapress' ),
 					wpautop( $message ) );
 			}
 		} );
@@ -1140,9 +1140,9 @@ function amapress_get_user_by_id_or_archived( $user_id ) {
 		$user               = new WP_User();
 		$user->ID           = $user_id;
 		$user->user_email   = "archived$user_id@nomail.org";
-		$user->first_name   = "Archived";
+		$user->first_name   = __( 'Archivé', 'amapress' );
 		$user->last_name    = $user_id;
-		$user->display_name = "Archived $user_id";
+		$user->display_name = sprintf( __( 'Archivé %s', 'amapress' ), $user_id );
 		$user->user_login   = "archived$user_id";
 	}
 
@@ -1308,7 +1308,8 @@ if ( ! function_exists( 'wp_mail' ) ) {
 	}
 } else {
 	amapress_add_admin_notice(
-		'Un autre plugin a déjà remplacé la fonction de gestion des emails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.',
+		__( 'Un autre plugin a déjà remplacé la fonction de gestion des emails. Certaines fonctionnalités d\'Amapress pourraient ne pas fonctionner correctement.'
+			, 'amapress' ),
 		'warning', true );
 }
 
@@ -1412,20 +1413,20 @@ function amapress_feedback_footer() {
 
 	$options = [
 		'context'        => [
-			'user' => amapress_is_user_logged_in() ? admin_url( 'user-edit.php?user_id=' . wp_get_current_user()->ID ) : 'Not logged',
+			'user' => amapress_is_user_logged_in() ? admin_url( 'user-edit.php?user_id=' . wp_get_current_user()->ID ) : __( 'Not logged', 'amapress' ),
 		],
 		'h2cPath'        => 'https://html2canvas.hertzen.com/dist/html2canvas.min.js',
 		//plugins_url( '/js/html2canvas.min.js', __FILE__ ),
-		'label'          => 'Feedback',
-		'header'         => 'Envoyer un retour sur Amapress',
+		'label'          => __( 'Feedback', 'amapress' ),
+		'header'         => __( 'Envoyer un retour sur Amapress', 'amapress' ),
 		'url'            => admin_url( 'admin-ajax.php?action=send_feedback' ),
 		'action'         => 'send_feedback',
-		'nextLabel'      => 'Continuer',
-		'reviewLabel'    => 'Finaliser',
-		'sendLabel'      => 'Envoyer',
-		'closeLabel'     => 'Fermer',
-		'messageSuccess' => 'Feedback envoyé avec succès',
-		'messageError'   => 'Une erreur s\'est produite pendant l\'envoi',
+		'nextLabel'      => __( 'Continuer', 'amapress' ),
+		'reviewLabel'    => __( 'Finaliser', 'amapress' ),
+		'sendLabel'      => __( 'Envoyer', 'amapress' ),
+		'closeLabel'     => __( 'Fermer', 'amapress' ),
+		'messageSuccess' => __( 'Feedback envoyé avec succès', 'amapress' ),
+		'messageError'   => __( 'Une erreur s\'est produite pendant l\'envoi', 'amapress' ),
 	];
 	echo '<script type="text/javascript">
             jQuery(document).ready(function($) {
@@ -1438,7 +1439,7 @@ add_action( 'wp_footer', 'amapress_feedback_footer', 9999 );
 add_action( 'admin_footer', 'amapress_feedback_footer', 9999 );
 
 function amapress_send_feedback() {
-	wp_mail( 'support@amapress.fr', 'Feedback', var_export( $_POST, true ) );
+	wp_mail( 'support@amapress.fr', __( 'Feedback', 'amapress' ), var_export( $_POST, true ) );
 	echo 'ok';
 	wp_die();
 }
@@ -1455,12 +1456,12 @@ CustomPostStatus::register( 'archived', [
 	AmapressRecette::INTERNAL_POST_TYPE
 ],
 	array(
-		'label'                     => _x( 'Archivé', 'post' ),
+		'label'                     => __( 'Archivé', 'amapress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Archivé <span class="count">(%s)</span>', 'Archivés <span class="count">(%s)</span>' ),
+		'label_count'               => _n_noop( 'Archivé <span class="count">(%s)</span>', 'Archivés <span class="count">(%s)</span>', 'amapress' ),
 	)
 );
 
@@ -1511,7 +1512,7 @@ add_action( 'admin_init', function () {
 	$contrat_to_generate = AmapressContrats::get_contrat_to_generate();
 	if ( ! empty( $contrat_to_generate ) ) {
 		amapress_add_admin_notice(
-			'Les contrats suivants nécessitent une mise à jour : ' .
+			__( 'Les contrats suivants nécessitent une mise à jour : ', 'amapress' ) .
 			implode( ', ', array_map( function ( $dn ) {
 				/** @var AmapressContrat_instance $dn */
 				$l      = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
@@ -1554,12 +1555,12 @@ add_action( 'admin_init', function () {
 	if ( current_user_can( 'manage_options' ) && ( ! wp_doing_ajax() ) ) {
 		$dir_name = basename( dirname( __FILE__ ) );
 		if ( 'amapress' != $dir_name ) {
-			amapress_add_admin_notice( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, ' . $dir_name . '. Merci de renommer "' . dirname( __FILE__ ) . '" et de réactiver Amapress',
+			amapress_add_admin_notice( sprintf( __( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, %s. Merci de renommer "%s" et de réactiver Amapress', 'amapress' ), $dir_name, dirname( __FILE__ ) ),
 				'error', false );
 		}
 
 		if ( Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
-			amapress_add_admin_notice( 'Le site est en <a target="_blank" href="' . admin_url( 'options-general.php?page=amapress_options_page&tab=amp_tests_config' ) . '">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers ' . Amapress::getOption( 'test_mail_target' ),
+			amapress_add_admin_notice( sprintf( __( 'Le site est en <a target="_blank" href="%s">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers %s', 'amapress' ), admin_url( 'options-general.php?page=amapress_options_page&tab=amp_tests_config' ), Amapress::getOption( 'test_mail_target' ) ),
 				'info', false, false );
 		}
 
@@ -1569,7 +1570,7 @@ add_action( 'admin_init', function () {
 				return $ml->isExternalSmtp();
 			} );
 			if ( ! empty( $mlgrps ) ) {
-				amapress_add_admin_notice( sprintf( 'Des <a target="_blank" href="%s">Emails groupés</a> sont configurés avec un SMTP externe et utilisent le Cron par défaut de WordPress. Vous devriez configurer un <a target="_blank" href="%s">Cron externe</a>.', admin_url( 'edit.php?post_type=amps_mlgrp' ), admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page#amapress_gestion_mailinggroup_page_cron' ) ),
+				amapress_add_admin_notice( sprintf( __( 'Des <a target="_blank" href="%s">Emails groupés</a> sont configurés avec un SMTP externe et utilisent le Cron par défaut de WordPress. Vous devriez configurer un <a target="_blank" href="%s">Cron externe</a>.', 'amapress' ), admin_url( 'edit.php?post_type=amps_mlgrp' ), admin_url( 'admin.php?page=amapress_gestion_mailinggroup_page#amapress_gestion_mailinggroup_page_cron' ) ),
 					'warning', false, false );
 			}
 		}
@@ -1583,14 +1584,14 @@ add_action( 'admin_init', function () {
 		}
 		foreach ( get_plugin_updates() as $plugin_file => $plugin_data ) {
 			if ( false !== strpos( $plugin_file, 'amapress' ) ) {
-				amapress_add_admin_notice( sprintf( "Une nouvelle version d'Amapress est disponible : %s",
+				amapress_add_admin_notice( sprintf( __( 'Une nouvelle version d\'Amapress est disponible : %s', 'amapress' ),
 					Amapress::makeLink( admin_url( 'update-core.php' ), $plugin_data->update->new_version ) ),
 					'warning', false, false );
 			}
 		}
 		if ( 'active' == amapress_is_plugin_active( 'amapress-installer' ) ) {
 			amapress_add_admin_notice(
-				sprintf( 'Vous venez d\'installer Amapress : %s l\'extension "Installateur du plugin Amapress"',
+				sprintf( __( 'Vous venez d\'installer Amapress : %s l\'extension "Installateur du plugin Amapress"', 'amapress' ),
 					Amapress::makeLink( amapress_get_plugin_desactivate_link( 'amapress-installer' ), 'désactivez' ) ),
 				'error', false, false );
 		}
@@ -1768,7 +1769,7 @@ add_filter( 'admin_footer_text', function ( $content ) {
 	}
 
 	$content .= ' | <strong>' .
-	            Amapress::makeLink( '#', 'Tableau de bord>' . $title
+	            Amapress::makeLink( '#', __( 'Tableau de bord>', 'amapress' ) . $title
 	                                     . ( ! empty( $subtitle ) ? '>' . $subtitle : '' )
 	                                     . ( ! empty( $tab_title ) ? ', onglet ' . $tab_title : '' ) )
 	            . '</strong>';
@@ -1776,7 +1777,7 @@ add_filter( 'admin_footer_text', function ( $content ) {
 	$mem_limit = (int) ini_get( 'memory_limit' );
 	$mem_usage = function_exists( 'memory_get_usage' ) ? round( memory_get_usage() / 1024 / 1024, 2 ) : 0;
 
-	$content .= ' | Mem. : ' . $mem_usage . ' of ' . $mem_limit . 'MB';
+	$content .= ' | Mem. : ' . $mem_usage . ' of ' . $mem_limit . __( 'MB', 'amapress' );
 
 	return $content;
 } );
@@ -1819,9 +1820,9 @@ add_action( 'admin_post_tf_event_scheduler_resend', function () {
 	$hook_name = $_REQUEST['hook_name'];
 	$args      = json_decode( wp_unslash( $_REQUEST['args'] ), true );
 	$args      = $args[0];
-	echo '<p>' . sprintf( 'Rappel lancé pour %s', $args['title'] ) . '</p>';
+	echo '<p>' . sprintf( __( 'Rappel lancé pour %s', 'amapress' ), $args['title'] ) . '</p>';
 	do_action( $hook_name, $args );
-	echo '<p>' . 'Rappel terminé' . '</p>';
+	echo '<p>' . __( 'Rappel terminé', 'amapress' ) . '</p>';
 	//echo '<p>Mail de rappel renvoyé avec succès !</p>';
 	die();
 } );
@@ -1835,11 +1836,11 @@ add_action( 'admin_post_tf_event_scheduler_test', function () {
 	$args                  = $args[0];
 	$args['is_test']       = true;
 	echo '<p>';
-	echo sprintf( 'Rappel lancé pour %s', $args['title'] );
+	echo sprintf( __( 'Rappel lancé pour %s', 'amapress' ), $args['title'] );
 	echo '</p>';
 	do_action( $hook_name, $args );
 	echo '<p>';
-	echo 'Rappel terminé';
+	echo __( 'Rappel terminé', 'amapress' );
 	echo '</p>';
 	die();
 } );

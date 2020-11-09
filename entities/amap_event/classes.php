@@ -122,9 +122,9 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	public function getTypeDisplay() {
 		switch ( $this->getCustom( 'amapress_amap_event_type', 'lieu' ) ) {
 			case 'lieu':
-				return 'Lieu de distribution';
+				return __( 'Lieu de distribution', 'amapress' );
 			case 'lieu_externe':
-				return 'Adresse externe';
+				return __( 'Adresse externe', 'amapress' );
 			default:
 				return $this->getCustom( 'amapress_amap_event_type' );
 		}
@@ -216,11 +216,11 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 
 	public function inscrireParticipant( $user_id ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$participants = $this->getParticipantsIds();
@@ -238,11 +238,11 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 
 	public function desinscrireParticipant( $user_id ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$participants = $this->getParticipantsIds();
@@ -293,12 +293,12 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 				'date_end' => $date_end,
 				'class'    => "agenda-amap-event agenda-inscription-amap-event $class_names",
 				'type'     => 'amap_event',
-				'category' => 'Évènements' . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
+				'category' => __( 'Évènements', 'amapress' ) . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
 				'lieu'     => $this,
 				'priority' => 60,
 				'label'    => $this->getTitle(),
 				'icon'     => $icon,
-				'alt'      => sprintf( 'Un(e) %s est prévu(e) le %s', $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
+				'alt'      => sprintf( __( 'Un(e) %s est prévu(e) le %s', 'amapress' ), $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
 				'href'     => $this->getPermalink()
 			) );
 		} else {
@@ -312,13 +312,13 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'date_end'    => $date_end,
 					'class'       => "agenda-amap-event agenda-inscrit-amap-event $class_names",
 					'type'        => 'amap_event',
-					'category'    => 'Évènements' . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
+					'category'    => __( 'Évènements', 'amapress' ) . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
 					'lieu'        => $this,
 					'priority'    => 60,
 					'inscr_types' => [ 'amap_event' ],
 					'label'       => $this->getTitle(),
 					'icon'        => $icon,
-					'alt'         => sprintf( 'Vous êtes inscript pour %s le %s', $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
+					'alt'         => sprintf( __( 'Vous êtes inscript pour %s le %s', 'amapress' ), $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
 					'href'        => $this->getPermalink()
 				) );
 			} else {
@@ -328,12 +328,12 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 					'date_end' => $date_end,
 					'class'    => "agenda-amap-event agenda-inscription-amap-event $class_names",
 					'type'     => 'amap_event',
-					'category' => 'Évènements',
+					'category' => __( 'Évènements', 'amapress' ),
 					'lieu'     => $this,
 					'priority' => 60,
 					'label'    => $this->getTitle(),
 					'icon'     => $icon,
-					'alt'      => sprintf( 'Un(e) %s est prévu(e) le %s', $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
+					'alt'      => sprintf( __( 'Un(e) %s est prévu(e) le %s', 'amapress' ), $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
 					'href'     => $this->getPermalink()
 				) );
 			}

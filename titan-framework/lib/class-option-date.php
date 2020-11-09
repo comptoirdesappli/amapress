@@ -160,7 +160,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
                             return false;
                         }
                     },
-                    "Please enter a valid date"
+                    "<?php echo esc_js( __( 'Merci de saisir une date valide', 'amapress' ) ); ?>"
                 );
                 var datepickerSettings = {
                     dateFormat: '<?php echo self::$default_jquery_date_format ?>',
@@ -257,7 +257,7 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
 
 		$date = intval( $this->getValue( $post_id ) );
 		echo $this->wrapColumnLink(
-			sprintf( '<span class="input-date%s%s">%s</span>',
+			sprintf( __( '<span class="input-date%s%s">%s</span>', 'amapress' ),
 				( $this->settings['date'] ? ' date' : '' ),
 				( $this->settings['time'] ? ' time' : '' ),
 				( $date > 0 ) ? date_i18n( $dateFormat, $date ) : ''

@@ -27,7 +27,7 @@ class ReadCSV {
 
 		$inputFileType = PHPExcel_IOFactory::identify( $inputFileName );
 		if ( 'CSV' == $inputFileType ) {
-			throw new Exception( 'Les fichiers CSV ne sont plus supportés pour cause d\'intéropérabilité. Veuillez convertir en XLSX, ODS ou XLS' );
+			throw new Exception( __( 'Les fichiers CSV ne sont plus supportés pour cause d\'intéropérabilité. Veuillez convertir en XLSX, ODS ou XLS', 'amapress' ) );
 		}
 		$objReader     = PHPExcel_IOFactory::createReader( $inputFileType );
 		$objPHPExcel   = $objReader->load( $inputFileName );

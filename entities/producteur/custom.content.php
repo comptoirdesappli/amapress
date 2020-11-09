@@ -15,15 +15,15 @@ function amapress_get_custom_content_producteur( $content ) {
 
 	echo $content;
 
-//	amapress_echo_panel_start( 'Présentation', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-resume' );
+//	amapress_echo_panel_start( __('Présentation', 'amapress'), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-resume' );
 //	echo wpautop( $producteur->getResume() );
 //	amapress_echo_panel_end();
 
-//	amapress_echo_panel_start( 'En résumé', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-presentation' );
+//	amapress_echo_panel_start( __('En résumé', 'amapress'), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-presentation' );
 //	echo wpautop( $producteur->getPresentation() );
 //	amapress_echo_panel_end();
 
-//    amapress_echo_panel_start('Coordonnées', null, 'amap-panel-prod amap-panel-prod-'.$producteur->ID.' amap-panel-prod-address');
+//    amapress_echo_panel_start(__('Coordonnées', 'amapress'), null, 'amap-panel-prod amap-panel-prod-'.$producteur->ID.' amap-panel-prod-address');
 //    //AmapressUsers::echoUserById(get_post_meta($producteur_id, 'amapress_producteur_user', true), array('adresse'));
 //    echo $producteur->getUser()->getDisplay(array(
 //        'show_avatar' => 'true',
@@ -36,7 +36,7 @@ function amapress_get_custom_content_producteur( $content ) {
 //    ));
 //    amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Adresse de la ferme', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-address' );
+	amapress_echo_panel_start( __( 'Adresse de la ferme', 'amapress' ), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-address' );
 	echo '<p class="visite-nom-exploitation">' .
 	     '<a href="' . $producteur->getPermalink() . '">' . $producteur->getNomExploitation() . '</a>' .
 	     '</p>';
@@ -45,14 +45,14 @@ function amapress_get_custom_content_producteur( $content ) {
 	     '</p>';
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Accès', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-access' );
+	amapress_echo_panel_start( __( 'Accès', 'amapress' ), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-access' );
 	echo '<p>' .
 	     $producteur->getAcces() .
 	     '</p>' .
 	     do_shortcode( "[producteur-map producteur={$producteur->ID} mode=map+streeview]" );
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Coordonnées du producteur', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-coords' );
+	amapress_echo_panel_start( __( 'Coordonnées du producteur', 'amapress' ), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-coords' );
 	//AmapressUsers::echoUserById(get_post_meta($producteur_id, 'amapress_producteur_user', true), array('adresse'));
 	if ( $producteur->getUser() ) {
 		echo $producteur->getUser()->getDisplay( array(
@@ -67,7 +67,7 @@ function amapress_get_custom_content_producteur( $content ) {
 	}
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Référent', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-referent' );
+	amapress_echo_panel_start( __( 'Référent', 'amapress' ), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-referent' );
 	$used_ids = array();
 	foreach ( $producteur->getAllReferentsIds() as $ref_id ) {
 		$ref = AmapressUser::getBy( $ref_id );
@@ -81,11 +81,11 @@ function amapress_get_custom_content_producteur( $content ) {
 //    AmapressUsers::echoUserById(get_post_meta($producteur_id, 'amapress_producteur_referent', true), is_user_logged_in() ? 'full' : 'thumb');
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( 'Contrats', null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-contrats' );
+	amapress_echo_panel_start( __( 'Contrats', 'amapress' ), null, 'amap-panel-prod amap-panel-prod-' . $producteur->ID . ' amap-panel-prod-contrats' );
 	echo Amapress::get_contrats_list( $producteur->ID );
 	amapress_echo_panel_end();
 
-	echo '<h3>' . 'Produits' . '</h3>';
+	echo '<h3>' . __( 'Produits', 'amapress' ) . '</h3>';
 	echo amapress_produits_shortcode(
 		[ 'producteur' => $producteur->ID ]
 	);
@@ -104,7 +104,7 @@ function amapress_get_custom_archive_content_producteur( $content ) {
 //	echo wpautop( $producteur->getPresentation() );
 	echo $content;
 
-	echo '<h3>' . 'Contrats' . '</h3>';
+	echo '<h3>' . __( 'Contrats', 'amapress' ) . '</h3>';
 	echo Amapress::get_contrats_list( $producteur->ID );
 
 	$content = ob_get_contents();

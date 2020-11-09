@@ -66,17 +66,17 @@ add_filter( 'wp_get_nav_menu_items', function ( $items, $menu ) {
 			if ( $item->object_id == $optionsPage ) {
 				$all_items[] = $item;
 				if ( amapress_is_user_logged_in() ) {
-//                    $item->title = 'Mes infos';
-//                    $all_items[] = amapress_make_item_obj(0, 'Adhésions', $base_url . 'adhesions/', $item_id++, $item->ID);
+//                    $item->title = __('Mes infos', 'amapress');
+//                    $all_items[] = amapress_make_item_obj(0, __('Adhésions', 'amapress'), $base_url . 'adhesions/', $item_id++, $item->ID);
 //                    if (Amapress::isIntermittenceEnabled()) {
-//                        $all_items[] = amapress_make_item_obj(0, 'Mes paniers à céder <span class="badge">' . count(AmapressPaniers::getUserPaniersIntermittents()) . '</span>', $base_url . 'echange-paniers/', $item_id++, $item->ID);
-//                        $all_items[] = amapress_make_item_obj(0, 'Paniers intermittents <span class="badge">' . count(AmapressPaniers::getPaniersIntermittentsToBuy()) . '</span>',
+//                        $all_items[] = amapress_make_item_obj(0, __('Mes paniers à céder <span class="badge">', 'amapress') . count(AmapressPaniers::getUserPaniersIntermittents()) . '</span>', $base_url . 'echange-paniers/', $item_id++, $item->ID);
+//                        $all_items[] = amapress_make_item_obj(0, __('Paniers intermittents <span class="badge">', 'amapress') . count(AmapressPaniers::getPaniersIntermittentsToBuy()) . '</span>',
 //                            Amapress::getPageLink('paniers-intermittents-page'), $item_id++, $item->ID);
 //                    }
-//                $items[] = amapress_make_item_obj(0, 'Commandes', $base_url . 'commandes/', count($items) + 1, $item->ID);
-//                    $all_items[] = amapress_make_item_obj(0, 'Messagerie <span class="badge">' . amapress_get_user_unread_message(amapress_current_user_id()) . '</span>', $base_url . 'messagerie/', $item_id++, $item->ID);
+//                $items[] = amapress_make_item_obj(0, __('Commandes', 'amapress'), $base_url . 'commandes/', count($items) + 1, $item->ID);
+//                    $all_items[] = amapress_make_item_obj(0, __('Messagerie <span class="badge">', 'amapress') . amapress_get_user_unread_message(amapress_current_user_id()) . '</span>', $base_url . 'messagerie/', $item_id++, $item->ID);
 				} else {
-					$item->title = 'Se connecter';
+					$item->title = __( 'Se connecter', 'amapress' );
 					$item->url   = wp_login_url();
 				}
 			} else if ( $item->menu_item_parent == $optionsPage ) {

@@ -131,7 +131,7 @@ class Amapress {
 			}
 
 
-//            add_shortcode('paged_gallery', array('Amapress', 'generic_paged_gallery_shortcode'));
+//            add_shortcode('paged_gallery', array(__('Amapress', 'amapress'), 'generic_paged_gallery_shortcode'));
 
 			TitanFrameworkOptionDate::$default_jquery_date_format      = 'dd/mm/yy';
 			TitanFrameworkOptionDate::$default_date_format             = 'd/m/Y';
@@ -820,7 +820,7 @@ class Amapress {
 
 	public static function init_producteur_role() {
 		self::clear_role( 'producteur' );
-		self::add_role( 'producteur', 'Amap Producteur', array( 'read' => true ) );
+		self::add_role( 'producteur', __( 'Amap Producteur', 'amapress' ), array( 'read' => true ) );
 		self::add_post_role( 'producteur', 'produit', 'produits', array(
 			'read'    => true,
 			'edit'    => true,
@@ -932,7 +932,7 @@ class Amapress {
 
 	public static function init_tresorier_role() {
 		self::clear_role( 'tresorier' );
-		self::add_role( 'tresorier', 'Amap Trésorier',
+		self::add_role( 'tresorier', __( 'Amap Trésorier', 'amapress' ),
 			array(
 				'read'         => true,
 				'list_users'   => true,
@@ -1044,7 +1044,7 @@ class Amapress {
 	public static function init_coordinateur_role() {
 		self::clear_role( 'coordinateur_amap' );
 
-		self::add_role( 'coordinateur_amap', 'Amap Coordinateur',
+		self::add_role( 'coordinateur_amap', __( 'Amap Coordinateur', 'amapress' ),
 			array(
 				'read'         => true,
 				'list_users'   => true,
@@ -1192,7 +1192,7 @@ class Amapress {
 	public static function init_redacteur_role() {
 		self::clear_role( 'redacteur_amap' );
 
-		self::add_role( 'redacteur_amap', 'Amap Rédacteur',
+		self::add_role( 'redacteur_amap', __( 'Amap Rédacteur', 'amapress' ),
 			array(
 				'read'         => true,
 				'list_users'   => false,
@@ -1224,7 +1224,7 @@ class Amapress {
 	public static function init_responsable_role() {
 		self::clear_role( 'responsable_amap' );
 
-		self::add_role( 'responsable_amap', 'Amap Responsable',
+		self::add_role( 'responsable_amap', __( 'Amap Responsable', 'amapress' ),
 			array(
 				'read'         => true,
 				'list_users'   => true,
@@ -1427,7 +1427,7 @@ class Amapress {
 	public static function init_referent_role() {
 		self::clear_role( 'referent' );
 
-		self::add_role( 'referent', 'Amap Référent producteur', array( 'read' => true ) );
+		self::add_role( 'referent', __( 'Amap Référent producteur', 'amapress' ), array( 'read' => true ) );
 		self::add_post_role( 'referent', 'contrat', 'contrats', array(
 			'read'    => true,
 			'edit'    => true,
@@ -1585,7 +1585,7 @@ class Amapress {
 	public static function init_amapien_role() {
 		self::clear_role( 'amapien' );
 
-		self::add_role( 'amapien', 'Amapien', array( 'read' => true ) );
+		self::add_role( 'amapien', __( 'Amapien', 'amapress' ), array( 'read' => true ) );
 		$r = get_role( 'amapien' );
 		if ( class_exists( 'bbPress' ) ) {
 			$caps = bbp_get_caps_for_role( bbp_get_participant_role() );
@@ -1601,7 +1601,7 @@ class Amapress {
 
 	public static function init_paiement_category() {
 		register_taxonomy( 'amps_paiement_category', 'amps_adh_pmt', array(
-			'label'             => 'Types de paiement',
+			'label'             => __( 'Types de paiement', 'amapress' ),
 			'show_ui'           => true,
 			'show_admin_column' => false,
 			'public'            => false,
@@ -1616,8 +1616,8 @@ class Amapress {
 		if ( Amapress::isBackOfficePage() ) {
 			foreach (
 				array(
-					'adhesion_amap_term'        => 'Adhésion AMAP',
-					'adhesion_reseau_amap_term' => 'Adhésion Réseau AMAP',
+					'adhesion_amap_term'        => __( 'Adhésion AMAP', 'amapress' ),
+					'adhesion_reseau_amap_term' => __( 'Adhésion Réseau AMAP', 'amapress' ),
 				) as $k => $v
 			) {
 				$adhesion_term = intval( Amapress::getOption( $k ) );
@@ -1658,7 +1658,7 @@ class Amapress {
 
 	public static function init_amap_role_category() {
 		$res = register_taxonomy( AmapressUser::AMAP_ROLE, 'user', array(
-			'label'             => 'Rôle dans l\'AMAP',
+			'label'             => __( 'Rôle dans l\'AMAP', 'amapress' ),
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'public'            => true,
@@ -1673,7 +1673,7 @@ class Amapress {
 
 	public static function init_amapien_group_category() {
 		$res = register_taxonomy( AmapressUser::AMAPIEN_GROUP, 'user', array(
-			'label'             => 'Groupe Amapien',
+			'label'             => __( 'Groupe Amapien', 'amapress' ),
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'public'            => true,
@@ -1688,7 +1688,7 @@ class Amapress {
 
 	public static function init_amap_event_category() {
 		register_taxonomy( AmapressAmap_event::CATEGORY, AmapressAmap_event::INTERNAL_POST_TYPE, array(
-			'label'             => 'Catégorie d\'évènement',
+			'label'             => __( 'Catégorie d\'évènement', 'amapress' ),
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'capabilities'      => array(
@@ -1702,7 +1702,7 @@ class Amapress {
 
 	public static function init_prpduit_category() {
 		register_taxonomy( AmapressProduit::CATEGORY, AmapressProduit::INTERNAL_POST_TYPE, array(
-			'label'             => 'Catégorie de produit',
+			'label'             => __( 'Catégorie de produit', 'amapress' ),
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'rewrite'           => array(
@@ -1719,7 +1719,7 @@ class Amapress {
 
 	public static function init_recette_category() {
 		register_taxonomy( AmapressRecette::CATEGORY, AmapressRecette::INTERNAL_POST_TYPE, array(
-			'label'             => 'Catégorie de recette',
+			'label'             => __( 'Catégorie de recette', 'amapress' ),
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'rewrite'           => array(
@@ -1950,7 +1950,7 @@ class Amapress {
 			}, 10, 2 );
 			add_filter( 'manage_edit-' . $internal_post_type . '_columns', function ( $columns ) use ( $internal_post_type ) {
 				if ( post_type_supports( $internal_post_type, 'thumbnail' ) ) {
-					$columns['thumb-preview'] = 'Image';
+					$columns['thumb-preview'] = __( 'Image', 'amapress' );
 				}
 
 				return $columns;
@@ -2096,7 +2096,7 @@ class Amapress {
 	) {
 		$pt = amapress_simplify_post_type( $post_type );
 		foreach ( $fields as $field => $options ) {
-			$group = ! empty( $options['group'] ) ? $options['group'] : 'Options';
+			$group = ! empty( $options['group'] ) ? $options['group'] : __( 'Options', 'amapress' );
 			if ( ! array_key_exists( $group, $metaboxes ) ) {
 				$group_conf = isset( $conf['groups'] ) && isset( $conf['groups'][ $group ] ) ? $conf['groups'][ $group ] : array();
 				unset( $group_conf['post_type'] );
@@ -2615,7 +2615,7 @@ class Amapress {
 
 		$m = self::getTitanInstance()->createMetaBox(
 			array(
-				'name'        => 'Aide',
+				'name'        => __( 'Aide', 'amapress' ),
 				'context'     => 'side',
 				'priority'    => 'high',
 				'post_type'   => $post_types,
@@ -2628,7 +2628,7 @@ class Amapress {
 				'type' => 'note',
 				'desc' => Amapress::makeInternalLink(
 						admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ),
-						'Liste des shortcodes' ) .
+						__( 'Liste des shortcodes', 'amapress' ) ) .
 				          '<br/>' .
 				          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/shortcodes' ),
 			)
@@ -2636,7 +2636,7 @@ class Amapress {
 
 		$m = self::getTitanInstance()->createMetaBox(
 			array(
-				'name'             => 'Amapress Protection',
+				'name'             => __( 'Amapress Protection', 'amapress' ),
 				'context'          => 'side',
 				'priority'         => 'high',
 				'post_type'        => $post_types,
@@ -2649,7 +2649,7 @@ class Amapress {
 				'bare_id' => true,
 //                'name' => amapress__('Amapiens seulement'),
 				'type'    => 'checkbox',
-				'desc'    => 'Amapiens connectés',
+				'desc'    => __( 'Amapiens connectés', 'amapress' ),
 			)
 		);
 		$m->createOption(
@@ -2658,7 +2658,7 @@ class Amapress {
 				'bare_id'     => true,
 				'name'        => __( 'Rediriger non connectés vers', 'amapress' ),
 				'type'        => 'select-pages',
-				'desc'        => 'Par défaut : les internautes non connectés sont redirigés vers la page de connexion<br/>'
+				'desc'        => __( 'Par défaut : les internautes non connectés sont redirigés vers la page de connexion<br/>', 'amapress' )
 				                 . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/protection' ),
 				'show_column' => false,
 			)
@@ -2952,22 +2952,22 @@ class Amapress {
 
 		wp_add_dashboard_widget(
 			'amapress_this_week_dashboard_widget',         // Widget slug.
-			'Cette semaine avec Amapress',         // Title.
+			__( 'Cette semaine avec Amapress', 'amapress' ),         // Title.
 			array( 'Amapress', 'amapress_this_week_dashboard_widget_function' ) // Display function.
 		);
 		wp_add_dashboard_widget(
 			'amapress_entities_dashboard_widget',         // Widget slug.
-			'Information Amapress',         // Title.
+			__( 'Information Amapress', 'amapress' ),         // Title.
 			array( 'Amapress', 'amapress_entities_dashboard_widget_function' ) // Display function.
 		);
 		wp_add_dashboard_widget(
 			'amapress_paiements_dashboard_widget',         // Widget slug.
-			'Adhésions Amapress',         // Title.
+			__( 'Adhésions Amapress', 'amapress' ),         // Title.
 			array( 'Amapress', 'amapress_paiements_dashboard_widget_function' ) // Display function.
 		);
 		wp_add_dashboard_widget(
 			'amapress_this_month_dashboard_widget',         // Widget slug.
-			'Ce mois-ci avec Amapress',         // Title.
+			__( 'Ce mois-ci avec Amapress', 'amapress' ),         // Title.
 			array( 'Amapress', 'amapress_this_month_dashboard_widget_function' ) // Display function.
 		);
 	}
@@ -2980,9 +2980,9 @@ class Amapress {
 		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
 		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
 
-		echo '<p>' . 'Paniers :' . '</p>';
+		echo '<p>' . __( 'Paniers :', 'amapress' ) . '</p>';
 		if ( count( $week_paniers ) == 0 ) {
-			echo '<i>' . 'Pas de panier ce mois-ci' . '</i>';
+			echo '<i>' . __( 'Pas de panier ce mois-ci', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paniers as $panier ) {
@@ -2998,9 +2998,9 @@ class Amapress {
 			echo '</ul>';
 		}
 
-		echo '<p>' . 'Distributions :' . '</p>';
+		echo '<p>' . __( 'Distributions :', 'amapress' ) . '</p>';
 		if ( count( $week_dists ) == 0 ) {
-			echo '<i>' . 'Pas de distribution ce mois-ci' . '</i>';
+			echo '<i>' . __( 'Pas de distribution ce mois-ci', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_dists as $dist ) {
@@ -3008,38 +3008,38 @@ class Amapress {
 				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de responsables' . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de responsables', 'amapress' ) . "</strong></li>";
 				} else if ( $req > count( $resps ) ) {
 					$miss = $req - count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( '%d responsable(s) manquants', $miss ) . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( __( '%d responsable(s) manquants', 'amapress' ), $miss ) . "</strong></li>";
 				} else {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . 'Complet' . "</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . __( 'Complet', 'amapress' ) . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>' . 'Visites à la ferme :' . '</p>';
+		echo '<p>' . __( 'Visites à la ferme :', 'amapress' ) . '</p>';
 		if ( count( $week_visites ) == 0 ) {
-			echo '<i>' . 'Pas de visite à la ferme ce mois-ci' . '</i>';
+			echo '<i>' . __( 'Pas de visite à la ferme ce mois-ci', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_visites as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de participants' . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de participants', 'amapress' ) . "</strong></li>";
 				} else {
 					$cnt = count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( '%d participant(s)', $cnt ) . "</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( __( '%d participant(s)', 'amapress' ), $cnt ) . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>' . 'Chèques à encaisser :' . '</p>';
+		echo '<p>' . __( 'Chèques à encaisser :', 'amapress' ) . '</p>';
 		if ( count( $week_paiements ) == 0 ) {
-			echo '<i>' . 'Pas de chèque à encaisser ce mois-ci' . '</i>';
+			echo '<i>' . __( 'Pas de chèque à encaisser ce mois-ci', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paiements as $dist ) {
@@ -3058,9 +3058,9 @@ class Amapress {
 		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
 		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
 
-		echo '<p>' . 'Paniers :' . '</p>';
+		echo '<p>' . __( 'Paniers :', 'amapress' ) . '</p>';
 		if ( count( $week_paniers ) == 0 ) {
-			echo '<i>' . 'Pas de panier cette semaine' . '</i>';
+			echo '<i>' . __( 'Pas de panier cette semaine', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paniers as $panier ) {
@@ -3076,9 +3076,9 @@ class Amapress {
 			echo '</ul>';
 		}
 
-		echo '<p>' . 'Distributions :' . '</p>';
+		echo '<p>' . __( 'Distributions :', 'amapress' ) . '</p>';
 		if ( count( $week_dists ) == 0 ) {
-			echo '<i>' . 'Pas de distribution cette semaine' . '</i>';
+			echo '<i>' . __( 'Pas de distribution cette semaine', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_dists as $dist ) {
@@ -3086,38 +3086,38 @@ class Amapress {
 				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de responsables' . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de responsables', 'amapress' ) . "</strong></li>";
 				} else if ( $req > count( $resps ) ) {
 					$miss = $req - count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( '%d responsable(s) manquants', $miss ) . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( __( '%d responsable(s) manquants', 'amapress' ), $miss ) . "</strong></li>";
 				} else {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . 'Complet' . "</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . __( 'Complet', 'amapress' ) . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>' . 'Visites à la ferme :' . '</p>';
+		echo '<p>' . __( 'Visites à la ferme :', 'amapress' ) . '</p>';
 		if ( count( $week_visites ) == 0 ) {
-			echo '<i>' . 'Pas de visite à la ferme cette semaine' . '</i>';
+			echo '<i>' . __( 'Pas de visite à la ferme cette semaine', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_visites as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . 'Pas de participants' . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de participants', 'amapress' ) . "</strong></li>";
 				} else {
 					$cnt = count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( '%d participant(s)', $cnt ) . "</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( __( '%d participant(s)', 'amapress' ), $cnt ) . "</li>";
 				}
 			}
 			echo '</ul>';
 		}
 
-		echo '<p>' . 'Chèques à encaisser :' . '</p>';
+		echo '<p>' . __( 'Chèques à encaisser :', 'amapress' ) . '</p>';
 		if ( count( $week_paiements ) == 0 ) {
-			echo '<i>' . 'Pas de chèque à encaisser cette semaine' . '</i>';
+			echo '<i>' . __( 'Pas de chèque à encaisser cette semaine', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
 			foreach ( $week_paiements as $dist ) {
@@ -3143,13 +3143,13 @@ class Amapress {
 		$cnt_contrats_tocheck = count( $contrats_tocheck );
 		if ( $cnt_contrats_tocheck > 0 ) {
 			$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
-			echo sprintf( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> contrats à vérifier</p>', $adm, $cnt_contrats_tocheck );
+			echo sprintf( __( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> contrats à vérifier</p>', 'amapress' ), $adm, $cnt_contrats_tocheck );
 		}
 
 		//contrats
 		$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
 		$cnt = count( $contrats );
-		echo sprintf( '<p><a href=\'%s\'>(%s)</a> contrats actifs</p>', $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> contrats actifs</p>', 'amapress' ), $adm, $cnt );
 
 		//lieux distrib
 		$lieux = get_posts(
@@ -3160,7 +3160,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_lieu' );
 		$cnt   = count( $lieux );
-		echo sprintf( '<p><a href=\'%s\'>(%s)</a> lieu(x) de distribution</p>', $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> lieu(x) de distribution</p>', 'amapress' ), $adm, $cnt );
 
 		$posts = get_posts(
 			array(
@@ -3170,7 +3170,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_producteur' );
 		$cnt   = count( $posts );
-		echo sprintf( '<p><a href=\'%s\'>(%s)</a> producteurs</p>', $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> producteurs</p>', 'amapress' ), $adm, $cnt );
 
 		$posts = get_posts(
 			array(
@@ -3180,7 +3180,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_produit' );
 		$cnt   = count( $posts );
-		echo sprintf( '<p><a href=\'%s\'>(%s)</a> produits</p>', $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> produits</p>', 'amapress' ), $adm, $cnt );
 	}
 
 	static function amapress_paiements_dashboard_widget_function() {
@@ -3200,7 +3200,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_adhesion' );
 		$cnt   = count( $ads );
-		echo sprintf( '<p><a href=\'%s\'>(%s)</a> adhésions :</p>', $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> adhésions :</p>', 'amapress' ), $adm, $cnt );
 		echo '<ul>';
 		foreach ( $lieux as $lieu ) {
 			$ads_lieu = get_posts(
@@ -3218,7 +3218,7 @@ class Amapress {
 			);
 			$adm      = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_lieu&meta_value=' . $lieu->ID );
 			$cnt      = count( $ads_lieu );
-			echo sprintf( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', $lieu->post_title, $adm, $cnt );
+			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', 'amapress' ), $lieu->post_title, $adm, $cnt );
 		}
 		echo '</ul>';
 		echo '<ul>';
@@ -3238,7 +3238,7 @@ class Amapress {
 			);
 			$adm         = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_contrat_instance&meta_value=' . $contrat->ID );
 			$cnt         = count( $ads_contrat );
-			echo sprintf( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', $contrat->getTitle(), $adm, $cnt );
+			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', 'amapress' ), $contrat->getTitle(), $adm, $cnt );
 		}
 		echo '</ul>';
 
@@ -3259,7 +3259,7 @@ class Amapress {
 		$cnt            = count( $ads_to_confirm );
 		if ( $cnt > 0 ) {
 			$adm = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_status&meta_value=to_confirm' );
-			echo sprintf( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> adhésions à confirmer</p>', $adm, $cnt );
+			echo sprintf( __( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> adhésions à confirmer</p>', 'amapress' ), $adm, $cnt );
 		}
 	}
 
@@ -3399,7 +3399,7 @@ class Amapress {
 			$item->post_parent      = 0;
 			$item->menu_item_parent = 0;
 			$item->type             = 'amapress-custom-latest';
-			$item->title            = sprintf( 'Derniers %s', $post_conf['plural'] );
+			$item->title            = sprintf( __( 'Derniers %s', 'amapress' ), $post_conf['plural'] );
 			$item->type_label       = __( 'Récents', 'amapress' );
 			$item->url              = get_post_type_archive_link( amapress_unsimplify_post_type( $post_type ) );
 			$item->target           = '';
@@ -3642,19 +3642,19 @@ class Amapress {
 	) {
 		switch ( $day ) {
 			case 1:
-				return 'Lundi';
+				return __( 'Lundi', 'amapress' );
 			case 2:
-				return 'Mardi';
+				return __( 'Mardi', 'amapress' );
 			case 3:
-				return 'Mercredi';
+				return __( 'Mercredi', 'amapress' );
 			case 4:
-				return 'Jeudi';
+				return __( 'Jeudi', 'amapress' );
 			case 5:
-				return 'Vendredi';
+				return __( 'Vendredi', 'amapress' );
 			case 6:
-				return 'Samedi';
+				return __( 'Samedi', 'amapress' );
 			case 0:
-				return 'Dimanche';
+				return __( 'Dimanche', 'amapress' );
 		}
 
 		return '';
@@ -3673,7 +3673,7 @@ class Amapress {
 	) {
 		$contrats = AmapressContrats::get_contrats( $producteur_id, true, true );
 		if ( empty( $contrats ) ) {
-			return '<p class="">' . 'Aucun contrat n\'est configuré' . '</p>';
+			return '<p class="">' . __( 'Aucun contrat n\'est configuré', 'amapress' ) . '</p>';
 		}
 		$ret                 = '<ul class="contrat-list">';
 		$active_contrats_ids = array_map( function ( $a ) {
@@ -3687,9 +3687,9 @@ class Amapress {
 			}
 			$used[] = $contrat->ID;
 			$lbl    = in_array( $contrat->ID, $active_contrats_ids ) ?
-				Amapress::getOption( 'front_produits_button_text_if_adherent', 'Adhérent' ) :
-				Amapress::getOption( 'front_produits_button_text_if_not_adherent', 'Découvrir' );
-			//$btn_url = in_array($contrat->ID, $active_contrats) ? trailingslashit(get_post_permalink($contrat->ID)).'details/' : 'Je m\'inscris';
+				Amapress::getOption( 'front_produits_button_text_if_adherent', __( 'Adhérent', 'amapress' ) ) :
+				Amapress::getOption( 'front_produits_button_text_if_not_adherent', __( 'Découvrir', 'amapress' ) );
+			//$btn_url = in_array($contrat->ID, $active_contrats) ? trailingslashit(get_post_permalink($contrat->ID)).'details/' : __('Je m\'inscris', 'amapress');
 			$btn_url = trailingslashit( get_post_permalink( $contrat->ID ) );
 			$url     = amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', 'default_contrat.jpg' );
 			$ret     .= '<li>
@@ -3711,7 +3711,7 @@ class Amapress {
 	public static function get_know_more(
 		$url
 	) {
-		return '<p class="know-more"><a href="' . $url . '"><i class="fa fa-star-o"></i>&#xA0;' . 'En savoir plus' . '</a></p>';
+		return '<p class="know-more"><a href="' . $url . '"><i class="fa fa-star-o"></i>&#xA0;' . __( 'En savoir plus', 'amapress' ) . '</a></p>';
 	}
 
 //    public static function amapress_produit_cell($produit, $add_class)
@@ -4005,7 +4005,7 @@ class Amapress {
 			        sprintf( __( 'Consulter les <a href="#" id="show_%s">marqueurs de substitution</a> disponibles (%%%%xxx%%%%)', 'amapress' ),
 				        $id ) . '</p>';
 		}
-		$ret .= '<div id="' . $id . '-container"><table id="' . $id . '" class="placeholders-help display"><thead><tr><th>' . 'Placeholder' . '</th><th>' . 'Description' . '</th></tr></thead><tbody>' .
+		$ret .= '<div id="' . $id . '-container"><table id="' . $id . '" class="placeholders-help display"><thead><tr><th>' . __( 'Placeholder', 'amapress' ) . '</th><th>' . __( 'Description', 'amapress' ) . '</th></tr></thead><tbody>' .
 		        implode( '', array_map( function ( $pn, $p ) use ( $marker_start, $marker_end ) {
 			        return '<tr><td>' . $marker_start . esc_html( $pn ) . $marker_end . '</td><td>' . esc_html( $p ) . '</td></tr>';
 		        }, array_keys( $final ), array_values( $final ) ) )
@@ -4191,7 +4191,7 @@ class Amapress {
 			) {
 				$amapien = AmapressUser::getBy( $user );
 				amapress_log_to_role_log_file( $log_file,
-					sprintf( '%s est "%s"',
+					sprintf( __( '%s est "%s"', 'amapress' ),
 						amapress_get_user_edit_link( $amapien ),
 						$amapien->getAmapRolesString() ) . "\n",
 					$amapien->getAmapRolesString(), '' );
@@ -4217,7 +4217,7 @@ class Amapress {
 			$contact_page = '<p>' .
 			                self::makeButtonLink(
 				                admin_url( 'options-general.php?page=amapress_options_page&tab=amp_public_contacts_config' ),
-				                'Editer les informations de Contacts public',
+				                __( 'Editer les informations de Contacts public', 'amapress' ),
 				                true, true
 			                ) . '</p>';
 		}
@@ -4328,13 +4328,13 @@ class Amapress {
 		}
 
 		$role_names = [
-			'administrator'     => 'Amap Administrateur',
-			'producteur'        => 'Amap Producteur',
-			'tresorier'         => 'Amap Trésorier',
-			'coordinateur_amap' => 'Amap Coordinateur',
-			'redacteur_amap'    => 'Amap Rédacteur',
-			'responsable_amap'  => 'Amap Responsable',
-			'referent'          => 'Amap Référent producteur',
+			'administrator'     => __( 'Amap Administrateur', 'amapress' ),
+			'producteur'        => __( 'Amap Producteur', 'amapress' ),
+			'tresorier'         => __( 'Amap Trésorier', 'amapress' ),
+			'coordinateur_amap' => __( 'Amap Coordinateur', 'amapress' ),
+			'redacteur_amap'    => __( 'Amap Rédacteur', 'amapress' ),
+			'responsable_amap'  => __( 'Amap Responsable', 'amapress' ),
+			'referent'          => __( 'Amap Référent producteur', 'amapress' ),
 		];
 
 		foreach ( $role_names as $k => $v ) {
@@ -4398,11 +4398,11 @@ class Amapress {
 		try {
 			$pdf_handle = fopen( $pdf_filename, 'w+' );
 			if ( ! $pdf_handle ) {
-				throw new Exception( sprintf( 'Cannot open %s for writing, please check rights', $pdf_filename ) );
+				throw new Exception( sprintf( __( 'Cannot open %s for writing, please check rights', 'amapress' ), $pdf_filename ) );
 			}
 			$fileContent = file_get_contents( $filename );
 			if ( ! $fileContent ) {
-				throw new Exception( sprintf( 'Cannot get content of %s', $filename ) );
+				throw new Exception( sprintf( __( 'Cannot get content of %s', 'amapress' ), $filename ) );
 			}
 			$client = new GuzzleHttp\Client();
 			$resp   = $client->post( $convertws_url, [

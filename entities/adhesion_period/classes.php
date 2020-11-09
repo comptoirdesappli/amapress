@@ -79,7 +79,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		$model_file   = $this->getModelDocFileName();
 		$placeholders = AmapressAdhesion_paiement::getPlaceholders();
 
-		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, 'Bulletin d\'adhésion' );
+		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, __( 'Bulletin d\'adhésion', 'amapress' ) );
 	}
 
 	public function getMontantReseau( $intermittent = false ) {
@@ -219,20 +219,20 @@ class AmapressAdhesionPeriod extends TitanEntity {
 
 		$archives_infos = [];
 		//extract inscriptions xlsx
-		echo '<p>' . 'Stockage de l\'excel des adhésions' . '</p>';
+		echo '<p>' . __( 'Stockage de l\'excel des adhésions', 'amapress' ) . '</p>';
 		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( 'post_type=amps_adh_pmt&amapress_adhesion_period=' . $this->ID,
-			null, sprintf( '%s - Adhésions', $this->getTitle() ) );
+			null, sprintf( __( '%s - Adhésions', 'amapress' ), $this->getTitle() ) );
 		$filename    = 'periode-' . $this->ID . '-adhesions.xlsx';
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
 		$archives_infos['file_adhesions'] = $filename;
 
 		//extract paiements xlsx
-		echo '<p>' . 'Stockage des excel des règlements' . '</p>';
+		echo '<p>' . __( 'Stockage des excel des règlements', 'amapress' ) . '</p>';
 		$_GET['page']     = 'adhesion_paiements';
 		$_GET['adh_date'] = Amapress::add_days( $this->getDate_debut(), 1 );
 		$objPHPExcel      = AmapressExport_Users::generate_phpexcel_sheet( 'amapress_adhesion=all',
-			null, sprintf( '%s - Réglements', $this->getTitle() ) );
+			null, sprintf( __( '%s - Réglements', 'amapress' ), $this->getTitle() ) );
 		$filename         = 'periode-' . $this->ID . '-paiements.xlsx';
 		$objWriter        = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( Amapress::getArchivesDir() . '/' . $filename );
@@ -241,10 +241,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		$adhesions                         = get_posts( 'post_type=amps_adh_pmt&amapress_adhesion_period=' . $this->ID );
 		$archives_infos['count_adhesions'] = count( $adhesions );
 
-		echo '<p>' . 'Stockage des infos du contrat pour archive' . '</p>';
+		echo '<p>' . __( 'Stockage des infos du contrat pour archive', 'amapress' ) . '</p>';
 		$this->setCustom( 'amapress_adhesion_period_archives_infos', $archives_infos );
 
-		echo '<p>' . 'Archivage des adhésions et règlements' . '</p>';
+		echo '<p>' . __( 'Archivage des adhésions et règlements', 'amapress' ) . '</p>';
 		global $wpdb;
 		//start transaction
 		$wpdb->query( 'START TRANSACTION' );
@@ -288,61 +288,61 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		if ( null == self::$properties ) {
 			$ret                         = [];
 			$ret['nom']                  = [
-				'desc' => 'Nom de la période d\'adhésion (par ex, saison 15)',
+				'desc' => __( 'Nom de la période d\'adhésion (par ex, saison 15)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getName() );
 				}
 			];
 			$ret['date_debut']           = [
-				'desc' => 'Date début de la période d\'adhésion (par ex, 01/09/2018)',
+				'desc' => __( 'Date début de la période d\'adhésion (par ex, 01/09/2018)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_debut() );
 				}
 			];
 			$ret['date_fin']             = [
-				'desc' => 'Date fin de période d\'adhésion (par ex, 31/08/2019)',
+				'desc' => __( 'Date fin de période d\'adhésion (par ex, 31/08/2019)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return date_i18n( 'd/m/Y', $adh->getDate_fin() );
 				}
 			];
 			$ret['date_debut_annee']     = [
-				'desc' => 'Année de début de période d\'adhésion',
+				'desc' => __( 'Année de début de période d\'adhésion', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return date_i18n( 'Y', $adh->getDate_debut() );
 				}
 			];
 			$ret['date_fin_annee']       = [
-				'desc' => 'Année de fin de période d\'adhésion',
+				'desc' => __( 'Année de fin de période d\'adhésion', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return date_i18n( 'Y', $adh->getDate_fin() );
 				}
 			];
 			$ret['montant_amap']         = [
-				'desc' => 'Montant versé à l\'AMAP (Amapiens)',
+				'desc' => __( 'Montant versé à l\'AMAP (Amapiens)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return Amapress::formatPrice( $adh->getMontantAmap( false ) );
 				}
 			];
 			$ret['montant_reseau']       = [
-				'desc' => 'Montant versé au réseau de l\'AMAP (Amapiens)',
+				'desc' => __( 'Montant versé au réseau de l\'AMAP (Amapiens)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return Amapress::formatPrice( $adh->getMontantReseau( false ) );
 				}
 			];
 			$ret['inter_montant_amap']   = [
-				'desc' => 'Montant versé à l\'AMAP (Intermittents)',
+				'desc' => __( 'Montant versé à l\'AMAP (Intermittents)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return Amapress::formatPrice( $adh->getMontantAmap( true ) );
 				}
 			];
 			$ret['inter_montant_reseau'] = [
-				'desc' => 'Montant versé au réseau de l\'AMAP (Intermittents)',
+				'desc' => __( 'Montant versé au réseau de l\'AMAP (Intermittents)', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return Amapress::formatPrice( $adh->getMontantReseau( true ) );
 				}
 			];
 			$ret['tresoriers']           = [
-				'desc' => 'Nom des référents de l\'adhésion',
+				'desc' => __( 'Nom des référents de l\'adhésion', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return implode( ', ', array_unique( array_map(
 						function ( $ref_id ) {
@@ -358,7 +358,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 				}
 			];
 			$ret['tresoriers_emails']    = [
-				'desc' => 'Nom des trésoriers avec emails',
+				'desc' => __( 'Nom des trésoriers avec emails', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return implode( ', ', array_unique( array_map(
 						function ( $ref_id ) {
@@ -374,7 +374,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 				}
 			];
 			$ret['paiements_mention']    = [
-				'desc' => 'Mention pour les paiements',
+				'desc' => __( 'Mention pour les paiements', 'amapress' ),
 				'func' => function ( AmapressAdhesionPeriod $adh ) {
 					return wp_strip_all_tags( html_entity_decode( wp_unslash( $adh->getPaymentInfo() ) ) );
 				}

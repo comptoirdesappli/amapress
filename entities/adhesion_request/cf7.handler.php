@@ -69,12 +69,12 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 		return $p->getModelId();
 	}, $contrats );
 	if ( $intermittent ) {
-		$contrats_noms[] = 'Intermittent';
+		$contrats_noms[] = __( 'Intermittent', 'amapress' );
 	}
 	$contrats_noms = implode( ', ', $contrats_noms );
 
 	$my_post = array(
-		'post_title'   => sprintf( 'Demande de préinscription de %s (%s) du %02d-%02d-%04d',
+		'post_title'   => sprintf( __( 'Demande de préinscription de %s (%s) du %02d-%02d-%04d', 'amapress' ),
 			$first_name . ' ' . $last_name,
 			$email,
 			date( 'd' ), date( 'm' ), date( 'Y' ) ),

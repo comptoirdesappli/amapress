@@ -26,7 +26,7 @@ function amapress_register_entities_panier( $entities ) {
 			'_dyn_'  => 'amapress_panier_views',
 		),
 		'groups'                   => [
-			'Modification' => [
+			__( 'Modification', 'amapress' ) => [
 				'context' => 'side',
 			]
 		],
@@ -38,11 +38,11 @@ function amapress_register_entities_panier( $entities ) {
 				'name'       => __( 'Livraison du panier', 'amapress' ),
 				'type'       => 'date',
 				'readonly'   => true,
-				'desc'       => 'Date de distribution',
-				'group'      => '1/ Informations',
+				'desc'       => __( 'Date de distribution', 'amapress' ),
+				'group'      => __( '1/ Informations', 'amapress' ),
 				'top_filter' => array(
 					'name'           => 'amapress_date',
-					'placeholder'    => 'Toutes les dates',
+					'placeholder'    => __( 'Toutes les dates', 'amapress' ),
 					'custom_options' => 'amapress_get_active_contrat_month_options'
 				),
 			),
@@ -51,19 +51,19 @@ function amapress_register_entities_panier( $entities ) {
 				'type'       => 'select-posts',
 				'post_type'  => 'amps_contrat_inst',
 				'readonly'   => true,
-				'desc'       => 'Contrat',
+				'desc'       => __( 'Contrat', 'amapress' ),
 				'searchable' => true,
-				'group'      => '1/ Informations',
+				'group'      => __( '1/ Informations', 'amapress' ),
 				'orderby'    => 'post_title',
 				'order'      => 'ASC',
 				'top_filter' => array(
 					'name'        => 'amapress_contrat',
-					'placeholder' => 'Toutes les contrats',
+					'placeholder' => __( 'Toutes les contrats', 'amapress' ),
 				),
 			),
 			'paniers'           => array(
 				'name'              => __( 'Distribution(s)', 'amapress' ),
-				'group'             => '1/ Informations',
+				'group'             => __( '1/ Informations', 'amapress' ),
 				'show_column'       => false,
 				'include_columns'   => array(
 					'title',
@@ -83,33 +83,33 @@ function amapress_register_entities_panier( $entities ) {
 				'name'           => __( 'Produits associés', 'amapress' ),
 				'type'           => 'select-posts',
 				'post_type'      => AmapressProduit::INTERNAL_POST_TYPE,
-				'desc'           => 'Produits associés aux paniers',
+				'desc'           => __( 'Produits associés aux paniers', 'amapress' ),
 				'multiple'       => true,
 				'tags'           => true,
 				'autocomplete'   => true,
-				'group'          => '2/ Contenu',
+				'group'          => __( '2/ Contenu', 'amapress' ),
 				'col_def_hidden' => true,
 			),
 //			'produits'         => array(
 //				'name'   => __( 'Panier', 'amapress' ),
 //				'type'   => 'custom',
-//				'custom' => array( 'AmapressPaniers', "panierTable" ),
-//				'save'   => array( 'AmapressPaniers', 'savePanierTable' ),
-//				'desc'   => 'Produits',
+//				'custom' => array( __('AmapressPaniers', 'amapress'), "panierTable" ),
+//				'save'   => array( __('AmapressPaniers', 'amapress'), 'savePanierTable' ),
+//				'desc'   => __('Produits', 'amapress'),
 //			),
 			'status'            => array(
 				'name'          => __( 'Statut', 'amapress' ),
 				'type'          => 'select',
 				'options'       => array(
-					''          => 'Date prévue',
-					'cancelled' => 'Annulé',
-					'delayed'   => 'Reporté',
+					''          => __( 'Date prévue', 'amapress' ),
+					'cancelled' => __( 'Annulé', 'amapress' ),
+					'delayed'   => __( 'Reporté', 'amapress' ),
 				),
 				'top_filter'    => array(
 					'name'        => 'amapress_status',
-					'placeholder' => 'Tous les status',
+					'placeholder' => __( 'Tous les status', 'amapress' ),
 				),
-				'group'         => 'Modification',
+				'group'         => __( 'Modification', 'amapress' ),
 				'before_option' => '<script type="text/javascript">
 jQuery(function($) {
     var $status_field = $("#amapress_panier_status");
@@ -131,7 +131,7 @@ jQuery(function($) {
 				'type'    => 'select',
 				'cache'   => false,
 				'options' => function ( $option ) {
-					$ret = [ '' => '--Aucune--' ];
+					$ret = [ '' => __( '--Aucune--', 'amapress' ) ];
 					/** @var TitanFrameworkOptionSelect $option */
 					$panier = AmapressPanier::getBy( $option->getPostID() );
 					if ( ! $panier ) {
@@ -148,8 +148,8 @@ jQuery(function($) {
 
 					return $ret;
 				},
-				'desc'    => 'Choisir une nouvelle date pour une livraison de panier dont le statut est "<strong>Reporté</strong>"',
-				'group'   => 'Modification',
+				'desc'    => __( 'Choisir une nouvelle date pour une livraison de panier dont le statut est "<strong>Reporté</strong>"', 'amapress' ),
+				'group'   => __( 'Modification', 'amapress' ),
 			),
 		),
 	);
@@ -172,9 +172,9 @@ function amapress_panier_fields( $fields ) {
 			     && ( $panier->getContrat_instance()->hasPanier_CustomContent() ) ) {
 				foreach ( AmapressContrats::get_contrat_quantites( $panier->getContrat_instanceId() ) as $quantite ) {
 					$fields[ 'contenu_' . $quantite->ID ] = array(
-						'name'  => sprintf( 'Contenu pour %s', $quantite->getTitle() ),
+						'name'  => sprintf( __( 'Contenu pour %s', 'amapress' ), $quantite->getTitle() ),
 						'type'  => 'editor',
-						'group' => '2/ Contenu',
+						'group' => __( '2/ Contenu', 'amapress' ),
 					);
 				}
 			}

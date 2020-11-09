@@ -241,7 +241,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 
 	$columns   = array();
 	$columns[] = array(
-		'title' => 'Rôle',
+		'title' => __( 'Rôle', 'amapress' ),
 		'width' => '30%',
 		'data'  => array(
 			'_'    => 'role',
@@ -250,7 +250,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	);
 	if ( count( $all_lieu_ids ) > 1 ) {
 		$columns[] = array(
-			'title' => 'Lieu',
+			'title' => __( 'Lieu', 'amapress' ),
 			'width' => '20%',
 			'data'  => array(
 				'_'    => 'lieu',
@@ -259,7 +259,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		);
 	}
 	$columns[] = array(
-		'title' => 'Amapien',
+		'title' => __( 'Amapien', 'amapress' ),
 		'width' => '50%',
 		'data'  => array(
 			'_'    => 'user',
@@ -268,7 +268,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	);
 	$columns[] = array(
 		'name'    => 'user_name',
-		'title'   => 'Membre collectif',
+		'title'   => __( 'Membre collectif', 'amapress' ),
 		'visible' => false,
 		'data'    => array(
 			'_'    => 'user_name',
@@ -277,7 +277,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	);
 	$columns[] = array(
 		'name'    => 'user_address',
-		'title'   => 'Adresse',
+		'title'   => __( 'Adresse', 'amapress' ),
 		'visible' => false,
 		'data'    => array(
 			'_'    => 'user_address',
@@ -286,7 +286,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	);
 	$columns[] = array(
 		'name'    => 'user_phone_fix',
-		'title'   => 'Tel Fixe',
+		'title'   => __( 'Tel Fixe', 'amapress' ),
 		'visible' => false,
 		'data'    => array(
 			'_'    => 'user_phone_fix',
@@ -295,7 +295,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	);
 	$columns[] = array(
 		'name'    => 'user_phone_mob',
-		'title'   => 'Tel Mobile',
+		'title'   => __( 'Tel Mobile', 'amapress' ),
 		'visible' => false,
 		'data'    => array(
 			'_'    => 'user_phone_mob',
@@ -304,7 +304,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 	);
 	$columns[] = array(
 		'name'    => 'user_email',
-		'title'   => 'Email',
+		'title'   => __( 'Email', 'amapress' ),
 		'visible' => false,
 		'data'    => array(
 			'_'    => 'user_email',
@@ -433,7 +433,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //                array(
 //                    'user' => $prod->getReferent($lieu->ID)->getDisplay($atts),
 //                    'lieu' => $lieu->getShortName(),
-//                    'role' => sprintf('Référent %s', $contrat->getTitle()),
+//                    'role' => sprintf(__('Référent %s', 'amapress'), $contrat->getTitle()),
 //                );
 //        }
 //        if (!$had_local_referents) {
@@ -445,7 +445,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //                    array(
 //                        'user' => $prod->getReferent()->getDisplay($atts),
 //                        'lieu' => $lieu->getShortName(),
-//                        'role' => sprintf('Référent %s', $contrat->getTitle()),
+//                        'role' => sprintf(__('Référent %s', 'amapress'), $contrat->getTitle()),
 //                    );
 //            }
 //        }
@@ -460,7 +460,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 //            array(
 //                'lieu' => $lieu->getShortName(),
 //                'user' => $lieu->getReferent()->getDisplay($atts),
-//                'role' => sprintf('Référent %s', $lieu->getShortName()),
+//                'role' => sprintf(__('Référent %s', 'amapress'), $lieu->getShortName()),
 //            );
 //    }
 //    //responsables
@@ -576,31 +576,31 @@ function amapress_extern_user_inscription_shortcode( $atts, $content = null, $ta
 		$url        = add_query_arg( 'key', $key, get_permalink() );
 		if ( empty( $_REQUEST['key'] ) ) {
 			if ( empty( $key ) ) {
-				$ret .= amapress_get_panel_start( 'Configuration' );
-				$ret .= '<div style="color:red">' . sprintf( 'Ajoutez la clé suivante à votre shortcode : %s<br/>De la forme : [%s key=%s]', $sample_key, $tag, $sample_key ) . '</div>';
+				$ret .= amapress_get_panel_start( __( 'Configuration', 'amapress' ) );
+				$ret .= '<div style="color:red">' . sprintf( __( 'Ajoutez la clé suivante à votre shortcode : %s<br/>De la forme : [%s key=%s]', 'amapress' ), $sample_key, $tag, $sample_key ) . '</div>';
 			} else {
-				$ret .= '<div class="alert alert-info">' . sprintf( 'Pour donner accès à cette page d\'inscription à des amapiens externes, veuillez leur envoyer le lien suivant : 
+				$ret .= '<div class="alert alert-info">' . sprintf( __( 'Pour donner accès à cette page d\'inscription à des amapiens externes, veuillez leur envoyer le lien suivant : 
 <pre>%s</pre>
 Pour y accéder cliquez <a href="%s">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
 %s
 Vous pouvez également utiliser l\'un des QRCode suivants : 
 <div>%s%s%s</div><br/>
-<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription comme amapien externe sans être connecté sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong>', $url, $url, ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ) ) . '</div>';
+<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription comme amapien externe sans être connecté sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong>', 'amapress' ), $url, $url, ! empty( $atts['shorturl'] ) ? __( 'Lien court sauvegardé : <code>', 'amapress' ) . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ) ) . '</div>';
 				$ret .= amapress_get_panel_end();
 			}
 		} else {
-			$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . 'Afficher les instructions d\'accès à cette page.' . '</a></div>';
+			$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . __( 'Afficher les instructions d\'accès à cette page.', 'amapress' ) . '</a></div>';
 		}
 	}
 	if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 		if ( empty( $key ) && amapress_can_access_admin() ) {
-			$ret .= 'Une fois le shortcode configuré : seuls les personnes dirigées depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.';
+			$ret .= __( 'Une fois le shortcode configuré : seuls les personnes dirigées depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.', 'amapress' );
 			$ret .= $content;
 
 			return $ret;
 		} elseif ( ! amapress_is_user_logged_in() ) {
-			$ret .= '<div class="alert alert-danger">' . 'Vous êtes dans un espace sécurisé. Accès interdit' . '</div>';
+			$ret .= '<div class="alert alert-danger">' . __( 'Vous êtes dans un espace sécurisé. Accès interdit', 'amapress' ) . '</div>';
 			$ret .= $content;
 
 			return $ret;
@@ -615,26 +615,26 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
   <input type="hidden" name="post-id" value="' . esc_attr( $current_post ? $current_post->ID : 0 ) . '" />
   <input type="hidden" name="group" value="' . esc_attr( $atts['group'] ) . '" />
   <div class="form-group">
-    <label for="email"><strong>*' . 'Email:' . '</strong></label>
+    <label for="email"><strong>*' . __( 'Email:', 'amapress' ) . '</strong></label>
     <input type="email" class="form-control required" id="email" name="email">
   </div>
   <div class="form-group">
-    <label for="first_name">' . 'Prénom:' . '</label>
+    <label for="first_name">' . __( 'Prénom:', 'amapress' ) . '</label>
     <input type="text" class="form-control required" id="first_name" name="first_name">
   </div>
   <div class="form-group">
-    <label for="last_name">' . 'Nom:' . '</label>
+    <label for="last_name">' . __( 'Nom:', 'amapress' ) . '</label>
     <input type="text" class="form-control required" id="last_name" name="last_name">
   </div>
   <div class="form-group">
-    <label for="phone"><em>' . 'Téléphone' . '</em>:</label>
+    <label for="phone"><em>' . __( 'Téléphone', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control" id="phone" name="phone">
   </div>
   <div class="form-group">
-    <label for="address"><em>' . 'Adresse' . '</em>:</label>
+    <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control" id="address" name="address">
   </div>
-  <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . 'S\'inscrire' . '</button>
+  <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'S\'inscrire', 'amapress' ) . '</button>
 </form>';
 
 	return $ret;

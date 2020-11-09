@@ -20,7 +20,7 @@ function amapress_get_custom_content_recette( $content ) {
 	}
 
 
-	echo '<h3>' . 'Produits' . '</h3>';
+	echo '<h3>' . __( 'Produits', 'amapress' ) . '</h3>';
 	echo amapress_produits_shortcode(
 		[ 'recette' => $recette_id ]
 	);

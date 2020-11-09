@@ -16,8 +16,8 @@ function amapress_register_entities_page( $entities ) {
 //            'logged_only' => array(
 //                'name' => amapress__('Amapiens seulement'),
 //                'type' => 'checkbox',
-//                'group' => 'Amapress Page Protection',
-//                'desc' => 'Amapiens seulement',
+//                'group' => __('Amapress Page Protection', 'amapress'),
+//                'desc' => __('Amapiens seulement', 'amapress'),
 //            ),
 		),
 	);

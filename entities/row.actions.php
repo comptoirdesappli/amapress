@@ -25,13 +25,13 @@ function amapress_get_row_action_href( $action, $id, $other_args = [] ) {
 function amapress_get_row_action_html( $action, $id, $row_action_config ) {
 	$label = $row_action_config['label'];
 
-	return sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s"%5$s>%2$s</a>',
+	return sprintf( __( '<a href="%1$s" class="%3$s" aria-label="%4$s"%5$s>%2$s</a>', 'amapress' ),
 		esc_url( amapress_get_row_action_href( $action, $id ) ),
 		esc_html( $row_action_config['label'] ),
 		esc_attr( $action ),
 		esc_attr( $label ),
 		( ! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' ) .
-		( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( esc_js( sprintf( 'Êtes-vous sur de vouloir : %s ?', $label ) ) ) . '\');"' : '' ) );
+		( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( esc_js( sprintf( __( 'Êtes-vous sur de vouloir : %s ?', 'amapress' ), $label ) ) ) . '\');"' : '' ) );
 }
 
 add_filter( 'user_row_actions', 'amapress_row_actions_registration', 10, 2 );
@@ -84,13 +84,13 @@ function amapress_row_actions_registration( $actions, $post_or_user, $type = 'li
 					} else {
 						$href = str_replace( '%id%', $post_or_user->ID, $href );
 					}
-					$actions[ $row_action ] = sprintf( '<a href="%1$s" class="%3$s" aria-label="%4$s"%5$s>%2$s</a>',
+					$actions[ $row_action ] = sprintf( __( '<a href="%1$s" class="%3$s" aria-label="%4$s"%5$s>%2$s</a>', 'amapress' ),
 						$href,
 						esc_html( $label ),
 						esc_attr( $row_action ),
 						esc_attr( $label ),
 						( ! empty( $row_action_config['target'] ) ? ' target="' . $row_action_config['target'] . '"' : '' ) .
-						( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( esc_js( sprintf( 'Êtes-vous sur de vouloir : %s ?', $label ) ) ) . '\');"' : '' ) );
+						( ! empty( $row_action_config['confirm'] ) ? ' onclick="return confirm(\'' . esc_attr( esc_js( sprintf( __( 'Êtes-vous sur de vouloir : %s ?', 'amapress' ), $label ) ) ) . '\');"' : '' ) );
 				} else {
 					$actions[ $row_action ] = amapress_get_row_action_html( $row_action, $post_or_user->ID, $row_action_config );
 				}
@@ -137,7 +137,7 @@ function amapress_add_row_actions_to_post_editor( WP_Post $post ) {
 	if ( ! empty( $actions ) ) {
 		$actions   = implode( ', ', $actions );
 		$post_type = amapress_simplify_post_type( $post->post_type );
-		$label     = apply_filters( "amapress_row_actions_label_{$post_type}", 'Actions possibles : ', $post );
+		$label     = apply_filters( "amapress_row_actions_label_{$post_type}", __( 'Actions possibles : ', 'amapress' ), $post );
 		echo "<p>$label $actions</p>";
 	}
 }
@@ -148,7 +148,7 @@ function amapress_add_row_actions_to_user_editor( WP_User $user ) {
 	if ( ! empty( $actions ) ) {
 		$actions = implode( ', ', $actions );
 		echo '<tr class="row-action-wrap"><th scope="row"><label>';
-		echo 'Actions possibles';
+		echo __( 'Actions possibles', 'amapress' );
 		echo '</label></th><td>';
 		echo $actions;
 		echo '</td></tr>';

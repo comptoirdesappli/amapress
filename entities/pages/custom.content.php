@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ////    if (trim(wp_strip_all_tags($produits_content, true)) != '') {
 ////        $interm = '';
 //////        if (Amapress::isIntermittenceEnabled() && Amapress::userCanRegister()) {
-//////            $interm = amapress_get_button('Devenir intermittent', Amapress::getMesInfosSublink('adhesions/intermittence/inscription'));
+//////            $interm = amapress_get_button(__('Devenir intermittent', 'amapress'), Amapress::getMesInfosSublink('adhesions/intermittence/inscription'));
 //////        }
 ////        if (Amapress::isIntermittenceEnabled()) {
 ////            $interm = do_shortcode('[intermittents-inscription view=me show_info=no]');

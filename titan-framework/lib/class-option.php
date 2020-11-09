@@ -228,9 +228,16 @@ class TitanFrameworkOption {
 	}
 
 	public static function echoFullEditLinkAndWarning(
-		$link_title = 'Passer en mode Édition avancée',
-		$state_title = 'Mode Édition avancée'
+		$link_title = null,
+		$state_title = null
 	) {
+		if ( empty( $link_title ) ) {
+			$link_title = __( 'Passer en mode Édition avancée', 'amapress' );
+		}
+		if ( empty( $state_title ) ) {
+			$link_title = __( 'Mode Édition avancée', 'amapress' );
+		}
+
 		if ( ! isset( $_REQUEST['full_edit'] ) ) {
 			if ( ! empty( $link_title ) ) {
 				echo '<p><a href="' . esc_attr( add_query_arg( 'full_edit', 'true' ) ) . '">' . $link_title . '</a></p>';

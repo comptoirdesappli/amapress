@@ -307,7 +307,7 @@ class AmapressDistributions {
 					}
 					if ( $cnt == 0 ) {
 						$my_post = array(
-							'post_title'   => sprintf( 'Distribution de %s du %02d-%02d-%04d à %s',
+							'post_title'   => sprintf( __( 'Distribution de %s du %02d-%02d-%04d à %s', 'amapress' ),
 								$contrat_model->getTitle(),
 								date( 'd', $date ), date( 'm', $date ), date( 'Y', $date ),
 								$lieu->getTitle() ),

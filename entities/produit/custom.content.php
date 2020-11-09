@@ -14,14 +14,14 @@ function amapress_get_custom_content_produit( $content ) {
 	$prod = new AmapressProduit( get_the_ID() );
 	ob_start();
 	$producteurs = $prod->getProducteurs();
-	echo '<h3>' . _n( 'Producteur', 'Producteurs', count( $producteurs ), 'amapress' ) . '</h3>';
+	echo '<h3>' . _n( __( 'Producteur', 'amapress' ), __( 'Producteurs', 'amapress' ), count( $producteurs ), 'amapress' ) . '</h3>';
 	foreach ( $producteurs as $producteur ) {
 		if ( $producteur && $producteur->getPost() ) {
 			echo '<p><a href="' . $producteur->getPermalink() . '">' . $producteur->getTitle() . '</a></p>';
 		}
 	}
 
-	echo '<h3>' . 'Recettes' . '</h3>';
+	echo '<h3>' . __( 'Recettes', 'amapress' ) . '</h3>';
 	echo get_amapress_recettes_gallery(
 		[
 			'produits' => $prod->ID,

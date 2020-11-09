@@ -22,7 +22,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 		'show_admin_bar_new'      => false,
 		'row_actions'             => array(
 			'relocate' => array(
-				'label'     => 'Géolocaliser',
+				'label'     => __( 'Géolocaliser', 'amapress' ),
 				'condition' => function ( $user_id ) {
 					$lieu = AmapressLieu_distribution::getBy( $user_id );
 
@@ -38,10 +38,10 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 			$lieu = AmapressLieu_distribution::getBy( $post, true );
 			if ( $lieu ) {
 				if ( ! $lieu->isAdresseLocalized() ) {
-					amapress_add_admin_notice( 'Adresse du lieu non localisée', 'warning', false );
+					amapress_add_admin_notice( __( 'Adresse du lieu non localisée', 'amapress' ), 'warning', false );
 				}
 				if ( ! empty( $lieu->getAdresseAcces() ) && ! $lieu->isAdresseAccesLocalized() ) {
-					amapress_add_admin_notice( 'Adresse d\'accès du lieu non localisée', 'warning', false );
+					amapress_add_admin_notice( __( 'Adresse d\'accès du lieu non localisée', 'amapress' ), 'warning', false );
 				}
 			}
 		},
@@ -50,42 +50,42 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'name'       => __( 'Nom court', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
-				'desc'       => 'Nom court',
-				'group'      => 'Information',
+				'desc'       => __( 'Nom court', 'amapress' ),
+				'group'      => __( 'Information', 'amapress' ),
 				'searchable' => true,
 			),
 			'principal'           => array(
 				'name'    => __( 'Lieu principal', 'amapress' ),
-				'group'   => 'Information',
+				'group'   => __( 'Information', 'amapress' ),
 				'type'    => 'checkbox',
 				'default' => true,
 			),
 //            'photo' => array(
 //                'name' => amapress__('Photo'),
 //                'type' => 'upload',
-//                'group' => 'Information',
-//                'desc' => 'Photo',
+//                'group' => __('Information', 'amapress'),
+//                'desc' => __('Photo', 'amapress'),
 //            ),
 			'contact_externe'     => array(
 				'name'       => __( 'Contact externe', 'amapress' ),
 				'type'       => 'editor',
-				'desc'       => 'Contact externe',
-				'group'      => 'Gestion',
+				'desc'       => __( 'Contact externe', 'amapress' ),
+				'group'      => __( 'Gestion', 'amapress' ),
 				'searchable' => true,
 			),
 			'referent'            => array(
 				'name'       => __( 'Référent', 'amapress' ),
 				'type'       => 'select-users',
-				'desc'       => 'Référent',
-				'group'      => 'Gestion',
+				'desc'       => __( 'Référent', 'amapress' ),
+				'group'      => __( 'Gestion', 'amapress' ),
 				'searchable' => true,
 			),
 			'nb_responsables'     => array(
 				'name'     => __( 'Nombre de responsables de distributions', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
-				'desc'     => 'Nombre de responsables de distributions',
-				'group'    => 'Gestion',
+				'desc'     => __( 'Nombre de responsables de distributions', 'amapress' ),
+				'group'    => __( 'Gestion', 'amapress' ),
 			),
 			'heure_debut'         => array(
 				'name'     => __( 'Heure début', 'amapress' ),
@@ -93,8 +93,8 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'date'     => false,
 				'time'     => true,
 				'required' => true,
-				'desc'     => 'Heure début',
-				'group'    => 'Horaires',
+				'desc'     => __( 'Heure début', 'amapress' ),
+				'group'    => __( 'Horaires', 'amapress' ),
 			),
 			'heure_fin'           => array(
 				'name'     => __( 'Heure fin', 'amapress' ),
@@ -102,30 +102,30 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'date'     => false,
 				'time'     => true,
 				'required' => true,
-				'desc'     => 'Heure fin',
-				'group'    => 'Horaires',
+				'desc'     => __( 'Heure fin', 'amapress' ),
+				'group'    => __( 'Horaires', 'amapress' ),
 			),
 			'adresse'             => array(
 				'name'       => __( 'Adresse', 'amapress' ),
 				'type'       => 'textarea',
-				'desc'       => 'Adresse',
+				'desc'       => __( 'Adresse', 'amapress' ),
 				'required'   => true,
-//                'save' => array('AmapressUsers', 'resolveLieuAddress'),
-				'group'      => 'Adresse',
+//                'save' => array(__('AmapressUsers', 'amapress'), 'resolveLieuAddress'),
+				'group'      => __( 'Adresse', 'amapress' ),
 				'searchable' => true,
 			),
 			'code_postal'         => array(
 				'name'       => __( 'Code postal', 'amapress' ),
 				'type'       => 'text',
-				'desc'       => 'Code postal',
-				'group'      => 'Adresse',
+				'desc'       => __( 'Code postal', 'amapress' ),
+				'group'      => __( 'Adresse', 'amapress' ),
 				'searchable' => true,
 			),
 			'ville'               => array(
 				'name'       => __( 'Ville', 'amapress' ),
 				'type'       => 'text',
-				'desc'       => 'Ville',
-				'group'      => 'Adresse',
+				'desc'       => __( 'Ville', 'amapress' ),
+				'group'      => __( 'Adresse', 'amapress' ),
 				'searchable' => true,
 			),
 			'adresse_localized'   => array(
@@ -137,30 +137,30 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'address_field_name'     => 'amapress_lieu_distribution_adresse',
 				'postal_code_field_name' => 'amapress_lieu_distribution_code_postal',
 				'town_field_name'        => 'amapress_lieu_distribution_ville',
-				'group'                  => 'Adresse',
+				'group'                  => __( 'Adresse', 'amapress' ),
 				'searchable'             => true,
 			),
 			'acces'               => array(
 				'name'       => __( 'Accès', 'amapress' ),
 				'type'       => 'editor',
 				'required'   => false,
-				'desc'       => 'Accès',
-				'group'      => 'Adresse',
+				'desc'       => __( 'Accès', 'amapress' ),
+				'group'      => __( 'Adresse', 'amapress' ),
 				'searchable' => true,
 			),
 			'adresse_acces'       => array(
 				'name'         => __( 'Adresse d\'accès', 'amapress' ),
 				'type'         => 'address',
 				'use_as_field' => true,
-				'group'        => 'Adresse',
+				'group'        => __( 'Adresse', 'amapress' ),
 				'searchable'   => true,
 			),
 			'instructions_privee' => array(
 				'name'       => __( 'Instructions privées', 'amapress' ),
 				'type'       => 'editor',
 				'required'   => false,
-				'desc'       => 'Instructions privées',
-				'group'      => 'Gestion',
+				'desc'       => __( 'Instructions privées', 'amapress' ),
+				'group'      => __( 'Gestion', 'amapress' ),
 				'searchable' => true,
 			),
 		),

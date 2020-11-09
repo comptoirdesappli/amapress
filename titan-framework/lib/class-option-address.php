@@ -87,7 +87,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			);
 		} else if ( 'here' == self::$geoprovider ) {
 			if ( empty( self::$here_map_app_code ) || empty( self::$here_map_app_id ) ) {
-				return new WP_Error( 'App Id et App Code Here Maps non renseignés' );
+				return new WP_Error( __( 'App Id et App Code Here Maps non renseignés', 'amapress' ) );
 			}
 			$string      = urlencode( $string );
 			$app_id      = urlencode( self::$here_map_app_id );
@@ -212,9 +212,9 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 			$lng        = call_user_func( $get_fn, $postID, "{$id}_long", true );
 			$coords_gps = "lat.=$lat;lng.=$lng";
 			if ( 'google' != self::$geoprovider ) {
-				echo '<p class="' . $id . ' localized-address">' . 'Localisé ' . '<a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng . '">' . 'Voir sur Open Street Map' . '</a></p>';
+				echo '<p class="' . $id . ' localized-address">' . __( 'Localisé ', 'amapress' ) . '<a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng . '">' . __( 'Voir sur Open Street Map', 'amapress' ) . '</a></p>';
 			} else {
-				echo '<p class="' . $id . ' localized-address">' . 'Localisé ' . '<a target="_blank" href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">' . 'Voir sur Google Maps' . '</a></p>';
+				echo '<p class="' . $id . ' localized-address">' . __( 'Localisé ', 'amapress' ) . '<a target="_blank" href="http://maps.google.com/maps?q=' . $lat . ',' . $lng . '">' . __( 'Voir sur Google Maps', 'amapress' ) . '</a></p>';
 			}
 		} else {
 			$loc_err = call_user_func( $get_fn, $postID, "{$id}_loc_err", true );
@@ -242,13 +242,13 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 					if ( ! empty( $full_address ) ) {
 						$help = '<br/><a target="_blank" href="' . esc_url(
 								'https://www.openstreetmap.org/search?query=' . $full_address
-							) . '">' . 'Rechercher l\'adresse sur OpenStreetMap</a> afin d\'en trouver la bonne forme (par exemple, sans précision du batiment, étage, ...)';
+							) . '">' . __( 'Rechercher l\'adresse sur OpenStreetMap</a> afin d\'en trouver la bonne forme (par exemple, sans précision du batiment, étage, ...)', 'amapress' );
 					}
 				}
 				if ( ! empty( $full_address ) ) {
-					echo '<p class=\'' . $id . ' unlocalized-address\'>' . 'Adresse non localisée' . $loc_err . $help . '</p>';
+					echo '<p class=\'' . $id . ' unlocalized-address\'>' . __( 'Adresse non localisée', 'amapress' ) . $loc_err . $help . '</p>';
 				} else {
-					echo '<p class=\'' . $id . '\'>' . 'Pas d\'adresse' . '</p>';
+					echo '<p class=\'' . $id . '\'>' . __( 'Pas d\'adresse', 'amapress' ) . '</p>';
 				}
 			}
 		}

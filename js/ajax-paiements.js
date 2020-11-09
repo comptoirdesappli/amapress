@@ -9,7 +9,7 @@ function amapress_paiement_status() {
         // We can also pass the url value separately from ajaxurl for front end AJAX implementations
         jQuery.post(update_paiement_status.ajax_url, data, function (response) {
             if (response == 'error') {
-                alert('Erreur');
+                alert('Error');
                 return;
             }
             paiement_status.replaceWith(response);

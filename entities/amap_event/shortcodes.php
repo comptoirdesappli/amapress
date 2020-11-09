@@ -25,8 +25,8 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 	$ret .= '<table class="table display responsive nowrap event-inscr-list">';
 	$ret .= '<thead>';
 	$ret .= '<tr>';
-	$ret .= '<th>' . 'Date' . '</th>';
-	$ret .= '<th>' . 'Participants' . '</th>';
+	$ret .= '<th>' . __( 'Date', 'amapress' ) . '</th>';
+	$ret .= '<th>' . __( 'Participants', 'amapress' ) . '</th>';
 	$ret .= '</tr>';
 	$ret .= '</thead>';
 
@@ -40,7 +40,7 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 		$ret .= '<th scope="row"><p class="inscr-list-date">' .
 		        esc_html( date_i18n( 'D j M Y', $event->getDate() ) ) .
 		        ( $event->hasDateFin() ? esc_html( ' - ' . date_i18n( 'D j M Y', $event->getDateFin() ) ) : '' ) .
-		        '</p><p class="inscr-list-title">' . esc_html( sprintf( '%s (%s)', $event->getTitle(), $event->getCategoriesDisplay() ) ) . '</p></th>';
+		        '</p><p class="inscr-list-title">' . esc_html( sprintf( __( '%s (%s)', 'amapress' ), $event->getTitle(), $event->getCategoriesDisplay() ) ) . '</p></th>';
 
 		$resps           = $event->getParticipants();
 		$can_unsubscribe = $event->canUnsubscribe();
@@ -49,13 +49,13 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 		$users = [ '' => '--Sélectionner un amapien--' ];
 		amapress_precache_all_users();
 		foreach ( get_users() as $user ) {
-			$users[ $user->ID ] = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+			$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 		}
 		$inscr_another = '';
 		if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
 			$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire cet amapien ?', 'amapress' ) . '" data-event="' . $event->ID . '">' . 'Inscrire' . '</button>
+<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire cet amapien ?', 'amapress' ) . '" data-event="' . $event->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
 		}
 
@@ -66,15 +66,15 @@ function amapress_inscription_amap_event_shortcode( $atts ) {
 			$is_resp = $is_resp || $resp->ID == amapress_current_user_id();
 			$ret     .= $resp->getDisplay( $atts );
 			if ( $resp->ID == amapress_current_user_id() && $can_unsubscribe ) {
-				$ret .= '<button type="button" class="btn btn-default event-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $event->ID . '">' . 'Me désinscrire' . '</button>';
+				$ret .= '<button type="button" class="btn btn-default event-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $event->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
 			}
 			$ret .= '</div>';
 		}
 		if ( ! $is_resp ) {
 			if ( $can_subscribe ) {
-				$ret .= '<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $event->ID . '">' . 'M\'inscrire' . '</button>';
+				$ret .= '<button type="button" class="btn btn-default event-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $event->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
 			} else {
-				$ret .= '<span class="event-inscr-closed">' . 'Inscriptions closes' . '</span>';
+				$ret .= '<span class="event-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
 			}
 		}
 		$ret .= $inscr_another;
@@ -94,17 +94,17 @@ add_action( 'wp_ajax_desinscrire_amap_event_action', function () {
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = ( amapress_current_user_id() == $user_id );
 	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
 	$event = new AmapressAmap_event( $event_id );
 	switch ( $event->desinscrireParticipant( $user_id ) ) {
 		case 'not_inscr':
-			echo '<p class="error">' . 'Non inscrit' . '</p>';
+			echo '<p class="error">' . __( 'Non inscrit', 'amapress' ) . '</p>';
 			break;
 		case true:
-			echo '<p class="success">' . 'Désinscription a bien été prise en compte' . '</p>';
+			echo '<p class="success">' . __( 'Désinscription a bien été prise en compte', 'amapress' ) . '</p>';
 			break;
 	}
 	die();
@@ -114,16 +114,16 @@ add_action( 'wp_ajax_inscrire_amap_event_action', function () {
 	$user_id    = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$is_current = ( amapress_current_user_id() == $user_id );
 	if ( ! $is_current && ! ( ! AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 	$event = new AmapressAmap_event( $event_id );
 	switch ( $event->inscrireParticipant( $user_id ) ) {
 		case 'already_in_list':
-			echo '<p class="error">' . 'Déjà inscrit' . '</p>';
+			echo '<p class="error">' . __( 'Déjà inscrit', 'amapress' ) . '</p>';
 			break;
 		case 'ok':
-			echo '<p class="success">' . 'L\'inscription a bien été prise en compte' . '</p>';
+			echo '<p class="success">' . __( 'L\'inscription a bien été prise en compte', 'amapress' ) . '</p>';
 			break;
 	}
 	die();

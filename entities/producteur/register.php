@@ -31,7 +31,7 @@ function amapress_register_entities_producteur( $entities ) {
 		'show_admin_bar_new'       => false,
 		'row_actions'              => array(
 			'relocate' => array(
-				'label'     => 'Géolocaliser',
+				'label'     => __( 'Géolocaliser', 'amapress' ),
 				'condition' => function ( $user_id ) {
 					$prod = AmapressProducteur::getBy( $user_id );
 
@@ -45,7 +45,7 @@ function amapress_register_entities_producteur( $entities ) {
 			'exp_csv' => true,
 		),
 		'groups'                   => array(
-			'Infos' => [
+			__( 'Infos', 'amapress' ) => [
 				'context' => 'side',
 			],
 		),
@@ -53,29 +53,29 @@ function amapress_register_entities_producteur( $entities ) {
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				$producteur = AmapressProducteur::getBy( $post );
 				if ( empty( $producteur->getUser() ) ) {
-					echo '<div class="notice notice-error"><p>' . 'Producteur invalide : pas d\'utilisateur associé' . '</p></div>';
+					echo '<div class="notice notice-error"><p>' . __( 'Producteur invalide : pas d\'utilisateur associé', 'amapress' ) . '</p></div>';
 				}
 				if ( ! $producteur->isAdresseExploitationLocalized() ) {
-					amapress_add_admin_notice( 'Adresse du producteur non localisée', 'warning', false );
+					amapress_add_admin_notice( __( 'Adresse du producteur non localisée', 'amapress' ), 'warning', false );
 				}
 				if ( from( $producteur->getContrats() )->any( function ( $contrat ) {
 					/** @var AmapressContrat $contrat */
 					return empty( $contrat->getAllReferentsIds() );
 				} ) ) {
-					echo '<div class="notice notice-error"><p>' . 'Producteur sans référent' . '</p></div>';
+					echo '<div class="notice notice-error"><p>' . __( 'Producteur sans référent', 'amapress' ) . '</p></div>';
 				}
 			}
 
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 
-			echo '<h2>' . 'Présentation du producteur <em>(Biographie, historique de la ferme...)</em>' . '</h2>';
+			echo '<h2>' . __( 'Présentation du producteur <em>(Biographie, historique de la ferme...)</em>', 'amapress' ) . '</h2>';
 		},
 		'fields'                   => array(
 			'nom_exploitation'     => array(
 				'name'       => __( 'Nom de l\'exploitation', 'amapress' ),
 				'type'       => 'text',
-				'desc'       => 'Nom de la ferme',
-				'group'      => '1/ Emplacement',
+				'desc'       => __( 'Nom de la ferme', 'amapress' ),
+				'group'      => __( '1/ Emplacement', 'amapress' ),
 				'searchable' => true,
 			),
 			'adresse_exploitation' => array(
@@ -83,22 +83,22 @@ function amapress_register_entities_producteur( $entities ) {
 				'type'          => 'address',
 				'use_as_field'  => true,
 				'use_enter_gps' => true,
-				'desc'          => 'Adresse de la ferme',
-				'group'         => '1/ Emplacement',
+				'desc'          => __( 'Adresse de la ferme', 'amapress' ),
+				'group'         => __( '1/ Emplacement', 'amapress' ),
 				'searchable'    => true,
 			),
 			'acces'                => array(
 				'name'       => __( 'Accès', 'amapress' ),
 				'type'       => 'editor',
-				'group'      => '1/ Emplacement',
-				'desc'       => 'Accès',
+				'group'      => __( '1/ Emplacement', 'amapress' ),
+				'desc'       => __( 'Accès', 'amapress' ),
 				'searchable' => true,
 			),
 			'user'                 => array(
 				'name'       => __( 'Compte utilisateur du producteur', 'amapress' ),
 				'type'       => 'select-users',
 				'role'       => 'producteur',
-				'group'      => 'Infos',
+				'group'      => __( 'Infos', 'amapress' ),
 				'readonly'   => function ( $post_id ) {
 					if ( TitanFrameworkOption::isOnEditScreen() ) {
 						return true;
@@ -111,15 +111,15 @@ function amapress_register_entities_producteur( $entities ) {
 					return false;
 				},
 				'required'   => true,
-				'desc'       => sprintf( 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', admin_url( 'user-new.php' ) ),
+				'desc'       => sprintf( __( 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) ),
 				'searchable' => true,
 			),
 			'referent'             => array(
 				'name'         => __( 'Référent', 'amapress' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
-				'group'        => '2/ Référents',
-				'desc'         => 'Référent producteur pour tous les lieux',
+				'group'        => __( '2/ Référents', 'amapress' ),
+				'desc'         => __( 'Référent producteur pour tous les lieux', 'amapress' ),
 				'searchable'   => true,
 				'autocomplete' => true,
 				'orderby'      => 'display_name',
@@ -130,8 +130,8 @@ function amapress_register_entities_producteur( $entities ) {
 				'name'         => __( 'Référent 2', 'amapress' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
-				'group'        => '2/ Référents',
-				'desc'         => 'Deuxième référent producteur pour tous les lieux',
+				'group'        => __( '2/ Référents', 'amapress' ),
+				'desc'         => __( 'Deuxième référent producteur pour tous les lieux', 'amapress' ),
 				'searchable'   => true,
 				'autocomplete' => true,
 				'readonly'     => 'amapress_is_referents_fields_readonly',
@@ -142,8 +142,8 @@ function amapress_register_entities_producteur( $entities ) {
 				'name'         => __( 'Référent 3', 'amapress' ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
-				'group'        => '2/ Référents',
-				'desc'         => 'Troisième référent producteur pour tous les lieux',
+				'group'        => __( '2/ Référents', 'amapress' ),
+				'desc'         => __( 'Troisième référent producteur pour tous les lieux', 'amapress' ),
 				'searchable'   => true,
 				'autocomplete' => true,
 				'readonly'     => 'amapress_is_referents_fields_readonly',
@@ -153,7 +153,7 @@ function amapress_register_entities_producteur( $entities ) {
 			'presentations'        => array(
 				'name'            => __( 'Productions', 'amapress' ),
 				'show_column'     => true,
-				'group'           => '3/ Présentations et contrats',
+				'group'           => __( '3/ Présentations et contrats', 'amapress' ),
 				'include_columns' => array(
 					'title',
 				),
@@ -164,7 +164,7 @@ function amapress_register_entities_producteur( $entities ) {
 				'name'               => __( 'Contrats', 'amapress' ),
 				'show_column'        => true,
 				'show_column_values' => true,
-				'group'              => '3/ Présentations et contrats',
+				'group'              => __( '3/ Présentations et contrats', 'amapress' ),
 				'include_columns'    => array(
 					'title',
 					'amapress_contrat_instance_name',
@@ -190,11 +190,11 @@ function amapress_producteur_fields( $fields ) {
 				'name'         => sprintf( __( 'Référent %s', 'amapress' ), $lieu->getShortName() ),
 				'type'         => 'select-users',
 				'role'         => amapress_can_be_referent_roles(),
-				'group'        => '2/ Référents',
+				'group'        => __( '2/ Référents', 'amapress' ),
 				'searchable'   => true,
 				'autocomplete' => true,
 				'readonly'     => 'amapress_is_referents_fields_readonly',
-				'desc'         => sprintf( 'Référent producteur spécifique à %s', $lieu->getTitle() ),
+				'desc'         => sprintf( __( 'Référent producteur spécifique à %s', 'amapress' ), $lieu->getTitle() ),
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			);
@@ -263,7 +263,7 @@ function amapress_producteurs_user_mails( $display_name, WP_User $user, TitanFra
 	if ( isset( $option->owner->settings['post_type'] ) && in_array( AmapressProducteur::INTERNAL_POST_TYPE, $option->owner->settings['post_type'] ) ) {
 		$amapien = AmapressUser::getBy( $user->ID );
 
-		return sprintf( '%s (%s)', $user->display_name, implode( ',', $amapien->getAllEmails() ) );
+		return sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, implode( ',', $amapien->getAllEmails() ) );
 	}
 
 	return $display_name;

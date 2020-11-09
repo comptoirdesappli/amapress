@@ -73,9 +73,9 @@ class AmapressDistribution extends Amapress_EventBase {
 		$wpdb->query( 'COMMIT' );
 
 		if ( $count > 0 ) {
-			return "$count distributions orphelines nettoyées";
+			return sprintf( __( '%d distributions orphelines nettoyées', 'amapress' ), $count );
 		} else {
-			return "Aucun distribution orpheline";
+			return __( 'Aucun distribution orpheline', 'amapress' );
 		}
 	}
 
@@ -190,17 +190,17 @@ class AmapressDistribution extends Amapress_EventBase {
 		$comment = null
 	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! $allow_not_member && ! amapress_can_access_admin() ) {
 			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
-				wp_die( 'Vous ne faites pas partie de cette distribution.' );
+				wp_die( __( 'Vous ne faites pas partie de cette distribution.', 'amapress' ) );
 			}
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$gardiens = $this->getGardiensIds();
@@ -226,11 +226,11 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	public function desinscrireGardien( $user_id, $allow_anonymous = false ) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$gardiens = $this->getGardiensIds();
@@ -291,17 +291,17 @@ class AmapressDistribution extends Amapress_EventBase {
 		$allow_anonymous = false, $allow_not_member = false
 	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! $allow_not_member && ! amapress_can_access_admin() ) {
 			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
-				wp_die( 'Vous ne faites pas partie de cette distribution.' );
+				wp_die( __( 'Vous ne faites pas partie de cette distribution.', 'amapress' ) );
 			}
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		if ( empty( $user_id ) ) {
@@ -419,10 +419,10 @@ class AmapressDistribution extends Amapress_EventBase {
 		if ( $bcc ) {
 			$site_email = Amapress::getOption( 'email_from_mail' );
 
-			return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=' . 'Distribution du ' .
+			return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=' . __( 'Distribution du ', 'amapress' ) .
 			       date_i18n( 'D j F Y' );
 		} else {
-			return 'mailto:' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=' . 'Distribution du ' .
+			return 'mailto:' . rawurlencode( implode( ',', $resp_mails ) ) . '&subject=' . __( 'Distribution du ', 'amapress' ) .
 			       date_i18n( 'D j F Y' );
 		}
 	}
@@ -469,7 +469,7 @@ class AmapressDistribution extends Amapress_EventBase {
 
 		$site_email = Amapress::getOption( 'email_from_mail' );
 
-		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', array_unique( $mails ) ) ) . '&subject=' . 'Distribution du ' .
+		return 'mailto:' . rawurlencode( $site_email ) . '?bcc=' . rawurlencode( implode( ',', array_unique( $mails ) ) ) . '&subject=' . __( 'Distribution du ', 'amapress' ) .
 		       date_i18n( 'D j F Y' );
 	}
 
@@ -691,17 +691,17 @@ class AmapressDistribution extends Amapress_EventBase {
 		$allow_anonymous = false, $allow_not_member = false
 	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! $allow_not_member && ! amapress_can_access_admin() ) {
 			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
-				wp_die( 'Vous ne faites pas partie de cette distribution.' );
+				wp_die( __( 'Vous ne faites pas partie de cette distribution.', 'amapress' ) );
 			}
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$responsables        = $this->getResponsablesIds();
@@ -771,11 +771,11 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	public function desinscrireResponsable( $user_id, $allow_anonymous = false ) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
-			wp_die( 'Clos et passé' );
+			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
 		$responsables = $this->getResponsablesIds();
@@ -1039,11 +1039,11 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date'     => $dist_date_start,
 					'date_end' => $dist_date_end,
 					'type'     => 'distribution',
-					'category' => 'Distributions',
+					'category' => __( 'Distributions', 'amapress' ),
 					'priority' => 30,
 					'lieu'     => $lieu,
 					'label'    => $contrat->getModelTitle(),
-					'alt'      => sprintf( 'Distribution de %s à %s', $contrat->getModelTitle(), $lieu->getShortName() ),
+					'alt'      => sprintf( __( 'Distribution de %s à %s', 'amapress' ), $contrat->getModelTitle(), $lieu->getShortName() ),
 					'class'    => "agenda-distrib agenda-contrat-{$contrat->getModel()->ID}",
 					'icon'     => Amapress::coalesce_icons( amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', null ), Amapress::getOption( "contrat_{$contrat->getModel()->ID}_icon" ), amapress_get_avatar_url( $contrat->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 					'href'     => $this->getPermalink()
@@ -1067,14 +1067,14 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date'        => $dist_date_start,
 					'date_end'    => $dist_date_end,
 					'class'       => 'agenda-distrib agenda-resp-distrib',
-					'category'    => 'Responsable de distribution',
+					'category'    => __( 'Responsable de distribution', 'amapress' ),
 					'lieu'        => $lieu,
 					'type'        => 'resp-distribution',
 					'priority'    => 45,
 					'inscr_types' => [ 'distrib' ],
-					'label'       => 'Responsable de distribution',
+					'label'       => __( 'Responsable de distribution', 'amapress' ),
 					'icon'        => 'dashicons dashicons-universal-access-alt',
-					'alt'         => 'Vous êtes responsable de distribution à ' . $lieu->getShortName(),
+					'alt'         => __( 'Vous êtes responsable de distribution à ', 'amapress' ) . $lieu->getShortName(),
 					'href'        => $this->getPermalink()
 				) );
 			}
@@ -1085,14 +1085,14 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date'        => $current_user_slot['date'],
 					'date_end'    => $current_user_slot['date_end'],
 					'class'       => 'agenda-distrib agenda-creneau-panier',
-					'category'    => 'Créneau de récupération',
+					'category'    => __( 'Créneau de récupération', 'amapress' ),
 					'lieu'        => $lieu,
 					'type'        => 'creneau-panier',
 					'priority'    => 45,
 					'inscr_types' => [ 'distrib-slot', 'distrib-admin-slot' ],
-					'label'       => 'Créneau de récupération',
+					'label'       => __( 'Créneau de récupération', 'amapress' ),
 					'icon'        => 'dashicons dashicons-clock',
-					'alt'         => 'Créneau pour récupérer vos paniers : ' . $current_user_slot['display'],
+					'alt'         => __( 'Créneau pour récupérer vos paniers : ', 'amapress' ) . $current_user_slot['display'],
 					'href'        => $this->getPermalink()
 				) );
 			}
@@ -1103,14 +1103,14 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date'        => $dist_date_start,
 					'date_end'    => $dist_date_end,
 					'class'       => 'agenda-distrib agenda-gardien-panier',
-					'category'    => 'Gardien de panier',
+					'category'    => __( 'Gardien de panier', 'amapress' ),
 					'lieu'        => $lieu,
 					'type'        => 'gardien-panier',
 					'priority'    => 45,
 					'inscr_types' => [ 'distrib-gardien' ],
-					'label'       => 'Gardien de panier',
+					'label'       => __( 'Gardien de panier', 'amapress' ),
 					'icon'        => 'dashicons dashicons-portfolio',
-					'alt'         => sprintf( 'Vous êtes gardien de panier à %s', $lieu->getShortName() ),
+					'alt'         => sprintf( __( 'Vous êtes gardien de panier à %s', 'amapress' ), $lieu->getShortName() ),
 					'href'        => $this->getPermalink()
 				) );
 			}
@@ -1130,12 +1130,12 @@ class AmapressDistribution extends Amapress_EventBase {
 						'date_end' => $dist_date_end,
 						'class'    => "agenda-distrib agenda-contrat-{$adhesion->getContrat_instance()->getModelTitle()}",
 						'type'     => 'distribution',
-						'category' => 'Distributions',
+						'category' => __( 'Distributions', 'amapress' ),
 						'priority' => 30,
 						'lieu'     => $lieu,
 						'label'    => $adhesion->getContrat_instance()->getModelTitle(),
 						'icon'     => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$adhesion->getContrat_instance()->getModel()->ID}_icon" ), amapress_get_avatar_url( $adhesion->getContrat_instance()->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
-						'alt'      => sprintf( 'Distribution de %s à %s', $adhesion->getContrat_instance()->getModelTitle(), $lieu->getShortName() ),
+						'alt'      => sprintf( __( 'Distribution de %s à %s', 'amapress' ), $adhesion->getContrat_instance()->getModelTitle(), $lieu->getShortName() ),
 						'href'     => $this->getPermalink()
 					) );
 				}
@@ -1180,7 +1180,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date_end' => $date_end,
 					'class'    => "agenda-inter agenda-inter-my-to-exchange",
 					'type'     => 'intermittence',
-					'category' => 'Paniers à échanger',
+					'category' => __( 'Paniers à échanger', 'amapress' ),
 					'priority' => 10,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['me_to_exchange'] . '</span> à échanger',
@@ -1196,7 +1196,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date_end'    => $date_end,
 					'class'       => "agenda-inter agenda-inter-exchanged",
 					'type'        => 'intermittence',
-					'category'    => 'Paniers échangé',
+					'category'    => __( 'Paniers échangé', 'amapress' ),
 					'priority'    => 5,
 					'inscr_types' => [ 'intermittence' ],
 					'lieu'        => $this->getRealLieu(),
@@ -1214,7 +1214,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date_end'    => $date_end,
 					'class'       => "agenda-inter agenda-inter-panier-recup",
 					'type'        => 'inter-recup',
-					'category'    => 'Paniers à récupérer',
+					'category'    => __( 'Paniers à récupérer', 'amapress' ),
 					'priority'    => 15,
 					'inscr_types' => [ 'intermittence' ],
 					'lieu'        => $this->getRealLieu(),
@@ -1234,7 +1234,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'date_end' => $date_end,
 					'class'    => "agenda-inter agenda-inter-to-exchange",
 					'type'     => 'intermittence',
-					'category' => 'Paniers dispo',
+					'category' => __( 'Paniers dispo', 'amapress' ),
 					'priority' => 10,
 					'lieu'     => $this->getRealLieu(),
 					'label'    => '<span class="badge">' . $status_count['other_to_exchange'] . '</span>' . __( ' à échanger', 'amapress' ),
@@ -1261,43 +1261,43 @@ class AmapressDistribution extends Amapress_EventBase {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
 				'lien-liste-paniers'                => [
-					'desc' => 'Lien vers la page "Paniers disponibles"',
+					'desc' => __( 'Lien vers la page "Paniers disponibles"', 'amapress' ),
 					'func' => function ( AmapressDistribution $dist ) {
 						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
 				'liste-paniers'                     => [
-					'desc' => 'Lien vers la page "Paniers disponibles"',
+					'desc' => __( 'Lien vers la page "Paniers disponibles"', 'amapress' ),
 					'func' => function ( AmapressDistribution $dist ) {
 						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
 				'mes-echanges'                      => [
-					'desc' => 'Lien vers la page "Mes paniers échangés"',
+					'desc' => __( 'Lien vers la page "Mes paniers échangés"', 'amapress' ),
 					'func' => function ( AmapressDistribution $dist ) {
 						return Amapress::makeLink( Amapress::getPageLink( 'mes-paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
 				'lien_desinscription_intermittent'  => [
-					'desc' => 'Lien vers la page de désinscription de la liste des intermittents',
+					'desc' => __( 'Lien vers la page de désinscription de la liste des intermittents', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( amapress_intermittence_desinscription_link() );
 					}
 				],
 				'lien_liste_emargement'             => [
-					'desc' => 'Lien vers la liste d\'émargement de cette distribution',
+					'desc' => __( 'Lien vers la liste d\'émargement de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getListeEmargementHref() );
 					}
 				],
 				'lieu'                              => [
-					'desc' => 'Nom du lieu de cette distribution',
+					'desc' => __( 'Nom du lieu de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return $distrib->getRealLieu()->getTitle();
 					}
 				],
 				'lieu_instruction'                  => [
-					'desc' => 'Instructions du lieu de cette distribution',
+					'desc' => __( 'Instructions du lieu de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();
 						$instructions = str_replace( '[liste-emargement-button]', Amapress::makeLink( $distrib->getListeEmargementHref() ), $instructions );
@@ -1306,7 +1306,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'lieu_instructions'                 => [
-					'desc' => 'Instructions du lieu de cette distribution',
+					'desc' => __( 'Instructions du lieu de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$instructions = $distrib->getLieu()->getInstructions_privee();
 						$instructions = str_replace( '[liste-emargement-button]', Amapress::makeLink( $distrib->getListeEmargementHref() ), $instructions );
@@ -1315,7 +1315,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'paniers_instructions_distribution' => [
-					'desc' => 'Instructions de distribution des paniers',
+					'desc' => __( 'Instructions de distribution des paniers', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$ret       = '';
 						$model_ids = [];
@@ -1340,7 +1340,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'contenu_paniers'                   => [
-					'desc' => 'Contenu des paniers',
+					'desc' => __( 'Contenu des paniers', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$ret = '';
 						foreach ( AmapressPaniers::getPaniersForDist( $distrib->getDate() ) as $panier ) {
@@ -1367,7 +1367,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'liste_contrats'                    => [
-					'desc' => 'Liste des contrats à cette distribution',
+					'desc' => __( 'Liste des contrats à cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return implode( ', ', array_map(
 							function ( $c ) {
@@ -1378,115 +1378,115 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'heure_debut'                       => [
-					'desc' => 'Heure de début de cette distribution',
+					'desc' => __( 'Heure de début de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'H:i', $distrib->getStartDateAndHour() );
 					}
 				],
 				'heure_fin'                         => [
-					'desc' => 'Heure de fin de cette distribution',
+					'desc' => __( 'Heure de fin de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'H:i', $distrib->getEndDateAndHour() );
 					}
 				],
 				'jour_date_distrib'                 => [
-					'desc' => 'Date de cette distribution (par ex, jeudi 22/09/2018)',
+					'desc' => __( 'Date de cette distribution (par ex, jeudi 22/09/2018)', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'l d/m/Y', $distrib->getDate() );
 					}
 				],
 				'date_distrib'                      => [
-					'desc' => 'Date de cette distribution (par ex, 22/09/2018)',
+					'desc' => __( 'Date de cette distribution (par ex, 22/09/2018)', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'd/m/Y', $distrib->getDate() );
 					}
 				],
 				'jour_distrib'                      => [
-					'desc' => 'Jour de cette distribution (par ex, jeudi)',
+					'desc' => __( 'Jour de cette distribution (par ex, jeudi)', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return date_i18n( 'l', $distrib->getDate() );
 					}
 				],
 				'lien_distrib'                      => [
-					'desc' => 'Lien url vers la page info de cette distribution',
+					'desc' => __( 'Lien url vers la page info de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getPermalink() );
 					}
 				],
 				'lien_distribution_title'           => [
-					'desc' => 'Lien vers la page info de cette distribution',
+					'desc' => __( 'Lien vers la page info de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distribution_titre'           => [
-					'desc' => 'Lien vers la page info de cette distribution',
+					'desc' => __( 'Lien vers la page info de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distrib_titre'                => [
-					'desc' => 'Lien vers la page info de cette distribution',
+					'desc' => __( 'Lien vers la page info de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distrib_title'                => [
-					'desc' => 'Lien vers la page info de cette distribution',
+					'desc' => __( 'Lien vers la page info de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getPermalink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distribution_title_admin'     => [
-					'desc' => 'Lien pour éditer les infos de cette distribution',
+					'desc' => __( 'Lien pour éditer les infos de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getAdminEditLink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distribution_titre_admin'     => [
-					'desc' => 'Lien pour éditer les infos de cette distribution',
+					'desc' => __( 'Lien pour éditer les infos de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getAdminEditLink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distrib_titre_admin'          => [
-					'desc' => 'Lien pour éditer les infos de cette distribution',
+					'desc' => __( 'Lien pour éditer les infos de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getAdminEditLink(), $distrib->getTitle() );
 					}
 				],
 				'lien_distrib_title_admin'          => [
-					'desc' => 'Lien pour éditer les infos de cette distribution',
+					'desc' => __( 'Lien pour éditer les infos de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getAdminEditLink(), $distrib->getTitle() );
 					}
 				],
 				'lien_instructions_lieu'            => [
-					'desc' => 'Lien vers les instructions du lieu',
+					'desc' => __( 'Lien vers les instructions du lieu', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return Amapress::makeLink( $distrib->getPermalink() . '#instructions-lieu' );
 					}
 				],
 				'resp-inscrits'                     => [
-					'desc' => 'Nombre de responsable de distribution inscrits pour cette distribution',
+					'desc' => __( 'Nombre de responsable de distribution inscrits pour cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return count( $distrib->getResponsables() );
 					}
 				],
 				'resp-requis'                       => [
-					'desc' => 'Nombre de responsable de distribution requis pour cette distribution',
+					'desc' => __( 'Nombre de responsable de distribution requis pour cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return AmapressDistributions::get_required_responsables( $distrib->ID );
 					}
 				],
 				'resp-manquants'                    => [
-					'desc' => 'Nombre de responsable de distribution manquants pour cette distribution',
+					'desc' => __( 'Nombre de responsable de distribution manquants pour cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return AmapressDistributions::get_required_responsables( $distrib->ID ) - count( $distrib->getResponsables() );
 					}
 				],
 				'lien-resp-distrib-ical'            => [
-					'desc' => 'Lien ical pour les responsables de cette distribution',
+					'desc' => __( 'Lien ical pour les responsables de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return add_query_arg(
 							[
@@ -1497,87 +1497,87 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'lien-distrib-ical'                 => [
-					'desc' => 'Lien ical de cette distribution',
+					'desc' => __( 'Lien ical de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return $distrib->getProperty( 'lien-evenement-ical' );
 					}
 				],
 				'liste-resp-email-phone'            => [
-					'desc' => 'Liste des responsables de distribution avec emails et numéros de téléphone',
+					'desc' => __( 'Liste des responsables de distribution avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$responsables = $distrib->getResponsables();
 						$responsables = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( '<a href="mailto:%s">%s</a> (%s)', implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%s">%s</a> (%s)', 'amapress' ), implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $responsables );
 
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
 					}
 				],
 				'liste-resp-email-phone-bcc'        => [
-					'desc' => 'Liste des responsables de distribution avec emails et numéros de téléphone',
+					'desc' => __( 'Liste des responsables de distribution avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$responsables = $distrib->getResponsables();
 						$site_email   = Amapress::getOption( 'email_from_mail' );
 						$responsables = array_map( function ( $p ) use ( $site_email ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( '<a href="mailto:%s?bcc=%s">%s</a> (%s)', $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%s?bcc=%s">%s</a> (%s)', 'amapress' ), $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $responsables );
 
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
 					}
 				],
 				'liste-resp-phone'                  => [
-					'desc' => 'Liste des responsables de distribution avec numéros de téléphone',
+					'desc' => __( 'Liste des responsables de distribution avec numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$responsables = $distrib->getResponsables();
 						$responsables = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( '%s (%s)', esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '%s (%s)', 'amapress' ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $responsables );
 
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
 					}
 				],
 				'liste-gardiens-email-phone'        => [
-					'desc' => 'Liste des gardiens de paniers avec emails et numéros de téléphone',
+					'desc' => __( 'Liste des gardiens de paniers avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$gardiens = $distrib->getGardiens();
 						$gardiens = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( '<a href="mailto:%s">%s</a> (%s)', implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%s">%s</a> (%s)', 'amapress' ), implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $gardiens );
 
 						return '<ul>' . implode( '', $gardiens ) . '</ul>';
 					}
 				],
 				'liste-gardiens-email-phone-bcc'    => [
-					'desc' => 'Liste des gardiens de paniers avec emails et numéros de téléphone',
+					'desc' => __( 'Liste des gardiens de paniers avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$gardiens   = $distrib->getGardiens();
 						$site_email = Amapress::getOption( 'email_from_mail' );
 						$gardiens   = array_map( function ( $p ) use ( $site_email ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( '<a href="mailto:%s?bcc=%s">%s</a> (%s)', $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%s?bcc=%s">%s</a> (%s)', 'amapress' ), $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $gardiens );
 
 						return '<ul>' . implode( '', $gardiens ) . '</ul>';
 					}
 				],
 				'liste-gardiens-phone'              => [
-					'desc' => 'Liste des gardiens de paniers avec numéros de téléphone',
+					'desc' => __( 'Liste des gardiens de paniers avec numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$gardiens = $distrib->getGardiens();
 						$gardiens = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( '%s (%s)', esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '%s (%s)', 'amapress' ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $gardiens );
 
 						return '<ul>' . implode( '', $gardiens ) . '</ul>';
 					}
 				],
 				'liste-paniers-lien'                => [
-					'desc' => 'Liste des paniers (avec lien) à cette distribution',
+					'desc' => __( 'Liste des paniers (avec lien) à cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$paniers = AmapressPaniers::getPaniersForDist( $distrib->getDate() );
 						$paniers = array_map( function ( $p ) {
@@ -1589,7 +1589,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'liste-paniers'                     => [
-					'desc' => 'Liste des paniers à cette distribution',
+					'desc' => __( 'Liste des paniers à cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$paniers = AmapressPaniers::getPaniersForDist( $distrib->getDate() );
 						$paniers = array_map( function ( $p ) {
@@ -1601,13 +1601,13 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'nb-paniers-intermittents'          => [
-					'desc' => 'Nombre de paniers intermittents à cette distribution',
+					'desc' => __( 'Nombre de paniers intermittents à cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return count( $distrib->getPaniersIntermittents() );
 					}
 				],
 				'paniers-intermittents'             => [
-					'desc' => 'Liste des paniers intermittents à cette distribution',
+					'desc' => __( 'Liste des paniers intermittents à cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return implode( ', ', array_map( function ( $p ) {
 							/** @var AmapressIntermittence_panier $p */
@@ -1616,7 +1616,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					}
 				],
 				'paniers_modifies'                  => [
-					'desc' => 'Liste des paniers modifiés à cette distribution',
+					'desc' => __( 'Liste des paniers modifiés à cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$paniers_modifies = array_merge(
 							$distrib->getCancelledPaniers(),

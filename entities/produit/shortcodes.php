@@ -15,7 +15,7 @@ function amapress_produits_shortcode( $atts ) {
 		'render_func' => 'simple_produit_cell',
 		'cat'         => '',
 		'cat__not_in' => '',
-		'if_empty'    => 'Pas encore de produits',
+		'if_empty'    => __( 'Pas encore de produits', 'amapress' ),
 //		'posts_per_page' => 12,
 //		'order'          => 'ASC',
 //		'orderby'        => 'title',

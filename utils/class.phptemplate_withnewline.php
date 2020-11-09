@@ -77,18 +77,18 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 		try {
 			$zipClass = new ZipArchive();
 			if ( ! $zipClass->open( $model_file ) ) {
-				throw new Exception( 'Fichier non DOCX ou corrompu' );
+				throw new Exception( __( 'Fichier non DOCX ou corrompu', 'amapress' ) );
 			}
 			$is_invalid = @empty( $zipClass->count() );
 			@$zipClass->close();
 			if ( $is_invalid ) {
-				throw new Exception( 'Fichier non DOCX ou corrompu' );
+				throw new Exception( __( 'Fichier non DOCX ou corrompu', 'amapress' ) );
 			}
 
 			$unknowns = Phptemplate_withnewline::getUnknownPlaceholders( $model_file, $placeholders );
 			if ( ! empty( $unknowns ) ) {
 				return [
-					'message' => sprintf( '%s: placeholders DOCX inconnus : %s ; causes possibles: mauvais type de modèle ou erreur de frappe', $model_title, implode( ', ', array_map( function ( $p ) {
+					'message' => sprintf( __( '%s: placeholders DOCX inconnus : %s ; causes possibles: mauvais type de modèle ou erreur de frappe', 'amapress' ), $model_title, implode( ', ', array_map( function ( $p ) {
 						return '${' . $p . '}';
 					}, $unknowns ) ) ),
 					'status'  => 'error'
@@ -96,7 +96,7 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 			}
 		} catch ( Exception $ex ) {
 			return [
-				'message' => sprintf( '%s: modèle DOCX invalide: %s', $model_title, $ex->getMessage() ),
+				'message' => sprintf( __( '%s: modèle DOCX invalide: %s', 'amapress' ), $model_title, $ex->getMessage() ),
 				'status'  => 'error'
 			];
 		}

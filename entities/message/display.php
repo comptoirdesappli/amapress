@@ -78,7 +78,7 @@ function amapress_display_messages_by_query( $container_id, $messages_query ) {
 	$messages = $query->get_posts();
 //    var_dump($messages);
 
-	amapress_echo_panel_start( 'Messages' );
+	amapress_echo_panel_start( __( 'Messages', 'amapress' ) );
 	if ( count( $messages ) > 0 ) {
 		echo '<div class="panel-group" id="' . $container_id . '" role="tablist" aria-multiselectable="true">';
 	}
@@ -109,7 +109,7 @@ function amapress_display_messages_by_query( $container_id, $messages_query ) {
             </div>
             <div id="' . $collapse_id . '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="' . $panel_id . '">
                 <div class="panel-body">
-                <p class="message-to">' . sprintf( 'Pour "%s"', $message_target_name ) . '</p>
+                <p class="message-to">' . sprintf( __( 'Pour "%s"', 'amapress' ), $message_target_name ) . '</p>
                 ' . $message_content . '
                 </div>
             </div>
@@ -120,7 +120,7 @@ function amapress_display_messages_by_query( $container_id, $messages_query ) {
 	if ( count( $messages ) > 0 ) {
 		echo '</div>';
 	} else {
-		echo '<p class="no-message">' . 'Pas de message' . '</p>';
+		echo '<p class="no-message">' . __( 'Pas de message', 'amapress' ) . '</p>';
 	}
 	amapress_echo_panel_end();
 

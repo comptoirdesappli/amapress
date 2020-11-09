@@ -87,7 +87,7 @@ class Amapress_Framalist_MailSystem extends Amapress_Sympa_MailSystem {
 			'family'                  => '',
 			'previous_action'         => '',
 			'action'                  => 'add',
-			'response_action_confirm' => 'Confirmer',
+			'response_action_confirm' => __( 'Confirmer', 'amapress' ),
 		);
 		self::$client->post( '', [
 			'form_params' => $post_data
@@ -108,7 +108,7 @@ class Amapress_Framalist_MailSystem extends Amapress_Sympa_MailSystem {
 			'family'                  => '',
 			'previous_action'         => '',
 			'action'                  => 'del',
-			'response_action_confirm' => 'Confirmer',
+			'response_action_confirm' => __( 'Confirmer', 'amapress' ),
 		);
 		self::$client->post( '', [
 			'form_params' => $post_data,

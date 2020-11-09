@@ -24,7 +24,7 @@ function amapress_get_distance( $p1_lat, $p1_lng, $p2_lat, $p2_lng ) {
 
 function amapress_generate_map( $markers, $mode = 'map' ) {
 	if ( count( $markers ) == 0 ) {
-		return '<p>' . 'Aucune localisation disponible' . '</p>';
+		return '<p>' . __( 'Aucune localisation disponible', 'amapress' ) . '</p>';
 	}
 
 	if ( ! defined( 'AMAPRESS_MAX_MAP_DISTANCE' ) ) {

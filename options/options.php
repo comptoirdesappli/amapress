@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function amapress_register_permalien_options() {
 	add_settings_section( 'amapress_permalink', 'Amapress', function ( $args ) {
-		echo '<p>' . 'Cette section permet de régler les slugs des types de post d\'Amapress' . '</p>';
+		echo '<p>' . __( 'Cette section permet de régler les slugs des types de post d\'Amapress', 'amapress' ) . '</p>';
 	}, 'permalink' );
 	foreach ( AmapressEntities::getPostTypes() as $name => $conf ) {
 		if ( isset( $conf['public'] ) && $conf['public'] === true ) {

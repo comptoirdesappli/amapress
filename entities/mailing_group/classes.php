@@ -227,17 +227,17 @@ class AmapressMailingGroup extends TitanEntity {
 	public function distributeMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			wp_die( "L\'email $msg_id n'existe pas/plus." );
+			wp_die( sprintf( __( 'L\'email %s n\'existe pas/plus.', 'amapress' ), $msg_id ) );
 		}
 
 		if ( ! $this->isCurrentUserModerator() ) {
-			wp_die( "Vous n'êtes pas modérateur de la liste {$this->getName()}" );
+			wp_die( sprintf( __( 'Vous n\'êtes pas modérateur de la liste %s', 'amapress' ), $this->getName() ) );
 		}
 
 		$msg['moderator'] = amapress_current_user_id();
 		$msg['mod_date']  = amapress_time();
 		if ( ! $this->sendMailFromMsgId( 'waiting', $msg_id ) ) {
-			wp_die( "L\'email $msg_id n'a pas pu être envoyé." );
+			wp_die( sprintf( __( 'L\'email %s n\'a pas pu être envoyé.', 'amapress' ), $msg_id ) );
 		}
 		$this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] );
 		$this->storeMailData( 'accepted', $msg );
@@ -248,11 +248,11 @@ class AmapressMailingGroup extends TitanEntity {
 	public function rejectMailQuiet( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			wp_die( "L\'email $msg_id n'existe pas/plus." );
+			wp_die( sprintf( __( 'L\'email %s n\'existe pas/plus.', 'amapress' ), $msg_id ) );
 		}
 
 		if ( ! $this->isCurrentUserModerator() ) {
-			wp_die( "Vous n\'êtes pas modérateur de la liste {$this->getName()}" );
+			wp_die( sprintf( __( 'Vous n\'êtes pas modérateur de la liste %s', 'amapress' ), $this->getName() ) );
 		}
 
 		$msg['moderator'] = amapress_current_user_id();
@@ -266,11 +266,11 @@ class AmapressMailingGroup extends TitanEntity {
 	public function rejectMail( $msg_id ) {
 		$msg = $this->loadMessage( 'waiting', $msg_id );
 		if ( ! $msg ) {
-			wp_die( "L\'email $msg_id n'existe pas/plus." );
+			wp_die( sprintf( __( 'L\'email %s n\'existe pas/plus.', 'amapress' ), $msg_id ) );
 		}
 
 		if ( ! $this->isCurrentUserModerator() ) {
-			wp_die( "Vous n\'êtes pas modérateur de la liste {$this->getName()}" );
+			wp_die( sprintf( __( 'Vous n\'êtes pas modérateur de la liste %s', 'amapress' ), $this->getName() ) );
 		}
 
 		$msg['moderator'] = amapress_current_user_id();
@@ -354,7 +354,7 @@ class AmapressMailingGroup extends TitanEntity {
 		} catch ( Exception $ex ) {
 			$proto = strtoupper( $this->getProtocol() );
 
-			return "Erreur de connexion {$proto}: {$ex->getMessage()}";
+			return sprintf( __( 'Erreur de connexion %s: %s', 'amapress' ), $proto, $ex->getMessage() );
 		}
 	}
 
@@ -411,7 +411,7 @@ class AmapressMailingGroup extends TitanEntity {
 		try {
 			$mailbox = $this->getMailbox();
 		} catch ( Exception $ex ) {
-			//error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
+			//error_log( __('Erreur IMAP/POP3 (', 'amapress') . $this->getName() . '): ' . $ex->getMessage() );
 
 			return false;
 		}
@@ -496,7 +496,7 @@ class AmapressMailingGroup extends TitanEntity {
 								$parsed_bounce_email = $bounce_handler->parseEmail( file_get_contents( $eml_file ) );
 
 								$undelivered = implode( ', ', array_map( function ( $recipient ) {
-									return sprintf( '%s (%s/%s)',
+									return sprintf( __( '%s (%s/%s)', 'amapress' ),
 										$recipient['recipient'],
 										$recipient['action'],
 										$recipient['message']
@@ -506,7 +506,7 @@ class AmapressMailingGroup extends TitanEntity {
 							}
 
 							amapress_wp_mail( get_option( 'admin_email' ),
-								sprintf( 'Message non remis à un ou plusieurs destinataires sur la liste %s', $this->getName() ),
+								sprintf( __( 'Message non remis à un ou plusieurs destinataires sur la liste %s', 'amapress' ), $this->getName() ),
 								wpautop( sprintf( "Bonjour,\n\n Un message n'a pas pu être remis à un ou plusieurs destinataires pour la liste %s:\n------\nDestinataires: %s\n------\nSujet: %s\n%s\n------\n\n%s", $this->getName(), $undelivered, $subject, $phpmailer->html2text( $content ), get_bloginfo( 'name' ) ) ),
 								'', [
 									[
@@ -519,11 +519,11 @@ class AmapressMailingGroup extends TitanEntity {
 						} else if ( 'moderate' == $unk_action && ( empty( $bl_regex ) || ! preg_match( "/$bl_regex/", $mail->fromAddress ) ) ) {
 							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, true );
 							if ( ! $res ) {
-								$this->logError( 'Cannot save mail for moderation' );
+								$this->logError( __( 'Cannot save mail for moderation', 'amapress' ) );
 							}
 						} else {
 							$res = true;
-							$this->logError( 'Rejected mail from' . $from );
+							$this->logError( __( 'Rejected mail from', 'amapress' ) . $from );
 						}
 					} else {
 						if ( $this->isAllowedSender( $mail->fromAddress ) || $this->isAllowedSender( $mail->senderAddress ) ) {
@@ -536,12 +536,12 @@ class AmapressMailingGroup extends TitanEntity {
 							}
 							$res = $this->sendMailFromMsgId( 'accepted', $msg_id );
 							if ( ! $res ) {
-								$this->logError( 'Cannot send mail to members' );
+								$this->logError( __( 'Cannot send mail to members', 'amapress' ) );
 							}
 						} else {
 							$res = $this->saveMailForModeration( $msg_id, $date, $cleaned_from, $from, $to, $cc, $subject, $content, $body, $headers, $eml_file, false );
 							if ( ! $res ) {
-								$this->logError( 'Cannot save mail for moderation' );
+								$this->logError( __( 'Cannot save mail for moderation', 'amapress' ) );
 							}
 						}
 					}
@@ -553,7 +553,7 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 			}
 		} catch ( Exception $ex ) {
-			//error_log( 'Erreur IMAP/POP3 (' . $this->getName() . '): ' . $ex->getMessage() );
+			//error_log( __('Erreur IMAP/POP3 (', 'amapress') . $this->getName() . '): ' . $ex->getMessage() );
 
 			return false;
 		} finally {
@@ -930,7 +930,7 @@ class AmapressMailingGroup extends TitanEntity {
 
 
 		$body    = $phpmailer->html2text( ! empty( $msg['content'] ) ? $msg['content'] : '' );
-		$summary = wpautop( "\n------\nSujet: $subject\n$body\n------\n" );
+		$summary = wpautop( __( "\n------\nSujet: $subject\n$body\n------\n", 'amapress' ) );
 
 		if ( empty( $msg['id'] ) ) {
 			$msg['id'] = '';
@@ -945,10 +945,10 @@ class AmapressMailingGroup extends TitanEntity {
 			'msg_subject'            => $subject,
 			'msg_summary'            => $summary,
 			'sender'                 => esc_html( ! empty( $msg['from'] ) ? $msg['from'] : '' ),
-			'msg_waiting_link'       => Amapress::makeLink( admin_url( 'admin.php?page=mailinggroup_moderation&tab=mailgrp-moderate-tab-' . $this->ID ), 'Voir' ),
-			'msg_reject_silent_link' => amapress_get_mailgroup_action_form( 'Rejetter sans prévenir', 'amapress_mailgroup_reject_quiet', $this->ID, $msg['id'] ),
-			'msg_reject_notif_link'  => amapress_get_mailgroup_action_form( 'Rejetter', 'amapress_mailgroup_reject', $this->ID, $msg['id'] ),
-			'msg_distrib_link'       => amapress_get_mailgroup_action_form( 'Distribuer', 'amapress_mailgroup_distribute', $this->ID, $msg['id'] ),
+			'msg_waiting_link'       => Amapress::makeLink( admin_url( 'admin.php?page=mailinggroup_moderation&tab=mailgrp-moderate-tab-' . $this->ID ), __( 'Voir', 'amapress' ) ),
+			'msg_reject_silent_link' => amapress_get_mailgroup_action_form( __( 'Rejetter sans prévenir', 'amapress' ), 'amapress_mailgroup_reject_quiet', $this->ID, $msg['id'] ),
+			'msg_reject_notif_link'  => amapress_get_mailgroup_action_form( __( 'Rejetter', 'amapress' ), 'amapress_mailgroup_reject', $this->ID, $msg['id'] ),
+			'msg_distrib_link'       => amapress_get_mailgroup_action_form( __( 'Distribuer', 'amapress' ), 'amapress_mailgroup_distribute', $this->ID, $msg['id'] ),
 		];
 
 		foreach ( $placeholders as $k => $v ) {
@@ -962,23 +962,23 @@ class AmapressMailingGroup extends TitanEntity {
 		$additional_helps = array_merge(
 			$additional_helps,
 			[
-				'liste_nom'              => 'Nom de la liste',
-				'nom_liste'              => 'Nom de la liste',
-				'moderated_by'           => 'Mailto du modérateur de l\'email',
-				'moderated_by_email'     => 'Email du modérateur de l\'email',
-				'moderated_by_name'      => 'Nom du modérateur de l\'email',
-				'msg_subject'            => 'Sujet de l\'email modéré',
-				'msg_summary'            => 'Sujet et contenu de l\'email à modérer',
-				'sender'                 => 'Emetteur de l\'email',
-				'msg_reject_silent_link' => 'Lien de rejet sans notification de l\'email',
-				'msg_reject_notif_link'  => 'Lien de rejet avec notification de l\'email',
-				'msg_distrib_link'       => 'Lien de distribution de l\'email',
-				'msg_waiting_link'       => 'Lien vers les emails en attente de modération',
+				'liste_nom'              => __( 'Nom de la liste', 'amapress' ),
+				'nom_liste'              => __( 'Nom de la liste', 'amapress' ),
+				'moderated_by'           => __( 'Mailto du modérateur de l\'email', 'amapress' ),
+				'moderated_by_email'     => __( 'Email du modérateur de l\'email', 'amapress' ),
+				'moderated_by_name'      => __( 'Nom du modérateur de l\'email', 'amapress' ),
+				'msg_subject'            => __( 'Sujet de l\'email modéré', 'amapress' ),
+				'msg_summary'            => __( 'Sujet et contenu de l\'email à modérer', 'amapress' ),
+				'sender'                 => __( 'Emetteur de l\'email', 'amapress' ),
+				'msg_reject_silent_link' => __( 'Lien de rejet sans notification de l\'email', 'amapress' ),
+				'msg_reject_notif_link'  => __( 'Lien de rejet avec notification de l\'email', 'amapress' ),
+				'msg_distrib_link'       => __( 'Lien de distribution de l\'email', 'amapress' ),
+				'msg_waiting_link'       => __( 'Lien vers les emails en attente de modération', 'amapress' ),
 			]
 		);
 
 		return Amapress::getPlaceholdersHelpTable( 'mailinggroup-placeholders',
-			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), 'de l\'Email groupé',
+			Amapress::getPlaceholdersHelpForProperties( self::getProperties() ), __( 'de l\'Email groupé', 'amapress' ),
 			$additional_helps, $for_recall ? 'recall' : true );
 	}
 
@@ -986,7 +986,7 @@ class AmapressMailingGroup extends TitanEntity {
 		if ( empty( $this->getHost() )
 		     || empty( $this->getPort() )
 		     || empty( $this->getProtocol() ) ) {
-			throw new Exception( "Invalid configuration" );
+			throw new Exception( 'Invalid configuration' );
 		}
 
 		$encryption = '';
@@ -1124,7 +1124,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function downloadEml( $msg_id, $type = 'accepted' ) {
 		$msg = $this->loadMessage( $type, $msg_id );
 		if ( ! $msg ) {
-			wp_die( 'Message introuvable' );
+			wp_die( __( 'Message introuvable', 'amapress' ) );
 		}
 
 		Amapress::sendDocumentFile( $msg['eml_file'], $msg_id . '.eml' );

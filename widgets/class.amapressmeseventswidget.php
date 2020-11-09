@@ -55,7 +55,7 @@ class Amapress_Next_Events_Widget extends WP_Widget {
 		$logged_only = isset( $instance['logged_only'] ) ? $instance['logged_only'] : false;
 		?>
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Titre :' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Titre :', 'amapress' ); ?></label>
             <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>"
                    name="<?php echo $this->get_field_name( 'title' ); ?>" type="text"
                    value="<?php echo esc_attr( $title ); ?>">

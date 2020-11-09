@@ -174,15 +174,14 @@ class Adhesion_Paiements_List_Table extends WP_List_Table {
 	}
 
 	function get_bulk_actions() {
-		$actions = array(//            'delete'    => 'Delete'
+		$actions = array(//            'delete'    => __('Delete', 'amapress')
 		);
 
 		return $actions;
 	}
 
 	function column_cb( $item ) {
-		return sprintf(
-			'<input type="checkbox" name="adhesion[]" value="%s" />', $item['ID']
+		return sprintf( __( '<input type="checkbox" name="adhesion[]" value="%s" />', 'amapress' ), $item['ID']
 		);
 	}
 
@@ -245,7 +244,7 @@ function amapress_adhesion_list_options() {
 	global $adhesions_table;
 	$option = 'per_page';
 	$args   = array(
-		'label'   => 'Adhésions',
+		'label'   => __( 'Adhésions', 'amapress' ),
 		'default' => 10,
 		'option'  => 'adhesions_per_page'
 	);
@@ -258,7 +257,7 @@ function amapress_render_adhesion_list() {
 	global $adhesions_table;
 	$adhesions_table->prepare_items();
 
-	echo '</pre><div class="wrap"><h2>' . 'Adhésions' . '</h2>';
+	echo '</pre><div class="wrap"><h2>' . __( 'Adhésions', 'amapress' ) . '</h2>';
 	if ( current_user_can( 'create_users' ) ) { ?>
         <a href="<?php echo admin_url( 'user-new.php' ); ?>"
            class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>

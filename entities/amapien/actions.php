@@ -13,7 +13,7 @@ add_filter( 'avatar_defaults', 'amapress_default_avatar' );
 function amapress_default_avatar( $avatar_defaults ) {
 	//Set the URL where the image file for your avatar is located
 	$new_avatar_url                     = AMAPRESS__PLUGIN_URL . 'images/default_amapien.jpg';
-	$avatar_defaults[ $new_avatar_url ] = 'Amapien Amapress';
+	$avatar_defaults[ $new_avatar_url ] = __( 'Amapien Amapress', 'amapress' );
 
 	return $avatar_defaults;
 }
@@ -107,7 +107,7 @@ function amapress_handle_image_upload( $upload ) {
 function amapress_process_user_profile_data() {
 	if ( isset( $_POST['user_profile_nonce_field'] ) && wp_verify_nonce( $_POST['user_profile_nonce_field'], 'user_profile_nonce' ) ) {
 		if ( ! amapress_is_user_logged_in() ) {
-			wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		// Get the current user id
@@ -324,11 +324,11 @@ function amapress_process_user_profile_data() {
 function amapress_display_messages( $content ) {
 	$message = '';
 	if ( in_array( 'profile-updated', $_GET ) && 'true' == $_GET['profile-updated'] ) {
-		$message = amapress_get_message_markup( 'Votre profile a été mis à jour avec succès.', 'success' );
+		$message = amapress_get_message_markup( __( 'Votre profile a été mis à jour avec succès.', 'amapress' ), 'success' );
 	} else if ( in_array( 'profile-updated', $_GET ) && 'false' == $_GET['profile-updated'] ) {
-		$message = amapress_get_message_markup( 'Il y a une erreur pendant l\'enregistrement.', 'danger' );
+		$message = amapress_get_message_markup( __( 'Il y a une erreur pendant l\'enregistrement.', 'amapress' ), 'danger' );
 	} else if ( in_array( 'password-error', $_GET ) && 'true' == $_GET['password-error'] ) {
-		$message = amapress_get_message_markup( 'Les mots de passe que vous avez entré ne correspondent pas.', 'danger' );
+		$message = amapress_get_message_markup( __( 'Les mots de passe que vous avez entré ne correspondent pas.', 'amapress' ), 'danger' );
 	}
 
 	return $message . $content;
@@ -382,14 +382,14 @@ add_action( 'admin_post_nopriv_inscription_amap_extern', 'amapress_admin_action_
 function amapress_admin_action_nopriv_inscription_amap_extern() {
 	header( 'Content-Type: text/html; charset=UTF-8' );
 	if ( ! isset( $_REQUEST['email'] ) ) {
-		die( 'Pas d\'email spécifié' );
+		die( __( 'Pas d\'email spécifié', 'amapress' ) );
 	}
 	if ( ! isset( $_REQUEST['group'] ) ) {
-		die( 'Pas de groupe' );
+		die( __( 'Pas de groupe', 'amapress' ) );
 	}
 	$group_id = Amapress::resolve_tax_id( trim( sanitize_text_field( $_REQUEST['group'] ) ), AmapressUser::AMAPIEN_GROUP );
 	if ( empty( $group_id ) ) {
-		die( 'Groupe inconnu' );
+		die( __( 'Groupe inconnu', 'amapress' ) );
 	}
 	/** @var WP_Term $term */
 	$term = get_term( $group_id, AmapressUser::AMAPIEN_GROUP );
@@ -407,7 +407,7 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 	}
 
 	if ( ! $is_ok ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
@@ -419,14 +419,14 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 
 	$user = get_user_by( 'email', $user_email );
 	if ( $user ) {
-		echo '<p class="error">' . sprintf( 'L\'adresse email %s est déjà utilisée.', $user_email ) . '</p>';
+		echo '<p class="error">' . sprintf( __( 'L\'adresse email %s est déjà utilisée.', 'amapress' ), $user_email ) . '</p>';
 		die();
 	}
 
 	$user_id = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 	wp_set_object_terms( $user_id, $group_id, AmapressUser::AMAPIEN_GROUP );
 	echo '<p class="success">' . sprintf(
-			'Vous êtes désormais inscrit sur le site %s en tant qu\'utilisateur %s. Vous allez recevoir un mail de bienvenue avec les instructions dans votre boîte mail.',
+			__( 'Vous êtes désormais inscrit sur le site %s en tant qu\'utilisateur %s. Vous allez recevoir un mail de bienvenue avec les instructions dans votre boîte mail.', 'amapress' ),
 			esc_html( get_bloginfo( 'name' ) ),
 			esc_html( $term->name )
 		) . '</p>';

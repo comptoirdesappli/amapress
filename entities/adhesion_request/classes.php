@@ -148,31 +148,31 @@ class AmapressAdhesionRequest extends TitanEntity {
 		if ( null == self::$properties ) {
 			$ret = array_merge( parent::getProperties(), [
 					'email'     => [
-						'desc' => 'Adresse Email',
+						'desc' => __( 'Adresse Email', 'amapress' ),
 						'func' => function ( AmapressAdhesionRequest $req ) {
 							return $req->getEmail();
 						}
 					],
 					'prenom'    => [
-						'desc' => 'Adresse Email',
+						'desc' => __( 'Adresse Email', 'amapress' ),
 						'func' => function ( AmapressAdhesionRequest $req ) {
 							return $req->getFirstName();
 						}
 					],
 					'nom'       => [
-						'desc' => 'Adresse Email',
+						'desc' => __( 'Adresse Email', 'amapress' ),
 						'func' => function ( AmapressAdhesionRequest $req ) {
 							return $req->getLastName();
 						}
 					],
 					'telephone' => [
-						'desc' => 'Adresse Email',
+						'desc' => __( 'Adresse Email', 'amapress' ),
 						'func' => function ( AmapressAdhesionRequest $req ) {
 							return $req->getTelephone();
 						}
 					],
 					'adresse'   => [
-						'desc' => 'Adresse Email',
+						'desc' => __( 'Adresse Email', 'amapress' ),
 						'func' => function ( AmapressAdhesionRequest $req ) {
 							return $req->getAdresse();
 						}

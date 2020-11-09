@@ -30,7 +30,7 @@ function amapress_fullcalendar( $atts ) {
 	);
 
 	if ( empty( $atts['url'] ) ) {
-		return 'Aucune source configurée pour le calendrier';
+		return __( 'Aucune source configurée pour le calendrier', 'amapress' );
 	}
 
 	//'https://cors-anywhere.herokuapp.com/'
@@ -40,30 +40,30 @@ function amapress_fullcalendar( $atts ) {
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
             $('#<?php echo $id; ?>').fullCalendar({
-                defaultView: '<?php echo $atts['default_view']; ?>',
-                locale: 'fr',
+                defaultView: '<?php echo esc_js( $atts['default_view'] ); ?>',
+                locale: '<?php echo esc_js( __( 'fr', 'amapress' ) ); ?>',
                 timezone: 'local',
                 header: {
-                    left: '<?php echo $atts['header_left']; ?>',
-                    center: '<?php echo $atts['header_center']; ?>',
-                    right: '<?php echo $atts['header_right']; ?>'
+                    left: '<?php echo esc_js( $atts['header_left'] ); ?>',
+                    center: '<?php echo esc_js( $atts['header_center'] ); ?>',
+                    right: '<?php echo esc_js( $atts['header_right'] ); ?>'
                 },
                 views: {
-                    listDay: {buttonText: 'Par jours'},
-                    listWeek: {buttonText: 'Par semaines'},
-                    listMonth: {buttonText: 'Par mois'}
+                    listDay: {buttonText: '<?php echo esc_js( __( 'Par jours', 'amapress' ) ); ?>'},
+                    listWeek: {buttonText: '<?php echo esc_js( __( 'Par semaines', 'amapress' ) ); ?>'},
+                    listMonth: {buttonText: '<?php echo esc_js( __( 'Par mois', 'amapress' ) ); ?>'}
                 },
                 navLinks: true, // can click day/week names to navigate views
                 editable: false,
-                minTime: "<?php echo $atts['min_time']; ?>",
-                maxTime: "<?php echo $atts['max_time']; ?>",
+                minTime: '<?php echo esc_js( $atts['min_time'] ); ?>',
+                maxTime: '<?php echo esc_js( $atts['max_time'] ); ?>',
                 eventRender: function (event, eventElement) {
                     if (event.imageurl) {
                         $('.fc-title, .fc-list-item-title', eventElement).prepend("<img src='" + event.imageurl + "' style='display:inline-block;vertical-align:middle;width:<?php echo $atts['icon_size']; ?>; height:<?php echo $atts['icon_size']; ?>' />");
                     }
                 }
             });
-            $.get('<?php echo $atts['url']; ?>', function (res) {
+            $.get('<?php echo esc_js( $atts['url'] ); ?>', function (res) {
                 var events = [];
                 var parsed = ICAL.parse(res);
                 parsed[2].forEach(function (event) {
@@ -115,8 +115,8 @@ function amapress_fullcalendar( $atts ) {
                         })
                     }
                 });
-                $('#<?php echo $id; ?>').fullCalendar('removeEventSources');
-                $('#<?php echo $id; ?>').fullCalendar('addEventSource', events);
+                $('#<?php echo esc_js( $id ); ?>').fullCalendar('removeEventSources');
+                $('#<?php echo esc_js( $id ); ?>').fullCalendar('addEventSource', events);
             })
         });
     </script>

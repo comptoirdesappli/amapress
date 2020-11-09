@@ -25,12 +25,12 @@ function amapress_register_resp_distrib_post_its( $post_its, $args ) {
 		$content = '';
 		$lieu    = $dist->getLieu();
 		if ( in_array( $user_id, $dist->getResponsablesIds() ) ) {
-			$content .= '<p class="resp-distribution">' . 'Vous êtes responsable de distribution' . '</p>';
+			$content .= '<p class="resp-distribution">' . __( 'Vous êtes responsable de distribution', 'amapress' ) . '</p>';
 		} elseif ( ! $is_resp_amap ) {
 			continue;
 		}
 		$content .= '<p>' . esc_html( $lieu->getShortName() ) . '</p>';
-		$content .= amapress_get_button( 'Liste d\'émargement',
+		$content .= amapress_get_button( __( 'Liste d\'émargement', 'amapress' ),
 			amapress_action_link( $dist->ID, 'liste-emargement' ), 'fa-fa',
 			true );
 
@@ -68,18 +68,18 @@ function amapress_responsables_distrib_shortcode( $atts ) {
 		$lieu    = $dist->getLieu();
 		$content .= '<p>' . esc_html( $lieu->getShortName() ) . '</p>';
 		if ( empty( $dist->getResponsables() ) ) {
-			$content .= '<p><strong>' . 'Aucun responsable inscrit' . '</strong></p>';
+			$content .= '<p><strong>' . __( 'Aucun responsable inscrit', 'amapress' ) . '</strong></p>';
 		} else {
 			foreach ( $dist->getResponsables() as $responsable ) {
 				$multi = $dist->getMultiResponsableInscriptionCount( $responsable->ID );
 				if ( $multi > 1 ) {
-					$multi = sprintf( ' (%d personnes)', $multi );
+					$multi = sprintf( __( ' (%d personnes)', 'amapress' ), $multi );
 				}
 				$content .= '<p>' . esc_html( $responsable->getDisplayName() ) . $multi . ' : ' . $responsable->getTelTo() . '</p>';
 			}
 		}
 
-		$content .= '<p>' . Amapress::makeLink( Amapress::get_collectif_page_href(), 'Contacts collectif' ) . '</p>';
+		$content .= '<p>' . Amapress::makeLink( Amapress::get_collectif_page_href(), __( 'Contacts collectif', 'amapress' ) ) . '</p>';
 
 		$ret .= amapress_get_panel_start_no_esc( Amapress::makeLink( $dist->getPermalink(), date_i18n( 'd/m/Y', $dist->getDate() ) . __( ' - Responsables', 'amapress' ) ) );
 		$ret .= $content;
@@ -174,32 +174,32 @@ function amapress_inscription_distrib_shortcode( $atts, $content = null, $tag = 
 			$url        = add_query_arg( 'key', $key, get_permalink() );
 			if ( empty( $_REQUEST['key'] ) ) {
 				if ( empty( $key ) ) {
-					$ret .= amapress_get_panel_start( 'Configuration' );
-					$ret .= '<div style="color:red">' . sprintf( 'Ajoutez la clé suivante à votre shortcode : %s<br/>De la forme : [%s key=%s]', $sample_key, $tag, $sample_key ) . '</div>';
+					$ret .= amapress_get_panel_start( __( 'Configuration', 'amapress' ) );
+					$ret .= '<div style="color:red">' . sprintf( __( 'Ajoutez la clé suivante à votre shortcode : %s<br/>De la forme : [%s key=%s]', 'amapress' ), $sample_key, $tag, $sample_key ) . '</div>';
 				} else {
-					$ret .= amapress_get_panel_start( 'Information d\'accès pour le collectif' );
-					$ret .= '<div class="alert alert-info">' . sprintf( 'Pour donner accès à cette page d\'inscription aux distributions, veuillez envoyer à vos amapiens le lien suivant : 
+					$ret .= amapress_get_panel_start( __( 'Information d\'accès pour le collectif', 'amapress' ) );
+					$ret .= '<div class="alert alert-info">' . sprintf( __( 'Pour donner accès à cette page d\'inscription aux distributions, veuillez envoyer à vos amapiens le lien suivant : 
 <pre>%s</pre>
 Pour y accéder cliquez <a href="%s">ici</a>.<br />
 Vous pouvez également utiliser un service de réduction d\'URL tel que <a href="https://bit.ly">bit.ly</a> pour obtenir une URL plus courte à partir du lien ci-dessus.<br/>
 %s
 Vous pouvez également utiliser l\'un des QRCode suivants : 
 <div>%s%s%s</div><br/>
-<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription aux distributions (mais uniquement) sans saisir son mot de passe sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong>', $url, $url, ! empty( $atts['shorturl'] ) ? 'Lien court sauvegardé : <code>' . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ) ) . '</div>';
+<strong>Attention : les lien ci-dessus, QR code et bit.ly NE doivent PAS être visible publiquement sur le site. Ce lien permet d\'accéder à la page d\'inscription aux distributions (mais uniquement) sans saisir son mot de passe sur le site et l\'exposer sur internet pourrait permettre à une personne malvaillante de polluer le site.</strong>', 'amapress' ), $url, $url, ! empty( $atts['shorturl'] ) ? __( 'Lien court sauvegardé : <code>', 'amapress' ) . $atts['shorturl'] . '</code><br />' : '', amapress_print_qrcode( $url ), amapress_print_qrcode( $url, 3 ), amapress_print_qrcode( $url, 2 ) ) . '</div>';
 					$ret .= amapress_get_panel_end();
 				}
 			} else {
-				$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . 'Afficher les instructions d\'accès à cette page.' . '</a></div>';
+				$ret .= '<div class="alert alert-info"><a href="' . esc_attr( get_permalink() ) . '">' . __( 'Afficher les instructions d\'accès à cette page.', 'amapress' ) . '</a></div>';
 			}
 		}
 		if ( empty( $key ) || empty( $_REQUEST['key'] ) || $_REQUEST['key'] != $key ) {
 			if ( empty( $key ) && amapress_can_access_admin() ) {
-				$ret .= 'Une fois le shortcode configuré : seuls les amapiens dirigés depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.';
+				$ret .= __( 'Une fois le shortcode configuré : seuls les amapiens dirigés depuis l\'url contenant cette clé pourront s\'inscrire sans mot de passe utilisateur.', 'amapress' );
 				$ret .= $content;
 
 				return $ret;
 			} elseif ( ! amapress_is_user_logged_in() ) {
-				$ret .= '<div class="alert alert-danger">' . 'Vous êtes dans un espace sécurisé. Accès interdit' . '</div>';
+				$ret .= '<div class="alert alert-danger">' . __( 'Vous êtes dans un espace sécurisé. Accès interdit', 'amapress' ) . '</div>';
 				$ret .= $content;
 
 				return $ret;
@@ -218,9 +218,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
                 <form method="post" action="<?php echo add_query_arg( 'key', $key, get_permalink() ); ?>"
                       id="inscr_email"
                       class="amapress_validate">
-                    <label for="email"><?php _e( 'Pour pouvoir vous inscrire en tant que responsable de distribution, renseignez
-                        votre
-                        adresse mail :', 'amapress' ) ?></label>
+                    <label for="email"><?php _e( 'Pour pouvoir vous inscrire en tant que responsable de distribution, renseignez votre adresse mail :', 'amapress' ) ?></label>
                     <input id="email" name="email" type="text" class="email required"
                            placeholder="<?php echo esc_attr__( 'Email', 'amapress' ) ?>"/>
                     <input type="submit" value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"
@@ -232,9 +230,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$email = sanitize_email( $_REQUEST['email'] );
 				$user  = get_user_by( 'email', $email );
 				if ( ! $user ) {
-					return '<p style="font-weight: bold">' . 'Adresse email inconnue, accès interdit.' . '</p>
-<p>' . 'Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.' . '</p>
-<p><a href="' . get_permalink() . '">' . 'Changer d’email' . '</a></p>';
+					return '<p style="font-weight: bold">' . __( 'Adresse email inconnue, accès interdit.', 'amapress' ) . '</p>
+<p>' . __( 'Si vous êtes déjà membre de l’AMAP, vous avez certainement utilisé une adresse email différente.', 'amapress' ) . '</p>
+<p><a href="' . get_permalink() . '">' . __( 'Changer d’email', 'amapress' ) . '</a></p>';
 				}
 
 				$allow_anonymous_access = true;
@@ -402,9 +400,9 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 
 	if ( ! is_admin() && $is_current_user_resp_amap ) {
 		if ( ! $allow_manage_others ) {
-			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), 'Choisir le mode Administrateur' ) . '</p>';
+			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( add_query_arg( 'for_resp', 'T' ), __( 'Choisir le mode Administrateur', 'amapress' ) ) . '</p>';
 		} else {
-			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), 'Choisir le mode Amapien' ) . '</p>';
+			$ret .= '<p style="text-align: center">' . Amapress::makeButtonLink( remove_query_arg( 'for_resp' ), __( 'Choisir le mode Amapien', 'amapress' ) ) . '</p>';
 		}
 	}
 
@@ -474,7 +472,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$ret .= '<h4 class="distrib-inscr-lieu">' . esc_html( $user_lieu->getShortName() ) . '</h4>';
 		}
 		if ( ! $for_pdf && current_user_can( 'edit_lieu_distribution' ) && ! is_admin() ) {
-			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">' . 'Modifier le nombre de responsables de distribution du lieu' . '</a></p>';
+			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">' . __( 'Modifier le nombre de responsables de distribution du lieu', 'amapress' ) . '</a></p>';
 		}
 
 		if ( $for_pdf ) {
@@ -505,17 +503,17 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		$ret  .= '<thead >';
 		$ret  .= '<tr>';
 		if ( $for_pdf ) {
-			$ret .= '<th class="dist-col-date">' . 'Date' . '</th>';
+			$ret .= '<th class="dist-col-date">' . __( 'Date', 'amapress' ) . '</th>';
 		} else {
 			$calc[] = $column_date_width;
-			$ret    .= '<th class="dist-col-date" data-width="' . $column_date_width . '"  style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">' . 'Date' . '</th>';
+			$ret    .= '<th class="dist-col-date" data-width="' . $column_date_width . '"  style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">' . __( 'Date', 'amapress' ) . '</th>';
 		}
 		if ( $for_emargement ) {
 			if ( $for_pdf ) {
-				$ret .= '<th>' . 'Produits' . '</th>';
+				$ret .= '<th>' . __( 'Produits', 'amapress' ) . '</th>';
 			} else {
 				$calc[] = $column_date_width;
-				$ret    .= '<th data-width="' . $column_date_width . '" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">' . 'Produits' . '</th>';
+				$ret    .= '<th data-width="' . $column_date_width . '" style="width: ' . $column_date_width . ';min-width: ' . $column_date_width . '">' . __( 'Produits', 'amapress' ) . '</th>';
 			}
 		}
 		if ( '%' == $fixed_column_width ) {
@@ -530,11 +528,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		if ( ! $for_emargement && ! $for_pdf ) {
 			if ( $has_slots ) {
 				$calc[] = $fixed_column_width;
-				$ret    .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">' . 'Créneau horaire' . '</th>';
+				$ret    .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">' . __( 'Créneau horaire', 'amapress' ) . '</th>';
 			}
 			if ( $allow_gardiens ) {
 				$calc[] = $fixed_column_width;
-				$ret    .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">' . 'Garde panier' . '</th>';
+				$ret    .= '<th data-width="' . $width . '" style="width:' . $width . ';min-width:' . $width . ';text-align: center">' . __( 'Garde panier', 'amapress' ) . '</th>';
 			}
 		}
 
@@ -548,7 +546,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 				$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name" ) );
 			}
 			if ( empty( $role_name ) ) {
-				$role_name = "Responsable $i";
+				$role_name = sprintf( __( 'Responsable %d', 'amapress' ), $i );
 			} else {
 				$has_role_names = true;
 			}
@@ -611,12 +609,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					'fields'           => 'all_with_meta',
 				) ) as $user
 			) {
-				$user_name                     = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+				$user_name                     = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 				$no_contrat_users[ $user->ID ] = $user_name;
 			}
 			$hours = '';
 			if ( ! empty( $dist->getSpecialHeure_debut() ) || ! empty( $dist->getSpecialHeure_fin() ) ) {
-				$hours .= sprintf( ' (%s à %s)',
+				$hours .= sprintf( __( ' (%s à %s)', 'amapress' ),
 					date_i18n( 'H:i', $dist->getStartDateAndHour() ),
 					date_i18n( 'H:i', $dist->getEndDateAndHour() ) );
 			}
@@ -632,7 +630,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			}
 			if ( ! $for_pdf && ! $for_emargement && Amapress::toBool( $atts['show_no_contrat'] ) ) {
 				if ( ! $dist->isUserMemberOf( $user_id, true, $adhesions ) ) {
-					$contrats_content .= '<p class="inscr-list-contrats"><strong>' . 'Pas de livraison pour vous' . '</strong></p>';
+					$contrats_content .= '<p class="inscr-list-contrats"><strong>' . __( 'Pas de livraison pour vous', 'amapress' ) . '</strong></p>';
 				}
 			}
 			$date_display = date_i18n( 'D j M Y', $date ) . $hours;
@@ -694,7 +692,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						) ) as $user
 					) {
 						$user_amapien = AmapressUser::getBy( $user->ID );
-						$user_name    = sprintf( '%s (%s)', $user->display_name, $user->user_email );
+						$user_name    = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
 						if ( ! empty( $user_amapien->getAdditionalCoAdherents() ) ) {
 							$user_name .= ' (' . $user_amapien->getAdditionalCoAdherents() . ')';
 						}
@@ -733,7 +731,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						if ( $can_change_slot ) {
 							$ret .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="distrib_desinscrire_slot" data-confirm="' . esc_attr__( 'Etes-vous sûr vous désinscrire de ce créneau ?', 'amapress' ) . '"
-					data-dist="' . $dist->ID . '" data-slot="' . strval( $slot_for_current_user['date'] ) . '">' . 'Désinscrire' . '</button>';
+					data-dist="' . $dist->ID . '" data-slot="' . strval( $slot_for_current_user['date'] ) . '">' . __( 'Désinscrire', 'amapress' ) . '</button>';
 						}
 					} else {
 						if ( $can_change_slot ) {
@@ -742,7 +740,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								if ( $conf['max'] <= 0 ) {
 									$dist_slots_options[ $k ] = $conf['display'];
 								} else {
-									$dist_slots_options[ $k ] = sprintf( '%s (%d/%d)', $conf['display'], intval( $conf['current'] ), intval( $conf['max'] ) );
+									$dist_slots_options[ $k ] = sprintf( __( '%s (%d/%d)', 'amapress' ), $conf['display'], intval( $conf['current'] ), intval( $conf['max'] ) );
 								}
 							}
 
@@ -753,7 +751,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								$affect_slot    .= '</select>';
 								$affect_slot    .= '<button  type="button" class="btn btn-default amapress-ajax-button" 
 					data-action="distrib_inscrire_slot" data-confirm="' . esc_attr__( 'Etes-vous sûr de vous inscrire à ce créneau ?', 'amapress' ) . '"
-					data-dist="' . $dist->ID . '" data-slot="val:#' . $affect_slot_id . '">' . 'Réserver' . '</button>';
+					data-dist="' . $dist->ID . '" data-slot="val:#' . $affect_slot_id . '">' . __( 'Réserver', 'amapress' ) . '</button>';
 								$ret            .= $affect_slot;
 							} else {
 								$ret .= 'aucun';
@@ -774,12 +772,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 						$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?', 'amapress' ) . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '">' . 'Inscrire' . '</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien comme gardien de panier ?', 'amapress' ) . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </div>';
 						if ( ! is_admin() ) {
 							$inscr_another .= '</form>';
 						}
-						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="' . esc_attr__( 'Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone', 'amapress' ) . '">' . 'Ajouter un utilisateur' . '</a></a></p>';
+						$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="' . esc_attr__( 'Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone', 'amapress' ) . '">' . __( 'Ajouter un utilisateur', 'amapress' ) . '</a></a></p>';
 					}
 
 					if ( $allow_gardiens_comments ) {
@@ -787,7 +785,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					} else {
 						$inscr_self = '';
 					}
-					$inscr_self .= '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . 'Me proposer' . '</button>';
+					$inscr_self .= '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . __( 'Me proposer', 'amapress' ) . '</button>';
 					$info       = '';
 					if ( ! $for_pdf ) {
 						if ( ! $can_subscribe ) {
@@ -795,7 +793,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 						if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
 							if ( $can_unsubscribe ) {
-								$inscr_self = '<button type="button" class="' . $btn_class . ' dist-desinscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir ne plus vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . 'Ne plus me proposer' . '</button>';
+								$inscr_self = '<button type="button" class="' . $btn_class . ' dist-desinscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir ne plus vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . __( 'Ne plus me proposer', 'amapress' ) . '</button>';
 							} else {
 								$inscr_self = '';
 							}
@@ -915,12 +913,12 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 									}
 									$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">' . 'Inscrire' . '</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </div>';
 									if ( ! is_admin() ) {
 										$inscr_another .= '</form>';
 									}
-									$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="' . esc_attr__( 'Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone', 'amapress' ) . '">' . 'Ajouter un utilisateur' . '</a></a></p>';
+									$inscr_another .= '<p><a href="' . admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_other_user' ) . '" title="' . esc_attr__( 'Si la personne est introuvable dans la liste ci-dessus, vous pouvez l\'inscrire avec son nom et/ou email et/ou téléphone', 'amapress' ) . '">' . __( 'Ajouter un utilisateur', 'amapress' ) . '</a></a></p>';
 								} elseif ( ! is_admin() ) {
 									$dist_cofoyers_users = array_combine( array_keys( $cofoyers_users ), array_values( $cofoyers_users ) );
 									foreach ( $dist->getResponsablesIds() as $dist_resp_id ) {
@@ -930,14 +928,14 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 										$inscr_another .= '<form class="inscription-distrib-other-user" action="#">';
 										$inscr_another .= '<div class="inscription-other-user">
 <select name="user" class="autocomplete ' . ( is_admin() ? '' : 'required' ) . '">' . tf_parse_select_options( $dist_cofoyers_users, null, false ) . '</select>
-<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire ce co-adhérent ?', 'amapress' ) . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">' . 'Inscrire' . '</button>
+<button type="button" class="' . $btn_class . ' dist-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire ce co-adhérent ?', 'amapress' ) . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </div>';
 										$inscr_another .= '</form>';
 									}
 								}
 							}
 
-							$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . 'M\'inscrire' . '</button>';
+							$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
 							$missing    = '';
 							if ( ! $for_pdf ) {
 								if ( ( $has_role_names || ! $added_inscr_button || $allow_multi_inscription ) && ( ! $is_resp || $allow_multi_inscription ) && $can_subscribe ) {
@@ -968,11 +966,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								$is_resp = $is_resp || $r->ID == $user_id;
 								if ( $can_unsubscribe ) {
 									if ( $r_id == $user_id ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">' . 'Me désinscrire' . '</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
 									} elseif ( $allow_manage_others ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire cet amapien ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">' . 'Désinscrire' . '</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire cet amapien ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">' . __( 'Désinscrire', 'amapress' ) . '</button>';
 									} elseif ( in_array( $r->ID, $cofoyers_ids ) ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire ce co-adhérent ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">' . 'Désinscrire' . '</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire ce co-adhérent ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">' . __( 'Désinscrire', 'amapress' ) . '</button>';
 									}
 								}
 							}
@@ -1062,7 +1060,7 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 	                          || amapress_can_access_admin()
 	                          || in_array( $user_id, $cofoyers_ids )
 		) ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
@@ -1073,23 +1071,23 @@ add_action( 'wp_ajax_desinscrire_distrib_action', function () {
 		$dist->desinscrireResponsable( $user_id ) ) {
 		case 'not_inscr':
 			if ( $is_current ) {
-				echo '<p class="error">' . 'Vous n\'êtes pas inscrit' . '</p>';
+				echo '<p class="error">' . __( 'Vous n\'êtes pas inscrit', 'amapress' ) . '</p>';
 			} else {
-				echo '<p class="error">' . 'Non inscrit' . '</p>';
+				echo '<p class="error">' . __( 'Non inscrit', 'amapress' ) . '</p>';
 			}
 			break;
 		case 'has_gardes':
 			if ( $is_current ) {
-				echo '<p class="error">' . 'Des amapiens vous ont confiés des paniers à cette distributions' . '</p>';
+				echo '<p class="error">' . __( 'Des amapiens vous ont confiés des paniers à cette distributions', 'amapress' ) . '</p>';
 			} else {
-				echo '<p class="error">' . 'Gardes de paniers en cours' . '</p>';
+				echo '<p class="error">' . __( 'Gardes de paniers en cours', 'amapress' ) . '</p>';
 			}
 			break;
 		case 'ok':
 			if ( $is_current ) {
-				echo '<p class="success">' . 'Votre désinscription a bien été prise en compte' . '</p>';
+				echo '<p class="success">' . __( 'Votre désinscription a bien été prise en compte', 'amapress' ) . '</p>';
 			} else {
-				echo '<p class="success">' . 'Désinscription bien prise en compte' . '</p>';
+				echo '<p class="success">' . __( 'Désinscription bien prise en compte', 'amapress' ) . '</p>';
 			}
 			break;
 	}
@@ -1106,7 +1104,7 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 	                          || amapress_can_access_admin()
 	                          || in_array( $user_id, $cofoyers_ids )
 		) ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
@@ -1122,22 +1120,22 @@ add_action( 'wp_ajax_inscrire_distrib_action', function () {
 			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
 		case 'already_in_list':
 			if ( $is_current ) {
-				echo '<p class="error">' . 'Vous êtes déjà inscrit' . '</p>';
+				echo '<p class="error">' . __( 'Vous êtes déjà inscrit', 'amapress' ) . '</p>';
 			} else {
-				echo '<p class="error">' . 'Déjà inscrit' . '</p>';
+				echo '<p class="error">' . __( 'Déjà inscrit', 'amapress' ) . '</p>';
 			}
 			break;
 		case 'already_taken':
-			echo '<p class="error">' . 'Rôle déjà pris' . '</p>';
+			echo '<p class="error">' . __( 'Rôle déjà pris', 'amapress' ) . '</p>';
 			break;
 		case 'list_full':
-			echo '<p class="error">' . 'La distribution est déjà complète' . '</p>';
+			echo '<p class="error">' . __( 'La distribution est déjà complète', 'amapress' ) . '</p>';
 			break;
 		case 'ok':
 			if ( $is_current ) {
-				echo '<p class="success">' . 'Votre inscription a bien été prise en compte' . '</p>';
+				echo '<p class="success">' . __( 'Votre inscription a bien été prise en compte', 'amapress' ) . '</p>';
 			} else {
-				echo '<p class="success">' . 'Inscription bien prise en compte' . '</p>';
+				echo '<p class="success">' . __( 'Inscription bien prise en compte', 'amapress' ) . '</p>';
 			}
 			break;
 	}
@@ -1161,7 +1159,7 @@ add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
 	}
 
 	if ( ! $is_ok ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
@@ -1170,10 +1168,10 @@ add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
 		$dist->desinscrireGardien( $user_id, true ) :
 		$dist->desinscrireResponsable( $user_id, true ) ) {
 		case 'not_inscr':
-			echo '<p class="error">' . 'Vous n\'êtes pas inscrit' . '</p>';
+			echo '<p class="error">' . __( 'Vous n\'êtes pas inscrit', 'amapress' ) . '</p>';
 			break;
 		case 'ok':
-			echo '<p class="success">' . 'Votre désinscription a bien été prise en compte' . '</p>';
+			echo '<p class="success">' . __( 'Votre désinscription a bien été prise en compte', 'amapress' ) . '</p>';
 			break;
 	}
 	die();
@@ -1195,7 +1193,7 @@ add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
 	}
 
 	if ( ! $is_ok ) {
-		echo '<p class="error">' . 'Non autorisé' . '</p>';
+		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
 		die();
 	}
 
@@ -1210,16 +1208,16 @@ add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
 			true,
 			isset( $_REQUEST['not_member'] ) ? Amapress::toBool( $_REQUEST['not_member'] ) : false ) ) {
 		case 'already_in_list':
-			echo '<p class="error">' . 'Vous êtes déjà inscrit' . '</p>';
+			echo '<p class="error">' . __( 'Vous êtes déjà inscrit', 'amapress' ) . '</p>';
 			break;
 		case 'already_taken':
-			echo '<p class="error">' . 'Rôle déjà pris' . '</p>';
+			echo '<p class="error">' . __( 'Rôle déjà pris', 'amapress' ) . '</p>';
 			break;
 		case 'list_full':
-			echo '<p class="error">' . 'La distribution est déjà complète' . '</p>';
+			echo '<p class="error">' . __( 'La distribution est déjà complète', 'amapress' ) . '</p>';
 			break;
 		case 'ok':
-			echo '<p class="success">' . 'Votre inscription a bien été prise en compte' . '</p>';
+			echo '<p class="success">' . __( 'Votre inscription a bien été prise en compte', 'amapress' ) . '</p>';
 			break;
 	}
 	die();
@@ -1257,7 +1255,7 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 			if ( $next_distrib ) {
 				return date_i18n( 'd/m/Y H:i', $next_distrib->getStartDateAndHour() );
 			} else {
-				return 'Pas de prochaine distribution';
+				return __( 'Pas de prochaine distribution', 'amapress' );
 			}
 		case 'next-emargement-href';
 			if ( $next_distrib ) {

@@ -37,11 +37,11 @@ class TitanFrameworkOptionSelectUsers extends TitanFrameworkOptionSelect {
 			return $this->settings['custom_csv_sample'];
 		} else {
 			return array(
-				'Login',
-				'Prénom Nom',
-				'Nom Prénom',
-				'Nom',
-				'Email'
+				__( 'Login', 'amapress' ),
+				__( 'Prénom Nom', 'amapress' ),
+				__( 'Nom Prénom', 'amapress' ),
+				__( 'Nom', 'amapress' ),
+				__( 'Email', 'amapress' )
 			);
 		}
 	}
@@ -177,7 +177,7 @@ class TitanFrameworkOptionSelectUsers extends TitanFrameworkOptionSelect {
 	public function getArchived( $id ) {
 		$user = get_user_by( 'ID', $id );
 		if ( ! $user ) {
-			return "Archivé $id";
+			return sprintf( __( "Archivé %s", 'amapress' ), $id );
 		}
 		$dn = "{$user->display_name} ({$user->user_email})";
 

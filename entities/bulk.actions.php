@@ -109,8 +109,8 @@ function amapress_custom_bulk_actions_admin_notices() {
 				$bulk_action_results = isset( $type['bulk_actions'][ $action ]['messages'] ) ?
 					$type['bulk_actions'][ $action ]['messages'] :
 					array(
-						'<=0' => "Une erreur est survenue pendant l'exécution de {$action}",
-						'>1'  => "%s {$post_type} mis à jour par {$action}",
+						'<=0' => sprintf( __( 'Une erreur est survenue pendant l\'exécution de %s', 'amapress' ), $action ),
+						'>1'  => sprintf( __( '%%s %s mis à jour par %s', 'amapress' ), $post_type, $action ),
 					);
 				$message             = '';
 				$message_index       = strval( $n );

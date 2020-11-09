@@ -19,7 +19,7 @@ function amapress_register_entities_message( $entities ) {
 			'target_name'     => array(
 				'name' => __( 'Destinataire', 'amapress' ),
 				'type' => 'readonly',
-				'desc' => 'Destinataire',
+				'desc' => __( 'Destinataire', 'amapress' ),
 			),
 			'query_string'    => array(
 				'name'        => __( 'Accès liste destinataires', 'amapress' ),
@@ -44,13 +44,13 @@ function amapress_register_entities_message( $entities ) {
 				'type' => 'readonly',
 			),
 			'content_for_sms' => array(
-				'name'        => 'Contenu du sms associé',
+				'name'        => __( 'Contenu du sms associé', 'amapress' ),
 				'type'        => 'readonly',
 				'show_column' => false,
 				'searchable'  => true,
 			),
 			'sms_sent'        => array(
-				'name'     => 'Sms relayé',
+				'name'     => __( 'Sms relayé', 'amapress' ),
 				'type'     => 'checkbox',
 				'readonly' => true,
 			),

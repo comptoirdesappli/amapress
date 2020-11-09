@@ -91,42 +91,42 @@ function amapress_distribution_views() {
 	amapress_add_view_button(
 		$ret, 'thisweek',
 		"post_type=amps_distribution&amapress_date=thisweek",
-		'Cette semaine' );
+		__( 'Cette semaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nextweek',
 		"post_type=amps_distribution&amapress_date=nextweek",
-		'Semaine prochaine' );
+		__( 'Semaine prochaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_distribution&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nextmonth',
 		"post_type=amps_distribution&amapress_date=nextmonth",
-		'Le mois prochain' );
+		__( 'Le mois prochain', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'prevmonth',
 		"post_type=amps_distribution&amapress_date=prevmonth",
-		'Le mois précédent' );
+		__( 'Le mois précédent', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'lastyear',
 		"post_type=amps_distribution&amapress_date=lastyear",
-		'L\'année précédente' );
+		__( 'L\'année précédente', 'amapress' ) );
 
 	if ( count( Amapress::get_lieu_ids() ) > 1 ) {
 		amapress_add_view_button(
 			$ret, 'change_lieu',
 			"post_type=amps_distribution&amapress_status=change_lieu",
-			'Changement lieu' );
+			__( 'Changement lieu', 'amapress' ) );
 	}
 	amapress_add_view_button(
 		$ret, 'change_hours',
 		"post_type=amps_distribution&amapress_status=change_hours",
-		'Changement horaires' );
+		__( 'Changement horaires', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'change_paniers',
 		"post_type=amps_distribution&amapress_status=change_paniers",
-		'Changement livraisons' );
+		__( 'Changement livraisons', 'amapress' ) );
 
 //        $prods = get_posts(array(
 //                'posts_per_page' => -1,
@@ -157,11 +157,11 @@ function amapress_visite_views() {
 	amapress_add_view_button(
 		$ret, 'thisweek',
 		"post_type=amps_visite&amapress_date=thisweek",
-		'Cette semaine' );
+		__( 'Cette semaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_visite&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nnext',
 		"post_type=amps_visite&amapress_date=next",
@@ -175,11 +175,11 @@ function amapress_assemblee_views() {
 	amapress_add_view_button(
 		$ret, 'thisweek',
 		"post_type=amps_assemblee&amapress_date=thisweek",
-		'Cette semaine' );
+		__( 'Cette semaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_assemblee&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nnext',
 		"post_type=amps_assemblee&amapress_date=next",
@@ -197,7 +197,7 @@ function amapress_amap_event_views() {
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_amap_event&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 
 	return $ret;
 }
@@ -207,29 +207,29 @@ function amapress_adhesion_paiement_views() {
 	amapress_add_view_button(
 		$ret, 'active',
 		"post_type=amps_adh_pmt&amapress_date=active",
-		'En cours' );
+		__( 'En cours', 'amapress' ) );
 
 	amapress_add_view_button(
 		$ret, 'not_received',
 		"post_type=amps_adh_pmt&amapress_status=not_received",
-		'Non reçu', false, true );
+		__( 'Non reçu', 'amapress' ), false, true );
 
 	amapress_add_view_button(
 		$ret, 'pmt_esp',
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_pmt_type=esp",
-		'Espèces' );
+		__( 'Espèces', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_vir',
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_pmt_type=vir",
-		'Virement' );
+		__( 'Virement', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_mon',
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_pmt_type=mon",
-		'Monnaie locale' );
+		__( 'Monnaie locale', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_mon',
 		"post_type=amps_adh_pmt&amapress_date=active&amapress_pmt_type=hla",
-		'HelloAsso' );
+		__( 'HelloAsso', 'amapress' ) );
 
 	return $ret;
 }
@@ -239,7 +239,7 @@ function amapress_adhesion_period_views() {
 	amapress_add_view_button(
 		$ret, 'active',
 		"post_type=amps_adh_per&amapress_date=active",
-		'En cours' );
+		__( 'En cours', 'amapress' ) );
 
 	return $ret;
 }
@@ -259,36 +259,36 @@ function amapress_panier_views() {
 	amapress_add_view_button(
 		$ret, 'lastweek',
 		"post_type=amps_panier&amapress_date=lastweek",
-		'Semaine dernière' );
+		__( 'Semaine dernière', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thisweek',
 		"post_type=amps_panier&amapress_date=thisweek",
-		'Cette semaine' );
+		__( 'Cette semaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nextweek',
 		"post_type=amps_panier&amapress_date=nextweek",
-		'Semaine prochaine' );
+		__( 'Semaine prochaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_panier&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nextmonth',
 		"post_type=amps_panier&amapress_date=nextmonth",
-		'Mois prochain' );
+		__( 'Mois prochain', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'prevmonth',
 		"post_type=amps_panier&amapress_date=prevmonth",
-		'Mois précédent' );
+		__( 'Mois précédent', 'amapress' ) );
 
 	amapress_add_view_button(
 		$ret, 'delayed',
 		"post_type=amps_panier&amapress_status=delayed&amapress_date=thisyear",
-		'Reporté' );
+		__( 'Reporté', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'cancelled',
 		"post_type=amps_panier&amapress_status=cancelled&amapress_date=thisyear",
-		'Annulé' );
+		__( 'Annulé', 'amapress' ) );
 
 	$contrats = AmapressContrats::get_active_contrat_instances();
 	foreach ( $contrats as $contrat ) {
@@ -306,7 +306,7 @@ function amapress_contrat_instance_views() {
 	amapress_add_view_button(
 		$ret, 'actives',
 		"post_type=amps_contrat_inst&amapress_date=active",
-		'En cours' );
+		__( 'En cours', 'amapress' ) );
 
 	foreach ( AmapressContrats::get_contrats() as $contrat ) {
 		amapress_add_view_button(
@@ -328,7 +328,7 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'actives',
 		"post_type=amps_adhesion&amapress_date=active",
-		'En cours' );
+		__( 'En cours', 'amapress' ) );
 
 //	$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
 	$contrats = AmapressContrats::get_active_contrat_instances();
@@ -362,7 +362,7 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'with_coadh',
 		"post_type=amps_adhesion&amapress_date=active&amapress_with_coadherents=true",
-		'Avec coadhérents' );
+		__( 'Avec coadhérents', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'to_confirm',
 		"post_type=amps_adhesion&amapress_date=active&amapress_status=to_confirm",
@@ -376,20 +376,20 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'ended',
 		"post_type=amps_adhesion&amapress_date=ended",
-		'Arrêtées/Clotûrées' );
+		__( 'Arrêtées/Clotûrées', 'amapress' ) );
 
 	amapress_add_view_button(
 		$ret, 'pmt_esp',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=esp",
-		'Espèces' );
+		__( 'Espèces', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_vir',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=vir",
-		'Virement' );
+		__( 'Virement', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_vir',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=mon",
-		'Monnaie locale' );
+		__( 'Monnaie locale', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_dlv',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=dlv",
@@ -397,15 +397,15 @@ function amapress_adhesion_views() {
 	amapress_add_view_button(
 		$ret, 'pmt_prl',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=prl",
-		'Prélèvement' );
+		__( 'Prélèvement', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_stp',
 		"post_type=amps_adhesion&amapress_date=active&amapress_pmt_type=stp",
-		'Paiement en ligne (Stripe)' );
+		__( 'Paiement en ligne (Stripe)', 'amapress' ) );
 	//    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",
-//        'Année précédente');
+//        __('Année précédente', 'amapress'));
 
 	return $ret;
 }
@@ -416,7 +416,7 @@ function amapress_adhesion_views() {
 //    amapress_add_view_button(
 //        $ret, 'actives',
 //        "post_type=amps_inter_adhe&amapress_date=active",
-//        'En cours');
+//        __('En cours', 'amapress'));
 //
 //    $lieux = get_posts(array(
 //            'posts_per_page' => -1,
@@ -462,84 +462,84 @@ function amapress_user_views( $ret ) {
 			amapress_add_view_button(
 				$ret, 'adhe_nok',
 				"amapress_adhesion=nok$query_add",
-				'Adhésions non réglées',
+				__( 'Adhésions non réglées', 'amapress' ),
 				true, true );
 		}
 		amapress_add_view_button(
 			$ret, 'w_adhe',
 			"amapress_contrat=active$query_add",
-			'Amapiens avec contrats',
+			__( 'Amapiens avec contrats', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'norenew',
 			"amapress_info=norenew$query_add",
-			'Non renouvellement',
+			__( 'Non renouvellement', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'no_loc',
 			"amapress_info=address_unk&amapress_contrat=active$query_add",
-			'Amapiens non localisés',
+			__( 'Amapiens non localisés', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'no_tel',
 			"amapress_info=phone_unk&amapress_contrat=active$query_add",
-			'Amapiens sans téléphone',
+			__( 'Amapiens sans téléphone', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'wo_adhe',
 			"amapress_contrat=no$query_add",
-			'Amapiens sans contrats',
+			__( 'Amapiens sans contrats', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'intermittents',
 			"amapress_contrat=intermittent$query_add",
-			'Intermittents',
+			__( 'Intermittents', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'coadh',
 			"amapress_contrat=coadherent$query_add",
-			'Co-adhérents',
+			__( 'Co-adhérents', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'with_coadh',
 			"amapress_contrat=with_coadherent$query_add",
-			'Amapiens avec co-adhérents',
+			__( 'Amapiens avec co-adhérents', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'principal',
 			"amapress_contrat=principal$query_add",
-			'Amapiens Principaux',
+			__( 'Amapiens Principaux', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'principal_contrat',
 			"amapress_contrat=principal_contrat$query_add",
-			'Amapiens Principaux (contrat)',
+			__( 'Amapiens Principaux (contrat)', 'amapress' ),
 			true );
 		amapress_add_view_button(
 			$ret, 'collectif',
 			"amapress_role=collectif$query_add",
-			'Membres du collectif',
+			__( 'Membres du collectif', 'amapress' ),
 			true );
 		if ( ! $is_adhesion_paiements ) {
 			amapress_add_view_button(
 				$ret, 'never_logged',
 				"amapress_role=never_logged$query_add",
-				'Jamais connecté',
+				__( 'Jamais connecté', 'amapress' ),
 				true );
 			amapress_add_view_button(
 				$ret, 'resp_distrib',
 				"amapress_role=resp_distrib$query_add",
-				'Responsable Distribution - Semaine',
+				__( 'Responsable Distribution - Semaine', 'amapress' ),
 				true );
 			amapress_add_view_button(
 				$ret, 'resp_distrib_next',
 				"amapress_role=resp_distrib_next$query_add",
-				'Responsable Distribution - Semaine prochaine',
+				__( 'Responsable Distribution - Semaine prochaine', 'amapress' ),
 				true );
 			amapress_add_view_button(
 				$ret, 'resp_distrib_month',
 				"amapress_role=resp_distrib_month$query_add",
-				'Responsable Distribution - Mois',
+				__( 'Responsable Distribution - Mois', 'amapress' ),
 				true );
 
 //			$contrats = AmapressContrats::get_active_contrat_instances( null, Amapress::remove_a_year( amapress_time() ) );
@@ -580,14 +580,14 @@ function amapress_user_views( $ret ) {
 		amapress_add_view_button(
 			$ret, 'archivable',
 			"amapress_role=archivable$query_add",
-			'Comptes archivables',
+			__( 'Comptes archivables', 'amapress' ),
 			true );
 	}
 
 //    amapress_add_view_button(
 //        $ret, 'lastyear',
 //        "post_type=amps_adhesion&amapress_date=lastyear",
-//        'Année précédente');
+//        __('Année précédente', 'amapress'));
 
 	return $ret;
 }
@@ -597,11 +597,11 @@ function amapress_paiements_views() {
 	amapress_add_view_button(
 		$ret, 'thisweek',
 		"post_type=amps_cont_pmt&amapress_date=thisweek",
-		'Cette semaine' );
+		__( 'Cette semaine', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_cont_pmt&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 
 	$lieux    = Amapress::get_lieux();
 	$contrats = AmapressContrats::get_active_contrat_instances();
@@ -630,21 +630,21 @@ function amapress_paiements_views() {
 	amapress_add_view_button(
 		$ret, 'not_received',
 		"post_type=amps_cont_pmt&amapress_status=not_received",
-		'Non reçu', false, true );
+		__( 'Non reçu', 'amapress' ), false, true );
 
 	amapress_add_view_button(
 		$ret, 'pmt_esp',
 		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=esp",
-		'Espèces' );
+		__( 'Espèces', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'pmt_vir',
 		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=vir",
-		'Virement' );
+		__( 'Virement', 'amapress' ) );
 
 	amapress_add_view_button(
 		$ret, 'pmt_stp',
 		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=stp",
-		'Paiement en ligne (Stripe)' );
+		__( 'Paiement en ligne (Stripe)', 'amapress' ) );
 //	amapress_add_view_button(
 //		$ret, 'pmt_dlv',
 //		"post_type=amps_cont_pmt&amapress_date=active&amapress_pmt_type=dlv",
@@ -659,15 +659,15 @@ function amapress_intermittence_panier_views() {
 	amapress_add_view_button(
 		$ret, 'actives',
 		"post_type=amps_inter_panier&amapress_date=active",
-		'En cours' );
+		__( 'En cours', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'thismonth',
 		"post_type=amps_inter_panier&amapress_date=thismonth",
-		'Ce mois' );
+		__( 'Ce mois', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'nextmonth',
 		"post_type=amps_inter_panier&amapress_date=nextmonth",
-		'Mois prochain' );
+		__( 'Mois prochain', 'amapress' ) );
 
 	$lieux = Amapress::get_lieux();
 	if ( count( $lieux ) > 1 ) {
@@ -685,15 +685,15 @@ function amapress_intermittence_panier_views() {
 	amapress_add_view_button(
 		$ret, 'exch_valid_wait',
 		"post_type=amps_inter_panier&amapress_status=exch_valid_wait",
-		'En attente validation' );
+		__( 'En attente validation', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'exchanged',
 		"post_type=amps_inter_panier&amapress_status=exchanged",
-		'Réservé' );
+		__( 'Réservé', 'amapress' ) );
 	amapress_add_view_button(
 		$ret, 'cancelled',
 		"post_type=amps_inter_panier&amapress_status=cancelled",
-		'Annulé' );
+		__( 'Annulé', 'amapress' ) );
 	if ( count( $lieux ) > 1 ) {
 		foreach ( $lieux as $lieu ) {
 			amapress_add_view_button(
@@ -751,7 +751,7 @@ function amapress_add_view_export_csv( $name = null, $is_user = false ) {
 		$url = AmapressExport_Posts::get_export_url( $name );
 	}
 
-	return "<a href='$url'>" . 'Exporter' . " <span class='dashicons dashicons-external'></span></a>";
+	return "<a href='$url'>" . __( 'Exporter', 'amapress' ) . " <span class='dashicons dashicons-external'></span></a>";
 }
 
 function amapress_generate_view_button( $query, $title, $user = false, $show_zero = false ) {

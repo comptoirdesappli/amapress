@@ -64,10 +64,10 @@ function amapress_posts_get_field_display_name( $field_name, $post_type ) {
 	//TODO place in right entity
 	if ( $post_type == AmapressAdhesion::POST_TYPE ) {
 		if ( $field_name == 'amapress_adhesion_contrat_instance' ) {
-			return 'Contrat';
+			return __( 'Contrat', 'amapress' );
 		}
 		if ( $field_name == 'amapress_adhesion_contrat_quantite' ) {
-			return 'Quantité';
+			return __( 'Quantité', 'amapress' );
 		}
 	}
 

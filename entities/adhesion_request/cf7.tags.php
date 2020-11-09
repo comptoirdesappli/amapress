@@ -62,7 +62,7 @@ function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
 					}
 					$tag['raw_values'][] = $lieu->ID;
 					$tag['values'][]     = $lieu->ID;
-					$tag['labels'][]     = sprintf( '%s (%s)', $lieu->getTitle(), $lieu->getFormattedAdresse() );
+					$tag['labels'][]     = sprintf( __( '%s (%s)', 'amapress' ), $lieu->getTitle(), $lieu->getFormattedAdresse() );
 				}
 				break;
 			case 'contrats':
@@ -107,7 +107,7 @@ function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
 				$tag['options'][]    = 'use_label_element';
 				$tag['raw_values'][] = 1;
 				$tag['values'][]     = 1;
-				$tag['labels'][]     = 'Devenir intermittent';
+				$tag['labels'][]     = __( 'Devenir intermittent', 'amapress' );
 				break;
 			default:
 				$tag['basetype'] = 'text';
@@ -138,7 +138,7 @@ function amapress_cf7_tag_generator_amapress_field( $contact_form, $args = '' ) 
 	$description = '';
 	switch ( $type ) {
 		case 'amapress_field':
-			$description = __( "Gère les champs de contact Amapress", 'contact-form-7' );
+			$description = __( 'Gère les champs de contact Amapress', 'contact-form-7' );
 			//$type = 'text';
 			break;
 		default:

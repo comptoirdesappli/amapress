@@ -138,14 +138,14 @@ class Amapress_Import_Posts_CSV {
 		self::init( $post_type );
 
 		if ( ! current_user_can( 'edit_' . $post_type ) ) {
-			wp_die( __( "Vous n'avait pas les droits de créer des $post_type", 'amapress' ) );
+			wp_die( __( sprintf( __( "Vous n'avait pas les droits de créer des %s", 'amapress' ), $post_type ), 'amapress' ) );
 		}
 
 		ob_start();
 		?>
 
         <div class="wrap">
-        <h2><?php _e( "Import de $post_type depuis un fichier XLSX/XLS/ODS", 'amapress' ); ?></h2>
+        <h2><?php _e( sprintf( __( 'Import de %s depuis un fichier XLSX/XLS/ODS', 'amapress' ), $post_type ), 'amapress' ); ?></h2>
 		<?php
 		$error_log_file = self::$log_dir_path . self::$log_file_name;
 		$error_log_url  = self::$log_dir_url . self::$log_file_name;
@@ -313,7 +313,7 @@ class Amapress_Import_Posts_CSV {
 		foreach ( $fields as $key => $field ) {
 			if ( in_array( $field, $taxonomies_names ) ) {
 				$headers[ $key ]      = $taxonomies_names[ $field ];
-				$headers_desc[ $key ] = 'Saisir une ou plusieurs des étiquettes suivantes séparées par des virgules';
+				$headers_desc[ $key ] = __( 'Saisir une ou plusieurs des étiquettes suivantes séparées par des virgules', 'amapress' );
 				$options[ $key ]      = $taxonomies_values[ $field ];
 			} else {
 				$arg  = [
@@ -525,7 +525,7 @@ class Amapress_Import_Posts_CSV {
 						if ( is_wp_error( $header_name ) ) {
 							$errors[ $rkey ][] = $header_name;
 						} else {
-							$errors[ $rkey ][] = new WP_Error( 'required_header_missing', "Il manque une colonne $header_name." );
+							$errors[ $rkey ][] = new WP_Error( 'required_header_missing', sprintf( __( 'Il manque une colonne %s.', 'amapress' ), $header_name ) );
 						}
 					}
 
@@ -550,7 +550,7 @@ class Amapress_Import_Posts_CSV {
 					}
 
 					if ( in_array( $column_name, $required_headers ) && empty( $column ) ) {
-						$column = new WP_Error( 'required_value_missing', "Colonne $col_name : valeur requise pour la colonne {$headers[$ckey]}." );
+						$column = new WP_Error( 'required_value_missing', sprintf( __( 'Colonne %s : valeur requise pour la colonne %s.', 'amapress' ), $col_name, $headers[ $ckey ] ) );
 					}
 
 					if ( in_array( $column_name, $postdata_fields ) ) {
@@ -823,7 +823,7 @@ class Amapress_Import_Posts_CSV {
 			}
 //			fclose( $file_handle );
 //		} else {
-//			$errors[] = new WP_Error('file_read', 'Unable to open CSV file.');
+//			$errors[] = new WP_Error('file_read', __('Unable to open CSV file.', 'amapress'));
 //		}
 		} catch ( Exception $e ) {
 			$errors[] = new WP_Error( 'file_read', $e->getMessage() );

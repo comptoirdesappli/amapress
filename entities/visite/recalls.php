@@ -14,19 +14,19 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 	$visite       = new AmapressVisite( $args['id'] );
 	$participants = $visite->getParticipantIds();
 	if ( empty( $participants ) ) {
-		echo '<p>' . 'Aucun participants' . '</p>';
+		echo '<p>' . __( 'Aucun participants', 'amapress' ) . '</p>';
 
 		return;
 	}
 
-	$participants_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $participants ), "Participants " . $visite->getTitle(), "visite" );
+	$participants_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $participants ), sprintf( __( 'Participants %s', 'amapress' ), $visite->getTitle() ), "visite" );
 	amapress_send_message(
 		Amapress::getOption( 'visite-inscription-recall-mail-subject' ),
 		Amapress::getOption( 'visite-inscription-recall-mail-content' ),
 		'', $participants_users, $visite, array(),
 		amapress_get_recall_cc_from_option( 'visite-inscription-recall-cc' ),
 		null, AmapressVisite::getResponsableVisitesReplyto() );
-	echo '<p>' . 'Email de rappel d\'inscription à une visite envoyé' . '</p>';
+	echo '<p>' . __( 'Email de rappel d\'inscription à une visite envoyé', 'amapress' ) . '</p>';
 } );
 
 /** @return array */
@@ -51,8 +51,8 @@ function amapress_visite_inscription_recall_options() {
 	return array(
 		array(
 			'id'                  => 'visite-inscription-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Inscription à une visite',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Inscription à une visite', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_visite_inscription',
 			'hook_args_generator' => function ( $option ) {
@@ -61,8 +61,8 @@ function amapress_visite_inscription_recall_options() {
 		),
 		array(
 			'id'                  => 'visite-inscription-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Inscription à une visite',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Inscription à une visite', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -73,18 +73,18 @@ function amapress_visite_inscription_recall_options() {
 		),
 		array(
 			'id'       => 'visite-inscription-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit à %%post:title%%',
 		),
 		array(
 			'id'      => 'visite-inscription-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\n\nVous êtes inscrit à %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp();
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) . AmapressVisite::getPlaceholdersHelp();
 			},
 		),
 		array(
@@ -94,7 +94,7 @@ function amapress_visite_inscription_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'type' => 'save',
@@ -107,34 +107,34 @@ add_action( 'amapress_recall_visite_available', function ( $args ) {
 	$participants = $visite->getParticipantIds();
 	$producteur   = $visite->getProducteur();
 	if ( empty( $producteur ) ) {
-		echo '<p>' . 'Producteur introuvable' . '</p>';
+		echo '<p>' . __( 'Producteur introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
 	$contrats = $producteur->getContrats();
 	$contrat  = array_shift( $contrats );
 	if ( empty( $contrat ) ) {
-		echo '<p>' . 'Producteur sans contrat' . '</p>';
+		echo '<p>' . __( 'Producteur sans contrat', 'amapress' ) . '</p>';
 
 		return;
 	}
 	$contrat_id = $contrat->ID;
 
-	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_contrat=' . $contrat_id . '&exclude=' . implode( ',', $participants ), "Amapiens ayant un contrat " . $contrat->getTitle(), "visite" );
+	$non_participants_users = amapress_prepare_message_target_bcc( 'user:amapress_contrat=' . $contrat_id . '&exclude=' . implode( ',', $participants ), sprintf( __( "Amapiens ayant un contrat %s", 'amapress' ), $contrat->getTitle() ), "visite" );
 	amapress_send_message(
 		Amapress::getOption( 'visite-available-recall-mail-subject' ),
 		Amapress::getOption( 'visite-available-recall-mail-content' ),
 		'', $non_participants_users, $visite, array(),
 		amapress_get_recall_cc_from_option( 'visite-available-recall-cc' ),
 		null, AmapressVisite::getResponsableVisitesReplyto() );
-	echo '<p>' . 'Email de rappel qu\'une visite a lieu envoyé' . '</p>';
+	echo '<p>' . __( 'Email de rappel qu\'une visite a lieu envoyé', 'amapress' ) . '</p>';
 } );
 function amapress_visite_available_recall_options() {
 	return array(
 		array(
 			'id'                  => 'visite-available-recall-1',
-			'name'                => 'Rappel 1',
-			'desc'                => 'Inscription à une visite',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Inscription à une visite', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'hook_name'           => 'amapress_recall_visite_available',
 			'hook_args_generator' => function ( $option ) {
@@ -143,8 +143,8 @@ function amapress_visite_available_recall_options() {
 		),
 		array(
 			'id'                  => 'visite-available-recall-2',
-			'name'                => 'Rappel 2',
-			'desc'                => 'Inscription à une visite',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Inscription à une visite', 'amapress' ),
 			'type'                => 'event-scheduler',
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
@@ -155,18 +155,18 @@ function amapress_visite_available_recall_options() {
 		),
 		array(
 			'id'       => 'visite-available-recall-mail-subject',
-			'name'     => 'Sujet de l\'email',
+			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Une viste a lieu bientôt : %%post:title%%',
 		),
 		array(
 			'id'      => 'visite-available-recall-mail-content',
-			'name'    => 'Contenu de l\'email',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
-			'default' => wpautop( "Bonjour,\n\nUne visite a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%" ),
+			'default' => wpautop( __( "Bonjour,\n\nUne visite a lieu bientôt : %%post:titre%% (%%post:lien%%)\nPensez à vous inscrire !\n\n%%nom_site%%", 'amapress' ) ),
 			'desc'    => function ( $option ) {
-				return 'Les placeholders suivants sont disponibles:' . AmapressVisite::getPlaceholdersHelp();
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) . AmapressVisite::getPlaceholdersHelp();
 			},
 		),
 		array(
@@ -176,7 +176,7 @@ function amapress_visite_available_recall_options() {
 			'autocomplete' => true,
 			'multiple'     => true,
 			'tags'         => true,
-			'desc'         => 'Emails en copie',
+			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
 			'type' => 'save',

@@ -102,7 +102,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                     return jQuery(element).val().trim().length > 0;
                 }
                 return true;
-            }, "Champ requis");
+            }, "<?php echo esc_js( __( 'Champ requis', 'amapress' ) ); ?>");
         });
         //]]>
     </script>
@@ -179,19 +179,19 @@ function amapress_edit_user_info_shortcode( $atts ) {
                    value="<?php esc_attr_e( wp_unslash( $user->getCode_postal() ) ); ?>"
                    size="5"/>
         </div>
-	    <div class="form-group">
-		    <label for="amapress_user_ville">
-			    <?php _e( 'Ville', 'amapress' ) ?><br/>
-		    </label>
-		    <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
-		           name="amapress_user_ville" id="amapress_user_ville"
-		           value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
-	    </div>
-	    <?php if ( $allow_trombi_decline ) { ?>
-		    <div class="form-group">
-			    <label for="amapress_user_hidaddr">
-				    <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
-					    <?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
+        <div class="form-group">
+            <label for="amapress_user_ville">
+				<?php _e( 'Ville', 'amapress' ) ?><br/>
+            </label>
+            <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
+                   name="amapress_user_ville" id="amapress_user_ville"
+                   value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
+        </div>
+		<?php if ( $allow_trombi_decline ) { ?>
+            <div class="form-group">
+                <label for="amapress_user_hidaddr">
+                    <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
+						<?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
 				    <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
 			    </label>
 		    </div>
@@ -301,7 +301,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                         <td>
                             <label for="cofoy1_remove"><input type="checkbox" name="cofoy1_remove"
                                                               id="cofoy1_remove"/>
-								<?php echo esc_html( sprintf( 'Je ne partage plus de panier avec %s %s', $cofoy1_user_firt_name, $cofoy1_user_last_name ) ) ?>
+								<?php echo esc_html( sprintf( __( 'Je ne partage plus de panier avec %s %s', 'amapress' ), $cofoy1_user_firt_name, $cofoy1_user_last_name ) ) ?>
                             </label>
                         </td>
                     </tr>
@@ -379,8 +379,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                         <th style="text-align: left; width: auto"></th>
                         <td>
                             <label for="cofoy2_remove"><input type="checkbox" name="cofoy2_remove"
-                                                              id="cofoy2_remove"/> Je ne partage plus de panier
-                                avec <?php echo esc_html( "$cofoy2_user_firt_name $cofoy2_user_last_name" ) ?>
+                                                              id="cofoy2_remove"/>
+								<?php echo esc_html( sprintf( __( 'Je ne partage plus de panier avec %s %s', 'amapress' ), $cofoy2_user_firt_name, $cofoy2_user_last_name ) ) ?>
                             </label>
                         </td>
                     </tr>
@@ -390,7 +390,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		<?php if ( $max_cofoyers >= 3 ) { ?>
             <table style="min-width: 50%">
                 <tr>
-                    <th colspan="2"><?php _e( 'Membre du foyer 3', 'amapress' ) ?></th>
+                    <th colspan="2"><?php _e( 'Membre du foyer 3', 'amapress' ); ?></th>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label

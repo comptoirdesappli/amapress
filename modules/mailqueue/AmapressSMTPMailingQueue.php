@@ -89,7 +89,7 @@ class AmapressSMTPMailingQueue {
 			} );
 		$ct      = array_filter( $headers,
 			function ( $h ) {
-				return false !== stripos( $h, 'Content-Type' );
+				return false !== stripos( $h, __( 'Content-Type', 'amapress' ) );
 			} );
 		if ( empty( $ct ) && 'text/html' == apply_filters( 'wp_mail_content_type', 'text/plain' ) ) {
 			$headers[] = 'Content-Type: text/html; charset=UTF-8';
@@ -360,7 +360,7 @@ class AmapressSMTPMailingQueue {
 		}
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
-			@error_log( 'Email send Error : ' . implode( ' ; ', $errors ) );
+			@error_log( __( 'Email send Error : ', 'amapress' ) . implode( ' ; ', $errors ) );
 			if ( $store_errors ) {
 				self::storeMail( $mlgrp_id, 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
 			}

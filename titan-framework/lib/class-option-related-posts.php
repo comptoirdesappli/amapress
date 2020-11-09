@@ -10,24 +10,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
+	public $defaultSecondarySettings;
 
-	public $defaultSecondarySettings = array(
-		'query'                    => null,
-		'table_header_text'        => '',
-		'show_link'                => true,
-		'bare'                     => false,
-		'link_text'                => 'Voir les (%%count%%) éléments',
-		'empty_text'               => '',
-		'show_on'                  => 'edit-only',
-		'show_table'               => true,
-		'show_column_values'       => false,
-		'include_columns'          => array(),
-		'exclude_columns'          => array(),
-		'datatable_options'        => array(),
-		'column_options'           => array(),
-		'related_posts_count_func' => null,
-		'related_posts_count_link' => true,
-	);
+	public function __construct( $settings, $owner ) {
+		$this->defaultSecondarySettings = array(
+			'query'                    => null,
+			'table_header_text'        => '',
+			'show_link'                => true,
+			'bare'                     => false,
+			'link_text'                => __( 'Voir les (%%count%%) éléments', 'amapress' ),
+			'empty_text'               => '',
+			'show_on'                  => 'edit-only',
+			'show_table'               => true,
+			'show_column_values'       => false,
+			'include_columns'          => array(),
+			'exclude_columns'          => array(),
+			'datatable_options'        => array(),
+			'column_options'           => array(),
+			'related_posts_count_func' => null,
+			'related_posts_count_link' => true,
+		);
+		parent::__construct( $settings, $owner );
+	}
 
 	private function evalQuery( $postID = null ) {
 		$post_type = null;
@@ -404,14 +408,12 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 		$url        = add_query_arg( $args, 'edit.php' );
 		$class_html = '';
 		if ( ! empty( $class ) ) {
-			$class_html = sprintf(
-				' class="%s"',
+			$class_html = sprintf( __( ' class="%s"', 'amapress' ),
 				esc_attr( $class )
 			);
 		}
 
-		return sprintf(
-			'<a href="%s"%s>%s</a>',
+		return sprintf( __( '<a href="%s"%s>%s</a>', 'amapress' ),
 			esc_url( $url ),
 			$class_html,
 			$label
@@ -553,7 +555,7 @@ class TitanFrameworkOptionRelatedPosts extends TitanFrameworkOption {
 			if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
 				$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
 			} else {
-				$h_time = mysql2date( __( 'Y/m/d' ), $m_time );
+				$h_time = mysql2date( 'Y/m/d', $m_time );
 			}
 		}
 		if ( 'publish' === $post->post_status ) {

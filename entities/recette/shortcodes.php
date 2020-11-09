@@ -20,7 +20,7 @@ function amapress_recettes_shortcode( $atts ) {
 		'cat__not_in' => '',
 		'render_func' => 'simple_recette_cell',
 //		'posts_per_page' => 12,
-		'if_empty'    => 'Pas encore de recette',
+		'if_empty'    => __( 'Pas encore de recette', 'amapress' ),
 //		'order'          => 'ASC',
 //		'orderby'        => 'title',
 //		'id'             => 0,

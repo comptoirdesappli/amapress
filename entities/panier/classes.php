@@ -91,9 +91,9 @@ class AmapressPanier extends Amapress_EventBase {
 //	public function getStatusDescription() {
 //		switch ( $this->getStatus() ) {
 //			case 'delayed':
-//				return 'Reportée au ' . date_i18n( 'd/m/Y', $this->getDateSubst() );
+//				return __('Reportée au ', 'amapress') . date_i18n( 'd/m/Y', $this->getDateSubst() );
 //			case 'cancelled':
-//				return 'Annulée';
+//				return __('Annulée', 'amapress');
 //			default:
 //				return '';
 //		}

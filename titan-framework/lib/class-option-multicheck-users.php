@@ -21,11 +21,11 @@ class TitanFrameworkOptionMulticheckUsers extends TitanFrameworkOptionMulticheck
 			return $this->settings['custom_csv_sample'];
 		} else {
 			return array(
-				'Login',
-				'Prénom Nom',
-				'Nom Prénom',
-				'Nom',
-				'Email'
+				__( 'Login', 'amapress' ),
+				__( 'Prénom Nom', 'amapress' ),
+				__( 'Nom Prénom', 'amapress' ),
+				__( 'Nom', 'amapress' ),
+				__( 'Email', 'amapress' )
 			);
 		}
 	}

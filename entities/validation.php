@@ -62,30 +62,32 @@ function amapress_post_validation() {
             };
             jQuery.validator.addMethod("multicheckReq", function (value, element) {
                 return jQuery('input:checkbox:checked,input:radio:checked', jQuery(element).closest('fieldset')).length > 0;
-            }, "Sélectionner au moins un élément");
-            jQuery.validator.addMethod("exclusiveCheckgroup", exclusiveGroupCheckFunction, "Sélectionner des élements dans un seul groupe");
-            jQuery.validator.addMethod("exclusiveContrat", exclusiveGroupCheckFunction, "Attention, vous avez sélectionné des produits/quantités concernant des contrats différents !");
+            }, "<?php echo esc_js( __( 'Sélectionner au moins un élément', 'amapress' ) ); ?>");
+            jQuery.validator.addMethod("exclusiveCheckgroup", exclusiveGroupCheckFunction,
+                "<?php echo esc_js( __( 'Sélectionner des élements dans un seul groupe', 'amapress' ) ); ?>");
+            jQuery.validator.addMethod("exclusiveContrat", exclusiveGroupCheckFunction,
+                "<?php echo esc_js( __( 'Attention, vous avez sélectionné des produits/quantités concernant des contrats différents !', 'amapress' ) ); ?>");
             jQuery.validator.addMethod("tinymcerequired", function (value, element) {
                 var content = tinymce.get(element.id).getContent({format: 'text'});
                 return jQuery.trim(content) != '';
-            }, "Doit être rempli");
+            }, "<?php echo esc_js( __( 'Doit être rempli', 'amapress' ) ); ?>");
             jQuery.validator.addMethod(
                 "docspaceSubfolders",
                 function (value, element) {
                     var re = new RegExp(/^(([a-z0-9]+)(\s*,\s*([a-z0-9]+))*)?$/);
                     return this.optional(element) || re.test(value);
                 },
-                "Les sous dossiers doivent avoir la forme xxx,yyy,... et ne doivent être composé que de minuscules ou chiffres"
+                "<?php echo esc_js( __( 'Les sous dossiers doivent avoir la forme xxx,yyy,... et ne doivent être composé que de minuscules ou chiffres', 'amapress' ) ); ?>"
             );
             jQuery.validator.addMethod('positiveNumber',
                 function (value) {
                     return Number(value) > 0;
-                }, 'Doit être supérieur à 0');
+                }, '<?php echo esc_js( __( 'Doit être supérieur à 0', 'amapress' ) ); ?>');
             jQuery.validator.setDefaults({
                 ignore: ''
             });
             var createBtn = jQuery("form#createuser #createusersub");
-            createBtn.hide().after("<input type=\'button\' value=\'Ajouter un utilisateur\' id=\'amapress_add_user\' class=\'amapress_add_user button-primary\' />");
+            createBtn.hide().after("<input type=\'button\' value=\'<?php echo esc_js( __( 'Ajouter un utilisateur', 'amapress' ) ); ?>\' id=\'amapress_add_user\' class=\'amapress_add_user button-primary\' />");
             jQuery("#amapress_add_user").click(function () {
                 try {
                     window.tinyMCE.triggerSave();
@@ -95,12 +97,12 @@ function amapress_post_validation() {
                 if (jQuery('form#createuser').valid()) {
                     createBtn.click();
                 } else {
-                    alert('Certains champs ne sont pas valides');
+                    alert('<?php echo esc_js( __( 'Certains champs ne sont pas valides', 'amapress' ) ); ?>');
                 }
             });
 
             var updateBtn = jQuery("form#your-profile #submit");
-            updateBtn.hide().after("<input type=\'button\' value=\'Mettre à jour\' id=\'amapress_update_user\' class=\'amapress_update_user button-primary\' />");
+            updateBtn.hide().after("<input type=\'button\' value=\'<?php echo esc_js( __( 'Mettre à jour', 'amapress' ) ); ?>\' id=\'amapress_update_user\' class=\'amapress_update_user button-primary\' />");
             jQuery("#amapress_update_user, #wp-admin-bar-amapress_update_user_admin_bar button.amapress_update_user").click(function () {
                 try {
                     window.tinyMCE.triggerSave();
@@ -110,12 +112,12 @@ function amapress_post_validation() {
                 if (jQuery('form#your-profile').valid()) {
                     updateBtn.click();
                 } else {
-                    alert('Certains champs ne sont pas valides');
+                    alert('<?php echo esc_js( __( 'Certains champs ne sont pas valides', 'amapress' ) ); ?>');
                 }
             });
 
             var publishBtn = jQuery("form#post #publish");
-            publishBtn.hide().after("<input type=\'button\' value=\'Enregistrer\' id=\'amapress_publish\' class=\'amapress_publish button-primary\' />");
+            publishBtn.hide().after("<input type=\'button\' value=\'<?php echo esc_js( __( 'Enregistrer', 'amapress' ) ); ?>\' id=\'amapress_publish\' class=\'amapress_publish button-primary\' />");
             jQuery("#amapress_publish, #wp-admin-bar-amapress_publish_admin_bar button.amapress_publish").click(function () {
                 try {
                     window.tinyMCE.triggerSave();
@@ -125,7 +127,7 @@ function amapress_post_validation() {
                 if (jQuery('form#post').valid()) {
                     publishBtn.click();
                 } else {
-                    alert('Certains champs ne sont pas valides');
+                    alert('<?php echo esc_js( __( 'Certains champs ne sont pas valides', 'amapress' ) ); ?>');
                 }
             }).css('display', publishBtn.length > 0 ? 'block' : 'none');
 
@@ -135,7 +137,7 @@ function amapress_post_validation() {
             jQuery.validator.addClassRules('emailDoesNotExists', {
                 remote: function (element) {
                     return {
-                        "url": "<?php echo admin_url( 'admin-ajax.php' ) ?>",
+                        "url": "<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>",
                         "type": "post",
                         "data": {
                             "action": "check_email_exists",
@@ -149,7 +151,7 @@ function amapress_post_validation() {
             jQuery.validator.addClassRules('onlyOneInscription', {
                 remote: function (element) {
                     return {
-                        "url": "<?php echo admin_url( 'admin-ajax.php' ) ?>",
+                        "url": "<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>",
                         "type": "post",
                         "data": {
                             "action": "check_inscription_unique",

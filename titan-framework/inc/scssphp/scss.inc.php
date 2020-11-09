@@ -1328,7 +1328,7 @@ class titanscssc {
 					return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $value[4] . ')';
 				}
 
-				$h = sprintf( '#%02x%02x%02x', $r, $g, $b );
+				$h = sprintf( __( '#%02x%02x%02x', 'amapress' ), $r, $g, $b );
 
 				// Converting hex color to short notation (e.g. #003399 to #039)
 				if ( $h[1] == $h[2] && $h[3] == $h[4] && $h[5] == $h[6] ) {
@@ -2233,7 +2233,7 @@ class titanscssc {
 		$color    = $this->coerceColor( $args[0] );
 		$color[4] = isset( $color[4] ) ? round( 255 * $color[4] ) : 255;
 
-		return sprintf( '#%02X%02X%02X%02X', $color[4], $color[1], $color[2], $color[3] );
+		return sprintf( __( '#%02X%02X%02X%02X', 'amapress' ), $color[4], $color[1], $color[2], $color[3] );
 	}
 
 	protected static $lib_red = array( 'color' );

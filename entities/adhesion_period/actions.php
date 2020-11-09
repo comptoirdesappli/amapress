@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'admin_post_archives_adhesions', function () {
 	if ( ! amapress_can_access_admin() ) {
-		wp_die( 'Accès interdit' );
+		wp_die( __( 'Accès interdit', 'amapress' ) );
 	}
 
 	$period_id  = intval( $_GET['period'] );
@@ -26,6 +26,6 @@ add_action( 'admin_post_archives_adhesions', function () {
 			Amapress::getArchivesDir() . '/' . $archives_infos["file_$type"],
 			$archives_infos["file_$type"] );
 	} else {
-		wp_die( 'Fichier introuvable' );
+		wp_die( __( 'Fichier introuvable', 'amapress' ) );
 	}
 } );

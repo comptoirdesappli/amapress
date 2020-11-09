@@ -31,7 +31,7 @@ class Amapress_Copyleft_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		echo $args['before_widget'];
-		echo 'Construit avec AMAPress, l\'outil pour les AMAPs';
+		echo __( 'Construit avec AMAPress, l\'outil pour les AMAPs', 'amapress' );
 		echo $args['after_widget'];
 	}
 

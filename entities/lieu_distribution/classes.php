@@ -160,7 +160,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
-			return sprintf( '%s, %s %s', $this->getAdresse(), $cp, $v );
+			return sprintf( __( '%s, %s %s', 'amapress' ), $this->getAdresse(), $cp, $v );
 		} else {
 			return $this->getAdresse();
 		}
@@ -170,7 +170,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();
 		if ( ! empty( $v ) ) {
-			return sprintf( '%s<br/>%s %s', $this->getAdresse(), $cp, $v );
+			return sprintf( __( '%s<br/>%s %s', 'amapress' ), $this->getAdresse(), $cp, $v );
 		} else {
 			return $this->getAdresse();
 		}

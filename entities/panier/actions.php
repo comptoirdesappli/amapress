@@ -28,7 +28,7 @@ add_action( 'wp_ajax_echanger_panier', function () {
 	$user_id = isset( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	if ( $user_id != amapress_current_user_id() ) {
 		if ( ! amapress_can_access_admin() ) {
-			echo '<p class="error">' . 'Accès interdit' . '</p>';
+			echo '<p class="error">' . __( 'Accès interdit', 'amapress' ) . '</p>';
 			die();
 		}
 	}
@@ -72,13 +72,13 @@ add_action( 'wp_ajax_echanger_panier', function () {
 			isset( $_REQUEST['message'] ) ? $_REQUEST['message'] : '',
 			$target_id );
 		if ( $res != 'ok' ) {
-			$msg = 'Erreur lors de l\'échange du panier';
+			$msg = __( 'Erreur lors de l\'échange du panier', 'amapress' );
 			switch ( $res ) {
 				case 'too_late':
-					$msg = 'Les cessions de paniers sont closes';
+					$msg = __( 'Les cessions de paniers sont closes', 'amapress' );
 					break;
 				case 'already':
-					$msg = 'Déjà cédés';
+					$msg = __( 'Déjà cédés', 'amapress' );
 					break;
 			}
 			echo '<p class="error">' . esc_html( $msg ) . '</p>';
@@ -88,11 +88,11 @@ add_action( 'wp_ajax_echanger_panier', function () {
 
 	if ( $user_id == amapress_current_user_id() ) {
 		if ( $cnt == 0 ) {
-			echo '<p class="error">' . 'Vous n\'avez pas de panier à cette distribution' . '</p>';
+			echo '<p class="error">' . __( 'Vous n\'avez pas de panier à cette distribution', 'amapress' ) . '</p>';
 		} else if ( $cnt > 1 ) {
-			echo '<p class="success">' . 'Vos paniers ont été inscrits sur la liste des paniers à échanger' . '</p>';
+			echo '<p class="success">' . __( 'Vos paniers ont été inscrits sur la liste des paniers à échanger', 'amapress' ) . '</p>';
 		} else {
-			echo '<p class="success">' . 'Votre panier a été inscrit sur la liste des paniers à échanger' . '</p>';
+			echo '<p class="success">' . __( 'Votre panier a été inscrit sur la liste des paniers à échanger', 'amapress' ) . '</p>';
 		}
 	} else {
 		$user = AmapressUser::getBy( $user_id );
@@ -104,22 +104,22 @@ add_action( 'wp_ajax_echanger_panier', function () {
 			if ( $target_id ) {
 				$target = AmapressUser::getBy( $target_id );
 				echo '<p class="success">';
-				echo sprintf( 'Les paniers de %s ont été attribués à %s', esc_html( $user->getDisplayName() ), esc_html( $target->getDisplayName() ) );
+				echo sprintf( __( 'Les paniers de %s ont été attribués à %s', 'amapress' ), esc_html( $user->getDisplayName() ), esc_html( $target->getDisplayName() ) );
 				echo '</p>';
 			} else {
 				echo '<p class="success">';
-				echo sprintf( 'Les paniers de %s ont été inscrits sur la liste des paniers à échanger', esc_html( $user->getDisplayName() ) );
+				echo sprintf( __( 'Les paniers de %s ont été inscrits sur la liste des paniers à échanger', 'amapress' ), esc_html( $user->getDisplayName() ) );
 				echo '</p>';
 			}
 		} else {
 			if ( $target_id ) {
 				$target = AmapressUser::getBy( $target_id );
 				echo '<p class="success">';
-				echo sprintf( 'Le panier de %s a été attribué à %s', esc_html( $user->getDisplayName() ), esc_html( $target->getDisplayName() ) );
+				echo sprintf( __( 'Le panier de %s a été attribué à %s', 'amapress' ), esc_html( $user->getDisplayName() ), esc_html( $target->getDisplayName() ) );
 				echo '</p>';
 			} else {
 				echo '<p class="success">';
-				echo sprintf( 'Le panier de %s a été inscrit sur la liste des paniers à échanger', esc_html( $user->getDisplayName() ) );
+				echo sprintf( __( 'Le panier de %s a été inscrit sur la liste des paniers à échanger', 'amapress' ), esc_html( $user->getDisplayName() ) );
 				echo '</p>';
 			}
 		}
@@ -130,11 +130,11 @@ add_action( 'wp_ajax_echanger_panier', function () {
 
 function amapress_echanger_panier( AmapressDistribution $dist, $panier_ids, $user_id = null, $message = null, $target_user_id = null ) {
 	if ( ! amapress_is_user_logged_in() ) {
-		wp_die( 'Vous devez avoir un compte pour effectuer cette opération.' );
+		wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 	}
 
 	if ( empty( $panier_ids ) || empty( $dist ) ) {
-		wp_die( 'Pas de panier' );
+		wp_die( __( 'Pas de panier', 'amapress' ) );
 	}
 
 	if ( ! is_array( $panier_ids ) ) {
@@ -163,7 +163,7 @@ function amapress_echanger_panier( AmapressDistribution $dist, $panier_ids, $use
 		$contrat_instance_ids[] = $contrat_instance->ID;
 		$adhesions              = array_values( $contrat_instance->getAdhesionsForUser( $user_id ) );
 		if ( empty( $adhesions ) or ( count( $adhesions ) == 0 ) ) {
-			wp_die( 'Vous ne faites pas partie de cette distribution.' );
+			wp_die( __( 'Vous ne faites pas partie de cette distribution.', 'amapress' ) );
 		}
 
 		/** @var AmapressAdhesion $adhesion */
@@ -225,7 +225,7 @@ function amapress_send_panier_intermittent_affected( $intermittence_panier_id ) 
 	$inter = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
 
 	$responsable      = AmapressUser::getBy( amapress_current_user_id() );
-	$responsable_html = sprintf( '%s (%s)',
+	$responsable_html = sprintf( __( '%s (%s)', 'amapress' ),
 		Amapress::makeLink( 'mailto:' . $responsable->getEmail(), $responsable->getDisplayName() ),
 		$responsable->getContacts() );
 
@@ -253,7 +253,7 @@ function amapress_send_panier_intermittent_available( $intermittence_panier_id )
 		$intermittence_panier_id = $intermittence_panier_id->ID;
 	}
 	$inter    = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
-	$intermit = amapress_prepare_message_target_bcc( "user:amapress_contrat=intermittent", "Les intermittents", "intermittent" );
+	$intermit = amapress_prepare_message_target_bcc( "user:amapress_contrat=intermittent", __( 'Les intermittents', 'amapress' ), "intermittent" );
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-panier-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-panier-dispo-mail-content' ),

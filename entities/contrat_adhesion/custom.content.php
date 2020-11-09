@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 //add_filter('amapress_get_user_infos_title_adhesions', 'amapress_get_user_infos_title_adhesions', 10, 2);
 //function amapress_get_user_infos_title_adhesions($content, $subview)
 //{
-//    return 'Mes adhésions';
+//    return __('Mes adhésions', 'amapress');
 //}
 
 //add_filter('amapress_get_user_infos_content_adhesions', 'amapress_get_user_infos_content_adhesions', 10, 2);
@@ -28,35 +28,35 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 	$adhs             = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
 	$adhesion_columns = array(
 		array(
-			'title' => 'Contrat',
+			'title' => __( 'Contrat', 'amapress' ),
 			'data'  => array(
 				'_'    => 'contrat',
 				'sort' => 'contrat',
 			)
 		),
 		array(
-			'title' => 'Quantité',
+			'title' => __( 'Quantité', 'amapress' ),
 			'data'  => array(
 				'_'    => 'quantite',
 				'sort' => 'quantite',
 			)
 		),
 		array(
-			'title' => 'Du',
+			'title' => __( 'Du', 'amapress' ),
 			'data'  => array(
 				'_'    => 'from_date.display',
 				'sort' => 'from_date.value',
 			)
 		),
 		array(
-			'title' => 'Au',
+			'title' => __( 'Au', 'amapress' ),
 			'data'  => array(
 				'_'    => 'to_date.display',
 				'sort' => 'to_date.value',
 			)
 		),
 		array(
-			'title' => 'Etat',
+			'title' => __( 'Etat', 'amapress' ),
 			'data'  => array(
 				'_'    => 'state',
 				'sort' => 'state',
@@ -68,7 +68,7 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 		$contrat       = $ad->getContrat_instance();
 		$contrat_model = $contrat->getModel();
 //        $status = get_post_meta($ad->ID, 'amapress_adhesion_status', true);
-//        $status_text = $status=='to_confirm' ? 'En attente de confirmation' : 'ConfirmÃ©e';
+//        $status_text = $status=='to_confirm' ? __('En attente de confirmation', 'amapress') : __('ConfirmÃ©e', 'amapress');
 		$date_debut      = $ad->getDate_debut();
 		$date_fin        = $ad->getDate_fin();
 		$url             = $contrat_model->getPermalink( 'details' ); //trailingslashit(get_post_permalink($contrat_model->ID)).'details/';
@@ -98,21 +98,21 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 //
 //    $intermittence_columns = array(
 //        array(
-//            'title' => 'Du',
+//            'title' => __('Du', 'amapress'),
 //            'data' => array(
 //                '_' => 'from_date.display',
 //                'sort' => 'from_date.value',
 //            )
 //        ),
 ////        array(
-////            'title' => 'Au',
+////            'title' => __('Au', 'amapress'),
 ////            'data' => array(
 ////                '_' => 'to_date.display',
 ////                'sort' => 'to_date.value',
 ////            )
 ////        ),
 //        array(
-//            'title' => 'Etat',
+//            'title' => __('Etat', 'amapress'),
 //            'data' => array(
 //                '_' => 'state',
 //                'sort' => 'state',

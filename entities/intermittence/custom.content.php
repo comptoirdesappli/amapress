@@ -18,7 +18,7 @@ function amapress_get_paniers_intermittents_exchange_table( $adhs ) {
 				$state = '<button type="button" class="btn btn-default amapress-ajax-button reprendre-panier" 
 				data-action="reprendre_panier" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir reprendre ce panier ?', 'amapress' ) . '" data-panier="' . implode( ',', array_map( function ( $a ) {
 						return $a->ID;
-					}, $adh ) ) . '">' . 'Je suis interessé' . '</button>';
+					}, $adh ) ) . '">' . __( 'Je suis interessé', 'amapress' ) . '</button>';
 			}
 
 			return $state;
@@ -59,7 +59,7 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 	if ( $check_adhesion ) {
 		$adh_period = AmapressAdhesionPeriod::getCurrent();
 		if ( empty( $adh_period ) ) {
-			return ( sprintf( 'Aucune période d\'adhésion n\'est configurée au %s', date_i18n( 'd/m/Y' ) ) );
+			return ( sprintf( __( 'Aucune période d\'adhésion n\'est configurée au %s', 'amapress' ), date_i18n( 'd/m/Y' ) ) );
 		}
 
 		$adh_paiement = AmapressAdhesion_paiement::getForUser( amapress_current_user_id(), null, false );
@@ -71,7 +71,7 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 	if ( ! Amapress::toBool( $atts['allow_amapiens'] ) ) {
 		$amapien = AmapressUser::getBy( amapress_current_user_id() );
 		if ( $amapien && ! $amapien->isIntermittent() ) {
-			return '<p><strong>' . 'La réservation de paniers n\'est pas ouverte aux amapiens non intermittents.' . '</strong></p>';
+			return '<p><strong>' . __( 'La réservation de paniers n\'est pas ouverte aux amapiens non intermittents.', 'amapress' ) . '</strong></p>';
 		}
 	}
 	$query = array(
@@ -129,7 +129,7 @@ function amapress_get_paniers_intermittents_table(
 	if ( $show_columns['date'] ) {
 		$columns[] = array(
 			'responsivePriority' => 1,
-			'title'              => 'Date',
+			'title'              => __( 'Date', 'amapress' ),
 			'data'               => array(
 				'_'    => 'date_display',
 				'sort' => 'date_value',
@@ -139,7 +139,7 @@ function amapress_get_paniers_intermittents_table(
 	if ( $show_columns['panier'] ) {
 		$columns[] = array(
 			'responsivePriority' => 4,
-			'title'              => 'Panier',
+			'title'              => __( 'Panier', 'amapress' ),
 			'data'               => array(
 				'_'    => 'panier',
 				'sort' => 'panier',
@@ -149,7 +149,7 @@ function amapress_get_paniers_intermittents_table(
 	if ( $show_columns['lieu'] ) {
 		$columns[] = array(
 			'responsivePriority' => 5,
-			'title'              => 'Lieu',
+			'title'              => __( 'Lieu', 'amapress' ),
 			'data'               => array(
 				'_'    => 'lieu',
 				'sort' => 'lieu',
@@ -159,7 +159,7 @@ function amapress_get_paniers_intermittents_table(
 	if ( $show_columns['quantite'] ) {
 		$columns[] = array(
 			'responsivePriority' => 3,
-			'title'              => 'Quantité',
+			'title'              => __( 'Quantité', 'amapress' ),
 			'data'               => array(
 				'_'    => 'quantite',
 				'sort' => 'quantite',
@@ -168,7 +168,7 @@ function amapress_get_paniers_intermittents_table(
 	}
 	if ( $show_columns['prix'] ) {
 		$columns[] = array(
-			'title' => 'Prix',
+			'title' => __( 'Prix', 'amapress' ),
 			'data'  => array(
 				'_'    => 'price',
 				'sort' => 'price',
@@ -177,7 +177,7 @@ function amapress_get_paniers_intermittents_table(
 	}
 	if ( $show_columns['adherent'] ) {
 		$columns[] = array(
-			'title' => 'Adhérent',
+			'title' => __( 'Adhérent', 'amapress' ),
 			'data'  => array(
 				'_'    => 'adherent',
 				'sort' => 'adherent',
@@ -186,7 +186,7 @@ function amapress_get_paniers_intermittents_table(
 	}
 	if ( $show_columns['message'] ) {
 		$columns[] = array(
-			'title' => 'Message',
+			'title' => __( 'Message', 'amapress' ),
 			'data'  => array(
 				'_'    => 'message',
 				'sort' => 'message',
@@ -195,7 +195,7 @@ function amapress_get_paniers_intermittents_table(
 	}
 	if ( $show_columns['repreneur'] ) {
 		$columns[] = array(
-			'title' => 'Repreneur',
+			'title' => __( 'Repreneur', 'amapress' ),
 			'data'  => array(
 				'_'    => 'repreneur',
 				'sort' => 'repreneur',
@@ -205,7 +205,7 @@ function amapress_get_paniers_intermittents_table(
 	if ( $show_columns['etat'] ) {
 		$columns[] = array(
 			'responsivePriority' => 2,
-			'title'              => 'État',
+			'title'              => __( 'État', 'amapress' ),
 			'data'               => array(
 				'_'    => 'state',
 				'sort' => 'state',
@@ -249,7 +249,7 @@ function amapress_get_paniers_intermittents_table(
 				}
 				$askers[] = $user->getDisplay( $show_options );
 			}
-			$repreneur .= '<strong>' . 'Non validé' . '</strong><br/>' . implode( '', $askers );
+			$repreneur .= '<strong>' . __( 'Non validé', 'amapress' ) . '</strong><br/>' . implode( '', $askers );
 		}
 		$paniers   = array();
 		$quantites = array();
@@ -339,11 +339,11 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 				$id    = "i{$ad->getDate()}-{$ad->getAdherent()->ID}-{$ad->getRealLieu()->ID}";
 				$state = '<strong>' . $state . '</strong>';
 				if ( $ad->getDate() >= Amapress::end_of_day( amapress_time() ) ) {
-					$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">' . 'Motif d\'annulation' . '</label><textarea id="' . $id . '"></textarea><br/>';
+					$state .= '<div class="cancel-echange-panier amapress-ajax-parent" style="border-top: 1pt solid black"><label style="display: block" for="' . $id . '">' . __( 'Motif d\'annulation', 'amapress' ) . '</label><textarea id="' . $id . '"></textarea><br/>';
 					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-panier" 
 				data-message="val:#' . $id . '" data-confirm="' . esc_attr__( 'Etes-vous sûr d\'annuler votre proposition?', 'amapress' ) . '" data-action="annuler_adherent" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">' . 'Annuler échange' . '</button></div>';
+						}, $adh ) ) . '">' . __( 'Annuler échange', 'amapress' ) . '</button></div>';
 				}
 				foreach ( $ad->getAsk() as $ask ) {
 					$user = AmapressUser::getBy( $ask['user'] );
@@ -358,10 +358,10 @@ function amapress_user_paniers_intermittents_shortcode( $atts ) {
 					) );
 					$state .= '<div><button type="button" class="btn btn-default amapress-ajax-button validate-echange" data-user="' . $user->ID . '" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir valider la reprise de votre panier ?', 'amapress' ) . '" data-action="validate_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">' . 'Valider échange' . ' (' . $user->getDisplayName() . ')</button><br/>';
+						}, $adh ) ) . '">' . __( 'Valider échange', 'amapress' ) . ' (' . $user->getDisplayName() . ')</button><br/>';
 					$state .= '<button type="button" class="btn btn-default amapress-ajax-button reject-echange" data-user="' . $user->ID . '" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir valider la propositio ?', 'amapress' ) . '" data-action="reject_reprise" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">' . 'Rejet échange' . ' (' . $user->getDisplayName() . ')</button></div>';
+						}, $adh ) ) . '">' . __( 'Rejet échange', 'amapress' ) . ' (' . $user->getDisplayName() . ')</button></div>';
 					$state .= '</div>';
 				}
 				if ( $ad->getRepreneurId() ) {
@@ -418,11 +418,11 @@ function amapress_intermittent_paniers_shortcode( $atts ) {
 			if ( 'exch_valid_wait' == $status || 'exchanged' == $status ) {
 				/** @var AmapressIntermittence_panier $ad */
 				$ad    = $adh[0];
-				$state = '<div class="amapress-ajax-parent"><span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>' . 'En attente de validation' . '</strong>' : 'A récupérer' ) . '</span>';
+				$state = '<div class="amapress-ajax-parent"><span style="display: block">' . ( 'exch_valid_wait' == $status ? '<strong>' . __( 'En attente de validation', 'amapress' ) . '</strong>' : 'A récupérer' ) . '</span>';
 				if ( $ad->getDate() >= Amapress::end_of_day( amapress_time() ) ) {
 					$state .= '<button type="button" class="btn btn-default amapress-ajax-button annuler-echange-repreneur" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir annuler l\'échange ?', 'amapress' ) . '" data-action="annuler_repreneur" data-panier="' . implode( ',', array_map( function ( $a ) {
 							return $a->ID;
-						}, $adh ) ) . '">' . 'Annuler échange' . '</button></div>';
+						}, $adh ) ) . '">' . __( 'Annuler échange', 'amapress' ) . '</button></div>';
 				}
 			}
 
