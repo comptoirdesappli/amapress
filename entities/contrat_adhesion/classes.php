@@ -909,7 +909,15 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_quantites_AsString( null, true );
 				}
 			];
-			$ret['total']                            = [
+			$ret['quantites_prix_unitaire'] = [
+				'desc' => __( 'Prix unitaire des quantité(s) choisie(s)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					return implode( ', ', array_map( function ( $q ) {
+						return Amapress::formatPrice( $q->getContratQuantite()->getPrix_unitaire() );
+					}, $adh->getContrat_quantites( null ) ) );
+				}
+			];
+			$ret['total'] = [
 				'desc' => __( 'Total du contrat', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getTotalAmount() > 0 ) {

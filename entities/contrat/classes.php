@@ -2076,6 +2076,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['inscription_admin_link']       = '';
 		$placeholders['message']                      = '';
 		$placeholders['quantites_prix']               = '';
+		$placeholders['quantites_prix_unitaire']      = '';
 		$placeholders['produits_paiements_livraison'] = '';
 		$placeholders['id']                           = '';
 		$placeholders['total']                        = '';
