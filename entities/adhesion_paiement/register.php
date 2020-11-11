@@ -633,7 +633,8 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 							$default_firstName,
 							$default_lastName,
 							sprintf( __( '%s, %s %s', 'amapress' ), $default_address, $default_zipCode, $default_city ),
-							$default_phone
+							$default_phone,
+							'both'
 						);
 
 						delete_user_meta( $user_id, 'pw_user_status' );
