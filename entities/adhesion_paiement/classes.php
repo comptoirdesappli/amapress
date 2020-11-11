@@ -616,19 +616,19 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getVille();
 				}
 			];
-			$ret['adherent.rue']          = [
+			$ret['adherent.rue'] = [
 				'desc' => __( 'Rue (adresse) adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getAdresse();
 				}
 			];
-			$ret['adherent.tel']          = [
+			$ret['adherent.tel'] = [
 				'desc' => __( 'Téléphone adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getTelephone();
 				}
 			];
-			$ret['adherent.email']        = [
+			$ret['adherent.email'] = [
 				'desc' => __( 'Email adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getUser()->getEmail();
@@ -670,7 +670,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $adh->getUser()->getCoAdherentsList( true );
 				}
 			];
-			$ret['coadherent']            = [
+			$ret['coadherent'] = [
 				'desc' => __( 'Prénom Nom co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					$coadh = $adh->getUser()->getFirstCoAdherent();

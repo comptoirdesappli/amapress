@@ -3635,6 +3635,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 		}
+		if ( $contrat->getDon_Distribution() ) {
+			echo '<p><hr/><label for="don-contrat-' . $contrat->ID . '">Don par distribution : </label><input style="display: inline-block; max-width: 5em; font-size: 1em" class="don-input" step="0.5" value="' . ( $edit_inscription ? $edit_inscription->getDon_Distribution() : 0 ) . '" type="number" id="don-contrat-' . $contrat->ID . '" name="don_dist" min="0" data-dists="' . count( $dates ) . '" /> ' . __( '€', 'amapress' ) . '<br/> ' . $contrat->getDon_DistributionDescription() . '<hr/></p>';
+		}
 		echo '<p style="margin-top: 1em;">' . __( 'Total: ', 'amapress' ) . '<span id="total">0</span>€</p>';
 		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Valider', 'amapress' ) . '" /></p>';
 		echo '</form>';
@@ -3851,6 +3854,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$serial_quants = esc_attr( serialize( $serial_quants ) );
 		echo '<form method="post" action="' . $next_step_url . '" class="amapress_validate">';
 		echo "<input type='hidden' name='quants' value='$serial_quants'/>";
+		if ( isset( $_REQUEST['don_dist'] ) ) {
+			echo '<input type="hidden" name="don_dist" value="' . esc_attr( $_REQUEST['don_dist'] ) . '"/>';
+		}
 		if ( $contrat->getManage_Cheques() ) {
 			$min_cheque_amount = $contrat->getMinChequeAmount();
 			if ( $total > 0 ) {
@@ -4259,6 +4265,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 			'amapress_adhesion_paiements'        => ( $cheques < 0 ? 1 : ( $cheques > 0 ? ( $cheques >= 100 ? $cheques - 100 : $cheques ) : 0 ) ),
 			'amapress_adhesion_lieu'             => $lieu_id,
 		];
+		if ( isset( $_REQUEST['don_dist'] ) ) {
+			$meta['amapress_adhesion_don_dist'] = floatval( $_REQUEST['don_dist'] );
+		}
 		for ( $i = 2; $i <= 4; $i ++ ) {
 			if ( ! empty( $coadhs[ $i - 2 ] ) ) {
 				$meta["amapress_adhesion_adherent{$i}"] = $coadhs[ $i - 2 ];
@@ -4588,10 +4597,18 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                 "<?php echo esc_js( __( 'Le montant total doit être supérieur à {0}€<br/>', 'amapress' ) ); ?>"
             );
 
+            jQuery('.don-input').change(function () {
+                computeTotal();
+            });
+
             function computeTotal() {
                 var total = 0;
                 jQuery('.quant:checked,.quant-var').each(function () {
                     total += parseFloat(jQuery(this).data('price'));
+                });
+                jQuery('.don-input').each(function () {
+                    var $this = jQuery(this);
+                    total += parseFloat($this.val()) * parseFloat($this.data('dists'));
                 });
                 jQuery('#total').text(total.toFixed(2));
             }

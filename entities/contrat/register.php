@@ -1288,7 +1288,25 @@ jQuery(function($) {
 					}
 				}
 			),
-
+			'don_dist'              => array(
+				'name'           => __( 'Don par distribution', 'amapress' ),
+				'desc'           => 'Activer la possibilité de faire un don par distribution en plus du prix unitaire du panier (panier solidaire du producteur)',
+				'type'           => 'checkbox',
+				'group'          => __( '4/6 - Paniers', 'amapress' ),
+				'readonly'       => 'amapress_is_contrat_instance_readonly',
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'show_on'        => 'edit-only',
+			),
+			'don_dist_desc'         => array(
+				'name'        => __( 'Don par distribution - Description', 'amapress' ),
+				'desc'        => 'Description du don par distribution',
+				'type'        => 'editor',
+				'group'       => __( '4/6 - Paniers', 'amapress' ),
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'show_column' => false,
+				'show_on'     => 'edit-only',
+			),
 			// 5/6 - Pré-inscription en ligne
 			'self_subscribe'        => array(
 				'name'           => __( 'Activer', 'amapress' ),

@@ -315,6 +315,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return ! empty( $this->getStripePublicKey() ) && ! empty( $this->getStripeSecretKey() );
 	}
 
+	public function getDon_Distribution() {
+		return $this->getCustom( 'amapress_contrat_instance_don_dist', 0 );
+	}
+
+	public function getDon_DistributionDescription() {
+		return stripslashes( $this->getCustom( 'amapress_contrat_instance_don_dist_desc', '' ) );
+	}
+
 	public function getPayByMonth() {
 		return $this->getCustom( 'amapress_contrat_instance_pay_month', 0 )
 		       || $this->getPayByMonthOnly();
@@ -2078,6 +2086,9 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['quantites_prix']               = '';
 		$placeholders['quantites_prix_unitaire']      = '';
 		$placeholders['produits_paiements_livraison'] = '';
+		$placeholders['don_distribution']             = '';
+		$placeholders['don_distribution_desc']        = '';
+		$placeholders['don_total']                    = '';
 		$placeholders['id']                           = '';
 		$placeholders['total']                        = '';
 		$placeholders['adherent']                     = '';
