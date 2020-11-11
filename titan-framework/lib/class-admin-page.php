@@ -319,10 +319,18 @@ class TitanFrameworkAdminPage {
             <h2><?php echo do_shortcode( $this->settings['title'] ) ?></h2>
 			<?php
 			if ( ! empty( $this->settings['desc'] ) ) {
-				?><p class='description'><?php echo $this->settings['desc'] ?></p><?php
+				$desc = $this->settings['desc'];
+				if ( is_callable( $desc, false ) ) {
+					$desc = call_user_func( $desc );
+				}
+				?><p class='description'><?php echo $desc; ?></p><?php
 			}
 			if ( ! empty( $this->settings['long_desc'] ) ) {
-				?><?php echo $this->settings['long_desc'] ?><?php
+				$long_desc = $this->settings['long_desc'];
+				if ( is_callable( $long_desc, false ) ) {
+					$long_desc = call_user_func( $long_desc );
+				}
+				echo $long_desc;
 			}
 			?>
 
@@ -375,7 +383,7 @@ class TitanFrameworkAdminPage {
 						$this->settings['use_table'];
 					if ( $use_form ) {
 					?>
-	                <form method='post' enctype="multipart/form-data">
+                    <form method='post' enctype="multipart/form-data">
 		                <?php
 		                // security
 		                wp_nonce_field( $this->settings['id'], TF . '_nonce' );
@@ -420,7 +428,7 @@ class TitanFrameworkAdminPage {
 	                if ( $use_form ) {
 
 	                ?>
-	                </form>
+                    </form>
                 <?php
                 }
 
@@ -428,20 +436,20 @@ class TitanFrameworkAdminPage {
                 // This is used by class-option-save.php
                 if ( $use_form ) :
 	                ?>
-	                <form method='post' id='tf-reset-form'>
+                    <form method='post' id='tf-reset-form'>
 		                <?php
 		                // security
 		                wp_nonce_field( $this->settings['id'], TF . '_nonce' );
 		                ?>
-		                <input type='hidden' name='action' value='reset'/>
-	                </form>
+                        <input type='hidden' name='action' value='reset'/>
+                    </form>
                 <?php
-				endif;
+                endif;
 
-				do_action( 'tf_admin_page_end' );
-				do_action( 'tf_admin_page_end_' . $this->getOptionNamespace() );
+                do_action( 'tf_admin_page_end' );
+                do_action( 'tf_admin_page_end_' . $this->getOptionNamespace() );
 
-				?>
+                ?>
                     <div class='options-container'>
                     </div>
                 </div>
