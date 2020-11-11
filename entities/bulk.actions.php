@@ -110,7 +110,7 @@ function amapress_custom_bulk_actions_admin_notices() {
 					$type['bulk_actions'][ $action ]['messages'] :
 					array(
 						'<=0' => sprintf( __( 'Une erreur est survenue pendant l\'exécution de %s', 'amapress' ), $action ),
-						'>1'  => sprintf( __( '%%s %s mis à jour par %s', 'amapress' ), $post_type, $action ),
+						'>1'  => sprintf( __( '%s %s mis à jour par %s', 'amapress' ), $post_type, $action ),
 					);
 				$message             = '';
 				$message_index       = strval( $n );
