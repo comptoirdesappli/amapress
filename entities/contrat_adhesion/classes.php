@@ -303,7 +303,7 @@ class AmapressAdhesion extends TitanEntity {
 								return '';
 							}
 
-							return $ref->getDisplayName() . '(' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
+							return $ref->getDisplayName() . ' (' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
 						},
 						$adh->getContrat_instance()->getModel()->getReferentsIds()
 					) ) );
@@ -357,7 +357,7 @@ class AmapressAdhesion extends TitanEntity {
 								return '';
 							}
 
-							return $ref->getDisplayName() . '(' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
+							return $ref->getDisplayName() . ' (' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
 						},
 						$adh->getContrat_instance()->getModel()->getReferentsIds( $adh->getLieuId() )
 					) ) );

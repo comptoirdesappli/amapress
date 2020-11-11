@@ -1060,7 +1060,7 @@ class AmapressContrat_instance extends TitanEntity {
 							return '';
 						}
 
-						return $ref->getDisplayName() . '(' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
+						return $ref->getDisplayName() . ' (' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
 					},
 					$adh->getModel()->getReferentsIds()
 				) ) );
@@ -1108,7 +1108,7 @@ class AmapressContrat_instance extends TitanEntity {
 							return '';
 						}
 
-						return $ref->getDisplayName() . '(' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
+						return $ref->getDisplayName() . ' (' . $ref->getEmail() . '/' . $ref->getTelTo( 'both', false, false, '/' ) . ')';
 					},
 					$adh->getModel()->getReferentsIds()
 				) ) );
