@@ -28,28 +28,28 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 //            'items_list' => 'xxx',
 		),
 		'row_actions'      => array(
-			'mark_rcv'       => [
+			'mark_rcv'               => [
 				'label'     => __( 'Marquer reçu', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion_paiement::NOT_RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
-			'mark_rcv_valid' => [
+			'mark_rcv_valid'         => [
 				'label'     => __( 'Marquer reçu et envoi adhésion validée', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion_paiement::NOT_RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
-			'send_valid'     => [
+			'send_valid'             => [
 				'label' => __( 'Envoi adhésion validée', 'amapress' ),
 			],
-			'unmark_rcv'     => [
+			'unmark_rcv'             => [
 				'label'     => __( 'Marquer Non reçu', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					return AmapressAdhesion_paiement::RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
 				},
 			],
-			'approve_user'   => [
+			'approve_user'           => [
 				'label'     => __( 'Approuver amapien', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					$adh = AmapressAdhesion_paiement::getBy( $adh_id );
@@ -592,9 +592,22 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 		if ( 'Membership' != $formType ) {
 			wp_die( __( 'Type de formulaire non reconnu : doit être un formulaire d\'adhésion', 'amapress' ) );
 		}
-		$date  = DateTime::createFromFormat( DateTime::ISO8601, $order->date );
-		$total = $order->amount->total;
-		$payer = $order->payer;
+		$date             = DateTime::createFromFormat( DateTime::ISO8601, $order->date );
+		$total            = $order->amount->total;
+		$payer            = $order->payer;
+		$formSlug         = $order->formSlug;
+		$organizationSlug = $order->organizationSlug;
+		$numero           = $order->id;
+		$order_date       = strtotime( $order->date );
+		if ( empty( $order_date ) ) {
+			$order_date = amapress_time();
+		}
+
+		if ( AmapressAdhesion_paiement::hasHelloAssoId( $numero ) ) {
+			@error_log( __( 'HelloAsso callback: already received', 'amapress' ) . $body );
+
+			return;
+		}
 
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
 		if ( $adh_period ) {
@@ -640,13 +653,6 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 						delete_user_meta( $user_id, 'pw_user_status' );
 						delete_transient( 'new_user_approve_user_statuses' );
 
-						$formSlug         = $order->formSlug;
-						$organizationSlug = $order->organizationSlug;
-						$numero           = $order->id;
-						$order_date       = strtotime( $order->date );
-						if ( empty( $order_date ) ) {
-							$order_date = amapress_time();
-						}
 						$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $date, true );
 						$pmt->setHelloAsso(
 							$total / 100.0,

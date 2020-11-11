@@ -297,6 +297,32 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $res;
 	}
 
+	/** @return AmapressAdhesion_paiement[] */
+	public static function hasHelloAssoId( $id ) {
+		return ! empty(
+		get_posts(
+			array(
+				'post_type'      => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
+				'fields'         => 'ids',
+				'posts_per_page' => - 1,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'amapress_adhesion_paiement_numero',
+						'value'   => $id,
+						'compare' => '=',
+					),
+					array(
+						'key'     => 'amapress_adhesion_paiement_pmt_type',
+						'value'   => 'hla',
+						'compare' => '=',
+					),
+				),
+			)
+		)
+		);
+	}
+
 	public static function hadUserAnyValidated( $user_id ) {
 		foreach ( self::getAllForUserId( $user_id ) as $adh ) {
 			if ( ! $adh->isNotReceived() ) {
