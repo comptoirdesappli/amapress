@@ -435,20 +435,46 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getEmail();
 				}
 			];
-			$ret['coadherents.noms']                 = [
-				'desc' => __( 'Liste des co-adhérents (Prénom, Nom)', 'amapress' ),
+			$ret['cofoyers.noms'] = [
+				'desc' => __( 'Liste des membres du foyer (Prénom, Nom)', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
-					return $adh->getAdherent()->getCoAdherentsList();
+					return $adh->getAdherent()->getCoAdherentsList( false, false, true, null, false );
 
 				}
 			];
-			$ret['coadherents.contacts']             = [
-				'desc' => __( 'Liste des co-adhérents (Prénom, Nom, Emails, Tel)', 'amapress' ),
+			$ret['cofoyers.contacts'] = [
+				'desc' => __( 'Liste des membres du foyer (Prénom, Nom, Emails, Tel)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList( true, false, true, null, false );
+				}
+			];
+			$ret['coadherents.noms'] = [
+				'desc' => __( 'Liste des co-adhérents (non membres du foyer) (Prénom, Nom)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList( false, false, false, $adh->getContrat_instanceId() );
+
+				}
+			];
+			$ret['coadherents.contacts'] = [
+				'desc' => __( 'Liste des co-adhérents (non membres du foyer) (Prénom, Nom, Emails, Tel)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList( true, false, false, $adh->getContrat_instanceId() );
+				}
+			];
+			$ret['touscoadherents.noms'] = [
+				'desc' => __( 'Liste de tous les co-adhérents/membres du foyer (Prénom, Nom)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getAdherent()->getCoAdherentsList( false );
+
+				}
+			];
+			$ret['touscoadherents.contacts'] = [
+				'desc' => __( 'Liste de tous les co-adhérents/membres du foyer (Prénom, Nom, Emails, Tel)', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getCoAdherentsList( true );
 				}
 			];
-			$ret['coadherent']                       = [
+			$ret['coadherent'] = [
 				'desc' => __( 'Prénom Nom co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();

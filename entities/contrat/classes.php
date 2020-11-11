@@ -2091,8 +2091,12 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['adherent.rue']                 = '';
 		$placeholders['adherent.tel']                 = '';
 		$placeholders['adherent.email']               = '';
+		$placeholders['cofoyers.noms']                = '';
+		$placeholders['cofoyers.contacts']            = '';
 		$placeholders['coadherents.noms']             = '';
 		$placeholders['coadherents.contacts']         = '';
+		$placeholders['touscoadherents.noms']         = '';
+		$placeholders['touscoadherents.contacts']     = '';
 		$placeholders['coadherent']                   = '';
 		$placeholders['coadherent.pseudo']            = '';
 		$placeholders['coadherent.nom_public']        = '';
