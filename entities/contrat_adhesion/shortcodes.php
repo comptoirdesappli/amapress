@@ -388,7 +388,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag
 	                       || 'intermittent-adhesion-en-ligne' == $tag || 'intermittent-adhesion-en-ligne-connecte' == $tag;
 
-	$atts = shortcode_atts(
+	$atts                                = shortcode_atts(
 		[
 			'key'                                 => '',
 			'use_steps_nums'                      => 'true',
@@ -408,6 +408,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'ignore_renouv_delta'                 => 'true',
 			'allow_inscriptions'                  => 'true',
 			'allow_new_mail'                      => 'true',
+			'allow_inscriptions_without_adhesion' => 'false',
 			'check_adhesion_received'             => Amapress::getOption( 'check_adh_rcv' ),
 			'check_adhesion_received_or_previous' => Amapress::getOption( 'check_adh_rcv_p' ),
 			'track_no_renews'                     => 'false',
@@ -498,6 +499,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$show_delivery_details               = Amapress::toBool( $atts['show_delivery_details'] );
 	$check_adhesion_received             = Amapress::toBool( $atts['check_adhesion_received'] );
 	$check_adhesion_received_or_previous = Amapress::toBool( $atts['check_adhesion_received_or_previous'] );
+	$allow_inscriptions_without_adhesion = Amapress::toBool( $atts['allow_inscriptions_without_adhesion'] );
 	$skip_coords                         = Amapress::toBool( $atts['skip_coords'] );
 	if ( $check_adhesion_received_or_previous ) {
 		$check_adhesion_received = true;
@@ -920,7 +922,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	$invalid_access_message = '<p>' . sprintf( __( 'Accès invalide : veuillez repartir de la <a href="%s">première étape</a>', 'amapress' ), esc_attr( $start_step_url ) ) . '</p>';
 
-	$edit_inscription        = null;
+	$edit_inscription = null;
 	if ( ! empty( $_REQUEST['edit_inscr_id'] ) ) {
 		Amapress::setFilterForReferent( false );
 		$edit_inscription = AmapressAdhesion::getBy( intval( $_REQUEST['edit_inscr_id'] ) );
@@ -1303,7 +1305,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			?>
         </h4>
         <p><?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-				$adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
+		        $adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
         <p><?php echo $adherents_infos; ?></p>
 		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
@@ -1313,13 +1315,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-	        <?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
+			<?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
-	        <?php } elseif ( $activate_agreement ) { ?>
+			<?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-	        <?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-	        <?php } ?>
+			<?php } ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
@@ -1367,7 +1369,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                   class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
                     </td>
                 </tr>
-		        <?php if ( $allow_trombi_decline ) { ?>
+				<?php if ( $allow_trombi_decline ) { ?>
                     <tr>
                         <th style="text-align: left; width: auto"></th>
                         <td>
@@ -1376,7 +1378,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             </label>
                         </td>
                     </tr>
-		        <?php } ?>
+				<?php } ?>
             </table>
             <div>
 				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
@@ -1869,28 +1871,28 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false ) : null;
 		?>
         <h4>
-			<?php
-			echo amapress_step_text( $step, $steps_nums, $steps_count );
-			echo esc_html( wp_unslash( Amapress::getOption(
-				$adhesion_intermittent ? 'online_subscription_inter_agreement_step_name' : 'online_subscription_agreement_step_name' ) ) );
-			?>
+	        <?php
+	        echo amapress_step_text( $step, $steps_nums, $steps_count );
+	        echo esc_html( wp_unslash( Amapress::getOption(
+		        $adhesion_intermittent ? 'online_subscription_inter_agreement_step_name' : 'online_subscription_agreement_step_name' ) ) );
+	        ?>
         </h4>
         <form method="post" id="agreement" class="amapress_validate"
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_agreement' ) ) ?>">
             <input type="hidden" name="inscr_assistant" value="validate_agreement"/>
             <input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>"/>
-	        <?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php if ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-	        <?php } ?>
+			<?php } ?>
             <div class="amap-agreement">
-		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-			        $adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ), null ) ); ?>
+				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
+					$adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ), null ) ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
                                                      class="required" value="1"
                                                      data-msg="<?php echo esc_attr__( 'Veuillez cocher la case ci-dessous', 'amapress' ) ?>"/> <?php echo esc_html( wp_unslash( Amapress::getOption(
-				        $adhesion_intermittent ? 'online_subscription_inter_agreement_step_checkbox' : 'online_subscription_agreement_step_checkbox' ) ) ); ?>
+						$adhesion_intermittent ? 'online_subscription_inter_agreement_step_checkbox' : 'online_subscription_agreement_step_checkbox' ) ) ); ?>
                 </label>
             </p>
             <p>
@@ -2262,7 +2264,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							     date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
 							     date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) ) ) .
 						     '</strong></p>';
-						$allow_inscriptions = false;
+						if ( ! $allow_inscriptions_without_adhesion ) {
+							$allow_inscriptions = false;
+						}
 					} else {
 						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption(
 							$adhesion_intermittent ? 'online_subscription_inter_req_adhesion' : 'online_subscription_req_adhesion' ) ), null );
@@ -3885,7 +3889,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$cheques   = implode( '|', array_map( function ( $month_amount ) {
 								return Amapress::formatPrice( $month_amount, true );
 							}, $by_month_totals ) );
-							$chq_label                       = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+							$chq_label = implode( ' ; ', array_map( function ( $month, $month_amount ) {
 								return sprintf( __( '%s: 1 chèque de %0.2f €', 'amapress' ),
 									$month,
 									$month_amount );
@@ -3897,7 +3901,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						$cheques   = implode( '|', array_map( function ( $amount ) {
 							return Amapress::formatPrice( $amount, true );
 						}, $amounts ) );
-						$chq_label                           = implode( ' ; ', array_map( function ( $amount ) {
+						$chq_label = implode( ' ; ', array_map( function ( $amount ) {
 							return sprintf( __( '1 chèque de %0.2f €', 'amapress' ),
 								$amount );
 						}, $amounts ) );
@@ -3969,7 +3973,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								$cheques   = implode( '|', array_map( function ( $month_amount ) {
 									return Amapress::formatPrice( $month_amount, true );
 								}, $by_month_totals ) );
-								$chq_label                   = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+								$chq_label = implode( ' ; ', array_map( function ( $month, $month_amount ) {
 									return sprintf( __( '%s: 1 prélèvement de %0.2f €', 'amapress' ),
 										$month,
 										$month_amount );
@@ -3981,7 +3985,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$cheques   = implode( '|', array_map( function ( $amount ) {
 								return Amapress::formatPrice( $amount, true );
 							}, $amounts ) );
-							$chq_label                       = implode( ' ; ', array_map( function ( $amount ) {
+							$chq_label = implode( ' ; ', array_map( function ( $amount ) {
 								return sprintf( __( '1 prélèvement de %0.2f €', 'amapress' ),
 									$amount );
 							}, $amounts ) );
@@ -4413,7 +4417,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 					'step'       => 'inscr_contrat_date_lieu',
 					'contrat_id' => $inscription->getContrat_instanceId()
 				] );
-				$modify_button                               = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
+				$modify_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="inscr_contrat_date_lieu" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -4421,7 +4425,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="edit_inscr_id" value="' . $inscription->ID . '" />
 <input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
-				$cancel_button                               = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
+				$cancel_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="details" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -4835,7 +4839,7 @@ function amapress_get_details_all_deliveries(
 	$ret     = '<h4>' . esc_html( $print_title ) . '</h4>';
 	$columns = [];
 	if ( $is_single_producteur ) {
-		$columns[]     = array(
+		$columns[] = array(
 			'title' => __( 'Date', 'amapress' ),
 			'data'  => array(
 				'_'    => 'date_d',
@@ -4844,7 +4848,7 @@ function amapress_get_details_all_deliveries(
 		);
 		if ( $contrat_instance->hasGroups() ) {
 			$has_groups = true;
-			$columns[] = array(
+			$columns[]  = array(
 				'title' => __( 'Groupe', 'amapress' ),
 				'data'  => array(
 					'_'    => 'group',
@@ -5072,28 +5076,28 @@ function amapress_get_details_all_paiements(
 	$print_title = 'Récapitulatif des sommes dues';
 	$ret         = '<h4>' . esc_html( $print_title ) . '</h4>';
 	$columns     = [];
-	$columns[] = array(
+	$columns[]   = array(
 		'title' => __( 'Producteur', 'amapress' ),
 		'data'  => array(
 			'_'    => 'prod',
 			'sort' => 'prod_sort',
 		)
 	);
-	$columns[] = array(
+	$columns[]   = array(
 		'title' => __( 'Total', 'amapress' ),
 		'data'  => array(
 			'_'    => 'total_d',
 			'sort' => 'total',
 		)
 	);
-	$columns[] = array(
+	$columns[]   = array(
 		'title' => __( 'Option paiements', 'amapress' ),
 		'data'  => array(
 			'_'    => 'opt_pmts',
 			'sort' => 'opt_pmts',
 		)
 	);
-	$columns[] = array(
+	$columns[]   = array(
 		'title' => __( 'Info', 'amapress' ),
 		'data'  => array(
 			'_'    => 'info',

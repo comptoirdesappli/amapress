@@ -516,6 +516,7 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'ignore_renouv_delta'                 => __( '(booléen, true par défaut) : ignorer la marge de renouvellement des contrats terminés', 'amapress' ),
 				'allow_inscriptions'                  => __( '(booléen, true par défaut) : autorise l\'inscription aux contrats', 'amapress' ),
+				'allow_inscriptions_without_adhesion' => __( '(booléen, false par défaut) : autorise l\'inscriptions aux contrats même si l\'amapien n\'a pas d\'adhésion en cours', 'amapress' ),
 				'check_adhesion_received'             => sprintf( __( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats', 'amapress' ), $contrats_conf_link ),
 				'check_adhesion_received_or_previous' => sprintf( __( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats', 'amapress' ), $contrats_conf_link ),
 				'allow_adhesion'                      => __( '(booléen, true par défaut) : autorise l\'adhésion à l\'AMAP', 'amapress' ),
@@ -646,6 +647,7 @@ function amapress_register_shortcodes() {
 				'check_principal'                     => __( '(booléen, true par défaut) : vérifier qu\'un contrat principal est actif. Peut être désactivé globalement dans ', 'amapress' ) . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ), __( 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats', 'amapress' ) ),
 				'check_adhesion_received'             => sprintf( __( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue avant de permettre l\'inscription aux contrats', 'amapress' ), $contrats_conf_link ),
 				'check_adhesion_received_or_previous' => sprintf( __( '(Configurable dans %s) : vérifier que l\'adhésion a été validée/reçue ou qu\'une adhésion précédente a été validée avant de permettre l\'inscription aux contrats', 'amapress' ), $contrats_conf_link ),
+				'allow_inscriptions_without_adhesion' => __( '(booléen, false par défaut) : autorise l\'inscriptions aux contrats même si l\'amapien n\'a pas d\'adhésion en cours', 'amapress' ),
 				'adhesion'                            => __( '(booléen, false par défaut) : afficher une étape Adhésion à l\'AMAP', 'amapress' ),
 				'allow_inscription_all_dates'         => __( '(booléen, false par défaut) : autoriser l\'inscription à partir de toutes les dates, y compris celles après la date de clôture du contrat', 'amapress' ),
 				'send_adhesion_confirm'               => __( '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour son adhésion à l\'AMAP', 'amapress' ),
