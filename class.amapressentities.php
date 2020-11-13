@@ -3515,7 +3515,7 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 											'name'    => __( 'Nofications trésoriers', 'amapress' ),
 											'type'    => 'checkbox',
 											'desc'    => __( 'Envoyer les notifications d\'adhésions aux trésoriers', 'amapress' ),
-											'default' => false,
+											'default' => true,
 										),
 										array(
 											'id'   => 'helloasso-notif-others',
