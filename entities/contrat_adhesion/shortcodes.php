@@ -396,6 +396,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'filter_multi_contrat'                => 'false',
 			'admin_mode'                          => 'false',
 			'agreement'                           => 'true',
+			'allow_classic_adhesion'              => 'true',
 			'mob_phone_required'                  => 'false',
 			'address_required'                    => 'false',
 			'check_principal'                     => 'true',
@@ -481,6 +482,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$amapien                             = null;
 	$paiements_info_required             = Amapress::toBool( $atts['paiements_info_required'] );
 	$allow_trombi_decline                = Amapress::toBool( $atts['allow_trombi_decline'] );
+	$allow_classic_adhesion              = Amapress::toBool( $atts['allow_classic_adhesion'] );
 	$activate_adhesion                   = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement                  = Amapress::toBool( $atts['agreement'] );
 	$allow_remove_coadhs                 = Amapress::toBool( $atts['allow_remove_coadhs'] );
@@ -959,6 +961,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo '<div class="alert alert-danger">' . $message . '</div>';
 	}
 
+	/** @var AmapressAdhesionPeriod $adh_period */
 	if ( 'email' == $step ) {
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
 		if ( $adh_period && ( $is_adhesion_mode || $min_contrat_date <= 0 ) ) {
@@ -2270,12 +2273,25 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					} else {
 						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption(
 							$adhesion_intermittent ? 'online_subscription_inter_req_adhesion' : 'online_subscription_req_adhesion' ) ), null );
-						echo '<p><form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
+
+						if ( empty( $adh_period->getHelloAssoFormSlug() ) ) {
+							$allow_classic_adhesion = true;
+						}
+
+						if ( $allow_classic_adhesion ) {
+							echo '<p><form method="get" action="' . esc_attr( $adhesion_step_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="' . ( $skip_coords ? ( $activate_agreement ? 'agreement' : 'adhesion' ) : ( $for_logged ? 'coords_logged' : 'coords' ) ) . '" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Adhérer', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr( wp_unslash( Amapress::getOption( 'online_subscription_adh_button_text' ) ) ) . '" />
 </form></p>';
+						}
+						if ( ! empty( $adh_period->getHelloAssoFormUrl() ) ) {
+							echo '<p>' . Amapress::makeButtonLink(
+									$adh_period->getHelloAssoFormUrl(),
+									wp_unslash( Amapress::getOption( 'online_subscription_adh_hla_button_text' ) ),
+									true, false, 'btn btn-default btn-assist-inscr' ) . '</p>';
+						}
 						if ( $track_no_renews ) {
 							?>
                             <form method="post"

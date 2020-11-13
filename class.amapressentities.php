@@ -3346,6 +3346,18 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'default' => '<p><strong>' . __( 'Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.', 'amapress' ) . '</strong></p>',
 										),
 										array(
+											'id'      => 'online_subscription_adh_button_text',
+											'name'    => __( 'Texte du bouton Adhérer', 'amapress' ),
+											'type'    => 'text',
+											'default' => __( 'Adhérer', 'amapress' ),
+										),
+										array(
+											'id'      => 'online_subscription_adh_hla_button_text',
+											'name'    => __( 'Texte du bouton Adhérer via HelloAsso', 'amapress' ),
+											'type'    => 'text',
+											'default' => __( 'Adhérer via HelloAsso', 'amapress' ),
+										),
+										array(
 											'id'      => 'online_subscription_adh_step_name',
 											'name'    => __( 'Nom de l\'étape', 'amapress' ),
 											'type'    => 'text',
@@ -3494,7 +3506,9 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 										array(
 											'type' => 'note',
 											'desc' => sprintf( __( 'Pour intégrer HelloAsso à Amapress, connectez vous au backoffice HelloAsso, et définissez l\'url dans Mon Compte&gt;Intégration/API, section Notifications, Mon URL de callback avec la valeur : <code>%s</code>', 'amapress' ),
-												admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) ) ),
+													admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) ) )
+											          . '<br/>' . sprintf( __( 'Vous devez crééer un formulaire d\'adhésion HelloAsso par <a href="%s">période d\'adhésion</a> et renseigner l\'url du formulaire dans la période d\'adhésion correspondante', 'amapress' ),
+													admin_url( 'edit.php?post_type=amps_adh_per&amapress_date=active' ) )
 										),
 										array(
 											'id'      => 'helloasso-auto-confirm',

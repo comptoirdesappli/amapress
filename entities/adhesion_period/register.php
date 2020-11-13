@@ -60,7 +60,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 //            'exp_csv' => true,
 		),
 		'fields'           => array(
-			'date_debut'  => array(
+			'date_debut'   => array(
 				'name'         => __( 'Date de début', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -68,7 +68,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => __( 'Date à laquelle démarre la période', 'amapress' ),
 				'csv_required' => true,
 			),
-			'date_fin'    => array(
+			'date_fin'     => array(
 				'name'         => __( 'Date de fin', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -76,19 +76,29 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => __( 'Date à laquelle finit la période', 'amapress' ),
 				'csv_required' => true,
 			),
-			'name'        => array(
+			'name'         => array(
 				'name'  => __( 'Nom de la période', 'amapress' ),
 				'type'  => 'text',
 				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
 				'desc'  => __( '(Facultatif) Nom de la saison (par exemple, saison 15)', 'amapress' ),
 			),
-			'online_desc' => array(
+			'hla_form_url' => array(
+				'name'  => __( 'Formulaire HelloAsso', 'amapress' ),
+				'type'  => 'text',
+				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
+				'desc'  => __( '(Facultatif) Url du formulaire HelloAsso correspondant. <br/>Doit être de la forme :<code>https://www.helloasso.com/associations/<em>nom-amap</em>/adhesions/<em><strong>nom-formulaire</strong></em></code>', 'amapress' )
+				           . '<br/>' . Amapress::makeLink(
+						admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=amp_helloasso_config' ),
+						__( 'Voir l\'intégration HelloAsso', 'amapress' )
+					),
+			),
+			'online_desc'  => array(
 				'name'  => __( 'Contenu bulletin', 'amapress' ),
 				'type'  => 'editor',
 				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
 				'desc'  => __( 'Contenu à afficher lors de l\'adhésion en ligne', 'amapress' ),
 			),
-			'word_model'  => array(
+			'word_model'   => array(
 				'name'            => __( 'Bulletin personnalisé', 'amapress' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',

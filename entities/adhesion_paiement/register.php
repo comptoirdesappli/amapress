@@ -609,7 +609,16 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 			return;
 		}
 
-		$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
+		$periods    = array_filter(
+			AmapressAdhesionPeriod::getAll(),
+			function ( $p ) use ( $formSlug ) {
+				/** @var AmapressAdhesionPeriod $p */
+				return 0 == strcasecmp( trim( $p->getHelloAssoFormSlug() ), trim( $formSlug ) );
+			} );
+		$adh_period = array_shift( $periods );
+		if ( empty( $adh_period ) ) {
+			$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
+		}
 		if ( $adh_period ) {
 			$default_email     = $payer->email;
 			$default_firstName = $payer->firstName;
