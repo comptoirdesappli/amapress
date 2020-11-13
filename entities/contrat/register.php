@@ -1298,7 +1298,17 @@ jQuery(function($) {
 				'col_def_hidden' => true,
 				'show_on'        => 'edit-only',
 			),
-			'don_dist_desc'         => array(
+			'don_dist_lbl'   => array(
+				'name'        => __( 'Don par distribution - Libellé', 'amapress' ),
+				'desc'        => __( 'Libellé du don par distribution', 'amapress' ),
+				'type'        => 'text',
+				'group'       => __( '4/6 - Paniers', 'amapress' ),
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'default'     => __( 'Don par distribution', 'amapress' ),
+				'show_column' => false,
+				'show_on'     => 'edit-only',
+			),
+			'don_dist_desc'  => array(
 				'name'        => __( 'Don par distribution - Description', 'amapress' ),
 				'desc'        => 'Description du don par distribution',
 				'type'        => 'editor',

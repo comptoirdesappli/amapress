@@ -388,7 +388,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag
 	                       || 'intermittent-adhesion-en-ligne' == $tag || 'intermittent-adhesion-en-ligne-connecte' == $tag;
 
-	$atts                                = shortcode_atts(
+	$atts = shortcode_atts(
 		[
 			'key'                                 => '',
 			'use_steps_nums'                      => 'true',
@@ -1305,7 +1305,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			?>
         </h4>
         <p><?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-		        $adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
+				$adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
         <p><?php echo $adherents_infos; ?></p>
 		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
@@ -1871,11 +1871,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false ) : null;
 		?>
         <h4>
-	        <?php
-	        echo amapress_step_text( $step, $steps_nums, $steps_count );
-	        echo esc_html( wp_unslash( Amapress::getOption(
-		        $adhesion_intermittent ? 'online_subscription_inter_agreement_step_name' : 'online_subscription_agreement_step_name' ) ) );
-	        ?>
+			<?php
+			echo amapress_step_text( $step, $steps_nums, $steps_count );
+			echo esc_html( wp_unslash( Amapress::getOption(
+				$adhesion_intermittent ? 'online_subscription_inter_agreement_step_name' : 'online_subscription_agreement_step_name' ) ) );
+			?>
         </h4>
         <form method="post" id="agreement" class="amapress_validate"
               action="<?php echo esc_attr( add_query_arg( 'step', 'validate_agreement' ) ) ?>">
@@ -3640,7 +3640,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 		if ( $contrat->getDon_Distribution() ) {
-			echo '<p><hr/><label for="don-contrat-' . $contrat->ID . '">Don par distribution : </label><input style="display: inline-block; max-width: 5em; font-size: 1em" class="don-input" step="0.5" value="' . ( $edit_inscription ? $edit_inscription->getDon_Distribution() : 0 ) . '" type="number" id="don-contrat-' . $contrat->ID . '" name="don_dist" min="0" data-dists="' . count( $dates ) . '" /> ' . __( '€', 'amapress' ) . '<br/> ' . $contrat->getDon_DistributionDescription() . '<hr/></p>';
+			echo '<p><hr/><label for="don-contrat-' . $contrat->ID . '">' . esc_html( $contrat->getDon_DistributionLabel() ) . __( ' : ', 'amapress' ) . '</label><input style="display: inline-block; max-width: 5em; font-size: 1em" class="don-input" step="0.5" value="' . ( $edit_inscription ? $edit_inscription->getDon_Distribution() : 0 ) . '" type="number" id="don-contrat-' . $contrat->ID . '" name="don_dist" min="0" data-dists="' . count( $dates ) . '" /> ' . __( '€', 'amapress' ) . '<br/> ' . $contrat->getDon_DistributionDescription() . '<hr/></p>';
 		}
 		echo '<p style="margin-top: 1em;">' . __( 'Total: ', 'amapress' ) . '<span id="total">0</span>€</p>';
 		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Valider', 'amapress' ) . '" /></p>';
