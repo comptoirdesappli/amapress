@@ -957,6 +957,39 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getID();
 				}
 			];
+			$ret['adhesion_montant'] = [
+				'desc' => __( 'Montant de l\'adhésion de l\'amapien à l\'AMAP', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					$adh_pmt = AmapressAdhesion_paiement::getForUser( $adh->getAdherentId(), $adh->getDate_debut(), false );
+					if ( empty( $adh_pmt ) ) {
+						return '';
+					}
+
+					return Amapress::formatPrice( $adh_pmt->getAmount() );
+				}
+			];
+			$ret['adhesion_debut'] = [
+				'desc' => __( 'Date de début de l\'adhésion de l\'amapien à l\'AMAP', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					$adh_pmt = AmapressAdhesion_paiement::getForUser( $adh->getAdherentId(), $adh->getDate_debut(), false );
+					if ( empty( $adh_pmt ) || empty( $adh_pmt->getPeriod() ) ) {
+						return '';
+					}
+
+					return date_i18n( 'd/m/Y', $adh_pmt->getPeriod()->getDate_debut() );
+				}
+			];
+			$ret['adhesion_fin'] = [
+				'desc' => __( 'Date de fin de l\'adhésion de l\'amapien à l\'AMAP', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					$adh_pmt = AmapressAdhesion_paiement::getForUser( $adh->getAdherentId(), $adh->getDate_debut(), false );
+					if ( empty( $adh_pmt ) || empty( $adh_pmt->getPeriod() ) ) {
+						return '';
+					}
+
+					return date_i18n( 'd/m/Y', $adh_pmt->getPeriod()->getDate_fin() );
+				}
+			];
 			self::$properties = $ret;
 		}
 
