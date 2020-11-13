@@ -165,3 +165,13 @@ function wpmu_no_username_error( $result ) {
 }
 
 add_filter( 'wpmu_validate_user_signup', 'wpmu_no_username_error' );
+
+add_action( 'login_form_register', function () {
+	$adhesion_page = Amapress::getOption( 'adhesion-page' );
+	if ( ! empty( $adhesion_page ) ) {
+		$adhesion_page = get_post( $adhesion_page );
+	}
+	if ( ! empty( $adhesion_page ) ) {
+		wp_redirect_and_exit( get_permalink( $adhesion_page ) );
+	}
+} );

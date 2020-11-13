@@ -683,7 +683,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 									)
 								),
-								'OVH - Mailinglist'   => array(
+								'OVH - Mailinglist'                                     => array(
 									'id'      => 'amapress_mailinglist_sync_ovh_tab',
 									'desc'    => '',
 									'options' => array(
@@ -4741,6 +4741,11 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type' => 'select-pages',
 										),
 										array(
+											'id'   => 'adhesion-page',
+											'name' => __( 'Page de demande d\'adhésion (publique)', 'amapress' ),
+											'type' => 'select-pages',
+										),
+										array(
 											'id'   => 'amps-tmpl-file',
 											'name' => __( 'Fichier template (Simple)', 'amapress' ),
 											'desc' => __( 'Fichier template de votre thème à utiliser pour l\'affichage des informations Amapress (Producteurs/Productions/Produits/Distributions/Recettes...)', 'amapress' ),
@@ -5503,7 +5508,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Configuration des paniers' => array(
+						'Configuration des paniers'               => array(
 							'id'         => 'import_quant_paniers',
 							'desc'       => '',
 							'capability' => 'edit_contrat_instance',
@@ -5564,7 +5569,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Producteurs'               => array(
+						'Producteurs'                             => array(
 							'id'         => 'import_producteurs_tab',
 							'desc'       => '',
 							'capability' => 'manage_amapress',
@@ -5593,7 +5598,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Productions'               => array(
+						'Productions'                             => array(
 							'id'         => 'import_productions_tab',
 							'desc'       => '',
 							'capability' => 'manage_amapress',
@@ -5622,7 +5627,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Contrats'                  => array(
+						'Contrats'                                => array(
 							'id'         => 'import_contrats_tab',
 							'desc'       => '',
 							'capability' => 'manage_amapress',
@@ -5665,7 +5670,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Adhésions AMAP'            => array(
+						'Adhésions AMAP'                          => array(
 							'id'         => 'import_adh_pmt_tab',
 							'desc'       => '',
 							'capability' => 'edit_adhesion_paiement',
@@ -5701,7 +5706,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Produits'                  => array(
+						'Produits'                                => array(
 							'id'         => 'import_produits_tab',
 							'desc'       => '',
 							'capability' => 'edit_produit',
