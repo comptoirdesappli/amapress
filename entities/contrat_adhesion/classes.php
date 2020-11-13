@@ -928,19 +928,19 @@ class AmapressAdhesion extends TitanEntity {
 				}
 			];
 			$ret['don_distribution'] = [
-				'desc' => __( 'Don par distribution', 'amapress' ),
+				'desc' => __( 'Montant du "Don par distribution" pour chaque distribution', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return Amapress::formatPrice( $adh->getDon_Distribution() );
 				}
 			];
 			$ret['don_distribution_desc'] = [
-				'desc' => __( 'Description du don par distribution', 'amapress' ),
+				'desc' => __( 'Description du "Don par distribution"', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return Amapress::formatPrice( $adh->getContrat_instance()->getDon_DistributionDescription() );
 				}
 			];
 			$ret['don_total'] = [
-				'desc' => __( 'Total du contrat', 'amapress' ),
+				'desc' => __( 'Total du "Don par distribution" pour ce contrat', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return Amapress::formatPrice( $adh->getTotalDon() );
 				}
