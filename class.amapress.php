@@ -166,7 +166,11 @@ class Amapress {
 		}
 	}
 
-	public static function makeWikiLink( $url, $title = 'Documentation Amapress', $escape_title = true ) {
+	public static function makeWikiLink( $url, $title = null, $escape_title = true ) {
+		if ( empty( $title ) ) {
+			$title = __( 'Documentation Amapress', 'amapress' );
+		}
+
 		return '<span class="dashicons dashicons-admin-site-alt"></span>&nbsp;' . self::makeLink( $url,
 				$title,
 				$escape_title, true );

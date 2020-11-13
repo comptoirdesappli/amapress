@@ -1167,7 +1167,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor'          => array(
+			'quant_editor'   => array(
 				'name'        => __( 'Configuration des paniers (Taille/Quantités)', 'amapress' ),
 				'type'        => 'custom',
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
@@ -1180,14 +1180,14 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => __('Quantités', 'amapress'),
 			),
-			'has_pancust'           => array(
+			'has_pancust'    => array(
 				'name'        => __( 'Contenu du panier', 'amapress' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
 				'desc'        => __( 'Rendre accessible la description des paniers', 'amapress' ),
 			),
-			'rattrapage'            => array(
+			'rattrapage'     => array(
 				'name'        => __( 'Rattrapage', 'amapress' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1288,9 +1288,9 @@ jQuery(function($) {
 					}
 				}
 			),
-			'don_dist'              => array(
+			'don_dist'       => array(
 				'name'           => __( 'Don par distribution', 'amapress' ),
-				'desc'           => 'Activer la possibilité de faire un don par distribution en plus du prix unitaire du panier (panier solidaire du producteur)',
+				'desc'           => __( 'Activer la possibilité de faire un don par distribution en plus du prix unitaire du panier (panier solidaire du producteur)', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '4/6 - Paniers', 'amapress' ),
 				'readonly'       => 'amapress_is_contrat_instance_readonly',
@@ -1310,7 +1310,7 @@ jQuery(function($) {
 			),
 			'don_dist_desc'  => array(
 				'name'        => __( 'Don par distribution - Description', 'amapress' ),
-				'desc'        => 'Description du don par distribution',
+				'desc'        => __( 'Description du don par distribution', 'amapress' ),
 				'type'        => 'editor',
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
@@ -1318,7 +1318,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 			),
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe'        => array(
+			'self_subscribe' => array(
 				'name'           => __( 'Activer', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1326,7 +1326,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'self_contrats'         => array(
+			'self_contrats'  => array(
 				'name'           => __( 'Autres contrats', 'amapress' ),
 				'type'           => 'select-posts',
 				'post_type'      => 'amps_contrat_inst',
@@ -1340,7 +1340,7 @@ jQuery(function($) {
 				'tags'           => true,
 				'autocomplete'   => true,
 			),
-			'self_edit'             => array(
+			'self_edit'      => array(
 				'name'           => __( 'Editer', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
