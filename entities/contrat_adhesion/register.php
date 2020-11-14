@@ -680,7 +680,9 @@ jQuery(function($) {
 				'name'          => __( 'Co-Adhérent 1', 'amapress' ),
 				'type'          => 'select-users',
 				'required'      => false,
-				'desc'          => sprintf( __( 'Sélectionner un Co-Adhérent 1 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) ),
+				'desc'          => function ( $o ) {
+					return sprintf( __( 'Sélectionner un Co-Adhérent 1 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) );
+				},
 				'group'         => __( '4/ Coadhérents', 'amapress' ),
 				'readonly'      => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete'  => true,
@@ -710,7 +712,9 @@ jQuery(function($) {
 				'name'           => __( 'Co-Adhérent 2', 'amapress' ),
 				'type'           => 'select-users',
 				'required'       => false,
-				'desc'           => sprintf( __( 'Sélectionner un Co-Adhérent 2 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) ),
+				'desc'           => function ( $o ) {
+					return sprintf( __( 'Sélectionner un Co-Adhérent 2 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) );
+				},
 				'group'          => __( '4/ Coadhérents', 'amapress' ),
 				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete'   => true,
@@ -741,7 +745,9 @@ jQuery(function($) {
 				'name'           => __( 'Co-Adhérent 3', 'amapress' ),
 				'type'           => 'select-users',
 				'required'       => false,
-				'desc'           => sprintf( __( 'Sélectionner un Co-Adhérent 3 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) ),
+				'desc'           => function ( $o ) {
+					return sprintf( __( 'Sélectionner un Co-Adhérent 3 si spécifique à ce contrat. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) );
+				},
 				'group'          => __( '4/ Coadhérents', 'amapress' ),
 				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
 				'autocomplete'   => true,

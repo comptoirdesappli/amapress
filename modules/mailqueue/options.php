@@ -17,7 +17,6 @@ function amapress_mailing_queue_menu_options() {
 		'tabs'     => array(
 			__( 'Options de la file des emails sortants', 'amapress' )   => array(
 				'id'      => 'amapress_mailqueue_options',
-				'desc'    => '',
 				'options' => array(
 					array(
 						'id'      => 'mail_queue_use_queue',
@@ -43,7 +42,9 @@ function amapress_mailing_queue_menu_options() {
 						'id'      => 'avoid_send_wp_from',
 						'name'    => __( 'Envoi au site', 'amapress' ),
 						'type'    => 'checkbox',
-						'desc'    => sprintf( __( 'Eviter d\'envoyer les emails avec destinataires en Cc/Bcc à l\'adresse email du site (%s)', 'amapress' ), amapress_mail_from( amapress_get_default_wordpress_from_email() ) ),
+						'desc'    => function ( $o ) {
+							return sprintf( __( 'Eviter d\'envoyer les emails avec destinataires en Cc/Bcc à l\'adresse email du site (%s)', 'amapress' ), amapress_mail_from( amapress_get_default_wordpress_from_email() ) );
+						},
 						'default' => true,
 					),
 					//
@@ -54,7 +55,6 @@ function amapress_mailing_queue_menu_options() {
 			),
 			'SMTP externe'                                               => array(
 				'id'      => 'amapress_mailqueue_stmp',
-				'desc'    => '',
 				'options' => array(
 					array(
 						'id'     => 'mail_queue_send_test_mail',
@@ -139,7 +139,6 @@ function amapress_mailing_queue_menu_options() {
 			__( 'Emails sortants en attente', 'amapress' ) . ' <span class="badge">' .
 			amapress_mailing_queue_waiting_mail_list_count() . '</span>' => array(
 				'id'      => 'amapress_mailqueue_waiting_mails',
-				'desc'    => '',
 				'options' => array(
 					array(
 						'id'     => 'mail_queue_waiting_list',
@@ -152,7 +151,6 @@ function amapress_mailing_queue_menu_options() {
 			__( 'Emails sortants en erreur', 'amapress' ) . ' <span class="badge">' .
 			amapress_mailing_queue_errored_mail_list_count() . '</span>' => array(
 				'id'      => 'amapress_mailqueue_errored_mails',
-				'desc'    => '',
 				'options' => array(
 					array(
 						'id'     => 'mail_queue_errored_list',
@@ -164,7 +162,6 @@ function amapress_mailing_queue_menu_options() {
 			),
 			__( 'Log des emails sortants', 'amapress' )                  => array(
 				'id'      => 'amapress_mailqueue_mail_logs',
-				'desc'    => '',
 				'options' => array(
 					array(
 						'id'      => 'mail_queue_log_clean_days',

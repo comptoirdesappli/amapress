@@ -147,7 +147,11 @@ class TitanFrameworkOption {
 		$this->type     = is_a( $owner, 'TitanFrameworkCustomizer' ) ? self::TYPE_CUSTOMIZER : $this->type;
 		// Generate a unique ID depending on the settings for those without IDs
 		if ( empty( $this->settings['id'] ) && $this->settings['type'] != 'save' ) {
-			$this->settings['id'] = substr( md5( serialize( $this->settings ) . serialize( $this->owner->settings ) ), 0, 16 );
+			$option_settings = array_merge( $this->settings );
+			if ( ! empty( $option_settings['desc'] ) && ! is_string( $option_settings['desc'] ) ) {
+				$option_settings['desc'] = uniqid();
+			}
+			$this->settings['id'] = substr( md5( serialize( $option_settings ) . serialize( $this->owner->settings ) ), 0, 16 );
 		}
 
 		if ( $this->settings['top_filter'] !== false || $this->settings['bottom_filter'] !== false ) {

@@ -111,7 +111,9 @@ function amapress_register_entities_producteur( $entities ) {
 					return false;
 				},
 				'required'   => true,
-				'desc'       => sprintf( __( 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) ),
+				'desc'       => function ( $o ) {
+					return sprintf( __( 'Sélectionner le compte utilisateur du producteur. S\'il ne se trouve pas dans la liste ci-dessus, créer son compte depuis « <a href="%s" target="_blank">Ajouter un utilisateur</a> » puis fermer la page et rafraîchir la liste avec le bouton accolé au champs', 'amapress' ), admin_url( 'user-new.php' ) );
+				},
 				'searchable' => true,
 			),
 			'referent'             => array(

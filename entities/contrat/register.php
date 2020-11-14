@@ -676,7 +676,9 @@ jQuery(function($) {
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'required'       => true,
-				'desc'           => sprintf( __( 'Indiquer une durée en mois pour activer l\'option %s', 'amapress' ), Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/slide', __( 'Contrat glissant', 'amapress' ) ) ),
+				'desc'           => function ( $o ) {
+					return sprintf( __( 'Indiquer une durée en mois pour activer l\'option %s', 'amapress' ), Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/slide', __( 'Contrat glissant', 'amapress' ) ) );
+				},
 				'min'            => 0,
 				'max'            => 12,
 				'default'        => 0,
@@ -758,7 +760,9 @@ jQuery(function($) {
 				'type'        => 'editor',
 				'show_column' => false,
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
-				'desc'        => sprintf( __( 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%%%xxx%%%%" <a target="_blank" href="%s">Plus d\'info</a>)', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) ),
+				'desc'        => function ( $o ) {
+					return sprintf( __( 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%%%xxx%%%%" <a target="_blank" href="%s">Plus d\'info</a>)', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) );
+				},
 			),
 			'special_mention'       => array(
 				'name'        => __( 'Mention', 'amapress' ),
@@ -1457,9 +1461,11 @@ jQuery(function($) {
 				'selector-button' => __( 'Utiliser ce modèle', 'amapress' ),
 				'selector-title'  => __( 'Sélectionnez/téléversez un modèle de contrat papier DOCX', 'amapress' ),
 				'group'           => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
-				'desc'            => sprintf( __( '<p><strong>Vous pouvez configurer %s et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
+				'desc'            => function ( $o ) {
+					return sprintf( __( '<p><strong>Vous pouvez configurer %s et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
 <p>Sinon, configurez un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
-<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>', 'amapress' ), Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) ),
+<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>', 'amapress' ), Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
+				},
 			),
 
 

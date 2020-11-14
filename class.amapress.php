@@ -2073,7 +2073,7 @@ class Amapress {
 						$t = $p->createTab( array(
 							'name'       => $tab_name,
 							'id'         => ! empty( $tab['id'] ) ? $tab['id'] : $tab_name,
-							'desc'       => $tab['desc'],
+							'desc'       => ! empty( $tab['desc'] ) ? $tab['desc'] : '',
 							'use_form'   => ( isset ( $tab['use_form'] ) ? $tab['use_form'] : true ),
 							'use_table'  => ( isset ( $tab['use_table'] ) ? $tab['use_table'] : true ),
 							'capability' => ( ! empty( $tab['capability'] ) ? $tab['capability'] : null )

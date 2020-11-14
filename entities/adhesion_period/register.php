@@ -108,8 +108,10 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'selector-title'  => __( 'Sélectionnez/téléversez un modèle de bulletin DOCX', 'amapress' ),
 				'selector-button' => __( 'Utiliser ce modèle', 'amapress' ),
 				'group'           => __( 'Pré-inscription en ligne', 'amapress' ),
-				'desc'            => sprintf( __( '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
-<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ), esc_attr( Amapress::getBulletinGenericUrl() ) ),
+				'desc'            => function ( $o ) {
+					return sprintf( __( '<p>Configurer un modèle de bulletin à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
+<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ), esc_attr( Amapress::getBulletinGenericUrl() ) );
+				},
 			),
 			'mnt_reseau'  => array(
 				'name'     => __( 'Montant adhésion au réseau', 'amapress' ),

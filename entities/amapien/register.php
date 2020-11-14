@@ -92,10 +92,12 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'        => __( 'Membre du collectif - Rôle dans l’Amap', 'amapress' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
-				'desc'        => '<div id="amapress_user_amap_roles">' . sprintf( __( '
+				'desc'        => function ( $o ) {
+					return '<div id="amapress_user_amap_roles">' . sprintf( __( '
 <p>Pour identifier ou contacter un membre du collectif via la fonctionnalité trombinoscope du site, sélectionner l’étiquette correspondante ci-dessous ou la <a href="%s">créer</a> :</p>
 <p><em>Exemple : Accueil nouveaux,  Boite Contact,  Convivialité-apéro,  Coordination associative,  Distributions, Feuille de chou,  Responsable Intermittents,  Ouverture vers l\'extérieur,  Panier solidaire,  Référent miel,  Relais Réseau AMAP IdF,  Responsable légal,  Site internet,  Sortie à la ferme…</em></p>
-<p>Pour modifier le collectif : <a href="%s">Editer le collectif</a></p>', 'amapress' ), admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ), admin_url( 'users.php?page=amapress_collectif&tab=amapress_edit_roles_collectif' ) ) . '</div>',
+<p>Pour modifier le collectif : <a href="%s">Editer le collectif</a></p>', 'amapress' ), admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ), admin_url( 'users.php?page=amapress_collectif&tab=amapress_edit_roles_collectif' ) ) . '</div>';
+				},
 				'show_column' => false,
 				'csv'         => false,
 //                'searchable' => true,
@@ -121,7 +123,9 @@ function amapress_register_entities_amapien( $entities ) {
 				'name'        => __( 'Groupes d\'amapien', 'amapress' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAPIEN_GROUP,
-				'desc'        => '<p id="amapress_user_amapien_groups">' . __( 'Pour indiquer l\'appartenance à un groupe d\'amapiens sans être membre du collectif (par ex, Donateur, Membre d\'une autre AMAP pour l\'organisation de visite à la ferme en commun, Ancien producteur...)', 'amapress' ) . '</p>',
+				'desc'        => function ( $o ) {
+					return '<p id="amapress_user_amapien_groups">' . __( 'Pour indiquer l\'appartenance à un groupe d\'amapiens sans être membre du collectif (par ex, Donateur, Membre d\'une autre AMAP pour l\'organisation de visite à la ferme en commun, Ancien producteur...)', 'amapress' ) . '</p>';
+				},
 				'show_column' => false,
 				'csv'         => false,
 //                'searchable' => true,
