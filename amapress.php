@@ -2140,3 +2140,33 @@ add_filter( 'cron_schedules', function ( $new_schedules ) {
 
 	return $new_schedules;
 } );
+
+function amapress_section_note_maker(
+	$section_title,
+	$before_list,
+	$items,
+	$after_list,
+	$help_link, $help_title = null
+) {
+	if ( empty( $section_title ) ) {
+		$section_title = __( 'Dans cette section, vous pouvez :', 'amapress' );
+	}
+
+	return '<div class="amapress-section-note">' .
+	       $before_list .
+	       '<h4>' . $section_title . '</h4>
+<ul style="margin-left: 2em; list-style-type: disc">' .
+	       implode( '', array_map(
+		       function ( $item ) {
+			       if ( empty( $item['capability'] ) || current_user_can( $item['capability'] ) ) {
+				       return '<li>' . $item['item'] . '</li>';
+			       }
+
+			       return '';
+		       }, $items
+	       ) ) . '</ul>' .
+	       $after_list .
+	       ( ! empty( $help_link ) ?
+		       '<p>' . Amapress::makeWikiLink( $help_link, $help_title ) . '</p>'
+		       : '' ) . '</div>';
+}
