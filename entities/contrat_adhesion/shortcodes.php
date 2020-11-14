@@ -3691,6 +3691,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . '</h4>';
 		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_pay_step_message' ), null ) );
 
+		$dates = $contrat->getRemainingDates( $start_date );
+
 		$by_month_totals = [];
 		if ( $contrat->isPanierVariable() ) {
 			$panier_vars = isset( $_REQUEST['panier_vars'] ) ? (array) $_REQUEST['panier_vars'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -3752,6 +3754,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			$serial_quants = $panier_vars;
 
+			$don_dist = 0;
+			if ( isset( $_REQUEST['don_dist'] ) ) {
+				$don_dist = floatval( $_REQUEST['don_dist'] );
+			}
+			$total += $don_dist * count( $dates );
+
 			if ( ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
 					echo '<p style="margin-bottom: 0">' . sprintf( __( 'Vous allez vous passer commande de %s pour un montant %s avec les options suivantes:', 'amapress' ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
@@ -3800,8 +3808,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			$factors = isset( $_REQUEST['factors'] ) ? (array) $_REQUEST['factors'] : []; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-			$dates = $contrat->getRemainingDates( $start_date );
-
 			$total         = 0;
 			$chosen_quants = [];
 			$serial_quants = [];
@@ -3836,6 +3842,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 				}
 			}
+
+			$don_dist = 0;
+			if ( isset( $_REQUEST['don_dist'] ) ) {
+				$don_dist = floatval( $_REQUEST['don_dist'] );
+			}
+			$total += $don_dist * count( $dates );
 
 			if ( count( $chosen_quants ) == 1 && ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {

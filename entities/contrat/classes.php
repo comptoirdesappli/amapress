@@ -2091,7 +2091,8 @@ class AmapressContrat_instance extends TitanEntity {
 		$placeholders['quantites_prix_unitaire']      = '';
 		$placeholders['produits_paiements_livraison'] = '';
 		$placeholders['don_distribution']             = '';
-		$placeholders['don_distribution_desc']        = '';
+		$placeholders['don_distribution_nom']         = $this->getDon_DistributionLabel();
+		$placeholders['don_distribution_desc']        = $this->getDon_DistributionDescription();
 		$placeholders['don_total']                    = '';
 		$placeholders['id']                           = '';
 		$placeholders['total']                        = '';
