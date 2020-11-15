@@ -5240,10 +5240,15 @@ function amapress_get_details_all_paiements(
 		$row['prod_sort'] = date_i18n( 'Y-m-d', $adh->getContrat_instance()->getDate_debut() ) .
 		                    $adh->getContrat_instance()->getModel()->getTitle();
 		$row['opt_pmts']  = $adh->getProperty( 'option_paiements' );
-		$info             = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
-		$info             .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
-		$row['info']      = $info;
-		$row['date_enc']  = implode( ', ', array_map( function ( $d ) {
+		if ( $adh->getDon_Distribution() > 0 ) {
+			$row['opt_pmts'] .= '<br/><em>' . sprintf( __( '(inclut %s : %0.2f €)', 'amapress' ),
+					$adh->getContrat_instance()->getDon_DistributionLabel(),
+					$adh->getTotalDon() ) . '</em>';
+		}
+		$info            = 'Ordre: ' . $adh->getProperty( 'paiements_ordre' );
+		$info            .= ! empty( $adh->getProperty( 'paiements_mention' ) ) ? '<br/>' . $adh->getProperty( 'paiements_mention' ) : '';
+		$row['info']     = $info;
+		$row['date_enc'] = implode( ', ', array_map( function ( $d ) {
 			return date_i18n( 'd/m/Y', $d );
 		}, $adh->getContrat_instance()->getPaiements_Liste_dates() ) );
 		$row['date_liv']  = implode( ', ', array_map( function ( $d ) {
@@ -5251,10 +5256,10 @@ function amapress_get_details_all_paiements(
 		}, array_filter( $adh->getContrat_instance()->getListe_dates(), function ( $d ) {
 			return Amapress::start_of_day( $d ) >= Amapress::start_of_day( amapress_time() );
 		} ) ) );
-		$row['total_d']   = Amapress::formatPrice( $adh->getTotalAmount(), true );
-		$row['total']     = $adh->getTotalAmount();
-		$row['status']    = implode( ' ; ', $paiements_status );
-		$data[]           = $row;
+		$row['total_d']  = Amapress::formatPrice( $adh->getTotalAmount(), true );
+		$row['total']    = $adh->getTotalAmount();
+		$row['status']   = implode( ' ; ', $paiements_status );
+		$data[]          = $row;
 	}
 	$ret .= amapress_get_datatable( 'details_all_paiements', $columns, $data,
 		array(
