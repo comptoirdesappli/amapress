@@ -320,7 +320,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getDon_DistributionLabel() {
-		return stripslashes( $this->getCustom( 'amapress_contrat_instance_don_dist_lbl', '' ) );
+		return stripslashes( $this->getCustom( 'amapress_contrat_instance_don_dist_lbl', __( 'Don par distribution', 'amapress' ) ) );
 	}
 
 	public function getDon_DistributionDescription() {

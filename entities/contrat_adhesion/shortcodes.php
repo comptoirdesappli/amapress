@@ -4951,6 +4951,7 @@ function amapress_get_details_all_deliveries(
 	$ix   = 1;
 	$data = [];
 	foreach ( $adhs as $adh ) {
+		$don_dist = $adh->getDon_Distribution();
 		if ( $adh->getContrat_instance()->isPanierVariable() ) {
 			$paniers = $adh->getPaniersVariables();
 			foreach ( $adh->getRemainingDates() as $date ) {
@@ -4982,6 +4983,23 @@ function amapress_get_details_all_deliveries(
 					}
 					$ix ++;
 				}
+
+				if ( $don_dist > 0 ) {
+					$row           = [];
+					$row['ix']     = $ix;
+					$row['date_d'] = date_i18n( 'd/m/Y', $date );
+					$row['date']   = $date;
+					$row['desc']   = '<em>' . $adh->getContrat_instance()->getDon_DistributionLabel() . '</em>';
+
+					$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+					                  . '<br />'
+					                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+					$row['fact']    = 1;
+					$row['total_d'] = Amapress::formatPrice( $don_dist, true );
+					$row['total']   = $don_dist;
+					$data[]         = $row;
+					$ix ++;
+				}
 			}
 
 		} else {
@@ -5008,6 +5026,23 @@ function amapress_get_details_all_deliveries(
 
 					$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
 					$row['total']   = $quant->getPrice();
+					$data[]         = $row;
+					$ix ++;
+				}
+
+				if ( $don_dist > 0 ) {
+					$row           = [];
+					$row['ix']     = $ix;
+					$row['date_d'] = date_i18n( 'd/m/Y', $date );
+					$row['date']   = $date;
+					$row['desc']   = '<em>' . $adh->getContrat_instance()->getDon_DistributionLabel() . '</em>';
+
+					$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+					                  . '<br />'
+					                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+					$row['fact']    = 1;
+					$row['total_d'] = Amapress::formatPrice( $don_dist, true );
+					$row['total']   = $don_dist;
 					$data[]         = $row;
 					$ix ++;
 				}
