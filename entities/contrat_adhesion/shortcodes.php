@@ -3337,6 +3337,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		$contrat_info .= '<h3>' . __( 'Lieu', 'amapress' ) . '</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
 		$contrat_info .= '<h3>' . __( 'Détails', 'amapress' ) . '</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
+		if ( $adh->getDon_distribution() > 0 ) {
+			$contrat_info .= '<h3>' . $adh->getContrat_instance()->getDon_distributionLabel() . '</h3><p>' . $adh->getProperty( 'don_distribution' ) . __( '€', 'amapress' ) . ' x ' . $adh->getProperty( 'nb_dates' ) . __( ' distribution(s)', 'amapress' ) . ' = ' . $adh->getProperty( 'don_total' ) . __( '€', 'amapress' ) . '</p>';
+		}
 		$contrat_info .= '<h3>' . __( 'Options de paiements', 'amapress' ) . '</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p><p>' . __( 'Ordre: ', 'amapress' ) . $adh->getProperty( 'paiements_ordre' ) . '</p>';
 		$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
 		$contrat_info .= '<h3>' . __( 'Référents', 'amapress' ) . '</h3>';
@@ -5251,7 +5254,7 @@ function amapress_get_details_all_paiements(
 		$row['date_enc'] = implode( ', ', array_map( function ( $d ) {
 			return date_i18n( 'd/m/Y', $d );
 		}, $adh->getContrat_instance()->getPaiements_Liste_dates() ) );
-		$row['date_liv']  = implode( ', ', array_map( function ( $d ) {
+		$row['date_liv'] = implode( ', ', array_map( function ( $d ) {
 			return date_i18n( 'd/m/Y', $d );
 		}, array_filter( $adh->getContrat_instance()->getListe_dates(), function ( $d ) {
 			return Amapress::start_of_day( $d ) >= Amapress::start_of_day( amapress_time() );
