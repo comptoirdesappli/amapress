@@ -97,6 +97,15 @@ class TitanFrameworkOptionMulticheck extends TitanFrameworkOption {
 
 
 	public function columnDisplayValue( $post_id ) {
+		if ( isset( $this->settings['column'] ) ) {
+			$column = $this->settings['column'];
+			if ( $column && is_callable( $column ) ) {
+				echo call_user_func( $column, $post_id, $this );
+
+				return;
+			}
+		}
+
 		$savedValue = $this->getValue( $post_id );
 		if ( ! $savedValue ) {
 			return;
@@ -118,6 +127,15 @@ class TitanFrameworkOptionMulticheck extends TitanFrameworkOption {
 	}
 
 	public function columnExportValue( $post_id ) {
+		if ( isset( $this->settings['export'] ) ) {
+			$column = $this->settings['export'];
+			if ( $column && is_callable( $column ) ) {
+				echo call_user_func( $column, $post_id, $this );
+
+				return;
+			}
+		}
+
 		$savedValue = $this->getValue( $post_id );
 		if ( ! $savedValue ) {
 			return;
@@ -261,7 +279,7 @@ function registerTitanFrameworkOptionMulticheckControl() {
                             csv = csv.replace(/,+$/, "");
 
                             $(this).parents('li:eq(0)').find('input[type=hidden]').val(csv)
-                            // we need to trigger the field afterwards to enable the save button
+                                // we need to trigger the field afterwards to enable the save button
                                 .trigger('change');
                             return true;
                         });
