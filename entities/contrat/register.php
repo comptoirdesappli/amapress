@@ -1622,12 +1622,17 @@ jQuery(function($) {
 
 					return $ret;
 				},
-				'csv_validator'     => function ( $value ) {
-					if ( intval( $value ) < 1 || intval( $value ) > 12 ) {
-						return new WP_Error( 'cannot_parse', sprintf( __( "Valeur '%s' non valide : doit être entre 1 et 12", 'amapress' ), $value ) );
+				'csv_validator' => function ( $value ) {
+					$values = array_map( function ( $v ) {
+						return intval( trim( $v ) );
+					}, explode( ',', $value ) );
+					foreach ( $values as $v ) {
+						if ( intval( $v ) < 1 || intval( $v ) > 12 ) {
+							return new WP_Error( 'cannot_parse', sprintf( __( "Valeur '%s' non valide : doit être une liste de paiements chacun entre 1 et 12", 'amapress' ), $value ) );
+						}
 					}
 
-					return [ 'amapress_contrat_instance_paiements' => intval( $value ) ];
+					return [ 'amapress_contrat_instance_paiements' => $values ];
 				},
 				'options'           => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
