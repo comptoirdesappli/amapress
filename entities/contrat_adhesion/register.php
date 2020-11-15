@@ -701,9 +701,9 @@ jQuery(function($) {
 					$user = AmapressAdhesion::getBy( $post_id );
 					if ( $user->getAdherent() ) {
 						if ( $user->getAdherent2() ) {
-							echo $user->getAdherent2()->getDisplayNameWithAdminEditLink();
+							echo $user->getAdherent2()->getDisplayName();
 						} else if ( ! Amapress::hasPartialCoAdhesion() && $user->getAdherent()->getCoAdherent1() ) {
-							echo $user->getAdherent()->getCoAdherent1()->getDisplayNameWithAdminEditLink();
+							echo $user->getAdherent()->getCoAdherent1()->getDisplayName();
 						}
 					}
 				},
