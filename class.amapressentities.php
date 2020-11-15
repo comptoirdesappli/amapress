@@ -3463,7 +3463,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'desc'    => function ( $option ) {
 												return __( 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin', 'amapress' ) . '<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
 														'print_button' => __( 'Bouton Imprimer le bulletin', 'amapress' )
-													], 'de l\'amapien', [], false );
+													], 'user:de l\'amapien', [], false );
 											},
 											'default' => wpautop( __( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%", 'amapress' ) ),
 										),
@@ -3899,7 +3899,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( __( "Bonjour,\n\nVotre demande d'adhésion à l'espace intermittents (%%post:lien_intermittence%%) a bien été enregistrée\n\n%%nom_site%%", 'amapress' ) ),
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'intermit-inscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+												return Amapress::getPlaceholdersHelpTable( 'intermit-inscr-placeholders', [], '' );
 											},
 										),
 										array(
@@ -3922,7 +3922,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'    => 'editor',
 											'default' => wpautop( __( "Bonjour,\n\nVotre demande de désincription de l'espace intermittents a bien été enregistrée\n\n%%nom_site%%", 'amapress' ) ),
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'intermit-desinscr-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+												return Amapress::getPlaceholdersHelpTable( 'intermit-desinscr-placeholders', [], '' );
 											},
 										),
 										array(
@@ -4452,7 +4452,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'desc'    => function ( $option ) {
 												return __( 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>', 'amapress' ) . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
 														'print_button' => __( 'Bouton Imprimer le bulletin', 'amapress' )
-													], 'de l\'amapien', [], false );
+													], '', [], false );
 											},
 											'default' => wpautop( __( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%", 'amapress' ) ),
 										),
@@ -4688,7 +4688,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type'    => 'editor',
 											'default' => wpautop( __( "Bonjour %%dest%%\n\nVotre identifiant est : %%dest:login%%. (Vous pouvez également utiliser votre email : %%dest:mail%%)\nPour configurer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%", 'amapress' ) ),
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+												return Amapress::getPlaceholdersHelpTable( 'welcome-placeholders', [], '' );
 											},
 //                                            'capability' => 'manage_amapress',
 										),
@@ -4705,7 +4705,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 											'type'    => 'editor',
 											'default' => wpautop( __( "Bonjour %%dest%%\n\nQuelqu'un a demandé la récupération de votre mot de passe. Si ce n'est pas vous, veuillez ignorer cet email et votre mot de passe restera inchangé.\n\nVotre identifiant est : %%dest:login%%. Vous pouvez également utiliser votre email : %%dest:mail%%\nPour changer votre mot de passe, rendez-vous à l’adresse suivante :\n%%password_url%%\n\nBien cordialement,\n%%nom_site%%", 'amapress' ) ),
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', amapress_replace_mail_user_placeholders_help(), 'de l\'amapien' );
+												return Amapress::getPlaceholdersHelpTable( 'passlost-placeholders', [], '' );
 											},
 										),
 										array(
@@ -6094,7 +6094,7 @@ jQuery(document).ready(function($) {
 											Amapress::getPlaceholdersHelpForProperties(
 												AmapressUser::getProperties()
 											),
-											'de l\'amapien', [], false,
+											'user:de l\'amapien', [], false,
 											'%%', '%%', false
 										);
 									}

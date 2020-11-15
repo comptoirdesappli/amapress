@@ -103,33 +103,48 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 
 			return '<div class="user-photo">' . $img . '</div>';
 		default:
-			return $user->getDisplayName();
+			return $user->getProperty( $subopt );
 	}
 }
 
 function amapress_replace_mail_user_placeholders_help() {
-	$ret                 = [];
-	$ret["nom_complet"]  = __( 'Prénom nom de l\'amapien', 'amapress' );
-	$ret["display_name"] = __( 'Prénom nom de l\'amapien', 'amapress' );
-	$ret["prenom"]       = __( 'Prénom de l\'amapien', 'amapress' );
-	$ret["first_name"]   = __( 'Prénom de l\'amapien', 'amapress' );
-	$ret["nom"]          = __( 'Nom de l\'amapien', 'amapress' );
-	$ret["last_name"]    = __( 'Nom de l\'amapien', 'amapress' );
-	$ret["mail"]         = __( 'Email de l\'amapien', 'amapress' );
-	$ret["mailto"]       = __( 'Lien email de l\'amapien', 'amapress' );
-	$ret["sms"]          = __( 'Téléphone de l\'amapien', 'amapress' );
-	$ret["tel"]          = __( 'Téléphone de l\'amapien', 'amapress' );
-	$ret["smsto"]        = __( 'Lien sms de l\'amapien', 'amapress' );
-	$ret["whatsappto"]   = __( 'Lien vers WhatsApp de l\'amapien', 'amapress' );
-	$ret["telto"]        = __( 'Lien vers d\'appel de l\'amapien', 'amapress' );
-	$ret["locto"]        = __( 'Lien vers la localisation de l\'amapien', 'amapress' );
-	$ret["adresse"]      = __( 'Adresse de l\'amapien', 'amapress' );
-	$ret["address"]      = __( 'Adresse de l\'amapien', 'amapress' );
-	$ret["adresse_html"] = __( 'Adresse de l\'amapien', 'amapress' );
-	$ret["address_html"] = __( 'Adresse de l\'amapien', 'amapress' );
-	$ret["login"]        = __( 'Identifiant de l\'amapien', 'amapress' );
-	$ret["identifiant"]  = __( 'Identifiant de l\'amapien', 'amapress' );
-	$ret["avatar"]       = __( 'Avatar de l\'amapien', 'amapress' );
+	$ret                     = [];
+	$ret["nom_complet"]      = __( 'Prénom nom de l\'amapien', 'amapress' );
+	$ret["display_name"]     = __( 'Prénom nom de l\'amapien', 'amapress' );
+	$ret["prenom"]           = __( 'Prénom de l\'amapien', 'amapress' );
+	$ret["first_name"]       = __( 'Prénom de l\'amapien', 'amapress' );
+	$ret["nom"]              = __( 'Nom de l\'amapien', 'amapress' );
+	$ret["last_name"]        = __( 'Nom de l\'amapien', 'amapress' );
+	$ret["mail"]             = __( 'Email de l\'amapien', 'amapress' );
+	$ret["mailto"]           = __( 'Lien email de l\'amapien', 'amapress' );
+	$ret["sms"]              = __( 'Téléphone de l\'amapien', 'amapress' );
+	$ret["tel"]              = __( 'Téléphone de l\'amapien', 'amapress' );
+	$ret["smsto"]            = __( 'Lien sms de l\'amapien', 'amapress' );
+	$ret["whatsappto"]       = __( 'Lien vers WhatsApp de l\'amapien', 'amapress' );
+	$ret["telto"]            = __( 'Lien vers d\'appel de l\'amapien', 'amapress' );
+	$ret["locto"]            = __( 'Lien vers la localisation de l\'amapien', 'amapress' );
+	$ret["adresse"]          = __( 'Adresse de l\'amapien', 'amapress' );
+	$ret["address"]          = __( 'Adresse de l\'amapien', 'amapress' );
+	$ret["adresse_html"]     = __( 'Adresse de l\'amapien', 'amapress' );
+	$ret["address_html"]     = __( 'Adresse de l\'amapien', 'amapress' );
+	$ret["login"]            = __( 'Identifiant de l\'amapien', 'amapress' );
+	$ret["identifiant"]      = __( 'Identifiant de l\'amapien', 'amapress' );
+	$ret["avatar"]           = __( 'Avatar de l\'amapien', 'amapress' );
+	$ret['full_name']        = __( 'Prénom Nom de l\'amapien', 'amapress' );
+	$ret['adherent_type']    = __( 'Type d\'adhérent (Principal, Co-adhérent...) de l\'amapien', 'amapress' );
+	$ret['pseudo']           = __( 'Pseudo de l\'amapien', 'amapress' );
+	$ret['nom_public']       = __( 'Nom public de l\'amapien', 'amapress' );
+	$ret['nom']              = __( 'Nom de l\'amapien', 'amapress' );
+	$ret['prenom']           = __( 'Prénom de l\'amapien', 'amapress' );
+	$ret['adresse']          = __( 'Adresse de l\'amapien', 'amapress' );
+	$ret['code_postal']      = __( 'Code postal de l\'amapien', 'amapress' );
+	$ret['ville']            = __( 'Ville de l\'amapien', 'amapress' );
+	$ret['rue']              = __( 'Rue (adresse) de l\'amapien', 'amapress' );
+	$ret['tel']              = __( 'Téléphone de l\'amapien', 'amapress' );
+	$ret['email']            = __( 'Email de l\'amapien', 'amapress' );
+	$ret['coadhesion_infos'] = __( 'Infos sur les coadhésions de l\'amapien', 'amapress' );
+	$ret['contacts']         = __( 'Moyens de contacts de l\'amapien', 'amapress' );
+	$ret['roles']            = __( 'Rôles de l\'amapien', 'amapress' );
 
 	return $ret;
 }
@@ -214,6 +229,13 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					}
 
 					return $amapiens_map_link;
+				case 'lien_intermittence':
+				case 'lien_paniers_intermittence':
+					$url = get_permalink( intval( Amapress::getOption( 'paniers-intermittents-page' ) ) );
+
+					return Amapress::makeLink( $url );
+				case 'lien_desinscription_intermittent':
+					return Amapress::makeLink( amapress_intermittence_desinscription_link() );//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
 				case 'site_icon_url':
 					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
 					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
@@ -411,15 +433,24 @@ function amapress_replace_mail_placeholders_help(
 		$ret["site_description"]          = __( 'Description du site de l\'AMAP', 'amapress' );
 		$ret["site:admin_email"]          = __( 'Email de l\'admin du site', 'amapress' ); //subopt
 //	$ret["site:language"]               = __('Langue du site', 'amapress'); //subopt
-		$ret["site:rss_url"]       = __( 'Lien RSS du site', 'amapress' ); //subopt
-		$ret["site:rss2_url"]      = __( 'Lien RSS2 du site', 'amapress' ); //subopt
-		$ret['site_icon_url']      = __( 'Url du logo du site de l\'AMAP', 'amapress' );
-		$ret['site_icon_url_link'] = __( 'Lien du logo du site de l\'AMAP', 'amapress' );
+		$ret["site:rss_url"]                     = __( 'Lien RSS du site', 'amapress' ); //subopt
+		$ret["site:rss2_url"]                    = __( 'Lien RSS2 du site', 'amapress' ); //subopt
+		$ret['site_icon_url']                    = __( 'Url du logo du site de l\'AMAP', 'amapress' );
+		$ret['site_icon_url_link']               = __( 'Lien du logo du site de l\'AMAP', 'amapress' );
+		$ret['lien_intermittence']               = __( 'Lien vers la page des paniers intermittents disponibles', 'amapress' );
+		$ret['lien_paniers_intermittence']       = __( 'Lien vers la page des paniers intermittents disponibles', 'amapress' );
+		$ret['lien_desinscription_intermittent'] = __( 'Lien de désinscription de la liste des intermittents', 'amapress' );
+
 		if ( $include_sender ) {
 			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
 				$ret["me:$k"] = __( 'Expéditeur: ', 'amapress' ) . $v; //subopt
 			}
+		} elseif ( ! empty( $post_type_desc ) && 0 === strpos( $post_type_desc, 'user:' ) ) {
+			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
+				$ret["me:$k"] = $v; //subopt
+			}
 		}
+
 		if ( $include_target ) {
 			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
 				$ret["dest:$k"] = __( 'Destinataire: ', 'amapress' ) . $v; //subopt
@@ -433,7 +464,7 @@ function amapress_replace_mail_placeholders_help(
 			$ret["registration_text"] = __( 'Texte de l\'email de récupération de mot de passe', 'amapress' );
 		}
 		$ret["now"] = __( 'Date courante', 'amapress' );
-		if ( ! empty( $post_type_desc ) ) {
+		if ( ! empty( $post_type_desc ) && 0 !== strpos( $post_type_desc, 'user:' ) ) {
 			$ret['post:id']              = 'ID ' . $post_type_desc;
 			$ret['post:title']           = __( 'Titre ', 'amapress' ) . $post_type_desc;
 			$ret['post:titre']           = __( 'Titre ', 'amapress' ) . $post_type_desc;
