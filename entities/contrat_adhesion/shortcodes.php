@@ -5244,7 +5244,7 @@ function amapress_get_details_all_paiements(
 		                    $adh->getContrat_instance()->getModel()->getTitle();
 		$row['opt_pmts']  = $adh->getProperty( 'option_paiements' );
 		if ( $adh->getDon_Distribution() > 0 ) {
-			$row['opt_pmts'] .= '<br/><em>' . sprintf( __( '(inclut %s : %0.2f €)', 'amapress' ),
+			$row['opt_pmts'] .= '<br/><em>' . sprintf( __( '(inclus %s : %0.2f €)', 'amapress' ),
 					$adh->getContrat_instance()->getDon_DistributionLabel(),
 					$adh->getTotalDon() ) . '</em>';
 		}
