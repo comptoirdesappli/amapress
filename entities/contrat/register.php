@@ -476,8 +476,9 @@ function amapress_register_entities_contrat( $entities ) {
 			'edit_item'    => __( 'Éditer - Modèle de contrat', 'amapress' ),
 		),
 		'views'                    => array(
-			'remove' => array( 'mine' ),
-			'_dyn_'  => 'amapress_contrat_instance_views',
+			'remove'  => array( 'mine' ),
+			'_dyn_'   => 'amapress_contrat_instance_views',
+			'exp_csv' => true,
 		),
 		'other_def_hidden_columns' => array( 'thumb-preview' ),
 		'fields'                   => array(
@@ -1171,7 +1172,7 @@ jQuery(function($) {
 					}
 				},
 			),
-			'quant_editor'   => array(
+			'quant_editor'          => array(
 				'name'        => __( 'Configuration des paniers (Taille/Quantités)', 'amapress' ),
 				'type'        => 'custom',
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
@@ -1184,14 +1185,14 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => __('Quantités', 'amapress'),
 			),
-			'has_pancust'    => array(
+			'has_pancust'           => array(
 				'name'        => __( 'Contenu du panier', 'amapress' ),
 				'type'        => 'checkbox',
 				'show_column' => false,
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
 				'desc'        => __( 'Rendre accessible la description des paniers', 'amapress' ),
 			),
-			'rattrapage'     => array(
+			'rattrapage'            => array(
 				'name'        => __( 'Rattrapage', 'amapress' ),
 				'desc'        => '',
 				'type'        => 'custom',
@@ -1292,7 +1293,7 @@ jQuery(function($) {
 					}
 				}
 			),
-			'don_dist'       => array(
+			'don_dist'              => array(
 				'name'           => __( 'Don par distribution', 'amapress' ),
 				'desc'           => __( 'Activer la possibilité de faire un don par distribution en plus du prix unitaire du panier (panier solidaire du producteur)', 'amapress' ),
 				'type'           => 'checkbox',
@@ -1302,7 +1303,7 @@ jQuery(function($) {
 				'col_def_hidden' => true,
 				'show_on'        => 'edit-only',
 			),
-			'don_dist_lbl'   => array(
+			'don_dist_lbl'          => array(
 				'name'        => __( 'Don par distribution - Libellé', 'amapress' ),
 				'desc'        => __( 'Libellé du don par distribution', 'amapress' ),
 				'type'        => 'text',
@@ -1312,7 +1313,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'show_on'     => 'edit-only',
 			),
-			'don_dist_desc'  => array(
+			'don_dist_desc'         => array(
 				'name'        => __( 'Don par distribution - Description', 'amapress' ),
 				'desc'        => __( 'Description du don par distribution', 'amapress' ),
 				'type'        => 'editor',
@@ -1322,7 +1323,7 @@ jQuery(function($) {
 				'show_on'     => 'edit-only',
 			),
 			// 5/6 - Pré-inscription en ligne
-			'self_subscribe' => array(
+			'self_subscribe'        => array(
 				'name'           => __( 'Activer', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1330,7 +1331,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'self_contrats'  => array(
+			'self_contrats'         => array(
 				'name'           => __( 'Autres contrats', 'amapress' ),
 				'type'           => 'select-posts',
 				'post_type'      => 'amps_contrat_inst',
@@ -1344,7 +1345,7 @@ jQuery(function($) {
 				'tags'           => true,
 				'autocomplete'   => true,
 			),
-			'self_edit'      => array(
+			'self_edit'             => array(
 				'name'           => __( 'Editer', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1374,6 +1375,10 @@ jQuery(function($) {
 					echo "<span style='color:$color'>";
 					echo date_i18n( 'd/m/Y', $contrat->getDate_ouverture() );
 					echo '</span>';
+				},
+				'custom_export'  => function ( $option, $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					echo $contrat->getDate_ouverture();
 				},
 				'before_option'  =>
 					function ( $option ) {
@@ -1414,6 +1419,10 @@ jQuery(function($) {
 					echo "<span style='color:$color'>";
 					echo date_i18n( 'd/m/Y', $contrat->getDate_cloture() );
 					echo '</span>';
+				},
+				'custom_export'  => function ( $option, $post_id ) {
+					$contrat = AmapressContrat_instance::getBy( $post_id );
+					echo $contrat->getDate_cloture();
 				},
 //				'before_option' =>
 //					function ( $option ) {
@@ -1622,7 +1631,7 @@ jQuery(function($) {
 
 					return $ret;
 				},
-				'csv_validator' => function ( $value ) {
+				'csv_validator'     => function ( $value ) {
 					$values = array_map( function ( $v ) {
 						return intval( trim( $v ) );
 					}, explode( ',', $value ) );
@@ -1678,6 +1687,22 @@ jQuery(function($) {
 					}
 
 					return false;
+				},
+				'column'            => function ( $post_id ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+					if ( ! $contrat_instance ) {
+						return '';
+					}
+
+					return implode( ',', $contrat_instance->getPossiblePaiements() );
+				},
+				'export'            => function ( $post_id ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+					if ( ! $contrat_instance ) {
+						return '';
+					}
+
+					return implode( ',', $contrat_instance->getPossiblePaiements() );
 				}
 			),
 			'pay_month'             => array(
