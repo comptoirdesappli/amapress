@@ -171,7 +171,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getTitle();
 				}
 			];
-			$ret['contrat_sous_titre']               = [
+			$ret['contrat_sous_titre'] = [
 				'desc' => __( 'Nom complémentaire du contrat (par ex, Semaine A)', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getSubName();
@@ -399,7 +399,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getUser()->first_name;
 				}
 			];
-			$ret['adherent.adresse']                 = [
+			$ret['adherent.adresse'] = [
 				'desc' => __( 'Adresse adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getFormattedAdresse();
@@ -922,6 +922,16 @@ class AmapressAdhesion extends TitanEntity {
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( $adh->getTotalAmount() > 0 ) {
 						return Amapress::formatPrice( $adh->getTotalAmount() );
+					} else {
+						return '-paiement à la livraison-';
+					}
+				}
+			];
+			$ret['total_sans_don'] = [
+				'desc' => __( 'Total du contrat (sans Don par distribution)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( $adh->getTotalAmount( false ) > 0 ) {
+						return Amapress::formatPrice( $adh->getTotalAmount( false ) );
 					} else {
 						return '-paiement à la livraison-';
 					}
@@ -2100,7 +2110,7 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	/** @return float */
-	public function getTotalAmount() {
+	public function getTotalAmount( $include_don = true ) {
 		if ( ! $this->getContrat_instanceId() ) {
 			return 0;
 		}
@@ -2110,8 +2120,11 @@ class AmapressAdhesion extends TitanEntity {
 		foreach ( $dates as $date ) {
 			$sum += $this->getContrat_quantites_Price( $date );
 		}
+		if ( $include_don ) {
+			$sum += count( $dates ) * $this->getDon_Distribution();
+		}
 
-		return $sum + count( $dates ) * $this->getDon_Distribution();
+		return $sum;
 //		} else {
 //			return count( $dates ) * $this->getContrat_quantites_Price();
 //		}
