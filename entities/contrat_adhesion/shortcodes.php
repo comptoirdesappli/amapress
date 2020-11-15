@@ -4948,6 +4948,7 @@ function amapress_get_details_all_deliveries(
 		)
 	);
 
+	$ix   = 1;
 	$data = [];
 	foreach ( $adhs as $adh ) {
 		if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -4956,6 +4957,7 @@ function amapress_get_details_all_deliveries(
 				foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
 					if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
 						$row           = [];
+						$row['ix']     = $ix;
 						$row['date_d'] = date_i18n( 'd/m/Y', $date );
 						$row['date']   = $date;
 						if ( $has_groups ) {
@@ -4978,6 +4980,7 @@ function amapress_get_details_all_deliveries(
 						$row['total']   = $price;
 						$data[]         = $row;
 					}
+					$ix ++;
 				}
 			}
 
@@ -4985,6 +4988,7 @@ function amapress_get_details_all_deliveries(
 			foreach ( $adh->getRemainingDates() as $date ) {
 				foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
 					$row           = [];
+					$row['ix']     = $ix;
 					$row['date_d'] = date_i18n( 'd/m/Y', $date );
 					$row['date']   = $date;
 					if ( $has_groups ) {
@@ -5005,6 +5009,7 @@ function amapress_get_details_all_deliveries(
 					$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
 					$row['total']   = $quant->getPrice();
 					$data[]         = $row;
+					$ix ++;
 				}
 			}
 		}
@@ -5022,7 +5027,7 @@ function amapress_get_details_all_deliveries(
 						$grouped_data[ $key ][ $k ] .= '<br/> + <strong>' . $row['fact'] . '</strong> x ' . $v;
 						continue;
 					}
-					if ( 'desc' == $k || 'date' == $k || 'date_d' == $k || 'prod' == $k || 'group' == $k ) {
+					if ( 'desc' == $k || 'date' == $k || 'date_d' == $k || 'prod' == $k || 'group' == $k || 'ix' == $k ) {
 						continue;
 					}
 					if ( ! is_numeric( $v ) ) {
@@ -5050,12 +5055,26 @@ function amapress_get_details_all_deliveries(
 
 	if ( $by_prod ) {
 		usort( $data, function ( $a, $b ) {
-			return strcmp( $a['prod'], $b['prod'] );
+			$cmp = strcmp( $a['prod'], $b['prod'] );
+			if ( 0 == $cmp ) {
+				if ( $a['date'] == $b['date'] ) {
+					$cmp = $a['ix'] > $b['ix'] ? 1 : - 1;
+				} else {
+					$cmp = $a['date'] > $b['date'] ? 1 : - 1;
+				}
+			}
+
+			return $cmp;
 		} );
 	} else {
 		usort( $data, function ( $a, $b ) {
 			if ( $a['date'] == $b['date'] ) {
-				return 0;
+				$cmp = strcmp( $a['prod'], $b['prod'] );
+				if ( 0 == $cmp ) {
+					$cmp = $a['ix'] > $b['ix'] ? 1 : - 1;
+				}
+
+				return $cmp;
 			}
 
 			return $a['date'] > $b['date'] ? 1 : - 1;
