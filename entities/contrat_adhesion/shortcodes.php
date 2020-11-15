@@ -3656,7 +3656,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 		if ( $contrat->getDon_Distribution() ) {
-			echo '<p><hr/><label for="don-contrat-' . $contrat->ID . '">' . esc_html( $contrat->getDon_DistributionLabel() ) . __( ' : ', 'amapress' ) . '</label><input style="display: inline-block; max-width: 5em; font-size: 1em" class="don-input" step="0.5" value="' . ( $edit_inscription ? $edit_inscription->getDon_Distribution() : 0 ) . '" type="number" id="don-contrat-' . $contrat->ID . '" name="don_dist" min="0" data-dists="' . count( $dates ) . '" /> ' . __( '€', 'amapress' ) . '<br/> ' . $contrat->getDon_DistributionDescription() . '<hr/></p>';
+			echo '<p><hr/>
+<label for="don-contrat-' . $contrat->ID . '">' . esc_html( $contrat->getDon_DistributionLabel() ) . __( ' : ', 'amapress' ) . '</label>
+<input style="display: inline-block; max-width: 5em; font-size: 1em" class="don-input" step="0.01" value="' . ( $edit_inscription ? $edit_inscription->getDon_Distribution() : 0 ) . '" type="number" id="don-contrat-' . $contrat->ID . '" name="don_dist" min="0" data-dists="' . count( $dates ) . '" /> ' . __( '€', 'amapress' ) .
+			     ' x ' . sprintf( __( '%d distribution(s)', 'amapress' ), count( $dates ) ) . ' = <span id="don-dist-total"></span>' . __( '€', 'amapress' ) .
+			     '<br/> ' . $contrat->getDon_DistributionDescription() .
+			     '<hr/></p>';
 		}
 		echo '<p style="margin-top: 1em;">' . __( 'Total: ', 'amapress' ) . '<span id="total">0</span>€</p>';
 		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Valider', 'amapress' ) . '" /></p>';
@@ -4640,7 +4645,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                 });
                 jQuery('.don-input').each(function () {
                     var $this = jQuery(this);
-                    total += parseFloat($this.val()) * parseFloat($this.data('dists'));
+                    var don = parseFloat($this.val()) * parseFloat($this.data('dists'));
+                    jQuery('#don-dist-total').text(don.toFixed(2));
+                    total += don;
                 });
                 jQuery('#total').text(total.toFixed(2));
             }
