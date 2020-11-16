@@ -2135,6 +2135,14 @@ jQuery(function($) {
 				'name' => __( 'Calendrier spécifique', 'amapress' ),
 				'type' => 'multidate',
 			),
+			'grp_mult'         => array(
+				'name' => __( 'Groupe multiple', 'amapress' ),
+				'type' => 'number',
+			),
+			'max_adhs'         => array(
+				'name' => __( 'Max adhérents', 'amapress' ),
+				'type' => 'number',
+			),
 		),
 	);
 //    $entities['contrat_paiement'] = array(
@@ -2599,6 +2607,10 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 	?>
     <p style="padding: 20px 10px 20px 0;">
         <strong><?php _e( 'Configuration des paniers (Taille/Quantités)', 'amapress' ) ?></strong></p>
+    <p><?php _e( 'Exporter les paniers vers Excel', 'amapress' ) ?><?php echo Amapress::makeButtonLink(
+			AmapressExport_Posts::get_export_url( null,
+				admin_url( 'edit.php?post_type=amps_contrat_quant&amapress_contrat_inst=' . $contrat_instance->ID . '&amapress_export=csv' ) ),
+			'Export CSV' ); ?></p>
     <p><?php _e( 'Créer un panier à partir d’un modèle Excel', 'amapress' ) ?> <a
                 href="<?php echo admin_url( 'admin.php?page=amapress_import_page&tab=import_quant_paniers&amapress_import_contrat_quantite_default_contrat_instance=' . $contrat_instance->ID ); ?>"
                 target="_blank" class="button button-secondary"><?php _e( 'Import CSV', 'amapress' ) ?></a></p>

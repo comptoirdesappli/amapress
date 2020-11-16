@@ -600,7 +600,7 @@ function amapress_filter_posts( WP_Query $query ) {
 			},
 			explode( ',', $query->query_vars['amapress_contrat_inst'] )
 		);
-		if ( $pt == 'adhesion' || $pt == 'intermittence_panier' || 'panier' == $pt ) {
+		if ( $pt == 'adhesion' || $pt == 'intermittence_panier' || 'panier' == $pt || 'contrat_quantite' == $pt ) {
 			amapress_add_meta_query( $query, array(
 				array(
 					'key'     => "amapress_{$pt}_contrat_instance",
