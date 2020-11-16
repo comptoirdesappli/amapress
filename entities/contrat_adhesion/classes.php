@@ -309,13 +309,19 @@ class AmapressAdhesion extends TitanEntity {
 					) ) );
 				}
 			];
-			$ret['message']                          = [
-				'desc' => __( 'Mssage aux référents lors de l\'inscription', 'amapress' ),
+			$ret['message'] = [
+				'desc' => __( 'Message aux référents lors de l\'inscription', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getMessage();
 				}
 			];
-			$ret['referents']                        = [
+			$ret['message_producteur'] = [
+				'desc' => __( 'Message de commande au producteur', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					return $adh->getProducteurMessage();
+				}
+			];
+			$ret['referents'] = [
 				'desc' => __( 'Nom des référents du contrat', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return implode( ', ', array_unique( array_map(
@@ -2078,6 +2084,10 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function getMessage() {
 		return $this->getCustom( 'amapress_adhesion_message' );
+	}
+
+	public function getProducteurMessage() {
+		return wp_unslash( $this->getCustom( 'amapress_adhesion_prod_msg' ) );
 	}
 
 	public function getDon_Distribution() {

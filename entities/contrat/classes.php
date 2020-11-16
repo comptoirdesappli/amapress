@@ -262,6 +262,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_has_pancust', 0 );
 	}
 
+	public function hasProducteur_Message() {
+		return $this->getCustom( 'amapress_contrat_instance_prod_msg', 0 );
+	}
+
+	public function getProducteur_Message_Instructions() {
+		return wp_unslash( $this->getCustom( 'amapress_contrat_instance_prod_msg_desc' ) );
+	}
+
 	public function getSpecialMention() {
 		return $this->getCustom( 'amapress_contrat_instance_special_mention', '' );
 	}

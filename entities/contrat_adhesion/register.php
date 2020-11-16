@@ -375,7 +375,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 
 			),
-			'contrat_quantite'  => array(
+			'contrat_quantite' => array(
 				'name'              => __( 'Quantité', 'amapress' ),
 				'type'              => 'custom',
 				'readonly'          => true,
@@ -458,7 +458,15 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'import_key' => true,
 //                'csv_required' => true,
 			),
-			'date_debut'        => array(
+			'prod_msg'         => array(
+				'name'           => __( 'Message au producteur', 'amapress' ),
+				'type'           => 'textarea',
+				'group'          => __( '2/ Contrat', 'amapress' ),
+				'desc'           => __( 'Message de commande au producteur', 'amapress' ),
+				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
+				'col_def_hidden' => true,
+			),
+			'date_debut'       => array(
 				'name'          => __( 'Date de début', 'amapress' ),
 				'type'          => 'date',
 				'required'      => true,
@@ -640,8 +648,8 @@ jQuery(function($) {
 				'col_def_hidden' => true,
 				'csv_import'     => false,
 			),
-			'message'           => array(
-				'name'           => __( 'Message', 'amapress' ),
+			'message'          => array(
+				'name'           => __( 'Message aux référents', 'amapress' ),
 				'type'           => 'textarea',
 				'readonly'       => true,
 				'group'          => __( '2/ Contrat', 'amapress' ),

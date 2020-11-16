@@ -1192,6 +1192,22 @@ jQuery(function($) {
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
 				'desc'        => __( 'Rendre accessible la description des paniers', 'amapress' ),
 			),
+			'prod_msg'              => array(
+				'name'        => __( 'Message au producteur', 'amapress' ),
+				'type'        => 'checkbox',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'show_column' => false,
+				'group'       => __( '4/6 - Paniers', 'amapress' ),
+				'desc'        => __( 'Activer un champ Message de commande au producteur pour les options de commandes', 'amapress' ),
+			),
+			'prod_msg_desc'         => array(
+				'name'        => __( 'Message au producteur - Instruction', 'amapress' ),
+				'type'        => 'editor',
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'show_column' => false,
+				'group'       => __( '4/6 - Paniers', 'amapress' ),
+				'desc'        => __( 'Instruction à l\'amapien sur comment remplir le Message de commande au producteur', 'amapress' ),
+			),
 			'rattrapage'            => array(
 				'name'        => __( 'Rattrapage', 'amapress' ),
 				'desc'        => '',

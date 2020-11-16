@@ -3336,7 +3336,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		$contrat_info .= '<h3>' . __( 'Lieu', 'amapress' ) . '</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
-		$contrat_info .= '<h3>' . __( 'Détails', 'amapress' ) . '</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p><p>' . $print_contrat . '</p>';
+		$contrat_info .= '<h3>' . __( 'Détails', 'amapress' ) . '</h3><p>' . $adh->getProperty( 'quantites_prix' ) . '</p>';
+		if ( ! empty( $adh->getProducteurMessage() ) ) {
+			$contrat_info .= '<div>' . wpautop( $adh->getProducteurMessage() ) . '</div>';
+		}
+		$contrat_info .= '<p>' . $print_contrat . '</p>';
+
 		if ( $adh->getDon_distribution() > 0 ) {
 			$contrat_info .= '<h3>' . $adh->getContrat_instance()->getDon_distributionLabel() . '</h3><p>' . $adh->getProperty( 'don_distribution' ) . __( '€', 'amapress' ) . ' x ' . $adh->getProperty( 'nb_dates' ) . __( ' distribution(s)', 'amapress' ) . ' = ' . $adh->getProperty( 'don_total' ) . __( '€', 'amapress' ) . '</p>';
 		}
@@ -3658,6 +3663,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 		}
+		if ( $contrat->hasProducteur_Message() ) {
+			echo '<label for="inscr_msg" style="display: block">' . __( 'Message de commande au producteur :', 'amapress' ) . '</label><textarea  style="display: block" id="inscr_msg" name="inscr_msg">' . ( $edit_inscription ? esc_textarea( $edit_inscription->getProducteurMessage() ) : '' ) . '</textarea>';
+			echo $contrat->getProducteur_Message_Instructions();
+		}
 		if ( $contrat->getDon_Distribution() ) {
 			echo '<p><hr/>
 <label for="don-contrat-' . $contrat->ID . '">' . esc_html( $contrat->getDon_DistributionLabel() ) . __( ' : ', 'amapress' ) . '</label>
@@ -3896,6 +3905,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo "<input type='hidden' name='quants' value='$serial_quants'/>";
 		if ( isset( $_REQUEST['don_dist'] ) ) {
 			echo '<input type="hidden" name="don_dist" value="' . esc_attr( $_REQUEST['don_dist'] ) . '"/>';
+		}
+		if ( isset( $_REQUEST['inscr_msg'] ) ) {
+			echo '<input type="hidden" name="inscr_msg" value="' . esc_attr( sanitize_textarea_field( $_REQUEST['inscr_msg'] ) ) . '"/>';
 		}
 		if ( $contrat->getManage_Cheques() ) {
 			$min_cheque_amount = $contrat->getMinChequeAmount();
@@ -4194,7 +4206,7 @@ $paiements_dates
 			echo '<br />';
 		}
 		if ( ! $admin_mode ) {
-			echo '<label for="inscr_message">' . __( 'Message pour le référent :', 'amapress' ) . '</label><textarea id="inscr_message" name="message">' . ( $edit_inscription ? esc_textarea( $edit_inscription->getMessage() ) : '' ) . '</textarea>';
+			echo '<label for="inscr_message"  style="display: block">' . __( 'Message pour le référent :', 'amapress' ) . '</label><textarea  style="display: block" id="inscr_message" name="message">' . ( $edit_inscription ? esc_textarea( $edit_inscription->getMessage() ) : '' ) . '</textarea>';
 		} else {
 			echo '<p><input type="checkbox" checked="checked" id="inscr_confirm_mail" name="inscr_confirm_mail" /><label for="inscr_confirm_mail"> ' . __( 'Confirmer par email à l\'adhérent', 'amapress' ) . '</label></p>';
 		}
@@ -4307,6 +4319,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 		];
 		if ( isset( $_REQUEST['don_dist'] ) ) {
 			$meta['amapress_adhesion_don_dist'] = floatval( $_REQUEST['don_dist'] );
+		}
+		if ( isset( $_REQUEST['inscr_msg'] ) ) {
+			$meta['amapress_adhesion_prod_msg'] = $_REQUEST['inscr_msg'];
 		}
 		for ( $i = 2; $i <= 4; $i ++ ) {
 			if ( ! empty( $coadhs[ $i - 2 ] ) ) {
