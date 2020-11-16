@@ -1616,7 +1616,8 @@ jQuery(function($) {
 			'paiements'             => array(
 				'name'              => __( 'Nombre de chèques', 'amapress' ),
 				'type'              => 'multicheck',
-				'desc'              => __( 'Sélectionner le nombre de règlements autorisés par le producteur. Le champs Rép. permet d\'indiquer une répartition en % pour les différents chèques/prélèvements (par ex, 75,15,10 pour un paiement en trois fois ; vide, répartition égale)', 'amapress' ),
+				'desc'              => __( 'Indiquez le nombre de règlements par chèque autorisés par le producteur', 'amapress' ) .
+				                       '<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/creation#pre-inscription_en_ligne' ),
 				'group'             => __( '6/6 - Règlements', 'amapress' ),
 				'readonly'          => 'amapress_is_contrat_instance_readonly',
 				'required'          => true,
@@ -1649,7 +1650,7 @@ jQuery(function($) {
 					$reps    = $contrat ? $contrat->getCustomRepartitions() : [];
 
 					$options     = [
-						'1' => __( '1 chèque/prélèvement', 'amapress' ),
+						'1' => __( '1 chèque', 'amapress' ),
 					];
 					$is_readonly = amapress_is_contrat_instance_readonly( $option );
 					for ( $i = 2; $i <= 12; $i ++ ) {
@@ -1658,16 +1659,18 @@ jQuery(function($) {
 						if ( $is_readonly ) {
 							$v = esc_html( $v );
 							if ( ! empty( $v ) ) {
-								$rep = " ; Rép. :$v";
+								$rep = ' ; ' . __( 'Répartition :', 'amapress' ) . $v;
 							}
 						} else {
 							$v   = esc_attr( $v );
-							$rep = " ; Rép. :<input id='amapress_pmt_repartitions-$i'
+							$rep = "<br/>" . __( 'Répartition :', 'amapress' ) . "<input id='amapress_pmt_repartitions-$i'
                                        name='amapress_pmt_repartitions[$i]'
-                                       class='text'
+                                       class='text repartitionCheck'
+                                       data-num='$i'
+                                       style='width: 15em'
                                        value='$v' />";
 						}
-						$options[ strval( $i ) ] = sprintf( __( '%d chèques/prélèvements%s', 'amapress' ), $i, $rep );
+						$options[ strval( $i ) ] = sprintf( __( '%d chèques%s', 'amapress' ), $i, $rep );
 					}
 
 					return $options;

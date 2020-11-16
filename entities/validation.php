@@ -79,6 +79,25 @@ function amapress_post_validation() {
                 },
                 "<?php echo esc_js( __( 'Les sous dossiers doivent avoir la forme xxx,yyy,... et ne doivent être composé que de minuscules ou chiffres', 'amapress' ) ); ?>"
             );
+            jQuery.validator.addMethod(
+                "repartitionCheck",
+                function (value, element) {
+                    if (this.optional(element))
+                        return true;
+                    var re = new RegExp(/^((\d+)(,(\d+))*)?$/);
+                    if (!re.test(value))
+                        return false;
+                    var arr = value.split(',');
+                    if (arr.length != parseInt(jQuery(element).data('num')))
+                        return false;
+                    var sum = 0;
+                    arr.forEach(function (v) {
+                        sum += parseInt(v);
+                    });
+                    return 100 == sum;
+                },
+                "<?php echo esc_js( __( 'Doit être une liste de pourcentages entiers, avoir le nombre de valeurs du nombre de règlements et leur somme doit être égale à 100', 'amapress' ) ); ?>"
+            );
             jQuery.validator.addMethod('positiveNumber',
                 function (value) {
                     return Number(value) > 0;
