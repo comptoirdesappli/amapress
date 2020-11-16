@@ -240,27 +240,61 @@ GROUP BY $wpdb->posts.ID" );
 		if ( empty( $user_id ) || $user_id <= 0 ) {
 
 		} else {
-			$price     = $this->getAmount();
-			$num       = $this->getNumero();
-			$date      = $this->getDate();
-			$adhesions = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
-			if ( $adhesions ) {
-				$adh = array_shift( $adhesions );
-				//TODO page link
-				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "upmt-{$this->ID}",
-					'date'     => $date,
-					'date_end' => $date,
-					'type'     => 'user-paiement contrat-paiement',
-					'category' => __( 'Encaissements', 'amapress' ),
-					'label'    => sprintf( __( 'Encaissement %s€', 'amapress' ), $price ),
-					'class'    => "agenda-user-paiement",
-					'priority' => 0,
-					'lieu'     => $adh->getLieu(),
-					'icon'     => 'flaticon-business',
-					'alt'      => sprintf( __( 'Vous allez être encaissé %s d\'un montant de %s€ à la date du %s', 'amapress' ), 'chq' == $this->getType() ? ' du chèque numéro ' . $num : ( 'esp' == $this->getType() ? ' des espèces remises ' : ( 'vir' == $this->getType() ? ' du virement ' : ( 'mon' == $this->getType() ? ' du paiement en monnaie locale ' : ( 'dlv' == $this->getType() ? ' à la livraison' : ( 'prl' == $this->getType() ? ' du prélèvement' : ( 'stp' == $this->getType() ? ' du paiement en ligne' : '' ) ) ) ) ) ), $price, date_i18n( 'd/m/Y', $date ) ),
-					'href'     => '/mes-adhesions'
-				) );
+			$price = Amapress::formatPrice( $this->getAmount(), true );
+			$adh   = $this->getAdhesion();
+			if ( $adh ) {
+				$contrat = $adh->getContrat_instance();
+				if ( $contrat ) {
+					$date                = $this->getDate();
+					$all_paiements       = $adh->getAllPaiements();
+					$remaining_paiements = count( $all_paiements );
+					$pmt_no              = 1;
+					foreach ( $all_paiements as $pmt ) {
+						$remaining_paiements --;
+						if ( $this->ID == $pmt->ID ) {
+							break;
+						}
+						$pmt_no ++;
+					}
+					if ( 1 == $adh->getPaiements() ) {
+						$desc = sprintf(
+							__( 'Règlement en une fois d\'un montant de %s', 'amapress' ),
+							$price );
+					} elseif ( $remaining_paiements > 0 ) {
+						$desc = sprintf(
+							__( 'Règlement %d sur %d d\'un montant de %s - il reste %d règlements à venir à ce contrat', 'amapress' ),
+							$pmt_no, $adh->getPaiements(), $price, $remaining_paiements );
+					} else {
+						$desc = sprintf(
+							__( 'Règlement %d sur %d d\'un montant de %s - dernier règlement pour ce contrat', 'amapress' ),
+							$pmt_no, $adh->getPaiements(), $price );
+					}
+					$desc  .= sprintf( __( "\nType: %s\nEtat: %s\nNuméro: %s\nEmetteur: %s\nMontant: %s", 'amapress' ),
+						$this->getTypeFormatted(),
+						$this->getStatusDisplay(),
+						( ! empty( $this->getBanque() ) ? $this->getBanque() . ' - ' : '' ) .
+						( ! empty( $this->getNumero() ) ? $this->getNumero() : __( '-non renseigné-', 'amapress' ) ),
+						! empty( $this->getEmetteur() ) ? $this->getEmetteur() : __( '-non renseigné-', 'amapress' ),
+						$price
+					);
+					$ret[] = new Amapress_EventEntry( array(
+						'ev_id'    => "upmt-{$this->ID}",
+						'date'     => Amapress::start_of_day( $date ),
+						'date_end' => Amapress::end_of_day( $date ),
+						'type'     => 'user-paiement contrat-paiement',
+						'category' => __( 'Paiements', 'amapress' ),
+						'label'    => sprintf( __( 'Paiement du contrat "%s" - %s', 'amapress' ),
+							$contrat->getModelTitleWithSubName(),
+							$price
+						),
+						'class'    => "agenda-user-paiement",
+						'priority' => 0,
+						'lieu'     => $adh->getLieu(),
+						'icon'     => 'flaticon-business',
+						'alt'      => $desc,
+						'href'     => Amapress::get_mes_contrats_page_href()
+					) );
+				}
 			}
 		}
 
