@@ -491,7 +491,7 @@ function amapress_customizer_init() {
 	) );
 
 	$section = $titan->createCustomizer( array(
-		'name'  => __( 'Encaissements', 'amapress' ),
+		'name'  => __( 'Paiements', 'amapress' ),
 		'panel' => __( 'Amapress Agenda', 'amapress' ),
 	) );
 	$section->createOption( array(
@@ -499,7 +499,7 @@ function amapress_customizer_init() {
 		'type' => 'note',
 	) );
 	$section->createOption( array(
-		'name' => __( 'Encaissements', 'amapress' ),
+		'name' => __( 'Paiements', 'amapress' ),
 		'type' => 'heading',
 	) );
 	//paiements
