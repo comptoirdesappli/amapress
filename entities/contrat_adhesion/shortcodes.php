@@ -2272,7 +2272,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						}
 					} else {
 						echo amapress_replace_mail_placeholders( wp_unslash( Amapress::getOption(
-							$adhesion_intermittent ? 'online_subscription_inter_req_adhesion' : 'online_subscription_req_adhesion' ) ), null );
+							$adhesion_intermittent ? 'online_subscription_inter_req_adhesion' : 'online_subscription_req_adhesion' ) ),
+							$amapien );
 
 						if ( empty( $adh_period->getHelloAssoFormSlug() ) ) {
 							$allow_classic_adhesion = true;
@@ -3265,6 +3266,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$user_ids = AmapressContrats::get_related_users( $user_id, true );
 
+		/** @var AmapressAdhesion $adh */
 		$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
 		if ( in_array( $adh->getAdherentId(), $user_ids )
 		     && in_array( $adh->getAdherent2Id(), $user_ids )

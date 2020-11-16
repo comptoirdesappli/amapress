@@ -3421,7 +3421,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => __( 'Message adhésion requise', 'amapress' ),
 											'type'    => 'editor',
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_req_adhesion-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_req_adhesion-placeholders', [], 'user:de l\'amapien', [], false );
 											},
 											'default' => '<p><strong>' . __( 'Pour vous engager dans l’AMAP et pouvoir s\'inscrire aux contrats disponibles, vous devez adhérer à notre Association.', 'amapress' ) . '</strong></p>',
 										),
@@ -4429,7 +4429,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => __( 'Message adhésion requise', 'amapress' ),
 											'type'    => 'editor',
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_req_adhesion-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_req_adhesion-placeholders', [], 'user:de l\'amapien', [], false );
 											},
 											'default' => '<p><strong>' . __( 'Pour vous engager dans l’AMAP et pouvoir réserver des paniers disponibles, vous devez adhérer à notre Association.', 'amapress' ) . '</strong></p>',
 										),
