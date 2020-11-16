@@ -324,6 +324,21 @@ function amapress_paiements_count_editor( $post_id ) {
 		if ( $adhesion->getContrat_instance()->getAllow_Transfer() ) {
 			$ret .= '<div><strong>' . __( 'Règlement par virement autorisé', 'amapress' ) . '</strong></div>';
 		}
+		if ( $adhesion->getTotalDon() > 0 ) {
+			if ( $adhesion->getContrat_instance()->getDon_Distribution_Apart() ) {
+				$ret .= '<div><strong>' . sprintf( __( '%s (%s x %d distribution(s)) non inclus : %s', 'amapress' ),
+						$adhesion->getContrat_instance()->getDon_DistributionLabel(),
+						Amapress::formatPrice( $adhesion->getDon_Distribution(), true ),
+						count( $remaining_dates ),
+						Amapress::formatPrice( $adhesion->getTotalDon(), true ) ) . '</strong></div>';
+			} else {
+				$ret .= '<div><strong>' . sprintf( __( '%s (%s x %d distribution(s)) inclus : %s', 'amapress' ),
+						$adhesion->getContrat_instance()->getDon_DistributionLabel(),
+						Amapress::formatPrice( $adhesion->getDon_Distribution(), true ),
+						count( $remaining_dates ),
+						Amapress::formatPrice( $adhesion->getTotalDon(), true ) ) . '</strong></div>';
+			}
+		}
 	}
 
 	return $ret;

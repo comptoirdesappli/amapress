@@ -943,6 +943,16 @@ class AmapressAdhesion extends TitanEntity {
 					}
 				}
 			];
+			$ret['total_avec_don'] = [
+				'desc' => __( 'Total du contrat (avec Don par distribution)', 'amapress' ),
+				'func' => function ( AmapressAdhesion $adh ) {
+					if ( $adh->getTotalAmount( true ) > 0 ) {
+						return Amapress::formatPrice( $adh->getTotalAmount( true ) );
+					} else {
+						return '-paiement à la livraison-';
+					}
+				}
+			];
 			$ret['don_distribution'] = [
 				'desc' => __( 'Montant du "Don par distribution" pour chaque distribution', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
@@ -2120,7 +2130,7 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	/** @return float */
-	public function getTotalAmount( $include_don = true ) {
+	public function getTotalAmount( $include_don = null ) {
 		if ( ! $this->getContrat_instanceId() ) {
 			return 0;
 		}
@@ -2129,6 +2139,9 @@ class AmapressAdhesion extends TitanEntity {
 		$sum = 0;
 		foreach ( $dates as $date ) {
 			$sum += $this->getContrat_quantites_Price( $date );
+		}
+		if ( null === $include_don ) {
+			$include_don = ! $this->getContrat_instance()->getDon_Distribution_Apart();
 		}
 		if ( $include_don ) {
 			$sum += count( $dates ) * $this->getDon_Distribution();

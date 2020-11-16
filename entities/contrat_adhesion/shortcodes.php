@@ -3771,11 +3771,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			$serial_quants = $panier_vars;
 
-			$don_dist = 0;
-			if ( isset( $_REQUEST['don_dist'] ) ) {
-				$don_dist = floatval( $_REQUEST['don_dist'] );
+			if ( ! $contrat->getDon_Distribution_Apart() ) {
+				$don_dist = 0;
+				if ( isset( $_REQUEST['don_dist'] ) ) {
+					$don_dist = floatval( $_REQUEST['don_dist'] );
+				}
+				$total += $don_dist * count( $dates );
 			}
-			$total += $don_dist * count( $dates );
 
 			if ( ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
@@ -3860,11 +3862,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 
-			$don_dist = 0;
-			if ( isset( $_REQUEST['don_dist'] ) ) {
-				$don_dist = floatval( $_REQUEST['don_dist'] );
+			if ( ! $contrat->getDon_Distribution_Apart() ) {
+				$don_dist = 0;
+				if ( isset( $_REQUEST['don_dist'] ) ) {
+					$don_dist = floatval( $_REQUEST['don_dist'] );
+				}
+				$total += $don_dist * count( $dates );
 			}
-			$total += $don_dist * count( $dates );
 
 			if ( count( $chosen_quants ) == 1 && ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
@@ -4200,11 +4204,27 @@ $paiements_dates
 		echo __( 'Ordre: ', 'amapress' ) . wp_unslash( $contrat->getPaiementsOrdre() );
 		echo '<br />' . wp_unslash( $contrat->getPaiementsMention() );
 		echo '</p>';
+
+		$don_dist = 0;
+		if ( isset( $_REQUEST['don_dist'] ) ) {
+			$don_dist = floatval( $_REQUEST['don_dist'] );
+		}
+		if ( $don_dist > 0 ) {
+			if ( $contrat->getDon_Distribution_Apart() ) {
+				echo '<p><strong>' . sprintf( 'Règlement à part pour "%s" d\'un montant de %s',
+						$contrat->getDon_DistributionLabel(),
+						Amapress::formatPrice( $don_dist * count( $dates ), true )
+					) . '</strong></p>';
+			}
+		}
+
 		echo '<br />';
 		if ( ! empty( $pay_at_deliv ) ) {
 			echo '<p><strong>' . __( 'Produits payables à la livraison', 'amapress' ) . '</strong> : ' . esc_html( implode( ', ', $pay_at_deliv ) ) . '</p>';
 			echo '<br />';
 		}
+
+
 		if ( ! $admin_mode ) {
 			echo '<label for="inscr_message"  style="display: block">' . __( 'Message pour le référent :', 'amapress' ) . '</label><textarea  style="display: block" id="inscr_message" name="message">' . ( $edit_inscription ? esc_textarea( $edit_inscription->getMessage() ) : '' ) . '</textarea>';
 		} else {
@@ -4665,7 +4685,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                     var $this = jQuery(this);
                     var don = parseFloat($this.val()) * parseFloat($this.data('dists'));
                     jQuery('#don-dist-total').text(don.toFixed(2));
+			        <?php if ($contrat && ! $contrat->getDon_Distribution_Apart()) { ?>
                     total += don;
+			        <?php } ?>
                 });
                 jQuery('#total').text(total.toFixed(2));
             }
@@ -5259,7 +5281,9 @@ function amapress_get_details_all_paiements(
 		                    $adh->getContrat_instance()->getModel()->getTitle();
 		$row['opt_pmts']  = $adh->getProperty( 'option_paiements' );
 		if ( $adh->getDon_Distribution() > 0 ) {
-			$row['opt_pmts'] .= '<br/><em>' . sprintf( __( '(inclus %s : %0.2f €)', 'amapress' ),
+			$row['opt_pmts'] .= '<br/><em>' . sprintf(
+					( $adh->getContrat_instance()->getDon_Distribution_Apart() ?
+						__( '(réglement à part pour %s : %0.2f €)', 'amapress' ) : __( '(inclus %s : %0.2f €)', 'amapress' ) ),
 					$adh->getContrat_instance()->getDon_DistributionLabel(),
 					$adh->getTotalDon() ) . '</em>';
 		}

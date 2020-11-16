@@ -1319,6 +1319,16 @@ jQuery(function($) {
 				'col_def_hidden' => true,
 				'show_on'        => 'edit-only',
 			),
+			'don_dist_apart'        => array(
+				'name'        => __( 'Don par distribution - A part', 'amapress' ),
+				'desc'        => __( 'Ne pas inclure le Don par distribution dans le total. Le montant du don est versé à part.', 'amapress' ),
+				'type'        => 'checkbox',
+				'group'       => __( '4/6 - Paniers', 'amapress' ),
+				'readonly'    => 'amapress_is_contrat_instance_readonly',
+				'default'     => false,
+				'show_column' => false,
+				'show_on'     => 'edit-only',
+			),
 			'don_dist_lbl'          => array(
 				'name'        => __( 'Don par distribution - Libellé', 'amapress' ),
 				'desc'        => __( 'Libellé du don par distribution', 'amapress' ),

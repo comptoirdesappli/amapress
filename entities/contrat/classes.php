@@ -323,6 +323,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return ! empty( $this->getStripePublicKey() ) && ! empty( $this->getStripeSecretKey() );
 	}
 
+	public function getDon_Distribution_Apart() {
+		return $this->getCustom( 'amapress_contrat_instance_don_dist_apart', 0 );
+	}
+
 	public function getDon_Distribution() {
 		return $this->getCustom( 'amapress_contrat_instance_don_dist', 0 );
 	}
