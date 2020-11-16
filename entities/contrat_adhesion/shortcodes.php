@@ -3349,6 +3349,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$contrat_info .= '<h3>' . __( 'Options de paiements', 'amapress' ) . '</h3><p>' . $adh->getProperty( 'option_paiements' ) . '</p><p>' . $adh->getProperty( 'paiements_mention' ) . '</p><p>' . __( 'Ordre: ', 'amapress' ) . $adh->getProperty( 'paiements_ordre' ) . '</p>';
 		$refs_emails  = $adh->getContrat_instance()->getAllReferentsEmails( $adh->getLieuId() );
+		if ( ! empty( $adh->getMessage() ) ) {
+			$contrat_info .= '<h3>' . __( 'Message pour les référents', 'amapress' ) . '</h3>';
+			$contrat_info .= '<div>' . wpautop( $adh->getMessage() ) . '</div>';
+		}
 		$contrat_info .= '<h3>' . __( 'Référents', 'amapress' ) . '</h3>';
 		$contrat_info .= '<p>' . $adh->getProperty( 'referents' ) . '</p>';
 		$contrat_info .= '<p>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( sprintf( __( 'Mon inscription %s', 'amapress' ), $adh->getTitle() ) ), __( 'Contacter les référents', 'amapress' ) ) . '</p>';
