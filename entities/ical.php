@@ -67,7 +67,7 @@ class Amapress_Agenda_ICAL_Export {
 			$lines[] = $value;
 		}
 
-		return join( $lines, "\r\n\t" );
+		return join( $lines, "\n\t" );
 	}
 
 	public static function load() {
@@ -158,6 +158,14 @@ class Amapress_Agenda_ICAL_Export {
 		exit();
 	}
 
+	private static function ical_escape( $t ) {
+		$t = str_replace( ',', '\,', $t );
+		$t = str_replace( ';', '\;', $t );
+		$t = str_replace( "\n", '\n', $t );
+
+		return $t;
+	}
+
 	public static function getICALFromEvents( $events, $calendar_title = '', $type = null ) {
 		if ( empty( $calendar_title ) ) {
 			$calendar_title = get_bloginfo( 'name' ) . ' - Agenda';
@@ -170,7 +178,7 @@ class Amapress_Agenda_ICAL_Export {
 		echo "VERSION:2.0\n";
 		echo "PRODID:-//Amapress//NONSGML Events//FR\n";
 		echo "CALSCALE:GREGORIAN\n";
-		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', $calendar_title ) . "\n";
+		echo "X-WR-CALNAME:" . self::ical_split( 'X-WR-CALNAME:', self::ical_escape( $calendar_title ) ) . "\n";
 		echo "X-WR-TIMEZONE:" . self::ical_split( 'X-WR-TIMEZONE:', self::getTimezoneString() ) . "\n";
 		if ( 'cancel' == $type ) {
 			echo "METHOD:CANCEL\n";
@@ -195,12 +203,20 @@ class Amapress_Agenda_ICAL_Export {
 			$start_date        = self::toUTCString( $event->getStartDate() );      //event start date
 			$end_date          = self::toUTCString( $event->getEndDate() );    //event end date
 			$reoccurrence_rule = false;                                       //event reoccurrence rule.
-			$location          = $event->getLieu()->getLieuTitle();                          //event location
-			$organiser         = get_bloginfo( 'name' );                                //event organiser
+			$lieu              = $event->getLieu();                          //event location
+			$location          = $lieu->getLieuTitle();                          //event location
+			if ( ! empty( $lieu->getLieuAddress() ) ) {
+				$location .= "\n" . $lieu->getLieuAddress();
+			}
+			$geo = null;
+			if ( ! empty( $lieu->getLieuLatitude() ) && ! empty( $lieu->getLieuLongitude() ) ) {
+				$geo = $lieu->getLieuLatitude() . ';' . $lieu->getLieuLongitude();
+			}
+			$organiser = get_bloginfo( 'name' );                                //event organiser
 
 			echo "BEGIN:VEVENT\n";
 			echo "UID:" . $uid . "\n";
-			echo "SUMMARY:" . self::ical_split( 'SUMMARY:', $title ) . "\n";
+			echo "SUMMARY:" . self::ical_split( 'SUMMARY:', self::ical_escape( $title ) ) . "\n";
 			echo "CATEGORIES:" . self::ical_split( 'CATEGORIES:', $categories ) . "\n";
 			echo "DTSTAMP:" . $dtstamp . "\n";
 			echo "CREATED:" . $created_date . "\n";
@@ -213,20 +229,23 @@ class Amapress_Agenda_ICAL_Export {
 			if ( $reoccurrence_rule ) {
 				echo "RRULE:" . $reoccurrence_rule . "\n";
 			}
-			echo "LOCATION:" . self::ical_split( 'LOCATION:', $location ) . "\n";
+			echo 'LOCATION:' . self::ical_split( 'LOCATION:', self::ical_escape( $location ) ) . "\n";
+			if ( ! empty( $geo ) ) {
+				echo 'GEO:' . self::ical_split( 'GEO:', $geo ) . "\n";
+			}
 			$site_email = $new = Amapress::getOption( 'email_from_mail' );
 			if ( empty( $site_email ) ) {
 				$site_email = amapress_get_default_wordpress_from_email();
 			}
-			echo "ORGANIZER;" . self::ical_split( 'ORGANIZER;', "CN=$organiser:MAILTO:$site_email" ) . "\n";
-			echo "URL:" . self::ical_split( 'URL:', $url ) . "\n";
-			echo "DESCRIPTION:" . self::ical_split( 'DESCRIPTION:', $desc ) . "\n";
+			echo 'ORGANIZER;' . self::ical_split( 'ORGANIZER;', "CN=\"$organiser\":MAILTO:$site_email" ) . "\n";
+			echo 'URL:' . self::ical_split( 'URL:', $url ) . "\n";
+			echo 'DESCRIPTION:' . self::ical_split( 'DESCRIPTION:', self::ical_escape( $desc ) ) . "\n";
 			echo "END:VEVENT\n";
 		}
 		echo "END:VCALENDAR\n";
 
 		//Collect output and echo
-		return ob_get_clean();
+		return str_replace( "\n", "\r\n", ob_get_clean() );
 	}
 } // end class
 

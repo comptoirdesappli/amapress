@@ -118,6 +118,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 		return wpautop( stripslashes( $this->getCustom( 'amapress_assemblee_generale_ordre_du_jour' ) ) );
 	}
 
+	/** @return AmapressLieu_distribution */
 	public function getLieu() {
 		return $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
 	}
@@ -249,8 +250,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 	}
 
 	public function getLieuPermalink() {
-		/** @var AmapressLieu_distribution $lieu */
-		$lieu = $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+		$lieu = $this->getLieu();
 		if ( $lieu ) {
 			return $lieu->getPermalink();
 		} else {
@@ -259,12 +259,38 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 	}
 
 	public function getLieuTitle() {
-		/** @var AmapressLieu_distribution $lieu */
-		$lieu = $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+		$lieu = $this->getLieu();
 		if ( $lieu ) {
 			return $lieu->getShortName();
 		} else {
 			return $this->getLieu_externe_nom();
+		}
+	}
+
+	public function getLieuAddress() {
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->getFormattedAdresse();
+		} else {
+			return $this->getLieu_externe_adresse();
+		}
+	}
+
+	public function getLieuLatitude() {
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->getLieuLatitude();
+		} else {
+			return $this->getLieu_externe_AdresseLatitude();
+		}
+	}
+
+	public function getLieuLongitude() {
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->getLieuLongitude();
+		} else {
+			return $this->getLieu_externe_AdresseLongitude();
 		}
 	}
 

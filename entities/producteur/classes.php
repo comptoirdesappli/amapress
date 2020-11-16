@@ -222,6 +222,18 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 		return $this->getTitle();
 	}
 
+	public function getLieuAddress() {
+		return $this->getAdresseExploitation();
+	}
+
+	public function getLieuLatitude() {
+		return $this->getAdresseExploitationLatitude();
+	}
+
+	public function getLieuLongitude() {
+		return $this->getAdresseExploitationLongitude();
+	}
+
 	/** @return AmapressContrat[] */
 	public function getContrats() {
 		return AmapressContrats::get_contrats( $this->ID );

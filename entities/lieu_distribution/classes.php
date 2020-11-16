@@ -156,6 +156,18 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 		return $this->getTitle();
 	}
 
+	public function getLieuAddress() {
+		return $this->getFormattedAdresse();
+	}
+
+	public function getLieuLatitude() {
+		return $this->getAdresseLatitude();
+	}
+
+	public function getLieuLongitude() {
+		return $this->getAdresseLongitude();
+	}
+
 	public function getFormattedAdresse() {
 		$cp = $this->getCode_postal();
 		$v  = $this->getVille();

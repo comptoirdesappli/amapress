@@ -6,6 +6,12 @@ interface iAmapress_Event_Lieu {
 	public function getLieuPermalink();
 
 	public function getLieuTitle();
+
+	public function getLieuAddress();
+
+	public function getLieuLatitude();
+
+	public function getLieuLongitude();
 }
 
 class Amapress_EventEntry {

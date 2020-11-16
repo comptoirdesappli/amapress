@@ -343,8 +343,7 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	}
 
 	public function getLieuPermalink() {
-		/** @var AmapressLieu_distribution $lieu */
-		$lieu = $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+		$lieu = $this->getLieu();
 		if ( $lieu ) {
 			return $lieu->getPermalink();
 		} else {
@@ -353,12 +352,38 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	}
 
 	public function getLieuTitle() {
-		/** @var AmapressLieu_distribution $lieu */
-		$lieu = $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+		$lieu = $this->getLieu();
 		if ( $lieu ) {
 			return $lieu->getShortName();
 		} else {
 			return $this->getLieu_externe_nom();
+		}
+	}
+
+	public function getLieuAddress() {
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->getFormattedAdresse();
+		} else {
+			return $this->getLieu_externe_adresse();
+		}
+	}
+
+	public function getLieuLatitude() {
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->getLieuLatitude();
+		} else {
+			return $this->getLieu_externe_AdresseAccesLatitude();
+		}
+	}
+
+	public function getLieuLongitude() {
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->getLieuLongitude();
+		} else {
+			return $this->getLieu_externe_AdresseAccesLongitude();
 		}
 	}
 

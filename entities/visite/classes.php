@@ -347,4 +347,29 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 			return $this->getProducteur()->getNomExploitation();
 		}
 	}
+
+	public function getLieuAddress() {
+		if ( ! empty( $this->getLieu_externe_nom() ) ) {
+			return $this->getLieu_externe_adresse();
+		} else {
+			return $this->getProducteur()->getLieuAddress();
+		}
+	}
+
+	public function getLieuLatitude() {
+		if ( ! empty( $this->getLieu_externe_nom() ) ) {
+			return $this->getLieu_externe_AdresseLatitude();
+		} else {
+			return $this->getProducteur()->getLieuLatitude();
+		}
+	}
+
+	public function getLieuLongitude() {
+		if ( ! empty( $this->getLieu_externe_nom() ) ) {
+			return $this->getLieu_externe_AdresseLongitude();
+		} else {
+			return $this->getProducteur()->getLieuLongitude();
+		}
+	}
+
 }
