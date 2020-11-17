@@ -3580,7 +3580,6 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 								),
 								__( 'Intégration HelloAsso', 'amapress' )                  => array(
 									'id'         => 'amp_helloasso_config',
-									'capability' => 'manage_options',
 									'options'    => array(
 										array(
 											'type' => 'note',
@@ -5156,7 +5155,7 @@ Retrouvez le shortcode associé avec le filtre docspace-amapiens.
 												$links = [];
 												foreach ( AmapressContrats::get_contrats() as $contrat ) {
 													$links[] = Amapress::makeLink(
-														$contrat->getPermalink( 'details' ),
+														$contrat->getPermalink(),
 														sprintf( __( 'Détails du contrat %s', 'amapress' ), $contrat->getTitle() ),
 														true, true
 													);
