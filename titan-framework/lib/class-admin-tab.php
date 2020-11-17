@@ -84,6 +84,12 @@ class TitanFrameworkAdminTab {
 	}
 
 	public function displayOptions() {
+		if ( ! empty( $this->settings['capability'] ) && ! current_user_can( $this->settings['capability'] ) ) {
+			echo '<h2>' . __( 'Sorry, you are not allowed to access this page.' ) . '</h2>';
+
+			return;
+		}
+
 		foreach ( $this->options as $option ) {
 			$option->display_with_check();
 		}
