@@ -2631,7 +2631,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => '',
 											'desc'    => function ( $option ) {
 												return __( 'Message supplémentaire à l\'étape 4/8 - Les contrats<br/>', 'amapress' ) .
-												       Amapress::getPlaceholdersHelpTable( 'online_contrats_step_message-placeholders', [], null, [], false );
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_step_message-placeholders', [], 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -2733,7 +2733,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name' => __( 'Message supplémentaire', 'amapress' ),
 											'type' => 'editor',
 											'desc' => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -2822,7 +2822,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												       Amapress::getPlaceholdersHelpTable( 'online_contrats_inscription_distrib_msg-placeholders', [
 													       'nb_inscriptions'    => __( 'Nombre d\'inscription comme responsable de distribution sur la période à venir', 'amapress' ),
 													       'dates_inscriptions' => __( 'Dates d\'inscription comme responsable de distribution sur la période à venir', 'amapress' )
-												       ], null, [], false );
+												       ], 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -3364,7 +3364,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name' => __( 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS', 'amapress' ),
 											'type' => 'editor',
 											'desc' => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_agreement-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_agreement-placeholders', [], 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -4414,7 +4414,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name' => __( 'Contenu du règlement intérieur et Contenu de la Charte des AMAPS', 'amapress' ),
 											'type' => 'editor',
 											'desc' => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_agreement-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_subscription_inter_agreement-placeholders', [], 'user:de l\'amapien', [], false );
 											},
 										),
 										array(

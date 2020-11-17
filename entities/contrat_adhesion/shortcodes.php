@@ -1889,7 +1889,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			<?php } ?>
             <div class="amap-agreement">
 				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-					$adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ), null ) ); ?>
+					$adhesion_intermittent ? 'online_subscription_inter_agreement' : 'online_subscription_agreement' ),
+					$amapien ) ); ?>
             </div>
             <p class="accept-agreement">
                 <label for="accept_agreement"><input type="checkbox" name="accept" id="accept_agreement"
@@ -2352,7 +2353,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 
-			echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_step_message' ), null ) );
+			echo wp_unslash( amapress_replace_mail_placeholders(
+				Amapress::getOption( 'online_contrats_step_message' ),
+				$amapien ) );
 		}
 
 		if ( $show_adherents_infos ) {
@@ -2878,7 +2881,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$step_name = wp_unslash( Amapress::getOption( 'online_subscription_date_lieu_step_name' ) );
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . ' - ' . esc_html( $contrat->getTitle() ) . '</h4>';
 		?>
-		<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_date_lieu_step_message' ), null ) ); ?>
+		<?php echo wp_unslash( amapress_replace_mail_placeholders(
+			Amapress::getOption( 'online_subscription_date_lieu_step_message' ),
+			null ) ); ?>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
 			<?php
 			$before_close_hours = 0;
@@ -3395,7 +3400,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$step_name = wp_unslash( Amapress::getOption( 'online_subscription_panier_step_name' ) );
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . ' - ' . esc_html( $contrat->getTitle() ) . '</h4>';
 
-		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_panier_step_message' ), null ) );
+		echo wp_unslash( amapress_replace_mail_placeholders(
+			Amapress::getOption( 'online_subscription_panier_step_message' ),
+			null ) );
 
 		$min_total = $contrat->getMinEngagement();
 
@@ -3709,10 +3716,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$next_step_url = add_query_arg( [ 'step' => 'inscr_contrat_create' ] );
 
+		$amapien = AmapressUser::getBy( $user_id );
+
 		$pay_at_deliv = [];
 		$step_name    = wp_unslash( Amapress::getOption( 'online_subscription_pay_step_name' ) );
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . '</h4>';
-		echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_subscription_pay_step_message' ), null ) );
+		echo wp_unslash( amapress_replace_mail_placeholders(
+			Amapress::getOption( 'online_subscription_pay_step_message' ),
+			$amapien ) );
 
 		$dates = $contrat->getRemainingDates( $start_date );
 
@@ -3792,7 +3803,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					echo '<p style="margin-bottom: 0">' . sprintf( __( 'Vous allez vous inscrire au contrat %s pour un montant %s avec les options suivantes:', 'amapress' ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				}
 			} else {
-				$amapien = AmapressUser::getBy( $user_id );
 				echo '<p style="margin-bottom: 0">' . sprintf( __( 'Vous allez inscrire %s au contrat %s pour un montant %s avec les options suivantes:', 'amapress' ), esc_html( $amapien->getDisplayName() ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 			}
 			if ( Amapress::toBool( $atts['use_quantite_tables'] ) ) {
