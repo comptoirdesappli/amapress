@@ -10,6 +10,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	const POST_TYPE = 'contrat_paiement';
 	const NOT_RECEIVED = 'not_received';
 	const RECEIVED = 'received';
+	const BANK = 'bank';
 
 	/**
 	 * @param $post_or_id
