@@ -696,7 +696,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	);
 
 	$use_mail_queue = Amapress::getOption( 'mail_queue_use_queue' );
-	$nb_mails       = '"pas de limite" (file désactivée)';
+	$nb_mails       = __( '"pas de limite" (file désactivée)', 'amapress' );
 	if ( $use_mail_queue ) {
 		$mail_interval = Amapress::getOption( 'mail_queue_interval' );
 		if ( empty( $mail_interval ) ) {
@@ -707,7 +707,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 			$mail_limite = AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT;
 		}
 		$mails_hours = $mail_limite / (float) $mail_interval * 3600;
-		$nb_mails    = "$mails_hours (max {$mail_limite} emails toute les {$mail_interval}s)";
+		$nb_mails    = sprintf( __( '%d (max %s emails toute les %ss)', 'amapress' ), $mails_hours, $mail_limite, $mail_interval );
 	}
 	$state['05_config'][] = amapress_get_check_state(
 		$use_mail_queue ? 'success' : 'warning',
