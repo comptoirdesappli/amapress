@@ -5269,6 +5269,7 @@ function amapress_get_details_all_paiements(
 	foreach ( $adhs as $adh ) {
 		$paiements        = $adh->getAllPaiements();
 		$paiements_status = [];
+		$sum_paiement     = 0;
 		foreach ( $paiements as $paiement ) {
 			$paiements_status[] = sprintf( __( '%s %s (<span style="color: %s">%s</span>)', 'amapress' ),
 				$paiement->getTypeFormatted(),
@@ -5276,7 +5277,7 @@ function amapress_get_details_all_paiements(
 				'not_received' == $paiement->getStatus() ? 'orange' : 'green',
 				$paiement->getStatusDisplay()
 			);
-			$paiement->getStatus();
+			$sum_paiement       += $paiement->getAmount();
 		}
 		$row              = [];
 		$row['prod']      = date_i18n( 'd/m/Y', $adh->getContrat_instance()->getDate_debut() ) .
@@ -5306,7 +5307,9 @@ function amapress_get_details_all_paiements(
 		} ) ) );
 		$row['total_d']  = Amapress::formatPrice( $adh->getTotalAmount(), true );
 		$row['total']    = $adh->getTotalAmount();
-		$row['status']   = implode( ' ; ', $paiements_status );
+		$row['status']   = implode( ' ; ', $paiements_status )
+		                   . '<br/>' . __( 'Total = ', 'amapress' )
+		                   . Amapress::formatPrice( $sum_paiement, true );
 		$data[]          = $row;
 	}
 	$ret .= amapress_get_datatable( 'details_all_paiements', $columns, $data,
