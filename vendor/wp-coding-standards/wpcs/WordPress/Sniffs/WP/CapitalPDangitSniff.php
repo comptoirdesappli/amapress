@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Capital P Dangit!
@@ -28,7 +28,7 @@ class CapitalPDangitSniff extends Sniff {
 	 * Regex to match a large number or spelling variations of WordPress in text strings.
 	 *
 	 * Prevents matches on:
-	 * - URLs for wordpress.org/com/net/tv.
+	 * - URLs for wordpress.org/com/net/test/tv.
 	 * - `@...` usernames starting with `wordpress`
 	 * - email addresses with a domain starting with `wordpress`
 	 * - email addresses with a user name ending with `wordpress`
@@ -42,7 +42,7 @@ class CapitalPDangitSniff extends Sniff {
 	 *
 	 * @var string
 	 */
-	const WP_REGEX = '#(?<![\\\\/\$@`-])\b(Word[ _-]*Pres+)\b(?![@/`-]|\.(?:org|com|net|tv)|[^\s<>\'"()]*?\.(?:php|js|css|png|j[e]?pg|gif|pot))#i';
+	const WP_REGEX = '#(?<![\\\\/\$@`-])\b(Word[ _-]*Pres+)\b(?![@/`-]|\.(?:org|com|net|test|tv)|[^\s<>\'"()]*?\.(?:php|js|css|png|j[e]?pg|gif|pot))#i';
 
 	/**
 	 * Regex to match a large number or spelling variations of WordPress in class names.
@@ -76,19 +76,6 @@ class CapitalPDangitSniff extends Sniff {
 	);
 
 	/**
-	 * Class-like structure tokens to listen for.
-	 *
-	 * Using proper spelling in class, interface and trait names does not conflict with the naming conventions.
-	 *
-	 * @var array
-	 */
-	private $class_tokens = array(
-		\T_CLASS     => \T_CLASS,
-		\T_INTERFACE => \T_INTERFACE,
-		\T_TRAIT     => \T_TRAIT,
-	);
-
-	/**
 	 * Combined text string and comment tokens array.
 	 *
 	 * This property is set in the register() method and used for lookups.
@@ -108,7 +95,7 @@ class CapitalPDangitSniff extends Sniff {
 		// Union the arrays - keeps the array keys.
 		$this->text_and_comment_tokens = ( $this->text_string_tokens + $this->comment_text_tokens );
 
-		$targets = ( $this->text_and_comment_tokens + $this->class_tokens );
+		$targets = ( $this->text_and_comment_tokens + Tokens::$ooScopeTokens );
 
 		// Also sniff for array tokens to make skipping anything within those more efficient.
 		$targets[ \T_ARRAY ]            = \T_ARRAY;
@@ -149,7 +136,7 @@ class CapitalPDangitSniff extends Sniff {
 		 * Deal with misspellings in class/interface/trait names.
 		 * These are not auto-fixable, but need the attention of a developer.
 		 */
-		if ( isset( $this->class_tokens[ $this->tokens[ $stackPtr ]['code'] ] ) ) {
+		if ( isset( Tokens::$ooScopeTokens[ $this->tokens[ $stackPtr ]['code'] ] ) ) {
 			$classname = $this->phpcsFile->getDeclarationName( $stackPtr );
 			if ( empty( $classname ) ) {
 				return;
@@ -177,7 +164,7 @@ class CapitalPDangitSniff extends Sniff {
 
 		// Ignore content of docblock @link tags.
 		if ( \T_DOC_COMMENT_STRING === $this->tokens[ $stackPtr ]['code']
-		     || \T_DOC_COMMENT === $this->tokens[ $stackPtr ]['code']
+			|| \T_DOC_COMMENT === $this->tokens[ $stackPtr ]['code']
 		) {
 
 			$comment_start = $this->phpcsFile->findPrevious( \T_DOC_COMMENT_OPEN_TAG, ( $stackPtr - 1 ) );
@@ -199,6 +186,24 @@ class CapitalPDangitSniff extends Sniff {
 					return;
 				}
 			}
+		}
+
+		// Ignore constant declarations via define().
+		if ( $this->is_in_function_call( $stackPtr, array( 'define' => true ), true, true ) ) {
+			return;
+		}
+
+		// Ignore constant declarations using the const keyword.
+		$stop_points = array(
+			\T_CONST,
+			\T_SEMICOLON,
+			\T_OPEN_TAG,
+			\T_CLOSE_TAG,
+			\T_OPEN_CURLY_BRACKET,
+		);
+		$maybe_const = $this->phpcsFile->findPrevious( $stop_points, ( $stackPtr - 1 ) );
+		if ( false !== $maybe_const && \T_CONST === $this->tokens[ $maybe_const ]['code'] ) {
+			return;
 		}
 
 		$content = $this->tokens[ $stackPtr ]['content'];

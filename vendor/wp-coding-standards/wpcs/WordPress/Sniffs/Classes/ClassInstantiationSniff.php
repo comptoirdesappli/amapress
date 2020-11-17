@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\Classes;
+namespace WordPressCS\WordPress\Sniffs\Classes;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Verifies object instantiation statements.
@@ -92,9 +92,9 @@ class ClassInstantiationSniff extends Sniff {
 	public function process_token( $stackPtr ) {
 		// Make sure we have the right token, JS vs PHP.
 		if ( ( 'PHP' === $this->phpcsFile->tokenizerType && \T_NEW !== $this->tokens[ $stackPtr ]['code'] )
-		     || ( 'JS' === $this->phpcsFile->tokenizerType
-		          && ( \T_STRING !== $this->tokens[ $stackPtr ]['code']
-		               || 'new' !== strtolower( $this->tokens[ $stackPtr ]['content'] ) ) )
+			|| ( 'JS' === $this->phpcsFile->tokenizerType
+				&& ( \T_STRING !== $this->tokens[ $stackPtr ]['code']
+				|| 'new' !== strtolower( $this->tokens[ $stackPtr ]['content'] ) ) )
 		) {
 			return;
 		}
@@ -142,7 +142,7 @@ class ClassInstantiationSniff extends Sniff {
 
 		// Walk back to the last part of the class name.
 		$has_comment = false;
-		for ( $classname_ptr = ( $next_non_empty_after_class_name - 1 ); $classname_ptr >= $stackPtr; $classname_ptr -- ) {
+		for ( $classname_ptr = ( $next_non_empty_after_class_name - 1 ); $classname_ptr >= $stackPtr; $classname_ptr-- ) {
 			if ( ! isset( Tokens::$emptyTokens[ $this->tokens[ $classname_ptr ]['code'] ] ) ) {
 				// Prevent a false positive on variable variables, disregard them for now.
 				if ( $stackPtr === $classname_ptr ) {
@@ -187,7 +187,7 @@ class ClassInstantiationSniff extends Sniff {
 
 					if ( true === $fix ) {
 						$this->phpcsFile->fixer->beginChangeset();
-						for ( $i = ( $next_non_empty_after_class_name - 1 ); $i > $classname_ptr; $i -- ) {
+						for ( $i = ( $next_non_empty_after_class_name - 1 ); $i > $classname_ptr; $i-- ) {
 							$this->phpcsFile->fixer->replaceToken( $i, '' );
 						}
 						$this->phpcsFile->fixer->endChangeset();

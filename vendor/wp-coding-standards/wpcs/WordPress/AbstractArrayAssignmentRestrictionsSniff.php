@@ -3,13 +3,13 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress;
+namespace WordPressCS\WordPress;
 
-use WordPress\Sniff;
+use WordPressCS\WordPress\Sniff;
 
 /**
  * Restricts array assignment of certain keys.
@@ -19,8 +19,8 @@ use WordPress\Sniff;
  * @since   0.3.0
  * @since   0.10.0 Class became a proper abstract class. This was already the behaviour.
  *                 Moved the file and renamed the class from
- *                 `WordPress_Sniffs_Arrays_ArrayAssignmentRestrictionsSniff` to
- *                 `WordPress_AbstractArrayAssignmentRestrictionsSniff`.
+ *                 `\WordPressCS\WordPress\Sniffs\Arrays\ArrayAssignmentRestrictionsSniff` to
+ *                 `\WordPressCS\WordPress\AbstractArrayAssignmentRestrictionsSniff`.
  */
 abstract class AbstractArrayAssignmentRestrictionsSniff extends Sniff {
 
@@ -162,17 +162,11 @@ abstract class AbstractArrayAssignmentRestrictionsSniff extends Sniff {
 				$operator = $this->phpcsFile->findNext( \T_EQUAL, ( $stackPtr + 1 ) );
 			}
 
-			$keyIdx = $this->phpcsFile->findPrevious( array(
-				\T_WHITESPACE,
-				\T_CLOSE_SQUARE_BRACKET
-			), ( $operator - 1 ), null, true );
+			$keyIdx = $this->phpcsFile->findPrevious( array( \T_WHITESPACE, \T_CLOSE_SQUARE_BRACKET ), ( $operator - 1 ), null, true );
 			if ( ! is_numeric( $this->tokens[ $keyIdx ]['content'] ) ) {
 				$key            = $this->strip_quotes( $this->tokens[ $keyIdx ]['content'] );
 				$valStart       = $this->phpcsFile->findNext( array( \T_WHITESPACE ), ( $operator + 1 ), null, true );
-				$valEnd         = $this->phpcsFile->findNext( array(
-					\T_COMMA,
-					\T_SEMICOLON
-				), ( $valStart + 1 ), null, false, null, true );
+				$valEnd         = $this->phpcsFile->findNext( array( \T_COMMA, \T_SEMICOLON ), ( $valStart + 1 ), null, false, null, true );
 				$val            = $this->phpcsFile->getTokensAsString( $valStart, ( $valEnd - $valStart ) );
 				$val            = $this->strip_quotes( $val );
 				$inst[ $key ][] = array( $val, $token['line'] );

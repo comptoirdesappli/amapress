@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\CodeAnalysis;
+namespace WordPressCS\WordPress\Sniffs\CodeAnalysis;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Checks against empty statements.
@@ -48,7 +48,8 @@ class EmptyStatementSniff extends Sniff {
 	 *
 	 * @param int $stackPtr The position of the current token in the stack.
 	 *
-	 * @return int Integer stack pointer to skip the rest of the file.
+	 * @return int|void Integer stack pointer to skip forward or void to continue
+	 *                  normal file processing.
 	 */
 	public function process_token( $stackPtr ) {
 
@@ -65,11 +66,22 @@ class EmptyStatementSniff extends Sniff {
 				);
 
 				if ( false === $prevNonEmpty
-				     || ( \T_SEMICOLON !== $this->tokens[ $prevNonEmpty ]['code']
-				          && \T_OPEN_TAG !== $this->tokens[ $prevNonEmpty ]['code']
-				          && \T_OPEN_TAG_WITH_ECHO !== $this->tokens[ $prevNonEmpty ]['code'] )
+					|| ( \T_SEMICOLON !== $this->tokens[ $prevNonEmpty ]['code']
+						&& \T_OPEN_TAG !== $this->tokens[ $prevNonEmpty ]['code']
+						&& \T_OPEN_TAG_WITH_ECHO !== $this->tokens[ $prevNonEmpty ]['code'] )
 				) {
 					return;
+				}
+
+				if ( isset( $this->tokens[ $stackPtr ]['nested_parenthesis'] ) ) {
+					$nested      = $this->tokens[ $stackPtr ]['nested_parenthesis'];
+					$last_closer = array_pop( $nested );
+					if ( isset( $this->tokens[ $last_closer ]['parenthesis_owner'] )
+						&& \T_FOR === $this->tokens[ $this->tokens[ $last_closer ]['parenthesis_owner'] ]['code']
+					) {
+						// Empty for() condition.
+						return;
+					}
 				}
 
 				$fix = $this->phpcsFile->addFixableWarning(
@@ -81,7 +93,7 @@ class EmptyStatementSniff extends Sniff {
 					$this->phpcsFile->fixer->beginChangeset();
 
 					if ( \T_OPEN_TAG === $this->tokens[ $prevNonEmpty ]['code']
-					     || \T_OPEN_TAG_WITH_ECHO === $this->tokens[ $prevNonEmpty ]['code']
+						|| \T_OPEN_TAG_WITH_ECHO === $this->tokens[ $prevNonEmpty ]['code']
 					) {
 						/*
 						 * Check for superfluous whitespace after the semi-colon which will be
@@ -95,9 +107,9 @@ class EmptyStatementSniff extends Sniff {
 						}
 					}
 
-					for ( $i = $stackPtr; $i > $prevNonEmpty; $i -- ) {
+					for ( $i = $stackPtr; $i > $prevNonEmpty; $i-- ) {
 						if ( \T_SEMICOLON !== $this->tokens[ $i ]['code']
-						     && \T_WHITESPACE !== $this->tokens[ $i ]['code']
+							&& \T_WHITESPACE !== $this->tokens[ $i ]['code']
 						) {
 							break;
 						}
@@ -120,8 +132,8 @@ class EmptyStatementSniff extends Sniff {
 				);
 
 				if ( false === $prevNonEmpty
-				     || ( \T_OPEN_TAG !== $this->tokens[ $prevNonEmpty ]['code']
-				          && \T_OPEN_TAG_WITH_ECHO !== $this->tokens[ $prevNonEmpty ]['code'] )
+					|| ( \T_OPEN_TAG !== $this->tokens[ $prevNonEmpty ]['code']
+						&& \T_OPEN_TAG_WITH_ECHO !== $this->tokens[ $prevNonEmpty ]['code'] )
 				) {
 					return;
 				}
@@ -133,7 +145,7 @@ class EmptyStatementSniff extends Sniff {
 				);
 				if ( true === $fix ) {
 					$this->phpcsFile->fixer->beginChangeset();
-					for ( $i = $prevNonEmpty; $i <= $stackPtr; $i ++ ) {
+					for ( $i = $prevNonEmpty; $i <= $stackPtr; $i++ ) {
 						$this->phpcsFile->fixer->replaceToken( $i, '' );
 					}
 					$this->phpcsFile->fixer->endChangeset();

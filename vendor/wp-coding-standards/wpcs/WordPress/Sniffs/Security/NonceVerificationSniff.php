@@ -3,13 +3,13 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\Security;
+namespace WordPressCS\WordPress\Sniffs\Security;
 
-use WordPress\Sniff;
+use WordPressCS\WordPress\Sniff;
 
 /**
  * Checks that nonce verification accompanies form processing.
@@ -39,32 +39,6 @@ class NonceVerificationSniff extends Sniff {
 		'$_GET'     => false,
 		'$_REQUEST' => false,
 	);
-
-	/**
-	 * Superglobals to give an error for when not accompanied by an nonce check.
-	 *
-	 * @since 0.5.0
-	 * @since 0.11.0 Changed visibility from public to protected.
-	 *
-	 * @deprecated 0.12.0 Replaced by $superglobals property.
-	 *
-	 * @var array
-	 */
-	protected $errorForSuperGlobals = array();
-
-	/**
-	 * Superglobals to give a warning for when not accompanied by an nonce check.
-	 *
-	 * If the variable is also in the error list, that takes precedence.
-	 *
-	 * @since 0.5.0
-	 * @since 0.11.0 Changed visibility from public to protected.
-	 *
-	 * @deprecated 0.12.0 Replaced by $superglobals property.
-	 *
-	 * @var array
-	 */
-	protected $warnForSuperGlobals = array();
 
 	/**
 	 * Custom list of functions which verify nonces.
@@ -147,12 +121,13 @@ class NonceVerificationSniff extends Sniff {
 
 		$this->mergeFunctionLists();
 
-		if ( $this->is_only_sanitized( $stackPtr ) ) {
+		if ( $this->has_nonce_check( $stackPtr ) ) {
 			return;
 		}
 
-		if ( $this->has_nonce_check( $stackPtr ) ) {
-			return;
+		$error_code = 'Missing';
+		if ( false === $this->superglobals[ $instance['content'] ] ) {
+			$error_code = 'Recommended';
 		}
 
 		// If we're still here, no nonce-verification function was found.
@@ -160,7 +135,7 @@ class NonceVerificationSniff extends Sniff {
 			'Processing form data without nonce verification.',
 			$stackPtr,
 			$this->superglobals[ $instance['content'] ],
-			'NoNonceVerification'
+			$error_code
 		);
 	}
 

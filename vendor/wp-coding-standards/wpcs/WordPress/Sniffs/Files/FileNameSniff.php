@@ -3,13 +3,13 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\Files;
+namespace WordPressCS\WordPress\Sniffs\Files;
 
-use WordPress\Sniff;
+use WordPressCS\WordPress\Sniff;
 
 /**
  * Ensures filenames do not contain underscores.
@@ -25,10 +25,10 @@ use WordPress\Sniff;
  *                   template tags end in `-template`. Based on @subpackage file DocBlock tag.
  *                 - This sniff will now allow for underscores in file names for certain theme
  *                   specific exceptions if the `$is_theme` property is set to `true`.
- * @since   0.12.0 Now extends the `WordPress_Sniff` class.
+ * @since   0.12.0 Now extends the WordPressCS native `Sniff` class.
  * @since   0.13.0 Class name changed: this class is now namespaced.
  *
- * @uses    \WordPress\Sniff::$custom_test_class_whitelist
+ * @uses    \WordPressCS\WordPress\Sniff::$custom_test_class_whitelist
  */
 class FileNameSniff extends Sniff {
 
@@ -146,20 +146,20 @@ class FileNameSniff extends Sniff {
 
 		// Respect phpcs:disable comments as long as they are not accompanied by an enable (PHPCS 3.2+).
 		if ( \defined( '\T_PHPCS_DISABLE' ) && \defined( '\T_PHPCS_ENABLE' ) ) {
-			$i = - 1;
+			$i = -1;
 			while ( $i = $this->phpcsFile->findNext( \T_PHPCS_DISABLE, ( $i + 1 ) ) ) {
 				if ( empty( $this->tokens[ $i ]['sniffCodes'] )
-				     || isset( $this->tokens[ $i ]['sniffCodes']['WordPress'] )
-				     || isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files'] )
-				     || isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files.FileName'] )
+					|| isset( $this->tokens[ $i ]['sniffCodes']['WordPress'] )
+					|| isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files'] )
+					|| isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files.FileName'] )
 				) {
 					do {
 						$i = $this->phpcsFile->findNext( \T_PHPCS_ENABLE, ( $i + 1 ) );
 					} while ( false !== $i
-					          && ! empty( $this->tokens[ $i ]['sniffCodes'] )
-					          && ! isset( $this->tokens[ $i ]['sniffCodes']['WordPress'] )
-					          && ! isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files'] )
-					          && ! isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files.FileName'] ) );
+						&& ! empty( $this->tokens[ $i ]['sniffCodes'] )
+						&& ! isset( $this->tokens[ $i ]['sniffCodes']['WordPress'] )
+						&& ! isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files'] )
+						&& ! isset( $this->tokens[ $i ]['sniffCodes']['WordPress.Files.FileName'] ) );
 
 					if ( false === $i ) {
 						// The entire (rest of the) file is disabled.
@@ -195,7 +195,7 @@ class FileNameSniff extends Sniff {
 				$class_name = $this->phpcsFile->getDeclarationName( $has_class );
 				$expected   = 'class-' . strtolower( str_replace( '_', '-', $class_name ) );
 
-				if ( substr( $fileName, 0, - 4 ) !== $expected && ! isset( $this->class_exceptions[ $fileName ] ) ) {
+				if ( substr( $fileName, 0, -4 ) !== $expected && ! isset( $this->class_exceptions[ $fileName ] ) ) {
 					$this->phpcsFile->addError(
 						'Class file names should be based on the class name with "class-" prepended. Expected %s, but found %s.',
 						0,
@@ -218,21 +218,21 @@ class FileNameSniff extends Sniff {
 			if ( false !== $subpackage_tag ) {
 				$subpackage = $this->phpcsFile->findNext( \T_DOC_COMMENT_STRING, $subpackage_tag );
 				if ( false !== $subpackage ) {
-					$fileName_end = substr( $fileName, - 13 );
+					$fileName_end = substr( $fileName, -13 );
 					$has_class    = $this->phpcsFile->findNext( \T_CLASS, $stackPtr );
 
 					if ( ( 'Template' === trim( $this->tokens[ $subpackage ]['content'] )
-					       && $this->tokens[ $subpackage_tag ]['line'] === $this->tokens[ $subpackage ]['line'] )
-					     && ( ( ! \defined( '\PHP_CODESNIFFER_IN_TESTS' ) && '-template.php' !== $fileName_end )
-					          || ( \defined( '\PHP_CODESNIFFER_IN_TESTS' ) && '-template.inc' !== $fileName_end ) )
-					     && false === $has_class
+						&& $this->tokens[ $subpackage_tag ]['line'] === $this->tokens[ $subpackage ]['line'] )
+						&& ( ( ! \defined( '\PHP_CODESNIFFER_IN_TESTS' ) && '-template.php' !== $fileName_end )
+						|| ( \defined( '\PHP_CODESNIFFER_IN_TESTS' ) && '-template.inc' !== $fileName_end ) )
+						&& false === $has_class
 					) {
 						$this->phpcsFile->addError(
 							'Files containing template tags should have "-template" appended to the end of the file name. Expected %s, but found %s.',
 							0,
 							'InvalidTemplateTagFileName',
 							array(
-								substr( $fileName, 0, - 4 ) . '-template.php',
+								substr( $fileName, 0, -4 ) . '-template.php',
 								$fileName,
 							)
 						);

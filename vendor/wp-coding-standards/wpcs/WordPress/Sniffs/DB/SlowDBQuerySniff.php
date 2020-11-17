@@ -3,18 +3,18 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\DB;
+namespace WordPressCS\WordPress\Sniffs\DB;
 
-use WordPress\AbstractArrayAssignmentRestrictionsSniff;
+use WordPressCS\WordPress\AbstractArrayAssignmentRestrictionsSniff;
 
 /**
  * Flag potentially slow queries.
  *
- * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#uncached-pageload
+ * @link    https://vip.wordpress.com/documentation/vip-go/code-review-blockers-warnings-notices/#uncached-pageload
  *
  * @package WPCS\WordPressCodingStandards
  *
@@ -35,9 +35,9 @@ class SlowDBQuerySniff extends AbstractArrayAssignmentRestrictionsSniff {
 	public function getGroups() {
 		return array(
 			'slow_db_query' => array(
-				'type' => 'warning',
+				'type'    => 'warning',
 				'message' => 'Detected usage of %s, possible slow query.',
-				'keys' => array(
+				'keys'    => array(
 					'tax_query',
 					'meta_query',
 					'meta_key',
@@ -61,24 +61,7 @@ class SlowDBQuerySniff extends AbstractArrayAssignmentRestrictionsSniff {
 
 		if ( $this->has_whitelist_comment( 'slow query', $stackPtr ) ) {
 			return;
-		}
-
-		if ( $this->has_whitelist_comment( 'tax_query', $stackPtr ) ) {
-			/*
-			 * Only throw the warning about a deprecated comment when the sniff would otherwise
-			 * have been triggered on the array key.
-			 */
-			if ( \in_array( $this->tokens[ $stackPtr ]['code'], array(
-				\T_CONSTANT_ENCAPSED_STRING,
-				\T_DOUBLE_QUOTED_STRING
-			), true ) ) {
-				$this->phpcsFile->addWarning(
-					'The "tax_query" whitelist comment is deprecated in favor of the "slow query" whitelist comment.',
-					$stackPtr,
-					'DeprecatedWhitelistFlagFound'
-				);
-			}
-
+		} elseif ( $this->has_whitelist_comment( 'tax_query', $stackPtr ) ) {
 			return;
 		}
 
@@ -89,11 +72,10 @@ class SlowDBQuerySniff extends AbstractArrayAssignmentRestrictionsSniff {
 	 * Callback to process each confirmed key, to check value.
 	 * This must be extended to add the logic to check assignment value.
 	 *
-	 * @param  string $key Array index / key.
-	 * @param  mixed $val Assigned value.
-	 * @param  int $line Token line.
-	 * @param  array $group Group definition.
-	 *
+	 * @param  string $key   Array index / key.
+	 * @param  mixed  $val   Assigned value.
+	 * @param  int    $line  Token line.
+	 * @param  array  $group Group definition.
 	 * @return mixed         FALSE if no match, TRUE if matches, STRING if matches
 	 *                       with custom error message passed to ->process().
 	 */

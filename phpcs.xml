@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards based custom ruleset for your plugin">
     <description>A modified set of rules, based on the WordPress Coding Standards.</description>
+    <config name="installed_paths" value="vendor/wp-coding-standards/wpcs"/>
 
     <!-- What to scan -->
     <file>.</file>

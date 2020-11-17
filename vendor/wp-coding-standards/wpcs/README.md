@@ -1,19 +1,19 @@
 <div aria-hidden="true">
 
 [![Latest Stable Version](https://poser.pugx.org/wp-coding-standards/wpcs/v/stable)](https://packagist.org/packages/wp-coding-standards/wpcs)
-[![Travis Build Status](https://travis-ci.org/WordPress-Coding-Standards/WordPress-Coding-Standards.png?branch=master)](https://travis-ci.org/WordPress-Coding-Standards/WordPress-Coding-Standards)
-[![Release Date of the Latest Version](https://img.shields.io/github/release-date/WordPress-Coding-Standards/WordPress-Coding-Standards.svg?maxAge=1800)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/releases)
+[![Travis Build Status](https://travis-ci.com/WordPress/WordPress-Coding-Standards.svg?branch=master)](https://travis-ci.com/WordPress/WordPress-Coding-Standards)
+[![Release Date of the Latest Version](https://img.shields.io/github/release-date/WordPress/WordPress-Coding-Standards.svg?maxAge=1800)](https://github.com/WordPress/WordPress-Coding-Standards/releases)
 :construction:
 [![Latest Unstable Version](https://img.shields.io/badge/unstable-dev--develop-e68718.svg?maxAge=2419200)](https://packagist.org/packages/wp-coding-standards/wpcs#dev-develop)
-[![Travis Build Status](https://travis-ci.org/WordPress-Coding-Standards/WordPress-Coding-Standards.png?branch=develop)](https://travis-ci.org/WordPress-Coding-Standards/WordPress-Coding-Standards)
-[![Last Commit to Unstable](https://img.shields.io/github/last-commit/WordPress-Coding-Standards/WordPress-Coding-Standards/develop.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/commits/develop)
+[![Travis Build Status](https://travis-ci.com/WordPress/WordPress-Coding-Standards.svg?branch=develop)](https://travis-ci.com/WordPress/WordPress-Coding-Standards)
+[![Last Commit to Unstable](https://img.shields.io/github/last-commit/WordPress/WordPress-Coding-Standards/develop.svg)](https://github.com/WordPress/WordPress-Coding-Standards/commits/develop)
 
 [![Minimum PHP Version](https://img.shields.io/packagist/php-v/wp-coding-standards/wpcs.svg?maxAge=3600)](https://packagist.org/packages/wp-coding-standards/wpcs)
-[![Tested on PHP 5.3 to nightly](https://img.shields.io/badge/tested%20on-PHP%205.3%20|%205.4%20|%205.5%20|%205.6%20|%207.0%20|%207.1%20|%207.2%20|%20nightly-green.svg?maxAge=2419200)](https://travis-ci.org/WordPress-Coding-Standards/WordPress-Coding-Standards)
+[![Tested on PHP 5.4 to 7.4 snapshot](https://img.shields.io/badge/tested%20on-PHP%205.4%20|%205.5%20|%205.6%20|%207.0%20|%207.1%20|%207.2%20|%207.3%20|%207.4snapshot-green.svg?maxAge=2419200)](https://travis-ci.com/WordPress/WordPress-Coding-Standards)
 
-[![License: MIT](https://poser.pugx.org/wp-coding-standards/wpcs/license)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/blob/develop/LICENSE)
+[![License: MIT](https://poser.pugx.org/wp-coding-standards/wpcs/license)](https://github.com/WordPress/WordPress-Coding-Standards/blob/develop/LICENSE)
 [![Total Downloads](https://poser.pugx.org/wp-coding-standards/wpcs/downloads)](https://packagist.org/packages/wp-coding-standards/wpcs/stats)
-[![Number of Contributors](https://img.shields.io/github/contributors/WordPress-Coding-Standards/WordPress-Coding-Standards.svg?maxAge=3600)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/graphs/contributors)
+[![Number of Contributors](https://img.shields.io/github/contributors/WordPress/WordPress-Coding-Standards.svg?maxAge=3600)](https://github.com/WordPress/WordPress-Coding-Standards/graphs/contributors)
 
 </div>
 
@@ -37,6 +37,7 @@
 * [Running your code through WPCS automatically using CI tools](#running-your-code-through-wpcs-automatically-using-ci-tools)
     + [Travis CI](#travis-ci)
 * [Fixing errors or whitelisting them](#fixing-errors-or-whitelisting-them)
+    + [Tools shipped with WPCS](#tools-shipped-with-wpcs)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -46,18 +47,19 @@ This project is a collection of [PHP_CodeSniffer](https://github.com/squizlabs/P
 
 ## Project history
 
- - In April 2009 original project from [Urban Giraffe](https://urbangiraffe.com/articles/wordpress-codesniffer-standard/) was published.
- - In May 2011 the project was forked on GitHub by [Chris Adams](https://chrisadams.me.uk/).
+ - On 22nd April 2009, the original project from [Urban Giraffe](https://urbangiraffe.com/articles/wordpress-codesniffer-standard/) was packaged and published.
+ - In May 2011 the project was forked and [added](https://github.com/WordPress/WordPress-Coding-Standards/commit/04fd547c691ca2baae3fa8e195a46b0c9dd671c5) to GitHub by [Chris Adams](https://chrisadams.me.uk/).
  - In April 2012 [XWP](https://xwp.co/) started to dedicate resources to develop and lead the creation of the sniffs and rulesets for `WordPress-Core`, `WordPress-VIP` (WordPress.com VIP), and `WordPress-Extra`.
+ - In May 2015, an initial documentation ruleset was [added](https://github.com/WordPress/WordPress-Coding-Standards/commit/b1a4bf8232a22563ef66f8a529357275a49f47dc#diff-a17c358c3262a26e9228268eb0a7b8c8) as `WordPress-Docs`.
  - In 2015, [J.D. Grimes](https://github.com/JDGrimes) began significant contributions, along with maintenance from [Gary Jones](https://github.com/GaryJones).
- - In 2016, [Juliette Reinders Folmer](https://github.com/jrfnl) began contributing heavily, adding more commits in a year than anyone else in 5 years previous since the project's inception.
+ - In 2016, [Juliette Reinders Folmer](https://github.com/jrfnl) began contributing heavily, adding more commits in a year than anyone else in the five years since the project was added to GitHub.
+ - In July 2018, version [`1.0.0`](https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/1.0.0) of the project was released.
 
 ## Installation
 
 ### Requirements
 
-The WordPress Coding Standards require PHP 5.3 or higher and [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) version **2.9.0** or higher.
-As of version 0.13.0, the WordPress Coding Standards are compatible with PHPCS 3.0.2+. In that case, the minimum PHP requirement is PHP 5.4.
+The WordPress Coding Standards require PHP 5.4 or higher and [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) version **3.3.1** or higher.
 
 ### Composer
 
@@ -72,7 +74,7 @@ Running this command will:
 3. Register WordPress standards in PHP_CodeSniffer configuration.
 4. Make `phpcs` command available from `wpcs/vendor/bin`.
 
-For the convenience of using `phpcs` as a global command, you may want to add the path to the `wpcs/vendor/scripts` (PHPCS 2.x) and/or `wpcs/vendor/bin` (PHPCS 3.x) directories to a `PATH` environment variable for your operating system.
+For the convenience of using `phpcs` as a global command, you may want to add the path to the `wpcs/vendor/bin` directory to a `PATH` environment variable for your operating system.
 
 #### Installing WPCS as a dependency
 
@@ -80,7 +82,7 @@ When installing the WordPress Coding Standards as a dependency in a larger proje
 
 There are two actively maintained Composer plugins which can handle the registration of standards with PHP_CodeSniffer for you:
 * [composer-phpcodesniffer-standards-plugin](https://github.com/higidi/composer-phpcodesniffer-standards-plugin)
-* [phpcodesniffer-composer-installer](https://github.com/DealerDirect/phpcodesniffer-composer-installer):"^0.4.3"
+* [phpcodesniffer-composer-installer](https://github.com/DealerDirect/phpcodesniffer-composer-installer):"^0.6"
 
 It is strongly suggested to `require` one of these plugins in your project to handle the registration of external standards with PHPCS for you.
 
@@ -92,7 +94,7 @@ It is strongly suggested to `require` one of these plugins in your project to ha
 
 2. Clone the WordPress standards repository:
 
-        git clone -b master https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git wpcs
+        git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git wpcs
 
 3. Add its path to the PHP_CodeSniffer configuration:
 
@@ -108,15 +110,12 @@ To summarize:
 ```bash
 cd ~/projects
 git clone https://github.com/squizlabs/PHP_CodeSniffer.git phpcs
-git clone -b master https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git wpcs
+git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git wpcs
 cd phpcs
-#PHPCS 2.x
-./scripts/phpcs --config-set installed_paths ../wpcs
-#PHPCS 3.x
 ./bin/phpcs --config-set installed_paths ../wpcs
 ```
 
-And then add the `~/projects/phpcs/scripts` (PHPCS 2.x) or `~/projects/phpcs/bin` (PHPCS 3.x) directory to your `PATH` environment variable via your `.bashrc`.
+And then add the `~/projects/phpcs/bin` directory to your `PATH` environment variable via your `.bashrc`.
 
 You should then see `WordPress-Core` et al listed when you run `phpcs -i`.
 
@@ -124,7 +123,7 @@ You should then see `WordPress-Core` et al listed when you run `phpcs -i`.
 
 ### Standards subsets
 
-The project encompasses a super-set of the sniffs that the WordPress community may need. If you use the `WordPress` standard you will get all the checks. Some of them might be unnecessary for your environment, for example, those specific to WordPress.com VIP coding requirements.
+The project encompasses a super-set of the sniffs that the WordPress community may need. If you use the `WordPress` standard you will get all the checks.
 
 You can use the following as standard names when invoking `phpcs` to select sniffs, fitting your needs:
 
@@ -134,19 +133,18 @@ You can use the following as standard names when invoking `phpcs` to select snif
   - `WordPress-Extra` - extended ruleset for recommended best practices, not sufficiently covered in the WordPress core coding standards
     - includes `WordPress-Core`
 
-**Notes:** This WPCS package contains the sniffs for another ruleset, `WordPress-VIP`. This ruleset was originally intended to aid with the [WordPress.com VIP coding requirements](https://vip.wordpress.com/documentation/code-review-what-we-look-for/), but this is no longer used or recommended by the WordPress.com VIP team or their clients, since they prefer to use their [official VIP coding standards](https://github.com/Automattic/VIP-Coding-Standards) ruleset instead.
-
-Before WPCS `1.0.0`, the WordPress-VIP ruleset was included as part of the complete `WordPress` ruleset. **As of `1.0.0` the `WordPress-VIP` ruleset is not part of the WordPress ruleset, and it is deprecated**. The remaining `WordPress-VIP` sniffs may still be referenced in custom rulesets, so to maintain some backwards compatibility, they will remain in WPCS until `2.0.0`. See [#1309](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1309) for more information.
+**Note:** The WPCS package used to include a `WordPress-VIP` ruleset and associated sniffs, prior to WPCS 2.0.0.
+The `WordPress-VIP` ruleset was originally intended to aid with the [WordPress.com VIP coding requirements](https://vip.wordpress.com/documentation/vip-go/code-review-blockers-warnings-notices/), but has been superseded. It is recommended to use the [official VIP coding standards](https://github.com/Automattic/VIP-Coding-Standards) ruleset instead for checking code against the VIP platform requirements.
 
 ### Using a custom ruleset
 
-If you need to further customize the selection of sniffs for your project - you can create a custom ruleset file. When you name this file either `phpcs.xml` or `phpcs.xml.dist`, PHP_CodeSniffer will automatically locate it as long as it is placed in the directory from which you run the CodeSniffer or in a directory above it. If you follow these naming conventions you don't have to supply a `--standard` arg. For more info, read about [using a default configuration file](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file). See also provided [`phpcs.xml.dist.sample`](phpcs.xml.dist.sample) file and [fully annotated example](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml) in the PHP_CodeSniffer documentation.
+If you need to further customize the selection of sniffs for your project - you can create a custom ruleset file. When you name this file either `.phpcs.xml`, `phpcs.xml`, `.phpcs.xml.dist` or `phpcs.xml.dist`, PHP_CodeSniffer will automatically locate it as long as it is placed in the directory from which you run the CodeSniffer or in a directory above it. If you follow these naming conventions you don't have to supply a `--standard` arg. For more info, read about [using a default configuration file](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file). See also provided [`phpcs.xml.dist.sample`](phpcs.xml.dist.sample) file and [fully annotated example](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml) in the PHP_CodeSniffer documentation.
 
 ### Customizing sniff behaviour
 
-The WordPress Coding Standard contains a number of sniffs which are configurable. This means that you can turn parts of the sniff on or off, or change the behaviour by setting a property for the sniff in your custom `phpcs.xml` file.
+The WordPress Coding Standard contains a number of sniffs which are configurable. This means that you can turn parts of the sniff on or off, or change the behaviour by setting a property for the sniff in your custom `.phpcs.xml.dist` file.
 
-You can find a complete list of all the properties you can change in the [wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties).
+You can find a complete list of all the properties you can change in the [wiki](https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties).
 
 ### Recommended additional rulesets
 
@@ -155,7 +153,13 @@ The [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) sni
 
 The [PHPCompatibilityWP](https://github.com/PHPCompatibility/PHPCompatibilityWP) ruleset is based on PHPCompatibility, but specifically crafted to prevent false positives for projects which expect to run within the context of WordPress, i.e. core, plugins and themes.
 
-Install either as a separate ruleset and either run it separately against your code or add it to your custom ruleset.
+Install either as a separate ruleset and run it separately against your code or add it to your custom ruleset, like so:
+```xml
+<config name="testVersion" value="5.2-"/>
+<rule ref="PHPCompatibilityWP">
+    <include-pattern>*\.php$</include-pattern>
+</rule>
+```
 
 Whichever way you run it, do make sure you set the `testVersion` to run the sniffs against. The `testVersion` determines for which PHP versions you will receive compatibility information. The recommended setting for this at this moment is  `5.2-` to support the same PHP versions as WordPress Core supports.
 
@@ -213,15 +217,15 @@ Will result in following output:
 ### Using PHPCS and WPCS from within your IDE
 
 * **PhpStorm** : Please see "[PHP Code Sniffer with WordPress Coding Standards Integration](https://confluence.jetbrains.com/display/PhpStorm/WordPress+Development+using+PhpStorm#WordPressDevelopmentusingPhpStorm-PHPCodeSnifferwithWordPressCodingStandardsIntegrationinPhpStorm)" in the PhpStorm documentation.
-* **Sublime Text** : Please see "[Setting up WPCS to work in Sublime Text](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Setting-up-WPCS-to-work-in-Sublime-Text)" in the wiki.
-* **Atom**: Please see "[Setting up WPCS to work in Atom](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Setting-up-WPCS-to-work-in-Atom)" in the wiki.
+* **Sublime Text** : Please see "[Setting up WPCS to work in Sublime Text](https://github.com/WordPress/WordPress-Coding-Standards/wiki/Setting-up-WPCS-to-work-in-Sublime-Text)" in the wiki.
+* **Atom**: Please see "[Setting up WPCS to work in Atom](https://github.com/WordPress/WordPress-Coding-Standards/wiki/Setting-up-WPCS-to-work-in-Atom)" in the wiki.
 * **Visual Studio**: Please see "[Setting up PHP CodeSniffer in Visual Studio Code](https://tommcfarlin.com/php-codesniffer-in-visual-studio-code/)", a tutorial by Tom McFarlin.
-* **Eclipse with XAMPP**: Please see "[Setting up WPCS when using Eclipse with XAMPP](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/How-to-use-WPCS-with-Eclipse-and-XAMPP)" in the wiki.
+* **Eclipse with XAMPP**: Please see "[Setting up WPCS when using Eclipse with XAMPP](https://github.com/WordPress/WordPress-Coding-Standards/wiki/How-to-use-WPCS-with-Eclipse-and-XAMPP)" in the wiki.
 
 
 ## Running your code through WPCS automatically using CI tools
 
-### [Travis CI](https://travis-ci.org/)
+### [Travis CI](https://travis-ci.com/)
 
 To integrate PHPCS with WPCS with Travis CI, you'll need to install both `before_install` and add the run command to the `script`.
 If your project uses Composer, the typical instructions might be different.
@@ -245,7 +249,7 @@ before_install:
   # Install PHP_CodeSniffer.
   - if [[ "$SNIFF" == "1" ]]; then git clone -b master --depth 1 https://github.com/squizlabs/PHP_CodeSniffer.git $PHPCS_DIR; fi
   # Install WordPress Coding Standards.
-  - if [[ "$SNIFF" == "1" ]]; then git clone -b master --depth 1 https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git $SNIFFS_DIR; fi
+  - if [[ "$SNIFF" == "1" ]]; then git clone -b master --depth 1 https://github.com/WordPress/WordPress-Coding-Standards.git $SNIFFS_DIR; fi
   # Set install path for WordPress Coding Standards.
   - if [[ "$SNIFF" == "1" ]]; then $PHPCS_DIR/bin/phpcs --config-set installed_paths $SNIFFS_DIR; fi
   # After CodeSniffer install you should refresh your path.
@@ -265,7 +269,22 @@ More examples and advice about integrating PHPCS in your Travis build tests can 
 
 ## Fixing errors or whitelisting them
 
-You can find information on how to deal with some of the more frequent issues in the [wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki).
+You can find information on how to deal with some of the more frequent issues in the [wiki](https://github.com/WordPress/WordPress-Coding-Standards/wiki).
+
+### Tools shipped with WPCS
+
+Since version 1.2.0, WPCS has a special sniff category `Utils`.
+
+This sniff category contains some tools which, generally speaking, will only be needed to be run once over a codebase and for which the fixers can be considered _risky_, i.e. very careful review by a developer is needed before accepting the fixes made by these sniffs.
+
+The sniffs in this category are disabled by default and can only be activated by adding some properties for each sniff via a custom ruleset.
+
+At this moment, WPCS offer the following tools:
+* `WordPress.Utils.I18nTextDomainFixer` - This sniff can replace the text domain used in a code-base.
+    The sniff will fix the text domains in both I18n function calls as well as in a plugin/theme header.
+    Passing the following properties will activate the sniff:
+    - `old_text_domain`: an array with one or more (old) text domain names which need to be replaced;
+    - `new_text_domain`: the correct (new) text domain as a string.
 
 
 ## Contributing

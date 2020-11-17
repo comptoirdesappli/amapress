@@ -3,24 +3,24 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Flag cron schedules less than 15 minutes.
  *
- * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#cron-schedules-less-than-15-minutes-or-expensive-events
+ * @link    https://vip.wordpress.com/documentation/vip-go/code-review-blockers-warnings-notices/#cron-schedules-less-than-15-minutes-or-expensive-events
  *
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.3.0
- * @since   0.11.0 - Extends the WordPress_Sniff class.
+ * @since   0.11.0 - Extends the WordPressCS native `Sniff` class.
  *                 - Now deals correctly with WP time constants.
  * @since   0.13.0 Class name changed: this class is now namespaced.
  * @since   0.14.0 The minimum cron interval tested against is now configurable.
@@ -56,6 +56,15 @@ class CronIntervalSniff extends Sniff {
 	);
 
 	/**
+	 * Function within which the hook should be found.
+	 *
+	 * @var array
+	 */
+	protected $valid_functions = array(
+		'add_filter' => true,
+	);
+
+	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
 	 * @return array
@@ -82,8 +91,8 @@ class CronIntervalSniff extends Sniff {
 		}
 
 		// If within add_filter.
-		$functionPtr = $this->phpcsFile->findPrevious( \T_STRING, key( $token['nested_parenthesis'] ) );
-		if ( false === $functionPtr || 'add_filter' !== $this->tokens[ $functionPtr ]['content'] ) {
+		$functionPtr = $this->is_in_function_call( $stackPtr, $this->valid_functions );
+		if ( false === $functionPtr ) {
 			return;
 		}
 
@@ -92,19 +101,23 @@ class CronIntervalSniff extends Sniff {
 			return;
 		}
 
+		if ( $stackPtr >= $callback['start'] ) {
+			// "cron_schedules" found in the second parameter, not the first.
+			return;
+		}
+
 		// Detect callback function name.
 		$callbackArrayPtr = $this->phpcsFile->findNext( Tokens::$emptyTokens, $callback['start'], ( $callback['end'] + 1 ), true );
 
 		// If callback is array, get second element.
 		if ( false !== $callbackArrayPtr
-		     && ( \T_ARRAY === $this->tokens[ $callbackArrayPtr ]['code']
-		          || \T_OPEN_SHORT_ARRAY === $this->tokens[ $callbackArrayPtr ]['code'] )
+			&& ( \T_ARRAY === $this->tokens[ $callbackArrayPtr ]['code']
+				|| \T_OPEN_SHORT_ARRAY === $this->tokens[ $callbackArrayPtr ]['code'] )
 		) {
 			$callback = $this->get_function_call_parameter( $callbackArrayPtr, 2 );
 
 			if ( false === $callback ) {
 				$this->confused( $stackPtr );
-
 				return;
 			}
 		}
@@ -112,15 +125,10 @@ class CronIntervalSniff extends Sniff {
 		unset( $functionPtr );
 
 		// Search for the function in tokens.
-		$callbackFunctionPtr = $this->phpcsFile->findNext( array(
-			\T_CONSTANT_ENCAPSED_STRING,
-			\T_DOUBLE_QUOTED_STRING,
-			\T_CLOSURE
-		), $callback['start'], ( $callback['end'] + 1 ) );
+		$callbackFunctionPtr = $this->phpcsFile->findNext( array( \T_CONSTANT_ENCAPSED_STRING, \T_DOUBLE_QUOTED_STRING, \T_CLOSURE ), $callback['start'], ( $callback['end'] + 1 ) );
 
 		if ( false === $callbackFunctionPtr ) {
 			$this->confused( $stackPtr );
-
 			return;
 		}
 
@@ -129,7 +137,7 @@ class CronIntervalSniff extends Sniff {
 		} else {
 			$functionName = $this->strip_quotes( $this->tokens[ $callbackFunctionPtr ]['content'] );
 
-			for ( $ptr = 0; $ptr < $this->phpcsFile->numTokens; $ptr ++ ) {
+			for ( $ptr = 0; $ptr < $this->phpcsFile->numTokens; $ptr++ ) {
 				if ( \T_FUNCTION === $this->tokens[ $ptr ]['code'] ) {
 					$foundName = $this->phpcsFile->getDeclarationName( $ptr );
 					if ( $foundName === $functionName ) {
@@ -145,7 +153,6 @@ class CronIntervalSniff extends Sniff {
 
 		if ( ! isset( $functionPtr ) ) {
 			$this->confused( $stackPtr );
-
 			return;
 		}
 
@@ -155,27 +162,20 @@ class CronIntervalSniff extends Sniff {
 
 		$opening = $this->tokens[ $functionPtr ]['scope_opener'];
 		$closing = $this->tokens[ $functionPtr ]['scope_closer'];
-		for ( $i = $opening; $i <= $closing; $i ++ ) {
+		for ( $i = $opening; $i <= $closing; $i++ ) {
 
-			if ( \in_array( $this->tokens[ $i ]['code'], array(
-				\T_CONSTANT_ENCAPSED_STRING,
-				\T_DOUBLE_QUOTED_STRING
-			), true ) ) {
+			if ( \in_array( $this->tokens[ $i ]['code'], array( \T_CONSTANT_ENCAPSED_STRING, \T_DOUBLE_QUOTED_STRING ), true ) ) {
 				if ( 'interval' === $this->strip_quotes( $this->tokens[ $i ]['content'] ) ) {
 					$operator = $this->phpcsFile->findNext( \T_DOUBLE_ARROW, $i, null, false, null, true );
 					if ( false === $operator ) {
 						$this->confused( $stackPtr );
-
 						return;
 					}
 
 					$valueStart = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $operator + 1 ), null, true, null, true );
-					$valueEnd   = $this->phpcsFile->findNext( array(
-						\T_COMMA,
-						\T_CLOSE_PARENTHESIS
-					), ( $valueStart + 1 ) );
+					$valueEnd   = $this->phpcsFile->findNext( array( \T_COMMA, \T_CLOSE_PARENTHESIS ), ( $valueStart + 1 ) );
 					$value      = '';
-					for ( $j = $valueStart; $j < $valueEnd; $j ++ ) {
+					for ( $j = $valueStart; $j < $valueEnd; $j++ ) {
 						if ( isset( Tokens::$emptyTokens[ $this->tokens[ $j ]['code'] ] ) ) {
 							continue;
 						}
@@ -192,12 +192,11 @@ class CronIntervalSniff extends Sniff {
 
 					// If all digits and operators, eval!
 					if ( preg_match( '#^[\s\d+*/-]+$#', $value ) > 0 ) {
-						$interval = eval( "return ( $value );" ); // @codingStandardsIgnoreLine - No harm here.
+						$interval = eval( "return ( $value );" ); // phpcs:ignore Squiz.PHP.Eval -- No harm here.
 						break;
 					}
 
 					$this->confused( $stackPtr );
-
 					return;
 				}
 			}
@@ -216,7 +215,6 @@ class CronIntervalSniff extends Sniff {
 					$minutes,
 				)
 			);
-
 			return;
 		}
 	}

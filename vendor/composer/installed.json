@@ -163,7 +163,8 @@
             "data",
             "faker",
             "fixtures"
-        ]
+        ],
+        "abandoned": true
     },
     {
         "name": "guzzlehttp/guzzle",
@@ -2106,30 +2107,33 @@
     },
     {
         "name": "wp-coding-standards/wpcs",
-        "version": "1.0.0",
-        "version_normalized": "1.0.0.0",
+        "version": "2.3.0",
+        "version_normalized": "2.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
-            "reference": "539c6d74e6207daa22b7ea754d6f103e9abb2755"
+            "reference": "7da1894633f168fe244afc6de00d141f27517b62"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/539c6d74e6207daa22b7ea754d6f103e9abb2755",
-            "reference": "539c6d74e6207daa22b7ea754d6f103e9abb2755",
+            "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/7da1894633f168fe244afc6de00d141f27517b62",
+            "reference": "7da1894633f168fe244afc6de00d141f27517b62",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3",
-            "squizlabs/php_codesniffer": "^2.9.0 || ^3.0.2"
+            "php": ">=5.4",
+            "squizlabs/php_codesniffer": "^3.3.1"
         },
         "require-dev": {
-            "phpcompatibility/php-compatibility": "*"
+            "dealerdirect/phpcodesniffer-composer-installer": "^0.5 || ^0.6",
+            "phpcompatibility/php-compatibility": "^9.0",
+            "phpcsstandards/phpcsdevtools": "^1.0",
+            "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
         },
         "suggest": {
-            "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically."
+            "dealerdirect/phpcodesniffer-composer-installer": "^0.6 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically."
         },
-        "time": "2018-07-25T18:10:35+00:00",
+        "time": "2020-05-13T23:57:56+00:00",
         "type": "phpcodesniffer-standard",
         "installation-source": "dist",
         "notification-url": "https://packagist.org/downloads/",
@@ -2139,7 +2143,7 @@
         "authors": [
             {
                 "name": "Contributors",
-                "homepage": "https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/graphs/contributors"
+                "homepage": "https://github.com/WordPress/WordPress-Coding-Standards/graphs/contributors"
             }
         ],
         "description": "PHP_CodeSniffer rules (sniffs) to enforce WordPress coding conventions",

@@ -3,13 +3,13 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress;
+namespace WordPressCS\WordPress;
 
-use WordPress\AbstractFunctionRestrictionsSniff;
+use WordPressCS\WordPress\AbstractFunctionRestrictionsSniff;
 
 /**
  * Restricts usage of some classes.
@@ -54,7 +54,7 @@ abstract class AbstractClassRestrictionsSniff extends AbstractFunctionRestrictio
 	 *
 	 * @return array
 	 *
-	 * abstract public function getGroups();
+	abstract public function getGroups();
 	 */
 
 	/**
@@ -79,7 +79,7 @@ abstract class AbstractClassRestrictionsSniff extends AbstractFunctionRestrictio
 	/**
 	 * Processes this test, when one of its tokens is encountered.
 	 *
-	 * {@internal Unlike in the `WordPress_AbstractFunctionRestrictionsSniff`,
+	 * {@internal Unlike in the `AbstractFunctionRestrictionsSniff`,
 	 *            we can't do a preliminary check on classes as at this point
 	 *            we don't know the class name yet.}}
 	 *
@@ -120,17 +120,9 @@ abstract class AbstractClassRestrictionsSniff extends AbstractFunctionRestrictio
 
 		if ( \in_array( $token['code'], array( \T_NEW, \T_EXTENDS, \T_IMPLEMENTS ), true ) ) {
 			if ( \T_NEW === $token['code'] ) {
-				$nameEnd = ( $this->phpcsFile->findNext( array(
-						\T_OPEN_PARENTHESIS,
-						\T_WHITESPACE,
-						\T_SEMICOLON,
-						\T_OBJECT_OPERATOR
-					), ( $stackPtr + 2 ) ) - 1 );
+				$nameEnd = ( $this->phpcsFile->findNext( array( \T_OPEN_PARENTHESIS, \T_WHITESPACE, \T_SEMICOLON, \T_OBJECT_OPERATOR ), ( $stackPtr + 2 ) ) - 1 );
 			} else {
-				$nameEnd = ( $this->phpcsFile->findNext( array(
-						\T_CLOSE_CURLY_BRACKET,
-						\T_WHITESPACE
-					), ( $stackPtr + 2 ) ) - 1 );
+				$nameEnd = ( $this->phpcsFile->findNext( array( \T_CLOSE_CURLY_BRACKET, \T_WHITESPACE ), ( $stackPtr + 2 ) ) - 1 );
 			}
 
 			$length    = ( $nameEnd - ( $stackPtr + 1 ) );
@@ -142,12 +134,8 @@ abstract class AbstractClassRestrictionsSniff extends AbstractFunctionRestrictio
 		}
 
 		if ( \T_DOUBLE_COLON === $token['code'] ) {
-			$nameEnd = $this->phpcsFile->findPrevious( \T_STRING, ( $stackPtr - 1 ) );
-			$nameStart = ( $this->phpcsFile->findPrevious( array(
-					\T_STRING,
-					\T_NS_SEPARATOR,
-					\T_NAMESPACE
-				), ( $nameEnd - 1 ), null, true, null, true ) + 1 );
+			$nameEnd   = $this->phpcsFile->findPrevious( \T_STRING, ( $stackPtr - 1 ) );
+			$nameStart = ( $this->phpcsFile->findPrevious( array( \T_STRING, \T_NS_SEPARATOR, \T_NAMESPACE ), ( $nameEnd - 1 ), null, true, null, true ) + 1 );
 			$length    = ( $nameEnd - ( $nameStart - 1 ) );
 			$classname = $this->phpcsFile->getTokensAsString( $nameStart, $length );
 
@@ -221,8 +209,8 @@ abstract class AbstractClassRestrictionsSniff extends AbstractFunctionRestrictio
 	/**
 	 * See if the classname was found in a namespaced file and if so, add the namespace to the classname.
 	 *
-	 * @param string $classname The full classname as found.
-	 * @param int $search_from The token position to search up from.
+	 * @param string $classname   The full classname as found.
+	 * @param int    $search_from The token position to search up from.
 	 * @return string Classname, potentially prefixed with the namespace.
 	 */
 	protected function get_namespaced_classname( $classname, $search_from ) {

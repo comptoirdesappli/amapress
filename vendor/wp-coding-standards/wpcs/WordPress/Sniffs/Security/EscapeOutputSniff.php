@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\Security;
+namespace WordPressCS\WordPress\Sniffs\Security;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Verifies that all outputted strings are escaped.
@@ -20,9 +20,9 @@ use PHP_CodeSniffer_Tokens as Tokens;
  * @package WPCS\WordPressCodingStandards
  *
  * @since   2013-06-11
- * @since   0.4.0  This class now extends WordPress_Sniff.
+ * @since   0.4.0  This class now extends the WordPressCS native `Sniff` class.
  * @since   0.5.0  The various function list properties which used to be contained in this class
- *                 have been moved to the WordPress_Sniff parent class.
+ *                 have been moved to the WordPressCS native `Sniff` parent class.
  * @since   0.12.0 This sniff will now also check for output escaping when using shorthand
  *                 echo tags `<?=`.
  * @since   0.13.0 Class name changed: this class is now namespaced.
@@ -47,17 +47,6 @@ class EscapeOutputSniff extends Sniff {
 	 * @var string|string[]
 	 */
 	public $customAutoEscapedFunctions = array();
-
-	/**
-	 * Custom list of functions which escape values for output.
-	 *
-	 * @since      0.3.0
-	 * @deprecated 0.5.0 Use $customEscapingFunctions instead.
-	 * @see        \WordPress\Sniffs\Security\EscapeOutputSniff::$customEscapingFunctions
-	 *
-	 * @var string|string[]
-	 */
-	public $customSanitizingFunctions = array();
 
 	/**
 	 * Custom list of functions which print output incorporating the passed values.
@@ -136,21 +125,7 @@ class EscapeOutputSniff extends Sniff {
 	);
 
 	/**
-	 * List of names of the cast tokens which can be considered as a safe escaping method.
-	 *
-	 * @since 0.12.0
-	 *
-	 * @var array
-	 */
-	private $safe_cast_tokens = array(
-		'T_INT_CAST'    => true, // (int)
-		'T_DOUBLE_CAST' => true, // (float)
-		'T_BOOL_CAST'   => true, // (bool)
-		'T_UNSET_CAST'  => true, // (unset)
-	);
-
-	/**
-	 * List of tokens which can be considered as a safe when directly part of the output.
+	 * List of tokens which can be considered as safe when directly part of the output.
 	 *
 	 * @since 0.12.0
 	 *
@@ -180,28 +155,13 @@ class EscapeOutputSniff extends Sniff {
 	 */
 	public function register() {
 
-		$tokens = array(
+		return array(
 			\T_ECHO,
 			\T_PRINT,
 			\T_EXIT,
 			\T_STRING,
 			\T_OPEN_TAG_WITH_ECHO,
 		);
-
-		/*
-		 * Check whether short open echo tags are disabled and if so, register the
-		 * T_INLINE_HTML token which is how short open tags are being handled in that case.
-		 *
-		 * In PHP < 5.4, support for short open echo tags depended on whether the
-		 * `short_open_tag` ini directive was set to `true`.
-		 * For PHP >= 5.4, the `short_open_tag` no longer affects the short open
-		 * echo tags and these are now always enabled.
-		 */
-		if ( \PHP_VERSION_ID < 50400 && false === (bool) ini_get( 'short_open_tag' ) ) {
-			$tokens[] = \T_INLINE_HTML;
-		}
-
-		return $tokens;
 	}
 
 	/**
@@ -238,25 +198,20 @@ class EscapeOutputSniff extends Sniff {
 				$end_of_statement = ( $first_param['end'] + 1 );
 				unset( $first_param );
 			}
-		} elseif ( \T_INLINE_HTML === $this->tokens[ $stackPtr ]['code'] ) {
-			// Skip if no PHP short_open_tag is found in the string.
-			if ( false === strpos( $this->tokens[ $stackPtr ]['content'], '<?=' ) ) {
-				return;
+
+			/*
+			 * If the first param to `_deprecated_file()` follows the typical `basename( __FILE__ )`
+			 * pattern, it doesn't need to be escaped.
+			 */
+			if ( '_deprecated_file' === $function ) {
+				$first_param = $this->get_function_call_parameter( $stackPtr, 1 );
+
+				// Quick check. This disregards comments.
+				if ( preg_match( '`^basename\s*\(\s*__FILE__\s*\)$`', $first_param['raw'] ) === 1 ) {
+					$stackPtr = ( $first_param['end'] + 2 );
+				}
+				unset( $first_param );
 			}
-
-			// Report on what is very likely a PHP short open echo tag outputting a variable.
-			if ( preg_match( '`\<\?\=[\s]*(\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:(?:->\S+|\[[^\]]+\]))*)[\s]*;?[\s]*\?\>`', $this->tokens[ $stackPtr ]['content'], $matches ) > 0 ) {
-				$this->phpcsFile->addError(
-					"All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '%s'.",
-					$stackPtr,
-					'OutputNotEscapedShortEcho',
-					array( $matches[1] )
-				);
-
-				return;
-			}
-
-			return;
 		}
 
 		// Checking for the ignore comment, ex: //xss ok.
@@ -301,13 +256,13 @@ class EscapeOutputSniff extends Sniff {
 		}
 
 		// Ignore the function itself.
-		$stackPtr ++;
+		$stackPtr++;
 
 		$in_cast = false;
 
 		// Looping through echo'd components.
 		$watch = true;
-		for ( $i = $stackPtr; $i < $end_of_statement; $i ++ ) {
+		for ( $i = $stackPtr; $i < $end_of_statement; $i++ ) {
 
 			// Ignore whitespaces and comments.
 			if ( isset( Tokens::$emptyTokens[ $this->tokens[ $i ]['code'] ] ) ) {
@@ -353,12 +308,12 @@ class EscapeOutputSniff extends Sniff {
 
 			// Handle arrays for those functions that accept them.
 			if ( \T_ARRAY === $this->tokens[ $i ]['code'] ) {
-				$i ++; // Skip the opening parenthesis.
+				$i++; // Skip the opening parenthesis.
 				continue;
 			}
 
 			if ( \T_OPEN_SHORT_ARRAY === $this->tokens[ $i ]['code']
-			     || \T_CLOSE_SHORT_ARRAY === $this->tokens[ $i ]['code']
+				|| \T_CLOSE_SHORT_ARRAY === $this->tokens[ $i ]['code']
 			) {
 				continue;
 			}
@@ -374,8 +329,8 @@ class EscapeOutputSniff extends Sniff {
 
 			// Handle safe PHP native constants.
 			if ( \T_STRING === $this->tokens[ $i ]['code']
-			     && isset( $this->safe_php_constants[ $this->tokens[ $i ]['content'] ] )
-			     && $this->is_use_of_global_constant( $i )
+				&& isset( $this->safe_php_constants[ $this->tokens[ $i ]['content'] ] )
+				&& $this->is_use_of_global_constant( $i )
 			) {
 				continue;
 			}
@@ -412,7 +367,7 @@ class EscapeOutputSniff extends Sniff {
 			$watch = false;
 
 			// Allow int/double/bool casted variables.
-			if ( isset( $this->safe_cast_tokens[ $this->tokens[ $i ]['type'] ] ) ) {
+			if ( isset( $this->safe_casts[ $this->tokens[ $i ]['code'] ] ) ) {
 				$in_cast = true;
 				continue;
 			}
@@ -427,20 +382,32 @@ class EscapeOutputSniff extends Sniff {
 
 				if ( false !== $function_opener ) {
 
-					if ( 'array_map' === $functionName ) {
+					if ( isset( $this->arrayWalkingFunctions[ $functionName ] ) ) {
 
-						// Get the first parameter (name of function being used on the array).
-						$mapped_function = $this->phpcsFile->findNext(
-							Tokens::$emptyTokens,
-							( $function_opener + 1 ),
-							$this->tokens[ $function_opener ]['parenthesis_closer'],
-							true
+						// Get the callback parameter.
+						$callback = $this->get_function_call_parameter(
+							$ptr,
+							$this->arrayWalkingFunctions[ $functionName ]
 						);
 
-						// If we're able to resolve the function name, do so.
-						if ( $mapped_function && \T_CONSTANT_ENCAPSED_STRING === $this->tokens[ $mapped_function ]['code'] ) {
-							$functionName = $this->strip_quotes( $this->tokens[ $mapped_function ]['content'] );
-							$ptr          = $mapped_function;
+						if ( ! empty( $callback ) ) {
+							/*
+							 * If this is a function callback (not a method callback array) and we're able
+							 * to resolve the function name, do so.
+							 */
+							$mapped_function = $this->phpcsFile->findNext(
+								Tokens::$emptyTokens,
+								$callback['start'],
+								( $callback['end'] + 1 ),
+								true
+							);
+
+							if ( false !== $mapped_function
+								&& \T_CONSTANT_ENCAPSED_STRING === $this->tokens[ $mapped_function ]['code']
+							) {
+								$functionName = $this->strip_quotes( $this->tokens[ $mapped_function ]['content'] );
+								$ptr          = $mapped_function;
+							}
 						}
 					}
 
@@ -476,11 +443,20 @@ class EscapeOutputSniff extends Sniff {
 				$ptr     = $i;
 			}
 
+			// Make the error message a little more informative for array access variables.
+			if ( \T_VARIABLE === $this->tokens[ $ptr ]['code'] ) {
+				$array_keys = $this->get_array_access_keys( $ptr );
+
+				if ( ! empty( $array_keys ) ) {
+					$content .= '[' . implode( '][', $array_keys ) . ']';
+				}
+			}
+
 			$this->phpcsFile->addError(
 				"All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '%s'.",
 				$ptr,
 				'OutputNotEscaped',
-				$content
+				array( $content )
 			);
 		}
 
@@ -495,32 +471,15 @@ class EscapeOutputSniff extends Sniff {
 	 * @return void
 	 */
 	protected function mergeFunctionLists() {
-		if ( $this->customEscapingFunctions !== $this->addedCustomFunctions['escape']
-		     || $this->customSanitizingFunctions !== $this->addedCustomFunctions['sanitize']
-		) {
+		if ( $this->customEscapingFunctions !== $this->addedCustomFunctions['escape'] ) {
 			$customEscapeFunctions = $this->merge_custom_array( $this->customEscapingFunctions, array(), false );
-
-			if ( ! empty( $this->customSanitizingFunctions ) ) {
-				$customEscapeFunctions = $this->merge_custom_array(
-					$this->customSanitizingFunctions,
-					$customEscapeFunctions,
-					false
-				);
-
-				$this->phpcsFile->addWarning(
-					'The customSanitizingFunctions property is deprecated in favor of customEscapingFunctions.',
-					0,
-					'DeprecatedCustomSanitizingFunctions'
-				);
-			}
 
 			$this->escapingFunctions = $this->merge_custom_array(
 				$customEscapeFunctions,
 				$this->escapingFunctions
 			);
 
-			$this->addedCustomFunctions['escape']   = $this->customEscapingFunctions;
-			$this->addedCustomFunctions['sanitize'] = $this->customSanitizingFunctions;
+			$this->addedCustomFunctions['escape'] = $this->customEscapingFunctions;
 		}
 
 		if ( $this->customAutoEscapedFunctions !== $this->addedCustomFunctions['autoescape'] ) {

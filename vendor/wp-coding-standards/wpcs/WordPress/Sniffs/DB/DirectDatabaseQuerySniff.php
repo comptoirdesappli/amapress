@@ -3,26 +3,25 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\DB;
+namespace WordPressCS\WordPress\Sniffs\DB;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Flag Database direct queries.
  *
- * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#direct-database-queries
- * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#database-alteration
+ * @link    https://vip.wordpress.com/documentation/vip-go/code-review-blockers-warnings-notices/#direct-database-queries
  *
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.3.0
  * @since   0.6.0  Removed the add_unique_message() function as it is no longer needed.
- * @since   0.11.0 This class now extends WordPress_Sniff.
+ * @since   0.11.0 This class now extends the WordPressCS native `Sniff` class.
  * @since   0.13.0 Class name changed: this class is now namespaced.
  * @since   1.0.0  This sniff has been moved from the `VIP` category to the `DB` category.
  */
@@ -79,7 +78,7 @@ class DirectDatabaseQuerySniff extends Sniff {
 	 * @var array[]
 	 */
 	protected $methods = array(
-		'cachable'    => array(
+		'cachable' => array(
 			'delete'      => true,
 			'get_var'     => true,
 			'get_col'     => true,
@@ -110,7 +109,8 @@ class DirectDatabaseQuerySniff extends Sniff {
 	 *
 	 * @param int $stackPtr The position of the current token in the stack.
 	 *
-	 * @return void
+	 * @return int|void Integer stack pointer to skip forward or void to continue
+	 *                  normal file processing.
 	 */
 	public function process_token( $stackPtr ) {
 
@@ -135,7 +135,7 @@ class DirectDatabaseQuerySniff extends Sniff {
 
 		$endOfStatement   = $this->phpcsFile->findNext( \T_SEMICOLON, ( $stackPtr + 1 ), null, false, null, true );
 		$endOfLineComment = '';
-		for ( $i = ( $endOfStatement + 1 ); $i < $this->phpcsFile->numTokens; $i ++ ) {
+		for ( $i = ( $endOfStatement + 1 ); $i < $this->phpcsFile->numTokens; $i++ ) {
 
 			if ( $this->tokens[ $i ]['line'] !== $this->tokens[ $endOfStatement ]['line'] ) {
 				break;
@@ -152,7 +152,7 @@ class DirectDatabaseQuerySniff extends Sniff {
 		}
 
 		// Check for Database Schema Changes.
-		for ( $_pos = ( $stackPtr + 1 ); $_pos < $endOfStatement; $_pos ++ ) {
+		for ( $_pos = ( $stackPtr + 1 ); $_pos < $endOfStatement; $_pos++ ) {
 			$_pos = $this->phpcsFile->findNext( Tokens::$textStringTokens, $_pos, $endOfStatement, false, null, true );
 			if ( false === $_pos ) {
 				break;
@@ -189,7 +189,7 @@ class DirectDatabaseQuerySniff extends Sniff {
 				$scopeStart = $this->tokens[ $scope_function ]['scope_opener'];
 				$scopeEnd   = $this->tokens[ $scope_function ]['scope_closer'];
 
-				for ( $i = ( $scopeStart + 1 ); $i < $scopeEnd; $i ++ ) {
+				for ( $i = ( $scopeStart + 1 ); $i < $scopeEnd; $i++ ) {
 					if ( \T_STRING === $this->tokens[ $i ]['code'] ) {
 
 						if ( isset( $this->cacheDeleteFunctions[ $this->tokens[ $i ]['content'] ] ) ) {

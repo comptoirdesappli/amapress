@@ -3,24 +3,25 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\Security;
+namespace WordPressCS\WordPress\Sniffs\Security;
 
-use WordPress\Sniff;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Flag any non-validated/sanitized input ( _GET / _POST / etc. ).
  *
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/69
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards/issues/69
  *
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.3.0
- * @since   0.4.0  This class now extends WordPress_Sniff.
- * @since   0.5.0  Method getArrayIndexKey() has been moved to WordPress_Sniff.
+ * @since   0.4.0  This class now extends the WordPressCS native `Sniff` class.
+ * @since   0.5.0  Method getArrayIndexKey() has been moved to the WordPressCS native `Sniff` class.
  * @since   0.13.0 Class name changed: this class is now namespaced.
  * @since   1.0.0  This sniff has been moved from the `VIP` category to the `Security` category.
  */
@@ -63,7 +64,7 @@ class ValidatedSanitizedInputSniff extends Sniff {
 	 * @var array
 	 */
 	protected $addedCustomFunctions = array(
-		'sanitize' => array(),
+		'sanitize'        => array(),
 		'unslashsanitize' => array(),
 	);
 
@@ -93,7 +94,7 @@ class ValidatedSanitizedInputSniff extends Sniff {
 
 		// Handling string interpolation.
 		if ( \T_DOUBLE_QUOTED_STRING === $this->tokens[ $stackPtr ]['code']
-		     || \T_HEREDOC === $this->tokens[ $stackPtr ]['code']
+			|| \T_HEREDOC === $this->tokens[ $stackPtr ]['code']
 		) {
 			$interpolated_variables = array_map(
 				function ( $symbol ) {
@@ -102,10 +103,7 @@ class ValidatedSanitizedInputSniff extends Sniff {
 				$this->get_interpolated_variables( $this->tokens[ $stackPtr ]['content'] )
 			);
 			foreach ( array_intersect( $interpolated_variables, $superglobals ) as $bad_variable ) {
-				$this->phpcsFile->addError( 'Detected usage of a non-sanitized, non-validated input variable %s: %s', $stackPtr, 'InputNotValidatedNotSanitized', array(
-					$bad_variable,
-					$this->tokens[ $stackPtr ]['content']
-				) );
+				$this->phpcsFile->addError( 'Detected usage of a non-sanitized, non-validated input variable %s: %s', $stackPtr, 'InputNotValidatedNotSanitized', array( $bad_variable, $this->tokens[ $stackPtr ]['content'] ) );
 			}
 
 			return;
@@ -126,26 +124,69 @@ class ValidatedSanitizedInputSniff extends Sniff {
 			return;
 		}
 
-		$array_key = $this->get_array_access_key( $stackPtr );
+		$array_keys = $this->get_array_access_keys( $stackPtr );
 
-		if ( empty( $array_key ) ) {
+		if ( empty( $array_keys ) ) {
 			return;
 		}
 
-		$error_data = array( $this->tokens[ $stackPtr ]['content'] );
+		$error_data = array( $this->tokens[ $stackPtr ]['content'] . '[' . implode( '][', $array_keys ) . ']' );
 
-		// Check for validation first.
-		if ( ! $this->is_validated( $stackPtr, $array_key, $this->check_validation_in_scope_only ) ) {
-			$this->phpcsFile->addError( 'Detected usage of a non-validated input variable: %s', $stackPtr, 'InputNotValidated', $error_data );
-			// return; // Should we just return and not look for sanitizing functions ?
+		/*
+		 * Check for validation first.
+		 */
+		$validated = false;
+
+		for ( $i = ( $stackPtr + 1 ); $i < $this->phpcsFile->numTokens; $i++ ) {
+			if ( isset( Tokens::$emptyTokens[ $this->tokens[ $i ]['code'] ] ) ) {
+				continue;
+			}
+
+			if ( \T_OPEN_SQUARE_BRACKET === $this->tokens[ $i ]['code']
+				&& isset( $this->tokens[ $i ]['bracket_closer'] )
+			) {
+				// Skip over array keys.
+				$i = $this->tokens[ $i ]['bracket_closer'];
+				continue;
+			}
+
+			if ( \T_COALESCE === $this->tokens[ $i ]['code'] ) {
+				$validated = true;
+			}
+
+			// Anything else means this is not a validation coalesce.
+			break;
+		}
+
+		if ( false === $validated ) {
+			$validated = $this->is_validated( $stackPtr, $array_keys, $this->check_validation_in_scope_only );
+		}
+
+		if ( false === $validated ) {
+			$this->phpcsFile->addError(
+				'Detected usage of a possibly undefined superglobal array index: %s. Use isset() or empty() to check the index exists before using it',
+				$stackPtr,
+				'InputNotValidated',
+				$error_data
+			);
 		}
 
 		if ( $this->has_whitelist_comment( 'sanitization', $stackPtr ) ) {
 			return;
 		}
 
+		// If this variable is being tested with one of the `is_..()` functions, sanitization isn't needed.
+		if ( $this->is_in_type_test( $stackPtr ) ) {
+			return;
+		}
+
 		// If this is a comparison ('a' == $_POST['foo']), sanitization isn't needed.
-		if ( $this->is_comparison( $stackPtr ) ) {
+		if ( $this->is_comparison( $stackPtr, false ) ) {
+			return;
+		}
+
+		// If this is a comparison using the array comparison functions, sanitization isn't needed.
+		if ( $this->is_in_array_comparison( $stackPtr ) ) {
 			return;
 		}
 
@@ -153,7 +194,12 @@ class ValidatedSanitizedInputSniff extends Sniff {
 
 		// Now look for sanitizing functions.
 		if ( ! $this->is_sanitized( $stackPtr, true ) ) {
-			$this->phpcsFile->addError( 'Detected usage of a non-sanitized input variable: %s', $stackPtr, 'InputNotSanitized', $error_data );
+			$this->phpcsFile->addError(
+				'Detected usage of a non-sanitized input variable: %s',
+				$stackPtr,
+				'InputNotSanitized',
+				$error_data
+			);
 		}
 	}
 

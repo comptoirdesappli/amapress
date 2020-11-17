@@ -3,26 +3,30 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\NamingConventions;
+namespace WordPressCS\WordPress\Sniffs\NamingConventions;
 
-use PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff as PHPCS_PEAR_ValidFunctionNameSniff;
-use PHP_CodeSniffer_File as File;
+use PHP_CodeSniffer\Standards\PEAR\Sniffs\NamingConventions\ValidFunctionNameSniff as PHPCS_PEAR_ValidFunctionNameSniff;
+use PHP_CodeSniffer\Files\File;
+use WordPressCS\WordPress\Sniff;
 
 /**
  * Enforces WordPress function name and method name format, based upon Squiz code.
  *
- * @link    https://make.wordpress.org/core/handbook/coding-standards/php/#naming-conventions
+ * @link    https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/#naming-conventions
  *
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.1.0
  * @since   0.13.0 Class name changed: this class is now namespaced.
+ * @since   2.0.0  The `get_name_suggestion()` method has been moved to the
+ *                 WordPress native `Sniff` base class as `get_snake_case_name_suggestion()`.
+ * @since   2.2.0  Will now ignore functions and methods which are marked as @deprecated.
  *
- * Last synced with parent class July 2016 up to commit 4fea2e651109e41066a81e22e004d851fb1287f6.
+ * Last synced with parent class December 2018 up to commit ee167761d7756273b8ad0ad68bf3db1f2c211bb8.
  * @link    https://github.com/squizlabs/PHP_CodeSniffer/blob/master/CodeSniffer/Standards/PEAR/Sniffs/NamingConventions/ValidFunctionNameSniff.php
  *
  * {@internal While this class extends the PEAR parent, it does not actually use the checks
@@ -31,38 +35,25 @@ use PHP_CodeSniffer_File as File;
 class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 
 	/**
-	 * Additional double underscore prefixed methods specific to certain PHP native extensions.
-	 *
-	 * Currently only handles the SoapClient Extension.
-	 *
-	 * @link http://php.net/manual/en/class.soapclient.php
-	 *
-	 * @var array <string method name> => <string class name>
-	 */
-	private $methodsDoubleUnderscore = array(
-		'doRequest'              => 'SoapClient',
-		'getFunctions'           => 'SoapClient',
-		'getLastRequest'         => 'SoapClient',
-		'getLastRequestHeaders'  => 'SoapClient',
-		'getLastResponse'        => 'SoapClient',
-		'getLastResponseHeaders' => 'SoapClient',
-		'getTypes'               => 'SoapClient',
-		'setCookie'              => 'SoapClient',
-		'setLocation'            => 'SoapClient',
-		'setSoapHeaders'         => 'SoapClient',
-		'soapCall'               => 'SoapClient',
-	);
-
-	/**
 	 * Processes the tokens outside the scope.
 	 *
 	 * @param \PHP_CodeSniffer\Files\File $phpcsFile The file being processed.
-	 * @param int $stackPtr The position where this token was
+	 * @param int                         $stackPtr  The position where this token was
 	 *                                               found.
 	 *
 	 * @return void
 	 */
 	protected function processTokenOutsideScope( File $phpcsFile, $stackPtr ) {
+
+		if ( Sniff::is_function_deprecated( $phpcsFile, $stackPtr ) === true ) {
+			/*
+			 * Deprecated functions don't have to comply with the naming conventions,
+			 * otherwise functions deprecated in favour of a function with a compliant
+			 * name would still trigger an error.
+			 */
+			return;
+		}
+
 		$functionName = $phpcsFile->getDeclarationName( $stackPtr );
 
 		if ( ! isset( $functionName ) ) {
@@ -71,14 +62,16 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 		}
 
 		if ( '' === ltrim( $functionName, '_' ) ) {
-			// Ignore special functions.
+			// Ignore special functions, like __().
 			return;
 		}
+
+		$functionNameLc = strtolower( $functionName );
 
 		// Is this a magic function ? I.e., it is prefixed with "__" ?
 		// Outside class scope this basically just means __autoload().
 		if ( 0 === strpos( $functionName, '__' ) ) {
-			$magicPart = strtolower( substr( $functionName, 2 ) );
+			$magicPart = substr( $functionNameLc, 2 );
 			if ( isset( $this->magicFunctions[ $magicPart ] ) ) {
 				return;
 			}
@@ -88,11 +81,11 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 			$phpcsFile->addError( $error, $stackPtr, 'FunctionDoubleUnderscore', $errorData );
 		}
 
-		if ( strtolower( $functionName ) !== $functionName ) {
+		if ( $functionNameLc !== $functionName ) {
 			$error     = 'Function name "%s" is not in snake case format, try "%s"';
 			$errorData = array(
 				$functionName,
-				$this->get_name_suggestion( $functionName ),
+				Sniff::get_snake_case_name_suggestion( $functionName ),
 			);
 			$phpcsFile->addError( $error, $stackPtr, 'FunctionNameInvalid', $errorData );
 		}
@@ -102,13 +95,33 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 	 * Processes the tokens within the scope.
 	 *
 	 * @param \PHP_CodeSniffer\Files\File $phpcsFile The file being processed.
-	 * @param int $stackPtr The position where this token was
+	 * @param int                         $stackPtr  The position where this token was
 	 *                                               found.
-	 * @param int $currScope The position of the current scope.
+	 * @param int                         $currScope The position of the current scope.
 	 *
 	 * @return void
 	 */
 	protected function processTokenWithinScope( File $phpcsFile, $stackPtr, $currScope ) {
+
+		$tokens = $phpcsFile->getTokens();
+
+		// Determine if this is a function which needs to be examined.
+		$conditions = $tokens[ $stackPtr ]['conditions'];
+		end( $conditions );
+		$deepestScope = key( $conditions );
+		if ( $deepestScope !== $currScope ) {
+			return;
+		}
+
+		if ( Sniff::is_function_deprecated( $phpcsFile, $stackPtr ) === true ) {
+			/*
+			 * Deprecated functions don't have to comply with the naming conventions,
+			 * otherwise functions deprecated in favour of a function with a compliant
+			 * name would still trigger an error.
+			 */
+			return;
+		}
+
 		$methodName = $phpcsFile->getDeclarationName( $stackPtr );
 
 		if ( ! isset( $methodName ) ) {
@@ -117,6 +130,12 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 		}
 
 		$className = $phpcsFile->getDeclarationName( $currScope );
+		if ( isset( $className ) === false ) {
+			$className = '[Anonymous Class]';
+		}
+
+		$methodNameLc = strtolower( $methodName );
+		$classNameLc  = strtolower( $className );
 
 		// Ignore special functions.
 		if ( '' === ltrim( $methodName, '_' ) ) {
@@ -124,12 +143,12 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 		}
 
 		// PHP4 constructors are allowed to break our rules.
-		if ( $methodName === $className ) {
+		if ( $methodNameLc === $classNameLc ) {
 			return;
 		}
 
 		// PHP4 destructors are allowed to break our rules.
-		if ( '_' . $className === $methodName ) {
+		if ( '_' . $classNameLc === $methodNameLc ) {
 			return;
 		}
 
@@ -143,8 +162,8 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 
 		// Is this a magic method ? I.e. is it prefixed with "__" ?
 		if ( 0 === strpos( $methodName, '__' ) ) {
-			$magicPart = strtolower( substr( $methodName, 2 ) );
-			if ( isset( $this->magicMethods[ $magicPart ] ) || isset( $this->methodsDoubleUnderscore[ $magicPart ] ) ) {
+			$magicPart = substr( $methodNameLc, 2 );
+			if ( isset( $this->magicMethods[ $magicPart ] ) ) {
 				return;
 			}
 
@@ -154,29 +173,15 @@ class ValidFunctionNameSniff extends PHPCS_PEAR_ValidFunctionNameSniff {
 		}
 
 		// Check for all lowercase.
-		if ( strtolower( $methodName ) !== $methodName ) {
+		if ( $methodNameLc !== $methodName ) {
 			$error     = 'Method name "%s" in class %s is not in snake case format, try "%s"';
 			$errorData = array(
 				$methodName,
 				$className,
-				$this->get_name_suggestion( $methodName ),
+				Sniff::get_snake_case_name_suggestion( $methodName ),
 			);
 			$phpcsFile->addError( $error, $stackPtr, 'MethodNameInvalid', $errorData );
 		}
-	}
-
-	/**
-	 * Transform the existing function/method name to one which complies with the naming conventions.
-	 *
-	 * @param string $name The function/method name.
-	 * @return string
-	 */
-	protected function get_name_suggestion( $name ) {
-		$suggested = preg_replace( '/([A-Z])/', '_$1', $name );
-		$suggested = strtolower( $suggested );
-		$suggested = str_replace( '__', '_', $suggested );
-		$suggested = trim( $suggested, '_' );
-		return $suggested;
 	}
 
 }

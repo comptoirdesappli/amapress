@@ -3,14 +3,15 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WhiteSpace;
+namespace WordPressCS\WordPress\Sniffs\WhiteSpace;
 
-use WordPress\Sniff;
-use WordPress\PHPCSHelper;
+use WordPressCS\WordPress\Sniff;
+use WordPressCS\WordPress\PHPCSHelper;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Warn on line indentation ending with spaces for precision alignment.
@@ -26,7 +27,7 @@ use WordPress\PHPCSHelper;
  *
  * As this may be intentional, this sniff explicitly does *NOT* contain a fixer.
  *
- * @link    https://make.wordpress.org/core/handbook/coding-standards/php/#indentation
+ * @link    https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/#indentation
  *
  * @package WPCS\WordPressCodingStandards
  *
@@ -50,8 +51,10 @@ class PrecisionAlignmentSniff extends Sniff {
 	 *
 	 * <rule ref="WordPress.WhiteSpace.PrecisionAlignment">
 	 *    <properties>
-	 *        <property name="ignoreAlignmentTokens" type="array"
-	 *             value="T_COMMENT,T_INLINE_HTML"/>
+	 *        <property name="ignoreAlignmentTokens" type="array">
+	 *            <element value="T_COMMENT"/>
+	 *            <element value="T_INLINE_HTML"/>
+	 *        </property>
 	 *    </properties>
 	 * </rule>
 	 *
@@ -91,27 +94,27 @@ class PrecisionAlignmentSniff extends Sniff {
 		}
 
 		// Handle any custom ignore tokens received from a ruleset.
-		$this->ignoreAlignmentTokens = $this->merge_custom_array( $this->ignoreAlignmentTokens );
+		$ignoreAlignmentTokens = $this->merge_custom_array( $this->ignoreAlignmentTokens );
 
-		$check_tokens = array(
-			'T_WHITESPACE'             => true,
-			'T_INLINE_HTML'            => true,
-			'T_DOC_COMMENT_WHITESPACE' => true,
-			'T_COMMENT'                => true,
+		$check_tokens  = array(
+			\T_WHITESPACE             => true,
+			\T_INLINE_HTML            => true,
+			\T_DOC_COMMENT_WHITESPACE => true,
+			\T_COMMENT                => true,
 		);
-		$check_tokens += $this->phpcsCommentTokens;
+		$check_tokens += Tokens::$phpcsCommentTokens;
 
-		for ( $i = 0; $i < $this->phpcsFile->numTokens; $i ++ ) {
+		for ( $i = 0; $i < $this->phpcsFile->numTokens; $i++ ) {
 
 			if ( 1 !== $this->tokens[ $i ]['column'] ) {
 				continue;
-			} elseif ( isset( $check_tokens[ $this->tokens[ $i ]['type'] ] ) === false
-			           || ( isset( $this->tokens[ ( $i + 1 ) ] )
-			                && \T_WHITESPACE === $this->tokens[ ( $i + 1 ) ]['code'] )
-			           || $this->tokens[ $i ]['content'] === $this->phpcsFile->eolChar
-			           || isset( $this->ignoreAlignmentTokens[ $this->tokens[ $i ]['type'] ] )
-			           || ( isset( $this->tokens[ ( $i + 1 ) ] )
-			                && isset( $this->ignoreAlignmentTokens[ $this->tokens[ ( $i + 1 ) ]['type'] ] ) )
+			} elseif ( isset( $check_tokens[ $this->tokens[ $i ]['code'] ] ) === false
+				|| ( isset( $this->tokens[ ( $i + 1 ) ] )
+					&& \T_WHITESPACE === $this->tokens[ ( $i + 1 ) ]['code'] )
+				|| $this->tokens[ $i ]['content'] === $this->phpcsFile->eolChar
+				|| isset( $ignoreAlignmentTokens[ $this->tokens[ $i ]['type'] ] )
+				|| ( isset( $this->tokens[ ( $i + 1 ) ] )
+					&& isset( $ignoreAlignmentTokens[ $this->tokens[ ( $i + 1 ) ]['type'] ] ) )
 			) {
 				continue;
 			}
@@ -127,12 +130,12 @@ class PrecisionAlignmentSniff extends Sniff {
 					$spaces = ( $length % $this->tab_width );
 
 					if ( isset( $this->tokens[ ( $i + 1 ) ] )
-					     && ( \T_DOC_COMMENT_STAR === $this->tokens[ ( $i + 1 ) ]['code']
-					          || \T_DOC_COMMENT_CLOSE_TAG === $this->tokens[ ( $i + 1 ) ]['code'] )
-					     && 0 !== $spaces
+						&& ( \T_DOC_COMMENT_STAR === $this->tokens[ ( $i + 1 ) ]['code']
+							|| \T_DOC_COMMENT_CLOSE_TAG === $this->tokens[ ( $i + 1 ) ]['code'] )
+						&& 0 !== $spaces
 					) {
 						// One alignment space expected before the *.
-						-- $spaces;
+						--$spaces;
 					}
 					break;
 
@@ -152,7 +155,7 @@ class PrecisionAlignmentSniff extends Sniff {
 					$spaces     = ( $length % $this->tab_width );
 
 					if ( isset( $comment[0] ) && '*' === $comment[0] && 0 !== $spaces ) {
-						-- $spaces;
+						--$spaces;
 					}
 					break;
 
@@ -166,6 +169,15 @@ class PrecisionAlignmentSniff extends Sniff {
 						$content    = ltrim( $this->tokens[ $i ]['content'] );
 						$whitespace = str_replace( $content, '', $this->tokens[ $i ]['content'] );
 						$spaces     = ( \strlen( $whitespace ) % $this->tab_width );
+					}
+
+					/*
+					 * Prevent triggering on multi-line /*-style inline javascript comments.
+					 * This may cause false negatives as there is no check for being in a
+					 * <script> tag, but that will be rare.
+					 */
+					if ( isset( $content[0] ) && '*' === $content[0] && 0 !== $spaces ) {
+						--$spaces;
 					}
 					break;
 			}

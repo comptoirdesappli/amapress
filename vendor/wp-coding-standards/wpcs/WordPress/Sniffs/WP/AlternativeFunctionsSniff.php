@@ -3,13 +3,13 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\AbstractFunctionRestrictionsSniff;
+use WordPressCS\WordPress\AbstractFunctionRestrictionsSniff;
 
 /**
  * Discourages the use of various functions and suggests (WordPress) alternatives.
@@ -21,9 +21,50 @@ use WordPress\AbstractFunctionRestrictionsSniff;
  * @since   1.0.0  - Takes the minimum supported WP version into account.
  *                 - Takes exceptions based on passed parameters into account.
  *
- * @uses    \WordPress\Sniff::$minimum_supported_version
+ * @uses    \WordPressCS\WordPress\Sniff::$minimum_supported_version
  */
 class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
+
+	/**
+	 * Local input streams which should not be flagged for the file system function checks.
+	 *
+	 * @link http://php.net/manual/en/wrappers.php.php
+	 *
+	 * @var array
+	 */
+	protected $allowed_local_streams = array(
+		'php://input'  => true,
+		'php://output' => true,
+		'php://stdin'  => true,
+		'php://stdout' => true,
+		'php://stderr' => true,
+	);
+
+	/**
+	 * Local input streams which should not be flagged for the file system function checks if
+	 * the $filename starts with them.
+	 *
+	 * @link http://php.net/manual/en/wrappers.php.php
+	 *
+	 * @var array
+	 */
+	protected $allowed_local_stream_partials = array(
+		'php://temp/',
+		'php://fd/',
+	);
+
+	/**
+	 * Local input stream constants which should not be flagged for the file system function checks.
+	 *
+	 * @link http://php.net/manual/en/wrappers.php.php
+	 *
+	 * @var array
+	 */
+	protected $allowed_local_stream_constants = array(
+		'STDIN'  => true,
+		'STDOUT' => true,
+		'STDERR' => true,
+	);
 
 	/**
 	 * Groups of functions to restrict.
@@ -47,6 +88,9 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 				'since'     => '2.7.0',
 				'functions' => array(
 					'curl_*',
+				),
+				'whitelist' => array(
+					'curl_version' => true,
 				),
 			),
 
@@ -83,13 +127,13 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 				'since'     => '2.5.0',
 				'functions' => array(
 					'readfile',
-					'fopen',
-					'fsockopen',
-					'pfsockopen',
 					'fclose',
+					'fopen',
 					'fread',
 					'fwrite',
 					'file_put_contents',
+					'fsockopen',
+					'pfsockopen',
 				),
 			),
 
@@ -127,8 +171,8 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 	/**
 	 * Process a matched token.
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param string $group_name The name of the group which was matched.
+	 * @param int    $stackPtr        The position of the current token in the stack.
+	 * @param string $group_name      The name of the group which was matched.
 	 * @param string $matched_content The token content (function name) which was matched.
 	 *
 	 * @return int|void Integer stack pointer to skip forward or void to continue
@@ -161,7 +205,7 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 				 * @see https://developer.wordpress.org/reference/functions/wp_parse_url/#changelog
 				 */
 				if ( $this->get_function_call_parameter_count( $stackPtr ) !== 1
-				     && version_compare( $this->minimum_supported_version, '4.7.0', '<' )
+					&& version_compare( $this->minimum_supported_version, '4.7.0', '<' )
 				) {
 					return;
 				}
@@ -186,7 +230,7 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 				}
 
 				if ( strpos( $params[1]['raw'], 'http:' ) !== false
-				     || strpos( $params[1]['raw'], 'https:' ) !== false
+					|| strpos( $params[1]['raw'], 'https:' ) !== false
 				) {
 					// Definitely a URL, throw notice.
 					break;
@@ -202,7 +246,34 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 					return;
 				}
 
+				if ( $this->is_local_data_stream( $params[1]['raw'] ) === true ) {
+					// Local data stream.
+					return;
+				}
+
 				unset( $params );
+
+				break;
+
+			case 'readfile':
+			case 'fopen':
+			case 'file_put_contents':
+				/*
+				 * Allow for handling raw data streams from the request body.
+				 */
+				$first_param = $this->get_function_call_parameter( $stackPtr, 1 );
+
+				if ( false === $first_param ) {
+					// If the file to work with is not set, local data streams don't come into play.
+					break;
+				}
+
+				if ( $this->is_local_data_stream( $first_param['raw'] ) === true ) {
+					// Local data stream.
+					return;
+				}
+
+				unset( $first_param );
 
 				break;
 		}
@@ -217,4 +288,29 @@ class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 		}
 	}
 
+	/**
+	 * Determine based on the "raw" parameter value, whether a file parameter points to
+	 * a local data stream.
+	 *
+	 * @param string $raw_param_value Raw parameter value.
+	 *
+	 * @return bool True if this is a local data stream. False otherwise.
+	 */
+	protected function is_local_data_stream( $raw_param_value ) {
+
+		$raw_stripped = $this->strip_quotes( $raw_param_value );
+		if ( isset( $this->allowed_local_streams[ $raw_stripped ] )
+			|| isset( $this->allowed_local_stream_constants[ $raw_param_value ] )
+		) {
+			return true;
+		}
+
+		foreach ( $this->allowed_local_stream_partials as $partial ) {
+			if ( strpos( $raw_stripped, $partial ) === 0 ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

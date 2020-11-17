@@ -14,13 +14,13 @@
     }
   },
   "require": {
-    "tecnickcom/tcpdf": ">=6.0",
-    "guzzlehttp/guzzle": "v6.3.0",
+    "tecnickcom/tcpdf": "6.2.17",
+    "guzzlehttp/guzzle": "6.3.0",
     "phpoffice/phpexcel": "1.8.1",
     "phpoffice/phpword": "v0.14.*",
     "athari/yalinqo": "~2.0",
     "phpunit/phpunit": "4.8.36",
-    "wp-coding-standards/wpcs": "*",
+    "wp-coding-standards/wpcs": ">=1.0",
     "php-imap/php-imap": "3.0.26",
     "fzaninotto/faker": "v1.8.0",
     "stripe/stripe-php": "v7.49.0",

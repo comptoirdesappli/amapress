@@ -3,16 +3,16 @@
  * Represents a PHP_CodeSniffer sniff for sniffing WordPress coding standards.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress;
+namespace WordPressCS\WordPress;
 
-use PHP_CodeSniffer_Sniff as PHPCS_Sniff;
-use PHP_CodeSniffer_File as File;
-use PHP_CodeSniffer_Tokens as Tokens;
-use WordPress\PHPCSHelper;
+use PHP_CodeSniffer\Sniffs\Sniff as PHPCS_Sniff;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Util\Tokens;
+use WordPressCS\WordPress\PHPCSHelper;
 
 /**
  * Represents a PHP_CodeSniffer sniff for sniffing WordPress coding standards.
@@ -82,7 +82,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * @var string WordPress version.
 	 */
-	public $minimum_supported_version = '4.6';
+	public $minimum_supported_version = '5.1';
 
 	/**
 	 * Custom list of classes which test classes can extend.
@@ -96,7 +96,10 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * Example usage:
 	 * <rule ref="WordPress.[Subset].[Sniffname]">
 	 *  <properties>
-	 *   <property name="custom_test_class_whitelist" type="array" value="My_Plugin_First_Test_Class,My_Plugin_Second_Test_Class"/>
+	 *   <property name="custom_test_class_whitelist" type="array">
+	 *     <element value="My_Plugin_First_Test_Class"/>
+	 *     <element value="My_Plugin_Second_Test_Class"/>
+	 *   </property>
 	 *  </properties>
 	 * </rule>
 	 *
@@ -129,38 +132,42 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @var array
 	 */
 	protected $escapingFunctions = array(
-		'absint'               => true,
-		'esc_attr__'           => true,
-		'esc_attr_e'           => true,
-		'esc_attr_x'           => true,
-		'esc_attr'             => true,
-		'esc_html__'           => true,
-		'esc_html_e'           => true,
-		'esc_html_x'           => true,
-		'esc_html'             => true,
-		'esc_js'               => true,
-		'esc_sql'              => true,
-		'esc_textarea'         => true,
-		'esc_url_raw'          => true,
-		'esc_url'              => true,
-		'filter_input'         => true,
-		'filter_var'           => true,
-		'floatval'             => true,
-		'intval'               => true,
-		'json_encode'          => true,
-		'like_escape'          => true,
-		'number_format'        => true,
-		'rawurlencode'         => true,
-		'sanitize_html_class'  => true,
-		'sanitize_user_field'  => true,
-		'tag_escape'           => true,
-		'urlencode_deep'       => true,
-		'urlencode'            => true,
-		'wp_json_encode'       => true,
-		'wp_kses_allowed_html' => true,
-		'wp_kses_data'         => true,
-		'wp_kses_post'         => true,
-		'wp_kses'              => true,
+		'absint'                     => true,
+		'esc_attr__'                 => true,
+		'esc_attr_e'                 => true,
+		'esc_attr_x'                 => true,
+		'esc_attr'                   => true,
+		'esc_html__'                 => true,
+		'esc_html_e'                 => true,
+		'esc_html_x'                 => true,
+		'esc_html'                   => true,
+		'esc_js'                     => true,
+		'esc_sql'                    => true,
+		'esc_textarea'               => true,
+		'esc_url_raw'                => true,
+		'esc_url'                    => true,
+		'filter_input'               => true,
+		'filter_var'                 => true,
+		'floatval'                   => true,
+		'highlight_string'           => true,
+		'intval'                     => true,
+		'json_encode'                => true,
+		'like_escape'                => true,
+		'number_format'              => true,
+		'rawurlencode'               => true,
+		'sanitize_hex_color'         => true,
+		'sanitize_hex_color_no_hash' => true,
+		'sanitize_html_class'        => true,
+		'sanitize_key'               => true,
+		'sanitize_user_field'        => true,
+		'tag_escape'                 => true,
+		'urlencode_deep'             => true,
+		'urlencode'                  => true,
+		'wp_json_encode'             => true,
+		'wp_kses_allowed_html'       => true,
+		'wp_kses_data'               => true,
+		'wp_kses_post'               => true,
+		'wp_kses'                    => true,
 	);
 
 	/**
@@ -178,40 +185,11 @@ abstract class Sniff implements PHPCS_Sniff {
 		'calendar_week_mod'         => true,
 		'category_description'      => true,
 		'checked'                   => true,
-		'comment_author_email_link' => true,
-		'comment_author_email'      => true,
-		'comment_author_IP'         => true,
-		'comment_author_link'       => true,
-		'comment_author_rss'        => true,
-		'comment_author_url_link'   => true,
-		'comment_author_url'        => true,
-		'comment_author'            => true,
 		'comment_class'             => true,
-		'comment_date'              => true,
-		'comment_excerpt'           => true,
-		'comment_form_title'        => true,
-		'comment_form'              => true,
-		'comment_id_fields'         => true,
-		'comment_ID'                => true,
-		'comment_reply_link'        => true,
-		'comment_text_rss'          => true,
-		'comment_text'              => true,
-		'comment_time'              => true,
-		'comment_type'              => true,
-		'comments_link'             => true,
-		'comments_number'           => true,
-		'comments_popup_link'       => true,
-		'comments_popup_script'     => true,
-		'comments_rss_link'         => true,
 		'count'                     => true,
-		'delete_get_calendar_cache' => true,
 		'disabled'                  => true,
 		'do_shortcode'              => true,
 		'do_shortcode_tag'          => true,
-		'edit_bookmark_link'        => true,
-		'edit_comment_link'         => true,
-		'edit_post_link'            => true,
-		'edit_tag_link'             => true,
 		'get_archives_link'         => true,
 		'get_attachment_link'       => true,
 		'get_avatar'                => true,
@@ -220,76 +198,30 @@ abstract class Sniff implements PHPCS_Sniff {
 		'get_comment_author_link'   => true,
 		'get_current_blog_id'       => true,
 		'get_delete_post_link'      => true,
-		'get_footer'                => true,
-		'get_header'                => true,
 		'get_search_form'           => true,
 		'get_search_query'          => true,
-		'get_sidebar'               => true,
 		'get_the_author_link'       => true,
 		'get_the_author'            => true,
 		'get_the_date'              => true,
 		'get_the_ID'                => true,
 		'get_the_post_thumbnail'    => true,
 		'get_the_term_list'         => true,
-		'get_the_title'           => true,
-		'next_comments_link'      => true,
-		'next_image_link'         => true,
-		'next_post_link'          => true,
-		'next_posts_link'         => true,
-		'paginate_comments_links' => true,
-		'permalink_anchor'        => true,
-		'post_type_archive_title' => true,
-		'posts_nav_link'          => true,
-		'previous_comments_link'  => true,
-		'previous_image_link'     => true,
-		'previous_post_link'      => true,
-		'previous_posts_link'     => true,
-		'readonly'                => true,
-		'selected'                => true,
-		'single_cat_title'        => true,
-		'single_month_title'      => true,
-		'single_post_title'       => true,
-		'single_tag_title'        => true,
-		'single_term_title'       => true,
-		'sticky_class'            => true,
-		'tag_description'         => true,
-		'term_description'        => true,
-		'the_attachment_link'     => true,
-		'the_author_link'         => true,
-		'the_author_meta'         => true,
-		'the_author_posts_link'   => true,
-		'the_author_posts'          => true,
+		'post_type_archive_title'   => true,
+		'readonly'                  => true,
+		'selected'                  => true,
+		'single_cat_title'          => true,
+		'single_month_title'        => true,
+		'single_post_title'         => true,
+		'single_tag_title'          => true,
+		'single_term_title'         => true,
+		'tag_description'           => true,
+		'term_description'          => true,
 		'the_author'                => true,
-		'the_category_rss'          => true,
-		'the_category'              => true,
-		'the_content_rss'           => true,
-		'the_content'               => true,
-		'the_date_xml'              => true,
 		'the_date'                  => true,
-		'the_excerpt_rss'           => true,
-		'the_excerpt'               => true,
-		'the_feed_link'             => true,
-		'the_ID'                    => true,
-		'the_meta'                  => true,
-		'the_modified_author'       => true,
-		'the_modified_date'         => true,
-		'the_modified_time'         => true,
-		'the_permalink'             => true,
-		'the_post_thumbnail'        => true,
-		'the_search_query'          => true,
-		'the_shortlink'             => true,
-		'the_tags'                  => true,
-		'the_taxonomies'            => true,
-		'the_terms'                 => true,
-		'the_time'                  => true,
 		'the_title_attribute'       => true,
-		'the_title_rss'             => true,
-		'the_title'                 => true,
-		'vip_powered_wpcom'         => true,
 		'walk_nav_menu_tree'        => true,
 		'wp_dropdown_categories'    => true,
 		'wp_dropdown_users'         => true,
-		'wp_enqueue_script'         => true,
 		'wp_generate_tag_cloud'     => true,
 		'wp_get_archives'           => true,
 		'wp_get_attachment_image'   => true,
@@ -301,11 +233,8 @@ abstract class Sniff implements PHPCS_Sniff {
 		'wp_list_comments'          => true,
 		'wp_login_form'             => true,
 		'wp_loginout'               => true,
-		'wp_meta'                   => true,
 		'wp_nav_menu'               => true,
 		'wp_register'               => true,
-		'wp_shortlink_header'       => true,
-		'wp_shortlink_wp_head'      => true,
 		'wp_tag_cloud'              => true,
 		'wp_title'                  => true,
 	);
@@ -326,12 +255,10 @@ abstract class Sniff implements PHPCS_Sniff {
 	 */
 	protected $sanitizingFunctions = array(
 		'_wp_handle_upload'          => true,
-		'array_key_exists'           => true,
 		'esc_url_raw'                => true,
 		'filter_input'               => true,
 		'filter_var'                 => true,
 		'hash_equals'                => true,
-		'in_array'                   => true,
 		'is_email'                   => true,
 		'number_format'              => true,
 		'sanitize_bookmark_field'    => true,
@@ -364,6 +291,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		'wp_parse_id_list'           => true,
 		'wp_redirect'                => true,
 		'wp_safe_redirect'           => true,
+		'wp_sanitize_redirect'       => true,
 		'wp_strip_all_tags'          => true,
 	);
 
@@ -383,10 +311,106 @@ abstract class Sniff implements PHPCS_Sniff {
 	protected $unslashingSanitizingFunctions = array(
 		'absint'       => true,
 		'boolval'      => true,
+		'count'        => true,
+		'doubleval'    => true,
 		'floatval'     => true,
 		'intval'       => true,
-		'is_array'     => true,
 		'sanitize_key' => true,
+		'sizeof'       => true,
+	);
+
+	/**
+	 * Functions which unslash the data passed to them.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @var array
+	 */
+	protected $unslashingFunctions = array(
+		'stripslashes_deep'              => true,
+		'stripslashes_from_strings_only' => true,
+		'wp_unslash'                     => true,
+	);
+
+	/**
+	 * List of PHP native functions to test the type of a variable.
+	 *
+	 * Using these functions is safe in combination with superglobals without
+	 * unslashing or sanitization.
+	 *
+	 * They should, however, not be regarded as unslashing or sanitization functions.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @var array
+	 */
+	protected $typeTestFunctions = array(
+		'is_array'     => true,
+		'is_bool'      => true,
+		'is_callable'  => true,
+		'is_countable' => true,
+		'is_double'    => true,
+		'is_float'     => true,
+		'is_int'       => true,
+		'is_integer'   => true,
+		'is_iterable'  => true,
+		'is_long'      => true,
+		'is_null'      => true,
+		'is_numeric'   => true,
+		'is_object'    => true,
+		'is_real'      => true,
+		'is_resource'  => true,
+		'is_scalar'    => true,
+		'is_string'    => true,
+	);
+
+	/**
+	 * Token which when they preceed code indicate the value is safely casted.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array
+	 */
+	protected $safe_casts = array(
+		\T_INT_CAST    => true,
+		\T_DOUBLE_CAST => true,
+		\T_BOOL_CAST   => true,
+		\T_UNSET_CAST  => true,
+	);
+
+	/**
+	 * List of array functions which apply a callback to the array.
+	 *
+	 * These are often used for sanitization/escaping an array variable.
+	 *
+	 * Note: functions which alter the array by reference are not listed here on purpose.
+	 * These cannot easily be used for sanitization as they can't be combined with unslashing.
+	 * Similarly, they cannot be used for late escaping as the return value is a boolean, not
+	 * the altered array.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @var array <string function name> => <int parameter position of the callback parameter>
+	 */
+	protected $arrayWalkingFunctions = array(
+		'array_map' => 1,
+		'map_deep'  => 2,
+	);
+
+	/**
+	 * Array functions to compare a $needle to a predefined set of values.
+	 *
+	 * If the value is set to an integer, the function needs to have at least that
+	 * many parameters for it to be considered as a comparison.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @var array <string function name> => <true|int>
+	 */
+	protected $arrayCompareFunctions = array(
+		'in_array'     => true,
+		'array_search' => true,
+		'array_keys'   => 2,
 	);
 
 	/**
@@ -561,7 +585,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @since 0.3.0
 	 * @since 0.11.0 Changed visibility from public to protected.
 	 * @since 0.12.0 Renamed from `$globals` to `$wp_globals` to be more descriptive.
-	 * @since 0.12.0 Moved from WordPress_Sniffs_Variables_GlobalVariablesSniff to WordPress_Sniff
+	 * @since 0.12.0 Moved here from the WordPress.Variables.GlobalVariables sniff.
 	 *
 	 * @var array
 	 */
@@ -619,6 +643,8 @@ abstract class Sniff implements PHPCS_Sniff {
 		'compress_css'                     => true,
 		'compress_scripts'                 => true,
 		'concatenate_scripts'              => true,
+		'content_width'                    => true,
+		'current_blog'                     => true,
 		'current_screen'                   => true,
 		'current_site'                     => true,
 		'current_user'                     => true,
@@ -666,9 +692,11 @@ abstract class Sniff implements PHPCS_Sniff {
 		'mode'                             => true,
 		'monthnum'                         => true,
 		'more'                             => true,
+		'mu_plugin'                        => true,
 		'multipage'                        => true,
 		'names'                            => true,
 		'nav_menu_selected_id'             => true,
+		'network_plugin'                   => true,
 		'new_whitelist_options'            => true,
 		'numpages'                         => true,
 		'one_theme_location_no_menus'      => true,
@@ -688,6 +716,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		'PHP_SELF'                         => true,
 		'phpmailer'                        => true,
 		'plugin_page'                      => true,
+		'plugin'                           => true,
 		'plugins'                          => true,
 		'post'                             => true,
 		'post_default_category'            => true,
@@ -721,6 +750,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		'table_prefix'                     => true,
 		'tabs'                             => true,
 		'tag'                              => true,
+		'tag_ID'                           => true,
 		'targets'                          => true,
 		'tax'                              => true,
 		'taxnow'                           => true,
@@ -831,6 +861,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @var string[]
 	 */
 	protected $test_class_whitelist = array(
+		'WP_UnitTestCase_Base'                       => true,
 		'WP_UnitTestCase'                            => true,
 		'WP_Ajax_UnitTestCase'                       => true,
 		'WP_Canonical_UnitTestCase'                  => true,
@@ -840,32 +871,8 @@ abstract class Sniff implements PHPCS_Sniff {
 		'WP_XMLRPC_UnitTestCase'                     => true,
 		'PHPUnit_Framework_TestCase'                 => true,
 		'PHPUnit\Framework\TestCase'                 => true,
-	);
-
-	/**
-	 * The token "type" values for the PHPCS 3.2+ whitelist comments.
-	 *
-	 * PHPCS cross-version compatibility layer to allow sniffs to
-	 * allow for the new PHPCS annotation comments without breaking in older
-	 * PHPCS versions.
-	 *
-	 * @internal Can be replaced with using the PHPCS native Token::$phpcsCommentTokens
-	 *           array once the minimum WPCS requirement for PHPCS has gone up
-	 *           to PHPCS 3.2.3.
-	 *           Note: The PHPCS native property uses the constants/ token "code",
-	 *           so code referring to this property will need to be adjusted when
-	 *           the property is removed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var array
-	 */
-	protected $phpcsCommentTokens = array(
-		'T_PHPCS_ENABLE'      => true,
-		'T_PHPCS_DISABLE'     => true,
-		'T_PHPCS_SET'         => true,
-		'T_PHPCS_IGNORE'      => true,
-		'T_PHPCS_IGNORE_FILE' => true,
+		// PHPUnit native TestCase class when imported via use statement.
+		'TestCase'                                   => true,
 	);
 
 	/**
@@ -892,7 +899,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @since 0.11.0
 	 *
 	 * @param \PHP_CodeSniffer\Files\File $phpcsFile The file being scanned.
-	 * @param int $stackPtr The position of the current token
+	 * @param int                         $stackPtr  The position of the current token
 	 *                                               in the stack passed in $tokens.
 	 *
 	 * @return int|void Integer stack pointer to skip forward or void to continue
@@ -938,7 +945,6 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @since 0.11.0
 	 *
 	 * @param string $string The raw string.
-	 *
 	 * @return string String without quotes around it.
 	 */
 	public function strip_quotes( $string ) {
@@ -950,14 +956,14 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * @since 0.11.0
 	 *
-	 * @param string $message The message.
-	 * @param int $stackPtr The position of the token the message relates to.
-	 * @param bool $is_error Optional. Whether to report the message as an 'error' or 'warning'.
-	 *                          Defaults to true (error).
-	 * @param string $code Optional error code for the message. Defaults to 'Found'.
-	 * @param array $data Optional input for the data replacements.
-	 * @param int $severity Optional. Severity level. Defaults to 0 which will translate to
-	 *                          the PHPCS default severity level.
+	 * @param string $message  The message.
+	 * @param int    $stackPtr The position of the token the message relates to.
+	 * @param bool   $is_error Optional. Whether to report the message as an 'error' or 'warning'.
+	 *                         Defaults to true (error).
+	 * @param string $code     Optional error code for the message. Defaults to 'Found'.
+	 * @param array  $data     Optional input for the data replacements.
+	 * @param int    $severity Optional. Severity level. Defaults to 0 which will translate to
+	 *                         the PHPCS default severity level.
 	 * @return bool
 	 */
 	protected function addMessage( $message, $stackPtr, $is_error = true, $code = 'Found', $data = array(), $severity = 0 ) {
@@ -969,14 +975,14 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * @since 0.11.0
 	 *
-	 * @param string $message The message.
-	 * @param int $stackPtr The position of the token the message relates to.
-	 * @param bool $is_error Optional. Whether to report the message as an 'error' or 'warning'.
-	 *                          Defaults to true (error).
-	 * @param string $code Optional error code for the message. Defaults to 'Found'.
-	 * @param array $data Optional input for the data replacements.
-	 * @param int $severity Optional. Severity level. Defaults to 0 which will translate to
-	 *                          the PHPCS default severity level.
+	 * @param string $message  The message.
+	 * @param int    $stackPtr The position of the token the message relates to.
+	 * @param bool   $is_error Optional. Whether to report the message as an 'error' or 'warning'.
+	 *                         Defaults to true (error).
+	 * @param string $code     Optional error code for the message. Defaults to 'Found'.
+	 * @param array  $data     Optional input for the data replacements.
+	 * @param int    $severity Optional. Severity level. Defaults to 0 which will translate to
+	 *                         the PHPCS default severity level.
 	 * @return bool
 	 */
 	protected function addFixableMessage( $message, $stackPtr, $is_error = true, $code = 'Found', $data = array(), $severity = 0 ) {
@@ -988,15 +994,15 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * @since 0.11.0
 	 *
-	 * @param string $message The message.
-	 * @param int $stackPtr The position of the token the message relates to.
-	 * @param bool $is_error Optional. Whether to report the message as an 'error' or 'warning'.
-	 *                          Defaults to true (error).
-	 * @param string $code Optional error code for the message. Defaults to 'Found'.
-	 * @param array $data Optional input for the data replacements.
-	 * @param int $severity Optional. Severity level. Defaults to 0 which will translate to
-	 *                          the PHPCS default severity level.
-	 * @param bool $fixable Optional. Whether this is a fixable error. Defaults to false.
+	 * @param string $message  The message.
+	 * @param int    $stackPtr The position of the token the message relates to.
+	 * @param bool   $is_error Optional. Whether to report the message as an 'error' or 'warning'.
+	 *                         Defaults to true (error).
+	 * @param string $code     Optional error code for the message. Defaults to 'Found'.
+	 * @param array  $data     Optional input for the data replacements.
+	 * @param int    $severity Optional. Severity level. Defaults to 0 which will translate to
+	 *                         the PHPCS default severity level.
+	 * @param bool   $fixable  Optional. Whether this is a fixable error. Defaults to false.
 	 * @return bool
 	 */
 	private function throwMessage( $message, $stackPtr, $is_error = true, $code = 'Found', $data = array(), $severity = 0, $fixable = false ) {
@@ -1031,12 +1037,27 @@ abstract class Sniff implements PHPCS_Sniff {
 	}
 
 	/**
-	 * Merge a pre-set array with a ruleset provided array or inline provided string.
+	 * Transform the name of a PHP construct (function, variable etc) to one in snake_case.
 	 *
-	 * - Will correctly handle custom array properties which were set without
-	 *   the `type="array"` indicator.
-	 *   This also allows for making these custom array properties testable using
-	 *   a `@codingStandardsChangeSetting` comment in the unit tests.
+	 * @since 2.0.0 Moved from the `WordPress.NamingConventions.ValidFunctionName` sniff
+	 *              to this class, renamed from `get_name_suggestion` and made static
+	 *              so it can also be used by classes which don't extend this class.
+	 *
+	 * @param string $name The construct name.
+	 *
+	 * @return string
+	 */
+	public static function get_snake_case_name_suggestion( $name ) {
+		$suggested = preg_replace( '`([A-Z])`', '_$1', $name );
+		$suggested = strtolower( $suggested );
+		$suggested = str_replace( '__', '_', $suggested );
+		$suggested = trim( $suggested, '_' );
+		return $suggested;
+	}
+
+	/**
+	 * Merge a pre-set array with a ruleset provided array.
+	 *
 	 * - By default flips custom lists to allow for using `isset()` instead
 	 *   of `in_array()`.
 	 * - When `$flip` is true:
@@ -1047,18 +1068,18 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *     before merging/returning to allow for resetting to the base array.
 	 *
 	 * {@internal Function is static as it doesn't use any of the properties or others
-	 * methods anyway and this way the `WordPress_Sniffs_NamingConventions_ValidVariableNameSniff`
+	 * methods anyway and this way the `WordPress.NamingConventions.ValidVariableName` sniff
 	 * which extends an upstream sniff can also use it.}}
 	 *
 	 * @since 0.11.0
+	 * @since 2.0.0  No longer supports custom array properties which were incorrectly
+	 *               passed as a string.
 	 *
-	 * @param array|string $custom Custom list as provided via a ruleset.
-	 *                             Can be either a comma-delimited string or
-	 *                             an array of values.
-	 * @param array $base Optional. Base list. Defaults to an empty array.
-	 *                             Expects `value => true` format when `$flip` is true.
-	 * @param bool $flip Optional. Whether or not to flip the custom list.
-	 *                             Defaults to true.
+	 * @param array $custom Custom list as provided via a ruleset.
+	 * @param array $base   Optional. Base list. Defaults to an empty array.
+	 *                      Expects `value => true` format when `$flip` is true.
+	 * @param bool  $flip   Optional. Whether or not to flip the custom list.
+	 *                      Defaults to true.
 	 * @return array
 	 */
 	public static function merge_custom_array( $custom, $base = array(), $flip = true ) {
@@ -1066,17 +1087,9 @@ abstract class Sniff implements PHPCS_Sniff {
 			$base = array_filter( $base );
 		}
 
-		if ( empty( $custom ) || ( ! \is_array( $custom ) && ! \is_string( $custom ) ) ) {
+		if ( empty( $custom ) || ! \is_array( $custom ) ) {
 			return $base;
 		}
-
-		// Allow for a comma delimited list.
-		if ( \is_string( $custom ) ) {
-			$custom = explode( ',', $custom );
-		}
-
-		// Always trim whitespace from the values.
-		$custom = array_filter( array_map( 'trim', $custom ) );
 
 		if ( true === $flip ) {
 			$custom = array_fill_keys( $custom, false );
@@ -1130,7 +1143,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	protected function get_wp_version_from_cl() {
 		$cl_supported_version = trim( PHPCSHelper::get_config_data( 'minimum_supported_wp_version' ) );
 		if ( ! empty( $cl_supported_version )
-		     && filter_var( $cl_supported_version, \FILTER_VALIDATE_FLOAT ) !== false
+			&& filter_var( $cl_supported_version, \FILTER_VALIDATE_FLOAT ) !== false
 		) {
 			$this->minimum_supported_version = $cl_supported_version;
 		}
@@ -1154,6 +1167,8 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @since 0.4.0
 	 * @since 0.14.0 Whitelist comments at the end of the statement are now also accepted.
 	 *
+	 * @deprecated 2.0.0 Use the PHPCS native `phpcs:ignore` annotations instead.
+	 *
 	 * @param string  $comment  Comment to find.
 	 * @param integer $stackPtr The position of the current token in the stack passed
 	 *                          in $tokens.
@@ -1167,10 +1182,16 @@ abstract class Sniff implements PHPCS_Sniff {
 			return false;
 		}
 
+		static $thrown_notices = array();
+
+		$deprecation_notice = 'Using the WPCS native whitelist comments is deprecated. Please use the PHPCS native "phpcs:ignore Standard.Category.SniffName.ErrorCode" annotations instead. Found: %s';
+		$deprecation_code   = 'DeprecatedWhitelistCommentFound';
+		$filename           = $this->phpcsFile->getFileName();
+
 		$regex = '#\b' . preg_quote( $comment, '#' ) . '\b#i';
 
 		// There is a findEndOfStatement() method, but it considers more tokens than
-		// we need to here.
+		// we need to consider here.
 		$end_of_statement = $this->phpcsFile->findNext( array( \T_CLOSE_TAG, \T_SEMICOLON ), $stackPtr );
 
 		if ( false !== $end_of_statement ) {
@@ -1183,10 +1204,24 @@ abstract class Sniff implements PHPCS_Sniff {
 			}
 
 			if ( ( \T_COMMENT === $this->tokens[ $lastPtr ]['code']
-			       || isset( $this->phpcsCommentTokens[ $this->tokens[ $lastPtr ]['type'] ] ) )
-			     && $this->tokens[ $lastPtr ]['line'] === $this->tokens[ $end_of_statement ]['line']
-			     && preg_match( $regex, $this->tokens[ $lastPtr ]['content'] ) === 1
+					|| ( isset( Tokens::$phpcsCommentTokens[ $this->tokens[ $lastPtr ]['code'] ] )
+					&& \T_PHPCS_SET !== $this->tokens[ $lastPtr ]['code'] ) )
+				&& $this->tokens[ $lastPtr ]['line'] === $this->tokens[ $end_of_statement ]['line']
+				&& preg_match( $regex, $this->tokens[ $lastPtr ]['content'] ) === 1
 			) {
+				if ( isset( $thrown_notices[ $filename ][ $lastPtr ] ) === false
+					&& isset( Tokens::$phpcsCommentTokens[ $this->tokens[ $lastPtr ]['code'] ] ) === false
+				) {
+					$this->phpcsFile->addWarning(
+						$deprecation_notice,
+						$lastPtr,
+						$deprecation_code,
+						array( $this->tokens[ $lastPtr ]['content'] )
+					);
+
+					$thrown_notices[ $filename ][ $lastPtr ] = true;
+				}
+
 				return true;
 			}
 		}
@@ -1197,10 +1232,24 @@ abstract class Sniff implements PHPCS_Sniff {
 		$lastPtr     = $this->phpcsFile->findPrevious( \T_WHITESPACE, $end_of_line, null, true );
 
 		if ( ( \T_COMMENT === $this->tokens[ $lastPtr ]['code']
-		       || isset( $this->phpcsCommentTokens[ $this->tokens[ $lastPtr ]['type'] ] ) )
-		     && $this->tokens[ $lastPtr ]['line'] === $this->tokens[ $stackPtr ]['line']
-		     && preg_match( $regex, $this->tokens[ $lastPtr ]['content'] ) === 1
+				|| ( isset( Tokens::$phpcsCommentTokens[ $this->tokens[ $lastPtr ]['code'] ] )
+				&& \T_PHPCS_SET !== $this->tokens[ $lastPtr ]['code'] ) )
+			&& $this->tokens[ $lastPtr ]['line'] === $this->tokens[ $stackPtr ]['line']
+			&& preg_match( $regex, $this->tokens[ $lastPtr ]['content'] ) === 1
 		) {
+			if ( isset( $thrown_notices[ $filename ][ $lastPtr ] ) === false
+				&& isset( Tokens::$phpcsCommentTokens[ $this->tokens[ $lastPtr ]['code'] ] ) === false
+			) {
+				$this->phpcsFile->addWarning(
+					$deprecation_notice,
+					$lastPtr,
+					$deprecation_code,
+					array( $this->tokens[ $lastPtr ]['content'] )
+				);
+
+				$thrown_notices[ $filename ][ $lastPtr ] = true;
+			}
+
 			return true;
 		}
 
@@ -1211,10 +1260,11 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * Check if a token is used within a unit test.
 	 *
 	 * Unit test methods are identified as such:
-	 * - Method name starts with `test_`.
-	 * - Method is within a unit test class.
+	 * - Method is within a known unit test class;
+	 * - or Method is within a class/trait which extends a known unit test class.
 	 *
 	 * @since 0.11.0
+	 * @since 1.1.0  Supports anonymous test classes and improved handling of nested scopes.
 	 *
 	 * @param int $stackPtr The position of the token to be examined.
 	 *
@@ -1224,22 +1274,26 @@ abstract class Sniff implements PHPCS_Sniff {
 		// Is the token inside of a function definition ?
 		$functionToken = $this->phpcsFile->getCondition( $stackPtr, \T_FUNCTION );
 		if ( false === $functionToken ) {
+			// No conditions or no function condition.
 			return false;
 		}
 
-		// Is this a method inside of a class or a trait ?
-		$classToken = $this->phpcsFile->getCondition( $functionToken, \T_CLASS );
-		$traitToken = $this->phpcsFile->getCondition( $functionToken, \T_TRAIT );
-		if ( false === $classToken && false === $traitToken ) {
-			return false;
+		$conditions = $this->tokens[ $stackPtr ]['conditions'];
+		foreach ( $conditions as $token => $condition ) {
+			if ( $token === $functionToken ) {
+				// Only examine the conditions the function is nested in, not those nested within the function.
+				break;
+			}
+
+			if ( isset( Tokens::$ooScopeTokens[ $condition ] ) ) {
+				$is_test_class = $this->is_test_class( $token );
+				if ( true === $is_test_class ) {
+					return true;
+				}
+			}
 		}
 
-		$structureToken = $classToken;
-		if ( false !== $traitToken ) {
-			$structureToken = $traitToken;
-		}
-
-		return $this->is_test_class( $structureToken );
+		return false;
 	}
 
 	/**
@@ -1259,13 +1313,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 */
 	protected function is_test_class( $stackPtr ) {
 
-		if ( ! isset( $this->tokens[ $stackPtr ] )
-		     || \in_array( $this->tokens[ $stackPtr ]['type'], array(
-				'T_CLASS',
-				'T_ANON_CLASS',
-				'T_TRAIT'
-			), true ) === false
-		) {
+		if ( isset( $this->tokens[ $stackPtr ], Tokens::$ooScopeTokens[ $this->tokens[ $stackPtr ]['code'] ] ) === false ) {
 			return false;
 		}
 
@@ -1296,6 +1344,10 @@ abstract class Sniff implements PHPCS_Sniff {
 
 		// Does the class/trait extend one of the whitelisted test classes ?
 		$extendedClassName = $this->phpcsFile->findExtendedClassName( $stackPtr );
+		if ( false === $extendedClassName ) {
+			return false;
+		}
+
 		if ( '\\' === $extendedClassName[0] ) {
 			if ( isset( $whitelist[ substr( $extendedClassName, 1 ) ] ) ) {
 				return true;
@@ -1366,7 +1418,9 @@ abstract class Sniff implements PHPCS_Sniff {
 		}
 
 		// Check if this is an array assignment, e.g., `$var['key'] = 'val';` .
-		if ( \T_OPEN_SQUARE_BRACKET === $this->tokens[ $next_non_empty ]['code'] ) {
+		if ( \T_OPEN_SQUARE_BRACKET === $this->tokens[ $next_non_empty ]['code']
+			&& isset( $this->tokens[ $next_non_empty ]['bracket_closer'] )
+		) {
 			return $this->is_assignment( $this->tokens[ $next_non_empty ]['bracket_closer'] );
 		}
 
@@ -1403,30 +1457,41 @@ abstract class Sniff implements PHPCS_Sniff {
 		$tokens = $this->phpcsFile->getTokens();
 
 		// If we're in a function, only look inside of it.
-		$f = $this->phpcsFile->getCondition( $stackPtr, \T_FUNCTION );
-		if ( false !== $f ) {
-			$start = $tokens[ $f ]['scope_opener'];
-		} else {
-			$f = $this->phpcsFile->getCondition( $stackPtr, \T_CLOSURE );
-			if ( false !== $f ) {
-				$start = $tokens[ $f ]['scope_opener'];
+		// Once PHPCS 3.5.0 comes out this should be changed to the new Conditions::GetLastCondition() method.
+		if ( isset( $tokens[ $stackPtr ]['conditions'] ) === true ) {
+			$conditions = $tokens[ $stackPtr ]['conditions'];
+			$conditions = array_reverse( $conditions, true );
+			foreach ( $conditions as $tokenPtr => $condition ) {
+				if ( \T_FUNCTION === $condition || \T_CLOSURE === $condition ) {
+					$start = $tokens[ $tokenPtr ]['scope_opener'];
+					break;
+				}
 			}
 		}
 
-		$in_isset = $this->is_in_isset_or_empty( $stackPtr );
+		$allow_nonce_after = false;
+		if ( $this->is_in_isset_or_empty( $stackPtr )
+			|| $this->is_in_type_test( $stackPtr )
+			|| $this->is_comparison( $stackPtr )
+			|| $this->is_in_array_comparison( $stackPtr )
+			|| $this->is_in_function_call( $stackPtr, $this->unslashingFunctions ) !== false
+			|| $this->is_only_sanitized( $stackPtr )
+		) {
+			$allow_nonce_after = true;
+		}
 
-		// We allow for isset( $_POST['var'] ) checks to come before the nonce check.
-		// If this is inside an isset(), check after it as well, all the way to the
-		// end of the scope.
-		if ( $in_isset ) {
+		// We allow for certain actions, such as an isset() check to come before the nonce check.
+		// If this superglobal is inside such a check, look for the nonce after it as well,
+		// all the way to the end of the scope.
+		if ( true === $allow_nonce_after ) {
 			$end = ( 0 === $start ) ? $this->phpcsFile->numTokens : $tokens[ $start ]['scope_closer'];
 		}
 
 		// Check if we've looked here before.
 		$filename = $this->phpcsFile->getFilename();
 
-		if (
-			$filename === $last['file']
+		if ( is_array( $last )
+			&& $filename === $last['file']
 			&& $start === $last['start']
 		) {
 
@@ -1434,7 +1499,7 @@ abstract class Sniff implements PHPCS_Sniff {
 				// If we have already found an nonce check in this scope, we just
 				// need to check whether it comes before this token. It is OK if the
 				// check is after the token though, if this was only a isset() check.
-				return ( $in_isset || $last['nonce_check'] < $stackPtr );
+				return ( true === $allow_nonce_after || $last['nonce_check'] < $stackPtr );
 			} elseif ( $end <= $last['end'] ) {
 				// If not, we can still go ahead and return false if we've already
 				// checked to the end of the search area.
@@ -1454,6 +1519,16 @@ abstract class Sniff implements PHPCS_Sniff {
 
 		// Loop through the tokens looking for nonce verification functions.
 		for ( $i = $start; $i < $end; $i++ ) {
+			// Skip over nested closed scope constructs.
+			if ( \T_FUNCTION === $tokens[ $i ]['code']
+				|| \T_CLOSURE === $tokens[ $i ]['code']
+				|| isset( Tokens::$ooScopeTokens[ $tokens[ $i ]['code'] ] )
+			) {
+				if ( isset( $tokens[ $i ]['scope_closer'] ) ) {
+					$i = $tokens[ $i ]['scope_closer'];
+				}
+				continue;
+			}
 
 			// If this isn't a function name, skip it.
 			if ( \T_STRING !== $tokens[ $i ]['code'] ) {
@@ -1462,6 +1537,17 @@ abstract class Sniff implements PHPCS_Sniff {
 
 			// If this is one of the nonce verification functions, we can bail out.
 			if ( isset( $this->nonceVerificationFunctions[ $tokens[ $i ]['content'] ] ) ) {
+				/*
+				 * Now, make sure it is a call to a global function.
+				 */
+				if ( $this->is_class_object_call( $i ) === true ) {
+					continue;
+				}
+
+				if ( $this->is_token_namespaced( $i ) === true ) {
+					continue;
+				}
+
 				$last['nonce_check'] = $i;
 				return true;
 			}
@@ -1474,9 +1560,11 @@ abstract class Sniff implements PHPCS_Sniff {
 	}
 
 	/**
-	 * Check if a token is inside of an isset() or empty() statement.
+	 * Check if a token is inside of an isset(), empty() or array_key_exists() statement.
 	 *
 	 * @since 0.5.0
+	 * @since 2.1.0 Now checks for the token being used as the array parameter
+	 *              in function calls to array_key_exists() and key_exists() as well.
 	 *
 	 * @param int $stackPtr The index of the token in the stack.
 	 *
@@ -1493,7 +1581,192 @@ abstract class Sniff implements PHPCS_Sniff {
 		end( $nested_parenthesis );
 		$open_parenthesis = key( $nested_parenthesis );
 
-		return \in_array( $this->tokens[ ( $open_parenthesis - 1 ) ]['code'], array( \T_ISSET, \T_EMPTY ), true );
+		$previous_non_empty = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $open_parenthesis - 1 ), null, true, null, true );
+		if ( false === $previous_non_empty ) {
+			return false;
+		}
+
+		$previous_code = $this->tokens[ $previous_non_empty ]['code'];
+		if ( \T_ISSET === $previous_code || \T_EMPTY === $previous_code ) {
+			return true;
+		}
+
+		$valid_functions = array(
+			'array_key_exists' => true,
+			'key_exists'       => true, // Alias.
+		);
+
+		$functionPtr = $this->is_in_function_call( $stackPtr, $valid_functions );
+		if ( false !== $functionPtr ) {
+			$second_param = $this->get_function_call_parameter( $functionPtr, 2 );
+			if ( $stackPtr >= $second_param['start'] && $stackPtr <= $second_param['end'] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a particular token is a (static or non-static) call to a class method or property.
+	 *
+	 * @internal Note: this may still mistake a namespaced function imported via a `use` statement for
+	 * a global function!
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int $stackPtr The index of the token in the stack.
+	 *
+	 * @return bool
+	 */
+	protected function is_class_object_call( $stackPtr ) {
+		$before = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $stackPtr - 1 ), null, true, null, true );
+
+		if ( false === $before ) {
+			return false;
+		}
+
+		if ( \T_OBJECT_OPERATOR !== $this->tokens[ $before ]['code']
+			&& \T_DOUBLE_COLON !== $this->tokens[ $before ]['code']
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a particular token is prefixed with a namespace.
+	 *
+	 * @internal This will give a false positive if the file is not namespaced and the token is prefixed
+	 * with `namespace\`.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int $stackPtr The index of the token in the stack.
+	 *
+	 * @return bool
+	 */
+	protected function is_token_namespaced( $stackPtr ) {
+		$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $stackPtr - 1 ), null, true, null, true );
+
+		if ( false === $prev ) {
+			return false;
+		}
+
+		if ( \T_NS_SEPARATOR !== $this->tokens[ $prev ]['code'] ) {
+			return false;
+		}
+
+		$before_prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $prev - 1 ), null, true, null, true );
+		if ( false === $before_prev ) {
+			return false;
+		}
+
+		if ( \T_STRING !== $this->tokens[ $before_prev ]['code']
+			&& \T_NAMESPACE !== $this->tokens[ $before_prev ]['code']
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a token is (part of) a parameter for a function call to a select list of functions.
+	 *
+	 * This is useful, for instance, when trying to determine the context a variable is used in.
+	 *
+	 * For example: this function could be used to determine if the variable `$foo` is used
+	 * in a global function call to the function `is_foo()`.
+	 * In that case, a call to this function would return the stackPtr to the T_STRING `is_foo`
+	 * for code like: `is_foo( $foo, 'some_other_param' )`, while it would return `false` for
+	 * the following code `is_bar( $foo, 'some_other_param' )`.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int   $stackPtr        The index of the token in the stack.
+	 * @param array $valid_functions List of valid function names.
+	 *                               Note: The keys to this array should be the function names
+	 *                               in lowercase. Values are irrelevant.
+	 * @param bool  $global          Optional. Whether to make sure that the function call is
+	 *                               to a global function. If `false`, calls to methods, be it static
+	 *                               `Class::method()` or via an object `$obj->method()`, and
+	 *                               namespaced function calls, like `MyNS\function_name()` will
+	 *                               also be accepted.
+	 *                               Defaults to `true`.
+	 * @param bool  $allow_nested    Optional. Whether to allow for nested function calls within the
+	 *                               call to this function.
+	 *                               I.e. when checking whether a token is within a function call
+	 *                               to `strtolower()`, whether to accept `strtolower( trim( $var ) )`
+	 *                               or only `strtolower( $var )`.
+	 *                               Defaults to `false`.
+	 *
+	 * @return int|bool Stack pointer to the function call T_STRING token or false otherwise.
+	 */
+	protected function is_in_function_call( $stackPtr, $valid_functions, $global = true, $allow_nested = false ) {
+		if ( ! isset( $this->tokens[ $stackPtr ]['nested_parenthesis'] ) ) {
+			return false;
+		}
+
+		$nested_parenthesis = $this->tokens[ $stackPtr ]['nested_parenthesis'];
+		if ( false === $allow_nested ) {
+			$nested_parenthesis = array_reverse( $nested_parenthesis, true );
+		}
+
+		foreach ( $nested_parenthesis as $open => $close ) {
+
+			$prev_non_empty = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $open - 1 ), null, true, null, true );
+			if ( false === $prev_non_empty || \T_STRING !== $this->tokens[ $prev_non_empty ]['code'] ) {
+				continue;
+			}
+
+			if ( isset( $valid_functions[ strtolower( $this->tokens[ $prev_non_empty ]['content'] ) ] ) === false ) {
+				if ( false === $allow_nested ) {
+					// Function call encountered, but not to one of the allowed functions.
+					return false;
+				}
+
+				continue;
+			}
+
+			if ( false === $global ) {
+				return $prev_non_empty;
+			}
+
+			/*
+			 * Now, make sure it is a global function.
+			 */
+			if ( $this->is_class_object_call( $prev_non_empty ) === true ) {
+				continue;
+			}
+
+			if ( $this->is_token_namespaced( $prev_non_empty ) === true ) {
+				continue;
+			}
+
+			return $prev_non_empty;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a token is inside of an is_...() statement.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int $stackPtr The index of the token in the stack.
+	 *
+	 * @return bool Whether the token is being type tested.
+	 */
+	protected function is_in_type_test( $stackPtr ) {
+		/*
+		 * Casting the potential integer stack pointer return value to boolean here is fine.
+		 * The return can never be `0` as there will always be a PHP open tag before the
+		 * function call.
+		 */
+		return (bool) $this->is_in_function_call( $stackPtr, $this->typeTestFunctions );
 	}
 
 	/**
@@ -1548,8 +1821,12 @@ abstract class Sniff implements PHPCS_Sniff {
 			true
 		);
 
+		if ( false === $prev ) {
+			return false;
+		}
+
 		// Check if it is a safe cast.
-		return \in_array( $this->tokens[ $prev ]['code'], array( \T_INT_CAST, \T_DOUBLE_CAST, \T_BOOL_CAST ), true );
+		return isset( $this->safe_casts[ $this->tokens[ $prev ]['code'] ] );
 	}
 
 	/**
@@ -1558,8 +1835,8 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @since 0.5.0
 	 *
 	 * @param int  $stackPtr        The index of the token in the stack.
-	 * @param bool $require_unslash Whether to give an error if wp_unslash() isn't
-	 *                              used on the variable before sanitization.
+	 * @param bool $require_unslash Whether to give an error if no unslashing function
+	 *                              is used on the variable before sanitization.
 	 *
 	 * @return bool Whether the token being sanitized.
 	 */
@@ -1575,54 +1852,67 @@ abstract class Sniff implements PHPCS_Sniff {
 			if ( $require_unslash ) {
 				$this->add_unslash_error( $stackPtr );
 			}
+
 			return false;
 		}
 
 		// Get the function that it's in.
 		$nested_parenthesis = $this->tokens[ $stackPtr ]['nested_parenthesis'];
-		$function_closer    = end( $nested_parenthesis );
-		$function_opener    = key( $nested_parenthesis );
-		$function           = $this->tokens[ ( $function_opener - 1 ) ];
+		$nested_openers     = array_keys( $nested_parenthesis );
+		$function_opener    = array_pop( $nested_openers );
+		$functionPtr        = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $function_opener - 1 ), null, true, null, true );
 
 		// If it is just being unset, the value isn't used at all, so it's safe.
-		if ( \T_UNSET === $function['code'] ) {
+		if ( \T_UNSET === $this->tokens[ $functionPtr ]['code'] ) {
 			return true;
 		}
 
-		// If this isn't a call to a function, it sure isn't sanitizing function.
-		if ( \T_STRING !== $function['code'] ) {
-			if ( $require_unslash ) {
+		$valid_functions  = $this->sanitizingFunctions;
+		$valid_functions += $this->unslashingSanitizingFunctions;
+		$valid_functions += $this->unslashingFunctions;
+		$valid_functions += $this->arrayWalkingFunctions;
+
+		$functionPtr = $this->is_in_function_call( $stackPtr, $valid_functions );
+
+		// If this isn't a call to one of the valid functions, it sure isn't a sanitizing function.
+		if ( false === $functionPtr ) {
+			if ( true === $require_unslash ) {
 				$this->add_unslash_error( $stackPtr );
 			}
+
 			return false;
 		}
 
-		$functionName = $function['content'];
+		$functionName = $this->tokens[ $functionPtr ]['content'];
 
-		// Check if wp_unslash() is being used.
-		if ( 'wp_unslash' === $functionName ) {
+		// Check if an unslashing function is being used.
+		if ( isset( $this->unslashingFunctions[ $functionName ] ) ) {
 
-			$is_unslashed    = true;
-			$function_closer = prev( $nested_parenthesis );
+			$is_unslashed = true;
 
-			// If there is no other function being used, this value is unsanitized.
-			if ( ! $function_closer ) {
+			// Remove the unslashing functions.
+			$valid_functions = array_diff_key( $valid_functions, $this->unslashingFunctions );
+
+			// Check is any of the remaining (sanitizing) functions is used.
+			$higherFunctionPtr = $this->is_in_function_call( $functionPtr, $valid_functions );
+
+			// If there is no other valid function being used, this value is unsanitized.
+			if ( false === $higherFunctionPtr ) {
 				return false;
 			}
 
-			$function_opener = key( $nested_parenthesis );
-			$functionName    = $this->tokens[ ( $function_opener - 1 ) ]['content'];
+			$functionPtr  = $higherFunctionPtr;
+			$functionName = $this->tokens[ $functionPtr ]['content'];
 
 		} else {
-
 			$is_unslashed = false;
 		}
 
-		// Arrays might be sanitized via array_map().
-		if ( 'array_map' === $functionName ) {
+		// Arrays might be sanitized via an array walking function using a callback.
+		if ( isset( $this->arrayWalkingFunctions[ $functionName ] ) ) {
 
-			// Get the first parameter.
-			$callback = $this->get_function_call_parameter( ( $function_opener - 1 ), 1 );
+			// Get the callback parameter.
+			$callback = $this->get_function_call_parameter( $functionPtr, $this->arrayWalkingFunctions[ $functionName ] );
 
 			if ( ! empty( $callback ) ) {
 				/*
@@ -1656,7 +1946,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	}
 
 	/**
-	 * Add an error for missing use of wp_unslash().
+	 * Add an error for missing use of unslashing.
 	 *
 	 * @since 0.5.0
 	 *
@@ -1665,11 +1955,64 @@ abstract class Sniff implements PHPCS_Sniff {
 	public function add_unslash_error( $stackPtr ) {
 
 		$this->phpcsFile->addError(
-			'Missing wp_unslash() before sanitization.',
+			'%s data not unslashed before sanitization. Use wp_unslash() or similar',
 			$stackPtr,
 			'MissingUnslash',
 			array( $this->tokens[ $stackPtr ]['content'] )
 		);
+	}
+
+	/**
+	 * Get the index keys of an array variable.
+	 *
+	 * E.g., "bar" and "baz" in $foo['bar']['baz'].
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int  $stackPtr The index of the variable token in the stack.
+	 * @param bool $all      Whether to get all keys or only the first.
+	 *                       Defaults to `true`(= all).
+	 *
+	 * @return array An array of index keys whose value is being accessed.
+	 *               or an empty array if this is not array access.
+	 */
+	protected function get_array_access_keys( $stackPtr, $all = true ) {
+
+		$keys = array();
+
+		if ( \T_VARIABLE !== $this->tokens[ $stackPtr ]['code'] ) {
+			return $keys;
+		}
+
+		$current = $stackPtr;
+
+		do {
+			// Find the next non-empty token.
+			$open_bracket = $this->phpcsFile->findNext(
+				Tokens::$emptyTokens,
+				( $current + 1 ),
+				null,
+				true
+			);
+
+			// If it isn't a bracket, this isn't an array-access.
+			if ( false === $open_bracket
+				|| \T_OPEN_SQUARE_BRACKET !== $this->tokens[ $open_bracket ]['code']
+				|| ! isset( $this->tokens[ $open_bracket ]['bracket_closer'] )
+			) {
+				break;
+			}
+
+			$key = $this->phpcsFile->getTokensAsString(
+				( $open_bracket + 1 ),
+				( $this->tokens[ $open_bracket ]['bracket_closer'] - $open_bracket - 1 )
+			);
+
+			$keys[]  = trim( $key );
+			$current = $this->tokens[ $open_bracket ]['bracket_closer'];
+		} while ( isset( $this->tokens[ $current ] ) && true === $all );
+
+		return $keys;
 	}
 
 	/**
@@ -1678,6 +2021,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * E.g., "bar" in $foo['bar'].
 	 *
 	 * @since 0.5.0
+	 * @since 2.1.0 Now uses get_array_access_keys() under the hood.
 	 *
 	 * @param int $stackPtr The index of the token in the stack.
 	 *
@@ -1685,29 +2029,18 @@ abstract class Sniff implements PHPCS_Sniff {
 	 */
 	protected function get_array_access_key( $stackPtr ) {
 
-		// Find the next non-empty token.
-		$open_bracket = $this->phpcsFile->findNext(
-			Tokens::$emptyTokens,
-			( $stackPtr + 1 ),
-			null,
-			true
-		);
+		$keys = $this->get_array_access_keys( $stackPtr, false );
 
-		// If it isn't a bracket, this isn't an array-access.
-		if ( false === $open_bracket || \T_OPEN_SQUARE_BRACKET !== $this->tokens[ $open_bracket ]['code'] ) {
-			return false;
+		if ( isset( $keys[0] ) ) {
+			return $keys[0];
 		}
 
-		$key = $this->phpcsFile->getTokensAsString(
-			( $open_bracket + 1 ),
-			( $this->tokens[ $open_bracket ]['bracket_closer'] - $open_bracket - 1 )
-		);
-
-		return trim( $key );
+		return false;
 	}
 
 	/**
-	 * Check if the existence of a variable is validated with isset() or empty().
+	 * Check if the existence of a variable is validated with isset(), empty(), array_key_exists()
+	 * or key_exists().
 	 *
 	 * When $in_condition_only is false, (which is the default), this is considered
 	 * valid:
@@ -1730,17 +2063,21 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * ```
 	 *
 	 * @since 0.5.0
+	 * @since 2.1.0 Now recognizes array_key_exists() and key_exists() as validation functions.
+	 * @since 2.1.0 Stricter check on whether the correct variable and the correct
+	 *              array keys are being validated.
 	 *
-	 * @param int    $stackPtr          The index of this token in the stack.
-	 * @param string $array_key         An array key to check for ("bar" in $foo['bar']).
-	 * @param bool   $in_condition_only Whether to require that this use of the
-	 *                                  variable occur within the scope of the
-	 *                                  validating condition, or just in the same
-	 *                                  scope as it (default).
+	 * @param int          $stackPtr          The index of this token in the stack.
+	 * @param array|string $array_keys        An array key to check for ("bar" in $foo['bar'])
+	 *                                        or an array of keys for multi-level array access.
+	 * @param bool         $in_condition_only Whether to require that this use of the
+	 *                                        variable occur within the scope of the
+	 *                                        validating condition, or just in the same
+	 *                                        scope as it (default).
 	 *
 	 * @return bool Whether the var is validated.
 	 */
-	protected function is_validated( $stackPtr, $array_key = null, $in_condition_only = false ) {
+	protected function is_validated( $stackPtr, $array_keys = array(), $in_condition_only = false ) {
 
 		if ( $in_condition_only ) {
 			/*
@@ -1791,32 +2128,168 @@ abstract class Sniff implements PHPCS_Sniff {
 			}
 
 			$scope_end = $stackPtr;
-
 		}
 
+		if ( ! empty( $array_keys ) && ! is_array( $array_keys ) ) {
+			$array_keys = (array) $array_keys;
+		}
+
+		$bare_array_keys = array_map( array( $this, 'strip_quotes' ), $array_keys );
+		$targets         = array(
+			\T_ISSET          => 'construct',
+			\T_EMPTY          => 'construct',
+			\T_UNSET          => 'construct',
+			\T_STRING         => 'function_call',
+			\T_COALESCE       => 'coalesce',
+			\T_COALESCE_EQUAL => 'coalesce',
+		);
+
+		// phpcs:ignore Generic.CodeAnalysis.JumbledIncrementer.Found -- On purpose, see below.
 		for ( $i = ( $scope_start + 1 ); $i < $scope_end; $i++ ) {
 
-			if ( ! \in_array( $this->tokens[ $i ]['code'], array( \T_ISSET, \T_EMPTY, \T_UNSET ), true ) ) {
+			if ( isset( $targets[ $this->tokens[ $i ]['code'] ] ) === false ) {
 				continue;
 			}
 
-			$issetOpener = $this->phpcsFile->findNext( \T_OPEN_PARENTHESIS, $i );
-			$issetCloser = $this->tokens[ $issetOpener ]['parenthesis_closer'];
+			switch ( $targets[ $this->tokens[ $i ]['code'] ] ) {
+				case 'construct':
+					$issetOpener = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $i + 1 ), null, true, null, true );
+					if ( false === $issetOpener || \T_OPEN_PARENTHESIS !== $this->tokens[ $issetOpener ]['code'] ) {
+						// Parse error or live coding.
+						continue 2;
+					}
 
-			// Look for this variable. We purposely stomp $i from the parent loop.
-			for ( $i = ( $issetOpener + 1 ); $i < $issetCloser; $i++ ) {
+					$issetCloser = $this->tokens[ $issetOpener ]['parenthesis_closer'];
 
-				if ( \T_VARIABLE !== $this->tokens[ $i ]['code'] ) {
-					continue;
-				}
+					// Look for this variable. We purposely stomp $i from the parent loop.
+					for ( $i = ( $issetOpener + 1 ); $i < $issetCloser; $i++ ) {
 
-				// If we're checking for a specific array key (ex: 'hello' in
-				// $_POST['hello']), that must match too.
-				if ( isset( $array_key ) && $this->get_array_access_key( $i ) !== $array_key ) {
-					continue;
-				}
+						if ( \T_VARIABLE !== $this->tokens[ $i ]['code'] ) {
+							continue;
+						}
 
-				return true;
+						if ( $this->tokens[ $stackPtr ]['content'] !== $this->tokens[ $i ]['content'] ) {
+							continue;
+						}
+
+						// If we're checking for specific array keys (ex: 'hello' in
+						// $_POST['hello']), that must match too. Quote-style, however, doesn't matter.
+						if ( ! empty( $bare_array_keys ) ) {
+							$found_keys = $this->get_array_access_keys( $i );
+							$found_keys = array_map( array( $this, 'strip_quotes' ), $found_keys );
+							$diff       = array_diff_assoc( $bare_array_keys, $found_keys );
+							if ( ! empty( $diff ) ) {
+								continue;
+							}
+						}
+
+						return true;
+					}
+
+					break;
+
+				case 'function_call':
+					// Only check calls to array_key_exists() and key_exists().
+					if ( 'array_key_exists' !== $this->tokens[ $i ]['content']
+						&& 'key_exists' !== $this->tokens[ $i ]['content']
+					) {
+						continue 2;
+					}
+
+					$next_non_empty = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $i + 1 ), null, true, null, true );
+					if ( false === $next_non_empty || \T_OPEN_PARENTHESIS !== $this->tokens[ $next_non_empty ]['code'] ) {
+						// Not a function call.
+						continue 2;
+					}
+
+					if ( $this->is_class_object_call( $i ) === true ) {
+						// Method call.
+						continue 2;
+					}
+
+					if ( $this->is_token_namespaced( $i ) === true ) {
+						// Namespaced function call.
+						continue 2;
+					}
+
+					$params = $this->get_function_call_parameters( $i );
+					if ( count( $params ) < 2 ) {
+						continue 2;
+					}
+
+					$param2_first_token = $this->phpcsFile->findNext( Tokens::$emptyTokens, $params[2]['start'], ( $params[2]['end'] + 1 ), true );
+					if ( false === $param2_first_token
+						|| \T_VARIABLE !== $this->tokens[ $param2_first_token ]['code']
+						|| $this->tokens[ $param2_first_token ]['content'] !== $this->tokens[ $stackPtr ]['content']
+					) {
+						continue 2;
+					}
+
+					if ( ! empty( $bare_array_keys ) ) {
+						// Prevent the original array from being altered.
+						$bare_keys = $bare_array_keys;
+						$last_key  = array_pop( $bare_keys );
+
+						/*
+						 * For multi-level array access, the complete set of keys could be split between
+						 * the first and the second parameter, but could also be completely in the second
+						 * parameter, so we need to check both options.
+						 */
+
+						$found_keys = $this->get_array_access_keys( $param2_first_token );
+						$found_keys = array_map( array( $this, 'strip_quotes' ), $found_keys );
+
+						// First try matching the complete set against the second parameter.
+						$diff = array_diff_assoc( $bare_array_keys, $found_keys );
+						if ( empty( $diff ) ) {
+							return true;
+						}
+
+						// If that failed, try getting an exact match for the subset against the
+						// second parameter and the last key against the first.
+						if ( $bare_keys === $found_keys && $this->strip_quotes( $params[1]['raw'] ) === $last_key ) {
+							return true;
+						}
+
+						// Didn't find the correct array keys.
+						continue 2;
+					}
+
+					return true;
+
+				case 'coalesce':
+					$prev = $i;
+					do {
+						$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $prev - 1 ), null, true, null, true );
+						// Skip over array keys, like $_GET['key']['subkey'].
+						if ( \T_CLOSE_SQUARE_BRACKET === $this->tokens[ $prev ]['code'] ) {
+							$prev = $this->tokens[ $prev ]['bracket_opener'];
+							continue;
+						}
+
+						break;
+					} while ( $prev >= ( $scope_start + 1 ) );
+
+					// We should now have reached the variable.
+					if ( \T_VARIABLE !== $this->tokens[ $prev ]['code'] ) {
+						continue 2;
+					}
+
+					if ( $this->tokens[ $prev ]['content'] !== $this->tokens[ $stackPtr ]['content'] ) {
+						continue 2;
+					}
+
+					if ( ! empty( $bare_array_keys ) ) {
+						$found_keys = $this->get_array_access_keys( $prev );
+						$found_keys = array_map( array( $this, 'strip_quotes' ), $found_keys );
+						$diff       = array_diff_assoc( $bare_array_keys, $found_keys );
+						if ( ! empty( $diff ) ) {
+							continue 2;
+						}
+					}
+
+					// Right variable, correct key.
+					return true;
 			}
 		}
 
@@ -1831,12 +2304,24 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * Also recognizes `switch ( $var )`.
 	 *
 	 * @since 0.5.0
+	 * @since 2.1.0 Added the $include_coalesce parameter.
 	 *
-	 * @param int $stackPtr The index of this token in the stack.
+	 * @param int  $stackPtr         The index of this token in the stack.
+	 * @param bool $include_coalesce Optional. Whether or not to regard the null
+	 *                               coalesce operator - ?? - as a comparison operator.
+	 *                               Defaults to true.
+	 *                               Null coalesce is a special comparison operator in this
+	 *                               sense as it doesn't compare a variable to whatever is
+	 *                               on the other side of the comparison operator.
 	 *
 	 * @return bool Whether this is a comparison.
 	 */
-	protected function is_comparison( $stackPtr ) {
+	protected function is_comparison( $stackPtr, $include_coalesce = true ) {
+
+		$comparisonTokens = Tokens::$comparisonTokens;
+		if ( false === $include_coalesce ) {
+			unset( $comparisonTokens[ \T_COALESCE ] );
+		}
 
 		// We first check if this is a switch statement (switch ( $var )).
 		if ( isset( $this->tokens[ $stackPtr ]['nested_parenthesis'] ) ) {
@@ -1860,7 +2345,7 @@ abstract class Sniff implements PHPCS_Sniff {
 			true
 		);
 
-		if ( isset( Tokens::$comparisonTokens[ $this->tokens[ $previous_token ]['code'] ] ) ) {
+		if ( isset( $comparisonTokens[ $this->tokens[ $previous_token ]['code'] ] ) ) {
 			return true;
 		}
 
@@ -1873,7 +2358,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		);
 
 		// This might be an opening square bracket in the case of arrays ($var['a']).
-		while ( \T_OPEN_SQUARE_BRACKET === $this->tokens[ $next_token ]['code'] ) {
+		while ( false !== $next_token && \T_OPEN_SQUARE_BRACKET === $this->tokens[ $next_token ]['code'] ) {
 
 			$next_token = $this->phpcsFile->findNext(
 				Tokens::$emptyTokens,
@@ -1883,7 +2368,35 @@ abstract class Sniff implements PHPCS_Sniff {
 			);
 		}
 
-		if ( isset( Tokens::$comparisonTokens[ $this->tokens[ $next_token ]['code'] ] ) ) {
+		if ( false !== $next_token && isset( $comparisonTokens[ $this->tokens[ $next_token ]['code'] ] ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a token is inside of an array-value comparison function.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int $stackPtr The index of the token in the stack.
+	 *
+	 * @return bool Whether the token is (part of) a parameter to an
+	 *              array-value comparison function.
+	 */
+	protected function is_in_array_comparison( $stackPtr ) {
+		$function_ptr = $this->is_in_function_call( $stackPtr, $this->arrayCompareFunctions, true, true );
+		if ( false === $function_ptr ) {
+			return false;
+		}
+
+		$function_name = $this->tokens[ $function_ptr ]['content'];
+		if ( true === $this->arrayCompareFunctions[ $function_name ] ) {
+			return true;
+		}
+
+		if ( $this->get_function_call_parameter_count( $function_ptr ) >= $this->arrayCompareFunctions[ $function_name ] ) {
 			return true;
 		}
 
@@ -1923,7 +2436,7 @@ abstract class Sniff implements PHPCS_Sniff {
 			'T_ANON_CLASS' => true,
 			'T_TRAIT'      => true,
 		);
-		if ( true === $this->valid_direct_scope( $stackPtr, $valid_scopes ) ) {
+		if ( false !== $this->valid_direct_scope( $stackPtr, $valid_scopes ) ) {
 			return 'trait';
 		}
 
@@ -1982,8 +2495,8 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * Extra feature: If passed an T_ARRAY or T_OPEN_SHORT_ARRAY stack pointer, it
 	 * will detect whether the array has values or is empty.
 	 *
-	 * @link https://github.com/wimg/PHPCompatibility/issues/120
-	 * @link https://github.com/wimg/PHPCompatibility/issues/152
+	 * @link https://github.com/PHPCompatibility/PHPCompatibility/issues/120
+	 * @link https://github.com/PHPCompatibility/PHPCompatibility/issues/152
 	 *
 	 * @since 0.11.0
 	 *
@@ -1999,11 +2512,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		}
 
 		// Is this one of the tokens this function handles ?
-		if ( false === \in_array( $this->tokens[ $stackPtr ]['code'], array(
-				\T_STRING,
-				\T_ARRAY,
-				\T_OPEN_SHORT_ARRAY
-			), true ) ) {
+		if ( false === \in_array( $this->tokens[ $stackPtr ]['code'], array( \T_STRING, \T_ARRAY, \T_OPEN_SHORT_ARRAY ), true ) ) {
 			return false;
 		}
 
@@ -2053,9 +2562,9 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * Extra feature: If passed an T_ARRAY or T_OPEN_SHORT_ARRAY stack pointer,
 	 * it will return the number of values in the array.
 	 *
-	 * @link https://github.com/wimg/PHPCompatibility/issues/111
-	 * @link https://github.com/wimg/PHPCompatibility/issues/114
-	 * @link https://github.com/wimg/PHPCompatibility/issues/151
+	 * @link https://github.com/PHPCompatibility/PHPCompatibility/issues/111
+	 * @link https://github.com/PHPCompatibility/PHPCompatibility/issues/114
+	 * @link https://github.com/PHPCompatibility/PHPCompatibility/issues/151
 	 *
 	 * @since 0.11.0
 	 *
@@ -2087,10 +2596,10 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * @return array Multi-dimentional array with parameter details or
 	 *               empty array if no parameters are found.
 	 *
-	 * @type int $position 1-based index position of the parameter. {
-	 * @type int $start Stack pointer for the start of the parameter.
-	 * @type int $end Stack pointer for the end of parameter.
-	 * @type int $raw Trimmed raw parameter content.
+	 *               @type int $position 1-based index position of the parameter. {
+	 *                   @type int $start Stack pointer for the start of the parameter.
+	 *                   @type int $end   Stack pointer for the end of parameter.
+	 *                   @type int $raw   Trimmed raw parameter content.
 	 *               }
 	 */
 	public function get_function_call_parameters( $stackPtr ) {
@@ -2125,17 +2634,12 @@ abstract class Sniff implements PHPCS_Sniff {
 		$next_comma  = $opener;
 		$param_start = ( $opener + 1 );
 		$cnt         = 1;
-		while ( $next_comma = $this->phpcsFile->findNext( array(
-			\T_COMMA,
-			$this->tokens[ $closer ]['code'],
-			\T_OPEN_SHORT_ARRAY,
-			\T_CLOSURE
-		), ( $next_comma + 1 ), ( $closer + 1 ) ) ) {
+		while ( $next_comma = $this->phpcsFile->findNext( array( \T_COMMA, $this->tokens[ $closer ]['code'], \T_OPEN_SHORT_ARRAY, \T_CLOSURE ), ( $next_comma + 1 ), ( $closer + 1 ) ) ) {
 			// Ignore anything within short array definition brackets.
 			if ( 'T_OPEN_SHORT_ARRAY' === $this->tokens[ $next_comma ]['type']
-			     && ( isset( $this->tokens[ $next_comma ]['bracket_opener'] )
-			          && $this->tokens[ $next_comma ]['bracket_opener'] === $next_comma )
-			     && isset( $this->tokens[ $next_comma ]['bracket_closer'] )
+				&& ( isset( $this->tokens[ $next_comma ]['bracket_opener'] )
+					&& $this->tokens[ $next_comma ]['bracket_opener'] === $next_comma )
+				&& isset( $this->tokens[ $next_comma ]['bracket_closer'] )
 			) {
 				// Skip forward to the end of the short array definition.
 				$next_comma = $this->tokens[ $next_comma ]['bracket_closer'];
@@ -2144,9 +2648,9 @@ abstract class Sniff implements PHPCS_Sniff {
 
 			// Skip past closures passed as function parameters.
 			if ( 'T_CLOSURE' === $this->tokens[ $next_comma ]['type']
-			     && ( isset( $this->tokens[ $next_comma ]['scope_condition'] )
-			          && $this->tokens[ $next_comma ]['scope_condition'] === $next_comma )
-			     && isset( $this->tokens[ $next_comma ]['scope_closer'] )
+				&& ( isset( $this->tokens[ $next_comma ]['scope_condition'] )
+					&& $this->tokens[ $next_comma ]['scope_condition'] === $next_comma )
+				&& isset( $this->tokens[ $next_comma ]['scope_closer'] )
 			) {
 				// Skip forward to the end of the closure declaration.
 				$next_comma = $this->tokens[ $next_comma ]['scope_closer'];
@@ -2155,8 +2659,8 @@ abstract class Sniff implements PHPCS_Sniff {
 
 			// Ignore comma's at a lower nesting level.
 			if ( \T_COMMA === $this->tokens[ $next_comma ]['code']
-			     && isset( $this->tokens[ $next_comma ]['nested_parenthesis'] )
-			     && \count( $this->tokens[ $next_comma ]['nested_parenthesis'] ) !== $nestedParenthesisCount
+				&& isset( $this->tokens[ $next_comma ]['nested_parenthesis'] )
+				&& \count( $this->tokens[ $next_comma ]['nested_parenthesis'] ) !== $nestedParenthesisCount
 			) {
 				continue;
 			}
@@ -2201,7 +2705,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * @since 0.11.0
 	 *
-	 * @param int $stackPtr The position of the function call token.
+	 * @param int $stackPtr     The position of the function call token.
 	 * @param int $param_offset The 1-based index position of the parameter to retrieve.
 	 *
 	 * @return array|false
@@ -2241,10 +2745,59 @@ abstract class Sniff implements PHPCS_Sniff {
 		} else {
 			// Short array syntax.
 			$opener = $stackPtr;
+			$closer = $this->tokens[ $stackPtr ]['bracket_closer'];
+		}
 
-			if ( isset( $this->tokens[ $stackPtr ]['bracket_closer'] ) ) {
-				$closer = $this->tokens[ $stackPtr ]['bracket_closer'];
+		if ( isset( $opener, $closer ) ) {
+			return array(
+				'opener' => $opener,
+				'closer' => $closer,
+			);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Find the list opener & closer based on a T_LIST or T_OPEN_SHORT_ARRAY token.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param int $stackPtr The stack pointer to the array token.
+	 *
+	 * @return array|bool Array with two keys `opener`, `closer` or false if
+	 *                    not a (short) list token or if either or these
+	 *                    could not be determined.
+	 */
+	protected function find_list_open_close( $stackPtr ) {
+		/*
+		 * Determine the list opener & closer.
+		 */
+		if ( \T_LIST === $this->tokens[ $stackPtr ]['code'] ) {
+			// PHPCS 3.5.0.
+			if ( isset( $this->tokens[ $stackPtr ]['parenthesis_opener'] ) ) {
+				$opener = $this->tokens[ $stackPtr ]['parenthesis_opener'];
+
+			} else {
+				// PHPCS < 3.5.0.
+				$next_non_empty = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
+				if ( false !== $next_non_empty
+					&& \T_OPEN_PARENTHESIS === $this->tokens[ $next_non_empty ]['code']
+				) {
+					$opener = $next_non_empty;
+				}
 			}
+
+			if ( isset( $opener, $this->tokens[ $opener ]['parenthesis_closer'] ) ) {
+				$closer = $this->tokens[ $opener ]['parenthesis_closer'];
+			}
+		}
+
+		if ( \T_OPEN_SHORT_ARRAY === $this->tokens[ $stackPtr ]['code']
+			&& $this->is_short_list( $stackPtr ) === true
+		) {
+			$opener = $stackPtr;
+			$closer = $this->tokens[ $stackPtr ]['bracket_closer'];
 		}
 
 		if ( isset( $opener, $closer ) ) {
@@ -2261,7 +2814,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * Determine the namespace name an arbitrary token lives in.
 	 *
 	 * @since 0.10.0
-	 * @since 0.12.0 Moved from the WordPress_AbstractClassRestrictionsSniff to this sniff.
+	 * @since 0.12.0 Moved from the `AbstractClassRestrictionsSniff` to this class.
 	 *
 	 * @param int $stackPtr The token position for which to determine the namespace.
 	 *
@@ -2303,7 +2856,7 @@ abstract class Sniff implements PHPCS_Sniff {
 
 			// Stop if we encounter a scoped namespace declaration as we already know we're not in one.
 			if ( ! empty( $this->tokens[ $previousNSToken ]['scope_condition'] )
-			     && $this->tokens[ $previousNSToken ]['scope_condition'] === $previousNSToken
+				&& $this->tokens[ $previousNSToken ]['scope_condition'] === $previousNSToken
 			) {
 				break;
 			}
@@ -2327,7 +2880,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 * i.e. MyProject\Sub\Level which will be returned together as one string.
 	 *
 	 * @since 0.12.0 A lesser variant of this method previously existed in the
-	 *               WordPress_AbstractClassRestrictionsSniff.
+	 *               `AbstractClassRestrictionsSniff` class.
 	 *
 	 * @param int|bool $stackPtr The position of a T_NAMESPACE token.
 	 *
@@ -2345,12 +2898,12 @@ abstract class Sniff implements PHPCS_Sniff {
 			return false;
 		}
 
-		if ( \T_NS_SEPARATOR === $this->tokens[ ( $stackPtr + 1 ) ]['code'] ) {
+		$nextToken = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true, null, true );
+		if ( \T_NS_SEPARATOR === $this->tokens[ $nextToken ]['code'] ) {
 			// Not a namespace declaration, but use of, i.e. `namespace\someFunction();`.
 			return false;
 		}
 
-		$nextToken = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true, null, true );
 		if ( \T_OPEN_CURLY_BRACKET === $this->tokens[ $nextToken ]['code'] ) {
 			// Declaration for global namespace when using multiple namespaces in a file.
 			// I.e.: `namespace {}`.
@@ -2358,54 +2911,21 @@ abstract class Sniff implements PHPCS_Sniff {
 		}
 
 		// Ok, this should be a namespace declaration, so get all the parts together.
-		$validTokens = array(
+		$acceptedTokens = array(
 			\T_STRING       => true,
 			\T_NS_SEPARATOR => true,
-			\T_WHITESPACE   => true,
 		);
+		$validTokens    = $acceptedTokens + Tokens::$emptyTokens;
 
 		$namespaceName = '';
 		while ( isset( $validTokens[ $this->tokens[ $nextToken ]['code'] ] ) ) {
-			$namespaceName .= trim( $this->tokens[ $nextToken ]['content'] );
-			$nextToken++;
+			if ( isset( $acceptedTokens[ $this->tokens[ $nextToken ]['code'] ] ) ) {
+				$namespaceName .= trim( $this->tokens[ $nextToken ]['content'] );
+			}
+			++$nextToken;
 		}
 
 		return $namespaceName;
-	}
-
-	/**
-	 * Check if a content string contains a specific html open tag.
-	 *
-	 * @since 0.11.0
-	 * @since 0.13.0 No longer allows for the PHP 5.2 bug for which the function was
-	 *               originally created.
-	 * @since 0.13.0 The $stackPtr parameter is now optional. Either that or the
-	 *               $content parameter has to be passed.
-	 * @deprecated 1.0.0 This method is only used by deprecated sniffs.
-	 *
-	 * @param string $tag_name The name of the HTML tag without brackets. So if
-	 *                         searching for '<span...', this would be 'span'.
-	 * @param int $stackPtr Optional. The position of the current token in the
-	 *                         token stack.
-	 *                         This parameter needs to be passed if no $content is
-	 *                         passed.
-	 * @param string $content Optionally, the current content string, might be a
-	 *                         substring of the original string.
-	 *                         Defaults to `false` to distinguish between a passed
-	 *                         empty string and not passing the $content string.
-	 *
-	 * @return bool True if the string contains an <tag_name> open tag, false otherwise.
-	 */
-	public function has_html_open_tag( $tag_name, $stackPtr = null, $content = false ) {
-		if ( false === $content && isset( $stackPtr ) ) {
-			$content = $this->tokens[ $stackPtr ]['content'];
-		}
-
-		if ( ! empty( $content ) && false !== strpos( $content, '<' . $tag_name ) ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -2429,7 +2949,7 @@ abstract class Sniff implements PHPCS_Sniff {
 			'T_INTERFACE'  => true,
 		);
 
-		return $this->valid_direct_scope( $stackPtr, $valid_scopes );
+		return is_int( $this->valid_direct_scope( $stackPtr, $valid_scopes ) );
 	}
 
 	/**
@@ -2453,10 +2973,20 @@ abstract class Sniff implements PHPCS_Sniff {
 			'T_TRAIT'      => true,
 		);
 
-		if ( $this->valid_direct_scope( $stackPtr, $valid_scopes ) ) {
+		$scopePtr = $this->valid_direct_scope( $stackPtr, $valid_scopes );
+		if ( false !== $scopePtr ) {
 			// Make sure it's not a method parameter.
 			if ( empty( $this->tokens[ $stackPtr ]['nested_parenthesis'] ) ) {
 				return true;
+			} else {
+				$parenthesis  = array_keys( $this->tokens[ $stackPtr ]['nested_parenthesis'] );
+				$deepest_open = array_pop( $parenthesis );
+				if ( $deepest_open < $scopePtr
+					|| isset( $this->tokens[ $deepest_open ]['parenthesis_owner'] ) === false
+					|| \T_FUNCTION !== $this->tokens[ $this->tokens[ $deepest_open ]['parenthesis_owner'] ]['code']
+				) {
+					return true;
+				}
 			}
 		}
 
@@ -2471,13 +3001,13 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * @since 0.14.0
 	 *
-	 * @param int $stackPtr The position in the stack of the token to verify.
+	 * @param int   $stackPtr     The position in the stack of the token to verify.
 	 * @param array $valid_scopes Array of token types.
 	 *                            Keys should be the token types in string format
 	 *                            to allow for newer token types.
 	 *                            Value is irrelevant.
 	 *
-	 * @return bool
+	 * @return int|bool StackPtr to the scope if valid, false otherwise.
 	 */
 	protected function valid_direct_scope( $stackPtr, array $valid_scopes ) {
 		if ( empty( $this->tokens[ $stackPtr ]['conditions'] ) ) {
@@ -2494,7 +3024,11 @@ abstract class Sniff implements PHPCS_Sniff {
 			return false;
 		}
 
-		return isset( $valid_scopes[ $this->tokens[ $ptr ]['type'] ] );
+		if ( isset( $valid_scopes[ $this->tokens[ $ptr ]['type'] ] ) ) {
+			return $ptr;
+		}
+
+		return false;
 	}
 
 	/**
@@ -2512,7 +3046,7 @@ abstract class Sniff implements PHPCS_Sniff {
 	 *
 	 * {@internal This method should probably be refactored.}}
 	 *
-	 * @param int $stackPtr The index of the $wpdb variable.
+	 * @param int   $stackPtr       The index of the $wpdb variable.
 	 * @param array $target_methods Array of methods. Key(s) should be method name.
 	 *
 	 * @return bool Whether this is a $wpdb method call.
@@ -2521,7 +3055,7 @@ abstract class Sniff implements PHPCS_Sniff {
 
 		// Check for wpdb.
 		if ( ( \T_VARIABLE === $this->tokens[ $stackPtr ]['code'] && '$wpdb' !== $this->tokens[ $stackPtr ]['content'] )
-		     || ( \T_STRING === $this->tokens[ $stackPtr ]['code'] && 'wpdb' !== $this->tokens[ $stackPtr ]['content'] )
+			|| ( \T_STRING === $this->tokens[ $stackPtr ]['code'] && 'wpdb' !== $this->tokens[ $stackPtr ]['content'] )
 		) {
 			return false;
 		}
@@ -2560,7 +3094,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		}
 
 		if ( \T_OPEN_PARENTHESIS !== $this->tokens[ $opening_paren ]['code']
-		     || ! isset( $this->tokens[ $opening_paren ]['parenthesis_closer'] )
+			|| ! isset( $this->tokens[ $opening_paren ]['parenthesis_closer'] )
 		) {
 			return false;
 		}
@@ -2574,7 +3108,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		$end = $this->phpcsFile->findEndOfStatement( $opening_paren + 1 );
 
 		if ( \T_COMMA !== $this->tokens[ $end ]['code'] ) {
-			++ $end;
+			++$end;
 		}
 
 		if ( property_exists( $this, 'end' ) ) {
@@ -2606,8 +3140,8 @@ abstract class Sniff implements PHPCS_Sniff {
 
 		$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
 		if ( false !== $next
-		     && ( \T_OPEN_PARENTHESIS === $this->tokens[ $next ]['code']
-		          || \T_DOUBLE_COLON === $this->tokens[ $next ]['code'] )
+			&& ( \T_OPEN_PARENTHESIS === $this->tokens[ $next ]['code']
+				|| \T_DOUBLE_COLON === $this->tokens[ $next ]['code'] )
 		) {
 			// Function call or declaration.
 			return false;
@@ -2637,23 +3171,20 @@ abstract class Sniff implements PHPCS_Sniff {
 
 		$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $stackPtr - 1 ), null, true );
 		if ( false !== $prev
-		     && isset( $tokens_to_ignore[ $this->tokens[ $prev ]['type'] ] )
+			&& isset( $tokens_to_ignore[ $this->tokens[ $prev ]['type'] ] )
 		) {
 			// Not the use of a constant.
 			return false;
 		}
 
-		if ( false !== $prev
-		     && \T_NS_SEPARATOR === $this->tokens[ $prev ]['code']
-		     && \T_STRING === $this->tokens[ ( $prev - 1 ) ]['code']
-		) {
+		if ( $this->is_token_namespaced( $stackPtr ) === true ) {
 			// Namespaced constant of the same name.
 			return false;
 		}
 
 		if ( false !== $prev
-		     && \T_CONST === $this->tokens[ $prev ]['code']
-		     && $this->is_class_constant( $prev )
+			&& \T_CONST === $this->tokens[ $prev ]['code']
+			&& $this->is_class_constant( $prev )
 		) {
 			// Class constant declaration of the same name.
 			return false;
@@ -2662,7 +3193,7 @@ abstract class Sniff implements PHPCS_Sniff {
 		/*
 		 * Deal with a number of variations of use statements.
 		 */
-		for ( $i = $stackPtr; $i > 0; $i -- ) {
+		for ( $i = $stackPtr; $i > 0; $i-- ) {
 			if ( $this->tokens[ $i ]['line'] !== $this->tokens[ $stackPtr ]['line'] ) {
 				break;
 			}
@@ -2673,7 +3204,7 @@ abstract class Sniff implements PHPCS_Sniff {
 			$nextOnLine = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $firstOnLine + 1 ), null, true );
 			if ( false !== $nextOnLine ) {
 				if ( \T_STRING === $this->tokens[ $nextOnLine ]['code']
-				     && 'const' === $this->tokens[ $nextOnLine ]['content']
+					&& 'const' === $this->tokens[ $nextOnLine ]['content']
 				) {
 					$hasNsSep = $this->phpcsFile->findNext( \T_NS_SEPARATOR, ( $nextOnLine + 1 ), $stackPtr );
 					if ( false !== $hasNsSep ) {
@@ -2690,4 +3221,204 @@ abstract class Sniff implements PHPCS_Sniff {
 		return true;
 	}
 
+	/**
+	 * Determine if a variable is in the `as $key => $value` part of a foreach condition.
+	 *
+	 * @since 1.0.0
+	 * @since 1.1.0 Moved from the PrefixAllGlobals sniff to the Sniff base class.
+	 *
+	 * @param int $stackPtr Pointer to the variable.
+	 *
+	 * @return bool True if it is. False otherwise.
+	 */
+	protected function is_foreach_as( $stackPtr ) {
+		if ( ! isset( $this->tokens[ $stackPtr ]['nested_parenthesis'] ) ) {
+			return false;
+		}
+
+		$nested_parenthesis = $this->tokens[ $stackPtr ]['nested_parenthesis'];
+		$close_parenthesis  = end( $nested_parenthesis );
+		$open_parenthesis   = key( $nested_parenthesis );
+		if ( ! isset( $this->tokens[ $close_parenthesis ]['parenthesis_owner'] ) ) {
+			return false;
+		}
+
+		if ( \T_FOREACH !== $this->tokens[ $this->tokens[ $close_parenthesis ]['parenthesis_owner'] ]['code'] ) {
+			return false;
+		}
+
+		$as_ptr = $this->phpcsFile->findNext( \T_AS, ( $open_parenthesis + 1 ), $close_parenthesis );
+		if ( false === $as_ptr ) {
+			// Should never happen.
+			return false;
+		}
+
+		return ( $stackPtr > $as_ptr );
+	}
+
+	/**
+	 * Determine whether a T_OPEN/CLOSE_SHORT_ARRAY token is a short list() construct.
+	 *
+	 * @internal This function will be introduced in PHPCS upstream in version 3.5.0
+	 * and can be removed from WPCS once WPCS raises the minimum version.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param int $stackPtr The position of the array bracket token.
+	 *
+	 * @return bool True if the token passed is the open/close bracket of a short list.
+	 *              False if the token is a short array bracket or not
+	 *              a T_OPEN/CLOSE_SHORT_ARRAY token.
+	 */
+	protected function is_short_list( $stackPtr ) {
+		// Is this one of the tokens this function handles ?
+		if ( \T_OPEN_SHORT_ARRAY !== $this->tokens[ $stackPtr ]['code']
+			&& \T_CLOSE_SHORT_ARRAY !== $this->tokens[ $stackPtr ]['code']
+		) {
+			return false;
+		}
+
+		switch ( $this->tokens[ $stackPtr ]['code'] ) {
+			case \T_OPEN_SHORT_ARRAY:
+				$opener = $stackPtr;
+				$closer = $this->tokens[ $stackPtr ]['bracket_closer'];
+				break;
+
+			case \T_CLOSE_SHORT_ARRAY:
+				$opener = $this->tokens[ $stackPtr ]['bracket_opener'];
+				$closer = $stackPtr;
+				break;
+		}
+
+		$nextNonEmpty = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $closer + 1 ), null, true, null, true );
+		if ( false !== $nextNonEmpty && \T_EQUAL === $this->tokens[ $nextNonEmpty ]['code'] ) {
+			return true;
+		}
+
+		// Check for short list in foreach, i.e. `foreach($array as [$a, $b])`.
+		if ( $this->is_foreach_as( $stackPtr ) === true ) {
+			return true;
+		}
+
+		// Maybe this is a short list syntax nested inside another short list syntax ?
+		$parentOpen = $opener;
+		do {
+			$parentOpen = $this->phpcsFile->findPrevious(
+				\T_OPEN_SHORT_ARRAY,
+				( $parentOpen - 1 ),
+				null,
+				false,
+				null,
+				true
+			);
+
+			if ( false === $parentOpen ) {
+				return false;
+			}
+		} while ( $this->tokens[ $parentOpen ]['bracket_closer'] < $opener );
+
+		return $this->is_short_list( $parentOpen );
+	}
+
+	/**
+	 * Get a list of the token pointers to the variables being assigned to in a list statement.
+	 *
+	 * @internal No need to take special measures for nested lists. Nested or not,
+	 * each list part can only contain one variable being written to.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param int   $stackPtr        The position of the T_LIST or T_OPEN_SHORT_ARRAY
+	 *                               token in the stack.
+	 * @param array $list_open_close Optional. Array containing the token pointers to
+	 *                               the list opener and closer.
+	 *
+	 * @return array Array with the stack pointers to the variables or an empty
+	 *               array when not a (short) list.
+	 */
+	protected function get_list_variables( $stackPtr, $list_open_close = array() ) {
+		if ( \T_LIST !== $this->tokens[ $stackPtr ]['code']
+			&& \T_OPEN_SHORT_ARRAY !== $this->tokens[ $stackPtr ]['code']
+		) {
+			return array();
+		}
+
+		if ( empty( $list_open_close ) ) {
+			$list_open_close = $this->find_list_open_close( $stackPtr );
+			if ( false === $list_open_close ) {
+				// Not a (short) list.
+				return array();
+			}
+		}
+
+		$var_pointers = array();
+		$current      = $list_open_close['opener'];
+		$closer       = $list_open_close['closer'];
+		$last         = false;
+		do {
+			++$current;
+			$next_comma = $this->phpcsFile->findNext( \T_COMMA, $current, $closer );
+			if ( false === $next_comma ) {
+				$next_comma = $closer;
+				$last       = true;
+			}
+
+			// Skip over the "key" part in keyed lists.
+			$arrow = $this->phpcsFile->findNext( \T_DOUBLE_ARROW, $current, $next_comma );
+			if ( false !== $arrow ) {
+				$current = ( $arrow + 1 );
+			}
+
+			/*
+			 * Each list item can only have one variable to which an assignment is being made.
+			 * This can be an array with a (variable) index, but that doesn't matter, we're only
+			 * concerned with the actual variable.
+			 */
+			$var = $this->phpcsFile->findNext( \T_VARIABLE, $current, $next_comma );
+			if ( false !== $var ) {
+				// Not an empty list item.
+				$var_pointers[] = $var;
+			}
+
+			$current = $next_comma;
+
+		} while ( false === $last );
+
+		return $var_pointers;
+	}
+
+	/**
+	 * Check whether a function has been marked as deprecated via a @deprecated tag
+	 * in the function docblock.
+	 *
+	 * {@internal This method is static to allow the ValidFunctionName class to use it.}}
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param \PHP_CodeSniffer\Files\File $phpcsFile The file being scanned.
+	 * @param int                         $stackPtr  The position of a T_FUNCTION
+	 *                                               token in the stack.
+	 *
+	 * @return bool
+	 */
+	public static function is_function_deprecated( File $phpcsFile, $stackPtr ) {
+		$tokens = $phpcsFile->getTokens();
+		$find   = Tokens::$methodPrefixes;
+		$find[] = \T_WHITESPACE;
+
+		$comment_end = $phpcsFile->findPrevious( $find, ( $stackPtr - 1 ), null, true );
+		if ( \T_DOC_COMMENT_CLOSE_TAG !== $tokens[ $comment_end ]['code'] ) {
+			// Function doesn't have a doc comment or is using the wrong type of comment.
+			return false;
+		}
+
+		$comment_start = $tokens[ $comment_end ]['comment_opener'];
+		foreach ( $tokens[ $comment_start ]['comment_tags'] as $tag ) {
+			if ( '@deprecated' === $tokens[ $tag ]['content'] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

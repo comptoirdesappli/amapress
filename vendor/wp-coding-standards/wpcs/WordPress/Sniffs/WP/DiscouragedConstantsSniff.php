@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\AbstractFunctionParameterSniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\AbstractFunctionParameterSniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Warns against usage of discouraged WP CONSTANTS and recommends alternatives.
@@ -124,17 +124,14 @@ class DiscouragedConstantsSniff extends AbstractFunctionParameterSniff {
 			return;
 		}
 
-		if ( false !== $prev
-		     && \T_NS_SEPARATOR === $this->tokens[ $prev ]['code']
-		     && \T_STRING === $this->tokens[ ( $prev - 1 ) ]['code']
-		) {
+		if ( $this->is_token_namespaced( $stackPtr ) === true ) {
 			// Namespaced constant of the same name.
 			return;
 		}
 
 		if ( false !== $prev
-		     && \T_CONST === $this->tokens[ $prev ]['code']
-		     && true === $this->is_class_constant( $prev )
+			&& \T_CONST === $this->tokens[ $prev ]['code']
+			&& true === $this->is_class_constant( $prev )
 		) {
 			// Class constant of the same name.
 			return;
@@ -143,7 +140,7 @@ class DiscouragedConstantsSniff extends AbstractFunctionParameterSniff {
 		/*
 		 * Deal with a number of variations of use statements.
 		 */
-		for ( $i = $stackPtr; $i > 0; $i -- ) {
+		for ( $i = $stackPtr; $i > 0; $i-- ) {
 			if ( $this->tokens[ $i ]['line'] !== $this->tokens[ $stackPtr ]['line'] ) {
 				break;
 			}
@@ -154,8 +151,8 @@ class DiscouragedConstantsSniff extends AbstractFunctionParameterSniff {
 			$next_on_line = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $first_on_line + 1 ), null, true );
 			if ( false !== $next_on_line ) {
 				if ( ( \T_STRING === $this->tokens[ $next_on_line ]['code']
-				       && 'const' === $this->tokens[ $next_on_line ]['content'] )
-				     || \T_CONST === $this->tokens[ $next_on_line ]['code'] // Happens in some PHPCS versions.
+						&& 'const' === $this->tokens[ $next_on_line ]['content'] )
+					|| \T_CONST === $this->tokens[ $next_on_line ]['code'] // Happens in some PHPCS versions.
 				) {
 					$has_ns_sep = $this->phpcsFile->findNext( \T_NS_SEPARATOR, ( $next_on_line + 1 ), $stackPtr );
 					if ( false !== $has_ns_sep ) {
@@ -173,7 +170,7 @@ class DiscouragedConstantsSniff extends AbstractFunctionParameterSniff {
 		$this->phpcsFile->addWarning(
 			'Found usage of constant "%s". Use %s instead.',
 			$stackPtr,
-			'UsageFound',
+			$this->string_to_errorcode( $content . 'UsageFound' ),
 			array(
 				$content,
 				$this->discouraged_constants[ $content ],
@@ -186,10 +183,10 @@ class DiscouragedConstantsSniff extends AbstractFunctionParameterSniff {
 	 *
 	 * @since 0.14.0
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param array $group_name The name of the group which was matched.
+	 * @param int    $stackPtr        The position of the current token in the stack.
+	 * @param string $group_name      The name of the group which was matched.
 	 * @param string $matched_content The token content (function name) which was matched.
-	 * @param array $parameters Array with information about the parameters.
+	 * @param array  $parameters      Array with information about the parameters.
 	 *
 	 * @return void
 	 */
@@ -208,7 +205,7 @@ class DiscouragedConstantsSniff extends AbstractFunctionParameterSniff {
 			$this->phpcsFile->addWarning(
 				'Found declaration of constant "%s". Use %s instead.',
 				$stackPtr,
-				'DeclarationFound',
+				$this->string_to_errorcode( $raw_content . 'DeclarationFound' ),
 				array(
 					$raw_content,
 					$this->discouraged_constants[ $raw_content ],

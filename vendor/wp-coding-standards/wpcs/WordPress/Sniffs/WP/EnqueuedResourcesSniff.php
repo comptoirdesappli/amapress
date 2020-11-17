@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Makes sure scripts and styles are enqueued and not explicitly echo'd.
@@ -20,7 +20,7 @@ use PHP_CodeSniffer_Tokens as Tokens;
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.3.0
- * @since   0.12.0 This class now extends WordPress_Sniff.
+ * @since   0.12.0 This class now extends the WordPressCS native `Sniff` class.
  * @since   0.13.0 Class name changed: this class is now namespaced.
  */
 class EnqueuedResourcesSniff extends Sniff {
@@ -44,7 +44,7 @@ class EnqueuedResourcesSniff extends Sniff {
 	public function process_token( $stackPtr ) {
 		$token = $this->tokens[ $stackPtr ];
 
-		if ( preg_match( '#rel=\\\\?[\'"]?stylesheet\\\\?[\'"]?#', $token['content'] ) > 0 ) {
+		if ( preg_match( '# rel=\\\\?[\'"]?stylesheet\\\\?[\'"]?#', $token['content'] ) > 0 ) {
 			$this->phpcsFile->addError(
 				'Stylesheets must be registered/enqueued via wp_enqueue_style',
 				$stackPtr,

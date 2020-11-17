@@ -3,18 +3,18 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\AbstractArrayAssignmentRestrictionsSniff;
+use WordPressCS\WordPress\AbstractArrayAssignmentRestrictionsSniff;
 
 /**
  * Flag returning high or infinite posts_per_page.
  *
- * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#no-limit-queries
+ * @link    https://vip.wordpress.com/documentation/vip-go/code-review-blockers-warnings-notices/#no-limit-queries
  *
  * @package WPCS\WordPressCodingStandards
  *
@@ -58,11 +58,10 @@ class PostsPerPageSniff extends AbstractArrayAssignmentRestrictionsSniff {
 	/**
 	 * Callback to process each confirmed key, to check value.
 	 *
-	 * @param  string $key Array index / key.
-	 * @param  mixed $val Assigned value.
-	 * @param  int $line Token line.
-	 * @param  array $group Group definition.
-	 *
+	 * @param  string $key   Array index / key.
+	 * @param  mixed  $val   Assigned value.
+	 * @param  int    $line  Token line.
+	 * @param  array  $group Group definition.
 	 * @return mixed         FALSE if no match, TRUE if matches, STRING if matches
 	 *                       with custom error message passed to ->process().
 	 */

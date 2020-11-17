@@ -3,13 +3,13 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\Arrays;
+namespace WordPressCS\WordPress\Sniffs\Arrays;
 
-use WordPress\Sniff;
+use WordPressCS\WordPress\Sniff;
 
 /**
  * Enforces alignment of the double arrow assignment operator for multi-item, multi-line arrays.
@@ -164,6 +164,14 @@ class MultipleStatementAlignmentSniff extends Sniff {
 	 *                  normal file processing.
 	 */
 	public function process_token( $stackPtr ) {
+
+		if ( \T_OPEN_SHORT_ARRAY === $this->tokens[ $stackPtr ]['code']
+			&& $this->is_short_list( $stackPtr )
+		) {
+			// Short list, not short array.
+			return;
+		}
+
 		/*
 		 * Determine the array opener & closer.
 		 */
@@ -202,10 +210,10 @@ class MultipleStatementAlignmentSniff extends Sniff {
 	 *
 	 * @since 0.14.0
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param array $items Info array containing information on each array item.
-	 * @param int $opener The position of the array opener.
-	 * @param int $closer The position of the array closer.
+	 * @param int   $stackPtr The position of the current token in the stack.
+	 * @param array $items    Info array containing information on each array item.
+	 * @param int   $opener   The position of the array opener.
+	 * @param int   $closer   The position of the array closer.
 	 *
 	 * @return int|void Integer stack pointer to skip forward or void to continue
 	 *                  normal file processing.
@@ -255,10 +263,10 @@ class MultipleStatementAlignmentSniff extends Sniff {
 	 *
 	 * @since 0.14.0
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param array $items Info array containing information on each array item.
-	 * @param int $opener The position of the array opener.
-	 * @param int $closer The position of the array closer.
+	 * @param int   $stackPtr The position of the current token in the stack.
+	 * @param array $items    Info array containing information on each array item.
+	 * @param int   $opener   The position of the array opener.
+	 * @param int   $closer   The position of the array closer.
 	 *
 	 * @return void
 	 */
@@ -332,7 +340,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 			}
 
 			if ( true === $this->ignoreNewlines
-			     && $this->tokens[ $last_index_token ]['line'] !== $this->tokens[ $double_arrow ]['line']
+				&& $this->tokens[ $last_index_token ]['line'] !== $this->tokens[ $double_arrow ]['line']
 			) {
 				// Ignore this item as it has a new line between the item key and the double arrow.
 				unset( $items[ $key ] );
@@ -348,7 +356,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 				$items[ $key ]['single_line'] = true;
 			} else {
 				$items[ $key ]['single_line'] = false;
-				$multi_line_count ++;
+				$multi_line_count++;
 			}
 
 			if ( ( $index_end_position + 2 ) <= $this->maxColumn ) {
@@ -358,7 +366,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 			if ( ! isset( $double_arrow_cols[ $this->tokens[ $double_arrow ]['column'] ] ) ) {
 				$double_arrow_cols[ $this->tokens[ $double_arrow ]['column'] ] = 1;
 			} else {
-				$double_arrow_cols[ $this->tokens[ $double_arrow ]['column'] ] ++;
+				$double_arrow_cols[ $this->tokens[ $double_arrow ]['column'] ]++;
 			}
 		}
 		unset( $key, $item, $double_arrow, $has_array_opener, $last_index_token );
@@ -403,7 +411,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 				if ( ! isset( $double_arrow_cols[ $this->tokens[ $item['operatorPtr'] ]['column'] ] ) ) {
 					$double_arrow_cols[ $this->tokens[ $item['operatorPtr'] ]['column'] ] = 1;
 				} else {
-					$double_arrow_cols[ $this->tokens[ $item['operatorPtr'] ]['column'] ] ++;
+					$double_arrow_cols[ $this->tokens[ $item['operatorPtr'] ]['column'] ]++;
 				}
 			}
 		}
@@ -447,7 +455,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 		 */
 		foreach ( $items as $item ) {
 			if ( $this->tokens[ $item['operatorPtr'] ]['column'] === $expected_col
-			     && $this->tokens[ $item['operatorPtr'] ]['line'] === $this->tokens[ $item['last_index_token'] ]['line']
+				&& $this->tokens[ $item['operatorPtr'] ]['line'] === $this->tokens[ $item['last_index_token'] ]['line']
 			) {
 				// Already correctly aligned.
 				continue;
@@ -468,11 +476,11 @@ class MultipleStatementAlignmentSniff extends Sniff {
 			 * array items which should not be aligned.
 			 */
 			if ( ( $item['last_index_col'] + 2 ) > $this->maxColumn
-			     || ( false === $alignMultilineItems && false === $item['single_line'] )
+				|| ( false === $alignMultilineItems && false === $item['single_line'] )
 			) {
 
 				if ( ( $item['last_index_col'] + 2 ) === $this->tokens[ $item['operatorPtr'] ]['column']
-				     && $this->tokens[ $item['operatorPtr'] ]['line'] === $this->tokens[ $item['last_index_token'] ]['line']
+					&& $this->tokens[ $item['operatorPtr'] ]['line'] === $this->tokens[ $item['last_index_token'] ]['line']
 				) {
 					// MaxColumn/Multi-line item exception, already correctly aligned.
 					continue;
@@ -502,7 +510,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 					$this->phpcsFile->fixer->beginChangeset();
 
 					// Remove whitespace tokens between the end of the index and the arrow, if any.
-					for ( $i = ( $item['last_index_token'] + 1 ); $i < $item['operatorPtr']; $i ++ ) {
+					for ( $i = ( $item['last_index_token'] + 1 ); $i < $item['operatorPtr']; $i++ ) {
 						$this->phpcsFile->fixer->replaceToken( $i, '' );
 					}
 
@@ -535,7 +543,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 					$this->phpcsFile->fixer->beginChangeset();
 
 					// Remove whitespace tokens between the end of the index and the arrow, if any.
-					for ( $i = ( $item['last_index_token'] + 1 ); $i < $item['operatorPtr']; $i ++ ) {
+					for ( $i = ( $item['last_index_token'] + 1 ); $i < $item['operatorPtr']; $i++ ) {
 						$this->phpcsFile->fixer->replaceToken( $i, '' );
 					}
 
@@ -585,7 +593,7 @@ class MultipleStatementAlignmentSniff extends Sniff {
 				$number   = (int) $matches[2];
 
 				if ( \in_array( $operator, array( '<', '<=', '>', '>=', '==', '=', '!=', '<>' ), true ) === true
-				     && ( $number >= 0 && $number <= 100 )
+					&& ( $number >= 0 && $number <= 100 )
 				) {
 					$this->alignMultilineItems = $alignMultilineItems;
 					$this->number              = (string) $number;

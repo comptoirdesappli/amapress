@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WhiteSpace;
+namespace WordPressCS\WordPress\Sniffs\WhiteSpace;
 
-use WordPress\Sniff;
-use WordPress\PHPCSHelper;
+use WordPressCS\WordPress\Sniff;
+use WordPressCS\WordPress\PHPCSHelper;
 
 /**
  * Enforces using spaces for mid-line alignment.
@@ -60,7 +60,7 @@ class DisallowInlineTabsSniff extends Sniff {
 			\T_DOC_COMMENT_STRING     => true,
 		);
 
-		for ( $i = ( $stackPtr + 1 ); $i < $this->phpcsFile->numTokens; $i ++ ) {
+		for ( $i = ( $stackPtr + 1 ); $i < $this->phpcsFile->numTokens; $i++ ) {
 			// Skip all non-whitespace tokens and skip whitespace at the start of a new line.
 			if ( ! isset( $check_tokens[ $this->tokens[ $i ]['code'] ] ) || 1 === $this->tokens[ $i ]['column'] ) {
 				continue;

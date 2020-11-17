@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\DB;
+namespace WordPressCS\WordPress\Sniffs\DB;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Check for incorrect use of the $wpdb->prepare method.
@@ -191,7 +191,7 @@ class PreparedSQLPlaceholdersSniff extends Sniff {
 			'adjustment_count' => 0,
 		);
 
-		for ( $i = $query['start']; $i <= $query['end']; $i ++ ) {
+		for ( $i = $query['start']; $i <= $query['end']; $i++ ) {
 			// Skip over groups of tokens if they are part of an inline function call.
 			if ( isset( $skip_from, $skip_to ) && $i >= $skip_from && $i < $skip_to ) {
 				$i = $skip_to;
@@ -244,12 +244,12 @@ class PreparedSQLPlaceholdersSniff extends Sniff {
 							}
 
 							if ( $this->analyse_implode( $i ) === true ) {
-								++ $valid_in_clauses['uses_in'];
-								++ $valid_in_clauses['implode_fill'];
+								++$valid_in_clauses['uses_in'];
+								++$valid_in_clauses['implode_fill'];
 
 								$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $i + 1 ), null, true );
 								if ( \T_OPEN_PARENTHESIS === $this->tokens[ $next ]['code']
-								     && isset( $this->tokens[ $next ]['parenthesis_closer'] )
+									&& isset( $this->tokens[ $next ]['parenthesis_closer'] )
 								) {
 									$skip_from = ( $i + 1 );
 									$skip_to   = ( $this->tokens[ $next ]['parenthesis_closer'] + 1 );
@@ -273,7 +273,7 @@ class PreparedSQLPlaceholdersSniff extends Sniff {
 			}
 
 			if ( \T_DOUBLE_QUOTED_STRING === $this->tokens[ $i ]['code']
-			     || \T_HEREDOC === $this->tokens[ $i ]['code']
+				|| \T_HEREDOC === $this->tokens[ $i ]['code']
 			) {
 				// Only interested in actual query text, so strip out variables.
 				$stripped_content = $this->strip_interpolated_variables( $content );
@@ -503,20 +503,20 @@ class PreparedSQLPlaceholdersSniff extends Sniff {
 			);
 
 			if ( false !== $next
-			     && ( \T_ARRAY === $this->tokens[ $next ]['code']
-			          || \T_OPEN_SHORT_ARRAY === $this->tokens[ $next ]['code'] )
+				&& ( \T_ARRAY === $this->tokens[ $next ]['code']
+					|| \T_OPEN_SHORT_ARRAY === $this->tokens[ $next ]['code'] )
 			) {
 				$replacements = $this->get_function_call_parameters( $next );
 			}
 		}
 
-		$total_replacements = \count( $replacements );
+		$total_replacements  = \count( $replacements );
 		$total_placeholders -= $valid_in_clauses['adjustment_count'];
 
 		// Bow out when `IN` clauses have been used which appear to be correct.
 		if ( $valid_in_clauses['uses_in'] > 0
-		     && $valid_in_clauses['uses_in'] === $valid_in_clauses['implode_fill']
-		     && 1 === $total_replacements
+			&& $valid_in_clauses['uses_in'] === $valid_in_clauses['implode_fill']
+			&& 1 === $total_replacements
 		) {
 			return;
 		}
@@ -595,10 +595,10 @@ class PreparedSQLPlaceholdersSniff extends Sniff {
 				true
 			);
 			if ( \T_STRING === $this->tokens[ $implode ]['code']
-			     && 'implode' === strtolower( $this->tokens[ $implode ]['content'] )
+				&& 'implode' === strtolower( $this->tokens[ $implode ]['content'] )
 			) {
 				if ( $this->analyse_implode( $implode ) === true ) {
-					++ $found;
+					++$found;
 				}
 			}
 		}
@@ -644,7 +644,7 @@ class PreparedSQLPlaceholdersSniff extends Sniff {
 		);
 
 		if ( \T_STRING !== $this->tokens[ $array_fill ]['code']
-		     || 'array_fill' !== strtolower( $this->tokens[ $array_fill ]['content'] )
+			|| 'array_fill' !== strtolower( $this->tokens[ $array_fill ]['content'] )
 		) {
 			return false;
 		}

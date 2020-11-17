@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\DB;
+namespace WordPressCS\WordPress\Sniffs\DB;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Sniff for prepared SQL.
@@ -69,6 +69,7 @@ class PreparedSQLSniff extends Sniff {
 		\T_INT_CAST                 => true,
 		\T_DOUBLE_CAST              => true,
 		\T_BOOL_CAST                => true,
+		\T_NS_SEPARATOR             => true,
 	);
 
 	/**
@@ -102,7 +103,7 @@ class PreparedSQLSniff extends Sniff {
 	 */
 	public function register() {
 
-		$this->ignored_tokens = $this->ignored_tokens + Tokens::$emptyTokens;
+		$this->ignored_tokens += Tokens::$emptyTokens;
 
 		return array(
 			\T_VARIABLE,
@@ -130,14 +131,14 @@ class PreparedSQLSniff extends Sniff {
 			return;
 		}
 
-		for ( $this->i; $this->i < $this->end; $this->i ++ ) {
+		for ( $this->i; $this->i < $this->end; $this->i++ ) {
 
 			if ( isset( $this->ignored_tokens[ $this->tokens[ $this->i ]['code'] ] ) ) {
 				continue;
 			}
 
 			if ( \T_DOUBLE_QUOTED_STRING === $this->tokens[ $this->i ]['code']
-			     || \T_HEREDOC === $this->tokens[ $this->i ]['code']
+				|| \T_HEREDOC === $this->tokens[ $this->i ]['code']
 			) {
 
 				$bad_variables = array_filter(
@@ -151,7 +152,7 @@ class PreparedSQLSniff extends Sniff {
 					$this->phpcsFile->addError(
 						'Use placeholders and $wpdb->prepare(); found interpolated variable $%s at %s',
 						$this->i,
-						'NotPrepared',
+						'InterpolatedNotPrepared',
 						array(
 							$bad_variable,
 							$this->tokens[ $this->i ]['content'],
@@ -183,8 +184,8 @@ class PreparedSQLSniff extends Sniff {
 					$opening_paren = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $this->i + 1 ), null, true, null, true );
 
 					if ( false !== $opening_paren
-					     && \T_OPEN_PARENTHESIS === $this->tokens[ $opening_paren ]['code']
-					     && isset( $this->tokens[ $opening_paren ]['parenthesis_closer'] )
+						&& \T_OPEN_PARENTHESIS === $this->tokens[ $opening_paren ]['code']
+						&& isset( $this->tokens[ $opening_paren ]['parenthesis_closer'] )
 					) {
 						// Skip past the end of the function.
 						$this->i = $this->tokens[ $opening_paren ]['parenthesis_closer'];

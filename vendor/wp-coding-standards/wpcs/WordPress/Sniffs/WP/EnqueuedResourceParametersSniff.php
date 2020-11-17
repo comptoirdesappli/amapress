@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\AbstractFunctionParameterSniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\AbstractFunctionParameterSniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * This checks the enqueued 4th and 5th parameters to make sure the version and in_footer are set.
@@ -110,10 +110,10 @@ class EnqueuedResourceParametersSniff extends AbstractFunctionParameterSniff {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param array $group_name The name of the group which was matched.
+	 * @param int    $stackPtr        The position of the current token in the stack.
+	 * @param string $group_name      The name of the group which was matched.
 	 * @param string $matched_content The token content (function name) which was matched.
-	 * @param array $parameters Array with information about the parameters.
+	 * @param array  $parameters      Array with information about the parameters.
 	 *
 	 * @return void
 	 */
@@ -182,7 +182,7 @@ class EnqueuedResourceParametersSniff extends AbstractFunctionParameterSniff {
 	 * Determine if a range has a falsy value.
 	 *
 	 * @param int $start The position to start looking from.
-	 * @param int $end The position to stop looking (inclusive).
+	 * @param int $end   The position to stop looking (inclusive).
 	 *
 	 * @return bool True if the parameter is falsy.
 	 *              False if the parameter is not falsy or when it
@@ -198,7 +198,7 @@ class EnqueuedResourceParametersSniff extends AbstractFunctionParameterSniff {
 		}
 
 		$code_string = '';
-		for ( $i = $start; $i <= $end; $i ++ ) {
+		for ( $i = $start; $i <= $end; $i++ ) {
 			if ( isset( $this->safe_tokens[ $this->tokens[ $i ]['code'] ] ) === false ) {
 				// Function call/variable or other token which makes it neigh impossible
 				// to determine whether the actual value would evaluate to false.

@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\WP;
+namespace WordPressCS\WordPress\Sniffs\WP;
 
-use WordPress\AbstractFunctionParameterSniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\AbstractFunctionParameterSniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Check for usage of deprecated parameter values in WP functions and provide alternative based on the parameter passed.
@@ -19,7 +19,7 @@ use PHP_CodeSniffer_Tokens as Tokens;
  *
  * @since   1.0.0
  *
- * @uses    \WordPress\Sniff::$minimum_supported_version
+ * @uses    \WordPressCS\WordPress\Sniff::$minimum_supported_version
  */
 class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 
@@ -55,9 +55,9 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 	 *     );
 	 */
 	protected $target_functions = array(
-		'add_settings_field'   => array(
+		'add_settings_field' => array(
 			4 => array(
-				'misc'    => array(
+				'misc' => array(
 					'alt'     => 'another settings group',
 					'version' => '3.0.0',
 				),
@@ -69,7 +69,7 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 		),
 		'add_settings_section' => array(
 			4 => array(
-				'misc'    => array(
+				'misc' => array(
 					'alt'     => 'another settings group',
 					'version' => '3.0.0',
 				),
@@ -79,13 +79,13 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 				),
 			),
 		),
-		'bloginfo'             => array(
+		'bloginfo' => array(
 			1 => array(
-				'home'           => array(
+				'home' => array(
 					'alt'     => 'the "url" argument',
 					'version' => '2.2.0',
 				),
-				'siteurl'        => array(
+				'siteurl' => array(
 					'alt'     => 'the "url" argument',
 					'version' => '2.2.0',
 				),
@@ -95,13 +95,13 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 				),
 			),
 		),
-		'get_bloginfo'         => array(
+		'get_bloginfo' => array(
 			1 => array(
-				'home'           => array(
+				'home' => array(
 					'alt'     => 'the "url" argument',
 					'version' => '2.2.0',
 				),
-				'siteurl'        => array(
+				'siteurl' => array(
 					'alt'     => 'the "url" argument',
 					'version' => '2.2.0',
 				),
@@ -111,9 +111,9 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 				),
 			),
 		),
-		'register_setting'     => array(
+		'register_setting' => array(
 			1 => array(
-				'misc'    => array(
+				'misc' => array(
 					'alt'     => 'another settings group',
 					'version' => '3.0.0',
 				),
@@ -123,9 +123,9 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 				),
 			),
 		),
-		'unregister_setting'   => array(
+		'unregister_setting' => array(
 			1 => array(
-				'misc'    => array(
+				'misc' => array(
 					'alt'     => 'another settings group',
 					'version' => '3.0.0',
 				),
@@ -142,10 +142,10 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param array $group_name The name of the group which was matched.
+	 * @param int    $stackPtr        The position of the current token in the stack.
+	 * @param string $group_name      The name of the group which was matched.
 	 * @param string $matched_content The token content (function name) which was matched.
-	 * @param array $parameters Array with information about the parameters.
+	 * @param array  $parameters      Array with information about the parameters.
 	 *
 	 * @return void
 	 */
@@ -169,8 +169,8 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 	 * @since 1.0.0
 	 *
 	 * @param string $matched_content The token content (function name) which was matched.
-	 * @param array $parameter Array with start and end token positon of the parameter.
-	 * @param array $parameter_args Array with alternative and WordPress deprecation version of the parameter.
+	 * @param array  $parameter       Array with start and end token positon of the parameter.
+	 * @param array  $parameter_args  Array with alternative and WordPress deprecation version of the parameter.
 	 *
 	 * @return void
 	 */
@@ -200,7 +200,7 @@ class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSniff {
 
 		if ( ! empty( $parameter_args[ $matched_parameter ]['alt'] ) ) {
 			$message .= ' Use %s instead.';
-			$data[]  = $parameter_args[ $matched_parameter ]['alt'];
+			$data[]   = $parameter_args[ $matched_parameter ]['alt'];
 		}
 
 		$is_error = version_compare( $parameter_args[ $matched_parameter ]['version'], $this->minimum_supported_version, '<' );

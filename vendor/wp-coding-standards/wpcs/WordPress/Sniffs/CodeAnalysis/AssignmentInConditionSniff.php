@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Sniffs\CodeAnalysis;
+namespace WordPressCS\WordPress\Sniffs\CodeAnalysis;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Detects variable assignments being made within conditions.
@@ -139,21 +139,13 @@ class AssignmentInConditionSniff extends Sniff {
 				$closer = end( $token['nested_parenthesis'] );
 				$opener = key( $token['nested_parenthesis'] );
 
-				$next_statement_closer = $this->phpcsFile->findEndOfStatement( $stackPtr, array(
-					\T_COLON,
-					\T_CLOSE_PARENTHESIS,
-					\T_CLOSE_SQUARE_BRACKET
-				) );
+				$next_statement_closer = $this->phpcsFile->findEndOfStatement( $stackPtr, array( \T_COLON, \T_CLOSE_PARENTHESIS, \T_CLOSE_SQUARE_BRACKET ) );
 				if ( false !== $next_statement_closer && $next_statement_closer < $closer ) {
 					// Parentheses are unrelated to the ternary.
 					return;
 				}
 
-				$prev_statement_closer = $this->phpcsFile->findStartOfStatement( $stackPtr, array(
-					\T_COLON,
-					\T_OPEN_PARENTHESIS,
-					\T_OPEN_SQUARE_BRACKET
-				) );
+				$prev_statement_closer = $this->phpcsFile->findStartOfStatement( $stackPtr, array( \T_COLON, \T_OPEN_PARENTHESIS, \T_OPEN_SQUARE_BRACKET ) );
 				if ( false !== $prev_statement_closer && $opener < $prev_statement_closer ) {
 					// Parentheses are unrelated to the ternary.
 					return;
@@ -195,14 +187,14 @@ class AssignmentInConditionSniff extends Sniff {
 				$conditionStart = $altConditionStart;
 			}
 
-			for ( $i = $hasAssignment; $i > $conditionStart; $i -- ) {
+			for ( $i = $hasAssignment; $i > $conditionStart; $i-- ) {
 				if ( isset( Tokens::$emptyTokens[ $this->tokens[ $i ]['code'] ] ) ) {
 					continue;
 				}
 
 				// If this is a variable or array, we've seen all we need to see.
 				if ( \T_VARIABLE === $this->tokens[ $i ]['code']
-				     || \T_CLOSE_SQUARE_BRACKET === $this->tokens[ $i ]['code']
+					|| \T_CLOSE_SQUARE_BRACKET === $this->tokens[ $i ]['code']
 				) {
 					$hasVariable = true;
 					break;

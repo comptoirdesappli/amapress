@@ -3,14 +3,14 @@
  * WordPress Coding Standard.
  *
  * @package WPCS\WordPressCodingStandards
- * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @link    https://github.com/WordPress/WordPress-Coding-Standards
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress;
+namespace WordPressCS\WordPress;
 
-use WordPress\Sniff;
-use PHP_CodeSniffer_Tokens as Tokens;
+use WordPressCS\WordPress\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Restricts usage of some functions.
@@ -20,9 +20,9 @@ use PHP_CodeSniffer_Tokens as Tokens;
  * @since   0.3.0
  * @since   0.10.0 Class became a proper abstract class. This was already the behaviour.
  *                 Moved the file and renamed the class from
- *                 `WordPress_Sniffs_Functions_FunctionRestrictionsSniff` to
- *                 `WordPress_AbstractFunctionRestrictionsSniff`.
- * @since   0.11.0 Extends the WordPress_Sniff class.
+ *                 `\WordPressCS\WordPress\Sniffs\Functions\FunctionRestrictionsSniff` to
+ *                 `\WordPressCS\WordPress\AbstractFunctionRestrictionsSniff`.
+ * @since   0.11.0 Extends the WordPressCS native `Sniff` class.
  */
 abstract class AbstractFunctionRestrictionsSniff extends Sniff {
 
@@ -57,7 +57,7 @@ abstract class AbstractFunctionRestrictionsSniff extends Sniff {
 	 *
 	 * @var string
 	 */
-	protected $regex_pattern = '`\b(?:%s)\b`i';
+	protected $regex_pattern = '`^(?:%s)$`i';
 
 	/**
 	 * Cache for the group information.
@@ -212,37 +212,52 @@ abstract class AbstractFunctionRestrictionsSniff extends Sniff {
 	 */
 	public function is_targetted_token( $stackPtr ) {
 
+		if ( \T_STRING !== $this->tokens[ $stackPtr ]['code'] ) {
+			return false;
+		}
+
 		// Exclude function definitions, class methods, and namespaced calls.
-		if ( \T_STRING === $this->tokens[ $stackPtr ]['code'] && isset( $this->tokens[ ( $stackPtr - 1 ) ] ) ) {
-			$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $stackPtr - 1 ), null, true );
+		if ( $this->is_class_object_call( $stackPtr ) === true ) {
+			return false;
+		}
 
-			if ( false !== $prev ) {
-				// Skip sniffing if calling a same-named method, or on function definitions.
-				$skipped = array(
-					\T_FUNCTION        => \T_FUNCTION,
-					\T_CLASS           => \T_CLASS,
-					\T_AS              => \T_AS, // Use declaration alias.
-					\T_DOUBLE_COLON    => \T_DOUBLE_COLON,
-					\T_OBJECT_OPERATOR => \T_OBJECT_OPERATOR,
-				);
+		if ( $this->is_token_namespaced( $stackPtr ) === true ) {
+			return false;
+		}
 
-				if ( isset( $skipped[ $this->tokens[ $prev ]['code'] ] ) ) {
-					return false;
-				}
+		$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $stackPtr - 1 ), null, true );
+		if ( false !== $prev ) {
+			// Skip sniffing on function, class definitions or for function aliases in use statements.
+			$skipped = array(
+				\T_FUNCTION        => \T_FUNCTION,
+				\T_CLASS           => \T_CLASS,
+				\T_AS              => \T_AS, // Use declaration alias.
+			);
 
-				// Skip namespaced functions, ie: \foo\bar() not \bar().
-				if ( \T_NS_SEPARATOR === $this->tokens[ $prev ]['code'] ) {
-					$pprev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $prev - 1 ), null, true );
-					if ( false !== $pprev && \T_STRING === $this->tokens[ $pprev ]['code'] ) {
-						return false;
-					}
-				}
+			if ( isset( $skipped[ $this->tokens[ $prev ]['code'] ] ) ) {
+				return false;
 			}
+		}
 
+		// Check if this could even be a function call.
+		$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
+		if ( false === $next ) {
+			return false;
+		}
+
+		// Check for `use function ... (as|;)`.
+		if ( ( \T_STRING === $this->tokens[ $prev ]['code'] && 'function' === $this->tokens[ $prev ]['content'] )
+			&& ( \T_AS === $this->tokens[ $next ]['code'] || \T_SEMICOLON === $this->tokens[ $next ]['code'] )
+		) {
 			return true;
 		}
 
-		return false;
+		// If it's not a `use` statement, there should be parenthesis.
+		if ( \T_OPEN_PARENTHESIS !== $this->tokens[ $next ]['code'] ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -286,8 +301,8 @@ abstract class AbstractFunctionRestrictionsSniff extends Sniff {
 	 *
 	 * @since 0.11.0 Split out from the `process()` method.
 	 *
-	 * @param int $stackPtr The position of the current token in the stack.
-	 * @param string $group_name The name of the group which was matched.
+	 * @param int    $stackPtr        The position of the current token in the stack.
+	 * @param string $group_name      The name of the group which was matched.
 	 * @param string $matched_content The token content (function name) which was matched.
 	 *
 	 * @return int|void Integer stack pointer to skip forward or void to continue
@@ -302,8 +317,6 @@ abstract class AbstractFunctionRestrictionsSniff extends Sniff {
 			$this->string_to_errorcode( $group_name . '_' . $matched_content ),
 			array( $matched_content )
 		);
-
-		return;
 	}
 
 	/**
