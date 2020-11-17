@@ -25,9 +25,34 @@ function amapress_mailing_queue_menu_options() {
 						'default' => '1',
 					),
 					array(
+						'type' => 'note',
+						'desc' => function ( $o ) {
+							$ret = '<p>' . __( 'Nombre maximum d\'emails envoyés par heure :', 'amapress' ) . ' <span id="amps-mail-per-hour">0</span></p>';
+							$ret .= '<p>' . __( 'Nombre maximum d\'emails envoyés par jour :', 'amapress' ) . ' <span id="amps-mail-per-day">0</span></p>';
+							$ret .= '<script type="application/javascript">
+jQuery(function($) {
+    var $per_hour = $("#amps-mail-per-hour");
+    var $per_day = $("#amps-mail-per-day");
+    function updateCounters() {
+        var mail_queue_limit = parseInt($("#amapress_mail_queue_limit").val());
+        var mail_queue_interval = parseInt($("#amapress_mail_queue_interval").val());
+        $per_hour.text((mail_queue_limit / mail_queue_interval * 3600.0).toFixed(0));
+        $per_day.text((mail_queue_limit / mail_queue_interval * 3600.0 * 24.0).toFixed(0));
+    }
+    $("#amapress_mail_queue_limit, #amapress_mail_queue_interval").change(updateCounters);
+    updateCounters();
+});
+</script>';
+
+							return $ret;
+						}
+					),
+					array(
 						'id'      => 'mail_queue_limit',
 						'name'    => __( 'Emails par intervalle', 'amapress' ),
 						'type'    => 'number',
+						'min'     => 1,
+						'unit'    => __( 'emails', 'amapress' ),
 						'desc'    => __( 'Nombre d\'emails envoyés à chaque intervalle d\'exécution de la file d\'envoi des emails sortants', 'amapress' ),
 						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT,
 					),
@@ -35,6 +60,8 @@ function amapress_mailing_queue_menu_options() {
 						'id'      => 'mail_queue_interval',
 						'name'    => __( 'Intervalle', 'amapress' ),
 						'type'    => 'number',
+						'min'     => 30,
+						'unit'    => __( 'secondes', 'amapress' ),
 						'desc'    => __( 'Intervalle d\'exécution de la file d\'envoi des emails sortants', 'amapress' ),
 						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL,
 					),
