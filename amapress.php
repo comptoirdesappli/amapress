@@ -834,14 +834,6 @@ function amapress_echo_img_thumb( $filename, $alt, $size ) {
 	echo "<img src='$src' alt='$alt' class='img_thumb_$size' />";
 }
 
-function amapress_get_post_field_as_text( $post_id, $post_type, $field_name ) {
-	return esc_html( get_post_meta( $post_id, "amapress_{$post_type}_{$field_name}", true ) );
-}
-
-function amapress_get_post_field_as_html( $post_id, $post_type, $field_name ) {
-	return get_post_meta( $post_id, "amapress_{$post_type}_{$field_name}", true );
-}
-
 function mc_admin_users_caps( $caps, $cap, $user_id, $args ) {
 
 //    var_dump($cap);

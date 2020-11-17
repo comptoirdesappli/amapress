@@ -23,8 +23,6 @@ function amapress_add_rewrite_rules() {
 		$rewrite_root = '^index.php/';
 	}
 
-	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/([^/]+)/?', 'index.php?post_type=amps_contrat&name=$matches[1]&viewmode=details&subview=$matches[2]', 'top' );
-	add_rewrite_rule( $rewrite_root . 'contrats/([^/]+)/details/?', 'index.php?post_type=amps_contrat&name=$matches[1]&viewmode=details', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/(inscription|s-inscrire|sinscrire|participer|devenir-responsable)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=inscr_resp', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/(desinscription|desinscrire)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amp_action=desinscr_resp', 'top' );
 	add_rewrite_rule( $rewrite_root . 'distributions/([^/]+)/liste-emargement/([^/]+)/([^/]+)/?', 'index.php?post_type=amps_distribution&name=$matches[1]&amapress_contrat=$matches[2]&amapress_contrat_qt=$matches[3]&amp_action=liste-emargement', 'top' );

@@ -4,21 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-//add_filter('amapress_get_custom_content_adhesion','amapress_get_custom_content_adhesion');
-//function amapress_get_custom_content_adhesion($content) {
-//    return $content;
-//}
-//add_filter('amapress_get_custom_archive_content_adhesion','amapress_get_custom_archive_content_adhesion');
-//function amapress_get_custom_archive_content_adhesion($content) {
-//    return $content;
-//}
-
-//add_filter('amapress_get_user_infos_title_adhesions', 'amapress_get_user_infos_title_adhesions', 10, 2);
-//function amapress_get_user_infos_title_adhesions($content, $subview)
-//{
-//    return __('Mes adhésions', 'amapress');
-//}
-
 //add_filter('amapress_get_user_infos_content_adhesions', 'amapress_get_user_infos_content_adhesions', 10, 2);
 function amapress_display_user_adhesions_shortcode( $atts ) {
 	if ( ! amapress_is_user_logged_in() ) {
@@ -71,7 +56,7 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 //        $status_text = $status=='to_confirm' ? __('En attente de confirmation', 'amapress') : __('ConfirmÃ©e', 'amapress');
 		$date_debut      = $ad->getDate_debut();
 		$date_fin        = $ad->getDate_fin();
-		$url             = $contrat_model->getPermalink( 'details' ); //trailingslashit(get_post_permalink($contrat_model->ID)).'details/';
+		$url             = $contrat_model->getPermalink(); //trailingslashit(get_post_permalink($contrat_model->ID)).'details/';
 		$adhesion_data[] = array(
 			'contrat'   => amapress_get_html_a( $url, $contrat_model->getTitle() ),
 			'quantite'  => $ad->getContrat_quantites_AsString(),
