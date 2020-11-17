@@ -4321,7 +4321,7 @@ class Amapress {
 	public static function formatPrice(
 		$number, $with_unit = false
 	) {
-		return number_format( floatval( $number ), 2, ',', ' ' ) . ( $with_unit ? '€' : '' );
+		return number_format( floatval( $number ), 2, ',', "\xA0" ) . ( $with_unit ? '€' : '' );
 	}
 
 	public static function rename_roles() {
