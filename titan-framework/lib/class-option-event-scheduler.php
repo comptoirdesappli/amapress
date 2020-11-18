@@ -325,7 +325,7 @@ jQuery(function($) {
 							'hook_name' => $hook_name,
 							'title'     => $args['title'],
 							'time'      => $args['time'],
-							'args'      => json_encode( [ $args ] )
+							'args'      => wp_json_encode( [ $args ] )
 						];
 					}
 					unset( $args['time'] );

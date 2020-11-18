@@ -110,7 +110,7 @@ function amapress_send_message(
 			'post_status'  => 'publish',
 			'meta_input'   => array(
 				'amapress_message_target_name'     => $opt['target_name'],
-				'amapress_message_query_string'    => json_encode( $opt ),
+				'amapress_message_query_string'    => wp_json_encode( $opt ),
 				'amapress_message_content_for_sms' => $content_sms,
 				'amapress_message_target_type'     => $opt['target_type']
 			),
@@ -392,16 +392,16 @@ function amapress_prepare_message_target( $query_string, $title, $target_type, $
 
 
 function amapress_add_message_target( &$arr, $query_string, $title, $target_type ) {
-	$opt                        = amapress_prepare_message_target( $query_string, $title, $target_type );
-	$members                    = amapress_get_users_for_message( $opt['users_query'], $opt['users_query_fields'] );
-	$count                      = count( $members );
-	$opt['members']             = implode( ', ', array_map(
+	$opt                           = amapress_prepare_message_target( $query_string, $title, $target_type );
+	$members                       = amapress_get_users_for_message( $opt['users_query'], $opt['users_query_fields'] );
+	$count                         = count( $members );
+	$opt['members']                = implode( ', ', array_map(
 		function ( $u ) {
 			/** @var WP_User $u */
 			return Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $u->ID ), sprintf( __( '%s (%s)', 'amapress' ), $u->display_name, $u->user_email ), true, true );
 		}, $members
 	) );
-	$arr[ json_encode( $opt ) ] = sprintf( _n( '%s (%d destinataires)', '%s (%d destinataires)', $count, 'amapress' ),
+	$arr[ wp_json_encode( $opt ) ] = sprintf( _n( '%s (%d destinataires)', '%s (%d destinataires)', $count, 'amapress' ),
 		$title,
 		$count );
 }

@@ -188,7 +188,7 @@ ENDFORM;
 			if ( ! isset( $_POST['amp_override'] ) && file_exists( $uploadfile ) ) {
 				http_response_code( 403 );
 				header( 'Content-Type: application/json; charset=utf-8' );
-				echo json_encode( [ 'error' => sprintf( __( 'Le fichier %s existe déjà', 'amapress' ), $_FILES['file']['name'] ) ] );
+				echo wp_json_encode( [ 'error' => sprintf( __( 'Le fichier %s existe déjà', 'amapress' ), $_FILES['file']['name'] ) ] );
 				die();
 			}
 			if ( move_uploaded_file( $_FILES['file']['tmp_name'], $uploadfile ) ) {
@@ -197,7 +197,7 @@ ENDFORM;
 			} else {
 				http_response_code( 401 );
 				header( 'Content-Type: application/json; charset=utf-8' );
-				echo json_encode( [ 'error' => __( 'Erreur inconnue', 'amapress' ) ] );
+				echo wp_json_encode( [ 'error' => __( 'Erreur inconnue', 'amapress' ) ] );
 				die();
 			}
 			//$_FILES['file']['tmp_name'];

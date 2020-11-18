@@ -2757,7 +2757,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	$new_row = ob_get_clean();
 
-	$new_row  = json_encode( array( 'html' => $new_row ) );
+	$new_row  = wp_json_encode( array( 'html' => $new_row ) );
 	$contents .= "<script type='text/javascript'>//<![CDATA[
     jQuery(function($) {
         amapress_quant_load_tags();

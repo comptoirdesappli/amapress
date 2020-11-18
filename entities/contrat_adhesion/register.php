@@ -1070,9 +1070,9 @@ add_action( 'wp_ajax_check_inscription_unique', function () {
 		}
 	}
 	if ( empty( $adhs ) ) {
-		echo json_encode( true );
+		echo wp_json_encode( true );
 	} else {
-		echo json_encode( __( 'L\'amapien possède déjà un contrat de ce type', 'amapress' ) );
+		echo wp_json_encode( __( 'L\'amapien possède déjà un contrat de ce type', 'amapress' ) );
 	}
 
 	wp_die();
@@ -3223,9 +3223,9 @@ add_action( 'wp_ajax_check_email_exists', function () {
 	$email = $_POST['email'];
 	$user  = get_user_by( 'email', $email );
 	if ( ! $user ) {
-		echo json_encode( true );
+		echo wp_json_encode( true );
 	} else {
-		echo json_encode( __( 'Cette adresse est déjà utilisée', 'amapress' ) );
+		echo wp_json_encode( __( 'Cette adresse est déjà utilisée', 'amapress' ) );
 	}
 
 	wp_die();

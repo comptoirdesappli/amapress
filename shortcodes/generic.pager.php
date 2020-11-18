@@ -143,7 +143,7 @@ function amapress_generic_paged_gallery_shortcode( $attr ) {
 			),
 		),
 	);
-	$slick_options = json_encode( $slick_options );
+	$slick_options = wp_json_encode( $slick_options );
 
 	$size_class      = sanitize_html_class( $size );
 	$gallery_div     = "<div id='$selector' class='slick-gallery slick-galleryid-{$id} slick-gallery-columns-{$columns} slick-gallery-size-{$size_class}' data-slick='{$slick_options}'>";

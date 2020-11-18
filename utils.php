@@ -181,7 +181,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='margin:0;$table_style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	if ( ! $options['no_script'] ) {
-		$json = json_encode( $options );
+		$json = wp_json_encode( $options );
 		if ( ! empty( $raw_js_options ) ) {
 			$json = substr( $json, 0, strlen( $json ) - 1 );
 			$json .= ',' . $raw_js_options . '}';

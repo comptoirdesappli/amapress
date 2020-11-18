@@ -86,7 +86,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 			$marker['icon'] = $icons[ $marker['icon'] ];
 		}
 
-		$js_markers .= json_encode( $marker );
+		$js_markers .= wp_json_encode( $marker );
 		$js_markers .= ',';
 		$coords[]   = [ $lat, $lng ];
 	}
@@ -216,7 +216,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 		return $htm . '<script type="text/javascript">
                 //<![CDATA[
                 jQuery(function() {
-var map = L.map(\'map' . $amapress_map_instance . '\').fitBounds(' . json_encode( $coords ) . ');
+var map = L.map(\'map' . $amapress_map_instance . '\').fitBounds(' . wp_json_encode( $coords ) . ');
 // add an OpenStreetMap tile layer
 L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
     attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
