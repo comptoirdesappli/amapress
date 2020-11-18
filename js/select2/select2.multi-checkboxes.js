@@ -20,7 +20,7 @@
             placeholder: options.placeholder,
             closeOnSelect: false,
             templateSelection: function () {
-                return self.options.templateSelection(self.$element.val() || [], $('option', self.$element).length);
+                return self.options.templateSelection(self.$element.val() || [], $('option', self.$element).length, self.$element);
             },
             templateResult: function (result) {
                 if (result.loading !== undefined)
@@ -68,7 +68,7 @@
                 },
                 wrapClass: 'wrap',
                 minimumResultsForSearch: -1,
-                searchMatchOptGroups: true
+                searchMatchOptGroups: true,
             }, arguments[0]);
 
             this.each(function () {

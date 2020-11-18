@@ -98,6 +98,17 @@ function amapress_post_validation() {
                 },
                 "<?php echo esc_js( __( 'Doit être une liste de pourcentages entiers, avoir le nombre de valeurs du nombre de règlements et leur somme doit être égale à 100', 'amapress' ) ); ?>"
             );
+            jQuery.validator.addMethod(
+                "repartitionDatesCheck",
+                function (value, element) {
+                    if (this.optional(element))
+                        return true;
+                    var selected = jQuery(':selected', element).length;
+                    var needed = parseInt(jQuery(element).data('max'));
+                    return 0 == selected || needed == selected;
+                },
+                "<?php echo esc_js( __( 'Le nombre de dates sélectionnées doit être égale au nombre de paiement ou aucune date', 'amapress' ) ); ?>"
+            );
             jQuery.validator.addMethod('positiveNumber',
                 function (value) {
                     return Number(value) > 0;

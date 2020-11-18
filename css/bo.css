@@ -300,3 +300,9 @@
     font-weight: bold;
     color: red;
 }
+
+.repartitions-dates + .select2 {
+    display: inline-block;
+    min-width: auto;
+!important;
+}

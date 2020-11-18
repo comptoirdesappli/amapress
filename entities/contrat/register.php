@@ -1670,22 +1670,27 @@ jQuery(function($) {
 
 					return [ 'amapress_contrat_instance_paiements' => $values ];
 				},
-				'options'           => function ( $option ) {
+				'options'      => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
-					$contrat = AmapressContrat_instance::getBy( $option->getPostID(), true );
-					$reps    = $contrat ? $contrat->getCustomRepartitions() : [];
+					$contrat    = AmapressContrat_instance::getBy( $option->getPostID(), true );
+					$reps       = $contrat ? $contrat->getCustomRepartitions() : [];
+					$reps_dates = $contrat ? $contrat->getCustomRepartitionsDates() : [];
 
 					$options     = [
 						'1' => __( '1 chèque', 'amapress' ),
 					];
 					$is_readonly = amapress_is_contrat_instance_readonly( $option );
 					for ( $i = 2; $i <= 12; $i ++ ) {
-						$v   = isset( $reps[ $i ] ) ? $reps[ $i ] : '';
-						$rep = '';
+						$v       = isset( $reps[ $i ] ) ? $reps[ $i ] : '';
+						$v_dates = isset( $reps_dates[ $i ] ) ? $reps_dates[ $i ] : [];
+						$rep     = '';
 						if ( $is_readonly ) {
 							$v = esc_html( $v );
 							if ( ! empty( $v ) ) {
-								$rep = ' ; ' . __( 'Répartition :', 'amapress' ) . $v;
+								$rep .= '<em> ; ' . __( 'Répartition : ', 'amapress' ) . $v . '</em>';
+							}
+							if ( ! empty( $v_dates ) ) {
+								$rep .= '<em> ; ' . __( 'Dates : ', 'amapress' ) . implode( ', ', $v_dates ) . '</em>';
 							}
 						} else {
 							$v   = esc_attr( $v );
@@ -1695,13 +1700,26 @@ jQuery(function($) {
                                        data-num='$i'
                                        style='width: 15em'
                                        value='$v' />";
+
+							$all_liste_dates_options = [];
+							foreach ( $contrat->getPaiements_Liste_dates() as $d ) {
+								$v                             = date_i18n( TitanFrameworkOptionDate::$default_date_format, intval( $d ) );
+								$all_liste_dates_options[ $v ] = $v;
+							}
+							$liste_dates_options = [];
+							foreach ( $v_dates as $d ) {
+								$liste_dates_options[ $d ] = $d;
+							}
+							$rep .= ' ; ' . __( 'Dates :', 'amapress' ) . " <select data-max='$i' style='width: 15em; display: inline-block' id='amapress_pmt_repartitions_dates-$i' name='amapress_pmt_repartitions_dates[$i][]' class='repartitions-dates repartitionDatesCheck' multiple='multiple' data-placeholder='" . esc_attr__( 'Dates de paiement', 'amapress' ) . "'>" .
+							        tf_parse_select_options( $all_liste_dates_options, $liste_dates_options, false ) . '</select>';
 						}
-						$options[ strval( $i ) ] = sprintf( __( '%d chèques%s', 'amapress' ), $i, $rep );
+						$options[ strval( $i ) ] = ( $is_readonly ? '<strong>' : '' ) . sprintf( __( '%d chèques', 'amapress' ), $i ) . ( $is_readonly ? '</strong>' : '' ) .
+						                           ( $is_readonly ? '' : '</label>' ) . $rep . ( $is_readonly ? '' : '<label>' ); //hack for excluding $rep of wrapping label added to multicheck
 					}
 
 					return $options;
 				},
-				'custom_save'       => function ( $post_id ) {
+				'custom_save'  => function ( $post_id ) {
 					if ( isset( $_POST['amapress_pmt_repartitions'] ) ) {
 						$amapress_pmt_repartitions = $_POST['amapress_pmt_repartitions'];
 						foreach ( $amapress_pmt_repartitions as $i => $r ) {
@@ -1714,10 +1732,22 @@ jQuery(function($) {
 							'amapress_contrat_instance_pmt_reps',
 							$amapress_pmt_repartitions );
 					}
+					if ( isset( $_POST['amapress_pmt_repartitions_dates'] ) ) {
+						$amapress_pmt_repartitions_dates = $_POST['amapress_pmt_repartitions_dates'];
+						foreach ( $amapress_pmt_repartitions_dates as $i => $r ) {
+							if ( empty( $r ) ) {
+								unset( $amapress_pmt_repartitions_dates[ $i ] );
+							}
+						}
+						update_post_meta(
+							$post_id,
+							'amapress_contrat_instance_pmt_reps_dates',
+							$amapress_pmt_repartitions_dates );
+					}
 
 					return false;
 				},
-				'column'            => function ( $post_id ) {
+				'export'       => function ( $post_id ) {
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 					if ( ! $contrat_instance ) {
 						return '';
@@ -1725,13 +1755,16 @@ jQuery(function($) {
 
 					return implode( ',', $contrat_instance->getPossiblePaiements() );
 				},
-				'export'            => function ( $post_id ) {
-					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
-					if ( ! $contrat_instance ) {
-						return '';
-					}
-
-					return implode( ',', $contrat_instance->getPossiblePaiements() );
+				'after_option' => function ( $options ) {
+					echo '<script type="application/javascript">
+jQuery(function($) {
+            $(".repartitions-dates").select2MultiCheckboxes({
+                templateSelection: function(selected, total, element) {
+                  return selected.length + "' . __( ' sur ', 'amapress' ) . '" + $(element).data("max");
+                },
+          });
+});
+</script>';
 				}
 			),
 			'pay_month'             => array(

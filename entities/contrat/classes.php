@@ -2362,6 +2362,21 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 	}
 
+	public function getCustomRepartitionsDates() {
+		return $this->getCustomAsArray( 'amapress_contrat_instance_pmt_reps_dates' );
+	}
+
+	public function getDatesPaiementsByCustom( $nb_paiements ) {
+		$rep_dates = $this->getCustomRepartitionsDates();
+		if ( empty( $rep_dates[ $nb_paiements ] ) ) {
+			return [];
+		}
+
+		return array_map( function ( $d ) {
+			return TitanEntity::to_date( $d );
+		}, $rep_dates[ $nb_paiements ] );
+	}
+
 	/** @return array */
 	public function getTotalAmountByCustom( $nb_paiements, $total ) {
 		$amounts   = [];

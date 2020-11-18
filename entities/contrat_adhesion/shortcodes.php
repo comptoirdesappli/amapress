@@ -3930,6 +3930,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			echo '<input type="hidden" name="inscr_msg" value="' . esc_attr( sanitize_textarea_field( $_REQUEST['inscr_msg'] ) ) . '"/>';
 		}
 		if ( $contrat->getManage_Cheques() ) {
+			$remaining_cheques_dates = $contrat->getPaiements_Liste_dates();
+			if ( ! $admin_mode ) {
+				$remaining_cheques_dates = array_filter( $remaining_cheques_dates,
+					function ( $d ) {
+						return $d > Amapress::start_of_week( amapress_time() );
+					} );
+			}
+
 			$min_cheque_amount = $contrat->getMinChequeAmount();
 			if ( $total > 0 ) {
 				$possible_cheques = $contrat->getPossiblePaiements();
@@ -3974,7 +3982,19 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								$amount );
 						}, $amounts ) );
 
-						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
+						$cheques_dates = $contrat->getDatesPaiementsByCustom( $nb_cheque );
+						if ( empty( $cheques_dates ) ) {
+							$cheques_dates = array_merge( $remaining_cheques_dates );
+						}
+
+						$cheques_dates_display = array_map( function ( $d ) {
+							return date_i18n( 'd/m/Y', $d );
+						}, $cheques_dates );
+
+						$cheques_dates         = implode( '|', $cheques_dates );
+						$cheques_dates_display = implode( '|', $cheques_dates_display );
+
+						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' data-cheques-dates='$cheques_dates' data-cheques-dates-display='$cheques_dates_display'  value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
 					} else {
 						$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total );
 						$option             = esc_html( $cheques['desc'] );
@@ -3984,7 +4004,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						if ( $cheque_main_amount != $last_cheque ) {
 							$chq_label = sprintf( __( '%s chèque(s) : ', 'amapress' ), $nb_cheque );
 						}
-						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' />$chq_label$option</label><br/>";
+
+						$cheques_dates_display = array_map( function ( $d ) {
+							return date_i18n( 'd/m/Y', $d );
+						}, $remaining_cheques_dates );
+
+						$cheques_dates         = implode( '|', $remaining_cheques_dates );
+						$cheques_dates_display = implode( '|', $cheques_dates_display );
+
+						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-dates='$cheques_dates' data-cheques-dates-display='$cheques_dates_display' data-main-amount='$cheque_main_amount €' data-last-amount='$last_cheque €' value='$nb_cheque' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 					}
 				}
 			} else {
@@ -4057,7 +4085,20 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								return sprintf( __( '1 prélèvement de %0.2f €', 'amapress' ),
 									$amount );
 							}, $amounts ) );
-							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label</label><br/>";
+
+							$cheques_dates = $contrat->getDatesPaiementsByCustom( $nb_cheque );
+							if ( empty( $cheques_dates ) ) {
+								$cheques_dates = array_merge( $remaining_cheques_dates );
+							}
+
+							$cheques_dates_display = array_map( function ( $d ) {
+								return date_i18n( 'd/m/Y', $d );
+							}, $cheques_dates );
+
+							$cheques_dates         = implode( '|', $cheques_dates );
+							$cheques_dates_display = implode( '|', $cheques_dates_display );
+
+							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' data-cheques-details='$cheques' data-cheques-dates='$cheques_dates' data-cheques-dates-display='$cheques_dates_display' class='input-nb-cheques required' />$chq_label</label><br/>";
 						} else {
 							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total, __( 'prélèvement', 'amapress' ) );
 							$option             = esc_html( $cheques['desc'] );
@@ -4067,7 +4108,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							if ( $cheque_main_amount != $last_cheque ) {
 								$chq_label = sprintf( __( '%s prélèvement(s) : ', 'amapress' ), $nb_cheque );
 							}
-							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' class='input-nb-cheques required' />$chq_label$option</label><br/>";
+
+							$cheques_dates_display = array_map( function ( $d ) {
+								return date_i18n( 'd/m/Y', $d );
+							}, $remaining_cheques_dates );
+
+							$cheques_dates         = implode( '|', $remaining_cheques_dates );
+							$cheques_dates_display = implode( '|', $cheques_dates_display );
+
+							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' data-cheques-dates='$cheques_dates' data-cheques-dates-display='$cheques_dates_display' class='input-nb-cheques required' />$chq_label$option</label><br/>";
 						}
 					}
 				}
@@ -4083,6 +4132,20 @@ jQuery(function($) {
         var nb_cheques = parseInt($(this).val());
         if (nb_cheques >= 100)
             nb_cheques = -1;
+        var cheques_dates = $(this).data("cheques-dates");
+        var cheques_dates_display = $(this).data("cheques-dates-display");
+        if (cheques_dates) {
+            cheques_dates = cheques_dates.split("|");
+            cheques_dates_display = cheques_dates_display.split("|");
+            var i = 0;
+            $("#cheques-details tr").each(function() {
+               //skip header
+               if (i > 0  && cheques_dates.length > i - 1 && cheques_dates_display.length > i - 1)
+                    $(".amps-pmt-date-display", this).text(cheques_dates_display[i - 1]);
+                    $(".amps-pmt-date", this).val(cheques_dates[i - 1]);
+               i++;
+            }); 
+        }
         var cheques_details = $(this).data("cheques-details");
         if (cheques_details) {
             cheques_details = cheques_details.split("|");
@@ -4094,7 +4157,7 @@ jQuery(function($) {
                     $(this).hide();
                }
                //skip header
-               if (i > 0)
+               if (i > 0 && cheques_details.length > i - 1)
                     $(".amps-pmt-amount", this).text(cheques_details[i - 1]);
                i++;
             }); 
@@ -4178,7 +4241,7 @@ jQuery(function($) {
 					$paiement_banque   = esc_attr( $edit_paiement ? $edit_paiement->getBanque() : '' );
 					$paiement_emetteur = esc_attr( $edit_paiement ? $edit_paiement->getEmetteur() : $emetteur );
 					$paiements_dates   = implode( '', $paiements_dates );
-					$select            = "<select id='pmt-$i-date' name='pmt[$i][date]' class='$req'>
+					$select            = "<select id='pmt-$i-date' name='pmt[$i][date]' class='$req amps-pmt-date'>
 $paiements_dates
 </select>";
 					if ( $contrat->getPayByMonth() ) {
@@ -4193,12 +4256,12 @@ $paiements_dates
 					} elseif ( ! $admin_mode && ! $contrat->getAllowAmapienInputPaiementsDates() ) {
 						if ( $edit_paiement ) {
 							$dt     = $edit_paiement->getDate();
-							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
-							          date_i18n( 'd/m/Y', $dt );
+							$select = "<input type='hidden' class='amps-pmt-date' name='pmt[$i][date]' value='$dt' /><span class='amps-pmt-date-display'>" .
+							          date_i18n( 'd/m/Y', $dt ) . '</span>';
 						} elseif ( isset( $paiements_raw_dates[ $i - 1 ] ) ) {
 							$dt     = $paiements_raw_dates[ $i - 1 ];
-							$select = "<input type='hidden' name='pmt[$i][date]' value='$dt' />" .
-							          date_i18n( 'd/m/Y', $dt );
+							$select = "<input type='hidden' class='amps-pmt-date' name='pmt[$i][date]' value='$dt' /><span class='amps-pmt-date-display'>" .
+							          date_i18n( 'd/m/Y', $dt ) . '</span>';
 						} else {
 							$select = '';
 						}
