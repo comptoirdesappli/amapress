@@ -637,10 +637,14 @@ class AmapressMailingGroup extends TitanEntity {
 
 	public function deleteMessage( $msg_id, $type = null ) {
 		foreach ( ! empty( $type ) ? [ $type ] : [ 'waiting', 'accepted', 'rejected' ] as $type ) {
-			$dir       = $this->getUploadDir( $type, false );
-			$attch_dir = $dir . "/$msg_id";
-			if ( file_exists( $attch_dir ) ) {
-				self::delTree( $attch_dir );
+			$waiting_attachment_dir = $this->getUploadDir( "waiting/$msg_id" );
+			if ( file_exists( $waiting_attachment_dir ) ) {
+				self::delTree( $waiting_attachment_dir );
+			}
+			$dir                  = $this->getUploadDir( $type, false );
+			$local_attachment_dir = $dir . "/$msg_id";
+			if ( file_exists( $local_attachment_dir ) ) {
+				self::delTree( $local_attachment_dir );
 			}
 			$msg_json = $dir . "/$msg_id.json";
 			if ( file_exists( $msg_json ) ) {
