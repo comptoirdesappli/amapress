@@ -4119,7 +4119,7 @@ jQuery(function($) {
 });
 </script>';
 				echo '<table id="cheques-details"><thead>
-<th>' . __( 'Date encaissement', 'amapress' ) . '</th>
+<th>' . __( 'Date paiement', 'amapress' ) . '</th>
 <th>' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_pay_num_label' ) ) ) . '</th>
 <th>' . __( 'Banque', 'amapress' ) . '</th>
 <th>' . __( 'Emetteur', 'amapress' ) . '</th>
@@ -5251,7 +5251,7 @@ function amapress_get_details_all_paiements(
 	);
 	if ( $show_dates_encaissement ) {
 		$columns[] = array(
-			'title' => __( 'Dates encaissement', 'amapress' ),
+			'title' => __( 'Dates paiement', 'amapress' ),
 			'data'  => array(
 				'_'    => 'date_enc',
 				'sort' => 'date_enc',

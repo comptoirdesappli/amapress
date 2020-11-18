@@ -229,7 +229,7 @@ function amapress_register_entities_contrat( $entities ) {
 				}
 				$nb_dates_paiements = count( $contrat->getPaiements_Liste_dates() );
 				if ( $max_nb_paiements > $nb_dates_paiements ) {
-					echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( __( 'Il y a moins de dates d\'encaissement (%d) que le nombre de règlements maximum autorisé (%d)', 'amapress' ), $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
+					echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( __( 'Il y a moins de dates de paiement (%d) que le nombre de règlements maximum autorisé (%d)', 'amapress' ), $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
 				}
 
 
@@ -1484,7 +1484,7 @@ jQuery(function($) {
 				'required'    => true,
 				'default'     => false,
 				'show_column' => false,
-				'desc'        => __( 'Permettre aux amapiens de choisir les dates d\'encaissemnt des chèques dans l’assistant de pré-inscription en ligne', 'amapress' ),
+				'desc'        => __( 'Permettre aux amapiens de choisir les dates de paiement des chèques dans l’assistant de pré-inscription en ligne', 'amapress' ),
 			),
 			'word_model'            => array(
 				'name'            => __( 'Contrat personnalisé', 'amapress' ),

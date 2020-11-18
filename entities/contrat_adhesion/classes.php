@@ -1087,7 +1087,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret['paiement_emetteur'] = '(Tableau paiement) Nom de l\'adhérent émetteur';
 		$ret['paiement_banque']   = '(Tableau paiement) Banque du chèque';
 		$ret['paiement_montant']  = '(Tableau paiement) Montant du paiement';
-		$ret['paiement_date']     = '(Tableau paiement) Date d\'encaissement du paiement';
+		$ret['paiement_date']     = '(Tableau paiement) Date de paiement';
 		$ret['paiement_status']   = '(Tableau paiement) Etat du paiement';
 
 		$ret['paiement_x_type']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Type de paiement (Chèque, espèces, virement...)';
@@ -1095,7 +1095,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret['paiement_x_emetteur'] = '(où x varie de 1 à 12 suivant le nombre de paiements) Nom de l\'adhérent émetteur';
 		$ret['paiement_x_banque']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Banque du chèque';
 		$ret['paiement_x_montant']  = '(où x varie de 1 à 12 suivant le nombre de paiements) Montant du paiement';
-		$ret['paiement_x_date']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Date d\'encaissement du paiement';
+		$ret['paiement_x_date']     = '(où x varie de 1 à 12 suivant le nombre de paiements) Date de paiement';
 		$ret['paiement_x_status']   = '(où x varie de 1 à 12 suivant le nombre de paiements) Etat du paiement';
 
 		return $ret;
