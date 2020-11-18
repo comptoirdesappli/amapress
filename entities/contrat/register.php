@@ -1278,7 +1278,7 @@ jQuery(function($) {
                                 </select>
                             </td>
                             <td>
-                                <input id="<?php echo "amapress_quantite_rattrapage-date-$i"; ?>"
+                                <input id="<?php echo "amapress_quantite_rattrapage-quant-$i"; ?>"
                                        name="<?php echo "amapress_quantite_rattrapage[$i][quantite]"; ?>"
                                        class="number positiveNumber"
                                        value="<?php echo $r['quantite']; ?>"
