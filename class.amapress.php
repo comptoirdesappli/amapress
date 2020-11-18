@@ -3480,8 +3480,8 @@ class Amapress {
 			$items2[] = $item;
 		}
 
-		$walker                     = new Walker_Nav_Menu_Checklist( array() );
-		$walker2                    = new Walker_Nav_Menu_Checklist( array() );
+		$walker  = new Walker_Nav_Menu_Checklist( array() );
+		$walker2 = new Walker_Nav_Menu_Checklist( array() );
 
 		?>
         <div id="amapress" class="posttypediv">
@@ -3939,6 +3939,9 @@ class Amapress {
 	public static function sendDocumentFile(
 		$full_file_name, $out_file_name
 	) {
+		if ( ! file_exists( $full_file_name ) ) {
+			wp_die( sprintf( __( 'Le fichier %s n\'existe pas (%s)', 'amapress' ), $out_file_name, $full_file_name ) );
+		}
 		if ( strpos( $out_file_name, '.docx' ) !== false ) {
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document' );
 		} else if ( strpos( $out_file_name, '.xlsx' ) !== false ) {
