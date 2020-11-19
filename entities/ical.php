@@ -161,7 +161,8 @@ class Amapress_Agenda_ICAL_Export {
 	private static function ical_escape( $t ) {
 		$t = str_replace( ',', '\,', $t );
 		$t = str_replace( ';', '\;', $t );
-		$t = str_replace( "\n", '\n', $t );
+		//add a trailing space in case \n is not properly interpreted (ie, Outlook, see issue #22)
+		$t = str_replace( "\n", ' \n', $t );
 
 		return $t;
 	}
