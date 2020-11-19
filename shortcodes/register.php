@@ -93,7 +93,7 @@ function amapress_register_shortcodes() {
 			'desc' => __( 'Rempli les informations de l\'amapien connecté (dans le texte avec placeholders placé dans le shortcode)', 'amapress' ),
 			'args' => [
 				'contenu' => Amapress::makeLink( admin_url( 'admin.php?page=amapress_help_page&tab=amapien_placeholders' ),
-					__( 'Placeholders dispnibles', 'amapress' ), true, true ),
+					__( 'Placeholders disponibles', 'amapress' ), true, true ),
 			]
 		] );
 	amapress_register_shortcode( 'amapress-panel', function ( $atts, $content ) {
