@@ -650,6 +650,9 @@ line-height: 1.1;
 				continue;
 			}
 			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+			if ( ! $lieu ) {
+				continue;
+			}
 			echo '<h3 class="liste-emargement-next-resps">';
 			echo esc_html( sprintf( __( 'Responsables du jour - %s', 'amapress' ), $lieu->getTitle() ) );
 			echo '</h3>';
