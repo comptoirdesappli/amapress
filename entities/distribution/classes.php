@@ -1035,7 +1035,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				}
 
 				$ret[] = new Amapress_EventEntry( array(
-					'ev_id'    => "dist-{$this->ID}",
+					'ev_id'    => "dist-{$this->ID}-{$contrat->ID}",
 					'date'     => $dist_date_start,
 					'date_end' => $dist_date_end,
 					'type'     => 'distribution',
@@ -1124,7 +1124,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						continue;
 					}
 					$ret[] = new Amapress_EventEntry( array(
-						'ev_id'    => "dist-{$this->ID}",
+						'ev_id'    => "dist-{$this->ID}-{$adhesion->ID}",
 						'id'       => $this->ID,
 						'date'     => $dist_date_start,
 						'date_end' => $dist_date_end,
