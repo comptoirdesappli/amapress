@@ -1434,5 +1434,75 @@ function amapress_register_shortcodes() {
 				'sms' => __( '(Par défaut “yes”) Afficher un lien SMS-To contenant tous les membres de chaque liste de diffusion', 'amapress' ),
 			]
 		] );
+
+
+	amapress_register_shortcode( 'helloasso-adhesion', function ( $atts, $content = null ) {
+		$atts = shortcode_atts(
+			array(
+				'adhesion_shift_weeks' => 0,
+				'form_type'            => 'form',
+				'show_period'          => 'true',
+				'show_adherent_info'   => 'true',
+			), $atts
+		);
+
+		$date = Amapress::add_a_week( amapress_time(), intval( $atts['adhesion_shift_weeks'] ) );
+
+		$period_adhesion = AmapressAdhesionPeriod::getCurrent( $date );
+		if ( ! $period_adhesion ) {
+			return __( 'Adhésions closes', 'amapress' );
+		}
+
+		if ( empty( $period_adhesion->getHelloAssoFormUrl() ) ) {
+			return __( 'Formulaire HelloAsso non associé', 'amapress' );
+		}
+
+		$form      = '';
+		$form_type = $atts['form_type'];
+		switch ( $form_type ) {
+			case 'button':
+				$form = '<iframe id="haWidget" allowtransparency="true" src="' .
+				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget-bouton" style="width:100%;height:70px;border:none;"></iframe>' .
+				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+			case 'thumb':
+				$form = '<iframe id="haWidget" allowtransparency="true" src="' .
+				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget-vignette" style="width:350px;height:450px;border:none;"></iframe>' .
+				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+			case 'thumb_vert':
+				$form = '<iframe id="haWidget" allowtransparency="true" src="' .
+				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget-vignette-horizontale" style="width:800px;height:400px;border:none;"></iframe>' .
+				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+			default:
+				$form = '<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="' .
+				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget" style="width:100%;height:750px;border:none;" onload="window.scroll(0, this.offsetTop)"></iframe>' .
+				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+		}
+		$title = '';
+		if ( Amapress::toBool( $atts['show_period'] ) ) {
+			$title = '<h4>' . esc_html( $period_adhesion->getTitle() ) . '</h4>';
+		}
+		$info = '';
+		if ( Amapress::toBool( $atts['show_adherent_info'] ) ) {
+			if ( amapress_is_user_logged_in() ) {
+				$amapien = AmapressUser::getBy( amapress_current_user_id() );
+				$info    = '<p>' . sprintf( __( 'Vous êtes connecté en tant que <strong>%s</strong>. Votre adresse email est <strong>%s</strong>', 'amapress' ),
+						$amapien->getDisplayName(), $amapien->getEmail() ) . '</p>';
+			} else {
+				$info = '<p>' . __( 'Vous n\'êtes pas connecté', 'amapress' ) . '</p>';
+			}
+		}
+
+		return $title . $info . $content . $form;
+	},
+		[
+			'desc' => __( 'Affichage le formulaire HelloAsso (Formulaire/Vignette/Vignette horizontale/Bouton)', 'amapress' ),
+			'args' => [
+				'contenu'              => 'Dans le contenu du shortcode, placez vos instructions de ré/adhésion.',
+				'show_period'          => '(true par défaut) Afficher le nom de la période d\'adhésion du formulaire',
+				'show_adherent_info'   => '(true par défaut) Afficher les infos de l\'utilisateur connecté',
+				'form_type'            => __( '(form par défaut) Type de formulaire à afficher (form: Formulaire, thumb: Vignette, thumbhori: Vignette horizontale, button: Bouton)', 'amapress' ),
+				'adhesion_shift_weeks' => __( '(0 par défaut) Nombre de semaines de décalage de la période de réadhésion', 'amapress' ),
+			]
+		] );
 }
 
