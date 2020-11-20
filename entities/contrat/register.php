@@ -228,10 +228,22 @@ function amapress_register_entities_contrat( $entities ) {
 					$max_nb_paiements = max( $nb_pmt, $max_nb_paiements );
 				}
 				$nb_dates_paiements = count( $contrat->getPaiements_Liste_dates() );
-				if ( $max_nb_paiements > $nb_dates_paiements ) {
-					echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( __( 'Il y a moins de dates de paiement (%d) que le nombre de règlements maximum autorisé (%d)', 'amapress' ), $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
+				if ( $contrat->getPayByMonth() ) {
+					$deliv_dates    = $contrat->getDatesByMonth( $contrat->getDate_debut() );
+					$pmt_dates      = $contrat->getPaiementDatesByMonth();
+					$missing_months = array_diff( array_keys( $deliv_dates ), array_keys( $pmt_dates ) );
+					if ( ! empty( $missing_months ) ) {
+						echo '<div class="notice notice-error"><p>' .
+						     sprintf( __( 'Il n\'y a pas de date de paiement pour les mois suivants : %s. <br/><strong>La répartition des dates de paiement ne fonctionnera pas correctement.</strong>', 'amapress' ),
+							     implode( ', ', $missing_months ) ) . '</p></div>';
+					}
+				} else {
+					if ( $max_nb_paiements > $nb_dates_paiements ) {
+						echo '<div class="notice notice-warning"><p>' .
+						     sprintf( __( 'Il y a moins de dates de paiement renseignées (%d) que le nombre de règlements maximum autorisé (%d). <br/><strong>La répartition des dates de paiement ne fonctionnera pas correctement.</strong>', 'amapress' ),
+							     $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
+					}
 				}
-
 
 				if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) ) {
 					$class   = 'notice notice-error';

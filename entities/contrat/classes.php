@@ -1838,8 +1838,23 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	/** @return array */
-	public function getDatesByMonth() {
-		$dates           = $this->getRemainingDates();
+	public function getDatesByMonth( $date = null ) {
+		$dates           = $this->getRemainingDates( $date );
+		$by_month_totals = [];
+		foreach ( $dates as $date ) {
+			$month = date_i18n( 'M', $date );
+			if ( empty( $by_month_totals[ $month ] ) ) {
+				$by_month_totals[ $month ] = 0;
+			}
+			$by_month_totals[ $month ] += 1;
+		}
+
+		return $by_month_totals;
+	}
+
+	/** @return array */
+	public function getPaiementDatesByMonth() {
+		$dates           = $this->getPaiements_Liste_dates();
 		$by_month_totals = [];
 		foreach ( $dates as $date ) {
 			$month = date_i18n( 'M', $date );
