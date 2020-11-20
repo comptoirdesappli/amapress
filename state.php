@@ -418,7 +418,7 @@ function amapress_get_state() {
 		__( '<strong>Recommandé</strong> : permet d\'optimiser la vitesse du site', 'amapress' ),
 		'active' === amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
 
-	$permalink_structure  = get_option( 'permalink_structure' );
+	$permalink_structure = get_option( 'permalink_structure' );
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		$state['05_config'][] = amapress_get_check_state(
 			empty( $permalink_structure )
@@ -840,6 +840,20 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 
 	$state['15_posts'] = array();
 
+	$state['15_posts'][] = amapress_get_check_state(
+		'info',
+		__( 'Configuration générale de votre AMAP', 'amapress' ),
+		'',
+		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page' ),
+		__( 'AMAP avec contrat obligatoire/principal', 'amapress' ) . __( ' : ', 'amapress' ) . ( ! Amapress::getOption( 'disable_principal' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Autoriser la co-adhésion partielle', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'allow_partial_coadh' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/co-panier' ) .
+		'<br/>' . __( 'L\'adhésion doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'check_adh_rcv' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'L\'adhésion ou une adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'check_adh_rcv_p' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . sprintf( __( 'Durée de la période de renouvellement : %d jours', 'amapress' ),
+			Amapress::getOption( 'renouv_days' ) )
+	);
+
 	$lieux               = Amapress::get_lieux();
 	$not_localized_lieux = array_filter( $lieux,
 		function ( $lieu ) {
@@ -1230,10 +1244,56 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 		$state['15_posts'][] = amapress_get_check_state(
 			'info',
 			__( 'Amapiens non localisés', 'amapress' ),
-			"$not_localized_amapiens_count amapien(s) ne sont pas localisés",
+			sprintf( __( '%s amapien(s) ne sont pas localisés', 'amapress' ), $not_localized_amapiens_count ),
 			admin_url( 'users.php?amapress_info=address_unk&amapress_contrat=active' )
 		);
 	}
+
+	$state['15_posts'][] = amapress_get_check_state(
+		Amapress::isIntermittenceEnabled() ? 'success' : 'info',
+		__( 'Espace intermittents', 'amapress' ),
+		'L\'espace intermittent permet aux utilisateurs qui le souhaitent de s\'organiser pour récupérer occasionnellement des paniers des amapiens absents.',
+		admin_url( 'admin.php?page=amapress_intermit_conf_opt_page' ),
+		__( 'Espace intermittents activé', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::isIntermittenceEnabled() ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Autoriser les amapiens à inscrire des intermittents', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'intermit_self_inscr' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Adhésion obligatoire pour les intermittents', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'intermit_adhesion_req' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Autoriser les la cession partielle de paniers', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'allow_partial_exchange' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . sprintf( __( 'Les cessions de paniers sont clôturées %d heures avant la distribution', 'amapress' ),
+			Amapress::getOption( 'close-subscribe-intermit-hours' ) ) .
+		'<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/amapien/intermittents' )
+	);
+
+	$resp_roles = [];
+	for ( $role_ix = 1; $role_ix < 10; $role_ix ++ ) {
+		$role_name = Amapress::getOption( "resp_role_$role_ix-name" );
+		if ( ! empty( $role_name ) ) {
+			$resp_roles[] = sprintf( 'Responsable %d : %s', $role_ix, $role_name );
+		}
+	}
+	if ( empty( $resp_roles ) ) {
+		$resp_roles = [ __( 'aucune ou spécifique par lieu de distribution', 'amapress' ) ];
+	}
+	$state['15_posts'][] = amapress_get_check_state(
+		'info',
+		__( 'Responsables de distributions', 'amapress' ),
+		'',
+		admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_tab_role_resp_distrib' ),
+		Amapress::makeLink( admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_tab_role_resp_distrib' ), __( 'Tâches des Responsables de distribution', 'amapress' ) ) .
+		__( ' : ', 'amapress' ) . implode( ', ', $resp_roles ) .
+		'<br/>' . __( 'Autoriser un amapien à s\'inscrire plusieurs fois comme responsable de distribution', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'inscr-distrib-allow-multi' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Autoriser l\'inscription des co-adhérents par l\'adhérent principal', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'inscr-distrib-co-adh' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Autoriser l\'inscription des membres du foyer par l\'adhérent principal', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'inscr-distrib-co-foyer' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_inscr_distrib_options_tab' ), 'Autres configuration pour les responsables de distribution' )
+	);
+
+	$state['15_posts'][] = amapress_get_check_state(
+		'info',
+		__( 'Système de garde de paniers', 'amapress' ),
+		'',
+		admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_tab_gardiens_paniers_distrib' ),
+		__( 'Activer le système de garde de paniers', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'enable-gardiens-paniers' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Autoriser les amapiens à choisir directement leur gardien de paniers', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'allow-affect-gardiens' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) )
+	);
 
 	$all_pages_and_presentations = get_pages( [
 		'post_status' => 'publish'
@@ -1681,6 +1741,36 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_convertws_config' )
 	);
 
+
+	$stripe_online_contrats     = array_filter( $online_contrats, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->getAllow_Stripe();
+	} );
+	$not_stripe_online_contrats = array_filter( $online_contrats, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return ! $c->getAllow_Stripe();
+	} );
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		'info',
+		__( 'Modèles de contrats avec paiement en ligne', 'amapress' ),
+		__( 'Le paiement en ligne via Stripe permet aux amapiens de régler leurs inscriptions avec suivi automatique du paiement', 'amapress' ),
+		admin_url( 'edit.php?post_type=amps_contrat_inst&amapress_date=active' ),
+		'<strong>' . __( 'Contrats avec paiement en ligne actif :', 'amapress' ) . '</strong> ' . ( count( $stripe_online_contrats ) == 0 ? __( 'aucun', 'amapress' ) : implode( ', ', array_map( function ( $dn ) {
+			/** @var AmapressContrat_instance $dn */
+			$l   = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+			$tit = esc_html( $dn->getTitle() );
+
+			return "<a href='{$l}' target='_blank'>{$tit}</a>";
+		}, $online_contrats ) ) ) .
+		( count( $not_stripe_online_contrats ) > 0 ? '<br /><strong>' . __( 'Contrats sans paiement en ligne :', 'amapress' ) . '</strong> ' . implode( ', ', array_map( function ( $dn ) {
+				/** @var AmapressContrat_instance $dn */
+				$l   = admin_url( 'post.php?post=' . $dn->getID() . '&action=edit' );
+				$tit = esc_html( $dn->getTitle() );
+
+				return "<a href='{$l}' target='_blank'>{$tit}</a>";
+			}, $not_stripe_online_contrats ) ) : '' )
+	);
+
 	$adh_period  = AmapressAdhesionPeriod::getCurrent( $first_online_date );
 	$status      = $adh_period ? $adh_period->getModelDocStatus() : true;
 	$status_text = '';
@@ -1694,6 +1784,17 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 		sprintf( __( 'Créer une période d\'adhésion au %s pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word', 'amapress' ), date_i18n( 'd/m/Y', $first_online_date ) ),
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
 		( ! empty( $adh_period ) ? '<a href="' . esc_attr( $adh_period->getAdminEditLink() ) . '" target=\'_blank\'>' . esc_html( $adh_period->getTitle() ) . $status_text . '</a>' : __( 'Aucune période d\'adhésion', 'amapress' ) )
+	);
+	$state['26_online_inscr'][] = amapress_get_check_state(
+		$adh_period && ! empty( $adh_period->getHelloAssoFormUrl() ) ? 'success' : 'info',
+		'Formulaire HelloAsso - Adhésion avec paiement ligne',
+		$adh_period && ! empty( $adh_period->getHelloAssoFormUrl() ) ?
+			sprintf( 'Vos adhésions pour la période "%s" sont effectuées via le formulaire HelloAsso suivant : <a href="%s">%s</a>',
+				$adh_period->getTitle(), $adh_period->getHelloAssoFormUrl(), $adh_period->getHelloAssoFormUrl() ) :
+			'Effectuer vos adhésions avec paiement en ligne via un formulaire d\'adhésion HelloAsso. ',
+		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),
+		Amapress::makeInternalLink( admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=amp_helloasso_config' ), 'Configuration de l\'intégration HelloAsso' ) .
+		'<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/helloasso' )
 	);
 	$type_paiements             = get_categories( array(
 		'orderby'    => 'name',
