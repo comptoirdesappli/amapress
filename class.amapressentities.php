@@ -4279,6 +4279,12 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'capability' => 'manage_options',
 									'options'    => array(
 										array(
+											'type' => 'note',
+											'desc' => function ( $o ) {
+												return Amapress::makeWikiLink( 'https://wiki.amapress.fr/amapien/intermittents' );
+											},
+										),
+										array(
 											'id'      => 'intermittence_enabled',
 											'name'    => __( 'Activer le système des intermittents', 'amapress' ),
 											'type'    => 'checkbox',
