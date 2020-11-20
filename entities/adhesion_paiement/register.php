@@ -594,7 +594,6 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 		if ( 'Membership' != $formType ) {
 			wp_die( __( 'Type de formulaire non reconnu : doit être un formulaire d\'adhésion', 'amapress' ) );
 		}
-		$date             = DateTime::createFromFormat( DateTime::ISO8601, $order->date );
 		$total            = $order->amount->total;
 		$payer            = $order->payer;
 		$formSlug         = $order->formSlug;
@@ -619,7 +618,7 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 			} );
 		$adh_period = array_shift( $periods );
 		if ( empty( $adh_period ) ) {
-			$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
+			$adh_period = AmapressAdhesionPeriod::getCurrent( $order_date );
 		}
 		if ( $adh_period ) {
 			$default_email     = $payer->email;
@@ -664,7 +663,7 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 						delete_user_meta( $user_id, 'pw_user_status' );
 						delete_transient( 'new_user_approve_user_statuses' );
 
-						$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $date, true );
+						$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period->getDate_debut(), true );
 						$pmt->setHelloAsso(
 							$total / 100.0,
 							"https://www.helloasso.com/associations/{$organizationSlug}/adhesions/{$formSlug}/administration",
