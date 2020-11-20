@@ -1070,3 +1070,7 @@ table.docspace_list tr.dir td:first-of-type a {
 #quant-commandes td.even {
     background-color: #fff;
 }
+
+#details_all_delivs .dtrg-group + .dtrg-group {
+    display: none;
+}

@@ -73,3 +73,4 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 * [Multi sélection dans les tableaux](https://github.com/gyrocode/jquery-datatables-checkboxes)
 * [Autocomplétion de formulaires](https://github.com/tbosch/autofill-event)
 * [Gestion UTF8](https://github.com/neitanod/forceutf8)
+* [Datables RowsGroup (merge vertical)](https://github.com/ashl1/datatables-rowsgroup)

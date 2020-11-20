@@ -5249,6 +5249,10 @@ function amapress_get_details_all_deliveries(
 			'searching' => false,
 			'rowGroup'  => [
 				'dataSrc' => $by_prod ? 'prod' : 'date_d',
+			],
+			'rowsGroup' => [
+				0,
+				1
 			]
 		),
 		array(
