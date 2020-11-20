@@ -696,6 +696,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	echo $ret;
 
+	$contrat   = null;
 	$min_total = 0;
 	Amapress::setFilterForReferent( false );
 	if ( $admin_mode ) {
