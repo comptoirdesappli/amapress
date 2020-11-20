@@ -2048,7 +2048,8 @@ jQuery(function($) {
 								}
 								if ( $contrat_instance->getAllow_Prelevement() ) {
 									foreach ( $contrat_instance->getPossiblePaiements() as $nb_cheque ) {
-										$o = $contrat_instance->getChequeOptionsForTotal( $nb_cheque, $total, 'prélèvement' );
+										$o = $contrat_instance->getChequeOptionsForTotal( $nb_cheque, $total,
+											__( 'prélèvement', 'amapress' ), __( 'prélèvements', 'amapress' ) );
 										if ( empty( $o ) ) {
 											continue;
 										}

@@ -1938,7 +1938,8 @@ class AmapressContrat_instance extends TitanEntity {
 					}
 				} else {
 					foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
-						$ch = $this->getChequeOptionsForTotal( $nb_cheque, $amount, 'prélèvement' );
+						$ch = $this->getChequeOptionsForTotal( $nb_cheque, $amount,
+							__( 'prélèvement', 'amapress' ), __( 'prélèvements', 'amapress' ) );
 						if ( ! isset( $ch['desc'] ) ) {
 							continue;
 						}
@@ -2409,11 +2410,19 @@ class AmapressContrat_instance extends TitanEntity {
 
 	public function getChequeOptionsForTotal(
 		$nb_cheque, $total,
-		$type_paiement = 'chèque'
+		$type_paiement_singular = null,
+		$type_paiement_plural = null
 	) {
+		if ( empty( $type_paiement_singular ) ) {
+			$type_paiement_singular = __( 'chèque', 'amapress' );
+		}
+		if ( empty( $type_paiement_plural ) ) {
+			$type_paiement_plural = __( 'chèques', 'amapress' );
+		}
+
 		if ( $this->hasCustomMultiplePaiements() ) {
-			$desc = implode( ' ; ', array_map( function ( $amount ) use ( $type_paiement ) {
-				return sprintf( __( '1 %s de %0.2f €', 'amapress' ), $type_paiement, $amount );
+			$desc = implode( ' ; ', array_map( function ( $amount ) use ( $type_paiement_singular ) {
+				return sprintf( __( '1 %s de %0.2f €', 'amapress' ), $type_paiement_singular, $amount );
 			}, $this->getTotalAmountByCustom( $nb_cheque, $total ) ) );
 
 			return [
@@ -2438,13 +2447,17 @@ class AmapressContrat_instance extends TitanEntity {
 		$nb = $nb_cheque;
 		if ( $cheque_main_amount == $last_cheque ) {
 			$last_cheque = 0;
-			$option      = sprintf( __( '%d %s(s) de %0.2f €', 'amapress' ), $nb, $type_paiement, $cheque_main_amount );
+			$option      = sprintf( __( '%d %s(s) de %0.2f €', 'amapress' ),
+				$nb, $nb > 1 ? $type_paiement_plural : $type_paiement_singular, $cheque_main_amount );
 		} else if ( $last_cheque == 0 ) {
 			$nb     = 1;
-			$option = sprintf( __( '1 %s de %0.2f €', 'amapress' ), $type_paiement, $cheque_main_amount );
+			$option = sprintf( __( '1 %s de %0.2f €', 'amapress' ),
+				$type_paiement_singular, $cheque_main_amount );
 		} else {
 			$nb     = $nb_cheque - 1;
-			$option = sprintf( __( '%d %s(s) de %0.2f € et 1 %s de %0.2f €', 'amapress' ), $nb, $type_paiement, $cheque_main_amount, $type_paiement, $last_cheque );
+			$option = sprintf( __( '%d %s(s) de %0.2f € et 1 %s de %0.2f €', 'amapress' ),
+				$nb, $nb > 1 ? $type_paiement_plural : $type_paiement_singular, $cheque_main_amount,
+				$type_paiement_singular, $last_cheque );
 		}
 
 		return [

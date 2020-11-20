@@ -1991,7 +1991,8 @@ class AmapressAdhesion extends TitanEntity {
 		} else {
 			$option = $this->getContrat_instance()->getChequeOptionsForTotal(
 				$this->getPaiements(), $amount,
-				'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ) );
+				'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : null,
+				'prl' == $this->getMainPaiementType() ? __( 'prélèvements', 'amapress' ) : null );
 
 			return sprintf( __( '%d %s (%s)', 'amapress' ),
 				$this->getPaiements(),
@@ -2022,7 +2023,8 @@ class AmapressAdhesion extends TitanEntity {
 			$cheques_options = array_map( function ( $v ) use ( $amount ) {
 				$option = $this->getContrat_instance()->getChequeOptionsForTotal(
 					$v, $amount,
-					'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ) );
+					'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : null,
+					'prl' == $this->getMainPaiementType() ? __( 'prélèvements', 'amapress' ) : null );
 
 				return sprintf( __( '%d (%s)', 'amapress' ), $v, $option['desc'] );
 			}, $this->getContrat_instance()->getPossiblePaiements() );
@@ -2747,7 +2749,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		} else {
 			$paiements_options = $contrat_instance->getChequeOptionsForTotal(
 				$nb_paiements, $this->getTotalAmount(),
-				'prl' == $this->getMainPaiementType() ? 'prélèvement' : 'chèque' );
+				'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : null,
+				'prl' == $this->getMainPaiementType() ? __( 'prélèvements', 'amapress' ) : null );
 			if ( $paiements_options['remain_amount'] > 0 ) {
 				for ( $i = 0; $i < $nb_paiements - 1; $i ++ ) {
 					$amounts[] = $paiements_options['main_amount'];

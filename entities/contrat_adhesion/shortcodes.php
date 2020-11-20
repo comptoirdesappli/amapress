@@ -4100,7 +4100,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 							echo "<label for='prlv-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='prlv-$nb_cheque' value='$nb_cheque_val' data-cheques-details='$cheques' data-cheques-dates='$cheques_dates' data-cheques-dates-display='$cheques_dates_display' class='input-nb-cheques required' />$chq_label</label><br/>";
 						} else {
-							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total, __( 'prélèvement', 'amapress' ) );
+							$cheques            = $contrat->getChequeOptionsForTotal( $nb_cheque, $total,
+								__( 'prélèvement', 'amapress' ), __( 'prélèvements', 'amapress' ) );
 							$option             = esc_html( $cheques['desc'] );
 							$cheque_main_amount = esc_attr( Amapress::formatPrice( $cheques['main_amount'] ) );
 							$last_cheque        = esc_attr( Amapress::formatPrice( ! empty( $cheques['remain_amount'] ) ? $cheques['remain_amount'] : $cheques['main_amount'] ) );
