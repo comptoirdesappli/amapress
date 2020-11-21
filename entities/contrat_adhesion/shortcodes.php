@@ -5247,12 +5247,30 @@ function amapress_get_details_all_deliveries(
 	}
 	$ret .= amapress_get_datatable( 'details_all_delivs', $columns, $data,
 		array(
-			'paging'    => false,
-			'searching' => false,
-			'rowGroup'  => [
-				'dataSrc' => $by_prod ? 'prod' : 'date_d',
-			],
-			'rowsGroup' => [
+			'paging'         => false,
+			'searching'      => false,
+			'raw_js_options' => 'rowGroup: {
+                endRender: null,
+                startRender: function ( rows, group ) {
+                    var fn = jQuery.fn.dataTable.ext.oApi._fnGetObjectDataFn( "total" );
+                    var total = 0.0;
+                    var indexes = rows.indexes();
+                    for ( var i=0, ien=indexes.length ; i < ien ; i++ ) {
+                        total += parseFloat(fn( this.s.dt.row( indexes[i] ).data() ) );
+                    }
+                    total = total.toFixed(2) + "' . __( '€', 'amapress' ) . '";
+     
+                    var colspan = this.s.dt.columns().visible().reduce( function (a, b) {
+                        return a + b;
+                    }, 0 );
+     
+                    return $("<tr/>")
+                        .append( "<td colspan=\'" + (colspan-1) + "\'>"+group+"</td>" )
+                        .append( "<td>" + total + "</td>" );
+                },
+                dataSrc: ' . ( $by_prod ? '"prod"' : '"date_d"' ) . '
+        }',
+			'rowsGroup'      => [
 				0,
 				1
 			]
