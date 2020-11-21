@@ -1926,6 +1926,8 @@ jQuery(function($) {
 						$ret .= '<br/><a id="amapress_recopy_dates_deliv_to_paiements" class="button button-secondary">' . __( 'Toutes les dates de distribution', 'amapress' ) . '</a>';
 						$ret .= '<a id="amapress_first_deliv_dates_paiements" class="button button-secondary">' . __( 'Première distribution de chaque mois', 'amapress' ) . '</a>';
 						$ret .= '<a id="amapress_last_deliv_dates_paiements" class="button button-secondary">' . __( 'Dernière distribution de chaque mois', 'amapress' ) . '</a>';
+						$ret .= '<br/><a id="amapress_first_dates_paiements" class="button button-secondary">' . __( 'Premier jour de chaque mois', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_last_dates_paiements" class="button button-secondary">' . __( 'Dernier jour de chaque mois', 'amapress' ) . '</a>';
 						$ret .= '<br/><a id="amapress_reset_dates_paiements" class="button button-secondary">' . __( 'Supprimer toutes les dates', 'amapress' ) . '</a>';
 						$ret .= '<script type="application/javascript">jQuery(function($) {
     var $source = $("#amapress_contrat_instance_liste_dates-cal");
@@ -1969,6 +1971,30 @@ jQuery(function($) {
         var by_month_dates = [];
         for (var k in by_months) {
             by_month_dates.push(by_months[k][by_months[k].length - 1]);
+        }
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("addDates", by_month_dates);
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_first_dates_paiements").click(function() {
+        var by_months = getDatesByMonth();
+        var by_month_dates = [];
+        for (var k in by_months) {
+            var d = $.datepicker.parseDate("dd/mm/yy", by_months[k][0]);
+            d.setDate(1);
+            by_month_dates.push(d);
+        }
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("addDates", by_month_dates);
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_last_dates_paiements").click(function() {
+        var by_months = getDatesByMonth();
+        var by_month_dates = [];
+        for (var k in by_months) {
+            var d = $.datepicker.parseDate("dd/mm/yy", by_months[k][0]);
+            d.setDate(0);
+            by_month_dates.push(d);
         }
         $dest.multiDatesPicker("resetDates");
         $dest.multiDatesPicker("addDates", by_month_dates);
