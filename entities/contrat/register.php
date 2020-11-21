@@ -1682,7 +1682,7 @@ jQuery(function($) {
 
 					return [ 'amapress_contrat_instance_paiements' => $values ];
 				},
-				'options'      => function ( $option ) {
+				'options'           => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
 					$contrat    = AmapressContrat_instance::getBy( $option->getPostID(), true );
 					$reps       = $contrat ? $contrat->getCustomRepartitions() : [];
@@ -1731,7 +1731,7 @@ jQuery(function($) {
 
 					return $options;
 				},
-				'custom_save'  => function ( $post_id ) {
+				'custom_save'       => function ( $post_id ) {
 					if ( isset( $_POST['amapress_pmt_repartitions'] ) ) {
 						$amapress_pmt_repartitions = $_POST['amapress_pmt_repartitions'];
 						foreach ( $amapress_pmt_repartitions as $i => $r ) {
@@ -1759,7 +1759,7 @@ jQuery(function($) {
 
 					return false;
 				},
-				'export'       => function ( $post_id ) {
+				'export'            => function ( $post_id ) {
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 					if ( ! $contrat_instance ) {
 						return '';
@@ -1767,7 +1767,15 @@ jQuery(function($) {
 
 					return implode( ',', $contrat_instance->getPossiblePaiements() );
 				},
-				'after_option' => function ( $options ) {
+				'column'            => function ( $post_id ) {
+					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
+					if ( ! $contrat_instance ) {
+						return '';
+					}
+
+					return implode( ',', $contrat_instance->getPossiblePaiements() );
+				},
+				'after_option'      => function ( $options ) {
 					echo '<script type="application/javascript">
 jQuery(function($) {
             $(".repartitions-dates").select2MultiCheckboxes({
