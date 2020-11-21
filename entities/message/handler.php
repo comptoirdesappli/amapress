@@ -461,7 +461,7 @@ function amapress_message_get_targets() {
 	$ret = array();
 	//amapiens distributions
 	$cnt   = array();
-	$query = new WP_Query( 'post_type=amps_distribution&amapress_date=next&meta_key=amapress_distribution_date&orderby=meta_key&order=ASC' );
+	$query = new WP_Query( 'post_type=amps_distribution&amapress_date=active&meta_key=amapress_distribution_date&orderby=meta_key&order=ASC' );
 	foreach ( $query->get_posts() as $distrib ) {
 		$dist_id = $distrib->ID;
 		$lieu_id = intval( get_post_meta( $dist_id, 'amapress_distribution_lieu', true ) );
@@ -484,7 +484,7 @@ function amapress_message_get_targets() {
 	$ret = array();
 	//responsables disributions
 	$cnt   = array();
-	$query = new WP_Query( 'post_type=amps_distribution&amapress_date=next&meta_key=amapress_distribution_date&orderby=meta_key&order=ASC' );
+	$query = new WP_Query( 'post_type=amps_distribution&amapress_date=active&meta_key=amapress_distribution_date&orderby=meta_key&order=ASC' );
 	foreach ( $query->get_posts() as $distrib ) {
 		$dist_id = $distrib->ID;
 		$lieu_id = intval( get_post_meta( $dist_id, 'amapress_distribution_lieu', true ) );

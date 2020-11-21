@@ -210,6 +210,11 @@ function amapress_adhesion_paiement_views() {
 		__( 'En cours', 'amapress' ) );
 
 	amapress_add_view_button(
+		$ret, 'future',
+		"post_type=amps_adh_pmt&amapress_date=future",
+		__( 'A venir', 'amapress' ) );
+
+	amapress_add_view_button(
 		$ret, 'not_received',
 		"post_type=amps_adh_pmt&amapress_status=not_received",
 		__( 'Non reçu', 'amapress' ), false, true );
@@ -240,6 +245,11 @@ function amapress_adhesion_period_views() {
 		$ret, 'active',
 		"post_type=amps_adh_per&amapress_date=active",
 		__( 'En cours', 'amapress' ) );
+
+	amapress_add_view_button(
+		$ret, 'future',
+		"post_type=amps_adh_per&amapress_date=future",
+		__( 'A venir', 'amapress' ) );
 
 	return $ret;
 }
@@ -307,6 +317,11 @@ function amapress_contrat_instance_views() {
 		$ret, 'actives',
 		"post_type=amps_contrat_inst&amapress_date=active",
 		__( 'En cours', 'amapress' ) );
+
+	amapress_add_view_button(
+		$ret, 'future',
+		"post_type=amps_contrat_inst&amapress_date=future",
+		__( 'A venir', 'amapress' ) );
 
 	foreach ( AmapressContrats::get_contrats() as $contrat ) {
 		amapress_add_view_button(

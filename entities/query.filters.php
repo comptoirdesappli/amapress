@@ -1020,7 +1020,7 @@ function amapress_filter_posts( WP_Query $query ) {
 					)
 				) );
 			}
-		} else if ( $amapress_date == 'next' || $amapress_date == 'active' ) {
+		} else if ( $amapress_date == 'active' ) {
 			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite'
 			     || $pt == 'amap_event' || $pt == 'contrat_paiement' || $pt == 'intermittence_panier'
 			) {
@@ -1137,6 +1137,64 @@ function amapress_filter_posts( WP_Query $query ) {
 							'type'    => 'NUMERIC',
 						),
 					)
+				) );
+			}
+		} else if ( $amapress_date == 'next' || $amapress_date == 'future' ) {
+			if ( $pt == 'distribution' || $pt == 'panier' || $pt == 'assemblee_generale' || $pt == 'visite'
+			     || $pt == 'amap_event' || $pt == 'contrat_paiement' || $pt == 'intermittence_panier'
+			) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date",
+						'value'   => Amapress::start_of_day( amapress_time() ),
+						'compare' => '>=',
+					)
+				) );
+			} else if ( $pt == 'contrat_instance' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_date_debut",
+						'value'   => Amapress::start_of_day( amapress_time() ),
+						'compare' => '>=',
+					),
+				) );
+			} else if ( $pt == 'message' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_message_associated_date",
+						'value'   => Amapress::start_of_day( amapress_time() ),
+						'compare' => '>=',
+					),
+				) );
+			} else if ( $pt == AmapressAdhesionPeriod::POST_TYPE ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						array(
+							'key'     => 'amapress_adhesion_period_date_debut',
+							'value'   => Amapress::start_of_day( amapress_time() ),
+							'compare' => '>=',
+						),
+					)
+				) );
+			} else if ( $pt == AmapressAdhesion_paiement::POST_TYPE ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						array(
+							'key'     => 'amapress_adhesion_paiement_date',
+							'value'   => Amapress::start_of_day( amapress_time() ),
+							'compare' => '>=',
+						),
+					)
+				) );
+				//
+			} else if ( $pt == 'adhesion' ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => 'amapress_adhesion_date_debut',
+						'value'   => Amapress::start_of_day( amapress_time() ),
+						'compare' => '>=',
+						'type'    => 'NUMERIC',
+					),
 				) );
 			}
 		} else if ( $amapress_date == 'renew' ) {
