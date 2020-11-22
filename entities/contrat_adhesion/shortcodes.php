@@ -2141,7 +2141,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		} else {
 			$online_subscription_greating_adhesion = str_replace( '%%print_button%%', '', $online_subscription_greating_adhesion );
 		}
-		echo amapress_replace_mail_placeholders( $online_subscription_greating_adhesion, null );
+		echo amapress_replace_mail_placeholders( $online_subscription_greating_adhesion,
+			$amapien, $adh_paiement );
 
 		if ( ! $is_adhesion_mode ) {
 			if ( ! $use_contrat_term ) {
@@ -4525,9 +4526,11 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 
 			$online_contrats_end_step_message      = wp_unslash( Amapress::getOption( 'online_contrats_end_step_message' ) );
 			$online_contrats_end_step_edit_message = wp_unslash( Amapress::getOption( 'online_contrats_end_step_edit_message' ) );
-			echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_end_confirm_msg' ), null ) );
+			echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_end_confirm_msg' ),
+				$inscription->getAdherent(), $inscription ) );
 			if ( Amapress::toBool( $atts['send_contrat_confirm'] ) ) {
-				echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_end_confirm_mail_msg' ), null ) );
+				echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_contrats_end_confirm_mail_msg' ),
+					$inscription->getAdherent(), $inscription ) );
 			}
 			$print_contrat = '';
 			if ( ! empty( $inscription->getContrat_instance()->getContratModelDocFileName() ) ) {
@@ -4628,7 +4631,8 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 					$online_contrats_end_continue_msg = str_replace( '%%remaining_contrats_list%%', $remain_contrats_list, $online_contrats_end_continue_msg );
 
 
-					echo amapress_replace_mail_placeholders( $online_contrats_end_continue_msg, $inscription->getAdherent() );
+					echo amapress_replace_mail_placeholders( $online_contrats_end_continue_msg,
+						$inscription->getAdherent() );
 					//
 					echo '<br />';
 					echo '<form method="get" action="' . esc_attr( $contrats_step_url ) . '">

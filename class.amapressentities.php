@@ -2762,7 +2762,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( __( 'Votre pré-inscription a bien été prise en compte.', 'amapress' ) ),
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_msg-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_msg-placeholders',
+													AmapressAdhesion::getPlaceholders(), 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -2774,7 +2775,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_continue_msg-placeholders', [
 													'remaining_contrats'      => __( 'Contrat disponibles à l\'inscription', 'amapress' ),
 													'remaining_contrats_list' => __( 'Contrat disponibles à l\'inscription (en liste)', 'amapress' )
-												], null, [], false );
+												], 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -2783,7 +2784,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'    => 'editor',
 											'default' => wpautop( __( 'Vous allez recevoir un email de confirmation avec votre contrat dans quelques minutes. (Pensez à regarder vos spams, cet email peut s\'y trouver à cause du contrat joint ou pour expéditeur inconnu de votre carnet d\'adresses)', 'amapress' ) ),
 											'desc'    => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_mail_msg-placeholders', [], null, [], false );
+												return Amapress::getPlaceholdersHelpTable( 'online_contrats_end_confirm_mail_msg-placeholders',
+													AmapressAdhesion::getPlaceholders(), 'user:de l\'amapien', [], false );
 											},
 										),
 										array(
@@ -2793,9 +2795,10 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => wpautop( __( "Pour finaliser votre inscription, vous devez imprimer ce contrat et le remettre aux référents concernés (%%tous_referents%%) avec les règlements correspondants lors de la prochaine distribution\n%%print_button%%", 'amapress' ) ),
 											'desc'    => function ( $option ) {
 												return __( 'Instruction en fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le contrat<br/>', 'amapress' ) .
-												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_message-placeholders', [
-													       'print_button' => __( 'Bouton Imprimer/Télécharger le contrat', 'amapress' )
-												       ], null, [], false );
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_message-placeholders',
+													       AmapressAdhesion::getPlaceholders(), 'user:de l\'amapien', [
+														       'print_button' => __( 'Bouton Imprimer/Télécharger le contrat', 'amapress' )
+													       ], false );
 											},
 										),
 										array(
@@ -2805,11 +2808,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => wpautop( __( "Veuillez vérifier le contrat : %%print_button%%\nSi vous constatez une erreur, vous pouvez modifier votre inscription : %%modify_button%%\nVous pouvez également l'annuler : %%cancel_button%%", 'amapress' ) ),
 											'desc'    => function ( $option ) {
 												return 'Instruction pour l\'édition ou l\'annulation à la fin d\'inscription à l\'étape 8/8 pour chaque inscription<br/>Les placeholders %%print_button%%, %%modify_button%%, %%cancel_button%% permettent d\'afficher respectivement le bouton Imprimer/Télécharger, Modifier et Annuler l\inscription<br/>' .
-												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_edit_message-placeholders', [
-													       'print_button'  => __( 'Bouton Imprimer/Télécharger le contrat', 'amapress' ),
-													       'modify_button' => __( 'Bouton Modifier l\'inscription', 'amapress' ),
-													       'cancel_button' => __( 'Bouton Annuler l\'inscription', 'amapress' )
-												       ], null, [], false );
+												       Amapress::getPlaceholdersHelpTable( 'online_contrats_end_step_edit_message-placeholders',
+													       AmapressAdhesion::getPlaceholders(), 'user:de l\'amapien', [
+														       'print_button'  => __( 'Bouton Imprimer/Télécharger le contrat', 'amapress' ),
+														       'modify_button' => __( 'Bouton Modifier l\'inscription', 'amapress' ),
+														       'cancel_button' => __( 'Bouton Annuler l\'inscription', 'amapress' )
+													       ], false );
 											},
 										),
 										array(
@@ -3461,9 +3465,10 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'name'    => __( 'Contenu du message de validation', 'amapress' ),
 											'type'    => 'editor',
 											'desc'    => function ( $option ) {
-												return __( 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin', 'amapress' ) . '<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
-														'print_button' => __( 'Bouton Imprimer le bulletin', 'amapress' )
-													], 'user:de l\'amapien', [], false );
+												return __( 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin', 'amapress' ) . '<br/>' . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders',
+														AmapressAdhesion_paiement::getPlaceholders(), 'user:de l\'amapien', [
+															'print_button' => __( 'Bouton Imprimer le bulletin', 'amapress' )
+														], false );
 											},
 											'default' => wpautop( __( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%", 'amapress' ) ),
 										),
@@ -3579,8 +3584,8 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 									),
 								),
 								__( 'Intégration HelloAsso', 'amapress' )                  => array(
-									'id'         => 'amp_helloasso_config',
-									'options'    => array(
+									'id'      => 'amp_helloasso_config',
+									'options' => array(
 										array(
 											'type' => 'note',
 											'desc' => function ( $o ) {
@@ -4455,9 +4460,10 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'name'    => __( 'Contenu du message de validation', 'amapress' ),
 											'type'    => 'editor',
 											'desc'    => function ( $option ) {
-												return __( 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>', 'amapress' ) . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders', [
-														'print_button' => __( 'Bouton Imprimer le bulletin', 'amapress' )
-													], '', [], false );
+												return __( 'Le placeholder %%print_button%% permet d\'afficher le bouton Imprimer le bulletin<br/>', 'amapress' ) . Amapress::getPlaceholdersHelpTable( 'online_subscription_greating_adhesion-placeholders',
+														AmapressAdhesion_paiement::getPlaceholders(), 'user:de l\'amapien', [
+															'print_button' => __( 'Bouton Imprimer le bulletin', 'amapress' )
+														], false );
 											},
 											'default' => wpautop( __( "Merci pour votre adhésion à l'AMAP !\nUn courriel de confirmation vient de vous être envoyé. Pensez à consulter les éléments indésirables.\nVeuillez imprimer le bulletin et le remettre avec votre chèque/règlement à l'ordre de l'AMAP lors de la première distribution.\n%%print_button%%", 'amapress' ) ),
 										),
