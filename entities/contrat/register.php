@@ -688,6 +688,7 @@ jQuery(function($) {
 				'name'           => __( 'Contrat glissant', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
+				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'required'       => true,
 				'desc'           => function ( $o ) {
 					return sprintf( __( 'Indiquer une durée en mois pour activer l\'option %s', 'amapress' ), Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/slide', __( 'Contrat glissant', 'amapress' ) ) );
