@@ -983,7 +983,8 @@ jQuery(function($) {
 						__( 'Choix multiple - quantités déterminées', 'amapress' ),
 						__( 'Choix unique - quantité libre', 'amapress' ),
 						__( 'Choix multiple - quantités libres', 'amapress' ),
-						__( 'Paniers modulables', 'amapress' )
+						__( 'Paniers modulables', 'amapress' ),
+						__( 'Commandes variables', 'amapress' ),
 					];
 				},
 				'csv_validator'     => function ( $value ) {
@@ -991,30 +992,42 @@ jQuery(function($) {
 						case __( 'Choix unique - quantité déterminée', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 0,
 							];
 						case __( 'Choix multiple - quantités déterminées', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 1,
 								'amapress_contrat_instance_quantite_variable' => 0,
 							];
 						case __( 'Choix unique - quantité libre', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 1,
 							];
 						case __( 'Choix multiple - quantités libres', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 1,
 								'amapress_contrat_instance_quantite_variable' => 1,
 							];
 						case __( 'Paniers modulables', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 1,
+								'amapress_contrat_instance_commande_variable' => 0,
+								'amapress_contrat_instance_quantite_multi'    => 0,
+								'amapress_contrat_instance_quantite_variable' => 0,
+							];
+						case __( 'Commandes variables', 'amapress' ):
+							return [
+								'amapress_contrat_instance_panier_variable'   => 1,
+								'amapress_contrat_instance_commande_variable' => 1,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 0,
 							];
@@ -1026,7 +1039,11 @@ jQuery(function($) {
 					$status           = [];
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat_instance->isPanierVariable() ) {
-						$status[] = __( 'Paniers modulables', 'amapress' );
+						if ( $contrat_instance->isCommandeVariable() ) {
+							$status[] = __( 'Commandes variables', 'amapress' );
+						} else {
+							$status[] = __( 'Paniers modulables', 'amapress' );
+						}
 					} else if ( $contrat_instance->isQuantiteVariable() ) {
 						if ( $contrat_instance->isQuantiteMultiple() ) {
 							$status[] = __( 'Choix multiple -  quantités libres', 'amapress' );
@@ -1054,7 +1071,11 @@ jQuery(function($) {
 					$contrat_instance = AmapressContrat_instance::getBy( $post_id, true );
 					if ( $contrat_instance ) {
 						if ( $contrat_instance->isPanierVariable() ) {
-							$type = 'panier_var';
+							if ( $contrat_instance->isCommandeVariable() ) {
+								$type = 'commande_var';
+							} else {
+								$type = 'panier_var';
+							}
 						} else if ( $contrat_instance->isQuantiteVariable() ) {
 							if ( $contrat_instance->isQuantiteMultiple() ) {
 								$type = 'quant_var_multi';
@@ -1076,6 +1097,7 @@ jQuery(function($) {
 //			'quant_var'       => __('Choix unique - quantité libre', 'amapress'),
 //			'quant_var_multi' => __('Choix multiple -  quantités libres', 'amapress'),
 //			'panier_var'      => __('Paniers modulables', 'amapress'),
+//			'commande_var'      => __('Commandes variables', 'amapress'),
 //		];
 					ob_start();
 					?>
@@ -1105,7 +1127,7 @@ jQuery(function($) {
                     <p><input type="radio" class="required" <?php checked( 'quant_var_multi', $type ) ?>
                               name="amapress_quantite_type" id="amp_quant_var_multi" value="quant_var_multi"/><label
                                 for="amp_quant_var_multi"><strong><?php _e( 'Choix multiple - quantités libres', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
-							<?php _e( 'L’adhérent peut choisir différents produits et différentes Quantités pour toute la durée du contrat', 'amapress' ) ?>
+		                    <?php _e( 'L’adhérent peut choisir différents produits et différentes Quantités pour toute la durée du contrat', 'amapress' ) ?>
                         </label><br/><span
                                 class="description"><?php _e( '(Par ex : “Oeufs - Quantité 6 et 12 oeufs”, “Fromage - Quantité Petit Panier Option 1 et Quantité Grand panier et Quantité Panier Faisselle...”, “Volailles - Quantité Petit poulet/ Quantité Moyen Poulet, Quantité Gros Poulet”...)', 'amapress' ) ?></span>
                     <p><input type="radio" class="required" <?php checked( 'panier_var', $type ) ?>
@@ -1114,6 +1136,13 @@ jQuery(function($) {
 							<?php _e( 'L’adhérent compose à l’avance un panier spécifique pour chaque distribution', 'amapress' ) ?>
                         </label><br/><span
                                 class="description"><?php _e( '(Par ex : “Brie”, “Epicerie”...)', 'amapress' ) ?></span>
+                    </p>
+                    <p><input type="radio" class="required" <?php checked( 'commande_var', $type ) ?>
+                              name="amapress_quantite_type" id="amp_commande_var" value="commande_var"/><label
+                                for="amp_panier_var"><strong><?php _e( 'Commandes variables', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
+							<?php _e( 'L’adhérent compose avant chaque distribution un panier spécifique', 'amapress' ) ?>
+                        </label><br/><span
+                                class="description"><?php _e( '(Par ex : commande pour la semaine suivante)', 'amapress' ) ?></span>
                     </p>
 					<?php
 					return ob_get_clean();
@@ -1124,6 +1153,10 @@ jQuery(function($) {
 						delete_post_meta(
 							$post_id,
 							'amapress_contrat_instance_panier_variable'
+						);
+						delete_post_meta(
+							$post_id,
+							'amapress_contrat_instance_commande_variable'
 						);
 						switch ( $amapress_quantite_type ) {
 							case 'quant_fix':
@@ -1176,6 +1209,24 @@ jQuery(function($) {
 								update_post_meta(
 									$post_id,
 									'amapress_contrat_instance_panier_variable',
+									1
+								);
+								break;
+							case 'commande_var':
+								delete_post_meta(
+									$post_id,
+									'amapress_contrat_instance_quantite_multi' );
+								delete_post_meta(
+									$post_id,
+									'amapress_contrat_instance_quantite_variable' );
+								update_post_meta(
+									$post_id,
+									'amapress_contrat_instance_panier_variable',
+									1
+								);
+								update_post_meta(
+									$post_id,
+									'amapress_contrat_instance_commande_variable',
 									1
 								);
 								break;

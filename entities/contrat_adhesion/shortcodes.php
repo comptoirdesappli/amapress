@@ -2944,59 +2944,71 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 			echo '<p><strong>' . __( 'Date', 'amapress' ) . '</strong></p>';
-			if ( ! $is_started && ! $admin_mode ) {
+			/** @var AmapressContrat_instance $contrat */
+			if ( $contrat->isCommandeVariable() ) {
 				echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
 				$first_date_dist = $contrat->getRealDateForDistribution( $first_contrat_date );
 				$last_date_dist  = $contrat->getDate_fin();
-				if ( $contrat->getMaxContratMonths() > 0 ) {
-					$last_date_dist = Amapress::add_a_month( $contrat->getDate_debut(), $contrat->getMaxContratMonths() );
-				}
-				if ( 1 == count( $contrat->getListe_dates() ) ) {
-					echo '<p>' . sprintf( __( 'Je m’inscris pour la distribution ponctuelle du %s', 'amapress' ), date_i18n( 'l d F Y', $first_date_dist ) ) . '</p>';
-				} else {
-					if ( ! $use_contrat_term ) {
-						echo '<p>' . sprintf( __( 'Je passe commande pour la période du %s au %s (%s dates de distributions)', 'amapress' ), date_i18n( 'l d F Y', $first_date_dist ), date_i18n( 'l d F Y', $last_date_dist ), count( $contrat->getListe_dates() ) ) . '</p>';
 
-					} else {
-						echo '<p>' . sprintf( __( 'Je m’inscris pour la période complète : du %s au %s (%s dates de distributions)', 'amapress' ), date_i18n( 'l d F Y', $first_date_dist ), date_i18n( 'l d F Y', $last_date_dist ), count( $contrat->getListe_dates() ) ) . '</p>';
-					}
-				}
+				echo '<p>' . sprintf( __( 'Choix libre pour chaque date de distributions sur la période du %s au %s (%s dates de distributions)', 'amapress' ),
+						date_i18n( 'l d F Y', $first_date_dist ),
+						date_i18n( 'l d F Y', $last_date_dist ),
+						count( $contrat->getListe_dates() ) ) . '</p>';
 			} else {
-				?>
-                <p><?php
-					if ( ! $admin_mode ) {
-						if ( ! $use_contrat_term ) {
-							echo __( 'La première date de livraison est passée, je récupère mon panier à la prochaine distribution ou je choisis une date ultérieure :', 'amapress' );
-						} else {
-							echo __( 'Je m\'inscris en cours de saison, je récupère mon panier à la prochaine distribution ou je choisis une date ultérieure :', 'amapress' );
-						}
-					} else {
-						echo __( 'A partir de quel date doit-il commencer son contrat :', 'amapress' );
+				if ( ! $is_started && ! $admin_mode ) {
+					echo '<input type="hidden" name="start_date" value="' . $first_avail_date . '" />';
+					$first_date_dist = $contrat->getRealDateForDistribution( $first_contrat_date );
+					$last_date_dist  = $contrat->getDate_fin();
+					if ( $contrat->getMaxContratMonths() > 0 ) {
+						$last_date_dist = Amapress::add_a_month( $contrat->getDate_debut(), $contrat->getMaxContratMonths() );
 					}
+					if ( 1 == count( $contrat->getListe_dates() ) ) {
+						echo '<p>' . sprintf( __( 'Je m’inscris pour la distribution ponctuelle du %s', 'amapress' ), date_i18n( 'l d F Y', $first_date_dist ) ) . '</p>';
+					} else {
+						if ( ! $use_contrat_term ) {
+							echo '<p>' . sprintf( __( 'Je passe commande pour la période du %s au %s (%s dates de distributions)', 'amapress' ), date_i18n( 'l d F Y', $first_date_dist ), date_i18n( 'l d F Y', $last_date_dist ), count( $contrat->getListe_dates() ) ) . '</p>';
+
+						} else {
+							echo '<p>' . sprintf( __( 'Je m’inscris pour la période complète : du %s au %s (%s dates de distributions)', 'amapress' ), date_i18n( 'l d F Y', $first_date_dist ), date_i18n( 'l d F Y', $last_date_dist ), count( $contrat->getListe_dates() ) ) . '</p>';
+						}
+					}
+				} else {
 					?>
-                    <br/>
-                    <select name="start_date" id="start_date" class="required">
-						<?php
-						foreach ( $dates as $date ) {
-							$real_date = $contrat->getRealDateForDistribution( $date );
-							$val_date  = date_i18n( 'd/m/Y', $real_date );
-							if ( Amapress::start_of_day( $date ) != Amapress::start_of_day( $real_date ) ) {
-								$val_date .= sprintf( __( ' initialement le %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) );
+                    <p><?php
+						if ( ! $admin_mode ) {
+							if ( ! $use_contrat_term ) {
+								echo __( 'La première date de livraison est passée, je récupère mon panier à la prochaine distribution ou je choisis une date ultérieure :', 'amapress' );
+							} else {
+								echo __( 'Je m\'inscris en cours de saison, je récupère mon panier à la prochaine distribution ou je choisis une date ultérieure :', 'amapress' );
 							}
-							if ( $date == $first_avail_date ) {
-								if ( $is_started ) {
-									$val_date = sprintf( __( 'Prochaine distribution (%s)', 'amapress' ), $val_date );
-								} else {
-									$val_date = sprintf( __( 'Première distribution (%s)', 'amapress' ), $val_date );
-								}
-							}
-							$selected = selected( $edit_inscription && Amapress::start_of_day( $date ) == Amapress::start_of_day( $edit_inscription->getDate_debut() ), true, false );
-							echo '<option ' . $selected . ' value="' . esc_attr( $date ) . '">' . esc_html( $val_date ) . '</option>';
+						} else {
+							echo __( 'A partir de quel date doit-il commencer son contrat :', 'amapress' );
 						}
 						?>
-                    </select>
-                </p>
-				<?php
+                        <br/>
+                        <select name="start_date" id="start_date" class="required">
+							<?php
+							foreach ( $dates as $date ) {
+								$real_date = $contrat->getRealDateForDistribution( $date );
+								$val_date  = date_i18n( 'd/m/Y', $real_date );
+								if ( Amapress::start_of_day( $date ) != Amapress::start_of_day( $real_date ) ) {
+									$val_date .= sprintf( __( ' initialement le %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) );
+								}
+								if ( $date == $first_avail_date ) {
+									if ( $is_started ) {
+										$val_date = sprintf( __( 'Prochaine distribution (%s)', 'amapress' ), $val_date );
+									} else {
+										$val_date = sprintf( __( 'Première distribution (%s)', 'amapress' ), $val_date );
+									}
+								}
+								$selected = selected( $edit_inscription && Amapress::start_of_day( $date ) == Amapress::start_of_day( $edit_inscription->getDate_debut() ), true, false );
+								echo '<option ' . $selected . ' value="' . esc_attr( $date ) . '">' . esc_html( $val_date ) . '</option>';
+							}
+							?>
+                        </select>
+                    </p>
+					<?php
+				}
 			}
 
 			echo '<p><strong>' . __( 'Lieu', 'amapress' ) . '</strong></p>';
@@ -3760,12 +3772,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			$total         = 0;
 			$chosen_quants = [];
+			$chosen_totals = [];
 			foreach ( $panier_vars as $date_k => $quant_factors ) {
 				$date_values = [];
 				$row         = [
 					'date'      => date_i18n( 'd/m/Y', $date_k ),
 					'date_sort' => date_i18n( 'Y-m-d', $date_k ),
 				];
+				$date_total  = 0;
 				foreach ( (array) $quant_factors as $quant_k => $factor_v ) {
 					$q_id   = intval( $quant_k );
 					$factor = floatval( $factor_v );
@@ -3783,6 +3797,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 					$date_values[] = $quant->getFormattedTitle( $factor, true );
 					$total         += $factor * $quant->getPrix_unitaire();
+					$date_total    += $factor * $quant->getPrix_unitaire();
 					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 						$pay_at_deliv[] = $quant->getTitle();
 					} else {
@@ -3796,6 +3811,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				if ( ! empty( $date_values ) ) {
 					$chosen_quants[ $date_k ] = $date_values;
+					$chosen_totals[ $date_k ] = $date_total;
 				} else {
 					unset( $panier_vars[ $date_k ] );
 				}
@@ -3835,7 +3851,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			} else {
 				echo '<ul style="list-style-type: square">';
 				foreach ( $chosen_quants as $dt => $quant_descs ) {
-					echo '<li style="margin-left: 35px">' . esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) );
+					echo '<li style="margin-left: 35px">' .
+					     esc_html( date_i18n( 'd/m/Y', intval( $dt ) ) ) .
+					     esc_html( sprintf( ' (total : %0.2f€)', $chosen_totals[ $dt ] ) );
 					echo '<ul style="list-style-type: disc">';
 					foreach ( $quant_descs as $quant_desc ) {
 						echo '<li style="margin-left: 15px">' . $quant_desc . '</li>';
@@ -3927,7 +3945,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		echo wp_unslash( $contrat->getPaiementsMention() );
 
-		if ( $contrat->getManage_Cheques() ) {
+		/** @var AmapressContrat_instance $contrat */
+		if ( ! $contrat->isCommandeVariable() && $contrat->getManage_Cheques() ) {
 			if ( ! $admin_mode ) {
 				echo '<p style="margin-bottom: 0">' . __( 'Propositions de règlement :', 'amapress' ) . '</p>';
 			} else {
@@ -3943,7 +3962,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( isset( $_REQUEST['inscr_msg'] ) ) {
 			echo '<input type="hidden" name="inscr_msg" value="' . esc_attr( sanitize_textarea_field( $_REQUEST['inscr_msg'] ) ) . '"/>';
 		}
-		if ( $contrat->getManage_Cheques() ) {
+		if ( ! $contrat->isCommandeVariable() && $contrat->getManage_Cheques() ) {
 			$remaining_cheques_dates = $contrat->getPaiements_Liste_dates();
 			if ( ! $admin_mode ) {
 				$remaining_cheques_dates = array_filter( $remaining_cheques_dates,
@@ -4358,7 +4377,7 @@ $paiements_dates
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
-		if ( $contrat->getManage_Cheques() && empty( $_REQUEST['cheques'] ) ) {
+		if ( ! $contrat->isCommandeVariable() && $contrat->getManage_Cheques() && empty( $_REQUEST['cheques'] ) ) {
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$cheques = ! isset( $_REQUEST['cheques'] ) ? 0 : intval( $_REQUEST['cheques'] );
@@ -4422,10 +4441,11 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 			}
 		}
 
-		$meta = [
+		/** @var AmapressContrat_instance $contrat */
+		$meta                                   = [
 			'amapress_adhesion_adherent'         => $user_id,
 			'amapress_adhesion_status'           => 'to_confirm',
-			'amapress_adhesion_date_debut'       => $start_date,
+			'amapress_adhesion_date_debut'       => $contrat->isCommandeVariable() && $edit_inscription ? $edit_inscription->getDate_debut() : $start_date,
 			'amapress_adhesion_contrat_instance' => $contrat_id,
 			'amapress_adhesion_message'          => $message,
 			'amapress_adhesion_paiements'        => ( $cheques < 0 ? 1 : ( $cheques > 0 ? ( $cheques >= 100 ? $cheques - 100 : $cheques ) : 0 ) ),
@@ -4469,6 +4489,15 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 			$meta['amapress_adhesion_contrat_quantite_factors'] = $quantite_factors;
 		}
 		if ( ! empty( $quantite_variables ) ) {
+			if ( $edit_inscription ) {
+				/** @var AmapressAdhesion $edit_inscription */
+				foreach ( $edit_inscription->getPaniersVariables() as $k => $v ) {
+					if ( ! isset( $quantite_variables[ $k ] ) ) {
+						$quantite_variables[ $k ] = $v;
+					}
+				}
+				ksort( $quantite_variables );
+			}
 			$meta['amapress_adhesion_panier_variables'] = $quantite_variables;
 		}
 		if ( $contrat->getMaxContratMonths() > 0 ) {
@@ -4493,14 +4522,14 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 			//TODO ???
 			wp_die( 'Une erreur s\'est produite' );
 		}
-		if ( $edit_inscription && $cheques > 0 && $cheques < 100 ) {
+		if ( $edit_inscription && ( $contrat->isCommandeVariable() || ( $cheques > 0 && $cheques < 100 ) ) ) {
 			delete_post_meta( $new_id, 'amapress_adhesion_pmt_type' );
 		}
 
 		Amapress::setFilterForReferent( false );
 		$inscription = AmapressAdhesion::getBy( $new_id, true );
 		Amapress::setFilterForReferent( true );
-		if ( $inscription->getContrat_instance()->getManage_Cheques() ) {
+		if ( ! $contrat->isCommandeVariable() && $inscription->getContrat_instance()->getManage_Cheques() ) {
 			if ( 'stp' != $inscription->getMainPaiementType() ) {
 				$inscription->preparePaiements( isset( $_REQUEST['pmt'] ) ? (array) $_REQUEST['pmt'] : [] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}

@@ -165,7 +165,7 @@ class AmapressAdhesion extends TitanEntity {
 					}
 				}
 			];
-			$ret['contrat_titre']                    = [
+			$ret['contrat_titre'] = [
 				'desc' => __( 'Nom du contrat (par ex, Légumes 09/2018-08/2019)', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getContrat_instance()->getTitle();
@@ -399,7 +399,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			];
-			$ret['adherent.prenom']                  = [
+			$ret['adherent.prenom'] = [
 				'desc' => __( 'Prénom adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->first_name;
@@ -1970,7 +1970,15 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function getChequeOptions() {
 		$amount = $this->getTotalAmount();
-		if ( $this->getContrat_instance()->getPayByMonth() ) {
+		if ( $this->getContrat_instance()->isCommandeVariable() ) {
+			$by_distribs = $this->getTotalAmountByDistribution();
+
+			return implode( ' ; ', array_map( function ( $date, $date_amount ) {
+				return sprintf( __( '%s: %0.2f €', 'amapress' ),
+					$date,
+					$date_amount );
+			}, array_keys( $by_distribs ), array_values( $by_distribs ) ) );
+		} elseif ( $this->getContrat_instance()->getPayByMonth() ) {
 			if ( 1 == $this->getPaiements() ) {
 				return sprintf( __( "1 %s de %0.2f €", 'amapress' ),
 					'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ),
@@ -2003,7 +2011,9 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function getPossibleChequeOptions() {
 		$amount = $this->getTotalAmount();
-		if ( $this->getContrat_instance()->getPayByMonth() ) {
+		if ( $this->getContrat_instance()->isCommandeVariable() ) {
+			return [ $this->getChequeOptions() ];
+		} elseif ( $this->getContrat_instance()->getPayByMonth() ) {
 			$cheques_options = [];
 			if ( ! $this->getContrat_instance()->getPayByMonthOnly() && in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
 				$cheques_options[] = sprintf( __( '1 %s de %0.2f €', 'amapress' ),
@@ -2164,6 +2174,25 @@ class AmapressAdhesion extends TitanEntity {
 
 		return $this->getContrat_instance()->getTotalAmountByCustom( $this->getPaiements(), $this->getTotalAmount() );
 	}
+
+	/** @return array */
+	public function getTotalAmountByDistribution() {
+		if ( ! $this->getContrat_instanceId() ) {
+			return [];
+		}
+		$dates             = $this->getRemainingDates();
+		$by_distrib_totals = [];
+		foreach ( $dates as $date ) {
+			$full_date = date_i18n( 'd/m/Y', $date );
+			if ( empty( $by_distrib_totals[ $full_date ] ) ) {
+				$by_distrib_totals[ $full_date ] = 0;
+			}
+			$by_distrib_totals[ $full_date ] += $this->getContrat_quantites_Price( $date );
+		}
+
+		return $by_distrib_totals;
+	}
+
 
 	/** @return array */
 	public function getTotalAmountByMonth() {
@@ -2485,6 +2514,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function canRenew() {
+		if ( $this->getContrat_instance()->isPanierVariable() ) {
+			return false;
+		}
+
 		$new_contrat_id = $this->getNextContratInstanceId();
 
 		return $new_contrat_id
@@ -2492,11 +2525,19 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		       && ! $this->isNotRenewable();
 	}
 
-	public function canSelfEdit( $days_before = 3 ) {
-		return $this->getContrat_instance()->canSelfEdit()
-		       && self::TO_CONFIRM == $this->getStatus()
-		       && Amapress::end_of_day( $this->getContrat_instance()->getDate_cloture() ) > Amapress::start_of_day( amapress_time() )
-		       && Amapress::add_days( $this->getDate_debut(), - abs( $days_before ) ) > Amapress::start_of_day( amapress_time() );
+	public function canSelfEdit() {
+		if ( $this->getContrat_instance()->isCommandeVariable() ) {
+			$remaining_dates = $this->getContrat_instance()->getRemainingDates(
+				Amapress::add_days( Amapress::start_of_day( amapress_time() ), $this->getContrat_instance()->getCloseDays() )
+			);
+
+			return ! empty( $remaining_dates );
+		} else {
+			return $this->getContrat_instance()->canSelfEdit()
+			       && self::TO_CONFIRM == $this->getStatus()
+			       && Amapress::end_of_day( $this->getContrat_instance()->getDate_cloture() ) > Amapress::start_of_day( amapress_time() )
+			       && Amapress::add_days( $this->getDate_debut(), - abs( $this->getContrat_instance()->getCloseDays() ) ) > Amapress::start_of_day( amapress_time() );
+		}
 	}
 
 	public function cloneAdhesion( $as_draft = true ) {
