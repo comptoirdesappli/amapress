@@ -2708,9 +2708,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 					$dates = array_values( $contrat->getListe_dates() );
 					$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours ) {
-						$real_date = $contrat->getRealDateForDistribution( $d );
+						$real_date  = $contrat->getRealDateForDistribution( $d );
+						$close_days = $contrat->getCloseDays();
+						if ( $close_days <= 0 ) {
+							$close_days = HOUR_IN_SECONDS * $before_close_hours;
+						}
 
-						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time();
+						return ( Amapress::start_of_day( $real_date ) - $close_days ) > amapress_time();
 					} );
 
 					return ! empty( $dates );
@@ -2734,9 +2738,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
 					} );
 					$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
-						$real_date = $contrat->getRealDateForDistribution( $d );
+						$real_date  = $contrat->getRealDateForDistribution( $d );
+						$close_days = $contrat->getCloseDays();
+						if ( $close_days <= 0 ) {
+							$close_days = HOUR_IN_SECONDS * $before_close_hours;
+						}
 
-						return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
+						return ( Amapress::start_of_day( $real_date ) - $close_days ) > amapress_time()
 						       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 					} );
 
@@ -2906,9 +2914,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				} );
 				$allow_all_dates      = Amapress::toBool( $atts['allow_inscription_all_dates'] );
 				$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture, $allow_all_dates ) {
-					$real_date = $contrat->getRealDateForDistribution( $d );
+					$real_date  = $contrat->getRealDateForDistribution( $d );
+					$close_days = $contrat->getCloseDays();
+					if ( $close_days <= 0 ) {
+						$close_days = HOUR_IN_SECONDS * $before_close_hours;
+					}
 
-					return ( Amapress::start_of_day( $real_date ) - HOUR_IN_SECONDS * $before_close_hours ) > amapress_time()
+					return ( Amapress::start_of_day( $real_date ) - $close_days ) > amapress_time()
 					       && ( $allow_all_dates || empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 				} );
 			} else {
