@@ -851,7 +851,12 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 		'<br/>' . __( 'L\'adhésion doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'check_adh_rcv' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
 		'<br/>' . __( 'L\'adhésion ou une adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'check_adh_rcv_p' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
 		'<br/>' . sprintf( __( 'Durée de la période de renouvellement : %d jours', 'amapress' ),
-			Amapress::getOption( 'renouv_days' ) )
+			Amapress::getOption( 'renouv_days' ) ) .
+		'<br/>' . sprintf( __( 'Décalage de la période d\'adhésion : %d semaine(s)', 'amapress' ),
+			Amapress::getOption( 'adhesion_shift_weeks' ) ) .
+		'<br/>' . sprintf( __( 'Clôture des inscriptions : %d heure(s) avant le jour de distribution', 'amapress' ),
+			Amapress::getOption( 'before_close_hours' ) )
+
 	);
 
 	$lieux               = Amapress::get_lieux();

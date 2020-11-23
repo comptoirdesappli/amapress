@@ -529,7 +529,7 @@ function amapress_register_shortcodes() {
 				'send_contrat_confirm'                => __( '(booléen, true par défaut) : envoyer une confirmation à l\'amapien pour chacune de ses inscriptions aux contrats', 'amapress' ),
 				'send_referents'                      => __( '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents', 'amapress' ),
 				'send_tresoriers'                     => __( '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers', 'amapress' ),
-				'adhesion_shift_weeks'                => __( '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ),
+				'adhesion_shift_weeks'                => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 				'paniers_modulables_editor_height'    => __( '(350 par défaut) Hauteur de l\'éditeur de paniers modulables (en px ou sinon préciser l\'unité)', 'amapress' ),
 				'allow_adhesion_lieu'                 => __( '(booléen, false par défaut) : permettre de choisir son lieu de distribution souhaité dès l\'adhésion', 'amapress' ),
 				'allow_adhesion_message'              => __( '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion', 'amapress' ),
@@ -537,7 +537,7 @@ function amapress_register_shortcodes() {
 				'show_adherents_infos'                => __( '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents', 'amapress' ),
 				'show_adhesion_infos'                 => __( '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin', 'amapress' ),
 				'contact_referents'                   => __( '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)', 'amapress' ),
-				'before_close_hours'                  => __( '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant', 'amapress' ),
+				'before_close_hours'                  => sprintf( __( '(Configurable dans %s) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant le jour de distribution', 'amapress' ), $contrats_conf_link ),
 				'paiements_info_required'             => __( '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)', 'amapress' ),
 				'allow_trombi_decline'                => __( '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope', 'amapress' ),
 				'max_produit_label_width'             => __( '(par défaut, 10em) Largeur maximal de la colonne Produit pour les inscriptions Paniers Modulables', 'amapress' ),
@@ -592,7 +592,7 @@ function amapress_register_shortcodes() {
 						return sprintf( __( '%d (%s)', 'amapress' ), $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
 				'shorturl'                            => __( 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne', 'amapress' ),
-				'adhesion_shift_weeks'                => __( '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ),
+				'adhesion_shift_weeks'                => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 				'max_coadherents'                     => __( '(3 par défaut) Nombre maximum de co-adhérents', 'amapress' ),
 				'max_cofoyers'                        => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
 				'mob_phone_required'                  => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
@@ -626,7 +626,7 @@ function amapress_register_shortcodes() {
 				'show_due_amounts'                    => __( '(false par défaut) Afficher un lien Récapitulatif des sommes dues', 'amapress' ),
 				'show_modify_coords'                  => __( '(false par défaut) Afficher un bouton pour modifier les coordonnées, co-adhérents et membres du foyer', 'amapress' ),
 				'contact_referents'                   => __( '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)', 'amapress' ),
-				'before_close_hours'                  => __( '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant', 'amapress' ),
+				'before_close_hours'                  => sprintf( __( '(Configurable dans %s) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant le jour de distribution', 'amapress' ), $contrats_conf_link ),
 				'paiements_info_required'             => __( '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)', 'amapress' ),
 				'allow_trombi_decline'                => __( '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope', 'amapress' ),
 				'email'                               => __( '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème', 'amapress' ),
@@ -662,7 +662,7 @@ function amapress_register_shortcodes() {
 						/** @var AmapressContrat $c */
 						return sprintf( __( '%d (%s)', 'amapress' ), $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
-				'adhesion_shift_weeks'                => __( '(0 par défaut) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ),
+				'adhesion_shift_weeks'                => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 				'max_coadherents'                     => __( '(3 par défaut) Nombre maximum de co-adhérents', 'amapress' ),
 				'max_cofoyers'                        => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
 				'mob_phone_required'                  => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
@@ -696,7 +696,7 @@ function amapress_register_shortcodes() {
 				'show_max_deliv_dates'                => __( '(3 par défaut) Afficher les dates de livraison dans la liste des contrats pour les contrats jusqu\'à X dates', 'amapress' ),
 				'use_quantite_tables'                 => __( '(false par défaut) (Paniers modulables) Afficher les quantités en tableaux (date en ligne, quantités en colonnes)', 'amapress' ),
 				'contact_referents'                   => __( '(true par défaut) Affiche un lien de contact des référents dans la liste des contrats déjà souscrit (étape 4/8)', 'amapress' ),
-				'before_close_hours'                  => __( '(24 par défaut) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant', 'amapress' ),
+				'before_close_hours'                  => sprintf( __( '(Configurable dans %s) Clôturer la possibilité d\'inscription pour la prochaine distribution X heures avant le jour de distribution', 'amapress' ), $contrats_conf_link ),
 				'paiements_info_required'             => __( '(false par défaut) Rendre la saisie des numéros de chèques obligatoire (adhésion AMAP et inscriptions aux contrats)', 'amapress' ),
 				'allow_trombi_decline'                => __( '(true par défaut) Afficher une case à cocher pour ne pas apparaître sur le trombinoscope', 'amapress' ),
 				'email'                               => __( '(adresse email de l\'administrateur par défaut)Email de contact pour demander l\'accès à l\'Assistant ou en cas de problème', 'amapress' ),
@@ -1439,7 +1439,7 @@ function amapress_register_shortcodes() {
 	amapress_register_shortcode( 'helloasso-adhesion', function ( $atts, $content = null ) {
 		$atts = shortcode_atts(
 			array(
-				'adhesion_shift_weeks' => 0,
+				'adhesion_shift_weeks' => intval( Amapress::getOption( 'adhesion_shift_weeks' ) ),
 				'form_type'            => 'form',
 				'show_period'          => 'true',
 				'show_adherent_info'   => 'true',
@@ -1501,7 +1501,7 @@ function amapress_register_shortcodes() {
 				'show_period'          => '(true par défaut) Afficher le nom de la période d\'adhésion du formulaire',
 				'show_adherent_info'   => '(true par défaut) Afficher les infos de l\'utilisateur connecté',
 				'form_type'            => __( '(form par défaut) Type de formulaire à afficher (form: Formulaire, thumb: Vignette, thumbhori: Vignette horizontale, button: Bouton)', 'amapress' ),
-				'adhesion_shift_weeks' => __( '(0 par défaut) Nombre de semaines de décalage de la période de réadhésion', 'amapress' ),
+				'adhesion_shift_weeks' => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 			]
 		] );
 }
