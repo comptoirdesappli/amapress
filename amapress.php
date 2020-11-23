@@ -2162,3 +2162,16 @@ function amapress_section_note_maker(
 		       '<p>' . Amapress::makeWikiLink( $help_link, $help_title ) . '</p>'
 		       : '' ) . '</div>';
 }
+
+add_filter( 'auto_update_plugin', function ( $update, $item ) {
+	if ( in_array( $item->slug, array( 'amapress' ) ) ) {
+		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
+			return $update;
+		}
+
+		return false;
+	} else {
+		// Else, use the normal API response to decide whether to update or not
+		return $update;
+	}
+}, 10, 2 );
