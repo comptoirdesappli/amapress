@@ -2295,6 +2295,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 									$adh_period->getHelloAssoFormUrl(),
 									wp_unslash( Amapress::getOption( 'online_subscription_adh_hla_button_text' ) ),
 									true, false, 'btn btn-default btn-assist-inscr' ) . '</p>';
+							echo '<p class="helloasso-adhesion-note"><em>' . sprintf( __( 'L\'adhésion via HelloAsso nécessite d\'utiliser l\'adresse email et le nom associé au compte avec laquelle vous êtes actuellement connecté. Vous êtes connecté en tant que <strong>%s</strong>. Votre adresse email est <strong>%s</strong>', 'amapress' ),
+									$amapien->getDisplayName(), $amapien->getEmail() ) . '</em></p>';
 						}
 						if ( $track_no_renews ) {
 							?>
