@@ -155,7 +155,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getContrat_instance()->getModelTitle();
 				}
 			];
-			$ret['contrat_titre_complet']            = [
+			$ret['contrat_titre_complet'] = [
 				'desc' => __( 'Nom du contrat (par ex, Légumes 09/2018-08/2019 - Semaine A)', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					if ( ! empty( $adh->getContrat_instance()->getSubName() ) ) {
@@ -393,7 +393,7 @@ class AmapressAdhesion extends TitanEntity {
 					return $adh->getAdherent()->getUser()->display_name;
 				}
 			];
-			$ret['adherent.nom']                     = [
+			$ret['adherent.nom'] = [
 				'desc' => __( 'Nom adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					return $adh->getAdherent()->getUser()->last_name;
@@ -2526,17 +2526,22 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	}
 
 	public function canSelfEdit() {
+		$now = amapress_time();
 		if ( $this->getContrat_instance()->isCommandeVariable() ) {
-			$remaining_dates = $this->getContrat_instance()->getRemainingDates(
-				Amapress::add_days( Amapress::start_of_day( amapress_time() ), $this->getContrat_instance()->getCloseDays() )
-			);
+			$remaining_dates = array_filter( $this->getContrat_instance()->getRemainingDates(
+				Amapress::start_of_day( $now )
+			), function ( $d ) use ( $now ) {
+				return ( Amapress::start_of_day( $d )
+				         - $this->getContrat_instance()->getCloseHours() * HOUR_IN_SECONDS )
+				       > $now;
+			} );
 
 			return ! empty( $remaining_dates );
 		} else {
 			return $this->getContrat_instance()->canSelfEdit()
 			       && self::TO_CONFIRM == $this->getStatus()
-			       && Amapress::end_of_day( $this->getContrat_instance()->getDate_cloture() ) > Amapress::start_of_day( amapress_time() )
-			       && Amapress::add_days( $this->getDate_debut(), - abs( $this->getContrat_instance()->getCloseDays() ) ) > Amapress::start_of_day( amapress_time() );
+			       && Amapress::end_of_day( $this->getContrat_instance()->getDate_cloture() ) > Amapress::start_of_day( $now )
+			       && ( Amapress::start_of_day( $this->getDate_debut() ) - $this->getContrat_instance()->getCloseHours() * HOUR_IN_SECONDS > $now );
 		}
 	}
 

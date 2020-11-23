@@ -463,8 +463,16 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_quantite_variable' );
 	}
 
-	public function getCloseDays() {
-		return $this->getCustomAsInt( 'amapress_contrat_instance_close_days', - 1 );
+	public function getCloseHours( $default_before_close_hours = null ) {
+		$ret = $this->getCustomAsInt( 'amapress_contrat_instance_close_hours', - 1 );
+		if ( $ret >= 0 ) {
+			return $ret;
+		}
+		if ( null == $default_before_close_hours ) {
+			$default_before_close_hours = intval( Amapress::getOption( 'before_close_hours' ) );
+		}
+
+		return $default_before_close_hours;
 	}
 
 	public function isPanierVariable() {

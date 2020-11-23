@@ -1249,9 +1249,9 @@ jQuery(function($) {
 				'bare'        => true,
 //                'desc' => __('Quantités', 'amapress'),
 			),
-			'close_days'            => array(
+			'close_hours'           => array(
 				'name'        => __( 'Clôture des inscriptions', 'amapress' ),
-				'desc'        => __( 'Clôturer les inscriptions x jours avant la distribution (-1, valeur par défaut de l\'AMAP)', 'amapress' ),
+				'desc'        => __( 'Clôturer les inscriptions x heures avant la distribution (-1, valeur par défaut de l\'AMAP)', 'amapress' ),
 				'type'        => 'number',
 				'group'       => __( '4/6 - Paniers', 'amapress' ),
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
@@ -1260,7 +1260,7 @@ jQuery(function($) {
 				'step'        => 1,
 				'default'     => - 1,
 				'slider'      => false,
-				'unit'        => 'jour(s)',
+				'unit'        => 'heure(s)',
 			),
 			'has_pancust'           => array(
 				'name'        => __( 'Contenu du panier', 'amapress' ),
