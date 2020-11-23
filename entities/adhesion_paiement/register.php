@@ -577,6 +577,8 @@ add_filter( 'amapress_gestion-adhesions_page_adhesion_paiements_default_hidden_c
 
 add_action( 'admin_post_nopriv_helloasso', function () {
 	if ( ! isset( $_REQUEST['key'] ) || amapress_sha_secret( 'helloasso' ) != $_REQUEST['key'] ) {
+		$body = file_get_contents( 'php://input' );
+		@error_log( sprintf( 'Invalid HelloAsso callback on (%s): %s', $_SERVER['REQUEST_URI'], $body ) );
 		wp_die( __( 'Accès invalide', 'amapress' ) );
 	}
 
