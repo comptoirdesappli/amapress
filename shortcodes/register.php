@@ -1464,14 +1464,17 @@ function amapress_register_shortcodes() {
 				$form = '<iframe id="haWidget" allowtransparency="true" src="' .
 				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget-bouton" style="width:100%;height:70px;border:none;"></iframe>' .
 				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+				break;
 			case 'thumb':
 				$form = '<iframe id="haWidget" allowtransparency="true" src="' .
 				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget-vignette" style="width:350px;height:450px;border:none;"></iframe>' .
 				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+				break;
 			case 'thumb_vert':
 				$form = '<iframe id="haWidget" allowtransparency="true" src="' .
 				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget-vignette-horizontale" style="width:800px;height:400px;border:none;"></iframe>' .
 				        '<div style="width:100%;text-align:center;">Propulsé par <a href="https://www.helloasso.com" rel="nofollow">HelloAsso</a></div>';
+				break;
 			default:
 				$form = '<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="' .
 				        trailingslashit( $period_adhesion->getHelloAssoFormUrl() ) . 'widget" style="width:100%;height:750px;border:none;" onload="window.scroll(0, this.offsetTop)"></iframe>' .
