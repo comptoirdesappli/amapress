@@ -326,24 +326,54 @@ function amapress_register_entities_contrat( $entities ) {
 			echo '<script type="text/javascript">jQuery(function($) { $("body > div#ui-datepicker-div").hide(); });</script>';
 		},
 		'row_actions'              => array(
-			'renew'              => array(
+			'renew'                => array(
 				'label'     => __( 'Renouveler (prolongement)', 'amapress' ),
 				'condition' => 'amapress_can_renew_contrat_instance',
 				'show_on'   => 'list',
 				'confirm'   => true,
 			),
-			'renew_same_period'  => array(
+			'renew_same_period'    => array(
 				'label'     => __( 'Renouveler (même période)', 'amapress' ),
 				'condition' => 'amapress_can_renew_same_period_contrat_instance',
 				'show_on'   => 'list',
 				'confirm'   => true,
 			),
-			'clone'              => [
+			'clone'                => [
 				'label'   => __( 'Dupliquer', 'amapress' ),
 				'show_on' => 'list',
 				'confirm' => true,
 			],
-			'generate_contrat'   => [
+			'clone_next_week'      => [
+				'label'     => __( 'Cloner - une semaine', 'amapress' ),
+				'condition' => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->isPanierVariable()
+					       && abs( Amapress::datediffInWeeks( $contrat->getDate_fin(), $contrat->getDate_debut() ) ) <= 2;
+				},
+				'confirm'   => true,
+			],
+			'clone_next_next_week' => [
+				'label'     => __( 'Cloner - deux semaines', 'amapress' ),
+				'condition' => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->isPanierVariable()
+					       && abs( Amapress::datediffInWeeks( $contrat->getDate_fin(), $contrat->getDate_debut() ) ) <= 3;
+				},
+				'confirm'   => true,
+			],
+			'clone_next_month'     => [
+				'label'     => __( 'Cloner - mois prochain', 'amapress' ),
+				'condition' => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->isPanierVariable()
+					       && abs( Amapress::datediffInWeeks( $contrat->getDate_fin(), $contrat->getDate_debut() ) ) <= 5;
+				},
+				'confirm'   => true,
+			],
+			'generate_contrat'     => [
 				'label'     => __( 'Générer le contrat papier (DOCX)', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -352,7 +382,7 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_week( $contrat->getDate_fin() ) > Amapress::start_of_day( amapress_time() );
 				},
 			],
-			'mailto_amapiens'    => [
+			'mailto_amapiens'      => [
 				'label'     => __( 'Email aux amapiens', 'amapress' ),
 				'target'    => '_blank',
 //				'confirm'   => true,
@@ -3038,6 +3068,51 @@ function amapress_row_action_contrat_instance_clone( $post_id ) {
 	}
 
 	$new_contrat_instance = $contrat_inst->cloneContrat( true, false );
+	if ( ! $new_contrat_instance ) {
+		wp_die( __( 'Une erreur s\'est produit lors de la duplication du contrat. Veuillez réessayer', 'amapress' ) );
+	}
+
+	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
+}
+
+add_action( 'amapress_row_action_contrat_instance_clone_next_week', 'amapress_row_action_contrat_instance_clone_next_week' );
+function amapress_row_action_contrat_instance_clone_next_week( $post_id ) {
+	$contrat_inst = AmapressContrat_instance::getBy( $post_id );
+	if ( $contrat_inst->isArchived() ) {
+		wp_die( __( 'Impossible de dupliquer un contrat archivé', 'amapress' ) );
+	}
+
+	$new_contrat_instance = $contrat_inst->cloneContratForNextWeeks( 1, false );
+	if ( ! $new_contrat_instance ) {
+		wp_die( __( 'Une erreur s\'est produit lors de la duplication du contrat. Veuillez réessayer', 'amapress' ) );
+	}
+
+	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
+}
+
+add_action( 'amapress_row_action_contrat_instance_clone_next_next_week', 'amapress_row_action_contrat_instance_clone_next_next_week' );
+function amapress_row_action_contrat_instance_clone_next_next_week( $post_id ) {
+	$contrat_inst = AmapressContrat_instance::getBy( $post_id );
+	if ( $contrat_inst->isArchived() ) {
+		wp_die( __( 'Impossible de dupliquer un contrat archivé', 'amapress' ) );
+	}
+
+	$new_contrat_instance = $contrat_inst->cloneContratForNextWeeks( 2, false );
+	if ( ! $new_contrat_instance ) {
+		wp_die( __( 'Une erreur s\'est produit lors de la duplication du contrat. Veuillez réessayer', 'amapress' ) );
+	}
+
+	wp_redirect_and_exit( admin_url( "post.php?post={$new_contrat_instance->ID}&action=edit" ) );
+}
+
+add_action( 'amapress_row_action_contrat_instance_clone_next_month', 'amapress_row_action_contrat_instance_clone_next_month' );
+function amapress_row_action_contrat_instance_clone_next_month( $post_id ) {
+	$contrat_inst = AmapressContrat_instance::getBy( $post_id );
+	if ( $contrat_inst->isArchived() ) {
+		wp_die( __( 'Impossible de dupliquer un contrat archivé', 'amapress' ) );
+	}
+
+	$new_contrat_instance = $contrat_inst->cloneContratForNextMonths( 1, false );
 	if ( ! $new_contrat_instance ) {
 		wp_die( __( 'Une erreur s\'est produit lors de la duplication du contrat. Veuillez réessayer', 'amapress' ) );
 	}

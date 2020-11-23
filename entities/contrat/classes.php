@@ -2507,9 +2507,21 @@ class AmapressContrat_instance extends TitanEntity {
 		return $res;
 	}
 
-	public function cloneContrat( $as_draft = true, $for_renew = true, $same_period = false ) {
-		$this->ensure_init();
+	public function cloneContratForNextWeeks( $weeks = 1, $as_draft = true ) {
+		return $this->cloneContratByWeeks( $weeks, $as_draft );
+	}
 
+	public function cloneContratForNextMonths( $month = 1, $as_draft = true ) {
+		$start_date = Amapress::start_of_week( $this->getDate_debut() );
+		$add_weeks  = Amapress::datediffInWeeks(
+			$start_date,
+			Amapress::start_of_week( Amapress::add_a_month( $start_date, $month ) )
+		);
+
+		return $this->cloneContratByWeeks( $add_weeks, $as_draft );
+	}
+
+	public function cloneContrat( $as_draft = true, $for_renew = true, $same_period = false ) {
 		if ( ! $for_renew ) {
 			$add_weeks = 0;
 		} else if ( $same_period ) {
@@ -2520,69 +2532,8 @@ class AmapressContrat_instance extends TitanEntity {
 				Amapress::end_of_week( $this->getDate_fin() )
 			);
 		}
-		$meta = array();
-		foreach ( $this->custom as $k => $v ) {
-			$meta[ $k ] = $v;
-		}
 
-		$date_debut = Amapress::add_a_week( $this->getDate_debut(), $add_weeks );
-		$date_fin   = Amapress::add_a_week( $this->getDate_fin(), $add_weeks );
-
-		$new_liste_dates                               = array_map(
-			function ( $date ) use ( $add_weeks ) {
-				return Amapress::add_a_week( $date, $add_weeks );
-			}, $this->getListe_dates() );
-		$new_liste_dates                               = array_filter(
-			$new_liste_dates,
-			function ( $date ) use ( $date_debut, $date_fin ) {
-				return $date_debut <= $date && $date <= $date_fin;
-			} );
-		$meta['amapress_contrat_instance_liste_dates'] = implode( ',',
-			array_map(
-				function ( $date ) {
-					return date( 'd/m/Y', $date );
-				}, $new_liste_dates )
-		);
-
-		$new_liste_dates_paiements                               = array_map(
-			function ( $date ) use ( $add_weeks ) {
-				return Amapress::add_a_week( $date, $add_weeks );
-			}, $this->getPaiements_Liste_dates() );
-		$meta['amapress_contrat_instance_liste_dates_paiements'] = implode( ',',
-			array_map(
-				function ( $date ) {
-					return date( 'd/m/Y', $date );
-				}, $new_liste_dates_paiements )
-		);
-		if ( $for_renew ) {
-//			unset( $meta['amapress_contrat_instance_liste_dates_paiements'] );
-			unset( $meta['amapress_contrat_instance_commande_liste_dates'] );
-		}
-		$meta['amapress_contrat_instance_date_debut'] = $date_debut;
-		$meta['amapress_contrat_instance_date_fin']   = $date_fin;
-		unset( $meta['amapress_contrat_instance_ended'] );
-		unset( $meta['amapress_contrat_instance_archives_infos'] );
-		unset( $meta['amapress_contrat_instance_archived'] );
-		$meta['amapress_contrat_instance_date_ouverture'] = Amapress::add_a_week( $this->getDate_ouverture(), $add_weeks );
-		$meta['amapress_contrat_instance_date_cloture']   = Amapress::add_a_week( $this->getDate_cloture(), $add_weeks );
-
-		$my_post = array(
-			'post_title'   => $this->getTitle(),
-			'post_type'    => AmapressContrat_instance::INTERNAL_POST_TYPE,
-			'post_content' => '',
-			'post_status'  => $as_draft ? 'draft' : 'publish',
-			'meta_input'   => $meta,
-		);
-		$new_id  = wp_insert_post( $my_post );
-		if ( ! $new_id || is_wp_error( $new_id ) ) {
-			return null;
-		}
-
-		foreach ( AmapressContrats::get_contrat_quantites( $this->ID ) as $quantite ) {
-			$quantite->cloneForContrat( $new_id );
-		}
-
-		return AmapressContrat_instance::getBy( $new_id );
+		return $this->cloneContratByWeeks( $add_weeks, $as_draft );
 	}
 
 	public function canRenew() {
@@ -2863,6 +2814,70 @@ class AmapressContrat_instance extends TitanEntity {
 		}
 
 		return $res;
+	}
+
+	private function cloneContratByWeeks( $add_weeks, $as_draft ) {
+		$this->ensure_init();
+
+		$meta = array();
+		foreach ( $this->custom as $k => $v ) {
+			$meta[ $k ] = $v;
+		}
+
+		$date_debut = Amapress::add_a_week( $this->getDate_debut(), $add_weeks );
+		$date_fin   = Amapress::add_a_week( $this->getDate_fin(), $add_weeks );
+
+		$new_liste_dates                               = array_map(
+			function ( $date ) use ( $add_weeks ) {
+				return Amapress::add_a_week( $date, $add_weeks );
+			}, $this->getListe_dates() );
+		$new_liste_dates                               = array_filter(
+			$new_liste_dates,
+			function ( $date ) use ( $date_debut, $date_fin ) {
+				return $date_debut <= $date && $date <= $date_fin;
+			} );
+		$meta['amapress_contrat_instance_liste_dates'] = implode( ',',
+			array_map(
+				function ( $date ) {
+					return date( 'd/m/Y', $date );
+				}, $new_liste_dates )
+		);
+
+		$new_liste_dates_paiements                               = array_map(
+			function ( $date ) use ( $add_weeks ) {
+				return Amapress::add_a_week( $date, $add_weeks );
+			}, $this->getPaiements_Liste_dates() );
+		$meta['amapress_contrat_instance_liste_dates_paiements'] = implode( ',',
+			array_map(
+				function ( $date ) {
+					return date( 'd/m/Y', $date );
+				}, $new_liste_dates_paiements )
+		);
+		$meta['amapress_contrat_instance_date_debut']            = $date_debut;
+		$meta['amapress_contrat_instance_date_fin']              = $date_fin;
+		unset( $meta['amapress_contrat_instance_ended'] );
+		unset( $meta['amapress_contrat_instance_archives_infos'] );
+		unset( $meta['amapress_contrat_instance_archived'] );
+		$meta['amapress_contrat_instance_date_ouverture'] = Amapress::add_a_week( $this->getDate_ouverture(), $add_weeks );
+		$meta['amapress_contrat_instance_date_cloture']   = Amapress::add_a_week( $this->getDate_cloture(), $add_weeks );
+
+		$my_post = array(
+			'post_title'   => $this->getTitle(),
+			'post_type'    => AmapressContrat_instance::INTERNAL_POST_TYPE,
+			'post_content' => '',
+			'post_status'  => $as_draft ? 'draft' : 'publish',
+			'meta_input'   => $meta,
+		);
+		$new_id  = wp_insert_post( $my_post );
+		if ( ! $new_id || is_wp_error( $new_id ) ) {
+			return null;
+		}
+
+		foreach ( AmapressContrats::get_contrat_quantites( $this->ID ) as $quantite ) {
+			$quantite->cloneForContrat( $new_id, $add_weeks );
+		}
+
+		return AmapressContrat_instance::getBy( $new_id );
 	}
 }
 
@@ -3145,9 +3160,9 @@ class AmapressContrat_quantite extends TitanEntity {
 		}
 	}
 
-	public
-	function cloneForContrat(
-		$contrat_instance_id
+	public function cloneForContrat(
+		$contrat_instance_id,
+		$add_weeks
 	) {
 		$this->ensure_init();
 
@@ -3156,6 +3171,21 @@ class AmapressContrat_quantite extends TitanEntity {
 			$meta[ $k ] = $v;
 		}
 		$meta['amapress_contrat_quantite_contrat_instance'] = $contrat_instance_id;
+
+		$new_liste_dates = array_map(
+			function ( $date ) use ( $add_weeks ) {
+				return Amapress::add_a_week( $date, $add_weeks );
+			}, $this->getSpecificDistributionDates() );
+		if ( ! empty( $new_liste_dates ) ) {
+			$meta['amapress_contrat_quantite_liste_dates'] = implode( ',',
+				array_map(
+					function ( $date ) {
+						return date( 'd/m/Y', $date );
+					}, $new_liste_dates )
+			);
+		} else {
+			unset( $meta['amapress_contrat_quantite_liste_dates'] );
+		}
 
 		$my_post = array(
 			'post_title'   => $this->getTitle(),
