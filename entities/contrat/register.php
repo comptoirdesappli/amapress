@@ -934,7 +934,81 @@ jQuery(function($) {
 				'show_column'      => true,
 				'col_def_hidden'   => true,
 				'column_value'     => 'dates_count',
-				'desc'             => __( 'Sélectionner les dates de distribution fournies par le producteur', 'amapress' ),
+				'desc'             => function ( $option ) {
+					$ret = __( 'Sélectionner les dates de distribution fournies par le producteur', 'amapress' );
+					if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+						$ret .= '<br/><a id="amapress_deliv_step_1w_dates" class="button button-secondary">' . __( 'Toutes les semaines', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_deliv_step_2w_dates" class="button button-secondary">' . __( 'Toutes les deux semaines', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_deliv_step_1m_dates" class="button button-secondary">' . __( 'Tous les mois', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_reset_deliv_dates" class="button button-secondary">' . __( 'Supprimer toutes les dates', 'amapress' ) . '</a>';
+						$ret .= '<script type="application/javascript">jQuery(function($) {
+    var $date_debut = $("#amapress_contrat_instance_date_debut");
+    var $date_fin = $("#amapress_contrat_instance_date_fin");
+    var $dest = $("#amapress_contrat_instance_liste_dates-cal");
+    var getDateDebut = function() {
+         return $.datepicker.parseDate("' . TitanFrameworkOptionMultiDate::$default_jquery_date_format . '", $date_debut.val());
+    };
+    var getDateFin = function() {
+         return $.datepicker.parseDate("' . TitanFrameworkOptionMultiDate::$default_jquery_date_format . '", $date_fin.val());
+    };
+    $("#amapress_deliv_step_1w_dates").click(function() {
+        $dest.multiDatesPicker("resetDates");
+        var dates = [];
+        var start_date = getDateDebut();
+        var end_date = getDateFin();
+        while (start_date <= end_date) {
+            dates.push(new Date(start_date));
+            start_date.setDate(start_date.getDate() + 7);
+        }
+        $dest.multiDatesPicker(
+            "addDates",
+            dates
+        );
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_deliv_step_2w_dates").click(function() {
+        $dest.multiDatesPicker("resetDates");
+        var dates = [];
+        var start_date = getDateDebut();
+        var end_date = getDateFin();
+        while (start_date <= end_date) {
+            dates.push(new Date(start_date));
+            start_date.setDate(start_date.getDate() + 7 * 2);
+        }
+        $dest.multiDatesPicker(
+            "addDates",
+            dates
+        );
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_deliv_step_1m_dates").click(function() {
+        $dest.multiDatesPicker("resetDates");
+        var dates = [];
+        var start_date = getDateDebut();
+        var end_date = getDateFin();
+        while (start_date <= end_date) {
+            dates.push(new Date(start_date));
+            var month = start_date.getMonth();
+            start_date.setDate(start_date.getDate() + 7 * 4);
+            while (start_date.getMonth() == month)
+                start_date.setDate(start_date.getDate() + 7);
+        }
+        $dest.multiDatesPicker(
+            "addDates",
+            dates
+        );
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_reset_deliv_dates").click(function() {
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("refresh");
+    });
+});</script>';
+
+					}
+
+					return $ret;
+				},
 				'show_dates_count' => true,
 				'show_dates_list'  => true,
 				'before_option'    =>
@@ -1157,7 +1231,7 @@ jQuery(function($) {
                     <p><input type="radio" class="required" <?php checked( 'quant_var_multi', $type ) ?>
                               name="amapress_quantite_type" id="amp_quant_var_multi" value="quant_var_multi"/><label
                                 for="amp_quant_var_multi"><strong><?php _e( 'Choix multiple - quantités libres', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
-		                    <?php _e( 'L’adhérent peut choisir différents produits et différentes Quantités pour toute la durée du contrat', 'amapress' ) ?>
+							<?php _e( 'L’adhérent peut choisir différents produits et différentes Quantités pour toute la durée du contrat', 'amapress' ) ?>
                         </label><br/><span
                                 class="description"><?php _e( '(Par ex : “Oeufs - Quantité 6 et 12 oeufs”, “Fromage - Quantité Petit Panier Option 1 et Quantité Grand panier et Quantité Panier Faisselle...”, “Volailles - Quantité Petit poulet/ Quantité Moyen Poulet, Quantité Gros Poulet”...)', 'amapress' ) ?></span>
                     <p><input type="radio" class="required" <?php checked( 'panier_var', $type ) ?>
